@@ -16,8 +16,11 @@
   "devDependencies": {
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.44",
+    "@types/power-assert": "^1.4.29",
     "chai": "^4.1.2",
+    "jsverify": "^0.8.3",
     "mocha": "^4.0.1",
+    "power-assert": "^1.4.4",
     "ts-node": "^3.3.0",
     "typescript": "^2.5.3"
   }
