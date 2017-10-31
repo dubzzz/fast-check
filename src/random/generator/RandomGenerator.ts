@@ -1,6 +1,8 @@
 export default interface RandomGenerator {
     next(): [number, RandomGenerator]
-}// values are between -2**31 and 2**31-1
+    min(): number //inclusive
+    max(): number //inclusive
+}
 
 function generate_n(rng: RandomGenerator, num: number): [number[], RandomGenerator] {
     let cur: RandomGenerator = rng;

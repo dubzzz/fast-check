@@ -26,4 +26,12 @@ describe("LinearCongruential", () => {
             return true;
         }));
     });
+    it("Should generate values between -2**31 and 2**31 -1", () => {
+        return jsc.assert(jsc.forall(jsc.integer, jsc.nat(MAX_SIZE), (seed, offset) => {
+            const value = skip_n(rng_for(seed), offset).next()[0];
+            assert.ok(value >= LinearCongruential.min);
+            assert.ok(value <= LinearCongruential.max);
+            return true;
+        }));
+    });
 });
