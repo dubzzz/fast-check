@@ -26,6 +26,41 @@ export default class Stream<T> implements IterableIterator<T> {
         }
         return new Stream(helper(this.g));
     }
+    
+    dropWhile(f: (v: T) => boolean): Stream<T> {
+        let foundEligible: boolean = false;
+        function* helper(v: T): IterableIterator<T> {
+            if (foundEligible || !f(v)) {
+                foundEligible = true;
+                yield v;
+            }
+        }
+        return this.flatMap(helper);
+    }
+    drop(n: number): Stream<T> {
+        let idx = 0;
+        function helper(v: T): boolean {
+            return idx++ < n;
+        }
+        return this.dropWhile(helper);
+    }
+    takeWhile(f: (v: T) => boolean): Stream<T> {
+        function* helper(g: IterableIterator<T>): IterableIterator<T> {
+            let cur = g.next();
+            while (!cur.done && f(cur.value)) {
+                yield cur.value;
+                cur = g.next();
+            }
+        }
+        return new Stream<T>(helper(this.g));
+    }
+    take(n: number): Stream<T> {
+        let idx = 0;
+        function helper(v: T): boolean {
+            return idx++ < n;
+        }
+        return this.takeWhile(helper);
+    }
 }
 
 function stream<T>(g: IterableIterator<T>): Stream<T> {

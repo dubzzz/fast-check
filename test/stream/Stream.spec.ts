@@ -75,4 +75,68 @@ describe("Stream", () => {
             assert.deepEqual([...s], [3, 5]);
         });
     });
+    describe("drop", () => {
+        it("Should drop the right number of elements", () => {
+            function* g() {
+                yield* [1, 2, 3, 4, 5, 6];
+            }
+            let s = stream(g()).drop(2);
+            assert.deepEqual([...s], [3, 4, 5, 6]);
+        });
+    });
+    describe("dropWhile", () => {
+        it("Should drop while predicate stays valid", () => {
+            function* g() {
+                yield* [-4, -2, -3, 1, -8, 7];
+            }
+            let s = stream(g()).dropWhile(v => v < 0);
+            assert.deepEqual([...s], [1, -8, 7]);
+        });
+        it("Should drop everything", () => {
+            function* g() {
+                yield* [-4, -2, -3, 1, -8, 7];
+            }
+            let s = stream(g()).dropWhile(v => true);
+            assert.deepEqual([...s], []);
+        });
+        it("Should drop nothing", () => {
+            function* g() {
+                yield* [-4, -2, -3, 1, -8, 7];
+            }
+            let s = stream(g()).dropWhile(v => false);
+            assert.deepEqual([...s], [-4, -2, -3, 1, -8, 7]);
+        });
+    });
+    describe("take", () => {
+        it("Should take the right number of elements", () => {
+            function* g() {
+                yield* [1, 2, 3, 4, 5, 6];
+            }
+            let s = stream(g()).take(4);
+            assert.deepEqual([...s], [1, 2, 3, 4]);
+        });
+    });
+    describe("takeWhile", () => {
+        it("Should take while predicate stays valid", () => {
+            function* g() {
+                yield* [-4, -2, -3, 1, -8, 7];
+            }
+            let s = stream(g()).takeWhile(v => v < 0);
+            assert.deepEqual([...s], [-4, -2, -3]);
+        });
+        it("Should take everything", () => {
+            function* g() {
+                yield* [-4, -2, -3, 1, -8, 7];
+            }
+            let s = stream(g()).takeWhile(v => true);
+            assert.deepEqual([...s], [-4, -2, -3, 1, -8, 7]);
+        });
+        it("Should take nothing", () => {
+            function* g() {
+                yield* [-4, -2, -3, 1, -8, 7];
+            }
+            let s = stream(g()).takeWhile(v => false);
+            assert.deepEqual([...s], []);
+        });
+    });
 });
