@@ -33,6 +33,12 @@ describe("Stream", () => {
             assert.deepEqual(data, [1, 2, 3, 4, 5]);
         });
     });
+    describe("nil", () => {
+        it("Should instantiate an empty stream", () => {
+            let s: Stream<number> = Stream.nil<number>();
+            assert.deepEqual([...s], []);
+        });
+    });
     describe("map", () => {
         it("Should apply on each element", () => {
             function* g() {
