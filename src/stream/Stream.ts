@@ -61,6 +61,15 @@ export default class Stream<T> implements IterableIterator<T> {
         }
         return this.takeWhile(helper);
     }
+
+    filter(f: (v: T) => boolean): Stream<T> {
+        function* helper(v: T) {
+            if (f(v)) {
+                yield v;
+            }
+        }
+        return this.flatMap(helper);
+    }
 }
 
 function stream<T>(g: IterableIterator<T>): Stream<T> {

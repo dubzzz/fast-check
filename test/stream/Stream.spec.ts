@@ -139,4 +139,13 @@ describe("Stream", () => {
             assert.deepEqual([...s], []);
         });
     });
+    describe("filter", () => {
+        it("Should remove undesirable values", () => {
+            function* g() {
+                yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
+            }
+            let s = stream(g()).filter(v => (v % 2) === 0);
+            assert.deepEqual([...s], [4, 8, 10, 4, 4]);
+        });
+    });
 });
