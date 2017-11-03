@@ -6,6 +6,11 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "strictNullChecks": true,
+        "downlevelIteration": true,
+        "target": "es6",
+        "lib": [
+            "es6"
+        ],
         "outDir": "lib/"
     },
     "include": [
