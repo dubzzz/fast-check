@@ -70,6 +70,16 @@ export default class Stream<T> implements IterableIterator<T> {
         }
         return this.flatMap(helper);
     }
+
+    join(...others: IterableIterator<T>[]): Stream<T> {
+        function* helper(c: Stream<T>): IterableIterator<T> {
+            yield *c;
+            for (let s of others) {
+                yield* s;
+            }
+        }
+        return new Stream<T>(helper(this));
+    }
 }
 
 function stream<T>(g: IterableIterator<T>): Stream<T> {
