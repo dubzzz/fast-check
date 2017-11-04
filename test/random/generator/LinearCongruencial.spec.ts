@@ -12,8 +12,7 @@ describe('LinearCongruential', () => {
     it('Should produce the right sequence for seed=42', () => {
         let g = rng_for(42);
         let data = [];
-        const num = 10;
-        for (let idx = 0 ; idx !== num ; ++idx) {
+        for (let idx = 0 ; idx !== 10 ; ++idx) {
             const [v, nextG] = g.next();
             data.push(v);
             g = nextG;
