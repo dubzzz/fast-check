@@ -6,10 +6,10 @@ export default class MutableRandomGenerator implements RandomGenerator {
         this.rng_ = rng;
     }
     min(): number {
-        return this.min();
+        return this.rng_.min();
     }
     max(): number {
-        return this.max();
+        return this.rng_.max();
     }
     next(): [number, RandomGenerator] {
         const [value, nrng] = this.rng_.next();
