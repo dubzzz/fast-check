@@ -2,13 +2,19 @@ import { RandomGenerator } from './RandomGenerator'
 
 // Inspired from java.util.Random implementation
 // http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b14/java/util/Random.java#Random.next%28int%29
-const MULTIPLIER: number = 0x5DEECE66D;
-const INCREMENT: number = 0xB;
-const MASK: number = (2**48) - 1;
+// Updated with values from: https://en.wikipedia.org/wiki/Linear_congruential_generator
+const MULTIPLIER: number = 0x000343fd;
+const INCREMENT: number = 0x00269ec3;
+const MASK: number = 0xffffffff;
+const MASK_2: number = (1 << 31) -1;
 
 export default class LinearCongruential implements RandomGenerator {
-    static readonly min: number = -(2**31);
-    static readonly max: number = 2**31 -1;
+    // Should produce exactly the same values
+    // as the following C++ code compiled with Visual Studio:
+    //  * constructor = srand(seed);
+    //  * next        = rand();
+    static readonly min: number = 0;
+    static readonly max: number = 2**15 -1;
     readonly seed: number;
 
     constructor(seed: number) {
@@ -25,6 +31,6 @@ export default class LinearCongruential implements RandomGenerator {
 
     next(): [number, RandomGenerator] {
         const nextseed = (this.seed * MULTIPLIER + INCREMENT) & MASK;
-        return [nextseed >>> 16, new LinearCongruential(nextseed)]
+        return [(nextseed & MASK_2) >> 16, new LinearCongruential(nextseed)]
     }
 }
