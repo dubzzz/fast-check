@@ -19,6 +19,7 @@
     "@types/power-assert": "^1.4.29",
     "chai": "^4.1.2",
     "jsverify": "^0.8.3",
+    "lorem-ipsum": "^1.0.4",
     "mocha": "^4.0.1",
     "power-assert": "^1.4.4",
     "ts-node": "^3.3.0",
