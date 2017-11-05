@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "mocha --require ts-node/register test/**/*.spec.ts"
+    "test": "mocha --require ts-node/register test/**/*.spec.ts test/**/**/*.spec.ts"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
