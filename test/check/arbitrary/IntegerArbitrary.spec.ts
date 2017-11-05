@@ -1,30 +1,8 @@
 import * as assert from 'power-assert';
-import RandomGenerator from '../../../src/random/generator/RandomGenerator';
+import { DummyRandomGenerator } from './TestRandomGenerator'
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import { integer, nat } from '../../../src/check/arbitrary/IntegerArbitrary';
 import * as jsc from 'jsverify';
-
-class DummyRandomGenerator implements RandomGenerator {
-    value: number;
-    incr: number;
-    constructor(value: number, incr?: number) {
-        this.value = value;
-        this.incr = incr === undefined || incr === 0 ? 1 : incr;
-    }
-    next(): [number, RandomGenerator] {
-        // need to tweak incr in order to use a large range of values
-        // uniform distribution expects some entropy
-        return [this.value, new DummyRandomGenerator((this.value + this.incr) | 0, 2 * this.incr +1)];
-    }
-    min(): number {
-        return -0x80000000;
-    }
-    max(): number {
-        return 0x7fffffff;
-    }
-}
-
-const MAX_SIZE: number = 2048;
 
 describe("IntegerArbitrary", () => {
     describe('integer', () => {
