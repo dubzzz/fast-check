@@ -3,6 +3,7 @@ import { DummyRandomGenerator } from './TestRandomGenerator'
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import Arbitrary from '../../../src/check/arbitrary/Arbitrary';
 import { array } from '../../../src/check/arbitrary/ArrayArbitrary';
+import { integer } from '../../../src/check/arbitrary/IntegerArbitrary';
 import * as jsc from 'jsverify';
 
 class DummyArbitrary implements Arbitrary<any> {
@@ -20,6 +21,14 @@ describe("ArrayArbitrary", () => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = array(new DummyArbitrary(() => 42)).generate(mrng);
                 assert.deepEqual(g, [...Array(g.length)].map(() => new Object({key: 42})));
+                return true;
+            })
+        ));
+        it('Should generate the same array with the same random', () => jsc.assert(
+            jsc.forall(jsc.integer, (seed) => {
+                const mrng1 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng2 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                assert.deepEqual(array(integer()).generate(mrng1), array(integer()).generate(mrng2));
                 return true;
             })
         ));
