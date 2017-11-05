@@ -1,10 +1,7 @@
 import RandomGenerator from './RandomGenerator'
 
 export default class MutableRandomGenerator implements RandomGenerator {
-    rng_: RandomGenerator;
-    constructor(rng: RandomGenerator) {
-        this.rng_ = rng;
-    }
+    constructor(private rng_: RandomGenerator) {}
     min(): number {
         return this.rng_.min();
     }

@@ -3,10 +3,8 @@ import { nat } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
 class ArrayArbitrary<T> implements Arbitrary<T[]> {
-    readonly arb: Arbitrary<T>;
     readonly lengthArb: Arbitrary<number>;
-    constructor(arb: Arbitrary<T>, maxLength: number) {
-        this.arb = arb;
+    constructor(readonly arb: Arbitrary<T>, maxLength: number) {
         this.lengthArb = nat(maxLength);
     }
     generate(mrng: MutableRandomGenerator): T[] {

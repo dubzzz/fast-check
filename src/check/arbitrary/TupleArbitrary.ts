@@ -2,10 +2,7 @@ import Arbitrary from './Arbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
 class GenericTupleArbitrary implements Arbitrary<any[]> {
-    readonly arbs: Arbitrary<any>[];
-    constructor(arbs: Arbitrary<any>[]) {
-        this.arbs = arbs;
-    }
+    constructor(readonly arbs: Arbitrary<any>[]) {}
     generate(mrng: MutableRandomGenerator): any[] {
         return this.arbs.map(a => a.generate(mrng));
     }

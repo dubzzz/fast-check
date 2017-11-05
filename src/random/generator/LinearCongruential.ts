@@ -15,11 +15,8 @@ export default class LinearCongruential implements RandomGenerator {
     //  * next        = rand();
     static readonly min: number = 0;
     static readonly max: number = 2**15 -1;
-    readonly seed: number;
 
-    constructor(seed: number) {
-        this.seed = seed;
-    }
+    constructor(readonly seed: number) {}
     
     min(): number {
         return LinearCongruential.min;

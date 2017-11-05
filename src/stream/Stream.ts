@@ -1,14 +1,10 @@
 export default class Stream<T> implements IterableIterator<T> {
-    readonly g: IterableIterator<T>;
-
     static nil<T>() {
         function* g(): IterableIterator<T> {}
         return new Stream<T>(g());
     }
 
-    constructor(g: IterableIterator<T>) {
-        this.g = g;
-    }
+    constructor(private readonly g: IterableIterator<T>) {}
 
     next(value?: any): IteratorResult<T> {
         return this.g.next();

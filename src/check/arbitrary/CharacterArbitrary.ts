@@ -4,10 +4,8 @@ import MutableRandomGenerator from '../../random/generator/MutableRandomGenerato
 
 class CharacterArbitrary implements Arbitrary<string> {
     readonly arb: Arbitrary<number>;
-    readonly map: (v: number) => number;
-    constructor(min: number, max: number, map: (v: number) => number = v => v) {
+    constructor(min: number, max: number, readonly map: (v: number) => number = v => v) {
         this.arb = integer(min, max);
-        this.map = map;
     }
     generate(mrng: MutableRandomGenerator): string {
         return String.fromCharCode(
