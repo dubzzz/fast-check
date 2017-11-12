@@ -1,8 +1,9 @@
 import Arbitrary from '../arbitrary/Arbitrary'
 import { tuple } from '../arbitrary/TupleArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import IProperty from './IProperty'
 
-class Property<Ts> {
+class Property<Ts> implements IProperty<Ts> {
     constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t:Ts) => (boolean|void)) {}
     run(mrng: MutableRandomGenerator): boolean {
         try {
