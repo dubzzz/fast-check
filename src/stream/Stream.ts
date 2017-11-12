@@ -71,6 +71,15 @@ export default class Stream<T> implements IterableIterator<T> {
         }
         return this.flatMap(helper);
     }
+    
+    every(f: (v: T) => boolean): boolean {
+        for (const v of this.g) {
+            if (! f(v)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     join(...others: IterableIterator<T>[]): Stream<T> {
         function* helper(c: Stream<T>): IterableIterator<T> {

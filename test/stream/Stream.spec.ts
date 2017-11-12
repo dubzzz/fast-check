@@ -154,6 +154,32 @@ describe("Stream", () => {
             assert.deepEqual([...s], [4, 8, 10, 4, 4]);
         });
     });
+    describe("every", () => {
+        it("Should be true if all values are ok", () => {
+            function* g() {
+                yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
+            }
+            assert.ok(stream(g()).every(v => v > 0));
+        });
+        it("Should be false if it starts by a failing value", () => {
+            function* g() {
+                yield* [0, 1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
+            }
+            assert.equal(stream(g()).every(v => v > 0), false);
+        });
+        it("Should be false if it ends by a failing value", () => {
+            function* g() {
+                yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4, 0];
+            }
+            assert.equal(stream(g()).every(v => v > 0), false);
+        });
+        it("Should be false if it contains a failing value", () => {
+            function* g() {
+                yield* [1, 3, 4, 7, 8, 10, 0, 1, 1, 3, 4, 4];
+            }
+            assert.equal(stream(g()).every(v => v > 0), false);
+        });
+    });
     describe("join", () => {
         it("Should be able to join nothing", () => {
             function* g() {
