@@ -27,6 +27,22 @@ describe("IntegerArbitrary", () => {
                 return min <= g && g <= min + num;
             })
         ));
+        it('Should shrink values between min and max', () => jsc.assert(
+            jsc.forall(jsc.integer, jsc.integer, jsc.nat, (seed, min, num) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const arb = integer(min, min + num);
+                const v = arb.generate(mrng);
+                return arb.shrink(v).every(g => min <= g && g <= min + num);
+            })
+        ));
+        it('Should not suggest input in shrinked values', () => jsc.assert(
+            jsc.forall(jsc.integer, jsc.integer, jsc.nat, (seed, min, num) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const arb = integer(min, min + num);
+                const v = arb.generate(mrng);
+                return arb.shrink(v).every(g => g != v);
+            })
+        ));
     });
     describe('nat', () => {
         it('Should generate values between 0 and 2**31 -1 by default', () => jsc.assert(

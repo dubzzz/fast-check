@@ -1,6 +1,7 @@
 import Arbitrary from './Arbitrary'
 import UniformDistribution from '../../random/distribution/UniformDistribution'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import { stream, Stream } from '../../stream/Stream'
 
 class IntegerArbitrary extends Arbitrary<number> {
     static MIN_INT: number = 0x80000000 | 0;
@@ -15,6 +16,26 @@ class IntegerArbitrary extends Arbitrary<number> {
     }
     generate(mrng: MutableRandomGenerator): number {
         return UniformDistribution.inRange(this.min, this.max)(mrng)[0];
+    }
+    private shrink_to(value: number, target: number): Stream<number> {
+        const gap = value - target;
+        function* shrink_decr(): IterableIterator<number> {
+            for (let toremove = gap ; toremove > 0 ; toremove = Math.floor(toremove/2)) {
+                yield (value - toremove);
+            }
+        }
+        function* shrink_incr(): IterableIterator<number> {
+            for (let toremove = gap ; toremove < 0 ; toremove = Math.ceil(toremove/2)) {
+                yield (value - toremove);
+            }
+        }
+        return gap > 0 ? stream(shrink_decr()) : stream(shrink_incr());
+    }
+    shrink(value: number): Stream<number> {
+        if (this.min <= 0 && this.max >= 0) {
+            return this.shrink_to(value, 0);
+        }
+        return value < 0 ? this.shrink_to(value, this.max) : this.shrink_to(value, this.min);
     }
 }
 
