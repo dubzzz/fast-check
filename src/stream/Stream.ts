@@ -80,6 +80,14 @@ export default class Stream<T> implements IterableIterator<T> {
         }
         return true;
     }
+    has(f: (v: T) => boolean): [boolean, T|null] {
+        for (const v of this.g) {
+            if (f(v)) {
+                return [true, v];
+            }
+        }
+        return [false, null];
+    }
 
     join(...others: IterableIterator<T>[]): Stream<T> {
         function* helper(c: Stream<T>): IterableIterator<T> {

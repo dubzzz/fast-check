@@ -186,6 +186,32 @@ describe("Stream", () => {
             assert.equal(stream(g()).every(v => v > 0), false);
         });
     });
+    describe("has", () => {
+        it("Should be true if one of the values is ok", () => {
+            function* g() {
+                yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
+            }
+            assert.deepStrictEqual(stream(g()).has(v => v > 9), [true, 10]);
+        });
+        it("Should be true if multiple values are ok", () => {
+            function* g() {
+                yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
+            }
+            assert.deepStrictEqual(stream(g()).has(v => v > 4), [true, 7]);
+        });
+        it("Should be false for empty streams", () => {
+            function* g() {
+                yield* [];
+            }
+            assert.deepStrictEqual(stream(g()).has(v => v > 0), [false, null]);
+        });
+        it("Should be false if no value is ok", () => {
+            function* g() {
+                yield* [-2, -4, 0];
+            }
+            assert.deepStrictEqual(stream(g()).has(v => v > 0), [false, null]);
+        });
+    });
     describe("join", () => {
         it("Should be able to join nothing", () => {
             function* g() {
