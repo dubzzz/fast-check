@@ -1,19 +1,26 @@
 import Arbitrary from '../arbitrary/Arbitrary'
 import { tuple } from '../arbitrary/TupleArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Stream from '../../stream/Stream'
 import IProperty from './IProperty'
 
 class Property<Ts> implements IProperty<Ts> {
-    constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t:Ts) => (boolean|void)) {}
+    constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => (boolean | void)) { }
     run(mrng: MutableRandomGenerator): [boolean, Ts] {
         const value = this.arb.generate(mrng);
+        return [this.runOne(value), value];
+    }
+    runOne(v: Ts): boolean {
         try {
-            const output = this.predicate(value);
-            return output == null ? [true, value] : [!!output, value];
+            const output = this.predicate(v);
+            return output == null ? true : !!output;
         }
         catch (err) {
-            return [false, value];
+            return false;
         }
+    }
+    shrink(v: Ts): Stream<Ts> {
+        return this.arb.shrink(v);
     }
 }
 

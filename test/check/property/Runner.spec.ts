@@ -1,6 +1,7 @@
 import * as assert from 'power-assert';
 import IProperty from '../../../src/check/property/IProperty';
 import { check } from '../../../src/check/property/Runner';
+import Stream from '../../../src/stream/Stream'
 import * as jsc from 'jsverify';
 
 describe('Runner', () => {
@@ -10,7 +11,9 @@ describe('Runner', () => {
             run: () => {
                 ++num_calls;
                 return [true, [0]];
-            }
+            },
+            runOne: () => { throw 'Not implemented'; },
+            shrink: () => Stream.nil<[number]>()
         };
         const out = check(p);
         assert.equal(num_calls, 100, 'Should have been called 100 times');
@@ -22,7 +25,9 @@ describe('Runner', () => {
             const p: IProperty<[number]> = {
                 run: () => {
                     return [++num_calls < num, [0]];
-                }
+                },
+                runOne: () => { throw 'Not implemented'; },
+                shrink: () => Stream.nil<[number]>()
             };
             const out = check(p, {seed: seed});
             assert.equal(num_calls, num, `Should have stopped at first failing run (run number ${num})`);
@@ -39,7 +44,9 @@ describe('Runner', () => {
                 run: () => {
                     ++num_calls;
                     return [true, [0]];
-                }
+                },
+                runOne: () => { throw 'Not implemented'; },
+                shrink: () => Stream.nil<[number]>()
             };
             const out = check(p, {num_runs: num});
             assert.equal(num_calls, num, `Should have been called ${num} times`);
