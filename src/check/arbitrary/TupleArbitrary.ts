@@ -1,5 +1,6 @@
 import Arbitrary from './Arbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Stream from '../../stream/Stream'
 
 class GenericTupleArbitrary extends Arbitrary<any[]> {
     constructor(readonly arbs: Arbitrary<any>[]) {
@@ -11,13 +12,15 @@ class GenericTupleArbitrary extends Arbitrary<any[]> {
 }
 
 class Tuple1Arbitrary<T1> extends Arbitrary<[T1]> {
-    readonly tupleArb: GenericTupleArbitrary;
-    constructor(arb1: Arbitrary<T1>) {
+    constructor(readonly arb1: Arbitrary<T1>) {
         super();
-        this.tupleArb = new GenericTupleArbitrary([arb1]);
     }
     generate(mrng: MutableRandomGenerator): [T1] {
-        return this.tupleArb.generate(mrng) as [T1];
+        const v1 = this.arb1.generate(mrng);
+        return [v1] as [T1];
+    }
+    shrink(value: [T1]): Stream<[T1]> {
+        return this.arb1.shrink(value[0]).map(v => [v] as [T1]);
     }
 }
 class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
