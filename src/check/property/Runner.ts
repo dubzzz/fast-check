@@ -15,17 +15,18 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
     let rng: RandomGenerator = MersenneTwister.from(seed);
     for (let idx = 0 ; idx !== num_runs ; ++idx) {
         rng = skip_n(rng, 42);
-        if (! property.run(new MutableRandomGenerator(rng))) {
-            return {failed: true, num_runs: idx+1, seed: seed};
+        const out = property.run(new MutableRandomGenerator(rng));
+        if (!out[0]) {
+            return {failed: true, num_runs: idx+1, seed: seed, counterexample: out[1]};
         }
     }
-    return {failed: false, num_runs: num_runs, seed: seed};
+    return {failed: false, num_runs: num_runs, seed: seed, counterexample: null};
 }
 
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
     const out = check(property, params);
     if (out.failed) {
-        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed})`;
+        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${out.counterexample}`;
     }
 }
 

@@ -9,7 +9,7 @@ describe('Runner', () => {
         const p: IProperty<[number]> = {
             run: () => {
                 ++num_calls;
-                return true;
+                return [true, [0]];
             }
         };
         const out = check(p);
@@ -21,7 +21,7 @@ describe('Runner', () => {
             let num_calls = 0;
             const p: IProperty<[number]> = {
                 run: () => {
-                    return ++num_calls < num;
+                    return [++num_calls < num, [0]];
                 }
             };
             const out = check(p, {seed: seed});
@@ -38,7 +38,7 @@ describe('Runner', () => {
             const p: IProperty<[number]> = {
                 run: () => {
                     ++num_calls;
-                    return true;
+                    return [true, [0]];
                 }
             };
             const out = check(p, {num_runs: num});

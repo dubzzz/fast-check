@@ -5,13 +5,14 @@ import IProperty from './IProperty'
 
 class Property<Ts> implements IProperty<Ts> {
     constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t:Ts) => (boolean|void)) {}
-    run(mrng: MutableRandomGenerator): boolean {
+    run(mrng: MutableRandomGenerator): [boolean, Ts] {
+        const value = this.arb.generate(mrng);
         try {
-            const output = this.predicate(this.arb.generate(mrng));
-            return output == null ? true : !!output;
+            const output = this.predicate(value);
+            return output == null ? [true, value] : [!!output, value];
         }
         catch (err) {
-            return false;
+            return [false, value];
         }
     }
 }

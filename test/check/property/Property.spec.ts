@@ -41,29 +41,29 @@ describe('Property', () => {
         const p = property(single(8), (arg: number) => {
             return false;
         });
-        assert.equal(p.run(generator()), false, 'Property should fail');
+        assert.equal(p.run(generator())[0], false, 'Property should fail');
     });
     it('Should fail if predicate throws', () => {
         const p = property(single(8), (arg: number) => {
             throw 'predicate throws';
         });
-        assert.equal(p.run(generator()), false, 'Property should fail');
+        assert.equal(p.run(generator())[0], false, 'Property should fail');
     });
     it('Should fail if predicate fails on asserts', () => {
         const p = property(single(8), (arg: number) => {
             assert.ok(false);
         });
-        assert.equal(p.run(generator()), false, 'Property should fail');
+        assert.equal(p.run(generator())[0], false, 'Property should fail');
     });
     it('Should succeed if predicate is true', () => {
         const p = property(single(8), (arg: number) => {
             return true;
         });
-        assert.ok(p.run(generator()), 'Property should succeed');
+        assert.ok(p.run(generator())[0], 'Property should succeed');
     });
     it('Should succeeds if predicate does not return anything', () => {
         const p = property(single(8), (arg: number) => {});
-        assert.ok(p.run(generator()), 'Property should succeed');
+        assert.ok(p.run(generator())[0], 'Property should succeed');
     });
     it('Should call and forward arbitraries one time', () => {
         let one_call_to_predicate = false;
@@ -79,7 +79,7 @@ describe('Property', () => {
         for (let idx = 0 ; idx !== arbs.length ; ++idx) {
             assert.equal(arbs[idx].called_once, false, `The creation of a property should not trigger call to generator #${idx+1}`);
         }
-        assert.ok(p.run(generator()), 'Predicate should receive the right arguments');
+        assert.ok(p.run(generator())[0], 'Predicate should receive the right arguments');
         assert.ok(one_call_to_predicate, 'Predicate should have been called by run');
         for (let idx = 0 ; idx !== arbs.length ; ++idx) {
             assert.ok(arbs[idx].called_once, `Generator #${idx+1} should have been called by run`);
