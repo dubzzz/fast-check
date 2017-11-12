@@ -5,10 +5,11 @@ import Arbitrary from './Arbitrary'
 import { nat } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
-class LoremArbitrary implements Arbitrary<string> {
+class LoremArbitrary extends Arbitrary<string> {
     readonly arbWordsCount: Arbitrary<number>;
     readonly sentencesMode: boolean;
     constructor(maxWordsCount?: number, sentencesMode?: boolean) {
+        super();
         this.arbWordsCount = nat(maxWordsCount || 5);
         this.sentencesMode = sentencesMode || false;
     }

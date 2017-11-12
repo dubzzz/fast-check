@@ -6,8 +6,9 @@ import { tuple } from '../../../src/check/arbitrary/TupleArbitrary';
 import { integer } from '../../../src/check/arbitrary/IntegerArbitrary';
 import * as jsc from 'jsverify';
 
-class DummyArbitrary implements Arbitrary<string> {
+class DummyArbitrary extends Arbitrary<string> {
     constructor(public id: number) {
+        super();
     }
     generate(mrng: MutableRandomGenerator) {
         return `key${this.id}_${integer().generate(mrng)}`;

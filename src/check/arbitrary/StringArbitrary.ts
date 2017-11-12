@@ -5,9 +5,10 @@ import { nat } from './IntegerArbitrary'
 import { char, ascii, unicode, hexa, base64 } from './CharacterArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
-class StringArbitrary implements Arbitrary<string> {
+class StringArbitrary extends Arbitrary<string> {
     readonly arrayArb: Arbitrary<string[]>;
     constructor(charArb: Arbitrary<string>, maxLength?: number) {
+        super();
         this.arrayArb = maxLength === undefined
                 ? array(charArb)
                 : array(charArb, maxLength);
@@ -17,9 +18,10 @@ class StringArbitrary implements Arbitrary<string> {
     }
 }
 
-class Base64StringArbitrary implements Arbitrary<string> {
+class Base64StringArbitrary extends Arbitrary<string> {
     readonly strArb: Arbitrary<string>;
     constructor(maxLength: number) {
+        super();
         assert.equal(maxLength % 4, 0, 'Maximal length of base64 strings must be a multiple of 4');
         this.strArb = new StringArbitrary(base64(), maxLength);
     }

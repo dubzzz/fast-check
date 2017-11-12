@@ -2,9 +2,10 @@ import Arbitrary from './Arbitrary'
 import { nat } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
-class ArrayArbitrary<T> implements Arbitrary<T[]> {
+class ArrayArbitrary<T> extends Arbitrary<T[]> {
     readonly lengthArb: Arbitrary<number>;
     constructor(readonly arb: Arbitrary<T>, maxLength: number) {
+        super();
         this.lengthArb = nat(maxLength);
     }
     generate(mrng: MutableRandomGenerator): T[] {

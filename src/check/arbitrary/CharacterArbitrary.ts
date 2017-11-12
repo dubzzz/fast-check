@@ -2,9 +2,10 @@ import Arbitrary from './Arbitrary'
 import { integer } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
-class CharacterArbitrary implements Arbitrary<string> {
+class CharacterArbitrary extends Arbitrary<string> {
     readonly arb: Arbitrary<number>;
     constructor(min: number, max: number, readonly map: (v: number) => number = v => v) {
+        super();
         this.arb = integer(min, max);
     }
     generate(mrng: MutableRandomGenerator): string {

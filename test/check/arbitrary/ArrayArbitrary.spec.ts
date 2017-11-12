@@ -6,8 +6,9 @@ import { array } from '../../../src/check/arbitrary/ArrayArbitrary';
 import { integer } from '../../../src/check/arbitrary/IntegerArbitrary';
 import * as jsc from 'jsverify';
 
-class DummyArbitrary implements Arbitrary<any> {
+class DummyArbitrary extends Arbitrary<any> {
     constructor(public value:() => number) {
+        super();
     }
     generate(mrng: MutableRandomGenerator) {
         return { key: this.value() };

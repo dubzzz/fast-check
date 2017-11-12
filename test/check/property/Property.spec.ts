@@ -20,9 +20,10 @@ function generator(): MutableRandomGenerator {
     return new MutableRandomGenerator(new NoCallGenerator());
 }
 
-class SingleUseArbitrary<T> implements Arbitrary<T> {
+class SingleUseArbitrary<T> extends Arbitrary<T> {
     called_once: boolean = false;
     constructor(public id: T) {
+        super();
     }
     generate(mrng: MutableRandomGenerator) {
         if (this.called_once) {
