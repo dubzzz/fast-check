@@ -1,7 +1,11 @@
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Stream from '../../stream/Stream'
 
-export default interface Arbitrary<T> {
-    generate(mrng: MutableRandomGenerator): T;
+export default abstract class Arbitrary<T> {
+    abstract generate(mrng: MutableRandomGenerator): T;
+    shrink(): Stream<T> {
+        return Stream.nil<T>();
+    }
 }
 
 export { Arbitrary };
