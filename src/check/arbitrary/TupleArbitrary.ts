@@ -1,6 +1,6 @@
 import Arbitrary from './Arbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
-import Stream from '../../stream/Stream'
+import { Stream, stream } from '../../stream/Stream'
 
 class GenericTupleArbitrary extends Arbitrary<any[]> {
     constructor(readonly arbs: Arbitrary<any>[]) {
@@ -9,18 +9,31 @@ class GenericTupleArbitrary extends Arbitrary<any[]> {
     generate(mrng: MutableRandomGenerator): any[] {
         return this.arbs.map(a => a.generate(mrng));
     }
+    shrink(value: any[]): Stream<any[]> {
+        // shrinking one by one is the not the most comprehensive
+        // but allows a reasonable number of entries in the shrink
+        let s = Stream.nil<any[]>();
+        for (let idx = 0 ; idx !== this.arbs.length ; ++idx) {
+            s = s.join(
+                this.arbs[idx].shrink(value[idx])
+                    .map(v => value.slice(0, idx).concat([v]).concat(value.slice(idx+1)))
+            );
+        }
+        return s;
+    }
 }
 
 class Tuple1Arbitrary<T1> extends Arbitrary<[T1]> {
+    readonly tupleArb: GenericTupleArbitrary;
     constructor(readonly arb1: Arbitrary<T1>) {
         super();
+        this.tupleArb = new GenericTupleArbitrary([arb1]);
     }
     generate(mrng: MutableRandomGenerator): [T1] {
-        const v1 = this.arb1.generate(mrng);
-        return [v1] as [T1];
+        return this.tupleArb.generate(mrng) as [T1];
     }
-    shrink(value: [T1]): Stream<[T1]> {
-        return this.arb1.shrink(value[0]).map(v => [v] as [T1]);
+    shrink(value: [T1]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1]);
     }
 }
 class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
@@ -32,6 +45,9 @@ class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
     generate(mrng: MutableRandomGenerator): [T1,T2] {
         return this.tupleArb.generate(mrng) as [T1,T2];
     }
+    shrink(value: [T1,T2]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2]);
+    }
 }
 class Tuple3Arbitrary<T1,T2,T3> extends Arbitrary<[T1,T2,T3]> {
     readonly tupleArb: GenericTupleArbitrary;
@@ -41,6 +57,9 @@ class Tuple3Arbitrary<T1,T2,T3> extends Arbitrary<[T1,T2,T3]> {
     }
     generate(mrng: MutableRandomGenerator): [T1,T2,T3] {
         return this.tupleArb.generate(mrng) as [T1,T2,T3];
+    }
+    shrink(value: [T1,T2,T3]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3]);
     }
 }
 class Tuple4Arbitrary<T1,T2,T3,T4> extends Arbitrary<[T1,T2,T3,T4]> {
@@ -53,6 +72,9 @@ class Tuple4Arbitrary<T1,T2,T3,T4> extends Arbitrary<[T1,T2,T3,T4]> {
     generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4] {
         return this.tupleArb.generate(mrng) as [T1,T2,T3,T4];
     }
+    shrink(value: [T1,T2,T3,T4]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4]);
+    }
 }
 class Tuple5Arbitrary<T1,T2,T3,T4,T5> extends Arbitrary<[T1,T2,T3,T4,T5]> {
     readonly tupleArb: GenericTupleArbitrary;
@@ -64,6 +86,9 @@ class Tuple5Arbitrary<T1,T2,T3,T4,T5> extends Arbitrary<[T1,T2,T3,T4,T5]> {
     generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5] {
         return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5];
     }
+    shrink(value: [T1,T2,T3,T4,T5]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5]);
+    }
 }
 class Tuple6Arbitrary<T1,T2,T3,T4,T5,T6> extends Arbitrary<[T1,T2,T3,T4,T5,T6]> {
     readonly tupleArb: GenericTupleArbitrary;
@@ -74,6 +99,9 @@ class Tuple6Arbitrary<T1,T2,T3,T4,T5,T6> extends Arbitrary<[T1,T2,T3,T4,T5,T6]> 
     }
     generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6] {
         return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6];
+    }
+    shrink(value: [T1,T2,T3,T4,T5,T6]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6]);
     }
 }
 class Tuple7Arbitrary<T1,T2,T3,T4,T5,T6,T7> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7]> {
@@ -87,6 +115,9 @@ class Tuple7Arbitrary<T1,T2,T3,T4,T5,T6,T7> extends Arbitrary<[T1,T2,T3,T4,T5,T6
     generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6,T7] {
         return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6,T7];
     }
+    shrink(value: [T1,T2,T3,T4,T5,T6,T7]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6,T7]);
+    }
 }
 class Tuple8Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8]> {
     readonly tupleArb: GenericTupleArbitrary;
@@ -99,6 +130,9 @@ class Tuple8Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8> extends Arbitrary<[T1,T2,T3,T4,T5
     generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6,T7,T8] {
         return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6,T7,T8];
     }
+    shrink(value: [T1,T2,T3,T4,T5,T6,T7,T8]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6,T7,T8]);
+    }
 }
 class Tuple9Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8,T9> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8,T9]> {
     readonly tupleArb: GenericTupleArbitrary;
@@ -110,6 +144,9 @@ class Tuple9Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8,T9> extends Arbitrary<[T1,T2,T3,T4
     }
     generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6,T7,T8,T9] {
         return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6,T7,T8,T9];
+    }
+    shrink(value: [T1,T2,T3,T4,T5,T6,T7,T8,T9]) {
+        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6,T7,T8,T9]);
     }
 }
 
