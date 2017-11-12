@@ -161,6 +161,12 @@ describe("Stream", () => {
             }
             assert.ok(stream(g()).every(v => v > 0));
         });
+        it("Should be true for empty streams", () => {
+            function* g() {
+                yield* [];
+            }
+            assert.ok(stream(g()).every(v => v > 0));
+        });
         it("Should be false if it starts by a failing value", () => {
             function* g() {
                 yield* [0, 1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
