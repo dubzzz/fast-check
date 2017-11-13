@@ -16,6 +16,10 @@ class StringArbitrary extends Arbitrary<string> {
     generate(mrng: MutableRandomGenerator): string {
         return this.arrayArb.generate(mrng).join('');
     }
+    shrink(value: string) {
+        return this.arrayArb.shrink([...value])
+            .map(tab => tab.join(''));
+    }
 }
 
 class Base64StringArbitrary extends Arbitrary<string> {
@@ -33,6 +37,19 @@ class Base64StringArbitrary extends Arbitrary<string> {
             case 2: return `${s}==`;
         }
         return s.slice(1); //remove one extra char to get to %4 == 0
+    }
+    shrink(value: string) {
+        const equalPosition = value.indexOf('=');
+        const splitPosition = equalPosition === -1 ? value.length : equalPosition;
+        return this.strArb.shrink(value.substr(0, splitPosition))
+            .map(s => {
+                switch (s.length % 4) {
+                    case 0: return s;
+                    case 3: return `${s}=`;
+                    case 2: return `${s}==`;
+                }
+                return s.slice(1);
+            });
     }
 }
 

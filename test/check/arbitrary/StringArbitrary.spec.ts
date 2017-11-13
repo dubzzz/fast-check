@@ -70,27 +70,33 @@ describe('StringArbitrary', () => {
         ));
     });
     describe('base64', () => {
+        function isValidBase64(g: string) {
+            const valid = (c: string) => (
+                ('a' <= c && c <= 'z') ||
+                ('A' <= c && c <= 'Z') ||
+                ('0' <= c && c <= '9') ||
+                c === '+' || c === '/'
+            );
+            const padStart = g.indexOf('=');
+            return g.substr(0, padStart === -1 ? g.length : padStart)
+                    .split('').every(valid);
+        }
+        function hasValidBase64Padding(g: string) {
+            const padStart = g.indexOf('=');
+            return g.substr(padStart === -1 ? g.length : padStart).split('').every(c => c === '=');
+        }
         it('Should generate base64 string', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = base64String().generate(mrng);
-                const valid = (c: string) => (
-                    ('a' <= c && c <= 'z') ||
-                    ('A' <= c && c <= 'Z') ||
-                    ('0' <= c && c <= '9') ||
-                    c === '+' || c === '/'
-                );
-                const padStart = g.indexOf('=');
-                return g.substr(0, padStart === -1 ? g.length : padStart)
-                        .split('').every(valid);
+                return isValidBase64(g);
             })
         ));
         it('Should pad base64 string with spaces', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = base64String().generate(mrng);
-                const padStart = g.indexOf('=');
-                return g.substr(padStart === -1 ? g.length : padStart).split('').every(c => c === '=');
+                return hasValidBase64Padding(g);
             })
         ));
         it('Should have a length multiple of 4', () => jsc.assert(
@@ -105,6 +111,16 @@ describe('StringArbitrary', () => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = base64String(maxLength).generate(mrng);
                 return g.length <= maxLength;
+            })
+        ));
+        it('Should shrink and suggest valid base64 strings', () => jsc.assert(
+            jsc.forall(jsc.integer, (seed) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const v = base64String().generate(mrng);
+                return base64String().shrink(v)
+                    .every(g => g.length % 4 === 0 &&
+                                isValidBase64(g) &&
+                                hasValidBase64Padding(g));
             })
         ));
     });
