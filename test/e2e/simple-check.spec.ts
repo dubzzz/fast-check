@@ -31,6 +31,11 @@ describe(`simple-check (seed: ${seed})`, () => {
             assert.ok(out.failed, 'Should have failed');
             assert.deepEqual(out.counterexample, [[3,3]], 'Should shrink to counterexample [3,3]');
         });
+        it('Should shrink removing unecessary entries in the array', () => {
+            const out = sc.check(sc.property(sc.array(sc.integer(0,10)), (arr: number[]) => arr.filter(v => v >= 5).length < 2), {seed: seed});
+            assert.ok(out.failed, 'Should have failed');
+            assert.deepEqual(out.counterexample, [[5,5]], 'Should shrink to counterexample [5,5]');
+        });
     });
     describe('TupleArbitrary', () => {
         it('Should shrink on tuple2', () => {
