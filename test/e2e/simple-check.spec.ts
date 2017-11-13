@@ -15,11 +15,28 @@ describe(`simple-check (seed: ${seed})`, () => {
             assert.deepEqual(out.counterexample, [-100], 'Should shrink to counterexample -100');
         });
     });
+    describe('ArrayArbitrary', () => {
+        it('Should shrink on the size of the array', () => {
+            const out = sc.check(sc.property(sc.array(sc.nat()), (arr: number[]) => arr.length < 2), {seed: seed});
+            assert.ok(out.failed, 'Should have failed');
+            if (out.counterexample) {
+                assert.deepEqual(out.counterexample[0].length, 2, 'Should shrink to counterexample an array of size 2');
+            }
+            else {
+                assert.fail();
+            }
+        });
+        it('Should shrink on the content of the array', () => {
+            const out = sc.check(sc.property(sc.array(sc.integer(3,10)), (arr: number[]) => arr.length < 2), {seed: seed});
+            assert.ok(out.failed, 'Should have failed');
+            assert.deepEqual(out.counterexample, [[3,3]], 'Should shrink to counterexample [3,3]');
+        });
+    });
     describe('TupleArbitrary', () => {
         it('Should shrink on tuple2', () => {
-            const out = sc.check(sc.property(sc.nat(), sc.nat(), (v1: number, v2: number) => v1 < 100 || v2 < 50), {seed: seed});
+            const out = sc.check(sc.property(sc.tuple(sc.nat(), sc.nat()), (v: [number,number]) => v[0] < 100 || v[1] < 50), {seed: seed});
             assert.ok(out.failed, 'Should have failed');
-            assert.deepEqual(out.counterexample, [100,50], 'Should shrink to counterexample [100,50]');
+            assert.deepEqual(out.counterexample, [[100,50]], 'Should shrink to counterexample [100,50]');
         });
     });
 });
