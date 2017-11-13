@@ -50,5 +50,21 @@ describe("ArrayArbitrary", () => {
                 return g.length <= maxLength;
             })
         ));
+        it('Should shrink values in the defined range', () => jsc.assert(
+            jsc.forall(jsc.integer, jsc.integer, jsc.nat, (seed, min, num) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const arb = array(integer(min, min + num));
+                const tab = arb.generate(mrng);
+                return arb.shrink(tab).every(g => g.every(vv => min <= vv && vv <= min + num));
+            })
+        ));
+        it('Should not suggest input in shrinked values', () => jsc.assert(
+            jsc.forall(jsc.integer, jsc.integer, jsc.nat, (seed, min, num) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const arb = array(integer(min, min + num));
+                const tab = arb.generate(mrng);
+                return arb.shrink(tab).every(g => g.length !== tab.length || !g.every((vv,idx) => vv === tab[idx]));
+            })
+        ));
     });
 });
