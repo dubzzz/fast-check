@@ -92,6 +92,15 @@ describe("CharacterArbitrary", () => {
                 throw `Unable to produce '${waitingFor}' (${selected}) given seed ${seed}`;
             })
         ));
+        it('Should shrink within hexa characters', () => jsc.assert(
+            jsc.forall(jsc.integer, (seed) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const v = hexa().generate(mrng);
+                return hexa().shrink(v).every(g => 
+                    g.length === 1 && (('0' <= g && g <= '9') || ('a' <= g && g <= 'f'))
+                );
+            })
+        ));
     });
     describe('base64', () => {
         it('Should generate a single base64 character', () => jsc.assert(
@@ -117,6 +126,19 @@ describe("CharacterArbitrary", () => {
                     }
                 }
                 throw `Unable to produce '${waitingFor}' (${selected}) given seed ${seed}`;
+            })
+        ));
+        it('Should shrink within base64 characters', () => jsc.assert(
+            jsc.forall(jsc.integer, (seed) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const v = base64().generate(mrng);
+                return base64().shrink(v).every(g => 
+                    g.length === 1 && (
+                        ('a' <= g && g <= 'z') ||
+                        ('A' <= g && g <= 'Z') ||
+                        ('0' <= g && g <= '9') ||
+                        g === '+' || g === '/'
+                ));
             })
         ));
     });
