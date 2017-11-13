@@ -63,7 +63,7 @@ function hexaString(maxLength?: number): StringArbitrary {
 function base64String(): Base64StringArbitrary;
 function base64String(maxLength: number): Base64StringArbitrary;
 function base64String(maxLength?: number): Base64StringArbitrary {
-    const length = maxLength || 16;
+    const length = maxLength == null ? 16 : maxLength;
     return new Base64StringArbitrary(length - length%4); // base64 length is always a multiple of 4
 }
 
