@@ -23,10 +23,10 @@ class LoremArbitrary extends Arbitrary<string> {
     }
 }
 
-function lorem(): LoremArbitrary;
-function lorem(maxWordsCount: number): LoremArbitrary;
-function lorem(maxWordsCount: number, sentencesMode: boolean): LoremArbitrary;
-function lorem(maxWordsCount?: number, sentencesMode?: boolean): LoremArbitrary {
+function lorem(): Arbitrary<string>;
+function lorem(maxWordsCount: number): Arbitrary<string>;
+function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;
+function lorem(maxWordsCount?: number, sentencesMode?: boolean): Arbitrary<string> {
     return new LoremArbitrary(maxWordsCount, sentencesMode);
 }
 

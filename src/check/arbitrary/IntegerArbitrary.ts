@@ -39,18 +39,18 @@ class IntegerArbitrary extends Arbitrary<number> {
     }
 }
 
-function integer(): IntegerArbitrary;
-function integer(max: number): IntegerArbitrary;
-function integer(min: number, max: number): IntegerArbitrary;
-function integer(a?: number, b?: number): IntegerArbitrary {
+function integer(): Arbitrary<number>;
+function integer(max: number): Arbitrary<number>;
+function integer(min: number, max: number): Arbitrary<number>;
+function integer(a?: number, b?: number): Arbitrary<number> {
     return b === undefined
         ? new IntegerArbitrary(undefined, a)
         : new IntegerArbitrary(a, b);
 }
 
-function nat(): IntegerArbitrary;
-function nat(max: number): IntegerArbitrary;
-function nat(a?: number): IntegerArbitrary {
+function nat(): Arbitrary<number>;
+function nat(max: number): Arbitrary<number>;
+function nat(a?: number): Arbitrary<number> {
     return new IntegerArbitrary(0, a);
 }
 

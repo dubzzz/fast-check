@@ -10,7 +10,7 @@ class ConstantArbitrary<T> extends Arbitrary<T> {
     }
 }
 
-function constant<T>(value: T): ConstantArbitrary<T> {
+function constant<T>(value: T): Arbitrary<T> {
     return new ConstantArbitrary<T>(value);
 }
 

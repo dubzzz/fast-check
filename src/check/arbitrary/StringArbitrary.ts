@@ -53,33 +53,33 @@ class Base64StringArbitrary extends Arbitrary<string> {
     }
 }
 
-function string(): StringArbitrary;
-function string(maxLength: number): StringArbitrary;
-function string(maxLength?: number): StringArbitrary {
+function string(): Arbitrary<string>;
+function string(maxLength: number): Arbitrary<string>;
+function string(maxLength?: number): Arbitrary<string> {
     return new StringArbitrary(char(), maxLength);
 }
 
-function asciiString(): StringArbitrary;
-function asciiString(maxLength: number): StringArbitrary;
-function asciiString(maxLength?: number): StringArbitrary {
+function asciiString(): Arbitrary<string>;
+function asciiString(maxLength: number): Arbitrary<string>;
+function asciiString(maxLength?: number): Arbitrary<string> {
     return new StringArbitrary(ascii(), maxLength);
 }
 
-function unicodeString(): StringArbitrary;
-function unicodeString(maxLength: number): StringArbitrary;
-function unicodeString(maxLength?: number): StringArbitrary {
+function unicodeString(): Arbitrary<string>;
+function unicodeString(maxLength: number): Arbitrary<string>;
+function unicodeString(maxLength?: number): Arbitrary<string> {
     return new StringArbitrary(unicode(), maxLength);
 }
 
-function hexaString(): StringArbitrary;
-function hexaString(maxLength: number): StringArbitrary;
-function hexaString(maxLength?: number): StringArbitrary {
+function hexaString(): Arbitrary<string>;
+function hexaString(maxLength: number): Arbitrary<string>;
+function hexaString(maxLength?: number): Arbitrary<string> {
     return new StringArbitrary(hexa(), maxLength);
 }
 
-function base64String(): Base64StringArbitrary;
-function base64String(maxLength: number): Base64StringArbitrary;
-function base64String(maxLength?: number): Base64StringArbitrary {
+function base64String(): Arbitrary<string>;
+function base64String(maxLength: number): Arbitrary<string>;
+function base64String(maxLength?: number): Arbitrary<string> {
     const length = maxLength == null ? 16 : maxLength;
     return new Base64StringArbitrary(length - length%4); // base64 length is always a multiple of 4
 }

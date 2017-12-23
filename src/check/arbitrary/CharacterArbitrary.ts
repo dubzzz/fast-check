@@ -23,11 +23,11 @@ class CharacterArbitrary extends Arbitrary<string> {
     }
 }
 
-function char(): CharacterArbitrary {
+function char(): Arbitrary<string> {
     // Only printable characters: https://www.ascii-code.com/
     return new CharacterArbitrary(0x20, 0x7e);
 }
-function hexa(): CharacterArbitrary {
+function hexa(): Arbitrary<string> {
     function mapper(v: number) {
         return (v < 10)
             ? v + 48      // 0-9
@@ -40,7 +40,7 @@ function hexa(): CharacterArbitrary {
     }
     return new CharacterArbitrary(0, 15, mapper, unmapper);
 }
-function base64(): CharacterArbitrary {
+function base64(): Arbitrary<string> {
     function mapper(v: number) {
         if (v < 26) return v + 65;     // A-Z
         if (v < 52) return v + 97 -26; // a-z
@@ -56,10 +56,10 @@ function base64(): CharacterArbitrary {
     return new CharacterArbitrary(0, 63, mapper, unmapper);
 }
 
-function ascii(): CharacterArbitrary {
+function ascii(): Arbitrary<string> {
     return new CharacterArbitrary(0x00, 0x7f);
 }
-function unicode(): CharacterArbitrary {
+function unicode(): Arbitrary<string> {
     return new CharacterArbitrary(0x0000, 0xffff);
 }
 
