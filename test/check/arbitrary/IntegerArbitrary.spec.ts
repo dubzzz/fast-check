@@ -27,6 +27,13 @@ describe("IntegerArbitrary", () => {
                 return min <= g && g <= min + num;
             })
         ));
+        it('Should not fail on single value range', () => jsc.assert(
+            jsc.forall(jsc.integer, jsc.nat, (seed, value) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const g = integer(value, value).generate(mrng);
+                return g == value;
+            })
+        ));
         it('Should shrink values between min and max', () => jsc.assert(
             jsc.forall(jsc.integer, jsc.integer, jsc.nat, (seed, min, num) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
