@@ -7,6 +7,7 @@ import { char, ascii, unicode, hexa, base64 } from './arbitrary/CharacterArbitra
 import { constant } from './arbitrary/ConstantArbitrary'
 import { integer, nat } from './arbitrary/IntegerArbitrary'
 import { lorem } from './arbitrary/LoremArbitrary'
+import { oneof } from './arbitrary/OneOfArbitrary'
 import { string, asciiString, unicodeString, hexaString, base64String } from './Arbitrary/StringArbitrary'
 import { tuple } from './arbitrary/TupleArbitrary'
 
