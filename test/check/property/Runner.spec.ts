@@ -19,6 +19,20 @@ describe('Runner', () => {
         assert.equal(num_calls, 100, 'Should have been called 100 times');
         assert.equal(out.failed, false, 'Should not have failed');
     });
+    it('Should never call shrink on success', () => {
+        let num_calls = 0;
+        const p: IProperty<[number]> = {
+            run: () => {
+                ++num_calls;
+                return [true, [0]];
+            },
+            runOne: () => { throw 'Not implemented'; },
+            shrink: () => { throw 'Not implemented'; }
+        };
+        const out = check(p);
+        assert.equal(num_calls, 100, 'Should have been called 100 times');
+        assert.equal(out.failed, false, 'Should not have failed');
+    });
     it('Should call the property 100 times by default (except on error)', () => jsc.assert(
         jsc.forall(jsc.integer(1, 100), jsc.integer, (num, seed) => {
             let num_calls = 0;
