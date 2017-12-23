@@ -11,7 +11,7 @@ describe("OneOfArbitrary", () => {
             jsc.forall(jsc.integer, jsc.integer, jsc.array(jsc.integer), (seed, choice1, others) => {
                 const choices = [choice1, ...others];
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const g = oneof(constant(choice1), ...others.map(constant)).generate(mrng);
+                const g = oneof(constant(choice1), ...others.map(constant)).generate(mrng).value;
                 return choices.indexOf(g) !== -1;
             })
         ));

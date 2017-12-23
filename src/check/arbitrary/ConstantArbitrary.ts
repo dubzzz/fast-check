@@ -1,12 +1,13 @@
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
 class ConstantArbitrary<T> extends Arbitrary<T> {
     constructor(readonly value: T) {
         super();
     }
-    generate(mrng: MutableRandomGenerator): T {
-        return this.value;
+    generate(mrng: MutableRandomGenerator): Shrinkable<T> {
+        return new Shrinkable(this.value);
     }
 }
 

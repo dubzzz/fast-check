@@ -1,4 +1,5 @@
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { nat } from './IntegerArbitrary'
 
@@ -8,9 +9,9 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
         super();
         this.idArb = nat(arbs.length -1);
     }
-    generate(mrng: MutableRandomGenerator): T {
+    generate(mrng: MutableRandomGenerator): Shrinkable<T> {
         const id = this.idArb.generate(mrng);
-        return this.arbs[id].generate(mrng);
+        return this.arbs[id.value].generate(mrng);
     }
 }
 

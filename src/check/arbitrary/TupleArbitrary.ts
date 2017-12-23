@@ -1,4 +1,5 @@
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { Stream, stream } from '../../stream/Stream'
 
@@ -6,16 +7,21 @@ class GenericTupleArbitrary extends Arbitrary<any[]> {
     constructor(readonly arbs: Arbitrary<any>[]) {
         super();
     }
-    generate(mrng: MutableRandomGenerator): any[] {
-        return this.arbs.map(a => a.generate(mrng));
+    private static wrapper(shrinkables: Shrinkable<any>[]): Shrinkable<any[]> {
+        return new Shrinkable(
+            shrinkables.map(s => s.value),
+            () => GenericTupleArbitrary.shrinkImpl(shrinkables).map(GenericTupleArbitrary.wrapper));
     }
-    shrink(value: any[]): Stream<any[]> {
+    generate(mrng: MutableRandomGenerator): Shrinkable<any[]> {
+        return GenericTupleArbitrary.wrapper(this.arbs.map(a => a.generate(mrng)));
+    }
+    private static shrinkImpl(value: Shrinkable<any>[]): Stream<Shrinkable<any>[]> {
         // shrinking one by one is the not the most comprehensive
         // but allows a reasonable number of entries in the shrink
         let s = Stream.nil<any[]>();
-        for (let idx = 0 ; idx !== this.arbs.length ; ++idx) {
+        for (let idx = 0 ; idx !== value.length ; ++idx) {
             s = s.join(
-                this.arbs[idx].shrink(value[idx])
+                value[idx].shrink()
                     .map(v => value.slice(0, idx).concat([v]).concat(value.slice(idx+1)))
             );
         }
@@ -29,11 +35,8 @@ class Tuple1Arbitrary<T1> extends Arbitrary<[T1]> {
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1]);
     }
-    generate(mrng: MutableRandomGenerator): [T1] {
-        return this.tupleArb.generate(mrng) as [T1];
-    }
-    shrink(value: [T1]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1]>;
     }
 }
 class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
@@ -42,11 +45,8 @@ class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2] {
-        return this.tupleArb.generate(mrng) as [T1,T2];
-    }
-    shrink(value: [T1,T2]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2]>;
     }
 }
 class Tuple3Arbitrary<T1,T2,T3> extends Arbitrary<[T1,T2,T3]> {
@@ -55,11 +55,8 @@ class Tuple3Arbitrary<T1,T2,T3> extends Arbitrary<[T1,T2,T3]> {
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2, arb3]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2,T3] {
-        return this.tupleArb.generate(mrng) as [T1,T2,T3];
-    }
-    shrink(value: [T1,T2,T3]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2,T3]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3]>;
     }
 }
 class Tuple4Arbitrary<T1,T2,T3,T4> extends Arbitrary<[T1,T2,T3,T4]> {
@@ -69,11 +66,8 @@ class Tuple4Arbitrary<T1,T2,T3,T4> extends Arbitrary<[T1,T2,T3,T4]> {
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2, arb3, arb4]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4] {
-        return this.tupleArb.generate(mrng) as [T1,T2,T3,T4];
-    }
-    shrink(value: [T1,T2,T3,T4]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2,T3,T4]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4]>;
     }
 }
 class Tuple5Arbitrary<T1,T2,T3,T4,T5> extends Arbitrary<[T1,T2,T3,T4,T5]> {
@@ -83,11 +77,8 @@ class Tuple5Arbitrary<T1,T2,T3,T4,T5> extends Arbitrary<[T1,T2,T3,T4,T5]> {
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2, arb3, arb4, arb5]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5] {
-        return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5];
-    }
-    shrink(value: [T1,T2,T3,T4,T5]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2,T3,T4,T5]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5]>;
     }
 }
 class Tuple6Arbitrary<T1,T2,T3,T4,T5,T6> extends Arbitrary<[T1,T2,T3,T4,T5,T6]> {
@@ -97,11 +88,8 @@ class Tuple6Arbitrary<T1,T2,T3,T4,T5,T6> extends Arbitrary<[T1,T2,T3,T4,T5,T6]> 
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2, arb3, arb4, arb5, arb6]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6] {
-        return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6];
-    }
-    shrink(value: [T1,T2,T3,T4,T5,T6]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2,T3,T4,T5,T6]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5,T6]>;
     }
 }
 class Tuple7Arbitrary<T1,T2,T3,T4,T5,T6,T7> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7]> {
@@ -112,11 +100,8 @@ class Tuple7Arbitrary<T1,T2,T3,T4,T5,T6,T7> extends Arbitrary<[T1,T2,T3,T4,T5,T6
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2, arb3, arb4, arb5, arb6, arb7]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6,T7] {
-        return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6,T7];
-    }
-    shrink(value: [T1,T2,T3,T4,T5,T6,T7]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6,T7]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2,T3,T4,T5,T6,T7]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5,T6,T7]>;
     }
 }
 class Tuple8Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8]> {
@@ -127,11 +112,8 @@ class Tuple8Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8> extends Arbitrary<[T1,T2,T3,T4,T5
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2, arb3, arb4, arb5, arb6, arb7, arb8]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6,T7,T8] {
-        return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6,T7,T8];
-    }
-    shrink(value: [T1,T2,T3,T4,T5,T6,T7,T8]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6,T7,T8]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2,T3,T4,T5,T6,T7,T8]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5,T6,T7,T8]>;
     }
 }
 class Tuple9Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8,T9> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8,T9]> {
@@ -142,11 +124,8 @@ class Tuple9Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8,T9> extends Arbitrary<[T1,T2,T3,T4
         super();
         this.tupleArb = new GenericTupleArbitrary([arb1, arb2, arb3, arb4, arb5, arb6, arb7, arb8, arb9]);
     }
-    generate(mrng: MutableRandomGenerator): [T1,T2,T3,T4,T5,T6,T7,T8,T9] {
-        return this.tupleArb.generate(mrng) as [T1,T2,T3,T4,T5,T6,T7,T8,T9];
-    }
-    shrink(value: [T1,T2,T3,T4,T5,T6,T7,T8,T9]) {
-        return this.tupleArb.shrink(value).map((v: any[]) => v as [T1,T2,T3,T4,T5,T6,T7,T8,T9]);
+    generate(mrng: MutableRandomGenerator): Shrinkable<[T1,T2,T3,T4,T5,T6,T7,T8,T9]> {
+        return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5,T6,T7,T8,T9]>;
     }
 }
 

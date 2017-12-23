@@ -1,5 +1,6 @@
 import * as assert from 'power-assert'
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import { array } from './ArrayArbitrary'
 import { nat } from './IntegerArbitrary'
 import { char, ascii, unicode, hexa, base64 } from './CharacterArbitrary'
@@ -13,12 +14,9 @@ class StringArbitrary extends Arbitrary<string> {
                 ? array(charArb)
                 : array(charArb, maxLength);
     }
-    generate(mrng: MutableRandomGenerator): string {
-        return this.arrayArb.generate(mrng).join('');
-    }
-    shrink(value: string) {
-        return this.arrayArb.shrink([...value])
-            .map(tab => tab.join(''));
+    generate(mrng: MutableRandomGenerator): Shrinkable<string> {
+        return this.arrayArb.generate(mrng)
+                .map(tab => tab.join(''));
     }
 }
 
@@ -29,26 +27,15 @@ class Base64StringArbitrary extends Arbitrary<string> {
         assert.equal(maxLength % 4, 0, 'Maximal length of base64 strings must be a multiple of 4');
         this.strArb = new StringArbitrary(base64(), maxLength);
     }
-    generate(mrng: MutableRandomGenerator): string {
-        const s = this.strArb.generate(mrng);
-        switch (s.length % 4) {
-            case 0: return s;
-            case 3: return `${s}=`;
-            case 2: return `${s}==`;
-        }
-        return s.slice(1); //remove one extra char to get to %4 == 0
-    }
-    shrink(value: string) {
-        const equalPosition = value.indexOf('=');
-        const splitPosition = equalPosition === -1 ? value.length : equalPosition;
-        return this.strArb.shrink(value.substr(0, splitPosition))
+    generate(mrng: MutableRandomGenerator): Shrinkable<string> {
+        return this.strArb.generate(mrng)
             .map(s => {
                 switch (s.length % 4) {
                     case 0: return s;
                     case 3: return `${s}=`;
                     case 2: return `${s}==`;
                 }
-                return s.slice(1);
+                return s.slice(1); //remove one extra char to get to %4 == 0
             });
     }
 }

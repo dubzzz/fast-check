@@ -1,4 +1,5 @@
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import UniformDistribution from '../../random/distribution/UniformDistribution'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { stream, Stream } from '../../stream/Stream'
@@ -14,7 +15,13 @@ class IntegerArbitrary extends Arbitrary<number> {
         this.min = min === undefined ? IntegerArbitrary.MIN_INT : min;
         this.max = max === undefined ? IntegerArbitrary.MAX_INT : max;
     }
-    generate(mrng: MutableRandomGenerator): number {
+    private wrapper(value: number): Shrinkable<number> {
+        return new Shrinkable(value, () => this.shrinkImpl(value).map(v => this.wrapper(v)));
+    }
+    generate(mrng: MutableRandomGenerator): Shrinkable<number> {
+        return this.wrapper(this.generateImpl(mrng));
+    }
+    private generateImpl(mrng: MutableRandomGenerator): number {
         return UniformDistribution.inRange(this.min, this.max)(mrng)[0];
     }
     private shrink_to(value: number, target: number): Stream<number> {
@@ -31,7 +38,7 @@ class IntegerArbitrary extends Arbitrary<number> {
         }
         return gap > 0 ? stream(shrink_decr()) : stream(shrink_incr());
     }
-    shrink(value: number): Stream<number> {
+    private shrinkImpl(value: number): Stream<number> {
         if (this.min <= 0 && this.max >= 0) {
             return this.shrink_to(value, 0);
         }

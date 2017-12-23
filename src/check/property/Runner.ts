@@ -1,3 +1,4 @@
+import Shrinkable from '../arbitrary/definition/Shrinkable'
 import { RandomGenerator, skip_n } from '../../random/generator/RandomGenerator'
 import MersenneTwister from '../../random/generator/MersenneTwister'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
@@ -8,13 +9,13 @@ interface Parameters {
     num_runs?: number;
 }
 
-function shrinkIt<Ts>(property: IProperty<Ts>, value: Ts, num_shrinks: number = 0): [Ts, number] {
-    for (const v of property.shrink(value)) {
-        if (!property.runOne(v)) {
+function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, num_shrinks: number = 0): [Ts, number] {
+    for (const v of value.shrink()) {
+        if (!property.runOne(v.value)) {
             return shrinkIt(property, v, num_shrinks+1);
         }
     }
-    return [value, num_shrinks];
+    return [value.value, num_shrinks];
 }
 
 function check<Ts>(property: IProperty<Ts>, params?: Parameters) {

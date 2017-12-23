@@ -1,4 +1,5 @@
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import { nat } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { Stream, stream } from '../../stream/Stream'
@@ -9,19 +10,35 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
         super();
         this.lengthArb = nat(maxLength);
     }
-    generate(mrng: MutableRandomGenerator): T[] {
-        const size = this.lengthArb.generate(mrng);
-        return [...Array(size)].map(() => this.arb.generate(mrng));
+    private wrapper(shrinkables: [Shrinkable<number>, Shrinkable<T>[]]): Shrinkable<T[]> {
+        const [size, items] = shrinkables;
+        return new Shrinkable(
+            items.map(s => s.value),
+            () => this.shrinkImpl(size, items).map(v => this.wrapper(v)));
     }
-    shrink(value: T[]): Stream<T[]> {
+    generate(mrng: MutableRandomGenerator): Shrinkable<T[]> {
+        const size = this.lengthArb.generate(mrng);
+        const items = [...Array(size.value)].map(() => this.arb.generate(mrng));
+        return this.wrapper([size, items]);
+    }
+    private shrinkImpl(size: Shrinkable<number>, items: Shrinkable<T>[]): Stream<[Shrinkable<number>, Shrinkable<T>[]]> {
         // shrinking one by one is the not the most comprehensive
         // but allows a reasonable number of entries in the shrink
-        if (value.length === 0) {
-            return Stream.nil<T[]>();
+        if (items.length === 0) {
+            return Stream.nil<[Shrinkable<number>, Shrinkable<T>[]]>();
         }
-        return this.lengthArb.shrink(value.length).map(l => value.slice(value.length -l))
-            .join(this.arb.shrink(value[0]).map(v => [v].concat(value.slice(1))))
-            .join(this.shrink(value.slice(1)).map(vs => [value[0]].concat(vs)));
+        return size.shrink().map(l => {
+                const v: [Shrinkable<number>, Shrinkable<T>[]] = [l, items.slice(items.length -l.value)];
+                return v;
+            }).join(items[0].shrink().map(v => {
+                const out: [Shrinkable<number>, Shrinkable<T>[]] = [size, [v].concat(items.slice(1))];
+                return out;
+            })).join(this.shrinkImpl(size.filter(v => v < size.value -1).withValue(size.value -1), items.slice(1)).map(vs => {
+                const nSize = size.filter(v => v < vs.length +1);
+                const nItems = [items[0]].concat(vs[1]);
+                const out: [Shrinkable<number>, Shrinkable<T>[]] = [nSize, nItems];
+                return out;
+            }));
     }
 }
 

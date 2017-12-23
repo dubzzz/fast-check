@@ -1,4 +1,5 @@
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import { integer } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { Stream, stream } from '../../stream/Stream'
@@ -11,15 +12,12 @@ class CharacterArbitrary extends Arbitrary<string> {
         super();
         this.arb = integer(min, max);
     }
-    generate(mrng: MutableRandomGenerator): string {
-        return String.fromCharCode(
-            this.map(
-                this.arb.generate(mrng)));
+    private mapper(n: number): string {
+        return String.fromCharCode(this.map(n));
     }
-    shrink(value: string): Stream<string> {
-        return this.arb.shrink(this.unmap(value.charCodeAt(0)))
-            .map(this.map)
-            .map(String.fromCharCode);
+    generate(mrng: MutableRandomGenerator): Shrinkable<string> {
+        return this.arb.generate(mrng)
+                .map(n => this.mapper(n));
     }
 }
 

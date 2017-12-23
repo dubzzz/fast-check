@@ -1,7 +1,8 @@
 import * as assert from 'power-assert';
 import { DummyRandomGenerator } from './TestRandomGenerator'
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
-import Arbitrary from '../../../src/check/arbitrary/Arbitrary';
+import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
+import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import { tuple } from '../../../src/check/arbitrary/TupleArbitrary';
 import { integer } from '../../../src/check/arbitrary/IntegerArbitrary';
 import * as jsc from 'jsverify';
@@ -11,11 +12,7 @@ class DummyArbitrary extends Arbitrary<string> {
         super();
     }
     generate(mrng: MutableRandomGenerator) {
-        return `key${this.id}_${integer().generate(mrng)}`;
-    }
-    shrink(v: string) {
-        return integer().shrink(+(v.substr(`key${this.id}_`.length)))
-            .map(v => `key${this.id}_${v}`);
+        return integer().generate(mrng).map(v => `key${this.id}_${v}`);
     }
 }
 function dummy(id: number) {
@@ -30,9 +27,9 @@ function propertySameTupleForSameSeed(...arbs: DummyArbitrary[]) {
     return jsc.forall(jsc.integer, (seed) => {
         const mrng1 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
         const mrng2 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-        const g1 = arb.generate(mrng1);
+        const g1 = arb.generate(mrng1).value;
         assert.ok(g1.every((v, idx) => v.startsWith(`key${arbs[idx].id}_`)));
-        assert.deepEqual(arb.generate(mrng2), g1);
+        assert.deepEqual(arb.generate(mrng2).value, g1);
         return true;
     });
 }
@@ -44,8 +41,8 @@ function propertyShrinkInRange(...arbs: DummyArbitrary[]) {
     const arb = tuple(arbs[0], ...arbs.slice(1));
     return jsc.forall(jsc.integer, (seed) => {
         const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-        const v = arb.generate(mrng);
-        return arb.shrink(v).every(g => g.every((vv, idx) => vv.startsWith(`key${arbs[idx].id}_`)));
+        const shrinkable = arb.generate(mrng);
+        return shrinkable.shrink().every(s => s.value.every((vv, idx) => vv.startsWith(`key${arbs[idx].id}_`)));
     });
 }
 
@@ -56,8 +53,8 @@ function propertyNotSuggestInputInShrink(...arbs: DummyArbitrary[]) {
     const arb = tuple(arbs[0], ...arbs.slice(1));
     return jsc.forall(jsc.integer, (seed) => {
         const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-        const v = arb.generate(mrng);
-        return arb.shrink(v).every(g => !g.every((vv, idx) => vv === v[idx]));
+        const shrinkable = arb.generate(mrng);
+        return shrinkable.shrink().every(s => !s.value.every((vv, idx) => vv === shrinkable.value[idx]));
     });
 }
 

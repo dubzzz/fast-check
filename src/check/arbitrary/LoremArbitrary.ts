@@ -1,7 +1,8 @@
 declare function require(name:string): any;
 var loremIpsum: (opt: any) => string = require('lorem-ipsum')
 
-import Arbitrary from './Arbitrary'
+import Arbitrary from './definition/Arbitrary'
+import Shrinkable from './definition/Shrinkable'
 import { nat } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
@@ -13,13 +14,14 @@ class LoremArbitrary extends Arbitrary<string> {
         this.arbWordsCount = nat(maxWordsCount || 5);
         this.sentencesMode = sentencesMode || false;
     }
-    generate(mrng: MutableRandomGenerator): string {
-        const numWords = this.arbWordsCount.generate(mrng);
-        return loremIpsum({
+    generate(mrng: MutableRandomGenerator): Shrinkable<string> {
+        const numWords = this.arbWordsCount.generate(mrng).value;
+        const lorem = loremIpsum({
             count: numWords,
             units: this.sentencesMode ? 'sentences' : 'words',
             random: () => mrng.next()[0] / (mrng.max() - mrng.min())
         });
+        return new Shrinkable(lorem);
     }
 }
 

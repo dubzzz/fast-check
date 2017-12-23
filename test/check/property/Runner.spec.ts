@@ -1,6 +1,7 @@
 import * as assert from 'power-assert';
 import IProperty from '../../../src/check/property/IProperty';
 import { check } from '../../../src/check/property/Runner';
+import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import Stream from '../../../src/stream/Stream'
 import * as jsc from 'jsverify';
 
@@ -10,10 +11,9 @@ describe('Runner', () => {
         const p: IProperty<[number]> = {
             run: () => {
                 ++num_calls;
-                return [true, [0]];
+                return [true, new Shrinkable([0]) as Shrinkable<[number]>];
             },
-            runOne: () => { throw 'Not implemented'; },
-            shrink: () => Stream.nil<[number]>()
+            runOne: () => { throw 'Not implemented'; }
         };
         const out = check(p);
         assert.equal(num_calls, 100, 'Should have been called 100 times');
@@ -24,10 +24,9 @@ describe('Runner', () => {
         const p: IProperty<[number]> = {
             run: () => {
                 ++num_calls;
-                return [true, [0]];
+                return [true, new Shrinkable([0], () => { throw 'Not implemented'; }) as Shrinkable<[number]>];
             },
             runOne: () => { throw 'Not implemented'; },
-            shrink: () => { throw 'Not implemented'; }
         };
         const out = check(p);
         assert.equal(num_calls, 100, 'Should have been called 100 times');
@@ -38,10 +37,9 @@ describe('Runner', () => {
             let num_calls = 0;
             const p: IProperty<[number]> = {
                 run: () => {
-                    return [++num_calls < num, [0]];
+                    return [++num_calls < num, new Shrinkable([0]) as Shrinkable<[number]>];
                 },
-                runOne: () => { throw 'Not implemented'; },
-                shrink: () => Stream.nil<[number]>()
+                runOne: () => { throw 'Not implemented'; }
             };
             const out = check(p, {seed: seed});
             assert.equal(num_calls, num, `Should have stopped at first failing run (run number ${num})`);
@@ -57,10 +55,9 @@ describe('Runner', () => {
             const p: IProperty<[number]> = {
                 run: () => {
                     ++num_calls;
-                    return [true, [0]];
+                    return [true, new Shrinkable([0]) as Shrinkable<[number]>];
                 },
-                runOne: () => { throw 'Not implemented'; },
-                shrink: () => Stream.nil<[number]>()
+                runOne: () => { throw 'Not implemented'; }
             };
             const out = check(p, {num_runs: num});
             assert.equal(num_calls, num, `Should have been called ${num} times`);

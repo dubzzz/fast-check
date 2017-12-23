@@ -9,7 +9,7 @@ describe("CharacterArbitrary", () => {
         it('Should generate a single printable character', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const g = char().generate(mrng);
+                const g = char().generate(mrng).value;
                 return g.length === 1 && 0x20 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0x7e;
             })
         ));
@@ -19,7 +19,7 @@ describe("CharacterArbitrary", () => {
                 const arb = char();
                 const waitingFor = String.fromCharCode(selected);
                 for (let t = 0 ; t !== 96 ; ++t) { // check for equiprobable at the same time
-                    if (arb.generate(mrng) === waitingFor) {
+                    if (arb.generate(mrng).value === waitingFor) {
                         return true;
                     }
                 }
@@ -31,7 +31,7 @@ describe("CharacterArbitrary", () => {
         it('Should generate a single ascii character', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const g = ascii().generate(mrng);
+                const g = ascii().generate(mrng).value;
                 return g.length === 1 && 0x00 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0x7f;
             })
         ));
@@ -41,7 +41,7 @@ describe("CharacterArbitrary", () => {
                 const arb = ascii();
                 const waitingFor = String.fromCharCode(selected);
                 for (let t = 0 ; t !== 128 ; ++t) { // check for equiprobable at the same time
-                    if (arb.generate(mrng) === waitingFor) {
+                    if (arb.generate(mrng).value === waitingFor) {
                         return true;
                     }
                 }
@@ -53,7 +53,7 @@ describe("CharacterArbitrary", () => {
         it('Should generate a single unicode character', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const g = unicode().generate(mrng);
+                const g = unicode().generate(mrng).value;
                 return g.length === 1 && 0x0000 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xffff;
             })
         ));
@@ -63,7 +63,7 @@ describe("CharacterArbitrary", () => {
                 const arb = unicode();
                 const waitingFor = String.fromCharCode(selected);
                 for (let t = 0 ; t !== 65536 ; ++t) { // check for equiprobable at the same time
-                    if (arb.generate(mrng) === waitingFor) {
+                    if (arb.generate(mrng).value === waitingFor) {
                         return true;
                     }
                 }
@@ -75,7 +75,7 @@ describe("CharacterArbitrary", () => {
         it('Should generate a single hexa character', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const g = hexa().generate(mrng);
+                const g = hexa().generate(mrng).value;
                 return g.length === 1 && (('0' <= g && g <= '9') || ('a' <= g && g <= 'f'));
             })
         ));
@@ -85,7 +85,7 @@ describe("CharacterArbitrary", () => {
                 const arb = hexa();
                 const waitingFor = '0123456789abcdef'[selected];
                 for (let t = 0 ; t !== 16 ; ++t) { // check for equiprobable at the same time
-                    if (arb.generate(mrng) === waitingFor) {
+                    if (arb.generate(mrng).value === waitingFor) {
                         return true;
                     }
                 }
@@ -95,9 +95,9 @@ describe("CharacterArbitrary", () => {
         it('Should shrink within hexa characters', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const v = hexa().generate(mrng);
-                return hexa().shrink(v).every(g => 
-                    g.length === 1 && (('0' <= g && g <= '9') || ('a' <= g && g <= 'f'))
+                const shrinkable = hexa().generate(mrng);
+                return shrinkable.shrink().every(s => 
+                    s.value.length === 1 && (('0' <= s.value && s.value <= '9') || ('a' <= s.value && s.value <= 'f'))
                 );
             })
         ));
@@ -106,7 +106,7 @@ describe("CharacterArbitrary", () => {
         it('Should generate a single base64 character', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const g = base64().generate(mrng);
+                const g = base64().generate(mrng).value;
                 return g.length === 1 && (
                     ('a' <= g && g <= 'z') ||
                     ('A' <= g && g <= 'Z') ||
@@ -121,7 +121,7 @@ describe("CharacterArbitrary", () => {
                 const arb = base64();
                 const waitingFor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'[selected];
                 for (let t = 0 ; t !== 64 ; ++t) { // check for equiprobable at the same time
-                    if (arb.generate(mrng) === waitingFor) {
+                    if (arb.generate(mrng).value === waitingFor) {
                         return true;
                     }
                 }
@@ -131,13 +131,13 @@ describe("CharacterArbitrary", () => {
         it('Should shrink within base64 characters', () => jsc.assert(
             jsc.forall(jsc.integer, (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const v = base64().generate(mrng);
-                return base64().shrink(v).every(g => 
-                    g.length === 1 && (
-                        ('a' <= g && g <= 'z') ||
-                        ('A' <= g && g <= 'Z') ||
-                        ('0' <= g && g <= '9') ||
-                        g === '+' || g === '/'
+                const shrinkable = base64().generate(mrng);
+                return shrinkable.shrink().every(s => 
+                    s.value.length === 1 && (
+                        ('a' <= s.value && s.value <= 'z') ||
+                        ('A' <= s.value && s.value <= 'Z') ||
+                        ('0' <= s.value && s.value <= '9') ||
+                        s.value === '+' || s.value === '/'
                 ));
             })
         ));

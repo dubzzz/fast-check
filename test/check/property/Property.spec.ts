@@ -1,7 +1,8 @@
 import * as assert from 'power-assert';
 import RandomGenerator from '../../../src/random/generator/RandomGenerator';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
-import Arbitrary from '../../../src/check/arbitrary/Arbitrary';
+import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
+import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import { property } from '../../../src/check/property/Property';
 import * as jsc from 'jsverify';
 
@@ -30,7 +31,7 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
             throw "Arbitrary has already been called once";
         }
         this.called_once = true;
-        return this.id;
+        return new Shrinkable(this.id);
     }
 }
 function single<T>(id: T) {
