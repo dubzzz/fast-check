@@ -1,5 +1,17 @@
 import RandomGenerator from '../../../src/random/generator/RandomGenerator';
 
+class NoCallGenerator implements RandomGenerator {
+    next(): [number, RandomGenerator] {
+        throw new Error("Method not implemented.");
+    }
+    min(): number {
+        throw new Error("Method not implemented.");
+    }
+    max(): number {
+        throw new Error("Method not implemented.");
+    }
+}
+
 class DummyRandomGenerator implements RandomGenerator {
     value: number;
     incr: number;
@@ -36,4 +48,4 @@ class IncrementRandomGenerator implements RandomGenerator {
     }
 }
 
-export { DummyRandomGenerator, IncrementRandomGenerator };
+export { NoCallGenerator, DummyRandomGenerator, IncrementRandomGenerator };
