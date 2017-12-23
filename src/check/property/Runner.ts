@@ -18,11 +18,11 @@ function shrinkIt<Ts>(property: IProperty<Ts>, value: Ts, num_shrinks: number = 
 }
 
 function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
-    const seed = (params && params.seed !== null) ? params.seed as number : Date.now();
-    const num_runs = (params && params.num_runs !== null) ? params.num_runs as number : 100;
+    const seed = (params && params.seed != null) ? params.seed as number : Date.now();
+    const num_runs = (params && params.num_runs != null) ? params.num_runs as number : 100;
 
     let rng: RandomGenerator = MersenneTwister.from(seed);
-    for (let idx = 0 ; idx !== num_runs ; ++idx) {
+    for (let idx = 0 ; idx < num_runs ; ++idx) {
         rng = skip_n(rng, 42);
         const out = property.run(new MutableRandomGenerator(rng));
         if (!out[0]) {
