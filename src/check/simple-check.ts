@@ -18,5 +18,5 @@ export {
     Arbitrary, Shrinkable, array, integer, nat, tuple,
     char, ascii, unicode, hexa, base64,
     constant,
-    string, asciiString, unicodeString, hexaString, base64String, lorem
+    string, asciiString, unicodeString, hexaString, base64String, lorem, oneof
 };
