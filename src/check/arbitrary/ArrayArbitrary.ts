@@ -1,11 +1,11 @@
-import Arbitrary from './definition/Arbitrary'
+import { Arbitrary, ArbitraryWithShrink } from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
 import { nat } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { Stream, stream } from '../../stream/Stream'
 
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
-    readonly lengthArb: Arbitrary<number>;
+    readonly lengthArb: ArbitraryWithShrink<number>;
     constructor(readonly arb: Arbitrary<T>, maxLength: number) {
         super();
         this.lengthArb = nat(maxLength);
@@ -33,8 +33,8 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
             }).join(items[0].shrink().map(v => {
                 const out: [Shrinkable<number>, Shrinkable<T>[]] = [size, [v].concat(items.slice(1))];
                 return out;
-            })).join(this.shrinkImpl(size.filter(v => v < size.value -1).withValue(size.value -1), items.slice(1)).map(vs => {
-                const nSize = size.filter(v => v < vs.length +1);
+            })).join(this.shrinkImpl(this.lengthArb.shrinkableFor(size.value -1), items.slice(1)).map(vs => {
+                const nSize = this.lengthArb.shrinkableFor(vs.length +1);
                 const nItems = [items[0]].concat(vs[1]);
                 const out: [Shrinkable<number>, Shrinkable<T>[]] = [nSize, nItems];
                 return out;

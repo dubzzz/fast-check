@@ -15,7 +15,4 @@ export default class Shrinkable<T> {
             () => this.shrink().filter(v => predicate(v.value))
         );
     }
-    withValue(v: T): Shrinkable<T> {
-        return new Shrinkable<T>(v, this.shrink);
-    }
 }
