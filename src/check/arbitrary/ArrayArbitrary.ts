@@ -28,13 +28,15 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
             return Stream.nil<[Shrinkable<number>, Shrinkable<T>[]]>();
         }
         return size.shrink().map(l => {
-                const v: [Shrinkable<number>, Shrinkable<T>[]] = [l, items.slice(items.length -l.value)];
-                return v;
+                const nSize = this.lengthArb.shrinkableFor(l.value);
+                const nItems = items.slice(items.length -l.value);
+                const out: [Shrinkable<number>, Shrinkable<T>[]] = [nSize, nItems];
+                return out;
             }).join(items[0].shrink().map(v => {
                 const out: [Shrinkable<number>, Shrinkable<T>[]] = [size, [v].concat(items.slice(1))];
                 return out;
             })).join(this.shrinkImpl(this.lengthArb.shrinkableFor(size.value -1), items.slice(1)).map(vs => {
-                const nSize = this.lengthArb.shrinkableFor(vs.length +1);
+                const nSize = this.lengthArb.shrinkableFor(vs[1].length +1);
                 const nItems = [items[0]].concat(vs[1]);
                 const out: [Shrinkable<number>, Shrinkable<T>[]] = [nSize, nItems];
                 return out;
