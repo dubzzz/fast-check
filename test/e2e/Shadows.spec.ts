@@ -61,7 +61,7 @@ class SpaceBuilder {
     }
 }
 
-function locate_in_space(space: Space, rounds: number) {
+function locate_in_space_bug(space: Space, rounds: number) {
     let x_min = 0;
     let x_max = space.dim_x;
     let y_min = 0;
@@ -95,26 +95,74 @@ function locate_in_space(space: Space, rounds: number) {
     }
 }
 
+function locate_in_space(space: Space, rounds: number) {
+    let x_min = 0;
+    let x_max = space.dim_x;
+    let y_min = 0;
+    let y_max = space.dim_y;
+    
+    for (let n = 0 ; n !== rounds && ! space.solved() ; ++n) {
+        if (x_min >= x_max || y_min >= y_max) { return; }
+        
+        let x0 = space.current_x;
+        let y0 = space.current_y;
+        let hint = space.hint;
+        
+        if (hint[0] == 'U') {
+            y_max = y0;
+            y0 = (y_max + y_min) /2;
+        }
+        else if (hint[0] == 'D') {
+            y_min = y0 +1;
+            y0 = (y_max + y_min) /2;
+        }
+        
+        if (hint.slice(-1) == 'L') {
+            x_max = x0;
+            x0 = (x_max + x_min) /2;
+        }
+        else if (hint.slice(-1) == 'R') {
+            x_min = x0 +1;
+            x0 = (x_max + x_min) /2;
+        }
+        space.move(Math.floor(x0), Math.floor(y0));
+    }
+}
+
+// Custom arbitrary
+
+const SpaceArbitrary = sc.tuple(
+        sc.integer(1, 1000), sc.integer(1, 1000),
+        sc.integer(1, 1000), sc.integer(1, 1000),
+        sc.integer(1, 1000), sc.integer(1, 1000)
+    ).filter(([w,h,cx,cy,sx,sy]: [number,number,number,number,number,number]) =>
+        cx < w && sx < w && cy < h && sy < h
+    ).map(([w,h,cx,cy,sx,sy]: [number,number,number,number,number,number]) =>
+        new SpaceBuilder()
+            .withDimension(w, h)
+            .withSolution(cx, cy)
+            .withCurrent(sx, sy)
+            .build()
+    ).map((space: Space) =>
+        [space, Math.ceil(Math.log(Math.max(space.dim_x, space.dim_y))/Math.log(2))]
+    );
+
+// Test
+
 const seed = Date.now();
 describe(`Shadows (seed: ${seed})`, () => {
     it('Should detect an implementation issue', () => {
-        const out = sc.check(sc.property(
-                sc.integer(1, 1000), sc.integer(1, 1000),
-                sc.integer(1, 1000), sc.integer(1, 1000),
-                sc.integer(1, 1000), sc.integer(1, 1000),
-            (w: number, h: number, cx: number, cy: number, sx: number, sy: number) => {
-                if (cx >= w || sx >= w || cy >= h || sy >= h) {
-                    return true; //invalid case
-                }
-                const space = new SpaceBuilder()
-                        .withDimension(w, h)
-                        .withSolution(cx, cy)
-                        .withCurrent(sx, sy)
-                        .build();
-                const max_guesses = Math.ceil(Math.log(Math.max(h, w))/Math.log(2));
-                locate_in_space(space, max_guesses);
+        const out = sc.check(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
+                locate_in_space_bug(space, max_guesses);
                 return space.solved();
             }), {seed: seed});
         assert.ok(out.failed, 'Should have failed');
+    });
+    it('Should not detect any issue', () => {
+        const out = sc.check(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
+                locate_in_space(space, max_guesses);
+                return space.solved();
+            }), {seed: seed});
+        assert.ok(!out.failed, 'Should have succeeded');
     });
 });
