@@ -1,10 +1,10 @@
-import Arbitrary from './definition/Arbitrary'
+import { ArbitraryWithShrink } from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
 import UniformDistribution from '../../random/distribution/UniformDistribution'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { stream, Stream } from '../../stream/Stream'
 
-class IntegerArbitrary extends Arbitrary<number> {
+class IntegerArbitrary extends ArbitraryWithShrink<number> {
     static MIN_INT: number = 0x80000000 | 0;
     static MAX_INT: number = 0x7fffffff | 0;
 
@@ -16,7 +16,7 @@ class IntegerArbitrary extends Arbitrary<number> {
         this.max = max === undefined ? IntegerArbitrary.MAX_INT : max;
     }
     private wrapper(value: number): Shrinkable<number> {
-        return new Shrinkable(value, () => this.shrinkImpl(value).map(v => this.wrapper(v)));
+        return new Shrinkable(value, () => this.shrink(value).map(v => this.wrapper(v)));
     }
     generate(mrng: MutableRandomGenerator): Shrinkable<number> {
         return this.wrapper(this.generateImpl(mrng));
@@ -38,7 +38,7 @@ class IntegerArbitrary extends Arbitrary<number> {
         }
         return gap > 0 ? stream(shrink_decr()) : stream(shrink_incr());
     }
-    private shrinkImpl(value: number): Stream<number> {
+    shrink(value: number): Stream<number> {
         if (this.min <= 0 && this.max >= 0) {
             return this.shrink_to(value, 0);
         }
@@ -46,18 +46,18 @@ class IntegerArbitrary extends Arbitrary<number> {
     }
 }
 
-function integer(): Arbitrary<number>;
-function integer(max: number): Arbitrary<number>;
-function integer(min: number, max: number): Arbitrary<number>;
-function integer(a?: number, b?: number): Arbitrary<number> {
+function integer(): ArbitraryWithShrink<number>;
+function integer(max: number): ArbitraryWithShrink<number>;
+function integer(min: number, max: number): ArbitraryWithShrink<number>;
+function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
     return b === undefined
         ? new IntegerArbitrary(undefined, a)
         : new IntegerArbitrary(a, b);
 }
 
-function nat(): Arbitrary<number>;
-function nat(max: number): Arbitrary<number>;
-function nat(a?: number): Arbitrary<number> {
+function nat(): ArbitraryWithShrink<number>;
+function nat(max: number): ArbitraryWithShrink<number>;
+function nat(a?: number): ArbitraryWithShrink<number> {
     return new IntegerArbitrary(0, a);
 }
 

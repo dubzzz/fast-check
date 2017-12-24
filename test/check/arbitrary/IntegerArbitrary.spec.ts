@@ -82,6 +82,16 @@ describe("IntegerArbitrary", () => {
                     || [...shrinkable.shrink()].length > 0;
             })
         ));
+        it('Should produce the same values for shrink on instance and on arbitrary', () => jsc.assert(
+            jsc.forall(jsc.integer, jsc.integer, jsc.nat, (seed, min, num) => {
+                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const arb = integer(min, min + num);
+                const shrinkable = arb.generate(mrng);
+                const shrinksInstance = [...shrinkable.shrink()].map(s => s.value);
+                const shrinksArb = [...arb.shrink(shrinkable.value)];
+                return shrinksInstance.length === shrinksArb.length && shrinksInstance.every((v, idx) => v === shrinksArb[idx]);
+            })
+        ));
     });
     describe('nat', () => {
         it('Should generate values between 0 and 2**31 -1 by default', () => jsc.assert(
