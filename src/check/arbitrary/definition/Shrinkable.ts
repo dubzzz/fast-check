@@ -12,7 +12,7 @@ export default class Shrinkable<T> {
     filter(predicate: (t: T) => boolean): Shrinkable<T> {
         return new Shrinkable<T>(
             this.value,
-            () => this.shrink().filter(v => predicate(v.value))
+            () => this.shrink().filter(v => predicate(v.value)).map(v => v.filter(predicate))
         );
     }
 }
