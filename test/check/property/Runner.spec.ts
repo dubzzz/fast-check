@@ -2,8 +2,7 @@ import * as assert from 'power-assert';
 import IProperty from '../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../src/check/property/Runner';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
-import Stream from '../../../src/stream/Stream'
-import * as jsc from 'jsverify';
+import * as sc from '../../../src/simple-check';
 
 describe('Runner', () => {
     describe('check', () => {
@@ -33,8 +32,8 @@ describe('Runner', () => {
             assert.equal(num_calls, 100, 'Should have been called 100 times');
             assert.equal(out.failed, false, 'Should not have failed');
         });
-        it('Should call the property 100 times by default (except on error)', () => jsc.assert(
-            jsc.forall(jsc.integer(1, 100), jsc.integer, (num, seed) => {
+        it('Should call the property 100 times by default (except on error)', () => sc.assert(
+            sc.property(sc.integer(1, 100), sc.integer(), (num, seed) => {
                 let num_calls = 0;
                 const p: IProperty<[number]> = {
                     run: () => {
@@ -50,8 +49,8 @@ describe('Runner', () => {
                 return true;
             })
         ));
-        it('Should alter the number of runs when asked to', () => jsc.assert(
-            jsc.forall(jsc.nat, (num) => {
+        it('Should alter the number of runs when asked to', () => sc.assert(
+            sc.property(sc.nat(), (num) => {
                 let num_calls = 0;
                 const p: IProperty<[number]> = {
                     run: () => {

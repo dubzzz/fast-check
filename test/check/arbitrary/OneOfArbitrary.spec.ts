@@ -6,7 +6,7 @@ import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import { constant } from '../../../src/check/arbitrary/ConstantArbitrary';
 import { oneof } from '../../../src/check/arbitrary/OneOfArbitrary';
 import { stream } from '../../../src/stream/Stream'
-import * as jsc from 'jsverify';
+import * as sc from '../../../src/simple-check';
 
 class CustomArbitrary extends Arbitrary<number> {
     constructor(readonly value: number) {
@@ -22,16 +22,16 @@ class CustomArbitrary extends Arbitrary<number> {
 
 describe("OneOfArbitrary", () => {
     describe('oneof', () => {
-        it('Should generate based on one of the given arbitraries', () => jsc.assert(
-            jsc.forall(jsc.integer, jsc.integer, jsc.array(jsc.integer), (seed, choice1, others) => {
+        it('Should generate based on one of the given arbitraries', () => sc.assert(
+            sc.property(sc.integer(), sc.integer(), sc.array(sc.integer()), (seed, choice1, others) => {
                 const choices = [choice1, ...others];
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = oneof(constant(choice1), ...others.map(constant)).generate(mrng).value;
                 return choices.indexOf(g) !== -1;
             })
         ));
-        it('Should call the right shrink on shrink', () => jsc.assert(
-            jsc.forall(jsc.integer, jsc.integer, jsc.array(jsc.integer), (seed, choice1, others) => {
+        it('Should call the right shrink on shrink', () => sc.assert(
+            sc.property(sc.integer(), sc.integer(), sc.array(sc.integer()), (seed, choice1, others) => {
                 const choices = [choice1, ...others].map(c => new CustomArbitrary(c));
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const shrinkable = oneof(choices[0], ...choices.slice(1)).generate(mrng);

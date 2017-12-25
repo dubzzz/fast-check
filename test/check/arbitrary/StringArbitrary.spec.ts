@@ -2,19 +2,19 @@ import * as assert from 'power-assert';
 import { DummyRandomGenerator } from './TestRandomGenerator'
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import { string, asciiString, unicodeString, hexaString, base64String } from '../../../src/check/arbitrary/StringArbitrary';
-import * as jsc from 'jsverify';
+import * as sc from '../../../src/simple-check';
 
 describe('StringArbitrary', () => {
     describe('char', () => {
-        it('Should generate printable characters', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should generate printable characters', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = string().generate(mrng).value;
                 return g.split('').every(c => 0x20 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0x7e);
             })
         ));
-        it('Should generate a string given maximal length', () => jsc.assert(
-            jsc.forall(jsc.integer, jsc.integer(0, 10000), (seed, maxLength) => {
+        it('Should generate a string given maximal length', () => sc.assert(
+            sc.property(sc.integer(), sc.integer(0, 10000), (seed, maxLength) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = string(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
@@ -22,15 +22,15 @@ describe('StringArbitrary', () => {
         ));
     });
     describe('asciiString', () => {
-        it('Should generate ascii string', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should generate ascii string', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = asciiString().generate(mrng).value;
                 return g.split('').every(c => 0x00 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0x7f);
             })
         ));
-        it('Should generate a string given maximal length', () => jsc.assert(
-            jsc.forall(jsc.integer, jsc.integer(0, 10000), (seed, maxLength) => {
+        it('Should generate a string given maximal length', () => sc.assert(
+            sc.property(sc.integer(), sc.integer(0, 10000), (seed, maxLength) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = asciiString(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
@@ -38,15 +38,15 @@ describe('StringArbitrary', () => {
         ));
     });
     describe('unicodeString', () => {
-        it('Should generate unicode string', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should generate unicode string', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = unicodeString().generate(mrng).value;
                 return g.split('').every(c => 0x0000 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0xffff);
             })
         ));
-        it('Should generate a string given maximal length', () => jsc.assert(
-            jsc.forall(jsc.integer, jsc.integer(0, 10000), (seed, maxLength) => {
+        it('Should generate a string given maximal length', () => sc.assert(
+            sc.property(sc.integer(), sc.integer(0, 10000), (seed, maxLength) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = unicodeString(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
@@ -54,15 +54,15 @@ describe('StringArbitrary', () => {
         ));
     });
     describe('hexaString', () => {
-        it('Should generate hexa string', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should generate hexa string', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = hexaString().generate(mrng).value;
                 return g.split('').every(c => ('0' <= c && c <= '9') || ('a' <= c && c <= 'f'));
             })
         ));
-        it('Should generate a string given maximal length', () => jsc.assert(
-            jsc.forall(jsc.integer, jsc.integer(0, 10000), (seed, maxLength) => {
+        it('Should generate a string given maximal length', () => sc.assert(
+            sc.property(sc.integer(), sc.integer(0, 10000), (seed, maxLength) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = hexaString(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
@@ -85,36 +85,36 @@ describe('StringArbitrary', () => {
             const padStart = g.indexOf('=');
             return g.substr(padStart === -1 ? g.length : padStart).split('').every(c => c === '=');
         }
-        it('Should generate base64 string', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should generate base64 string', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = base64String().generate(mrng).value;
                 return isValidBase64(g);
             })
         ));
-        it('Should pad base64 string with spaces', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should pad base64 string with spaces', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = base64String().generate(mrng).value;
                 return hasValidBase64Padding(g);
             })
         ));
-        it('Should have a length multiple of 4', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should have a length multiple of 4', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = base64String().generate(mrng).value;
                 return g.length % 4 === 0;
             })
         ));
-        it('Should generate a string given maximal length', () => jsc.assert(
-            jsc.forall(jsc.integer, jsc.integer(0, 10000), (seed, maxLength) => {
+        it('Should generate a string given maximal length', () => sc.assert(
+            sc.property(sc.integer(), sc.integer(0, 10000), (seed, maxLength) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = base64String(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
             })
         ));
-        it('Should shrink and suggest valid base64 strings', () => jsc.assert(
-            jsc.forall(jsc.integer, (seed) => {
+        it('Should shrink and suggest valid base64 strings', () => sc.assert(
+            sc.property(sc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const shrinkable = base64String().generate(mrng);
                 return shrinkable.shrink()

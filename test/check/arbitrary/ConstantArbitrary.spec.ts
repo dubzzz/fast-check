@@ -2,7 +2,6 @@ import * as assert from 'power-assert';
 import { NoCallGenerator } from './TestRandomGenerator'
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import { constant } from '../../../src/check/arbitrary/ConstantArbitrary';
-import * as jsc from 'jsverify';
 
 describe("ConstantArbitrary", () => {
     describe('constant', () => {
