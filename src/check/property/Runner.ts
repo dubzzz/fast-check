@@ -9,13 +9,14 @@ interface Parameters {
     num_runs?: number;
 }
 
-function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, num_shrinks: number = 0): [Ts, number] {
+function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string, num_shrinks: number = 0): [Ts, number, string] {
     for (const v of value.shrink()) {
-        if (property.runOne(v.value) != null) {
-            return shrinkIt(property, v, num_shrinks+1);
+        const out = property.runOne(v.value);
+        if (out != null) {
+            return shrinkIt(property, v, out, num_shrinks+1);
         }
     }
-    return [value.value, num_shrinks];
+    return [value.value, num_shrinks, error];
 }
 
 function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
@@ -27,11 +28,11 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
         rng = skip_n(rng, 42);
         const out = property.run(new MutableRandomGenerator(rng));
         if (out[0] != null) {
-            const [shrinkedValue, numShrinks] = shrinkIt(property, out[1]);
-            return {failed: true, num_runs: idx+1, num_shrinks: numShrinks, seed: seed, counterexample: shrinkedValue};
+            const [shrinkedValue, numShrinks, error] = shrinkIt(property, out[1], out[0] as string);
+            return {failed: true, num_runs: idx+1, num_shrinks: numShrinks, seed: seed, counterexample: shrinkedValue, error: error};
         }
     }
-    return {failed: false, num_runs: num_runs, num_shrinks: 0, seed: seed, counterexample: null};
+    return {failed: false, num_runs: num_runs, num_shrinks: 0, seed: seed, counterexample: null, error: null};
 }
 
 function prettyOne(value: any): string {
@@ -54,7 +55,7 @@ function pretty<Ts>(value: any): string {
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
     const out = check(property, params);
     if (out.failed) {
-        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}`;
+        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}\nGot error: ${out.error}`;
     }
 }
 

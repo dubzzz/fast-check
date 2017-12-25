@@ -55,7 +55,9 @@ describe('Property', () => {
         const p = property(single(8), (arg: number) => {
             assert.ok(false);
         });
-        assert.notEqual(p.run(generator())[0], false, 'Property should fail');
+        let expected = "";
+        try { assert.ok(false); } catch (err) { expected = `${err}`; }
+        assert.equal(p.run(generator())[0], expected, 'Property should fail and attach the exception as string');
     });
     it('Should succeed if predicate is true', () => {
         const p = property(single(8), (arg: number) => {

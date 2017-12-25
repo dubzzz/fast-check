@@ -71,11 +71,11 @@ describe('Runner', () => {
         const v1 = { toString: () => "toString(value#1)" };
         const v2 = { a: "Hello", b: 21 };
         const failingProperty: IProperty<[any,any]> = {
-            run: () => ["error", new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
+            run: () => ["error in failingProperty", new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
             runOne: () => { throw 'Not implemented'; }
         };
         const failingComplexProperty: IProperty<[any,any,any]> = {
-            run: () => ["error", new Shrinkable([[v1,v2],v2,v1]) as Shrinkable<[any,any,any]>],
+            run: () => ["error in failingComplexProperty", new Shrinkable([[v1,v2],v2,v1]) as Shrinkable<[any,any,any]>],
             runOne: () => { throw 'Not implemented'; }
         };
         const successProperty: IProperty<[any,any]> = {
@@ -134,6 +134,16 @@ describe('Runner', () => {
             }
             catch (err) {
                 assert.ok(err.indexOf(`[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`) !== -1, `Cannot find the example in: ${err}`);
+                return;
+            }
+            assert.ok(false, "Expected an exception, got success");
+        });
+        it('Should put the orginal error in error message', () => {
+            try {
+                rAssert(failingProperty, {seed: 42});
+            }
+            catch (err) {
+                assert.ok(err.indexOf(`Got error: error in failingProperty`) !== -1, `Cannot find the original error in: ${err}`);
                 return;
             }
             assert.ok(false, "Expected an exception, got success");
