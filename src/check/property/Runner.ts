@@ -11,7 +11,7 @@ interface Parameters {
 
 function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, num_shrinks: number = 0): [Ts, number] {
     for (const v of value.shrink()) {
-        if (!property.runOne(v.value)) {
+        if (property.runOne(v.value) != null) {
             return shrinkIt(property, v, num_shrinks+1);
         }
     }
@@ -26,7 +26,7 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
     for (let idx = 0 ; idx < num_runs ; ++idx) {
         rng = skip_n(rng, 42);
         const out = property.run(new MutableRandomGenerator(rng));
-        if (!out[0]) {
+        if (out[0] != null) {
             const [shrinkedValue, numShrinks] = shrinkIt(property, out[1]);
             return {failed: true, num_runs: idx+1, num_shrinks: numShrinks, seed: seed, counterexample: shrinkedValue};
         }

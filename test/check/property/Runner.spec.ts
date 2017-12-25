@@ -12,7 +12,7 @@ describe('Runner', () => {
             const p: IProperty<[number]> = {
                 run: () => {
                     ++num_calls;
-                    return [true, new Shrinkable([0]) as Shrinkable<[number]>];
+                    return [null, new Shrinkable([0]) as Shrinkable<[number]>];
                 },
                 runOne: () => { throw 'Not implemented'; }
             };
@@ -25,7 +25,7 @@ describe('Runner', () => {
             const p: IProperty<[number]> = {
                 run: () => {
                     ++num_calls;
-                    return [true, new Shrinkable([0], () => { throw 'Not implemented'; }) as Shrinkable<[number]>];
+                    return [null, new Shrinkable([0], () => { throw 'Not implemented'; }) as Shrinkable<[number]>];
                 },
                 runOne: () => { throw 'Not implemented'; },
             };
@@ -38,7 +38,7 @@ describe('Runner', () => {
                 let num_calls = 0;
                 const p: IProperty<[number]> = {
                     run: () => {
-                        return [++num_calls < num, new Shrinkable([0]) as Shrinkable<[number]>];
+                        return [++num_calls < num ? null : "error", new Shrinkable([0]) as Shrinkable<[number]>];
                     },
                     runOne: () => { throw 'Not implemented'; }
                 };
@@ -56,7 +56,7 @@ describe('Runner', () => {
                 const p: IProperty<[number]> = {
                     run: () => {
                         ++num_calls;
-                        return [true, new Shrinkable([0]) as Shrinkable<[number]>];
+                        return [null, new Shrinkable([0]) as Shrinkable<[number]>];
                     },
                     runOne: () => { throw 'Not implemented'; }
                 };
@@ -71,15 +71,15 @@ describe('Runner', () => {
         const v1 = { toString: () => "toString(value#1)" };
         const v2 = { a: "Hello", b: 21 };
         const failingProperty: IProperty<[any,any]> = {
-            run: () => [false, new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
+            run: () => ["error", new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
             runOne: () => { throw 'Not implemented'; }
         };
         const failingComplexProperty: IProperty<[any,any,any]> = {
-            run: () => [false, new Shrinkable([[v1,v2],v2,v1]) as Shrinkable<[any,any,any]>],
+            run: () => ["error", new Shrinkable([[v1,v2],v2,v1]) as Shrinkable<[any,any,any]>],
             runOne: () => { throw 'Not implemented'; }
         };
         const successProperty: IProperty<[any,any]> = {
-            run: () => [true, new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
+            run: () => [null, new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
             runOne: () => { throw 'Not implemented'; }
         };
 
