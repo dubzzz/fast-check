@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as sc from '../../../src/check/simple-check'
+import * as sc from '../../../src/simple-check'
 
 const seed = Date.now();
 describe(`TupleArbitrary (seed: ${seed})`, () => {

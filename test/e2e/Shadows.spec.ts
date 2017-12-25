@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as sc from '../../src/check/simple-check'
+import * as sc from '../../src/simple-check'
 
 // Code under tests
 // Based on the CodinGame https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1
