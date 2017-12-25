@@ -4,6 +4,7 @@ import { check, assert as rAssert } from '../../../src/check/property/Runner';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import * as sc from '../../../src/simple-check';
 
+const MAX_NUM_RUNS = 10000;
 describe('Runner', () => {
     describe('check', () => {
         it('Should call the property 100 times by default (on success)', () => {
@@ -50,7 +51,7 @@ describe('Runner', () => {
             })
         ));
         it('Should alter the number of runs when asked to', () => sc.assert(
-            sc.property(sc.nat(), (num) => {
+            sc.property(sc.nat(MAX_NUM_RUNS), (num) => {
                 let num_calls = 0;
                 const p: IProperty<[number]> = {
                     run: () => {
