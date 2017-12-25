@@ -34,10 +34,27 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
     return {failed: false, num_runs: num_runs, num_shrinks: 0, seed: seed, counterexample: null};
 }
 
+function prettyOne(value: any): string {
+    const defaultRepr: string = `${value}`;
+    if (/^\[object (Object|Null|Undefined)\]$/.exec(defaultRepr) === null)
+        return defaultRepr;
+    try {
+        return JSON.stringify(value);
+    }
+    catch (err) {}
+    return defaultRepr;
+}
+
+function pretty<Ts>(value: any): string {
+    if (Array.isArray(value))
+        return `[${[...value].map(pretty).join(',')}]`;
+    return prettyOne(value);
+}
+
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
     const out = check(property, params);
     if (out.failed) {
-        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${out.counterexample}`;
+        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}`;
     }
 }
 
