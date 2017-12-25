@@ -1,7 +1,7 @@
 import * as assert from 'power-assert';
 import { RandomGenerator, skip_n, generate_n } from '../../../src/random/generator/RandomGenerator';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
-import * as jsc from 'jsverify';
+import * as sc from '../../../src/simple-check';
 
 class DummyRandomGenerator implements RandomGenerator {
     value: number;
@@ -22,14 +22,13 @@ class DummyRandomGenerator implements RandomGenerator {
 const MAX_SIZE: number = 2048;
 
 describe("MutableRandomGenerator", () => {
-    it('Should produce the same values as its underlying', () => jsc.assert(
-        jsc.forall(jsc.integer, jsc.nat(MAX_SIZE), jsc.nat(MAX_SIZE), (seed, offset, num) => {
+    it('Should produce the same values as its underlying', () => sc.assert(
+        sc.property(sc.integer(), sc.nat(MAX_SIZE), sc.nat(MAX_SIZE), (seed, offset, num) => {
             let rng = new DummyRandomGenerator(seed);
             const mrng = new MutableRandomGenerator(rng);
             const seq1 = generate_n(skip_n(rng, offset), num)[0];
             const seq2 = generate_n(skip_n(mrng, offset), num)[0];
             assert.deepEqual(seq1, seq2);
-            return true;
         })
     ));
 });

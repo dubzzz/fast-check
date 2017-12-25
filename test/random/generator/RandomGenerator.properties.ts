@@ -1,11 +1,11 @@
 import * as assert from 'power-assert';
 import { RandomGenerator, skip_n, generate_n } from '../../../src/random/generator/RandomGenerator';
-import * as jsc from 'jsverify';
+import * as sc from '../../../src/simple-check';
 
 const MAX_SIZE: number = 2048;
 
 function sameSeedSameSequences(rng_for: (seed:number) => RandomGenerator) {
-    return jsc.forall(jsc.integer, jsc.nat(MAX_SIZE), jsc.nat(MAX_SIZE), (seed, offset, num) => {
+    return sc.property(sc.integer(), sc.nat(MAX_SIZE), sc.nat(MAX_SIZE), (seed, offset, num) => {
         const seq1 = generate_n(skip_n(rng_for(seed), offset), num)[0];
         const seq2 = generate_n(skip_n(rng_for(seed), offset), num)[0];
         assert.deepEqual(seq1, seq2);
@@ -14,7 +14,7 @@ function sameSeedSameSequences(rng_for: (seed:number) => RandomGenerator) {
 }
 
 function sameSequencesIfCallTwice(rng_for: (seed:number) => RandomGenerator) {
-    return jsc.forall(jsc.integer, jsc.nat(MAX_SIZE), jsc.nat(MAX_SIZE), (seed, offset, num) => {
+    return sc.property(sc.integer(), sc.nat(MAX_SIZE), sc.nat(MAX_SIZE), (seed, offset, num) => {
         const rng = skip_n(rng_for(seed), offset);
         const seq1 = generate_n(rng, num)[0];
         const seq2 = generate_n(rng, num)[0];
@@ -24,7 +24,7 @@ function sameSequencesIfCallTwice(rng_for: (seed:number) => RandomGenerator) {
 }
 
 function valuesInRange(rng_for: (seed:number) => RandomGenerator) {
-    return jsc.forall(jsc.integer, jsc.nat(MAX_SIZE), (seed, offset) => {
+    return sc.property(sc.integer(), sc.nat(MAX_SIZE), (seed, offset) => {
         const rng = rng_for(seed);
         const value = skip_n(rng, offset).next()[0];
         assert.ok(value >= rng.min());
