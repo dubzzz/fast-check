@@ -17,6 +17,8 @@ class Property<Ts> implements IProperty<Ts> {
             return output == null || output == true ? null : "Property failed by returning false";
         }
         catch (err) {
+            if (err instanceof Error && err.stack)
+                return `${err}\n\nStack trace: ${err.stack}`
             return `${err}`;
         }
     }

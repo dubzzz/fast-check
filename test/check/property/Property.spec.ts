@@ -57,7 +57,10 @@ describe('Property', () => {
         });
         let expected = "";
         try { assert.ok(false); } catch (err) { expected = `${err}`; }
-        assert.equal(p.run(generator())[0], expected, 'Property should fail and attach the exception as string');
+
+        const out = p.run(generator())[0]
+        assert.ok(out!.startsWith(expected), 'Property should fail and attach the exception as string');
+        assert.ok(out!.indexOf('\n\nStack trace:') !== -1, 'Property should include the stack trace when available');
     });
     it('Should succeed if predicate is true', () => {
         const p = property(single(8), (arg: number) => {
