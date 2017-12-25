@@ -47,7 +47,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
 function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, maxLength?: number): Arbitrary<T[]> {
-    return new ArrayArbitrary<T>(arb, maxLength || 10);
+    return new ArrayArbitrary<T>(arb, maxLength == null ? 10 : maxLength);
 }
 
 export { array };

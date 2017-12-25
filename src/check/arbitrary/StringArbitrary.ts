@@ -7,7 +7,7 @@ import { char, ascii, unicode, hexa, base64 } from './CharacterArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
 function StringArbitrary(charArb: Arbitrary<string>, maxLength?: number) {
-    const arrayArb = maxLength === undefined
+    const arrayArb = maxLength == null
             ? array(charArb)
             : array(charArb, maxLength);
     return arrayArb.map(tab => tab.join(''));
