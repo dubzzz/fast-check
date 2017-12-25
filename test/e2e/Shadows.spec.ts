@@ -6,10 +6,14 @@ import * as sc from '../../src/check/simple-check'
 
 class Space {
     hint: string = "";
+    public current_x: number;
+    public current_y: number;
     constructor(
             readonly dim_x: number, readonly dim_y: number,
             private readonly solution_x: number, private readonly solution_y: number,
-            public current_x: number, public current_y: number) {
+            private readonly initial_x: number, private readonly initial_y: number) {
+        this.current_x = initial_x;
+        this.current_y = initial_y;
         this.update_hint();
     }
     update_hint() {
@@ -29,6 +33,9 @@ class Space {
     solved() {
         return this.current_x === this.solution_x
             && this.current_y === this.solution_y;
+    }
+    toString() {
+        return `Space(grid{x:${this.dim_x},y:${this.dim_y}},solution{x:${this.solution_x},y:${this.solution_y}},initial{x:${this.initial_y},y:${this.initial_y}})`;
     }
 }
 class SpaceBuilder {
@@ -152,17 +159,26 @@ const SpaceArbitrary = sc.tuple(
 const seed = Date.now();
 describe(`Shadows (seed: ${seed})`, () => {
     it('Should detect an implementation issue', () => {
-        const out = sc.check(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
-                locate_in_space_bug(space, max_guesses);
-                return space.solved();
-            }), {seed: seed});
-        assert.ok(out.failed, 'Should have failed');
+        let failed = false;
+        try {
+            sc.assert(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
+                    locate_in_space_bug(space, max_guesses);
+                    return space.solved();
+                }), {seed: seed});
+        }
+        catch (err) {
+            failed = true;
+            const msg = err as string;
+            assert.ok(msg.indexOf(`(seed: ${seed})`) !== -1, `Message contains the seed, got: ${err}`);
+            assert.ok(/Space\(grid\{x:\d+,y:\d+\},solution\{x:\d+,y:\d+\},initial\{x:\d+,y:\d+\}\),\d+/.exec(msg) !== null, `Message contains the failing entry, got: ${err}`);
+            assert.ok(/failed after \d+ test/.exec(msg) !== null, `Message contains the number of tests, got: ${err}`)
+        }
+        assert.ok(failed, 'Should have failed');
     });
     it('Should not detect any issue', () => {
-        const out = sc.check(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
+        sc.assert(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
                 locate_in_space(space, max_guesses);
                 return space.solved();
             }), {seed: seed});
-        assert.ok(!out.failed, 'Should have succeeded');
     });
 });
