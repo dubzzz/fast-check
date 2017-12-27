@@ -24,5 +24,13 @@
     "power-assert": "^1.4.4",
     "ts-node": "^3.3.0",
     "typescript": "^2.5.3"
-  }
+  },
+  "keywords": [
+    "property-based testing",
+    "end-to-end testing",
+    "ui testing",
+    "testing",
+    "quickcheck",
+    "quality-assurance"
+  ]
 }
