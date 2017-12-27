@@ -2,7 +2,8 @@
   "name": "simple-check",
   "version": "0.0.1",
   "description": "A very simple property based testing framework written in typescript",
-  "main": "lib/simple-check.ts",
+  "main": "lib/simple-check.js",
+  "types": "lib/simple-check.d.ts",
   "directories": {
     "test": "test"
   },

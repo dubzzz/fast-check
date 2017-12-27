@@ -5,7 +5,7 @@ import MutableRandomGenerator from '../../random/generator/MutableRandomGenerato
 import Stream from '../../stream/Stream'
 import IProperty from './IProperty'
 
-class Property<Ts> implements IProperty<Ts> {
+export class Property<Ts> implements IProperty<Ts> {
     constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => (boolean | void)) { }
     run(mrng: MutableRandomGenerator): [(string|null), Shrinkable<Ts>] {
         const value = this.arb.generate(mrng);

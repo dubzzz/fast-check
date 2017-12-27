@@ -3,7 +3,7 @@ import Shrinkable from './definition/Shrinkable'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { Stream, stream } from '../../stream/Stream'
 
-class GenericTupleArbitrary extends Arbitrary<any[]> {
+export class GenericTupleArbitrary extends Arbitrary<any[]> {
     constructor(readonly arbs: Arbitrary<any>[]) {
         super();
     }
@@ -29,7 +29,7 @@ class GenericTupleArbitrary extends Arbitrary<any[]> {
     }
 }
 
-class Tuple1Arbitrary<T1> extends Arbitrary<[T1]> {
+export class Tuple1Arbitrary<T1> extends Arbitrary<[T1]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(readonly arb1: Arbitrary<T1>) {
         super();
@@ -39,7 +39,7 @@ class Tuple1Arbitrary<T1> extends Arbitrary<[T1]> {
         return this.tupleArb.generate(mrng) as Shrinkable<[T1]>;
     }
 }
-class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
+export class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>) {
         super();
@@ -49,7 +49,7 @@ class Tuple2Arbitrary<T1,T2> extends Arbitrary<[T1,T2]> {
         return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2]>;
     }
 }
-class Tuple3Arbitrary<T1,T2,T3> extends Arbitrary<[T1,T2,T3]> {
+export class Tuple3Arbitrary<T1,T2,T3> extends Arbitrary<[T1,T2,T3]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>, arb3: Arbitrary<T3>) {
         super();
@@ -59,7 +59,7 @@ class Tuple3Arbitrary<T1,T2,T3> extends Arbitrary<[T1,T2,T3]> {
         return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3]>;
     }
 }
-class Tuple4Arbitrary<T1,T2,T3,T4> extends Arbitrary<[T1,T2,T3,T4]> {
+export class Tuple4Arbitrary<T1,T2,T3,T4> extends Arbitrary<[T1,T2,T3,T4]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>, arb3: Arbitrary<T3>,
             arb4: Arbitrary<T4>) {
@@ -70,7 +70,7 @@ class Tuple4Arbitrary<T1,T2,T3,T4> extends Arbitrary<[T1,T2,T3,T4]> {
         return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4]>;
     }
 }
-class Tuple5Arbitrary<T1,T2,T3,T4,T5> extends Arbitrary<[T1,T2,T3,T4,T5]> {
+export class Tuple5Arbitrary<T1,T2,T3,T4,T5> extends Arbitrary<[T1,T2,T3,T4,T5]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>, arb3: Arbitrary<T3>,
             arb4: Arbitrary<T4>, arb5: Arbitrary<T5>) {
@@ -81,7 +81,7 @@ class Tuple5Arbitrary<T1,T2,T3,T4,T5> extends Arbitrary<[T1,T2,T3,T4,T5]> {
         return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5]>;
     }
 }
-class Tuple6Arbitrary<T1,T2,T3,T4,T5,T6> extends Arbitrary<[T1,T2,T3,T4,T5,T6]> {
+export class Tuple6Arbitrary<T1,T2,T3,T4,T5,T6> extends Arbitrary<[T1,T2,T3,T4,T5,T6]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>, arb3: Arbitrary<T3>,
             arb4: Arbitrary<T4>, arb5: Arbitrary<T5>, arb6: Arbitrary<T6>) {
@@ -92,7 +92,7 @@ class Tuple6Arbitrary<T1,T2,T3,T4,T5,T6> extends Arbitrary<[T1,T2,T3,T4,T5,T6]> 
         return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5,T6]>;
     }
 }
-class Tuple7Arbitrary<T1,T2,T3,T4,T5,T6,T7> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7]> {
+export class Tuple7Arbitrary<T1,T2,T3,T4,T5,T6,T7> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>, arb3: Arbitrary<T3>,
             arb4: Arbitrary<T4>, arb5: Arbitrary<T5>, arb6: Arbitrary<T6>,
@@ -104,7 +104,7 @@ class Tuple7Arbitrary<T1,T2,T3,T4,T5,T6,T7> extends Arbitrary<[T1,T2,T3,T4,T5,T6
         return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5,T6,T7]>;
     }
 }
-class Tuple8Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8]> {
+export class Tuple8Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>, arb3: Arbitrary<T3>,
             arb4: Arbitrary<T4>, arb5: Arbitrary<T5>, arb6: Arbitrary<T6>,
@@ -116,7 +116,7 @@ class Tuple8Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8> extends Arbitrary<[T1,T2,T3,T4,T5
         return this.tupleArb.generate(mrng) as Shrinkable<[T1,T2,T3,T4,T5,T6,T7,T8]>;
     }
 }
-class Tuple9Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8,T9> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8,T9]> {
+export class Tuple9Arbitrary<T1,T2,T3,T4,T5,T6,T7,T8,T9> extends Arbitrary<[T1,T2,T3,T4,T5,T6,T7,T8,T9]> {
     readonly tupleArb: GenericTupleArbitrary;
     constructor(arb1: Arbitrary<T1>, arb2: Arbitrary<T2>, arb3: Arbitrary<T3>,
             arb4: Arbitrary<T4>, arb5: Arbitrary<T5>, arb6: Arbitrary<T6>,

@@ -4,7 +4,7 @@ import MersenneTwister from '../../random/generator/MersenneTwister'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import IProperty from './IProperty'
 
-interface Parameters {
+export interface Parameters {
     seed?: number;
     num_runs?: number;
 }
