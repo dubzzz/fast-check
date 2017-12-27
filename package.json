@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "nyc --reporter=html --reporter=text mocha \"test/**/*.spec.ts\"",
+    "test": "nyc mocha \"test/**/*.spec.ts\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "codeclimate": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   },

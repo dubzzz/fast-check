@@ -16,7 +16,8 @@
   ],
   "reporter": [
     "json",
-    "html"
+    "html",
+    "text"
   ],
   "produceSourceMap": true,
   "sourceMap": true,
