@@ -4,7 +4,7 @@ import { check, assert as rAssert } from '../../../src/check/property/Runner';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import * as sc from '../../../src/simple-check';
 
-const MAX_NUM_RUNS = 10000;
+const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
     describe('check', () => {
         it('Should call the property 100 times by default (on success)', () => {
