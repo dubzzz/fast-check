@@ -9,4 +9,8 @@ cache:
     - node_modules
 
 script:
-  - npm test
+  - npm run test
+
+after_success:
+  - npm run coverage
+  - npm run codeclimate
