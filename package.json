@@ -37,31 +37,6 @@
     "ts-node": "^4.1.0",
     "typescript": "^2.5.3"
   },
-  "nyc": {
-    "include": [
-      "src/**/*.{js,ts,tsx}"
-    ],
-    "exclude": [
-      "**/node_modules/**"
-    ],
-    "extension": [
-      ".js",
-      ".ts",
-      ".tsx"
-    ],
-    "require": [
-      "source-map-support/register",
-      "ts-node/register"
-    ],
-    "reporter": [
-      "json",
-      "html"
-    ],
-    "produceSourceMap": true,
-    "sourceMap": true,
-    "instrument": true,
-    "all": true
-  },
   "keywords": [
     "property-based testing",
     "end-to-end testing",

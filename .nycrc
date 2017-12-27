@@ -1,0 +1,25 @@
+{
+  "include": [
+    "src/**/*.{js,ts,tsx}"
+  ],
+  "exclude": [
+    "**/node_modules/**"
+  ],
+  "extension": [
+    ".js",
+    ".ts",
+    ".tsx"
+  ],
+  "require": [
+    "source-map-support/register",
+    "ts-node/register"
+  ],
+  "reporter": [
+    "json",
+    "html"
+  ],
+  "produceSourceMap": true,
+  "sourceMap": true,
+  "instrument": true,
+  "all": true
+}
