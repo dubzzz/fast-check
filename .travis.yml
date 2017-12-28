@@ -6,7 +6,7 @@ node_js:
 
 cache:
   directories:
-    - node_modules
+  - node_modules
 
 script:
   - npm run test
@@ -21,7 +21,7 @@ deploy:
   email: npm@dubien.org
   skip_cleanup: true
   api_key:
-    secure: xvMdgrmNAwVEvoy1yLo2T6SnAtiVZNN/YShFK9QzJXuUrcNgW3fp/M0B6PACyHH5deriMRF99E/O10in3dKbu30kNvi88tRONPmV0Yv58G67IDl5S+sd9BoHWXB2xGYqqxYkcbPyB//2qB3p1KyG56fu0GshbtYdop8WTBjLdDLjqyS1EcuAGg2mxktvfzjSjfoUhqW5gQyo0VwAeUfytpD7kiPJXG1B14JPXEEogX2yQTdZLEiqMHtEfVglkP+ozKhiqS7DZRmDQPkdazkRYDUdUilV090N9p8zx/nPkM2E0zsb8yCVdF4mqx3Fa+4nGAIkiCcLMucsyCFkUA/xDBbKreVXXadkNbgR8EN+jNopfhkzkWBAUiH5l/lgwIYIT1jj78wiROGOqcpGVgFVwu+psf22AL6yM81Sli7aV/KZ57OwyI8Z4wT1ZM7pOL+Dpe3o7Fqyj75cjVty5yt1vQCupWbbFPCNG1HunE574eJKpMGjiJ/YN7FMCnh8DTng3r6hrVpCYZCj+7zcXwJkpYXgetdYWTZjKr5wQ+MPOMMQZ11XuQ8aC5jlWoqAMuBd8MCN7Q04y/qFSVuczVCJ38FsuyfC1m2T4R5ROFQPE176jsL5nT0Cm6sO5hiYS6rWzUXzHuZ2Xt+gf+dc7cL8di/+JoLgoXSRN3EUx1wtbuA=
+    secure: U25V+vyJQn14dxiWUJ5bcsXIVM5gLxNmRvmJ8FgwyRST1tqvPk0x71rq1n0rwXJTO3aLMfEAz6499bG9MKNlwDwFBCRqDCWicbaXgAWqplaGbS3pI9EtA6aleLaS2SRET2jAT1piWtGPaXNdIQOS1ZaM+CG5RbKu0SoFDq25lPh2CrktqoR0nb2YKneWw8W7QGCuOpm11i5uLKs+7vhKOp8MVwRksHm3QgDX/+kbLVik71FEbmfn2DMna4RLCUKxeayX9/6dx+ZCD00EY5POaKNFzo29HvFaNRwNdUcPZYE97ZBDqgbs2z9KHQljBVB4cYP1lEGgTbpmPOJ9Oj8boGlf+TF/3bSK/tM0a/CKwp/L8+Fd7NSpMlLCAiMDje/3DQ5PgI5LojQzHe4zMCZO5rphoiC03wuw9drECESlD3+jPX3uPHmrCmU2CqoNKclwFM3nAI16UbWAo+Gg/SzQzyRYukoH7pittNJ0YauUIcNjprS0lWk7Wj3v+w27IannWTa4OcVAtl7mVXmcGX+/n5ejBsS/lMPOSiqXEsaQOZm1tcfJBRO75NF72UdV71SQ+YHWzvJ6HZ42WMRAgeE8ARhRdQ6CneHZE508xEh4QQPIihOCnWx3o/g+2pZFo0Um3IGOXxiR/8SCJXOtJv6yd0OpOVRAyrjXfjV9a24ZGMQ=
   on:
     tags: true
 repo: dubzzz/fast-check
