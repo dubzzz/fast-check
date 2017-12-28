@@ -5,7 +5,7 @@ import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import { array } from '../../../src/check/arbitrary/ArrayArbitrary';
 import { integer } from '../../../src/check/arbitrary/IntegerArbitrary';
-import * as sc from '../../../src/simple-check';
+import * as fc from '../../../src/fast-check';
 
 class DummyArbitrary extends Arbitrary<any> {
     constructor(public value:() => number) {
@@ -18,24 +18,24 @@ class DummyArbitrary extends Arbitrary<any> {
 
 describe("ArrayArbitrary", () => {
     describe('array', () => {
-        it('Should generate an array using specified arbitrary', () => sc.assert(
-            sc.property(sc.integer(), (seed) => {
+        it('Should generate an array using specified arbitrary', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = array(new DummyArbitrary(() => 42)).generate(mrng).value;
                 assert.deepEqual(g, [...Array(g.length)].map(() => new Object({key: 42})));
                 return true;
             })
         ));
-        it('Should generate the same array with the same random', () => sc.assert(
-            sc.property(sc.integer(), (seed) => {
+        it('Should generate the same array with the same random', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
                 const mrng1 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const mrng2 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 assert.deepEqual(array(integer()).generate(mrng1).value, array(integer()).generate(mrng2).value);
                 return true;
             })
         ));
-        it('Should generate an array calling multiple times arbitrary generator', () => sc.assert(
-            sc.property(sc.integer(), (seed) => {
+        it('Should generate an array calling multiple times arbitrary generator', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 let num = 0;
                 const g = array(new DummyArbitrary(() => ++num)).generate(mrng).value;
@@ -44,23 +44,23 @@ describe("ArrayArbitrary", () => {
                 return true;
             })
         ));
-        it('Should generate an array given maximal length', () => sc.assert(
-            sc.property(sc.integer(), sc.integer(0, 10000), (seed, maxLength) => {
+        it('Should generate an array given maximal length', () => fc.assert(
+            fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const g = array(new DummyArbitrary(() => 42), maxLength).generate(mrng).value;
                 return g.length <= maxLength;
             })
         ));
-        it('Should shrink values in the defined range', () => sc.assert(
-            sc.property(sc.integer(), sc.integer(), sc.nat(), (seed, min, num) => {
+        it('Should shrink values in the defined range', () => fc.assert(
+            fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const arb = array(integer(min, min + num));
                 const shrinkable = arb.generate(mrng);
                 return shrinkable.shrink().every(s => s.value.every(vv => min <= vv && vv <= min + num));
             })
         ));
-        it('Should not suggest input in shrinked values', () => sc.assert(
-            sc.property(sc.integer(), sc.integer(), sc.nat(), (seed, min, num) => {
+        it('Should not suggest input in shrinked values', () => fc.assert(
+            fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
                 const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
                 const arb = array(integer(min, min + num));
                 const shrinkable = arb.generate(mrng);

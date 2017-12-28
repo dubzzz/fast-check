@@ -1,9 +1,9 @@
 {
-  "name": "simple-check",
+  "name": "fast-check",
   "version": "0.0.1",
   "description": "Property based testing framework in TypeScript (like QuickCheck)",
-  "main": "lib/simple-check.js",
-  "types": "lib/simple-check.d.ts",
+  "main": "lib/fast-check.js",
+  "types": "lib/fast-check.d.ts",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",

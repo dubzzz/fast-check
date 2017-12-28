@@ -2,7 +2,7 @@ import * as assert from 'power-assert';
 import RandomGenerator from '../../../src/random/generator/RandomGenerator';
 import MersenneTwister from '../../../src/random/generator/MersenneTwister';
 import * as p from './RandomGenerator.properties';
-import * as sc from '../../../src/simple-check';
+import * as fc from '../../../src/fast-check';
 
 function rng_for(seed: number): RandomGenerator {
     return MersenneTwister.from(seed);
@@ -353,7 +353,7 @@ describe("MersenneTwister", () => {
             4184993832, 1116476131, 4235742911, 
             1946654618]);
     });
-    it('Should return the same sequence given same seeds', () => sc.assert(p.sameSeedSameSequences(rng_for)));
-    it('Should return the same sequence if called twice', () => sc.assert(p.sameSequencesIfCallTwice(rng_for)));
-    it('Should generate values between 0 and 2**32 -1', () => sc.assert(p.valuesInRange(rng_for)));
+    it('Should return the same sequence given same seeds', () => fc.assert(p.sameSeedSameSequences(rng_for)));
+    it('Should return the same sequence if called twice', () => fc.assert(p.sameSequencesIfCallTwice(rng_for)));
+    it('Should generate values between 0 and 2**32 -1', () => fc.assert(p.valuesInRange(rng_for)));
 });

@@ -1,7 +1,7 @@
 import * as assert from 'power-assert';
 import RandomGenerator from '../../../src/random/generator/RandomGenerator';
 import UniformDistribution from '../../../src/random/distribution/UniformDistribution';
-import * as sc from '../../../src/simple-check';
+import * as fc from '../../../src/fast-check';
 
 class NatGenerator implements RandomGenerator {
     readonly current: number;
@@ -23,16 +23,16 @@ class NatGenerator implements RandomGenerator {
 const MAX_RANGE: number = 1000;
 
 describe('UniformDistribution', () => {
-    it('Should always generate values within the range', () => sc.assert(
-        sc.property(sc.nat(), sc.integer(), sc.integer(0, MAX_RANGE),
+    it('Should always generate values within the range', () => fc.assert(
+        fc.property(fc.nat(), fc.integer(), fc.integer(0, MAX_RANGE),
             (offset, from, length) => {
                 const [v, nrng] = UniformDistribution.inRange(from, from + length)(new NatGenerator(offset));
                 return v >= from && v <= from + length;
             }
         )
     ));
-    it('Should be able to generate all values within the range', () => sc.assert(
-        sc.property(sc.nat(), sc.integer(), sc.integer(0, MAX_RANGE), sc.nat(),
+    it('Should be able to generate all values within the range', () => fc.assert(
+        fc.property(fc.nat(), fc.integer(), fc.integer(0, MAX_RANGE), fc.nat(),
             (offset, from, length, targetOffset) => {
                 const target = from + (targetOffset) % (length +1);
                 let rng: RandomGenerator = new NatGenerator(offset);
@@ -47,8 +47,8 @@ describe('UniformDistribution', () => {
             }
         )
     ));
-    it('Should be evenly distributed over the range', () => sc.assert(
-        sc.property(sc.nat(), sc.integer(), sc.integer(0, MAX_RANGE), sc.integer(1, 100),
+    it('Should be evenly distributed over the range', () => fc.assert(
+        fc.property(fc.nat(), fc.integer(), fc.integer(0, MAX_RANGE), fc.integer(1, 100),
             (offset, from, length, num) => {
                 let buckets = [...Array(length+1)].map(() => 0);
                 let rng: RandomGenerator = new NatGenerator(offset);

@@ -1,7 +1,7 @@
 import * as assert from 'power-assert';
 import { RandomGenerator, skip_n, generate_n } from '../../../src/random/generator/RandomGenerator';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
-import * as sc from '../../../src/simple-check';
+import * as fc from '../../../src/fast-check';
 
 class DummyRandomGenerator implements RandomGenerator {
     value: number;
@@ -22,8 +22,8 @@ class DummyRandomGenerator implements RandomGenerator {
 const MAX_SIZE: number = 2048;
 
 describe("MutableRandomGenerator", () => {
-    it('Should produce the same values as its underlying', () => sc.assert(
-        sc.property(sc.integer(), sc.nat(MAX_SIZE), sc.nat(MAX_SIZE), (seed, offset, num) => {
+    it('Should produce the same values as its underlying', () => fc.assert(
+        fc.property(fc.integer(), fc.nat(MAX_SIZE), fc.nat(MAX_SIZE), (seed, offset, num) => {
             let rng = new DummyRandomGenerator(seed);
             const mrng = new MutableRandomGenerator(rng);
             const seq1 = generate_n(skip_n(rng, offset), num)[0];

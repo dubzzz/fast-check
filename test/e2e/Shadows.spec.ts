@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as sc from '../../src/simple-check'
+import * as fc from '../../src/fast-check'
 
 // Code under tests
 // Based on the CodinGame https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1
@@ -138,10 +138,10 @@ function locate_in_space(space: Space, rounds: number) {
 
 // Custom arbitrary
 
-const SpaceArbitrary = sc.tuple(
-        sc.integer(1, 1000), sc.integer(1, 1000),
-        sc.integer(1, 1000), sc.integer(1, 1000),
-        sc.integer(1, 1000), sc.integer(1, 1000)
+const SpaceArbitrary = fc.tuple(
+        fc.integer(1, 1000), fc.integer(1, 1000),
+        fc.integer(1, 1000), fc.integer(1, 1000),
+        fc.integer(1, 1000), fc.integer(1, 1000)
     ).filter(([w,h,cx,cy,sx,sy]: [number,number,number,number,number,number]) =>
         cx < w && sx < w && cy < h && sy < h
     ).map(([w,h,cx,cy,sx,sy]: [number,number,number,number,number,number]) =>
@@ -161,7 +161,7 @@ describe(`Shadows (seed: ${seed})`, () => {
     it('Should detect an implementation issue', () => {
         let failed = false;
         try {
-            sc.assert(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
+            fc.assert(fc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
                     locate_in_space_bug(space, max_guesses);
                     return space.solved();
                 }), {seed: seed});
@@ -176,7 +176,7 @@ describe(`Shadows (seed: ${seed})`, () => {
         assert.ok(failed, 'Should have failed');
     });
     it('Should not detect any issue', () => {
-        sc.assert(sc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
+        fc.assert(fc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
                 locate_in_space(space, max_guesses);
                 return space.solved();
             }), {seed: seed});
