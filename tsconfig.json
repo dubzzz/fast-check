@@ -9,7 +9,7 @@
         "preserveConstEnums": true,
         "strictNullChecks": true,
         "downlevelIteration": true,
-        "target": "es6",
+        "target": "es5",
         "lib": [
             "es6"
         ],
