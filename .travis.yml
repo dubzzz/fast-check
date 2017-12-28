@@ -10,7 +10,18 @@ cache:
 
 script:
   - npm run test
+  - npm run build
 
 after_success:
   - npm run coverage
   - npm run codeclimate
+
+deploy:
+  provider: npm
+  email: npm@dubien.org
+  skip_cleanup: true
+  api_key:
+    secure: xvMdgrmNAwVEvoy1yLo2T6SnAtiVZNN/YShFK9QzJXuUrcNgW3fp/M0B6PACyHH5deriMRF99E/O10in3dKbu30kNvi88tRONPmV0Yv58G67IDl5S+sd9BoHWXB2xGYqqxYkcbPyB//2qB3p1KyG56fu0GshbtYdop8WTBjLdDLjqyS1EcuAGg2mxktvfzjSjfoUhqW5gQyo0VwAeUfytpD7kiPJXG1B14JPXEEogX2yQTdZLEiqMHtEfVglkP+ozKhiqS7DZRmDQPkdazkRYDUdUilV090N9p8zx/nPkM2E0zsb8yCVdF4mqx3Fa+4nGAIkiCcLMucsyCFkUA/xDBbKreVXXadkNbgR8EN+jNopfhkzkWBAUiH5l/lgwIYIT1jj78wiROGOqcpGVgFVwu+psf22AL6yM81Sli7aV/KZ57OwyI8Z4wT1ZM7pOL+Dpe3o7Fqyj75cjVty5yt1vQCupWbbFPCNG1HunE574eJKpMGjiJ/YN7FMCnh8DTng3r6hrVpCYZCj+7zcXwJkpYXgetdYWTZjKr5wQ+MPOMMQZ11XuQ8aC5jlWoqAMuBd8MCN7Q04y/qFSVuczVCJ38FsuyfC1m2T4R5ROFQPE176jsL5nT0Cm6sO5hiYS6rWzUXzHuZ2Xt+gf+dc7cL8di/+JoLgoXSRN3EUx1wtbuA=
+  on:
+    tags: true
+repo: dubzzz/fast-check
