@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dubzzz/simple-check.git"
+    "url": "git+https://github.com/dubzzz/fast-check.git"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dubzzz/simple-check/issues"
+    "url": "https://github.com/dubzzz/fast-check/issues"
   },
-  "homepage": "https://github.com/dubzzz/simple-check#readme",
+  "homepage": "https://github.com/dubzzz/fast-check#readme",
   "devDependencies": {
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.44",
