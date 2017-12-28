@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check#readme",
   "dependencies": {
-    "lorem-ipsum": "^1.0.4"
+    "lorem-ipsum": "^1.0.4",
+    "power-assert": "^1.4.4"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
@@ -34,7 +35,6 @@
     "coveralls": "^3.0.0",
     "mocha": "^4.0.1",
     "nyc": "^11.4.1",
-    "power-assert": "^1.4.4",
     "source-map-support": "^0.5.0",
     "ts-node": "^4.1.0",
     "typescript": "^2.5.3"
