@@ -21,6 +21,9 @@
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
   "homepage": "https://github.com/dubzzz/fast-check#readme",
+  "dependencies": {
+    "lorem-ipsum": "^1.0.4"
+  },
   "devDependencies": {
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.44",
@@ -29,7 +32,6 @@
     "chai": "^4.1.2",
     "codeclimate-test-reporter": "^0.5.0",
     "coveralls": "^3.0.0",
-    "lorem-ipsum": "^1.0.4",
     "mocha": "^4.0.1",
     "nyc": "^11.4.1",
     "power-assert": "^1.4.4",
