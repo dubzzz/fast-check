@@ -119,3 +119,13 @@ They can be combined together to build more complex datatypes.
 - `fc.nat()` all possible positive integers ie. from 0 (included) to 2147483647 (included)
 - `fc.nat(max: number)` all possible positive integers between 0 (included) and max (included)
 
+## String (:string)
+
+Single character only:
+
+- `fc.hexa()` one character in `0123456789abcdef` (lower case)
+- `fc.base64()` one character in `A-Z`, `a-z`, `0-9`, `+` or `/`
+- `fc.char()` between 0x20 (included) and 0x7e (included) , corresponding to printable characters (see https://www.ascii-code.com/)
+- `fc.ascii()` between 0x00 (included) and 0x7f (included)
+- `fc.unicode()` between 0x0000 (included) and 0xffff (included)
+
