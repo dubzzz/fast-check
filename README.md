@@ -105,3 +105,17 @@ interface Details {
 ```typescript
 function check<Ts>(property: IProperty<Ts>, params?: Parameters);
 ```
+
+## Arbitraries
+
+Arbitraries are responsible for the random generation (but deterministic) and shrink of datatypes.
+They can be combined together to build more complex datatypes.
+
+### Numeric (:number)
+
+- `fc.integer()` all possible integers ie. from -2147483648 (included) to 2147483647 (included)
+- `fc.integer(max: number)` all possible integers between -2147483648 (included) and max (included)
+- `fc.integer(min: number, max: number)` all possible integers between min (included) and max (included)
+- `fc.nat()` all possible positive integers ie. from 0 (included) to 2147483647 (included)
+- `fc.nat(max: number)` all possible positive integers between 0 (included) and max (included)
+
