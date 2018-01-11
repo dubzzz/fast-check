@@ -45,3 +45,63 @@ In case of failure, the tests would raise a red flag and the output should help 
     Property failed after 1 tests (seed: 1515709471288): [,,]
     Got error: Property failed by returning false
 ```
+
+## Documentation
+
+### Properties
+
+- `fc.property`: define a new property ie. a list of arbitraries and a test function to assess the success
+
+The predicate would be considered falsy if its throws or if `output == null || output == true` evaluate to `false`.
+```typescript
+function property<T1>(
+        arb1: Arbitrary<T1>,
+        predicate: (t1:T1) => (boolean|void)): Property<[T1]>;
+function property<T1,T2>(
+        arb1: Arbitrary<T1>, arb2: Arbitrary<T2>,
+        predicate: (t1:T1,t2:T2) => (boolean|void)): Property<[T1,T2]>;
+...
+```
+
+## Runners
+
+- `fc.assert`: run the property and throws in case of failure
+
+This function is ideal to be called in `describe`, `it` blocks.
+It does not return anything in case of success.
+
+It can be parametrized using its second argument.
+
+```typescript
+export interface Parameters {
+    seed?: number;     // optional, initial seed of the generator: Date.now() by default
+    num_runs?: number; // optional, number of runs before success: 100 by default 
+}
+```
+
+```typescript
+function assert<Ts>(property: IProperty<Ts>, params?: Parameters);
+```
+
+- `fc.check`: run the property and return an object containing the test status along with other useful details
+
+It should never throw whatever the status of the test.
+
+It can be parametrized with the same parameters than `fc.assert`.
+
+The details returned by `fc.check` are the following:
+
+```typescript
+interface Details {
+    boolean: failed: false, // false in case of failure, true otherwise
+    number: num_runs,    // number of runs (all runs if success, up and including the first failure if failed)
+    number: num_shrinks, // number of shrinks (depth required to get the minimal failing example)
+    number: seed,        // seed used for the test
+    Ts?: counterexample, // failure only: shrunk conterexample causig the property to fail
+    string?: error       // failure only: stack trace and error details
+}
+```
+
+```typescript
+function check<Ts>(property: IProperty<Ts>, params?: Parameters);
+```
