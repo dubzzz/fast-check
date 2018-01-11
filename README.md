@@ -119,7 +119,7 @@ They can be combined together to build more complex datatypes.
 - `fc.nat()` all possible positive integers ie. from 0 (included) to 2147483647 (included)
 - `fc.nat(max: number)` all possible positive integers between 0 (included) and max (included)
 
-## String (:string)
+### String (:string)
 
 Single character only:
 
