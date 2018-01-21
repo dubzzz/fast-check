@@ -7,11 +7,10 @@ import IProperty from './IProperty'
 
 export class Property<Ts> implements IProperty<Ts> {
     constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => (boolean | void)) { }
-    run(mrng: MutableRandomGenerator): [(string|null), Shrinkable<Ts>] {
-        const value = this.arb.generate(mrng);
-        return [this.runOne(value.value), value];
+    generate(mrng: MutableRandomGenerator): Shrinkable<Ts> {
+        return this.arb.generate(mrng);
     }
-    runOne(v: Ts): (string|null) {
+    run(v: Ts): (string|null) {
         try {
             const output = this.predicate(v);
             return output == null || output == true ? null : "Property failed by returning false";

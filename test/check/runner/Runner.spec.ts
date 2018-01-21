@@ -1,6 +1,6 @@
 import * as assert from 'power-assert';
 import IProperty from '../../../src/check/property/IProperty';
-import { check, assert as rAssert } from '../../../src/check/property/Runner';
+import { check, assert as rAssert } from '../../../src/check/runner/Runner';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import * as fc from '../../../src/fast-check';
 
@@ -8,42 +8,59 @@ const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
     describe('check', () => {
         it('Should call the property 100 times by default (on success)', () => {
-            let num_calls = 0;
+            let num_calls_generate = 0;
+            let num_calls_run = 0;
             const p: IProperty<[number]> = {
-                run: () => {
-                    ++num_calls;
-                    return [null, new Shrinkable([0]) as Shrinkable<[number]>];
+                generate: () => {
+                    assert.equal(num_calls_run, num_calls_generate, 'Should have called run before calling back');
+                    ++num_calls_generate;
+                    return new Shrinkable([num_calls_generate]) as Shrinkable<[number]>;
                 },
-                runOne: () => { throw 'Not implemented'; }
+                run: (value: [number]) => {
+                    assert.equal(value[0], num_calls_generate, 'Should be called with previously generated value');
+                    ++num_calls_run;
+                    return null;
+                }
             };
             const out = check(p);
-            assert.equal(num_calls, 100, 'Should have been called 100 times');
+            assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
+            assert.equal(num_calls_run, 100, 'Should have called run 100 times');
             assert.equal(out.failed, false, 'Should not have failed');
         });
         it('Should never call shrink on success', () => {
-            let num_calls = 0;
+            let num_calls_generate = 0;
+            let num_calls_run = 0;
             const p: IProperty<[number]> = {
-                run: () => {
-                    ++num_calls;
-                    return [null, new Shrinkable([0], () => { throw 'Not implemented'; }) as Shrinkable<[number]>];
+                generate: () => {
+                    ++num_calls_generate;
+                    return new Shrinkable([0], () => { throw 'Not implemented'; }) as Shrinkable<[number]>;
                 },
-                runOne: () => { throw 'Not implemented'; },
+                run: (value: [number]) => {
+                    ++num_calls_run;
+                    return null;
+                },
             };
             const out = check(p);
-            assert.equal(num_calls, 100, 'Should have been called 100 times');
+            assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
+            assert.equal(num_calls_run, 100, 'Should have called run 100 times');
             assert.equal(out.failed, false, 'Should not have failed');
         });
         it('Should call the property 100 times by default (except on error)', () => fc.assert(
             fc.property(fc.integer(1, 100), fc.integer(), (num, seed) => {
-                let num_calls = 0;
+                let num_calls_generate = 0;
+                let num_calls_run = 0;
                 const p: IProperty<[number]> = {
-                    run: () => {
-                        return [++num_calls < num ? null : "error", new Shrinkable([0]) as Shrinkable<[number]>];
+                    generate: () => {
+                        ++num_calls_generate;
+                        return new Shrinkable([0]) as Shrinkable<[number]>;
                     },
-                    runOne: () => { throw 'Not implemented'; }
+                    run: (value: [number]) => {
+                        return ++num_calls_run < num ? null : "error";
+                    }
                 };
                 const out = check(p, {seed: seed});
-                assert.equal(num_calls, num, `Should have stopped at first failing run (run number ${num})`);
+                assert.equal(num_calls_generate, num, `Should have stopped generate at first failing run (run number ${num})`);
+                assert.equal(num_calls_run, num, `Should have stopped run (because no shrink) at first failing run (run number ${num})`);
                 assert.ok(out.failed, 'Should have failed');
                 assert.equal(out.num_runs, num, `Should have failed after ${num} tests`);
                 assert.equal(out.seed, seed, `Should attach the failing seed`);
@@ -52,16 +69,21 @@ describe('Runner', () => {
         ));
         it('Should alter the number of runs when asked to', () => fc.assert(
             fc.property(fc.nat(MAX_NUM_RUNS), (num) => {
-                let num_calls = 0;
+                let num_calls_generate = 0;
+                let num_calls_run = 0;
                 const p: IProperty<[number]> = {
-                    run: () => {
-                        ++num_calls;
-                        return [null, new Shrinkable([0]) as Shrinkable<[number]>];
+                    generate: () => {
+                        ++num_calls_generate;
+                        return new Shrinkable([0]) as Shrinkable<[number]>;
                     },
-                    runOne: () => { throw 'Not implemented'; }
+                    run: (value: [number]) => {
+                        ++num_calls_run;
+                        return null;
+                    }
                 };
                 const out = check(p, {num_runs: num});
-                assert.equal(num_calls, num, `Should have been called ${num} times`);
+                assert.equal(num_calls_generate, num, `Should have called generate ${num} times`);
+                assert.equal(num_calls_run, num, `Should have called run ${num} times`);
                 assert.equal(out.failed, false, 'Should not have failed');
                 return true;
             })
@@ -71,16 +93,16 @@ describe('Runner', () => {
         const v1 = { toString: () => "toString(value#1)" };
         const v2 = { a: "Hello", b: 21 };
         const failingProperty: IProperty<[any,any]> = {
-            run: () => ["error in failingProperty", new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
-            runOne: () => { throw 'Not implemented'; }
+            generate: () => new Shrinkable([v1,v2]) as Shrinkable<[any,any]>,
+            run: (v: [any,any]) => "error in failingProperty"
         };
         const failingComplexProperty: IProperty<[any,any,any]> = {
-            run: () => ["error in failingComplexProperty", new Shrinkable([[v1,v2],v2,v1]) as Shrinkable<[any,any,any]>],
-            runOne: () => { throw 'Not implemented'; }
+            generate: () => new Shrinkable([[v1,v2],v2,v1]) as Shrinkable<[any,any,any]>,
+            run: (v: [any,any,any]) => "error in failingComplexProperty"
         };
         const successProperty: IProperty<[any,any]> = {
-            run: () => [null, new Shrinkable([v1,v2]) as Shrinkable<[any,any]>],
-            runOne: () => { throw 'Not implemented'; }
+            generate: () => new Shrinkable([v1,v2]) as Shrinkable<[any,any]>,
+            run: (v: [any,any]) => null
         };
 
         it('Should never throw if no failure occured', () => {

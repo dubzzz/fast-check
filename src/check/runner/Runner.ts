@@ -1,8 +1,7 @@
 import Shrinkable from '../arbitrary/definition/Shrinkable'
 import { RandomGenerator, skip_n } from '../../random/generator/RandomGenerator'
-import MersenneTwister from '../../random/generator/MersenneTwister'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
-import IProperty from './IProperty'
+import IProperty from '../property/IProperty'
+import toss from './Tosser'
 
 export interface Parameters {
     seed?: number;
@@ -11,7 +10,7 @@ export interface Parameters {
 
 function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string, num_shrinks: number = 0): [Ts, number, string] {
     for (const v of value.shrink()) {
-        const out = property.runOne(v.value);
+        const out = property.run(v.value);
         if (out != null) {
             return shrinkIt(property, v, out, num_shrinks+1);
         }
@@ -22,13 +21,13 @@ function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: str
 function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
     const seed = (params && params.seed != null) ? params.seed as number : Date.now();
     const num_runs = (params && params.num_runs != null) ? params.num_runs as number : 100;
+    const generator = toss(property, seed);
 
-    let rng: RandomGenerator = MersenneTwister.from(seed);
     for (let idx = 0 ; idx < num_runs ; ++idx) {
-        rng = skip_n(rng, 42);
-        const out = property.run(new MutableRandomGenerator(rng));
-        if (out[0] != null) {
-            const [shrinkedValue, numShrinks, error] = shrinkIt(property, out[1], out[0] as string);
+        const g = generator.next().value;
+        const out = property.run(g.value);
+        if (out != null) {
+            const [shrinkedValue, numShrinks, error] = shrinkIt(property, g, out as string);
             return {failed: true, num_runs: idx+1, num_shrinks: numShrinks, seed: seed, counterexample: shrinkedValue, error: error};
         }
     }

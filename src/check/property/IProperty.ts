@@ -3,6 +3,6 @@ import MutableRandomGenerator from '../../random/generator/MutableRandomGenerato
 import Stream from '../../stream/Stream'
 
 export default interface IProperty<Ts> {
-    run(mrng: MutableRandomGenerator): [(string|null), Shrinkable<Ts>];
-    runOne(v: Ts): (string|null);
+    generate(mrng: MutableRandomGenerator): Shrinkable<Ts>;
+    run(v: Ts): (string|null);
 }

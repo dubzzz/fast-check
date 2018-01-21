@@ -1,4 +1,4 @@
-import { check, assert } from './check/property/Runner'
+import { check, assert } from './check/runner/Runner'
 import { property } from './check/property/Property'
 
 import Arbitrary from './check/arbitrary/definition/Arbitrary'
