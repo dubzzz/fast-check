@@ -1,4 +1,5 @@
 import { check, assert } from './check/runner/Runner'
+import { sample } from './check/runner/Sampler'
 import { property } from './check/property/Property'
 
 import Arbitrary from './check/arbitrary/definition/Arbitrary'
@@ -13,6 +14,8 @@ import { string, asciiString, unicodeString, hexaString, base64String } from './
 import { tuple } from './check/arbitrary/TupleArbitrary'
 
 export {
+    // assess the property
+    sample,
     // check the property
     check, assert,
     // property definition
