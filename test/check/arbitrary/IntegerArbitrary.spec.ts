@@ -1,8 +1,10 @@
 import * as assert from 'power-assert';
-import { FastIncreaseRandomGenerator } from '../../stubs/generators';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import * as fc from '../../../lib/fast-check';
+
 import { integer, nat } from '../../../src/check/arbitrary/IntegerArbitrary';
-import * as fc from '../../../src/fast-check';
+import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+
+import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 
 describe("IntegerArbitrary", () => {
     describe('integer', () => {

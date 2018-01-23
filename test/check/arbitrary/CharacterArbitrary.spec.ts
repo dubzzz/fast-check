@@ -1,8 +1,10 @@
 import * as assert from 'power-assert';
-import { FastIncreaseRandomGenerator, CounterRandomGenerator } from '../../stubs/generators';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import * as fc from '../../../lib/fast-check';
+
 import { char, ascii, unicode, hexa, base64 } from '../../../src/check/arbitrary/CharacterArbitrary';
-import * as fc from '../../../src/fast-check';
+import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+
+import { FastIncreaseRandomGenerator, CounterRandomGenerator } from '../../stubs/generators';
 
 describe("CharacterArbitrary", () => {
     describe('char', () => {

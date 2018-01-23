@@ -1,7 +1,9 @@
 import * as assert from 'power-assert';
+import * as fc from '../../../lib/fast-check';
+
 import { sample } from '../../../src/check/runner/Sampler';
+
 import { CounterArbitrary, ForwardArbitrary } from '../../stubs/arbitraries';
-import * as fc from '../../../src/fast-check';
 
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {

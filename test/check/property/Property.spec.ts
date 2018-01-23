@@ -1,11 +1,10 @@
 import * as assert from 'power-assert';
-import RandomGenerator from '../../../src/random/generator/RandomGenerator';
+
+import { property } from '../../../src/check/property/Property';
+import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+
 import { SingleUseArbitrary } from '../../stubs/arbitraries';
 import { NoCallGenerator } from '../../stubs/generators';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
-import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
-import { property } from '../../../src/check/property/Property';
 
 function generator(): MutableRandomGenerator {
     return new MutableRandomGenerator(new NoCallGenerator());

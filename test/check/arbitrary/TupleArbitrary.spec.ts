@@ -1,11 +1,13 @@
 import * as assert from 'power-assert';
-import { FastIncreaseRandomGenerator } from '../../stubs/generators';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import * as fc from '../../../lib/fast-check';
+
 import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
-import { tuple } from '../../../src/check/arbitrary/TupleArbitrary';
-import { integer } from '../../../src/check/arbitrary/IntegerArbitrary';
-import * as fc from '../../../src/fast-check';
+import { integer } from '../../../src/check/arbitrary/IntegerArbitrary'
+import { tuple } from '../../../src/check/arbitrary/TupleArbitrary';;
+import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+
+import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 
 class DummyArbitrary extends Arbitrary<string> {
     constructor(public id: number) {

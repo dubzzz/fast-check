@@ -1,7 +1,9 @@
 import * as assert from 'power-assert';
-import { NoCallGenerator } from '../../stubs/generators';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+
 import { constant } from '../../../src/check/arbitrary/ConstantArbitrary';
+import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+
+import { NoCallGenerator } from '../../stubs/generators';
 
 describe("ConstantArbitrary", () => {
     describe('constant', () => {

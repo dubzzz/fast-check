@@ -1,8 +1,9 @@
 import * as assert from 'power-assert';
+import * as fc from '../../../lib/fast-check';
+
+import { lorem } from '../../../src/check/arbitrary/LoremArbitrary';
 import MersenneTwister from '../../../src/random/generator/MersenneTwister';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
-import { lorem } from '../../../src/check/arbitrary/LoremArbitrary';
-import * as fc from '../../../src/fast-check';
 
 describe('LoremArbitrary', () => {
     describe('lorem', () => {
