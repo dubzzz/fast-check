@@ -1,5 +1,5 @@
 import { check, assert } from './check/runner/Runner'
-import { sample } from './check/runner/Sampler'
+import { sample, statistics } from './check/runner/Sampler'
 import { property } from './check/property/Property'
 
 import Arbitrary from './check/arbitrary/definition/Arbitrary'
@@ -15,7 +15,7 @@ import { tuple } from './check/arbitrary/TupleArbitrary'
 
 export {
     // assess the property
-    sample,
+    sample, statistics,
     // check the property
     check, assert,
     // property definition
