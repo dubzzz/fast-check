@@ -1,4 +1,5 @@
 import RandomGenerator from '../../../src/random/generator/RandomGenerator';
+import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 
 /**
  * NoCallGenerator
@@ -66,4 +67,16 @@ class CounterRandomGenerator implements RandomGenerator {
     }
 }
 
-export { NoCallGenerator, FastIncreaseRandomGenerator, CounterRandomGenerator };
+const raw = {
+    counter: (value: number) => new CounterRandomGenerator(value),
+    nocall: () => new NoCallGenerator(),
+    fastincrease: (value: number) => new FastIncreaseRandomGenerator(value)
+};
+
+const mutable = {
+    counter: (value: number) => new MutableRandomGenerator(new CounterRandomGenerator(value)),
+    nocall: () => new MutableRandomGenerator(new NoCallGenerator()),
+    fastincrease: (value: number) => new MutableRandomGenerator(new FastIncreaseRandomGenerator(value))
+};
+
+export { mutable, raw };

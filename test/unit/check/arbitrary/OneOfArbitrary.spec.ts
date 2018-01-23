@@ -8,7 +8,7 @@ import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 import { stream } from '../../../../src/stream/Stream';
 
-import { FastIncreaseRandomGenerator } from '../../stubs/generators';
+import * as stubRng from '../../stubs/generators';
 
 class CustomArbitrary extends Arbitrary<number> {
     constructor(readonly value: number) {
@@ -27,7 +27,7 @@ describe("OneOfArbitrary", () => {
         it('Should generate based on one of the given arbitraries', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.array(fc.integer()), (seed, choice1, others) => {
                 const choices = [choice1, ...others];
-                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
+                const mrng = stubRng.mutable.fastincrease(seed);
                 const g = oneof(constant(choice1), ...others.map(constant)).generate(mrng).value;
                 return choices.indexOf(g) !== -1;
             })
@@ -35,7 +35,7 @@ describe("OneOfArbitrary", () => {
         it('Should call the right shrink on shrink', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.array(fc.integer()), (seed, choice1, others) => {
                 const choices = [choice1, ...others].map(c => new CustomArbitrary(c));
-                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
+                const mrng = stubRng.mutable.fastincrease(seed);
                 const shrinkable = oneof(choices[0], ...choices.slice(1)).generate(mrng);
                 const shrinks = [...shrinkable.shrink()];
                 return shrinks.length === 1 && shrinks[0].value === shrinkable.value -42;
