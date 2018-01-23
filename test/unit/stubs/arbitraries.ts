@@ -54,4 +54,11 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
     }
 }
 
-export { CounterArbitrary, ForwardArbitrary, SingleUseArbitrary };
+const counter = (value: number) => new CounterArbitrary(value);
+const forward = () => new ForwardArbitrary();
+const single = <T>(id: T) => new SingleUseArbitrary(id);
+
+export {
+    counter, forward, single,
+    SingleUseArbitrary
+};
