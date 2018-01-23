@@ -4,6 +4,7 @@ import * as fc from '../../../../lib/fast-check';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
+import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
@@ -86,6 +87,28 @@ describe('Runner', () => {
                 assert.equal(num_calls_generate, num, `Should have called generate ${num} times`);
                 assert.equal(num_calls_run, num, `Should have called run ${num} times`);
                 assert.equal(out.failed, false, 'Should not have failed');
+                return true;
+            })
+        ));
+        it('Should generate the same values given the same seeds', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const buildPropertyFor = function(runOn: number[]) {
+                    const p: IProperty<[number]> = {
+                        generate: (rng: MutableRandomGenerator) => {
+                            return new Shrinkable([rng.next()[0]]) as Shrinkable<[number]>;
+                        },
+                        run: (value: [number]) => {
+                            runOn.push(value[0]);
+                            return null;
+                        }
+                    };
+                    return p;
+                }
+                let data1: number[] = [];
+                let data2: number[] = [];
+                check(buildPropertyFor(data1), {seed: seed});
+                check(buildPropertyFor(data2), {seed: seed});
+                assert.deepEqual(data2, data1, 'Should run on the same values given the same seed');
                 return true;
             })
         ));
