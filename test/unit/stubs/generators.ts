@@ -1,4 +1,4 @@
-import RandomGenerator from '../../src/random/generator/RandomGenerator';
+import RandomGenerator from '../../../src/random/generator/RandomGenerator';
 
 /**
  * NoCallGenerator

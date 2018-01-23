@@ -1,6 +1,6 @@
-import Arbitrary from '../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../src/check/arbitrary/definition/Shrinkable';
-import MutableRandomGenerator from '../../src/random/generator/MutableRandomGenerator';
+import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
+import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
+import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 
 /**
  * CounterArbitrary

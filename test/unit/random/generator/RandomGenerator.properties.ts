@@ -1,6 +1,7 @@
 import * as assert from 'power-assert';
-import { RandomGenerator, skip_n, generate_n } from '../../../src/random/generator/RandomGenerator';
-import * as fc from '../../../src/fast-check';
+import * as fc from '../../../../lib/fast-check';
+
+import { RandomGenerator, skip_n, generate_n } from '../../../../src/random/generator/RandomGenerator';
 
 const MAX_SIZE: number = 2048;
 

@@ -1,9 +1,9 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
-import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
-import IProperty from '../../../src/check/property/IProperty';
-import { check, assert as rAssert } from '../../../src/check/runner/Runner';
+import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
+import IProperty from '../../../../src/check/property/IProperty';
+import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {

@@ -1,8 +1,8 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
-import { string, asciiString, unicodeString, hexaString, base64String } from '../../../src/check/arbitrary/StringArbitrary';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import { string, asciiString, unicodeString, hexaString, base64String } from '../../../../src/check/arbitrary/StringArbitrary';
+import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 
 import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 

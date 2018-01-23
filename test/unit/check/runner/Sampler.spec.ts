@@ -1,7 +1,7 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
-import { sample } from '../../../src/check/runner/Sampler';
+import { sample } from '../../../../src/check/runner/Sampler';
 
 import { CounterArbitrary, ForwardArbitrary } from '../../stubs/arbitraries';
 

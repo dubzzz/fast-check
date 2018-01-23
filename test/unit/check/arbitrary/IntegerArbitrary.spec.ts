@@ -1,8 +1,8 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
-import { integer, nat } from '../../../src/check/arbitrary/IntegerArbitrary';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import { integer, nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 
 import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 

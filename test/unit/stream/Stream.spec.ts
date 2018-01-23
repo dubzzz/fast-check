@@ -1,5 +1,6 @@
 import * as assert from 'power-assert';
-import { Stream, stream } from '../../src/stream/Stream';
+
+import { Stream, stream } from '../../../src/stream/Stream';
 
 describe("Stream", () => {
     describe("constructor", () => {

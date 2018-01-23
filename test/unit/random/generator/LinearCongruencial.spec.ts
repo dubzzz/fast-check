@@ -1,8 +1,9 @@
 import * as assert from 'power-assert';
-import RandomGenerator from '../../../src/random/generator/RandomGenerator';
-import LinearCongruential from '../../../src/random/generator/LinearCongruential';
+import * as fc from '../../../../lib/fast-check';
+
+import LinearCongruential from '../../../../src/random/generator/LinearCongruential';
+import RandomGenerator from '../../../../src/random/generator/RandomGenerator';
 import * as p from './RandomGenerator.properties';
-import * as fc from '../../../src/fast-check';
 
 function rng_for(seed: number): RandomGenerator {
     return new LinearCongruential(seed);

@@ -10,6 +10,7 @@ cache:
 
 script:
   - npm run test
+  - npm run e2e
   - npm run build
 
 after_success:

@@ -1,11 +1,11 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
-import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
-import { integer } from '../../../src/check/arbitrary/IntegerArbitrary'
-import { tuple } from '../../../src/check/arbitrary/TupleArbitrary';;
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
+import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary'
+import { tuple } from '../../../../src/check/arbitrary/TupleArbitrary';;
+import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 
 import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 

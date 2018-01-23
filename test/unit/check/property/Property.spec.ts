@@ -1,7 +1,7 @@
 import * as assert from 'power-assert';
 
-import { property } from '../../../src/check/property/Property';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import { property } from '../../../../src/check/property/Property';
+import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 
 import { SingleUseArbitrary } from '../../stubs/arbitraries';
 import { NoCallGenerator } from '../../stubs/generators';

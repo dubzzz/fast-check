@@ -1,7 +1,8 @@
 import * as assert from 'power-assert';
-import { RandomGenerator, skip_n, generate_n } from '../../../src/random/generator/RandomGenerator';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
-import * as fc from '../../../src/fast-check';
+import * as fc from '../../../../lib/fast-check';
+
+import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import { RandomGenerator, skip_n, generate_n } from '../../../../src/random/generator/RandomGenerator';
 
 class DummyRandomGenerator implements RandomGenerator {
     value: number;
