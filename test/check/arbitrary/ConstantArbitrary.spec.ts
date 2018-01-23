@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import { NoCallGenerator } from './TestRandomGenerator'
+import { NoCallGenerator } from '../../stubs/generators';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import { constant } from '../../../src/check/arbitrary/ConstantArbitrary';
 

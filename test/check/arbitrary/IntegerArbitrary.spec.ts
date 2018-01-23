@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import { DummyRandomGenerator } from './TestRandomGenerator'
+import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import { integer, nat } from '../../../src/check/arbitrary/IntegerArbitrary';
 import * as fc from '../../../src/fast-check';
@@ -8,35 +8,35 @@ describe("IntegerArbitrary", () => {
     describe('integer', () => {
         it('Should generate values between -2**31 and 2**31 -1 by default', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = integer().generate(mrng).value;
                 return -0x80000000 <= g && g <= 0x7fffffff;
             })
         ));
         it('Should generate values between -2**31 and max', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), (seed, max) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = integer(max).generate(mrng).value;
                 return -0x80000000 <= g && g <= max;
             })
         ));
         it('Should generate values between min and max', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = integer(min, min + num).generate(mrng).value;
                 return min <= g && g <= min + num;
             })
         ));
         it('Should not fail on single value range', () => fc.assert(
             fc.property(fc.integer(), fc.nat(), (seed, value) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = integer(value, value).generate(mrng).value;
                 return g == value;
             })
         ));
         it('Should shrink values between min and max', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const arb = integer(min, min + num);
                 const shrinkable = arb.generate(mrng);
                 return shrinkable.shrink().every(s => min <= s.value && s.value <= min + num);
@@ -44,7 +44,7 @@ describe("IntegerArbitrary", () => {
         ));
         it('Should not suggest input in shrinked values', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const arb = integer(min, min + num);
                 const shrinkable = arb.generate(mrng);
                 return shrinkable.shrink().every(s => s.value != shrinkable.value);
@@ -52,7 +52,7 @@ describe("IntegerArbitrary", () => {
         ));
         it('Should shrink towards zero', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const arb = integer(min, min + num);
                 const shrinkable = arb.generate(mrng);
                 return shrinkable.value >= 0
@@ -62,7 +62,7 @@ describe("IntegerArbitrary", () => {
         ));
         it('Should be able to call shrink multiple times', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const arb = integer(min, min + num);
                 const shrinkable = arb.generate(mrng);
                 const s1 = [...shrinkable.shrink()].map(s => s.value);
@@ -72,7 +72,7 @@ describe("IntegerArbitrary", () => {
         ));
         it('Should always suggest one shrinked value if it can go towards zero', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const arb = integer(min, min + num);
                 const shrinkable = arb.generate(mrng);
                 const v = shrinkable.value;
@@ -84,7 +84,7 @@ describe("IntegerArbitrary", () => {
         ));
         it('Should produce the same values for shrink on instance and on arbitrary', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const arb = integer(min, min + num);
                 const shrinkable = arb.generate(mrng);
                 const shrinksInstance = [...shrinkable.shrink()].map(s => s.value);
@@ -96,14 +96,14 @@ describe("IntegerArbitrary", () => {
     describe('nat', () => {
         it('Should generate values between 0 and 2**31 -1 by default', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = nat().generate(mrng).value;
                 return 0 <= g && g <= 0x7fffffff;
             })
         ));
         it('Should generate values between 0 and max', () => fc.assert(
             fc.property(fc.integer(), fc.nat(), (seed, max) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = nat(max).generate(mrng).value;
                 return 0 <= g && g <= max;
             })

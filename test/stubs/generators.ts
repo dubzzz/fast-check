@@ -1,5 +1,11 @@
-import RandomGenerator from '../../../src/random/generator/RandomGenerator';
+import RandomGenerator from '../../src/random/generator/RandomGenerator';
 
+/**
+ * NoCallGenerator
+ * 
+ * no op generator
+ * should not be called on any of its methods
+ */
 class NoCallGenerator implements RandomGenerator {
     next(): [number, RandomGenerator] {
         throw new Error("Method not implemented.");
@@ -12,7 +18,13 @@ class NoCallGenerator implements RandomGenerator {
     }
 }
 
-class DummyRandomGenerator implements RandomGenerator {
+/**
+ * FastIncreaseRandomGenerator
+ * 
+ * always increasing generator (up to max then "overflow")
+ * increase factor increase itself at each new generation
+ */
+class FastIncreaseRandomGenerator implements RandomGenerator {
     value: number;
     incr: number;
     constructor(value: number, incr?: number) {
@@ -22,7 +34,7 @@ class DummyRandomGenerator implements RandomGenerator {
     next(): [number, RandomGenerator] {
         // need to tweak incr in order to use a large range of values
         // uniform distribution expects some entropy
-        return [this.value, new DummyRandomGenerator((this.value + this.incr) | 0, 2 * this.incr +1)];
+        return [this.value, new FastIncreaseRandomGenerator((this.value + this.incr) | 0, 2 * this.incr +1)];
     }
     min(): number {
         return -0x80000000;
@@ -32,13 +44,19 @@ class DummyRandomGenerator implements RandomGenerator {
     }
 }
 
-class IncrementRandomGenerator implements RandomGenerator {
+/**
+ * CounterRandomGenerator
+ * 
+ * generator starting at a `seed` value
+ * and incrementing itself at each call to `next`
+ */
+class CounterRandomGenerator implements RandomGenerator {
     value: number;
     constructor(value: number) {
         this.value = value;
     }
     next(): [number, RandomGenerator] {
-        return [this.value, new IncrementRandomGenerator((this.value + 1) | 0)];
+        return [this.value, new CounterRandomGenerator((this.value + 1) | 0)];
     }
     min(): number {
         return -0x80000000;
@@ -48,4 +66,4 @@ class IncrementRandomGenerator implements RandomGenerator {
     }
 }
 
-export { NoCallGenerator, DummyRandomGenerator, IncrementRandomGenerator };
+export { NoCallGenerator, FastIncreaseRandomGenerator, CounterRandomGenerator };

@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import { DummyRandomGenerator } from './TestRandomGenerator'
+import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import { string, asciiString, unicodeString, hexaString, base64String } from '../../../src/check/arbitrary/StringArbitrary';
 import * as fc from '../../../src/fast-check';
@@ -8,14 +8,14 @@ describe('StringArbitrary', () => {
     describe('char', () => {
         it('Should generate printable characters', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = string().generate(mrng).value;
                 return g.split('').every(c => 0x20 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0x7e);
             })
         ));
         it('Should generate a string given maximal length', () => fc.assert(
             fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = string(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
             })
@@ -24,14 +24,14 @@ describe('StringArbitrary', () => {
     describe('asciiString', () => {
         it('Should generate ascii string', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = asciiString().generate(mrng).value;
                 return g.split('').every(c => 0x00 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0x7f);
             })
         ));
         it('Should generate a string given maximal length', () => fc.assert(
             fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = asciiString(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
             })
@@ -40,14 +40,14 @@ describe('StringArbitrary', () => {
     describe('unicodeString', () => {
         it('Should generate unicode string', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = unicodeString().generate(mrng).value;
                 return g.split('').every(c => 0x0000 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0xffff);
             })
         ));
         it('Should generate a string given maximal length', () => fc.assert(
             fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = unicodeString(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
             })
@@ -56,14 +56,14 @@ describe('StringArbitrary', () => {
     describe('hexaString', () => {
         it('Should generate hexa string', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = hexaString().generate(mrng).value;
                 return g.split('').every(c => ('0' <= c && c <= '9') || ('a' <= c && c <= 'f'));
             })
         ));
         it('Should generate a string given maximal length', () => fc.assert(
             fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = hexaString(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
             })
@@ -87,35 +87,35 @@ describe('StringArbitrary', () => {
         }
         it('Should generate base64 string', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = base64String().generate(mrng).value;
                 return isValidBase64(g);
             })
         ));
         it('Should pad base64 string with spaces', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = base64String().generate(mrng).value;
                 return hasValidBase64Padding(g);
             })
         ));
         it('Should have a length multiple of 4', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = base64String().generate(mrng).value;
                 return g.length % 4 === 0;
             })
         ));
         it('Should generate a string given maximal length', () => fc.assert(
             fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = base64String(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
             })
         ));
         it('Should shrink and suggest valid base64 strings', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const shrinkable = base64String().generate(mrng);
                 return shrinkable.shrink()
                     .every(s => s.value.length % 4 === 0 &&

@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import { DummyRandomGenerator } from './TestRandomGenerator'
+import { FastIncreaseRandomGenerator } from '../../stubs/generators';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
@@ -25,8 +25,8 @@ function propertySameTupleForSameSeed(...arbs: DummyArbitrary[]) {
     }
     const arb = tuple(arbs[0], ...arbs.slice(1));
     return fc.property(fc.integer(), (seed) => {
-        const mrng1 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-        const mrng2 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+        const mrng1 = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
+        const mrng2 = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
         const g1 = arb.generate(mrng1).value;
         assert.ok(g1.every((v, idx) => v.startsWith(`key${arbs[idx].id}_`)));
         assert.deepEqual(arb.generate(mrng2).value, g1);
@@ -40,7 +40,7 @@ function propertyShrinkInRange(...arbs: DummyArbitrary[]) {
     }
     const arb = tuple(arbs[0], ...arbs.slice(1));
     return fc.property(fc.integer(), (seed) => {
-        const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+        const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
         const shrinkable = arb.generate(mrng);
         return shrinkable.shrink().every(s => s.value.every((vv, idx) => vv.startsWith(`key${arbs[idx].id}_`)));
     });
@@ -52,7 +52,7 @@ function propertyNotSuggestInputInShrink(...arbs: DummyArbitrary[]) {
     }
     const arb = tuple(arbs[0], ...arbs.slice(1));
     return fc.property(fc.integer(), (seed) => {
-        const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+        const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
         const shrinkable = arb.generate(mrng);
         return shrinkable.shrink().every(s => !s.value.every((vv, idx) => vv === shrinkable.value[idx]));
     });

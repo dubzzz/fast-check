@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import { DummyRandomGenerator } from '../TestRandomGenerator'
+import { FastIncreaseRandomGenerator } from '../../../stubs/generators'
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
@@ -22,7 +22,7 @@ describe("Arbitrary", () => {
     describe('filter', () => {
         it('Should filter unsuitable values from the underlying arbitrary', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng).value;
                 assert.ok(g % 3 === 0);
                 return true;
@@ -30,7 +30,7 @@ describe("Arbitrary", () => {
         ));
         it('Should filter unsuitable values from shrink', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const shrinkable = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng);
                 assert.ok(shrinkable.shrink().every(s => s.value % 3 === 0));
                 return true;
@@ -38,7 +38,7 @@ describe("Arbitrary", () => {
         ));
         it('Should filter unsuitable values from shrink of shrink', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const shrinkable = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng);
                 assert.ok(shrinkable.shrink().flatMap(s => s.shrink()).every(s => s.value % 3 === 0));
                 return true;
@@ -48,8 +48,8 @@ describe("Arbitrary", () => {
     describe('map', () => {
         it('Should apply mapper to produced values', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng1 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
-                const mrng2 = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng1 = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
+                const mrng2 = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const g = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng1).value;
                 assert.equal(g, `value = ${new ForwardArbitrary().generate(mrng2).value}`);
                 return true;
@@ -57,7 +57,7 @@ describe("Arbitrary", () => {
         ));
         it('Should apply mapper to shrink values', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const shrinkable = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng);
                 assert.ok(shrinkable.shrink().every(s => s.value.startsWith("value = ")));
                 return true;
@@ -65,7 +65,7 @@ describe("Arbitrary", () => {
         ));
         it('Should apply mapper to shrink of shrink values', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
-                const mrng = new MutableRandomGenerator(new DummyRandomGenerator(seed));
+                const mrng = new MutableRandomGenerator(new FastIncreaseRandomGenerator(seed));
                 const shrinkable = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng);
                 assert.ok(shrinkable.shrink().flatMap(s => s.shrink()).every(s => s.value.startsWith("value = ")));
                 return true;

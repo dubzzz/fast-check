@@ -1,45 +1,22 @@
 import * as assert from 'power-assert';
 import { sample } from '../../../src/check/runner/Sampler';
-import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import { CounterArbitrary, ForwardArbitrary } from '../../stubs/arbitraries';
 import * as fc from '../../../src/fast-check';
-
-class CounterArbitrary extends Arbitrary<number> {
-    public generatedValues: number[] = [];
-    constructor(private value: number) {
-        super();
-    }
-    generate(): Shrinkable<number> {
-        const last = (this.value++) | 0; // keep it in integer range
-        this.generatedValues.push(last);
-        return new Shrinkable(last);
-    }
-}
-
-class RngArbitrary extends Arbitrary<number> {
-    constructor() {
-        super();
-    }
-    generate(rng: MutableRandomGenerator): Shrinkable<number> {
-        return new Shrinkable(rng.next()[0]);
-    }
-}
 
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {
     describe('sample', () => {
         it('Should produce the same sequence given the same seed', () => {
             fc.property(fc.integer(), (seed) => {
-                const out1 = sample(new RngArbitrary(), {seed: seed});
-                const out2 = sample(new RngArbitrary(), {seed: seed});
+                const out1 = sample(new ForwardArbitrary(), {seed: seed});
+                const out2 = sample(new ForwardArbitrary(), {seed: seed});
                 assert.deepEqual(out2, out1, 'Should be the same array');
             });
         });
         it('Should produce the same sequence given the same seed and different lengths', () => {
             fc.property(fc.integer(), fc.nat(MAX_NUM_RUNS), fc.nat(MAX_NUM_RUNS), (seed, l1, l2) => {
-                const out1 = sample(new RngArbitrary(), {seed: seed, num_runs: l1});
-                const out2 = sample(new RngArbitrary(), {seed: seed, num_runs: l2});
+                const out1 = sample(new ForwardArbitrary(), {seed: seed, num_runs: l1});
+                const out2 = sample(new ForwardArbitrary(), {seed: seed, num_runs: l2});
                 const lmin = Math.min(l1, l2);
                 assert.deepEqual(out2.slice(0, lmin), out1.slice(0, lmin), 'Should be the same array');
             });

@@ -1,38 +1,16 @@
 import * as assert from 'power-assert';
 import RandomGenerator from '../../../src/random/generator/RandomGenerator';
+import { SingleUseArbitrary } from '../../stubs/arbitraries';
+import { NoCallGenerator } from '../../stubs/generators';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
 import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import { property } from '../../../src/check/property/Property';
 
-class NoCallGenerator implements RandomGenerator {
-    next(): [number, RandomGenerator] {
-        throw new Error("Method not implemented.");
-    }
-    min(): number {
-        throw new Error("Method not implemented.");
-    }
-    max(): number {
-        throw new Error("Method not implemented.");
-    }
-}
 function generator(): MutableRandomGenerator {
     return new MutableRandomGenerator(new NoCallGenerator());
 }
 
-class SingleUseArbitrary<T> extends Arbitrary<T> {
-    called_once: boolean = false;
-    constructor(public id: T) {
-        super();
-    }
-    generate(mrng: MutableRandomGenerator) {
-        if (this.called_once) {
-            throw "Arbitrary has already been called once";
-        }
-        this.called_once = true;
-        return new Shrinkable(this.id);
-    }
-}
 function single<T>(id: T) {
     return new SingleUseArbitrary<T>(id);
 }
