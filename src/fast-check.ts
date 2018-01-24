@@ -9,6 +9,7 @@ import { boolean } from './check/arbitrary/BooleanArbitrary'
 import { char, ascii, unicode, hexa, base64 } from './check/arbitrary/CharacterArbitrary'
 import { constant } from './check/arbitrary/ConstantArbitrary'
 import { float, double } from './check/arbitrary/FloatingPointArbitrary'
+import { frequency } from './check/arbitrary/FrequencyArbitrary'
 import { integer, nat } from './check/arbitrary/IntegerArbitrary'
 import { lorem } from './check/arbitrary/LoremArbitrary'
 import { oneof } from './check/arbitrary/OneOfArbitrary'
@@ -29,7 +30,7 @@ export {
     integer, nat, // integer types
     char, ascii, unicode, hexa, base64, // single character
     string, asciiString, unicodeString, hexaString, base64String, lorem, // strings
-    constant, option, oneof, array, tuple, // combination of others
+    constant, option, oneof, frequency, array, tuple, // combination of others
     // extend the framework
     Arbitrary, Shrinkable
 };
