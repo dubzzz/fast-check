@@ -7,6 +7,7 @@ import Shrinkable from './check/arbitrary/definition/Shrinkable'
 import { array } from './check/arbitrary/ArrayArbitrary'
 import { char, ascii, unicode, hexa, base64 } from './check/arbitrary/CharacterArbitrary'
 import { constant } from './check/arbitrary/ConstantArbitrary'
+import { float, double } from './check/arbitrary/FloatingPointArbitrary'
 import { integer, nat } from './check/arbitrary/IntegerArbitrary'
 import { lorem } from './check/arbitrary/LoremArbitrary'
 import { oneof } from './check/arbitrary/OneOfArbitrary'
@@ -21,6 +22,7 @@ export {
     // property definition
     property,
     // pre-built arbitraries
+    float, double, // floating point types
     integer, nat, // integer types
     char, ascii, unicode, hexa, base64, // single character
     string, asciiString, unicodeString, hexaString, base64String, lorem, // strings
