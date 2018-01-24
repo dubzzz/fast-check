@@ -1,6 +1,7 @@
 import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
 import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import { stream } from '../../../src/stream/Stream';
 
 /**
  * CounterArbitrary
@@ -54,11 +55,39 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
     }
 }
 
+/**
+ * WithShrinkArbitrary
+ * 
+ * like counter except it can be shrinked towards zero
+ */
+class WithShrinkArbitrary extends Arbitrary<number> {
+    constructor(private value: number) {
+        super();
+    }
+    private static shrinkIt(v: number): Shrinkable<number> {
+        function* g() {
+            let vv = v;
+            while (Math.abs(vv) > 0) {
+                vv = vv > 0 ? Math.floor(vv / 2) : Math.ceil(vv / 2);
+                if (v != vv) {
+                    yield WithShrinkArbitrary.shrinkIt(vv);
+                }
+            }
+        }
+        return new Shrinkable(v, () => stream(g()));
+    }
+    generate(rng: MutableRandomGenerator): Shrinkable<number> {
+        const last = (this.value++) | 0; // keep it in integer range
+        return WithShrinkArbitrary.shrinkIt(last);
+    }
+}
+
 const counter = (value: number) => new CounterArbitrary(value);
 const forward = () => new ForwardArbitrary();
 const single = <T>(id: T) => new SingleUseArbitrary(id);
+const withShrink = (value: number) => new WithShrinkArbitrary(value);
 
 export {
-    counter, forward, single,
+    counter, forward, single, withShrink,
     SingleUseArbitrary
 };
