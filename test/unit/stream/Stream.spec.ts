@@ -261,5 +261,12 @@ describe("Stream", () => {
             let s = stream(g1()).map(v => 10 * v).join(g2()).take(5);
             assert.deepEqual([...s], [10, 10, 10, 10, 10]);
         });
+        it("Should be able to join on nil", () => {
+            function* g1() {
+                yield* [1, 2, 3, 4, 5];
+            }
+            let s = Stream.nil().join(g1());
+            assert.deepEqual([...s], [1, 2, 3, 4, 5]);
+        });
     });
 });
