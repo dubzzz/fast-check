@@ -33,6 +33,16 @@ describe("FloatingPointArbitrary", () => {
                 return g >= 0 && g < 1;
             })
         ));
+        it('Should shrink towards zero', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                let shrinkable = float().generate(mrng);
+                while (shrinkable.shrink().has(v => true)[0]) {
+                    shrinkable = shrinkable.shrink().next().value;
+                }// only check one shrink path
+                return shrinkable.value == 0.;
+            })
+        ));
     });
     describe('double', () => {
         it('Should be able to generate a floating point number value', () => fc.assert(
@@ -46,6 +56,16 @@ describe("FloatingPointArbitrary", () => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const g = double().generate(mrng).value;
                 return g >= 0 && g < 1;
+            })
+        ));
+        it('Should shrink towards zero', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                let shrinkable = double().generate(mrng);
+                while (shrinkable.shrink().has(v => true)[0]) {
+                    shrinkable = shrinkable.shrink().next().value;
+                }// only check one shrink path
+                return shrinkable.value == 0.;
             })
         ));
     });
