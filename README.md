@@ -111,13 +111,24 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters);
 Arbitraries are responsible for the random generation (but deterministic) and shrink of datatypes.
 They can be combined together to build more complex datatypes.
 
+### Boolean (:boolean)
+
+- `fc.boolean()` either `true` or `false`
+
 ### Numeric (:number)
+
+Integer values:
 
 - `fc.integer()` all possible integers ie. from -2147483648 (included) to 2147483647 (included)
 - `fc.integer(max: number)` all possible integers between -2147483648 (included) and max (included)
 - `fc.integer(min: number, max: number)` all possible integers between min (included) and max (included)
 - `fc.nat()` all possible positive integers ie. from 0 (included) to 2147483647 (included)
 - `fc.nat(max: number)` all possible positive integers between 0 (included) and max (included)
+
+Floating point numbers:
+
+- `fc.float()` uniformly distributed `float` value between 0.0 (included) and 1.0 (excluded)
+- `fc.double()`uniformly distributed `double` value between 0.0 (included) and 1.0 (excluded)
 
 ### String (:string)
 
