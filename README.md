@@ -76,6 +76,7 @@ It can be parametrized using its second argument.
 export interface Parameters {
     seed?: number;     // optional, initial seed of the generator: Date.now() by default
     num_runs?: number; // optional, number of runs before success: 100 by default 
+    logger?: (v: string) => void; // optional, log output: console.log by default
 }
 ```
 
@@ -104,6 +105,47 @@ interface Details {
 
 ```typescript
 function check<Ts>(property: IProperty<Ts>, params?: Parameters);
+```
+
+- `fc.sample`: sample generated values of an `Arbitrary<T>` or `Property<T>`
+
+It builds an array containing all the values that would have been generated for the equivalent test.
+
+It also accept `Parameters` as configuration in order to help you diagnose the shape of the inputs that will be received by your property.
+
+```typescript
+function sample<Ts>(generator: Arbitrary<Ts>): Ts[];
+function sample<Ts>(generator: Arbitrary<Ts>, params: Parameters): Ts[];
+function sample<Ts>(generator: Arbitrary<Ts>, num_generated: number): Ts[];
+
+function sample<Ts>(generator: IProperty<Ts>): Ts[];
+function sample<Ts>(generator: IProperty<Ts>, params: Parameters): Ts[];
+function sample<Ts>(generator: IProperty<Ts>, num_generated: number): Ts[];
+```
+
+- `fc.statistics`: classify the values produced by an `Arbitrary<T>` or `Property<T>`
+
+It provides useful statistics concerning generated values.
+In order to be able to gather those statistics it has to be provided with a classifier function that can classify the generated value in zero, one or more categories (free labels).
+
+It also accept `Parameters` as configuration in order to help you diagnose the shape of the inputs that will be received by your property.
+
+Statistics are dumped into `console.log` but can be redirected to another source by modifying the `logger` key in `Parameters`.
+
+```typescript
+function statistics<Ts>(generator: Arbitrary<Ts>, classify: (v: Ts) => string): void;
+function statistics<Ts>(generator: Arbitrary<Ts>, classify: (v: Ts) => string, params: Parameters): void;
+function statistics<Ts>(generator: Arbitrary<Ts>, classify: (v: Ts) => string, num_generated: number): void;
+function statistics<Ts>(generator: Arbitrary<Ts>, classify: (v: Ts) => string[]): void;
+function statistics<Ts>(generator: Arbitrary<Ts>, classify: (v: Ts) => string[], params: Parameters): void;
+function statistics<Ts>(generator: Arbitrary<Ts>, classify: (v: Ts) => string[], num_generated: number): void;
+
+function statistics<Ts>(generator: IProperty<Ts>, classify: (v: Ts) => string): void;
+function statistics<Ts>(generator: IProperty<Ts>, classify: (v: Ts) => string, params: Parameters): void;
+function statistics<Ts>(generator: IProperty<Ts>, classify: (v: Ts) => string, num_generated: number): void;
+function statistics<Ts>(generator: IProperty<Ts>, classify: (v: Ts) => string[]): void;
+function statistics<Ts>(generator: IProperty<Ts>, classify: (v: Ts) => string[], params: Parameters): void;
+function statistics<Ts>(generator: IProperty<Ts>, classify: (v: Ts) => string[], num_generated: number): void;
 ```
 
 ## Arbitraries
