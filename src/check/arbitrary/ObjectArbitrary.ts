@@ -5,6 +5,7 @@ import MutableRandomGenerator from '../../random/generator/MutableRandomGenerato
 import { array } from './ArrayArbitrary'
 import { boolean } from './BooleanArbitrary'
 import { constant } from './ConstantArbitrary'
+import { dictionary } from './DictionaryArbitrary'
 import { double } from './FloatingPointArbitrary'
 import { integer } from './IntegerArbitrary'
 import { oneof } from './OneOfArbitrary'
@@ -66,17 +67,11 @@ class ObjectArbitrary extends Arbitrary<any> {
         }
         return oneof(potentialArbValue[0], ...potentialArbValue.slice(0));
     }
-    private static toObject(items: [string, any][]): any {
-        const obj: any = {};
-        for (const keyValue of items) {
-            obj[keyValue[0]] = keyValue[1];
-        }
-        return obj;
-    }
     generate(mrng: MutableRandomGenerator): Shrinkable<any> {
-        return array(tuple(this.constraints.key, ObjectArbitrary.anything(this.constraints)))
-                .generate(mrng)
-                .map(ObjectArbitrary.toObject);
+        return dictionary(
+                this.constraints.key,
+                ObjectArbitrary.anything(this.constraints)
+            ).generate(mrng);
     }
 }
 
