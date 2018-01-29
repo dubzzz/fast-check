@@ -87,17 +87,9 @@ describe("ObjectArbitrary", () => {
     });
     describe('object', () => {
         it('Should generate an object', () => fc.assert(
-            fc.property(fc.integer(),
-                    fc.string(), fc.array(fc.string()),
-                    fc.string(), fc.array(fc.string()), (seed, key0, keys, value0, values) => {
-                const allowedKeys = [key0, ...keys];
-                const allowedValues = [value0, ...values];
+            fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
-
-                const keyArb = oneof(constant(key0), ...keys.map(constant));
-                const baseArbs = [...allowedValues.map(constant)];
-                const g = object({key: keyArb, values: baseArbs}).generate(mrng).value;
-                
+                const g = object().generate(mrng).value;
                 return typeof g === 'object' && ! Array.isArray(g);
             })
         ));
