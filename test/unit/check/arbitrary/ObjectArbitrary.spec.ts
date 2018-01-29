@@ -60,6 +60,30 @@ describe("ObjectArbitrary", () => {
                 return evaluateDepth(g) <= depth;
             })
         ));
+        it('Should shrink towards minimal value of type', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                let shrinkable = object().generate(mrng);
+                const originalValue = shrinkable.value;
+                while (shrinkable.shrink().has(v => true)[0]) {
+                    shrinkable = shrinkable.shrink().next().value;
+                }// only check one shrink path
+                switch (typeof originalValue) {
+                    case 'boolean':
+                        return assert.strictEqual(shrinkable.value, false, 'Should have shrinked towards false');
+                    case 'number':
+                        return assert.strictEqual(shrinkable.value, 0, 'Should have shrinked towards zero');
+                    case 'undefined':
+                        return assert.strictEqual(shrinkable.value, undefined, 'Should have shrinked towards undefined');
+                    default:
+                        if (originalValue == null)
+                            return assert.strictEqual(shrinkable.value, null, 'Should have shrinked towards null');
+                        if (Array.isArray(originalValue))
+                            return assert.deepStrictEqual(shrinkable.value, [], 'Should have shrinked towards empty array');
+                        return assert.deepStrictEqual(shrinkable.value, {}, 'Should have shrinked towards empty object');
+                }
+            })
+        ));
     });
     describe('object', () => {
         it('Should generate an object', () => fc.assert(
@@ -101,6 +125,16 @@ describe("ObjectArbitrary", () => {
                 const baseArbs = [constant(value0), ...values.map(constant)];
                 const g = object({key: keyArb, values: baseArbs, maxDepth: depth}).generate(mrng).value;
                 return evaluateDepth(g) <= depth +1;
+            })
+        ));
+        it('Should shrink towards empty object', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                let shrinkable = object().generate(mrng);
+                while (shrinkable.shrink().has(v => true)[0]) {
+                    shrinkable = shrinkable.shrink().next().value;
+                }// only check one shrink path
+                return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value).length === 0;
             })
         ));
     });
