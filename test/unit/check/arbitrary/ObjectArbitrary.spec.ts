@@ -18,6 +18,11 @@ describe("ObjectArbitrary", () => {
             case 'boolean':
                 return assert.strictEqual(shrinked, false, 'Should have shrinked towards false');
             case 'number':
+                if (isNaN(original))
+                    return assert.ok(isNaN(shrinked), 'Should be unchanged equal to NaN');
+                if (original === Number.MAX_VALUE || original === Number.MIN_VALUE
+                        || original === Number.MAX_SAFE_INTEGER || original === Number.MIN_SAFE_INTEGER)
+                    return assert.ok(shrinked === 0 || shrinked === original, 'Should have shrinked toward zero or be the same');
                 return assert.strictEqual(shrinked, 0, 'Should have shrinked towards zero');
             case 'undefined':
                 return assert.strictEqual(shrinked, undefined, 'Should have shrinked towards undefined');
@@ -82,7 +87,7 @@ describe("ObjectArbitrary", () => {
         it('Should shrink towards minimal value of type', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
-                let shrinkable = object().generate(mrng);
+                let shrinkable = anything().generate(mrng);
                 const originalValue = shrinkable.value;
                 while (shrinkable.shrink().has(v => true)[0]) {
                     shrinkable = shrinkable.shrink().next().value;
