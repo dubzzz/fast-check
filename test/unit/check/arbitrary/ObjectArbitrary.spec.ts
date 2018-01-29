@@ -14,6 +14,7 @@ import { debug } from 'util';
 
 describe("ObjectArbitrary", () => {
     const assertShrinkedValue = (original, shrinked) => {
+        assert.equal(typeof shrinked, typeof original);
         switch (typeof original) {
             case 'boolean':
                 return assert.strictEqual(shrinked, false, 'Should have shrinked towards false');
