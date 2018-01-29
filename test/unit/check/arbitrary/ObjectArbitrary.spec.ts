@@ -13,6 +13,25 @@ import { constants } from 'os';
 import { debug } from 'util';
 
 describe("ObjectArbitrary", () => {
+    const assertShrinkedValue = (original, shrinked) => {
+        switch (typeof original) {
+            case 'boolean':
+                return assert.strictEqual(shrinked, false, 'Should have shrinked towards false');
+            case 'number':
+                return assert.strictEqual(shrinked, 0, 'Should have shrinked towards zero');
+            case 'undefined':
+                return assert.strictEqual(shrinked, undefined, 'Should have shrinked towards undefined');
+            case 'string':
+                return assert.strictEqual(shrinked, '', 'Should have shrinked towards empty string');
+            default:
+                if (original == null)
+                    return assert.strictEqual(shrinked, null, 'Should have shrinked towards null');
+                if (Array.isArray(original))
+                    return assert.deepStrictEqual(shrinked, [], 'Should have shrinked towards empty array');
+                assert.equal(typeof original, 'object');
+                return assert.deepStrictEqual(shrinked, {}, 'Should have shrinked towards empty object');
+        }
+    };
     const checkCorrect = (allowedKeys, allowedValues) => {
         const check = (value) => {
             if (Array.isArray(value))
@@ -68,38 +87,61 @@ describe("ObjectArbitrary", () => {
                 while (shrinkable.shrink().has(v => true)[0]) {
                     shrinkable = shrinkable.shrink().next().value;
                 }// only check one shrink path
-                switch (typeof originalValue) {
-                    case 'boolean':
-                        return assert.strictEqual(shrinkable.value, false, 'Should have shrinked towards false');
-                    case 'number':
-                        return assert.strictEqual(shrinkable.value, 0, 'Should have shrinked towards zero');
-                    case 'undefined':
-                        return assert.strictEqual(shrinkable.value, undefined, 'Should have shrinked towards undefined');
-                    case 'string':
-                        return assert.strictEqual(shrinkable.value, '', 'Should have shrinked towards empty string');
-                    default:
-                        if (originalValue == null)
-                            return assert.strictEqual(shrinkable.value, null, 'Should have shrinked towards null');
-                        if (Array.isArray(originalValue))
-                            return assert.deepStrictEqual(shrinkable.value, [], 'Should have shrinked towards empty array');
-                        return assert.deepStrictEqual(shrinkable.value, {}, 'Should have shrinked towards empty object');
-                }
+                assertShrinkedValue(originalValue, shrinkable.value);
             })
         ));
     });
     describe('json', () => {
+        it('Should produce strings', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = json().generate(mrng).value;
+                return typeof g === 'string';
+            })
+        ));
         it('Should generate a parsable JSON', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 JSON.parse(json().generate(mrng).value);
             })
         ));
+        it('Should shrink towards minimal value of type', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                let shrinkable = json().generate(mrng);
+                const originalValue = shrinkable.value;
+                while (shrinkable.shrink().has(v => true)[0]) {
+                    shrinkable = shrinkable.shrink().next().value;
+                }// only check one shrink path
+                assert.equal(typeof shrinkable.value, 'string');
+                assertShrinkedValue(JSON.parse(originalValue), JSON.parse(shrinkable.value));
+            })
+        ));
     });
     describe('unicodeJson', () => {
+        it('Should produce strings', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = unicodeJson().generate(mrng).value;
+                return typeof g === 'string';
+            })
+        ));
         it('Should generate a parsable JSON', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 JSON.parse(unicodeJson().generate(mrng).value);
+            })
+        ));
+        it('Should shrink towards minimal value of type', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                let shrinkable = unicodeJson().generate(mrng);
+                const originalValue = shrinkable.value;
+                while (shrinkable.shrink().has(v => true)[0]) {
+                    shrinkable = shrinkable.shrink().next().value;
+                }// only check one shrink path
+                assert.equal(typeof shrinkable.value, 'string');
+                assertShrinkedValue(JSON.parse(originalValue), JSON.parse(shrinkable.value));
             })
         ));
     });
