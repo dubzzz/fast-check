@@ -87,6 +87,22 @@ describe("ObjectArbitrary", () => {
             })
         ));
     });
+    describe('json', () => {
+        it('Should generate a parsable JSON', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                JSON.parse(json().generate(mrng).value);
+            })
+        ));
+    });
+    describe('unicodeJson', () => {
+        it('Should generate a parsable JSON', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                JSON.parse(unicodeJson().generate(mrng).value);
+            })
+        ));
+    });
     describe('object', () => {
         it('Should generate an object', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
