@@ -75,6 +75,8 @@ describe("ObjectArbitrary", () => {
                         return assert.strictEqual(shrinkable.value, 0, 'Should have shrinked towards zero');
                     case 'undefined':
                         return assert.strictEqual(shrinkable.value, undefined, 'Should have shrinked towards undefined');
+                    case 'string':
+                        return assert.strictEqual(shrinkable.value, '', 'Should have shrinked towards empty string');
                     default:
                         if (originalValue == null)
                             return assert.strictEqual(shrinkable.value, null, 'Should have shrinked towards null');
