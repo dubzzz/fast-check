@@ -53,12 +53,35 @@ describe("ArrayArbitrary", () => {
                 return g.length <= maxLength;
             })
         ));
+        it('Should generate an array given minimal and maximal length', () => fc.assert(
+            fc.property(fc.integer(), fc.nat(10000), fc.nat(10000), (seed, aLength, bLength) => {
+                const minLength = Math.min(aLength, bLength);
+                const maxLength = Math.max(aLength, bLength);
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = array(new DummyArbitrary(() => 42), minLength, maxLength).generate(mrng).value;
+                return minLength <= g.length && g.length <= maxLength;
+            })
+        ));
         it('Should shrink values in the defined range', () => fc.assert(
             fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const arb = array(integer(min, min + num));
                 const shrinkable = arb.generate(mrng);
                 return shrinkable.shrink().every(s => s.value.every(vv => min <= vv && vv <= min + num));
+            })
+        ));
+        it('Should shrink values in the min/max size range', () => fc.assert(
+            fc.property(fc.integer(), fc.nat(50), fc.nat(50), (seed, aLength, bLength) => {
+                const minLength = Math.min(aLength, bLength);
+                const maxLength = Math.max(aLength, bLength);
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const arb = array(new DummyArbitrary(() => 42), minLength, maxLength);
+                const shrinkable = arb.generate(mrng);
+                return shrinkable.shrink().every(s => {
+                    const r = minLength <= s.value.length && s.value.length <= maxLength;
+                    if (!r) console.log(`${JSON.stringify(s.value)} expected ${minLength} and ${maxLength}`);
+                    return r;
+                });
             })
         ));
         it('Should not suggest input in shrinked values', () => fc.assert(

@@ -1,14 +1,14 @@
 import { Arbitrary, ArbitraryWithShrink } from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
-import { nat } from './IntegerArbitrary'
+import { integer } from './IntegerArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import { Stream, stream } from '../../stream/Stream'
 
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
     readonly lengthArb: ArbitraryWithShrink<number>;
-    constructor(readonly arb: Arbitrary<T>, maxLength: number) {
+    constructor(readonly arb: Arbitrary<T>, readonly minLength: number, maxLength: number) {
         super();
-        this.lengthArb = nat(maxLength);
+        this.lengthArb = integer(minLength, maxLength);
     }
     private wrapper(shrinkables: [Shrinkable<number>, Shrinkable<T>[]]): Shrinkable<T[]> {
         const [size, items] = shrinkables;
@@ -35,7 +35,9 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
             }).join(items[0].shrink().map(v => {
                 const out: [Shrinkable<number>, Shrinkable<T>[]] = [size, [v].concat(items.slice(1))];
                 return out;
-            })).join(this.shrinkImpl(this.lengthArb.shrinkableFor(size.value -1), items.slice(1)).map(vs => {
+            })).join(this.shrinkImpl(this.lengthArb.shrinkableFor(size.value -1), items.slice(1))
+                    .filter(vs => this.minLength <= vs[1].length +1)
+                    .map(vs => {
                 const nSize = this.lengthArb.shrinkableFor(vs[1].length +1);
                 const nItems = [items[0]].concat(vs[1]);
                 const out: [Shrinkable<number>, Shrinkable<T>[]] = [nSize, nItems];
@@ -46,8 +48,11 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
 
 function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
-function array<T>(arb: Arbitrary<T>, maxLength?: number): Arbitrary<T[]> {
-    return new ArrayArbitrary<T>(arb, maxLength == null ? 10 : maxLength);
+function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
+function array<T>(arb: Arbitrary<T>, aLength?: number, bLength?: number): Arbitrary<T[]> {
+    if (bLength == null)
+        return new ArrayArbitrary<T>(arb, 0, aLength == null ? 10 : aLength);
+    return new ArrayArbitrary<T>(arb, aLength!, bLength);
 }
 
 export { array };
