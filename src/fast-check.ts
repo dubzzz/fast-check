@@ -1,6 +1,7 @@
 import { check, assert } from './check/runner/Runner'
 import { sample, statistics } from './check/runner/Sampler'
 import { Parameters, RunDetails } from './check/runner/utils/utils'
+import { asyncProperty } from './check/property/AsyncProperty'
 import { property } from './check/property/Property'
 
 import Arbitrary from './check/arbitrary/definition/Arbitrary'
@@ -34,7 +35,7 @@ export {
     // check the property
     check, assert,
     // property definition
-    property,
+    property, asyncProperty,
     // pre-built arbitraries
     boolean, // boolean
     float, double, // floating point types

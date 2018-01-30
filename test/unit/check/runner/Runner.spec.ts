@@ -5,6 +5,7 @@ import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import { RunDetails } from '../../../../src/check/runner/utils/utils';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
@@ -13,6 +14,7 @@ describe('Runner', () => {
             let num_calls_generate = 0;
             let num_calls_run = 0;
             const p: IProperty<[number]> = {
+                isAsync: () => false,
                 generate: () => {
                     assert.equal(num_calls_run, num_calls_generate, 'Should have called run before calling back');
                     ++num_calls_generate;
@@ -24,7 +26,7 @@ describe('Runner', () => {
                     return null;
                 }
             };
-            const out = check(p);
+            const out = check(p) as RunDetails<[number]>;;
             assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
             assert.equal(num_calls_run, 100, 'Should have called run 100 times');
             assert.equal(out.failed, false, 'Should not have failed');
@@ -33,6 +35,7 @@ describe('Runner', () => {
             let num_calls_generate = 0;
             let num_calls_run = 0;
             const p: IProperty<[number]> = {
+                isAsync: () => false,
                 generate: () => {
                     ++num_calls_generate;
                     return new Shrinkable([0], () => { throw 'Not implemented'; }) as Shrinkable<[number]>;
@@ -42,7 +45,7 @@ describe('Runner', () => {
                     return null;
                 },
             };
-            const out = check(p);
+            const out = check(p) as RunDetails<[number]>;;
             assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
             assert.equal(num_calls_run, 100, 'Should have called run 100 times');
             assert.equal(out.failed, false, 'Should not have failed');
@@ -52,6 +55,7 @@ describe('Runner', () => {
                 let num_calls_generate = 0;
                 let num_calls_run = 0;
                 const p: IProperty<[number]> = {
+                    isAsync: () => false,
                     generate: () => {
                         ++num_calls_generate;
                         return new Shrinkable([0]) as Shrinkable<[number]>;
@@ -60,7 +64,7 @@ describe('Runner', () => {
                         return ++num_calls_run < num ? null : "error";
                     }
                 };
-                const out = check(p, {seed: seed});
+                const out = check(p, {seed: seed}) as RunDetails<[number]>;;
                 assert.equal(num_calls_generate, num, `Should have stopped generate at first failing run (run number ${num})`);
                 assert.equal(num_calls_run, num, `Should have stopped run (because no shrink) at first failing run (run number ${num})`);
                 assert.ok(out.failed, 'Should have failed');
@@ -74,6 +78,7 @@ describe('Runner', () => {
                 let num_calls_generate = 0;
                 let num_calls_run = 0;
                 const p: IProperty<[number]> = {
+                    isAsync: () => false,
                     generate: () => {
                         ++num_calls_generate;
                         return new Shrinkable([0]) as Shrinkable<[number]>;
@@ -83,7 +88,7 @@ describe('Runner', () => {
                         return null;
                     }
                 };
-                const out = check(p, {num_runs: num});
+                const out = check(p, {num_runs: num}) as RunDetails<[number]>;
                 assert.equal(num_calls_generate, num, `Should have called generate ${num} times`);
                 assert.equal(num_calls_run, num, `Should have called run ${num} times`);
                 assert.equal(out.failed, false, 'Should not have failed');
@@ -94,6 +99,7 @@ describe('Runner', () => {
             fc.property(fc.integer(), (seed) => {
                 const buildPropertyFor = function(runOn: number[]) {
                     const p: IProperty<[number]> = {
+                        isAsync: () => false,
                         generate: (rng: MutableRandomGenerator) => {
                             return new Shrinkable([rng.next()[0]]) as Shrinkable<[number]>;
                         },
@@ -117,14 +123,17 @@ describe('Runner', () => {
         const v1 = { toString: () => "toString(value#1)" };
         const v2 = { a: "Hello", b: 21 };
         const failingProperty: IProperty<[any,any]> = {
+            isAsync: () => false,
             generate: () => new Shrinkable([v1,v2]) as Shrinkable<[any,any]>,
             run: (v: [any,any]) => "error in failingProperty"
         };
         const failingComplexProperty: IProperty<[any,any,any]> = {
+            isAsync: () => false,
             generate: () => new Shrinkable([[v1,v2],v2,v1]) as Shrinkable<[any,any,any]>,
             run: (v: [any,any,any]) => "error in failingComplexProperty"
         };
         const successProperty: IProperty<[any,any]> = {
+            isAsync: () => false,
             generate: () => new Shrinkable([v1,v2]) as Shrinkable<[any,any]>,
             run: (v: [any,any]) => null
         };
