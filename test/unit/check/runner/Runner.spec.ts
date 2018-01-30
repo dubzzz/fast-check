@@ -158,7 +158,7 @@ describe('Runner', () => {
                 rAssert(failingProperty, {seed: 42});
             }
             catch (err) {
-                assert.ok(err.indexOf(`(seed: 42)`) !== -1, `Cannot find the seed in: ${err}`);
+                assert.ok(err.message.indexOf(`(seed: 42)`) !== -1, `Cannot find the seed in: ${err.message}`);
                 return;
             }
             assert.ok(false, "Expected an exception, got success");
@@ -168,7 +168,7 @@ describe('Runner', () => {
                 rAssert(failingProperty, {seed: 42});
             }
             catch (err) {
-                assert.ok(err.indexOf(`failed after 1 test`) !== -1, `Cannot find the number of tests in: ${err}`);
+                assert.ok(err.message.indexOf(`failed after 1 test`) !== -1, `Cannot find the number of tests in: ${err.message}`);
                 return;
             }
             assert.ok(false, "Expected an exception, got success");
@@ -178,7 +178,7 @@ describe('Runner', () => {
                 rAssert(failingProperty, {seed: 42});
             }
             catch (err) {
-                assert.ok(err.indexOf(`[${v1.toString()},${JSON.stringify(v2)}]`) !== -1, `Cannot find the example in: ${err}`);
+                assert.ok(err.message.indexOf(`[${v1.toString()},${JSON.stringify(v2)}]`) !== -1, `Cannot find the example in: ${err.message}`);
                 return;
             }
             assert.ok(false, "Expected an exception, got success");
@@ -188,7 +188,7 @@ describe('Runner', () => {
                 rAssert(failingComplexProperty, {seed: 42});
             }
             catch (err) {
-                assert.ok(err.indexOf(`[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`) !== -1, `Cannot find the example in: ${err}`);
+                assert.ok(err.message.indexOf(`[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`) !== -1, `Cannot find the example in: ${err.message}`);
                 return;
             }
             assert.ok(false, "Expected an exception, got success");
@@ -198,7 +198,7 @@ describe('Runner', () => {
                 rAssert(failingProperty, {seed: 42});
             }
             catch (err) {
-                assert.ok(err.indexOf(`Got error: error in failingProperty`) !== -1, `Cannot find the original error in: ${err}`);
+                assert.ok(err.message.indexOf(`Got error: error in failingProperty`) !== -1, `Cannot find the original error in: ${err.message}`);
                 return;
             }
             assert.ok(false, "Expected an exception, got success");

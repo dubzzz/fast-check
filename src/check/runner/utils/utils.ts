@@ -61,7 +61,9 @@ function pretty<Ts>(value: any): string {
 
 function throwIfFailed<Ts>(out: RunDetails<Ts>) {
     if (out.failed) {
-        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}\nGot error: ${out.error}`;
+        throw new Error(
+            `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}\n` +
+            `Got error: ${out.error}`);
     }
 }
 
