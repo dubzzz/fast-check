@@ -63,9 +63,24 @@ function property<T1,T2>(
 ...
 ```
 
+- `fc.asyncPoperty`: define a new property ie. a list of arbitraries and an asynchronous test function to assess the success
+
+The predicate would be considered falsy if its throws or if `output == null || output == true` evaluate to `false` (after `await`).
+```typescript
+function asyncProperty<T1>(
+        arb1: Arbitrary<T1>,
+        predicate: (t1:T1) => Promise<boolean|void>): AsyncProperty<[T1]>;
+function asyncProperty<T1,T2>(
+        arb1: Arbitrary<T1>, arb2: Arbitrary<T2>,
+        predicate: (t1:T1,t2:T2) => Promise<boolean|void>): AsyncProperty<[T1,T2]>;
+...
+```
+
 ## Runners
 
 - `fc.assert`: run the property and throws in case of failure
+
+**This function has to be awaited in case it is called on an asynchronous property.**
 
 This function is ideal to be called in `describe`, `it` blocks.
 It does not return anything in case of success.
@@ -86,6 +101,8 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters);
 
 - `fc.check`: run the property and return an object containing the test status along with other useful details
 
+**This function has to be awaited in case it is called on an asynchronous property.**
+
 It should never throw whatever the status of the test.
 
 It can be parametrized with the same parameters than `fc.assert`.
@@ -93,13 +110,13 @@ It can be parametrized with the same parameters than `fc.assert`.
 The details returned by `fc.check` are the following:
 
 ```typescript
-interface Details {
-    boolean: failed: false, // false in case of failure, true otherwise
-    number: num_runs,    // number of runs (all runs if success, up and including the first failure if failed)
-    number: num_shrinks, // number of shrinks (depth required to get the minimal failing example)
-    number: seed,        // seed used for the test
-    Ts?: counterexample, // failure only: shrunk conterexample causig the property to fail
-    string?: error       // failure only: stack trace and error details
+interface RunDetails<Ts> {
+    failed: boolean,         // false in case of failure, true otherwise
+    num_runs: number,        // number of runs (all runs if success, up and including the first failure if failed)
+    num_shrinks: number,     // number of shrinks (depth required to get the minimal failing example)
+    seed: number,            // seed used for the test
+    counterexample: Ts|null, // failure only: shrunk conterexample causig the property to fail
+    error: string|null,      // failure only: stack trace and error details
 }
 ```
 
