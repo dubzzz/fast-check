@@ -2,7 +2,7 @@ import Shrinkable from '../arbitrary/definition/Shrinkable'
 import { RandomGenerator, skip_n } from '../../random/generator/RandomGenerator'
 import IProperty from '../property/IProperty'
 import toss from './Tosser'
-import { Parameters, QualifiedParameters, pretty } from './utils/utils'
+import { Parameters, QualifiedParameters, RunDetails, successFor, failureFor, throwIfFailed } from './utils/utils'
 
 function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string, num_shrinks: number = 0): [Ts, number, string] {
     for (const v of value.shrink()) {
@@ -14,7 +14,7 @@ function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: str
     return [value.value, num_shrinks, error];
 }
 
-function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
+function check<Ts>(property: IProperty<Ts>, params?: Parameters): RunDetails<Ts> {
     const qParams = QualifiedParameters.read(params);
     const generator = toss(property, qParams.seed);
 
@@ -23,17 +23,15 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
         const out = property.run(g.value);
         if (out != null) {
             const [shrinkedValue, numShrinks, error] = shrinkIt(property, g, out as string);
-            return {failed: true, num_runs: idx+1, num_shrinks: numShrinks, seed: qParams.seed, counterexample: shrinkedValue, error: error};
+            return failureFor(qParams, idx+1, numShrinks, shrinkedValue, error);
         }
     }
-    return {failed: false, num_runs: qParams.num_runs, num_shrinks: 0, seed: qParams.seed, counterexample: null, error: null};
+    return successFor<Ts>(qParams);
 }
 
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
     const out = check(property, params);
-    if (out.failed) {
-        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}\nGot error: ${out.error}`;
-    }
+    throwIfFailed(out);
 }
 
 export { check, assert };

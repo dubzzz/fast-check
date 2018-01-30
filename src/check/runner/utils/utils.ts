@@ -26,6 +26,22 @@ class QualifiedParameters {
     }
 }
 
+interface RunDetails<Ts> {
+    failed: boolean,
+    num_runs: number,
+    num_shrinks: number,
+    seed: number,
+    counterexample: Ts|null,
+    error: string|null,
+}
+
+function successFor<Ts>(qParams: QualifiedParameters): RunDetails<Ts> {
+    return {failed: false, num_runs: qParams.num_runs, num_shrinks: 0, seed: qParams.seed, counterexample: null, error: null};
+}
+function failureFor<Ts>(qParams: QualifiedParameters, num_runs: number, num_shrinks: number, counterexample: Ts, error: string): RunDetails<Ts> {
+    return {failed: true, num_runs, num_shrinks, seed: qParams.seed, counterexample, error};
+}
+
 function prettyOne(value: any): string {
     const defaultRepr: string = `${value}`;
     if (/^\[object (Object|Null|Undefined)\]$/.exec(defaultRepr) === null)
@@ -43,4 +59,10 @@ function pretty<Ts>(value: any): string {
     return prettyOne(value);
 }
 
-export { Parameters, QualifiedParameters, pretty };
+function throwIfFailed<Ts>(out: RunDetails<Ts>) {
+    if (out.failed) {
+        throw `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}\nGot error: ${out.error}`;
+    }
+}
+
+export { Parameters, QualifiedParameters, RunDetails, successFor, failureFor, throwIfFailed };

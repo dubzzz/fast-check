@@ -1,6 +1,6 @@
 import { check, assert } from './check/runner/Runner'
 import { sample, statistics } from './check/runner/Sampler'
-import { Parameters } from './check/runner/utils/utils'
+import { Parameters, RunDetails } from './check/runner/utils/utils'
 import { property } from './check/property/Property'
 
 import Arbitrary from './check/arbitrary/definition/Arbitrary'
@@ -46,7 +46,7 @@ export {
     // extend the framework
     Arbitrary, Shrinkable,
     // interfaces
-    ObjectConstraints, Parameters,
+    ObjectConstraints, Parameters, RunDetails,
     UniformDistribution, LinearCongruential, MersenneTwister, MutableRandomGenerator, RandomGenerator,
     Stream, stream,
 };
