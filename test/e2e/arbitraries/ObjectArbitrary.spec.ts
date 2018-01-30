@@ -29,7 +29,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
                 catch (err) {
                     return true;
                 }
-            }), {seed: seed});
+            }), {seed: seed, num_runs: 1000});
             assert.ok(out.failed, 'Should have failed');
             assert.deepEqual(out.counterexample[0], '{}', `Should shrink to counterexample {} got ${JSON.stringify(out.counterexample[0])}`);
         });
