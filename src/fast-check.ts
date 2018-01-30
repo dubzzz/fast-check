@@ -20,6 +20,14 @@ import { option } from './check/arbitrary/OptionArbitrary'
 import { string, asciiString, unicodeString, hexaString, base64String } from './check/arbitrary/StringArbitrary'
 import { tuple } from './check/arbitrary/TupleArbitrary'
 
+import { UniformDistribution } from './random/distribution/UniformDistribution'
+import LinearCongruential from './random/generator/LinearCongruential'
+import MersenneTwister from './random/generator/MersenneTwister'
+import { MutableRandomGenerator } from './random/generator/MutableRandomGenerator'
+import { RandomGenerator } from './random/generator/RandomGenerator'
+
+import { Stream, stream } from './stream/Stream'
+
 export {
     // assess the property
     sample, statistics,
@@ -39,4 +47,6 @@ export {
     Arbitrary, Shrinkable,
     // interfaces
     ObjectConstraints, Parameters,
+    UniformDistribution, LinearCongruential, MersenneTwister, MutableRandomGenerator, RandomGenerator,
+    Stream, stream,
 };
