@@ -14,6 +14,8 @@
 
 Install the module with: `npm install fast-check`
 
+Running examples in RunKit: https://runkit.com/dubzzz/fast-check-basic-examples
+
 ## Usage
 
 Using fast-check with [mocha](http://mochajs.org/) is really straightfoward.
