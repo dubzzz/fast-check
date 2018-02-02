@@ -87,21 +87,27 @@ function object(settings?: ObjectConstraints.Settings): Arbitrary<any> {
     return new ObjectArbitrary(ObjectConstraints.from(settings));
 }
 
+function jsonSettings(key: Arbitrary<string>, values: Arbitrary<any>[], maxDepth?: number) {
+    return maxDepth != null ? {key, values, maxDepth} : {key, values};
+}
+
 function json(): Arbitrary<string>;
 function json(maxDepth: number): Arbitrary<string>;
 function json(maxDepth?: number): Arbitrary<string> {
-    const key = string();
-    const values = [boolean(), integer(), double(), string(), constant(null)];
-    const settings = maxDepth != null ? {key, values, maxDepth} : {key, values};
+    const settings = jsonSettings(
+            string(),
+            [boolean(), integer(), double(), string(), constant(null)],
+            maxDepth);
     return anything(settings).map(JSON.stringify);
 }
 
 function unicodeJson(): Arbitrary<string>;
 function unicodeJson(maxDepth: number): Arbitrary<string>;
 function unicodeJson(maxDepth?: number): Arbitrary<string> {
-    const key = unicodeString();
-    const values = [boolean(), integer(), double(), unicodeString(), constant(null)];
-    const settings = maxDepth != null ? {key, values, maxDepth} : {key, values};
+    const settings = jsonSettings(
+            unicodeString(),
+            [boolean(), integer(), double(), unicodeString(), constant(null)],
+            maxDepth);
     return anything(settings).map(JSON.stringify);
 }
 
