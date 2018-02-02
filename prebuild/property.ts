@@ -56,4 +56,44 @@ const generateProperty = function(num: number, isAsync: boolean): string {
     return blocks.join('\n');
 };
 
-export { generateProperty };
+const testBasicCall = function(num: number, isAsync: boolean): string {
+    const functionName = isAsync ? 'asyncProperty' : 'property';
+    const className = isAsync ? 'AsyncProperty' : 'Property';
+    const kAsync = isAsync ? 'async': '';
+    const kAwait = isAsync ? 'await': '';
+    return `
+        it('Should call the underlying arbitraries in ${functionName}${num}', ${kAsync} () => {
+            let data = null;
+            const p = ${functionName}(
+                        ${commas(num, v => `stubArb.single(${v*v})`)},
+                        ${kAsync} (${commas(num, v => `a${v}:number`)}) => {
+                data = [${commas(num, v => `a${v}`)}];
+                return true;
+            });
+            assert.equal(${kAwait} p.run(p.generate(stubRng.mutable.nocall()).value), null, '${className} should succeed');
+            assert.deepEqual(data, [${commas(num, v => `${v*v}`)}], '${className} should forward values and keep ordering');
+        });
+    `;
+}
+
+const generatePropertySpec = function(num: number, isAsync: boolean): string {
+    const functionName = isAsync ? 'asyncProperty' : 'property';
+    const className = isAsync ? 'AsyncProperty' : 'Property';
+    const blocks = [
+            // imports
+            `import * as assert from 'power-assert';`,
+            `import * as stubArb from '../../stubs/arbitraries';`,
+            `import * as stubRng from '../../stubs/generators';`,
+            `import { ${functionName} } from '../../../../src/check/property/${className}';`,
+            // start blocks
+            `describe('${className}', () => {`,
+            // tests
+            ...iota(num).map(num => testBasicCall(num +1, isAsync)),
+            // end blocks
+            `});`
+    ];
+
+    return blocks.join('\n');
+};
+
+export { generateProperty, generatePropertySpec };
