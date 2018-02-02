@@ -19,7 +19,7 @@ import { anything, object, json, unicodeJson, ObjectConstraints } from './check/
 import { oneof } from './check/arbitrary/OneOfArbitrary'
 import { option } from './check/arbitrary/OptionArbitrary'
 import { string, asciiString, unicodeString, hexaString, base64String } from './check/arbitrary/StringArbitrary'
-import { tuple } from './check/arbitrary/TupleArbitrary'
+import { tuple, generic_tuple } from './check/arbitrary/TupleArbitrary'
 
 import { UniformDistribution } from './random/distribution/UniformDistribution'
 import LinearCongruential from './random/generator/LinearCongruential'
@@ -42,7 +42,7 @@ export {
     integer, nat, // integer types
     char, ascii, unicode, hexa, base64, // single character
     string, asciiString, unicodeString, hexaString, base64String, lorem, // strings
-    constant, option, oneof, frequency, array, tuple, // combination of others
+    constant, option, oneof, frequency, array, tuple, generic_tuple, // combination of others
     anything, object, json, unicodeJson, // complex combinations
     // extend the framework
     Arbitrary, Shrinkable,

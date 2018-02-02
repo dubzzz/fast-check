@@ -2,3 +2,5 @@ coverage/
 lib/
 node_modules/
 .nyc_output/
+*.generated.ts
+*.generated.spec.ts

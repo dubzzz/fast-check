@@ -5,6 +5,7 @@
   "main": "lib/fast-check.js",
   "types": "lib/fast-check.d.ts",
   "scripts": {
+    "prebuild": "ts-node prebuild/prebuild.ts",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "npm run build && nyc mocha \"test/unit/**/*.spec.ts\"",
