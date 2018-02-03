@@ -118,6 +118,50 @@ describe('Runner', () => {
                 return true;
             })
         ));
+        it('Should wait on async properties to complete', async () => fc.assert(
+            fc.asyncProperty(fc.integer(1, 100), fc.integer(), async (num, seed) => {
+                const delay = () => new Promise((resolve, reject) => setTimeout(resolve, 0));
+
+                let runnerHasCompleted = false;
+                let waitingResolve: (()=>void)[] = [];
+                let num_calls_generate = 0;
+                let num_calls_run = 0;
+                const p: IProperty<[number]> = {
+                    isAsync: () => true,
+                    generate: () => {
+                        ++num_calls_generate;
+                        return new Shrinkable([0]) as Shrinkable<[number]>;
+                    },
+                    run: async (value: [number]) => {
+                        await new Promise((resolve, reject) => {
+                            waitingResolve.push(resolve);
+                        });
+                        return ++num_calls_run < num ? null : "error";
+                    }
+                };
+                const checker = check(p, {seed: seed}) as Promise<RunDetails<[number]>>;
+                checker.then(() => runnerHasCompleted = true);
+
+                await delay();
+                while (waitingResolve.length > 0) {
+                    assert.equal(waitingResolve.length, 1, 'Should not run multiple properties in parallel');
+                    assert.equal(runnerHasCompleted, false, 'Should not have completed yet');
+                    waitingResolve.shift()();
+                    await delay();
+                }
+
+                await delay();
+                assert.equal(runnerHasCompleted, true, 'Should have completed');
+
+                const out = await checker;
+                assert.equal(num_calls_generate, num, `Should have stopped generate at first failing run (run number ${num})`);
+                assert.equal(num_calls_run, num, `Should have stopped run (because no shrink) at first failing run (run number ${num})`);
+                assert.ok(out.failed, 'Should have failed');
+                assert.equal(out.num_runs, num, `Should have failed after ${num} tests`);
+                assert.equal(out.seed, seed, `Should attach the failing seed`);
+                return true;
+            })
+        ));
     });
     describe('assert', () => {
         const v1 = { toString: () => "toString(value#1)" };
