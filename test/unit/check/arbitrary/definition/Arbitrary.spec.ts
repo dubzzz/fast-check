@@ -74,4 +74,14 @@ describe("Arbitrary", () => {
             })
         ));
     });
+    describe('noShrink', () => {
+        it('Should remove the ability to shrink the arbitrary', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const shrinkable = new ForwardArbitrary().noShrink().generate(mrng);
+                assert.deepStrictEqual([...shrinkable.shrink()], []);
+                return true;
+            })
+        ));
+    });
 });

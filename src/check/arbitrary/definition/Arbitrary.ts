@@ -30,6 +30,17 @@ export default abstract class Arbitrary<T> {
         }
         return new MappedArbitrary(this, mapper);
     }
+    noShrink(): Arbitrary<T> {
+        class NoShrinkArbitrary extends Arbitrary<T> {
+            constructor(readonly arb: Arbitrary<T>) {
+                super();
+            }
+            generate(mrng: MutableRandomGenerator): Shrinkable<T> {
+                return new Shrinkable(this.arb.generate(mrng).value);
+            }
+        }
+        return new NoShrinkArbitrary(this);
+    }
 }
 
 abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
