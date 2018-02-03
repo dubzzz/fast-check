@@ -244,10 +244,11 @@ All generated arbitraries inherit from the same base class: [Arbitrary](https://
 
 It cames with two useful methods: `filter(predicate: (t: T) => boolean): Arbitrary<T>` and `map<U>(mapper: (t: T) => U): Arbitrary<U>`. These methods are used internally by the framework to derive some Arbitraries from existing ones.
 
-For instance, given the arbitrary for integers, `fc.integer()`, you can derive `fc.char()` as follow:
+For instance, given the arbitrary for integers, `fc.integer()`, and one for arrays, `fc.array()`, you can derive `fc.char()` and `fc.string()` as follow:
 
 ```typescript
 const char = () => integer(0x20, 0x7e).map(String.fromCharCode);
+const string = () => array(char()).map(arr => arr.join(''));
 ```
 
 Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) use this trick to define themselves.
