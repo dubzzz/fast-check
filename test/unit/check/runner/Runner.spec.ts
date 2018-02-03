@@ -6,6 +6,7 @@ import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 import { RunDetails } from '../../../../src/check/runner/utils/utils';
+import Stream from '../../../../src/stream/Stream';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
@@ -130,7 +131,9 @@ describe('Runner', () => {
                     isAsync: () => true,
                     generate: () => {
                         ++num_calls_generate;
-                        return new Shrinkable([0]) as Shrinkable<[number]>;
+                        const shrinkedValue = new Shrinkable([42]) as Shrinkable<[number]>;
+                        const g = function*() { yield shrinkedValue; };
+                        return new Shrinkable([1], () => new Stream(g())) as Shrinkable<[number]>;
                     },
                     run: async (value: [number]) => {
                         await new Promise((resolve, reject) => {
@@ -155,10 +158,11 @@ describe('Runner', () => {
 
                 const out = await checker;
                 assert.equal(num_calls_generate, num, `Should have stopped generate at first failing run (run number ${num})`);
-                assert.equal(num_calls_run, num, `Should have stopped run (because no shrink) at first failing run (run number ${num})`);
+                assert.equal(num_calls_run, num +1, `Should have stopped run one shrink after first failing run (run number ${num +1})`);
                 assert.ok(out.failed, 'Should have failed');
                 assert.equal(out.num_runs, num, `Should have failed after ${num} tests`);
                 assert.equal(out.seed, seed, `Should attach the failing seed`);
+                assert.deepStrictEqual(out.counterexample, [42], `Should have been shrinked to [42] got ${JSON.stringify(out.counterexample)}`)
                 return true;
             })
         ));
