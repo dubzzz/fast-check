@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Property based testing framework in TypeScript (like QuickCheck)",
   "main": "lib/fast-check.js",
   "types": "lib/fast-check.d.ts",
