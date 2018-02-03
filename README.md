@@ -244,11 +244,34 @@ All generated arbitraries inherit from the same base class: [Arbitrary](https://
 
 It cames with two useful methods: `filter(predicate: (t: T) => boolean): Arbitrary<T>` and `map<U>(mapper: (t: T) => U): Arbitrary<U>`. These methods are used internally by the framework to derive some Arbitraries from existing ones.
 
-For instance, given the arbitrary for integers, `fc.integer()`, and one for arrays, `fc.array()`, you can derive `fc.char()` and `fc.string()` as follow:
+#### Filter values
+
+`filter(predicate: (t: T) => boolean): Arbitrary<T>` can be used to filter undesirable values from the generated ones. It can be used as some kind of pre-requisite for the parameters required for your algorithm. For instance, you might need to generate two ordered integer values. One approach can be to use filter as follow:
 
 ```typescript
-const char = () => integer(0x20, 0x7e).map(String.fromCharCode);
-const string = () => array(char()).map(arr => arr.join(''));
+const minMax = fc.tuple(fc.integer(), fc.integer())
+                    .filter(t => t[0] < t[1]);
+```
+
+But be aware that using `filter` may highly impact the time required to generate a valid entry. In the previous example, half of the generated tuples will be rejected. It can nontheless be a very useful and powerful tool to derive your arbitraries quickly and easily.
+
+#### Transform values
+
+`map<U>(mapper: (t: T) => U): Arbitrary<U>` in its side does not filter any of the generated entries. It take one entry (generated or shrinked) and map it to another.
+
+For instance the previous example could have been refactored as follow:
+
+```typescript
+const minMax = fc.tuple(fc.integer(), fc.integer())
+                    .map(t => t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]]);
+```
+
+
+Another example would be to derive `fc.integer()` and `fc.array()` to build `fc.char()` and `fc.string()`:
+
+```typescript
+const char = () => fc.integer(0x20, 0x7e).map(String.fromCharCode);
+const string = () => fc.array(fc.char()).map(arr => arr.join(''));
 ```
 
 Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) use this trick to define themselves.
