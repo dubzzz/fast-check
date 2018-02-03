@@ -45,7 +45,7 @@ async function asyncInternalCheck<Ts>(property: IProperty<Ts>, params?: Paramete
         const g = generator.next().value;
         const out = await property.run(g.value);
         if (out != null) {
-            const [shrinkedValue, numShrinks, error] = await shrinkIt(property, g, out as string);
+            const [shrinkedValue, numShrinks, error] = await asyncShrinkIt(property, g, out as string);
             return failureFor(qParams, idx+1, numShrinks, shrinkedValue, error);
         }
     }
