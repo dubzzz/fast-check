@@ -6,7 +6,7 @@
   "types": "lib/fast-check.d.ts",
   "scripts": {
     "prebuild": "ts-node prebuild/prebuild.ts",
-    "build": "tsc",
+    "build": "tsc && browserify lib/fast-check.js --s fastcheck -o lib/bundle.js",
     "watch": "tsc -w",
     "test": "npm run build && nyc mocha \"test/unit/**/*.spec.ts\"",
     "e2e": "mocha \"test/e2e/**/*.spec.ts\"",
@@ -32,6 +32,7 @@
     "@types/mocha": "^2.2.47",
     "@types/node": "^9.3.0",
     "@types/power-assert": "^1.4.29",
+    "browserify": "15.2.0",
     "chai": "^4.1.2",
     "codeclimate-test-reporter": "^0.5.0",
     "coveralls": "^3.0.0",
