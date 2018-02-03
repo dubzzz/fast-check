@@ -235,6 +235,8 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 
 - `fc.anything()` or `fc.anything(settings: ObjectConstraints.Settings)` generate a possible values coming from Settings and all objects or arrays derived from those same settings
 - `fc.object()` or `fc.object(settings: ObjectConstraints.Settings)` generate an object
+- `fc.jsonObject()` or `fc.jsonObject(maxDepth: number)` generate an object that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
+- `fc.unicodeJsonObject()` or `fc.unicodeJsonObject(maxDepth: number)` generate an object with potentially unicode characters that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
 
 ## Custom arbitraries
 
