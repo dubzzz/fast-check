@@ -235,3 +235,29 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 
 - `fc.anything()` or `fc.anything(settings: ObjectConstraints.Settings)` generate a possible values coming from Settings and all objects or arrays derived from those same settings
 - `fc.object()` or `fc.object(settings: ObjectConstraints.Settings)` generate an object
+
+## Custom arbitraries
+
+### Derive existing arbitraries
+
+All generated arbitraries inherit from the same base class: [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts).
+
+It cames with two useful methods: `filter(predicate: (t: T) => boolean): Arbitrary<T>` and `map<U>(mapper: (t: T) => U): Arbitrary<U>`. These methods are used internally by the framework to derive some Arbitraries from existing ones.
+
+For instance, given the arbitrary for integers, `fc.integer()`, you can derive `fc.char()` as follow:
+
+```typescript
+const char = () => integer(0x20, 0x7e).map(String.fromCharCode);
+```
+
+Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) use this trick to define themselves.
+
+### Build your own
+
+You can also fully customize your arbitrary and not derived from any of the buit-in arbitraries. What you have to do is to derive from [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: MutableRandomGenerator): Shrinkable<T>`.
+
+`generate` is responsable for the generation of one new random entity of type `T` (see signature above). In ordedr to fulfill it in a deterministic way it received a `mrng: MutableRandomGenerator`. It can then use it to generate integer values within `min` (included) and `max` (included) by using `UniformDistribution.inRange(min, max)(mrng)[0]`.
+
+The generated value also came with a shrink method able to derive _smaller_ values in case of failure. It can be ignored making the arbitrary not shrinkable.
+
+Once again the [built-in types](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) can be very helpful if you need an example.
