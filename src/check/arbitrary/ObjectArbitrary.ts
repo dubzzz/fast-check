@@ -93,16 +93,30 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
     return maxDepth != null ? {key, values, maxDepth} : {key, values};
 }
 
+function jsonObject(): Arbitrary<any>;
+function jsonObject(maxDepth: number): Arbitrary<any>;
+function jsonObject(maxDepth?: number): Arbitrary<any> {
+    return anything(jsonSettings(string(), maxDepth));
+}
+
+function unicodeJsonObject(): Arbitrary<any>;
+function unicodeJsonObject(maxDepth: number): Arbitrary<any>;
+function unicodeJsonObject(maxDepth?: number): Arbitrary<any> {
+    return anything(jsonSettings(unicodeString(), maxDepth));
+}
+
 function json(): Arbitrary<string>;
 function json(maxDepth: number): Arbitrary<string>;
 function json(maxDepth?: number): Arbitrary<string> {
-    return anything(jsonSettings(string(), maxDepth)).map(JSON.stringify);
+    const arb = maxDepth != null ? jsonObject(maxDepth) : jsonObject();
+    return arb.map(JSON.stringify);
 }
 
 function unicodeJson(): Arbitrary<string>;
 function unicodeJson(maxDepth: number): Arbitrary<string>;
 function unicodeJson(maxDepth?: number): Arbitrary<string> {
-    return anything(jsonSettings(unicodeString(), maxDepth)).map(JSON.stringify);
+    const arb = maxDepth != null ? unicodeJsonObject(maxDepth) : unicodeJsonObject();
+    return arb.map(JSON.stringify);
 }
 
-export { anything, object, json, unicodeJson };
+export { anything, object, jsonObject, unicodeJsonObject, json, unicodeJson };

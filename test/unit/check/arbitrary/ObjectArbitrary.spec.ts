@@ -5,7 +5,7 @@ import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
-import { anything, object, json, unicodeJson, ObjectConstraints } from '../../../../src/check/arbitrary/ObjectArbitrary';
+import { anything, object, jsonObject, unicodeJsonObject, json, unicodeJson, ObjectConstraints } from '../../../../src/check/arbitrary/ObjectArbitrary';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
@@ -148,6 +148,36 @@ describe("ObjectArbitrary", () => {
                 }// only check one shrink path
                 assert.equal(typeof shrinkable.value, 'string');
                 assertShrinkedValue(JSON.parse(originalValue), JSON.parse(shrinkable.value));
+            })
+        ));
+    });
+    describe('jsonObject', () => {
+        it('Should generate a stringifyable object', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                return typeof JSON.stringify(jsonObject().generate(mrng).value) === 'string';
+            })
+        ));
+        it('Should be re-created from its json representation', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = jsonObject().generate(mrng).value;
+                assert.deepStrictEqual(JSON.parse(JSON.stringify(g)), g);
+            })
+        ));
+    });
+    describe('unicodeJsonObject', () => {
+        it('Should generate a stringifyable object', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                return typeof JSON.stringify(unicodeJsonObject().generate(mrng).value) === 'string';
+            })
+        ));
+        it('Should be re-created from its json representation', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = unicodeJsonObject().generate(mrng).value;
+                assert.deepStrictEqual(JSON.parse(JSON.stringify(g)), g);
             })
         ));
     });
