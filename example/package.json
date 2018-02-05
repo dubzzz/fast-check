@@ -1,0 +1,15 @@
+{
+  "name": "fast-check-examples",
+  "version": "1.0.0",
+  "description": "Examples of usage of fast-check",
+  "scripts": {
+    "test:contains": "mocha contains/test.js",
+    "test": "npm run test:contains"
+  },
+  "devDependencies": {
+    "fast-check": "*",
+    "mocha": "^5.0.0"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT"
+}
