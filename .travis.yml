@@ -12,6 +12,7 @@ script:
   - npm run test
   - npm run e2e
   - npm run build
+  - cd example/ && sh local-fast-check.sh && npm install && npm run test
 
 after_success:
   - npm run coverage
