@@ -1,21 +1,25 @@
 interface Parameters {
     seed?: number;
     num_runs?: number;
+    timeout?: number;
     logger?: (v: string) => void;
 }
 class QualifiedParameters {
     seed: number;
     num_runs: number;
+    timeout: number | null;
     logger: (v: string) => void;
     
     private static read_seed = (p?: Parameters): number => p != null && p.seed != null ? p.seed : Date.now();
     private static read_num_runs = (p?: Parameters): number => p != null && p.num_runs != null ? p.num_runs : 100;
+    private static read_timeout = (p?: Parameters): number | null => p != null && p.timeout != null ? p.timeout : null;
     private static read_logger = (p?: Parameters): ((v: string) => void) => p != null && p.logger != null ? p.logger : (v: string) => console.log(v);
 
     static read(p?: Parameters): QualifiedParameters {
         return {
             seed: QualifiedParameters.read_seed(p),
             num_runs: QualifiedParameters.read_num_runs(p),
+            timeout: QualifiedParameters.read_timeout(p),
             logger: QualifiedParameters.read_logger(p)
         };
     }

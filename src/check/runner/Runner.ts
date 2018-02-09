@@ -3,6 +3,7 @@ import { RandomGenerator, skip_n } from '../../random/generator/RandomGenerator'
 import IProperty from '../property/IProperty'
 import { Property } from '../property/Property'
 import { AsyncProperty } from '../property/AsyncProperty'
+import { TimeoutProperty } from '../property/TimeoutProperty'
 import toss from './Tosser'
 import { Parameters, QualifiedParameters, RunDetails, successFor, failureFor, throwIfFailed } from './utils/utils'
 
@@ -38,8 +39,9 @@ function internalCheck<Ts>(property: IProperty<Ts>, params?: Parameters): RunDet
     }
     return successFor<Ts>(qParams);
 }
-async function asyncInternalCheck<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>> {
+async function asyncInternalCheck<Ts>(rawProperty: IProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>> {
     const qParams = QualifiedParameters.read(params);
+    const property = qParams.timeout == null ? rawProperty : new TimeoutProperty(rawProperty, qParams.timeout);
     const generator = toss(property, qParams.seed);
     for (let idx = 0 ; idx < qParams.num_runs ; ++idx) {
         const g = generator.next().value;

@@ -166,6 +166,35 @@ describe('Runner', () => {
                 return true;
             })
         ));
+        it('Should not timeout if no timeout defined', async () => {
+            const p: IProperty<[number]> = {
+                isAsync: () => true,
+                generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
+                run: async (value: [number]) => null
+            };
+            const out = await (check(p) as Promise<RunDetails<[number]>>);
+            assert.equal(out.failed, false, 'Should not have failed');
+        });
+        it('Should not timeout if timeout not reached', async () => {
+            const wait = (timeMs: number) => new Promise<null>((resolve, reject) => setTimeout(resolve, timeMs));
+            const p: IProperty<[number]> = {
+                isAsync: () => true,
+                generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
+                run: async (value: [number]) => await wait(0)
+            };
+            const out = await (check(p, {timeout: 100}) as Promise<RunDetails<[number]>>);
+            assert.equal(out.failed, false, 'Should not have failed');
+        });
+        it('Should timeout if it reached the timeout', async () => {
+            const wait = (timeMs: number) => new Promise<null>((resolve, reject) => setTimeout(resolve, timeMs));
+            const p: IProperty<[number]> = {
+                isAsync: () => true,
+                generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
+                run: async (value: [number]) => await wait(100)
+            };
+            const out = await (check(p, {timeout: 0}) as Promise<RunDetails<[number]>>);
+            assert.equal(out.failed, true, 'Should have failed');
+        });
     });
     describe('assert', () => {
         const v1 = { toString: () => "toString(value#1)" };
