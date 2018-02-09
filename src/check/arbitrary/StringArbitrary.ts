@@ -6,16 +6,20 @@ import { nat } from './IntegerArbitrary'
 import { char, ascii, unicode, hexa, base64 } from './CharacterArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
-function StringArbitrary(charArb: Arbitrary<string>, maxLength?: number) {
-    const arrayArb = maxLength == null
-            ? array(charArb)
-            : array(charArb, maxLength);
+function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
+    const arrayArb = aLength != null
+            ? (bLength != null
+                ? array(charArb, aLength, bLength)
+                : array(charArb, aLength))
+            : array(charArb);
     return arrayArb.map(tab => tab.join(''));
 }
 
-function Base64StringArbitrary(maxLength: number) {
+function Base64StringArbitrary(minLength: number, maxLength: number) {
+    assert.ok(minLength <= maxLength, 'Minimal length should be inferior or equal to maximal length');
+    assert.equal(minLength % 4, 0, 'Minimal length of base64 strings must be a multiple of 4');
     assert.equal(maxLength % 4, 0, 'Maximal length of base64 strings must be a multiple of 4');
-    return StringArbitrary(base64(), maxLength).map(s => {
+    return StringArbitrary(base64(), minLength, maxLength).map(s => {
         switch (s.length % 4) {
             case 0: return s;
             case 3: return `${s}=`;
@@ -27,33 +31,41 @@ function Base64StringArbitrary(maxLength: number) {
 
 function string(): Arbitrary<string>;
 function string(maxLength: number): Arbitrary<string>;
-function string(maxLength?: number): Arbitrary<string> {
-    return StringArbitrary(char(), maxLength);
+function string(minLength: number, maxLength: number): Arbitrary<string>;
+function string(aLength?: number, bLength?: number): Arbitrary<string> {
+    return StringArbitrary(char(), aLength, bLength);
 }
 
 function asciiString(): Arbitrary<string>;
 function asciiString(maxLength: number): Arbitrary<string>;
-function asciiString(maxLength?: number): Arbitrary<string> {
-    return StringArbitrary(ascii(), maxLength);
+function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
+function asciiString(aLength?: number, bLength?: number): Arbitrary<string> {
+    return StringArbitrary(ascii(), aLength, bLength);
 }
 
 function unicodeString(): Arbitrary<string>;
 function unicodeString(maxLength: number): Arbitrary<string>;
-function unicodeString(maxLength?: number): Arbitrary<string> {
-    return StringArbitrary(unicode(), maxLength);
+function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
+function unicodeString(aLength?: number, bLength?: number): Arbitrary<string> {
+    return StringArbitrary(unicode(), aLength, bLength);
 }
 
 function hexaString(): Arbitrary<string>;
 function hexaString(maxLength: number): Arbitrary<string>;
-function hexaString(maxLength?: number): Arbitrary<string> {
-    return StringArbitrary(hexa(), maxLength);
+function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
+function hexaString(aLength?: number, bLength?: number): Arbitrary<string> {
+    return StringArbitrary(hexa(), aLength, bLength);
 }
 
 function base64String(): Arbitrary<string>;
 function base64String(maxLength: number): Arbitrary<string>;
-function base64String(maxLength?: number): Arbitrary<string> {
-    const length = maxLength == null ? 16 : maxLength;
-    return Base64StringArbitrary(length - length%4); // base64 length is always a multiple of 4
+function base64String(minLength: number, maxLength: number): Arbitrary<string>;
+function base64String(aLength?: number, bLength?: number): Arbitrary<string> {
+    const minLength = aLength != null && bLength != null ? aLength : 0;
+    const maxLength = bLength == null ? (aLength == null ? 16 : aLength) : bLength;
+    return Base64StringArbitrary(
+        (minLength +3) - (minLength +3)%4,
+        maxLength - maxLength%4); // base64 length is always a multiple of 4
 }
 
 export { string, asciiString, unicodeString, hexaString, base64String };

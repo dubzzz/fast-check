@@ -5,8 +5,11 @@ import { string, asciiString, unicodeString, hexaString, base64String } from '..
 
 import * as stubRng from '../../stubs/generators';
 
+const minMax = fc.tuple(fc.integer(0, 10000), fc.integer(0, 10000))
+                    .map(t => t[0] < t[1] ? {min: t[0], max: t[1]} : {min: t[1], max: t[0]});
+
 describe('StringArbitrary', () => {
-    describe('char', () => {
+    describe('string', () => {
         it('Should generate printable characters', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
@@ -19,6 +22,13 @@ describe('StringArbitrary', () => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const g = string(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
+            })
+        ));
+        it('Should generate a string given minimal and maximal length', () => fc.assert(
+            fc.property(fc.integer(), minMax, (seed, lengths) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = string(lengths.min, lengths.max).generate(mrng).value;
+                return lengths.min <= g.length && g.length <= lengths.max;
             })
         ));
     });
@@ -37,6 +47,13 @@ describe('StringArbitrary', () => {
                 return g.length <= maxLength;
             })
         ));
+        it('Should generate a string given minimal and maximal length', () => fc.assert(
+            fc.property(fc.integer(), minMax, (seed, lengths) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = asciiString(lengths.min, lengths.max).generate(mrng).value;
+                return lengths.min <= g.length && g.length <= lengths.max;
+            })
+        ));
     });
     describe('unicodeString', () => {
         it('Should generate unicode string', () => fc.assert(
@@ -53,6 +70,13 @@ describe('StringArbitrary', () => {
                 return g.length <= maxLength;
             })
         ));
+        it('Should generate a string given minimal and maximal length', () => fc.assert(
+            fc.property(fc.integer(), minMax, (seed, lengths) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = unicodeString(lengths.min, lengths.max).generate(mrng).value;
+                return lengths.min <= g.length && g.length <= lengths.max;
+            })
+        ));
     });
     describe('hexaString', () => {
         it('Should generate hexa string', () => fc.assert(
@@ -67,6 +91,13 @@ describe('StringArbitrary', () => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const g = hexaString(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
+            })
+        ));
+        it('Should generate a string given minimal and maximal length', () => fc.assert(
+            fc.property(fc.integer(), minMax, (seed, lengths) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = hexaString(lengths.min, lengths.max).generate(mrng).value;
+                return lengths.min <= g.length && g.length <= lengths.max;
             })
         ));
     });
@@ -112,6 +143,13 @@ describe('StringArbitrary', () => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const g = base64String(maxLength).generate(mrng).value;
                 return g.length <= maxLength;
+            })
+        ));
+        it('Should generate a string given minimal and maximal length', () => fc.assert(
+            fc.property(fc.integer(), minMax.filter(l => l.max >= l.min +4), (seed, lengths) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = base64String(lengths.min, lengths.max).generate(mrng).value;
+                return lengths.min <= g.length && g.length <= lengths.max;
             })
         ));
         it('Should shrink and suggest valid base64 strings', () => fc.assert(
