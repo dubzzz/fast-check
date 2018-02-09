@@ -13,6 +13,7 @@ script:
   - npm run test
   - npm run e2e
   - npm run build
+  - cd example && sh configure.sh && sh run.sh
 
 after_success:
   - npm run coverage
