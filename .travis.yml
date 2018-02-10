@@ -13,9 +13,8 @@ script:
   - npm run e2e
   - npm run build
   - cd example ;
-    chmod +x *.sh ;
-    ./configure.sh ;
-    ./run.sh
+    bash -x configure.sh ;
+    bash -x run.sh
 
 after_success:
   - npm run coverage
