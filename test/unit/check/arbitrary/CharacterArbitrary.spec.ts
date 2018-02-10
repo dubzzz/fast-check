@@ -55,11 +55,13 @@ describe("CharacterArbitrary", () => {
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const g = unicode().generate(mrng).value;
-                return g.length === 1 && 0x0000 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xffff;
+                return g.length === 1 &&
+                        0x0000 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xffff &&
+                        !(0xd800 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xdfff); // surrogate pairs
             })
         ));
-        it('Should be able to produce any character from unicode', () => fc.assert(
-            fc.property(fc.integer(), fc.integer(0, 65535), (seed, selected) => {
+        it('Should be able to produce any character from unicode (UCS-2 subset only)', () => fc.assert(
+            fc.property(fc.integer(), fc.integer(0, 0xffff).filter(v => v < 0xd800 || v > 0xdfff), (seed, selected) => {
                 const mrng = stubRng.mutable.counter(seed);
                 const arb = unicode();
                 const waitingFor = String.fromCharCode(selected);

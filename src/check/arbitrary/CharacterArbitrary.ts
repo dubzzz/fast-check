@@ -34,7 +34,17 @@ function ascii(): Arbitrary<string> {
     return CharacterArbitrary(0x00, 0x7f);
 }
 function unicode(): Arbitrary<string> {
-    return CharacterArbitrary(0x0000, 0xffff);
+    // Characters in the range: U+D800 to U+DFFF
+    // are called 'surrogate pairs', they cannot be defined alone and come by pairs
+    // JavaScript function 'fromCodePoint' can handle those
+    // This unicode builder is able to produce a subset of UTF-16 characters called UCS-2
+    // You can refer to 'fromCharCode' documentation for more details
+    const gapSize = 0xdfff +1 - 0xd800;
+    function mapping(v: number) {
+        if (v < 0xd800) return v;
+        return v + gapSize;
+    }
+    return CharacterArbitrary(0x0000, 0xffff - gapSize, mapping);
 }
 
 export { char, ascii, unicode, hexa, base64 };
