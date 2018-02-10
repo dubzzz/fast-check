@@ -195,6 +195,16 @@ describe('Runner', () => {
             const out = await (check(p, {timeout: 0}) as Promise<RunDetails<[number]>>);
             assert.equal(out.failed, true, 'Should have failed');
         });
+        it('Should timeout if task never ends', async () => {
+            const neverEnds = () => new Promise<null>((resolve, reject) => {});
+            const p: IProperty<[number]> = {
+                isAsync: () => true,
+                generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
+                run: async (value: [number]) => await neverEnds()
+            };
+            const out = await (check(p, {timeout: 0}) as Promise<RunDetails<[number]>>);
+            assert.equal(out.failed, true, 'Should have failed');
+        });
     });
     describe('assert', () => {
         const v1 = { toString: () => "toString(value#1)" };
