@@ -93,6 +93,9 @@ It can be parametrized using its second argument.
 export interface Parameters {
     seed?: number;     // optional, initial seed of the generator: Date.now() by default
     num_runs?: number; // optional, number of runs before success: 100 by default 
+    timeout?: number;  // optional, only taken into account for asynchronous runs (asyncProperty)
+                       // specify a timeout in milliseconds, maximum time for the predicate to return its result
+                       // only works for async code, will not interrupt a synchronous code: disabled by default
     logger?: (v: string) => void; // optional, log output: console.log by default
 }
 ```
