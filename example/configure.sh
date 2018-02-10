@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Switch the configuration of examples
 # to use local fast-check
 

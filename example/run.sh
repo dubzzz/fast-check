@@ -1,3 +1,5 @@
+#!/bin/bash
+
 mkdir -p output
 npm install
 
