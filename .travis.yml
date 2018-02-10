@@ -17,10 +17,10 @@ script:
     bash run.sh
   - nvm install 0.10 ;
     node --version ;
-    node --require ../../lib/fast-check --eval "var fc = require('fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
+    node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
   - nvm install 0.12 ;
     node --version ;
-    node --require ../../lib/fast-check --eval "var fc = require('fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
+    node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
 
 after_success:
   - npm run coverage
