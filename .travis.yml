@@ -15,6 +15,10 @@ script:
   - cd example ;
     bash configure.sh ;
     bash run.sh
+  - nvm install 0.10 ; basic run on oldest versions
+    node --version
+  - nvm install 0.12 ; basic run on oldest versions
+    node --version
 
 after_success:
   - npm run coverage
