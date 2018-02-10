@@ -15,9 +15,6 @@ script:
   - cd example ;
     bash configure.sh ;
     bash run.sh
-  - nvm install 0.10 ;
-    node --version ;
-    node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
   - nvm install 0.12 ;
     node --version ;
     node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
