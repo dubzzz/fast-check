@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Switch the configuration of examples
 # to use local fast-check
