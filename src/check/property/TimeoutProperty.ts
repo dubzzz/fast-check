@@ -5,7 +5,7 @@ import IProperty from './IProperty';
 
 const timeoutAfter = function(timeMs: number) {
     return new Promise<string>(
-        (resolve, reject) => setTimeout(() => resolve('Property timeout'), timeMs));
+        (resolve, reject) => setTimeout(() => resolve(`Property timeout: exceeded limit of ${timeMs} milliseconds`), timeMs));
 };
 
 export class TimeoutProperty<Ts> implements IProperty<Ts> {

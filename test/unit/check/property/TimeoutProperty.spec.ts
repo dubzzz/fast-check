@@ -33,6 +33,6 @@ describe('TimeoutProperty', () => {
             });
         });
         const timeoutProp = new TimeoutProperty(p, 0);
-        assert.equal(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value), 'Property timeout');
+        assert.equal(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value), `Property timeout: exceeded limit of 0 milliseconds`);
     });
 });
