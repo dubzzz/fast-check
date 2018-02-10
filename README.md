@@ -65,7 +65,7 @@ function property<T1,T2>(
 ...
 ```
 
-- `fc.asyncPoperty`: define a new property ie. a list of arbitraries and an asynchronous test function to assess the success
+- `fc.asyncProperty`: define a new property ie. a list of arbitraries and an asynchronous test function to assess the success
 
 The predicate would be considered falsy if its throws or if `output == null || output == true` evaluate to `false` (after `await`).
 ```typescript
