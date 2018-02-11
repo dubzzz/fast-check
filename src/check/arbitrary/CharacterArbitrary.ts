@@ -33,6 +33,9 @@ function base64(): Arbitrary<string> {
 function ascii(): Arbitrary<string> {
     return CharacterArbitrary(0x00, 0x7f);
 }
+function char16bits(): Arbitrary<string> {
+    return CharacterArbitrary(0x0000, 0xffff);
+}
 function unicode(): Arbitrary<string> {
     // Characters in the range: U+D800 to U+DFFF
     // are called 'surrogate pairs', they cannot be defined alone and come by pairs
@@ -51,6 +54,8 @@ function fullUnicode(): Arbitrary<string> {
     // from the node version or web-browser
     // Be aware that 'characters' can have a length greater than 1
     // More details on: https://tc39.github.io/ecma262/#sec-utf16encoding
+    // This unicode builder is able to produce all the UTF-16 characters
+    // It only produces valid UTF-16 code points
     const gapSize = 0xdfff +1 - 0xd800;
     function mapping(v: number) {
         if (v < 0xd800) return v;
@@ -63,4 +68,4 @@ function fullUnicode(): Arbitrary<string> {
 }
 
 
-export { char, ascii, unicode, fullUnicode, hexa, base64 };
+export { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 };

@@ -3,7 +3,7 @@ import Arbitrary from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
 import { array } from './ArrayArbitrary'
 import { nat } from './IntegerArbitrary'
-import { char, ascii, unicode, fullUnicode, hexa, base64 } from './CharacterArbitrary'
+import { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 } from './CharacterArbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
 function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
@@ -43,6 +43,13 @@ function asciiString(aLength?: number, bLength?: number): Arbitrary<string> {
     return StringArbitrary(ascii(), aLength, bLength);
 }
 
+function string16bits(): Arbitrary<string>;
+function string16bits(maxLength: number): Arbitrary<string>;
+function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
+function string16bits(aLength?: number, bLength?: number): Arbitrary<string> {
+    return StringArbitrary(char16bits(), aLength, bLength);
+}
+
 function unicodeString(): Arbitrary<string>;
 function unicodeString(maxLength: number): Arbitrary<string>;
 function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
@@ -75,4 +82,4 @@ function base64String(aLength?: number, bLength?: number): Arbitrary<string> {
         maxLength - maxLength%4); // base64 length is always a multiple of 4
 }
 
-export { string, asciiString, unicodeString, fullUnicodeString, hexaString, base64String };
+export { string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String };

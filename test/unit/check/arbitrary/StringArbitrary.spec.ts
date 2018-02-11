@@ -1,7 +1,7 @@
 import * as assert from 'power-assert';
 import * as fc from '../../../../lib/fast-check';
 
-import { string, asciiString, unicodeString, hexaString, base64String } from '../../../../src/check/arbitrary/StringArbitrary';
+import { string, asciiString, string16bits, unicodeString, hexaString, base64String } from '../../../../src/check/arbitrary/StringArbitrary';
 
 import * as stubRng from '../../stubs/generators';
 
@@ -55,12 +55,37 @@ describe('StringArbitrary', () => {
             })
         ));
     });
+    describe('string16bits', () => {
+        it('Should generate string of 16 bits characters', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = string16bits().generate(mrng).value;
+                return g.split('').every(c => 0x0000 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0xffff);
+            })
+        ));
+        it('Should generate a string given maximal length', () => fc.assert(
+            fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = string16bits(maxLength).generate(mrng).value;
+                return g.length <= maxLength;
+            })
+        ));
+        it('Should generate a string given minimal and maximal length', () => fc.assert(
+            fc.property(fc.integer(), minMax, (seed, lengths) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = string16bits(lengths.min, lengths.max).generate(mrng).value;
+                return lengths.min <= g.length && g.length <= lengths.max;
+            })
+        ));
+    });
     describe('unicodeString', () => {
-        it('Should generate unicode string', () => fc.assert(
+        it('Should generate unicode string (ucs-2 characters only)', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const g = unicodeString().generate(mrng).value;
-                return g.split('').every(c => 0x0000 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0xffff);
+                return g.split('').every(c =>
+                    0x0000 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0xffff &&
+                    !(0xd800 <= c.charCodeAt(0) && c.charCodeAt(0) <= 0xdfff));
             })
         ));
         it('Should generate a string given maximal length', () => fc.assert(
