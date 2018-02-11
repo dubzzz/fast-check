@@ -58,4 +58,4 @@ function set<T>(arb: Arbitrary<T>,
     return arrayArb.filter(tab => tab.length >= minLength);
 }
 
-export { set };
+export { set, buildCompareFilter };

@@ -3,30 +3,36 @@ import * as fc from '../../../../lib/fast-check';
 
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { set } from '../../../../src/check/arbitrary/SetArbitrary';
+import { set, buildCompareFilter } from '../../../../src/check/arbitrary/SetArbitrary';
 import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 
-describe('SetArbitrary', () => {
-    describe('set', () => {
-        const customMapper = (v:string) => {
-            return {key: v};
-        };
-        const validSet = (s: string[]) => {
-            for (let idx = s.length -1 ; idx !== -1 ; --idx) {
-                if (s.slice(idx+1).indexOf(s[idx]) !== -1)
-                    return false;
-            }
-            return true;
-        };
-        const validCustomSet = (s: {key:string}[]) => {
-            return validSet(s.map(v => v.key));
-        };
-        const customCompare = (a: {key: string}, b: {key: string}) => a.key === b.key;
+const customMapper = (v:string) => { return {key: v} };
+const validSet = (s: string[]) => {
+    for (let idx = s.length -1 ; idx !== -1 ; --idx) {
+        if (s.slice(idx+1).indexOf(s[idx]) !== -1)
+            return false;
+    }
+    return true;
+};
+const validCustomSet = (s: {key:string}[]) => validSet(s.map(v => v.key));
+const customCompare = (a: {key: string}, b: {key: string}) => a.key === b.key;
 
+describe('SetArbitrary', () => {
+    describe('buildCompareFilter', () => {
+        it('Should filter array from duplicated values', () => fc.assert(
+            fc.property(fc.array(fc.char()), (tab) => {
+                const filter = buildCompareFilter<string>((a,b) => a === b);
+                const adaptedTab = tab.map(v => new Shrinkable(v));
+                const filteredTab = filter(adaptedTab);
+                assert.ok(validSet(filteredTab.map(s => s.value)));
+            })
+        ));
+    });
+    describe('set', () => {
         it('Should generate an array using specified arbitrary', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
