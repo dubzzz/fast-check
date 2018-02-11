@@ -5,7 +5,7 @@ import MutableRandomGenerator from '../../random/generator/MutableRandomGenerato
 import { Stream, stream } from '../../stream/Stream'
 
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number = v => v) {
-    return integer(min, max).map(n => String.fromCodePoint(mapToCode(n)));
+    return integer(min, max).map(n => String.fromCharCode(mapToCode(n)));
 }
 
 function char(): Arbitrary<string> {
@@ -47,6 +47,8 @@ function unicode(): Arbitrary<string> {
     return CharacterArbitrary(0x0000, 0xffff - gapSize, mapping);
 }
 function fullUnicode(): Arbitrary<string> {
+    // Might require a polyfill if String.fromCodePoint is missing
+    // from the node version or web-browser
     // Be aware that 'characters' can have a length greater than 1
     // More details on: https://tc39.github.io/ecma262/#sec-utf16encoding
     const gapSize = 0xdfff +1 - 0xd800;
@@ -54,7 +56,10 @@ function fullUnicode(): Arbitrary<string> {
         if (v < 0xd800) return v;
         return v + gapSize;
     }
-    return CharacterArbitrary(0x0000, 0x10ffff - gapSize, mapping);
+    // Do not call CharacterArbitrary or use fromCodePoint in it
+    // String.fromCodePoint is unknown for older versions of node
+    return integer(0x0000, 0x10ffff - gapSize)
+            .map(n => String.fromCodePoint(mapping(n)));
 }
 
 
