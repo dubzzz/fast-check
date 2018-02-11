@@ -6,12 +6,16 @@ import { Stream, stream } from '../../stream/Stream'
 
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
     readonly lengthArb: ArbitraryWithShrink<number>;
-    constructor(readonly arb: Arbitrary<T>, readonly minLength: number, maxLength: number) {
+    constructor(readonly arb: Arbitrary<T>,
+            readonly minLength: number, maxLength: number,
+            readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = tab => tab) {
         super();
         this.lengthArb = integer(minLength, maxLength);
     }
     private wrapper(shrinkables: [Shrinkable<number>, Shrinkable<T>[]]): Shrinkable<T[]> {
-        const [size, items] = shrinkables;
+        const [sizeRaw, itemsRaw] = shrinkables;
+        const items = this.preFilter(itemsRaw);
+        const size = this.lengthArb.shrinkableFor(items.length);
         return new Shrinkable(
             items.map(s => s.value),
             () => this.shrinkImpl(size, items).map(v => this.wrapper(v)));
@@ -55,4 +59,4 @@ function array<T>(arb: Arbitrary<T>, aLength?: number, bLength?: number): Arbitr
     return new ArrayArbitrary<T>(arb, aLength!, bLength);
 }
 
-export { array };
+export { array, ArrayArbitrary };
