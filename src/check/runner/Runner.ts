@@ -30,7 +30,7 @@ function internalCheck<Ts>(property: IProperty<Ts>, params?: Parameters): RunDet
     const qParams = QualifiedParameters.read(params);
     const generator = toss(property, qParams.seed);
     for (let idx = 0 ; idx < qParams.num_runs ; ++idx) {
-        const g = generator.next().value;
+        const g = generator.next().value();
         const out = property.run(g.value);
         if (out != null) {
             const [shrinkedValue, numShrinks, error] = shrinkIt(property, g, out as string);
@@ -44,7 +44,7 @@ async function asyncInternalCheck<Ts>(rawProperty: IProperty<Ts>, params?: Param
     const property = qParams.timeout == null ? rawProperty : new TimeoutProperty(rawProperty, qParams.timeout);
     const generator = toss(property, qParams.seed);
     for (let idx = 0 ; idx < qParams.num_runs ; ++idx) {
-        const g = generator.next().value;
+        const g = generator.next().value();
         const out = await property.run(g.value);
         if (out != null) {
             const [shrinkedValue, numShrinks, error] = await asyncShrinkIt(property, g, out as string);

@@ -5,11 +5,15 @@ import MersenneTwister from '../../random/generator/MersenneTwister'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 import IProperty from '../property/IProperty'
 
-export default function* toss<Ts>(generator: (IProperty<Ts> | Arbitrary<Ts>), seed: number): IterableIterator<Shrinkable<Ts>> {
+function lazyGenerate<Ts>(generator: (IProperty<Ts> | Arbitrary<Ts>), rng: RandomGenerator): () => Shrinkable<Ts> {
+    return () => generator.generate(new MutableRandomGenerator(rng));
+}
+
+export default function* toss<Ts>(generator: (IProperty<Ts> | Arbitrary<Ts>), seed: number): IterableIterator<() => Shrinkable<Ts>> {
     let rng: RandomGenerator = MersenneTwister.from(seed);
     for (;;) {
         rng = skip_n(rng, 42);
-        yield generator.generate(new MutableRandomGenerator(rng));
+        yield lazyGenerate(generator, rng);
     }
 }
 

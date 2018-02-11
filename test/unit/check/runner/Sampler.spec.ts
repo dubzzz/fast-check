@@ -40,6 +40,13 @@ describe('Sampler', () => {
                 assert.deepEqual(out, arb.generatedValues.slice(0, num), 'Should give back the values in order');
             })
         ));
+        it('Should not call arbitrary more times than the number of values required', () => fc.assert(
+            fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
+                const arb = stubArb.counter(start);
+                const out = sample(arb, num);
+                assert.equal(arb.generatedValues.length, num, 'Should not call the arbitrary too many times');
+            })
+        ));
     });
     describe('statistics', () => {
         const customGen = (m: number = 7) => stubArb.forward().map(v => v % m);
@@ -130,6 +137,14 @@ describe('Sampler', () => {
                 statistics(customGen(mod), classify, {seed: seed, logger: (v: string) => logs.push(v)});
                 assert.ok(logs.length >= 1, "Should always produce at least one log");
                 assert.ok(logs.length <= mod, "Should aggregate classified values together");
+            })
+        ));
+        it('Should not call arbitrary more times than the number of values required', () => fc.assert(
+            fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
+                const classify = (g: number) => g.toString();
+                const arb = stubArb.counter(start);
+                const out = statistics(arb, classify,  {num_runs: num, logger: (v: string) => {}});
+                assert.equal(arb.generatedValues.length, num, 'Should not call the arbitrary too many times');
             })
         ));
     });

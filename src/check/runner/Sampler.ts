@@ -6,7 +6,7 @@ import toss from './Tosser'
 
 function sample<Ts>(generator: (IProperty<Ts> | Arbitrary<Ts>), params?: (Parameters|number)): Ts[] {
     const qParams = QualifiedParameters.read_or_num_runs(params);
-    return [...stream(toss(generator, qParams.seed)).take(qParams.num_runs).map(s => s.value)];
+    return [...stream(toss(generator, qParams.seed)).take(qParams.num_runs).map(s => s().value)];
 }
 
 interface Dictionary<T> {
@@ -44,7 +44,7 @@ function String_padEnd(s: string, length: number, pad: string): string {
 function statistics<Ts>(generator: (IProperty<Ts> | Arbitrary<Ts>), classify: (v: Ts) => (string|string[]), params?: (Parameters|number)): void {
     const qParams = QualifiedParameters.read_or_num_runs(params);
     let recorded: Dictionary<number> = {};
-    for (const g of stream(toss(generator, qParams.seed)).take(qParams.num_runs).map(s => s.value)) {
+    for (const g of stream(toss(generator, qParams.seed)).take(qParams.num_runs).map(s => s().value)) {
         const out = classify(g);
         const categories: string[] = Array.isArray(out) ? out as string[] : [out as string];
         for (const c of categories) {
