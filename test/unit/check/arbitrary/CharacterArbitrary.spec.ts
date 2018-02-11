@@ -54,8 +54,8 @@ describe("CharacterArbitrary", () => {
         it('Should generate a single 16 bits character', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
-                const g = fullUnicode().generate(mrng).value;
-                return g.length === 1 && 0x0000 <= g.codePointAt(0) && g.codePointAt(0) <= 0x10ffff;
+                const g = char16bits().generate(mrng).value;
+                return g.length === 1 && 0x0000 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xffff;
             })
         ));
     });
