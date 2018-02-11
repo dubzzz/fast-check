@@ -77,11 +77,7 @@ describe("ArrayArbitrary", () => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const arb = array(new DummyArbitrary(() => 42), minLength, maxLength);
                 const shrinkable = arb.generate(mrng);
-                return shrinkable.shrink().every(s => {
-                    const r = minLength <= s.value.length && s.value.length <= maxLength;
-                    if (!r) console.log(`${JSON.stringify(s.value)} expected ${minLength} and ${maxLength}`);
-                    return r;
-                });
+                return shrinkable.shrink().every(s => minLength <= s.value.length && s.value.length <= maxLength);
             })
         ));
         it('Should not suggest input in shrinked values', () => fc.assert(
