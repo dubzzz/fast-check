@@ -6,12 +6,16 @@ export default class UniformDistribution {
         function helper(rng: RandomGenerator): [number, RandomGenerator] {
             const NUM_VALUES = rng.max() - rng.min() +1;
             const MAX_ALLOWED = NUM_VALUES - (NUM_VALUES % diff);
-            const [v, nrng] = rng.next();
-            const deltaV = v - rng.min();
-            if (deltaV < MAX_ALLOWED) {
-                return [deltaV % diff + from, nrng];
+            
+            let prng = rng;
+            while (true) {
+                const [v, nrng] = prng.next();
+                const deltaV = v - prng.min();
+                if (deltaV < MAX_ALLOWED) {
+                    return [deltaV % diff + from, nrng];
+                }
+                prng = nrng;
             }
-            return helper(nrng);
         }
         return helper;
     }
