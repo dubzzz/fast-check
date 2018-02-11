@@ -3,7 +3,6 @@ import * as fc from '../../../../lib/fast-check';
 
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
 import { set } from '../../../../src/check/arbitrary/SetArbitrary';
 import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
