@@ -1,7 +1,7 @@
 import * as assert from 'power-assert';
 import * as fc from '../../../../lib/fast-check';
 
-import { char, ascii, unicode, hexa, base64 } from '../../../../src/check/arbitrary/CharacterArbitrary';
+import { char, ascii, unicode, hexa, base64, fullUnicode } from '../../../../src/check/arbitrary/CharacterArbitrary';
 
 import * as stubRng from '../../stubs/generators';
 
@@ -71,6 +71,16 @@ describe("CharacterArbitrary", () => {
                     }
                 }
                 throw `Unable to produce '${waitingFor}' (${selected}) given seed ${seed}`;
+            })
+        ));
+    });
+    describe('fullUnicode', () => {
+        it('Should generate a single unicode character', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = fullUnicode().generate(mrng).value;
+                return 0x0000 <= g.codePointAt(0) && g.codePointAt(0) <= 0x10ffff &&
+                        !(0xd800 <= g.codePointAt(0) && g.codePointAt(0) <= 0xdfff); // surrogate pairs
             })
         ));
     });

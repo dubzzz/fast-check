@@ -8,7 +8,7 @@ import Arbitrary from './check/arbitrary/definition/Arbitrary'
 import Shrinkable from './check/arbitrary/definition/Shrinkable'
 import { array } from './check/arbitrary/ArrayArbitrary'
 import { boolean } from './check/arbitrary/BooleanArbitrary'
-import { char, ascii, unicode, hexa, base64 } from './check/arbitrary/CharacterArbitrary'
+import { char, ascii, unicode, fullUnicode, hexa, base64 } from './check/arbitrary/CharacterArbitrary'
 import { constant } from './check/arbitrary/ConstantArbitrary'
 import { dictionary } from './check/arbitrary/DictionaryArbitrary'
 import { float, double } from './check/arbitrary/FloatingPointArbitrary'
@@ -18,7 +18,7 @@ import { lorem } from './check/arbitrary/LoremArbitrary'
 import { anything, object, jsonObject, unicodeJsonObject, json, unicodeJson, ObjectConstraints } from './check/arbitrary/ObjectArbitrary'
 import { oneof } from './check/arbitrary/OneOfArbitrary'
 import { option } from './check/arbitrary/OptionArbitrary'
-import { string, asciiString, unicodeString, hexaString, base64String } from './check/arbitrary/StringArbitrary'
+import { string, asciiString, unicodeString, fullUnicodeString, hexaString, base64String } from './check/arbitrary/StringArbitrary'
 import { tuple, generic_tuple } from './check/arbitrary/TupleArbitrary'
 
 import { UniformDistribution } from './random/distribution/UniformDistribution'
@@ -40,8 +40,8 @@ export {
     boolean, // boolean
     float, double, // floating point types
     integer, nat, // integer types
-    char, ascii, unicode, hexa, base64, // single character
-    string, asciiString, unicodeString, hexaString, base64String, lorem, // strings
+    char, ascii, unicode, fullUnicode, hexa, base64, // single character
+    string, asciiString, unicodeString, fullUnicodeString, hexaString, base64String, lorem, // strings
     constant, option, oneof, frequency, array, tuple, generic_tuple, // combination of others
     anything, object, json, unicodeJson, // complex combinations
     // extend the framework

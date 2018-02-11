@@ -5,7 +5,7 @@ import MutableRandomGenerator from '../../random/generator/MutableRandomGenerato
 import { Stream, stream } from '../../stream/Stream'
 
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number = v => v) {
-    return integer(min, max).map(n => String.fromCharCode(mapToCode(n)));
+    return integer(min, max).map(n => String.fromCodePoint(mapToCode(n)));
 }
 
 function char(): Arbitrary<string> {
@@ -46,5 +46,16 @@ function unicode(): Arbitrary<string> {
     }
     return CharacterArbitrary(0x0000, 0xffff - gapSize, mapping);
 }
+function fullUnicode(): Arbitrary<string> {
+    // Be aware that 'characters' can have a length greater than 1
+    // More details on: https://tc39.github.io/ecma262/#sec-utf16encoding
+    const gapSize = 0xdfff +1 - 0xd800;
+    function mapping(v: number) {
+        if (v < 0xd800) return v;
+        return v + gapSize;
+    }
+    return CharacterArbitrary(0x0000, 0x10ffff - gapSize, mapping);
+}
 
-export { char, ascii, unicode, hexa, base64 };
+
+export { char, ascii, unicode, fullUnicode, hexa, base64 };
