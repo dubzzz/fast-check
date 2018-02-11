@@ -225,5 +225,13 @@ describe("ObjectArbitrary", () => {
                 return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value).length === 0;
             })
         ));
+        it('Should not suggest input in shrinked values', () => fc.assert(
+            fc.property(fc.integer(), (seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const shrinkable = object().generate(mrng);
+                for (const s of shrinkable.shrink())
+                    assert.notDeepEqual(s.value, shrinkable.value);
+            })
+        ));
     });
 });

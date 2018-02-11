@@ -1,7 +1,7 @@
 import Arbitrary from './definition/Arbitrary'
 import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
 
-import { array } from './ArrayArbitrary'
+import { set } from './SetArbitrary'
 import { tuple } from './TupleArbitrary'
 
 function toObject<T>(items: [string, T][]): {[Key:string]:T} {
@@ -13,7 +13,7 @@ function toObject<T>(items: [string, T][]): {[Key:string]:T} {
 }
 
 function dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<{[Key:string]:T}> {
-    return array(tuple(keyArb, valueArb))
+    return set(tuple(keyArb, valueArb), (t1, t2) => t1[0] === t2[0])
             .map(toObject);
 }
 
