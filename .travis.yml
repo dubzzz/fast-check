@@ -12,6 +12,7 @@ script:
   - npm run test
   - npm run e2e
   - npm run build
+  - npm run webbuild
   - cd example ;
     bash configure.sh ;
     bash run.sh

@@ -6,7 +6,8 @@
   "types": "lib/fast-check.d.ts",
   "scripts": {
     "prebuild": "ts-node prebuild/prebuild.ts",
-    "build": "tsc && browserify lib/fast-check.js --s fastcheck -o lib/bundle.js",
+    "build": "tsc",
+    "webbuild": "browserify lib/fast-check.js --s fastcheck -o lib/bundle.js",
     "watch": "tsc -w",
     "test": "npm run build && nyc mocha \"test/unit/**/*.spec.ts\"",
     "e2e": "mocha \"test/e2e/**/*.spec.ts\"",
