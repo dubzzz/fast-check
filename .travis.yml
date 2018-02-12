@@ -9,6 +9,7 @@ cache:
   - node_modules
 
 script:
+  - NODE_VERSION=`node --version | cut -dv -f2`
   - npm run test
   - npm run e2e
   - npm run build
@@ -18,7 +19,8 @@ script:
     bash run.sh
   - nvm install 0.12 ;
     node --version ;
-    node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
+    node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))" ;
+    nvm use "${NODE_VERSION}"
 
 after_success:
   - npm run coverage
