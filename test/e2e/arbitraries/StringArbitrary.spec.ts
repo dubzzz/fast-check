@@ -20,4 +20,21 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
             assert.deepEqual(out.counterexample, ["AA=="], 'Should shrink to counterexample "AA=="');
         });
     });
+    describe('unicodeString', () => {
+        it('Should produce valid UTF-16 strings', () => {
+            fc.assert(fc.property(fc.unicodeString(), (s:string) => encodeURIComponent(s) !== null), {seed: seed});
+        });
+    });
+    describe('fullUnicodeString', () => {
+        it('Should produce valid UTF-16 strings', () => {
+            fc.assert(fc.property(fc.fullUnicodeString(), (s:string) => encodeURIComponent(s) !== null), {seed: seed});
+        });
+    });
+    describe('string16bits', () => {
+        it('Should be able to produce invalid UTF-16 strings', () => {
+            const out = fc.check(fc.property(fc.string16bits(), (s:string) => encodeURIComponent(s) !== null), {seed: seed});
+            assert.ok(out.failed, 'Should have failed');
+            assert.deepEqual(out.counterexample, ['\ud800'], 'Should shrink to counterexample "\\ud800"');
+        });
+    });
 });
