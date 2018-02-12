@@ -16,11 +16,12 @@ script:
   - npm run webbuild
   - cd example ;
     bash configure.sh ;
-    bash run.sh
-  - nvm install 0.12 ;
+    bash run.sh ;
+    nvm install 0.12 ;
     node --version ;
     node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))" ;
-    nvm use "${NODE_VERSION}"
+    nvm use "${NODE_VERSION}" ;
+    cd ..
 
 after_success:
   - npm run coverage
