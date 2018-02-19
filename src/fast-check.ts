@@ -9,7 +9,7 @@ import Shrinkable from './check/arbitrary/definition/Shrinkable'
 import { array } from './check/arbitrary/ArrayArbitrary'
 import { boolean } from './check/arbitrary/BooleanArbitrary'
 import { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 } from './check/arbitrary/CharacterArbitrary'
-import { constant } from './check/arbitrary/ConstantArbitrary'
+import { constant, constantFrom } from './check/arbitrary/ConstantArbitrary'
 import { dictionary } from './check/arbitrary/DictionaryArbitrary'
 import { float, double } from './check/arbitrary/FloatingPointArbitrary'
 import { frequency } from './check/arbitrary/FrequencyArbitrary'
@@ -43,7 +43,7 @@ export {
     integer, nat, // integer types
     char, ascii, char16bits, unicode, fullUnicode, hexa, base64, // single character
     string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String, lorem, // strings
-    constant, option, oneof, frequency, array, set, tuple, generic_tuple, // combination of others
+    constant, constantFrom, option, oneof, frequency, array, set, tuple, generic_tuple, // combination of others
     anything, object, json, unicodeJson, // complex combinations
     // extend the framework
     Arbitrary, Shrinkable,

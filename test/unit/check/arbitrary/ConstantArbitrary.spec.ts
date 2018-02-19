@@ -1,6 +1,7 @@
 import * as assert from 'power-assert';
+import * as fc from '../../../../lib/fast-check';
 
-import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { constant, constantFrom } from '../../../../src/check/arbitrary/ConstantArbitrary';
 
 import * as stubRng from '../../stubs/generators';
 
@@ -19,5 +20,35 @@ describe("ConstantArbitrary", () => {
             instance.push("world");
             assert.deepEqual(g, ["hello", "world"]);
         });
+    });
+    describe('constantFrom', () => {
+        it('Should always return one of the constants', () => fc.assert(
+            fc.property(fc.array(fc.string(), 1, 10), fc.integer(), (data, seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const g = constant(data[0], ...data.slice(1)).generate(mrng).value;
+                return data.indexOf(g) !== -1;
+            })
+        ));
+        it('Should be able to produce all the constants', () => fc.assert(
+            fc.property(fc.array(fc.string(), 1, 10), fc.integer(), (data, seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const arb = constant(data[0], ...data.slice(1));
+                for (let id = 0 ; id != 10000 ; ++id) {
+                    const g = arb.generate(mrng).value;
+                    if (data.indexOf(g) !== -1) return true;
+                }
+                return false;
+            })
+        ));
+        it('Should shrink any of the constants towards the first one', () => fc.assert(
+            fc.property(fc.set(fc.string(), 1, 10), fc.integer(), (data, seed) => {
+                const mrng = stubRng.mutable.fastincrease(seed);
+                const shrinkable = constant(data[0], ...data.slice(1)).generate(mrng);
+                if (data.indexOf(shrinkable.value) === 0)
+                    assert.deepStrictEqual([...shrinkable.shrink()], []);
+                else
+                    assert.deepStrictEqual([...shrinkable.shrink()].map(s => s.value), [data[0]]);
+            })
+        ));
     });
 });
