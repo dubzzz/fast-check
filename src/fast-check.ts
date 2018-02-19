@@ -18,6 +18,7 @@ import { lorem } from './check/arbitrary/LoremArbitrary'
 import { anything, object, jsonObject, unicodeJsonObject, json, unicodeJson, ObjectConstraints } from './check/arbitrary/ObjectArbitrary'
 import { oneof } from './check/arbitrary/OneOfArbitrary'
 import { option } from './check/arbitrary/OptionArbitrary'
+import { record } from './check/arbitrary/RecordArbitrary'
 import { string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String } from './check/arbitrary/StringArbitrary'
 import { set } from './check/arbitrary/SetArbitrary'
 import { tuple, generic_tuple } from './check/arbitrary/TupleArbitrary'
@@ -43,7 +44,7 @@ export {
     integer, nat, // integer types
     char, ascii, char16bits, unicode, fullUnicode, hexa, base64, // single character
     string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String, lorem, // strings
-    constant, constantFrom, option, oneof, frequency, array, set, tuple, generic_tuple, // combination of others
+    constant, constantFrom, option, oneof, frequency, array, set, tuple, generic_tuple, record, // combination of others
     anything, object, json, unicodeJson, // complex combinations
     // extend the framework
     Arbitrary, Shrinkable,
