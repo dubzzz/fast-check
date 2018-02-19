@@ -25,14 +25,14 @@ describe("ConstantArbitrary", () => {
         it('Should always return one of the constants', () => fc.assert(
             fc.property(fc.array(fc.string(), 1, 10), fc.integer(), (data, seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
-                const g = constant(data[0], ...data.slice(1)).generate(mrng).value;
+                const g = constantFrom(data[0], ...data.slice(1)).generate(mrng).value;
                 return data.indexOf(g) !== -1;
             })
         ));
         it('Should be able to produce all the constants', () => fc.assert(
             fc.property(fc.array(fc.string(), 1, 10), fc.integer(), (data, seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
-                const arb = constant(data[0], ...data.slice(1));
+                const arb = constantFrom(data[0], ...data.slice(1));
                 for (let id = 0 ; id != 10000 ; ++id) {
                     const g = arb.generate(mrng).value;
                     if (data.indexOf(g) !== -1) return true;
@@ -43,7 +43,7 @@ describe("ConstantArbitrary", () => {
         it('Should shrink any of the constants towards the first one', () => fc.assert(
             fc.property(fc.set(fc.string(), 1, 10), fc.integer(), (data, seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
-                const shrinkable = constant(data[0], ...data.slice(1)).generate(mrng);
+                const shrinkable = constantFrom(data[0], ...data.slice(1)).generate(mrng);
                 if (data.indexOf(shrinkable.value) === 0)
                     assert.deepStrictEqual([...shrinkable.shrink()], []);
                 else
