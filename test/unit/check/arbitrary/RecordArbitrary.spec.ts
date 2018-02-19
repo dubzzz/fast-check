@@ -1,6 +1,7 @@
 import * as assert from 'power-assert';
 import * as fc from '../../../../lib/fast-check';
 
+import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { record } from '../../../../src/check/arbitrary/RecordArbitrary';
 import MersenneTwister from '../../../../src/random/generator/MersenneTwister';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
@@ -11,7 +12,7 @@ import * as stubRng from '../../stubs/generators';
 describe("RecordArbitrary", () => {
     describe('record', () => {
         it('Should produce a record having the right keys', () => fc.assert(
-            fc.property(fc.array(fc.string()), fc.integer(), (keys, seed) => {
+            fc.property(fc.set(fc.string()), fc.integer(), (keys, seed) => {
                 const mrng = stubRng.mutable.fastincrease(seed);
                 const expectedRecord = {};
                 const recordModel = {};
@@ -21,6 +22,38 @@ describe("RecordArbitrary", () => {
                 }
                 const g = record(recordModel).generate(mrng).value;
                 assert.deepStrictEqual(g, expectedRecord);
+            })
+        ));
+        it('Should produce a record with missing keys', () => fc.assert(
+            fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
+                const mrng = new MutableRandomGenerator(MersenneTwister.from(seed));
+                const recordModel = {};
+                for (const k of keys)
+                    recordModel[k] = constant(`_${k}_`);
+                
+                const arb = record(recordModel, {with_deleted_keys: true});
+                for (let idx = 0 ; idx != 1000 ; ++idx) {
+                    const g = arb.generate(mrng).value;
+                    if (! g.hasOwnProperty(keys[missingIdx % keys.length]))
+                        return true;
+                }
+                return false;
+            })
+        ));
+        it('Should produce a record with present keys', () => fc.assert(
+            fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
+                const mrng = new MutableRandomGenerator(MersenneTwister.from(seed));
+                const recordModel = {};
+                for (const k of keys)
+                    recordModel[k] = constant(`_${k}_`);
+                
+                const arb = record(recordModel, {with_deleted_keys: true});
+                for (let idx = 0 ; idx != 1000 ; ++idx) {
+                    const g = arb.generate(mrng).value;
+                    if (g[keys[missingIdx % keys.length]] === `_${keys[missingIdx % keys.length]}_`)
+                        return true;
+                }
+                return false;
             })
         ));
     });

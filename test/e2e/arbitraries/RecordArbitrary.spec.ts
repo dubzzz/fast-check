@@ -14,5 +14,15 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
             assert.ok(out.failed, 'Should have failed');
             assert.deepEqual(out.counterexample, [{aa:0,bb:{},cc:"   "}], 'Should shrink to counterexample {aa: 0, bb: {}, cc: "   "}');
         });
+        it('Should shrink on a record with bb as single key', () => {
+            const recordModel = {
+                aa: fc.integer(),
+                bb: fc.object(),
+                cc: fc.string()
+            };
+            const out = fc.check(fc.property(fc.record(recordModel, {with_deleted_keys: true}), (obj: any) => obj['bb'] == null), {seed: seed});
+            assert.ok(out.failed, 'Should have failed');
+            assert.deepEqual(out.counterexample, [{bb:{}}], 'Should shrink to counterexample {bb: {}}');
+        });
     });
 });

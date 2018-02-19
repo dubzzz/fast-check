@@ -18,7 +18,7 @@ import { lorem } from './check/arbitrary/LoremArbitrary'
 import { anything, object, jsonObject, unicodeJsonObject, json, unicodeJson, ObjectConstraints } from './check/arbitrary/ObjectArbitrary'
 import { oneof } from './check/arbitrary/OneOfArbitrary'
 import { option } from './check/arbitrary/OptionArbitrary'
-import { record } from './check/arbitrary/RecordArbitrary'
+import { record, RecordConstraints } from './check/arbitrary/RecordArbitrary'
 import { string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String } from './check/arbitrary/StringArbitrary'
 import { set } from './check/arbitrary/SetArbitrary'
 import { tuple, generic_tuple } from './check/arbitrary/TupleArbitrary'
@@ -49,7 +49,7 @@ export {
     // extend the framework
     Arbitrary, Shrinkable,
     // interfaces
-    ObjectConstraints, Parameters, RunDetails,
+    ObjectConstraints, Parameters, RecordConstraints, RunDetails,
     UniformDistribution, LinearCongruential, MersenneTwister, MutableRandomGenerator, RandomGenerator,
     Stream, stream,
 };
