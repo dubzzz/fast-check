@@ -269,4 +269,33 @@ describe("Stream", () => {
             assert.deepEqual([...s], [1, 2, 3, 4, 5]);
         });
     });
+    describe("getNthOrLast", () => {
+        it("Should return the nth value of the stream", () => {
+            function* g() {
+                yield* [42, 5, 43, 8, 19];
+            }
+            let v = stream(g()).getNthOrLast(2);
+            assert.deepEqual(v, 43);
+        });
+        it("Should return the last value if the stream is too small", () => {
+            function* g() {
+                yield* [42, 5, 43, 8, 19];
+            }
+            let v = stream(g()).getNthOrLast(20);
+            assert.deepEqual(v, 19);
+        });
+        it("Should be null for empty streams", () => {
+            function* g() {}
+            let v = Stream.nil<number>().getNthOrLast(10);
+            assert.deepEqual(v, null);
+        });
+        it("Should be able to run on infinite streams", () => {
+            function* g() {
+                let idx = 0;
+                while (true) yield idx++;
+            }
+            let v = stream(g()).getNthOrLast(10);
+            assert.deepEqual(v, 10);
+        });
+    });
 });

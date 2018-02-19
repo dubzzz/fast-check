@@ -98,6 +98,16 @@ export default class Stream<T> implements IterableIterator<T> {
         }
         return new Stream<T>(helper(this));
     }
+
+    getNthOrLast(nth: number): T | null {
+        let last: T | null = null;
+        for (const v of this.g) {
+            if (nth-- === 0)
+                return v;
+            last = v;
+        }
+        return last;
+    }
 }
 
 function stream<T>(g: IterableIterator<T>): Stream<T> {
