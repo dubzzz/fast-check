@@ -126,7 +126,7 @@ describe('StringArbitrary', () => {
             })
         ));
     });
-    describe('base64', () => {
+    describe('base64String', () => {
         function isValidBase64(g: string) {
             const valid = (c: string) => (
                 ('a' <= c && c <= 'z') ||
