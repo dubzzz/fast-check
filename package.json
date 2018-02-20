@@ -30,18 +30,18 @@
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
-    "@types/mocha": "^2.2.47",
-    "@types/node": "^9.3.0",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.4.6",
     "@types/power-assert": "^1.4.29",
-    "browserify": "15.2.0",
+    "browserify": "^16.1.0",
     "chai": "^4.1.2",
     "codeclimate-test-reporter": "^0.5.0",
     "coveralls": "^3.0.0",
-    "mocha": "^5.0.0",
+    "mocha": "^5.0.1",
     "nyc": "^11.4.1",
-    "source-map-support": "^0.5.2",
-    "ts-node": "^4.1.0",
-    "typescript": "^2.6.2"
+    "source-map-support": "^0.5.3",
+    "ts-node": "^5.0.0",
+    "typescript": "^2.7.2"
   },
   "keywords": [
     "property-based testing",
