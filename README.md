@@ -272,6 +272,8 @@ All generated arbitraries inherit from the same base class: [Arbitrary](https://
 
 It cames with two useful methods: `filter(predicate: (t: T) => boolean): Arbitrary<T>` and `map<U>(mapper: (t: T) => U): Arbitrary<U>`. These methods are used internally by the framework to derive some Arbitraries from existing ones.
 
+Additionaly it comes with `noShrink()` which derives an existing `Arbitrary<T>` into the same `Arbitrary<T>` without the shrink option.
+
 #### Filter values
 
 `filter(predicate: (t: T) => boolean): Arbitrary<T>` can be used to filter undesirable values from the generated ones. It can be used as some kind of pre-requisite for the parameters required for your algorithm. For instance, you might need to generate two ordered integer values. One approach can be to use filter as follow:
@@ -303,6 +305,14 @@ const string = () => fc.array(fc.char()).map(arr => arr.join(''));
 ```
 
 Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) use this trick to define themselves.
+
+### Remove the shrinker
+
+Calling `noShrink()` on an `Arbitrary<T>` just remove the shrinker of the `Arbitrary<T>`. For instance, the following code will produce an `Arbitrary<number>` without shrinking operation.
+
+```js
+const intNoShrink = fc.int().noShrink();
+```
 
 ### Build your own
 
