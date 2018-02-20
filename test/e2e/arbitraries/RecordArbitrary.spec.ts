@@ -24,5 +24,22 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
             assert.ok(out.failed, 'Should have failed');
             assert.deepEqual(out.counterexample, [{bb:{}}], 'Should shrink to counterexample {bb: {}}');
         });
+        it('Should shrink on the failing conjonction of keys', () => {
+            const recordModel = {
+                enable_a: fc.boolean(),
+                enable_b: fc.boolean(),
+                enable_c: fc.boolean(),
+                enable_d: fc.boolean(),
+                force_positive_output: fc.boolean(),
+                force_negative_output: fc.boolean()
+            };
+            const out = fc.check(fc.property(fc.record(recordModel, {with_deleted_keys: true}), (obj: any) => {
+                if (obj.force_positive_output === true && obj.force_negative_output === true)
+                    return false;
+                return true;
+            }), {seed: seed});
+            assert.ok(out.failed, 'Should have failed');
+            assert.deepEqual(out.counterexample, [{force_positive_output:true,force_negative_output:true}], 'Should shrink to counterexample {force_positive_output:true,force_negative_output:true}');
+        });
     });
 });
