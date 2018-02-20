@@ -21,8 +21,10 @@ describe("ObjectArbitrary", () => {
             case 'number':
                 if (isNaN(original))
                     return assert.ok(isNaN(shrinked), 'Should be unchanged equal to NaN');
-                if (original === Number.MAX_VALUE || original === Number.MIN_VALUE
-                        || original === Number.MAX_SAFE_INTEGER || original === Number.MIN_SAFE_INTEGER)
+                if (original == Number.EPSILON
+                        || original === Number.MAX_VALUE || original === Number.MIN_VALUE
+                        || original === Number.MAX_SAFE_INTEGER || original === Number.MIN_SAFE_INTEGER
+                        || ! Number.isFinite(original))
                     return assert.ok(shrinked === 0 || shrinked === original, 'Should have shrinked toward zero or be the same');
                 return assert.strictEqual(shrinked, 0, 'Should have shrinked towards zero');
             case 'undefined':

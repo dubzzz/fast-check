@@ -25,8 +25,12 @@ export class ObjectConstraints {
         return [
                 boolean(), integer(), double(), string(),
                 oneof(
-                    constant(null), constant(undefined),
-                    constant(Number.NaN),
+                    string(),
+                    constant(null), constant(undefined)),
+                oneof(
+                    double(),
+                    constant(Number.NaN), constant(Number.POSITIVE_INFINITY), constant(Number.NEGATIVE_INFINITY),
+                    constant(Number.EPSILON), 
                     constant(Number.MIN_VALUE), constant(Number.MAX_VALUE),
                     constant(Number.MIN_SAFE_INTEGER), constant(Number.MAX_SAFE_INTEGER))
             ];
