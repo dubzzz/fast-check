@@ -1,5 +1,5 @@
 const assert = require('assert');
-const fc = require('../../lib/fast-check');
+const fc = require('fast-check');
 const { unit_tests } = require('./units');
 const { SpaceBuilder, Space } = require('./space');
 const { buggyKnight, knight } = require('./knight');
