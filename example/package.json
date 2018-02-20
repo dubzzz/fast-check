@@ -5,6 +5,7 @@
   "scripts": {
     "test:contains": "mocha contains/test.js",
     "test:knight": "mocha shadows-of-the-knight-codingame/test.js",
+    "test:settings": "mocha optional-settings-combination/test.js",
     "test": "npm run test:contains && npm run test:knight"
   },
   "devDependencies": {
