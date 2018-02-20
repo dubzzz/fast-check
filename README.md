@@ -18,6 +18,8 @@ Running examples in RunKit: https://runkit.com/dubzzz/fast-check-basic-examples
 
 ## Usage
 
+### In mocha or jasmine
+
 Using fast-check with [mocha](http://mochajs.org/) is really straightfoward.
 It can be used directly in `describe`, `it` blocks with no extra care.
 
@@ -47,6 +49,22 @@ In case of failure, the tests would raise a red flag and the output should help 
     Property failed after 1 tests (seed: 1515709471288): [,,]
     Got error: Property failed by returning false
 ```
+
+### In a web-page
+
+In order to use fast-check from a web-page (for instance with QUnit or other testing tools), you have to reference the web-aware script as follow:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/fast-check/lib/bundle.js"></script>
+```
+
+You can also reference a precise version by setting the version you want in the url:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/fast-check@0.0.11/lib/bundle.js"></script>
+```
+
+Once it has been included, fast-check becomes accessible directly by calling `fastcheck` (in `window.fastcheck`). I highly recommend you to alias it by `fc` whenever possible by running `const fc = fastcheck` at the beginning of the scripts using it. 
 
 ## Documentation
 
