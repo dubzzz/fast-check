@@ -138,13 +138,16 @@ function locate_in_space(space: Space, rounds: number) {
 
 // Custom arbitrary
 
-const SpaceArbitrary = fc.tuple(
-        fc.integer(1, 1000), fc.integer(1, 1000),
-        fc.integer(1, 1000), fc.integer(1, 1000),
-        fc.integer(1, 1000), fc.integer(1, 1000)
-    ).filter(([w,h,cx,cy,sx,sy]: [number,number,number,number,number,number]) =>
-        cx < w && sx < w && cy < h && sy < h
-    ).map(([w,h,cx,cy,sx,sy]: [number,number,number,number,number,number]) =>
+const SpaceArbitrary = fc.record({
+        w: fc.integer(1, 1000),
+        h: fc.integer(1, 1000),
+        cx: fc.integer(1, 1000),
+        cy: fc.integer(1, 1000),
+        sx: fc.integer(1, 1000),
+        sy: fc.integer(1, 1000)
+    })
+    .filter(({w,h,cx,cy,sx,sy}) => cx < w && sx < w && cy < h && sy < h)
+    .map(({w,h,cx,cy,sx,sy}) =>
         new SpaceBuilder()
             .withDimension(w, h)
             .withSolution(cx, cy)
