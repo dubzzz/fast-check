@@ -29,6 +29,7 @@ export class ObjectConstraints {
                     constant(null), constant(undefined)),
                 oneof(
                     double(),
+                    constant(-0), constant(0),
                     constant(Number.NaN), constant(Number.POSITIVE_INFINITY), constant(Number.NEGATIVE_INFINITY),
                     constant(Number.EPSILON), 
                     constant(Number.MIN_VALUE), constant(Number.MAX_VALUE),
