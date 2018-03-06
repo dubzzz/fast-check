@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../../lib/fast-check';
+import fc from '../../../../lib/fast-check';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { record } from '../../../../src/check/arbitrary/RecordArbitrary';

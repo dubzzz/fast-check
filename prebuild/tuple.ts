@@ -78,7 +78,7 @@ const propertyShrinkNotSuggestItselfFor = function(num : number): string {
 const generateTupleSpec = function(num: number): string {
     const blocks = [
             // imports
-            `import * as fc from '../../../../lib/fast-check';`,
+            `import fc from '../../../../lib/fast-check';`,
             `import { dummy, propertyNotSuggestInputInShrink, propertySameTupleForSameSeed, propertyShrinkInRange } from './TupleArbitrary.properties';`,
             // start blocks
             `describe('TupleArbitrary', () => {`,

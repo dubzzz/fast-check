@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../src/fast-check';
+import fc from '../../../src/fast-check';
 
 const seed = Date.now();
 describe(`TupleArbitrary (seed: ${seed})`, () => {

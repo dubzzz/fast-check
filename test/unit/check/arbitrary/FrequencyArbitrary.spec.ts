@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../../lib/fast-check';
+import fc from '../../../../lib/fast-check';
 
 import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
 import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';

@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../../lib/fast-check';
+import fc from '../../../../lib/fast-check';
 
 import { char, ascii, char16bits, unicode, hexa, base64, fullUnicode } from '../../../../src/check/arbitrary/CharacterArbitrary';
 

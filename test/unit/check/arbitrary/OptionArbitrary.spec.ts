@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../../lib/fast-check';
+import fc from '../../../../lib/fast-check';
 
 import { option } from '../../../../src/check/arbitrary/OptionArbitrary';
 import MersenneTwister from '../../../../src/random/generator/MersenneTwister';

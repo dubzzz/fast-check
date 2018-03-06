@@ -1,4 +1,4 @@
-import * as fc from '../../../../lib/fast-check';
+import fc from '../../../../lib/fast-check';
 import { dummy, propertyNotSuggestInputInShrink, propertySameTupleForSameSeed, propertyShrinkInRange } from './TupleArbitrary.properties';
 
 describe('TupleArbitrary', () => {

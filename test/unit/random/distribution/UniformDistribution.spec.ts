@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../../lib/fast-check';
+import fc from '../../../../lib/fast-check';
 
 import UniformDistribution from '../../../../src/random/distribution/UniformDistribution';
 import RandomGenerator from '../../../../src/random/generator/RandomGenerator';

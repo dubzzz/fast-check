@@ -1,5 +1,5 @@
 import * as assert from 'power-assert';
-import * as fc from '../../../../lib/fast-check';
+import fc from '../../../../lib/fast-check';
 
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 import { RandomGenerator, skip_n, generate_n } from '../../../../src/random/generator/RandomGenerator';
