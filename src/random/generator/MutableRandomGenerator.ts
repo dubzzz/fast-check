@@ -1,4 +1,4 @@
-import RandomGenerator from './RandomGenerator'
+import { RandomGenerator } from 'pure-rand';
 
 export default class MutableRandomGenerator implements RandomGenerator {
     constructor(private rng_: RandomGenerator) {}

@@ -1,8 +1,8 @@
 import * as assert from 'power-assert';
+import prand from 'pure-rand';
 import fc from '../../../../lib/fast-check';
 
 import { option } from '../../../../src/check/arbitrary/OptionArbitrary';
-import MersenneTwister from '../../../../src/random/generator/MersenneTwister';
 import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
 
 import * as stubArb from '../../stubs/arbitraries';
@@ -13,7 +13,7 @@ describe("OptionArbitrary", () => {
         it('Should produce null option on default freq value', () => fc.assert(
             fc.property(fc.integer(), (seed) => {
                 const MAX_GUESSES = 1000;
-                const mrng = new MutableRandomGenerator(MersenneTwister.from(seed));
+                const mrng = new MutableRandomGenerator(prand.mersenne(seed));
                 const arb = option(stubArb.forward());
                 for (let idx = 0 ; idx != MAX_GUESSES ; ++idx) {
                     if (arb.generate(mrng).value == null) {

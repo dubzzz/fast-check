@@ -23,11 +23,7 @@ import { string, asciiString, string16bits, unicodeString, fullUnicodeString, he
 import { set } from './check/arbitrary/SetArbitrary'
 import { tuple, generic_tuple } from './check/arbitrary/TupleArbitrary'
 
-import { UniformDistribution } from './random/distribution/UniformDistribution'
-import LinearCongruential from './random/generator/LinearCongruential'
-import MersenneTwister from './random/generator/MersenneTwister'
 import { MutableRandomGenerator } from './random/generator/MutableRandomGenerator'
-import { RandomGenerator } from './random/generator/RandomGenerator'
 
 import { Stream, stream } from './stream/Stream'
 
@@ -50,6 +46,6 @@ export {
     Arbitrary, Shrinkable,
     // interfaces
     ObjectConstraints, Parameters, RecordConstraints, RunDetails,
-    UniformDistribution, LinearCongruential, MersenneTwister, MutableRandomGenerator, RandomGenerator,
+    MutableRandomGenerator,
     Stream, stream,
 };
