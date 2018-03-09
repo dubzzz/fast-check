@@ -1,0 +1,40 @@
+import * as assert from 'power-assert';
+import prand from 'pure-rand';
+import fc from '../../src/fast-check';
+
+const seed = Date.now();
+describe(`Generate all values (seed: ${seed})`, () => {
+    /**
+     * Check the ability of arbitraries to generate all the values
+     * of their type / range
+     */
+    const lookForMissing = <T>(arb: fc.Arbitrary<T>, missing: number): void => {
+        const mrng = new fc.Random(prand.mersenne(seed));
+        const alreadySeen = {};
+        while (missing > 0) {
+            const g = arb.generate(mrng).value.toString();
+            if (alreadySeen[g]) continue;
+            alreadySeen[g] = true;
+            --missing;
+        }
+    };
+    describe('fc.char()', () => {
+        it('Should be able to produce any printable character', () => lookForMissing(fc.char(), 95));
+    });
+    describe('fc.ascii()', () => {
+        it('Should be able to produce any character from ascii', () => lookForMissing(fc.ascii(), 128));
+    });
+    describe('fc.char16bits()', () => {
+        it('Should be able to produce any 16 bits character', () => lookForMissing(fc.char16bits(), 65536));
+    });
+    describe('fc.unicode()', () => {
+        const numCharacters = 65536 - (0xdfff - 0xd800 +1);
+        it('Should be able to produce any character from unicode (UCS-2 subset only)', () => lookForMissing(fc.unicode(), numCharacters));
+    });
+    describe('fc.hexa()', () => {
+        it('Should be able to produce any character from hexa', () => lookForMissing(fc.hexa(), 16));
+    });
+    describe('fc.base64()', () => {
+        it('Should be able to produce any character from base64', () => lookForMissing(fc.base64(), 64));
+    });
+});
