@@ -18,6 +18,16 @@ describe(`Generate all values (seed: ${seed})`, () => {
             --missing;
         }
     };
+    describe('fc.boolean()', () => {
+        it('Should be able to produce true and false', () => lookForMissing(fc.boolean(), 2));
+    });
+    describe('fc.integer()', () => {
+        it('Should be able to produce all integer values within the range', () => fc.assert(
+            fc.property(
+                fc.integer(), fc.nat(100),
+                (from, gap) => lookForMissing(fc.integer(from, from+gap), gap+1))
+        ))
+    });
     describe('fc.char()', () => {
         it('Should be able to produce any printable character', () => lookForMissing(fc.char(), 95));
     });
@@ -36,5 +46,12 @@ describe(`Generate all values (seed: ${seed})`, () => {
     });
     describe('fc.base64()', () => {
         it('Should be able to produce any character from base64', () => lookForMissing(fc.base64(), 64));
+    });
+    describe('fc.constantFrom()', () => {
+        it('Should be able to produce all the constants', () => fc.assert(
+            fc.property(
+                fc.set(fc.string(), 0, 40),
+                (csts) => lookForMissing(fc.constantFrom(csts[0], ...csts.slice(1)), csts.length))
+        ))
     });
 });
