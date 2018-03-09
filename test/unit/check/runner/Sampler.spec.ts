@@ -56,7 +56,7 @@ describe('Sampler', () => {
             fc.property(fc.integer(), fc.integer(1, MAX_NUM_RUNS), (seed, runs) => {
                 let logs: string[] = [];
                 const classify = (g: number) => g.toString();
-                statistics(customGen(), classify, {seed: seed, logger: (v: string) => logs.push(v)});
+                statistics(customGen(), classify, {seed: seed, num_runs: runs, logger: (v: string) => logs.push(v)});
                 assert.notEqual(logs.length, 1, 'Should not be empty');
             })
         ));
