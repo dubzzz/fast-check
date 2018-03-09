@@ -318,9 +318,14 @@ const intNoShrink = fc.int().noShrink();
 
 ### Build your own
 
-You can also fully customize your arbitrary and not derived from any of the buit-in arbitraries. What you have to do is to derive from [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: MutableRandomGenerator): Shrinkable<T>`.
+You can also fully customize your arbitrary and by not deriving it from any of the buit-in arbitraries. What you have to do is to derive from [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: Random): Shrinkable<T>`.
 
-`generate` is responsable for the generation of one new random entity of type `T` (see signature above). In ordedr to fulfill it in a deterministic way it received a `mrng: MutableRandomGenerator`. It can then use it to generate integer values within `min` (included) and `max` (included) by using `UniformDistribution.inRange(min, max)(mrng)[0]`.
+`generate` is responsable for the generation of one new random entity of type `T` (see signature above). In order to fulfill it in a deterministic way it received a `mrng: Random`. It comes with multiple built-in helpers to generate values:
+- `next(n: number): number`: uniformly distributed n bits value (max value of n = 31)
+- `nextBoolean(): boolean`: uniformly distributed boolean value
+- `nextInt(): number`: uniformly distributed integer value
+- `nextInt(from: number, to: number): number`: uniformly distributed integer value between from (inclusive) and to (inclusive)
+- `nextDouble(): number`: uniformly distributed double value between 0.0 (included) and 1.0 (not included)
 
 The generated value also came with a shrink method able to derive _smaller_ values in case of failure. It can be ignored making the arbitrary not shrinkable.
 

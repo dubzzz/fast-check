@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
 import { nat } from './IntegerArbitrary'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 
 class OptionArbitrary<T> extends Arbitrary<T | null> {
     readonly isOptionArb: Arbitrary<number>;
@@ -17,7 +17,7 @@ class OptionArbitrary<T> extends Arbitrary<T | null> {
                 s.value,
                 () => s.shrink().map(OptionArbitrary.extendedShrinkable).join(g()));
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<T | null> {
+    generate(mrng: Random): Shrinkable<T | null> {
         return this.isOptionArb.generate(mrng).value === 0
                 ? new Shrinkable(null)
                 : OptionArbitrary.extendedShrinkable(this.arb.generate(mrng));

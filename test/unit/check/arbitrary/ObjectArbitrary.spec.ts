@@ -2,7 +2,7 @@ import * as assert from 'power-assert';
 import fc from '../../../../lib/fast-check';
 
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
-import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../src/random/generator/Random';
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
 import { anything, object, jsonObject, unicodeJsonObject, json, unicodeJson, ObjectConstraints } from '../../../../src/check/arbitrary/ObjectArbitrary';

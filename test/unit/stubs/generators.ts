@@ -1,5 +1,5 @@
 import { RandomGenerator } from 'pure-rand';
-import MutableRandomGenerator from '../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../src/random/generator/Random';
 
 /**
  * NoCallGenerator
@@ -74,9 +74,9 @@ const raw = {
 };
 
 const mutable = {
-    counter: (value: number) => new MutableRandomGenerator(new CounterRandomGenerator(value)),
-    nocall: () => new MutableRandomGenerator(new NoCallGenerator()),
-    fastincrease: (value: number) => new MutableRandomGenerator(new FastIncreaseRandomGenerator(value))
+    counter: (value: number) => new Random(new CounterRandomGenerator(value)),
+    nocall: () => new Random(new NoCallGenerator()),
+    fastincrease: (value: number) => new Random(new FastIncreaseRandomGenerator(value))
 };
 
 export { mutable, raw };

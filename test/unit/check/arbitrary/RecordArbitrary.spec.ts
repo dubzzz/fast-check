@@ -4,7 +4,7 @@ import fc from '../../../../lib/fast-check';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { record } from '../../../../src/check/arbitrary/RecordArbitrary';
-import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../src/random/generator/Random';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
@@ -26,7 +26,7 @@ describe("RecordArbitrary", () => {
         ));
         it('Should produce a record with missing keys', () => fc.assert(
             fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
-                const mrng = new MutableRandomGenerator(prand.mersenne(seed));
+                const mrng = new Random(prand.mersenne(seed));
                 const recordModel = {};
                 for (const k of keys)
                     recordModel[k] = constant(`_${k}_`);
@@ -42,7 +42,7 @@ describe("RecordArbitrary", () => {
         ));
         it('Should produce a record with present keys', () => fc.assert(
             fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
-                const mrng = new MutableRandomGenerator(prand.mersenne(seed));
+                const mrng = new Random(prand.mersenne(seed));
                 const recordModel = {};
                 for (const k of keys)
                     recordModel[k] = constant(`_${k}_`);

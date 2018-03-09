@@ -5,7 +5,7 @@ import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
-import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../src/random/generator/Random';
 import { stream } from '../../../../src/stream/Stream';
 
 import * as stubRng from '../../stubs/generators';
@@ -14,7 +14,7 @@ class CustomArbitrary extends Arbitrary<number> {
     constructor(readonly value: number) {
         super();
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<number> {
+    generate(mrng: Random): Shrinkable<number> {
         function* g(v: number) {
             yield new Shrinkable(v -42);
         }

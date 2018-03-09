@@ -1,15 +1,15 @@
-import MutableRandomGenerator from '../../../random/generator/MutableRandomGenerator'
+import Random from '../../../random/generator/Random'
 import Shrinkable from './Shrinkable'
 import Stream from '../../../stream/Stream'
 
 export default abstract class Arbitrary<T> {
-    abstract generate(mrng: MutableRandomGenerator): Shrinkable<T>;
+    abstract generate(mrng: Random): Shrinkable<T>;
     filter(predicate: (t: T) => boolean): Arbitrary<T> {
         class FilteredArbitrary<T> extends Arbitrary<T> {
             constructor(readonly arb: Arbitrary<T>, readonly predicate: (t: T) => boolean) {
                 super();
             }
-            generate(mrng: MutableRandomGenerator): Shrinkable<T> {
+            generate(mrng: Random): Shrinkable<T> {
                 let g = this.arb.generate(mrng);
                 while (! this.predicate(g.value)) {
                     g = this.arb.generate(mrng);
@@ -24,7 +24,7 @@ export default abstract class Arbitrary<T> {
             constructor(readonly arb: Arbitrary<T>, readonly mapper: (t: T) => U) {
                 super();
             }
-            generate(mrng: MutableRandomGenerator): Shrinkable<U> {
+            generate(mrng: Random): Shrinkable<U> {
                 return this.arb.generate(mrng).map(this.mapper);
             }
         }
@@ -35,7 +35,7 @@ export default abstract class Arbitrary<T> {
             constructor(readonly arb: Arbitrary<T>) {
                 super();
             }
-            generate(mrng: MutableRandomGenerator): Shrinkable<T> {
+            generate(mrng: Random): Shrinkable<T> {
                 return new Shrinkable(this.arb.generate(mrng).value);
             }
         }
@@ -44,7 +44,7 @@ export default abstract class Arbitrary<T> {
 }
 
 abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
-    abstract generate(mrng: MutableRandomGenerator): Shrinkable<T>;
+    abstract generate(mrng: Random): Shrinkable<T>;
     abstract shrink(value: T): Stream<T>;
     shrinkableFor(value: T): Shrinkable<T> {
         return new Shrinkable(value, () => this.shrink(value).map(v => this.shrinkableFor(v)));

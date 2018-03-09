@@ -1,7 +1,7 @@
 import { Arbitrary, ArbitraryWithShrink } from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
 import { integer } from './IntegerArbitrary'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 import { Stream, stream } from '../../stream/Stream'
 
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
@@ -18,7 +18,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
             items.map(s => s.value),
             () => this.shrinkImpl(items).map(v => this.wrapper(v)));
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<T[]> {
+    generate(mrng: Random): Shrinkable<T[]> {
         const size = this.lengthArb.generate(mrng);
         const items = [...Array(size.value)].map(() => this.arb.generate(mrng));
         return this.wrapper(items);

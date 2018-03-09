@@ -1,7 +1,7 @@
 import Arbitrary from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
 import { integer } from './IntegerArbitrary'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 import { Stream, stream } from '../../stream/Stream'
 
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number = v => v) {

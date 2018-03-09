@@ -1,6 +1,6 @@
 import Arbitrary from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 import { nat } from './IntegerArbitrary'
 
 export interface WeightedArbitrary<T> {
@@ -21,7 +21,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
                 .slice(1);
         this.idArb = nat(this.summedWarbs[this.summedWarbs.length -1].weight -1);
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<T> {
+    generate(mrng: Random): Shrinkable<T> {
         const selected = this.idArb.generate(mrng).value;
         return this.summedWarbs
                 .find(warb => selected < warb.weight)!.arbitrary

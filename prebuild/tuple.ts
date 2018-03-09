@@ -8,7 +8,7 @@ const classFor = function(num: number): string {
                 super();
                 this.tupleArb = new GenericTupleArbitrary([${arbCommas(num)}]);
             }
-            generate(mrng: MutableRandomGenerator): Shrinkable<[${txCommas(num)}]> {
+            generate(mrng: Random): Shrinkable<[${txCommas(num)}]> {
                 return this.tupleArb.generate(mrng) as Shrinkable<[${txCommas(num)}]>;
             }
         };
@@ -34,7 +34,7 @@ const generateTuple = function(num: number): string {
             // imports
             `import Arbitrary from './definition/Arbitrary';`,
             `import Shrinkable from './definition/Shrinkable';`,
-            `import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator';`,
+            `import Random from '../../random/generator/Random';`,
             `import { GenericTupleArbitrary } from './TupleArbitrary.generic';`,
             // declare all necessary classes
             ...iota(num).map(num => classFor(num +1)),

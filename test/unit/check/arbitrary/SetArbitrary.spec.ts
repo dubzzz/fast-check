@@ -5,7 +5,7 @@ import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { set, buildCompareFilter } from '../../../../src/check/arbitrary/SetArbitrary';
 import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
-import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../src/random/generator/Random';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';

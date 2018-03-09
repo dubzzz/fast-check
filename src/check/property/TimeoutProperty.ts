@@ -1,6 +1,6 @@
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator';
+import Random from '../../random/generator/Random';
 import IProperty from './IProperty';
 
 const timeoutAfter = function(timeMs: number) {
@@ -11,7 +11,7 @@ const timeoutAfter = function(timeMs: number) {
 export class TimeoutProperty<Ts> implements IProperty<Ts> {
     constructor(readonly property: IProperty<Ts>, readonly timeMs: number) { }
     isAsync = () => true;
-    generate(mrng: MutableRandomGenerator): Shrinkable<Ts> {
+    generate(mrng: Random): Shrinkable<Ts> {
         return this.property.generate(mrng);
     }
     async run(v: Ts): Promise<string|null> {

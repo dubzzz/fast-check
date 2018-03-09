@@ -1,6 +1,6 @@
 import Arbitrary from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 import { nat } from './IntegerArbitrary'
 import { stream, Stream } from '../../stream/Stream'
 
@@ -10,7 +10,7 @@ class ConstantArbitrary<T> extends Arbitrary<T> {
         super();
         this.idArb = nat(values.length -1);
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<T> {
+    generate(mrng: Random): Shrinkable<T> {
         if (this.values.length === 1)
             return new Shrinkable(this.values[0]);
         

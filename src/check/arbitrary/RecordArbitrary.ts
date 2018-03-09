@@ -1,5 +1,5 @@
 import Arbitrary from './definition/Arbitrary'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 
 import { option } from './OptionArbitrary'
 import { generic_tuple } from './TupleArbitrary'

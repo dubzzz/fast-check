@@ -2,14 +2,14 @@ import * as assert from 'power-assert';
 import fc from '../../../../lib/fast-check';
 
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
-import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../src/random/generator/Random';
 import { float, double } from '../../../../src/check/arbitrary/FloatingPointArbitrary';
 
 import * as stubRng from '../../stubs/generators';
 
 const MAX_TRIES = 100;
 describe("FloatingPointArbitrary", () => {
-    const canGenerateFloatingPoint = (mrng: MutableRandomGenerator, arb: Arbitrary<number>) => {
+    const canGenerateFloatingPoint = (mrng: Random, arb: Arbitrary<number>) => {
         for (let idx = 0 ; idx != MAX_TRIES ; ++idx) {
             const g = arb.generate(mrng).value;
             if (g != Math.round(g)) {

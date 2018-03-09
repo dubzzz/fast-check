@@ -1,6 +1,6 @@
 import Arbitrary from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 import { Stream, stream } from '../../stream/Stream'
 
 class GenericTupleArbitrary extends Arbitrary<any[]> {
@@ -12,7 +12,7 @@ class GenericTupleArbitrary extends Arbitrary<any[]> {
             shrinkables.map(s => s.value),
             () => GenericTupleArbitrary.shrinkImpl(shrinkables).map(GenericTupleArbitrary.wrapper));
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<any[]> {
+    generate(mrng: Random): Shrinkable<any[]> {
         return GenericTupleArbitrary.wrapper(this.arbs.map(a => a.generate(mrng)));
     }
     private static shrinkImpl(value: Shrinkable<any>[]): Stream<Shrinkable<any>[]> {

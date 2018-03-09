@@ -1,6 +1,6 @@
 import Arbitrary from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 
 import { array } from './ArrayArbitrary'
 import { boolean } from './BooleanArbitrary'
@@ -72,7 +72,7 @@ class ObjectArbitrary extends Arbitrary<any> {
         }
         return oneof(potentialArbValue[0], ...potentialArbValue.slice(0));
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<any> {
+    generate(mrng: Random): Shrinkable<any> {
         return dictionary(
                 this.constraints.key,
                 ObjectArbitrary.anything(this.constraints)

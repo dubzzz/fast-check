@@ -2,7 +2,7 @@ import prand from 'pure-rand'
 
 import { ArbitraryWithShrink } from './definition/Arbitrary'
 import Shrinkable from './definition/Shrinkable'
-import MutableRandomGenerator from '../../random/generator/MutableRandomGenerator'
+import Random from '../../random/generator/Random'
 import { stream, Stream } from '../../stream/Stream'
 
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
@@ -19,11 +19,8 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     private wrapper(value: number): Shrinkable<number> {
         return new Shrinkable(value, () => this.shrink(value).map(v => this.wrapper(v)));
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<number> {
-        return this.wrapper(this.generateImpl(mrng));
-    }
-    private generateImpl(mrng: MutableRandomGenerator): number {
-        return prand.uniformIntDistribution(this.min, this.max)(mrng)[0];
+    generate(mrng: Random): Shrinkable<number> {
+        return this.wrapper(mrng.nextInt(this.min, this.max));
     }
     private shrink_to(value: number, target: number): Stream<number> {
         const gap = value - target;

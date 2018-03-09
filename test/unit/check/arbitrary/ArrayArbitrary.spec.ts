@@ -5,7 +5,7 @@ import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
-import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../src/random/generator/Random';
 
 import * as stubRng from '../../stubs/generators';
 
@@ -13,7 +13,7 @@ class DummyArbitrary extends Arbitrary<any> {
     constructor(public value:() => number) {
         super();
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<any> {
+    generate(mrng: Random): Shrinkable<any> {
         return new Shrinkable({ key: this.value() });
     }
 }

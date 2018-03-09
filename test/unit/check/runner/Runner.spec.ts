@@ -4,7 +4,7 @@ import fc from '../../../../lib/fast-check';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
-import MutableRandomGenerator from '../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../src/random/generator/Random';
 import { RunDetails } from '../../../../src/check/runner/utils/utils';
 import Stream from '../../../../src/stream/Stream';
 
@@ -101,7 +101,7 @@ describe('Runner', () => {
                 const buildPropertyFor = function(runOn: number[]) {
                     const p: IProperty<[number]> = {
                         isAsync: () => false,
-                        generate: (rng: MutableRandomGenerator) => {
+                        generate: (rng: Random) => {
                             return new Shrinkable([rng.next()[0]]) as Shrinkable<[number]>;
                         },
                         run: (value: [number]) => {

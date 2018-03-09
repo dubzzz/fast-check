@@ -3,7 +3,7 @@ import fc from '../../../../../lib/fast-check';
 
 import Arbitrary from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../../src/check/arbitrary/definition/Shrinkable';
-import MutableRandomGenerator from '../../../../../src/random/generator/MutableRandomGenerator';
+import Random from '../../../../../src/random/generator/Random';
 import { Stream, stream } from '../../../../../src/stream/Stream';
 
 import * as stubRng from '../../../stubs/generators'
@@ -15,8 +15,8 @@ class ForwardArbitrary extends Arbitrary<number> {
         }
         return new Shrinkable(v, () => stream(g(v)).map(vv => this.shrinkableFor(vv)))
     }
-    generate(mrng: MutableRandomGenerator): Shrinkable<number> {
-        return this.shrinkableFor(mrng.next()[0]);
+    generate(mrng: Random): Shrinkable<number> {
+        return this.shrinkableFor(mrng.nextInt());
     }
 }
 
