@@ -12,7 +12,7 @@ describe('Random', () => {
                 const mrng = new Random(prand.mersenne(seed));
                 for (let idx = 0 ; idx != num ; ++idx) {
                     const v = mrng.next(n);
-                    if (v < 0 || v > (1 << n) -1) return false;
+                    if (v < 0 || v > (((1 << n) -1) | 0)) return false;
                 }
                 return true;
             })
