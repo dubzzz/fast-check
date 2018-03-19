@@ -211,8 +211,8 @@ Single character only:
 - `fc.base64()` one character in `A-Z`, `a-z`, `0-9`, `+` or `/`
 - `fc.char()` between 0x20 (included) and 0x7e (included) , corresponding to printable characters (see https://www.ascii-code.com/)
 - `fc.ascii()` between 0x00 (included) and 0x7f (included)
-- `fc.unicode()` between 0x0000 (included) and 0xffff (included) but excluding surrogate pairs (between 0xd800 and 0xdfff). Generate any character of UCS-2 which is a subset of UTF-16
-- `fc.char16bits()` between 0x0000 (included) and 0xffff (included). Generate any 16 bits character. Be aware the values within 0xd800 and 0xdfff which constitutes the surrogate pairs characters are also generated meaning that some generated characters might appear invalid regarding unicode encoding
+- `fc.unicode()` between 0x0000 (included) and 0xffff (included) but excluding surrogate pairs (between 0xd800 and 0xdfff). Generate any character of UCS-2 which is a subset of UTF-16 (restricted to BMP plan)
+- `fc.char16bits()` between 0x0000 (included) and 0xffff (included). Generate any 16 bits character. Be aware the values within 0xd800 and 0xdfff which constitutes the surrogate pair characters are also generated meaning that some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding
 - `fc.fullUnicode()` between 0x0000 (included) and 0x10ffff (included) but excluding surrogate pairs (between 0xd800 and 0xdfff). Its length can be greater than one as it potentially contains multiple UTF-16 characters for a single glyph
 
 Multiple characters:
