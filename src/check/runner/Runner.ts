@@ -6,23 +6,43 @@ import { TimeoutProperty } from '../property/TimeoutProperty'
 import toss from './Tosser'
 import { Parameters, QualifiedParameters, RunDetails, successFor, failureFor, throwIfFailed } from './utils/utils'
 
-function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string, num_shrinks: number = 0): [Ts, number, string] {
-    for (const v of value.shrink()) {
-        const out = property.run(v.value) as (string|null);
-        if (out != null) {
-            return shrinkIt(property, v, out, num_shrinks+1);
+type ShrinkDetails<Ts> = [Ts, number, string];
+
+function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string): ShrinkDetails<Ts> {
+    let details: ShrinkDetails<Ts> = [value.value, 0, error];
+    let currentValue: Shrinkable<Ts> = value;
+    let stopShrinking = false;
+    while (!stopShrinking) {
+        stopShrinking = true;
+        for (const v of currentValue.shrink()) {
+            const out = property.run(v.value) as (string|null);
+            if (out != null) {
+                stopShrinking = false;
+                details = [v.value, details[1] +1, out];
+                currentValue = v;
+                break;
+            }
         }
     }
-    return [value.value, num_shrinks, error];
+    return details;
 }
-async function asyncShrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string, num_shrinks: number = 0): Promise<[Ts, number, string]> {
-    for (const v of value.shrink()) {
-        const out = await property.run(v.value);
-        if (out != null) {
-            return await asyncShrinkIt(property, v, out, num_shrinks+1);
+async function asyncShrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string): Promise<ShrinkDetails<Ts>> {
+    let details: ShrinkDetails<Ts> = [value.value, 0, error];
+    let currentValue: Shrinkable<Ts> = value;
+    let stopShrinking = false;
+    while (!stopShrinking) {
+        stopShrinking = true;
+        for (const v of currentValue.shrink()) {
+            const out = await property.run(v.value) as (string|null);
+            if (out != null) {
+                stopShrinking = false;
+                details = [v.value, details[1] +1, out];
+                currentValue = v;
+                break;
+            }
         }
     }
-    return [value.value, num_shrinks, error];
+    return details;
 }
 
 function internalCheck<Ts>(property: IProperty<Ts>, params?: Parameters): RunDetails<Ts> {
