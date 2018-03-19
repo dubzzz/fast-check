@@ -57,7 +57,7 @@ describe('Sampler', () => {
                 let logs: string[] = [];
                 const classify = (g: number) => g.toString();
                 statistics(customGen(), classify, {seed: seed, num_runs: runs, logger: (v: string) => logs.push(v)});
-                assert.notEqual(logs.length, 1, 'Should not be empty');
+                assert.notEqual(logs.length, 0, 'Should not be empty');
             })
         ));
         it('Should produce the same statistics given the same seed', () => fc.assert(
