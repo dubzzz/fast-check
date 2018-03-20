@@ -72,6 +72,9 @@ class RunExecution<Ts> {
 }
 
 function prettyOne(value: any): string {
+    if (typeof value === 'string')
+        return JSON.stringify(value);
+    
     const defaultRepr: string = `${value}`;
     if (/^\[object (Object|Null|Undefined)\]$/.exec(defaultRepr) === null)
         return defaultRepr;
