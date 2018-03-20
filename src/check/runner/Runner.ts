@@ -6,80 +6,89 @@ import { TimeoutProperty } from '../property/TimeoutProperty'
 import toss from './Tosser'
 import { Parameters, QualifiedParameters, RunDetails, successFor, failureFor, throwIfFailed } from './utils/utils'
 
-type ShrinkDetails<Ts> = [Ts, number, string];
+class RunExecution<Ts> {
+    public pathToFailure?: string;
+    public value?: Ts;
+    public failure: string;
+    
+    public fail(value: Ts, id: number, message: string) {
+        if (this.pathToFailure == null)
+            this.pathToFailure = `${id}`;
+        else
+            this.pathToFailure += `:${id}`;
+        this.value = value;
+        this.failure = message;
+    }
 
-function shrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string): ShrinkDetails<Ts> {
-    let details: ShrinkDetails<Ts> = [value.value, 0, error];
-    let currentValue: Shrinkable<Ts> = value;
-    let stopShrinking = false;
-    while (!stopShrinking) {
-        stopShrinking = true;
-        for (const v of currentValue.shrink()) {
+    private isSuccess = (): boolean => this.pathToFailure == null;
+    private firstFailure = (): number => this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1;
+    private numShrinks = (): number => this.pathToFailure ? this.pathToFailure.split(':').length : 0;
+
+    public toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
+        return this.isSuccess()
+            ? successFor<Ts>(qParams)
+            : failureFor<Ts>(qParams, this.firstFailure() +1, this.numShrinks(), this.value!, this.failure);
+    }
+}
+
+function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
+    const runExecution = new RunExecution<Ts>();
+    let done = false;
+    let values: IterableIterator<Shrinkable<Ts>> = initialValues;
+    while (!done) {
+        done = true;
+        let idx = 0;
+        for (const v of values) {
             const out = property.run(v.value) as (string|null);
             if (out != null) {
-                stopShrinking = false;
-                details = [v.value, details[1] +1, out];
-                currentValue = v;
+                runExecution.fail(v.value, idx, out);
+                values = v.shrink();
+                done = false;
                 break;
             }
+            ++idx;
         }
     }
-    return details;
+    return runExecution;
 }
-async function asyncShrinkIt<Ts>(property: IProperty<Ts>, value: Shrinkable<Ts>, error: string): Promise<ShrinkDetails<Ts>> {
-    let details: ShrinkDetails<Ts> = [value.value, 0, error];
-    let currentValue: Shrinkable<Ts> = value;
-    let stopShrinking = false;
-    while (!stopShrinking) {
-        stopShrinking = true;
-        for (const v of currentValue.shrink()) {
+async function asyncRunIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): Promise<RunExecution<Ts>> {
+    const runExecution = new RunExecution<Ts>();
+    let done = false;
+    let values: IterableIterator<Shrinkable<Ts>> = initialValues;
+    while (!done) {
+        done = true;
+        let idx = 0;
+        for (const v of values) {
             const out = await property.run(v.value) as (string|null);
             if (out != null) {
-                stopShrinking = false;
-                details = [v.value, details[1] +1, out];
-                currentValue = v;
+                runExecution.fail(v.value, idx, out);
+                values = v.shrink();
+                done = false;
                 break;
             }
+            ++idx;
         }
     }
-    return details;
-}
-
-function internalCheck<Ts>(property: IProperty<Ts>, params?: Parameters): RunDetails<Ts> {
-    const qParams = QualifiedParameters.read(params);
-    const generator = toss(property, qParams.seed);
-    for (let idx = 0 ; idx < qParams.num_runs ; ++idx) {
-        const g = generator.next().value();
-        const out = property.run(g.value);
-        if (out != null) {
-            const [shrinkedValue, numShrinks, error] = shrinkIt(property, g, out as string);
-            return failureFor(qParams, idx+1, numShrinks, shrinkedValue, error);
-        }
-    }
-    return successFor<Ts>(qParams);
-}
-async function asyncInternalCheck<Ts>(rawProperty: IProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>> {
-    const qParams = QualifiedParameters.read(params);
-    const property = qParams.timeout == null ? rawProperty : new TimeoutProperty(rawProperty, qParams.timeout);
-    const generator = toss(property, qParams.seed);
-    for (let idx = 0 ; idx < qParams.num_runs ; ++idx) {
-        const g = generator.next().value();
-        const out = await property.run(g.value);
-        if (out != null) {
-            const [shrinkedValue, numShrinks, error] = await asyncShrinkIt(property, g, out as string);
-            return failureFor(qParams, idx+1, numShrinks, shrinkedValue, error);
-        }
-    }
-    return successFor<Ts>(qParams);
+    return runExecution;
 }
 
 function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters) : Promise<RunDetails<Ts>>;
 function check<Ts>(property: Property<Ts>, params?: Parameters) : RunDetails<Ts>;
 function check<Ts>(property: IProperty<Ts>, params?: Parameters) : Promise<RunDetails<Ts>> | RunDetails<Ts>;
-function check<Ts>(property: IProperty<Ts>, params?: Parameters) {
+function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
+    const qParams = QualifiedParameters.read(params);
+    const property = rawProperty.isAsync() && qParams.timeout != null
+        ? new TimeoutProperty(rawProperty, qParams.timeout)
+        : rawProperty;
+    const generator = toss(property, qParams.seed);
+    
+    function* g() {
+        for (let idx = 0 ; idx < qParams.num_runs ; ++idx)
+            yield generator.next().value();
+    }
     return property.isAsync()
-            ? asyncInternalCheck(property, params)
-            : internalCheck(property, params);
+            ? asyncRunIt(property, g()).then(e => e.toRunDetails(qParams))
+            : runIt(property, g()).toRunDetails(qParams);
 }
 
 function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters) : Promise<void>;
