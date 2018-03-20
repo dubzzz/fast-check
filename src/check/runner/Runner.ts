@@ -4,32 +4,7 @@ import { Property } from '../property/Property'
 import { AsyncProperty } from '../property/AsyncProperty'
 import { TimeoutProperty } from '../property/TimeoutProperty'
 import toss from './Tosser'
-import { Parameters, QualifiedParameters, RunDetails, successFor, failureFor, throwIfFailed } from './utils/utils'
-
-class RunExecution<Ts> {
-    public pathToFailure?: string;
-    public value?: Ts;
-    public failure: string;
-    
-    public fail(value: Ts, id: number, message: string) {
-        if (this.pathToFailure == null)
-            this.pathToFailure = `${id}`;
-        else
-            this.pathToFailure += `:${id}`;
-        this.value = value;
-        this.failure = message;
-    }
-
-    private isSuccess = (): boolean => this.pathToFailure == null;
-    private firstFailure = (): number => this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1;
-    private numShrinks = (): number => this.pathToFailure ? this.pathToFailure.split(':').length : 0;
-
-    public toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
-        return this.isSuccess()
-            ? successFor<Ts>(qParams)
-            : failureFor<Ts>(qParams, this.firstFailure() +1, this.numShrinks(), this.value!, this.failure);
-    }
-}
+import { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed } from './utils/utils'
 
 function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
     const runExecution = new RunExecution<Ts>();

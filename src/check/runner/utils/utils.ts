@@ -46,6 +46,31 @@ function failureFor<Ts>(qParams: QualifiedParameters, num_runs: number, num_shri
     return {failed: true, num_runs, num_shrinks, seed: qParams.seed, counterexample, error};
 }
 
+class RunExecution<Ts> {
+    public pathToFailure?: string;
+    public value?: Ts;
+    public failure: string;
+    
+    public fail(value: Ts, id: number, message: string) {
+        if (this.pathToFailure == null)
+            this.pathToFailure = `${id}`;
+        else
+            this.pathToFailure += `:${id}`;
+        this.value = value;
+        this.failure = message;
+    }
+
+    private isSuccess = (): boolean => this.pathToFailure == null;
+    private firstFailure = (): number => this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1;
+    private numShrinks = (): number => this.pathToFailure ? this.pathToFailure.split(':').length : 0;
+
+    public toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
+        return this.isSuccess()
+            ? successFor<Ts>(qParams)
+            : failureFor<Ts>(qParams, this.firstFailure() +1, this.numShrinks(), this.value!, this.failure);
+    }
+}
+
 function prettyOne(value: any): string {
     const defaultRepr: string = `${value}`;
     if (/^\[object (Object|Null|Undefined)\]$/.exec(defaultRepr) === null)
@@ -71,4 +96,4 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>) {
     }
 }
 
-export { Parameters, QualifiedParameters, RunDetails, successFor, failureFor, throwIfFailed };
+export { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed };
