@@ -102,7 +102,7 @@ describe('Runner', () => {
                     const p: IProperty<[number]> = {
                         isAsync: () => false,
                         generate: (rng: Random) => {
-                            return new Shrinkable([rng.next()[0]]) as Shrinkable<[number]>;
+                            return new Shrinkable([rng.nextInt()]) as Shrinkable<[number]>;
                         },
                         run: (value: [number]) => {
                             runOn.push(value[0]);
