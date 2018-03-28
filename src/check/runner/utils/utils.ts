@@ -35,29 +35,25 @@ interface RunDetails<Ts> {
     num_runs: number,
     num_shrinks: number,
     seed: number,
-    initialCounterexample: Ts|null,
     counterexample: Ts|null,
     error: string|null,
 }
 
 function successFor<Ts>(qParams: QualifiedParameters): RunDetails<Ts> {
-    return {failed: false, num_runs: qParams.num_runs, num_shrinks: 0, seed: qParams.seed, initialCounterexample: null, counterexample: null, error: null};
+    return {failed: false, num_runs: qParams.num_runs, num_shrinks: 0, seed: qParams.seed, counterexample: null, error: null};
 }
-function failureFor<Ts>(qParams: QualifiedParameters, num_runs: number, num_shrinks: number, initialCounterexample: Ts, counterexample: Ts, error: string): RunDetails<Ts> {
-    return {failed: true, num_runs, num_shrinks, seed: qParams.seed, initialCounterexample, counterexample, error};
+function failureFor<Ts>(qParams: QualifiedParameters, num_runs: number, num_shrinks: number, counterexample: Ts, error: string): RunDetails<Ts> {
+    return {failed: true, num_runs, num_shrinks, seed: qParams.seed, counterexample, error};
 }
 
 class RunExecution<Ts> {
     public pathToFailure?: string;
-    public initialValue?: Ts;
     public value?: Ts;
     public failure: string;
     
     public fail(value: Ts, id: number, message: string) {
-        if (this.pathToFailure == null) {
+        if (this.pathToFailure == null)
             this.pathToFailure = `${id}`;
-            this.initialValue = value;
-        }
         else
             this.pathToFailure += `:${id}`;
         this.value = value;
@@ -71,7 +67,7 @@ class RunExecution<Ts> {
     public toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
         return this.isSuccess()
             ? successFor<Ts>(qParams)
-            : failureFor<Ts>(qParams, this.firstFailure() +1, this.numShrinks(), this.initialValue!, this.value!, this.failure);
+            : failureFor<Ts>(qParams, this.firstFailure() +1, this.numShrinks(), this.value!, this.failure);
     }
 }
 
@@ -99,7 +95,7 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>) {
     if (out.failed) {
         throw new Error(
             `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}\n` +
-            `Shrunk ${out.num_shrinks} time(s) from ${out.initialCounterexample}\n` +
+            `Shrunk ${out.num_shrinks} time(s)\n` +
             `Got error: ${out.error}`);
     }
 }
