@@ -63,7 +63,7 @@ class RunExecution<Ts> {
 
     private isSuccess = (): boolean => this.pathToFailure == null;
     private firstFailure = (): number => this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1;
-    private numShrinks = (): number => this.pathToFailure ? this.pathToFailure.split(':').length : 0;
+    private numShrinks = (): number => this.pathToFailure ? this.pathToFailure.split(':').length -1 : 0;
 
     public toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
         return this.isSuccess()

@@ -152,7 +152,7 @@ describe('Runner', () => {
                 assert.ok(out.failed);
                 assert.equal(out.seed, seed);
                 assert.equal(out.num_runs, failurePoints[0] +1);
-                assert.equal(out.num_shrinks, failurePoints.length);
+                assert.equal(out.num_shrinks, failurePoints.length -1);
                 assert.equal(out.counterexample_path, expectedFailurePath);
             })
         ));
