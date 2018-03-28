@@ -37,13 +37,14 @@ interface RunDetails<Ts> {
     seed: number,
     counterexample: Ts|null,
     error: string|null,
+    counterexample_path: string|null,
 }
 
 function successFor<Ts>(qParams: QualifiedParameters): RunDetails<Ts> {
-    return {failed: false, num_runs: qParams.num_runs, num_shrinks: 0, seed: qParams.seed, counterexample: null, error: null};
+    return {failed: false, num_runs: qParams.num_runs, num_shrinks: 0, seed: qParams.seed, counterexample: null, counterexample_path: null, error: null};
 }
-function failureFor<Ts>(qParams: QualifiedParameters, num_runs: number, num_shrinks: number, counterexample: Ts, error: string): RunDetails<Ts> {
-    return {failed: true, num_runs, num_shrinks, seed: qParams.seed, counterexample, error};
+function failureFor<Ts>(qParams: QualifiedParameters, num_runs: number, num_shrinks: number, counterexample: Ts, counterexample_path: string, error: string): RunDetails<Ts> {
+    return {failed: true, num_runs, num_shrinks, seed: qParams.seed, counterexample, counterexample_path, error};
 }
 
 class RunExecution<Ts> {
@@ -67,7 +68,7 @@ class RunExecution<Ts> {
     public toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
         return this.isSuccess()
             ? successFor<Ts>(qParams)
-            : failureFor<Ts>(qParams, this.firstFailure() +1, this.numShrinks(), this.value!, this.failure);
+            : failureFor<Ts>(qParams, this.firstFailure() +1, this.numShrinks(), this.value!, this.pathToFailure!, this.failure);
     }
 }
 
@@ -94,7 +95,7 @@ function pretty<Ts>(value: any): string {
 function throwIfFailed<Ts>(out: RunDetails<Ts>) {
     if (out.failed) {
         throw new Error(
-            `Property failed after ${out.num_runs} tests (seed: ${out.seed}): ${pretty(out.counterexample)}\n` +
+            `Property failed after ${out.num_runs} tests (seed: ${out.seed}, path: ${out.counterexample_path}): ${pretty(out.counterexample)}\n` +
             `Shrunk ${out.num_shrinks} time(s)\n` +
             `Got error: ${out.error}`);
     }

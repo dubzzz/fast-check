@@ -6,7 +6,7 @@ import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import Random from '../../../../src/random/generator/Random';
 import { RunDetails } from '../../../../src/check/runner/utils/utils';
-import Stream from '../../../../src/stream/Stream';
+import { stream, Stream } from '../../../../src/stream/Stream';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
@@ -117,6 +117,43 @@ describe('Runner', () => {
                 check(buildPropertyFor(data2), {seed: seed});
                 assert.deepEqual(data2, data1, 'Should run on the same values given the same seed');
                 return true;
+            })
+        ));
+        it('Should build the right counterexample_path', () => fc.assert(
+            fc.property(fc.integer(), fc.array(fc.nat(99), 1, 100), (seed, failurePoints) => {
+                // Each entry (at index idx) in failurePoints represents the number of runs
+                // required before failing for the level <idx>
+                // Basically it must fail before the end of the execution (100 runs by default)
+                // so failure points are between 0 and 99 inclusive
+
+                const deepShrinkable = function(depth): Shrinkable<[number]> {
+                    if (depth <= 0)
+                        return new Shrinkable([0]) as Shrinkable<[number]>;
+                    function* g(subDepth): IterableIterator<Shrinkable<[number]>> {
+                        while(true)
+                            yield deepShrinkable(subDepth);
+                    }
+                    return new Shrinkable([0], () => stream(g(depth -1))) as Shrinkable<[number]>;
+                };
+
+                let idx = 0;
+                let remainingBeforeFailure = failurePoints[idx];
+                const p: IProperty<[number]> = {
+                    isAsync: () => false,
+                    generate: (rng: Random) => deepShrinkable(failurePoints.length -1),
+                    run: (value: [number]) => {
+                        if (--remainingBeforeFailure >= 0) return null;
+                        remainingBeforeFailure = failurePoints[++idx];
+                        return 'failure';
+                    }
+                };
+                const expectedFailurePath = failurePoints.join(':');
+                const out = check(p, {seed: seed}) as RunDetails<[number]>;
+                assert.ok(out.failed);
+                assert.equal(out.seed, seed);
+                assert.equal(out.num_runs, failurePoints[0] +1);
+                assert.equal(out.num_shrinks, failurePoints.length);
+                assert.equal(out.counterexample_path, expectedFailurePath);
             })
         ));
         it('Should wait on async properties to complete', async () => fc.assert(
@@ -245,7 +282,7 @@ describe('Runner', () => {
                 rAssert(failingProperty, {seed: 42});
             }
             catch (err) {
-                assert.ok(err.message.indexOf(`(seed: 42)`) !== -1, `Cannot find the seed in: ${err.message}`);
+                assert.ok(err.message.indexOf(`(seed: 42, path:`) !== -1, `Cannot find the seed in: ${err.message}`);
                 return;
             }
             assert.ok(false, "Expected an exception, got success");

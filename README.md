@@ -139,6 +139,7 @@ interface RunDetails<Ts> {
     num_shrinks: number,     // number of shrinks (depth required to get the minimal failing example)
     seed: number,            // seed used for the test
     counterexample: Ts|null, // failure only: shrunk conterexample causig the property to fail
+    counterexample_path: string|null, // failure only: the exact path to re-run the counterexample
     error: string|null,      // failure only: stack trace and error details
 }
 ```
