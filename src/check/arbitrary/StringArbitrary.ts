@@ -15,9 +15,9 @@ function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?:
 }
 
 function Base64StringArbitrary(minLength: number, maxLength: number) {
-    if (minLength > maxLength) throw 'Minimal length should be inferior or equal to maximal length';
-    if (minLength % 4 !== 0) throw 'Minimal length of base64 strings must be a multiple of 4';
-    if (maxLength % 4 !== 0) throw 'Maximal length of base64 strings must be a multiple of 4';
+    if (minLength > maxLength) throw new Error('Minimal length should be inferior or equal to maximal length');
+    if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');
+    if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
     return StringArbitrary(base64(), minLength, maxLength).map(s => {
         switch (s.length % 4) {
             case 0: return s;
