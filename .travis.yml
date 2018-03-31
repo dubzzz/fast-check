@@ -10,6 +10,7 @@ cache:
 
 script:
   - NODE_VERSION=`node --version | cut -dv -f2`
+  - npm run format:check
   - npm run test
   - npm run e2e
   - npm run build
