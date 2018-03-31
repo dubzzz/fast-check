@@ -14,7 +14,9 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "codeclimate": "nyc report --reporter=text-lcov | codeclimate-test-reporter",
     "format:check": "prettier --list-different \"**/*.ts\"",
-    "format:fix": "prettier --write \"**/*.ts\""
+    "format:fix": "prettier --write \"**/*.ts\"", 
+    "lint:check": "tslint --project tsconfig.json --exclude \"**/**.generated.**\"",
+    "lint:fix": "tslint --project tsconfig.json --exclude \"**/**.generated.**\" --fix"
   },
   "repository": {
     "type": "git",
@@ -43,6 +45,9 @@
     "prettier": "^1.11.1",
     "source-map-support": "^0.5.4",
     "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.10.0",
+    "tslint-microsoft-contrib": "^5.0.3",
     "typescript": "^2.8.1"
   },
   "keywords": [
