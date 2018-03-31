@@ -1,8 +1,8 @@
-import Arbitrary from '../arbitrary/definition/Arbitrary';
 import { stream } from '../../stream/Stream';
+import Arbitrary from '../arbitrary/definition/Arbitrary';
 import IProperty from '../property/IProperty';
-import { Parameters, QualifiedParameters } from './utils/utils';
 import toss from './Tosser';
+import { Parameters, QualifiedParameters } from './utils/utils';
 
 function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameters | number): Ts[] {
   const qParams = QualifiedParameters.read_or_num_runs(params);
@@ -18,7 +18,7 @@ interface Dictionary<T> {
 }
 
 function Object_entries<T>(obj: Dictionary<T>): [string, T][] {
-  let entries: [string, T][] = [];
+  const entries: [string, T][] = [];
   for (const k of Object.keys(obj)) {
     entries.push([k, obj[k]]);
   }
@@ -51,12 +51,12 @@ function statistics<Ts>(
   params?: Parameters | number
 ): void {
   const qParams = QualifiedParameters.read_or_num_runs(params);
-  let recorded: Dictionary<number> = {};
+  const recorded: Dictionary<number> = {};
   for (const g of stream(toss(generator, qParams.seed))
     .take(qParams.num_runs)
     .map(s => s().value)) {
     const out = classify(g);
-    const categories: string[] = Array.isArray(out) ? (out as string[]) : [out as string];
+    const categories: string[] = Array.isArray(out) ? out : [out];
     for (const c of categories) {
       recorded[c] = (recorded[c] || 0) + 1;
     }

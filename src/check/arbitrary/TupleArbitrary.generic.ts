@@ -1,7 +1,7 @@
-import Arbitrary from './definition/Arbitrary';
-import Shrinkable from './definition/Shrinkable';
 import Random from '../../random/generator/Random';
 import { Stream, stream } from '../../stream/Stream';
+import Arbitrary from './definition/Arbitrary';
+import Shrinkable from './definition/Shrinkable';
 
 class GenericTupleArbitrary extends Arbitrary<any[]> {
   constructor(readonly arbs: Arbitrary<any>[]) {

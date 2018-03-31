@@ -1,7 +1,7 @@
+import Random from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
-import Random from '../../random/generator/Random';
 
 class OptionArbitrary<T> extends Arbitrary<T | null> {
   readonly isOptionArb: Arbitrary<number>;

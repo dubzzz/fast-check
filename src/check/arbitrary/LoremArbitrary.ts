@@ -1,10 +1,10 @@
 declare function require(name: string): any;
-var loremIpsum: (opt: any) => string = require('lorem-ipsum');
+const loremIpsum: (opt: any) => string = require('lorem-ipsum');
 
+import Random from '../../random/generator/Random';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
-import Random from '../../random/generator/Random';
 
 class LoremArbitrary extends Arbitrary<string> {
   readonly arbWordsCount: Arbitrary<number>;

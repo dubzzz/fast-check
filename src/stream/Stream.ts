@@ -92,7 +92,7 @@ export default class Stream<T> implements IterableIterator<T> {
   join(...others: IterableIterator<T>[]): Stream<T> {
     function* helper(c: Stream<T>): IterableIterator<T> {
       yield* c;
-      for (let s of others) {
+      for (const s of others) {
         yield* s;
       }
     }

@@ -1,8 +1,8 @@
+import Random from '../../random/generator/Random';
+import { Stream, stream } from '../../stream/Stream';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
-import Random from '../../random/generator/Random';
-import { Stream, stream } from '../../stream/Stream';
 
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number = v => v) {
   return integer(min, max).map(n => String.fromCharCode(mapToCode(n)));

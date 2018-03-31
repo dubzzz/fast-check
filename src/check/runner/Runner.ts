@@ -1,7 +1,7 @@
 import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { AsyncProperty } from '../property/AsyncProperty';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
-import { AsyncProperty } from '../property/AsyncProperty';
 import { TimeoutProperty } from '../property/TimeoutProperty';
 import toss from './Tosser';
 import { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed } from './utils/utils';
@@ -37,7 +37,7 @@ async function asyncRunIt<Ts>(
     done = true;
     let idx = 0;
     for (const v of values) {
-      const out = (await property.run(v.value)) as string | null;
+      const out = await property.run(v.value);
       if (out != null) {
         runExecution.fail(v.value, idx, out);
         values = v.shrink();

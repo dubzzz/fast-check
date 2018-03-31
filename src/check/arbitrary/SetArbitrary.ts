@@ -1,6 +1,6 @@
+import { ArrayArbitrary } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
-import { ArrayArbitrary } from './ArrayArbitrary';
 
 function subArrayContains<T>(tab: T[], upperBound: number, includeValue: (v: T) => boolean): boolean {
   for (let idx = 0; idx < upperBound; ++idx) {
@@ -47,7 +47,7 @@ function set<T>(
 ): Arbitrary<T[]> {
   const minLength: number = bLength == null || typeof bLength !== 'number' ? 0 : (aLength as number);
   const maxLength: number =
-    aLength == null || typeof aLength !== 'number' ? 10 : typeof bLength === 'number' ? (bLength as number) : aLength;
+    aLength == null || typeof aLength !== 'number' ? 10 : typeof bLength === 'number' ? bLength : aLength;
   const compare =
     compareFn != null
       ? compareFn

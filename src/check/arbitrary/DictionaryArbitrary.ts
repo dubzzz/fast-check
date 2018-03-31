@@ -1,5 +1,5 @@
-import Arbitrary from './definition/Arbitrary';
 import Random from '../../random/generator/Random';
+import Arbitrary from './definition/Arbitrary';
 
 import { set } from './SetArbitrary';
 import { tuple } from './TupleArbitrary';

@@ -1,9 +1,9 @@
+import Random from '../../random/generator/Random';
+import { array } from './ArrayArbitrary';
+import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './CharacterArbitrary';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
-import { array } from './ArrayArbitrary';
 import { nat } from './IntegerArbitrary';
-import { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 } from './CharacterArbitrary';
-import Random from '../../random/generator/Random';
 
 function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
   const arrayArb =

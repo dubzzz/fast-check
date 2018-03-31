@@ -1,6 +1,6 @@
+import Random from '../../random/generator/Random';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
-import Random from '../../random/generator/Random';
 import IProperty from './IProperty';
 
 const timeoutAfter = function(timeMs: number) {
@@ -16,6 +16,6 @@ export class TimeoutProperty<Ts> implements IProperty<Ts> {
     return this.property.generate(mrng);
   }
   async run(v: Ts): Promise<string | null> {
-    return (await Promise.race([this.property.run(v), timeoutAfter(this.timeMs)])) as string | null;
+    return Promise.race([this.property.run(v), timeoutAfter(this.timeMs)]);
   }
 }

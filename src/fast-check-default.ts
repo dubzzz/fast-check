@@ -1,43 +1,43 @@
-import { check, assert } from './check/runner/Runner';
-import { sample, statistics } from './check/runner/Sampler';
-import { Parameters, RunDetails } from './check/runner/utils/utils';
 import { asyncProperty } from './check/property/AsyncProperty';
 import { property } from './check/property/Property';
+import { assert, check } from './check/runner/Runner';
+import { sample, statistics } from './check/runner/Sampler';
+import { Parameters, RunDetails } from './check/runner/utils/utils';
 
-import Arbitrary from './check/arbitrary/definition/Arbitrary';
-import Shrinkable from './check/arbitrary/definition/Shrinkable';
 import { array } from './check/arbitrary/ArrayArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
-import { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 } from './check/arbitrary/CharacterArbitrary';
+import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
 import { constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
+import Arbitrary from './check/arbitrary/definition/Arbitrary';
+import Shrinkable from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
-import { float, double } from './check/arbitrary/FloatingPointArbitrary';
+import { double, float } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency } from './check/arbitrary/FrequencyArbitrary';
 import { integer, nat } from './check/arbitrary/IntegerArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import {
   anything,
-  object,
-  jsonObject,
-  unicodeJsonObject,
   json,
+  jsonObject,
+  object,
+  ObjectConstraints,
   unicodeJson,
-  ObjectConstraints
+  unicodeJsonObject
 } from './check/arbitrary/ObjectArbitrary';
 import { oneof } from './check/arbitrary/OneOfArbitrary';
 import { option } from './check/arbitrary/OptionArbitrary';
 import { record, RecordConstraints } from './check/arbitrary/RecordArbitrary';
+import { set } from './check/arbitrary/SetArbitrary';
 import {
-  string,
   asciiString,
-  string16bits,
-  unicodeString,
+  base64String,
   fullUnicodeString,
   hexaString,
-  base64String
+  string,
+  string16bits,
+  unicodeString
 } from './check/arbitrary/StringArbitrary';
-import { set } from './check/arbitrary/SetArbitrary';
-import { tuple, generic_tuple } from './check/arbitrary/TupleArbitrary';
+import { generic_tuple, tuple } from './check/arbitrary/TupleArbitrary';
 
 import { Random } from './random/generator/Random';
 

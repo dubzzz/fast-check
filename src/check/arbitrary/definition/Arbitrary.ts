@@ -1,6 +1,6 @@
 import Random from '../../../random/generator/Random';
-import Shrinkable from './Shrinkable';
 import Stream from '../../../stream/Stream';
+import Shrinkable from './Shrinkable';
 
 export default abstract class Arbitrary<T> {
   abstract generate(mrng: Random): Shrinkable<T>;

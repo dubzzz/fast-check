@@ -1,8 +1,8 @@
 import prand from 'pure-rand';
 
+import Random from '../../random/generator/Random';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
-import Random from '../../random/generator/Random';
 import IProperty from '../property/IProperty';
 
 function lazyGenerate<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, rng: prand.RandomGenerator): () => Shrinkable<Ts> {

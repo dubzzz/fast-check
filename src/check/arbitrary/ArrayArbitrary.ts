@@ -1,8 +1,8 @@
+import Random from '../../random/generator/Random';
+import { Stream, stream } from '../../stream/Stream';
 import { Arbitrary, ArbitraryWithShrink } from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
-import Random from '../../random/generator/Random';
-import { Stream, stream } from '../../stream/Stream';
 
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: ArbitraryWithShrink<number>;

@@ -1,7 +1,7 @@
+import Random from '../../random/generator/Random';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import { tuple } from '../arbitrary/TupleArbitrary';
-import Random from '../../random/generator/Random';
 import IProperty from './IProperty';
 
 export class Property<Ts> implements IProperty<Ts> {

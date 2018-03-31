@@ -1,8 +1,8 @@
+import Random from '../../random/generator/Random';
+import { stream, Stream } from '../../stream/Stream';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
-import Random from '../../random/generator/Random';
 import { nat } from './IntegerArbitrary';
-import { stream, Stream } from '../../stream/Stream';
 
 class ConstantArbitrary<T> extends Arbitrary<T> {
   readonly idArb: Arbitrary<number>;

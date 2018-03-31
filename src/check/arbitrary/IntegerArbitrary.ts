@@ -1,9 +1,9 @@
 import prand from 'pure-rand';
 
-import { ArbitraryWithShrink } from './definition/Arbitrary';
-import Shrinkable from './definition/Shrinkable';
 import Random from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
+import { ArbitraryWithShrink } from './definition/Arbitrary';
+import Shrinkable from './definition/Shrinkable';
 
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
   static MIN_INT: number = 0x80000000 | 0;

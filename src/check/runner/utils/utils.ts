@@ -2,7 +2,7 @@ interface Parameters {
   seed?: number;
   num_runs?: number;
   timeout?: number;
-  logger?: (v: string) => void;
+  logger?(v: string): void;
 }
 class QualifiedParameters {
   seed: number;
@@ -26,8 +26,8 @@ class QualifiedParameters {
   }
   static read_or_num_runs(p?: Parameters | number): QualifiedParameters {
     if (p == null) return QualifiedParameters.read();
-    if (typeof p == 'number') return QualifiedParameters.read({ num_runs: p as number });
-    return QualifiedParameters.read(p as Parameters);
+    if (typeof p == 'number') return QualifiedParameters.read({ num_runs: p });
+    return QualifiedParameters.read(p);
   }
 }
 
@@ -72,11 +72,11 @@ function failureFor<Ts>(
 }
 
 class RunExecution<Ts> {
-  public pathToFailure?: string;
-  public value?: Ts;
-  public failure: string;
+  pathToFailure?: string;
+  value?: Ts;
+  failure: string;
 
-  public fail(value: Ts, id: number, message: string) {
+  fail(value: Ts, id: number, message: string) {
     if (this.pathToFailure == null) this.pathToFailure = `${id}`;
     else this.pathToFailure += `:${id}`;
     this.value = value;
@@ -87,7 +87,7 @@ class RunExecution<Ts> {
   private firstFailure = (): number => (this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1);
   private numShrinks = (): number => (this.pathToFailure ? this.pathToFailure.split(':').length - 1 : 0);
 
-  public toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
+  toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
     return this.isSuccess()
       ? successFor<Ts>(qParams)
       : failureFor<Ts>(
