@@ -7,6 +7,8 @@ import { set, buildCompareFilter } from '../../../../src/check/arbitrary/SetArbi
 import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
 import Random from '../../../../src/random/generator/Random';
 
+import * as genericHelper from './generic/GenericArbitraryHelper';
+
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 
@@ -101,5 +103,8 @@ describe('SetArbitrary', () => {
           for (const s of shrinkable.shrink()) assert.notDeepEqual(s.value, shrinkable.value);
         })
       ));
+    genericHelper.testNoImpactOfMutation(set(char()), tab => {
+      for (let idx = 0; idx !== tab.length; ++idx) tab[idx] = '.';
+    });
   });
 });
