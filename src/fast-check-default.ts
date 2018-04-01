@@ -91,6 +91,7 @@ export {
   tuple,
   generic_tuple,
   record,
+  dictionary,
   anything,
   object,
   json,
