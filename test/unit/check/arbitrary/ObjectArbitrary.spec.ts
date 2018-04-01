@@ -4,6 +4,7 @@ import fc from '../../../../lib/fast-check';
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Random from '../../../../src/random/generator/Random';
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
 import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
 import {
   anything,
@@ -15,10 +16,10 @@ import {
   ObjectConstraints
 } from '../../../../src/check/arbitrary/ObjectArbitrary';
 
+import * as genericHelper from './generic/GenericArbitraryHelper';
+
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
-import { constants } from 'os';
-import { debug } from 'util';
 
 describe('ObjectArbitrary', () => {
   const assertShrinkedValue = (original, shrinked) => {
@@ -280,5 +281,10 @@ describe('ObjectArbitrary', () => {
           for (const s of shrinkable.shrink()) assert.notDeepEqual(s.value, shrinkable.value);
         })
       ));
+
+    genericHelper.testNoImpactOfMutation(object({ key: char(), values: [char()], maxDepth: 2 }), obj => {
+      obj['new_key'] = 'another_key';
+      obj[Object.keys(obj)[0]] = 'mutation';
+    });
   });
 });
