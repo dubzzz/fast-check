@@ -101,7 +101,7 @@ function asyncProperty<T1,T2>(
 ...
 ```
 
-## Runners
+### Runners
 
 - `fc.assert`: run the property and throws in case of failure
 
@@ -185,16 +185,16 @@ function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, para
 function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, num_generated: number): void;
 ```
 
-## Arbitraries
+### Arbitraries
 
 Arbitraries are responsible for the random generation (but deterministic) and shrink of datatypes.
 They can be combined together to build more complex datatypes.
 
-### Boolean (:boolean)
+#### Boolean (:boolean)
 
 - `fc.boolean()` either `true` or `false`
 
-### Numeric (:number)
+#### Numeric (:number)
 
 Integer values:
 
@@ -209,7 +209,7 @@ Floating point numbers:
 - `fc.float()` uniformly distributed `float` value between 0.0 (included) and 1.0 (excluded)
 - `fc.double()`uniformly distributed `double` value between 0.0 (included) and 1.0 (excluded)
 
-### String (:string)
+#### String (:string)
 
 Single character only:
 
@@ -237,7 +237,7 @@ Strings that mimic real strings, with words and sentences:
 - `unicodeJson()` or `unicodeJson(maxDepth: number)` json strings having keys generated using `fc.unicodeString()`. String values are also produced by `fc.unicodeString()`
 - `fc.lorem()`, `fc.lorem(maxWordsCount: number)` or `fc.lorem(maxWordsCount: number, sentencesMode: boolean)` lorem ipsum strings. Generator can be configured by giving it a maximum number of characters by using `maxWordsCount` or switching the mode to sentences by setting `sentencesMode` to `true` in which case `maxWordsCount` is used to cap the number of sentences allowed. **This arbitrary is not shrinkable**
 
-### Combinors of arbitraries (:T)
+#### Combinors of arbitraries (:T)
 
 - `fc.constant<T>(value: T): Arbitrary<T>` constant arbitrary only able to produce `value: T`
 - `fc.constantFrom<T>(...values: T[]): Arbitrary<T>` randomly chooses among the values provided. It considers the first value as the default value so that in case of failure it will shrink to it
@@ -249,7 +249,7 @@ Strings that mimic real strings, with words and sentences:
 - `fc.dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<{[Key:string]:T}>` dictionary containing keys generated using `keyArb` and values gneerated by `valueArb`
 - `fc.record<T>(recordModel: {[Key:string]: Arbitrary<T>}): Arbitrary<{[Key:string]: T}>` or `fc.record<T>(recordModel: {[Key:string]: Arbitrary<T>}, constraints: RecordConstraints): Arbitrary<{[Key:string]: T}>` record using the incoming arbitraries to generate its values. It comes very useful when dealing with settings. It takes an optional parameter of type `RecordConstraints` to configure some of its properties. The setting `with_deleted_keys=true` instructs the record generator that it can omit some keys
 
-### Objects (:any)
+#### Objects (:any)
 
 The framework is able to generate totally random objects in order to adapt to programs that do not requires any specific data structure. All those custom types can be parametrized using `ObjectConstraints.Settings`.
 
@@ -272,9 +272,9 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 - `fc.jsonObject()` or `fc.jsonObject(maxDepth: number)` generate an object that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
 - `fc.unicodeJsonObject()` or `fc.unicodeJsonObject(maxDepth: number)` generate an object with potentially unicode characters that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
 
-## Custom arbitraries
+### Custom arbitraries
 
-### Derive existing arbitraries
+#### Derive existing arbitraries
 
 All generated arbitraries inherit from the same base class: [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts).
 
@@ -282,7 +282,7 @@ It cames with two useful methods: `filter(predicate: (t: T) => boolean): Arbitra
 
 Additionaly it comes with `noShrink()` which derives an existing `Arbitrary<T>` into the same `Arbitrary<T>` without the shrink option.
 
-#### Filter values
+##### Filter values
 
 `filter(predicate: (t: T) => boolean): Arbitrary<T>` can be used to filter undesirable values from the generated ones. It can be used as some kind of pre-requisite for the parameters required for your algorithm. For instance, you might need to generate two ordered integer values. One approach can be to use filter as follow:
 
@@ -293,7 +293,7 @@ const minMax = fc.tuple(fc.integer(), fc.integer())
 
 But be aware that using `filter` may highly impact the time required to generate a valid entry. In the previous example, half of the generated tuples will be rejected. It can nontheless be a very useful and powerful tool to derive your arbitraries quickly and easily.
 
-#### Transform values
+##### Transform values
 
 `map<U>(mapper: (t: T) => U): Arbitrary<U>` in its side does not filter any of the generated entries. It take one entry (generated or shrinked) and map it to another.
 
@@ -314,7 +314,7 @@ const string = () => fc.array(fc.char()).map(arr => arr.join(''));
 
 Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) use this trick to define themselves.
 
-### Remove the shrinker
+##### Remove the shrinker
 
 Calling `noShrink()` on an `Arbitrary<T>` just remove the shrinker of the `Arbitrary<T>`. For instance, the following code will produce an `Arbitrary<number>` without shrinking operation.
 
@@ -322,7 +322,7 @@ Calling `noShrink()` on an `Arbitrary<T>` just remove the shrinker of the `Arbit
 const intNoShrink = fc.int().noShrink();
 ```
 
-### Build your own
+#### Build your own
 
 You can also fully customize your arbitrary and by not deriving it from any of the buit-in arbitraries. What you have to do is to derive from [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: Random): Shrinkable<T>`.
 
