@@ -15,8 +15,8 @@
     "codeclimate": "nyc report --reporter=text-lcov | codeclimate-test-reporter",
     "format:check": "prettier --list-different \"**/*.ts\"",
     "format:fix": "prettier --write \"**/*.ts\"", 
-    "lint:check": "tslint --project tsconfig.json --exclude \"**/**.generated.**\"",
-    "lint:fix": "tslint --project tsconfig.json --exclude \"**/**.generated.**\" --fix"
+    "lint:check": "tslint --project tsconfig.json",
+    "lint:fix": "tslint --project tsconfig.json --fix"
   },
   "repository": {
     "type": "git",
