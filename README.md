@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.org/dubzzz/fast-check.svg?branch=master)](https://travis-ci.org/dubzzz/fast-check)
 [![npm version](https://badge.fury.io/js/fast-check.svg)](https://badge.fury.io/js/fast-check)
+[![total downloads](https://img.shields.io/npm/dt/fast-check.svg)]
 [![dependencies Status](https://david-dm.org/dubzzz/fast-check/status.svg)](https://david-dm.org/dubzzz/fast-check)
 [![devDependencies Status](https://david-dm.org/dubzzz/fast-check/dev-status.svg)](https://david-dm.org/dubzzz/fast-check?type=dev)
 
