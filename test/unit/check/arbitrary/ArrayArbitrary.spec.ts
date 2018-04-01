@@ -7,6 +7,8 @@ import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import Random from '../../../../src/random/generator/Random';
 
+import * as genericHelper from './generic/GenericArbitraryHelper';
+
 import * as stubRng from '../../stubs/generators';
 
 class DummyArbitrary extends Arbitrary<any> {
@@ -99,44 +101,8 @@ describe('ArrayArbitrary', () => {
             .every(s => s.value.length !== tab.length || !s.value.every((vv, idx) => vv === tab[idx]));
         })
       ));
-    it('Should not be impacted by mutations of its generated value', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const arb = array(integer());
-          const shrinkableNoMutation = arb.generate(stubRng.mutable.fastincrease(seed));
-          const shrinkableMutation = arb.generate(stubRng.mutable.fastincrease(seed));
-          assert.deepStrictEqual(shrinkableMutation.value, shrinkableNoMutation.value);
-          for (let idx = 0; idx !== shrinkableMutation.value.length; ++idx) {
-            shrinkableMutation.value[idx] = 0;
-          }
-          assert.deepStrictEqual(
-            [...shrinkableMutation.shrink().map(s => s.value)],
-            [...shrinkableNoMutation.shrink().map(s => s.value)]
-          );
-        })
-      ));
-    it('Should not be impacted by mutations of its shrinked value', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.nat(9), (seed, idx) => {
-          const arb = array(integer());
-          const shrinkable = arb.generate(stubRng.mutable.fastincrease(seed));
-          
-          const shrinkableNoMutation = shrinkable.shrink().getNthOrLast(idx);
-          const shrinkableMutation = shrinkable.shrink().getNthOrLast(idx);
-          if (shrinkableNoMutation == null) {
-            return true; // no shrink for this generated value
-          }
-
-          assert.deepStrictEqual(shrinkableMutation.value, shrinkableNoMutation.value);
-          for (let idx = 0; idx !== shrinkableMutation.value.length; ++idx) {
-            shrinkableMutation.value[idx] = 0;
-          }
-          assert.deepStrictEqual(
-            [...shrinkableMutation.shrink().map(s => s.value)],
-            [...shrinkableNoMutation.shrink().map(s => s.value)]
-          );
-          return true;
-        })
-      ));
+    genericHelper.testNoImpactOfMutation(array(integer()), tab => {
+      for (let idx = 0; idx !== tab.length; ++idx) tab[idx] = 0;
+    });
   });
 });
