@@ -336,3 +336,23 @@ You can also fully customize your arbitrary and by not deriving it from any of t
 The generated value also came with a shrink method able to derive _smaller_ values in case of failure. It can be ignored making the arbitrary not shrinkable.
 
 Once again the [built-in types](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) can be very helpful if you need an example.
+
+## Issues found by fast-check in famous packages
+
+`fast-check` has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using `fast-check`:
+
+### [js-yaml](https://github.com/nodeca/js-yaml/)
+
+Issue detected: enabling `!!int: binary` style when dumping negative integers produces invalid content \[[more](https://github.com/nodeca/js-yaml/pull/398)\]
+
+Code example: `yaml.dump({toto: -10}, {styles:{'!!int':'binary'}})` produces `toto: 0b-1010` not `toto: -0b1010`
+
+### [left-pad](https://github.com/stevemao/left-pad)
+
+Issue detected: unicode characters outside of the BMP plan are not handled consistently \[[more](https://github.com/stevemao/left-pad/issues/58)\]
+
+Code example:
+```js
+leftPad('a\u{1f431}b', 4, 'x') //=> 'a\u{1f431}b'  -- in: 3 code points, out: 3 code points
+leftPad('abc', 4, '\u{1f431}') //=> '\u{1f431}abc' -- in: 3 code points, out: 4 code points
+```
