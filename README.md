@@ -13,7 +13,7 @@
 
 ## Getting started
 
-Install the module with: `npm install fast-check`
+Install the module with: `npm install fast-check --save-dev`
 
 Running examples in RunKit: https://runkit.com/dubzzz/fast-check-basic-examples
 
