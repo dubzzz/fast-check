@@ -11,6 +11,22 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/7cb8cb395740446a3108/test_coverage)](https://codeclimate.com/github/dubzzz/fast-check/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7cb8cb395740446a3108/maintainability)](https://codeclimate.com/github/dubzzz/fast-check/maintainability)
 
+----
+
+[Getting started](#getting-started)
+
+[Usage](#usage)
+
+[Documentation](#documentation)
+- [Properties](#properties)
+- [Runners](#runners)
+- [Arbitraries](#arbitraries)
+- [Custom arbitraries](#custom-arbitraries)
+
+[Issues found by fast-check in famous packages](#issues-found-by-fast-check-in-famous-packages)
+
+----
+
 ## Getting started
 
 Install the module with: `npm install fast-check --save-dev`
