@@ -29,5 +29,10 @@
         // a.map(e => f(e)) != a.map(f)
         // a.map(f) == a.map((e, idx) => f(e, idx))
         "no-unnecessary-callback-wrapper": false
+    },
+    "linterOptions": {
+        "exclude": [
+            "test/**/*"
+        ]
     }
 }
