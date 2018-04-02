@@ -6,15 +6,8 @@
         "tslint-config-prettier"
     ],
     "rules": {
-        "completed-docs": false,
-        "curly": false,
-        "export-name": false,
-        "function-name": false,
-        "interface-name": false,
         "member-access": [true, "no-public"],
         "member-ordering": false,
-        "missing-jsdoc": false,
-        "newline-before-return": false,
         "no-bitwise": false,
         "no-default-export": false,
         "no-empty": false,
@@ -22,6 +15,18 @@
         "no-parameter-properties": false,
         "no-relative-imports": false,
         "prefer-for-of": true,
+        "typedef": false,
+        // Naming
+        "export-name": false,
+        "function-name": false,
+        "interface-name": false,
+        "variable-name": [true, "ban-keywords", "check-format", "allow-snake-case"],
+        // Documentation
+        "completed-docs": false,
+        "missing-jsdoc": false,
+        // Format (handled by prettier if needed)
+        "curly": false,
+        "newline-before-return": false,
         // Disable import-name
         // want to import pure-rand as prand
         "import-name": false,
