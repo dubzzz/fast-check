@@ -163,6 +163,9 @@ interface RunDetails<Ts> {
     seed: number,            // seed used for the test
     counterexample: Ts|null, // failure only: shrunk conterexample causig the property to fail
     counterexample_path: string|null, // failure only: the exact path to re-run the counterexample
+                                      // In order to replay the failing case directly,
+                                      // this value as to be set as path attribute in the Parameters (with the seed)
+                                      // of assert, check, sample or even statistics
     error: string|null,      // failure only: stack trace and error details
 }
 ```
