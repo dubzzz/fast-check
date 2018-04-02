@@ -1,11 +1,12 @@
-import { iota, commas, arbCommas, txCommas } from './helpers';
+// tslint:disable:no-multiline-string
+import { arbCommas, commas, iota, txCommas } from './helpers';
 
-const predicateFor = function(num: number, isAsync: boolean): string {
-  return isAsync
+const predicateFor = (num: number, isAsync: boolean): string =>
+  isAsync
     ? `(${commas(num, v => `t${v}:T${v}`)}) => Promise<boolean|void>`
     : `(${commas(num, v => `t${v}:T${v}`)}) => (boolean|void)`;
-};
-const signatureFor = function(num: number, isAsync: boolean): string {
+
+const signatureFor = (num: number, isAsync: boolean): string => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
   return `
@@ -14,7 +15,7 @@ const signatureFor = function(num: number, isAsync: boolean): string {
             predicate: ${predicateFor(num, isAsync)}
         ): ${className}<[${txCommas(num)}]>;`;
 };
-const finalSignatureFor = function(num: number, isAsync: boolean): string {
+const finalSignatureFor = (num: number, isAsync: boolean): string => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   return `
         function ${functionName}<${txCommas(num)}>(
@@ -22,7 +23,7 @@ const finalSignatureFor = function(num: number, isAsync: boolean): string {
             arb${num}?: ${predicateFor(num, isAsync)}
         ) {`;
 };
-const ifFor = function(num: number, isAsync: boolean): string {
+const ifFor = (num: number, isAsync: boolean): string => {
   const className = isAsync ? 'AsyncProperty' : 'Property';
   return `
         if (arb${num}) {
@@ -33,7 +34,7 @@ const ifFor = function(num: number, isAsync: boolean): string {
         }`;
 };
 
-const generateProperty = function(num: number, isAsync: boolean): string {
+const generateProperty = (num: number, isAsync: boolean): string => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const blocks = [
@@ -42,13 +43,13 @@ const generateProperty = function(num: number, isAsync: boolean): string {
     `import { tuple } from '../arbitrary/TupleArbitrary';`,
     `import { ${className} } from './${className}.generic';`,
     // declare all signatures
-    ...iota(num).map(num => signatureFor(num + 1, isAsync)),
+    ...iota(num).map(id => signatureFor(id + 1, isAsync)),
     // start declare function
     finalSignatureFor(num + 1, isAsync),
     // cascade ifs
     ...iota(num)
       .reverse()
-      .map(num => ifFor(num + 1, isAsync)),
+      .map(id => ifFor(id + 1, isAsync)),
     // end declare function
     `}`,
     // export
@@ -58,7 +59,7 @@ const generateProperty = function(num: number, isAsync: boolean): string {
   return blocks.join('\n');
 };
 
-const testBasicCall = function(num: number, isAsync: boolean): string {
+const testBasicCall = (num: number, isAsync: boolean): string => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const kAsync = isAsync ? 'async' : '';
@@ -81,7 +82,7 @@ const testBasicCall = function(num: number, isAsync: boolean): string {
     `;
 };
 
-const generatePropertySpec = function(num: number, isAsync: boolean): string {
+const generatePropertySpec = (num: number, isAsync: boolean): string => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const blocks = [
@@ -93,7 +94,7 @@ const generatePropertySpec = function(num: number, isAsync: boolean): string {
     // start blocks
     `describe('${className}', () => {`,
     // tests
-    ...iota(num).map(num => testBasicCall(num + 1, isAsync)),
+    ...iota(num).map(id => testBasicCall(id + 1, isAsync)),
     // end blocks
     `});`
   ];

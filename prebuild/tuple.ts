@@ -1,7 +1,8 @@
-import { iota, commas, arbCommas, txCommas, txXor } from './helpers';
+// tslint:disable:no-multiline-string
+import { arbCommas, commas, iota, txCommas, txXor } from './helpers';
 
-const classFor = function(num: number): string {
-  return `
+const classFor = (num: number): string =>
+  `
         export class Tuple${num}Arbitrary<${txCommas(num)}> extends Arbitrary<[${txCommas(num)}]> {
             readonly tupleArb: GenericTupleArbitrary<${txXor(num)}>;
             constructor(${commas(num, v => `readonly arb${v}: Arbitrary<T${v}>`)}) {
@@ -13,23 +14,22 @@ const classFor = function(num: number): string {
             }
         };
     `;
-};
-const signatureFor = function(num: number, opt?: boolean): string {
-  return `
+
+const signatureFor = (num: number, opt?: boolean): string =>
+  `
         function tuple<${txCommas(num)}>(
                 ${commas(num, v => `arb${v}${opt === true ? '?' : ''}: Arbitrary<T${v}>`)}
                 )`;
-};
-const ifFor = function(num: number): string {
-  return `
+
+const ifFor = (num: number): string =>
+  `
         if (arb${num - 1}) {
             return new Tuple${num}Arbitrary(
                 ${commas(num, v => `arb${v} as Arbitrary<T${v}>`)}
             );
         }`;
-};
 
-const generateTuple = function(num: number): string {
+const generateTuple = (num: number): string => {
   const blocks = [
     // imports
     `import Arbitrary from './definition/Arbitrary';`,
@@ -37,15 +37,15 @@ const generateTuple = function(num: number): string {
     `import Random from '../../random/generator/Random';`,
     `import { GenericTupleArbitrary } from './TupleArbitrary.generic';`,
     // declare all necessary classes
-    ...iota(num).map(num => classFor(num + 1)),
+    ...iota(num).map(id => classFor(id + 1)),
     // declare all signatures
-    ...iota(num).map(num => `${signatureFor(num + 1)}: Tuple${num + 1}Arbitrary<${txCommas(num + 1)}>;`),
+    ...iota(num).map(id => `${signatureFor(id + 1)}: Tuple${id + 1}Arbitrary<${txCommas(id + 1)}>;`),
     // start declare function
     `${signatureFor(num + 1, true)} {`,
     // cascade ifs
     ...iota(num)
       .reverse()
-      .map(num => ifFor(num + 1)),
+      .map(id => ifFor(id + 1)),
     // end declare function
     `}`,
     // export
@@ -55,29 +55,26 @@ const generateTuple = function(num: number): string {
   return blocks.join('\n');
 };
 
-const propertySameSeedSameTupleFor = function(num: number): string {
-  return `
+const propertySameSeedSameTupleFor = (num: number): string =>
+  `
         it('Should generate the same tuple${num} with the same random', () => fc.assert(
             propertySameTupleForSameSeed([${commas(num, v => `dummy(${v * v})`)}])
         ));
     `;
-};
-const propertyShrinkInAllowedFor = function(num: number): string {
-  return `
+const propertyShrinkInAllowedFor = (num: number): string =>
+  `
         it('Should shrink tuple${num} within allowed values', () => fc.assert(
             propertyShrinkInRange([${commas(num, v => `dummy(${v * v})`)}])
         ));
     `;
-};
-const propertyShrinkNotSuggestItselfFor = function(num: number): string {
-  return `
+const propertyShrinkNotSuggestItselfFor = (num: number): string =>
+  `
         it('Should not suggest input in tuple${num} shrinked values', () => fc.assert(
             propertyNotSuggestInputInShrink([${commas(num, v => `dummy(${v * v})`)}])
         ));
     `;
-};
 
-const generateTupleSpec = function(num: number): string {
+const generateTupleSpec = (num: number): string => {
   const blocks = [
     // imports
     `import fc from '../../../../lib/fast-check';`,
@@ -86,9 +83,9 @@ const generateTupleSpec = function(num: number): string {
     `describe('TupleArbitrary', () => {`,
     `    describe('tuple', () => {`,
     // properties
-    ...iota(num).map(num => propertySameSeedSameTupleFor(num + 1)),
-    ...iota(num).map(num => propertyShrinkInAllowedFor(num + 1)),
-    ...iota(num).map(num => propertyShrinkNotSuggestItselfFor(num + 1)),
+    ...iota(num).map(id => propertySameSeedSameTupleFor(id + 1)),
+    ...iota(num).map(id => propertyShrinkInAllowedFor(id + 1)),
+    ...iota(num).map(id => propertyShrinkNotSuggestItselfFor(id + 1)),
     // end blocks
     `   });`,
     `});`
