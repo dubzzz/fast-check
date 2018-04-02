@@ -92,7 +92,7 @@ class RunExecution<Ts> {
   private numShrinks = (): number => (this.pathToFailure ? this.pathToFailure.split(':').length - 1 : 0);
 
   toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
-    const mergePaths = (offsetPath, path) => {
+    const mergePaths = (offsetPath: string, path: string) => {
       if (offsetPath.length === 0) return path;
       const offsetItems = offsetPath.split(':');
       const remainingItems = path.split(':');
