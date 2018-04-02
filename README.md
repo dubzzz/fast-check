@@ -135,6 +135,8 @@ export interface Parameters {
     timeout?: number;  // optional, only taken into account for asynchronous runs (asyncProperty)
                        // specify a timeout in milliseconds, maximum time for the predicate to return its result
                        // only works for async code, will not interrupt a synchronous code: disabled by default
+    path?: string;     // optional, way to replay a failing property directly with the counterexample
+                       // it can be fed with the counterexample_path returned by the failing test (requires seed too)
     logger?: (v: string) => void; // optional, log output: console.log by default
 }
 ```
