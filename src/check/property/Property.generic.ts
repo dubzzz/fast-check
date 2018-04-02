@@ -13,7 +13,7 @@ export class Property<Ts> implements IProperty<Ts> {
   run(v: Ts): string | null {
     try {
       const output = this.predicate(v);
-      return output == null || output == true ? null : 'Property failed by returning false';
+      return output == null || output === true ? null : 'Property failed by returning false';
     } catch (err) {
       if (err instanceof Error && err.stack) return `${err}\n\nStack trace: ${err.stack}`;
       return `${err}`;
