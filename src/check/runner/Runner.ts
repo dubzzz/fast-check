@@ -4,8 +4,8 @@ import { AsyncProperty } from '../property/AsyncProperty';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
 import { TimeoutProperty } from '../property/TimeoutProperty';
-import { pathWalk } from './utils/PathWalker';
 import { toss } from './Tosser';
+import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed } from './utils/utils';
 
 function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
@@ -16,7 +16,7 @@ function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shri
     done = true;
     let idx = 0;
     for (const v of values) {
-      const out = property.run(v.value) as string | null;
+      const out = <string | null>property.run(v.value);
       if (out != null) {
         runExecution.fail(v.value, idx, out);
         values = v.shrink();
@@ -75,9 +75,7 @@ function assert<Ts>(property: Property<Ts>, params?: Parameters): void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<void> | void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
   const out = check(property, params);
-  return property.isAsync()
-    ? (out as Promise<RunDetails<Ts>>).then(throwIfFailed)
-    : throwIfFailed(out as RunDetails<Ts>);
+  return property.isAsync() ? (<Promise<RunDetails<Ts>>>out).then(throwIfFailed) : throwIfFailed(<RunDetails<Ts>>out);
 }
 
 export { check, assert };

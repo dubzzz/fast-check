@@ -10,7 +10,7 @@ function streamSample<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
   params?: Parameters | number
 ): IterableIterator<Ts> {
-  const qParams: QualifiedParameters = QualifiedParameters.read_or_num_runs(params);
+  const qParams: QualifiedParameters = QualifiedParameters.readOrNumRuns(params);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(generator, qParams.seed));
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.num_runs).map(s => s().value);
@@ -25,7 +25,7 @@ function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameter
 }
 
 interface Dictionary<T> {
-  [Key: string]: T;
+  [key: string]: T;
 }
 
 function Object_entries<T>(obj: Dictionary<T>): [string, T][] {
@@ -35,7 +35,8 @@ function Object_entries<T>(obj: Dictionary<T>): [string, T][] {
   }
   return entries;
 }
-function String_padStart(s: string, length: number, pad: string): string {
+function String_padStart(s: string, length: number, padString: string): string {
+  let pad = padString;
   if (s.length > length) {
     return String(s);
   }
@@ -45,7 +46,8 @@ function String_padStart(s: string, length: number, pad: string): string {
   }
   return pad.slice(0, missing) + s;
 }
-function String_padEnd(s: string, length: number, pad: string): string {
+function String_padEnd(s: string, length: number, padString: string): string {
+  let pad = padString;
   if (s.length > length) {
     return String(s);
   }
@@ -61,7 +63,7 @@ function statistics<Ts>(
   classify: (v: Ts) => string | string[],
   params?: Parameters | number
 ): void {
-  const qParams = QualifiedParameters.read_or_num_runs(params);
+  const qParams = QualifiedParameters.readOrNumRuns(params);
   const recorded: Dictionary<number> = {};
   for (const g of streamSample(generator, params)) {
     const out = classify(g);
@@ -72,7 +74,7 @@ function statistics<Ts>(
   }
   const data = Object_entries(recorded)
     .sort((a, b) => b[1] - a[1])
-    .map(i => [i[0], `${(100.0 * i[1] / qParams.num_runs).toFixed(2)}%`]);
+    .map(i => [i[0], `${(i[1] * 100.0 / qParams.num_runs).toFixed(2)}%`]);
   const longestName = data.map(i => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map(i => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {

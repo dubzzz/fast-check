@@ -12,25 +12,26 @@ class QualifiedParameters {
   path: string;
   logger: (v: string) => void;
 
-  private static read_seed = (p?: Parameters): number => (p != null && p.seed != null ? p.seed : Date.now());
-  private static read_num_runs = (p?: Parameters): number => (p != null && p.num_runs != null ? p.num_runs : 100);
-  private static read_timeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
-  private static read_path = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
-  private static read_logger = (p?: Parameters): ((v: string) => void) =>
+  private static readSeed = (p?: Parameters): number => (p != null && p.seed != null ? p.seed : Date.now());
+  private static readNumRuns = (p?: Parameters): number => (p != null && p.num_runs != null ? p.num_runs : 100);
+  private static readTimeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
+  private static readPath = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
+  private static readLogger = (p?: Parameters): ((v: string) => void) =>
+    // tslint:disable-next-line:no-console
     p != null && p.logger != null ? p.logger : (v: string) => console.log(v);
 
   static read(p?: Parameters): QualifiedParameters {
     return {
-      seed: QualifiedParameters.read_seed(p),
-      num_runs: QualifiedParameters.read_num_runs(p),
-      timeout: QualifiedParameters.read_timeout(p),
-      logger: QualifiedParameters.read_logger(p),
-      path: QualifiedParameters.read_path(p)
+      seed: QualifiedParameters.readSeed(p),
+      num_runs: QualifiedParameters.readNumRuns(p),
+      timeout: QualifiedParameters.readTimeout(p),
+      logger: QualifiedParameters.readLogger(p),
+      path: QualifiedParameters.readPath(p)
     };
   }
-  static read_or_num_runs(p?: Parameters | number): QualifiedParameters {
+  static readOrNumRuns(p?: Parameters | number): QualifiedParameters {
     if (p == null) return QualifiedParameters.read();
-    if (typeof p == 'number') return QualifiedParameters.read({ num_runs: p });
+    if (typeof p === 'number') return QualifiedParameters.read({ num_runs: p });
     return QualifiedParameters.read(p);
   }
 }
@@ -105,14 +106,16 @@ class RunExecution<Ts> {
           qParams,
           this.firstFailure() + 1,
           this.numShrinks(),
+          // tslint:disable-next-line:no-non-null-assertion
           this.value!,
+          // tslint:disable-next-line:no-non-null-assertion
           mergePaths(qParams.path, this.pathToFailure!),
           this.failure
         );
   }
 }
 
-function prettyOne(value: any): string {
+function prettyOne<Ts>(value: Ts): string {
   if (typeof value === 'string') return JSON.stringify(value);
 
   const defaultRepr: string = `${value}`;
@@ -123,7 +126,7 @@ function prettyOne(value: any): string {
   return defaultRepr;
 }
 
-function pretty<Ts>(value: any): string {
+function pretty<Ts>(value: Ts): string {
   if (Array.isArray(value)) return `[${[...value].map(pretty).join(',')}]`;
   return prettyOne(value);
 }
@@ -133,9 +136,9 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>) {
     throw new Error(
       `Property failed after ${out.num_runs} tests (seed: ${out.seed}, path: ${out.counterexample_path}): ${pretty(
         out.counterexample
-      )}\n` +
-        `Shrunk ${out.num_shrinks} time(s)\n` +
-        `Got error: ${out.error}`
+      )}
+Shrunk ${out.num_shrinks} time(s)
+Got error: ${out.error}`
     );
   }
 }
