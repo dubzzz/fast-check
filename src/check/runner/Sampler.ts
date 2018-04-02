@@ -1,4 +1,4 @@
-import { stream } from '../../stream/Stream';
+import { Stream, stream } from '../../stream/Stream';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
@@ -11,8 +11,11 @@ function streamSample<Ts>(
   params?: Parameters | number
 ): IterableIterator<Ts> {
   const qParams: QualifiedParameters = QualifiedParameters.read_or_num_runs(params);
-  const tossedValues: IterableIterator<Shrinkable<Ts>> = stream(toss(generator, qParams.seed)).map(s => s());
-  return stream(pathWalk(qParams.path, tossedValues))
+  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(generator, qParams.seed));
+  if (qParams.path.length === 0) {
+    return tossedValues.take(qParams.num_runs).map(s => s().value);
+  }
+  return stream(pathWalk(qParams.path, tossedValues.map(s => s())))
     .take(qParams.num_runs)
     .map(s => s.value);
 }
