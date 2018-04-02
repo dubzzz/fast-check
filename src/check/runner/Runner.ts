@@ -1,9 +1,11 @@
+import { Stream, stream } from '../../fast-check';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import { AsyncProperty } from '../property/AsyncProperty';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
 import { TimeoutProperty } from '../property/TimeoutProperty';
-import toss from './Tosser';
+import { pathWalk } from './utils/PathWalker';
+import { toss } from './Tosser';
 import { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed } from './utils/utils';
 
 function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
@@ -62,9 +64,10 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   function* g() {
     for (let idx = 0; idx < qParams.num_runs; ++idx) yield generator.next().value();
   }
+  const initialValues = pathWalk(qParams.path, g());
   return property.isAsync()
-    ? asyncRunIt(property, g()).then(e => e.toRunDetails(qParams))
-    : runIt(property, g()).toRunDetails(qParams);
+    ? asyncRunIt(property, initialValues).then(e => e.toRunDetails(qParams))
+    : runIt(property, initialValues).toRunDetails(qParams);
 }
 
 function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<void>;

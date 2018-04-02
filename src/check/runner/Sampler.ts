@@ -1,16 +1,24 @@
 import { stream } from '../../stream/Stream';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
+import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
 import toss from './Tosser';
+import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters } from './utils/utils';
 
+function streamSample<Ts>(
+  generator: IProperty<Ts> | Arbitrary<Ts>,
+  params?: Parameters | number
+): IterableIterator<Ts> {
+  const qParams: QualifiedParameters = QualifiedParameters.read_or_num_runs(params);
+  const tossedValues: IterableIterator<Shrinkable<Ts>> = stream(toss(generator, qParams.seed)).map(s => s());
+  return stream(pathWalk(qParams.path, tossedValues))
+    .take(qParams.num_runs)
+    .map(s => s.value);
+}
+
 function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameters | number): Ts[] {
-  const qParams = QualifiedParameters.read_or_num_runs(params);
-  return [
-    ...stream(toss(generator, qParams.seed))
-      .take(qParams.num_runs)
-      .map(s => s().value)
-  ];
+  return [...streamSample(generator, params)];
 }
 
 interface Dictionary<T> {
@@ -52,9 +60,7 @@ function statistics<Ts>(
 ): void {
   const qParams = QualifiedParameters.read_or_num_runs(params);
   const recorded: Dictionary<number> = {};
-  for (const g of stream(toss(generator, qParams.seed))
-    .take(qParams.num_runs)
-    .map(s => s().value)) {
+  for (const g of streamSample(generator, params)) {
     const out = classify(g);
     const categories: string[] = Array.isArray(out) ? out : [out];
     for (const c of categories) {

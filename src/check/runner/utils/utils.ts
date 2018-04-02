@@ -2,17 +2,20 @@ interface Parameters {
   seed?: number;
   num_runs?: number;
   timeout?: number;
+  path?: string;
   logger?(v: string): void;
 }
 class QualifiedParameters {
   seed: number;
   num_runs: number;
   timeout: number | null;
+  path: string;
   logger: (v: string) => void;
 
   private static read_seed = (p?: Parameters): number => (p != null && p.seed != null ? p.seed : Date.now());
   private static read_num_runs = (p?: Parameters): number => (p != null && p.num_runs != null ? p.num_runs : 100);
   private static read_timeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
+  private static read_path = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
   private static read_logger = (p?: Parameters): ((v: string) => void) =>
     p != null && p.logger != null ? p.logger : (v: string) => console.log(v);
 
@@ -21,7 +24,8 @@ class QualifiedParameters {
       seed: QualifiedParameters.read_seed(p),
       num_runs: QualifiedParameters.read_num_runs(p),
       timeout: QualifiedParameters.read_timeout(p),
-      logger: QualifiedParameters.read_logger(p)
+      logger: QualifiedParameters.read_logger(p),
+      path: QualifiedParameters.read_path(p)
     };
   }
   static read_or_num_runs(p?: Parameters | number): QualifiedParameters {
@@ -88,6 +92,13 @@ class RunExecution<Ts> {
   private numShrinks = (): number => (this.pathToFailure ? this.pathToFailure.split(':').length - 1 : 0);
 
   toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
+    const mergePaths = (offsetPath, path) => {
+      if (offsetPath.length === 0) return path;
+      const offsetItems = offsetPath.split(':');
+      const remainingItems = path.split(':');
+      const middle = +offsetItems[offsetItems.length - 1] + +remainingItems[0];
+      return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
+    };
     return this.isSuccess()
       ? successFor<Ts>(qParams)
       : failureFor<Ts>(
@@ -95,7 +106,7 @@ class RunExecution<Ts> {
           this.firstFailure() + 1,
           this.numShrinks(),
           this.value!,
-          this.pathToFailure!,
+          mergePaths(qParams.path, this.pathToFailure!),
           this.failure
         );
   }
