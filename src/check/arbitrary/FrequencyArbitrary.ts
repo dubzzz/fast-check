@@ -27,6 +27,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
   }
   generate(mrng: Random): Shrinkable<T> {
     const selected = this.idArb.generate(mrng).value;
+    // tslint:disable-next-line:no-non-null-assertion
     return this.summedWarbs.find(warb => selected < warb.weight)!.arbitrary.generate(mrng);
   }
 }

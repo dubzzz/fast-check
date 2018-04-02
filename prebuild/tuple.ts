@@ -1,12 +1,12 @@
-import { iota, commas, arbCommas, txCommas } from './helpers';
+import { iota, commas, arbCommas, txCommas, txXor } from './helpers';
 
 const classFor = function(num: number): string {
   return `
         export class Tuple${num}Arbitrary<${txCommas(num)}> extends Arbitrary<[${txCommas(num)}]> {
-            readonly tupleArb: GenericTupleArbitrary;
+            readonly tupleArb: GenericTupleArbitrary<${txXor(num)}>;
             constructor(${commas(num, v => `readonly arb${v}: Arbitrary<T${v}>`)}) {
                 super();
-                this.tupleArb = new GenericTupleArbitrary([${arbCommas(num)}]);
+                this.tupleArb = new GenericTupleArbitrary<${txXor(num)}>([${arbCommas(num)}]);
             }
             generate(mrng: Random): Shrinkable<[${txCommas(num)}]> {
                 return this.tupleArb.generate(mrng) as Shrinkable<[${txCommas(num)}]>;

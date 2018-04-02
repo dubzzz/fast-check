@@ -16,12 +16,12 @@ class LoremArbitrary extends Arbitrary<string> {
   }
   generate(mrng: Random): Shrinkable<string> {
     const numWords = this.arbWordsCount.generate(mrng).value;
-    const lorem = loremIpsum({
+    const loremString = loremIpsum({
       count: numWords,
       units: this.sentencesMode ? 'sentences' : 'words',
       random: () => mrng.nextDouble()
     });
-    return new Shrinkable(lorem);
+    return new Shrinkable(loremString);
   }
 }
 

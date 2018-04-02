@@ -3,22 +3,22 @@ import { Stream, stream } from '../../stream/Stream';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 
-class GenericTupleArbitrary extends Arbitrary<any[]> {
-  constructor(readonly arbs: Arbitrary<any>[]) {
+class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
+  constructor(readonly arbs: Arbitrary<Ts>[]) {
     super();
   }
-  private static wrapper(shrinkables: Shrinkable<any>[]): Shrinkable<any[]> {
+  private static wrapper<Ts>(shrinkables: Shrinkable<Ts>[]): Shrinkable<Ts[]> {
     return new Shrinkable(shrinkables.map(s => s.value), () =>
       GenericTupleArbitrary.shrinkImpl(shrinkables).map(GenericTupleArbitrary.wrapper)
     );
   }
-  generate(mrng: Random): Shrinkable<any[]> {
+  generate(mrng: Random): Shrinkable<Ts[]> {
     return GenericTupleArbitrary.wrapper(this.arbs.map(a => a.generate(mrng)));
   }
-  private static shrinkImpl(value: Shrinkable<any>[]): Stream<Shrinkable<any>[]> {
+  private static shrinkImpl<Ts>(value: Shrinkable<Ts>[]): Stream<Shrinkable<Ts>[]> {
     // shrinking one by one is the not the most comprehensive
     // but allows a reasonable number of entries in the shrink
-    let s = Stream.nil<any[]>();
+    let s = Stream.nil<Shrinkable<Ts>[]>();
     for (let idx = 0; idx !== value.length; ++idx) {
       s = s.join(
         value[idx].shrink().map(v =>
@@ -33,7 +33,7 @@ class GenericTupleArbitrary extends Arbitrary<any[]> {
   }
 }
 
-function generic_tuple(arbs: Arbitrary<any>[]): Arbitrary<any[]> {
+function generic_tuple<Ts>(arbs: Arbitrary<Ts>[]): Arbitrary<Ts[]> {
   return new GenericTupleArbitrary(arbs);
 }
 

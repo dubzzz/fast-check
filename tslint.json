@@ -16,6 +16,7 @@
         "no-relative-imports": false,
         "prefer-for-of": true,
         "typedef": false,
+        "unified-signatures": false,
         // Naming
         "export-name": false,
         "function-name": false,

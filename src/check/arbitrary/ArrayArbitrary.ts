@@ -48,7 +48,7 @@ function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, aLength?: number, bLength?: number): Arbitrary<T[]> {
   if (bLength == null) return new ArrayArbitrary<T>(arb, 0, aLength == null ? 10 : aLength);
-  return new ArrayArbitrary<T>(arb, aLength!, bLength);
+  return new ArrayArbitrary<T>(arb, aLength || 0, bLength);
 }
 
 export { array, ArrayArbitrary };
