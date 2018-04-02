@@ -64,7 +64,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   function* g() {
     for (let idx = 0; idx < qParams.num_runs; ++idx) yield generator.next().value();
   }
-  const initialValues = pathWalk(qParams.path, g());
+  const initialValues = qParams.path.length === 0 ? g() : pathWalk(qParams.path, g());
   return property.isAsync()
     ? asyncRunIt(property, initialValues).then(e => e.toRunDetails(qParams))
     : runIt(property, initialValues).toRunDetails(qParams);
