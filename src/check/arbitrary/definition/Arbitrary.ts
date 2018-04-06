@@ -45,9 +45,11 @@ export default abstract class Arbitrary<T> {
 
 abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
   abstract generate(mrng: Random): Shrinkable<T>;
-  abstract shrink(value: T): Stream<T>;
-  shrinkableFor(value: T): Shrinkable<T> {
-    return new Shrinkable(value, () => this.shrink(value).map(v => this.shrinkableFor(v)));
+  abstract shrink(value: T, shrunkOnce?: boolean): Stream<T>;
+  shrinkableFor(value: T, shrunkOnce?: boolean): Shrinkable<T> {
+    return new Shrinkable(value, () =>
+      this.shrink(value, shrunkOnce === true).map(v => this.shrinkableFor(v, shrunkOnce === true))
+    );
   }
 }
 

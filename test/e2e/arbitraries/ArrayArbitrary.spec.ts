@@ -26,5 +26,21 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       assert.ok(out.failed, 'Should have failed');
       assert.deepEqual(out.counterexample, [[5, 5]], 'Should shrink to counterexample [5,5]');
     });
+    it('Should not suggest multiple times the empty array (after first failure)', () => {
+      let failedOnce = false;
+      let numSuggests = 0;
+      const out = fc.check(
+        fc.property(fc.array(fc.integer()), (arr: number[]) => {
+          if (failedOnce && arr.length === 0) ++numSuggests;
+          if (arr.length === 0) return true;
+          failedOnce = true;
+          return false;
+        }),
+        { seed }
+      );
+      assert.ok(out.failed, 'Should have failed');
+      assert.equal(out.counterexample[0].length, 1, 'Should shrink to a counterexample having a single element');
+      assert.equal(numSuggests, 1, 'Should have suggested [] only once');
+    });
   });
 });

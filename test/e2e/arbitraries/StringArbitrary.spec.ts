@@ -39,4 +39,22 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       assert.deepEqual(out.counterexample, ['\ud800'], 'Should shrink to counterexample "\\ud800"');
     });
   });
+  describe('string', () => {
+    it('Should not suggest multiple times the empty string (after first failure)', () => {
+      let failedOnce = false;
+      let numSuggests = 0;
+      const out = fc.check(
+        fc.property(fc.string(), (s: string) => {
+          if (failedOnce && s === '') ++numSuggests;
+          if (s.length === 0) return true;
+          failedOnce = true;
+          return false;
+        }),
+        { seed }
+      );
+      assert.ok(out.failed, 'Should have failed');
+      assert.equal(out.counterexample[0].length, 1, 'Should shrink to a counterexample having a single char');
+      assert.equal(numSuggests, 1, "Should have suggested '' only once");
+    });
+  });
 });
