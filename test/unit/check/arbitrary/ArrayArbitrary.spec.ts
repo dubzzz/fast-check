@@ -104,5 +104,15 @@ describe('ArrayArbitrary', () => {
     genericHelper.testNoImpactOfMutation(array(integer()), tab => {
       for (let idx = 0; idx !== tab.length; ++idx) tab[idx] = 0;
     });
+
+    // // array of non objects is not impacted by mutations
+    // // however an array of other objects is impacted by such modifications
+    // // in general the predicates used inside properties should not change the inputs
+    //
+    // genericHelper.testNoImpactOfMutation(array(array(integer())), tabtab => {
+    //   for (let idx = 0; idx !== tabtab.length; ++idx)
+    //     for (let idx2 = 0 ; idx2 !== tabtab[idx].length ; ++idx2)
+    //       tabtab[idx][idx2] = 0;
+    // });
   });
 });
