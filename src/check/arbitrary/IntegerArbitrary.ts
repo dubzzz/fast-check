@@ -16,31 +16,35 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     this.min = min === undefined ? IntegerArbitrary.MIN_INT : min;
     this.max = max === undefined ? IntegerArbitrary.MAX_INT : max;
   }
-  private wrapper(value: number): Shrinkable<number> {
-    return new Shrinkable(value, () => this.shrink(value).map(v => this.wrapper(v)));
+  private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
+    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map(v => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<number> {
-    return this.wrapper(mrng.nextInt(this.min, this.max));
+    return this.wrapper(mrng.nextInt(this.min, this.max), false);
   }
-  private shrink_to(value: number, target: number): Stream<number> {
-    const gap = value - target;
+  private shrink_to(value: number, target: number, shrunkOnce: boolean): Stream<number> {
+    const realGap = value - target;
     function* shrink_decr(): IterableIterator<number> {
+      const gap = shrunkOnce ? Math.floor(realGap / 2) : realGap;
       for (let toremove = gap; toremove > 0; toremove = Math.floor(toremove / 2)) {
         yield value - toremove;
       }
     }
     function* shrink_incr(): IterableIterator<number> {
+      const gap = shrunkOnce ? Math.ceil(realGap / 2) : realGap;
       for (let toremove = gap; toremove < 0; toremove = Math.ceil(toremove / 2)) {
         yield value - toremove;
       }
     }
-    return gap > 0 ? stream(shrink_decr()) : stream(shrink_incr());
+    return realGap > 0 ? stream(shrink_decr()) : stream(shrink_incr());
   }
-  shrink(value: number): Stream<number> {
+  shrink(value: number, shrunkOnce?: boolean): Stream<number> {
     if (this.min <= 0 && this.max >= 0) {
-      return this.shrink_to(value, 0);
+      return this.shrink_to(value, 0, shrunkOnce === true);
     }
-    return value < 0 ? this.shrink_to(value, this.max) : this.shrink_to(value, this.min);
+    return value < 0
+      ? this.shrink_to(value, this.max, shrunkOnce === true)
+      : this.shrink_to(value, this.min, shrunkOnce === true);
   }
 }
 

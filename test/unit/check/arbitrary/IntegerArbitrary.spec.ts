@@ -107,6 +107,38 @@ describe('IntegerArbitrary', () => {
           );
         })
       ));
+    it('Should not shrink twice towards zero', () =>
+      fc.assert(
+        fc.property(fc.integer().noShrink(), seed => {
+          // all value between <sA> and <sB> are failure cases
+          // we have a contiguous range of failures
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const sA = integer().generate(mrng);
+          const sB = integer().generate(mrng);
+          const minValue = Math.min(sA.value, sB.value);
+          const maxValue = Math.max(sA.value, sB.value);
+
+          let shrinkable = sA;
+          let numZeros = 0;
+
+          // simulate the shrinking process
+          // count we do not ask for zero multiple times
+          while (shrinkable !== null) {
+            const oldShrinkable = shrinkable;
+            shrinkable = null;
+            for (const smallerShrinkable of oldShrinkable.shrink()) {
+              if (smallerShrinkable.value === 0) {
+                assert.equal(numZeros, 0);
+                ++numZeros;
+              }
+              if (minValue <= smallerShrinkable.value && smallerShrinkable.value <= maxValue) {
+                shrinkable = smallerShrinkable;
+                break;
+              }
+            }
+          }
+        })
+      ));
   });
   describe('nat', () => {
     it('Should generate values between 0 and 2**31 -1 by default', () =>
