@@ -119,9 +119,9 @@ function asyncProperty<T1,T2>(
 
 **WARNING:**
 
-    The predicate function must not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
+> The predicate function must not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
 
-    Nonetheless a failing property will still be a failing property.
+> Nonetheless a failing property will still be a failing property.
 
 ### Runners
 
