@@ -25,6 +25,8 @@
 
 [Issues found by fast-check in famous packages](#issues-found-by-fast-check-in-famous-packages)
 
+[Examples](https://github.com/dubzzz/fast-check/tree/master/example) - [More examples](https://github.com/dubzzz/fast-check-examples)
+
 ----
 
 ## Getting started
