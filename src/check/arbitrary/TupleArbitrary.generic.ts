@@ -6,6 +6,11 @@ import Shrinkable from './definition/Shrinkable';
 class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
   constructor(readonly arbs: Arbitrary<Ts>[]) {
     super();
+    for (let idx = 0; idx !== arbs.length; ++idx) {
+      const arb = arbs[idx];
+      if (arb == null || arb.generate == null)
+        throw new Error(`Invalid parameter encountered at index ${idx}: expecting an Arbitrary`);
+    }
   }
   private static wrapper<Ts>(shrinkables: Shrinkable<Ts>[]): Shrinkable<Ts[]> {
     return new Shrinkable(shrinkables.map(s => s.value), () =>

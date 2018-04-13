@@ -80,4 +80,8 @@ describe('Property', () => {
       assert.ok(arbs[idx].called_once, `Generator #${idx + 1} should have been called by run`);
     }
   });
+  it('Should throw on null arbitrary', () =>
+    assert.throws(() => property(stubArb.single(8), stubArb.single(8), null, () => {})));
+  it('Should throw on invalid arbitrary', () =>
+    assert.throws(() => property(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, () => {})));
 });
