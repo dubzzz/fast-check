@@ -6,20 +6,20 @@ export default class Random {
   static DBL_FACTOR: number = Math.pow(2, 27);
   static DBL_DIVISOR: number = Math.pow(2, -53);
 
-  constructor(private rng_: prand.RandomGenerator) {}
+  constructor(private internalRng: prand.RandomGenerator) {}
   clone(): Random {
-    return new Random(this.rng_);
+    return new Random(this.internalRng);
   }
-  private uniformIn(from: number, to: number): number {
-    const [v, nrng] = prand.uniformIntDistribution(from, to)(this.rng_);
-    this.rng_ = nrng;
+  private uniformIn(rangeMin: number, rangeMax: number): number {
+    const [v, nrng] = prand.uniformIntDistribution(rangeMin, rangeMax)(this.internalRng);
+    this.internalRng = nrng;
     return v;
   }
   next(bits: number): number {
     return this.uniformIn(0, (1 << bits) - 1);
   }
   nextBoolean(): boolean {
-    return this.uniformIn(0, 1) == 1;
+    return this.uniformIn(0, 1) === 1;
   }
   nextInt(): number;
   nextInt(min: number, max: number): number;
