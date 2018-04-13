@@ -69,8 +69,6 @@ describe('AsyncProperty', () => {
     assert.equal(runnerHasCompleted, true, 'Runner should have completed');
     assert.equal(await runner, null, 'Property should succeed');
   });
-  it('Should throw on null arbitrary', () =>
-    assert.throws(() => asyncProperty(stubArb.single(8), stubArb.single(8), null, async () => {})));
   it('Should throw on invalid arbitrary', () =>
     assert.throws(() => asyncProperty(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, async () => {})));
 });
