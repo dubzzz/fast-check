@@ -1,4 +1,4 @@
-import prand from 'pure-rand';
+import * as prand from 'pure-rand';
 
 import Random from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';

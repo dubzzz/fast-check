@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import prand from 'pure-rand';
+import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
 import { lorem } from '../../../../src/check/arbitrary/LoremArbitrary';

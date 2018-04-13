@@ -1,4 +1,4 @@
-import prand from 'pure-rand';
+import * as prand from 'pure-rand';
 
 export default class Random {
   static MIN_INT: number = 0x80000000 | 0;
