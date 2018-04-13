@@ -33,8 +33,8 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
   }
 }
 
-function generic_tuple<Ts>(arbs: Arbitrary<Ts>[]): Arbitrary<Ts[]> {
+function genericTuple<Ts>(arbs: Arbitrary<Ts>[]): Arbitrary<Ts[]> {
   return new GenericTupleArbitrary(arbs);
 }
 
-export { GenericTupleArbitrary, generic_tuple };
+export { GenericTupleArbitrary, genericTuple };

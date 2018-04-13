@@ -37,7 +37,7 @@ import {
   string16bits,
   unicodeString
 } from './check/arbitrary/StringArbitrary';
-import { generic_tuple, tuple } from './check/arbitrary/TupleArbitrary';
+import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
 
 import { Random } from './random/generator/Random';
 
@@ -89,7 +89,7 @@ export {
   array,
   set,
   tuple,
-  generic_tuple,
+  genericTuple,
   record,
   dictionary,
   anything,

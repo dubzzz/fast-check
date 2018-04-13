@@ -4,7 +4,7 @@ import fc from '../../../../lib/fast-check';
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
-import { tuple, generic_tuple } from '../../../../src/check/arbitrary/TupleArbitrary';
+import { tuple, genericTuple } from '../../../../src/check/arbitrary/TupleArbitrary';
 import Random from '../../../../src/random/generator/Random';
 
 import * as stubRng from '../../stubs/generators';
@@ -24,7 +24,7 @@ function dummy(id: number) {
 }
 
 function propertySameTupleForSameSeed(arbs: DummyArbitrary[], isGeneric?: boolean) {
-  const arb = isGeneric === true ? generic_tuple(arbs) : tuple(arbs[0], ...arbs.slice(1));
+  const arb = isGeneric === true ? genericTuple(arbs) : tuple(arbs[0], ...arbs.slice(1));
   return fc.property(fc.integer(), seed => {
     const mrng1 = stubRng.mutable.fastincrease(seed);
     const mrng2 = stubRng.mutable.fastincrease(seed);
@@ -36,7 +36,7 @@ function propertySameTupleForSameSeed(arbs: DummyArbitrary[], isGeneric?: boolea
 }
 
 function propertyShrinkInRange(arbs: DummyArbitrary[], isGeneric?: boolean) {
-  const arb = isGeneric === true ? generic_tuple(arbs) : tuple(arbs[0], ...arbs.slice(1));
+  const arb = isGeneric === true ? genericTuple(arbs) : tuple(arbs[0], ...arbs.slice(1));
   return fc.property(fc.integer(), seed => {
     const mrng = stubRng.mutable.fastincrease(seed);
     const shrinkable = arb.generate(mrng);
@@ -45,7 +45,7 @@ function propertyShrinkInRange(arbs: DummyArbitrary[], isGeneric?: boolean) {
 }
 
 function propertyNotSuggestInputInShrink(arbs: DummyArbitrary[], isGeneric?: boolean) {
-  const arb = isGeneric === true ? generic_tuple(arbs) : tuple(arbs[0], ...arbs.slice(1));
+  const arb = isGeneric === true ? genericTuple(arbs) : tuple(arbs[0], ...arbs.slice(1));
   return fc.property(fc.integer(), seed => {
     const mrng = stubRng.mutable.fastincrease(seed);
     const shrinkable = arb.generate(mrng);
