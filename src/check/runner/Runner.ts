@@ -56,6 +56,10 @@ function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<Ru
 function check<Ts>(property: Property<Ts>, params?: Parameters): RunDetails<Ts>;
 function check<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>> | RunDetails<Ts>;
 function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
+  if (rawProperty == null || rawProperty.generate == null)
+    throw new Error('Invalid property encountered, please use a valid property');
+  if (rawProperty.run == null)
+    throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams = QualifiedParameters.read(params);
   const property =
     rawProperty.isAsync() && qParams.timeout != null ? new TimeoutProperty(rawProperty, qParams.timeout) : rawProperty;

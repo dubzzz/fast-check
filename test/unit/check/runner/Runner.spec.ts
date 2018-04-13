@@ -2,6 +2,7 @@ import * as assert from 'power-assert';
 import fc from '../../../../lib/fast-check';
 
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
 import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import Random from '../../../../src/random/generator/Random';
@@ -11,6 +12,9 @@ import { stream, Stream } from '../../../../src/stream/Stream';
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
+    it('Should throw if property is null', () => assert.throws(() => check(null)));
+    it('Should throw if property is not a property at all', () => assert.throws(() => check(<IProperty<{}>>{})));
+    it('Should throw if property is an Arbitrary', () => assert.throws(() => check(<IProperty<{}>>(<any>char()))));
     it('Should call the property 100 times by default (on success)', () => {
       let num_calls_generate = 0;
       let num_calls_run = 0;
@@ -289,6 +293,9 @@ describe('Runner', () => {
       run: (v: [any, any]) => null
     };
 
+    it('Should throw if property is null', () => assert.throws(() => rAssert(null)));
+    it('Should throw if property is not a property at all', () => assert.throws(() => rAssert(<IProperty<{}>>{})));
+    it('Should throw if property is an Arbitrary', () => assert.throws(() => rAssert(<IProperty<{}>>(<any>char()))));
     it('Should never throw if no failure occured', () => {
       try {
         rAssert(successProperty, { seed: 42 });
