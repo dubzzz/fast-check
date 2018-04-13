@@ -1,4 +1,4 @@
-import * as assert from 'power-assert';
+import * as assert from 'assert';
 import fc from '../../../../lib/fast-check';
 
 import { boolean } from '../../../../src/check/arbitrary/BooleanArbitrary';

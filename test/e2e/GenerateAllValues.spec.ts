@@ -1,4 +1,4 @@
-import * as assert from 'power-assert';
+import * as assert from 'assert';
 import prand from 'pure-rand';
 import fc from '../../src/fast-check';
 

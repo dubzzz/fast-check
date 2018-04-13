@@ -1,4 +1,4 @@
-import * as assert from 'power-assert';
+import * as assert from 'assert';
 
 import { Stream, stream } from '../../../src/stream/Stream';
 

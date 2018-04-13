@@ -87,7 +87,7 @@ const generatePropertySpec = (num: number, isAsync: boolean): string => {
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const blocks = [
     // imports
-    `import * as assert from 'power-assert';`,
+    `import * as assert from 'assert';`,
     `import * as stubArb from '../../stubs/arbitraries';`,
     `import * as stubRng from '../../stubs/generators';`,
     `import { ${functionName} } from '../../../../src/check/property/${className}';`,

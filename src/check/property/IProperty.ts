@@ -6,4 +6,4 @@ export default interface IProperty<Ts> {
   isAsync(): boolean;
   generate(mrng: Random): Shrinkable<Ts>;
   run(v: Ts): Promise<string | null> | (string | null);
-};
+}

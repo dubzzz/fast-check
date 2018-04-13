@@ -1,4 +1,4 @@
-import * as assert from 'power-assert';
+import * as assert from 'assert';
 
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';

@@ -53,7 +53,9 @@ function set<T>(
       ? compareFn
       : typeof bLength === 'function'
         ? (bLength as (a: T, b: T) => boolean)
-        : typeof aLength === 'function' ? (aLength as (a: T, b: T) => boolean) : (a: T, b: T) => a === b;
+        : typeof aLength === 'function'
+          ? (aLength as (a: T, b: T) => boolean)
+          : (a: T, b: T) => a === b;
 
   const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, buildCompareFilter(compare));
   if (minLength === 0) return arrayArb;
