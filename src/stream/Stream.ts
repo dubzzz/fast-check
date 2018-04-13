@@ -6,7 +6,7 @@ export default class Stream<T> implements IterableIterator<T> {
 
   constructor(private readonly g: IterableIterator<T>) {}
 
-  next(value?: any): IteratorResult<T> {
+  next(): IteratorResult<T> {
     return this.g.next();
   }
   [Symbol.iterator](): IterableIterator<T> {
@@ -100,9 +100,10 @@ export default class Stream<T> implements IterableIterator<T> {
   }
 
   getNthOrLast(nth: number): T | null {
+    let remaining = nth;
     let last: T | null = null;
     for (const v of this.g) {
-      if (nth-- === 0) return v;
+      if (remaining-- === 0) return v;
       last = v;
     }
     return last;
