@@ -1,5 +1,4 @@
-declare function require(name: string): any;
-const loremIpsum: (opt: any) => string = require('lorem-ipsum');
+import * as loremIpsum from 'lorem-ipsum';
 
 import Random from '../../random/generator/Random';
 import Arbitrary from './definition/Arbitrary';
