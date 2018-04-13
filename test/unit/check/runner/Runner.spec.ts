@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import fc from '../../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';

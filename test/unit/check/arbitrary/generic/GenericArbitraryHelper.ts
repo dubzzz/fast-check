@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import prand from 'pure-rand';
-import fc from '../../../../../lib/fast-check';
+import * as fc from '../../../../../lib/fast-check';
 
 import Arbitrary from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../../src/check/arbitrary/definition/Shrinkable';

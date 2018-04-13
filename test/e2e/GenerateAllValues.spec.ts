@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import prand from 'pure-rand';
-import fc from '../../src/fast-check';
+import * as fc from '../../src/fast-check';
 
 const seed = Date.now();
 describe(`Generate all values (seed: ${seed})`, () => {

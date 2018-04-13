@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import fc from '../../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
 import { sample, statistics } from '../../../../src/check/runner/Sampler';
 

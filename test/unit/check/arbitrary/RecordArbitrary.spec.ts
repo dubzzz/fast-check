@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import prand from 'pure-rand';
-import fc from '../../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { record } from '../../../../src/check/arbitrary/RecordArbitrary';

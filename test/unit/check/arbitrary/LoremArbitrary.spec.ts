@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import prand from 'pure-rand';
-import fc from '../../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
 import { lorem } from '../../../../src/check/arbitrary/LoremArbitrary';
 import Random from '../../../../src/random/generator/Random';
