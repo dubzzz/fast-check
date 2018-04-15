@@ -2,7 +2,7 @@ import * as prand from 'pure-rand';
 
 import Random from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
-import { ArbitraryWithShrink } from './definition/Arbitrary';
+import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import Shrinkable from './definition/Shrinkable';
 
 class IntegerArbitrary extends ArbitraryWithShrink<number> {

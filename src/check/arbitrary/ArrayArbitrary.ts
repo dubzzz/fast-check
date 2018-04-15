@@ -1,6 +1,7 @@
 import Random from '../../random/generator/Random';
 import { Stream, stream } from '../../stream/Stream';
-import { Arbitrary, ArbitraryWithShrink } from './definition/Arbitrary';
+import { Arbitrary } from './definition/Arbitrary';
+import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import Shrinkable from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
