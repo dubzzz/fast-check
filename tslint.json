@@ -6,6 +6,7 @@
         "tslint-config-prettier"
     ],
     "rules": {
+        "max-classes-per-file": false,
         "member-access": [true, "no-public"],
         "member-ordering": false,
         "no-bitwise": false,
@@ -15,6 +16,7 @@
         "no-parameter-properties": false,
         "no-relative-imports": false,
         "prefer-for-of": true,
+        "strict-boolean-expressions": false,
         "typedef": false,
         "unified-signatures": false,
         // Naming

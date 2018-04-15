@@ -3,9 +3,11 @@ import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from './IProperty';
 
-const timeoutAfter = (timeMs: number) =>
+const timeoutAfter = async (timeMs: number) =>
   new Promise<string>((resolve, reject) =>
-    setTimeout(() => resolve(`Property timeout: exceeded limit of ${timeMs} milliseconds`), timeMs)
+    setTimeout(() => {
+      resolve(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
+    }, timeMs)
   );
 
 export class TimeoutProperty<Ts> implements IProperty<Ts> {

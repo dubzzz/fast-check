@@ -16,9 +16,13 @@ class QualifiedParameters {
   private static readNumRuns = (p?: Parameters): number => (p != null && p.num_runs != null ? p.num_runs : 100);
   private static readTimeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
   private static readPath = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
-  private static readLogger = (p?: Parameters): ((v: string) => void) =>
-    // tslint:disable-next-line:no-console
-    p != null && p.logger != null ? p.logger : (v: string) => console.log(v);
+  private static readLogger = (p?: Parameters): ((v: string) => void) => {
+    if (p != null && p.logger != null) return p.logger;
+    return (v: string) => {
+      // tslint:disable-next-line:no-console
+      console.log(v);
+    };
+  };
 
   static read(p?: Parameters): QualifiedParameters {
     return {
