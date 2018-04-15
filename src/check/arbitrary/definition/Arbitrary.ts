@@ -5,41 +5,35 @@ import Shrinkable from './Shrinkable';
 export default abstract class Arbitrary<T> {
   abstract generate(mrng: Random): Shrinkable<T>;
   filter(predicate: (t: T) => boolean): Arbitrary<T> {
-    class FilteredArbitrary<T> extends Arbitrary<T> {
-      constructor(readonly arb: Arbitrary<T>, readonly predicate: (t: T) => boolean) {
-        super();
-      }
+    // tslint:disable-next-line:no-this-assignment
+    const arb = this;
+    return new class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {
-        let g = this.arb.generate(mrng);
-        while (!this.predicate(g.value)) {
-          g = this.arb.generate(mrng);
+        let g = arb.generate(mrng);
+        while (!predicate(g.value)) {
+          g = arb.generate(mrng);
         }
-        return g.filter(this.predicate);
+        return g.filter(predicate);
       }
-    }
-    return new FilteredArbitrary(this, predicate);
+    }();
   }
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
-    class MappedArbitrary<T, U> extends Arbitrary<U> {
-      constructor(readonly arb: Arbitrary<T>, readonly mapper: (t: T) => U) {
-        super();
-      }
+    // tslint:disable-next-line:no-this-assignment
+    const arb = this;
+    return new class extends Arbitrary<U> {
       generate(mrng: Random): Shrinkable<U> {
-        return this.arb.generate(mrng).map(this.mapper);
+        return arb.generate(mrng).map(mapper);
       }
-    }
-    return new MappedArbitrary(this, mapper);
+    }();
   }
   noShrink(): Arbitrary<T> {
-    class NoShrinkArbitrary extends Arbitrary<T> {
-      constructor(readonly arb: Arbitrary<T>) {
-        super();
-      }
+    // tslint:disable-next-line:no-this-assignment
+    const arb = this;
+    return new class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {
-        return new Shrinkable(this.arb.generate(mrng).value);
+        return new Shrinkable(arb.generate(mrng).value);
       }
-    }
-    return new NoShrinkArbitrary(this);
+    }();
   }
 }
 
