@@ -46,7 +46,6 @@
     "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
-    "tslint-microsoft-contrib": "^5.0.3",
     "typescript": "^2.8.1"
   },
   "keywords": [

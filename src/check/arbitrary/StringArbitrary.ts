@@ -25,7 +25,7 @@ function Base64StringArbitrary(minLength: number, maxLength: number) {
       case 2:
         return `${s}==`;
       default:
-        return s.slice(1); //remove one extra char to get to %4 == 0
+        return s.slice(1); // remove one extra char to get to %4 == 0
     }
   });
 }

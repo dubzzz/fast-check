@@ -1,42 +1,26 @@
 {
     "extends": [
+        // https://github.com/palantir/tslint/blob/master/src/configs/recommended.ts
         "tslint:recommended",
-        // More details at https://github.com/Microsoft/tslint-microsoft-contrib/blob/master/tslint.json
-        "tslint-microsoft-contrib",
         "tslint-config-prettier"
     ],
     "rules": {
+        "array-type": [true, "array"],
+        "import-name": false, // import pure-rand as prand
+        "interface-name": false,
         "max-classes-per-file": false,
         "member-access": [true, "no-public"],
-        "member-ordering": false,
         "no-bitwise": false,
-        "no-default-export": false,
         "no-empty": false,
-        "no-increment-decrement": false,
-        "no-parameter-properties": false,
-        "no-relative-imports": false,
-        "prefer-for-of": true,
-        "strict-boolean-expressions": false,
-        "typedef": false,
+        "no-angle-bracket-type-assertion": false,
+        "no-namespace": false,
+        "no-unnecessary-callback-wrapper": false, // a.map(f) != a.map(e => f(e))
         "unified-signatures": false,
-        // Naming
-        "export-name": false,
-        "function-name": false,
-        "interface-name": false,
         "variable-name": [true, "ban-keywords", "check-format", "allow-snake-case"],
-        // Documentation
-        "completed-docs": false,
-        "missing-jsdoc": false,
         // Format (handled by prettier if needed)
         "curly": false,
-        "newline-before-return": false,
-        // Disable import-name
-        // want to import pure-rand as prand
-        "import-name": false,
-        // Disable no-unnecessary-callback-wrapper
-        // a.map(e => f(e)) != a.map(f)
-        // a.map(f) == a.map((e, idx) => f(e, idx))
-        "no-unnecessary-callback-wrapper": false
+        "member-ordering": false,
+        "object-literal-sort-keys": false
     },
     "linterOptions": {
         "exclude": [
