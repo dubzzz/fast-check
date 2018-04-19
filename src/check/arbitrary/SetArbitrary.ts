@@ -45,16 +45,16 @@ function set<T>(
   bLength?: number | ((a: T, b: T) => boolean),
   compareFn?: (a: T, b: T) => boolean
 ): Arbitrary<T[]> {
-  const minLength: number = bLength == null || typeof bLength !== 'number' ? 0 : <number>aLength;
+  const minLength: number = bLength == null || typeof bLength !== 'number' ? 0 : (aLength as number);
   const maxLength: number =
     aLength == null || typeof aLength !== 'number' ? 10 : typeof bLength === 'number' ? bLength : aLength;
   const compare =
     compareFn != null
       ? compareFn
       : typeof bLength === 'function'
-        ? <(a: T, b: T) => boolean>bLength
+        ? (bLength as (a: T, b: T) => boolean)
         : typeof aLength === 'function'
-          ? <(a: T, b: T) => boolean>aLength
+          ? (aLength as (a: T, b: T) => boolean)
           : (a: T, b: T) => a === b;
 
   const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, buildCompareFilter(compare));

@@ -12,7 +12,6 @@
         "member-access": [true, "no-public"],
         "no-bitwise": false,
         "no-empty": false,
-        "no-angle-bracket-type-assertion": false,
         "no-namespace": false,
         "no-unnecessary-callback-wrapper": false, // a.map(f) != a.map(e => f(e))
         "unified-signatures": false,

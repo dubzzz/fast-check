@@ -16,7 +16,7 @@ function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shri
     done = true;
     let idx = 0;
     for (const v of values) {
-      const out = <string | null>property.run(v.value);
+      const out = property.run(v.value) as string | null;
       if (out != null) {
         runExecution.fail(v.value, idx, out);
         values = v.shrink();
@@ -79,8 +79,8 @@ function assert<Ts>(property: Property<Ts>, params?: Parameters): void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<void> | void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
   const out = check(property, params);
-  if (property.isAsync()) return (<Promise<RunDetails<Ts>>>out).then(throwIfFailed);
-  else throwIfFailed(<RunDetails<Ts>>out);
+  if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(throwIfFailed);
+  else throwIfFailed(out as RunDetails<Ts>);
 }
 
 export { check, assert };

@@ -41,7 +41,7 @@ function record<T>(
   return rawRecord(updatedRecordModel).map(obj => {
     const nobj: { [key: string]: T } = {};
     for (const k of Object.keys(obj)) {
-      if (obj[k] != null) nobj[k] = (<{ value: T }>obj[k]).value;
+      if (obj[k] != null) nobj[k] = (obj[k] as { value: T }).value;
     }
     return nobj;
   });
