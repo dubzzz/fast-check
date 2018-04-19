@@ -5,7 +5,6 @@ import Shrinkable from './Shrinkable';
 export default abstract class Arbitrary<T> {
   abstract generate(mrng: Random): Shrinkable<T>;
   filter(predicate: (t: T) => boolean): Arbitrary<T> {
-    // tslint:disable-next-line:no-this-assignment
     const arb = this;
     return new class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {
@@ -18,7 +17,6 @@ export default abstract class Arbitrary<T> {
     }();
   }
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
-    // tslint:disable-next-line:no-this-assignment
     const arb = this;
     return new class extends Arbitrary<U> {
       generate(mrng: Random): Shrinkable<U> {
@@ -27,7 +25,6 @@ export default abstract class Arbitrary<T> {
     }();
   }
   noShrink(): Arbitrary<T> {
-    // tslint:disable-next-line:no-this-assignment
     const arb = this;
     return new class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {

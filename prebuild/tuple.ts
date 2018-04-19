@@ -1,4 +1,3 @@
-// tslint:disable:no-multiline-string
 import { arbCommas, commas, iota, txCommas, txXor } from './helpers';
 
 const classFor = (num: number): string =>

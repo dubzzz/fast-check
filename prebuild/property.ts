@@ -1,4 +1,3 @@
-// tslint:disable:no-multiline-string
 import { arbCommas, commas, iota, txCommas } from './helpers';
 
 const predicateFor = (num: number, isAsync: boolean): string =>

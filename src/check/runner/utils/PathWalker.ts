@@ -10,7 +10,6 @@ export function pathWalk<Ts>(
   if (segments.length === 0) return values;
   values = values.drop(segments[0]);
   for (const s of segments.slice(1)) {
-    // tslint:disable-next-line:no-non-null-assertion
     values = values
       .getNthOrLast(0)!
       .shrink()

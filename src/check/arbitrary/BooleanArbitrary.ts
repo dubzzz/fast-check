@@ -1,4 +1,3 @@
-// tslint:disable:no-reserved-keywords
 import Arbitrary from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 

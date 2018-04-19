@@ -55,7 +55,6 @@ async function asyncRunIt<Ts>(
 function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>>;
 function check<Ts>(property: Property<Ts>, params?: Parameters): RunDetails<Ts>;
 function check<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>> | RunDetails<Ts>;
-// tslint:disable-next-line:promise-function-async
 function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   if (rawProperty == null || rawProperty.generate == null)
     throw new Error('Invalid property encountered, please use a valid property');
@@ -78,7 +77,6 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
 function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<void>;
 function assert<Ts>(property: Property<Ts>, params?: Parameters): void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<void> | void;
-// tslint:disable-next-line:promise-function-async
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
   const out = check(property, params);
   if (property.isAsync()) return (<Promise<RunDetails<Ts>>>out).then(throwIfFailed);

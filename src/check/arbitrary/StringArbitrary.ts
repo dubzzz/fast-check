@@ -1,4 +1,3 @@
-// tslint:disable:no-reserved-keywords
 import Random from '../../random/generator/Random';
 import { array } from './ArrayArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './CharacterArbitrary';

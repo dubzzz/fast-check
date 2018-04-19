@@ -1,4 +1,3 @@
-// tslint:disable:no-reserved-keywords
 import { ArrayArbitrary } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';

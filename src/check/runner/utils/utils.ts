@@ -110,9 +110,7 @@ class RunExecution<Ts> {
           qParams,
           this.firstFailure() + 1,
           this.numShrinks(),
-          // tslint:disable-next-line:no-non-null-assertion
           this.value!,
-          // tslint:disable-next-line:no-non-null-assertion
           mergePaths(qParams.path, this.pathToFailure!),
           this.failure
         );
