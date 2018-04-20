@@ -236,7 +236,11 @@ Integer values:
 Floating point numbers:
 
 - `fc.float()` uniformly distributed `float` value between 0.0 (included) and 1.0 (excluded)
+- `fc.float(max: number)` uniformly distributed `float` value between 0.0 (included) and max (excluded)
+- `fc.float(min: number, max: number)` uniformly distributed `float` value between min (included) and max (excluded)
 - `fc.double()`uniformly distributed `double` value between 0.0 (included) and 1.0 (excluded)
+- `fc.double(max: number)`uniformly distributed `double` value between 0.0 (included) and max (excluded)
+- `fc.double(min: number, max: number)`uniformly distributed `double` value between min (included) and max (excluded)
 
 #### String (:string)
 

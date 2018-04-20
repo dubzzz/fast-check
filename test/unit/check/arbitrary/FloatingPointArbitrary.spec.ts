@@ -35,6 +35,29 @@ describe('FloatingPointArbitrary', () => {
           return g >= 0 && g < 1;
         })
       ));
+    it('Should generate values between 0 (included) and maxValue (excluded)', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.nat().map(v => v / 100.0), (seed, maxValue) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const g = float(maxValue).generate(mrng).value;
+          return g >= 0 && g < maxValue;
+        })
+      ));
+    it('Should generate values between minValue (included) and maxValue (excluded)', () =>
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.integer().map(v => v / 100.0),
+          fc.integer().map(v => v / 100.0),
+          (seed, va, vb) => {
+            const mrng = stubRng.mutable.fastincrease(seed);
+            const minValue = va < vb ? va : vb;
+            const maxValue = va < vb ? vb : va;
+            const g = float(minValue, maxValue).generate(mrng).value;
+            return g >= minValue && g < maxValue;
+          }
+        )
+      ));
     it('Should shrink towards zero', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
@@ -62,6 +85,29 @@ describe('FloatingPointArbitrary', () => {
           const g = double().generate(mrng).value;
           return g >= 0 && g < 1;
         })
+      ));
+    it('Should generate values between 0 (included) and maxValue (excluded)', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.nat().map(v => v / 100.0), (seed, maxValue) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const g = double(maxValue).generate(mrng).value;
+          return g >= 0 && g < maxValue;
+        })
+      ));
+    it('Should generate values between minValue (included) and maxValue (excluded)', () =>
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.integer().map(v => v / 100.0),
+          fc.integer().map(v => v / 100.0),
+          (seed, va, vb) => {
+            const mrng = stubRng.mutable.fastincrease(seed);
+            const minValue = va < vb ? va : vb;
+            const maxValue = va < vb ? vb : va;
+            const g = double(minValue, maxValue).generate(mrng).value;
+            return g >= minValue && g < maxValue;
+          }
+        )
       ));
     it('Should shrink towards zero', () =>
       fc.assert(
