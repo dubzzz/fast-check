@@ -13,10 +13,10 @@ function streamSample<Ts>(
   const qParams: QualifiedParameters = QualifiedParameters.readOrNumRuns(params);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(generator, qParams.seed));
   if (qParams.path.length === 0) {
-    return tossedValues.take(qParams.num_runs).map(s => s().value);
+    return tossedValues.take(qParams.numRuns).map(s => s().value);
   }
   return stream(pathWalk(qParams.path, tossedValues.map(s => s())))
-    .take(qParams.num_runs)
+    .take(qParams.numRuns)
     .map(s => s.value);
 }
 
@@ -74,7 +74,7 @@ function statistics<Ts>(
   }
   const data = Object_entries(recorded)
     .sort((a, b) => b[1] - a[1])
-    .map(i => [i[0], `${(i[1] * 100.0 / qParams.num_runs).toFixed(2)}%`]);
+    .map(i => [i[0], `${(i[1] * 100.0 / qParams.numRuns).toFixed(2)}%`]);
   const longestName = data.map(i => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map(i => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {

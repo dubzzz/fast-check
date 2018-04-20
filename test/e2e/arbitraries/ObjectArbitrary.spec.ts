@@ -34,7 +34,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
             return true;
           }
         }),
-        { seed: seed, num_runs: 1000 }
+        { seed: seed, numRuns: 1000 }
       );
       assert.ok(out.failed, 'Should have failed');
       assert.deepEqual(

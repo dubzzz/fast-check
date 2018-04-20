@@ -19,8 +19,8 @@ describe('Sampler', () => {
     it('Should produce the same sequence given the same seed and different lengths', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(MAX_NUM_RUNS), fc.nat(MAX_NUM_RUNS), (seed, l1, l2) => {
-          const out1 = sample(stubArb.forward(), { seed: seed, num_runs: l1 });
-          const out2 = sample(stubArb.forward(), { seed: seed, num_runs: l2 });
+          const out1 = sample(stubArb.forward(), { seed: seed, numRuns: l1 });
+          const out2 = sample(stubArb.forward(), { seed: seed, numRuns: l2 });
           const lmin = Math.min(l1, l2);
           assert.deepEqual(out2.slice(0, lmin), out1.slice(0, lmin), 'Should be the same array');
         })
@@ -62,7 +62,7 @@ describe('Sampler', () => {
         fc.property(fc.integer(), fc.integer(1, MAX_NUM_RUNS), (seed, runs) => {
           let logs: string[] = [];
           const classify = (g: number) => g.toString();
-          statistics(customGen(), classify, { seed: seed, num_runs: runs, logger: (v: string) => logs.push(v) });
+          statistics(customGen(), classify, { seed: seed, numRuns: runs, logger: (v: string) => logs.push(v) });
           assert.notEqual(logs.length, 0, 'Should not be empty');
         })
       ));
@@ -167,7 +167,7 @@ describe('Sampler', () => {
         fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const classify = (g: number) => g.toString();
           const arb = stubArb.counter(start);
-          const out = statistics(arb, classify, { num_runs: num, logger: (v: string) => {} });
+          const out = statistics(arb, classify, { numRuns: num, logger: (v: string) => {} });
           assert.equal(arb.generatedValues.length, num, 'Should not call the arbitrary too many times');
         })
       ));

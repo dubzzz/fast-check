@@ -21,7 +21,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       const out = fc.check(prop, { seed: seed });
       assert.ok(out.failed, 'Should have failed');
       assert.deepStrictEqual(
-        fc.sample(propArbitrary, { seed: seed, path: out.counterexample_path, num_runs: 1 })[0],
+        fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath, numRuns: 1 })[0],
         out.counterexample[0]
       );
     });
@@ -38,10 +38,10 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       assert.ok(out.failed, 'Should have failed');
 
       let replayedFailures = [];
-      const segments = out.counterexample_path.split(':');
+      const segments = out.counterexamplePath.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
-        const g = fc.sample(propArbitrary, { seed: seed, path: p, num_runs: 1 });
+        const g = fc.sample(propArbitrary, { seed: seed, path: p, numRuns: 1 });
         replayedFailures.push(g[0]);
       }
       assert.deepStrictEqual(replayedFailures, failuresRecorded);
@@ -65,26 +65,26 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
           ++numCalls;
           return propCheck(data);
         }),
-        { seed: seed, path: out.counterexample_path }
+        { seed: seed, path: out.counterexamplePath }
       );
       assert.equal(numValidCalls, 1);
       assert.equal(validCallIndex, 0);
-      assert.equal(out2.num_runs, 1);
-      assert.equal(out2.num_shrinks, 0);
-      assert.equal(out2.counterexample_path, out.counterexample_path);
+      assert.equal(out2.numRuns, 1);
+      assert.equal(out2.numShrinks, 0);
+      assert.equal(out2.counterexamplePath, out.counterexamplePath);
       assert.deepStrictEqual(out2.counterexample, out.counterexample);
     });
     it('Should start from any position in the path', () => {
       const out = fc.check(prop, { seed: seed });
       assert.ok(out.failed, 'Should have failed');
 
-      const segments = out.counterexample_path.split(':');
+      const segments = out.counterexamplePath.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
         const outMiddlePath = fc.check(prop, { seed: seed, path: p });
-        assert.equal(outMiddlePath.num_runs, 1);
-        assert.equal(outMiddlePath.num_shrinks, out.num_shrinks - idx + 1);
-        assert.equal(outMiddlePath.counterexample_path, out.counterexample_path);
+        assert.equal(outMiddlePath.numRuns, 1);
+        assert.equal(outMiddlePath.numShrinks, out.numShrinks - idx + 1);
+        assert.equal(outMiddlePath.counterexamplePath, out.counterexamplePath);
         assert.deepStrictEqual(outMiddlePath.counterexample, out.counterexample);
       }
     });
@@ -92,13 +92,13 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       const out = fc.check(prop, { seed: seed });
       assert.ok(out.failed, 'Should have failed');
 
-      const segments = out.counterexample_path.split(':');
+      const segments = out.counterexamplePath.split(':');
       const playOnIndex = seed % segments.length;
 
       for (let offset = 0; offset !== +segments[playOnIndex]; ++offset) {
         const p = [...segments.slice(0, playOnIndex), offset].join(':');
         const outMiddlePath = fc.check(prop, { seed: seed, path: p });
-        assert.equal(outMiddlePath.counterexample_path, out.counterexample_path);
+        assert.equal(outMiddlePath.counterexamplePath, out.counterexamplePath);
         assert.deepStrictEqual(outMiddlePath.counterexample, out.counterexample);
       }
     });

@@ -84,7 +84,7 @@ describe('Runner', () => {
             `Should have stopped run (because no shrink) at first failing run (run number ${num})`
           );
           assert.ok(out.failed, 'Should have failed');
-          assert.equal(out.num_runs, num, `Should have failed after ${num} tests`);
+          assert.equal(out.numRuns, num, `Should have failed after ${num} tests`);
           assert.equal(out.seed, seed, `Should attach the failing seed`);
           return true;
         })
@@ -105,7 +105,7 @@ describe('Runner', () => {
               return null;
             }
           };
-          const out = check(p, { num_runs: num }) as RunDetails<[number]>;
+          const out = check(p, { numRuns: num }) as RunDetails<[number]>;
           assert.equal(num_calls_generate, num, `Should have called generate ${num} times`);
           assert.equal(num_calls_run, num, `Should have called run ${num} times`);
           assert.equal(out.failed, false, 'Should not have failed');
@@ -136,7 +136,7 @@ describe('Runner', () => {
           return true;
         })
       ));
-    it('Should build the right counterexample_path', () =>
+    it('Should build the right counterexamplePath', () =>
       fc.assert(
         fc.property(fc.integer(), fc.array(fc.nat(99), 1, 100), (seed, failurePoints) => {
           // Each entry (at index idx) in failurePoints represents the number of runs
@@ -167,9 +167,9 @@ describe('Runner', () => {
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
           assert.ok(out.failed);
           assert.equal(out.seed, seed);
-          assert.equal(out.num_runs, failurePoints[0] + 1);
-          assert.equal(out.num_shrinks, failurePoints.length - 1);
-          assert.equal(out.counterexample_path, expectedFailurePath);
+          assert.equal(out.numRuns, failurePoints[0] + 1);
+          assert.equal(out.numShrinks, failurePoints.length - 1);
+          assert.equal(out.counterexamplePath, expectedFailurePath);
         })
       ));
     it('Should wait on async properties to complete', async () =>
@@ -224,7 +224,7 @@ describe('Runner', () => {
             `Should have stopped run one shrink after first failing run (run number ${num + 1})`
           );
           assert.ok(out.failed, 'Should have failed');
-          assert.equal(out.num_runs, num, `Should have failed after ${num} tests`);
+          assert.equal(out.numRuns, num, `Should have failed after ${num} tests`);
           assert.equal(out.seed, seed, `Should attach the failing seed`);
           assert.deepStrictEqual(
             out.counterexample,

@@ -25,7 +25,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         cc: fc.string()
       };
       const out = fc.check(
-        fc.property(fc.record(recordModel, { with_deleted_keys: true }), (obj: any) => obj['bb'] == null),
+        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj: any) => obj['bb'] == null),
         { seed: seed }
       );
       assert.ok(out.failed, 'Should have failed');
@@ -41,7 +41,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         force_negative_output: fc.boolean()
       };
       const out = fc.check(
-        fc.property(fc.record(recordModel, { with_deleted_keys: true }), (obj: any) => {
+        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj: any) => {
           if (obj.force_positive_output === true && obj.force_negative_output === true) return false;
           return true;
         }),

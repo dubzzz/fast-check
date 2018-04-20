@@ -5,7 +5,8 @@ import { option } from './OptionArbitrary';
 import { genericTuple } from './TupleArbitrary';
 
 export interface RecordConstraints {
-  with_deleted_keys?: boolean;
+  withDeletedKeys?: boolean;
+  /** @depreciated Prefer withDeletedKeys */ with_deleted_keys?: boolean;
 }
 
 function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [key: string]: T }> {
@@ -27,7 +28,8 @@ function record<T>(
   recordModel: { [key: string]: Arbitrary<T> },
   constraints?: RecordConstraints
 ): Arbitrary<{ [key: string]: T }> {
-  if (constraints == null || constraints.with_deleted_keys !== true) return rawRecord(recordModel);
+  if (constraints == null || constraints.withDeletedKeys !== true || constraints.with_deleted_keys !== true)
+    return rawRecord(recordModel);
 
   const updatedRecordModel: {
     [key: string]: Arbitrary<{ value: T } | null>;

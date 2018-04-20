@@ -1,19 +1,25 @@
 interface Parameters {
   seed?: number;
-  num_runs?: number;
+  numRuns?: number;
   timeout?: number;
   path?: string;
   logger?(v: string): void;
 }
 class QualifiedParameters {
   seed: number;
-  num_runs: number;
+  numRuns: number;
   timeout: number | null;
   path: string;
   logger: (v: string) => void;
 
   private static readSeed = (p?: Parameters): number => (p != null && p.seed != null ? p.seed : Date.now());
-  private static readNumRuns = (p?: Parameters): number => (p != null && p.num_runs != null ? p.num_runs : 100);
+  private static readNumRuns = (p?: Parameters): number => {
+    const defaultValue = 100;
+    if (p == null) return defaultValue;
+    if (p.numRuns != null) return p.numRuns;
+    if ((p as { num_runs?: number }).num_runs != null) return (p as { num_runs?: number }).num_runs;
+    return defaultValue;
+  };
   private static readTimeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
   private static readPath = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
   private static readLogger = (p?: Parameters): ((v: string) => void) => {
@@ -27,7 +33,7 @@ class QualifiedParameters {
   static read(p?: Parameters): QualifiedParameters {
     return {
       seed: QualifiedParameters.readSeed(p),
-      num_runs: QualifiedParameters.readNumRuns(p),
+      numRuns: QualifiedParameters.readNumRuns(p),
       timeout: QualifiedParameters.readTimeout(p),
       logger: QualifiedParameters.readLogger(p),
       path: QualifiedParameters.readPath(p)
@@ -35,47 +41,47 @@ class QualifiedParameters {
   }
   static readOrNumRuns(p?: Parameters | number): QualifiedParameters {
     if (p == null) return QualifiedParameters.read();
-    if (typeof p === 'number') return QualifiedParameters.read({ num_runs: p });
+    if (typeof p === 'number') return QualifiedParameters.read({ numRuns: p });
     return QualifiedParameters.read(p);
   }
 }
 
 interface RunDetails<Ts> {
   failed: boolean;
-  num_runs: number;
-  num_shrinks: number;
+  numRuns: number;
+  numShrinks: number;
   seed: number;
   counterexample: Ts | null;
   error: string | null;
-  counterexample_path: string | null;
+  counterexamplePath: string | null;
 }
 
 function successFor<Ts>(qParams: QualifiedParameters): RunDetails<Ts> {
   return {
     failed: false,
-    num_runs: qParams.num_runs,
-    num_shrinks: 0,
+    numRuns: qParams.numRuns,
+    numShrinks: 0,
     seed: qParams.seed,
     counterexample: null,
-    counterexample_path: null,
+    counterexamplePath: null,
     error: null
   };
 }
 function failureFor<Ts>(
   qParams: QualifiedParameters,
-  num_runs: number,
-  num_shrinks: number,
+  numRuns: number,
+  numShrinks: number,
   counterexample: Ts,
-  counterexample_path: string,
+  counterexamplePath: string,
   error: string
 ): RunDetails<Ts> {
   return {
     failed: true,
-    num_runs,
-    num_shrinks,
+    numRuns,
+    numShrinks,
     seed: qParams.seed,
     counterexample,
-    counterexample_path,
+    counterexamplePath,
     error
   };
 }
@@ -136,10 +142,10 @@ function pretty<Ts>(value: Ts): string {
 function throwIfFailed<Ts>(out: RunDetails<Ts>) {
   if (out.failed) {
     throw new Error(
-      `Property failed after ${out.num_runs} tests (seed: ${out.seed}, path: ${out.counterexample_path}): ${pretty(
+      `Property failed after ${out.numRuns} tests (seed: ${out.seed}, path: ${out.counterexamplePath}): ${pretty(
         out.counterexample
       )}
-Shrunk ${out.num_shrinks} time(s)
+Shrunk ${out.numShrinks} time(s)
 Got error: ${out.error}`
     );
   }

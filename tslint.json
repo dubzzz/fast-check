@@ -15,7 +15,6 @@
         "no-namespace": false,
         "no-unnecessary-callback-wrapper": false, // a.map(f) != a.map(e => f(e))
         "unified-signatures": false,
-        "variable-name": [true, "ban-keywords", "check-format", "allow-snake-case"],
         // Format (handled by prettier if needed)
         "curly": false,
         "member-ordering": false,

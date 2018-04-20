@@ -66,7 +66,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   const generator = toss(property, qParams.seed);
 
   function* g() {
-    for (let idx = 0; idx < qParams.num_runs; ++idx) yield generator.next().value();
+    for (let idx = 0; idx < qParams.numRuns; ++idx) yield generator.next().value();
   }
   const initialValues = qParams.path.length === 0 ? g() : pathWalk(qParams.path, g());
   return property.isAsync()
