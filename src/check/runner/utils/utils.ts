@@ -17,7 +17,7 @@ class QualifiedParameters {
     const defaultValue = 100;
     if (p == null) return defaultValue;
     if (p.numRuns != null) return p.numRuns;
-    if ((p as { num_runs?: number }).num_runs != null) return (p as { num_runs?: number }).num_runs;
+    if ((p as { num_runs?: number }).num_runs != null) return (p as { num_runs: number }).num_runs;
     return defaultValue;
   };
   private static readTimeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
@@ -130,7 +130,9 @@ function prettyOne<Ts>(value: Ts): string {
   if (/^\[object (Object|Null|Undefined)\]$/.exec(defaultRepr) === null) return defaultRepr;
   try {
     return JSON.stringify(value);
-  } catch (err) {}
+  } catch (err) {
+    // ignored: object cannot be stringified using JSON.stringify
+  }
   return defaultRepr;
 }
 

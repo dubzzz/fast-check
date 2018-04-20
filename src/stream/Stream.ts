@@ -1,6 +1,8 @@
 export default class Stream<T> implements IterableIterator<T> {
   static nil<T>() {
-    function* g(): IterableIterator<T> {}
+    function* g(): IterableIterator<T> {
+      // nil has no value
+    }
     return new Stream<T>(g());
   }
 
