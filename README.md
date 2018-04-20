@@ -348,7 +348,7 @@ Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/mas
 Calling `noShrink()` on an `Arbitrary<T>` just remove the shrinker of the `Arbitrary<T>`. For instance, the following code will produce an `Arbitrary<number>` without shrinking operation.
 
 ```js
-const intNoShrink = fc.int().noShrink();
+const intNoShrink = fc.integer().noShrink();
 ```
 
 #### Build your own
