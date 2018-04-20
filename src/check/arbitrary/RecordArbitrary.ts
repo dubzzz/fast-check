@@ -28,7 +28,7 @@ function record<T>(
   recordModel: { [key: string]: Arbitrary<T> },
   constraints?: RecordConstraints
 ): Arbitrary<{ [key: string]: T }> {
-  if (constraints == null || constraints.withDeletedKeys !== true || constraints.with_deleted_keys !== true)
+  if (constraints == null || (constraints.withDeletedKeys !== true && constraints.with_deleted_keys !== true))
     return rawRecord(recordModel);
 
   const updatedRecordModel: {
