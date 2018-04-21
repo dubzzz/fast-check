@@ -25,7 +25,7 @@
 
 [Issues found by fast-check in famous packages](#issues-found-by-fast-check-in-famous-packages)
 
-[Examples](https://github.com/dubzzz/fast-check/tree/master/example) - [More examples](https://github.com/dubzzz/fast-check-examples)
+[Examples](https://github.com/dubzzz/fast-check/tree/master/example) - [Examples against REST API](https://github.com/dubzzz/fuzz-rest-api) - [More examples](https://github.com/dubzzz/fast-check-examples)
 
 ----
 
