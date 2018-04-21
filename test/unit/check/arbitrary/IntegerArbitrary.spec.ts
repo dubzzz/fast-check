@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
+import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { integer, nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 
 import * as stubRng from '../../stubs/generators';
@@ -118,13 +119,13 @@ describe('IntegerArbitrary', () => {
           const minValue = Math.min(sA.value, sB.value);
           const maxValue = Math.max(sA.value, sB.value);
 
-          let shrinkable = sA;
+          let shrinkable: Shrinkable<number> | null = sA;
           let numZeros = 0;
 
           // simulate the shrinking process
           // count we do not ask for zero multiple times
           while (shrinkable !== null) {
-            const oldShrinkable = shrinkable;
+            const oldShrinkable: Shrinkable<number> | null = shrinkable;
             shrinkable = null;
             for (const smallerShrinkable of oldShrinkable.shrink()) {
               if (smallerShrinkable.value === 0) {

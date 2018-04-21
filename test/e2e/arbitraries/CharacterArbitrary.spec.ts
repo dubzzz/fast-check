@@ -7,7 +7,7 @@ describe(`CharacterArbitrary (seed: ${seed})`, () => {
     it('Should shrink towards a character of size greater than one', () => {
       const out = fc.check(fc.property(fc.fullUnicode(), (s: string) => s.length === 1), { seed: seed });
       assert.ok(out.failed, 'Should have failed');
-      assert.ok(out.counterexample[0].length > 1);
+      assert.ok(out.counterexample![0].length > 1);
     });
   });
 });

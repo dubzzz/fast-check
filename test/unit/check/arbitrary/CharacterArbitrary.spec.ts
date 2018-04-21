@@ -66,9 +66,10 @@ describe('CharacterArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const g = fullUnicode().generate(mrng).value;
           return (
-            0x0000 <= g.codePointAt(0) &&
-            g.codePointAt(0) <= 0x10ffff &&
-            !(0xd800 <= g.codePointAt(0) && g.codePointAt(0) <= 0xdfff)
+            g.length !== 0 &&
+            0x0000 <= g.codePointAt(0)! &&
+            g.codePointAt(0)! <= 0x10ffff &&
+            !(0xd800 <= g.codePointAt(0)! && g.codePointAt(0)! <= 0xdfff)
           ); // surrogate pairs
         })
       ));

@@ -42,7 +42,7 @@ describe('ArbitraryWithShrink', () => {
         arbWithShrink
           .shrinkableFor(5)
           .shrink()
-          .getNthOrLast(2)
+          .getNthOrLast(2)!
           .shrink()
           .map(s => s.value)
       ),

@@ -11,7 +11,7 @@ describe('FrequencyArbitrary', () => {
   describe('frequency', () => {
     const MAX_WEIGHT = 100;
     const weightArb = () => fc.tuple(fc.integer(), fc.integer(1, MAX_WEIGHT));
-    const rng = seed => stubRng.mutable.fastincrease(seed);
+    const rng = (seed: number) => stubRng.mutable.fastincrease(seed);
     it('Should produce the same as oneof when called on weights of 1', () =>
       fc.assert(
         fc.property(fc.integer(), fc.integer(), fc.array(fc.integer()), (seed, choice1, others) => {
@@ -28,7 +28,9 @@ describe('FrequencyArbitrary', () => {
         fc.property(fc.integer(), weightArb(), fc.array(weightArb()), (seed, choice1, others) => {
           const expand = (value: number, num: number): number[] => [...Array(num)].map(() => value);
 
-          const othersOneOf = [choice1, ...others].reduce((p, c) => p.concat(...expand(c[0], c[1])), []).slice(1);
+          const othersOneOf = [choice1, ...others]
+            .reduce((p: number[], c) => p.concat(...expand(c[0], c[1])), [])
+            .slice(1);
 
           const gFreq = frequency(
             { weight: choice1[1], arbitrary: stubArb.counter(choice1[0]) },

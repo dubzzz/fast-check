@@ -38,11 +38,11 @@ const testNoImpactOfMutationOnShrunk = function<T>(arb: Arbitrary<T>, mutate: (t
         if (shrinkableNoMutation == null) {
           return true; // no shrink for this generated value
         }
-        assert.deepStrictEqual(shrinkableMutation.value, shrinkableNoMutation.value);
+        assert.deepStrictEqual(shrinkableMutation!.value, shrinkableNoMutation.value);
 
-        mutate(shrinkableMutation.value);
+        mutate(shrinkableMutation!.value);
         assert.deepStrictEqual(
-          [...shrinkableMutation.shrink().map(s => s.value)],
+          [...shrinkableMutation!.shrink().map(s => s.value)],
           [...shrinkableNoMutation.shrink().map(s => s.value)]
         );
       })

@@ -12,7 +12,7 @@ import { stream, Stream } from '../../../../src/stream/Stream';
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
-    it('Should throw if property is null', () => assert.throws(() => check(null)));
+    it('Should throw if property is null', () => assert.throws(() => check((null as any) as IProperty<{}>)));
     it('Should throw if property is not a property at all', () => assert.throws(() => check(<IProperty<{}>>{})));
     it('Should throw if property is an Arbitrary', () => assert.throws(() => check(<IProperty<{}>>(<any>char()))));
     it('Should call the property 100 times by default (on success)', () => {
@@ -144,9 +144,9 @@ describe('Runner', () => {
           // Basically it must fail before the end of the execution (100 runs by default)
           // so failure points are between 0 and 99 inclusive
 
-          const deepShrinkable = function(depth): Shrinkable<[number]> {
+          const deepShrinkable = function(depth: number): Shrinkable<[number]> {
             if (depth <= 0) return new Shrinkable([0]) as Shrinkable<[number]>;
-            function* g(subDepth): IterableIterator<Shrinkable<[number]>> {
+            function* g(subDepth: number): IterableIterator<Shrinkable<[number]>> {
               while (true) yield deepShrinkable(subDepth);
             }
             return new Shrinkable([0], () => stream(g(depth - 1))) as Shrinkable<[number]>;
@@ -205,7 +205,7 @@ describe('Runner', () => {
           while (waitingResolve.length > 0) {
             assert.equal(waitingResolve.length, 1, 'Should not run multiple properties in parallel');
             assert.equal(runnerHasCompleted, false, 'Should not have completed yet');
-            waitingResolve.shift()();
+            waitingResolve.shift()!();
             await delay();
           }
 
@@ -293,7 +293,7 @@ describe('Runner', () => {
       run: (v: [any, any]) => null
     };
 
-    it('Should throw if property is null', () => assert.throws(() => rAssert(null)));
+    it('Should throw if property is null', () => assert.throws(() => rAssert((null as any) as IProperty<{}>)));
     it('Should throw if property is not a property at all', () => assert.throws(() => rAssert(<IProperty<{}>>{})));
     it('Should throw if property is an Arbitrary', () => assert.throws(() => rAssert(<IProperty<{}>>(<any>char()))));
     it('Should never throw if no failure occured', () => {

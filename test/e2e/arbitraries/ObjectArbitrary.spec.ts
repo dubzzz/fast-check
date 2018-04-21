@@ -38,9 +38,9 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
       );
       assert.ok(out.failed, 'Should have failed');
       assert.deepEqual(
-        out.counterexample[0],
+        out.counterexample![0],
         '{}',
-        `Should shrink to counterexample {} got ${JSON.stringify(out.counterexample[0])}`
+        `Should shrink to counterexample {} got ${JSON.stringify(out.counterexample![0])}`
       );
     });
   });
@@ -48,10 +48,10 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
     it('Should shrink on object in object', () => {
       const out = fc.check(
         fc.property(fc.object(), (obj: any) => {
-          const isObject = ins => {
+          const isObject = (ins: any) => {
             return typeof ins === 'object' && !Array.isArray(ins) && ins !== null;
           };
-          const objectInObject = ins => {
+          const objectInObject = (ins: any): boolean => {
             if (typeof ins !== 'object') return false;
             if (Array.isArray(ins)) return ins.map(objectInObject).some(v => v === true);
             if (!isObject(ins)) return false;
@@ -65,9 +65,9 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
       );
       assert.ok(out.failed, 'Should have failed');
       assert.deepEqual(
-        out.counterexample[0],
+        out.counterexample![0],
         { '': {} },
-        `Should shrink to counterexample {"":{}} got ${JSON.stringify(out.counterexample[0])}`
+        `Should shrink to counterexample {"":{}} got ${JSON.stringify(out.counterexample![0])}`
       );
     });
   });

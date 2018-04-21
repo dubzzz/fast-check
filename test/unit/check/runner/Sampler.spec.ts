@@ -87,7 +87,7 @@ describe('Sampler', () => {
             const m = reLabel.exec(l);
             assert.notEqual(m, null, `The log line '${l}' must start by the label (format: my_label_...!)`);
             assert.notStrictEqual(
-              /^my_label_(\d+)!$/.exec(m[1]),
+              /^my_label_(\d+)!$/.exec(m![1]),
               null,
               `Label should have the format given by classifier: my_label_...!`
             );
@@ -111,7 +111,7 @@ describe('Sampler', () => {
           let logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
-          const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)[1]));
+          const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)![1]));
           const lowerBound = extractedPercents.reduce((p, c) => p + c - 0.01);
           const upperBound = extractedPercents.reduce((p, c) => p + c + 0.01);
           assert.ok(lowerBound <= 100, `Lower bound should be lower than 100, got: ${lowerBound}`);
@@ -124,7 +124,7 @@ describe('Sampler', () => {
           let logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
-          const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)[1]));
+          const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)![1]));
           for (var idx = 1; idx < extractedPercents.length; ++idx) {
             assert.ok(extractedPercents[idx - 1] >= extractedPercents[idx], 'Percentages should be ordered');
           }
@@ -136,7 +136,7 @@ describe('Sampler', () => {
           let logs: string[] = [];
           const classify = (g: number) => (g % 2 === 0 ? [`a::${g}`, `b::${g}`, `c::${g}`] : [`a::${g}`, `b::${g}`]);
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
-          const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)[1]));
+          const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)![1]));
           const lowerBound = extractedPercents.reduce((p, c) => p + c - 0.01);
           const upperBound = extractedPercents.reduce((p, c) => p + c + 0.01);
           assert.ok(lowerBound <= 300, `Lower bound should be lower than 300, got: ${lowerBound}`); // we always have a and b

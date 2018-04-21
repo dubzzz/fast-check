@@ -15,8 +15,8 @@ describe('RecordArbitrary', () => {
       fc.assert(
         fc.property(fc.set(fc.string()), fc.integer(), (keys, seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const expectedRecord = {};
-          const recordModel = {};
+          const expectedRecord: any = {};
+          const recordModel: any = {};
           for (const k of keys) {
             expectedRecord[k] = `_${k}_`;
             recordModel[k] = stubArb.single(`_${k}_`);
@@ -29,7 +29,7 @@ describe('RecordArbitrary', () => {
       fc.assert(
         fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.mersenne(seed));
-          const recordModel = {};
+          const recordModel: any = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
 
           const arb = record(recordModel, { withDeletedKeys: true });
@@ -44,7 +44,7 @@ describe('RecordArbitrary', () => {
       fc.assert(
         fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.mersenne(seed));
-          const recordModel = {};
+          const recordModel: any = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
 
           const arb = record(recordModel, { with_deleted_keys: true });

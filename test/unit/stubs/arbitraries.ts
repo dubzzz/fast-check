@@ -87,4 +87,13 @@ const forward = () => new ForwardArbitrary();
 const single = <T>(id: T) => new SingleUseArbitrary(id);
 const withShrink = (value: number) => new WithShrinkArbitrary(value);
 
-export { counter, forward, single, withShrink, SingleUseArbitrary };
+export {
+  counter,
+  forward,
+  single,
+  withShrink,
+  CounterArbitrary,
+  ForwardArbitrary,
+  SingleUseArbitrary,
+  WithShrinkArbitrary
+};

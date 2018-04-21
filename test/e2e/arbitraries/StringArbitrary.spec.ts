@@ -53,7 +53,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
         { seed }
       );
       assert.ok(out.failed, 'Should have failed');
-      assert.equal(out.counterexample[0].length, 1, 'Should shrink to a counterexample having a single char');
+      assert.equal(out.counterexample![0].length, 1, 'Should shrink to a counterexample having a single char');
       assert.equal(numSuggests, 1, "Should have suggested '' only once");
     });
   });

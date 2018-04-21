@@ -10,7 +10,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
    */
   const lookForMissing = <T>(arb: fc.Arbitrary<T>, missing: number): void => {
     const mrng = new fc.Random(prand.mersenne(seed));
-    const alreadySeen = {};
+    const alreadySeen: any = {};
     while (missing > 0) {
       const g = arb.generate(mrng).value.toString();
       if (alreadySeen[g]) continue;

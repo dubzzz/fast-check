@@ -52,13 +52,13 @@ describe('AsyncProperty', () => {
     const delay = () => new Promise((resolve, reject) => setTimeout(resolve, 0));
 
     let runnerHasCompleted = false;
-    let resolvePromise: ((boolean) => void) = null;
+    let resolvePromise: ((t: boolean) => void) = (null as any) as ((t: boolean) => void);
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       return await new Promise<boolean>(function(resolve, reject) {
         resolvePromise = resolve;
       });
     });
-    const runner: Promise<string> = p.run(p.generate(stubRng.mutable.nocall()).value);
+    const runner: Promise<string | null> = p.run(p.generate(stubRng.mutable.nocall()).value);
     runner.then(() => (runnerHasCompleted = true));
 
     await delay(); // give back the control for other threads

@@ -22,7 +22,7 @@ import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 
 describe('ObjectArbitrary', () => {
-  const assertShrinkedValue = (original, shrinked) => {
+  const assertShrinkedValue = (original: any, shrinked: any) => {
     assert.equal(typeof shrinked, typeof original);
     switch (typeof original) {
       case 'boolean':
@@ -51,8 +51,8 @@ describe('ObjectArbitrary', () => {
         return assert.deepStrictEqual(shrinked, {}, 'Should have shrinked towards empty object');
     }
   };
-  const checkCorrect = (allowedKeys, allowedValues) => {
-    const check = value => {
+  const checkCorrect = (allowedKeys: string[], allowedValues: string[]) => {
+    const check = (value: any): boolean => {
       if (Array.isArray(value)) return value.every(check);
       if (allowedValues.findIndex(v => v === value) !== -1) return true;
       const keys = Object.getOwnPropertyNames(value);
@@ -60,7 +60,7 @@ describe('ObjectArbitrary', () => {
     };
     return check;
   };
-  const evaluateDepth = value => {
+  const evaluateDepth = (value: any): number => {
     if (Array.isArray(value)) return 1 + value.map(evaluateDepth).reduce((p, c) => Math.max(p, c), 0);
     if (typeof value === 'string') return 0;
     const keys = Object.getOwnPropertyNames(value);

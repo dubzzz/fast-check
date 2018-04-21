@@ -8,7 +8,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       const out = fc.check(fc.property(fc.array(fc.nat()), (arr: number[]) => arr.length < 2), { seed: seed });
       assert.ok(out.failed, 'Should have failed');
       assert.notEqual(out.counterexample, null, 'Should come with a counterexample');
-      assert.deepEqual(out.counterexample[0].length, 2, 'Should shrink to counterexample an array of size 2');
+      assert.deepEqual(out.counterexample![0].length, 2, 'Should shrink to counterexample an array of size 2');
     });
     it('Should shrink on the content of the array', () => {
       const out = fc.check(fc.property(fc.array(fc.integer(3, 10)), (arr: number[]) => arr.length < 2), { seed: seed });
@@ -36,7 +36,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
         { seed }
       );
       assert.ok(out.failed, 'Should have failed');
-      assert.equal(out.counterexample[0].length, 1, 'Should shrink to a counterexample having a single element');
+      assert.equal(out.counterexample![0].length, 1, 'Should shrink to a counterexample having a single element');
       assert.equal(numSuggests, 1, 'Should have suggested [] only once');
     });
   });

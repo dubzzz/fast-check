@@ -56,28 +56,28 @@ const generateTuple = (num: number): string => {
 
 const propertySameSeedSameTupleFor = (num: number): string =>
   `
-        it('Should generate the same tuple${num} with the same random', () => fc.assert(
-            propertySameTupleForSameSeed([${commas(num, v => `dummy(${v * v})`)}])
-        ));
+        it('Should generate the same tuple${num} with the same random', () => 
+            assertSameTupleForSameSeed([${commas(num, v => `dummy(${v * v})`)}])
+        );
     `;
 const propertyShrinkInAllowedFor = (num: number): string =>
   `
-        it('Should shrink tuple${num} within allowed values', () => fc.assert(
-            propertyShrinkInRange([${commas(num, v => `dummy(${v * v})`)}])
-        ));
+        it('Should shrink tuple${num} within allowed values', () => 
+            assertShrinkInRange([${commas(num, v => `dummy(${v * v})`)}])
+        );
     `;
 const propertyShrinkNotSuggestItselfFor = (num: number): string =>
   `
-        it('Should not suggest input in tuple${num} shrinked values', () => fc.assert(
-            propertyNotSuggestInputInShrink([${commas(num, v => `dummy(${v * v})`)}])
-        ));
+        it('Should not suggest input in tuple${num} shrinked values', () => 
+            assertNotSuggestInputInShrink([${commas(num, v => `dummy(${v * v})`)}])
+        );
     `;
 
 const generateTupleSpec = (num: number): string => {
   const blocks = [
     // imports
     `import * as fc from '../../../../lib/fast-check';`,
-    `import { dummy, propertyNotSuggestInputInShrink, propertySameTupleForSameSeed, propertyShrinkInRange } from './TupleArbitrary.properties';`,
+    `import { dummy, assertNotSuggestInputInShrink, assertSameTupleForSameSeed, assertShrinkInRange } from './TupleArbitrary.properties';`,
     // start blocks
     `describe('TupleArbitrary', () => {`,
     `    describe('tuple', () => {`,
