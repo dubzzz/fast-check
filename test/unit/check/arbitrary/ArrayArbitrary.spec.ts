@@ -80,25 +80,27 @@ describe('ArrayArbitrary', () => {
     describe('Given no length constraints', () => {
       genericHelper.testAlwaysCorrectValues(
         fc.constant(null),
-        (maxLength: number) => array(new DummyArbitrary(() => 42)),
-        (maxLength: number, g: { key: number }[]) => Array.isArray(g) && g.every(v => v.key === 42)
+        (maxLength: number) => array(integer()),
+        (maxLength: number, g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number')
       );
     });
     describe('Given maximal length only', () => {
       genericHelper.testAlwaysCorrectValues(
         fc.nat(100),
-        (maxLength: number) => array(new DummyArbitrary(() => 42), maxLength),
-        (maxLength: number, g: { key: number }[]) =>
-          Array.isArray(g) && g.length <= maxLength && g.every(v => v.key === 42)
+        (maxLength: number) => array(integer(), maxLength),
+        (maxLength: number, g: number[]) =>
+          Array.isArray(g) && g.length <= maxLength && g.every(v => typeof v === 'number')
       );
     });
     describe('Given minimal and maximal lengths', () => {
       genericHelper.testAlwaysCorrectValues(
         genericHelper.minMax(fc.nat(100)),
-        (constraints: { min: number; max: number }) =>
-          array(new DummyArbitrary(() => 42), constraints.min, constraints.max),
-        (constraints: { min: number; max: number }, g: { key: number }[]) =>
-          Array.isArray(g) && g.length >= constraints.min && g.length <= constraints.max && g.every(v => v.key === 42)
+        (constraints: { min: number; max: number }) => array(integer(), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }, g: number[]) =>
+          Array.isArray(g) &&
+          g.length >= constraints.min &&
+          g.length <= constraints.max &&
+          g.every(v => typeof v === 'number')
       );
     });
   });

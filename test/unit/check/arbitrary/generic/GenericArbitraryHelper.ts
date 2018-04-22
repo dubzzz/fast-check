@@ -85,19 +85,11 @@ const testAlwaysShrinkToCorrectValues = function<U, T>(
         (params, seed, shrinkPath) => {
           const arb = arbGenerator(params);
           let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
-          const initial = shrinkable.value;
-          const allLengths: number[] = [];
           let id = 0;
-          let tot = 0;
           while (shrinkable !== null) {
-            if (Array.isArray(shrinkable.value)) allLengths.push(((shrinkable.value as any) as any[]).length);
             assert.ok(isCorrect(params, shrinkable.value), 'All values in the path must be correct');
             shrinkable = shrinkable.shrink().getNthOrLast(id);
             id = (id + 1) % shrinkPath.length;
-            ++tot;
-            if (tot === 100) {
-              console.log(JSON.stringify({ params, initial, seed, shrinkPath, allLengths }));
-            }
           }
         }
       )
