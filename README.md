@@ -39,6 +39,17 @@ Property based testing explained:
 - [John Hughes — Don’t Write Tests](https://www.youtube.com/watch?v=hXnS_Xjwk2Y)
 - [Generating test cases so you don’t have to (Spotify)](https://labs.spotify.com/2015/06/25/rapid-check/)
 
+If you want to synchronize and build the code locally:
+
+```bash
+git clone https://github.com/dubzzz/fast-check.git && cd fast-check
+npm install
+npm run prebuild #generate missing implementations: tuple and properties
+npm run build    #compile the code in ./src, build the ./lib content
+npm run test     #run unit tests
+npm run e2e      #run end-to-end tests: check the code can shrink on errors, replay on failure...
+```
+
 ## Usage
 
 ### In mocha or jasmine
