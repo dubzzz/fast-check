@@ -10,7 +10,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
   constructor(
     readonly arb: Arbitrary<T>,
     readonly minLength: number,
-    maxLength: number,
+    readonly maxLength: number,
     readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = tab => tab
   ) {
     super();
@@ -39,9 +39,11 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
       .map(l => items.slice(items.length - l.value))
       .join(items[0].shrink().map(v => [v].concat(items.slice(1))))
       .join(
-        this.shrinkImpl(items.slice(1), false)
-          .filter(vs => this.minLength <= vs.length + 1)
-          .map(vs => [items[0]].concat(vs))
+        items.length > this.minLength
+          ? this.shrinkImpl(items.slice(1), false)
+              .filter(vs => this.minLength <= vs.length + 1)
+              .map(vs => [items[0]].concat(vs))
+          : Stream.nil<Shrinkable<T>[]>()
       );
   }
 }
