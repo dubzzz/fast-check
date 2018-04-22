@@ -11,120 +11,75 @@ import {
   fullUnicode
 } from '../../../../src/check/arbitrary/CharacterArbitrary';
 
+import * as genericHelper from './generic/GenericArbitraryHelper';
+
 import * as stubRng from '../../stubs/generators';
 
 describe('CharacterArbitrary', () => {
   describe('char', () => {
-    it('Should generate a single printable character', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = char().generate(mrng).value;
-          return g.length === 1 && 0x20 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0x7e;
-        })
-      ));
+    genericHelper.testAlwaysCorrectValues(
+      fc.constant(null),
+      () => char(),
+      (empty: null, g: string) => g.length === 1 && 0x20 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0x7e,
+      'single printable character'
+    );
   });
   describe('ascii', () => {
-    it('Should generate a single ascii character', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = ascii().generate(mrng).value;
-          return g.length === 1 && 0x00 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0x7f;
-        })
-      ));
+    genericHelper.testAlwaysCorrectValues(
+      fc.constant(null),
+      () => ascii(),
+      (empty: null, g: string) => g.length === 1 && 0x00 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0x7f,
+      'single ascii character'
+    );
   });
   describe('char16bits', () => {
-    it('Should generate a single 16 bits character', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = char16bits().generate(mrng).value;
-          return g.length === 1 && 0x0000 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xffff;
-        })
-      ));
+    genericHelper.testAlwaysCorrectValues(
+      fc.constant(null),
+      () => char16bits(),
+      (empty: null, g: string) => g.length === 1 && 0x0000 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xffff,
+      'single 16 bits character'
+    );
   });
   describe('unicode', () => {
-    it('Should generate a single unicode character', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = unicode().generate(mrng).value;
-          return (
-            g.length === 1 &&
-            0x0000 <= g.charCodeAt(0) &&
-            g.charCodeAt(0) <= 0xffff &&
-            !(0xd800 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xdfff)
-          ); // surrogate pairs
-        })
-      ));
+    genericHelper.testAlwaysCorrectValues(
+      fc.constant(null),
+      () => unicode(),
+      (empty: null, g: string) =>
+        g.length === 1 &&
+        0x0000 <= g.charCodeAt(0) &&
+        g.charCodeAt(0) <= 0xffff &&
+        !(0xd800 <= g.charCodeAt(0) && g.charCodeAt(0) <= 0xdfff) /*surrogate pairs*/,
+      'single unicode character of BMP plan'
+    );
   });
   describe('fullUnicode', () => {
-    it('Should generate a single unicode character', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = fullUnicode().generate(mrng).value;
-          return (
-            g.length !== 0 &&
-            0x0000 <= g.codePointAt(0)! &&
-            g.codePointAt(0)! <= 0x10ffff &&
-            !(0xd800 <= g.codePointAt(0)! && g.codePointAt(0)! <= 0xdfff)
-          ); // surrogate pairs
-        })
-      ));
+    genericHelper.testAlwaysCorrectValues(
+      fc.constant(null),
+      () => fullUnicode(),
+      (empty: null, g: string) =>
+        [...g].length === 1 &&
+        0x0000 <= g.codePointAt(0)! &&
+        g.codePointAt(0)! <= 0x10ffff &&
+        !(0xd800 <= g.codePointAt(0)! && g.codePointAt(0)! <= 0xdfff) /*surrogate pairs*/,
+      'single unicode character'
+    );
   });
   describe('hexa', () => {
-    it('Should generate a single hexa character', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = hexa().generate(mrng).value;
-          return g.length === 1 && (('0' <= g && g <= '9') || ('a' <= g && g <= 'f'));
-        })
-      ));
-    it('Should shrink within hexa characters', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = hexa().generate(mrng);
-          return shrinkable
-            .shrink()
-            .every(
-              s => s.value.length === 1 && (('0' <= s.value && s.value <= '9') || ('a' <= s.value && s.value <= 'f'))
-            );
-        })
-      ));
+    genericHelper.testAlwaysCorrectValues(
+      fc.constant(null),
+      () => hexa(),
+      (empty: null, g: string) => g.length === 1 && (('0' <= g && g <= '9') || ('a' <= g && g <= 'f')),
+      'single hexa character'
+    );
   });
   describe('base64', () => {
-    it('Should generate a single base64 character', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = base64().generate(mrng).value;
-          return (
-            g.length === 1 &&
-            (('a' <= g && g <= 'z') || ('A' <= g && g <= 'Z') || ('0' <= g && g <= '9') || g === '+' || g === '/')
-          );
-        })
-      ));
-    it('Should shrink within base64 characters', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = base64().generate(mrng);
-          return shrinkable
-            .shrink()
-            .every(
-              s =>
-                s.value.length === 1 &&
-                (('a' <= s.value && s.value <= 'z') ||
-                  ('A' <= s.value && s.value <= 'Z') ||
-                  ('0' <= s.value && s.value <= '9') ||
-                  s.value === '+' ||
-                  s.value === '/')
-            );
-        })
-      ));
+    genericHelper.testAlwaysCorrectValues(
+      fc.constant(null),
+      () => base64(),
+      (empty: null, g: string) =>
+        g.length === 1 &&
+        (('a' <= g && g <= 'z') || ('A' <= g && g <= 'Z') || ('0' <= g && g <= '9') || g === '+' || g === '/'),
+      'single base64 character'
+    );
   });
 });

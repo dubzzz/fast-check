@@ -112,8 +112,8 @@ describe('IntegerArbitrary', () => {
     describe('Given no constraints', () => {
       genericHelper.testAlwaysCorrectValues(
         fc.constant(null),
-        (maxLength: number) => integer(),
-        (maxLength: number, g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff,
+        () => integer(),
+        (empty: null, g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff,
         'between -2**31 and 2**31 -1'
       );
     });
@@ -139,8 +139,8 @@ describe('IntegerArbitrary', () => {
     describe('Given no constraints', () => {
       genericHelper.testAlwaysCorrectValues(
         fc.constant(null),
-        (maxLength: number) => nat(),
-        (maxLength: number, g: number) => typeof g === 'number' && g >= 0 && g <= 0x7fffffff,
+        () => nat(),
+        (empty: null, g: number) => typeof g === 'number' && g >= 0 && g <= 0x7fffffff,
         'between 0 and 2**31 -1'
       );
     });

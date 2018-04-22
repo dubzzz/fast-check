@@ -80,8 +80,8 @@ describe('ArrayArbitrary', () => {
     describe('Given no length constraints', () => {
       genericHelper.testAlwaysCorrectValues(
         fc.constant(null),
-        (maxLength: number) => array(integer()),
-        (maxLength: number, g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number')
+        () => array(integer()),
+        (empty: null, g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number')
       );
     });
     describe('Given maximal length only', () => {
