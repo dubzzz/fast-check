@@ -11,11 +11,11 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
 
-class DummyArbitrary extends Arbitrary<any> {
+class DummyArbitrary extends Arbitrary<{ key: number }> {
   constructor(public value: () => number) {
     super();
   }
-  generate(mrng: Random): Shrinkable<any> {
+  generate(mrng: Random): Shrinkable<{ key: number }> {
     return new Shrinkable({ key: this.value() });
   }
 }
@@ -51,44 +51,6 @@ describe('ArrayArbitrary', () => {
           return true;
         })
       ));
-    it('Should generate an array given maximal length', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = array(new DummyArbitrary(() => 42), maxLength).generate(mrng).value;
-          return g.length <= maxLength;
-        })
-      ));
-    it('Should generate an array given minimal and maximal length', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.nat(10000), fc.nat(10000), (seed, aLength, bLength) => {
-          const minLength = Math.min(aLength, bLength);
-          const maxLength = Math.max(aLength, bLength);
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = array(new DummyArbitrary(() => 42), minLength, maxLength).generate(mrng).value;
-          return minLength <= g.length && g.length <= maxLength;
-        })
-      ));
-    it('Should shrink values in the defined range', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const arb = array(integer(min, min + num));
-          const shrinkable = arb.generate(mrng);
-          return shrinkable.shrink().every(s => s.value.every(vv => min <= vv && vv <= min + num));
-        })
-      ));
-    it('Should shrink values in the min/max size range', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.nat(50), fc.nat(50), (seed, aLength, bLength) => {
-          const minLength = Math.min(aLength, bLength);
-          const maxLength = Math.max(aLength, bLength);
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const arb = array(new DummyArbitrary(() => 42), minLength, maxLength);
-          const shrinkable = arb.generate(mrng);
-          return shrinkable.shrink().every(s => minLength <= s.value.length && s.value.length <= maxLength);
-        })
-      ));
     it('Should not suggest input in shrinked values', () =>
       fc.assert(
         fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
@@ -114,5 +76,30 @@ describe('ArrayArbitrary', () => {
     //     for (let idx2 = 0 ; idx2 !== tabtab[idx].length ; ++idx2)
     //       tabtab[idx][idx2] = 0;
     // });
+
+    describe('Given no length constraints', () => {
+      genericHelper.testAlwaysCorrectValues(
+        fc.constant(null),
+        (maxLength: number) => array(new DummyArbitrary(() => 42)),
+        (maxLength: number, g: { key: number }[]) => Array.isArray(g) && g.every(v => v.key === 42)
+      );
+    });
+    describe('Given maximal length only', () => {
+      genericHelper.testAlwaysCorrectValues(
+        fc.nat(100),
+        (maxLength: number) => array(new DummyArbitrary(() => 42), maxLength),
+        (maxLength: number, g: { key: number }[]) =>
+          Array.isArray(g) && g.length <= maxLength && g.every(v => v.key === 42)
+      );
+    });
+    describe('Given minimal and maximal lengths', () => {
+      genericHelper.testAlwaysCorrectValues(
+        genericHelper.minMax(fc.nat(100)),
+        (constraints: { min: number; max: number }) =>
+          array(new DummyArbitrary(() => 42), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }, g: { key: number }[]) =>
+          Array.isArray(g) && g.length >= constraints.min && g.length <= constraints.max && g.every(v => v.key === 42)
+      );
+    });
   });
 });
