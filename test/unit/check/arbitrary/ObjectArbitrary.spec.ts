@@ -281,10 +281,5 @@ describe('ObjectArbitrary', () => {
           for (const s of shrinkable.shrink()) assert.notDeepEqual(s.value, shrinkable.value);
         })
       ));
-
-    genericHelper.testNoImpactOfMutation(object({ key: char(), values: [char()], maxDepth: 2 }), obj => {
-      obj['new_key'] = 'another_key';
-      obj[Object.keys(obj)[0]] = 'mutation';
-    });
   });
 });

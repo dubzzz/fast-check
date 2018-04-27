@@ -42,9 +42,6 @@ describe('SetArbitrary', () => {
           for (const s of shrinkable.shrink()) assert.notDeepEqual(s.value, shrinkable.value);
         })
       ));
-    genericHelper.testNoImpactOfMutation(set(integer()), tab => {
-      for (let idx = 0; idx !== tab.length; ++idx) tab[idx] = 0;
-    });
     describe('Given no length constraints', () => {
       genericHelper.testAlwaysCorrectValues(
         fc.constant(null),

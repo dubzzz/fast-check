@@ -49,8 +49,5 @@ describe('TupleArbitrary', () => {
       assert.throws(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])));
     it('Should throw on invalid arbitrary', () =>
       assert.throws(() => genericTuple([dummy(1), dummy(2), <Arbitrary<any>>{}])));
-    genericHelper.testNoImpactOfMutation(genericTuple([char(), char()]), tab => {
-      for (let idx = 0; idx !== tab.length; ++idx) tab[idx] = '.';
-    });
   });
 });
