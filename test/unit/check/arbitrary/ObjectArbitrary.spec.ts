@@ -116,10 +116,10 @@ describe('ObjectArbitrary', () => {
           while (shrinkable.shrink().has(v => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
-              assertShrinkedValue(originalValue, shrinkable.value);
+          assertShrinkedValue(originalValue, shrinkable.value);
         })
       ));
-    });
+  });
   describe('json', () => {
     it('Should produce strings', () =>
       fc.assert(
