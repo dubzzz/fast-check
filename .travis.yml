@@ -62,6 +62,7 @@ script:
       cd .. ;
     fi;
   - if [ "$CHECK_LEGACY" != "OFF" ];
+    then
       NODE_VERSION=`node --version | cut -dv -f2` ;
       nvm install 0.12 ;
       node --version ;
