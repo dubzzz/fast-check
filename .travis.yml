@@ -5,6 +5,7 @@ matrix:
     - node_js: '7'
     - node_js: '8'
     - node_js: '10'
+      env: PUBLISH_PACKAGE=ON
 
 cache:
   directories:
@@ -37,5 +38,6 @@ deploy:
   api_key:
     secure: U25V+vyJQn14dxiWUJ5bcsXIVM5gLxNmRvmJ8FgwyRST1tqvPk0x71rq1n0rwXJTO3aLMfEAz6499bG9MKNlwDwFBCRqDCWicbaXgAWqplaGbS3pI9EtA6aleLaS2SRET2jAT1piWtGPaXNdIQOS1ZaM+CG5RbKu0SoFDq25lPh2CrktqoR0nb2YKneWw8W7QGCuOpm11i5uLKs+7vhKOp8MVwRksHm3QgDX/+kbLVik71FEbmfn2DMna4RLCUKxeayX9/6dx+ZCD00EY5POaKNFzo29HvFaNRwNdUcPZYE97ZBDqgbs2z9KHQljBVB4cYP1lEGgTbpmPOJ9Oj8boGlf+TF/3bSK/tM0a/CKwp/L8+Fd7NSpMlLCAiMDje/3DQ5PgI5LojQzHe4zMCZO5rphoiC03wuw9drECESlD3+jPX3uPHmrCmU2CqoNKclwFM3nAI16UbWAo+Gg/SzQzyRYukoH7pittNJ0YauUIcNjprS0lWk7Wj3v+w27IannWTa4OcVAtl7mVXmcGX+/n5ejBsS/lMPOSiqXEsaQOZm1tcfJBRO75NF72UdV71SQ+YHWzvJ6HZ42WMRAgeE8ARhRdQ6CneHZE508xEh4QQPIihOCnWx3o/g+2pZFo0Um3IGOXxiR/8SCJXOtJv6yd0OpOVRAyrjXfjV9a24ZGMQ=
   on:
+    condition: "$PUBLISH_PACKAGE = ON"
     tags: true
 repo: dubzzz/fast-check
