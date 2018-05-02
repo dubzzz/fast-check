@@ -5,12 +5,6 @@ matrix:
     - node_js: '7'
     - node_js: '8'
     - node_js: '10'
-      env: LEGACY_ONLY=ON
-    - node_js: '10'
-      env: FORMAT_ONLY=ON
-    - node_js: '10'
-      env: LINT_ONLY=ON
-    - node_js: '10'
       env: PUBLISH_PACKAGE=ON
 
 cache:
@@ -18,60 +12,24 @@ cache:
   - node_modules
 
 script:
-  - CHECK_FORMAT=OFF;
-    CHECK_LINT=OFF;
-    CHECK_LEGACY=OFF;
-  - if [ "$FORMAT_ONLY" == "ON" ] || [ "$LINT_ONLY" == "ON" ] || [ "$LEGACY_ONLY" == "ON" ];
-    then
-      CHECK_FORMAT=OFF;
-      CHECK_LINT=OFF;
-      CHECK_TEST=OFF;
-      CHECK_BUILD=OFF;
-      CHECK_EXAMPLE=OFF;
-      CHECK_LEGACY=OFF;
-      if [ "$FORMAT_ONLY" == "ON" ]; then CHECK_FORMAT=ON; fi;
-      if [ "$LINT_ONLY" == "ON" ]; then CHECK_LINT=ON; fi;
-      if [ "$LEGACY_ONLY" == "ON" ]; then CHECK_LEGACY=ON; fi;
-    fi;
-  - if [ "$PUBLISH_PACKAGE" == "ON" ];
-    then
-      CHECK_FORMAT=ON;
-      CHECK_LINT=ON;
-      CHECK_TEST=ON;
-      CHECK_BUILD=ON;
-      CHECK_EXAMPLE=ON;
-      CHECK_LEGACY=ON;
-    fi;
-  - if [ "$CHECK_FORMAT" != "OFF" ]; then npm run format:check; fi;
-  - if [ "$CHECK_LINT" != "OFF" ]; then npm run lint:check; fi;
-  - if [ "$CHECK_TEST" != "OFF" ];
-    then
-      npm run test ;
-      npm run e2e ;
-    fi;
-  - if [ "$CHECK_BUILD" != "OFF" ];
-    then
-      npm run build ;
-      npm run webbuild ;
-    fi;
-  - if [ "$CHECK_EXAMPLE" != "OFF" ];
-    then
-      cd example ;
-      bash configure.sh ;
-      bash run.sh ;
-      cd .. ;
-    fi;
-  - if [ "$CHECK_LEGACY" != "OFF" ];
-    then
-      NODE_VERSION=`node --version | cut -dv -f2` ;
-      nvm install 0.12 ;
-      node --version ;
-      node --eval "var fc = require('./lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))" ;
-      nvm use "${NODE_VERSION}" ;
-    fi;
+  - NODE_VERSION=`node --version | cut -dv -f2`
+  - npm run format:check
+  - npm run lint:check
+  - npm run test
+  - npm run e2e
+  - npm run build
+  - npm run webbuild
+  - cd example ;
+    bash configure.sh ;
+    bash run.sh
+  - nvm install 0.12 ;
+    node --version ;
+    node --eval "var fc = require('../lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))" ;
+  - nvm use "${NODE_VERSION}" ;
+    cd ..
 
 after_success:
-  - if [ "$PUBLISH_PACKAGE" == "ON" ]; then npm run coverage; fi;
+  - npm run coverage
 
 deploy:
   provider: npm
