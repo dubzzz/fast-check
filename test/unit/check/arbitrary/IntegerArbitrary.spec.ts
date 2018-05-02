@@ -109,48 +109,39 @@ describe('IntegerArbitrary', () => {
           }
         })
       ));
-    describe('Given no constraints', () => {
-      genericHelper.testAlwaysCorrectValues(
-        fc.constant(null),
-        () => integer(),
-        (empty: null, g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff,
-        'between -2**31 and 2**31 -1'
-      );
+    describe('Given no constraints [between -2**31 and 2**31 -1]', () => {
+      genericHelper.isValidArbitrary(() => integer(), {
+        isValidValue: (g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff
+      });
     });
-    describe('Given maximal value only', () => {
-      genericHelper.testAlwaysCorrectValues(
-        fc.integer(),
-        (maxValue: number) => integer(maxValue),
-        (maxValue: number, g: number) => typeof g === 'number' && -0x80000000 <= g && g <= maxValue,
-        'between -2**31 and max'
-      );
+    describe('Given maximal value only [between -2**31 and max]', () => {
+      genericHelper.isValidArbitrary((maxValue: number) => integer(maxValue), {
+        seedGenerator: fc.integer(),
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && -0x80000000 <= g && g <= maxValue
+      });
     });
-    describe('Given minimal and maximal values', () => {
-      genericHelper.testAlwaysCorrectValues(
-        genericHelper.minMax(fc.integer()),
+    describe('Given minimal and maximal values [between min and max]', () => {
+      genericHelper.isValidArbitrary(
         (constraints: { min: number; max: number }) => integer(constraints.min, constraints.max),
-        (constraints: { min: number; max: number }, g: number) =>
-          typeof g === 'number' && constraints.min <= g && g <= constraints.max,
-        'between min and max'
+        {
+          seedGenerator: genericHelper.minMax(fc.integer()),
+          isValidValue: (g: number, constraints: { min: number; max: number }) =>
+            typeof g === 'number' && constraints.min <= g && g <= constraints.max
+        }
       );
     });
   });
   describe('nat', () => {
-    describe('Given no constraints', () => {
-      genericHelper.testAlwaysCorrectValues(
-        fc.constant(null),
-        () => nat(),
-        (empty: null, g: number) => typeof g === 'number' && g >= 0 && g <= 0x7fffffff,
-        'between 0 and 2**31 -1'
-      );
+    describe('Given no constraints [between 0 and 2**31 -1]', () => {
+      genericHelper.isValidArbitrary(() => nat(), {
+        isValidValue: (g: number) => typeof g === 'number' && g >= 0 && g <= 0x7fffffff
+      });
     });
-    describe('Given maximal value only', () => {
-      genericHelper.testAlwaysCorrectValues(
-        fc.nat(),
-        (maxValue: number) => nat(maxValue),
-        (maxValue: number, g: number) => typeof g === 'number' && g >= 0 && g <= maxValue,
-        'between 0 and max'
-      );
+    describe('Given maximal value only [between 0 and max]', () => {
+      genericHelper.isValidArbitrary((maxValue: number) => nat(maxValue), {
+        seedGenerator: fc.nat(),
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && g >= 0 && g <= maxValue
+      });
     });
   });
 });

@@ -9,15 +9,14 @@ import Random from '../../../../../src/random/generator/Random';
 const testAlwaysGenerateCorrectValues = function<U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
-  isCorrect: (u: U, t: T) => boolean,
-  label?: string
+  isValidValue: (g: T, seed: U) => boolean
 ) {
-  it(`Should always generate correct values${label ? ': ' + label : ''}`, () =>
+  it(`Should always generate correct values`, () =>
     fc.assert(
       fc.property(argsForArbGenerator, fc.integer().noShrink(), (params, seed) => {
         const arb = arbGenerator(params);
         let shrinkable = arb.generate(new Random(prand.mersenne(seed)));
-        return isCorrect(params, shrinkable.value);
+        return isValidValue(shrinkable.value, params);
       })
     ));
 };
@@ -25,10 +24,9 @@ const testAlwaysGenerateCorrectValues = function<U, T>(
 const testAlwaysShrinkToCorrectValues = function<U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
-  isCorrect: (u: U, t: T) => boolean,
-  label?: string
+  isValidValue: (g: T, seed: U) => boolean
 ) {
-  it(`Should always shrink to correct values${label ? ': ' + label : ''}`, () =>
+  it(`Should always shrink to correct values`, () =>
     fc.assert(
       fc.property(
         argsForArbGenerator,
@@ -39,7 +37,7 @@ const testAlwaysShrinkToCorrectValues = function<U, T>(
           let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
           let id = 0;
           while (shrinkable !== null) {
-            assert.ok(isCorrect(params, shrinkable.value), 'All values in the path must be correct');
+            assert.ok(isValidValue(shrinkable.value, params), 'All values in the path must be correct');
             shrinkable = shrinkable.shrink().getNthOrLast(id);
             id = (id + 1) % shrinkPath.length;
           }
@@ -48,14 +46,16 @@ const testAlwaysShrinkToCorrectValues = function<U, T>(
     ));
 };
 
-export const testAlwaysCorrectValues = function<U, T>(
-  argsForArbGenerator: fc.Arbitrary<U>,
-  arbGenerator: (u: U) => Arbitrary<T>,
-  isCorrect: (u: U, t: T) => boolean,
-  label?: string
+export const isValidArbitrary = function<U, T>(
+  arbitraryBuilder: (u: U) => Arbitrary<T>,
+  settings: {
+    seedGenerator?: fc.Arbitrary<U>;
+    isValidValue: (g: T, seed: U) => boolean;
+  }
 ) {
-  testAlwaysGenerateCorrectValues(argsForArbGenerator, arbGenerator, isCorrect, label);
-  testAlwaysShrinkToCorrectValues(argsForArbGenerator, arbGenerator, isCorrect, label);
+  const seedGenerator = settings.seedGenerator || fc.constant(undefined);
+  testAlwaysGenerateCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
+  testAlwaysShrinkToCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
 };
 
 export const minMax = (arb: fc.Arbitrary<number>) =>

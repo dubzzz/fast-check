@@ -42,35 +42,30 @@ describe('SetArbitrary', () => {
           for (const s of shrinkable.shrink()) assert.notDeepEqual(s.value, shrinkable.value);
         })
       ));
-    describe('Given no length constraints', () => {
-      genericHelper.testAlwaysCorrectValues(
-        fc.constant(null),
-        () => set(integer()),
-        (empty: null, g: number[]) => validSet(g),
-        'unique items only'
-      );
+    describe('Given no length constraints [unique items only]', () => {
+      genericHelper.isValidArbitrary(() => set(integer()), {
+        isValidValue: (g: number[]) => validSet(g)
+      });
     });
-    describe('Given no length constraints but comparator', () => {
-      genericHelper.testAlwaysCorrectValues(
-        fc.constant(null),
-        () => set(integer(1000).map(customMapper)),
-        (empty: null, g: { key: number }[]) => validCustomSet(g),
-        'unique items for the specified comparator'
-      );
+    describe('Given no length constraints but comparator [unique items for the specified comparator]', () => {
+      genericHelper.isValidArbitrary(() => set(integer(1000).map(customMapper)), {
+        isValidValue: (g: { key: number }[]) => validCustomSet(g)
+      });
     });
     describe('Given maximal length only', () => {
-      genericHelper.testAlwaysCorrectValues(
-        fc.nat(100),
-        (maxLength: number) => set(integer(), maxLength),
-        (maxLength: number, g: number[]) => validSet(g) && g.length <= maxLength
-      );
+      genericHelper.isValidArbitrary((maxLength: number) => set(integer(), maxLength), {
+        seedGenerator: fc.nat(100),
+        isValidValue: (g: number[], maxLength: number) => validSet(g) && g.length <= maxLength
+      });
     });
     describe('Given minimal and maximal lengths', () => {
-      genericHelper.testAlwaysCorrectValues(
-        genericHelper.minMax(fc.nat(100)),
+      genericHelper.isValidArbitrary(
         (constraints: { min: number; max: number }) => set(integer(), constraints.min, constraints.max),
-        (constraints: { min: number; max: number }, g: number[]) =>
-          validSet(g) && g.length >= constraints.min && g.length <= constraints.max
+        {
+          seedGenerator: genericHelper.minMax(fc.nat(100)),
+          isValidValue: (g: number[], constraints: { min: number; max: number }) =>
+            validSet(g) && g.length >= constraints.min && g.length <= constraints.max
+        }
       );
     });
   });
