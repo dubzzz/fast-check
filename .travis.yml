@@ -1,9 +1,9 @@
 language: node_js
 node_js:
- - '10'
  - '6'
  - '7'
  - '8'
+ - '10'
 
 cache:
   directories:
@@ -20,8 +20,10 @@ stages:
 jobs:
   include:
     - stage: prettier
+      node_js: '10'
       script: npm run format:check
     - stage: lint
+      node_js: '10'
       script: npm run lint:check
     - stage: test
       script:
@@ -31,12 +33,14 @@ jobs:
         - npm run test
         - npm run e2e
     - stage: examples
+      node_js: '10'
       script:
         - cd example ;
           bash configure.sh ;
           bash run.sh ;
           cd ..
     - stage: legacy
+      node_js: '10'
       script:
         - NODE_VERSION=`node --version | cut -dv -f2`
         - nvm install 0.12 ;
@@ -44,7 +48,7 @@ jobs:
           node --eval "var fc = require('./lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))" ;
         - nvm use "${NODE_VERSION}" ;
     - stage: deploy
-      if: env(PUBLISH_PACKAGE) = ON
+      node_js: '10'
       script: skip
       after_success: npm run coverage
       deploy:
