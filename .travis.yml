@@ -1,48 +1,52 @@
 language: node_js
 node_js:
  - '10'
- - '7'
+ - '8'
  - '7'
  - '6'
 
 cache:
   directories:
-  - node_modules
+    - node_modules
 
+stages:
+  - code style
+  - test
+  - examples
+  - legacy
+  - deploy
 
 jobs:
   include:
-    - stage: prettier
-      node_js: '10'
+    - stage: code style
+      env: STEP=FORMAT
       script: npm run format:check
-    - stage: lint
-      node_js: '10'
+    - stage: code style
+      env: STEP=LINT
       script: npm run lint:check
     - stage: test
       script:
-        - npm run prebuild
-        - npm run build
-        - npm run webbuild
         - npm run test
         - npm run e2e
     - stage: examples
-      node_js: '10'
       script:
+        - npm run build
         - cd example ;
           bash configure.sh ;
           bash run.sh ;
           cd ..
     - stage: legacy
-      node_js: '10'
       script:
+        - npm run build
         - NODE_VERSION=`node --version | cut -dv -f2`
-        - nvm install 0.12 ;
-          node --version ;
-          node --eval "var fc = require('./lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))" ;
-        - nvm use "${NODE_VERSION}" ;
+        - nvm install 0.12
+        - node --version
+        - node --eval "var fc = require('./lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
+        - nvm use "${NODE_VERSION}"
     - stage: deploy
-      node_js: '10'
-      script: skip
+      script:
+        - npm run build
+        - npm run webbuild
       after_success: npm run coverage
       deploy:
         provider: npm
