@@ -1,9 +1,9 @@
 language: node_js
 node_js:
+ - '10'
  - '6'
  - '7'
  - '8'
- - '10'
 
 cache:
   directories:
@@ -20,10 +20,8 @@ stages:
 jobs:
   include:
     - stage: prettier
-      #if: env(PUBLISH_PACKAGE) = ON
       script: npm run format:check
     - stage: lint
-      #if: env(PUBLISH_PACKAGE) = ON
       script: npm run lint:check
     - stage: test
       script:
@@ -33,14 +31,12 @@ jobs:
         - npm run test
         - npm run e2e
     - stage: examples
-      #if: env(PUBLISH_PACKAGE) = ON
       script:
         - cd example ;
           bash configure.sh ;
           bash run.sh ;
           cd ..
     - stage: legacy
-      #if: env(PUBLISH_PACKAGE) = ON
       script:
         - NODE_VERSION=`node --version | cut -dv -f2`
         - nvm install 0.12 ;
@@ -60,4 +56,3 @@ jobs:
         on:
           tags: true
       repo: dubzzz/fast-check
-
