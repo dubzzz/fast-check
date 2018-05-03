@@ -21,6 +21,7 @@ jobs:
       script: npm run lint:check
     - stage: test
       script:
+        - npm run prebuild
         - npm run build
         - npm run webbuild
         - npm run test
