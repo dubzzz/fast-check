@@ -31,15 +31,6 @@ describe('ArrayArbitrary', () => {
           return true;
         })
       ));
-    it('Should generate the same array with the same random', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng1 = stubRng.mutable.fastincrease(seed);
-          const mrng2 = stubRng.mutable.fastincrease(seed);
-          assert.deepEqual(array(integer()).generate(mrng1).value, array(integer()).generate(mrng2).value);
-          return true;
-        })
-      ));
     it('Should generate an array calling multiple times arbitrary generator', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
