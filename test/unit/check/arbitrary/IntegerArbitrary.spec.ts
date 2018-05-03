@@ -8,6 +8,8 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
 
+const isStrictlySmallerInteger = (v1: number, v2: number) => Math.abs(v1) < Math.abs(v2);
+
 describe('IntegerArbitrary', () => {
   describe('integer', () => {
     it('Should not fail on single value range', () =>
@@ -111,12 +113,14 @@ describe('IntegerArbitrary', () => {
       ));
     describe('Given no constraints [between -2**31 and 2**31 -1]', () => {
       genericHelper.isValidArbitrary(() => integer(), {
+        isStrictlySmallerValue: isStrictlySmallerInteger,
         isValidValue: (g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff
       });
     });
     describe('Given maximal value only [between -2**31 and max]', () => {
       genericHelper.isValidArbitrary((maxValue: number) => integer(maxValue), {
         seedGenerator: fc.integer(),
+        isStrictlySmallerValue: isStrictlySmallerInteger,
         isValidValue: (g: number, maxValue: number) => typeof g === 'number' && -0x80000000 <= g && g <= maxValue
       });
     });
@@ -125,6 +129,7 @@ describe('IntegerArbitrary', () => {
         (constraints: { min: number; max: number }) => integer(constraints.min, constraints.max),
         {
           seedGenerator: genericHelper.minMax(fc.integer()),
+          isStrictlySmallerValue: isStrictlySmallerInteger,
           isValidValue: (g: number, constraints: { min: number; max: number }) =>
             typeof g === 'number' && constraints.min <= g && g <= constraints.max
         }
@@ -134,12 +139,14 @@ describe('IntegerArbitrary', () => {
   describe('nat', () => {
     describe('Given no constraints [between 0 and 2**31 -1]', () => {
       genericHelper.isValidArbitrary(() => nat(), {
+        isStrictlySmallerValue: isStrictlySmallerInteger,
         isValidValue: (g: number) => typeof g === 'number' && g >= 0 && g <= 0x7fffffff
       });
     });
     describe('Given maximal value only [between 0 and max]', () => {
       genericHelper.isValidArbitrary((maxValue: number) => nat(maxValue), {
         seedGenerator: fc.nat(),
+        isStrictlySmallerValue: isStrictlySmallerInteger,
         isValidValue: (g: number, maxValue: number) => typeof g === 'number' && g >= 0 && g <= maxValue
       });
     });

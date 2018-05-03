@@ -48,6 +48,38 @@ const testSameSeedSameShrinks = function<U, T>(
     ));
 };
 
+const testShrinkPathStrictlyDecreasing = function<U, T>(
+  argsForArbGenerator: fc.Arbitrary<U>,
+  arbGenerator: (u: U) => Arbitrary<T>,
+  isStrictlySmallerValue: (g1: T, g2: T) => boolean
+) {
+  it(`Should produce strictly smaller values along the shrink path`, () =>
+    fc.assert(
+      fc.property(
+        argsForArbGenerator,
+        fc.integer().noShrink(),
+        fc.set(fc.nat(100), 1, 10),
+        (params, seed, shrinkPath) => {
+          const arb = arbGenerator(params);
+          let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
+          let prevValue = shrinkable!.value;
+          let id = 0;
+          while (shrinkable !== null) {
+            shrinkable = shrinkable.shrink().getNthOrLast(id);
+            if (shrinkable !== null) {
+              assert.ok(
+                isStrictlySmallerValue(shrinkable.value, prevValue),
+                `Expect ${JSON.stringify(shrinkable.value)} to be strictly inferior to ${JSON.stringify(prevValue)}`
+              );
+              prevValue = shrinkable.value;
+            }
+            id = (id + 1) % shrinkPath.length;
+          }
+        }
+      )
+    ));
+};
+
 const testAlwaysGenerateCorrectValues = function<U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
@@ -57,8 +89,13 @@ const testAlwaysGenerateCorrectValues = function<U, T>(
     fc.assert(
       fc.property(argsForArbGenerator, fc.integer().noShrink(), (params, seed) => {
         const arb = arbGenerator(params);
-        let shrinkable = arb.generate(new Random(prand.mersenne(seed)));
-        return isValidValue(shrinkable.value, params);
+        const shrinkable = arb.generate(new Random(prand.mersenne(seed)));
+        assert.ok(
+          isValidValue(shrinkable.value, params),
+          `Expect ${JSON.stringify(shrinkable.value)} to be a correct value (built with parameters: ${JSON.stringify(
+            params
+          )})`
+        );
       })
     ));
 };
@@ -79,7 +116,12 @@ const testAlwaysShrinkToCorrectValues = function<U, T>(
           let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
           let id = 0;
           while (shrinkable !== null) {
-            assert.ok(isValidValue(shrinkable.value, params), 'All values in the path must be correct');
+            assert.ok(
+              isValidValue(shrinkable.value, params),
+              `Expect ${JSON.stringify(
+                shrinkable.value
+              )} to be a correct value (built with parameters: ${JSON.stringify(params)})`
+            );
             shrinkable = shrinkable.shrink().getNthOrLast(id);
             id = (id + 1) % shrinkPath.length;
           }
@@ -92,12 +134,14 @@ export const isValidArbitrary = function<U, T>(
   arbitraryBuilder: (u: U) => Arbitrary<T>,
   settings: {
     seedGenerator?: fc.Arbitrary<U>;
+    isStrictlySmallerValue: (g1: T, g2: T) => boolean;
     isValidValue: (g: T, seed: U) => boolean;
   }
 ) {
   const seedGenerator = settings.seedGenerator || fc.constant(undefined);
   testSameSeedSameValues(seedGenerator, arbitraryBuilder);
   testSameSeedSameShrinks(seedGenerator, arbitraryBuilder);
+  testShrinkPathStrictlyDecreasing(seedGenerator, arbitraryBuilder, settings.isStrictlySmallerValue);
   testAlwaysGenerateCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
   testAlwaysShrinkToCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
 };

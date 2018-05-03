@@ -4,7 +4,7 @@ import * as fc from '../../../../lib/fast-check';
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
-import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import Random from '../../../../src/random/generator/Random';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
@@ -19,6 +19,18 @@ class DummyArbitrary extends Arbitrary<{ key: number }> {
     return new Shrinkable({ key: this.value() });
   }
 }
+
+const isStrictlySmallerArray = (arr1: number[], arr2: number[]) => {
+  if (arr1.length > arr2.length) return false;
+  if (arr1.length === arr2.length) {
+    return arr1.every((v, idx) => arr1[idx] <= arr2[idx]) && arr1.find((v, idx) => arr1[idx] < arr2[idx]) != null;
+  }
+  for (let idx1 = 0, idx2 = 0; idx1 < arr1.length && idx2 < arr2.length; ++idx1, ++idx2) {
+    while (idx2 < arr2.length && arr1[idx1] > arr2[idx2]) ++idx2;
+    if (idx2 === arr2.length) return false;
+  }
+  return true;
+};
 
 describe('ArrayArbitrary', () => {
   describe('array', () => {
@@ -42,35 +54,26 @@ describe('ArrayArbitrary', () => {
           return true;
         })
       ));
-    it('Should not suggest input in shrinked values', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.integer(), fc.nat(), (seed, min, num) => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const arb = array(integer(min, min + num));
-          const shrinkable = arb.generate(mrng);
-          const tab = shrinkable.value;
-          return shrinkable
-            .shrink()
-            .every(s => s.value.length !== tab.length || !s.value.every((vv, idx) => vv === tab[idx]));
-        })
-      ));
     describe('Given no length constraints', () => {
-      genericHelper.isValidArbitrary(() => array(integer()), {
+      genericHelper.isValidArbitrary(() => array(nat()), {
+        isStrictlySmallerValue: isStrictlySmallerArray,
         isValidValue: (g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number')
       });
     });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => array(integer(), maxLength), {
+      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), maxLength), {
         seedGenerator: fc.nat(100),
+        isStrictlySmallerValue: isStrictlySmallerArray,
         isValidValue: (g: number[], maxLength: number) =>
           Array.isArray(g) && g.length <= maxLength && g.every(v => typeof v === 'number')
       });
     });
     describe('Given minimal and maximal lengths', () => {
       genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => array(integer(), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }) => array(nat(), constraints.min, constraints.max),
         {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
+          isStrictlySmallerValue: isStrictlySmallerArray,
           isValidValue: (g: number[], constraints: { min: number; max: number }) =>
             Array.isArray(g) &&
             g.length >= constraints.min &&

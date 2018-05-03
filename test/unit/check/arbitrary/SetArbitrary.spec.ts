@@ -4,7 +4,7 @@ import * as fc from '../../../../lib/fast-check';
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { set, buildCompareFilter } from '../../../../src/check/arbitrary/SetArbitrary';
-import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import Random from '../../../../src/random/generator/Random';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
@@ -20,11 +20,25 @@ const customCompare = (a: { key: number }, b: { key: number }) => a.key === b.ke
 const validSet = (s: number[]) => s.length === new Set(s).size && s.every(e => typeof e === 'number');
 const validCustomSet = (s: { key: number }[]) => validSet(s.map(v => v.key));
 
+const isStrictlySmallerSet = (arr1: number[], arr2: number[]) => {
+  if (arr1.length > arr2.length) return false;
+  if (arr1.length === arr2.length) {
+    return arr1.every((v, idx) => arr1[idx] <= arr2[idx]) && arr1.find((v, idx) => arr1[idx] < arr2[idx]) != null;
+  }
+  for (let idx1 = 0, idx2 = 0; idx1 < arr1.length && idx2 < arr2.length; ++idx1, ++idx2) {
+    while (idx2 < arr2.length && arr1[idx1] > arr2[idx2]) ++idx2;
+    if (idx2 === arr2.length) return false;
+  }
+  return true;
+};
+const isStrictlySmallerCustomSet = (arr1: { key: number }[], arr2: { key: number }[]) =>
+  isStrictlySmallerSet(arr1.map(v => v.key), arr2.map(v => v.key));
+
 describe('SetArbitrary', () => {
   describe('buildCompareFilter', () => {
     it('Should filter array from duplicated values', () =>
       fc.assert(
-        fc.property(fc.array(fc.integer(1000)), tab => {
+        fc.property(fc.array(fc.nat(1000)), tab => {
           const filter = buildCompareFilter<number>((a, b) => a === b);
           const adaptedTab = tab.map(v => new Shrinkable(v));
           const filteredTab = filter(adaptedTab);
@@ -33,36 +47,31 @@ describe('SetArbitrary', () => {
       ));
   });
   describe('set', () => {
-    it('Should not suggest input in shrinked values', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const arb = set(integer());
-          const shrinkable = arb.generate(mrng);
-          for (const s of shrinkable.shrink()) assert.notDeepEqual(s.value, shrinkable.value);
-        })
-      ));
     describe('Given no length constraints [unique items only]', () => {
-      genericHelper.isValidArbitrary(() => set(integer()), {
+      genericHelper.isValidArbitrary(() => set(nat(1000)), {
+        isStrictlySmallerValue: isStrictlySmallerSet,
         isValidValue: (g: number[]) => validSet(g)
       });
     });
     describe('Given no length constraints but comparator [unique items for the specified comparator]', () => {
-      genericHelper.isValidArbitrary(() => set(integer(1000).map(customMapper)), {
+      genericHelper.isValidArbitrary(() => set(nat(1000).map(customMapper), customCompare), {
+        isStrictlySmallerValue: isStrictlySmallerCustomSet,
         isValidValue: (g: { key: number }[]) => validCustomSet(g)
       });
     });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => set(integer(), maxLength), {
+      genericHelper.isValidArbitrary((maxLength: number) => set(nat(1000), maxLength), {
         seedGenerator: fc.nat(100),
+        isStrictlySmallerValue: isStrictlySmallerSet,
         isValidValue: (g: number[], maxLength: number) => validSet(g) && g.length <= maxLength
       });
     });
     describe('Given minimal and maximal lengths', () => {
       genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => set(integer(), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }) => set(nat(1000), constraints.min, constraints.max),
         {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
+          isStrictlySmallerValue: isStrictlySmallerSet,
           isValidValue: (g: number[], constraints: { min: number; max: number }) =>
             validSet(g) && g.length >= constraints.min && g.length <= constraints.max
         }
