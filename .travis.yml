@@ -13,11 +13,12 @@ script:
   - npm run test
   - npm run e2e
 
+after_success:
+  - npm run coverage
+
 stages:
   - code style
   - test
-  - examples
-  - legacy
   - deploy
 
 jobs:
@@ -28,26 +29,24 @@ jobs:
     - stage: code style
       env: STEP=LINT
       script: npm run lint:check
-    - stage: examples
+    - stage: test
+      env: STEP=EXAMPLES
       script:
         - npm run build
         - cd example ;
           bash configure.sh ;
           bash run.sh ;
           cd ..
-    - stage: legacy
+    - stage: test
+      env: STEP=LEGACY
       script:
         - npm run build
-        - NODE_VERSION=`node --version | cut -dv -f2`
         - nvm install 0.12
-        - node --version
         - node --eval "var fc = require('./lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
-        - nvm use "${NODE_VERSION}"
     - stage: deploy
       script:
         - npm run build
         - npm run webbuild
-      after_success: npm run coverage
       deploy:
         provider: npm
         email: npm@dubien.org
