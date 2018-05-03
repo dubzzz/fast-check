@@ -9,6 +9,10 @@ cache:
   directories:
     - node_modules
 
+script:
+  - npm run test
+  - npm run e2e
+
 stages:
   - code style
   - test
@@ -24,10 +28,6 @@ jobs:
     - stage: code style
       env: STEP=LINT
       script: npm run lint:check
-    - stage: test
-      script:
-        - npm run test
-        - npm run e2e
     - stage: examples
       script:
         - npm run build
