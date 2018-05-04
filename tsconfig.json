@@ -11,7 +11,7 @@
         "downlevelIteration": true,
         "target": "es3",
         "lib": [
-            "es6"
+            "esnext"
         ],
         "outDir": "lib/"
     },
