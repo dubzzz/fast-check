@@ -4,5 +4,6 @@ example/output/
 lib/
 node_modules/
 .nyc_output/
+.vscode/
 *.generated.ts
 *.generated.spec.ts
