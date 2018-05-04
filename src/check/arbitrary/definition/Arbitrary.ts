@@ -16,9 +16,9 @@ export default abstract class Arbitrary<T> {
   abstract generate(mrng: Random): Shrinkable<T>;
 
   /**
-   * Create another Arbitrary<T> by filtering values against `predicate`
+   * Create another arbitrary by filtering values against `predicate`
    *
-   * All the values produced by the resulting `Arbitrary<T>`
+   * All the values produced by the resulting arbitrary
    * satisfy `predicate(value) == true`
    *
    * @example
@@ -45,8 +45,8 @@ export default abstract class Arbitrary<T> {
   }
 
   /**
-   * Create another Arbitrary<T> by mapping all produced values using the provided `mapper`
-   * Values produced by the new Arbitrary<T> are the result of applying `mapper` to the value coming from the original Arbitrary<T>
+   * Create another arbitrary by mapping all produced values using the provided `mapper`
+   * Values produced by the new arbitrary are the result of applying `mapper` value by value
    *
    * @example
    * ```typescript
@@ -55,7 +55,7 @@ export default abstract class Arbitrary<T> {
    * // transform an Arbitrary producing {r,g,b} integers into an Arbitrary of '#rrggbb'
    * ```
    *
-   * @param mapper Map, to produce a new element based on an old one
+   * @param mapper Map function, to produce a new element based on an old one
    * @returns New arbitrary with mapped elements
    */
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
@@ -68,7 +68,7 @@ export default abstract class Arbitrary<T> {
   }
 
   /**
-   * Create another Arbitrary<T> without shrink
+   * Create another Arbitrary with no shrink values
    *
    * @example
    * ```typescript
@@ -77,7 +77,7 @@ export default abstract class Arbitrary<T> {
    * // same values no shrink
    * ```
    *
-   * @returns Create another Arbitrary<T> without shrink
+   * @returns Create another arbitrary with no shrink values
    */
   noShrink(): Arbitrary<T> {
     const arb = this;
