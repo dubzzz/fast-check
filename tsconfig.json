@@ -5,7 +5,7 @@
         "alwaysStrict": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
-        "removeComments": true,
+        "removeComments": false,
         "preserveConstEnums": true,
         "strictNullChecks": true,
         "downlevelIteration": true,
