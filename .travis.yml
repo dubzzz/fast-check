@@ -34,7 +34,6 @@ jobs:
       script:
         - npm run build
         - cd example ;
-          bash configure.sh ;
           bash run.sh ;
           cd ..
     - stage: test

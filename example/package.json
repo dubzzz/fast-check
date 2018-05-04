@@ -9,7 +9,7 @@
     "test": "npm run test:contains && npm run test:knight"
   },
   "devDependencies": {
-    "fast-check": "*",
+    "fast-check": "file:..",
     "mocha": "^5.0.0"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
