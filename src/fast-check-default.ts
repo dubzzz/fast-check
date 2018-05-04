@@ -1,3 +1,5 @@
+import "core-js";
+
 import { asyncProperty } from './check/property/AsyncProperty';
 import { property } from './check/property/Property';
 import { assert, check } from './check/runner/Runner';
