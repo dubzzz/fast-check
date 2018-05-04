@@ -12,7 +12,7 @@
     "test": "npm run build && nyc mocha \"test/unit/**/*.spec.ts\"",
     "e2e": "mocha \"test/e2e/**/*.spec.ts\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "docs": "typedoc ./src --out ./docs --module system --exclude node_modules --ignoreCompilerErrors",
+    "docs": "typedoc ./src --out ./docs --name \"fast-check\" --readme README.md --mode modules --module amd --exclude node_modules --includeDeclarations --ignoreCompilerErrors",
     "format:check": "prettier --list-different \"**/*.ts\"",
     "format:fix": "prettier --write \"**/*.ts\"",
     "lint:check": "tslint --project tsconfig.json",
