@@ -16,7 +16,7 @@
 
 [Usage](#usage)
 
-[Documentation](#documentation)
+[Documentation](#documentation) \[[Generated TypeDoc](https://dubzzz.github.io/fast-check/)\]
 - [Arbitraries](#arbitraries)
 - [Custom arbitraries](#custom-arbitraries)
 - [Properties](#properties)
