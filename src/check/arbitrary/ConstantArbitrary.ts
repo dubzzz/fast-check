@@ -4,6 +4,7 @@ import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
+/** @internalapi */
 class ConstantArbitrary<T> extends Arbitrary<T> {
   readonly idArb: Arbitrary<number>;
   constructor(readonly values: T[]) {

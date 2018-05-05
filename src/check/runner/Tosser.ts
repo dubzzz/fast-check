@@ -5,6 +5,7 @@ import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
 
+/** @internalapi */
 function lazyGenerate<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, rng: prand.RandomGenerator): () => Shrinkable<Ts> {
   return () => generator.generate(new Random(rng));
 }

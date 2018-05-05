@@ -6,6 +6,7 @@ import toss from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters } from './utils/utils';
 
+/** @internalapi */
 function streamSample<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
   params?: Parameters | number
@@ -24,17 +25,13 @@ function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameter
   return [...streamSample(generator, params)];
 }
 
-interface Dictionary<T> {
-  [key: string]: T;
-}
-
 function statistics<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: Parameters | number
 ): void {
   const qParams = QualifiedParameters.readOrNumRuns(params);
-  const recorded: Dictionary<number> = {};
+  const recorded: { [key: string]: number } = {};
   for (const g of streamSample(generator, params)) {
     const out = classify(g);
     const categories: string[] = Array.isArray(out) ? out : [out];

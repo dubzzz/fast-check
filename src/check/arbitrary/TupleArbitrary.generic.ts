@@ -3,6 +3,7 @@ import { Stream, stream } from '../../stream/Stream';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 
+/** @internalapi */
 class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
   constructor(readonly arbs: Arbitrary<Ts>[]) {
     super();

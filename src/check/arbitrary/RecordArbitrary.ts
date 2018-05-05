@@ -12,6 +12,7 @@ export interface RecordConstraints {
   with_deleted_keys?: boolean;
 }
 
+/** @internalapi */
 function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [key: string]: T }> {
   const keys = Object.keys(recordModel);
   const arbs: Arbitrary<T>[] = keys.map(v => recordModel[v]);

@@ -61,6 +61,7 @@ export namespace ObjectConstraints {
   }
 }
 
+/** @internalapi */
 class ObjectArbitrary extends Arbitrary<any> {
   constructor(readonly constraints: ObjectConstraints) {
     super();
@@ -94,6 +95,7 @@ function object(settings?: ObjectConstraints.Settings): Arbitrary<any> {
   return new ObjectArbitrary(ObjectConstraints.from(settings));
 }
 
+/** @internalapi */
 function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
   const key = stringArbitrary;
   const values = [boolean(), integer(), double(), stringArbitrary, constant(null)];

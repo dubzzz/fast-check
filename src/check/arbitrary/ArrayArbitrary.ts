@@ -5,6 +5,7 @@ import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import Shrinkable from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
+/** @internalapi */
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: ArbitraryWithShrink<number>;
   constructor(

@@ -4,6 +4,7 @@ import Arbitrary from './definition/Arbitrary';
 import { set } from './SetArbitrary';
 import { tuple } from './TupleArbitrary';
 
+/** @internalapi */
 function toObject<T>(items: [string, T][]): { [key: string]: T } {
   const obj: { [key: string]: T } = {};
   for (const keyValue of items) {
