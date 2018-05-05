@@ -4,8 +4,8 @@ _Reduce risk of using an unimplemented method of Node (older releases <6)_
 
 ## Fixes
 
-* ([55ff3ff](/commit/55ff3ff)) Clean: Switch to the latest ES standard to use its implementations
-* ([ce75e4e](/commit/ce75e4e)) Fix: Safer polyfill for older version of node - rely on core-js
+- ([55ff3ff](/commit/55ff3ff)) Clean: Switch to the latest ES standard to use its implementations
+- ([ce75e4e](/commit/ce75e4e)) Fix: Safer polyfill for older version of node - rely on core-js
 
 # 1.0.2
 
@@ -13,8 +13,8 @@ _Readme update following removal of depreciated devDependencies_
 
 ## Fixes
 
-* ([309a00b](/commit/309a00b)) Doc: Update README.md
-* ([e13df27](/commit/e13df27)) Clean: Clean depreciated dependencies
+- ([309a00b](/commit/309a00b)) Doc: Update README.md
+- ([e13df27](/commit/e13df27)) Clean: Clean depreciated dependencies
 
 # 1.0.1
 
@@ -22,7 +22,7 @@ _Fix infinite loop when shrinking array having a minimal length defined_
 
 ## Fixes
 
-* ([d6468dc](/commit/d6468dc)) Fix: shrink an array with minimal length lead to infinite loop
+- ([d6468dc](/commit/d6468dc)) Fix: shrink an array with minimal length lead to infinite loop
 
 # 1.0.0
 
@@ -54,3 +54,30 @@ _No recursion when shrinking_
 - ([fe44db5](/commit/fe44db5)) Fix: Avoid recursion during shrinking
 - ([e3ecc3c](/commit/e3ecc3c)) Fix: Bad number of shrinks in case of failure (offset by one)
 - ([79c08f7](/commit/79c08f7)) Fix: Export dictionary arbitrary
+
+---
+
+# 0.0.13
+
+_Readme update_
+
+## Fixes
+
+- ([79fadb2](/commit/79fadb2)) Update README.md
+
+# 0.0.12
+
+_New arbitraries: constantFrom and record_
+
+## Features:
+
+- ([786e16e](/commit/786e16e)) Modify default values available for fc.object
+- ([8984e78](/commit/8984e78)) Add flag to generate fc.record with missing keys
+- ([850158b](/commit/850158b)) Add fc.record Arbitrary
+- ([262b809](/commit/262b809)) Add fc.constantFrom Arbitrary
+
+## Fixes:
+
+- ([6db53f2](/commit/6db53f2)) Clean: Exclude example/ from npm package
+- ([036cd2f](/commit/036cd2f)) Doc: Documentation noShrink
+- ([0ee3a03](/commit/0ee3a03)) Doc: Link towards jsDelivr
