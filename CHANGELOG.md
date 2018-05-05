@@ -1,11 +1,15 @@
 # 1.0.3
 
+_Reduce risk of using an unimplemented method of Node (older releases <6)_
+
 ## Fixes
 
 * ([55ff3ff](/commit/55ff3ff)) Clean: Switch to the latest ES standard to use its implementations
 * ([ce75e4e](/commit/ce75e4e)) Fix: Safer polyfill for older version of node - rely on core-js
 
 # 1.0.2
+
+_Readme update following removal of depreciated devDependencies_
 
 ## Fixes
 
@@ -14,11 +18,19 @@
 
 # 1.0.1
 
+_Fix infinite loop when shrinking array having a minimal length defined_
+
 ## Fixes
 
 * ([d6468dc](/commit/d6468dc)) Fix: shrink an array with minimal length lead to infinite loop
 
 # 1.0.0
+
+_Easier replay of failures_
+
+_Faster shrinks_
+
+_No recursion when shrinking_
 
 ## Features
 
