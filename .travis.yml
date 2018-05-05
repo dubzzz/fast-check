@@ -57,6 +57,7 @@ jobs:
         on:
           branch: master
     - stage: deploy
+      if: tag =~ ^v\d+\.
       script:
         - npm run build
         - npm run webbuild
