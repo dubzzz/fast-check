@@ -53,6 +53,7 @@ jobs:
         skip-cleanup: true
         github-token: $GITHUB_TOKEN
         target-branch: gh-pages
+        local-dir: docs
         on:
           branch: master
     - stage: deploy
