@@ -19,6 +19,7 @@ after_success:
 stages:
   - code style
   - test
+  - publish documentation
   - deploy
 
 jobs:
@@ -42,6 +43,18 @@ jobs:
         - npm run build
         - nvm install 0.12
         - node --eval "var fc = require('./lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
+    - stage: publish documentation
+      if: branch = master
+      script:
+        - npm run prebuild
+        - mkdir docs
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        target-branch: gh-pages
+        on:
+          branch: master
     - stage: deploy
       script:
         - npm run build
