@@ -48,6 +48,7 @@ jobs:
       script:
         - npm run prebuild
         - mkdir docs
+        - npm run docs
       deploy:
         provider: pages
         skip-cleanup: true
