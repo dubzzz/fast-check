@@ -28,11 +28,44 @@ function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): ((tab: Shrinka
   };
 }
 
+/**
+ * Arbitrary producing array of unique values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ */
 function set<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
+/**
+ * Arbitrary producing array of unique values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ * @param maxLength Upper bound of the generated array size
+ */
 function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
+/**
+ * Arbitrary producing array of unique values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ * @param minLength Lower bound of the generated array size
+ * @param maxLength Upper bound of the generated array size
+ */
 function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
+/**
+ * Arbitrary producing array of unique values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ * @param compare Return true when the two values are equals
+ */
 function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
+/**
+ * Arbitrary producing array of unique values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ * @param maxLength Upper bound of the generated array size
+ * @param compare Return true when the two values are equals
+ */
 function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
+/**
+ * Arbitrary producing array of unique values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ * @param minLength Lower bound of the generated array size
+ * @param maxLength Upper bound of the generated array size
+ * @param compare Return true when the two values are equals
+ */
 function set<T>(
   arb: Arbitrary<T>,
   minLength: number,

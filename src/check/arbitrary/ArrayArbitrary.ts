@@ -48,8 +48,23 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
 }
 
+/**
+ * Arbitrary producing array of values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ */
 function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
+/**
+ * Arbitrary producing array of values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ * @param maxLength Upper bound of the generated array size
+ */
 function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
+/**
+ * Arbitrary producing array of values coming from `arb`
+ * @param arb Arbitrary used to generate the values inside the array
+ * @param minLength Lower bound of the generated array size
+ * @param maxLength Upper bound of the generated array size
+ */
 function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, aLength?: number, bLength?: number): Arbitrary<T[]> {
   if (bLength == null) return new ArrayArbitrary<T>(arb, 0, aLength == null ? 10 : aLength);

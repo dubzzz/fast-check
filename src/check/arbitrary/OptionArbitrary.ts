@@ -27,7 +27,16 @@ class OptionArbitrary<T> extends Arbitrary<T | null> {
   }
 }
 
+/**
+ * Arbitrary producing either null or a value coming from `arb`
+ * @param arb Arbitrary that will be called to generate a non null value
+ */
 function option<T>(arb: Arbitrary<T>): Arbitrary<T | null>;
+/**
+ * Arbitrary producing either null or a value coming from `arb`
+ * @param arb Arbitrary that will be called to generate a non null value
+ * @param freq The probability to build a null value is of `1 / freq`
+ */
 function option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>;
 function option<T>(arb: Arbitrary<T>, freq?: number): Arbitrary<T | null> {
   return new OptionArbitrary(arb, freq == null ? 5 : freq);

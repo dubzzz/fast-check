@@ -5,8 +5,11 @@ import { option } from './OptionArbitrary';
 import { genericTuple } from './TupleArbitrary';
 
 export interface RecordConstraints {
+  /** Allow to remove keys from the generated record */
   withDeletedKeys?: boolean;
-  /** @depreciated Prefer withDeletedKeys */ with_deleted_keys?: boolean;
+
+  /** @depreciated Prefer withDeletedKeys */
+  with_deleted_keys?: boolean;
 }
 
 function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [key: string]: T }> {
@@ -19,7 +22,30 @@ function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{
   });
 }
 
+/**
+ * Arbitrary producing a record following the `recordModel` schema
+ *
+ * @example
+ * ```typescript
+ * record({ x: someArbitraryInt, y: someArbitraryInt }): Arbitrary<{x:number,y:number}>
+ * // merge two integer arbitraries to produce a {x, y} record
+ * ```
+ *
+ * @param recordModel Schema of the record
+ */
 function record<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [key: string]: T }>;
+/**
+ * Arbitrary producing a record following the `recordModel` schema
+ *
+ * @example
+ * ```typescript
+ * record({ x: someArbitraryInt, y: someArbitraryInt }, {withDeletedKeys: true}): Arbitrary<{x?:number,y?:number}>
+ * // merge two integer arbitraries to produce a {x, y} record or {X}, {y} or just {}
+ * ```
+ *
+ * @param recordModel Schema of the record
+ * @param constraints Contraints on the generated record
+ */
 function record<T>(
   recordModel: { [key: string]: Arbitrary<T> },
   constraints: RecordConstraints
