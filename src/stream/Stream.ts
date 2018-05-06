@@ -22,12 +22,20 @@ export default class Stream<T> implements IterableIterator<T> {
     return this.g;
   }
 
+  /**
+   * Map all elements of the Stream using `f`
+   * @param f Mapper function
+   */
   map<U>(f: (v: T) => U): Stream<U> {
     function* helper(v: T): IterableIterator<U> {
       yield f(v);
     }
     return this.flatMap(helper);
   }
+  /**
+   * Flat map all elements of the Stream using `f`
+   * @param f Mapper function
+   */
   flatMap<U>(f: (v: T) => IterableIterator<U>): Stream<U> {
     function* helper(g: IterableIterator<T>): IterableIterator<U> {
       for (const v of g) {
