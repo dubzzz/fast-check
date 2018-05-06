@@ -10,6 +10,7 @@ function lazyGenerate<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, rng: prand.R
   return () => generator.generate(new Random(rng));
 }
 
+/** @hidden */
 export default function* toss<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
   seed: number
