@@ -1,4 +1,7 @@
 export default class Stream<T> implements IterableIterator<T> {
+  /**
+   * Create an empty stream of T
+   */
   static nil<T>() {
     function* g(): IterableIterator<T> {
       // nil has no value
@@ -6,6 +9,10 @@ export default class Stream<T> implements IterableIterator<T> {
     return new Stream<T>(g());
   }
 
+  /**
+   * Create a Stream based on `g`
+   * @param g Underlying data of the Stream
+   */
   constructor(private readonly g: IterableIterator<T>) {}
 
   next(): IteratorResult<T> {
@@ -30,6 +37,10 @@ export default class Stream<T> implements IterableIterator<T> {
     return new Stream(helper(this.g));
   }
 
+  /**
+   * Drop elements from the Stream while `f(element) === true`
+   * @param f Drop condition
+   */
   dropWhile(f: (v: T) => boolean): Stream<T> {
     let foundEligible: boolean = false;
     function* helper(v: T): IterableIterator<T> {
@@ -40,6 +51,10 @@ export default class Stream<T> implements IterableIterator<T> {
     }
     return this.flatMap(helper);
   }
+  /**
+   * Drop `n` first elements of the Stream
+   * @param n Number of elements to drop
+   */
   drop(n: number): Stream<T> {
     let idx = 0;
     function helper(v: T): boolean {
@@ -47,6 +62,10 @@ export default class Stream<T> implements IterableIterator<T> {
     }
     return this.dropWhile(helper);
   }
+  /**
+   * Take elements from the Stream while `f(element) === true`
+   * @param f Take condition
+   */
   takeWhile(f: (v: T) => boolean): Stream<T> {
     function* helper(g: IterableIterator<T>): IterableIterator<T> {
       let cur = g.next();
@@ -57,6 +76,10 @@ export default class Stream<T> implements IterableIterator<T> {
     }
     return new Stream<T>(helper(this.g));
   }
+  /**
+   * Take `n` first elements of the Stream
+   * @param n Number of elements to take
+   */
   take(n: number): Stream<T> {
     let idx = 0;
     function helper(v: T): boolean {
@@ -65,6 +88,10 @@ export default class Stream<T> implements IterableIterator<T> {
     return this.takeWhile(helper);
   }
 
+  /**
+   * Filter elements of the Stream
+   * @param f Elements to keep
+   */
   filter(f: (v: T) => boolean): Stream<T> {
     function* helper(v: T) {
       if (f(v)) {
@@ -74,6 +101,10 @@ export default class Stream<T> implements IterableIterator<T> {
     return this.flatMap(helper);
   }
 
+  /**
+   * Check whether all elements of the Stream are successful for `f`
+   * @param f Condition to check
+   */
   every(f: (v: T) => boolean): boolean {
     for (const v of this.g) {
       if (!f(v)) {
@@ -82,6 +113,10 @@ export default class Stream<T> implements IterableIterator<T> {
     }
     return true;
   }
+  /**
+   * Check whether one of the elements of the Stream is successful for `f`
+   * @param f Condition to check
+   */
   has(f: (v: T) => boolean): [boolean, T | null] {
     for (const v of this.g) {
       if (f(v)) {
@@ -91,6 +126,10 @@ export default class Stream<T> implements IterableIterator<T> {
     return [false, null];
   }
 
+  /**
+   * Join `others` Stream to the current Stream
+   * @param others Streams to join to the current Stream
+   */
   join(...others: IterableIterator<T>[]): Stream<T> {
     function* helper(c: Stream<T>): IterableIterator<T> {
       yield* c;
@@ -101,6 +140,10 @@ export default class Stream<T> implements IterableIterator<T> {
     return new Stream<T>(helper(this));
   }
 
+  /**
+   * Take the `nth` element of the Stream of the last (if it does not exist)
+   * @param nth Position of the element to extract
+   */
   getNthOrLast(nth: number): T | null {
     let remaining = nth;
     let last: T | null = null;
@@ -112,6 +155,10 @@ export default class Stream<T> implements IterableIterator<T> {
   }
 }
 
+/**
+ * Create a Stream based on `g`
+ * @param g Underlying data of the Stream
+ */
 function stream<T>(g: IterableIterator<T>): Stream<T> {
   return new Stream<T>(g);
 }
