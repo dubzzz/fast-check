@@ -14,21 +14,16 @@ const floatInternal = (): Arbitrary<number> => {
 };
 
 /**
- * Arbitrary producing floating point number between 0. (included) and 1. (excluded).
- * Accuracy of 1 / 2**24
+ * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**24`
  */
 function float(): Arbitrary<number>;
 /**
- * Arbitrary producing floating point number between 0. (included) and max (excluded).
- * Accuracy of max / 2**24
- *
+ * For floating point numbers between 0.0 (included) and max (excluded) - accuracy of `max / 2**24`
  * @param max Upper bound of the generated floating point
  */
 function float(max: number): Arbitrary<number>;
 /**
- * Arbitrary producing floating point number between min (included) and max (excluded).
- * Accuracy of (max - min) / 2**24
- *
+ * For floating point numbers between min (included) and max (excluded) - accuracy of `(max - min) / 2**24`
  * @param min Lower bound of the generated floating point
  * @param max Upper bound of the generated floating point
  */
@@ -49,21 +44,16 @@ const doubleInternal = (): Arbitrary<number> => {
 };
 
 /**
- * Arbitrary producing floating point number between 0. (included) and 1. (excluded).
- * Accuracy of (max - min) / 2**53
+ * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**53`
  */
 function double(): Arbitrary<number>;
 /**
- * Arbitrary producing floating point number between 0. (included) and max (excluded).
- * Accuracy of max / 2**53
- *
+ * For floating point numbers between 0.0 (included) and max (excluded) - accuracy of `max / 2**53`
  * @param max Upper bound of the generated floating point
  */
 function double(max: number): Arbitrary<number>;
 /**
- * Arbitrary producing floating point number between min (included) and max (excluded).
- * Accuracy of (max - min) / 2**53
- *
+ * For floating point numbers between min (included) and max (excluded) - accuracy of `(max - min) / 2**53`
  * @param min Lower bound of the generated floating point
  * @param max Upper bound of the generated floating point
  */

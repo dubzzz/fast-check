@@ -10,9 +10,7 @@ function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => 
 }
 
 /**
- * Arbitrary producing a single printable ascii character.
- * Character with char code between 0x20 (included) and 0x7e (included)
- *
+ * For single printable ascii characters - char code between 0x20 (included) and 0x7e (included)
  * @see https://www.ascii-code.com/
  */
 function char(): Arbitrary<string> {
@@ -21,8 +19,7 @@ function char(): Arbitrary<string> {
 }
 
 /**
- * Arbitrary producing a single hexadecimal character.
- * Character in 0-9, a-f
+ * For single hexadecimal characters - 0-9 or a-f
  */
 function hexa(): Arbitrary<string> {
   function mapper(v: number) {
@@ -34,8 +31,7 @@ function hexa(): Arbitrary<string> {
 }
 
 /**
- * Arbitrary producing a single base 64 character.
- * Character in A-Z, a-z, 0-9, + or /
+ * For single base64 characters - A-Z, a-z, 0-9, + or /
  */
 function base64(): Arbitrary<string> {
   function mapper(v: number) {
@@ -48,18 +44,17 @@ function base64(): Arbitrary<string> {
 }
 
 /**
- * Arbitrary producing a single ascii character.
- * Character with char code between 0x00 (included) and 0x7f (included)
+ * For single ascii characters - char code between 0x00 (included) and 0x7f (included)
  */
 function ascii(): Arbitrary<string> {
   return CharacterArbitrary(0x00, 0x7f);
 }
 
 /**
- * Arbitrary producing a single character.
- * Character can be any of the values between 0x0000 and 0xffff
- *
+ * For single characters - all values in 0x0000-0xffff can be generated
+ * 
  * WARNING:
+ * 
  * Some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding.
  * Indeed values within 0xd800 and 0xdfff constitute surrogate pair characters and are illegal without their paired character.
  */
@@ -68,10 +63,7 @@ function char16bits(): Arbitrary<string> {
 }
 
 /**
- * Arbitrary producing a single unicode code point inside the BMP plan
- *
- * Character with char code between 0x0000 (included) and 0xffff (included)
- * but without the range 0xd800 to 0xdfff (surrogate pair characters)
+ * For single unicode characters defined in the BMP plan - char code between 0x0000 (included) and 0xffff (included) and without the range 0xd800 to 0xdfff (surrogate pair characters)
  */
 function unicode(): Arbitrary<string> {
   // Characters in the range: U+D800 to U+DFFF
@@ -88,12 +80,11 @@ function unicode(): Arbitrary<string> {
 }
 
 /**
- * Arbitrary producing a single code point.
- * It can generate any of the code points defined in the unicode standard
+ * For single unicode characters - any of the code points defined in the unicode standard
  *
- * WARNING:
- * Generated values can have a length greater than 1.
- * More details on: https://tc39.github.io/ecma262/#sec-utf16encoding
+ * WARNING: Generated values can have a length greater than 1.
+ * 
+ * @see https://tc39.github.io/ecma262/#sec-utf16encoding
  */
 function fullUnicode(): Arbitrary<string> {
   // Might require a polyfill if String.fromCodePoint is missing

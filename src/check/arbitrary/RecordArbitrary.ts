@@ -24,7 +24,7 @@ function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{
 }
 
 /**
- * Arbitrary producing a record following the `recordModel` schema
+ * For records following the `recordModel` schema
  *
  * @example
  * ```typescript
@@ -36,7 +36,7 @@ function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{
  */
 function record<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [key: string]: T }>;
 /**
- * Arbitrary producing a record following the `recordModel` schema
+ * For records following the `recordModel` schema
  *
  * @example
  * ```typescript

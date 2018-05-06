@@ -26,22 +26,24 @@ class LoremArbitrary extends Arbitrary<string> {
 }
 
 /**
- * Arbitrary producing lorem ipsum string of words
+ * For lorem ipsum strings of words
  *
  * WARNING: It cannot be shrunk
  */
 function lorem(): Arbitrary<string>;
 /**
- * Arbitrary producing lorem ipsum string of words
+ * For lorem ipsum string of words with maximal number of words
  *
  * WARNING: It cannot be shrunk
+ * 
  * @param maxWordsCount Upper bound of the number of words allowed
  */
 function lorem(maxWordsCount: number): Arbitrary<string>;
 /**
- * Arbitrary producing lorem ipsum string of words
+ * For lorem ipsum string of words or sentences with maximal number of words or sentences
  *
  * WARNING: It cannot be shrunk
+ * 
  * @param maxWordsCount Upper bound of the number of words/sentences allowed
  * @param sentencesMode If enabled, multiple sentences might be generated
  */

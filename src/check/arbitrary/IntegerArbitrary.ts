@@ -50,16 +50,16 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
 }
 
 /**
- * Arbitrary producing integer between -2147483648 (included) and 2147483647 (included)
+ * For integers between -2147483648 (included) and 2147483647 (included)
  */
 function integer(): ArbitraryWithShrink<number>;
 /**
- * Arbitrary producing integer between -2147483648 (included) and max (included)
+ * For integers between -2147483648 (included) and max (included)
  * @param max Upper bound for the generated integers
  */
 function integer(max: number): ArbitraryWithShrink<number>;
 /**
- * Arbitrary producing integer between min (included) and max (included)
+ * For integers between min (included) and max (included)
  * @param min Lower bound for the generated integers
  * @param max Upper bound for the generated integers
  */
@@ -69,12 +69,12 @@ function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
 }
 
 /**
- * Arbitrary producing positive integer between 0 (included) and 2147483647 (included)
+ * For positive integers between 0 (included) and 2147483647 (included)
  */
 function nat(): ArbitraryWithShrink<number>;
 /**
- * Arbitrary producing positive integer between 0 (included) and max (included)
- * @param max Upper bound for the generated integers
+ * For positive integers between 0 (included) and max (included)
+ * @param max Upper bound for the generated integers 
  */
 function nat(max: number): ArbitraryWithShrink<number>;
 function nat(a?: number): ArbitraryWithShrink<number> {

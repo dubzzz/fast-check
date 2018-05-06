@@ -14,7 +14,7 @@ function toObject<T>(items: [string, T][]): { [key: string]: T } {
 }
 
 /**
- * Arbitrary producing dictionary which keys are produced by `keyArb` and values from `valueArb`
+ * For dictionaries with keys produced by `keyArb` and values from `valueArb`
  * @param keyArb Arbitrary used to generate the keys of the object
  * @param valueArb Arbitrary used to generate the values of the object
  */

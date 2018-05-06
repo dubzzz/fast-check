@@ -25,7 +25,7 @@ class ConstantArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * Arbitrary producing only `value`
+ * For `value`
  * @param value The value to produce
  */
 function constant<T>(value: T): Arbitrary<T> {
@@ -33,9 +33,7 @@ function constant<T>(value: T): Arbitrary<T> {
 }
 
 /**
- * Arbitrary producing one of `v0` or `...values`.
- * All the values are equiprobable
- *
+ * For one of `v0` or `...values` values - all equiprobable
  * @param v0 One of the value to produce (all values shrink to this one)
  * @param values Other possible values
  */
