@@ -32,6 +32,25 @@ function Base64StringArbitrary(minLength: number, maxLength: number) {
 }
 
 /**
+ * Arbitrary producing string using the characters produced by `charArb`
+ */
+function stringOf(charArb: Arbitrary<string>): Arbitrary<string>;
+/**
+ * Arbitrary producing string using the characters produced by `charArb`
+ * @param maxLength Upper bound of the generated string length
+ */
+function stringOf(charArb: Arbitrary<string>, maxLength: number): Arbitrary<string>;
+/**
+ * Arbitrary producing string using the characters produced by `charArb`
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
+ */
+function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: number): Arbitrary<string>;
+function stringOf(charArb: Arbitrary<string>, aLength?: number, bLength?: number): Arbitrary<string> {
+  return StringArbitrary(charArb, aLength, bLength);
+}
+
+/**
  * Arbitrary producing string of {@link char}
  */
 function string(): Arbitrary<string>;
@@ -171,4 +190,4 @@ function base64String(aLength?: number, bLength?: number): Arbitrary<string> {
   return Base64StringArbitrary(minLength + 3 - (minLength + 3) % 4, maxLength - maxLength % 4); // base64 length is always a multiple of 4
 }
 
-export { string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String };
+export { stringOf, string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String };

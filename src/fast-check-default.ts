@@ -37,6 +37,7 @@ import {
   hexaString,
   string,
   string16bits,
+  stringOf,
   unicodeString
 } from './check/arbitrary/StringArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';

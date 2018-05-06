@@ -1,7 +1,9 @@
 import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
+import { constantFrom } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import {
+  stringOf,
   string,
   asciiString,
   string16bits,
@@ -10,6 +12,8 @@ import {
   base64String
 } from '../../../../src/check/arbitrary/StringArbitrary';
 
+import * as genericHelper from './generic/GenericArbitraryHelper';
+
 import * as stubRng from '../../stubs/generators';
 
 const minMax = fc
@@ -17,6 +21,43 @@ const minMax = fc
   .map(t => (t[0] < t[1] ? { min: t[0], max: t[1] } : { min: t[1], max: t[0] }));
 
 describe('StringArbitrary', () => {
+  describe('stringOf', () => {
+    describe('Given no length constraints', () => {
+      genericHelper.isValidArbitrary(() => stringOf(constantFrom('\u{1f431}', 'D', '1').noShrink()), {
+        isStrictlySmallerValue: (g1, g2) => [...g1].length < [...g2].length,
+        isValidValue: (g: string) =>
+          typeof g === 'string' && [...g].every(c => c === '\u{1f431}' || c === 'D' || c === '1')
+      });
+    });
+    describe('Given maximal length only', () => {
+      genericHelper.isValidArbitrary(
+        (maxLength: number) => stringOf(constantFrom('\u{1f431}', 'D', '1').noShrink(), maxLength),
+        {
+          seedGenerator: fc.nat(100),
+          isStrictlySmallerValue: (g1, g2) => [...g1].length < [...g2].length,
+          isValidValue: (g: string, maxLength: number) =>
+            typeof g === 'string' &&
+            [...g].length <= maxLength &&
+            [...g].every(c => c === '\u{1f431}' || c === 'D' || c === '1')
+        }
+      );
+    });
+    describe('Given minimal and maximal lengths', () => {
+      genericHelper.isValidArbitrary(
+        (constraints: { min: number; max: number }) =>
+          stringOf(constantFrom('\u{1f431}', 'D', '1').noShrink(), constraints.min, constraints.max),
+        {
+          seedGenerator: genericHelper.minMax(fc.nat(100)),
+          isStrictlySmallerValue: (g1, g2) => [...g1].length < [...g2].length,
+          isValidValue: (g: string, constraints: { min: number; max: number }) =>
+            typeof g === 'string' &&
+            [...g].length >= constraints.min &&
+            [...g].length <= constraints.max &&
+            [...g].every(c => c === '\u{1f431}' || c === 'D' || c === '1')
+        }
+      );
+    });
+  });
   describe('string', () => {
     it('Should generate printable characters', () =>
       fc.assert(
