@@ -2,7 +2,7 @@ import { arbCommas, commas, iota, txCommas, txXor } from './helpers';
 
 const classFor = (num: number): string =>
   `
-        /** @internalapi */
+        /** @hidden */
         export class Tuple${num}Arbitrary<${txCommas(num)}> extends Arbitrary<[${txCommas(num)}]> {
             readonly tupleArb: GenericTupleArbitrary<${txXor(num)}>;
             constructor(${commas(num, v => `readonly arb${v}: Arbitrary<T${v}>`)}) {
