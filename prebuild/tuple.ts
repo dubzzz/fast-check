@@ -1,4 +1,4 @@
-import { arbCommas, commas, iota, txCommas, txXor } from './helpers';
+import { arbCommas, commas, iota, joiner, txCommas, txXor } from './helpers';
 
 const classFor = (num: number): string =>
   `
@@ -17,6 +17,10 @@ const classFor = (num: number): string =>
 
 const signatureFor = (num: number, opt?: boolean): string =>
   `
+        /**
+         * For tuples of [${txCommas(num)}]
+         * ${joiner(num, v => `@param arb${v} Arbitrary responsible for T${v}`, '\n* ')}
+         */
         function tuple<${txCommas(num)}>(
                 ${commas(num, v => `arb${v}${opt === true ? '?' : ''}: Arbitrary<T${v}>`)}
                 )`;

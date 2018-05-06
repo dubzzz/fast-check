@@ -18,6 +18,9 @@ export class ObjectConstraints {
     return new ObjectConstraints(this.key, this.values, this.maxDepth - 1);
   }
 
+  /**
+   * Default value of ObjectConstraints.Settings.values field
+   */
   static defaultValues(): Arbitrary<any>[] {
     return [
       boolean(),
@@ -54,10 +57,39 @@ export class ObjectConstraints {
 }
 
 export namespace ObjectConstraints {
+  /** Constraints to be applied during object generation */
   export interface Settings {
-    maxDepth?: number; // maximal depth allowed for this object
-    key?: Arbitrary<string>; // arbitrary for key
-    values?: Arbitrary<any>[]; // arbitrary responsible for base value
+    /** Maximal depth allowed */
+    maxDepth?: number;
+    /**
+     * Arbitrary for keys
+     *
+     * Default for `key` is: `fc.string()`
+     */
+    key?: Arbitrary<string>;
+    /**
+     * Arbitrary for values
+     *
+     * Default for `values` are:
+     * - `fc.boolean()`,
+     * - `fc.integer()`,
+     * - `fc.double()`,
+     * - `fc.string()`
+     * - constants among:
+     *  - `null`,
+     *  - `undefined`,
+     *  - `Number.NaN`,
+     *  - `+0`,
+     *  - `-0`,
+     *  - `Number.EPSILON`,
+     *  - `Number.MIN_VALUE`,
+     *  - `Number.MAX_VALUE`,
+     *  - `Number.MIN_SAFE_INTEGER`,
+     *  - `Number.MAX_SAFE_INTEGER`,
+     *  - `Number.POSITIVE_INFINITY`,
+     *  - `Number.NEGATIVE_INFINITY`
+     */
+    values?: Arbitrary<any>[];
   }
 }
 
@@ -83,13 +115,34 @@ class ObjectArbitrary extends Arbitrary<any> {
   }
 }
 
+/**
+ * For any type of values
+ */
 function anything(): Arbitrary<any>;
+/**
+ * For any type of values following the constraints defined by `settings`
+ * @param settings Constraints to apply when building instances
+ */
 function anything(settings: ObjectConstraints.Settings): Arbitrary<any>;
 function anything(settings?: ObjectConstraints.Settings): Arbitrary<any> {
   return ObjectArbitrary.anything(ObjectConstraints.from(settings));
 }
 
+/**
+ * For any objects
+ *
+ * @example
+ * ```{} or {k: [{}, 1, 2]}```
+ */
 function object(): Arbitrary<any>;
+/**
+ * For any objects
+ *
+ * @example
+ * ```{} or {k: [{}, 1, 2]}```
+ *
+ * @param settings Constraints to apply when building instances
+ */
 function object(settings: ObjectConstraints.Settings): Arbitrary<any>;
 function object(settings?: ObjectConstraints.Settings): Arbitrary<any> {
   return new ObjectArbitrary(ObjectConstraints.from(settings));
@@ -102,26 +155,54 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
   return maxDepth != null ? { key, values, maxDepth } : { key, values };
 }
 
+/**
+ * For any JSON compliant values
+ */
 function jsonObject(): Arbitrary<any>;
+/**
+ * For any JSON compliant values with a maximal depth
+ * @param maxDepth Maximal depth of the generated values
+ */
 function jsonObject(maxDepth: number): Arbitrary<any>;
 function jsonObject(maxDepth?: number): Arbitrary<any> {
   return anything(jsonSettings(string(), maxDepth));
 }
 
+/**
+ * For any JSON compliant values with full unicode support
+ */
 function unicodeJsonObject(): Arbitrary<any>;
+/**
+ * For any JSON compliant values with full unicode support and a maximal depth
+ * @param maxDepth Maximal depth of the generated values
+ */
 function unicodeJsonObject(maxDepth: number): Arbitrary<any>;
 function unicodeJsonObject(maxDepth?: number): Arbitrary<any> {
   return anything(jsonSettings(unicodeString(), maxDepth));
 }
 
+/**
+ * For any JSON strings
+ */
 function json(): Arbitrary<string>;
+/**
+ * For any JSON strings with a maximal depth
+ * @param maxDepth Maximal depth of the generated objects
+ */
 function json(maxDepth: number): Arbitrary<string>;
 function json(maxDepth?: number): Arbitrary<string> {
   const arb = maxDepth != null ? jsonObject(maxDepth) : jsonObject();
   return arb.map(JSON.stringify);
 }
 
+/**
+ * For any JSON strings with full unicode support
+ */
 function unicodeJson(): Arbitrary<string>;
+/**
+ * For any JSON strings with full unicode support and a maximal depth
+ * @param maxDepth Maximal depth of the generated objects
+ */
 function unicodeJson(maxDepth: number): Arbitrary<string>;
 function unicodeJson(maxDepth?: number): Arbitrary<string> {
   const arb = maxDepth != null ? unicodeJsonObject(maxDepth) : unicodeJsonObject();
