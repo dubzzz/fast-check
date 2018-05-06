@@ -166,13 +166,13 @@ function hexaString(aLength?: number, bLength?: number): Arbitrary<string> {
 
 /**
  * For base64 strings
- * 
+ *
  * A base64 string will always have a length multiple of 4 (padded with =)
  */
 function base64String(): Arbitrary<string>;
 /**
  * For base64 strings
- * 
+ *
  * A base64 string will always have a length multiple of 4 (padded with =)
  *
  * @param maxLength Upper bound of the generated string length
@@ -180,7 +180,7 @@ function base64String(): Arbitrary<string>;
 function base64String(maxLength: number): Arbitrary<string>;
 /**
  * For base64 strings
- * 
+ *
  * A base64 string will always have a length multiple of 4 (padded with =)
  *
  * @param minLength Lower bound of the generated string length

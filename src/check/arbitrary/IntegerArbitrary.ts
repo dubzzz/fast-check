@@ -74,7 +74,7 @@ function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
 function nat(): ArbitraryWithShrink<number>;
 /**
  * For positive integers between 0 (included) and max (included)
- * @param max Upper bound for the generated integers 
+ * @param max Upper bound for the generated integers
  */
 function nat(max: number): ArbitraryWithShrink<number>;
 function nat(a?: number): ArbitraryWithShrink<number> {
