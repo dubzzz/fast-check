@@ -5,7 +5,7 @@ import { stream, Stream } from '../../stream/Stream';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import Shrinkable from './definition/Shrinkable';
 
-/** @internalapi */
+/** @hidden */
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
   static MIN_INT: number = 0x80000000 | 0;
   static MAX_INT: number = 0x7fffffff | 0;

@@ -8,7 +8,7 @@ export interface WeightedArbitrary<T> {
   arbitrary: Arbitrary<T>;
 }
 
-/** @internalapi */
+/** @hidden */
 class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly summedWarbs: WeightedArbitrary<T>[];
   readonly idArb: Arbitrary<number>;

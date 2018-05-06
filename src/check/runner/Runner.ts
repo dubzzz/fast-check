@@ -8,7 +8,7 @@ import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed } from './utils/utils';
 
-/** @internalapi */
+/** @hidden */
 function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
   const runExecution = new RunExecution<Ts>();
   let done = false;
@@ -30,7 +30,7 @@ function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shri
   return runExecution;
 }
 
-/** @internalapi */
+/** @hidden */
 async function asyncRunIt<Ts>(
   property: IProperty<Ts>,
   initialValues: IterableIterator<Shrinkable<Ts>>

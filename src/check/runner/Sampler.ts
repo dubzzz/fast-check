@@ -6,7 +6,7 @@ import toss from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters } from './utils/utils';
 
-/** @internalapi */
+/** @hidden */
 function streamSample<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
   params?: Parameters | number

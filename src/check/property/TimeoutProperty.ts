@@ -3,7 +3,7 @@ import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from './IProperty';
 
-/** @internalapi */
+/** @hidden */
 const timeoutAfter = async (timeMs: number) =>
   new Promise<string>((resolve, reject) =>
     setTimeout(() => {
@@ -11,7 +11,7 @@ const timeoutAfter = async (timeMs: number) =>
     }, timeMs)
   );
 
-/** @internalapi */
+/** @hidden */
 export class TimeoutProperty<Ts> implements IProperty<Ts> {
   constructor(readonly property: IProperty<Ts>, readonly timeMs: number) {}
   isAsync = () => true;

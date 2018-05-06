@@ -5,14 +5,14 @@ import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
-/** @internalapi */
+/** @hidden */
 function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
   const arrayArb =
     aLength != null ? (bLength != null ? array(charArb, aLength, bLength) : array(charArb, aLength)) : array(charArb);
   return arrayArb.map(tab => tab.join(''));
 }
 
-/** @internalapi */
+/** @hidden */
 function Base64StringArbitrary(minLength: number, maxLength: number) {
   if (minLength > maxLength) throw new Error('Minimal length should be inferior or equal to maximal length');
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');

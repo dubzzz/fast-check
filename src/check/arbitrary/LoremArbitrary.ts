@@ -5,7 +5,7 @@ import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
-/** @internalapi */
+/** @hidden */
 class LoremArbitrary extends Arbitrary<string> {
   readonly arbWordsCount: Arbitrary<number>;
   readonly sentencesMode: boolean;

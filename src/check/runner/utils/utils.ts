@@ -6,7 +6,7 @@ interface Parameters {
   logger?(v: string): void;
 }
 
-/** @internalapi */
+/** @hidden */
 class QualifiedParameters {
   seed: number;
   numRuns: number;
@@ -58,7 +58,7 @@ interface RunDetails<Ts> {
   counterexamplePath: string | null;
 }
 
-/** @internalapi */
+/** @hidden */
 function successFor<Ts>(qParams: QualifiedParameters): RunDetails<Ts> {
   return {
     failed: false,
@@ -71,7 +71,7 @@ function successFor<Ts>(qParams: QualifiedParameters): RunDetails<Ts> {
   };
 }
 
-/** @internalapi */
+/** @hidden */
 function failureFor<Ts>(
   qParams: QualifiedParameters,
   numRuns: number,
@@ -91,7 +91,7 @@ function failureFor<Ts>(
   };
 }
 
-/** @internalapi */
+/** @hidden */
 class RunExecution<Ts> {
   pathToFailure?: string;
   value?: Ts;
@@ -129,7 +129,7 @@ class RunExecution<Ts> {
   }
 }
 
-/** @internalapi */
+/** @hidden */
 function prettyOne<Ts>(value: Ts): string {
   if (typeof value === 'string') return JSON.stringify(value);
 
@@ -143,13 +143,13 @@ function prettyOne<Ts>(value: Ts): string {
   return defaultRepr;
 }
 
-/** @internalapi */
+/** @hidden */
 function pretty<Ts>(value: Ts): string {
   if (Array.isArray(value)) return `[${[...value].map(pretty).join(',')}]`;
   return prettyOne(value);
 }
 
-/** @internalapi */
+/** @hidden */
 function throwIfFailed<Ts>(out: RunDetails<Ts>) {
   if (out.failed) {
     throw new Error(

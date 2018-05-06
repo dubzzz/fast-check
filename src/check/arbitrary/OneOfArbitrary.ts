@@ -3,7 +3,7 @@ import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
-/** @internalapi */
+/** @hidden */
 class OneOfArbitrary<T> extends Arbitrary<T> {
   readonly idArb: Arbitrary<number>;
   constructor(readonly arbs: Arbitrary<T>[]) {

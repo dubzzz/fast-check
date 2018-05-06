@@ -4,7 +4,7 @@ import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
-/** @internalapi */
+/** @hidden */
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number = v => v) {
   return integer(min, max).map(n => String.fromCharCode(mapToCode(n)));
 }
