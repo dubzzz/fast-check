@@ -1,18 +1,16 @@
 import Random from '../../random/generator/Random';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
-import { nat } from './IntegerArbitrary';
 
 /** @hidden */
 class OneOfArbitrary<T> extends Arbitrary<T> {
   readonly idArb: Arbitrary<number>;
   constructor(readonly arbs: Arbitrary<T>[]) {
     super();
-    this.idArb = nat(arbs.length - 1);
   }
   generate(mrng: Random): Shrinkable<T> {
-    const id = this.idArb.generate(mrng);
-    return this.arbs[id.value].generate(mrng);
+    const id = mrng.nextInt(0, this.arbs.length - 1);
+    return this.arbs[id].generate(mrng);
   }
 }
 
