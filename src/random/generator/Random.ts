@@ -45,7 +45,7 @@ export default class Random {
   /**
    * Generate a random integer between min (included) and max (included)
    * @param min Minimal integer value
-   * @param max Maxiaml integer value
+   * @param max Maximal integer value
    */
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
