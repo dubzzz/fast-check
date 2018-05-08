@@ -50,7 +50,7 @@ describe('RecordArbitrary', () => {
     type Meta = { key: string; valueStart: number };
 
     const metaArbitrary = fc.set(
-      fc.record<any>({ key: fc.string(), valueType: fc.nat(1000) }),
+      fc.record<any>({ key: fc.string(), valueStart: fc.nat(1000) }),
       (v1, v2) => v1.key === v2.key
     );
     const constraintsArbitrary = fc.record({ withDeletedKeys: fc.boolean() }, { withDeletedKeys: true });
