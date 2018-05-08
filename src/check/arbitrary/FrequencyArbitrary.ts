@@ -1,7 +1,6 @@
 import Random from '../../random/generator/Random';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
-import { nat } from './IntegerArbitrary';
 
 export interface WeightedArbitrary<T> {
   weight: number;
@@ -11,7 +10,7 @@ export interface WeightedArbitrary<T> {
 /** @hidden */
 class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly summedWarbs: WeightedArbitrary<T>[];
-  readonly idArb: Arbitrary<number>;
+  readonly totalWeight: number;
   constructor(readonly warbs: WeightedArbitrary<T>[]) {
     super();
     this.summedWarbs = warbs
@@ -24,10 +23,10 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
         [{ weight: 0, arbitrary: warbs[0].arbitrary }]
       )
       .slice(1);
-    this.idArb = nat(this.summedWarbs[this.summedWarbs.length - 1].weight - 1);
+    this.totalWeight = this.summedWarbs[this.summedWarbs.length - 1].weight;
   }
   generate(mrng: Random): Shrinkable<T> {
-    const selected = this.idArb.generate(mrng).value;
+    const selected = mrng.nextInt(0, this.totalWeight - 1);
     return this.summedWarbs.find(warb => selected < warb.weight)!.arbitrary.generate(mrng);
   }
 }
