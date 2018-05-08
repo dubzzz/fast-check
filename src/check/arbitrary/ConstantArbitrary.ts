@@ -2,19 +2,17 @@ import Random from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
 import Arbitrary from './definition/Arbitrary';
 import Shrinkable from './definition/Shrinkable';
-import { nat } from './IntegerArbitrary';
 
 /** @hidden */
 class ConstantArbitrary<T> extends Arbitrary<T> {
   readonly idArb: Arbitrary<number>;
   constructor(readonly values: T[]) {
     super();
-    this.idArb = nat(values.length - 1);
   }
   generate(mrng: Random): Shrinkable<T> {
     if (this.values.length === 1) return new Shrinkable(this.values[0]);
 
-    const id = this.idArb.generate(mrng).value;
+    const id = mrng.nextInt(0, this.values.length - 1);
     if (id === 0) return new Shrinkable(this.values[0]);
 
     function* g(v: T) {
