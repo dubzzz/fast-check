@@ -4,9 +4,12 @@ import * as fc from '../../../../lib/fast-check';
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
 import Random from '../../../../src/random/generator/Random';
 import { stream } from '../../../../src/stream/Stream';
+
+import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
 
@@ -43,5 +46,21 @@ describe('OneOfArbitrary', () => {
           return shrinks.length === 1 && shrinks[0].value === shrinkable.value - 42;
         })
       ));
+
+    genericHelper.isValidArbitrary(
+      (rawMetas: { [key: string]: any }[]) => {
+        const metas = rawMetas as { type: string; value: number }[];
+        const arbs = metas.map(m => (m.type === 'unique' ? constant(m.value) : integer(m.value - 10, m.value)));
+        return oneof(arbs[0], ...arbs.slice(1));
+      },
+      {
+        seedGenerator: fc.array(fc.record<any>({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), 1, 10),
+        isValidValue: (v: number, rawMetas: { [key: string]: any }[]) => {
+          const metas = rawMetas as { type: string; value: number }[];
+          return metas.findIndex(m => (m.type === 'unique' ? m.value === v : m.value - 10 <= v && v <= m.value)) !== -1;
+        },
+        isStrictlySmallerValue: (a: number, b: number) => (Math.abs(b - a) <= 10 && b > 0 ? b - a > 0 : b - a < 0)
+      }
+    );
   });
 });
