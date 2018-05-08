@@ -134,14 +134,16 @@ export const isValidArbitrary = function<U, T>(
   arbitraryBuilder: (u: U) => Arbitrary<T>,
   settings: {
     seedGenerator?: fc.Arbitrary<U>;
-    isStrictlySmallerValue: (g1: T, g2: T) => boolean;
+    isStrictlySmallerValue?: (g1: T, g2: T) => boolean;
     isValidValue: (g: T, seed: U) => boolean;
   }
 ) {
   const seedGenerator = settings.seedGenerator || fc.constant(undefined);
   testSameSeedSameValues(seedGenerator, arbitraryBuilder);
   testSameSeedSameShrinks(seedGenerator, arbitraryBuilder);
-  testShrinkPathStrictlyDecreasing(seedGenerator, arbitraryBuilder, settings.isStrictlySmallerValue);
+  if (settings.isStrictlySmallerValue != null) {
+    testShrinkPathStrictlyDecreasing(seedGenerator, arbitraryBuilder, settings.isStrictlySmallerValue);
+  }
   testAlwaysGenerateCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
   testAlwaysShrinkToCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
 };

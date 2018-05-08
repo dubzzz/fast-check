@@ -3,28 +3,18 @@ import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
-import { record } from '../../../../src/check/arbitrary/RecordArbitrary';
+import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { record, RecordConstraints } from '../../../../src/check/arbitrary/RecordArbitrary';
 import Random from '../../../../src/random/generator/Random';
+
+import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
+import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 
 describe('RecordArbitrary', () => {
   describe('record', () => {
-    it('Should produce a record having the right keys', () =>
-      fc.assert(
-        fc.property(fc.set(fc.string()), fc.integer(), (keys, seed) => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const expectedRecord: any = {};
-          const recordModel: any = {};
-          for (const k of keys) {
-            expectedRecord[k] = `_${k}_`;
-            recordModel[k] = stubArb.single(`_${k}_`);
-          }
-          const g = record(recordModel).generate(mrng).value;
-          assert.deepStrictEqual(g, expectedRecord);
-        })
-      ));
     it('Should produce a record with missing keys', () =>
       fc.assert(
         fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
@@ -55,5 +45,45 @@ describe('RecordArbitrary', () => {
           return false;
         })
       ));
+
+    type RawMeta = { [key: string]: any };
+    type Meta = { key: string; valueStart: number };
+
+    const metaArbitrary = fc.set(
+      fc.record<any>({ key: fc.string(), valueType: fc.nat(1000) }),
+      (v1, v2) => v1.key === v2.key
+    );
+    const constraintsArbitrary = fc.record({ withDeletedKeys: fc.boolean() }, { withDeletedKeys: true });
+
+    describe('Given a custom record configuration', () => {
+      genericHelper.isValidArbitrary(
+        ([rawMetas, constraints]: [RawMeta[], RecordConstraints]) => {
+          const metas = rawMetas as Meta[];
+          const recordModel: { [key: string]: Arbitrary<number> } = {};
+          for (const m of metas) {
+            recordModel[m.key] = integer(m.valueStart, m.valueStart + 10);
+          }
+          return record(recordModel, constraints);
+        },
+        {
+          seedGenerator: fc.tuple(metaArbitrary, constraintsArbitrary),
+          isValidValue: (r: { [key: string]: number }, [rawMetas, constraints]: [RawMeta[], RecordConstraints]) => {
+            const metas = rawMetas as Meta[];
+            for (const k of Object.keys(r)) {
+              // generated object should not have more keys
+              if (metas.findIndex(m => m.key === k) === -1) return false;
+            }
+            for (const m of metas) {
+              // values are associated to the right key (if key required)
+              if (constraints.withDeletedKeys === true && !(r as any).hasOwnProperty(m.key)) continue;
+              if (typeof r[m.key] !== 'number') return false;
+              if (r[m.key] < m.valueStart) return false;
+              if (r[m.key] > m.valueStart + 10) return false;
+            }
+            return true;
+          }
+        }
+      );
+    });
   });
 });
