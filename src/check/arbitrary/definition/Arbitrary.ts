@@ -44,6 +44,9 @@ export default abstract class Arbitrary<T> {
         }
         return g.filter(predicate);
       }
+      withBias(freq: number) {
+        return arb.withBias(freq).filter(predicate);
+      }
     }();
   }
 
@@ -67,6 +70,9 @@ export default abstract class Arbitrary<T> {
       generate(mrng: Random): Shrinkable<U> {
         return arb.generate(mrng).map(mapper);
       }
+      withBias(freq: number) {
+        return arb.withBias(freq).map(mapper);
+      }
     }();
   }
 
@@ -87,6 +93,32 @@ export default abstract class Arbitrary<T> {
     return new class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {
         return new Shrinkable(arb.generate(mrng).value);
+      }
+      withBias(freq: number) {
+        return arb.withBias(freq).noShrink();
+      }
+    }();
+  }
+
+  /**
+   * Create another Arbitrary having bias - by default return itself
+   *
+   * @param freq The biased version will be used one time over freq - if it exists - freq must be superior or equal to 2 to avoid any lock
+   */
+  withBias(freq: number): Arbitrary<T> {
+    return this;
+  }
+
+  /**
+   * Create another Arbitrary that cannot be biased
+   *
+   * @param freq The biased version will be used one time over freq - if it exists
+   */
+  noBias(): Arbitrary<T> {
+    const arb = this;
+    return new class extends Arbitrary<T> {
+      generate(mrng: Random): Shrinkable<T> {
+        return arb.generate(mrng);
       }
     }();
   }

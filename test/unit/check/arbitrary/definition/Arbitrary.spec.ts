@@ -18,6 +18,36 @@ class ForwardArbitrary extends Arbitrary<number> {
   generate(mrng: Random): Shrinkable<number> {
     return this.shrinkableFor(mrng.nextInt());
   }
+  withBias(freq: number) {
+    const arb = this;
+    return new class extends Arbitrary<number> {
+      generate(mrng: Random): Shrinkable<number> {
+        return mrng.nextInt(1, freq) === 1 ? new Shrinkable(42) : arb.generate(mrng);
+      }
+    }();
+  }
+}
+
+class FakeNoBiasArbitrary extends Arbitrary<number> {
+  generate(mrng: Random): Shrinkable<number> {
+    return new ForwardArbitrary().generate(mrng);
+  }
+  withBias(freq: number) {
+    return new ForwardArbitrary();
+  }
+}
+
+class FakeTwoValuesBiasArbitrary extends Arbitrary<number> {
+  generate(mrng: Random): Shrinkable<number> {
+    return new Shrinkable(44);
+  }
+  withBias(freq: number) {
+    return new class extends Arbitrary<number> {
+      generate(mrng: Random): Shrinkable<number> {
+        return mrng.nextInt(1, 2) === 1 ? new Shrinkable(42) : new Shrinkable(43);
+      }
+    }();
+  }
 }
 
 describe('Arbitrary', () => {
@@ -51,6 +81,28 @@ describe('Arbitrary', () => {
               .flatMap(s => s.shrink())
               .every(s => s.value % 3 === 0)
           );
+          return true;
+        })
+      ));
+    it('Should apply filter to the biased arbitrary', () =>
+      fc.assert(
+        fc.property(fc.integer(), seed => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const arb = new FakeTwoValuesBiasArbitrary().filter(v => v !== 42);
+          const biasedArb = arb.withBias(2); // this arbitrary is always 100% biased (see its code)
+          const g = biasedArb.generate(mrng).value;
+          assert.ok(g === 43);
+          return true;
+        })
+      ));
+    it('Should not lock on biased arbitrary not providing right entries', () =>
+      fc.assert(
+        fc.property(fc.integer(), seed => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const arb = new ForwardArbitrary().filter(v => v !== 42);
+          const biasedArb = arb.withBias(2);
+          const g = biasedArb.generate(mrng).value;
+          assert.notEqual(g, 42);
           return true;
         })
       ));
@@ -89,6 +141,17 @@ describe('Arbitrary', () => {
           return true;
         })
       ));
+    it('Should apply mapper to the biased arbitrary', () =>
+      fc.assert(
+        fc.property(fc.integer(), seed => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const arb = new ForwardArbitrary().map(v => `value = ${v}`);
+          const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
+          const g = biasedArb.generate(mrng).value;
+          assert.equal(g, `value = 42`);
+          return true;
+        })
+      ));
   });
   describe('noShrink', () => {
     it('Should remove the ability to shrink the arbitrary', () =>
@@ -100,5 +163,25 @@ describe('Arbitrary', () => {
           return true;
         })
       ));
+    it('Should apply noShrink to the biased arbitrary', () =>
+      fc.assert(
+        fc.property(fc.integer(), seed => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const arb = new FakeNoBiasArbitrary().noShrink();
+          const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
+          const shrinkable = biasedArb.generate(mrng);
+          assert.deepStrictEqual([...shrinkable.shrink()], []);
+          return true;
+        })
+      ));
+  });
+  describe('noBias', () => {
+    it('Should not be able to bias a noBias', () => {
+      const mrng = stubRng.mutable.fastincrease(0);
+      const arb = new FakeTwoValuesBiasArbitrary().noBias();
+      const biasedArb = arb.withBias(1);
+      const g = biasedArb.generate(mrng).value;
+      assert.equal(g, 44);
+    });
   });
 });
