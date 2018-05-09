@@ -1,3 +1,16 @@
+# 1.0.4
+
+_TypeScript and JavaScript documentation of the code using TypeDoc_
+
+## Features
+
+- ([cc73ab33](/commit/cc73ab33)) Add stringOf arbitrary
+
+# Fixes
+
+- ([959fb52b](/commit/959fb52b)) Doc: Add a Tips section in the Readme
+- ([0dd1e66a](/commit/0dd1e66a)) Doc: Link towards the generated documentation in the Readme
+
 # 1.0.3
 
 _Reduce risk of using an unimplemented method of Node (older releases <6)_
