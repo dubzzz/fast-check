@@ -139,13 +139,22 @@ export const isValidArbitrary = function<U, T>(
   }
 ) {
   const seedGenerator = settings.seedGenerator || fc.constant(undefined);
-  testSameSeedSameValues(seedGenerator, arbitraryBuilder);
-  testSameSeedSameShrinks(seedGenerator, arbitraryBuilder);
+
+  const biasedSeedGenerator = fc.tuple(fc.option(fc.integer(2, 100), 2), seedGenerator);
+  const biasedArbitraryBuilder = ([biasedFactor, u]: [(number | null), U]) => {
+    return biasedFactor != null ? arbitraryBuilder(u).withBias(biasedFactor) : arbitraryBuilder(u);
+  };
+  const biasedIsValidValue = (g: T, [biasedFactor, u]: [(number | null), U]) => {
+    return settings.isValidValue(g, u);
+  };
+
+  testSameSeedSameValues(biasedSeedGenerator, biasedArbitraryBuilder);
+  testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder);
   if (settings.isStrictlySmallerValue != null) {
-    testShrinkPathStrictlyDecreasing(seedGenerator, arbitraryBuilder, settings.isStrictlySmallerValue);
+    testShrinkPathStrictlyDecreasing(biasedSeedGenerator, biasedArbitraryBuilder, settings.isStrictlySmallerValue);
   }
-  testAlwaysGenerateCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
-  testAlwaysShrinkToCorrectValues(seedGenerator, arbitraryBuilder, settings.isValidValue);
+  testAlwaysGenerateCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue);
+  testAlwaysShrinkToCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue);
 };
 
 export const minMax = (arb: fc.Arbitrary<number>) =>
