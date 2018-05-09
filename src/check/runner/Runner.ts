@@ -55,7 +55,25 @@ async function asyncRunIt<Ts>(
   return runExecution;
 }
 
+/**
+ * Run the property, do not throw contrary to {@link assert}
+ *
+ * WARNING: Has to be awaited
+ *
+ * @param property Asynchronous property to be checked
+ * @param params Optional parameters to customize the execution
+ *
+ * @returns Test status and other useful details
+ */
 function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>>;
+/**
+ * Run the property, do not throw contrary to {@link assert}
+ *
+ * @param property Synchronous property to be checked
+ * @param params Optional parameters to customize the execution
+ *
+ * @returns Test status and other useful details
+ */
 function check<Ts>(property: Property<Ts>, params?: Parameters): RunDetails<Ts>;
 function check<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>> | RunDetails<Ts>;
 function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
@@ -77,7 +95,27 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
     : runIt(property, initialValues).toRunDetails(qParams);
 }
 
+/**
+ * Run the property, throw in case of failure
+ *
+ * It can be called directly from describe/it blocks of Mocha.
+ * It does not return anything in case of success.
+ *
+ * WARNING: Has to be awaited
+ *
+ * @param property Asynchronous property to be checked
+ * @param params Optional parameters to customize the execution
+ */
 function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<void>;
+/**
+ * Run the property, throw in case of failure
+ *
+ * It can be called directly from describe/it blocks of Mocha.
+ * It does not return anything in case of success.
+ *
+ * @param property Synchronous property to be checked
+ * @param params Optional parameters to customize the execution
+ */
 function assert<Ts>(property: Property<Ts>, params?: Parameters): void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<void> | void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {

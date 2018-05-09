@@ -262,7 +262,7 @@ Once again the [built-in types](https://github.com/dubzzz/fast-check/tree/master
 
 - `fc.property`: define a new property ie. a list of arbitraries and a test function to assess the success
 
-The predicate would be considered falsy if its throws or if `output == null || output == true` evaluate to `false`.
+The predicate would be considered falsy if its throws or if `output` evaluates to `false`.
 ```typescript
 function property<T1>(
         arb1: Arbitrary<T1>,
@@ -275,7 +275,7 @@ function property<T1,T2>(
 
 - `fc.asyncProperty`: define a new property ie. a list of arbitraries and an asynchronous test function to assess the success
 
-The predicate would be considered falsy if its throws or if `output == null || output == true` evaluate to `false` (after `await`).
+The predicate would be considered falsy if its throws or if `output` evaluates to `false` (after `await`).
 ```typescript
 function asyncProperty<T1>(
         arb1: Arbitrary<T1>,

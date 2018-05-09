@@ -41,7 +41,7 @@ function record<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [k
  * @example
  * ```typescript
  * record({ x: someArbitraryInt, y: someArbitraryInt }, {withDeletedKeys: true}): Arbitrary<{x?:number,y?:number}>
- * // merge two integer arbitraries to produce a {x, y} record or {X}, {y} or just {}
+ * // merge two integer arbitraries to produce a {x, y}, {x}, {y} or {} record
  * ```
  *
  * @param recordModel Schema of the record

@@ -117,10 +117,36 @@ class ObjectArbitrary extends Arbitrary<any> {
 
 /**
  * For any type of values
+ *
+ * You may use {@link sample} to preview the values that will be generated
+ *
+ * @example
+ * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
  */
 function anything(): Arbitrary<any>;
 /**
  * For any type of values following the constraints defined by `settings`
+ *
+ * You may use {@link sample} to preview the values that will be generated
+ *
+ * @example
+ * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
+ *
+ * @example
+ * ```typescript
+ * // Using custom settings
+ * fc.anything({
+ *     key: fc.char(),
+ *     values: [fc.integer(10,20), fc.constant(42)],
+ *     maxDepth: 2
+ * });
+ * // Can build entries such as:
+ * // - 19
+ * // - [{"2":12,"k":15,"A":42}]
+ * // - {"4":[19,13,14,14,42,11,20,11],"6":42,"7":16,"L":10,"'":[20,11],"e":[42,20,42,14,13,17]}
+ * // - [42,42,42]...
+ * ```
+ *
  * @param settings Constraints to apply when building instances
  */
 function anything(settings: ObjectConstraints.Settings): Arbitrary<any>;
@@ -131,12 +157,16 @@ function anything(settings?: ObjectConstraints.Settings): Arbitrary<any> {
 /**
  * For any objects
  *
+ * You may use {@link sample} to preview the values that will be generated
+ *
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  */
 function object(): Arbitrary<any>;
 /**
- * For any objects
+ * For any objects following the constraints defined by `settings`
+ *
+ * You may use {@link sample} to preview the values that will be generated
  *
  * @example
  * ```{} or {k: [{}, 1, 2]}```
@@ -157,10 +187,15 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
 
 /**
  * For any JSON compliant values
+ *
+ * Keys and string values rely on {@link string}
  */
 function jsonObject(): Arbitrary<any>;
 /**
  * For any JSON compliant values with a maximal depth
+ *
+ * Keys and string values rely on {@link string}
+ *
  * @param maxDepth Maximal depth of the generated values
  */
 function jsonObject(maxDepth: number): Arbitrary<any>;
@@ -169,11 +204,16 @@ function jsonObject(maxDepth?: number): Arbitrary<any> {
 }
 
 /**
- * For any JSON compliant values with full unicode support
+ * For any JSON compliant values with unicode support
+ *
+ * Keys and string values rely on {@link unicode}
  */
 function unicodeJsonObject(): Arbitrary<any>;
 /**
- * For any JSON compliant values with full unicode support and a maximal depth
+ * For any JSON compliant values with unicode support and a maximal depth
+ *
+ * Keys and string values rely on {@link unicode}
+ *
  * @param maxDepth Maximal depth of the generated values
  */
 function unicodeJsonObject(maxDepth: number): Arbitrary<any>;
@@ -183,10 +223,15 @@ function unicodeJsonObject(maxDepth?: number): Arbitrary<any> {
 
 /**
  * For any JSON strings
+ *
+ * Keys and string values rely on {@link string}
  */
 function json(): Arbitrary<string>;
 /**
  * For any JSON strings with a maximal depth
+ *
+ * Keys and string values rely on {@link string}
+ *
  * @param maxDepth Maximal depth of the generated objects
  */
 function json(maxDepth: number): Arbitrary<string>;
@@ -196,11 +241,16 @@ function json(maxDepth?: number): Arbitrary<string> {
 }
 
 /**
- * For any JSON strings with full unicode support
+ * For any JSON strings with unicode support
+ *
+ * Keys and string values rely on {@link unicode}
  */
 function unicodeJson(): Arbitrary<string>;
 /**
- * For any JSON strings with full unicode support and a maximal depth
+ * For any JSON strings with unicode support and a maximal depth
+ *
+ * Keys and string values rely on {@link unicode}
+ *
  * @param maxDepth Maximal depth of the generated objects
  */
 function unicodeJson(maxDepth: number): Arbitrary<string>;

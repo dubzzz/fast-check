@@ -1,8 +1,31 @@
+/**
+ * Customization of the parameters used to run the properties
+ */
 interface Parameters {
+  /**
+   * Initial seed of the generator: `Date.now()` by default
+   *
+   * It can be forced to replay a failed run
+   */
   seed?: number;
+  /**
+   * Optional, number of runs before success: 100 by default
+   */
   numRuns?: number;
+  /**
+   * Maximum time in milliseconds for the predicate to answer: disabled by default
+   *
+   * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
+   */
   timeout?: number;
+  /**
+   * Way to replay a failing property directly with the counterexample.
+   * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
+   */
   path?: string;
+  /**
+   * Logger (see {@link statistics}): `console.log` by default
+   */
   logger?(v: string): void;
 }
 
@@ -48,13 +71,46 @@ class QualifiedParameters {
   }
 }
 
+/**
+ * Post-run details produced by {@link check}
+ *
+ * A failing property can easily detected by checking the `failed` flag of this structure
+ */
 interface RunDetails<Ts> {
+  /**
+   * Does the property failed during the execution of {@link check}?
+   */
   failed: boolean;
+  /**
+   * Number of runs
+   *
+   * - In case of failed property: Number of runs up to the first failure (including the failure run)
+   * - Otherwise: Number of successful executions
+   */
   numRuns: number;
+  /**
+   * Number of shrinks required to get to the minimal failing case (aka counterexample)
+   */
   numShrinks: number;
+  /**
+   * Seed that have been used by the run
+   *
+   * It can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using {@link Parameters}
+   */
   seed: number;
+  /**
+   * In case of failure: the counterexample contains the minimal failing case (first failure after shrinking)
+   */
   counterexample: Ts | null;
+  /**
+   * In case of failure: it contains the reason of the failure
+   */
   error: string | null;
+  /**
+   * In case of failure: path to the counterexample
+   *
+   * For replay purposes, it can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using {@link Parameters}
+   */
   counterexamplePath: string | null;
 }
 

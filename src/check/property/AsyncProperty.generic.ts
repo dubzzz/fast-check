@@ -3,6 +3,11 @@ import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from './IProperty';
 
+/**
+ * Asynchronous property, see {@link IProperty}
+ *
+ * Prefer using {@link asyncProperty} instead
+ */
 export class AsyncProperty<Ts> implements IProperty<Ts> {
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {}
   isAsync = () => true;

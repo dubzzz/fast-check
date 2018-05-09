@@ -4,6 +4,11 @@ import Shrinkable from '../arbitrary/definition/Shrinkable';
 import { tuple } from '../arbitrary/TupleArbitrary';
 import IProperty from './IProperty';
 
+/**
+ * Property, see {@link IProperty}
+ *
+ * Prefer using {@link property} instead
+ */
 export class Property<Ts> implements IProperty<Ts> {
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {}
   isAsync = () => false;
