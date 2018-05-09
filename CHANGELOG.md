@@ -6,7 +6,7 @@ _TypeScript and JavaScript documentation of the code using TypeDoc_
 
 - ([cc73ab33](/commit/cc73ab33)) Add stringOf arbitrary
 
-# Fixes
+## Fixes
 
 - ([959fb52b](/commit/959fb52b)) Doc: Add a Tips section in the Readme
 - ([0dd1e66a](/commit/0dd1e66a)) Doc: Link towards the generated documentation in the Readme
