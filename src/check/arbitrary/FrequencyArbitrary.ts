@@ -29,6 +29,9 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     const selected = mrng.nextInt(0, this.totalWeight - 1);
     return this.summedWarbs.find(warb => selected < warb.weight)!.arbitrary.generate(mrng);
   }
+  withBias(freq: number) {
+    return new FrequencyArbitrary(this.warbs.map(v => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })));
+  }
 }
 
 /**
