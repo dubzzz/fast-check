@@ -12,6 +12,9 @@ const classFor = (num: number): string =>
             generate(mrng: Random): Shrinkable<[${txCommas(num)}]> {
                 return this.tupleArb.generate(mrng) as Shrinkable<[${txCommas(num)}]>;
             }
+            withBias(freq: number) {
+                return new Tuple${num}Arbitrary(${commas(num, v => `this.arb${v}.withBias(1)`)});
+            }
         };
     `;
 
@@ -59,11 +62,13 @@ const generateTuple = (num: number): string => {
   return blocks.join('\n');
 };
 
-const simpleUnitTest = (num: number): string =>
+const simpleUnitTest = (num: number, biased: boolean): string =>
   `
-        it('Should produce the same output for tuple${num} and genericTuple', () => {
-            const tupleArb = tuple(${commas(num, v => `dummy(${v * v})`)});
-            const genericTupleArb = tuple(${commas(num, v => `dummy(${v * v})`)});
+        it('Should produce the same output for tuple${num} and genericTuple${biased ? ' (enforced bias)' : ''}', () => {
+            const tupleArb = tuple(${commas(num, v => `dummy(${v * v})`)})${biased ? '.withBias(1)' : ''};
+            const genericTupleArb = genericTuple([${commas(num, v => `dummy(${v * v})`)}])${
+    biased ? '.withBias(1)' : ''
+  };
             const mrng1 = stubRng.mutable.fastincrease(0);
             const mrng2 = stubRng.mutable.fastincrease(0);
             const g1 = tupleArb.generate(mrng1).value;
@@ -83,7 +88,8 @@ const generateTupleSpec = (num: number): string => {
     `describe('TupleArbitrary', () => {`,
     `    describe('tuple', () => {`,
     // units
-    ...iota(num).map(id => simpleUnitTest(id + 1)),
+    ...iota(num).map(id => simpleUnitTest(id + 1, false)),
+    ...iota(num).map(id => simpleUnitTest(id + 1, true)),
     // end blocks
     `   });`,
     `});`

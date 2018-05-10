@@ -15,6 +15,9 @@ export class DummyArbitrary extends Arbitrary<string> {
       .generate(mrng)
       .map(v => `key${this.id}_${v}`);
   }
+  withBias(freq: number) {
+    return new DummyArbitrary(2 * this.id + freq);
+  }
 }
 function dummy(id: number) {
   return new DummyArbitrary(id);
