@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
+import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';
 
 import * as stubArb from '../../stubs/arbitraries';
@@ -71,4 +72,41 @@ describe('AsyncProperty', () => {
   });
   it('Should throw on invalid arbitrary', () =>
     assert.throws(() => asyncProperty(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, async () => {})));
+
+  it('Should use the unbiased arbitrary by default', async () => {
+    const p = asyncProperty(
+      new class extends Arbitrary<number> {
+        generate(): Shrinkable<number> {
+          return new Shrinkable(69);
+        }
+        withBias(): Arbitrary<number> {
+          throw 'Should not call withBias if not forced to';
+        }
+      }(),
+      async () => {}
+    );
+    assert.equal(p.generate(stubRng.mutable.nocall()).value, 69);
+  });
+  it('Should use the biased arbitrary when asked to', async () => {
+    const p = asyncProperty(
+      new class extends Arbitrary<number> {
+        generate(): Shrinkable<number> {
+          return new Shrinkable(69);
+        }
+        withBias(freq: number): Arbitrary<number> {
+          if (typeof freq !== 'number' || freq < 2) {
+            throw new Error(`freq atribute must always be superior or equal to 2, got: ${freq}`);
+          }
+          return new class extends Arbitrary<number> {
+            generate(): Shrinkable<number> {
+              return new Shrinkable(42);
+            }
+          }();
+        }
+      }(),
+      async () => {}
+    );
+    assert.equal(p.generate(stubRng.mutable.nocall(), 0).value, 42);
+    assert.equal(p.generate(stubRng.mutable.nocall(), 2).value, 42);
+  });
 });

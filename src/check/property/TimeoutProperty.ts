@@ -15,8 +15,8 @@ const timeoutAfter = async (timeMs: number) =>
 export class TimeoutProperty<Ts> implements IProperty<Ts> {
   constructor(readonly property: IProperty<Ts>, readonly timeMs: number) {}
   isAsync = () => true;
-  generate(mrng: Random): Shrinkable<Ts> {
-    return this.property.generate(mrng);
+  generate(mrng: Random, runId?: number): Shrinkable<Ts> {
+    return this.property.generate(mrng, runId);
   }
   async run(v: Ts): Promise<string | null> {
     return Promise.race([this.property.run(v), timeoutAfter(this.timeMs)]);
