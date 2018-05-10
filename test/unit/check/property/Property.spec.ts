@@ -30,7 +30,7 @@ describe('Property', () => {
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
     assert.ok(
-      out!.startsWith('AssertionError [ERR_ASSERTION]: false == true'),
+      out!.startsWith('AssertionError'),
       `Property should fail and attach the exception as string, got: ${out}`
     );
     assert.ok(out!.indexOf('\n\nStack trace:') !== -1, 'Property should include the stack trace when available');
