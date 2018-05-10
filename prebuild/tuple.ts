@@ -13,7 +13,7 @@ const classFor = (num: number): string =>
                 return this.tupleArb.generate(mrng) as Shrinkable<[${txCommas(num)}]>;
             }
             withBias(freq: number) {
-                return new Tuple${num}Arbitrary(${commas(num, v => `this.arb${v}.withBias(1)`)});
+                return new Tuple${num}Arbitrary(${commas(num, v => `this.arb${v}.withBias(freq)`)});
             }
         };
     `;
