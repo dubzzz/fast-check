@@ -36,7 +36,10 @@ describe('AsyncProperty', () => {
     }
 
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
-    assert.ok(out!.startsWith(expected), 'Property should fail and attach the exception as string');
+    assert.ok(
+      out!.startsWith(expected),
+      `Property should fail and attach the exception as string, got: ${JSON.stringify({ out, expected })}`
+    );
     assert.ok(out!.indexOf('\n\nStack trace:') !== -1, 'Property should include the stack trace when available');
   });
   it('Should succeed if predicate is true', async () => {
