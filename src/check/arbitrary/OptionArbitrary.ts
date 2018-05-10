@@ -26,6 +26,9 @@ class OptionArbitrary<T> extends Arbitrary<T | null> {
       ? new Shrinkable(null)
       : OptionArbitrary.extendedShrinkable(this.arb.generate(mrng));
   }
+  withBias(freq: number) {
+    return new OptionArbitrary(this.arb.withBias(freq), this.frequency);
+  }
 }
 
 /**
