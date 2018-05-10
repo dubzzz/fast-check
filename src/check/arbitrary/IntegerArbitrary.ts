@@ -2,6 +2,7 @@ import * as prand from 'pure-rand';
 
 import Random from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
+import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import Shrinkable from './definition/Shrinkable';
 
@@ -46,6 +47,27 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     return value < 0
       ? this.shrink_to(value, this.max, shrunkOnce === true)
       : this.shrink_to(value, this.min, shrunkOnce === true);
+  }
+  private pureBiasedArbitrary(): Arbitrary<number> {
+    const log2 = (v: number) => Math.floor(Math.log(v) / Math.log(2));
+    if (this.min < 0) {
+      return this.max > 0
+        ? new IntegerArbitrary(-log2(-this.min), log2(this.max)) // min and max != 0
+        : new IntegerArbitrary(this.max - log2(this.max - this.min), this.max); // max-min and max != 0
+    }
+    // min >= 0, so max >= 0
+    return this.min === this.max
+      ? new IntegerArbitrary(this.min, this.max)
+      : new IntegerArbitrary(this.min, this.min + log2(this.max - this.min));
+  }
+  withBias(freq: number) {
+    const arb = this;
+    const smallArb = this.pureBiasedArbitrary();
+    return new class extends Arbitrary<number> {
+      generate(mrng: Random) {
+        return mrng.nextInt(1, freq) === 1 ? smallArb.generate(mrng) : arb.generate(mrng);
+      }
+    }();
   }
 }
 
