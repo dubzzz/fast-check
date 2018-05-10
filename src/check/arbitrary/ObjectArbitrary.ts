@@ -94,26 +94,23 @@ export namespace ObjectConstraints {
 }
 
 /** @hidden */
-class ObjectArbitrary extends Arbitrary<any> {
-  constructor(readonly constraints: ObjectConstraints) {
-    super();
+const anythingInternal = (subConstraints: ObjectConstraints): Arbitrary<any> => {
+  const potentialArbValue = [...subConstraints.values]; // base
+  if (subConstraints.maxDepth > 0) {
+    potentialArbValue.push(objectInternal(subConstraints.next())); // sub-object
+    potentialArbValue.push(...subConstraints.values.map(arb => array(arb))); // arrays of base
+    potentialArbValue.push(array(anythingInternal(subConstraints.next()))); // mixed content arrays
   }
-  static anything(constraints: ObjectConstraints): Arbitrary<any> {
-    const potentialArbValue = [...constraints.values]; // base
-    if (constraints.maxDepth > 0) {
-      potentialArbValue.push(new ObjectArbitrary(constraints.next())); // sub-object
-      potentialArbValue.push(...constraints.values.map(arb => array(arb))); // arrays of base
-      potentialArbValue.push(array(ObjectArbitrary.anything(constraints.next()))); // mixed content arrays
-    }
-    if (constraints.maxDepth > 1) {
-      potentialArbValue.push(array(new ObjectArbitrary(constraints.next().next()))); // array of Object
-    }
-    return oneof(potentialArbValue[0], ...potentialArbValue.slice(0));
+  if (subConstraints.maxDepth > 1) {
+    potentialArbValue.push(array(objectInternal(subConstraints.next().next()))); // array of Object
   }
-  generate(mrng: Random): Shrinkable<any> {
-    return dictionary(this.constraints.key, ObjectArbitrary.anything(this.constraints)).generate(mrng);
-  }
-}
+  return oneof(potentialArbValue[0], ...potentialArbValue.slice(0));
+};
+
+/** @hidden */
+const objectInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
+  return dictionary(constraints.key, anythingInternal(constraints));
+};
 
 /**
  * For any type of values
@@ -151,7 +148,7 @@ function anything(): Arbitrary<any>;
  */
 function anything(settings: ObjectConstraints.Settings): Arbitrary<any>;
 function anything(settings?: ObjectConstraints.Settings): Arbitrary<any> {
-  return ObjectArbitrary.anything(ObjectConstraints.from(settings));
+  return anythingInternal(ObjectConstraints.from(settings));
 }
 
 /**
@@ -175,7 +172,7 @@ function object(): Arbitrary<any>;
  */
 function object(settings: ObjectConstraints.Settings): Arbitrary<any>;
 function object(settings?: ObjectConstraints.Settings): Arbitrary<any> {
-  return new ObjectArbitrary(ObjectConstraints.from(settings));
+  return objectInternal(ObjectConstraints.from(settings));
 }
 
 /** @hidden */
