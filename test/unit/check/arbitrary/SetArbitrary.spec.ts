@@ -38,7 +38,7 @@ describe('SetArbitrary', () => {
   describe('buildCompareFilter', () => {
     it('Should filter array from duplicated values', () =>
       fc.assert(
-        fc.property(fc.array(fc.nat(1000)), tab => {
+        fc.property(fc.array(fc.nat()), tab => {
           const filter = buildCompareFilter<number>((a, b) => a === b);
           const adaptedTab = tab.map(v => new Shrinkable(v));
           const filteredTab = filter(adaptedTab);
@@ -48,19 +48,19 @@ describe('SetArbitrary', () => {
   });
   describe('set', () => {
     describe('Given no length constraints [unique items only]', () => {
-      genericHelper.isValidArbitrary(() => set(nat(1000)), {
+      genericHelper.isValidArbitrary(() => set(nat()), {
         isStrictlySmallerValue: isStrictlySmallerSet,
         isValidValue: (g: number[]) => validSet(g)
       });
     });
     describe('Given no length constraints but comparator [unique items for the specified comparator]', () => {
-      genericHelper.isValidArbitrary(() => set(nat(1000).map(customMapper), customCompare), {
+      genericHelper.isValidArbitrary(() => set(nat().map(customMapper), customCompare), {
         isStrictlySmallerValue: isStrictlySmallerCustomSet,
         isValidValue: (g: { key: number }[]) => validCustomSet(g)
       });
     });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => set(nat(1000), maxLength), {
+      genericHelper.isValidArbitrary((maxLength: number) => set(nat(), maxLength), {
         seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerSet,
         isValidValue: (g: number[], maxLength: number) => validSet(g) && g.length <= maxLength
@@ -68,7 +68,7 @@ describe('SetArbitrary', () => {
     });
     describe('Given minimal and maximal lengths', () => {
       genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => set(nat(1000), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }) => set(nat(), constraints.min, constraints.max),
         {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
           isStrictlySmallerValue: isStrictlySmallerSet,
