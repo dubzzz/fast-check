@@ -6,15 +6,12 @@ import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
 
 /** @hidden */
-function lazyGenerate<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, rng: prand.RandomGenerator): () => Shrinkable<Ts> {
+function lazyGenerate<Ts>(generator: IProperty<Ts>, rng: prand.RandomGenerator): () => Shrinkable<Ts> {
   return () => generator.generate(new Random(rng));
 }
 
 /** @hidden */
-export default function* toss<Ts>(
-  generator: IProperty<Ts> | Arbitrary<Ts>,
-  seed: number
-): IterableIterator<() => Shrinkable<Ts>> {
+export default function* toss<Ts>(generator: IProperty<Ts>, seed: number): IterableIterator<() => Shrinkable<Ts>> {
   let rng = prand.mersenne(seed);
   for (;;) {
     rng = prand.skipN(rng, 42);

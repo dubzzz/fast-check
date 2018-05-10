@@ -12,8 +12,8 @@ import IProperty from './IProperty';
 export class Property<Ts> implements IProperty<Ts> {
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {}
   isAsync = () => false;
-  generate(mrng: Random): Shrinkable<Ts> {
-    return this.arb.generate(mrng);
+  generate(mrng: Random, runId?: number): Shrinkable<Ts> {
+    return runId != null ? this.arb.withBias(runId + 2).generate(mrng) : this.arb.generate(mrng);
   }
   run(v: Ts): string | null {
     try {

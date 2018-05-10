@@ -18,8 +18,11 @@ export default interface IProperty<Ts> {
   isAsync(): boolean;
   /**
    * Generate values of type Ts
+   *
+   * @param mrng Random number generator
+   * @param runId Id of the generation, starting at 0 - if set the generation might be biased
    */
-  generate(mrng: Random): Shrinkable<Ts>;
+  generate(mrng: Random, runId?: number): Shrinkable<Ts>;
   /**
    * Check the predicate for v
    * @param v Value of which we want to check the predicate

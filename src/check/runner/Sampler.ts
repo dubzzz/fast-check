@@ -2,9 +2,16 @@ import { Stream, stream } from '../../stream/Stream';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
+import { Property } from '../property/Property';
 import toss from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters } from './utils/utils';
+
+/** @hidden */
+function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>): IProperty<Ts> {
+  if (!generator.hasOwnProperty('isAsync')) return new Property(generator as Arbitrary<Ts>, () => true);
+  return generator as IProperty<Ts>;
+}
 
 /** @hidden */
 function streamSample<Ts>(
@@ -12,7 +19,7 @@ function streamSample<Ts>(
   params?: Parameters | number
 ): IterableIterator<Ts> {
   const qParams: QualifiedParameters = QualifiedParameters.readOrNumRuns(params);
-  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(generator, qParams.seed));
+  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(toProperty(generator), qParams.seed));
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map(s => s().value);
   }
