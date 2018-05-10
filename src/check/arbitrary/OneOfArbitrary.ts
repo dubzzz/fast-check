@@ -12,6 +12,9 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
     const id = mrng.nextInt(0, this.arbs.length - 1);
     return this.arbs[id].generate(mrng);
   }
+  withBias(freq: number) {
+    return new OneOfArbitrary(this.arbs.map(a => a.withBias(freq)));
+  }
 }
 
 /**
