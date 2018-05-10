@@ -6,7 +6,9 @@ import { integer } from './IntegerArbitrary';
 
 /** @hidden */
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number = v => v) {
-  return integer(min, max).map(n => String.fromCharCode(mapToCode(n)));
+  return integer(min, max)
+    .map(n => String.fromCharCode(mapToCode(n)))
+    .noBias();
 }
 
 /**
@@ -100,7 +102,9 @@ function fullUnicode(): Arbitrary<string> {
   }
   // Do not call CharacterArbitrary or use fromCodePoint in it
   // String.fromCodePoint is unknown for older versions of node
-  return integer(0x0000, 0x10ffff - gapSize).map(n => String.fromCodePoint(mapping(n)));
+  return integer(0x0000, 0x10ffff - gapSize)
+    .map(n => String.fromCodePoint(mapping(n)))
+    .noBias();
 }
 
 export { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 };
