@@ -5,6 +5,8 @@ import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Random from '../../../../src/random/generator/Random';
 import { float, double } from '../../../../src/check/arbitrary/FloatingPointArbitrary';
 
+import * as genericHelper from './generic/GenericArbitraryHelper';
+
 import * as stubRng from '../../stubs/generators';
 
 const MAX_TRIES = 100;
@@ -27,48 +29,32 @@ describe('FloatingPointArbitrary', () => {
           return canGenerateFloatingPoint(mrng, float());
         })
       ));
-    it('Should generate values between 0 (included) and 1 (excluded)', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = float().generate(mrng).value;
-          return g >= 0 && g < 1;
-        })
-      ));
-    it('Should generate values between 0 (included) and maxValue (excluded)', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.nat().map(v => v / 100.0), (seed, maxValue) => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = float(maxValue).generate(mrng).value;
-          return g >= 0 && g < maxValue;
-        })
-      ));
-    it('Should generate values between minValue (included) and maxValue (excluded)', () =>
-      fc.assert(
-        fc.property(
-          fc.integer(),
-          fc.integer().map(v => v / 100.0),
-          fc.integer().map(v => v / 100.0),
-          (seed, va, vb) => {
-            const mrng = stubRng.mutable.fastincrease(seed);
-            const minValue = va < vb ? va : vb;
-            const maxValue = va < vb ? vb : va;
-            const g = float(minValue, maxValue).generate(mrng).value;
-            return g >= minValue && g < maxValue;
-          }
-        )
-      ));
-    it('Should shrink towards zero', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          let shrinkable = float().generate(mrng);
-          while (shrinkable.shrink().has(v => true)[0]) {
-            shrinkable = shrinkable.shrink().next().value;
-          } // only check one shrink path
-          return shrinkable.value == 0;
-        })
-      ));
+    describe('Given no constraints [between 0 (included) and 1 (excluded)]', () => {
+      genericHelper.isValidArbitrary(() => float(), {
+        isStrictlySmallerValue: (a, b) => a < b,
+        isValidValue: (g: number) => typeof g === 'number' && 0.0 <= g && g < 1.0
+      });
+    });
+    describe('Given maximal value only [between 0 (included) and max (excluded)]', () => {
+      genericHelper.isValidArbitrary((maxValue: number) => float(maxValue), {
+        seedGenerator: fc.nat().map(v => (v + 1) / 100.0), // must be != 0
+        isStrictlySmallerValue: (a, b) => a < b,
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && 0.0 <= g && g < maxValue
+      });
+    });
+    describe('Given minimal and maximal values [between min (included) and max (excluded)]', () => {
+      genericHelper.isValidArbitrary(
+        (constraints: { min: number; max: number }) => float(constraints.min, constraints.max),
+        {
+          seedGenerator: genericHelper
+            .minMax(fc.integer())
+            .filter(({ min, max }: { min: number; max: number }) => min !== max)
+            .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
+          isValidValue: (g: number, constraints: { min: number; max: number }) =>
+            typeof g === 'number' && constraints.min <= g && g < constraints.max
+        }
+      );
+    });
   });
   describe('double', () => {
     it('Should be able to generate a floating point number value', () =>
@@ -78,47 +64,31 @@ describe('FloatingPointArbitrary', () => {
           return canGenerateFloatingPoint(mrng, double());
         })
       ));
-    it('Should generate values between 0 (included) and 1 (excluded)', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = double().generate(mrng).value;
-          return g >= 0 && g < 1;
-        })
-      ));
-    it('Should generate values between 0 (included) and maxValue (excluded)', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.nat().map(v => v / 100.0), (seed, maxValue) => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const g = double(maxValue).generate(mrng).value;
-          return g >= 0 && g < maxValue;
-        })
-      ));
-    it('Should generate values between minValue (included) and maxValue (excluded)', () =>
-      fc.assert(
-        fc.property(
-          fc.integer(),
-          fc.integer().map(v => v / 100.0),
-          fc.integer().map(v => v / 100.0),
-          (seed, va, vb) => {
-            const mrng = stubRng.mutable.fastincrease(seed);
-            const minValue = va < vb ? va : vb;
-            const maxValue = va < vb ? vb : va;
-            const g = double(minValue, maxValue).generate(mrng).value;
-            return g >= minValue && g < maxValue;
-          }
-        )
-      ));
-    it('Should shrink towards zero', () =>
-      fc.assert(
-        fc.property(fc.integer(), seed => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          let shrinkable = double().generate(mrng);
-          while (shrinkable.shrink().has(v => true)[0]) {
-            shrinkable = shrinkable.shrink().next().value;
-          } // only check one shrink path
-          return shrinkable.value == 0;
-        })
-      ));
+    describe('Given no constraints [between 0 (included) and 1 (excluded)]', () => {
+      genericHelper.isValidArbitrary(() => double(), {
+        isStrictlySmallerValue: (a, b) => a < b,
+        isValidValue: (g: number) => typeof g === 'number' && 0.0 <= g && g < 1.0
+      });
+    });
+    describe('Given maximal value only [between 0 (included) and max (excluded)]', () => {
+      genericHelper.isValidArbitrary((maxValue: number) => double(maxValue), {
+        seedGenerator: fc.nat().map(v => (v + 1) / 100.0), // must be != 0
+        isStrictlySmallerValue: (a, b) => a < b,
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && 0.0 <= g && g < maxValue
+      });
+    });
+    describe('Given minimal and maximal values [between min (included) and max (excluded)]', () => {
+      genericHelper.isValidArbitrary(
+        (constraints: { min: number; max: number }) => double(constraints.min, constraints.max),
+        {
+          seedGenerator: genericHelper
+            .minMax(fc.integer())
+            .filter(({ min, max }: { min: number; max: number }) => min !== max)
+            .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
+          isValidValue: (g: number, constraints: { min: number; max: number }) =>
+            typeof g === 'number' && constraints.min <= g && g < constraints.max
+        }
+      );
+    });
   });
 });
