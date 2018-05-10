@@ -28,17 +28,10 @@ describe('AsyncProperty', () => {
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       assert.ok(false);
     });
-    let expected = '';
-    try {
-      assert.ok(false);
-    } catch (err) {
-      expected = `${err}`;
-    }
-
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
     assert.ok(
-      out!.startsWith(expected),
-      `Property should fail and attach the exception as string, got: ${JSON.stringify({ out, expected })}`
+      out!.startsWith('AssertionError [ERR_ASSERTION]: false == true'),
+      `Property should fail and attach the exception as string, got: ${out}`
     );
     assert.ok(out!.indexOf('\n\nStack trace:') !== -1, 'Property should include the stack trace when available');
   });
@@ -76,7 +69,7 @@ describe('AsyncProperty', () => {
   it('Should throw on invalid arbitrary', () =>
     assert.throws(() => asyncProperty(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, async () => {})));
 
-  it('Should use the unbiased arbitrary by default', async () => {
+  it('Should use the unbiased arbitrary by default', () => {
     const p = asyncProperty(
       new class extends Arbitrary<number> {
         generate(): Shrinkable<number> {
@@ -90,7 +83,7 @@ describe('AsyncProperty', () => {
     );
     assert.equal(p.generate(stubRng.mutable.nocall()).value, 69);
   });
-  it('Should use the biased arbitrary when asked to', async () => {
+  it('Should use the biased arbitrary when asked to', () => {
     const p = asyncProperty(
       new class extends Arbitrary<number> {
         generate(): Shrinkable<number> {
