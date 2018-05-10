@@ -37,6 +37,9 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
     }
     return s;
   }
+  withBias(freq: number) {
+    return new GenericTupleArbitrary(this.arbs.map(a => a.withBias(freq)));
+  }
 }
 
 /**
