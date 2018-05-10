@@ -48,15 +48,16 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
       );
   }
   withBias(freq: number) {
-    const arb = new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength);
+    const arb = new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength, this.preFilter);
     const biasedArb =
       this.minLength !== this.maxLength
         ? new ArrayArbitrary(
             this.arb.withBias(freq),
             this.minLength,
-            this.minLength + Math.floor(Math.log(this.maxLength - this.minLength) / Math.log(2))
+            this.minLength + Math.floor(Math.log(this.maxLength - this.minLength) / Math.log(2)),
+            this.preFilter
           )
-        : new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength);
+        : new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength, this.preFilter);
     return new class extends Arbitrary<T[]> {
       generate(mrng: Random) {
         return mrng.nextInt(1, freq) === 1 ? biasedArb.generate(mrng) : arb.generate(mrng);
