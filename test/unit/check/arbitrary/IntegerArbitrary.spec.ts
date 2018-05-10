@@ -111,6 +111,36 @@ describe('IntegerArbitrary', () => {
           }
         })
       ));
+
+    const log2 = (v: number) => Math.log(v) / Math.log(2);
+
+    it('Should be able to bias strictly positive integers', () =>
+      fc.assert(
+        fc.property(fc.integer(), genericHelper.minMax(fc.integer(1, 0x7fffffff)), (seed, range) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const arb = integer(range.min, range.max).withBias(1); // 100% of bias - not recommended outside of tests
+          const g = arb.generate(mrng).value;
+          return g >= range.min && g - range.min <= log2(range.max - range.min);
+        })
+      ));
+    it('Should be able to bias strictly negative integers', () =>
+      fc.assert(
+        fc.property(fc.integer(), genericHelper.minMax(fc.integer(-0x80000000, -1)), (seed, range) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const arb = integer(range.min, range.max).withBias(1); // 100% of bias - not recommended outside of tests
+          const g = arb.generate(mrng).value;
+          return g <= range.max && range.max - g <= log2(range.max - range.min);
+        })
+      ));
+    it('Should be able to bias negative and positive integers', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.integer(-0x80000000, -1), fc.integer(1, 0x7fffffff), (seed, min, max) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const arb = integer(min, max).withBias(1); // 100% of bias - not recommended outside of tests
+          const g = arb.generate(mrng).value;
+          return -log2(-min) <= g && g <= log2(max);
+        })
+      ));
     describe('Given no constraints [between -2**31 and 2**31 -1]', () => {
       genericHelper.isValidArbitrary(() => integer(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
