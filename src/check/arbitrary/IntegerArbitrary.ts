@@ -50,15 +50,16 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
   }
   private pureBiasedArbitrary(): Arbitrary<number> {
     const log2 = (v: number) => Math.floor(Math.log(v) / Math.log(2));
+    if (this.min === this.max) {
+      return new IntegerArbitrary(this.min, this.max);
+    }
     if (this.min < 0) {
       return this.max > 0
         ? new IntegerArbitrary(-log2(-this.min), log2(this.max)) // min and max != 0
-        : new IntegerArbitrary(this.max - log2(this.max - this.min), this.max); // max-min and max != 0
+        : new IntegerArbitrary(this.max - log2(this.max - this.min), this.max); // max-min != 0
     }
     // min >= 0, so max >= 0
-    return this.min === this.max
-      ? new IntegerArbitrary(this.min, this.max)
-      : new IntegerArbitrary(this.min, this.min + log2(this.max - this.min));
+    return new IntegerArbitrary(this.min, this.min + log2(this.max - this.min)); // max-min != 0
   }
   withBias(freq: number) {
     const arb = this;
