@@ -120,6 +120,9 @@ describe('IntegerArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = integer(range.min, range.max).withBias(1); // 100% of bias - not recommended outside of tests
           const g = arb.generate(mrng).value;
+          if (range.min === range.max) {
+            return g === range.min;
+          }
           return g >= range.min && g - range.min <= log2(range.max - range.min);
         })
       ));
@@ -129,6 +132,9 @@ describe('IntegerArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = integer(range.min, range.max).withBias(1); // 100% of bias - not recommended outside of tests
           const g = arb.generate(mrng).value;
+          if (range.min === range.max) {
+            return g === range.min;
+          }
           return g <= range.max && range.max - g <= log2(range.max - range.min);
         })
       ));
