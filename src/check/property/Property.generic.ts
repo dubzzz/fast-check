@@ -2,7 +2,7 @@ import Random from '../../random/generator/Random';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import { tuple } from '../arbitrary/TupleArbitrary';
-import IProperty from './IProperty';
+import { IProperty, runIdToFrequency } from './IProperty';
 
 /**
  * Property, see {@link IProperty}
@@ -13,7 +13,7 @@ export class Property<Ts> implements IProperty<Ts> {
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {}
   isAsync = () => false;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
-    return runId != null ? this.arb.withBias(runId + 2).generate(mrng) : this.arb.generate(mrng);
+    return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
   run(v: Ts): string | null {
     try {
