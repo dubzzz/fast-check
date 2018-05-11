@@ -48,7 +48,7 @@ const generateTuple = (num: number): string => {
     // declare all signatures
     ...iota(num).map(id => `${signatureFor(id + 1)}: Tuple${id + 1}Arbitrary<${txCommas(id + 1)}>;`),
     // start declare function
-    `${signatureFor(num + 1, true)} {`,
+    `${signatureFor(num, true)} {`,
     // cascade ifs
     ...iota(num)
       .reverse()
