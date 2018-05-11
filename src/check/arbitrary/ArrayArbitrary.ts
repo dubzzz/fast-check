@@ -61,14 +61,11 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
         : new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength, this.preFilter);
     return new class extends Arbitrary<T[]> {
       generate(mrng: Random) {
-        switch (mrng.nextInt(1, 2 * freq)) {
-          case 1:
-            return highBiasedArb.generate(mrng);
-          case 2:
-            return lowBiasedarb.generate(mrng);
-          default:
-            return arb.generate(mrng);
-        }
+        return mrng.nextInt(1, freq) === 1
+          ? mrng.nextInt(1, freq) === 1
+            ? highBiasedArb.generate(mrng)
+            : lowBiasedarb.generate(mrng)
+          : arb.generate(mrng);
       }
     }();
   }
