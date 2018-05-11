@@ -1,7 +1,7 @@
 import Random from '../../random/generator/Random';
 import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
-import IProperty from './IProperty';
+import { IProperty, runIdToFrequency } from './IProperty';
 
 /**
  * Asynchronous property, see {@link IProperty}
@@ -12,7 +12,7 @@ export class AsyncProperty<Ts> implements IProperty<Ts> {
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {}
   isAsync = () => true;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
-    return runId != null ? this.arb.withBias(runId + 2).generate(mrng) : this.arb.generate(mrng);
+    return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
   async run(v: Ts): Promise<string | null> {
     try {

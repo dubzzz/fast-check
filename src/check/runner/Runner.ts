@@ -4,6 +4,7 @@ import { AsyncProperty } from '../property/AsyncProperty';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
 import { TimeoutProperty } from '../property/TimeoutProperty';
+import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed } from './utils/utils';
@@ -55,6 +56,13 @@ async function asyncRunIt<Ts>(
   return runExecution;
 }
 
+/** @hidden */
+function decorateProperty<Ts>(rawProperty: IProperty<Ts>, qParams: QualifiedParameters) {
+  const propA =
+    rawProperty.isAsync() && qParams.timeout != null ? new TimeoutProperty(rawProperty, qParams.timeout) : rawProperty;
+  return qParams.unbiased === true ? new UnbiasedProperty(propA) : propA;
+}
+
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -82,8 +90,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams = QualifiedParameters.read(params);
-  const property =
-    rawProperty.isAsync() && qParams.timeout != null ? new TimeoutProperty(rawProperty, qParams.timeout) : rawProperty;
+  const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed);
 
   function* g() {

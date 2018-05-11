@@ -3,14 +3,17 @@ import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
+import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import toss from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { Parameters, QualifiedParameters } from './utils/utils';
 
 /** @hidden */
-function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>): IProperty<Ts> {
-  if (!generator.hasOwnProperty('isAsync')) return new Property(generator as Arbitrary<Ts>, () => true);
-  return generator as IProperty<Ts>;
+function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters): IProperty<Ts> {
+  const prop = !generator.hasOwnProperty('isAsync')
+    ? new Property(generator as Arbitrary<Ts>, () => true)
+    : (generator as IProperty<Ts>);
+  return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }
 
 /** @hidden */
@@ -19,7 +22,7 @@ function streamSample<Ts>(
   params?: Parameters | number
 ): IterableIterator<Ts> {
   const qParams: QualifiedParameters = QualifiedParameters.readOrNumRuns(params);
-  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(toProperty(generator), qParams.seed));
+  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(toProperty(generator, qParams), qParams.seed));
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map(s => s().value);
   }
