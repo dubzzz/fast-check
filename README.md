@@ -317,6 +317,7 @@ export interface Parameters {
     path?: string;     // optional, way to replay a failing property directly with the counterexample
                        // it can be fed with the counterexamplePath returned by the failing test (requires seed too)
     logger?: (v: string) => void; // optional, log output: console.log by default
+    unbiased?: boolean; // optional, force the use of unbiased arbitraries: biased by default
 }
 ```
 
