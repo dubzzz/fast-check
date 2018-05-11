@@ -9,7 +9,7 @@ interface Parameters {
    */
   seed?: number;
   /**
-   * Optional, number of runs before success: 100 by default
+   * Number of runs before success: 100 by default
    */
   numRuns?: number;
   /**
