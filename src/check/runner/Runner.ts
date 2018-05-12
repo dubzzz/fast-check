@@ -101,8 +101,8 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   }
   const initialValues = qParams.path.length === 0 ? g() : pathWalk(qParams.path, g());
   return property.isAsync()
-    ? asyncRunIt(property, initialValues).then(e => e.toRunDetails(qParams))
-    : runIt(property, initialValues).toRunDetails(qParams);
+    ? asyncRunIt(property, initialValues).then(e => e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns))
+    : runIt(property, initialValues).toRunDetails(qParams.seed, qParams.path, qParams.numRuns);
 }
 
 /**

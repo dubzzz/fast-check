@@ -1,4 +1,3 @@
-import { QualifiedParameters } from '../configuration/QualifiedParameters';
 import { RunDetails } from './RunDetails';
 
 /**
@@ -32,13 +31,13 @@ export class RunExecution<Ts> {
     return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
   };
 
-  toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
+  toRunDetails(seed: number, basePath: string, numRuns: number): RunDetails<Ts> {
     return this.isSuccess()
       ? {
           failed: false,
-          numRuns: qParams.numRuns,
+          numRuns,
           numShrinks: 0,
-          seed: qParams.seed,
+          seed,
           counterexample: null,
           counterexamplePath: null,
           error: null
@@ -47,9 +46,9 @@ export class RunExecution<Ts> {
           failed: true,
           numRuns: this.firstFailure() + 1,
           numShrinks: this.numShrinks(),
-          seed: qParams.seed,
+          seed,
           counterexample: this.value!,
-          counterexamplePath: RunExecution.mergePaths(qParams.path, this.pathToFailure!),
+          counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
           error: this.failure
         };
   }

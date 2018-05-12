@@ -26,7 +26,7 @@ describe('RunExecution', () => {
           }
           // Assert the value
           const lastFailure = failuresDesc[failuresDesc.length - 1];
-          const details = run.toRunDetails(QualifiedParameters.read({ seed }));
+          const details = run.toRunDetails(seed, '', 42);
           assert.ok(details.failed);
           assert.ok(details.counterexamplePath != null && details.counterexamplePath.length > 0);
           assert.strictEqual(details.seed, seed);
@@ -39,19 +39,19 @@ describe('RunExecution', () => {
     ));
   it('Should generate correct counterexamplePath with no initial offset', () =>
     fc.assert(
-      fc.property(fc.array(fc.nat(), 1, 10), path => {
+      fc.property(fc.integer(), fc.array(fc.nat(), 1, 10), (seed, path) => {
         // Simulate the run
         const run = new RunExecution<number>();
         for (const failureId of path) {
           run.fail(42, failureId, 'Failed');
         }
         // Assert the value
-        assert.strictEqual(run.toRunDetails(QualifiedParameters.read({})).counterexamplePath, path.join(':'));
+        assert.strictEqual(run.toRunDetails(seed, '', 42).counterexamplePath, path.join(':'));
       })
     ));
   it('Should generate correct counterexamplePath given initial offset', () =>
     fc.assert(
-      fc.property(fc.array(fc.nat(), 1, 10), fc.array(fc.nat(), 1, 10), (offsetPath, addedPath) => {
+      fc.property(fc.integer(), fc.array(fc.nat(), 1, 10), fc.array(fc.nat(), 1, 10), (seed, offsetPath, addedPath) => {
         // Simulate the run
         const run = new RunExecution<number>();
         for (const failureId of addedPath) {
@@ -61,10 +61,7 @@ describe('RunExecution', () => {
         const joinedPath = [...offsetPath, ...addedPath.slice(1)];
         joinedPath[offsetPath.length - 1] += addedPath[0];
         // Assert the value
-        assert.strictEqual(
-          run.toRunDetails(QualifiedParameters.read({ path: offsetPath.join(':') })).counterexamplePath,
-          joinedPath.join(':')
-        );
+        assert.strictEqual(run.toRunDetails(seed, offsetPath.join(':'), 42).counterexamplePath, joinedPath.join(':'));
       })
     ));
 });
