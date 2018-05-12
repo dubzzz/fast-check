@@ -136,6 +136,29 @@ describe('Runner', () => {
           return true;
         })
       ));
+    it('Should not provide list of failures by default (no verbose)', () => {
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => new Shrinkable([42]) as Shrinkable<[number]>,
+        run: () => 'failure'
+      };
+      const out = check(p) as RunDetails<[number]>;
+      assert.ok(out.failures.length === 0);
+    });
+    it('Should provide the list of failures in verbose mode', () => {
+      const g = function*() {
+        yield new Shrinkable([48]) as Shrinkable<[number]>;
+        yield new Shrinkable([12]) as Shrinkable<[number]>;
+      };
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => new Shrinkable([42], () => stream(g())) as Shrinkable<[number]>,
+        run: () => 'failure'
+      };
+      const out = check(p, { verbose: true }) as RunDetails<[number]>;
+      assert.ok(out.failures.length !== 0);
+      assert.deepStrictEqual(out.failures, [[42], [48]]);
+    });
     it('Should build the right counterexamplePath', () =>
       fc.assert(
         fc.property(fc.integer(), fc.array(fc.nat(99), 1, 100), (seed, failurePoints) => {
@@ -368,6 +391,34 @@ describe('Runner', () => {
         return;
       }
       assert.ok(false, 'Expected an exception, got success');
+    });
+    it('Should not provide list of failures by default (no verbose)', () => {
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => new Shrinkable([42]) as Shrinkable<[number]>,
+        run: () => 'failure'
+      };
+      try {
+        rAssert(p);
+      } catch (err) {
+        assert.ok(err.message.indexOf('Encountered failures were:') === -1);
+      }
+    });
+    it('Should provide the list of failures in verbose mode', () => {
+      const g = function*() {
+        yield new Shrinkable([48]) as Shrinkable<[number]>;
+        yield new Shrinkable([12]) as Shrinkable<[number]>;
+      };
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => new Shrinkable([42], () => stream(g())) as Shrinkable<[number]>,
+        run: () => 'failure'
+      };
+      try {
+        rAssert(p, { verbose: true });
+      } catch (err) {
+        assert.ok(err.message.indexOf('Encountered failures were:\n- [42]\n- [48]') !== -1);
+      }
     });
   });
 });

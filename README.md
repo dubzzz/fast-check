@@ -309,15 +309,19 @@ It can be parametrized using its second argument.
 
 ```typescript
 export interface Parameters {
-    seed?: number;     // optional, initial seed of the generator: Date.now() by default
-    numRuns?: number; // optional, number of runs before success: 100 by default 
-    timeout?: number;  // optional, only taken into account for asynchronous runs (asyncProperty)
-                       // specify a timeout in milliseconds, maximum time for the predicate to return its result
-                       // only works for async code, will not interrupt a synchronous code: disabled by default
-    path?: string;     // optional, way to replay a failing property directly with the counterexample
-                       // it can be fed with the counterexamplePath returned by the failing test (requires seed too)
+    seed?: number;      // optional, initial seed of the generator: Date.now() by default
+    numRuns?: number;   // optional, number of runs before success: 100 by default 
+    timeout?: number;   // optional, only taken into account for asynchronous runs (asyncProperty)
+                        // specify a timeout in milliseconds, maximum time for the predicate to return its result
+                        // only works for async code, will not interrupt a synchronous code: disabled by default
+    path?: string;      // optional, way to replay a failing property directly with the counterexample
+                        // it can be fed with the counterexamplePath returned by the failing test (requires seed too)
     logger?: (v: string) => void; // optional, log output: console.log by default
     unbiased?: boolean; // optional, force the use of unbiased arbitraries: biased by default
+    verbose?: boolean;  // optional, enable verbose mode: false by default
+                        // when enabling verbose mode,
+                        // you will be provided the list of all failing entries encountered
+                        // whenever a property fails - useful to detect patterns
 }
 ```
 

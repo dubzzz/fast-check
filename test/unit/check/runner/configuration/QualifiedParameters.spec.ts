@@ -19,7 +19,8 @@ const parametersArbitrary = fc.record<any>(
     numRuns: fc.nat(),
     timeout: fc.nat(),
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
-    unbiased: fc.boolean()
+    unbiased: fc.boolean(),
+    verbose: fc.boolean()
   },
   { withDeletedKeys: true }
 ) as fc.Arbitrary<Parameters>;
@@ -31,7 +32,13 @@ describe('QualifiedParameters', () => {
         fc.property(parametersArbitrary, params => {
           const qualifiedParams = QualifiedParameters.read(params);
           for (const key of Object.keys(params)) {
-            assert.strictEqual((qualifiedParams as any)[key], (params as any)[key]);
+            assert.strictEqual(
+              (qualifiedParams as any)[key],
+              (params as any)[key],
+              `Unexpected value encountered in qualified - ${
+                (qualifiedParams as any)[key]
+              } - for key ${key}, expected: ${(params as any)[key]}`
+            );
           }
         })
       ));

@@ -31,4 +31,13 @@ export interface Parameters {
    * Force the use of unbiased arbitraries: biased by default
    */
   unbiased?: boolean;
+  /**
+   * Enable verbose mode: false by default
+   *
+   * When enabling verbose mode
+   * you will be provided the list of all failing entries encountered whenever a property fails
+   *
+   * It can prove very useful to detect pattern in the inputs causing the problem to occur
+   */
+  verbose?: boolean;
 }
