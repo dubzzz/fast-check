@@ -2,9 +2,10 @@ import 'core-js';
 
 import { asyncProperty } from './check/property/AsyncProperty';
 import { property } from './check/property/Property';
+import { Parameters } from './check/runner/configuration/Parameters';
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
-import { Parameters, RunDetails } from './check/runner/utils/utils';
+import { RunDetails } from './check/runner/utils/utils';
 
 import { array } from './check/arbitrary/ArrayArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
