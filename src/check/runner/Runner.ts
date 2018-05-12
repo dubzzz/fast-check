@@ -1,4 +1,3 @@
-import { Stream, stream } from '../../fast-check';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import { AsyncProperty } from '../property/AsyncProperty';
 import IProperty from '../property/IProperty';
@@ -7,9 +6,11 @@ import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
+import { RunDetails } from './reporter/RunDetails';
+import { RunExecution } from './reporter/RunExecution';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
-import { RunDetails, RunExecution, throwIfFailed } from './utils/utils';
+import { throwIfFailed } from './utils/utils';
 
 /** @hidden */
 function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {

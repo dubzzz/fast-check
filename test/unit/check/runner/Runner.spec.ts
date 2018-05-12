@@ -6,7 +6,7 @@ import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
 import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import Random from '../../../../src/random/generator/Random';
-import { RunDetails } from '../../../../src/check/runner/utils/utils';
+import { RunDetails } from '../../../../src/check/runner/reporter/RunDetails';
 import { stream, Stream } from '../../../../src/stream/Stream';
 
 const MAX_NUM_RUNS = 1000;
