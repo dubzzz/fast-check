@@ -39,4 +39,10 @@ export interface RunDetails<Ts> {
    * For replay purposes, it can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using {@link Parameters}
    */
   counterexamplePath: string | null;
+  /**
+   * List all failures that have occurred during the run
+   *
+   * You must enable verbose mode in {@link Parameters} in order to have values in it
+   */
+  failures: Ts[];
 }
