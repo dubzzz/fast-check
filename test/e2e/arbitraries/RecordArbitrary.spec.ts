@@ -10,7 +10,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         bb: fc.object(),
         cc: fc.string()
       };
-      const out = fc.check(fc.property(fc.record(recordModel), (obj: any) => obj['cc'].length <= 2), { seed: seed });
+      const out = fc.check(fc.property(fc.record(recordModel), obj => obj.cc.length <= 2), { seed: seed });
       assert.ok(out.failed, 'Should have failed');
       assert.deepEqual(
         out.counterexample,
@@ -24,10 +24,9 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         bb: fc.object(),
         cc: fc.string()
       };
-      const out = fc.check(
-        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj: any) => obj['bb'] == null),
-        { seed: seed }
-      );
+      const out = fc.check(fc.property(fc.record(recordModel, { withDeletedKeys: true }), obj => obj.bb == null), {
+        seed: seed
+      });
       assert.ok(out.failed, 'Should have failed');
       assert.deepEqual(out.counterexample, [{ bb: {} }], 'Should shrink to counterexample {bb: {}}');
     });
@@ -41,7 +40,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         force_negative_output: fc.boolean()
       };
       const out = fc.check(
-        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj: any) => {
+        fc.property(fc.record(recordModel, { withDeletedKeys: true }), obj => {
           if (obj.force_positive_output === true && obj.force_negative_output === true) return false;
           return true;
         }),

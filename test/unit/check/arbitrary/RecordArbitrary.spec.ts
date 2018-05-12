@@ -19,7 +19,7 @@ describe('RecordArbitrary', () => {
       fc.assert(
         fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.mersenne(seed));
-          const recordModel: any = {};
+          const recordModel: { [key: string]: Arbitrary<string> } = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
 
           const arb = record(recordModel, { withDeletedKeys: true });
@@ -34,7 +34,7 @@ describe('RecordArbitrary', () => {
       fc.assert(
         fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.mersenne(seed));
-          const recordModel: any = {};
+          const recordModel: { [key: string]: Arbitrary<string> } = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
 
           const arb = record(recordModel, { with_deleted_keys: true });
@@ -46,19 +46,16 @@ describe('RecordArbitrary', () => {
         })
       ));
 
-    type RawMeta = { [key: string]: any };
     type Meta = { key: string; valueStart: number };
-
     const metaArbitrary = fc.set(
-      fc.record<any>({ key: fc.string(), valueStart: fc.nat(1000) }),
+      fc.record({ key: fc.string(), valueStart: fc.nat(1000) }),
       (v1, v2) => v1.key === v2.key
     );
     const constraintsArbitrary = fc.record({ withDeletedKeys: fc.boolean() }, { withDeletedKeys: true });
 
     describe('Given a custom record configuration', () => {
       genericHelper.isValidArbitrary(
-        ([rawMetas, constraints]: [RawMeta[], RecordConstraints]) => {
-          const metas = rawMetas as Meta[];
+        ([metas, constraints]: [Meta[], RecordConstraints]) => {
           const recordModel: { [key: string]: Arbitrary<number> } = {};
           for (const m of metas) {
             recordModel[m.key] = integer(m.valueStart, m.valueStart + 10);
@@ -67,8 +64,7 @@ describe('RecordArbitrary', () => {
         },
         {
           seedGenerator: fc.tuple(metaArbitrary, constraintsArbitrary),
-          isValidValue: (r: { [key: string]: number }, [rawMetas, constraints]: [RawMeta[], RecordConstraints]) => {
-            const metas = rawMetas as Meta[];
+          isValidValue: (r: { [key: string]: number }, [metas, constraints]: [Meta[], RecordConstraints]) => {
             for (const k of Object.keys(r)) {
               // generated object should not have more keys
               if (metas.findIndex(m => m.key === k) === -1) return false;

@@ -1,7 +1,6 @@
 import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 
-import { Parameters } from '../../../../../src/check/runner/configuration/Parameters';
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
 
 const extract = (conf: QualifiedParameters) => {
@@ -13,7 +12,7 @@ const extractExceptSeed = (conf: QualifiedParameters) => {
   return others;
 };
 
-const parametersArbitrary = fc.record<any>(
+const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
     numRuns: fc.nat(),
@@ -23,7 +22,7 @@ const parametersArbitrary = fc.record<any>(
     verbose: fc.boolean()
   },
   { withDeletedKeys: true }
-) as fc.Arbitrary<Parameters>;
+);
 
 describe('QualifiedParameters', () => {
   describe('read', () => {
