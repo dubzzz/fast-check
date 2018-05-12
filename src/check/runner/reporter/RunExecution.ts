@@ -11,8 +11,14 @@ export class RunExecution<Ts> {
   pathToFailure?: string;
   value?: Ts;
   failure: string;
+  allFailures: Ts[];
+
+  constructor(readonly storeFailures: boolean) {
+    this.allFailures = [];
+  }
 
   fail(value: Ts, id: number, message: string) {
+    if (this.storeFailures) this.allFailures.push(value);
     if (this.pathToFailure == null) this.pathToFailure = `${id}`;
     else this.pathToFailure += `:${id}`;
     this.value = value;
@@ -40,7 +46,8 @@ export class RunExecution<Ts> {
           seed,
           counterexample: null,
           counterexamplePath: null,
-          error: null
+          error: null,
+          failures: []
         }
       : {
           failed: true,
@@ -49,7 +56,8 @@ export class RunExecution<Ts> {
           seed,
           counterexample: this.value!,
           counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
-          error: this.failure
+          error: this.failure,
+          failures: this.allFailures
         };
   }
 }

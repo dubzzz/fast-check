@@ -9,6 +9,7 @@ describe('RunExecution', () => {
     fc.assert(
       fc.property(
         fc.integer(),
+        fc.boolean(),
         fc.array(
           fc.record<any>({
             value: fc.integer(),
@@ -18,9 +19,9 @@ describe('RunExecution', () => {
           1,
           10
         ),
-        (seed, failuresDesc) => {
+        (seed, storeFailures, failuresDesc) => {
           // Simulate the run
-          const run = new RunExecution<number>();
+          const run = new RunExecution<number>(storeFailures);
           for (const f of failuresDesc) {
             run.fail(f.value, f.failureId, f.message);
           }
@@ -34,6 +35,7 @@ describe('RunExecution', () => {
           assert.strictEqual(details.numShrinks, failuresDesc.length - 1);
           assert.strictEqual(details.counterexample, lastFailure.value);
           assert.strictEqual(details.error, lastFailure.message);
+          assert.deepStrictEqual(details.failures, storeFailures ? failuresDesc.map(f => f.value) : []);
         }
       )
     ));
@@ -41,7 +43,7 @@ describe('RunExecution', () => {
     fc.assert(
       fc.property(fc.integer(), fc.array(fc.nat(), 1, 10), (seed, path) => {
         // Simulate the run
-        const run = new RunExecution<number>();
+        const run = new RunExecution<number>(false);
         for (const failureId of path) {
           run.fail(42, failureId, 'Failed');
         }
@@ -53,7 +55,7 @@ describe('RunExecution', () => {
     fc.assert(
       fc.property(fc.integer(), fc.array(fc.nat(), 1, 10), fc.array(fc.nat(), 1, 10), (seed, offsetPath, addedPath) => {
         // Simulate the run
-        const run = new RunExecution<number>();
+        const run = new RunExecution<number>(false);
         for (const failureId of addedPath) {
           run.fail(42, failureId, 'Failed');
         }

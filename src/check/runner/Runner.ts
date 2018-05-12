@@ -14,7 +14,7 @@ import { throwIfFailed } from './utils/utils';
 
 /** @hidden */
 function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
-  const runExecution = new RunExecution<Ts>();
+  const runExecution = new RunExecution<Ts>(false);
   let done = false;
   let values: IterableIterator<Shrinkable<Ts>> = initialValues;
   while (!done) {
@@ -39,7 +39,7 @@ async function asyncRunIt<Ts>(
   property: IProperty<Ts>,
   initialValues: IterableIterator<Shrinkable<Ts>>
 ): Promise<RunExecution<Ts>> {
-  const runExecution = new RunExecution<Ts>();
+  const runExecution = new RunExecution<Ts>(false);
   let done = false;
   let values: IterableIterator<Shrinkable<Ts>> = initialValues;
   while (!done) {
