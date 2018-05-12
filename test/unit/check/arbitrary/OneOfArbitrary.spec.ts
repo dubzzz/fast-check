@@ -48,17 +48,14 @@ describe('OneOfArbitrary', () => {
       ));
 
     genericHelper.isValidArbitrary(
-      (rawMetas: { [key: string]: any }[]) => {
-        const metas = rawMetas as { type: string; value: number }[];
+      (metas: { type: string; value: number }[]) => {
         const arbs = metas.map(m => (m.type === 'unique' ? constant(m.value) : integer(m.value - 10, m.value)));
         return oneof(arbs[0], ...arbs.slice(1));
       },
       {
-        seedGenerator: fc.array(fc.record<any>({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), 1, 10),
-        isValidValue: (v: number, rawMetas: { [key: string]: any }[]) => {
-          const metas = rawMetas as { type: string; value: number }[];
-          return metas.findIndex(m => (m.type === 'unique' ? m.value === v : m.value - 10 <= v && v <= m.value)) !== -1;
-        },
+        seedGenerator: fc.array(fc.record({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), 1, 10),
+        isValidValue: (v: number, metas: { type: string; value: number }[]) =>
+          metas.findIndex(m => (m.type === 'unique' ? m.value === v : m.value - 10 <= v && v <= m.value)) !== -1,
         isStrictlySmallerValue: (a: number, b: number) => (Math.abs(b - a) <= 10 && b > 0 ? b - a > 0 : b - a < 0)
       }
     );

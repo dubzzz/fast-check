@@ -11,11 +11,11 @@ describe('RunExecution', () => {
         fc.integer(),
         fc.boolean(),
         fc.array(
-          fc.record<any>({
+          fc.record({
             value: fc.integer(),
             failureId: fc.nat(),
             message: fc.fullUnicodeString()
-          }) as fc.Arbitrary<{ failureId: number; value: number; message: string }>,
+          }),
           1,
           10
         ),
