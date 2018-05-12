@@ -14,6 +14,7 @@ export class QualifiedParameters {
   path: string;
   logger: (v: string) => void;
   unbiased: boolean;
+  verbose: boolean;
 
   private static readSeed = (p?: Parameters): number => (p != null && p.seed != null ? p.seed : Date.now());
   private static readNumRuns = (p?: Parameters): number => {
@@ -26,6 +27,7 @@ export class QualifiedParameters {
   private static readTimeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
   private static readPath = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
   private static readUnbiased = (p?: Parameters): boolean => p != null && p.unbiased === true;
+  private static readVerbose = (p?: Parameters): boolean => p != null && p.verbose === true;
   private static readLogger = (p?: Parameters): ((v: string) => void) => {
     if (p != null && p.logger != null) return p.logger;
     return (v: string) => {
@@ -45,7 +47,8 @@ export class QualifiedParameters {
       timeout: QualifiedParameters.readTimeout(p),
       logger: QualifiedParameters.readLogger(p),
       path: QualifiedParameters.readPath(p),
-      unbiased: QualifiedParameters.readUnbiased(p)
+      unbiased: QualifiedParameters.readUnbiased(p),
+      verbose: QualifiedParameters.readVerbose(p)
     };
   }
 

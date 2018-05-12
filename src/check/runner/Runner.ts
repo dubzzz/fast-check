@@ -13,8 +13,12 @@ import { pathWalk } from './utils/PathWalker';
 import { throwIfFailed } from './utils/utils';
 
 /** @hidden */
-function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
-  const runExecution = new RunExecution<Ts>(false);
+function runIt<Ts>(
+  property: IProperty<Ts>,
+  initialValues: IterableIterator<Shrinkable<Ts>>,
+  verbose: boolean
+): RunExecution<Ts> {
+  const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
   let values: IterableIterator<Shrinkable<Ts>> = initialValues;
   while (!done) {
@@ -37,9 +41,10 @@ function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shri
 /** @hidden */
 async function asyncRunIt<Ts>(
   property: IProperty<Ts>,
-  initialValues: IterableIterator<Shrinkable<Ts>>
+  initialValues: IterableIterator<Shrinkable<Ts>>,
+  verbose: boolean
 ): Promise<RunExecution<Ts>> {
-  const runExecution = new RunExecution<Ts>(false);
+  const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
   let values: IterableIterator<Shrinkable<Ts>> = initialValues;
   while (!done) {
@@ -101,8 +106,10 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   }
   const initialValues = qParams.path.length === 0 ? g() : pathWalk(qParams.path, g());
   return property.isAsync()
-    ? asyncRunIt(property, initialValues).then(e => e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns))
-    : runIt(property, initialValues).toRunDetails(qParams.seed, qParams.path, qParams.numRuns);
+    ? asyncRunIt(property, initialValues, qParams.verbose).then(e =>
+        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns)
+      )
+    : runIt(property, initialValues, qParams.verbose).toRunDetails(qParams.seed, qParams.path, qParams.numRuns);
 }
 
 /**

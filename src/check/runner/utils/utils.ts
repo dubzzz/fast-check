@@ -28,7 +28,13 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>) {
         out.counterexample
       )}
 Shrunk ${out.numShrinks} time(s)
-Got error: ${out.error}`
+Got error: ${out.error}
+
+${
+        out.failures.length === 0
+          ? 'Hint: Enable verbose mode in order to have the list of all failing values encountered during the run'
+          : `Encountered failures were:\n- ${out.failures.map(pretty).join('\n- ')}`
+      }`
     );
   }
 }
