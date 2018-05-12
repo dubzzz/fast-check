@@ -1,82 +1,4 @@
-/**
- * Customization of the parameters used to run the properties
- */
-interface Parameters {
-  /**
-   * Initial seed of the generator: `Date.now()` by default
-   *
-   * It can be forced to replay a failed run
-   */
-  seed?: number;
-  /**
-   * Number of runs before success: 100 by default
-   */
-  numRuns?: number;
-  /**
-   * Maximum time in milliseconds for the predicate to answer: disabled by default
-   *
-   * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
-   */
-  timeout?: number;
-  /**
-   * Way to replay a failing property directly with the counterexample.
-   * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
-   */
-  path?: string;
-  /**
-   * Logger (see {@link statistics}): `console.log` by default
-   */
-  logger?(v: string): void;
-  /**
-   * Force the use of unbiased arbitraries: biased by default
-   */
-  unbiased?: boolean;
-}
-
-/** @hidden */
-class QualifiedParameters {
-  seed: number;
-  numRuns: number;
-  timeout: number | null;
-  path: string;
-  logger: (v: string) => void;
-  unbiased: boolean;
-
-  private static readSeed = (p?: Parameters): number => (p != null && p.seed != null ? p.seed : Date.now());
-  private static readNumRuns = (p?: Parameters): number => {
-    const defaultValue = 100;
-    if (p == null) return defaultValue;
-    if (p.numRuns != null) return p.numRuns;
-    if ((p as { num_runs?: number }).num_runs != null) return (p as { num_runs: number }).num_runs;
-    return defaultValue;
-  };
-  private static readTimeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
-  private static readPath = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
-  private static readUnbiased = (p?: Parameters): boolean => p != null && p.unbiased === true;
-  private static readLogger = (p?: Parameters): ((v: string) => void) => {
-    if (p != null && p.logger != null) return p.logger;
-    return (v: string) => {
-      // tslint:disable-next-line:no-console
-      console.log(v);
-    };
-  };
-
-  static read(p?: Parameters): QualifiedParameters {
-    return {
-      seed: QualifiedParameters.readSeed(p),
-      numRuns: QualifiedParameters.readNumRuns(p),
-      timeout: QualifiedParameters.readTimeout(p),
-      logger: QualifiedParameters.readLogger(p),
-      path: QualifiedParameters.readPath(p),
-      unbiased: QualifiedParameters.readUnbiased(p)
-    };
-  }
-  static readOrNumRuns(p?: Parameters | number): QualifiedParameters {
-    if (p == null) return QualifiedParameters.read();
-    if (typeof p === 'number') return QualifiedParameters.read({ numRuns: p });
-    return QualifiedParameters.read(p);
-  }
-}
+import { QualifiedParameters } from '../configuration/QualifiedParameters';
 
 /**
  * Post-run details produced by {@link check}
@@ -225,4 +147,4 @@ Got error: ${out.error}`
   }
 }
 
-export { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed };
+export { RunDetails, RunExecution, throwIfFailed };

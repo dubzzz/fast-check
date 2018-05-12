@@ -4,9 +4,10 @@ import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
+import { Parameters } from './configuration/Parameters';
+import { QualifiedParameters } from './configuration/QualifiedParameters';
 import toss from './Tosser';
 import { pathWalk } from './utils/PathWalker';
-import { Parameters, QualifiedParameters } from './utils/utils';
 
 /** @hidden */
 function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters): IProperty<Ts> {

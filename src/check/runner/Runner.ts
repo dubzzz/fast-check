@@ -5,9 +5,11 @@ import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
 import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
+import { Parameters } from './configuration/Parameters';
+import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
-import { Parameters, QualifiedParameters, RunDetails, RunExecution, throwIfFailed } from './utils/utils';
+import { RunDetails, RunExecution, throwIfFailed } from './utils/utils';
 
 /** @hidden */
 function runIt<Ts>(property: IProperty<Ts>, initialValues: IterableIterator<Shrinkable<Ts>>): RunExecution<Ts> {
