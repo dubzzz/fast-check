@@ -13,13 +13,13 @@ export interface RecordConstraints {
 }
 
 /** @hidden */
-function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [key: string]: T }> {
+function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
   const keys = Object.keys(recordModel);
-  const arbs: Arbitrary<T>[] = keys.map(v => recordModel[v]);
-  return genericTuple(arbs).map((gs: T[]) => {
-    const obj: { [key: string]: T } = {};
+  const arbs: Arbitrary<any>[] = keys.map(v => (recordModel as { [key: string]: Arbitrary<any> })[v]);
+  return genericTuple(arbs).map((gs: any[]) => {
+    const obj: { [key: string]: any } = {};
     for (let idx = 0; idx !== keys.length; ++idx) obj[keys[idx]] = gs[idx];
-    return obj;
+    return obj as { [K in keyof T]: T[K] };
   });
 }
 
@@ -34,7 +34,7 @@ function rawRecord<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{
  *
  * @param recordModel Schema of the record
  */
-function record<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [key: string]: T }>;
+function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }>;
 /**
  * For records following the `recordModel` schema
  *
@@ -48,13 +48,10 @@ function record<T>(recordModel: { [key: string]: Arbitrary<T> }): Arbitrary<{ [k
  * @param constraints Contraints on the generated record
  */
 function record<T>(
-  recordModel: { [key: string]: Arbitrary<T> },
+  recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints: RecordConstraints
-): Arbitrary<{ [key: string]: T }>;
-function record<T>(
-  recordModel: { [key: string]: Arbitrary<T> },
-  constraints?: RecordConstraints
-): Arbitrary<{ [key: string]: T }> {
+): Arbitrary<Partial<{ [K in keyof T]: T[K] }>>;
+function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints) {
   if (constraints == null || (constraints.withDeletedKeys !== true && constraints.with_deleted_keys !== true))
     return rawRecord(recordModel);
 
@@ -62,11 +59,7 @@ function record<T>(
     [key: string]: Arbitrary<{ value: T } | null>;
   } = {};
   for (const k of Object.keys(recordModel))
-    updatedRecordModel[k] = option(
-      recordModel[k].map(v => {
-        return { value: v };
-      })
-    );
+    updatedRecordModel[k] = option((recordModel as { [key: string]: Arbitrary<any> })[k].map(v => ({ value: v })));
   return rawRecord(updatedRecordModel).map(obj => {
     const nobj: { [key: string]: T } = {};
     for (const k of Object.keys(obj)) {
