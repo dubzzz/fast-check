@@ -1,39 +1,6 @@
 import { QualifiedParameters } from '../configuration/QualifiedParameters';
 import { RunDetails } from './RunDetails';
 
-/** @hidden */
-function successFor<Ts>(qParams: QualifiedParameters): RunDetails<Ts> {
-  return {
-    failed: false,
-    numRuns: qParams.numRuns,
-    numShrinks: 0,
-    seed: qParams.seed,
-    counterexample: null,
-    counterexamplePath: null,
-    error: null
-  };
-}
-
-/** @hidden */
-function failureFor<Ts>(
-  qParams: QualifiedParameters,
-  numRuns: number,
-  numShrinks: number,
-  counterexample: Ts,
-  counterexamplePath: string,
-  error: string
-): RunDetails<Ts> {
-  return {
-    failed: true,
-    numRuns,
-    numShrinks,
-    seed: qParams.seed,
-    counterexample,
-    counterexamplePath,
-    error
-  };
-}
-
 /**
  * @hidden
  *
@@ -57,23 +24,33 @@ export class RunExecution<Ts> {
   private firstFailure = (): number => (this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1);
   private numShrinks = (): number => (this.pathToFailure ? this.pathToFailure.split(':').length - 1 : 0);
 
+  private static mergePaths = (offsetPath: string, path: string) => {
+    if (offsetPath.length === 0) return path;
+    const offsetItems = offsetPath.split(':');
+    const remainingItems = path.split(':');
+    const middle = +offsetItems[offsetItems.length - 1] + +remainingItems[0];
+    return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
+  };
+
   toRunDetails(qParams: QualifiedParameters): RunDetails<Ts> {
-    const mergePaths = (offsetPath: string, path: string) => {
-      if (offsetPath.length === 0) return path;
-      const offsetItems = offsetPath.split(':');
-      const remainingItems = path.split(':');
-      const middle = +offsetItems[offsetItems.length - 1] + +remainingItems[0];
-      return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
-    };
     return this.isSuccess()
-      ? successFor<Ts>(qParams)
-      : failureFor<Ts>(
-          qParams,
-          this.firstFailure() + 1,
-          this.numShrinks(),
-          this.value!,
-          mergePaths(qParams.path, this.pathToFailure!),
-          this.failure
-        );
+      ? {
+          failed: false,
+          numRuns: qParams.numRuns,
+          numShrinks: 0,
+          seed: qParams.seed,
+          counterexample: null,
+          counterexamplePath: null,
+          error: null
+        }
+      : {
+          failed: true,
+          numRuns: this.firstFailure() + 1,
+          numShrinks: this.numShrinks(),
+          seed: qParams.seed,
+          counterexample: this.value!,
+          counterexamplePath: RunExecution.mergePaths(qParams.path, this.pathToFailure!),
+          error: this.failure
+        };
   }
 }
