@@ -1,3 +1,13 @@
+# 1.1.0
+
+_Straight to corner cases and verbose mode_
+
+## Features
+
+- ([PR#91](/pull/91)) Straight to corner cases by default, see `unbiased` option of `assert` to disable it
+- ([PR#93](/pull/93)) Verbose mode on failure to have the list of all failing values encountered, see `verbose` option of `assert` to enable it
+- ([PR#94](/pull/94)) Better typings for `fc.record`
+
 # 1.0.4
 
 _TypeScript and JavaScript documentation of the code using TypeDoc_
