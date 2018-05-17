@@ -87,6 +87,14 @@ In case of failure, the tests would raise a red flag and the output should help 
     Got error: Property failed by returning false
 ```
 
+More on integration in:
+[ava](https://github.com/dubzzz/fast-check-examples/blob/master/test-ava/example.spec.js),
+[jasmine](https://github.com/dubzzz/fast-check-examples/blob/master/test-jasmine/example.spec.js),
+[jest](https://github.com/dubzzz/fast-check-examples/blob/master/test-jest/example.spec.js),
+[mocha](https://github.com/dubzzz/fast-check-examples/blob/master/test/longest%20common%20substr/test.js)
+and
+[tape](https://github.com/dubzzz/fast-check-examples/blob/master/test-tape/example.spec.js).
+
 ### In a web-page
 
 In order to use fast-check from a web-page (for instance with QUnit or other testing tools), you have to reference the web-aware script as follow:
