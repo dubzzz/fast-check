@@ -24,5 +24,15 @@ describe(`IntegerArbitrary (seed: ${seed})`, () => {
       assert.ok(out.failed, 'Should have failed');
       assert.deepEqual(out.counterexample, [100], 'Should shrink to counterexample 100');
     });
+    it('Should detect overflow', () => {
+      const out = fc.check(
+        fc.property(
+          fc.nat(Number.MAX_SAFE_INTEGER),
+          fc.nat(Number.MAX_SAFE_INTEGER),
+          (a: number, b: number) => a + b !== a + b + 1
+        )
+      );
+      assert.ok(out.failed, 'Should have failed');
+    });
   });
 });

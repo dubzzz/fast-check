@@ -78,13 +78,14 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
 function integer(): ArbitraryWithShrink<number>;
 /**
  * For integers between -2147483648 (included) and max (included)
- * @param max Upper bound for the generated integers
+ * @param max Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
  */
 function integer(max: number): ArbitraryWithShrink<number>;
 /**
  * For integers between min (included) and max (included)
- * @param min Lower bound for the generated integers
- * @param max Upper bound for the generated integers
+ *
+ * @param min Lower bound for the generated integers (eg.: 0, Number.MIN_SAFE_INTEGER)
+ * @param max Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
  */
 function integer(min: number, max: number): ArbitraryWithShrink<number>;
 function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
