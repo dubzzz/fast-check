@@ -1,3 +1,11 @@
+# 1.1.1
+
+_Ability to use min and max boundaries outside of 32 bits integers for `fc.integer`_
+
+## Fixes
+
+- ([b45b90eb](/commit/b45b90eb)) Ability to use min and max boundaries outside of 32 bits integers: `fc.integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)`
+
 # 1.1.0
 
 _Straight to corner cases and verbose mode_
@@ -7,6 +15,8 @@ _Straight to corner cases and verbose mode_
 - ([PR#91](/pull/91)) Straight to corner cases by default, see `unbiased` option of `assert` to disable it
 - ([PR#93](/pull/93)) Verbose mode on failure to have the list of all failing values encountered, see `verbose` option of `assert` to enable it
 - ([PR#94](/pull/94)) Better typings for `fc.record`
+
+---
 
 # 1.0.4
 
