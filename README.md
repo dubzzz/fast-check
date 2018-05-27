@@ -83,8 +83,11 @@ In case of failure, the tests would raise a red flag and the output should help 
 
 ```
 1) should always contain its substrings
-    Property failed after 1 tests (seed: 1515709471288): [,,]
+    Error: Property failed after 1 tests (seed: 1527422598337, path: 0:0): ["","",""]
+    Shrunk 1 time(s)
     Got error: Property failed by returning false
+
+    Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
 ```
 
 More on integration in:
