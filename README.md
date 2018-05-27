@@ -3,7 +3,10 @@
 
 [![Build Status](https://travis-ci.org/dubzzz/fast-check.svg?branch=master)](https://travis-ci.org/dubzzz/fast-check)
 [![npm version](https://badge.fury.io/js/fast-check.svg)](https://badge.fury.io/js/fast-check)
-![total downloads](https://img.shields.io/npm/dt/fast-check.svg)
+[![total downloads](https://img.shields.io/npm/dt/fast-check.svg)](https://www.npmjs.com/package/fast-check)
+
+[![per week downloads](https://img.shields.io/npm/dw/fast-check.svg)](https://www.npmjs.com/package/fast-check)
+[![per month downloads](https://img.shields.io/npm/dm/fast-check.svg)](https://www.npmjs.com/package/fast-check)
 
 [![Coverage Status](https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg)](https://coveralls.io/github/dubzzz/fast-check)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7cb8cb395740446a3108/maintainability)](https://codeclimate.com/github/dubzzz/fast-check/maintainability)
