@@ -23,6 +23,7 @@
 - [Runners](#runners)
 
 [Tips](#tips)
+- [Opt for verbose failures](#opt-for-verbose-failures)
 - [Preview generated values](#preview-generated-values)
 - [Replay after failure](#replay-after-failure)
 
@@ -402,6 +403,57 @@ function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, numG
 ```
 
 ## Tips
+
+### Opt for verbose failures
+
+By default, the failures reported by `fast-check` feature most relevant data:
+- seed
+- path towards the minimal counterexample
+- number of tries before the first failure
+- depth of the shrink
+- minimal counterexample
+
+`fast-check` comes with a verbose mode, which can help users while trying to dig into a failure.
+
+For instance, let's suppose the folowwing property failed:
+```js
+fc.assert(
+    fc.property(
+        fc.string(), fc.string(), fc.string(),
+        (a,b,c) => contains(a+b+c, b)));
+```
+
+The output will look something like:
+```
+Error: Property failed after 1 tests (seed: 1527423434693, path: 0:0:0): ["","",""]
+Shrunk 1 time(s)
+Got error: Property failed by returning false
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
+```
+
+In order to enable the `verbose` mode, we just need to give a second parameter to `fc.assert` as follow:
+```js
+fc.assert(
+    fc.property(
+        fc.string(), fc.string(), fc.string(),
+        (a,b,c) => contains(a+b+c, b)),
+    {verbose: true});
+```
+
+Verbose logs give more details on the error as they will contain all the counterexamples encountered while shrinking the inputs. The example above results in:
+```
+Error: Property failed after 1 tests (seed: 1527423434693, path: 0:0:0): ["","",""]
+Shrunk 2 time(s)
+Got error: Property failed by returning false
+
+Encountered failures were:
+- ["","JeXPqIQ6",">q"]
+- ["","",">q"]
+- ["","",""]
+```
+
+With that output, we notice that our `contains` implementation seems to fail when the `pattern` we are looking for is the beginning of the string we are looking in.
 
 ### Preview generated values
 
