@@ -80,6 +80,7 @@ export {
   string,
   asciiString,
   string16bits,
+  stringOf,
   unicodeString,
   fullUnicodeString,
   hexaString,
