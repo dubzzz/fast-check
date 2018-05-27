@@ -27,6 +27,8 @@
 - [Preview generated values](#preview-generated-values)
 - [Replay after failure](#replay-after-failure)
 
+[Why should I migrate to fast-check?](#why-should-i-migrate-to-fast-check)
+
 [Issues found by fast-check in famous packages](#issues-found-by-fast-check-in-famous-packages)
 
 [Examples](https://github.com/dubzzz/fast-check/tree/master/example) - [Examples against REST API](https://github.com/dubzzz/fuzz-rest-api) - [More examples](https://github.com/dubzzz/fast-check-examples)
@@ -520,6 +522,17 @@ fc.assert(
   }
 );
 ```
+
+## Why should I migrate to fast-check?
+
+`fast-check` has initially be designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
+
+- strong and up-to-date types - *thanks to TypeScript*
+- ability to shrink on `fc.oneof` - *unfortunately it is often not the case*
+- easy `map` method to derive existing arbitraries while keeping shrink - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
+- biased by default - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
+- verbose mode - *easier troubleshooting with verbose mode enabled*
+- replay directly on the minimal counterexample
 
 ## Issues found by fast-check in famous packages
 
