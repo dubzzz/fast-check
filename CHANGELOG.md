@@ -1,3 +1,13 @@
+# 1.1.2
+
+_Readme update_
+
+## Fixes
+
+- ([68893e99](/commit/68893e99)) Doc: Why should I migrate section? in README.md
+- ([d779aa9e](/commit/d779aa9e)) Doc: Verbose mode explained in README.md
+- ([eacc7f0e](/commit/eacc7f0e)) Doc: Bug detected using property based testing and fast-check
+
 # 1.1.1
 
 _Ability to use min and max boundaries outside of 32 bits integers for `fc.integer`_
