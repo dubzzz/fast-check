@@ -1,3 +1,11 @@
+# 1.1.3
+
+_Export missing `fc.stringOf`_
+
+## Fixes
+
+- ([63915033](/commit/63915033)) Fix: Export missing `fc.stringOf`
+
 # 1.1.2
 
 _Readme update_
