@@ -70,8 +70,22 @@ export default abstract class Arbitrary<T> {
       generate(mrng: Random): Shrinkable<U> {
         return arb.generate(mrng).map(mapper);
       }
-      withBias(freq: number) {
+      withBias(freq: number): Arbitrary<U> {
         return arb.withBias(freq).map(mapper);
+      }
+    }();
+  }
+
+  flatMap<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U> {
+    const arb = this;
+    return new class extends Arbitrary<U> {
+      generate(mrng: Random): Shrinkable<U> {
+        const thing = arb.generate(mrng);
+        const result = fmapper(thing.value);
+        return result.generate(mrng);
+      }
+      withBias(freq: number): Arbitrary<U> {
+        return arb.withBias(freq).flatMap(fmapper);
       }
     }();
   }
