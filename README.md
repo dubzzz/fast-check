@@ -22,6 +22,10 @@
 - [Properties](#properties)
 - [Runners](#runners)
 
+[Technical reference](#technical-reference)
+- [Biased arbitraries](#biased-arbitraries)
+- [Shrinking](#shrinking)
+
 [Tips](#tips)
 - [Opt for verbose failures](#opt-for-verbose-failures)
 - [Preview generated values](#preview-generated-values)
@@ -418,6 +422,45 @@ function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>): voi
 function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, params: Parameters): void;
 function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, numGenerated: number): void;
 ```
+
+## Technical reference
+
+**DISCLAIMER:** This part is more technical it mainly targets people who want to contribute to the framework.
+
+### Biased arbitraries
+
+Property based testing framework must be able to discover any kind of issues even very rare ones happening on some small values. For instance your algorithm might use magic numbers such as `-1`, `0` or others. Or fail when the input has duplicated values...
+
+A common way to deal with those issues is:
+- Solution A: only generate small values - *very poor as it fails to build large ones*
+- Solution B: generate larger and larger entries - *what if the failing case require both large and small values*
+
+The choice made by `fast-check` is to bias the arbitrary 1 time over `freq`.
+
+For `fc.integer`:
+- 1 over `freq`: arbitrary between smaller values
+- remaining: the full range arbitrary
+
+For `fc.array`:
+- 1 over `freq`:
+  - 1 over `freq`: small array with biased values
+  - remaining: full range array with biased values
+- remaining: the full range arbitrary
+
+### Shrinking
+
+A basic way to implement a property based testing framework is to define arbitraries with the following structure:
+
+```typescript
+interface DummyArbitrary<Ts> {
+    generate(mrng: Random): Ts;
+    shrink(prev: Ts): Stream<Ts>;
+}
+```
+
+Some frameworks actually use this approach. Unfortunately using this approach makes it impossible to shrink `oneof`.
+
+For this reason, the `shrink` method is not part of `Arbitrary` in `fast-check` but is part of the values instantiated by `generate`.
 
 ## Tips
 
