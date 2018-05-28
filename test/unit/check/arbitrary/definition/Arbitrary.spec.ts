@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 
 import Arbitrary from '../../../../../src/check/arbitrary/definition/Arbitrary';
+import { ArbitraryWithShrink } from '../../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 import Shrinkable from '../../../../../src/check/arbitrary/definition/Shrinkable';
 import Random from '../../../../../src/random/generator/Random';
 import { Stream, stream } from '../../../../../src/stream/Stream';
@@ -166,7 +167,7 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 1000 + 1;
             return fc.tuple(fc.string(c, c), fc.constant(c));
           };
-          const g = new ForwardArbitrary().flatMap<Tuple2Arbitrary<string, number>>(fmapper).generate(mrng1).value;
+          const g: [string, number] = <[string, number]>new ForwardArbitrary().flatMap<Tuple2Arbitrary<string, number>>(fmapper).generate(mrng1).value;
           assert.equal(g[0].length, g[1]);
           return true;
         }),
@@ -176,7 +177,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number): ArrayArbitrary<number> => {
+          const fmapper = (v: number): Arbitrary<number[]> => {
             let c = Math.abs(v) % 10 + 1;
             return fc.array(fc.integer(), c);
           };
@@ -192,7 +193,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number): ArrayArbitrary<number> => {
+          const fmapper = (v: number): ArbitraryWithShrink<number> => {
             let c = Math.abs(v) % 10 + 1;
             return fc.nat(c);
           };
@@ -213,7 +214,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number) => {
+          const fmapper = (v: number): Arbitrary<string> => {
             const possibilities = ['A', 'B', 'C', 'D'];
             return fc.constant(possibilities[v % 4]);
           };
