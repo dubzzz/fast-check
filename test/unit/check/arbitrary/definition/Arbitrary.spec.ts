@@ -7,6 +7,8 @@ import Random from '../../../../../src/random/generator/Random';
 import { Stream, stream } from '../../../../../src/stream/Stream';
 
 import * as stubRng from '../../../stubs/generators';
+import { Tuple2Arbitrary } from '../../../../../src/check/arbitrary/TupleArbitrary.generated';
+import { ArrayArbitrary } from '../../../../../src/check/arbitrary/ArrayArbitrary';
 
 class ForwardArbitrary extends Arbitrary<number> {
   private shrinkableFor(v: number): Shrinkable<number> {
@@ -54,7 +56,7 @@ describe('Arbitrary', () => {
   describe('filter', () => {
     it('Should filter unsuitable values from the underlying arbitrary', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const g = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng).value;
           assert.ok(g % 3 === 0);
@@ -63,7 +65,7 @@ describe('Arbitrary', () => {
       ));
     it('Should filter unsuitable values from shrink', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng);
           assert.ok(shrinkable.shrink().every(s => s.value % 3 === 0));
@@ -72,7 +74,7 @@ describe('Arbitrary', () => {
       ));
     it('Should filter unsuitable values from shrink of shrink', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng);
           assert.ok(
@@ -86,7 +88,7 @@ describe('Arbitrary', () => {
       ));
     it('Should apply filter to the biased arbitrary', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = new FakeTwoValuesBiasArbitrary().filter(v => v !== 42);
           const biasedArb = arb.withBias(2); // this arbitrary is always 100% biased (see its code)
@@ -97,7 +99,7 @@ describe('Arbitrary', () => {
       ));
     it('Should not lock on biased arbitrary not providing right entries', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = new ForwardArbitrary().filter(v => v !== 42);
           const biasedArb = arb.withBias(2);
@@ -110,7 +112,7 @@ describe('Arbitrary', () => {
   describe('map', () => {
     it('Should apply mapper to produced values', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng1 = stubRng.mutable.fastincrease(seed);
           const mrng2 = stubRng.mutable.fastincrease(seed);
           const g = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng1).value;
@@ -120,7 +122,7 @@ describe('Arbitrary', () => {
       ));
     it('Should apply mapper to shrink values', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng);
           assert.ok(shrinkable.shrink().every(s => s.value.startsWith('value = ')));
@@ -129,7 +131,7 @@ describe('Arbitrary', () => {
       ));
     it('Should apply mapper to shrink of shrink values', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng);
           assert.ok(
@@ -143,7 +145,7 @@ describe('Arbitrary', () => {
       ));
     it('Should apply mapper to the biased arbitrary', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = new ForwardArbitrary().map(v => `value = ${v}`);
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
@@ -153,10 +155,81 @@ describe('Arbitrary', () => {
         })
       ));
   });
+
+  describe('flatMap', () => {
+    it('Should apply fmapper to produced values', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed: number) => {
+          const mrng1 = stubRng.mutable.fastincrease(seed);
+          const mrng2 = stubRng.mutable.fastincrease(seed);
+          const fmapper = (v: number) => {
+            let c = Math.abs(v) % 1000 + 1;
+            return fc.tuple(fc.string(c, c), fc.constant(c));
+          };
+          const g = new ForwardArbitrary().flatMap<Tuple2Arbitrary<string, number>>(fmapper).generate(mrng1).value;
+          assert.equal(g[0].length, g[1]);
+          return true;
+        }),
+        { verbose: true }
+      ));
+    it('Should apply fmapper to shrink values', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed: number) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const fmapper = (v: number): ArrayArbitrary<number> => {
+            let c = Math.abs(v) % 10 + 1;
+            return fc.array(fc.integer(), c);
+          };
+          const shrinkable = new ForwardArbitrary()
+            .flatMap(fmapper)
+            .map(v => `value = ${v}`)
+            .generate(mrng);
+          assert.ok(shrinkable.shrink().every(s => s.value.startsWith('value = ')));
+          return true;
+        })
+      ));
+    it('Should apply fmapper to shrink of shrink values', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed: number) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const fmapper = (v: number): ArrayArbitrary<number> => {
+            let c = Math.abs(v) % 10 + 1;
+            return fc.nat(c);
+          };
+          const shrinkable = new ForwardArbitrary()
+            .flatMap(fmapper)
+            .map(v => `value = ${v}`)
+            .generate(mrng);
+          assert.ok(
+            shrinkable
+              .shrink()
+              .flatMap(s => s.shrink())
+              .every(s => s.value.startsWith('value = '))
+          );
+          return true;
+        })
+      ));
+    it('Should apply fmapper to the biased arbitrary', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed: number) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const fmapper = (v: number) => {
+            const possibilities = ['A', 'B', 'C', 'D'];
+            return fc.constant(possibilities[v % 4]);
+          };
+          const arb = new ForwardArbitrary().flatMap(fmapper).map(v => `value = ${v}`);
+          const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
+          const g = biasedArb.generate(mrng).value;
+          assert.equal(g, `value = C`);
+          return true;
+        })
+      ));
+  });
+
   describe('noShrink', () => {
     it('Should remove the ability to shrink the arbitrary', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = new ForwardArbitrary().noShrink().generate(mrng);
           assert.deepStrictEqual([...shrinkable.shrink()], []);
@@ -165,7 +238,7 @@ describe('Arbitrary', () => {
       ));
     it('Should apply noShrink to the biased arbitrary', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = new FakeNoBiasArbitrary().noShrink();
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
