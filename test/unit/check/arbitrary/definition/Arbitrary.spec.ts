@@ -3,6 +3,11 @@ import * as fc from '../../../../../lib/fast-check';
 
 import Arbitrary from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../../src/check/arbitrary/definition/Shrinkable';
+import { array } from '../../../../../src/check/arbitrary/ArrayArbitrary';
+import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
+import { integer, nat } from '../../../../../src/check/arbitrary/IntegerArbitrary';
+import { string } from '../../../../../src/check/arbitrary/StringArbitrary';
+import { tuple } from '../../../../../src/check/arbitrary/TupleArbitrary';
 import Random from '../../../../../src/random/generator/Random';
 import { Stream, stream } from '../../../../../src/stream/Stream';
 
@@ -162,7 +167,7 @@ describe('Arbitrary', () => {
           const mrng2 = stubRng.mutable.fastincrease(seed);
           const fmapper = (v: number) => {
             let c = Math.abs(v) % 1000 + 1;
-            return fc.tuple(fc.string(c, c), fc.constant(c));
+            return tuple(string(c, c), constant(c));
           };
           const g: [string, number] = new ForwardArbitrary().then<[string, number]>(fmapper).generate(mrng1).value;
           assert.equal(g[0].length, g[1]);
@@ -175,7 +180,7 @@ describe('Arbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const fmapper = (v: number): Arbitrary<number[]> => {
             let c = Math.abs(v) % 10 + 1;
-            return fc.array(fc.integer(), c);
+            return array(integer(), c);
           };
           const shrinkable = new ForwardArbitrary()
             .then(fmapper)
@@ -191,7 +196,7 @@ describe('Arbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const fmapper = (v: number): Arbitrary<number> => {
             let c = Math.abs(v) % 10 + 1;
-            return fc.nat(c);
+            return nat(c);
           };
           const shrinkable = new ForwardArbitrary()
             .then(fmapper)
@@ -212,7 +217,7 @@ describe('Arbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const fmapper = (v: number): Arbitrary<string> => {
             const possibilities = ['A', 'B', 'C', 'D'];
-            return fc.constant(possibilities[v % 4]);
+            return constant(possibilities[v % 4]);
           };
           const arb = new ForwardArbitrary().then(fmapper).map(v => `value = ${v}`);
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
