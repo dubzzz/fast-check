@@ -2,14 +2,11 @@ import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 
 import Arbitrary from '../../../../../src/check/arbitrary/definition/Arbitrary';
-import { ArbitraryWithShrink } from '../../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 import Shrinkable from '../../../../../src/check/arbitrary/definition/Shrinkable';
 import Random from '../../../../../src/random/generator/Random';
 import { Stream, stream } from '../../../../../src/stream/Stream';
 
 import * as stubRng from '../../../stubs/generators';
-import { Tuple2Arbitrary } from '../../../../../src/check/arbitrary/TupleArbitrary.generated';
-import { ArrayArbitrary } from '../../../../../src/check/arbitrary/ArrayArbitrary';
 
 class ForwardArbitrary extends Arbitrary<number> {
   private shrinkableFor(v: number): Shrinkable<number> {
@@ -157,7 +154,7 @@ describe('Arbitrary', () => {
       ));
   });
 
-  describe('flatMap', () => {
+  describe('then', () => {
     it('Should apply fmapper to produced values', () =>
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
@@ -167,13 +164,10 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 1000 + 1;
             return fc.tuple(fc.string(c, c), fc.constant(c));
           };
-          const g: [string, number] = <[string, number]>new ForwardArbitrary()
-            .flatMap<Tuple2Arbitrary<string, number>>(fmapper)
-            .generate(mrng1).value;
+          const g: [string, number] = new ForwardArbitrary().then<[string, number]>(fmapper).generate(mrng1).value;
           assert.equal(g[0].length, g[1]);
           return true;
-        }),
-        { verbose: true }
+        })
       ));
     it('Should apply fmapper to shrink values', () =>
       fc.assert(
@@ -184,7 +178,7 @@ describe('Arbitrary', () => {
             return fc.array(fc.integer(), c);
           };
           const shrinkable = new ForwardArbitrary()
-            .flatMap(fmapper)
+            .then(fmapper)
             .map(v => `value = ${v}`)
             .generate(mrng);
           assert.ok(shrinkable.shrink().every(s => s.value.startsWith('value = ')));
@@ -195,12 +189,12 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number): ArbitraryWithShrink<number> => {
+          const fmapper = (v: number): Arbitrary<number> => {
             let c = Math.abs(v) % 10 + 1;
             return fc.nat(c);
           };
           const shrinkable = new ForwardArbitrary()
-            .flatMap(fmapper)
+            .then(fmapper)
             .map(v => `value = ${v}`)
             .generate(mrng);
           assert.ok(
@@ -220,7 +214,7 @@ describe('Arbitrary', () => {
             const possibilities = ['A', 'B', 'C', 'D'];
             return fc.constant(possibilities[v % 4]);
           };
-          const arb = new ForwardArbitrary().flatMap(fmapper).map(v => `value = ${v}`);
+          const arb = new ForwardArbitrary().then(fmapper).map(v => `value = ${v}`);
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
           const g = biasedArb.generate(mrng).value;
           assert.equal(g, `value = C`);
