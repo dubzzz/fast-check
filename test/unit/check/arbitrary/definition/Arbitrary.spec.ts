@@ -167,7 +167,9 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 1000 + 1;
             return fc.tuple(fc.string(c, c), fc.constant(c));
           };
-          const g: [string, number] = <[string, number]>new ForwardArbitrary().flatMap<Tuple2Arbitrary<string, number>>(fmapper).generate(mrng1).value;
+          const g: [string, number] = <[string, number]>new ForwardArbitrary()
+            .flatMap<Tuple2Arbitrary<string, number>>(fmapper)
+            .generate(mrng1).value;
           assert.equal(g[0].length, g[1]);
           return true;
         }),
