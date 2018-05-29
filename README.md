@@ -253,6 +253,17 @@ const string = () => fc.array(fc.char()).map(arr => arr.join(''));
 
 Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) use this trick to define themselves.
 
+##### Transform arbitraries
+
+`then<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U>` It takes on entry and uses to create a new Arbitrary based on that value. It currently only shrinks on the last Arbitrary.
+
+For example you can create Arbitraries based on generated values.
+
+```typescript
+const RandomFixedLengthStringArb: Arbitrary<string[]> => fc.nat(100).then(length => fc.array(fc.string(length, length))));
+const BoundedPairs: Arbitrary<[number, number][]>  => fc.integer().then(bound => fc.array(fc.integer().map(left_bound => [left_bound, left_bound+bound])));
+```
+
 ##### Remove the shrinker
 
 Calling `noShrink()` on an `Arbitrary<T>` just remove the shrinker of the `Arbitrary<T>`. For instance, the following code will produce an `Arbitrary<number>` without shrinking operation.
