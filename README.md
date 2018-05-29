@@ -258,7 +258,7 @@ Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/mas
 
 ##### Transform arbitraries
 
-`then<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U>` It takes on entry and uses to create a new Arbitrary based on that value. It currently only shrinks on the last Arbitrary.
+`then<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U>` It takes one entry from an Arbitrary and uses it to create a new Arbitrary based on that value. It currently only shrinks on the last Arbitrary.
 
 For example you can create Arbitraries based on generated values.
 
