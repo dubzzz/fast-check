@@ -51,7 +51,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
           }
           return true;
         }),
-        { seed, numRuns: 1000 } // increased numRuns to remove flakiness
+        { seed, numRuns: 5000 } // increased numRuns to remove flakiness
       );
       assert.ok(out.failed, 'Should have failed');
       assert.equal(out.counterexample![0].length, 2, 'Should provide a counterexample having only two values');
