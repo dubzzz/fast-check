@@ -69,7 +69,7 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     return this.biasedIntegerArbitrary;
   }
   withBias(freq: number): Arbitrary<number> {
-    return biasWrapper(freq, this, this.pureBiasedArbitrary());
+    return biasWrapper(freq, this, (originalArbitrary: IntegerArbitrary) => originalArbitrary.pureBiasedArbitrary());
   }
 }
 
