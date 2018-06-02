@@ -2,6 +2,7 @@ import Random from '../../random/generator/Random';
 import { Stream, stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import Shrinkable from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
@@ -47,8 +48,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
           : Stream.nil<Shrinkable<T>[]>()
       );
   }
-  withBias(freq: number) {
-    const arb = this;
+  withBias(freq: number): Arbitrary<T[]> {
     const lowBiasedarb = new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength, this.preFilter);
     const highBiasedArb =
       this.minLength !== this.maxLength
@@ -59,15 +59,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
             this.preFilter
           )
         : new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength, this.preFilter);
-    return new class extends Arbitrary<T[]> {
-      generate(mrng: Random) {
-        return mrng.nextInt(1, freq) === 1
-          ? mrng.nextInt(1, freq) === 1
-            ? highBiasedArb.generate(mrng)
-            : lowBiasedarb.generate(mrng)
-          : arb.generate(mrng);
-      }
-    }();
+    return biasWrapper(freq, this, biasWrapper(freq, lowBiasedarb, highBiasedArb));
   }
 }
 
