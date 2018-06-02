@@ -4,6 +4,7 @@ import Random from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import Shrinkable from './definition/Shrinkable';
 
 /** @hidden */
@@ -67,14 +68,8 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     }
     return this.biasedIntegerArbitrary;
   }
-  withBias(freq: number) {
-    const arb = this;
-    const smallArb = this.pureBiasedArbitrary();
-    return new class extends Arbitrary<number> {
-      generate(mrng: Random) {
-        return mrng.nextInt(1, freq) === 1 ? smallArb.generate(mrng) : arb.generate(mrng);
-      }
-    }();
+  withBias(freq: number): Arbitrary<number> {
+    return biasWrapper(freq, this, this.pureBiasedArbitrary());
   }
 }
 
