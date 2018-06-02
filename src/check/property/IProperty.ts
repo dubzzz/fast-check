@@ -37,6 +37,6 @@ export default interface IProperty<Ts> {
  * @param runId Id of the run starting at 0
  * @returns Frequency of bias starting at 2
  */
-export const runIdToFrequency = (runId: number): number => 2 + Math.floor(Math.log(runId + 1) / Math.log(100));
+export const runIdToFrequency = (runId: number): number => 2 + Math.floor(Math.log(runId + 1) / Math.log(10));
 
 export { IProperty };
