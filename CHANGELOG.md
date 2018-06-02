@@ -1,3 +1,12 @@
+# 1.1.4
+
+_Better performance for biased arbitraries (=default)_
+
+## Fixes
+
+- ([PR#107](/pull/107)) Fix: Performance issue when using biased arbitraries
+- ([743d7619](/commit/743d7619)) Fix: Bump to the latest version of `pure-rand`
+
 # 1.1.3
 
 _Export missing `fc.stringOf`_
