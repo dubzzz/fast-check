@@ -11,6 +11,7 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
   static MIN_INT: number = 0x80000000 | 0;
   static MAX_INT: number = 0x7fffffff | 0;
 
+  private biasedIntegerArbitrary: Arbitrary<number> | null = null;
   readonly min: number;
   readonly max: number;
   constructor(min?: number, max?: number) {
@@ -49,17 +50,22 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
       : this.shrink_to(value, this.min, shrunkOnce === true);
   }
   private pureBiasedArbitrary(): Arbitrary<number> {
+    if (this.biasedIntegerArbitrary != null) {
+      return this.biasedIntegerArbitrary;
+    }
     const log2 = (v: number) => Math.floor(Math.log(v) / Math.log(2));
     if (this.min === this.max) {
-      return new IntegerArbitrary(this.min, this.max);
+      this.biasedIntegerArbitrary = new IntegerArbitrary(this.min, this.max);
+    } else if (this.min < 0) {
+      this.biasedIntegerArbitrary =
+        this.max > 0
+          ? new IntegerArbitrary(-log2(-this.min), log2(this.max)) // min and max != 0
+          : new IntegerArbitrary(this.max - log2(this.max - this.min), this.max); // max-min != 0
+    } else {
+      // min >= 0, so max >= 0
+      this.biasedIntegerArbitrary = new IntegerArbitrary(this.min, this.min + log2(this.max - this.min)); // max-min != 0
     }
-    if (this.min < 0) {
-      return this.max > 0
-        ? new IntegerArbitrary(-log2(-this.min), log2(this.max)) // min and max != 0
-        : new IntegerArbitrary(this.max - log2(this.max - this.min), this.max); // max-min != 0
-    }
-    // min >= 0, so max >= 0
-    return new IntegerArbitrary(this.min, this.min + log2(this.max - this.min)); // max-min != 0
+    return this.biasedIntegerArbitrary;
   }
   withBias(freq: number) {
     const arb = this;
