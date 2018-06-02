@@ -49,17 +49,31 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
       );
   }
   withBias(freq: number): Arbitrary<T[]> {
-    const lowBiasedarb = new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength, this.preFilter);
-    const highBiasedArb =
-      this.minLength !== this.maxLength
-        ? new ArrayArbitrary(
-            this.arb.withBias(freq),
-            this.minLength,
-            this.minLength + Math.floor(Math.log(this.maxLength - this.minLength) / Math.log(2)),
-            this.preFilter
-          )
-        : new ArrayArbitrary(this.arb.withBias(freq), this.minLength, this.maxLength, this.preFilter);
-    return biasWrapper(freq, this, biasWrapper(freq, lowBiasedarb, highBiasedArb));
+    return biasWrapper(freq, this, (originalArbitrary: ArrayArbitrary<T>) => {
+      const lowBiased = new ArrayArbitrary(
+        originalArbitrary.arb.withBias(freq),
+        originalArbitrary.minLength,
+        originalArbitrary.maxLength,
+        originalArbitrary.preFilter
+      );
+      const highBiasedArbBuilder = () => {
+        return originalArbitrary.minLength !== originalArbitrary.maxLength
+          ? new ArrayArbitrary(
+              originalArbitrary.arb.withBias(freq),
+              originalArbitrary.minLength,
+              originalArbitrary.minLength +
+                Math.floor(Math.log(originalArbitrary.maxLength - originalArbitrary.minLength) / Math.log(2)),
+              originalArbitrary.preFilter
+            )
+          : new ArrayArbitrary(
+              originalArbitrary.arb.withBias(freq),
+              originalArbitrary.minLength,
+              originalArbitrary.maxLength,
+              originalArbitrary.preFilter
+            );
+      };
+      return biasWrapper(freq, lowBiased, highBiasedArbBuilder);
+    });
   }
 }
 
