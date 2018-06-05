@@ -263,8 +263,10 @@ Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/mas
 For example you can create Arbitraries based on generated values.
 
 ```typescript
-const RandomFixedLengthStringArb: Arbitrary<string[]> => fc.nat(100).then(length => fc.array(fc.string(length, length))));
-const BoundedPairs: Arbitrary<[number, number][]>  => fc.integer().then(bound => fc.array(fc.integer().map(left_bound => [left_bound, left_bound+bound])));
+//generates an array of strings, all having the same length.
+const RandomFixedLengthStringArb: Arbitrary<string[]> = fc.nat(100).then(length => fc.array(fc.string(length, length)));
+//generates an array of 2-element arrays containing integer pairs
+const BoundedPairsArb: Arbitrary<[number, number][]> = fc.nat().then(bound => fc.array(fc.integer().map((leftBound: number): [number, number] => [leftBound, leftBound+bound])));
 ```
 
 ##### Remove the shrinker
