@@ -182,9 +182,7 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 10 + 1;
             return array(integer(), c);
           };
-          const shrinkable = new ForwardArbitrary()
-            .then(fmapper)
-            .generate(mrng);
+          const shrinkable = new ForwardArbitrary().then(fmapper).generate(mrng);
           assert.ok(shrinkable.shrink().every(s => s.value.length <= 10));
           return true;
         })
@@ -197,9 +195,7 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 10 + 1;
             return nat(c);
           };
-          const shrinkable = new ForwardArbitrary()
-            .then(fmapper)
-            .generate(mrng);
+          const shrinkable = new ForwardArbitrary().then(fmapper).generate(mrng);
           assert.ok(
             shrinkable
               .shrink()
