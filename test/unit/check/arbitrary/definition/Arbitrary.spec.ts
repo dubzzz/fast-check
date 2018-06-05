@@ -169,7 +169,7 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 1000 + 1;
             return tuple(string(c, c), constant(c));
           };
-          const g: [string, number] = new ForwardArbitrary().then<[string, number]>(fmapper).generate(mrng1).value;
+          const g: [string, number] = new ForwardArbitrary().then(fmapper).generate(mrng1).value;
           assert.equal(g[0].length, g[1]);
           return true;
         })
@@ -184,9 +184,8 @@ describe('Arbitrary', () => {
           };
           const shrinkable = new ForwardArbitrary()
             .then(fmapper)
-            .map(v => `value = ${v}`)
             .generate(mrng);
-          assert.ok(shrinkable.shrink().every(s => s.value.startsWith('value = ')));
+          assert.ok(shrinkable.shrink().every(s => s.value.length <= 10));
           return true;
         })
       ));
@@ -200,13 +199,12 @@ describe('Arbitrary', () => {
           };
           const shrinkable = new ForwardArbitrary()
             .then(fmapper)
-            .map(v => `value = ${v}`)
             .generate(mrng);
           assert.ok(
             shrinkable
               .shrink()
               .flatMap(s => s.shrink())
-              .every(s => s.value.startsWith('value = '))
+              .every(s => s.value <= 10)
           );
           return true;
         })
