@@ -159,7 +159,7 @@ describe('Arbitrary', () => {
       ));
   });
 
-  describe('then', () => {
+  describe('chain', () => {
     it('Should apply fmapper to produced values', () =>
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
@@ -169,7 +169,7 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 1000 + 1;
             return tuple(string(c, c), constant(c));
           };
-          const g: [string, number] = new ForwardArbitrary().then(fmapper).generate(mrng1).value;
+          const g: [string, number] = new ForwardArbitrary().chain(fmapper).generate(mrng1).value;
           assert.equal(g[0].length, g[1]);
           return true;
         })
@@ -182,7 +182,7 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 10 + 1;
             return array(integer(), c);
           };
-          const shrinkable = new ForwardArbitrary().then(fmapper).generate(mrng);
+          const shrinkable = new ForwardArbitrary().chain(fmapper).generate(mrng);
           assert.ok(shrinkable.shrink().every(s => s.value.length <= 10));
           return true;
         })
@@ -195,7 +195,7 @@ describe('Arbitrary', () => {
             let c = Math.abs(v) % 10 + 1;
             return nat(c);
           };
-          const shrinkable = new ForwardArbitrary().then(fmapper).generate(mrng);
+          const shrinkable = new ForwardArbitrary().chain(fmapper).generate(mrng);
           assert.ok(
             shrinkable
               .shrink()
@@ -213,7 +213,7 @@ describe('Arbitrary', () => {
             const possibilities = ['A', 'B', 'C', 'D'];
             return constant(possibilities[v % 4]);
           };
-          const arb = new ForwardArbitrary().then(fmapper).map(v => `value = ${v}`);
+          const arb = new ForwardArbitrary().chain(fmapper).map(v => `value = ${v}`);
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
           const g = biasedArb.generate(mrng).value;
           assert.equal(g, `value = C`);

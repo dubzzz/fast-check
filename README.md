@@ -255,15 +255,17 @@ Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/mas
 
 ##### Transform arbitraries
 
-`then<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U>` It takes one entry from an Arbitrary and uses it to create a new Arbitrary based on that value. It currently only shrinks on the last Arbitrary.
+`chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U>` (aka flatMap) It takes one entry from an Arbitrary and uses it to create a new Arbitrary based on that value. It currently only shrinks on the last Arbitrary.
 
 For example you can create Arbitraries based on generated values.
 
 ```typescript
 //generates an array of strings, all having the same length.
-const RandomFixedLengthStringArb: Arbitrary<string[]> = fc.nat(100).then(length => fc.array(fc.string(length, length)));
+const RandomFixedLengthStringArb: Arbitrary<string[]> = fc.nat(100).chain(length => fc.array(fc.string(length, length)));
 //generates an array of 2-element arrays containing integer pairs
-const BoundedPairsArb: Arbitrary<[number, number][]> = fc.nat().then(bound => fc.array(fc.integer().map((leftBound: number): [number, number] => [leftBound, leftBound+bound])));
+const BoundedPairsArb: Arbitrary<[number, number][]> = fc.nat().chain(bound => fc.array(fc.integer().map((leftBound: number): [number, number] => [leftBound, leftBound+bound])));
+//generates a random sized substring of a string
+const StringAndSubstringArb: Arbitrary<[string, string]> = fc.string(3,100).chain(fulltext => fc.tuple(fc.nat(fulltext.length-1), fc.nat(fulltext.length-1)).map(indexes => [fulltext, fulltext.slice(indexes[0], indexes[1]) ]))
 ```
 
 ##### Remove the shrinker
