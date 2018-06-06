@@ -84,7 +84,7 @@ export default abstract class Arbitrary<T> {
    * const arrayAndLimitArbitrary = fc.nat().chain((c: number) => fc.tuple( fc.array(fc.nat(c)), fc.constant(c)));
    * ```
    *
-   * @param fmapper Then function, to produce a new Arbitrary using a value from another Arbitrary
+   * @param fmapper Chain function, to produce a new Arbitrary using a value from another Arbitrary
    * @returns New arbitrary of new type
    */
   chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U> {
