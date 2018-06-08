@@ -3,14 +3,12 @@ import * as fc from '../../../../../lib/fast-check';
 
 import Arbitrary from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../../src/check/arbitrary/definition/Shrinkable';
-import { array } from '../../../../../src/check/arbitrary/ArrayArbitrary';
 import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
-import { integer, nat } from '../../../../../src/check/arbitrary/IntegerArbitrary';
-import { string } from '../../../../../src/check/arbitrary/StringArbitrary';
 import { tuple } from '../../../../../src/check/arbitrary/TupleArbitrary';
 import Random from '../../../../../src/random/generator/Random';
 import { Stream, stream } from '../../../../../src/stream/Stream';
 
+import * as stubArb from '../../../stubs/arbitraries';
 import * as stubRng from '../../../stubs/generators';
 
 class ForwardArbitrary extends Arbitrary<number> {
@@ -166,10 +164,10 @@ describe('Arbitrary', () => {
           const mrng1 = stubRng.mutable.fastincrease(seed);
           const mrng2 = stubRng.mutable.fastincrease(seed);
           const fmapper = (v: number) => {
-            let c = Math.abs(v) % 1000 + 1;
-            return tuple(string(c, c), constant(c));
+            let c = Math.abs(v) % 1000;
+            return tuple(stubArb.forwardArray(c), constant(c));
           };
-          const g: [string, number] = new ForwardArbitrary().chain(fmapper).generate(mrng1).value;
+          const g: [number[], number] = new ForwardArbitrary().chain(fmapper).generate(mrng1).value;
           assert.equal(g[0].length, g[1]);
           return true;
         })
@@ -178,12 +176,12 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number): Arbitrary<number[]> => {
-            let c = Math.abs(v) % 10 + 1;
-            return array(integer(), c);
+          const fmapper = (v: number) => {
+            let c = Math.abs(v) % 1000;
+            return tuple(stubArb.forwardArray(c), constant(c));
           };
           const shrinkable = new ForwardArbitrary().chain(fmapper).generate(mrng);
-          assert.ok(shrinkable.shrink().every(s => s.value.length <= 10));
+          assert.ok(shrinkable.shrink().every(s => s.value[0].length === s.value[1]));
           return true;
         })
       ));
@@ -191,16 +189,16 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number): Arbitrary<number> => {
-            let c = Math.abs(v) % 10 + 1;
-            return nat(c);
+          const fmapper = (v: number) => {
+            let c = Math.abs(v) % 1000;
+            return tuple(stubArb.forwardArray(c), constant(c));
           };
           const shrinkable = new ForwardArbitrary().chain(fmapper).generate(mrng);
           assert.ok(
             shrinkable
               .shrink()
               .flatMap(s => s.shrink())
-              .every(s => s.value <= 10)
+              .every(s => s.value[0].length === s.value[1])
           );
           return true;
         })
