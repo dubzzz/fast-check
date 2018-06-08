@@ -176,8 +176,8 @@ Multiple characters:
 
 Strings that mimic real strings, with words and sentences:
 
-- `json()` or `json(maxDepth: number)` json strings having keys generated using `fc.string()`. String values are also produced by `fc.string()`
-- `unicodeJson()` or `unicodeJson(maxDepth: number)` json strings having keys generated using `fc.unicodeString()`. String values are also produced by `fc.unicodeString()`
+- `fc.json()` or `fc.json(maxDepth: number)` json strings having keys generated using `fc.string()`. String values are also produced by `fc.string()`
+- `fc.unicodeJson()` or `fc.unicodeJson(maxDepth: number)` json strings having keys generated using `fc.unicodeString()`. String values are also produced by `fc.unicodeString()`
 - `fc.lorem()`, `fc.lorem(maxWordsCount: number)` or `fc.lorem(maxWordsCount: number, sentencesMode: boolean)` lorem ipsum strings. Generator can be configured by giving it a maximum number of characters by using `maxWordsCount` or switching the mode to sentences by setting `sentencesMode` to `true` in which case `maxWordsCount` is used to cap the number of sentences allowed. **This arbitrary is not shrinkable**
 
 #### Combinors of arbitraries (:T)
