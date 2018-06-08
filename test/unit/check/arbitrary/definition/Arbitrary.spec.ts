@@ -209,14 +209,23 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number): Arbitrary<string> => {
-            const possibilities = ['A', 'B', 'C', 'D'];
-            return constant(possibilities[v % 4]);
-          };
-          const arb = new ForwardArbitrary().chain(fmapper).map(v => `value = ${v}`);
+          const fmapper = (v: number) => constant(v);
+          const arb = new ForwardArbitrary().chain(fmapper);
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
           const g = biasedArb.generate(mrng).value;
-          assert.equal(g, `value = C`);
+          assert.equal(g, 42);
+          return true;
+        })
+      ));
+    it('Should apply bias on fmapper arbitrary', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed: number) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const fmapper = (v: number) => new ForwardArbitrary();
+          const arb = constant(0).chain(fmapper);
+          const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
+          const g = biasedArb.generate(mrng).value;
+          assert.equal(g, 42);
           return true;
         })
       ));

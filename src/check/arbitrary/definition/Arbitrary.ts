@@ -97,7 +97,7 @@ export default abstract class Arbitrary<T> {
         return mappedArb.generate(stepMrng);
       }
       withBias(freq: number): Arbitrary<U> {
-        return arb.withBias(freq).chain(fmapper);
+        return arb.withBias(freq).chain((t: T) => fmapper(t).withBias(freq));
       }
     }();
   }
