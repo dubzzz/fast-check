@@ -86,7 +86,13 @@ export default abstract class Arbitrary<T> {
     return new Shrinkable(dst.value, () =>
       src
         .shrink()
-        .map((v: Shrinkable<T>) => Arbitrary.shrinkChain(mrng, v, fmapper(v.value).generate(mrng.clone()), fmapper))
+        .flatMap(function*(v: Shrinkable<T>) {
+          const cMrng = mrng.clone();
+          for (let n = 0; n !== 10; ++n) {
+            yield Arbitrary.shrinkChain(cMrng.clone(), v, fmapper(v.value).generate(cMrng.clone()), fmapper);
+            cMrng.skip(42);
+          }
+        })
         .join(dst.shrink())
     );
   }
@@ -106,10 +112,10 @@ export default abstract class Arbitrary<T> {
     const arb = this;
     return new class extends Arbitrary<U> {
       generate(mrng: Random): Shrinkable<U> {
-        const stepMrng = mrng.clone();
-        const src = arb.generate(stepMrng);
-        const dst = fmapper(src.value).generate(stepMrng);
-        return Arbitrary.shrinkChain(mrng, src, dst, fmapper);
+        const clonedMrng = mrng.clone();
+        const src = arb.generate(mrng);
+        const dst = fmapper(src.value).generate(mrng);
+        return Arbitrary.shrinkChain(clonedMrng, src, dst, fmapper);
       }
       withBias(freq: number): Arbitrary<U> {
         return arb.withBias(freq).chain((t: T) => fmapper(t).withBias(freq));
