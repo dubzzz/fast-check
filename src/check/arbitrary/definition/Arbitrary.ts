@@ -86,13 +86,9 @@ export default abstract class Arbitrary<T> {
     return new Shrinkable(dst.value, () =>
       src
         .shrink()
-        .flatMap(function*(v: Shrinkable<T>) {
-          const cMrng = mrng.clone();
-          for (let n = 0; n !== 10; ++n) {
-            yield Arbitrary.shrinkChain(cMrng.clone(), v, fmapper(v.value).generate(cMrng.clone()), fmapper);
-            cMrng.skip(42);
-          }
-        })
+        .map((v: Shrinkable<T>) =>
+          Arbitrary.shrinkChain(mrng.clone(), v, fmapper(v.value).generate(mrng.clone()), fmapper)
+        )
         .join(dst.shrink())
     );
   }

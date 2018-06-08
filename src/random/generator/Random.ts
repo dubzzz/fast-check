@@ -19,14 +19,6 @@ export default class Random {
     return new Random(this.internalRng);
   }
 
-  /**
-   * Skip multiple random number generations
-   * @param n Number of generation to skip
-   */
-  skip(n: number): void {
-    this.internalRng = prand.skipN(this.internalRng, n);
-  }
-
   private uniformIn(rangeMin: number, rangeMax: number): number {
     const [v, nrng] = prand.uniformIntDistribution(rangeMin, rangeMax)(this.internalRng);
     this.internalRng = nrng;
