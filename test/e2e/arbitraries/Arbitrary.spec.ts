@@ -44,5 +44,15 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       );
       assert.ok(out.failed, 'Should have failed');
     });
+    it('Should shrink chain on source', () => {
+      const out = fc.check(fc.property(fc.nat().chain(v => fc.constant(v)), (v: number) => v < 1), { seed: seed });
+      assert.ok(out.failed, 'Should have failed');
+      assert.deepStrictEqual(out.counterexample, [1], 'Should have shrunk to the minimal counterexample');
+    });
+    it('Should shrink chain on destination', () => {
+      const out = fc.check(fc.property(fc.constant(42).chain(v => fc.nat()), (v: number) => v < 1), { seed: seed });
+      assert.ok(out.failed, 'Should have failed');
+      assert.deepStrictEqual(out.counterexample, [1], 'Should have shrunk to the minimal counterexample');
+    });
   });
 });
