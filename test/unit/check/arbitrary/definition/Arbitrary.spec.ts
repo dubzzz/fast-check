@@ -163,12 +163,11 @@ describe('Arbitrary', () => {
         fc.property(fc.integer(), (seed: number) => {
           const mrng1 = stubRng.mutable.fastincrease(seed);
           const mrng2 = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number) => {
-            let c = Math.abs(v) % 1000;
-            return tuple(stubArb.forwardArray(c), constant(c));
-          };
-          const g: [number[], number] = new ForwardArbitrary().chain(fmapper).generate(mrng1).value;
-          assert.equal(g[0].length, g[1]);
+          const toSize = (v: number) => Math.abs(v) % 100;
+          const fmapper = (v: number) => stubArb.forwardArray(toSize(v));
+          const expectedSize: number = toSize(new ForwardArbitrary().generate(mrng1).value);
+          const g: number[] = new ForwardArbitrary().chain(fmapper).generate(mrng2).value;
+          assert.equal(g.length, expectedSize);
           return true;
         })
       ));
