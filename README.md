@@ -420,8 +420,8 @@ function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, numG
 Property based testing framework must be able to discover any kind of issues even very rare ones happening on some small values. For instance your algorithm might use magic numbers such as `-1`, `0` or others. Or fail when the input has duplicated values...
 
 A common way to deal with those issues is:
-- Solution A: only generate small values - *very poor as it fails to build large ones*
-- Solution B: generate larger and larger entries - *what if the failing case require both large and small values*
+- Solution A: only generate small values - *Issue: it fails to build large ones*
+- Solution B: generate larger and larger entries - *Issue: what if the failing case requires both large and small values*
 
 The choice made by `fast-check` is to bias the arbitrary 1 time over `freq`.
 
@@ -446,7 +446,9 @@ interface DummyArbitrary<Ts> {
 }
 ```
 
-Some frameworks actually use this approach. Unfortunately using this approach makes it impossible to shrink `oneof`.
+Some frameworks actually use this approach. Unfortunately using this approach makes it impossible to shrink `oneof`. Indeed as soon as you have generated your value you do not know anymore who produced you.
+
+Let's imagine you are using a `oneof(integer(0, 10), integer(20, 30))` relying on the `DummyArbitrary<number>` above. As soon as you have generated a value - a `number` - you cannot call shrink anymore as you do not know if it has been produced by `integer(0, 10)` or `integer(20, 30)` - in this precise case you can easily infer the producer.
 
 For this reason, the `shrink` method is not part of `Arbitrary` in `fast-check` but is part of the values instantiated by `generate`.
 
