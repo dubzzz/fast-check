@@ -13,6 +13,8 @@
 
 ## Getting started
 
+Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
+
 Install the module with: `npm install fast-check --save-dev`
 
 Example of integration in [mocha](http://mochajs.org/):
@@ -25,14 +27,14 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
 describe('properties', () => {
-    // string text always contains itself
-    it('should always contain itself', () => {
-        fc.assert(fc.property(fc.string(), text => contains(text, text)));
-    });
-    // string a + b + c always contains b, whatever the values of a, b and c
-    it('should always contain its substrings', () => {
-        fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => contains(a+b+c, b)));
-    });
+  // string text always contains itself
+  it('should always contain itself', () => {
+    fc.assert(fc.property(fc.string(), text => contains(text, text)));
+  });
+  // string a + b + c always contains b, whatever the values of a, b and c
+  it('should always contain its substrings', () => {
+    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => contains(a+b+c, b)));
+  });
 });
 ```
 
@@ -47,7 +49,7 @@ In case of failure, the tests would raise a red flag and the output should help 
     Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
 ```
 
-More on integration in:
+Integration with other test frameworks:
 [ava](https://github.com/dubzzz/fast-check-examples/blob/master/test-ava/example.spec.js),
 [jasmine](https://github.com/dubzzz/fast-check-examples/blob/master/test-jasmine/example.spec.js),
 [jest](https://github.com/dubzzz/fast-check-examples/blob/master/test-jest/example.spec.js),
@@ -60,6 +62,12 @@ More examples:
 [fuzzing](https://github.com/dubzzz/fuzz-rest-api)
 and
 [against various algorithms](https://github.com/dubzzz/fast-check-examples)
+
+Useful documentations:
+- [:hatching_chick: Built-in arbitraries](https://github.com/dubzzz/fast-check/documentation/Arbitraries.md)
+- [:wrench: Custom arbitraries](https://github.com/dubzzz/fast-check/documentation/AdvancedArbitraries.md)
+- [:running_man: Property based runners](https://github.com/dubzzz/fast-check/documentation/Runners.md)
+- [:boom: Tips](https://github.com/dubzzz/fast-check/documentation/Tips.md)
 
 ## In a web-page
 
