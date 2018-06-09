@@ -7,18 +7,13 @@ import { nat } from './IntegerArbitrary';
 
 /** @hidden */
 class LoremArbitrary extends Arbitrary<string> {
-  readonly arbWordsCount: Arbitrary<number>;
-  readonly sentencesMode: boolean;
-  constructor(maxWordsCount?: number, sentencesMode?: boolean) {
+  constructor(readonly numWords: number, readonly mode: 'words' | 'sentences' | 'paragraphs') {
     super();
-    this.arbWordsCount = nat(maxWordsCount || 5);
-    this.sentencesMode = sentencesMode || false;
   }
   generate(mrng: Random): Shrinkable<string> {
-    const numWords = this.arbWordsCount.generate(mrng).value;
     const loremString = loremIpsum({
-      count: numWords,
-      units: this.sentencesMode ? 'sentences' : 'words',
+      count: this.numWords,
+      units: this.mode,
       random: () => mrng.nextDouble()
     });
     return new Shrinkable(loremString);
@@ -27,29 +22,22 @@ class LoremArbitrary extends Arbitrary<string> {
 
 /**
  * For lorem ipsum strings of words
- *
- * WARNING: It cannot be shrunk
  */
 function lorem(): Arbitrary<string>;
 /**
  * For lorem ipsum string of words with maximal number of words
- *
- * WARNING: It cannot be shrunk
- *
  * @param maxWordsCount Upper bound of the number of words allowed
  */
 function lorem(maxWordsCount: number): Arbitrary<string>;
 /**
  * For lorem ipsum string of words or sentences with maximal number of words or sentences
- *
- * WARNING: It cannot be shrunk
- *
  * @param maxWordsCount Upper bound of the number of words/sentences allowed
  * @param sentencesMode If enabled, multiple sentences might be generated
  */
 function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;
 function lorem(maxWordsCount?: number, sentencesMode?: boolean): Arbitrary<string> {
-  return new LoremArbitrary(maxWordsCount, sentencesMode);
+  const mode = sentencesMode ? 'sentences' : 'words';
+  return nat(maxWordsCount || 5).chain(numWords => new LoremArbitrary(numWords, mode));
 }
 
 export { lorem };
