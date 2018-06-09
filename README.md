@@ -38,7 +38,7 @@ describe('properties', () => {
 });
 ```
 
-In case of failure, the tests would raise a red flag and the output should help you to diagnose what went wrong in your implementation (example with a failing implementation of contain):
+In case of failure, the test raises a red flag. Its output should help you to diagnose what went wrong in your implementation. Example with a failing implementation of contain:
 
 ```
 1) should always contain its substrings
