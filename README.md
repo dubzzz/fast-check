@@ -15,6 +15,8 @@
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
 
+![Logo](./logo.png)
+
 Install the module with: `npm install fast-check --save-dev`
 
 Example of integration in [mocha](http://mochajs.org/):
