@@ -1,0 +1,135 @@
+# [:house:](../README.md) Runners
+
+Runners are the way to make your [arbitraries](./Arbitraries.md) live. They receive a property - *binding between arbitraries and a check function* - to verify.
+
+This documentation describes all the runners and properties you can use in fast-check.
+
+You can refer to the [generated TypeDoc](https://dubzzz.github.io/fast-check/) for more details.
+
+## Properties
+
+- `fc.property`: define a new property ie. a list of arbitraries and a test function to assess the success
+
+The predicate would be considered falsy if its throws or if `output` evaluates to `false`.
+```typescript
+function property<T1>(
+        arb1: Arbitrary<T1>,
+        predicate: (t1:T1) => (boolean|void)): Property<[T1]>;
+function property<T1,T2>(
+        arb1: Arbitrary<T1>, arb2: Arbitrary<T2>,
+        predicate: (t1:T1,t2:T2) => (boolean|void)): Property<[T1,T2]>;
+...
+```
+
+- `fc.asyncProperty`: define a new property ie. a list of arbitraries and an asynchronous test function to assess the success
+
+The predicate would be considered falsy if its throws or if `output` evaluates to `false` (after `await`).
+```typescript
+function asyncProperty<T1>(
+        arb1: Arbitrary<T1>,
+        predicate: (t1:T1) => Promise<boolean|void>): AsyncProperty<[T1]>;
+function asyncProperty<T1,T2>(
+        arb1: Arbitrary<T1>, arb2: Arbitrary<T2>,
+        predicate: (t1:T1,t2:T2) => Promise<boolean|void>): AsyncProperty<[T1,T2]>;
+...
+```
+
+**WARNING:**
+
+> The predicate function must not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
+
+> Nonetheless a failing property will still be a failing property.
+
+## Runners
+
+- `fc.assert`: run the property and throws in case of failure
+
+**This function has to be awaited in case it is called on an asynchronous property.**
+
+This function is ideal to be called in `describe`, `it` blocks.
+It does not return anything in case of success.
+
+It can be parametrized using its second argument.
+
+```typescript
+export interface Parameters {
+    seed?: number;      // optional, initial seed of the generator: Date.now() by default
+    numRuns?: number;   // optional, number of runs before success: 100 by default 
+    timeout?: number;   // optional, only taken into account for asynchronous runs (asyncProperty)
+                        // specify a timeout in milliseconds, maximum time for the predicate to return its result
+                        // only works for async code, will not interrupt a synchronous code: disabled by default
+    path?: string;      // optional, way to replay a failing property directly with the counterexample
+                        // it can be fed with the counterexamplePath returned by the failing test (requires seed too)
+    logger?: (v: string) => void; // optional, log output: console.log by default
+    unbiased?: boolean; // optional, force the use of unbiased arbitraries: biased by default
+    verbose?: boolean;  // optional, enable verbose mode: false by default
+                        // when enabling verbose mode,
+                        // you will be provided the list of all failing entries encountered
+                        // whenever a property fails - useful to detect patterns
+}
+```
+
+```typescript
+function assert<Ts>(property: IProperty<Ts>, params?: Parameters);
+```
+
+- `fc.check`: run the property and return an object containing the test status along with other useful details
+
+**This function has to be awaited in case it is called on an asynchronous property.**
+
+It should never throw whatever the status of the test.
+
+It can be parametrized with the same parameters than `fc.assert`.
+
+The details returned by `fc.check` are the following:
+
+```typescript
+interface RunDetails<Ts> {
+    failed: boolean,         // false in case of failure, true otherwise
+    numRuns: number,         // number of runs (all runs if success, up and including the first failure if failed)
+    numShrinks: number,      // number of shrinks (depth required to get the minimal failing example)
+    seed: number,            // seed used for the test
+    counterexample: Ts|null, // failure only: shrunk conterexample causig the property to fail
+    counterexamplePath: string|null, // failure only: the exact path to re-run the counterexample
+                                     // In order to replay the failing case directly,
+                                     // this value as to be set as path attribute in the Parameters (with the seed)
+                                     // of assert, check, sample or even statistics
+    error: string|null,      // failure only: stack trace and error details
+}
+```
+
+```typescript
+function check<Ts>(property: IProperty<Ts>, params?: Parameters);
+```
+
+- `fc.sample`: sample generated values of an `Arbitrary<T>` or `Property<T>`
+
+It builds an array containing all the values that would have been generated for the equivalent test.
+
+It also accept `Parameters` as configuration in order to help you diagnose the shape of the inputs that will be received by your property.
+
+```typescript
+type Generator<Ts> = Arbitrary<Ts> | IProperty<Ts>;
+
+function sample<Ts>(generator: Generator<Ts>): Ts[];
+function sample<Ts>(generator: Generator<Ts>, params: Parameters): Ts[];
+function sample<Ts>(generator: Generator<Ts>, numGenerated: number): Ts[];
+```
+
+- `fc.statistics`: classify the values produced by an `Arbitrary<T>` or `Property<T>`
+
+It provides useful statistics concerning generated values.
+In order to be able to gather those statistics it has to be provided with a classifier function that can classify the generated value in zero, one or more categories (free labels).
+
+It also accept `Parameters` as configuration in order to help you diagnose the shape of the inputs that will be received by your property.
+
+Statistics are dumped into `console.log` but can be redirected to another source by modifying the `logger` key in `Parameters`.
+
+```typescript
+type Generator<Ts> = Arbitrary<Ts> | IProperty<Ts>;
+type Classifier<Ts> = ((v: Ts) => string) | ((v: Ts) => string[]);
+
+function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>): void;
+function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, params: Parameters): void;
+function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, numGenerated: number): void;
+```

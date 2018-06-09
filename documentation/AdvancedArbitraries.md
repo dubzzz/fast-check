@@ -1,6 +1,6 @@
 # [:house:](../README.md) Advanced arbitraries
 
-:warning: Before diving into the topic of *advanced arbitraries*, it is highly recommended to have in mind the [built-in arbitraries coming with fast-check](Arbitraries.md).
+:warning: Before diving into the topic of *advanced arbitraries*, it is highly recommended to have in mind the [built-in arbitraries coming with fast-check](./Arbitraries.md).
 
 This documentation covers the definition of new arbitraries. It can be an arbitrary derived from some existing ones or a totally new one.
 
