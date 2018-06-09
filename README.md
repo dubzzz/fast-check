@@ -1,21 +1,26 @@
-# fast-check
+<h3 align="center">
+  <img align="center" src="https://raw.githubusercontent.com/dubzzz/fast-check/master/logo.png" alt="fast-check logo" />
+</h3>
 
-*Property based testing framework for JavaScript/TypeScript*
+<p align="center">
+Property based testing framework for JavaScript/TypeScript
+</p>
 
-[![Build Status](https://travis-ci.org/dubzzz/fast-check.svg?branch=master)](https://travis-ci.org/dubzzz/fast-check)
-[![npm version](https://badge.fury.io/js/fast-check.svg)](https://badge.fury.io/js/fast-check)
-[![total downloads](https://img.shields.io/npm/dt/fast-check.svg)](https://www.npmjs.com/package/fast-check)
-
-[![Coverage Status](https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg)](https://coveralls.io/github/dubzzz/fast-check)
-[![Maintainability](https://api.codeclimate.com/v1/badges/7cb8cb395740446a3108/maintainability)](https://codeclimate.com/github/dubzzz/fast-check/maintainability)
-[![dependencies Status](https://david-dm.org/dubzzz/fast-check/status.svg)](https://david-dm.org/dubzzz/fast-check)
-[![devDependencies Status](https://david-dm.org/dubzzz/fast-check/dev-status.svg)](https://david-dm.org/dubzzz/fast-check?type=dev)
+<p align="center">
+  <a href="https://travis-ci.org/dubzzz/fast-check"><img src="https://travis-ci.org/dubzzz/fast-check.svg?branch=master" alt="Build Status" /></a>
+  <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dt/fast-check.svg" alt="total downloads" /></a>
+</p>
+<p align="center">
+  <a href="https://coveralls.io/github/dubzzz/fast-check"><img src="https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg" alt="Coverage Status" /></a>
+  <a href="https://codeclimate.com/github/dubzzz/fast-check/maintainability"><img src="https://api.codeclimate.com/v1/badges/7cb8cb395740446a3108/maintainability" alt="Maintainability" /></a>
+  <a href="https://david-dm.org/dubzzz/fast-check"><img src="https://david-dm.org/dubzzz/fast-check/status.svg" alt="dependencies Status" /></a>
+  <a href="https://david-dm.org/dubzzz/fast-check?type=dev"><img src="https://david-dm.org/dubzzz/fast-check/dev-status.svg" alt="devDependencies Status" /></a>
+</p>
 
 ## Getting started
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
-
-![Logo](https://raw.githubusercontent.com/dubzzz/fast-check/master/logo.png)
 
 Install the module with: `npm install fast-check --save-dev`
 
