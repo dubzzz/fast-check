@@ -61,7 +61,7 @@ More examples:
 [simple examples](https://github.com/dubzzz/fast-check/tree/master/example),
 [fuzzing](https://github.com/dubzzz/fuzz-rest-api)
 and
-[against various algorithms](https://github.com/dubzzz/fast-check-examples)
+[against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
 - [:hatching_chick: Built-in arbitraries](https://github.com/dubzzz/fast-check/documentation/Arbitraries.md)
