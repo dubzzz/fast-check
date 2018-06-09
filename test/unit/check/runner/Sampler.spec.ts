@@ -52,6 +52,15 @@ describe('Sampler', () => {
           assert.equal(arb.generatedValues.length, num, 'Should not call the arbitrary too many times');
         })
       ));
+    it('Should throw on wrong path (too deep)', () => {
+      const arb = stubArb.forward().noShrink();
+      assert.throws(() => sample(arb, { seed: 42, path: '0:0:0' }));
+      // 0:1 should not throw but retrieve an empty set
+    });
+    it('Should throw on invalid path', () => {
+      const arb = stubArb.forward().noShrink();
+      assert.throws(() => sample(arb, { seed: 42, path: 'invalid' }));
+    });
   });
   describe('statistics', () => {
     const customGen = (m: number = 7) => stubArb.forward().map(v => (v % m + m) % m);
