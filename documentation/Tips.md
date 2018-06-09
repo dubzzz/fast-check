@@ -1,4 +1,4 @@
-## Tips
+## [:house:](../README.md) Tips
 
 Simple tips to unlock all the power of fast-check with only few changes.
 

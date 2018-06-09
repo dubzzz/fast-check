@@ -1,4 +1,4 @@
-# Advanced arbitraries
+# [:house:](../README.md) Advanced arbitraries
 
 :warning: Before diving into the topic of *advanced arbitraries*, it is highly recommended to have in mind the [built-in arbitraries coming with fast-check](Arbitraries.md).
 
@@ -89,3 +89,42 @@ You can also fully customize your arbitrary: not derive it from any of the buit-
 The generated value is responsible for its shrinking. Shrinking derives the item into _smaller_ values and is optional.
 
 Refer to [built-in types](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) for examples of custom arbitraries.
+
+## Advanced features of arbitraries
+
+### Biased arbitraries
+
+Property based testing framework must be able to discover any kind of issues even very rare ones happening on some small values. For instance your algorithm might use magic numbers such as `-1`, `0` or others. Or fail when the input has duplicated values...
+
+A common way to deal with those issues is:
+- Solution A: only generate small values - *Issue: it fails to build large ones*
+- Solution B: generate larger and larger entries - *Issue: what if the failing case requires both large and small values*
+
+The choice made by fast-check is to bias the arbitrary 1 time over `freq`.
+
+For `fc.integer`:
+- 1 over `freq`: arbitrary between smaller values
+- remaining: the full range arbitrary
+
+For `fc.array`:
+- 1 over `freq`:
+  - 1 over `freq`: small array with biased values
+  - remaining: full range array with biased values
+- remaining: the full range arbitrary
+
+### Shrinking
+
+A basic way to implement a property based testing framework is to define arbitraries with the following structure:
+
+```typescript
+interface DummyArbitrary<Ts> {
+    generate(mrng: Random): Ts;
+    shrink(prev: Ts): Stream<Ts>;
+}
+```
+
+Some frameworks actually use this approach. Unfortunately using this approach makes it impossible to shrink `oneof`. Indeed as soon as you have generated your value you do not know anymore who produced you.
+
+Let's imagine you are using a `oneof(integer(0, 10), integer(20, 30))` relying on the `DummyArbitrary<number>` above. As soon as you have generated a value - a `number` - you cannot call shrink anymore as you do not know if it has been produced by `integer(0, 10)` or `integer(20, 30)` - in this precise case you can easily infer the producer.
+
+For this reason, the `shrink` method is not part of `Arbitrary` in fast-check but is part of the values instantiated by `generate`.
