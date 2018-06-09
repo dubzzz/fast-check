@@ -1,5 +1,7 @@
 # fast-check
 
+*Property based testing framework for JavaScript/TypeScript*
+
 [![Build Status](https://travis-ci.org/dubzzz/fast-check.svg?branch=master)](https://travis-ci.org/dubzzz/fast-check)
 [![npm version](https://badge.fury.io/js/fast-check.svg)](https://badge.fury.io/js/fast-check)
 [![total downloads](https://img.shields.io/npm/dt/fast-check.svg)](https://www.npmjs.com/package/fast-check)
@@ -9,69 +11,11 @@
 [![dependencies Status](https://david-dm.org/dubzzz/fast-check/status.svg)](https://david-dm.org/dubzzz/fast-check)
 [![devDependencies Status](https://david-dm.org/dubzzz/fast-check/dev-status.svg)](https://david-dm.org/dubzzz/fast-check?type=dev)
 
-## Property based testing framework for JavaScript/TypeScript
-
-for all (x, y, ...)
-such as precondition(x, y, ...) holds
-property(x, y, ...) is true
-
-
-[Getting started](#getting-started)
-
-[Usage](#usage)
-
-[Documentation](#documentation) \[[Generated TypeDoc](https://dubzzz.github.io/fast-check/)\]
-- [Arbitraries](#arbitraries)
-- [Custom arbitraries](#custom-arbitraries)
-- [Properties](#properties)
-- [Runners](#runners)
-
-[Technical reference](#technical-reference)
-- [Biased arbitraries](#biased-arbitraries)
-- [Shrinking](#shrinking)
-
-[Tips](#tips)
-- [Opt for verbose failures](#opt-for-verbose-failures)
-- [Preview generated values](#preview-generated-values)
-- [Replay after failure](#replay-after-failure)
-
-[Why should I migrate to fast-check?](#why-should-i-migrate-to-fast-check)
-
-[Issues found by fast-check in famous packages](#issues-found-by-fast-check-in-famous-packages)
-
-[Examples](https://github.com/dubzzz/fast-check/tree/master/example) - [Examples against REST API](https://github.com/dubzzz/fuzz-rest-api) - [More examples](https://github.com/dubzzz/fast-check-examples)
-
-----
-
 ## Getting started
 
 Install the module with: `npm install fast-check --save-dev`
 
-Running examples in RunKit: https://runkit.com/dubzzz/fast-check-basic-examples
-
-Property based testing explained:
-- [John Hughes — Don’t Write Tests](https://www.youtube.com/watch?v=hXnS_Xjwk2Y)
-- [Generating test cases so you don’t have to (Spotify)](https://labs.spotify.com/2015/06/25/rapid-check/)
-
-If you want to synchronize and build the code locally:
-
-```bash
-git clone https://github.com/dubzzz/fast-check.git && cd fast-check
-npm install
-npm run prebuild #generate missing implementations: tuple and properties
-npm run build    #compile the code in ./src, build the ./lib content
-npm run test     #run unit tests
-npm run e2e      #run end-to-end tests: check the code can shrink on errors, replay on failure...
-```
-
-## Usage
-
-### In mocha or jasmine
-
-Using fast-check with [mocha](http://mochajs.org/) is really straightfoward.
-It can be used directly in `describe`, `it` blocks with no extra care.
-
-The following snippets written in Javascript shows an example featuring two properties:
+Example of integration in [mocha](http://mochajs.org/):
 
 ```js
 const fc = require('fast-check');
@@ -81,9 +25,11 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
 describe('properties', () => {
+    // string text always contains itself
     it('should always contain itself', () => {
         fc.assert(fc.property(fc.string(), text => contains(text, text)));
     });
+    // string a + b + c always contains b, whatever the values of a, b and c
     it('should always contain its substrings', () => {
         fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => contains(a+b+c, b)));
     });
@@ -109,7 +55,13 @@ More on integration in:
 and
 [tape](https://github.com/dubzzz/fast-check-examples/blob/master/test-tape/example.spec.js).
 
-### In a web-page
+More examples:
+[simple examples](https://github.com/dubzzz/fast-check/tree/master/example),
+[fuzzing](https://github.com/dubzzz/fuzz-rest-api)
+and
+[against various algorithms](https://github.com/dubzzz/fast-check-examples)
+
+## In a web-page
 
 In order to use fast-check from a web-page (for instance with QUnit or other testing tools), you have to reference the web-aware script as follow:
 
@@ -127,7 +79,7 @@ Once it has been included, fast-check becomes accessible directly by calling `fa
 
 ## Why should I migrate to fast-check?
 
-`fast-check` has initially be designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
+fast-check has initially be designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
 - strong and up-to-date types - *thanks to TypeScript*
 - ability to shrink on `fc.oneof` - *unfortunately it is often not the case*
