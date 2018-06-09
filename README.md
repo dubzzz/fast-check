@@ -93,11 +93,14 @@ Once it has been included, fast-check becomes accessible directly by calling `fa
 fast-check has initially be designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
 - strong and up-to-date types - *thanks to TypeScript*
-- ability to shrink on `fc.oneof` - *unfortunately it is often not the case*
+- ability to shrink on `fc.oneof` - *surprisingly some frameworks don't*
 - easy `map` method to derive existing arbitraries while keeping shrink - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
+- kind of flatMap-operation called `chain` - *able to bind the output of an arbitrary as input of another one while keeping the shrink working*
 - biased by default - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
 - verbose mode - *easier troubleshooting with verbose mode enabled*
-- replay directly on the minimal counterexample
+- replay directly on the minimal counterexample - *no need to replay the whole sequence, you get directly the counterexample*
+
+For more details, refer to the documentation in the links above.
 
 ## Issues found by fast-check in famous packages
 
