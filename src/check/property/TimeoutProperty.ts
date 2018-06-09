@@ -1,5 +1,4 @@
 import Random from '../../random/generator/Random';
-import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from './IProperty';
 
@@ -18,7 +17,7 @@ export class TimeoutProperty<Ts> implements IProperty<Ts> {
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return this.property.generate(mrng, runId);
   }
-  async run(v: Ts): Promise<string | null> {
+  async run(v: Ts) {
     return Promise.race([this.property.run(v), timeoutAfter(this.timeMs)]);
   }
 }
