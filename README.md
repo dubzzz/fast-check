@@ -68,6 +68,7 @@ Useful documentations:
 - [:wrench: Custom arbitraries](https://github.com/dubzzz/fast-check/documentation/AdvancedArbitraries.md)
 - [:running_man: Property based runners](https://github.com/dubzzz/fast-check/documentation/Runners.md)
 - [:boom: Tips](https://github.com/dubzzz/fast-check/documentation/Tips.md)
+- [:mag: Generated documentation](https://dubzzz.github.io/fast-check/)
 
 ## In a web-page
 
@@ -98,7 +99,7 @@ fast-check has initially be designed in an attempt to cope with limitations I en
 
 ## Issues found by fast-check in famous packages
 
-`fast-check` has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using `fast-check`:
+fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
 
 ### [js-yaml](https://github.com/nodeca/js-yaml/)
 
