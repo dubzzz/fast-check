@@ -15,7 +15,7 @@
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
 
-![Logo](./logo.png)
+![Logo](https://raw.githubusercontent.com/dubzzz/fast-check/master/logo.png)
 
 Install the module with: `npm install fast-check --save-dev`
 
@@ -66,10 +66,10 @@ and
 [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
-- [:hatching_chick: Built-in arbitraries](https://github.com/dubzzz/fast-check/documentation/Arbitraries.md)
-- [:wrench: Custom arbitraries](https://github.com/dubzzz/fast-check/documentation/AdvancedArbitraries.md)
-- [:running_man: Property based runners](https://github.com/dubzzz/fast-check/documentation/Runners.md)
-- [:boom: Tips](https://github.com/dubzzz/fast-check/documentation/Tips.md)
+- [:hatching_chick: Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md)
+- [:wrench: Custom arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md)
+- [:running_man: Property based runners](https://github.com/dubzzz/fast-check/blob/master/documentation/Runners.md)
+- [:boom: Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md)
 - [:mag: Generated documentation](https://dubzzz.github.io/fast-check/)
 
 ## In a web-page
