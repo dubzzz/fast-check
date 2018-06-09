@@ -1,3 +1,20 @@
+# 1.2.0
+
+_Built-in chaining of arbitraries_
+
+## Features
+
+- ([PR#103](/pull/103)) Use the output of arbitraries to produce other ones with `.chain(...)`
+- ([PR#114](/pull/114)) Add shrink for `fc.lorem`
+- ([PR#116](/pull/116)) Throw exception in case of bad path when trying to replay a failure
+
+## Fixes:
+
+- ([PR#117](/pull/117)) Doc: Fully revamp the documentation
+- ([a5dcd71c](/commit/a5dcd71c)) Doc: New logo
+
+---
+
 # 1.1.4
 
 _Better performance for biased arbitraries (=default)_
