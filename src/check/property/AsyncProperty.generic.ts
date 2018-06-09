@@ -15,13 +15,13 @@ export class AsyncProperty<Ts> implements IProperty<Ts> {
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
-  async run(v: Ts): Promise<string | null> {
+  async run(v: Ts): Promise<PreconditionFailure | string | null> {
     try {
       const output = await this.predicate(v);
       return output == null || output === true ? null : 'Property failed by returning false';
     } catch (err) {
       // precondition failure considered as success for the first version
-      if (PreconditionFailure.isFailure(err)) return null;
+      if (PreconditionFailure.isFailure(err)) return err;
       // exception as string in case of real failure
       if (err instanceof Error && err.stack) return `${err}\n\nStack trace: ${err.stack}`;
       return `${err}`;

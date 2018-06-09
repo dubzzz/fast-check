@@ -1,6 +1,6 @@
 import Random from '../../random/generator/Random';
-import Stream from '../../stream/Stream';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
 /**
  * Property
@@ -27,7 +27,7 @@ export default interface IProperty<Ts> {
    * Check the predicate for v
    * @param v Value of which we want to check the predicate
    */
-  run(v: Ts): Promise<string | null> | (string | null);
+  run(v: Ts): Promise<PreconditionFailure | string | null> | (PreconditionFailure | string | null);
 }
 
 /**

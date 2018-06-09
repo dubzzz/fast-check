@@ -1,4 +1,5 @@
 import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { AsyncProperty } from '../property/AsyncProperty';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
@@ -25,8 +26,8 @@ function runIt<Ts>(
     done = true;
     let idx = 0;
     for (const v of values) {
-      const out = property.run(v.value) as string | null;
-      if (out != null) {
+      const out = property.run(v.value) as PreconditionFailure | string | null;
+      if (out != null && typeof out === 'string') {
         runExecution.fail(v.value, idx, out);
         values = v.shrink();
         done = false;
@@ -52,7 +53,7 @@ async function asyncRunIt<Ts>(
     let idx = 0;
     for (const v of values) {
       const out = await property.run(v.value);
-      if (out != null) {
+      if (out != null && typeof out === 'string') {
         runExecution.fail(v.value, idx, out);
         values = v.shrink();
         done = false;

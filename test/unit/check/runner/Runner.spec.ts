@@ -7,6 +7,7 @@ import IProperty from '../../../../src/check/property/IProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import Random from '../../../../src/random/generator/Random';
 import { RunDetails } from '../../../../src/check/runner/reporter/RunDetails';
+import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { stream, Stream } from '../../../../src/stream/Stream';
 
 const MAX_NUM_RUNS = 1000;
@@ -34,6 +35,26 @@ describe('Runner', () => {
       const out = check(p) as RunDetails<[number]>;
       assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
       assert.equal(num_calls_run, 100, 'Should have called run 100 times');
+      assert.equal(out.failed, false, 'Should not have failed');
+    });
+    it('Should consider precondition failure as success', () => {
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => new Shrinkable([0]) as Shrinkable<[number]>,
+        run: (value: [number]) => new PreconditionFailure()
+      };
+      const out = check(p) as RunDetails<[number]>;
+      assert.equal(out.numRuns, 100, 'Should have count 100 runs');
+      assert.equal(out.failed, false, 'Should not have failed');
+    });
+    it('Should consider precondition failure in async properties as success', async () => {
+      const p: IProperty<[number]> = {
+        isAsync: () => true,
+        generate: () => new Shrinkable([0]) as Shrinkable<[number]>,
+        run: async (value: [number]) => new PreconditionFailure()
+      };
+      const out = await (check(p) as Promise<RunDetails<[number]>>);
+      assert.equal(out.numRuns, 100, 'Should have count 100 runs');
       assert.equal(out.failed, false, 'Should not have failed');
     });
     it('Should never call shrink on success', () => {
