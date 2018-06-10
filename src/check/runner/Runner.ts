@@ -96,7 +96,7 @@ function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<
     .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
     .take(1)
     .map(producer => producer());
-  const adaptedPath = ['0', ...path.slice(1)].join(':');
+  const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
   return stream(pathWalk(adaptedPath, pathStream)).map(v => () => v);
 }
 
