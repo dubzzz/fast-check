@@ -34,6 +34,16 @@ function asyncProperty<T1,T2>(
 ...
 ```
 
+**TIPS:**
+
+If you want to filter invalid entries directly at predicate level, you can use `fc.pre(...)`.
+
+`fc.pre` is responsible to check for preconditions within predicate scope.
+
+Whenever running a predicate, the framework runs the `fc.pre` instructions as they come and if one of them has a falsy value, it stops the execution flow and asks for another value to run the predicate on.
+
+An alternate solution would be to filter invalid entries at arbitrary level. It can be done using `.filter(...)`.
+
 **WARNING:**
 
 > The predicate function must not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
