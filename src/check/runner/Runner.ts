@@ -38,6 +38,10 @@ function runIt<Ts>(
         done = false;
         break;
       }
+      if (out != null) {
+        // skipped the run
+        ++maxInitialIterations;
+      }
       ++idx;
     }
   }
@@ -67,6 +71,10 @@ async function asyncRunIt<Ts>(
         values = v.shrink();
         done = false;
         break;
+      }
+      if (out != null) {
+        // skipped the run
+        ++maxInitialIterations;
       }
       ++idx;
     }

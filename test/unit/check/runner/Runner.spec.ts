@@ -37,25 +37,35 @@ describe('Runner', () => {
       assert.equal(num_calls_run, 100, 'Should have called run 100 times');
       assert.equal(out.failed, false, 'Should not have failed');
     });
-    it('Should consider precondition failure as success', () => {
-      const p: IProperty<[number]> = {
-        isAsync: () => false,
-        generate: () => new Shrinkable([0]) as Shrinkable<[number]>,
-        run: (value: [number]) => new PreconditionFailure()
-      };
-      const out = check(p) as RunDetails<[number]>;
-      assert.equal(out.numRuns, 100, 'Should have count 100 runs');
-      assert.equal(out.failed, false, 'Should not have failed');
-    });
-    it('Should consider precondition failure in async properties as success', async () => {
-      const p: IProperty<[number]> = {
-        isAsync: () => true,
-        generate: () => new Shrinkable([0]) as Shrinkable<[number]>,
-        run: async (value: [number]) => new PreconditionFailure()
-      };
-      const out = await (check(p) as Promise<RunDetails<[number]>>);
-      assert.equal(out.numRuns, 100, 'Should have count 100 runs');
-      assert.equal(out.failed, false, 'Should not have failed');
+    it('Should ignore precondition failure runs and generate another value', async () => {
+      const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
+      const successfulRunIdsArb = gapsBetweenSuccessesArb.map(gaps =>
+        gaps.reduce((prev: number[], cur: number) => {
+          prev.push(prev.length === 0 ? cur : prev[prev.length - 1] + cur + 1);
+          return prev;
+        }, [])
+      );
+      await fc.assert(
+        fc.asyncProperty(successfulRunIdsArb, fc.boolean(), async (successIds, isAsyncProp) => {
+          let num_calls_generate = 0;
+          let num_calls_run = 0;
+          const p: IProperty<[number]> = {
+            isAsync: () => isAsyncProp,
+            generate: () => new Shrinkable([num_calls_generate++]) as Shrinkable<[number]>,
+            run: (value: [number]) => {
+              ++num_calls_run;
+              if (successIds.includes(value[0])) return null;
+              return new PreconditionFailure();
+            }
+          };
+          const out = await check(p);
+          const expectedGenerate = successIds[successIds.length - 1] + 1;
+          assert.equal(num_calls_generate, expectedGenerate, `Should have called generate ${expectedGenerate} times`);
+          assert.equal(num_calls_run, expectedGenerate, `Should have called run ${expectedGenerate} times`);
+          assert.equal(out.numRuns, 100, 'Should have count 100 runs');
+          assert.equal(out.failed, false, 'Should not have failed');
+        })
+      );
     });
     it('Should never call shrink on success', () => {
       let num_calls_generate = 0;
