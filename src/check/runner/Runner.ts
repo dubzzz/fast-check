@@ -25,7 +25,11 @@ function runIt<Ts>(
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
   function* g() {
-    while (--maxInitialIterations !== -1 && remainingSkips >= 0) yield initialValues.next().value();
+    while (--maxInitialIterations !== -1 && remainingSkips >= 0) {
+      const n = initialValues.next();
+      if (n.done) return;
+      yield n.value();
+    }
   }
   let values: IterableIterator<Shrinkable<Ts>> = g();
   while (!done) {
@@ -64,7 +68,11 @@ async function asyncRunIt<Ts>(
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
   function* g() {
-    while (--maxInitialIterations !== -1 && remainingSkips >= 0) yield initialValues.next().value();
+    while (--maxInitialIterations !== -1 && remainingSkips >= 0) {
+      const n = initialValues.next();
+      if (n.done) return;
+      yield n.value();
+    }
   }
   let values: IterableIterator<Shrinkable<Ts>> = g();
   while (!done) {
@@ -104,7 +112,6 @@ function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<
   const pathPoints = path.split(':');
   const pathStream = stream(valueProducers)
     .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
-    .take(1)
     .map(producer => producer());
   const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
   return stream(pathWalk(adaptedPath, pathStream)).map(v => () => v);
