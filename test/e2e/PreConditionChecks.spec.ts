@@ -11,4 +11,13 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
       })
     );
   });
+  it('should consider run as failure on too many pre failures', () => {
+    const out = fc.check(
+      fc.property(fc.integer(), fc.integer(), (x, y) => {
+        fc.pre(false);
+        return true;
+      })
+    );
+    assert.ok(out.failed);
+  });
 });

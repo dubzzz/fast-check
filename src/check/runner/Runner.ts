@@ -19,12 +19,13 @@ function runIt<Ts>(
   property: IProperty<Ts>,
   initialValues: IterableIterator<() => Shrinkable<Ts>>,
   maxInitialIterations: number,
+  remainingSkips: number,
   verbose: boolean
 ): RunExecution<Ts> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
   function* g() {
-    while (--maxInitialIterations !== -1) yield initialValues.next().value();
+    while (--maxInitialIterations !== -1 && remainingSkips >= 0) yield initialValues.next().value();
   }
   let values: IterableIterator<Shrinkable<Ts>> = g();
   while (!done) {
@@ -41,7 +42,10 @@ function runIt<Ts>(
       if (out != null) {
         // skipped the run
         runExecution.skip();
+        --remainingSkips;
         ++maxInitialIterations;
+      } else {
+        runExecution.success();
       }
       ++idx;
     }
@@ -54,12 +58,13 @@ async function asyncRunIt<Ts>(
   property: IProperty<Ts>,
   initialValues: IterableIterator<() => Shrinkable<Ts>>,
   maxInitialIterations: number,
+  remainingSkips: number,
   verbose: boolean
 ): Promise<RunExecution<Ts>> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
   function* g() {
-    while (--maxInitialIterations !== -1) yield initialValues.next().value();
+    while (--maxInitialIterations !== -1 && remainingSkips >= 0) yield initialValues.next().value();
   }
   let values: IterableIterator<Shrinkable<Ts>> = g();
   while (!done) {
@@ -76,7 +81,10 @@ async function asyncRunIt<Ts>(
       if (out != null) {
         // skipped the run
         runExecution.skip();
+        --remainingSkips;
         ++maxInitialIterations;
+      } else {
+        runExecution.success();
       }
       ++idx;
     }
@@ -133,15 +141,17 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   const generator = toss(property, qParams.seed);
 
   const maxInitialIterations = qParams.path.length === 0 ? qParams.numRuns : -1;
+  const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const initialValues = qParams.path.length === 0 ? generator : runnerPathWalker(generator, qParams.path);
   return property.isAsync()
-    ? asyncRunIt(property, initialValues, maxInitialIterations, qParams.verbose).then(e =>
-        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns)
+    ? asyncRunIt(property, initialValues, maxInitialIterations, maxSkips, qParams.verbose).then(e =>
+        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
       )
-    : runIt(property, initialValues, maxInitialIterations, qParams.verbose).toRunDetails(
+    : runIt(property, initialValues, maxInitialIterations, maxSkips, qParams.verbose).toRunDetails(
         qParams.seed,
         qParams.path,
-        qParams.numRuns
+        qParams.numRuns,
+        maxSkips
       );
 }
 

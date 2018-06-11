@@ -65,6 +65,7 @@ It can be parametrized using its second argument.
 export interface Parameters {
     seed?: number;      // optional, initial seed of the generator: Date.now() by default
     numRuns?: number;   // optional, number of runs before success: 100 by default
+    maxSkipsPerRun?: number; // optional, maximal number of skipped entries per run: 100 by default
     timeout?: number;   // optional, only taken into account for asynchronous runs (asyncProperty)
                         // specify a timeout in milliseconds, maximum time for the predicate to return its result
                         // only works for async code, will not interrupt a synchronous code: disabled by default
@@ -95,7 +96,7 @@ The details returned by `fc.check` are the following:
 
 ```typescript
 interface RunDetails<Ts> {
-    failed: boolean;         // false in case of failure, true otherwise
+    failed: boolean;         // true in case of failure or too many skips, false otherwise
     numRuns: number;         // number of runs (all runs if success, up and including the first failure if failed)
     numSkips: number;        // number of skipped entries due to failed pre-condition (before the first failure)
     numShrinks: number;      // number of shrinks (depth required to get the minimal failing example)
@@ -108,6 +109,8 @@ interface RunDetails<Ts> {
     error: string|null;      // failure only: stack trace and error details
 }
 ```
+
+*Please note that in case of too many pre-condition failures, the run will be marked as failed. However it will come with no value for failure specific details: counterexample, counterexamplePath and error.*
 
 ```typescript
 function check<Ts>(property: IProperty<Ts>, params?: Parameters);

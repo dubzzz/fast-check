@@ -10,6 +10,7 @@ import { Parameters } from './Parameters';
 export class QualifiedParameters {
   seed: number;
   numRuns: number;
+  maxSkipsPerRun: number;
   timeout: number | null;
   path: string;
   logger: (v: string) => void;
@@ -24,6 +25,8 @@ export class QualifiedParameters {
     if ((p as { num_runs?: number }).num_runs != null) return (p as { num_runs: number }).num_runs;
     return defaultValue;
   };
+  private static readMaxSkipsPerRun = (p?: Parameters): number =>
+    p != null && p.maxSkipsPerRun != null ? p.maxSkipsPerRun : 100;
   private static readTimeout = (p?: Parameters): number | null => (p != null && p.timeout != null ? p.timeout : null);
   private static readPath = (p?: Parameters): string => (p != null && p.path != null ? p.path : '');
   private static readUnbiased = (p?: Parameters): boolean => p != null && p.unbiased === true;
@@ -44,6 +47,7 @@ export class QualifiedParameters {
     return {
       seed: QualifiedParameters.readSeed(p),
       numRuns: QualifiedParameters.readNumRuns(p),
+      maxSkipsPerRun: QualifiedParameters.readMaxSkipsPerRun(p),
       timeout: QualifiedParameters.readTimeout(p),
       logger: QualifiedParameters.readLogger(p),
       path: QualifiedParameters.readPath(p),
