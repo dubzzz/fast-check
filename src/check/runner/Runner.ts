@@ -40,6 +40,7 @@ function runIt<Ts>(
       }
       if (out != null) {
         // skipped the run
+        runExecution.skip();
         ++maxInitialIterations;
       }
       ++idx;
@@ -74,6 +75,7 @@ async function asyncRunIt<Ts>(
       }
       if (out != null) {
         // skipped the run
+        runExecution.skip();
         ++maxInitialIterations;
       }
       ++idx;
