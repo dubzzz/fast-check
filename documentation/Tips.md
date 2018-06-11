@@ -28,6 +28,12 @@ fc.assert(
 
 Whenever it encounters a failing precondition, the framework generates another value and forgets about this run - *neither failed nor succeeded*.
 
+The advantage of `fc.pre(...)` over `.filter(...)` is that runs having too many rejected values will be marked as faulty. When used in combination of `fc.check(...)` it can help to design new filtered arbitraries as the number of skipped values will be computed and available in the output.
+
+However when your arbitrary is safe enough, switching to `.filter(...)` might be taken into for two reasons:
+- easier to share the arbitrary across multiple tests
+- higher performances - contrary to `fc.pre`, `fc.filter` is not exception-based making it faster
+
 ## Opt for verbose failures
 
 By default, the failures reported by `fast-check` feature most relevant data:

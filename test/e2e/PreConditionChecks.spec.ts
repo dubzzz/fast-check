@@ -20,4 +20,8 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
     );
     assert.ok(out.failed);
   });
+  it('should not failed when no skips on no skips allowed', () => {
+    const out = fc.check(fc.property(fc.integer(), fc.integer(), (x, y) => true), { maxSkipsPerRun: 0 });
+    assert.ok(!out.failed);
+  });
 });
