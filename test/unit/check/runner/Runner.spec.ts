@@ -93,6 +93,38 @@ describe('Runner', () => {
         )
       );
     });
+    it('Should fail on too many precondition failures', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.nat(1000).chain(v => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
+          fc.boolean(),
+          async (settings, isAsyncProp) => {
+            let num_calls_generate = 0;
+            let num_precondition_failures = 0;
+            const p: IProperty<[number]> = {
+              isAsync: () => isAsyncProp,
+              generate: () => new Shrinkable([num_calls_generate++]) as Shrinkable<[number]>,
+              run: (value: [number]) => {
+                if (value[0] === settings.onlySuccessId) return null;
+                ++num_precondition_failures;
+                return new PreconditionFailure();
+              }
+            };
+            const out = await check(p, { numRuns: 2, maxSkipsPerRun: settings.maxSkipsPerRun });
+            const expectedSkips = 2 * settings.maxSkipsPerRun + 1;
+            const expectedRuns = settings.onlySuccessId === expectedSkips ? 0 : 1;
+            assert.equal(out.numRuns, expectedRuns, `Should have count ${expectedRuns} run`);
+            assert.equal(
+              out.numSkips,
+              expectedSkips,
+              `Should have run ${num_precondition_failures} precondition failures`
+            );
+            assert.equal(out.numSkips, expectedSkips, `Should have count ${expectedSkips} skips`);
+            assert.equal(out.failed, true, 'Should have failed');
+          }
+        )
+      );
+    });
     it('Should never call shrink on success', () => {
       let num_calls_generate = 0;
       let num_calls_run = 0;
