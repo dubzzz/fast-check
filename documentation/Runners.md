@@ -42,7 +42,7 @@ If you want to filter invalid entries directly at predicate level, you can use `
 
 Whenever running a predicate, the framework runs the `fc.pre` instructions as they come and if one of them has a falsy value, it stops the execution flow and asks for another value to run the predicate on.
 
-An alternate solution would be to filter invalid entries at arbitrary level. It can be done using `.filter(...)`.
+Contrary to its alternate solution, `.filter(...)`, a run having too many failing `fc.pre(...)` will be marked as faulty. The tolerance before marking such run as faulty can be customized with `maxSkipsPerRun` but it is recommended not to increase it too much - *too many precondition failures means lots of wasted generated values and an inefficient arbitrary definition*.
 
 **WARNING:**
 
