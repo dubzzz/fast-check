@@ -1,0 +1,14 @@
+import * as assert from 'assert';
+import * as fc from '../../src/fast-check';
+
+const seed = Date.now();
+describe(`PreConditionChecks (seed: ${seed})`, () => {
+  it('should skip property execution whenever pre fails', () => {
+    fc.assert(
+      fc.property(fc.integer(), fc.integer(), (x, y) => {
+        fc.pre(x < y);
+        return x < y;
+      })
+    );
+  });
+});
