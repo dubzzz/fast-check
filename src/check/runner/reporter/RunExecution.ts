@@ -12,9 +12,11 @@ export class RunExecution<Ts> {
   value?: Ts;
   failure: string;
   allFailures: Ts[];
+  numSkips: number;
 
   constructor(readonly storeFailures: boolean) {
     this.allFailures = [];
+    this.numSkips = 0;
   }
 
   fail(value: Ts, id: number, message: string) {
@@ -23,6 +25,11 @@ export class RunExecution<Ts> {
     else this.pathToFailure += `:${id}`;
     this.value = value;
     this.failure = message;
+  }
+  skip() {
+    if (this.pathToFailure == null) {
+      ++this.numSkips;
+    }
   }
 
   private isSuccess = (): boolean => this.pathToFailure == null;
@@ -51,7 +58,7 @@ export class RunExecution<Ts> {
         }
       : {
           failed: true,
-          numRuns: this.firstFailure() + 1,
+          numRuns: this.firstFailure() + 1 - this.numSkips,
           numShrinks: this.numShrinks(),
           seed,
           counterexample: this.value!,
