@@ -66,6 +66,7 @@ describe('Runner', () => {
             const out = await check(p);
             if (failAtId == null) {
               const expectedGenerate = successIds[successIds.length - 1] + 1;
+              const expectedSkips = expectedGenerate - 100;
               assert.equal(
                 num_calls_generate,
                 expectedGenerate,
@@ -73,9 +74,11 @@ describe('Runner', () => {
               );
               assert.equal(num_calls_run, expectedGenerate, `Should have called run ${expectedGenerate} times`);
               assert.equal(out.numRuns, 100, 'Should have count 100 runs');
+              assert.equal(out.numSkips, expectedSkips, `Should have count ${expectedSkips} skips`);
               assert.equal(out.failed, false, 'Should not have failed');
             } else {
               const expectedGenerate = successIds[failAtId] + 1;
+              const expectedSkips = expectedGenerate - failAtId - 1;
               assert.equal(
                 num_calls_generate,
                 expectedGenerate,
@@ -83,6 +86,7 @@ describe('Runner', () => {
               );
               assert.equal(num_calls_run, expectedGenerate, `Should have called run ${expectedGenerate} times`);
               assert.equal(out.numRuns, failAtId + 1, `Should have count ${failAtId} runs`);
+              assert.equal(out.numSkips, expectedSkips, `Should have count ${expectedSkips} skips`);
               assert.equal(out.failed, true, 'Should have failed');
             }
           }

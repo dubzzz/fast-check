@@ -49,6 +49,7 @@ export class RunExecution<Ts> {
       ? {
           failed: false,
           numRuns,
+          numSkips: this.numSkips,
           numShrinks: 0,
           seed,
           counterexample: null,
@@ -59,6 +60,7 @@ export class RunExecution<Ts> {
       : {
           failed: true,
           numRuns: this.firstFailure() + 1 - this.numSkips,
+          numSkips: this.numSkips,
           numShrinks: this.numShrinks(),
           seed,
           counterexample: this.value!,
