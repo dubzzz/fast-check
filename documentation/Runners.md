@@ -64,7 +64,7 @@ It can be parametrized using its second argument.
 ```typescript
 export interface Parameters {
     seed?: number;      // optional, initial seed of the generator: Date.now() by default
-    numRuns?: number;   // optional, number of runs before success: 100 by default 
+    numRuns?: number;   // optional, number of runs before success: 100 by default
     timeout?: number;   // optional, only taken into account for asynchronous runs (asyncProperty)
                         // specify a timeout in milliseconds, maximum time for the predicate to return its result
                         // only works for async code, will not interrupt a synchronous code: disabled by default
@@ -95,16 +95,17 @@ The details returned by `fc.check` are the following:
 
 ```typescript
 interface RunDetails<Ts> {
-    failed: boolean,         // false in case of failure, true otherwise
-    numRuns: number,         // number of runs (all runs if success, up and including the first failure if failed)
-    numShrinks: number,      // number of shrinks (depth required to get the minimal failing example)
-    seed: number,            // seed used for the test
-    counterexample: Ts|null, // failure only: shrunk conterexample causig the property to fail
-    counterexamplePath: string|null, // failure only: the exact path to re-run the counterexample
+    failed: boolean;         // false in case of failure, true otherwise
+    numRuns: number;         // number of runs (all runs if success, up and including the first failure if failed)
+    numSkips: number;        // number of skipped entries due to failed pre-condition (before the first failure)
+    numShrinks: number;      // number of shrinks (depth required to get the minimal failing example)
+    seed: number;            // seed used for the test
+    counterexample: Ts|null; // failure only: shrunk conterexample causig the property to fail
+    counterexamplePath: string|null; // failure only: the exact path to re-run the counterexample
                                      // In order to replay the failing case directly,
                                      // this value as to be set as path attribute in the Parameters (with the seed)
                                      // of assert, check, sample or even statistics
-    error: string|null,      // failure only: stack trace and error details
+    error: string|null;      // failure only: stack trace and error details
 }
 ```
 
