@@ -5,7 +5,7 @@ npm install
 
 status=0
 
-for testUnit in "contains:6:0" "knight:15:1" "settings:0:1"
+for testUnit in "contains:6:0" "knight:15:1" "settings:0:1" "model:1:0"
 do
     name=`echo "${testUnit}" | cut -d: -f1`
     success=`echo "${testUnit}" | cut -d: -f2`
