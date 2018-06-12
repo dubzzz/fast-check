@@ -1,0 +1,47 @@
+/**
+ * Basic state machine
+ * Example of how fast-check can be derived for model based testing
+ */
+export class MusicPlayer {
+  private tracks: string[];
+  private isPlaying: boolean;
+  private playingId: number;
+
+  constructor(tracks: string[]) {
+    this.tracks = [...tracks];
+    this.isPlaying = false;
+    this.playingId = 0;
+  }
+
+  playing(): boolean {
+    return this.isPlaying;
+  }
+
+  currentTrackName(): string | null {
+    return this.playingId != null && this.playingId < this.tracks.length ? this.tracks[this.playingId] : null;
+  }
+
+  play(): void {
+    this.isPlaying = true;
+  }
+  pause(): void {
+    this.isPlaying = false;
+  }
+
+  addTrack(trackName: string, position: number): void {
+    this.tracks = [...this.tracks.slice(0, position), trackName, ...this.tracks.slice(position)];
+    if (this.playingId >= position) {
+      // comment this block to check bug detection
+      ++this.playingId;
+    }
+  }
+
+  next(): void {
+    if (++this.playingId === this.tracks.length) {
+      this.playingId = 0;
+    }
+  }
+  jump(position: number): void {
+    this.playingId = position;
+  }
+}
