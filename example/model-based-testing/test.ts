@@ -3,7 +3,7 @@ import * as fc from '../../lib/fast-check';
 import { Command } from './helpers/Command';
 import { CommandExecutor } from './helpers/CommandExecutor';
 
-import { MusicPlayer } from './MusicPlayer';
+import { MusicPlayer, MusicPlayerA, MusicPlayerB } from './MusicPlayer';
 
 class MusicPlayerModel {
   isPlaying: boolean = false;
@@ -79,7 +79,7 @@ class AddTrackCommand implements MusicPlayerCommand {
     assert.equal(p.currentTrackName(), trackBefore);
   }
   toString() {
-    return `AddTrack(${this.position}, ${this.trackName})`;
+    return `AddTrack(${this.position}, "${this.trackName}")`;
   }
 }
 
@@ -93,10 +93,22 @@ describe('MusicPlayer', () => {
       fc.record({ position: fc.nat(), trackName: TrackNameArb }).map(d => new AddTrackCommand(d.position, d.trackName))
     )
   );
-  it('should run fast-check on model based approach', () =>
+  it('should run fast-check on model based approach against MusicPlayerA', () =>
     fc.assert(
       fc.property(fc.set(TrackNameArb, 1, 10), CommandsArb, (initialTracks, commands) => {
-        const real = new MusicPlayer(initialTracks);
+        const real = new MusicPlayerA(initialTracks);
+        const model = new MusicPlayerModel();
+        model.numTracks = initialTracks.length;
+        for (const t of initialTracks) {
+          model.tracksAlreadySeen[t] = true;
+        }
+        CommandExecutor(() => ({ model, real }), commands);
+      })
+    ));
+  it('should run fast-check on model based approach against MusicPlayerB', () =>
+    fc.assert(
+      fc.property(fc.set(TrackNameArb, 1, 10), CommandsArb, (initialTracks, commands) => {
+        const real = new MusicPlayerB(initialTracks);
         const model = new MusicPlayerModel();
         model.numTracks = initialTracks.length;
         for (const t of initialTracks) {
