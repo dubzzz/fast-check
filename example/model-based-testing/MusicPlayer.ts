@@ -1,13 +1,23 @@
+export interface MusicPlayer {
+  playing(): boolean;
+  currentTrackName(): string | null;
+  play(): void;
+  pause(): void;
+  addTrack(trackName: string, position: number): void;
+  next(): void;
+  jump(position: number): void;
+}
+
 /**
  * Basic state machine
  * Example of how fast-check can be derived for model based testing
  */
-export class MusicPlayer {
+class MusicPlayerRaw implements MusicPlayer {
   private tracks: string[];
   private isPlaying: boolean;
   private playingId: number;
 
-  constructor(tracks: string[]) {
+  constructor(tracks: string[], readonly buggy: boolean) {
     this.tracks = [...tracks];
     this.isPlaying = false;
     this.playingId = 0;
@@ -30,8 +40,7 @@ export class MusicPlayer {
 
   addTrack(trackName: string, position: number): void {
     this.tracks = [...this.tracks.slice(0, position), trackName, ...this.tracks.slice(position)];
-    if (this.playingId >= position) {
-      // comment this block to check bug detection
+    if (!this.buggy && this.playingId >= position) {
       ++this.playingId;
     }
   }
@@ -43,5 +52,16 @@ export class MusicPlayer {
   }
   jump(position: number): void {
     this.playingId = position;
+  }
+}
+
+export class MusicPlayerA extends MusicPlayerRaw {
+  constructor(tracks: string[]) {
+    super(tracks, true);
+  }
+}
+export class MusicPlayerB extends MusicPlayerRaw {
+  constructor(tracks: string[]) {
+    super(tracks, false);
   }
 }
