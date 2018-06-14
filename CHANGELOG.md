@@ -1,3 +1,12 @@
+# 1.2.1
+
+_Readme update_
+
+## Fixes
+
+- ([b80b4f92](/commit/b80b4f92)) Doc: Model based testing example
+- ([cc4f4f4f](/commit/cc4f4f4f)) Doc: Getting started tutorial
+
 # 1.2.0
 
 _Built-in chaining of arbitraries_
