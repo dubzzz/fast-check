@@ -31,12 +31,17 @@ function constant<T>(value: T): Arbitrary<T> {
 }
 
 /**
- * For one of `v0` or `...values` values - all equiprobable
- * @param v0 One of the value to produce (all values shrink to this one)
- * @param values Other possible values
+ * For one `...values` values - all equiprobable
+ *
+ * **WARNING**: It expects at least one value, otherwise it should throw
+ *
+ * @param values Constant values to be produced (all values shrink to the first one)
  */
-function constantFrom<T>(v0: T, ...values: T[]): Arbitrary<T> {
-  return new ConstantArbitrary<T>([v0, ...values]);
+function constantFrom<T>(...values: T[]): Arbitrary<T> {
+  if (values.length === 0) {
+    throw new Error('fc.constantFrom expects at least one parameter');
+  }
+  return new ConstantArbitrary<T>([...values]);
 }
 
 export { constant, constantFrom };
