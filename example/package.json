@@ -6,7 +6,8 @@
     "test:contains": "mocha contains/test.js",
     "test:knight": "mocha shadows-of-the-knight-codingame/test.js",
     "test:settings": "mocha optional-settings-combination/test.js",
-    "test:model": "mocha --require ts-node/register model-based-testing/test.ts"
+    "test:model": "mocha --require ts-node/register model-based-testing/test.ts",
+    "test:tree": "mocha --require ts-node/register binary-trees/test.ts"
   },
   "devDependencies": {
     "fast-check": "file:..",
