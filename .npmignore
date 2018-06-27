@@ -1,4 +1,7 @@
 .nyc_output/
 coverage/
+documentation/
 example/
+prebuild/
+src/
 test/
