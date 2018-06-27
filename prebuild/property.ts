@@ -1,6 +1,6 @@
 import { arbCommas, commas, iota, joiner, txCommas } from './helpers';
 
-const predicateFor = (num: number, isAsync: boolean): string =>
+export const predicateFor = (num: number, isAsync: boolean): string =>
   isAsync
     ? `(${commas(num, v => `t${v}:T${v}`)}) => Promise<boolean|void>`
     : `(${commas(num, v => `t${v}:T${v}`)}) => (boolean|void)`;
