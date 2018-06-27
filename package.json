@@ -8,7 +8,7 @@
     "prebuild": "ts-node prebuild/prebuild.ts",
     "build": "tsc",
     "build:publish": "tsc -p tsconfig.publish.json",
-    "webbuild": "browserify lib/fast-check.js --s fastcheck -o lib/bundle.js",
+    "webbuild": "browserify lib/fast-check.js --s fastcheck | uglifyjs -cm > lib/bundle.js",
     "watch": "tsc -w",
     "test": "npm run build && nyc mocha \"test/unit/**/*.spec.ts\"",
     "e2e": "mocha \"test/e2e/**/*.spec.ts\"",
@@ -48,7 +48,8 @@
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.12.0",
     "typedoc": "^0.11.1",
-    "typescript": "^2.9.1"
+    "typescript": "^2.9.1",
+    "uglifyjs": "^2.4.11"
   },
   "keywords": [
     "property-based testing",
