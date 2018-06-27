@@ -77,6 +77,8 @@ const intNoShrink = fc.integer().noShrink();
 
 ## Build your own
 
+**NOTE:** Before writing your own arbitrary from scratch you should have a look to the [examples](https://github.com/dubzzz/fast-check/tree/master/example) provided in the repository. There are examples for: [recursive structures](https://github.com/dubzzz/fast-check/tree/master/example/binary-trees), [properties for automata or state machine](https://github.com/dubzzz/fast-check/tree/master/example/model-based-testing) and others.
+
 You can also fully customize your arbitrary: not derive it from any of the buit-in arbitraries. What you have to do is to extend [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: Random): Shrinkable<T>`.
 
 `generate` is responsable for the generation of one new random entity of type `T` (see signature above). In order to fulfill it in a deterministic way it receives a `mrng: Random`:
@@ -88,7 +90,7 @@ You can also fully customize your arbitrary: not derive it from any of the buit-
 
 The generated value is responsible for its shrinking. Shrinking derives the item into _smaller_ values and is optional.
 
-Refer to [built-in types](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) for examples of custom arbitraries.
+Refer to [built-in types](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) for examples of fully custom arbitraries.
 
 ## Advanced features of arbitraries
 
