@@ -31,7 +31,7 @@ Example of integration in [mocha](http://mochajs.org/):
 ```js
 const fc = require('fast-check');
 
-// Code under tests
+// Code under test
 const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
@@ -82,7 +82,7 @@ Useful documentations:
 
 ## In a web-page
 
-In order to use fast-check from a web-page (for instance with QUnit or other testing tools), you have to reference the web-aware script as follow:
+In order to use fast-check from a web-page (for instance with QUnit or other testing tools), you have to reference the web-aware script as follows:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/fast-check/lib/bundle.js"></script>
@@ -98,7 +98,7 @@ Once it has been included, fast-check becomes accessible directly by calling `fa
 
 ## Why should I migrate to fast-check?
 
-fast-check has initially be designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
+fast-check has initially been designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
 - strong and up-to-date types - *thanks to TypeScript*
 - ability to shrink on `fc.oneof` - *surprisingly some frameworks don't*
