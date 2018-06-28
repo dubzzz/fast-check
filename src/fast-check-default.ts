@@ -100,7 +100,9 @@ export {
   anything,
   object,
   json,
+  jsonObject,
   unicodeJson,
+  unicodeJsonObject,
   // extend the framework
   Arbitrary,
   Shrinkable,
