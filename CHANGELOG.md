@@ -1,10 +1,22 @@
+# 1.2.3
+
+_Reduce package footprint and less restrictive API for `oneof`/`frequency`_
+
+## Fixes
+
+- ([PR#135](/pull/135)) Do not force explicitly one parameter in `oneof`/`frequency` 
+- ([PR#134](/pull/134)) Doc: Typos in README
+- ([PR#132](/pull/132)) Add missing exports for `jsonObject` and `unicodeJsonObject`
+- ([PR#131](/pull/131)) Reduce package size
+- ([PR#130](/pull/130)) Doc: Examples for generation of recursive structures
+
 # 1.2.2
 
 _Less restrictive API for `constantFrom`_
 
 ## Fixes
 
-- ([PR#123](/pull/123)) Do not force explicitly one parameter in constantFrom 
+- ([PR#123](/pull/123)) Do not force explicitly one parameter in `constantFrom`
 
 # 1.2.1
 
