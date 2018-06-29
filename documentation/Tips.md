@@ -1,8 +1,40 @@
-## [:house:](../README.md) Tips
+# [:house:](../README.md) Tips
 
 Simple tips to unlock all the power of fast-check with only few changes.
 
-### Opt for verbose failures
+## Filter invalid combinations using pre-conditions
+
+Filtering invalid combinations of generated entries can be done in two ways in fast-check:
+- at arbitrary level using `.filter(...)`
+- at property level using `fc.pre(expectedToBeTrue)`
+
+This part describes the usage of `fc.pre(...)`. More details on `.filter(...)` in [Advanced Arbitraries](./AdvancedArbitraries.md).
+
+`fc.pre(...)` can be used anywhere within check functions. For instance, you might write:
+
+```js
+fc.assert(
+  fc.property(
+    fc.nat(), fc.nat(),
+    (a, b) => {
+      // runs not having a < b will be disgarded
+      fc.pre(a < b);
+      // ... your code
+      // ... and possibly other preconditions using fc.pre(...)
+    }
+  )
+)
+```
+
+Whenever it encounters a failing precondition, the framework generates another value and forgets about this run - *neither failed nor succeeded*.
+
+The advantage of `fc.pre(...)` over `.filter(...)` is that runs having too many rejected values will be marked as faulty. When used in combination of `fc.check(...)` it can help to design new filtered arbitraries as the number of skipped values will be computed and available in the output.
+
+However when your arbitrary is safe enough, switching to `.filter(...)` might be taken into for two reasons:
+- easier to share the arbitrary across multiple tests
+- higher performances - contrary to `fc.pre`, `fc.filter` is not exception-based making it faster
+
+## Opt for verbose failures
 
 By default, the failures reported by `fast-check` feature most relevant data:
 - seed
@@ -53,7 +85,7 @@ Encountered failures were:
 
 With that output, we notice that our `contains` implementation seems to fail when the `pattern` we are looking for is the beginning of the string we are looking in.
 
-### Preview generated values
+## Preview generated values
 
 Before writing down your test, it might be great to confirm that the arbitrary you will be using produce the values you want.
 
@@ -83,7 +115,7 @@ fc.statistics(
 // Even number..49.70%
 ```
 
-### Replay after failure
+## Replay after failure
 
 `fast-check` comes with a must have feature: replay a failing case immediately given its seed and path (seed only to replay all).
 

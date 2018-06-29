@@ -1,3 +1,4 @@
+import { pre } from './check/precondition/Pre';
 import { asyncProperty } from './check/property/AsyncProperty';
 import { property } from './check/property/Property';
 import { Parameters } from './check/runner/configuration/Parameters';
@@ -59,6 +60,8 @@ export {
   // check the property
   check,
   assert,
+  // pre conditions
+  pre,
   // property definition
   property,
   asyncProperty,

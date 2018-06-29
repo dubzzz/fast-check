@@ -13,6 +13,15 @@ export interface Parameters {
    */
   numRuns?: number;
   /**
+   * Maximal number of skipped values per run
+   *
+   * Skipped is considered globally, so this value is used to compute maxSkips = maxSkipsPerRun * numRuns.
+   * Runner will consider a run to have failed if it skipped maxSkips+1 times before having generated numRuns valid entries.
+   *
+   * See {@link pre} for more details on pre-conditions
+   */
+  maxSkipsPerRun?: number;
+  /**
    * Maximum time in milliseconds for the predicate to answer: disabled by default
    *
    * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.

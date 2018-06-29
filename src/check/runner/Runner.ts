@@ -1,4 +1,6 @@
+import { stream } from '../../stream/Stream';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { AsyncProperty } from '../property/AsyncProperty';
 import IProperty from '../property/IProperty';
 import { Property } from '../property/Property';
@@ -15,22 +17,39 @@ import { throwIfFailed } from './utils/utils';
 /** @hidden */
 function runIt<Ts>(
   property: IProperty<Ts>,
-  initialValues: IterableIterator<Shrinkable<Ts>>,
+  initialValues: IterableIterator<() => Shrinkable<Ts>>,
+  maxInitialIterations: number,
+  remainingSkips: number,
   verbose: boolean
 ): RunExecution<Ts> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
-  let values: IterableIterator<Shrinkable<Ts>> = initialValues;
+  function* g() {
+    while (--maxInitialIterations !== -1 && remainingSkips >= 0) {
+      const n = initialValues.next();
+      if (n.done) return;
+      yield n.value();
+    }
+  }
+  let values: IterableIterator<Shrinkable<Ts>> = g();
   while (!done) {
     done = true;
     let idx = 0;
     for (const v of values) {
-      const out = property.run(v.value) as string | null;
-      if (out != null) {
+      const out = property.run(v.value) as PreconditionFailure | string | null;
+      if (out != null && typeof out === 'string') {
         runExecution.fail(v.value, idx, out);
         values = v.shrink();
         done = false;
         break;
+      }
+      if (out != null) {
+        // skipped the run
+        runExecution.skip();
+        --remainingSkips;
+        ++maxInitialIterations;
+      } else {
+        runExecution.success();
       }
       ++idx;
     }
@@ -41,22 +60,39 @@ function runIt<Ts>(
 /** @hidden */
 async function asyncRunIt<Ts>(
   property: IProperty<Ts>,
-  initialValues: IterableIterator<Shrinkable<Ts>>,
+  initialValues: IterableIterator<() => Shrinkable<Ts>>,
+  maxInitialIterations: number,
+  remainingSkips: number,
   verbose: boolean
 ): Promise<RunExecution<Ts>> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
-  let values: IterableIterator<Shrinkable<Ts>> = initialValues;
+  function* g() {
+    while (--maxInitialIterations !== -1 && remainingSkips >= 0) {
+      const n = initialValues.next();
+      if (n.done) return;
+      yield n.value();
+    }
+  }
+  let values: IterableIterator<Shrinkable<Ts>> = g();
   while (!done) {
     done = true;
     let idx = 0;
     for (const v of values) {
       const out = await property.run(v.value);
-      if (out != null) {
+      if (out != null && typeof out === 'string') {
         runExecution.fail(v.value, idx, out);
         values = v.shrink();
         done = false;
         break;
+      }
+      if (out != null) {
+        // skipped the run
+        runExecution.skip();
+        --remainingSkips;
+        ++maxInitialIterations;
+      } else {
+        runExecution.success();
       }
       ++idx;
     }
@@ -69,6 +105,16 @@ function decorateProperty<Ts>(rawProperty: IProperty<Ts>, qParams: QualifiedPara
   const propA =
     rawProperty.isAsync() && qParams.timeout != null ? new TimeoutProperty(rawProperty, qParams.timeout) : rawProperty;
   return qParams.unbiased === true ? new UnbiasedProperty(propA) : propA;
+}
+
+/** @hidden */
+function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<Ts>>, path: string) {
+  const pathPoints = path.split(':');
+  const pathStream = stream(valueProducers)
+    .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
+    .map(producer => producer());
+  const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
+  return stream(pathWalk(adaptedPath, pathStream)).map(v => () => v);
 }
 
 /**
@@ -101,15 +147,19 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
   const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed);
 
-  function* g() {
-    for (let idx = 0; idx < qParams.numRuns; ++idx) yield generator.next().value();
-  }
-  const initialValues = qParams.path.length === 0 ? g() : pathWalk(qParams.path, g());
+  const maxInitialIterations = qParams.path.length === 0 ? qParams.numRuns : -1;
+  const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
+  const initialValues = qParams.path.length === 0 ? generator : runnerPathWalker(generator, qParams.path);
   return property.isAsync()
-    ? asyncRunIt(property, initialValues, qParams.verbose).then(e =>
-        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns)
+    ? asyncRunIt(property, initialValues, maxInitialIterations, maxSkips, qParams.verbose).then(e =>
+        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
       )
-    : runIt(property, initialValues, qParams.verbose).toRunDetails(qParams.seed, qParams.path, qParams.numRuns);
+    : runIt(property, initialValues, maxInitialIterations, maxSkips, qParams.verbose).toRunDetails(
+        qParams.seed,
+        qParams.path,
+        qParams.numRuns,
+        maxSkips
+      );
 }
 
 /**

@@ -12,9 +12,13 @@ export class RunExecution<Ts> {
   value?: Ts;
   failure: string;
   allFailures: Ts[];
+  numSkips: number;
+  numSuccesses: number;
 
   constructor(readonly storeFailures: boolean) {
     this.allFailures = [];
+    this.numSkips = 0;
+    this.numSuccesses = 0;
   }
 
   fail(value: Ts, id: number, message: string) {
@@ -23,6 +27,16 @@ export class RunExecution<Ts> {
     else this.pathToFailure += `:${id}`;
     this.value = value;
     this.failure = message;
+  }
+  skip() {
+    if (this.pathToFailure == null) {
+      ++this.numSkips;
+    }
+  }
+  success() {
+    if (this.pathToFailure == null) {
+      ++this.numSuccesses;
+    }
   }
 
   private isSuccess = (): boolean => this.pathToFailure == null;
@@ -37,27 +51,45 @@ export class RunExecution<Ts> {
     return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
   };
 
-  toRunDetails(seed: number, basePath: string, numRuns: number): RunDetails<Ts> {
-    return this.isSuccess()
-      ? {
-          failed: false,
-          numRuns,
-          numShrinks: 0,
-          seed,
-          counterexample: null,
-          counterexamplePath: null,
-          error: null,
-          failures: []
-        }
-      : {
-          failed: true,
-          numRuns: this.firstFailure() + 1,
-          numShrinks: this.numShrinks(),
-          seed,
-          counterexample: this.value!,
-          counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
-          error: this.failure,
-          failures: this.allFailures
-        };
+  toRunDetails(seed: number, basePath: string, numRuns: number, maxSkips: number): RunDetails<Ts> {
+    if (!this.isSuccess()) {
+      // encountered a property failure
+      return {
+        failed: true,
+        numRuns: this.firstFailure() + 1 - this.numSkips,
+        numSkips: this.numSkips,
+        numShrinks: this.numShrinks(),
+        seed,
+        counterexample: this.value!,
+        counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
+        error: this.failure,
+        failures: this.allFailures
+      };
+    }
+    if (this.numSkips > maxSkips) {
+      // too many skips
+      return {
+        failed: true,
+        numRuns: this.numSuccesses,
+        numSkips: this.numSkips,
+        numShrinks: 0,
+        seed,
+        counterexample: null,
+        counterexamplePath: null,
+        error: null,
+        failures: []
+      };
+    }
+    return {
+      failed: false,
+      numRuns,
+      numSkips: this.numSkips,
+      numShrinks: 0,
+      seed,
+      counterexample: null,
+      counterexamplePath: null,
+      error: null,
+      failures: []
+    };
   }
 }

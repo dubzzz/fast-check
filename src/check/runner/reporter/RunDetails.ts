@@ -16,6 +16,13 @@ export interface RunDetails<Ts> {
    */
   numRuns: number;
   /**
+   * Number of skipped entries due to failed pre-condition
+   *
+   * As `numRuns` it only takes into account the skipped values that occured before the first failure.
+   * Refer to {@link pre} to add such pre-conditions.
+   */
+  numSkips: number;
+  /**
    * Number of shrinks required to get to the minimal failing case (aka counterexample)
    */
   numShrinks: number;

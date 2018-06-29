@@ -105,6 +105,7 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 - easy `map` method to derive existing arbitraries while keeping shrink - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
 - kind of flatMap-operation called `chain` - *able to bind the output of an arbitrary as input of another one while keeping the shrink working*
 - biased by default - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
+- precondition checks with `fc.pre(...)` - *filtering invalid entries can be done directly inside the check function if needed*
 - verbose mode - *easier troubleshooting with verbose mode enabled*
 - replay directly on the minimal counterexample - *no need to replay the whole sequence, you get directly the counterexample*
 

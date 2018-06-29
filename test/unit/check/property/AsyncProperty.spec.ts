@@ -3,6 +3,8 @@ import * as assert from 'assert';
 import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
 import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';
+import { pre } from '../../../../src/check/precondition/Pre';
+import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
@@ -29,11 +31,26 @@ describe('AsyncProperty', () => {
       assert.ok(false);
     });
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
+    assert.equal(typeof out, 'string');
     assert.ok(
-      out!.startsWith('AssertionError'),
+      (out as string).startsWith('AssertionError'),
       `Property should fail and attach the exception as string, got: ${out}`
     );
-    assert.ok(out!.indexOf('\n\nStack trace:') !== -1, 'Property should include the stack trace when available');
+    assert.ok(
+      (out as string).indexOf('\n\nStack trace:') !== -1,
+      'Property should include the stack trace when available'
+    );
+  });
+  it('Should forward failure of runs with failing precondition', async () => {
+    let doNotResetThisValue: boolean = false;
+    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+      pre(false);
+      doNotResetThisValue = true;
+      return false;
+    });
+    const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
+    assert.ok(PreconditionFailure.isFailure(out));
+    assert.ok(!doNotResetThisValue, 'should not execute the code after the failing precondition');
   });
   it('Should succeed if predicate is true', async () => {
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
@@ -55,7 +72,7 @@ describe('AsyncProperty', () => {
         resolvePromise = resolve;
       });
     });
-    const runner: Promise<string | null> = p.run(p.generate(stubRng.mutable.nocall()).value);
+    const runner = p.run(p.generate(stubRng.mutable.nocall()).value);
     runner.then(() => (runnerHasCompleted = true));
 
     await delay(); // give back the control for other threads
