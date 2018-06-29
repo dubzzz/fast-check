@@ -1,5 +1,3 @@
-import 'core-js';
-
 import { pre } from './check/precondition/Pre';
 import { asyncProperty } from './check/property/AsyncProperty';
 import { property } from './check/property/Property';
