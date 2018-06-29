@@ -1,5 +1,6 @@
 import 'core-js';
 
+import { test } from './check/integration/Test.generated';
 import { asyncProperty } from './check/property/AsyncProperty';
 import { property } from './check/property/Property';
 import { Parameters } from './check/runner/configuration/Parameters';
@@ -61,6 +62,7 @@ export {
   // check the property
   check,
   assert,
+  test,
   // property definition
   property,
   asyncProperty,
