@@ -1,3 +1,11 @@
+# 1.2.2
+
+_Less restrictive API for `constantFrom`_
+
+## Fixes
+
+- ([PR#123](/pull/123)) Do not force explicitly one parameter in constantFrom 
+
 # 1.2.1
 
 _Readme update_
