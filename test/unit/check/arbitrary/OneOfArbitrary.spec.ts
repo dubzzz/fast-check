@@ -29,19 +29,17 @@ describe('OneOfArbitrary', () => {
   describe('oneof', () => {
     it('Should generate based on one of the given arbitraries', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(), fc.array(fc.integer()), (seed, choice1, others) => {
-          const choices = [choice1, ...others];
+        fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, choices) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = oneof(constant(choice1), ...others.map(constant)).generate(mrng).value;
+          const g = oneof(...choices.map(constant)).generate(mrng).value;
           return choices.indexOf(g) !== -1;
         })
       ));
     it('Should call the right shrink on shrink', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(), fc.array(fc.integer()), (seed, choice1, others) => {
-          const choices = [choice1, ...others].map(c => new CustomArbitrary(c));
+        fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, choices) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = oneof(choices[0], ...choices.slice(1)).generate(mrng);
+          const shrinkable = oneof(...choices.map(c => new CustomArbitrary(c))).generate(mrng);
           const shrinks = [...shrinkable.shrink()];
           return shrinks.length === 1 && shrinks[0].value === shrinkable.value - 42;
         })
@@ -50,7 +48,7 @@ describe('OneOfArbitrary', () => {
     genericHelper.isValidArbitrary(
       (metas: { type: string; value: number }[]) => {
         const arbs = metas.map(m => (m.type === 'unique' ? constant(m.value) : integer(m.value - 10, m.value)));
-        return oneof(arbs[0], ...arbs.slice(1));
+        return oneof(...arbs);
       },
       {
         seedGenerator: fc.array(fc.record({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), 1, 10),
