@@ -14,30 +14,25 @@ describe('FrequencyArbitrary', () => {
     const rng = (seed: number) => stubRng.mutable.fastincrease(seed);
     it('Should produce the same as oneof when called on weights of 1', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(), fc.array(fc.integer()), (seed, choice1, others) => {
-          const gFreq = frequency(
-            { weight: 1, arbitrary: stubArb.counter(choice1) },
-            ...others.map(c => Object({ weight: 1, arbitrary: stubArb.counter(c) }))
-          ).generate(rng(seed)).value;
-          const gOneOf = oneof(stubArb.counter(choice1), ...others.map(stubArb.counter)).generate(rng(seed)).value;
+        fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, choices) => {
+          const gFreq = frequency(...choices.map(c => Object({ weight: 1, arbitrary: stubArb.counter(c) }))).generate(
+            rng(seed)
+          ).value;
+          const gOneOf = oneof(...choices.map(stubArb.counter)).generate(rng(seed)).value;
           return gFreq == gOneOf;
         })
       ));
     it('Should produce the same as oneof with sum of weights elements', () =>
       fc.assert(
-        fc.property(fc.integer(), weightArb(), fc.array(weightArb()), (seed, choice1, others) => {
+        fc.property(fc.integer(), fc.array(weightArb(), 1, 10), (seed, choices) => {
           const expand = (value: number, num: number): number[] => [...Array(num)].map(() => value);
 
-          const othersOneOf = [choice1, ...others]
-            .reduce((p: number[], c) => p.concat(...expand(c[0], c[1])), [])
-            .slice(1);
+          const choicesOneOf = [...choices].reduce((p: number[], c) => p.concat(...expand(c[0], c[1])), []);
 
           const gFreq = frequency(
-            { weight: choice1[1], arbitrary: stubArb.counter(choice1[0]) },
-            ...others.map(c => Object({ weight: c[1], arbitrary: stubArb.counter(c[0]) }))
+            ...choices.map(c => Object({ weight: c[1], arbitrary: stubArb.counter(c[0]) }))
           ).generate(rng(seed)).value;
-          const gOneOf = oneof(stubArb.counter(choice1[0]), ...othersOneOf.map(stubArb.counter)).generate(rng(seed))
-            .value;
+          const gOneOf = oneof(...choicesOneOf.map(stubArb.counter)).generate(rng(seed)).value;
           return gFreq == gOneOf;
         })
       ));
