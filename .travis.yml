@@ -60,6 +60,7 @@ jobs:
     - stage: deploy
       if: tag =~ ^v\d+\.
       script:
+        - npm run prebuild
         - npm run build:publish
         - npm run webbuild
       deploy:
