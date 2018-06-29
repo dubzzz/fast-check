@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check#readme",
   "dependencies": {
-    "core-js": "^2.5.5",
     "lorem-ipsum": "^1.0.4",
     "pure-rand": "^1.1.1"
   },
