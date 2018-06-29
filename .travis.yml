@@ -42,7 +42,7 @@ jobs:
       script:
         - npm run build
         - nvm install 0.12
-        - node --eval "var fc = require('./lib/fast-check'); fc.assert(fc.property(fc.string(), function(s) { return s === s; }))"
+        - node test/legacy/main.js
     - stage: publish documentation
       if: branch = master AND type = push
       script:
