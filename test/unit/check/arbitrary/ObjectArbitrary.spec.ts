@@ -72,16 +72,12 @@ describe('ObjectArbitrary', () => {
       fc.assert(
         fc.property(
           fc.integer(),
-          fc.string(),
-          fc.array(fc.string()),
-          fc.string(),
-          fc.array(fc.string()),
-          (seed, key0, keys, value0, values) => {
-            const allowedKeys = [key0, ...keys];
-            const allowedValues = [value0, ...values];
+          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), 1, 10),
+          (seed, allowedKeys, allowedValues) => {
             const mrng = stubRng.mutable.fastincrease(seed);
 
-            const keyArb = oneof(constant(key0), ...keys.map(constant));
+            const keyArb = oneof(...allowedKeys.map(constant));
             const baseArbs = [...allowedValues.map(constant)];
             const g = anything({ key: keyArb, values: baseArbs }).generate(mrng).value;
 
@@ -94,14 +90,12 @@ describe('ObjectArbitrary', () => {
         fc.property(
           fc.integer(),
           fc.integer(0, 5),
-          fc.string(),
-          fc.array(fc.string()),
-          fc.string(),
-          fc.array(fc.string()),
-          (seed, depth, key0, keys, value0, values) => {
+          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), 1, 10),
+          (seed, depth, keys, values) => {
             const mrng = stubRng.mutable.fastincrease(seed);
-            const keyArb = oneof(constant(key0), ...keys.map(constant));
-            const baseArbs = [constant(value0), ...values.map(constant)];
+            const keyArb = oneof(...keys.map(constant));
+            const baseArbs = [...values.map(constant)];
             const g = anything({ key: keyArb, values: baseArbs, maxDepth: depth }).generate(mrng).value;
             return evaluateDepth(g) <= depth;
           }
@@ -225,38 +219,29 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should only use provided keys and values', () =>
       fc.assert(
-        fc.property(
-          fc.integer(),
-          fc.string(),
-          fc.array(fc.string()),
-          fc.string(),
-          fc.array(fc.string()),
-          (seed, key0, keys, value0, values) => {
-            const allowedKeys = [key0, ...keys];
-            const allowedValues = [value0, ...values];
-            const mrng = stubRng.mutable.fastincrease(seed);
+        fc.property(fc.integer(), fc.array(fc.string(), 1, 10), fc.array(fc.string(), 1, 10), (seed, keys, values) => {
+          const allowedKeys = [...keys];
+          const allowedValues = [...values];
+          const mrng = stubRng.mutable.fastincrease(seed);
 
-            const keyArb = oneof(constant(key0), ...keys.map(constant));
-            const baseArbs = [...allowedValues.map(constant)];
-            const g = object({ key: keyArb, values: baseArbs }).generate(mrng).value;
+          const keyArb = oneof(...keys.map(constant));
+          const baseArbs = [...allowedValues.map(constant)];
+          const g = object({ key: keyArb, values: baseArbs }).generate(mrng).value;
 
-            return checkCorrect(allowedKeys, allowedValues)(g);
-          }
-        )
+          return checkCorrect(allowedKeys, allowedValues)(g);
+        })
       ));
     it('Should respect the maximal depth parameter', () =>
       fc.assert(
         fc.property(
           fc.integer(),
           fc.integer(0, 5),
-          fc.string(),
-          fc.array(fc.string()),
-          fc.string(),
-          fc.array(fc.string()),
-          (seed, depth, key0, keys, value0, values) => {
+          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), 1, 10),
+          (seed, depth, keys, values) => {
             const mrng = stubRng.mutable.fastincrease(seed);
-            const keyArb = oneof(constant(key0), ...keys.map(constant));
-            const baseArbs = [constant(value0), ...values.map(constant)];
+            const keyArb = oneof(...keys.map(constant));
+            const baseArbs = [...values.map(constant)];
             const g = object({ key: keyArb, values: baseArbs, maxDepth: depth }).generate(mrng).value;
             return evaluateDepth(g) <= depth + 1;
           }

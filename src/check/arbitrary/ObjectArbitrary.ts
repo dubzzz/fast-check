@@ -104,7 +104,7 @@ const anythingInternal = (subConstraints: ObjectConstraints): Arbitrary<any> => 
   if (subConstraints.maxDepth > 1) {
     potentialArbValue.push(array(objectInternal(subConstraints.next().next()))); // array of Object
   }
-  return oneof(potentialArbValue[0], ...potentialArbValue.slice(0));
+  return oneof(...potentialArbValue);
 };
 
 /** @hidden */
