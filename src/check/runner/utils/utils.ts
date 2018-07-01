@@ -31,9 +31,11 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>) {
       );
     }
     throw new Error(
-      `Property failed after ${out.numRuns} tests (seed: ${out.seed}, path: ${out.counterexamplePath}): ${pretty(
-        out.counterexample
-      )}\nShrunk ${out.numShrinks} time(s)\nGot error: ${out.error}\n\n${
+      `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
+        out.counterexamplePath
+      }" }\nCounterexample: ${pretty(out.counterexample)}\nShrunk ${out.numShrinks} time(s)\nGot error: ${
+        out.error
+      }\n\n${
         out.failures.length === 0
           ? 'Hint: Enable verbose mode in order to have the list of all failing values encountered during the run'
           : `Encountered failures were:\n- ${out.failures.map(pretty).join('\n- ')}`

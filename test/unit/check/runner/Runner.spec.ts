@@ -427,7 +427,7 @@ describe('Runner', () => {
       try {
         rAssert(failingProperty, { seed: 42 });
       } catch (err) {
-        assert.ok(err.message.indexOf(`(seed: 42, path:`) !== -1, `Cannot find the seed in: ${err.message}`);
+        assert.ok(err.message.indexOf(`seed: 42, path:`) !== -1, `Cannot find the seed in: ${err.message}`);
         return;
       }
       assert.ok(false, 'Expected an exception, got success');
