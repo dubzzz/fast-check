@@ -28,11 +28,6 @@ export const StringPadEndImpl = (src: string, targetLength: number, padString: s
 };
 
 /** @hidden */
-export const StringPadEnd = String.prototype.padEnd
-  ? (src: string, targetLength: number, padString: string) => src.padEnd(targetLength, padString)
-  : StringPadEndImpl;
-
-/** @hidden */
 export const StringPadStartImpl = (src: string, targetLength: number, padString: string) => {
   targetLength = targetLength >> 0;
   if (padString === '' || src.length > targetLength) return String(src);
@@ -41,7 +36,15 @@ export const StringPadStartImpl = (src: string, targetLength: number, padString:
   return padString.slice(0, targetLength) + String(src);
 };
 
+const wrapStringPad = (method?: (targetLength: number, padString: string) => string) => {
+  return (
+    method &&
+    ((src: string, targetLength: number, padString: string) => method.call(src, targetLength, padString) as string)
+  );
+};
+
 /** @hidden */
-export const StringPadStart = String.prototype.padStart
-  ? (src: string, targetLength: number, padString: string) => src.padStart(targetLength, padString)
-  : StringPadStartImpl;
+export const StringPadEnd = wrapStringPad(String.prototype.padEnd) || StringPadEndImpl;
+
+/** @hidden */
+export const StringPadStart = wrapStringPad(String.prototype.padStart) || StringPadStartImpl;
