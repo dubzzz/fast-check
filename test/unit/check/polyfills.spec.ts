@@ -1,7 +1,14 @@
 import * as assert from 'assert';
 import * as fc from '../../../lib/fast-check';
 
-import { ObjectEntriesImpl, StringPadEndImpl, StringPadStartImpl } from '../../../src/check/polyfills';
+import {
+  ObjectEntries,
+  StringPadEnd,
+  StringPadStart,
+  ObjectEntriesImpl,
+  StringPadEndImpl,
+  StringPadStartImpl
+} from '../../../src/check/polyfills';
 
 describe('polyfills', () => {
   describe('Object.entries', () => {
@@ -13,6 +20,10 @@ describe('polyfills', () => {
           })
         ));
     }
+    it('Should provide a working polyfilled implementation', () => {
+      if (Object.entries) assert.ok(ObjectEntries === Object.entries);
+      else assert.ok(ObjectEntries === ObjectEntriesImpl);
+    });
   });
   describe('String.prototype.padEnd', () => {
     if (String.prototype.padEnd) {
@@ -26,6 +37,15 @@ describe('polyfills', () => {
           )
         ));
     }
+    it('Should provide a working polyfilled implementation', () =>
+      fc.assert(
+        fc.property(
+          fc.fullUnicodeString(),
+          fc.nat(1000),
+          fc.fullUnicodeString(),
+          (src, l, pad) => StringPadEnd(src, l, pad) === StringPadEndImpl(src, l, pad)
+        )
+      ));
   });
   describe('String.prototype.padStart', () => {
     if (String.prototype.padStart) {
@@ -39,5 +59,14 @@ describe('polyfills', () => {
           )
         ));
     }
+    it('Should provide a working polyfilled implementation', () =>
+      fc.assert(
+        fc.property(
+          fc.fullUnicodeString(),
+          fc.nat(1000),
+          fc.fullUnicodeString(),
+          (src, l, pad) => StringPadStart(src, l, pad) === StringPadStartImpl(src, l, pad)
+        )
+      ));
   });
 });
