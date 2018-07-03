@@ -1,8 +1,7 @@
 // All the implementations below are directly taken from https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference
 
 /** @hidden */
-export const ObjectEntries = (obj: any): [string, any][] => {
-  if (Object.entries) return Object.entries(obj);
+export const ObjectEntriesImpl = (obj: any): [string, any][] => {
   const ownProps = Object.keys(obj);
   let i = ownProps.length;
   const resArray = new Array(i);
@@ -10,34 +9,39 @@ export const ObjectEntries = (obj: any): [string, any][] => {
   return resArray;
 };
 
-/** hidden */
-export const StringPadEnd = (src: string, targetLength: number, padString: string) => {
-  if (src && src.padEnd) return src.padEnd(targetLength, padString);
-  targetLength = targetLength >> 0;
-  padString = String(typeof padString !== 'undefined' ? padString : ' ');
-  if (src.length > targetLength) {
-    return String(src);
-  } else {
-    targetLength = targetLength - src.length;
-    while (targetLength > padString.length) {
-      padString += padString;
-    }
-    return String(src) + padString.slice(0, targetLength);
-  }
+/** @hidden */
+export const ObjectEntries = Object.entries ? Object.entries : ObjectEntriesImpl;
+
+/** @hidden */
+const repeatUpToLength = (src: string, targetLength: number): string => {
+  for (; targetLength > src.length; src += src);
+  return src;
 };
 
 /** @hidden */
-export const StringPadStart = (src: string, targetLength: number, padString: string) => {
-  if (src && src.padStart) return src.padStart(targetLength, padString);
+export const StringPadEndImpl = (src: string, targetLength: number, padString: string) => {
   targetLength = targetLength >> 0;
-  padString = String(typeof padString !== 'undefined' ? padString : ' ');
-  if (src.length > targetLength) {
-    return String(src);
-  } else {
-    targetLength = targetLength - src.length;
-    while (targetLength > padString.length) {
-      padString += padString;
-    }
-    return padString.slice(0, targetLength) + String(src);
-  }
+  if (padString === '' || src.length > targetLength) return String(src);
+  targetLength = targetLength - src.length;
+  padString = repeatUpToLength(typeof padString !== 'undefined' ? String(padString) : ' ', targetLength);
+  return String(src) + padString.slice(0, targetLength);
 };
+
+/** @hidden */
+export const StringPadEnd = String.prototype.padEnd
+  ? (src: string, targetLength: number, padString: string) => src.padEnd(targetLength, padString)
+  : StringPadEndImpl;
+
+/** @hidden */
+export const StringPadStartImpl = (src: string, targetLength: number, padString: string) => {
+  targetLength = targetLength >> 0;
+  if (padString === '' || src.length > targetLength) return String(src);
+  targetLength = targetLength - src.length;
+  padString = repeatUpToLength(typeof padString !== 'undefined' ? String(padString) : ' ', targetLength);
+  return padString.slice(0, targetLength) + String(src);
+};
+
+/** @hidden */
+export const StringPadStart = String.prototype.padStart
+  ? (src: string, targetLength: number, padString: string) => src.padStart(targetLength, padString)
+  : StringPadStartImpl;
