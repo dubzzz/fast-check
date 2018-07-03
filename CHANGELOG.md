@@ -1,3 +1,15 @@
+# 1.3.0
+
+_Filter invalid values directly in predicates using `fc.pre`_
+
+## Features
+
+- ([PR#140](/pull/140)) Make seed and path copy pasteable
+- ([PR#138](/pull/138)) Remove core-js, no more global namespace pollution
+- ([PR#118](/pull/118)) Enable preconditions in predicate
+
+---
+
 # 1.2.3
 
 _Reduce package footprint and less restrictive API for `oneof`/`frequency`_
