@@ -3,11 +3,11 @@ import * as fc from '../../../../../lib/fast-check';
 
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
 
-const extract = (conf: QualifiedParameters) => {
+const extract = <T>(conf: QualifiedParameters<T>) => {
   const { logger, ...others } = conf;
   return others;
 };
-const extractExceptSeed = (conf: QualifiedParameters) => {
+const extractExceptSeed = <T>(conf: QualifiedParameters<T>) => {
   const { seed, ...others } = extract(conf);
   return others;
 };
@@ -19,7 +19,8 @@ const parametersArbitrary = fc.record(
     timeout: fc.nat(),
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
     unbiased: fc.boolean(),
-    verbose: fc.boolean()
+    verbose: fc.boolean(),
+    examples: fc.array(fc.nat())
   },
   { withDeletedKeys: true }
 );
