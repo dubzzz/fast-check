@@ -1,7 +1,7 @@
 /**
  * Customization of the parameters used to run the properties
  */
-export interface Parameters {
+export interface Parameters<T = void> {
   /**
    * Initial seed of the generator: `Date.now()` by default
    *
@@ -49,4 +49,10 @@ export interface Parameters {
    * It can prove very useful to detect pattern in the inputs causing the problem to occur
    */
   verbose?: boolean;
+  /**
+   * Custom values added at the beginning of generated ones
+   *
+   * It enables users to come with examples they want to test at every run
+   */
+  examples?: T[];
 }

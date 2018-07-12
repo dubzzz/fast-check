@@ -11,7 +11,12 @@ function lazyGenerate<Ts>(generator: IProperty<Ts>, rng: prand.RandomGenerator, 
 }
 
 /** @hidden */
-export default function* toss<Ts>(generator: IProperty<Ts>, seed: number): IterableIterator<() => Shrinkable<Ts>> {
+export default function* toss<Ts>(
+  generator: IProperty<Ts>,
+  seed: number,
+  examples: Ts[]
+): IterableIterator<() => Shrinkable<Ts>> {
+  yield* examples.map(e => () => new Shrinkable(e));
   let idx = 0;
   let rng = prand.mersenne(seed);
   for (;;) {

@@ -11,7 +11,7 @@ import toss from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
 /** @hidden */
-function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters): IProperty<Ts> {
+function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters<Ts>): IProperty<Ts> {
   const prop = !generator.hasOwnProperty('isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
     : (generator as IProperty<Ts>);
@@ -21,10 +21,12 @@ function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, qParams: Quali
 /** @hidden */
 function streamSample<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
-  params?: Parameters | number
+  params?: Parameters<Ts> | number
 ): IterableIterator<Ts> {
-  const qParams: QualifiedParameters = QualifiedParameters.readOrNumRuns(params);
-  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(toss(toProperty(generator, qParams), qParams.seed));
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.readOrNumRuns(params);
+  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
+    toss(toProperty(generator, qParams), qParams.seed, qParams.examples)
+  );
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map(s => s().value);
   }
@@ -45,7 +47,7 @@ function streamSample<Ts>(
  * @param generator {@link IProperty} or {@link Arbitrary} to extract the values from
  * @param params Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
  */
-function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameters | number): Ts[] {
+function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
   return [...streamSample(generator, params)];
 }
 
@@ -73,7 +75,7 @@ function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameter
 function statistics<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: Parameters | number
+  params?: Parameters<Ts> | number
 ): void {
   const qParams = QualifiedParameters.readOrNumRuns(params);
   const recorded: { [key: string]: number } = {};

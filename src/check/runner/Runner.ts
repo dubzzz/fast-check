@@ -101,7 +101,7 @@ async function asyncRunIt<Ts>(
 }
 
 /** @hidden */
-function decorateProperty<Ts>(rawProperty: IProperty<Ts>, qParams: QualifiedParameters) {
+function decorateProperty<Ts>(rawProperty: IProperty<Ts>, qParams: QualifiedParameters<Ts>) {
   const propA =
     rawProperty.isAsync() && qParams.timeout != null ? new TimeoutProperty(rawProperty, qParams.timeout) : rawProperty;
   return qParams.unbiased === true ? new UnbiasedProperty(propA) : propA;
@@ -127,7 +127,7 @@ function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>>;
+function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -136,16 +136,16 @@ function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<Ru
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: Property<Ts>, params?: Parameters): RunDetails<Ts>;
-function check<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<RunDetails<Ts>> | RunDetails<Ts>;
-function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
+function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
+function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
+function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
   if (rawProperty == null || rawProperty.generate == null)
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams = QualifiedParameters.read(params);
   const property = decorateProperty(rawProperty, qParams);
-  const generator = toss(property, qParams.seed);
+  const generator = toss(property, qParams.seed, qParams.examples);
 
   const maxInitialIterations = qParams.path.length === 0 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
@@ -173,7 +173,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters) {
  * @param property Asynchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<void>;
+function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
 /**
  * Run the property, throw in case of failure
  *
@@ -183,9 +183,9 @@ function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters): Promise<v
  * @param property Synchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: Property<Ts>, params?: Parameters): void;
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters): Promise<void> | void;
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters) {
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): void;
+function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
+function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>) {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(throwIfFailed);
   else throwIfFailed(out as RunDetails<Ts>);
