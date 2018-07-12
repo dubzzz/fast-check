@@ -108,6 +108,7 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 - precondition checks with `fc.pre(...)` - *filtering invalid entries can be done directly inside the check function if needed*
 - verbose mode - *easier troubleshooting with verbose mode enabled*
 - replay directly on the minimal counterexample - *no need to replay the whole sequence, you get directly the counterexample*
+- custom examples in addition of generated ones - *no need to duplicate the code to play the property on custom examples*
 
 For more details, refer to the documentation in the links above.
 
