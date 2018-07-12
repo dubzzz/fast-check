@@ -190,7 +190,7 @@ function base64String(minLength: number, maxLength: number): Arbitrary<string>;
 function base64String(aLength?: number, bLength?: number): Arbitrary<string> {
   const minLength = aLength != null && bLength != null ? aLength : 0;
   const maxLength = bLength == null ? (aLength == null ? 16 : aLength) : bLength;
-  return Base64StringArbitrary(minLength + 3 - (minLength + 3) % 4, maxLength - maxLength % 4); // base64 length is always a multiple of 4
+  return Base64StringArbitrary(minLength + 3 - ((minLength + 3) % 4), maxLength - (maxLength % 4)); // base64 length is always a multiple of 4
 }
 
 export { stringOf, string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String };

@@ -86,7 +86,7 @@ function statistics<Ts>(
   }
   const data = ObjectEntries(recorded)
     .sort((a, b) => b[1] - a[1])
-    .map(i => [i[0], `${(i[1] * 100.0 / qParams.numRuns).toFixed(2)}%`]);
+    .map(i => [i[0], `${((i[1] * 100.0) / qParams.numRuns).toFixed(2)}%`]);
   const longestName = data.map(i => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map(i => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {

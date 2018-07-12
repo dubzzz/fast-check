@@ -63,7 +63,7 @@ describe('Sampler', () => {
     });
   });
   describe('statistics', () => {
-    const customGen = (m: number = 7) => stubArb.forward().map(v => (v % m + m) % m);
+    const customGen = (m: number = 7) => stubArb.forward().map(v => ((v % m) + m) % m);
     const reLabel = /^(.*[^.])\.+\d+\.\d+%$/;
     const rePercent = /(\d+\.\d+)%$/;
     it('Should always produce for non null number of runs', () =>
