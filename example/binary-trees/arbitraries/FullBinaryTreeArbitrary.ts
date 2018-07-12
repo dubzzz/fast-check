@@ -13,18 +13,20 @@ export const fullBinaryTree = (maxDepth: number): fc.Arbitrary<Tree<number>> => 
     });
   }
   const subTree = fullBinaryTree(maxDepth - 1);
-  return fc.boolean().chain((hasChildren: boolean): fc.Arbitrary<Tree<number>> => {
-    if (hasChildren) {
+  return fc.boolean().chain(
+    (hasChildren: boolean): fc.Arbitrary<Tree<number>> => {
+      if (hasChildren) {
+        return fc.record({
+          value: valueArbitrary,
+          left: subTree,
+          right: subTree
+        });
+      }
       return fc.record({
         value: valueArbitrary,
-        left: subTree,
-        right: subTree
+        left: fc.constant(null),
+        right: fc.constant(null)
       });
     }
-    return fc.record({
-      value: valueArbitrary,
-      left: fc.constant(null),
-      right: fc.constant(null)
-    });
-  });
+  );
 };
