@@ -53,9 +53,10 @@
   "keywords": [
     "property-based testing",
     "end-to-end testing",
-    "ui testing",
+    "unit testing",
     "testing",
     "quickcheck",
-    "quality-assurance"
+    "jscheck",
+    "jsverify"
   ]
 }
