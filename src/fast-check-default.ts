@@ -42,6 +42,11 @@ import {
 } from './check/arbitrary/StringArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
 
+import { AsyncCommand } from './check/model/command/AsyncCommand';
+import { Command } from './check/model/command/Command';
+import { ICommand } from './check/model/command/ICommand';
+import { asyncModelRun, modelRun } from './check/model/ModelRunner';
+
 import { Random } from './random/generator/Random';
 
 import { Stream, stream } from './stream/Stream';
@@ -104,6 +109,12 @@ export {
   jsonObject,
   unicodeJson,
   unicodeJsonObject,
+  // model-based
+  AsyncCommand,
+  Command,
+  ICommand,
+  asyncModelRun,
+  modelRun,
   // extend the framework
   Arbitrary,
   Shrinkable,
