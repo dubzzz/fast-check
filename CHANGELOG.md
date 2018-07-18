@@ -1,3 +1,19 @@
+# 1.4.0
+
+_Suggest custom test values with `examples`_
+
+## Features
+
+- ([PR#148](/pull/148)) Manually add concrete examples to test
+
+## Fixes
+
+- ([PR#153](/pull/153)) Edit npm project description
+- ([PR#152](/pull/152)) Add minimal supported node engine version in package.json
+- ([PR#149](/pull/149)) Bump npm dependencies
+
+---
+
 # 1.3.0
 
 _Filter invalid values directly in predicates using `fc.pre`_
