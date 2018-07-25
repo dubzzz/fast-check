@@ -13,7 +13,8 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
     readonly arb: Arbitrary<T>,
     readonly minLength: number,
     readonly maxLength: number,
-    readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = tab => tab
+    readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = tab => tab,
+    readonly preShrink: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = tab => tab
   ) {
     super();
     this.lengthArb = integer(minLength, maxLength);
@@ -29,9 +30,10 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
     const items = [...Array(size.value)].map(() => this.arb.generate(mrng));
     return this.wrapper(items, false);
   }
-  private shrinkImpl(items: Shrinkable<T>[], shrunkOnce: boolean): Stream<Shrinkable<T>[]> {
+  private shrinkImpl(itemsRaw: Shrinkable<T>[], shrunkOnce: boolean): Stream<Shrinkable<T>[]> {
     // shrinking one by one is the not the most comprehensive
     // but allows a reasonable number of entries in the shrink
+    const items = this.preShrink(itemsRaw);
     if (items.length === 0) {
       return Stream.nil<Shrinkable<T>[]>();
     }
