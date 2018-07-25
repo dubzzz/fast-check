@@ -1,7 +1,5 @@
 import * as assert from 'assert';
 import * as fc from '../../lib/fast-check';
-import { Command } from './helpers/Command';
-import { CommandExecutor } from './helpers/CommandExecutor';
 
 import { MusicPlayer, MusicPlayerA, MusicPlayerB } from './MusicPlayer';
 
@@ -10,17 +8,15 @@ class MusicPlayerModel {
   numTracks: number = 0;
   tracksAlreadySeen: { [Key: string]: boolean } = {}; // our model forbid to append twice the same track
 }
-type MusicPlayerCommand = Command<MusicPlayerModel, MusicPlayer>;
+type MusicPlayerCommand = fc.Command<MusicPlayerModel, MusicPlayer>;
 
 class PlayCommand implements MusicPlayerCommand {
-  checkPreconditions(m: MusicPlayerModel) {
+  check(m: MusicPlayerModel) {
     return true;
-  }
-  apply(m: MusicPlayerModel) {
-    m.isPlaying = true;
   }
   run(m: MusicPlayerModel, p: MusicPlayer) {
     p.play();
+    m.isPlaying = true;
     assert.ok(p.playing());
   }
   toString() {
@@ -28,14 +24,12 @@ class PlayCommand implements MusicPlayerCommand {
   }
 }
 class PauseCommand implements MusicPlayerCommand {
-  checkPreconditions(m: MusicPlayerModel) {
+  check(m: MusicPlayerModel) {
     return true;
-  }
-  apply(m: MusicPlayerModel) {
-    m.isPlaying = false;
   }
   run(m: MusicPlayerModel, p: MusicPlayer) {
     p.pause();
+    m.isPlaying = false;
     assert.ok(!p.playing());
   }
   toString() {
@@ -43,11 +37,8 @@ class PauseCommand implements MusicPlayerCommand {
   }
 }
 class NextCommand implements MusicPlayerCommand {
-  checkPreconditions(m: MusicPlayerModel) {
+  check(m: MusicPlayerModel) {
     return true;
-  }
-  apply(m: MusicPlayerModel) {
-    /**/
   }
   run(m: MusicPlayerModel, p: MusicPlayer) {
     const trackBefore = p.currentTrackName();
@@ -65,18 +56,16 @@ class NextCommand implements MusicPlayerCommand {
 }
 class AddTrackCommand implements MusicPlayerCommand {
   constructor(readonly position: number, readonly trackName: string) {}
-  checkPreconditions(m: MusicPlayerModel) {
+  check(m: MusicPlayerModel) {
     return !m.tracksAlreadySeen[this.trackName];
-  }
-  apply(m: MusicPlayerModel) {
-    ++m.numTracks;
-    m.tracksAlreadySeen[this.trackName] = true;
   }
   run(m: MusicPlayerModel, p: MusicPlayer) {
     const trackBefore = p.currentTrackName();
     p.addTrack(this.trackName, this.position % (m.numTracks + 1)); // old model
     assert.equal(p.playing(), m.isPlaying);
     assert.equal(p.currentTrackName(), trackBefore);
+    ++m.numTracks;
+    m.tracksAlreadySeen[this.trackName] = true;
   }
   toString() {
     return `AddTrack(${this.position}, "${this.trackName}")`;
@@ -85,14 +74,12 @@ class AddTrackCommand implements MusicPlayerCommand {
 
 describe('MusicPlayer', () => {
   const TrackNameArb = fc.hexaString(1, 10);
-  const CommandsArb: fc.Arbitrary<MusicPlayerCommand[]> = fc.array(
-    fc.oneof(
-      fc.constant(new PlayCommand()),
-      fc.constant(new PauseCommand()),
-      fc.constant(new NextCommand()),
-      fc.record({ position: fc.nat(), trackName: TrackNameArb }).map(d => new AddTrackCommand(d.position, d.trackName))
-    )
-  );
+  const CommandsArb: fc.Arbitrary<MusicPlayerCommand[]> = fc.commands([
+    fc.constant(new PlayCommand()),
+    fc.constant(new PauseCommand()),
+    fc.constant(new NextCommand()),
+    fc.record({ position: fc.nat(), trackName: TrackNameArb }).map(d => new AddTrackCommand(d.position, d.trackName))
+  ]);
   it('should run fast-check on model based approach against MusicPlayerA', () =>
     fc.assert(
       fc.property(fc.set(TrackNameArb, 1, 10), CommandsArb, (initialTracks, commands) => {
@@ -102,8 +89,9 @@ describe('MusicPlayer', () => {
         for (const t of initialTracks) {
           model.tracksAlreadySeen[t] = true;
         }
-        CommandExecutor(() => ({ model, real }), commands);
-      })
+        fc.modelRun(() => ({ model, real }), commands);
+      }),
+      { verbose: true }
     ));
   it('should run fast-check on model based approach against MusicPlayerB', () =>
     fc.assert(
@@ -114,7 +102,7 @@ describe('MusicPlayer', () => {
         for (const t of initialTracks) {
           model.tracksAlreadySeen[t] = true;
         }
-        CommandExecutor(() => ({ model, real }), commands);
+        fc.modelRun(() => ({ model, real }), commands);
       })
     ));
 });
