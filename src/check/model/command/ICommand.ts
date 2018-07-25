@@ -21,5 +21,5 @@ export interface ICommand<Model extends object, Real, RunResult> {
   /**
    * Name of the command
    */
-  name: string;
+  toString(): string;
 }

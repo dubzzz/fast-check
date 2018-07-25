@@ -39,17 +39,17 @@ class SizeCommand implements fc.Command<Model, IList<number>> {
   }
   name = 'size';
 }
-const allCommandsArb = fc.oneof(
+const allCommands = [
   fc.integer().map(v => new PushCommand(v)),
   fc.constant(new PopCommand()),
   fc.constant(new SizeCommand())
-);
+];
 
 const seed = Date.now();
 describe(`Model Based (seed: ${seed})`, () => {
   it('should not detect any issue on built-in list', () => {
     fc.assert(
-      fc.property(fc.array(allCommandsArb), cmds => {
+      fc.property(fc.commands(allCommands, 100), cmds => {
         class BuiltinList implements IList<number> {
           data: number[] = [];
           push = (v: number) => this.data.push(v);
@@ -63,7 +63,7 @@ describe(`Model Based (seed: ${seed})`, () => {
   });
   it('should detect an issue on fixed size circular list', () => {
     const out = fc.check(
-      fc.property(fc.integer(1, 1000), fc.array(allCommandsArb), (size, cmds) => {
+      fc.property(fc.integer(1, 1000), fc.commands(allCommands, 100), (size, cmds) => {
         class CircularList implements IList<number> {
           start: number = 0;
           end: number = 0;
