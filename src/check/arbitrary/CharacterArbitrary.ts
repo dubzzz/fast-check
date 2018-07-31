@@ -1,15 +1,19 @@
-import Random from '../../random/generator/Random';
-import { Stream, stream } from '../../stream/Stream';
 import Arbitrary from './definition/Arbitrary';
-import Shrinkable from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
 /** @hidden */
-function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number = v => v) {
+function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number) {
   return integer(min, max)
     .map(n => String.fromCharCode(mapToCode(n)))
     .noBias();
 }
+
+/** @hidden */
+const preferPrintableMapper = (v: number): number => {
+  if (v < 95) return v + 0x20; // 0x20-0x7e
+  if (v <= 0x7e) return v - 95;
+  return v;
+};
 
 /**
  * For single printable ascii characters - char code between 0x20 (included) and 0x7e (included)
@@ -17,7 +21,7 @@ function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => 
  */
 function char(): Arbitrary<string> {
   // Only printable characters: https://www.ascii-code.com/
-  return CharacterArbitrary(0x20, 0x7e);
+  return CharacterArbitrary(0x20, 0x7e, v => v);
 }
 
 /**
@@ -49,7 +53,7 @@ function base64(): Arbitrary<string> {
  * For single ascii characters - char code between 0x00 (included) and 0x7f (included)
  */
 function ascii(): Arbitrary<string> {
-  return CharacterArbitrary(0x00, 0x7f);
+  return CharacterArbitrary(0x00, 0x7f, preferPrintableMapper);
 }
 
 /**
@@ -61,7 +65,7 @@ function ascii(): Arbitrary<string> {
  * Indeed values within 0xd800 and 0xdfff constitute surrogate pair characters and are illegal without their paired character.
  */
 function char16bits(): Arbitrary<string> {
-  return CharacterArbitrary(0x0000, 0xffff);
+  return CharacterArbitrary(0x0000, 0xffff, preferPrintableMapper);
 }
 
 /**
@@ -75,7 +79,7 @@ function unicode(): Arbitrary<string> {
   // You can refer to 'fromCharCode' documentation for more details
   const gapSize = 0xdfff + 1 - 0xd800;
   function mapping(v: number) {
-    if (v < 0xd800) return v;
+    if (v < 0xd800) return preferPrintableMapper(v);
     return v + gapSize;
   }
   return CharacterArbitrary(0x0000, 0xffff - gapSize, mapping);
