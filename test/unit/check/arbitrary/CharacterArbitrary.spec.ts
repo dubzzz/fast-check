@@ -13,9 +13,13 @@ import {
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
-import * as stubRng from '../../stubs/generators';
-
-const isStrictlySmallerCharacter = (c1: string, c2: string) => c1.codePointAt(0)! < c2.codePointAt(0)!;
+const remapCharToIndex = (c: string): number => {
+  const cp = c.codePointAt(0)!;
+  if (cp >= 0x20 && cp <= 0x7e) return cp - 0x20;
+  if (cp < 0x20) return cp + 0x7e - 0x20;
+  return cp;
+};
+const isStrictlySmallerCharacter = (c1: string, c2: string) => remapCharToIndex(c1) < remapCharToIndex(c2);
 
 describe('CharacterArbitrary', () => {
   describe('char [single printable character]', () => {
