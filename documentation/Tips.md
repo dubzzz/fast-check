@@ -34,6 +34,85 @@ However when your arbitrary is safe enough, switching to `.filter(...)` might be
 - easier to share the arbitrary across multiple tests
 - higher performances - contrary to `fc.pre`, `fc.filter` is not exception-based making it faster
 
+## Model based testing or UI test
+
+Model based testing approach have been introduced into fast-check to ease UI testing or state machine tests.
+
+The idea of the approach is to define commands that could be applied to your system. The framework then picks zero, one or more commands and run them sequentially if they can be executed on the current state.
+
+A full example is available [here](https://github.com/dubzzz/fast-check/tree/master/example/model-based-testing).
+
+Let's take the case of a list class with `pop`, `push`, `size` methods as an example.
+
+```typescript
+class List {
+  data: number[] = [];
+  push = (v: number) => this.data.push(v);
+  pop = () => this.data.pop()!;
+  size = () => this.data.length;
+}
+```
+
+Model based testing requires a model. A model is a simplified version of the real system. In this precise case our model would contain only a single integer representing the size of the list.
+
+```typescript
+type Model = { num: number };
+```
+
+Then we have to define a command for each of the available operations on our list. Commands come with two methods:
+- `check(m: Readonly<Model>): boolean`: true if the command can be executed given the current state
+- `run(m: Model, r: RealSystem): void`: execute the command on the system and update the model accordingly. Check for potential problems or inconsistencies between the model and the real system - throws in such case.
+
+```typescript
+class PushCommand implements fc.Command<Model, List> {
+  constructor(readonly value: number) {}
+  check = (m: Readonly<Model>) => true;
+  run(m: Model, r: List): void {
+    r.push(this.value); // impact the system
+    ++m.num;            // impact the model
+  }
+  toString = () => `push(${this.value})`;
+}
+class PopCommand implements fc.Command<Model, List> {
+  check(m: Readonly<Model>): boolean {
+    // should not call pop on empty list
+    return m.num > 0;
+  }
+  run(m: Model, r: List): void {
+    assert.equal(typeof r.pop(), 'number');
+    --m.num;
+  }
+  toString = () => 'pop';
+}
+class SizeCommand implements fc.Command<Model, List> {
+  check = (m: Readonly<Model>) => true;
+  run(m: Model, r: List): void {
+    assert.equal(r.size(), m.num);
+  }
+  toString = () => 'size';
+}
+```
+
+Now that all or commands are ready we can run everything:
+
+```typescript
+// define the possible commands and their inputs
+const allCommands = [
+  fc.integer().map(v => new PushCommand(v)),
+  fc.constant(new PopCommand()),
+  fc.constant(new SizeCommand())
+];
+// run everything
+fc.assert(
+  fc.property(fc.commands(allCommands, 100), cmds => {
+    const s = () => ({ model: { num: 0 }, real: new List() });
+    fc.modelRun(s, cmds);
+  })
+);
+```
+
+The code above can easily be applied to other state machines, APIs or UI. In the case of asynchronous operations you need to implement `AsyncCommand` and use `asyncModelRun`.
+
 ## Opt for verbose failures
 
 By default, the failures reported by `fast-check` feature most relevant data:
