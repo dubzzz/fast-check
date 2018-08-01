@@ -11,15 +11,13 @@ interface IList<T> {
 type Model = { num: number };
 
 class PushCommand implements fc.Command<Model, IList<number>> {
-  constructor(readonly value: number) {
-    this.name = `push(${value})`;
-  }
+  constructor(readonly value: number) {}
   check = (m: Readonly<Model>) => true;
   run(m: Model, r: IList<number>): void {
     r.push(this.value);
     ++m.num;
   }
-  name: string;
+  toString = () => `push(${this.value})`;
 }
 class PopCommand implements fc.Command<Model, IList<number>> {
   check(m: Readonly<Model>): boolean {
@@ -30,14 +28,14 @@ class PopCommand implements fc.Command<Model, IList<number>> {
     assert.equal(typeof r.pop(), 'number');
     --m.num;
   }
-  name = 'pop';
+  toString = () => 'pop';
 }
 class SizeCommand implements fc.Command<Model, IList<number>> {
   check = (m: Readonly<Model>) => true;
   run(m: Model, r: IList<number>): void {
     assert.equal(r.size(), m.num);
   }
-  name = 'size';
+  toString = () => 'size';
 }
 const allCommands = [
   fc.integer().map(v => new PushCommand(v)),
