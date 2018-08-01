@@ -50,7 +50,7 @@
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
     "typedoc": "^0.11.1",
-    "typescript": "^2.9.2",
+    "typescript": "^3.0.1",
     "uglifyjs": "^2.4.11"
   },
   "keywords": [
