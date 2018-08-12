@@ -85,16 +85,16 @@ Useful documentations:
 In order to use fast-check from a web-page (for instance with QUnit or other testing tools), you have to reference the web-aware script as follows:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/fast-check/lib/bundle.js"></script>
+<script src="https://bundle.run/fast-check"></script>
 ```
 
 You can also reference a precise version by setting the version you want in the url:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/fast-check@0.0.11/lib/bundle.js"></script>
+<script src="https://bundle.run/fast-check@0.0.11"></script>
 ```
 
-Once it has been included, fast-check becomes accessible directly by calling `fastcheck` (in `window.fastcheck`). I highly recommend you to alias it by `fc` whenever possible by running `const fc = fastcheck` at the beginning of the scripts using it.
+Once it has been included, fast-check becomes accessible directly by calling `fastCheck` (in `window.fastCheck`). I highly recommend you to alias it by `fc` whenever possible by running `const fc = fastCheck` at the beginning of the scripts using it.
 
 ## Why should I migrate to fast-check?
 
