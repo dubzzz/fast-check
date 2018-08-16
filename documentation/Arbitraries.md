@@ -92,3 +92,84 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 - `fc.object()` or `fc.object(settings: ObjectConstraints.Settings)` generate an object
 - `fc.jsonObject()` or `fc.jsonObject(maxDepth: number)` generate an object that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
 - `fc.unicodeJsonObject()` or `fc.unicodeJsonObject(maxDepth: number)` generate an object with potentially unicode characters that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
+
+## Model based testing
+
+Model based testing approach extends the power of property based testing to state machines - *eg.: UI, data-structures*.
+
+See section [Model based testing or UI test](./Tips.md#model-based-testing-or-ui-test) in Tips for an in depth explanation.
+
+### Commands
+
+The approach relies on commands. Commands can be seen as operations a user can run on the system. Those commands have:
+- pre-condition - *implemented by `check`* - confirming whether or not the command can be executed given the current context
+- execution - *implemented by `run`* - responsible to update a simplified context while updating and checking the real system
+
+Commands can either be synchronous - `fc.Command<Model, Real>` - or asynchronous - `fc.AsyncCommand<Model, Real>`:
+
+```typescript
+// Real : system under test
+// Model: simplified state for the system
+export interface Command<Model extends object, Real> {
+  // Check if the model is in the right state to apply the command
+  // WARNING: does not change the model
+  check(m: Readonly<Model>): boolean;
+
+  // Execute on r and perform the checks - Throw in case of invalid state
+  // Update the model - m - accordingly
+  run(m: Model, r: Real): void;
+
+  // Name of the command
+  toString(): string;
+}
+
+export interface AsyncCommand<Model extends object, Real> {
+  check(m: Readonly<Model>): boolean;
+  run(m: Model, r: Real): Promise<void>;
+  toString(): string;
+}
+```
+
+### Arbitrary
+
+While `fc.array` or any other array arbitrary could be used to generate such data, it is highly recommended to rely on `fc.commands` to generate arrays of commands. Its shrinker would be more adapted for such cases.
+
+**WARNING:** `fc.commands` cannot be replayed for the moment
+
+Possible signatures:
+- `fc.commands<Model, Real>(commandArbs: Arbitrary<Command<Model, Real>>[], maxCommands?: number)` arrays of `Command` that can be ingested by `fc.modelRun`
+- `fc.commands<Model, Real>(commandArbs: Arbitrary<AsyncCommand<Model, Real>>[], maxCommands?: number)` arrays of `AsyncCommand` that can be ingested by `fc.asyncModelRun`
+
+### Model runner
+
+In order to execute the commands properly a call to either `fc.modelRun` or `fc.asyncModelRun` as to be done within classical runners - *ie. `fc.assert` or `fc.check`*.
+
+### Simplified structure
+
+```typescript
+type Model = { /* stuff */ };
+type Real  = { /* stuff */ };
+
+class CommandA extends Command { /* stuff */ };
+class CommandB extends Command { /* stuff */ };
+// other commands
+
+const CommandsArbitrary = fc.commands([
+  fc.constant(new CommandA()),        // no custom parameters
+  fc.nat().map(s => new CommandB(s)), // with custom parameter
+  // other commands
+]);
+
+fc.assert(
+  fc.property(
+    CommandsArbitrary,
+    cmds => {
+      const s = () => ({ // initial state builder
+          model: /* new model */,
+          real:  /* new system instance */
+      });
+      fc.modelRun(s, cmds);
+    }
+  )
+);
+```
