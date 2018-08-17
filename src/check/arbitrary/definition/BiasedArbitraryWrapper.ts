@@ -1,6 +1,5 @@
 import Random from '../../../random/generator/Random';
 import Arbitrary from './Arbitrary';
-import Shrinkable from './Shrinkable';
 
 /** @hidden */
 class BiasedArbitraryWrapper<T> extends Arbitrary<T> {
