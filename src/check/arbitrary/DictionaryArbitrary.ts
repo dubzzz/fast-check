@@ -1,4 +1,4 @@
-import Arbitrary from './definition/Arbitrary';
+import { Arbitrary } from './definition/Arbitrary';
 
 import { set } from './SetArbitrary';
 import { tuple } from './TupleArbitrary';

@@ -1,5 +1,5 @@
-import Random from '../../../random/generator/Random';
-import Arbitrary from './Arbitrary';
+import { Random } from '../../../random/generator/Random';
+import { Arbitrary } from './Arbitrary';
 
 /** @hidden */
 class BiasedArbitraryWrapper<T> extends Arbitrary<T> {

@@ -1,4 +1,4 @@
-export default class Stream<T> implements IterableIterator<T> {
+export class Stream<T> implements IterableIterator<T> {
   /**
    * Create an empty stream of T
    */
@@ -216,8 +216,6 @@ export default class Stream<T> implements IterableIterator<T> {
  * Create a Stream based on `g`
  * @param g Underlying data of the Stream
  */
-function stream<T>(g: IterableIterator<T>): Stream<T> {
+export function stream<T>(g: IterableIterator<T>): Stream<T> {
   return new Stream<T>(g);
 }
-
-export { stream, Stream };

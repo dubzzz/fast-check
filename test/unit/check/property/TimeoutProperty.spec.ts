@@ -1,9 +1,8 @@
 import * as assert from 'assert';
 
-import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';
-import IProperty from '../../../../src/check/property/IProperty';
+import { IProperty } from '../../../../src/check/property/IProperty';
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 
 import * as stubArb from '../../stubs/arbitraries';

@@ -1,17 +1,14 @@
-import * as assert from 'assert';
 import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { record, RecordConstraints } from '../../../../src/check/arbitrary/RecordArbitrary';
-import Random from '../../../../src/random/generator/Random';
+import { Random } from '../../../../src/random/generator/Random';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
-import * as stubArb from '../../stubs/arbitraries';
-import * as stubRng from '../../stubs/generators';
-import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 
 describe('RecordArbitrary', () => {
   describe('record', () => {

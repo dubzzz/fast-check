@@ -1,6 +1,6 @@
 import { array } from './ArrayArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './CharacterArbitrary';
-import Arbitrary from './definition/Arbitrary';
+import { Arbitrary } from './definition/Arbitrary';
 
 /** @hidden */
 function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {

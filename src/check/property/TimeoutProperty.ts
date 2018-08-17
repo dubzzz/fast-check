@@ -1,6 +1,6 @@
-import Random from '../../random/generator/Random';
-import Shrinkable from '../arbitrary/definition/Shrinkable';
-import IProperty from './IProperty';
+import { Random } from '../../random/generator/Random';
+import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { IProperty } from './IProperty';
 
 /** @hidden */
 const timeoutAfter = async (timeMs: number) =>

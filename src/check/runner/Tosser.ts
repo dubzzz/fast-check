@@ -1,8 +1,8 @@
 import * as prand from 'pure-rand';
 
-import Random from '../../random/generator/Random';
-import Shrinkable from '../arbitrary/definition/Shrinkable';
-import IProperty from '../property/IProperty';
+import { Random } from '../../random/generator/Random';
+import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { IProperty } from '../property/IProperty';
 
 /** @hidden */
 function lazyGenerate<Ts>(generator: IProperty<Ts>, rng: prand.RandomGenerator, idx: number): () => Shrinkable<Ts> {
@@ -10,7 +10,7 @@ function lazyGenerate<Ts>(generator: IProperty<Ts>, rng: prand.RandomGenerator, 
 }
 
 /** @hidden */
-export default function* toss<Ts>(
+export function* toss<Ts>(
   generator: IProperty<Ts>,
   seed: number,
   examples: Ts[]
@@ -23,5 +23,3 @@ export default function* toss<Ts>(
     yield lazyGenerate(generator, rng, idx++);
   }
 }
-
-export { toss };

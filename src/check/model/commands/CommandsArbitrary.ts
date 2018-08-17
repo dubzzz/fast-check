@@ -1,6 +1,6 @@
 import { ArrayArbitrary } from '../../arbitrary/ArrayArbitrary';
-import Arbitrary from '../../arbitrary/definition/Arbitrary';
-import Shrinkable from '../../arbitrary/definition/Shrinkable';
+import { Arbitrary } from '../../arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../arbitrary/definition/Shrinkable';
 import { oneof } from '../../arbitrary/OneOfArbitrary';
 import { ICommand } from '../command/ICommand';
 import { CommandWrapper } from './CommandWrapper';

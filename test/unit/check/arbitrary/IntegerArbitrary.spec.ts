@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
-import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { integer, nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';

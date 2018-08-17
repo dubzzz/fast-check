@@ -1,7 +1,7 @@
-import Random from '../../random/generator/Random';
+import { Random } from '../../random/generator/Random';
 import { stream } from '../../stream/Stream';
-import Arbitrary from './definition/Arbitrary';
-import Shrinkable from './definition/Shrinkable';
+import { Arbitrary } from './definition/Arbitrary';
+import { Shrinkable } from './definition/Shrinkable';
 
 /** @hidden */
 class ConstantArbitrary<T> extends Arbitrary<T> {

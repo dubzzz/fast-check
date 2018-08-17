@@ -1,8 +1,7 @@
 import * as assert from 'assert';
 
-import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
-import IProperty from '../../../../src/check/property/IProperty';
+import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { IProperty } from '../../../../src/check/property/IProperty';
 import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
 
 import * as stubRng from '../../stubs/generators';

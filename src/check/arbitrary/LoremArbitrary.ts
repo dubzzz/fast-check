@@ -1,8 +1,8 @@
 import * as loremIpsum from 'lorem-ipsum';
 
-import Random from '../../random/generator/Random';
-import Arbitrary from './definition/Arbitrary';
-import Shrinkable from './definition/Shrinkable';
+import { Random } from '../../random/generator/Random';
+import { Arbitrary } from './definition/Arbitrary';
+import { Shrinkable } from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
 /** @hidden */

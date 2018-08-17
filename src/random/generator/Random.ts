@@ -1,6 +1,6 @@
 import * as prand from 'pure-rand';
 
-export default class Random {
+export class Random {
   private static MIN_INT: number = 0x80000000 | 0;
   private static MAX_INT: number = 0x7fffffff | 0;
   private static DBL_FACTOR: number = Math.pow(2, 27);
@@ -61,5 +61,3 @@ export default class Random {
     return (a * Random.DBL_FACTOR + b) * Random.DBL_DIVISOR;
   }
 }
-
-export { Random };

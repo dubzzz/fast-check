@@ -1,5 +1,5 @@
-import Random from '../../random/generator/Random';
-import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { Random } from '../../random/generator/Random';
+import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
 /**
@@ -9,7 +9,7 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
  * - Arbitraries: how to generate the inputs for the algorithm
  * - Predicate: how to confirm the algorithm succeeded?
  */
-export default interface IProperty<Ts> {
+export interface IProperty<Ts> {
   /**
    * Is the property asynchronous?
    *
@@ -38,5 +38,3 @@ export default interface IProperty<Ts> {
  * @returns Frequency of bias starting at 2
  */
 export const runIdToFrequency = (runId: number): number => 2 + Math.floor(Math.log(runId + 1) / Math.log(10));
-
-export { IProperty };

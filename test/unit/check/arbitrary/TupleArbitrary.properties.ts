@@ -1,10 +1,6 @@
-import * as assert from 'assert';
-import * as fc from '../../../../lib/fast-check';
-
-import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
-import Random from '../../../../src/random/generator/Random';
+import { Random } from '../../../../src/random/generator/Random';
 
 export class DummyArbitrary extends Arbitrary<string> {
   constructor(public id: number) {
