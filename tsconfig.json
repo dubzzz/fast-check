@@ -9,6 +9,7 @@
         "preserveConstEnums": true,
         "strictNullChecks": true,
         "downlevelIteration": true,
+        "module": "commonjs",
         "target": "es3",
         "lib": [
             "esnext"
