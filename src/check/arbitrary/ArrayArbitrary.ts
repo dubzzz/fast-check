@@ -1,5 +1,5 @@
 import Random from '../../random/generator/Random';
-import { Stream, stream } from '../../stream/Stream';
+import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';

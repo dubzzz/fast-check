@@ -1,7 +1,6 @@
 import * as prand from 'pure-rand';
 
 import Random from '../../random/generator/Random';
-import Arbitrary from '../arbitrary/definition/Arbitrary';
 import Shrinkable from '../arbitrary/definition/Shrinkable';
 import IProperty from '../property/IProperty';
 

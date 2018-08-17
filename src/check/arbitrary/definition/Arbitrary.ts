@@ -1,5 +1,4 @@
 import Random from '../../../random/generator/Random';
-import Stream from '../../../stream/Stream';
 import Shrinkable from './Shrinkable';
 
 /**

@@ -1,6 +1,4 @@
-import Random from '../../random/generator/Random';
 import Arbitrary from './definition/Arbitrary';
-import Shrinkable from './definition/Shrinkable';
 
 import { array } from './ArrayArbitrary';
 import { boolean } from './BooleanArbitrary';
@@ -10,7 +8,6 @@ import { double } from './FloatingPointArbitrary';
 import { integer } from './IntegerArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { string, unicodeString } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
 
 export class ObjectConstraints {
   constructor(readonly key: Arbitrary<string>, readonly values: Arbitrary<any>[], readonly maxDepth: number) {}
