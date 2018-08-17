@@ -1,6 +1,6 @@
-import Random from '../../random/generator/Random';
-import Arbitrary from './definition/Arbitrary';
-import Shrinkable from './definition/Shrinkable';
+import { Random } from '../../random/generator/Random';
+import { Arbitrary } from './definition/Arbitrary';
+import { Shrinkable } from './definition/Shrinkable';
 
 /** @hidden */
 class OneOfArbitrary<T> extends Arbitrary<T> {

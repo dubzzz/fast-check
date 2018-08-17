@@ -3,7 +3,7 @@ import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
 import { lorem } from '../../../../src/check/arbitrary/LoremArbitrary';
-import Random from '../../../../src/random/generator/Random';
+import { Random } from '../../../../src/random/generator/Random';
 
 describe('LoremArbitrary', () => {
   describe('lorem', () => {

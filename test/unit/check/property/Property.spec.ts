@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 
-import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { property } from '../../../../src/check/property/Property';
 import { pre } from '../../../../src/check/precondition/Pre';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';

@@ -44,7 +44,7 @@ const generateProperty = (num: number, isAsync: boolean): string => {
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const blocks = [
     // imports
-    `import Arbitrary from '../arbitrary/definition/Arbitrary';`,
+    `import { Arbitrary } from '../arbitrary/definition/Arbitrary';`,
     `import { tuple } from '../arbitrary/TupleArbitrary';`,
     `import { ${className} } from './${className}.generic';`,
     // declare all signatures

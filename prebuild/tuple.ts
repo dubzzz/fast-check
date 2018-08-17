@@ -39,9 +39,9 @@ const ifFor = (num: number): string =>
 const generateTuple = (num: number): string => {
   const blocks = [
     // imports
-    `import Arbitrary from './definition/Arbitrary';`,
-    `import Shrinkable from './definition/Shrinkable';`,
-    `import Random from '../../random/generator/Random';`,
+    `import { Arbitrary } from './definition/Arbitrary';`,
+    `import { Shrinkable } from './definition/Shrinkable';`,
+    `import { Random } from '../../random/generator/Random';`,
     `import { GenericTupleArbitrary } from './TupleArbitrary.generic';`,
     // declare all necessary classes
     ...iota(num).map(id => classFor(id + 1)),

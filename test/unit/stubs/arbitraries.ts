@@ -1,6 +1,6 @@
-import Arbitrary from '../../../src/check/arbitrary/definition/Arbitrary';
-import Shrinkable from '../../../src/check/arbitrary/definition/Shrinkable';
-import Random from '../../../src/random/generator/Random';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../../src/check/arbitrary/definition/Shrinkable';
+import { Random } from '../../../src/random/generator/Random';
 import { stream } from '../../../src/stream/Stream';
 
 /**

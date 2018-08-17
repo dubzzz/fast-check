@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
-import Random from '../../../../src/random/generator/Random';
+import { Random } from '../../../../src/random/generator/Random';
 
 const MAX_SIZE: number = 2048;
 describe('Random', () => {

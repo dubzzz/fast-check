@@ -4,8 +4,8 @@ import * as fc from '../../../../lib/fast-check';
 import { toss } from '../../../../src/check/runner/Tosser';
 import { stream } from '../../../../src/stream/Stream';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import IProperty from '../../../../src/check/property/IProperty';
-import Random from '../../../../src/random/generator/Random';
+import { IProperty } from '../../../../src/check/property/IProperty';
+import { Random } from '../../../../src/random/generator/Random';
 
 import * as stubArb from '../../stubs/arbitraries';
 

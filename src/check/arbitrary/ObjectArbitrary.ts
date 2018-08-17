@@ -1,4 +1,4 @@
-import Arbitrary from './definition/Arbitrary';
+import { Arbitrary } from './definition/Arbitrary';
 
 import { array } from './ArrayArbitrary';
 import { boolean } from './BooleanArbitrary';

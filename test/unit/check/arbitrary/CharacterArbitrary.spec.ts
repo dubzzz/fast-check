@@ -1,6 +1,3 @@
-import * as assert from 'assert';
-import * as fc from '../../../../lib/fast-check';
-
 import {
   char,
   ascii,

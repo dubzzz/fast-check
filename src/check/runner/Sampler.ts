@@ -1,13 +1,13 @@
 import { Stream, stream } from '../../stream/Stream';
-import Arbitrary from '../arbitrary/definition/Arbitrary';
-import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { ObjectEntries, StringPadEnd, StringPadStart } from '../polyfills';
-import IProperty from '../property/IProperty';
+import { IProperty } from '../property/IProperty';
 import { Property } from '../property/Property';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
-import toss from './Tosser';
+import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
 /** @hidden */

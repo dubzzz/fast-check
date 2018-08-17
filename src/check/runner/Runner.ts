@@ -1,8 +1,8 @@
 import { stream } from '../../stream/Stream';
-import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { AsyncProperty } from '../property/AsyncProperty';
-import IProperty from '../property/IProperty';
+import { IProperty } from '../property/IProperty';
 import { Property } from '../property/Property';
 import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';

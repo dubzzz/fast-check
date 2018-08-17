@@ -2,14 +2,11 @@ import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 import { dummy } from './TupleArbitrary.properties';
 
-import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { genericTuple } from '../../../../src/check/arbitrary/TupleArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
-
-import * as stubRng from '../../stubs/generators';
-import { array } from '../../../../lib/fast-check';
 
 describe('TupleArbitrary', () => {
   describe('genericTuple', () => {

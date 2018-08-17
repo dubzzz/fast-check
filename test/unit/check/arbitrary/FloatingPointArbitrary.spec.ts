@@ -1,8 +1,7 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
-import Arbitrary from '../../../../src/check/arbitrary/definition/Arbitrary';
-import Random from '../../../../src/random/generator/Random';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import { Random } from '../../../../src/random/generator/Random';
 import { float, double } from '../../../../src/check/arbitrary/FloatingPointArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';

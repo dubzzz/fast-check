@@ -1,5 +1,5 @@
-import Random from '../../random/generator/Random';
-import IProperty from './IProperty';
+import { Random } from '../../random/generator/Random';
+import { IProperty } from './IProperty';
 
 /** @hidden */
 export class UnbiasedProperty<Ts> implements IProperty<Ts> {

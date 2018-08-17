@@ -1,4 +1,4 @@
-import Arbitrary from './definition/Arbitrary';
+import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 
 /**

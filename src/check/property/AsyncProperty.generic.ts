@@ -1,6 +1,6 @@
-import Random from '../../random/generator/Random';
-import Arbitrary from '../arbitrary/definition/Arbitrary';
-import Shrinkable from '../arbitrary/definition/Shrinkable';
+import { Random } from '../../random/generator/Random';
+import { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IProperty, runIdToFrequency } from './IProperty';
 

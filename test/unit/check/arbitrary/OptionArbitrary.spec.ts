@@ -1,9 +1,8 @@
-import * as assert from 'assert';
 import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
 import { option } from '../../../../src/check/arbitrary/OptionArbitrary';
-import Random from '../../../../src/random/generator/Random';
+import { Random } from '../../../../src/random/generator/Random';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';

@@ -1,9 +1,9 @@
-import Random from '../../random/generator/Random';
+import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
-import Shrinkable from './definition/Shrinkable';
+import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
 /** @hidden */

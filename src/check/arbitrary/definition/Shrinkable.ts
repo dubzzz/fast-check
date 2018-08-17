@@ -1,10 +1,10 @@
-import Stream from '../../../stream/Stream';
+import { Stream } from '../../../stream/Stream';
 
 /**
  * A Shrinkable<T> holds an internal value of type `T`
  * and can shrink it to smaller `T` values
  */
-export default class Shrinkable<T> {
+export class Shrinkable<T> {
   /**
    * @param value Internal value of the shrinkable
    * @param shrink Function producing Stream of shrinks associated to value
