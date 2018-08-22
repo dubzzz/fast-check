@@ -1,3 +1,4 @@
+import { StringFromCodePointLimited } from '../polyfills';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 
@@ -107,7 +108,7 @@ function fullUnicode(): Arbitrary<string> {
   // Do not call CharacterArbitrary or use fromCodePoint in it
   // String.fromCodePoint is unknown for older versions of node
   return integer(0x0000, 0x10ffff - gapSize)
-    .map(n => String.fromCodePoint(mapping(n)))
+    .map(n => StringFromCodePointLimited(mapping(n)))
     .noBias();
 }
 
