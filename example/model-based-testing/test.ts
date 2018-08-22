@@ -74,7 +74,7 @@ class AddTrackCommand implements MusicPlayerCommand {
 
 describe('MusicPlayer', () => {
   const TrackNameArb = fc.hexaString(1, 10);
-  const CommandsArb: fc.Arbitrary<MusicPlayerCommand[]> = fc.commands([
+  const CommandsArb = fc.commands([
     fc.constant(new PlayCommand()),
     fc.constant(new PauseCommand()),
     fc.constant(new NextCommand()),
