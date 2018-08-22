@@ -50,3 +50,6 @@ function testArbitrary(arb) {
 testArbitrary(fc.nat());
 testArbitrary(fc.array(fc.nat()));
 testArbitrary(fc.json());
+testArbitrary(fc.string());
+testArbitrary(fc.fullUnicodeString());
+testArbitrary(fc.lorem());
