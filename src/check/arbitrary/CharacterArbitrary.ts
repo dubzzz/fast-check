@@ -5,7 +5,7 @@ import { integer } from './IntegerArbitrary';
 /** @hidden */
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number) {
   return integer(min, max)
-    .map(n => String.fromCharCode(mapToCode(n)))
+    .map(n => StringFromCodePointLimited(mapToCode(n)))
     .noBias();
 }
 
@@ -94,8 +94,6 @@ function unicode(): Arbitrary<string> {
  * @see https://tc39.github.io/ecma262/#sec-utf16encoding
  */
 function fullUnicode(): Arbitrary<string> {
-  // Might require a polyfill if String.fromCodePoint is missing
-  // from the node version or web-browser
   // Be aware that 'characters' can have a length greater than 1
   // More details on: https://tc39.github.io/ecma262/#sec-utf16encoding
   // This unicode builder is able to produce all the UTF-16 characters
@@ -105,11 +103,7 @@ function fullUnicode(): Arbitrary<string> {
     if (v < 0xd800) return preferPrintableMapper(v);
     return v + gapSize;
   }
-  // Do not call CharacterArbitrary or use fromCodePoint in it
-  // String.fromCodePoint is unknown for older versions of node
-  return integer(0x0000, 0x10ffff - gapSize)
-    .map(n => StringFromCodePointLimited(mapping(n)))
-    .noBias();
+  return CharacterArbitrary(0x0000, 0x10ffff - gapSize, mapping);
 }
 
 export { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 };
