@@ -42,6 +42,11 @@ jobs:
         - npm run build
         - nvm install 0.12
         - node test/legacy/main.js
+    - stage: test
+      env: STEP=ROLLUP
+      script:
+        - npm run build
+        - npm run test:rollup
     - stage: publish documentation
       if: branch = master AND type = push
       script:
