@@ -7,16 +7,20 @@ type Setup<Model, Real> = () => { model: Model; real: Real };
 /** @hidden */
 const genericModelRun = <Model extends object, Real, P>(
   s: Setup<Model, Real>,
-  cmds: ICommand<Model, Real, P>[],
+  cmds: Iterable<ICommand<Model, Real, P>>,
   initialValue: P,
   then: (p: P, c: () => P | undefined) => P
 ): P => {
   const { model, real } = s();
-  return cmds.reduce((r: P, c: ICommand<Model, Real, P>) => {
-    return then(r, () => {
+  let state = initialValue;
+  for (const c of cmds) {
+    state = then(state, () => {
+      // No need to check incoming state
+      // as c.run "throws" in case of exception
       if (c.check(model)) return c.run(model, real);
     });
-  }, initialValue);
+  }
+  return state;
 };
 
 /**
@@ -27,7 +31,10 @@ const genericModelRun = <Model extends object, Real, P>(
  * @param s Initial state provider
  * @param cmds Synchronous commands to be executed
  */
-export const modelRun = <Model extends object, Real>(s: Setup<Model, Real>, cmds: Command<Model, Real>[]): void => {
+export const modelRun = <Model extends object, Real>(
+  s: Setup<Model, Real>,
+  cmds: Iterable<Command<Model, Real>>
+): void => {
   const then = (p: undefined, c: () => undefined) => c();
   genericModelRun(s, cmds, undefined, then);
 };
@@ -42,7 +49,7 @@ export const modelRun = <Model extends object, Real>(s: Setup<Model, Real>, cmds
  */
 export const asyncModelRun = <Model extends object, Real>(
   s: Setup<Model, Real>,
-  cmds: AsyncCommand<Model, Real>[]
+  cmds: Iterable<AsyncCommand<Model, Real>>
 ): Promise<void> => {
   const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
   return genericModelRun(s, cmds, Promise.resolve(), then);
