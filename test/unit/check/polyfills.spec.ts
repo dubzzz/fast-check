@@ -7,7 +7,9 @@ import {
   StringPadStart,
   ObjectEntriesImpl,
   StringPadEndImpl,
-  StringPadStartImpl
+  StringPadStartImpl,
+  StringFromCodePointLimitedImpl,
+  StringFromCodePointLimited
 } from '../../../src/check/polyfills';
 
 describe('polyfills', () => {
@@ -23,6 +25,20 @@ describe('polyfills', () => {
     it('Should provide a working polyfilled implementation', () => {
       if (Object.entries) assert.ok(ObjectEntries === Object.entries);
       else assert.ok(ObjectEntries === ObjectEntriesImpl);
+    });
+  });
+  describe('String.fromCodePoint', () => {
+    if (String.fromCodePoint) {
+      it('Should give the same answer as built-it entries', () =>
+        fc.assert(
+          fc.property(fc.nat(0x10ffff), code => {
+            assert.deepStrictEqual(StringFromCodePointLimitedImpl(code), String.fromCodePoint(code));
+          })
+        ));
+    }
+    it('Should provide a working polyfilled implementation', () => {
+      if (String.fromCodePoint) assert.ok(StringFromCodePointLimited === String.fromCodePoint);
+      else assert.ok(StringFromCodePointLimited === StringFromCodePointLimitedImpl);
     });
   });
   describe('String.prototype.padEnd', () => {
