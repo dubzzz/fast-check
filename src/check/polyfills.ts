@@ -36,6 +36,7 @@ export const StringPadStartImpl = (src: string, targetLength: number, padString:
   return padString.slice(0, targetLength) + String(src);
 };
 
+/** @hidden */
 const wrapStringPad = (method?: (targetLength: number, padString: string) => string) => {
   return (
     method &&
@@ -48,3 +49,15 @@ export const StringPadEnd = wrapStringPad(String.prototype.padEnd) || StringPadE
 
 /** @hidden */
 export const StringPadStart = wrapStringPad(String.prototype.padStart) || StringPadStartImpl;
+
+/** @hidden */
+export const StringFromCodePointLimitedImpl = (codePoint: number): string => {
+  if (codePoint < 0x10000) return String.fromCharCode(codePoint);
+
+  codePoint -= 0x10000;
+  return String.fromCharCode((codePoint >> 10) + 0xd800) + String.fromCharCode((codePoint % 0x400) + 0xdc00);
+};
+
+/** @hidden */
+export const StringFromCodePointLimited = String.fromCodePoint ? String.fromCodePoint : StringFromCodePointLimitedImpl;
+// only takes into account a single code point
