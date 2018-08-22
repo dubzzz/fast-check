@@ -102,7 +102,7 @@ function fullUnicode(): Arbitrary<string> {
   // It only produces valid UTF-16 code points
   const gapSize = 0xdfff + 1 - 0xd800;
   function mapping(v: number) {
-    if (v < 0xd800) return v;
+    if (v < 0xd800) return preferPrintableMapper(v);
     return v + gapSize;
   }
   // Do not call CharacterArbitrary or use fromCodePoint in it
