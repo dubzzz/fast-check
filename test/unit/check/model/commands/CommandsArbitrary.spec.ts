@@ -47,7 +47,7 @@ class FailureCommand implements Cmd {
 
 describe('CommandWrapper', () => {
   describe('commands', () => {
-    const simulateCommands = (cmds: Cmd[]) => {
+    const simulateCommands = (cmds: Iterable<Cmd>) => {
       for (const c of cmds) {
         if (!c.check(model)) continue;
         try {
@@ -72,7 +72,7 @@ describe('CommandWrapper', () => {
 
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
-            shrunkCmds.value.forEach(c => c.check(model));
+            [...shrunkCmds.value].forEach(c => c.check(model));
             assert.ok(logOnCheck.data.every(e => e !== 'skipped'));
           }
         })
@@ -122,7 +122,7 @@ describe('CommandWrapper', () => {
 
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
-            shrunkCmds.value.forEach(c => c.check(model));
+            [...shrunkCmds.value].forEach(c => c.check(model));
             assert.ok(logOnCheck.data.every(e => e === 'failure' || e === 'success'));
             assert.ok(logOnCheck.data.filter(e => e === 'failure').length <= 1);
           }

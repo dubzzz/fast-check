@@ -17,7 +17,7 @@ import { CommandWrapper } from './CommandWrapper';
 export const commands = <Model extends object, Real, RunResult>(
   commandArbs: Arbitrary<ICommand<Model, Real, RunResult>>[],
   maxCommands?: number
-): Arbitrary<ICommand<Model, Real, RunResult>[]> => {
+): Arbitrary<Iterable<ICommand<Model, Real, RunResult>>> => {
   const internalCommandArb: Arbitrary<CommandWrapper<Model, Real, RunResult>> = oneof(...commandArbs).map(
     c => new CommandWrapper(c)
   );
