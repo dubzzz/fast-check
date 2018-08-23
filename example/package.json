@@ -15,5 +15,6 @@
     "ts-node": "^6.1.0"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
