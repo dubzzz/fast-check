@@ -3,7 +3,6 @@
   "version": "1.4.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "main": "lib/fast-check.js",
-  "module": "lib/esm/fast-check.js",
   "types": "lib/fast-check.d.ts",
   "scripts": {
     "prebuild": "ts-node prebuild/prebuild.ts",
