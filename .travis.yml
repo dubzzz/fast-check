@@ -45,7 +45,8 @@ jobs:
     - stage: test
       env: STEP=ROLLUP
       script:
-        - npm run build
+        - npm run prebuild
+        - npm run build:publish-esm
         - npm run test:rollup
     - stage: publish documentation
       if: branch = master AND type = push
