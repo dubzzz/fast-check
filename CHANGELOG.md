@@ -1,3 +1,23 @@
+# 1.5.0
+
+_Property based test state machine: UI, automata._
+_Addition of `subarray` and `shuffledSubarray` arbitraries_
+
+## Features
+
+- ([PR#177](/pull/177)) Add `subarray` and `shuffledSubarray` arbitraries
+- ([PR#157](/pull/157)) Model based testing and commands
+- ([PR#158](/pull/158)) Characters shrink towards printable ascii
+
+
+## Fixes
+
+- ([PR#170](/pull/170)) Fix: `fullUnicode` and `fullUnicodeString` were failing on old releases of node
+- ([PR#178](/pull/178)) Doc: Update typedoc
+- ([PR#161](/pull/161)) Doc: Suggest bundle.run instead of jsdelivr
+
+---
+
 # 1.4.0
 
 _Suggest custom test values with `examples`_
