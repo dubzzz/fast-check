@@ -13,7 +13,6 @@ Property based testing framework for JavaScript/TypeScript
 </p>
 <p align="center">
   <a href="https://coveralls.io/github/dubzzz/fast-check"><img src="https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg" alt="Coverage Status" /></a>
-  <a href="https://codeclimate.com/github/dubzzz/fast-check/maintainability"><img src="https://api.codeclimate.com/v1/badges/7cb8cb395740446a3108/maintainability" alt="Maintainability" /></a>
   <a href="https://david-dm.org/dubzzz/fast-check"><img src="https://david-dm.org/dubzzz/fast-check/status.svg" alt="dependencies Status" /></a>
   <a href="https://david-dm.org/dubzzz/fast-check?type=dev"><img src="https://david-dm.org/dubzzz/fast-check/dev-status.svg" alt="devDependencies Status" /></a>
 </p>
