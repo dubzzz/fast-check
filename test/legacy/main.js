@@ -48,6 +48,7 @@ function testArbitrary(arb) {
 }
 
 testArbitrary(fc.nat());
+testArbitrary(fc.subarray([1, 42, 360]));
 testArbitrary(fc.array(fc.nat()));
 testArbitrary(fc.json());
 testArbitrary(fc.string());
