@@ -40,6 +40,7 @@ import {
   stringOf,
   unicodeString
 } from './check/arbitrary/StringArbitrary';
+import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
 
 import { AsyncCommand } from './check/model/command/AsyncCommand';
@@ -98,6 +99,8 @@ export {
   option,
   oneof,
   frequency,
+  shuffledSubarray,
+  subarray,
   array,
   set,
   tuple,
