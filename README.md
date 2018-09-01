@@ -80,22 +80,6 @@ Useful documentations:
 - [:boom: Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md)
 - [:mag: Generated documentation](https://dubzzz.github.io/fast-check/)
 
-## In a web-page
-
-In order to use fast-check from a web-page (for instance with QUnit or other testing tools), you have to reference the web-aware script as follows:
-
-```html
-<script src="https://bundle.run/fast-check"></script>
-```
-
-You can also reference a precise version by setting the version you want in the url:
-
-```html
-<script src="https://bundle.run/fast-check@0.0.11"></script>
-```
-
-Once it has been included, fast-check becomes accessible directly by calling `fastCheck` (in `window.fastCheck`). I highly recommend you to alias it by `fc` whenever possible by running `const fc = fastCheck` at the beginning of the scripts using it.
-
 ## Why should I migrate to fast-check?
 
 fast-check has initially been designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
