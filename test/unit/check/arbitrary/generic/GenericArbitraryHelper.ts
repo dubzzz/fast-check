@@ -8,7 +8,8 @@ import { Random } from '../../../../../src/random/generator/Random';
 
 const testSameSeedSameValues = function<U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
-  arbGenerator: (u: U) => Arbitrary<T>
+  arbGenerator: (u: U) => Arbitrary<T>,
+  assertEquality: (v1: T, v2: T) => void
 ) {
   it(`Should produce the same value given the same seed`, () =>
     fc.assert(
@@ -16,14 +17,15 @@ const testSameSeedSameValues = function<U, T>(
         const arb = arbGenerator(params);
         const v1 = arb.generate(new Random(prand.mersenne(seed))).value;
         const v2 = arb.generate(new Random(prand.mersenne(seed))).value;
-        assert.deepStrictEqual(v1, v2);
+        assertEquality(v1, v2);
       })
     ));
 };
 
 const testSameSeedSameShrinks = function<U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
-  arbGenerator: (u: U) => Arbitrary<T>
+  arbGenerator: (u: U) => Arbitrary<T>,
+  assertEquality: (v1: T, v2: T) => void
 ) {
   it(`Should produce the same shrunk values given the same seed`, () =>
     fc.assert(
@@ -37,7 +39,7 @@ const testSameSeedSameShrinks = function<U, T>(
           let s2: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
           let id = 0;
           while (s1 !== null && s2 !== null) {
-            assert.deepStrictEqual(s1.value, s2.value, 'All values in the path must be the same');
+            assertEquality(s1.value, s2.value);
             s1 = s1.shrink().getNthOrLast(id);
             s2 = s2.shrink().getNthOrLast(id);
             id = (id + 1) % shrinkPath.length;
@@ -134,6 +136,7 @@ export const isValidArbitrary = function<U, T>(
   arbitraryBuilder: (u: U) => Arbitrary<T>,
   settings: {
     seedGenerator?: fc.Arbitrary<U>;
+    isEqual?: (g1: T, g2: T) => boolean;
     isStrictlySmallerValue?: (g1: T, g2: T) => boolean;
     isValidValue: (g: T, seed: U) => boolean;
   }
@@ -148,8 +151,12 @@ export const isValidArbitrary = function<U, T>(
     return settings.isValidValue(g, u);
   };
 
-  testSameSeedSameValues(biasedSeedGenerator, biasedArbitraryBuilder);
-  testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder);
+  const assertEquality = (v1: T, v2: T) => {
+    if (settings.isEqual) assert.ok(settings.isEqual(v1, v2));
+    else assert.deepStrictEqual(v1, v2);
+  };
+  testSameSeedSameValues(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality);
+  testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality);
   if (settings.isStrictlySmallerValue != null) {
     testShrinkPathStrictlyDecreasing(biasedSeedGenerator, biasedArbitraryBuilder, settings.isStrictlySmallerValue);
   }
