@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
+import * as prand from 'pure-rand';
 
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
 import { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
@@ -16,7 +17,7 @@ const extractExceptSeed = <T>(conf: QualifiedParameters<T>) => {
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
-    randomType: fc.constantFrom('mersenne', 'congruential', 'congruential32') as fc.Arbitrary<RandomType>,
+    randomType: fc.constantFrom(prand.mersenne, prand.congruential, prand.congruential32),
     numRuns: fc.nat(),
     timeout: fc.nat(),
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
@@ -26,6 +27,8 @@ const parametersArbitrary = fc.record(
   },
   { withDeletedKeys: true }
 );
+
+const hardCodedRandomType = fc.constantFrom('mersenne', 'congruential', 'congruential32') as fc.Arbitrary<RandomType>;
 
 describe('QualifiedParameters', () => {
   describe('read', () => {
@@ -42,6 +45,19 @@ describe('QualifiedParameters', () => {
               } - for key ${key}, expected: ${(params as any)[key]}`
             );
           }
+        })
+      ));
+    it('Should transform correctly hardcoded randomType', () =>
+      fc.assert(
+        fc.property(parametersArbitrary, hardCodedRandomType, (params, randomType) => {
+          const qparams = QualifiedParameters.read({ ...params, randomType });
+          return qparams.randomType === prand[randomType];
+        })
+      ));
+    it('Should throw on invalid randomType', () =>
+      fc.assert(
+        fc.property(parametersArbitrary, params => {
+          assert.throws(() => QualifiedParameters.read({ ...params, randomType: 'invalid' as RandomType }));
         })
       ));
   });

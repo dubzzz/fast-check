@@ -1,3 +1,4 @@
+import { RandomGenerator } from 'pure-rand';
 import { RandomType } from './RandomType';
 
 /**
@@ -15,8 +16,9 @@ export interface Parameters<T = void> {
    *
    * Random generator is the core element behind the generation of random values - changing it might directly impact the quality and performances of the generation of random values.
    * It can be one of: 'mersenne', 'congruential', 'congruential32'
+   * Or any function able to build a `RandomGenerator` based on a seed
    */
-  randomType?: RandomType;
+  randomType?: RandomType | ((seed: number) => RandomGenerator);
   /**
    * Number of runs before success: 100 by default
    */

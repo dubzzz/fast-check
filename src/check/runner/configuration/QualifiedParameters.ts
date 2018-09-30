@@ -1,5 +1,5 @@
+import prand, { RandomGenerator } from 'pure-rand';
 import { Parameters } from './Parameters';
-import { RandomType } from './RandomType';
 
 /**
  * @hidden
@@ -10,7 +10,7 @@ import { RandomType } from './RandomType';
  */
 export class QualifiedParameters<T> {
   seed: number;
-  randomType: RandomType;
+  randomType: (seed: number) => RandomGenerator;
   numRuns: number;
   maxSkipsPerRun: number;
   timeout: number | null;
@@ -21,8 +21,22 @@ export class QualifiedParameters<T> {
   examples: T[];
 
   private static readSeed = <T>(p?: Parameters<T>): number => (p != null && p.seed != null ? p.seed : Date.now());
-  private static readRandomType = <T>(p?: Parameters<T>): RandomType =>
-    p != null && p.randomType != null ? p.randomType : 'mersenne';
+  private static readRandomType = <T>(p?: Parameters<T>): ((seed: number) => RandomGenerator) => {
+    if (p == null || p.randomType == null) return prand.mersenne;
+    if (typeof p.randomType === 'string') {
+      switch (p.randomType) {
+        case 'mersenne':
+          return prand.mersenne;
+        case 'congruential':
+          return prand.congruential;
+        case 'congruential32':
+          return prand.congruential32;
+        default:
+          throw new Error(`Invalid random specified: '${p.randomType}'`);
+      }
+    }
+    return p.randomType;
+  };
   private static readNumRuns = <T>(p?: Parameters<T>): number => {
     const defaultValue = 100;
     if (p == null) return defaultValue;
