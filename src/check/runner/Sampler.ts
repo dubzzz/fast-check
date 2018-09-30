@@ -25,7 +25,7 @@ function streamSample<Ts>(
 ): IterableIterator<Ts> {
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.readOrNumRuns(params);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
-    toss(toProperty(generator, qParams), qParams.seed, qParams.examples)
+    toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
   );
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map(s => s().value);

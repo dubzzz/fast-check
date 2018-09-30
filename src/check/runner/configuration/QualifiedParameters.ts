@@ -1,4 +1,5 @@
 import { Parameters } from './Parameters';
+import { RandomType } from './RandomType';
 
 /**
  * @hidden
@@ -9,6 +10,7 @@ import { Parameters } from './Parameters';
  */
 export class QualifiedParameters<T> {
   seed: number;
+  randomType: RandomType;
   numRuns: number;
   maxSkipsPerRun: number;
   timeout: number | null;
@@ -19,6 +21,8 @@ export class QualifiedParameters<T> {
   examples: T[];
 
   private static readSeed = <T>(p?: Parameters<T>): number => (p != null && p.seed != null ? p.seed : Date.now());
+  private static readRandomType = <T>(p?: Parameters<T>): RandomType =>
+    p != null && p.randomType != null ? p.randomType : 'mersenne';
   private static readNumRuns = <T>(p?: Parameters<T>): number => {
     const defaultValue = 100;
     if (p == null) return defaultValue;
@@ -49,6 +53,7 @@ export class QualifiedParameters<T> {
   static read<T>(p?: Parameters<T>): QualifiedParameters<T> {
     return {
       seed: QualifiedParameters.readSeed(p),
+      randomType: QualifiedParameters.readRandomType(p),
       numRuns: QualifiedParameters.readNumRuns(p),
       maxSkipsPerRun: QualifiedParameters.readMaxSkipsPerRun(p),
       timeout: QualifiedParameters.readTimeout(p),

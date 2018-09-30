@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
+import { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
 
 const extract = <T>(conf: QualifiedParameters<T>) => {
   const { logger, ...others } = conf;
@@ -15,6 +16,7 @@ const extractExceptSeed = <T>(conf: QualifiedParameters<T>) => {
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
+    randomType: fc.constantFrom('mersenne', 'congruential', 'congruential32') as fc.Arbitrary<RandomType>,
     numRuns: fc.nat(),
     timeout: fc.nat(),
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
