@@ -15,7 +15,7 @@ function prettyOne<Ts>(value: Ts): string {
 }
 
 /** @hidden */
-function pretty<Ts>(value: Ts): string {
+export function pretty<Ts>(value: Ts): string {
   if (Array.isArray(value)) return `[${[...value].map(pretty).join(',')}]`;
   return prettyOne(value);
 }

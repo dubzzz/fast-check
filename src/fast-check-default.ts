@@ -15,6 +15,7 @@ import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { double, float } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency } from './check/arbitrary/FrequencyArbitrary';
+import { func } from './check/arbitrary/FunctionArbitrary';
 import { integer, nat } from './check/arbitrary/IntegerArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import {
@@ -113,6 +114,7 @@ export {
   jsonObject,
   unicodeJson,
   unicodeJsonObject,
+  func,
   // model-based
   AsyncCommand,
   Command,
