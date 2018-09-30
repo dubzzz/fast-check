@@ -145,7 +145,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams = QualifiedParameters.read(params);
   const property = decorateProperty(rawProperty, qParams);
-  const generator = toss(property, qParams.seed, qParams.examples);
+  const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 
   const maxInitialIterations = qParams.path.length === 0 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;

@@ -1,3 +1,5 @@
+import { RandomType } from './RandomType';
+
 /**
  * Customization of the parameters used to run the properties
  */
@@ -8,6 +10,13 @@ export interface Parameters<T = void> {
    * It can be forced to replay a failed run
    */
   seed?: number;
+  /**
+   * Random number generator: `mersenne` by default
+   *
+   * Random generator is the core element behind the generation of random values - changing it might directly impact the quality and performances of the generation of random values.
+   * It can be one of: 'mersenne', 'congruential', 'congruential32'
+   */
+  randomType?: RandomType;
   /**
    * Number of runs before success: 100 by default
    */
