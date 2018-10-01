@@ -301,3 +301,38 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
     return Object.assign(f, { recorded, toString });
   });
 }
+
+/**
+ * For comparison functions
+ *
+ * A comparison function returns:
+ * - negative value whenever a < b
+ * - positive value whenever a > b
+ * - zero whenever a and b are equivalent
+ *
+ * Comparison functions are transitive: `a < b and b < c => a < c`
+ *
+ * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
+ */
+export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
+  return integer()
+    .noShrink()
+    .map(seed => {
+      const recorded: { [key: string]: number } = {};
+      const f = (a: T, b: T) => {
+        const reprA = pretty(a);
+        const reprB = pretty(b);
+        const val = hash(`${seed}${reprA}`) - hash(`${seed}${reprB}`);
+        recorded[`[${reprA},${reprB}]`] = val;
+        return val;
+      };
+      const toString = () =>
+        '<function :: ' +
+        Object.keys(recorded)
+          .sort()
+          .map(k => `${k} => ${recorded[k]}`)
+          .join(', ') +
+        '>';
+      return Object.assign(f, { recorded, toString });
+    });
+}

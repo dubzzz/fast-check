@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { func } from '../../../../src/check/arbitrary/FunctionArbitrary';
+import { func, compareFunc } from '../../../../src/check/arbitrary/FunctionArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
@@ -35,6 +35,57 @@ describe('FunctionArbitrary', () => {
       genericHelper.isValidArbitrary(() => func<[number, number], number>(integer()), {
         isEqual: (f1, f2) => f1(0, 42) === f2(0, 42),
         isValidValue: f => typeof f === 'function' && typeof f(0, 0) === 'number'
+      });
+    });
+  });
+  describe('compareFunc', () => {
+    it('Should return the same value given the same input', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.anything(), fc.anything(), (seed, a, b) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const f = compareFunc().generate(mrng).value;
+          return f(a, b) === f(a, b);
+        })
+      ));
+    it('Should be transitive', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.anything(), fc.anything(), fc.anything(), (seed, a, b, c) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const f = compareFunc().generate(mrng).value;
+          const ab = f(a, b);
+          const bc = f(b, c);
+          fc.pre(ab !== 0 && bc !== 0);
+
+          if (ab < 0 && bc < 0) return f(a, c) < 0;
+          else if (ab > 0 && bc > 0) return f(a, c) > 0;
+
+          fc.pre(false);
+        })
+      ));
+    it('Should be zero when called on a = b', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.anything(), (seed, a) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const f = compareFunc().generate(mrng).value;
+          return f(a, a) === 0;
+        })
+      ));
+    it('Should be consistent when called in reversed order', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.anything(), fc.anything(), (seed, a, b) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const f = compareFunc().generate(mrng).value;
+          const ab = f(a, b);
+          const ba = f(b, a);
+          if (ab === 0) return ba === 0;
+          else if (ab < 0) return ba > 0;
+          else return ba < 0;
+        })
+      ));
+    describe('Is valid arbitrary', () => {
+      genericHelper.isValidArbitrary(() => compareFunc(), {
+        isEqual: (f1, f2) => f1({ k: 0 }, { k: 42 }) === f2({ k: 0 }, { k: 42 }),
+        isValidValue: f => typeof f === 'function' && typeof f({ k: 0 }, { k: 42 }) === 'number'
       });
     });
   });
