@@ -1,7 +1,7 @@
 import { Stream, stream } from '../../stream/Stream';
+import { ObjectEntries, StringPadEnd, StringPadStart } from '../../utils/polyfills';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
-import { ObjectEntries, StringPadEnd, StringPadStart } from '../polyfills';
 import { IProperty } from '../property/IProperty';
 import { Property } from '../property/Property';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
