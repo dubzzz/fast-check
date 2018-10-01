@@ -273,7 +273,7 @@ function hash(repr: string): number {
   for (let idx = 0; idx !== buf.length; ++idx) {
     crc = crc32Table[(crc & 0xff) ^ buf[idx]] ^ (crc >> 8);
   }
-  return crc ^ 0xffffffff;
+  return crc + 0x80000000;
 }
 
 /**
@@ -286,8 +286,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
     const recorded: { [key: string]: TOut } = {};
     const f = (...args: TArgs) => {
       const repr = pretty(args);
-      const h = hash(`${seed}${repr}`) + 0xffffffff;
-      const val = outs[h % outs.length];
+      const val = outs[hash(`${seed}${repr}`) % outs.length];
       recorded[repr] = val;
       return val;
     };
@@ -320,8 +319,8 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
     const f = (a: T, b: T) => {
       const reprA = pretty(a);
       const reprB = pretty(b);
-      const hA = (hash(`${seed}${reprA}`) + 0xffffffff) % hashEnvSize;
-      const hB = (hash(`${seed}${reprB}`) + 0xffffffff) % hashEnvSize;
+      const hA = hash(`${seed}${reprA}`) % hashEnvSize;
+      const hB = hash(`${seed}${reprB}`) % hashEnvSize;
       const val = hA - hB;
       recorded[`[${reprA},${reprB}]`] = val;
       return val;
@@ -350,8 +349,8 @@ export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
     const f = (a: T, b: T) => {
       const reprA = pretty(a);
       const reprB = pretty(b);
-      const hA = (hash(`${seed}${reprA}`) + 0xffffffff) % hashEnvSize;
-      const hB = (hash(`${seed}${reprB}`) + 0xffffffff) % hashEnvSize;
+      const hA = hash(`${seed}${reprA}`) % hashEnvSize;
+      const hB = hash(`${seed}${reprB}`) % hashEnvSize;
       const val = hA < hB;
       recorded[`[${reprA},${reprB}]`] = val;
       return val;
