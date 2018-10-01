@@ -26,4 +26,20 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
       }
     });
   });
+  describe('compareFunc', () => {
+    it('Should be able to find equivalence between distinct values', () => {
+      const out = fc.check(
+        fc.property(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
+          fc.pre(a !== b);
+          return f(a, b) !== 0;
+        }),
+        {
+          seed: seed
+        }
+      );
+      assert.ok(out.failed, 'Should have failed (ie. there is (a, b) such that a != b and a equivalent to b under f)');
+      const counter = out.counterexample!;
+      assert.equal(counter[0](counter[1], counter[2]), 0);
+    });
+  });
 });
