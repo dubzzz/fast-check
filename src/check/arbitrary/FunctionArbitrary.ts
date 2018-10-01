@@ -315,26 +315,26 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
  * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
  */
 export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
-  return integer()
-    .noShrink()
-    .map(seed => {
-      const recorded: { [key: string]: number } = {};
-      const f = (a: T, b: T) => {
-        const reprA = pretty(a);
-        const reprB = pretty(b);
-        const val = hash(`${seed}${reprA}`) - hash(`${seed}${reprB}`);
-        recorded[`[${reprA},${reprB}]`] = val;
-        return val;
-      };
-      const toString = () =>
-        '<function :: ' +
-        Object.keys(recorded)
-          .sort()
-          .map(k => `${k} => ${recorded[k]}`)
-          .join(', ') +
-        '>';
-      return Object.assign(f, { recorded, toString });
-    });
+  return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
+    const recorded: { [key: string]: number } = {};
+    const f = (a: T, b: T) => {
+      const reprA = pretty(a);
+      const reprB = pretty(b);
+      const hA = (hash(`${seed}${reprA}`) + 0xffffffff) % hashEnvSize;
+      const hB = (hash(`${seed}${reprB}`) + 0xffffffff) % hashEnvSize;
+      const val = hA - hB;
+      recorded[`[${reprA},${reprB}]`] = val;
+      return val;
+    };
+    const toString = () =>
+      '<function :: ' +
+      Object.keys(recorded)
+        .sort()
+        .map(k => `${k} => ${recorded[k]}`)
+        .join(', ') +
+      '>';
+    return Object.assign(f, { recorded, toString });
+  });
 }
 
 /**
@@ -345,24 +345,24 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
  * - false otherwise (ie. a = b or a > b)
  */
 export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
-  return integer()
-    .noShrink()
-    .map(seed => {
-      const recorded: { [key: string]: boolean } = {};
-      const f = (a: T, b: T) => {
-        const reprA = pretty(a);
-        const reprB = pretty(b);
-        const val = hash(`${seed}${reprA}`) < hash(`${seed}${reprB}`);
-        recorded[`[${reprA},${reprB}]`] = val;
-        return val;
-      };
-      const toString = () =>
-        '<function :: ' +
-        Object.keys(recorded)
-          .sort()
-          .map(k => `${k} => ${recorded[k]}`)
-          .join(', ') +
-        '>';
-      return Object.assign(f, { recorded, toString });
-    });
+  return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
+    const recorded: { [key: string]: boolean } = {};
+    const f = (a: T, b: T) => {
+      const reprA = pretty(a);
+      const reprB = pretty(b);
+      const hA = (hash(`${seed}${reprA}`) + 0xffffffff) % hashEnvSize;
+      const hB = (hash(`${seed}${reprB}`) + 0xffffffff) % hashEnvSize;
+      const val = hA < hB;
+      recorded[`[${reprA},${reprB}]`] = val;
+      return val;
+    };
+    const toString = () =>
+      '<function :: ' +
+      Object.keys(recorded)
+        .sort()
+        .map(k => `${k} => ${recorded[k]}`)
+        .join(', ') +
+      '>';
+    return Object.assign(f, { recorded, toString });
+  });
 }
