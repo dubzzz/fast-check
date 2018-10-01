@@ -1,4 +1,4 @@
-import { StringFromCodePointLimited } from '../polyfills';
+import { StringFromCodePointLimited } from '../../utils/polyfills';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 

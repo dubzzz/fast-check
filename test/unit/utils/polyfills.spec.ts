@@ -10,7 +10,7 @@ import {
   StringPadStartImpl,
   StringFromCodePointLimitedImpl,
   StringFromCodePointLimited
-} from '../../../src/check/polyfills';
+} from '../../../src/utils/polyfills';
 
 describe('polyfills', () => {
   describe('Object.entries', () => {
