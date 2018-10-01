@@ -336,3 +336,33 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
       return Object.assign(f, { recorded, toString });
     });
 }
+
+/**
+ * For comparison boolean functions
+ *
+ * A comparison boolean function returns:
+ * - true whenever a < b
+ * - false otherwise (ie. a = b or a > b)
+ */
+export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
+  return integer()
+    .noShrink()
+    .map(seed => {
+      const recorded: { [key: string]: boolean } = {};
+      const f = (a: T, b: T) => {
+        const reprA = pretty(a);
+        const reprB = pretty(b);
+        const val = hash(`${seed}${reprA}`) < hash(`${seed}${reprB}`);
+        recorded[`[${reprA},${reprB}]`] = val;
+        return val;
+      };
+      const toString = () =>
+        '<function :: ' +
+        Object.keys(recorded)
+          .sort()
+          .map(k => `${k} => ${recorded[k]}`)
+          .join(', ') +
+        '>';
+      return Object.assign(f, { recorded, toString });
+    });
+}
