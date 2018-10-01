@@ -1,4 +1,4 @@
-import { pretty } from '../runner/utils/utils';
+import { stringify } from '../../utils/stringify';
 import { array } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
@@ -285,7 +285,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
   return tuple(array(arb, 1, 10), integer().noShrink()).map(([outs, seed]) => {
     const recorded: { [key: string]: TOut } = {};
     const f = (...args: TArgs) => {
-      const repr = pretty(args);
+      const repr = stringify(args);
       const val = outs[hash(`${seed}${repr}`) % outs.length];
       recorded[repr] = val;
       return val;
@@ -294,7 +294,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
       '<function :: ' +
       Object.keys(recorded)
         .sort()
-        .map(k => `${k} => ${pretty(recorded[k])}`)
+        .map(k => `${k} => ${stringify(recorded[k])}`)
         .join(', ') +
       '>';
     return Object.assign(f, { recorded, toString });
@@ -317,8 +317,8 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
   return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
     const recorded: { [key: string]: number } = {};
     const f = (a: T, b: T) => {
-      const reprA = pretty(a);
-      const reprB = pretty(b);
+      const reprA = stringify(a);
+      const reprB = stringify(b);
       const hA = hash(`${seed}${reprA}`) % hashEnvSize;
       const hB = hash(`${seed}${reprB}`) % hashEnvSize;
       const val = hA - hB;
@@ -347,8 +347,8 @@ export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
   return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
     const recorded: { [key: string]: boolean } = {};
     const f = (a: T, b: T) => {
-      const reprA = pretty(a);
-      const reprB = pretty(b);
+      const reprA = stringify(a);
+      const reprB = stringify(b);
       const hA = hash(`${seed}${reprA}`) % hashEnvSize;
       const hB = hash(`${seed}${reprB}`) % hashEnvSize;
       const val = hA < hB;
