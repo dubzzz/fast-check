@@ -132,4 +132,40 @@ describe('Property', () => {
     assert.equal(p.generate(stubRng.mutable.nocall(), 0).value, 42);
     assert.equal(p.generate(stubRng.mutable.nocall(), 2).value, 42);
   });
+  it('Should always execute beforeEach before the test', () => {
+    const prob = { beforeEachCalled: false };
+    const p = property(stubArb.single(8), (arg: number) => {
+      const beforeEachCalled = prob.beforeEachCalled;
+      prob.beforeEachCalled = false;
+      return beforeEachCalled;
+    }).beforeEach(() => (prob.beforeEachCalled = true));
+    assert.equal(p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should not fail');
+  });
+  it('Should execute afterEach after the test on success', () => {
+    const callOrder: string[] = [];
+    const p = property(stubArb.single(8), (arg: number) => {
+      callOrder.push('test');
+      return true;
+    }).afterEach(() => callOrder.push('afterEach'));
+    assert.equal(p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should not fail');
+    assert.deepEqual(callOrder, ['test', 'afterEach']);
+  });
+  it('Should execute afterEach after the test on failure', () => {
+    const callOrder: string[] = [];
+    const p = property(stubArb.single(8), (arg: number) => {
+      callOrder.push('test');
+      return false;
+    }).afterEach(() => callOrder.push('afterEach'));
+    assert.notEqual(p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should fail');
+    assert.deepEqual(callOrder, ['test', 'afterEach']);
+  });
+  it('Should execute afterEach after the test on uncaught exception', () => {
+    const callOrder: string[] = [];
+    const p = property(stubArb.single(8), (arg: number) => {
+      callOrder.push('test');
+      throw new Error('uncaught');
+    }).afterEach(() => callOrder.push('afterEach'));
+    assert.notEqual(p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should fail');
+    assert.deepEqual(callOrder, ['test', 'afterEach']);
+  });
 });

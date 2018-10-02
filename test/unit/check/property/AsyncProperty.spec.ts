@@ -122,4 +122,48 @@ describe('AsyncProperty', () => {
     assert.equal(p.generate(stubRng.mutable.nocall(), 0).value, 42);
     assert.equal(p.generate(stubRng.mutable.nocall(), 2).value, 42);
   });
+  it('Should always execute beforeEach before the test', async () => {
+    const prob = { beforeEachCalled: false };
+    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+      const beforeEachCalled = prob.beforeEachCalled;
+      prob.beforeEachCalled = false;
+      return beforeEachCalled;
+    }).beforeEach(async () => {
+      prob.beforeEachCalled = true;
+    });
+    assert.equal(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should not fail');
+  });
+  it('Should execute afterEach after the test on success', async () => {
+    const callOrder: string[] = [];
+    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+      callOrder.push('test');
+      return true;
+    }).afterEach(async () => {
+      callOrder.push('afterEach');
+    });
+    assert.equal(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should not fail');
+    assert.deepEqual(callOrder, ['test', 'afterEach']);
+  });
+  it('Should execute afterEach after the test on failure', async () => {
+    const callOrder: string[] = [];
+    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+      callOrder.push('test');
+      return false;
+    }).afterEach(async () => {
+      callOrder.push('afterEach');
+    });
+    assert.notEqual(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should fail');
+    assert.deepEqual(callOrder, ['test', 'afterEach']);
+  });
+  it('Should execute afterEach after the test on uncaught exception', async () => {
+    const callOrder: string[] = [];
+    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+      callOrder.push('test');
+      throw new Error('uncaught');
+    }).afterEach(async () => {
+      callOrder.push('afterEach');
+    });
+    assert.notEqual(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should fail');
+    assert.deepEqual(callOrder, ['test', 'afterEach']);
+  });
 });
