@@ -1,3 +1,21 @@
+# 1.6.0
+
+_ESM version of the package published to npm, arbitraries to generate functions and more settings to be able to tweak the execution_
+
+## Features
+
+- ([PR#201](/pull/201)) Add `compareBooleanFunc`, `compareFunc` and `func` arbitraries
+- ([PR#200](/pull/200)) Parameter `randomType` to choose the random generator
+- ([PR#202](/pull/202)) Property hooks for `beforeEach` and `afterEach`
+- ([PR#196](/pull/196)) Publish both cjs and esm versions of the package
+
+## Fixes
+
+- ([PR#175](/pull/175)) Characters must be biased by default
+- ([PR#184](/pull/184)) Update to latest lorem-ipsum
+
+---
+
 # 1.5.0
 
 _Property based test state machine: UI, automata._
