@@ -2,6 +2,7 @@
 coverage/
 documentation/
 example/
+perf/
 prebuild/
 src/
 test/

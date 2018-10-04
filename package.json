@@ -6,6 +6,7 @@
   "module": "lib/esm/fast-check.js",
   "types": "lib/fast-check.d.ts",
   "scripts": {
+    "perf": "node perf/index.js",
     "prebuild": "ts-node prebuild/prebuild.ts",
     "build": "tsc",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
@@ -43,6 +44,7 @@
     "@types/lorem-ipsum": "^1.0.2",
     "@types/mocha": "^5.2.4",
     "@types/node": "^10.5.2",
+    "benchmark": "^2.1.4",
     "browserify": "^16.2.2",
     "coveralls": "^3.0.2",
     "mocha": "^5.2.0",
