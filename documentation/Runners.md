@@ -36,7 +36,7 @@ function asyncProperty<T1,T2>(
 
 **TIPS 1:**
 
-The output of `property` and `asyncProperty` (respectively `Property` and `AsyncProperty`) accepts optionnal `beforeEach` and `afterEach` hooks that would be invoked before and after the execution of the predicate.
+The output of `property` and `asyncProperty` (respectively `Property` and `AsyncProperty`) accepts optional `beforeEach` and `afterEach` hooks that would be invoked before and after the execution of the predicate.
 
 ```typescript
 property(arb1, predicate)
