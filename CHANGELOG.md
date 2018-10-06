@@ -1,3 +1,11 @@
+# 1.6.1
+
+_Performance improvements_
+
+## Fixes
+
+- ([PR#207](/pull/207)) Performance improvements done on `pure-rand` side
+
 # 1.6.0
 
 _ESM version of the package published to npm, arbitraries to generate functions and more settings to be able to tweak the execution_
