@@ -1,12 +1,11 @@
+import { filterHelper, flatMapHelper, joinHelper, mapHelper, nilHelper, takeWhileHelper } from './StreamHelpers';
+
 export class Stream<T> implements IterableIterator<T> {
   /**
    * Create an empty stream of T
    */
-  static nil<T>() {
-    function* g(): IterableIterator<T> {
-      // nil has no value
-    }
-    return new Stream<T>(g());
+  static nil<T>(): Stream<T> {
+    return new Stream(nilHelper());
   }
 
   // /*DEBUG*/ // no double iteration
@@ -41,10 +40,8 @@ export class Stream<T> implements IterableIterator<T> {
    * @param f Mapper function
    */
   map<U>(f: (v: T) => U): Stream<U> {
-    function* helper(v: T): IterableIterator<U> {
-      yield f(v);
-    }
-    return this.flatMap(helper);
+    // /*DEBUG*/ this.closeCurrentStream();
+    return new Stream(mapHelper(this.g, f));
   }
   /**
    * Flat map all elements of the Stream using `f`
@@ -55,12 +52,7 @@ export class Stream<T> implements IterableIterator<T> {
    */
   flatMap<U>(f: (v: T) => IterableIterator<U>): Stream<U> {
     // /*DEBUG*/ this.closeCurrentStream();
-    function* helper(g: IterableIterator<T>): IterableIterator<U> {
-      for (const v of g) {
-        yield* f(v);
-      }
-    }
-    return new Stream(helper(this.g));
+    return new Stream(flatMapHelper(this.g, f));
   }
 
   /**
@@ -103,14 +95,7 @@ export class Stream<T> implements IterableIterator<T> {
    */
   takeWhile(f: (v: T) => boolean): Stream<T> {
     // /*DEBUG*/ this.closeCurrentStream();
-    function* helper(g: IterableIterator<T>): IterableIterator<T> {
-      let cur = g.next();
-      while (!cur.done && f(cur.value)) {
-        yield cur.value;
-        cur = g.next();
-      }
-    }
-    return new Stream<T>(helper(this.g));
+    return new Stream(takeWhileHelper(this.g, f));
   }
   /**
    * Take `n` first elements of the Stream
@@ -135,12 +120,8 @@ export class Stream<T> implements IterableIterator<T> {
    * @param f Elements to keep
    */
   filter(f: (v: T) => boolean): Stream<T> {
-    function* helper(v: T) {
-      if (f(v)) {
-        yield v;
-      }
-    }
-    return this.flatMap(helper);
+    // /*DEBUG*/ this.closeCurrentStream();
+    return new Stream(filterHelper(this.g, f));
   }
 
   /**
@@ -184,13 +165,8 @@ export class Stream<T> implements IterableIterator<T> {
    * @param others Streams to join to the current Stream
    */
   join(...others: IterableIterator<T>[]): Stream<T> {
-    function* helper(c: Stream<T>): IterableIterator<T> {
-      yield* c;
-      for (const s of others) {
-        yield* s;
-      }
-    }
-    return new Stream<T>(helper(this));
+    // /*DEBUG*/ this.closeCurrentStream();
+    return new Stream(joinHelper(this.g, others));
   }
 
   /**
