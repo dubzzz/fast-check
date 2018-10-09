@@ -4,9 +4,19 @@
 // They were originally defined as anonymous functions
 // Most of the methods of Stream were calling Stream.prototype.flatMap (eg.: map, filter...)
 
+class Nil<T> implements IterableIterator<T> {
+  [Symbol.iterator](): IterableIterator<T> {
+    return this;
+  }
+  next(value?: any): IteratorResult<T> {
+    return { value, done: true };
+  }
+  static nil = new Nil<any>();
+}
+
 /** @hidden */
-export function* nilHelper<T>(): IterableIterator<T> {
-  // nil has no value
+export function nilHelper<T>(): IterableIterator<T> {
+  return Nil.nil;
 }
 
 /** @hidden */
