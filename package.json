@@ -7,6 +7,7 @@
   "types": "lib/fast-check.d.ts",
   "scripts": {
     "perf": "node perf/benchmark.js",
+    "profile": "node --prof --no-logfile-per-isolate perf/profiler.js && node --prof-process v8.log > v8.out",
     "prebuild": "ts-node prebuild/prebuild.ts",
     "build": "tsc",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
