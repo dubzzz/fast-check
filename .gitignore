@@ -3,6 +3,7 @@ dist/
 docs/
 example/output/
 lib/
+lib-*/
 node_modules/
 .nyc_output/
 .vscode/

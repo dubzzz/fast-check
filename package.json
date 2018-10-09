@@ -6,7 +6,7 @@
   "module": "lib/esm/fast-check.js",
   "types": "lib/fast-check.d.ts",
   "scripts": {
-    "perf": "node perf/index.js",
+    "perf": "node perf/benchmark.js",
     "prebuild": "ts-node prebuild/prebuild.ts",
     "build": "tsc",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
