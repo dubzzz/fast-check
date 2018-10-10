@@ -1,4 +1,4 @@
-exports.run = function(fc) {
+exports.runComplexFailure = function(fc) {
     let loremIpsum = fc.record({
         text: fc.lorem(100),
         type: fc.constant('x'),
@@ -23,4 +23,8 @@ exports.run = function(fc) {
         });
 
     fc.check(fc.property(section(5), s => !(s.children.length === 4 && s.children[0].text == null)), { seed: 42 });
+};
+
+exports.runArraySuccess = function(fc) {
+    fc.check(fc.property(fc.array(fc.nat()), _ => true), { seed: 42 });
 };

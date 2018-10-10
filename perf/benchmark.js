@@ -2,10 +2,11 @@ const Benchmark = require('benchmark');
 const fcOld = require('../lib-old/fast-check');
 const fcNew = require('../lib/fast-check');
 
-const { run } = require('./tasks');
+const { runComplexFailure, runArraySuccess } = require('./tasks');
 
 const MIN_SAMPLES = 20;
 const benchConf = { minSamples: MIN_SAMPLES };
+const run = runArraySuccess;
 
 Benchmark.invoke(
     [
