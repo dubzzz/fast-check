@@ -53,8 +53,12 @@ export function* takeWhileHelper<T>(g: IterableIterator<T>, f: (v: T) => boolean
 
 /** @hidden */
 export function* joinHelper<T>(g: IterableIterator<T>, others: IterableIterator<T>[]): IterableIterator<T> {
-  yield* g;
+  for (let cur = g.next(); !cur.done; cur = g.next()) {
+    yield cur.value;
+  }
   for (const s of others) {
-    yield* s;
+    for (let cur = s.next(); !cur.done; cur = s.next()) {
+      yield cur.value;
+    }
   }
 }
