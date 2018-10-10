@@ -20,9 +20,9 @@ export class Random {
   }
 
   private uniformIn(rangeMin: number, rangeMax: number): number {
-    const [v, nrng] = prand.uniformIntDistribution(rangeMin, rangeMax, this.internalRng);
-    this.internalRng = nrng;
-    return v;
+    const g = prand.uniformIntDistribution(rangeMin, rangeMax, this.internalRng);
+    this.internalRng = g[1];
+    return g[0];
   }
 
   /**
