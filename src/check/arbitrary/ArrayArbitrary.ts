@@ -27,7 +27,10 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const size = this.lengthArb.generate(mrng);
-    const items = [...Array(size.value)].map(() => this.arb.generate(mrng));
+    const items = Array(size.value);
+    for (let idx = 0; idx !== size.value; ++idx) {
+      items[idx] = this.arb.generate(mrng);
+    }
     return this.wrapper(items, false);
   }
   private shrinkImpl(itemsRaw: Shrinkable<T>[], shrunkOnce: boolean): Stream<Shrinkable<T>[]> {
