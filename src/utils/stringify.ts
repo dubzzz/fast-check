@@ -14,6 +14,6 @@ function stringifyOne<Ts>(value: Ts): string {
 
 /** @hidden */
 export function stringify<Ts>(value: Ts): string {
-  if (Array.isArray(value)) return `[${[...value].map(stringify).join(',')}]`;
+  if (Array.isArray(value)) return `[${value.map(stringify).join(',')}]`;
   return stringifyOne(value);
 }
