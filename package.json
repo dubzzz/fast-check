@@ -58,8 +58,8 @@
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
-    "typedoc": "^0.12.0",
-    "typescript": "^3.0.1",
+    "typedoc": "^0.13.0",
+    "typescript": "^3.1.2",
     "uglifyjs": "^2.4.11"
   },
   "keywords": [
