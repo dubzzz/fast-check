@@ -1,3 +1,15 @@
+# 1.6.2
+
+_Performance improvements_
+
+## Fixes
+
+- ([PR#215](/pull/215)) Fix deopt in Stream.join and Random.uniformIn
+- ([PR#211](/pull/211)) Remove costly spread operator in ArrayArbitrary
+- ([PR#210](/pull/210)) Reduce the number of closures in Stream
+- ([PR#209](/pull/209)) Bump to `pure-rand@1.4.2`: improvements on mersenne twister
+- ([PR#208](/pull/208)) Bump to `pure-rand@1.4.1`: destructuring was too costly
+
 # 1.6.1
 
 _Performance improvements_
