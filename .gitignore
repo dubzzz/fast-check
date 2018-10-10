@@ -9,5 +9,6 @@ node_modules/
 .vscode/
 *.generated.ts
 *.generated.spec.ts
+deopt.out
 v8.log
 v8.out
