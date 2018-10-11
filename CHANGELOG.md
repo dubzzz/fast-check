@@ -273,3 +273,72 @@ _New arbitraries: constantFrom and record_
 - ([6db53f2](/commit/6db53f2)) Clean: Exclude example/ from npm package
 - ([036cd2f](/commit/036cd2f)) Doc: Documentation noShrink
 - ([0ee3a03](/commit/0ee3a03)) Doc: Link towards jsDelivr
+
+# 0.0.11
+
+_Bundled for web-browsers and node_
+
+## Features:
+- Add bundle for web-browsers
+- Add code examples in the source code
+- Add minimal length parameter on all strings arbitraries
+- Add es3 support in order to support oldest versions of node
+- Add `set`, `char16bits` and `fullUnicode` arbitraries
+- Add timeout parameter on asychronous properties
+
+## Fixes:
+- Fix: unicode character generators
+
+# 0.0.10
+
+_Fix shrink of async properties_
+
+## Fixes:
+
+- Fix: bug in shrink of async properties
+
+# 0.0.9
+
+_JSON arbitraries and shrinker kill switch_
+
+## Features:
+
+- `noShrink` method can remove shrink from existing arbitraries
+- Add `jsonObject` and `unicodeJsonObject` arbitraries
+- Support higher number of arbitraies in tuples and properties
+
+# 0.0.8
+
+_Code and documentation alignment_
+
+## Fixes:
+
+- Doc: align documentation with code
+- Doc: missing parts in the documentation
+
+# 0.0.7
+
+_Going async/await_
+
+## Features:
+
+- Support async/await properties
+- Add `frequency`, `anything`, `object`, `json`, `dictionary` arbitraries
+- Accept min and max length on `array`
+
+## Fixes:
+
+- Clean: Better integration with modern tests frameworks (throw Error not strings)
+
+# 0.0.6
+
+_Force ready to be used version_
+
+## Features:
+
+- Add `option`, `float`, `double`, `boolean` arbitraries
+- Add function to extract generated values `fc.sample` and `fc.statitistics`
+
+## Fixes:
+
+- Doc: creation of a documentation
