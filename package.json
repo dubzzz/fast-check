@@ -19,8 +19,8 @@
     "test:rollup": "rollup --config test/rollup/rollup.config.js && node test/rollup/dist/main.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "docs": "typedoc --options typedoc.json ./src/",
-    "format:check": "prettier --list-different \"**/*.{js,ts}\" \"!lib-*/**\" \"!{lib,coverage,docs}/**\"",
-    "format:fix": "prettier --write \"**/*.{js,ts}\" \"!lib-*/**\" \"!{lib,coverage,docs}/**\"",
+    "format:check": "prettier --list-different \"**/*.{js,ts}\"",
+    "format:fix": "prettier --write \"**/*.{js,ts}\"",
     "lint:check": "tslint --project tsconfig.json",
     "lint:fix": "tslint --project tsconfig.json --fix"
   },
