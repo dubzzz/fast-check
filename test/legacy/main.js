@@ -9,7 +9,11 @@ function log() {
 
 function testArbitrary(arb) {
   // should not crash if running a succesful property
-  fc.assert(fc.property(arb, function() { return true; }));
+  fc.assert(
+    fc.property(arb, function() {
+      return true;
+    })
+  );
   log();
 
   // should be able to detect failing runs and report them correctly
@@ -17,12 +21,13 @@ function testArbitrary(arb) {
   var successfulAssert = true;
   try {
     var runId = 0;
-    fc.assert(fc.property(arb, function() {
-      return (runId++ % 3) === 0;
-    }));
+    fc.assert(
+      fc.property(arb, function() {
+        return runId++ % 3 === 0;
+      })
+    );
     successfulAssert = false;
-  }
-  catch (e) {
+  } catch (e) {
     successfulAssert = successfulAssert && e.constructor.name === 'Error';
     successfulAssert = successfulAssert && e.message.indexOf('Property failed after') === 0;
   }
@@ -31,18 +36,28 @@ function testArbitrary(arb) {
 
   // should be able to replay a failing case
   var runId = 0;
-  var details = fc.check(fc.property(arb, function() {
-    return (runId++ % 3) === 0;
-  }));
-  var replay = fc.sample(arb, {seed: details.seed, path: details.counterexamplePath});
+  var details = fc.check(
+    fc.property(arb, function() {
+      return runId++ % 3 === 0;
+    })
+  );
+  var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
   assert.deepEqual(replay[0], details.counterexample[0]);
   log();
 
   // should be able to retrieve statistics
   var stats = [];
-  fc.statistics(arb, function(data) {
-    return String(String(data).length);
-  }, {logger: function(l) { stats.push(l); }});
+  fc.statistics(
+    arb,
+    function(data) {
+      return String(String(data).length);
+    },
+    {
+      logger: function(l) {
+        stats.push(l);
+      }
+    }
+  );
   assert.notEqual(stats.length, 0);
   log();
 }
