@@ -60,7 +60,7 @@ describe('CommandWrapper', () => {
     it('Should skip skipped commands on shrink', () =>
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
-          const mrng = new Random(prand.mersenne(seed));
+          const mrng = new Random(prand.xorshift128plus(seed));
           let logOnCheck: { data: string[] } = { data: [] };
 
           const baseCommands = commands([
@@ -82,7 +82,7 @@ describe('CommandWrapper', () => {
     /*it('Should shrink with failure at the end', () =>
         fc.assert(
           fc.property(fc.integer(), (seed: number) => {
-            const mrng = new Random(prand.mersenne(seed));
+            const mrng = new Random(prand.xorshift128plus(seed));
             let logOnCheck: { data: string[] } = { data: [] };
   
             const baseCommands = commands([
@@ -110,7 +110,7 @@ describe('CommandWrapper', () => {
     it('Should shrink with at most one failure and all successes', () =>
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
-          const mrng = new Random(prand.mersenne(seed));
+          const mrng = new Random(prand.xorshift128plus(seed));
           let logOnCheck: { data: string[] } = { data: [] };
 
           const baseCommands = commands([

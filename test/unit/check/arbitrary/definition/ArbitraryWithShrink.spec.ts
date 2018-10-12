@@ -66,7 +66,7 @@ describe('ArbitraryWithShrink', () => {
   it('Should produce the same shrunk values as the generated shrinkable', () => {
     fc.assert(
       fc.property(fc.integer().noShrink(), fc.nat(), (seed, mod) => {
-        const mrng = new Random(prand.mersenne(seed));
+        const mrng = new Random(prand.xorshift128plus(seed));
         const generated = smallIntWithShrink.generate(mrng);
         const fromValue = smallIntWithShrink.shrinkableFor(generated.value);
 

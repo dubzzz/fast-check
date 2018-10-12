@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "lorem-ipsum": "~1.0.6",
-    "pure-rand": "^1.4.2"
+    "pure-rand": "^1.5.0"
   },
   "devDependencies": {
     "@types/lorem-ipsum": "^1.0.2",

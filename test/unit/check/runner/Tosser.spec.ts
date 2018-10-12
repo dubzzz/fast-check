@@ -23,7 +23,7 @@ describe('Tosser', () => {
     it('Should offset the random number generator between calls', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(100), (seed, start) => {
-          const s = stream(toss(wrap(stubArb.forwardArray(4)), seed, prand.mersenne, []));
+          const s = stream(toss(wrap(stubArb.forwardArray(4)), seed, prand.xorshift128plus, []));
           const [g1, g2] = [
             ...s
               .drop(start)
@@ -39,12 +39,12 @@ describe('Tosser', () => {
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
           assert.deepStrictEqual(
             [
-              ...stream(toss(wrap(stubArb.forward()), seed, prand.mersenne, []))
+              ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
                 .take(num)
                 .map(f => f().value)
             ],
             [
-              ...stream(toss(wrap(stubArb.forward()), seed, prand.mersenne, []))
+              ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
                 .take(num)
                 .map(f => f().value)
             ]
@@ -54,8 +54,8 @@ describe('Tosser', () => {
     it('Should not depend on the order of iteration', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
-          const onGoingItems1 = [...stream(toss(wrap(stubArb.forward()), seed, prand.mersenne, [])).take(num)];
-          const onGoingItems2 = [...stream(toss(wrap(stubArb.forward()), seed, prand.mersenne, [])).take(num)];
+          const onGoingItems1 = [...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num)];
+          const onGoingItems2 = [...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num)];
           assert.deepStrictEqual(
             onGoingItems2
               .reverse()
@@ -69,10 +69,10 @@ describe('Tosser', () => {
       fc.assert(
         fc.property(fc.integer(), fc.nat(20), fc.array(fc.integer()), (seed, num, examples) => {
           const noExamplesProvided = [
-            ...stream(toss(wrap(stubArb.forward()), seed, prand.mersenne, [])).take(num - examples.length)
+            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num - examples.length)
           ].map(f => f().value);
           const examplesProvided = [
-            ...stream(toss(wrap(stubArb.forward()), seed, prand.mersenne, examples)).take(num)
+            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, examples)).take(num)
           ].map(f => f().value);
           assert.deepStrictEqual([...examples, ...noExamplesProvided].slice(0, num), examplesProvided);
         })
