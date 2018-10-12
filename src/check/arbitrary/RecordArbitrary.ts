@@ -11,6 +11,18 @@ export interface RecordConstraints {
   with_deleted_keys?: boolean;
 }
 
+interface DeletedKeys {
+  withDeletedKeys: true;
+}
+
+interface DeletedKeysDepreciated {
+  with_deleted_keys: true;
+}
+
+type ConstrainedArbitrary<T, Constraints> = Constraints extends DeletedKeys | DeletedKeysDepreciated
+  ? Arbitrary<Partial<T>>
+  : Arbitrary<T>;
+
 /** @hidden */
 function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
   const keys = Object.keys(recordModel);
@@ -46,10 +58,10 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  * @param recordModel Schema of the record
  * @param constraints Contraints on the generated record
  */
-function record<T>(
+function record<T, Constraints extends RecordConstraints>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints: RecordConstraints
-): Arbitrary<Partial<{ [K in keyof T]: T[K] }>>;
+  constraints: Constraints
+): ConstrainedArbitrary<{ [K in keyof T]: T[K] }, Constraints>;
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints) {
   if (constraints == null || (constraints.withDeletedKeys !== true && constraints.with_deleted_keys !== true))
     return rawRecord(recordModel);
