@@ -9,14 +9,15 @@ const benchConf = { minSamples: MIN_SAMPLES };
 const run = runArraySuccess;
 
 Benchmark.invoke(
-    [
-      new Benchmark(`Reference`, () => run(fcOld), benchConf),
-      new Benchmark(`Test`, () => run(fcNew), benchConf),
-      new Benchmark(`Reference`, () => run(fcOld), benchConf),
-      new Benchmark(`Test`, () => run(fcNew), benchConf),
-    ], {
-        name: 'run',
-        queued: true,
-        onCycle: (event) => console.log(String(event.target)),
-    }
+  [
+    new Benchmark(`Reference`, () => run(fcOld), benchConf),
+    new Benchmark(`Test`, () => run(fcNew), benchConf),
+    new Benchmark(`Reference`, () => run(fcOld), benchConf),
+    new Benchmark(`Test`, () => run(fcNew), benchConf)
+  ],
+  {
+    name: 'run',
+    queued: true,
+    onCycle: event => console.log(String(event.target))
+  }
 );

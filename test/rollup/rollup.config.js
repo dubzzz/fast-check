@@ -8,5 +8,5 @@ export default {
     format: 'iife',
     name: 'RunFastCheck'
   },
-  plugins: [ resolve(), cjs() ],
+  plugins: [resolve(), cjs()]
 };
