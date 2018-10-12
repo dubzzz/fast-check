@@ -15,8 +15,8 @@ const testSameSeedSameValues = function<U, T>(
     fc.assert(
       fc.property(argsForArbGenerator, fc.integer().noShrink(), (params, seed) => {
         const arb = arbGenerator(params);
-        const v1 = arb.generate(new Random(prand.mersenne(seed))).value;
-        const v2 = arb.generate(new Random(prand.mersenne(seed))).value;
+        const v1 = arb.generate(new Random(prand.xorshift128plus(seed))).value;
+        const v2 = arb.generate(new Random(prand.xorshift128plus(seed))).value;
         assertEquality(v1, v2);
       })
     ));
@@ -35,8 +35,8 @@ const testSameSeedSameShrinks = function<U, T>(
         fc.set(fc.nat(100), 1, 10),
         (params, seed, shrinkPath) => {
           const arb = arbGenerator(params);
-          let s1: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
-          let s2: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
+          let s1: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
+          let s2: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
           let id = 0;
           while (s1 !== null && s2 !== null) {
             assertEquality(s1.value, s2.value);
@@ -63,7 +63,7 @@ const testShrinkPathStrictlyDecreasing = function<U, T>(
         fc.set(fc.nat(100), 1, 10),
         (params, seed, shrinkPath) => {
           const arb = arbGenerator(params);
-          let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
+          let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
           let prevValue = shrinkable!.value;
           let id = 0;
           while (shrinkable !== null) {
@@ -91,7 +91,7 @@ const testAlwaysGenerateCorrectValues = function<U, T>(
     fc.assert(
       fc.property(argsForArbGenerator, fc.integer().noShrink(), (params, seed) => {
         const arb = arbGenerator(params);
-        const shrinkable = arb.generate(new Random(prand.mersenne(seed)));
+        const shrinkable = arb.generate(new Random(prand.xorshift128plus(seed)));
         assert.ok(
           isValidValue(shrinkable.value, params),
           `Expect ${JSON.stringify(shrinkable.value)} to be a correct value (built with parameters: ${JSON.stringify(
@@ -115,7 +115,7 @@ const testAlwaysShrinkToCorrectValues = function<U, T>(
         fc.set(fc.nat(100), 1, 10),
         (params, seed, shrinkPath) => {
           const arb = arbGenerator(params);
-          let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.mersenne(seed)));
+          let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
           let id = 0;
           while (shrinkable !== null) {
             assert.ok(

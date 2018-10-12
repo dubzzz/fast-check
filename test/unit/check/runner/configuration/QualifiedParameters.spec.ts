@@ -17,7 +17,7 @@ const extractExceptSeed = <T>(conf: QualifiedParameters<T>) => {
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
-    randomType: fc.constantFrom(prand.mersenne, prand.congruential, prand.congruential32),
+    randomType: fc.constantFrom(prand.mersenne, prand.congruential, prand.congruential32, prand.xorshift128plus),
     numRuns: fc.nat(),
     timeout: fc.nat(),
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
@@ -28,7 +28,12 @@ const parametersArbitrary = fc.record(
   { withDeletedKeys: true }
 );
 
-const hardCodedRandomType = fc.constantFrom('mersenne', 'congruential', 'congruential32') as fc.Arbitrary<RandomType>;
+const hardCodedRandomType = fc.constantFrom(
+  'mersenne',
+  'congruential',
+  'congruential32',
+  'xorshift128plus'
+) as fc.Arbitrary<RandomType>;
 
 describe('QualifiedParameters', () => {
   describe('read', () => {

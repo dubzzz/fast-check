@@ -13,7 +13,7 @@ describe('OptionArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), seed => {
           const MAX_GUESSES = 1000;
-          const mrng = new Random(prand.mersenne(seed));
+          const mrng = new Random(prand.xorshift128plus(seed));
           const arb = option(stubArb.forward());
           for (let idx = 0; idx != MAX_GUESSES; ++idx) {
             if (arb.generate(mrng).value == null) {

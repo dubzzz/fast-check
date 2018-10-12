@@ -22,7 +22,7 @@ export class QualifiedParameters<T> {
 
   private static readSeed = <T>(p?: Parameters<T>): number => (p != null && p.seed != null ? p.seed : Date.now());
   private static readRandomType = <T>(p?: Parameters<T>): ((seed: number) => RandomGenerator) => {
-    if (p == null || p.randomType == null) return prand.mersenne;
+    if (p == null || p.randomType == null) return prand.xorshift128plus;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
         case 'mersenne':
@@ -31,6 +31,8 @@ export class QualifiedParameters<T> {
           return prand.congruential;
         case 'congruential32':
           return prand.congruential32;
+        case 'xorshift128plus':
+          return prand.xorshift128plus;
         default:
           throw new Error(`Invalid random specified: '${p.randomType}'`);
       }

@@ -9,7 +9,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
    * of their type / range
    */
   const lookForMissing = <T>(arb: fc.Arbitrary<T>, missing: number): void => {
-    const mrng = new fc.Random(prand.mersenne(seed));
+    const mrng = new fc.Random(prand.xorshift128plus(seed));
     const alreadySeen: any = {};
     while (missing > 0) {
       const g = arb.generate(mrng).value.toString();
