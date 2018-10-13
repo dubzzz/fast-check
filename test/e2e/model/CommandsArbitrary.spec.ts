@@ -7,6 +7,11 @@ type Model = {
 };
 type Real = {};
 
+class SuccessAlwaysCommand implements fc.Command<Model, Real> {
+  check = (m: Readonly<Model>) => true;
+  run = (m: Model, r: Real) => {};
+  toString = () => 'success';
+}
 class SuccessCommand implements fc.Command<Model, Real> {
   check = (m: Readonly<Model>) => m.validSteps.includes(m.current.stepId++);
   run = (m: Model, r: Real) => {};
@@ -56,6 +61,24 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         /^(-,)*failure(,-)*$/.test(cmdsRepr),
         `Expected the only played command to be 'failure', got: ${cmdsRepr} for steps ${validSteps.sort().join(',')}`
       );
+    });
+    it('Should result in empty commands if failures happen after the run', () => {
+      const out = fc.check(
+        fc.property(
+          fc.commands([fc.constant(new SuccessAlwaysCommand())]),
+          (cmds: Iterable<fc.Command<Model, Real>>) => {
+            const setup = () => ({
+              model: { current: { stepId: 0 }, validSteps: [] },
+              real: {}
+            });
+            fc.modelRun(setup, cmds);
+            return false; // fails after the model, no matter the commands
+          }
+        ),
+        { seed: seed }
+      );
+      assert.ok(out.failed, 'Should have failed');
+      assert.equal([...out.counterexample![0]].length, 0);
     });
   });
 });
