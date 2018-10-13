@@ -1,6 +1,7 @@
 import { AsyncCommand } from './command/AsyncCommand';
 import { Command } from './command/Command';
 import { ICommand } from './command/ICommand';
+import { CommandsIterable } from './commands/CommandsIterable';
 
 type Setup<Model, Real> = () => { model: Model; real: Real };
 
@@ -23,6 +24,38 @@ const genericModelRun = <Model extends object, Real, P>(
   return state;
 };
 
+/** @hidden */
+const internalModelRun = <Model extends object, Real>(
+  s: Setup<Model, Real>,
+  cmds: Iterable<Command<Model, Real>> | CommandsIterable<Model, Real, void>
+): void => {
+  const then = (p: undefined, c: () => undefined) => c();
+  try {
+    return genericModelRun(s, cmds, undefined, then);
+  } catch (err) {
+    if ('errorDetected' in cmds && typeof cmds.errorDetected === 'function') {
+      cmds.errorDetected();
+    }
+    throw err;
+  }
+};
+
+/** @hidden */
+const internalAsyncModelRun = async <Model extends object, Real>(
+  s: Setup<Model, Real>,
+  cmds: Iterable<AsyncCommand<Model, Real>> | CommandsIterable<Model, Real, Promise<void>>
+): Promise<void> => {
+  const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
+  try {
+    return await genericModelRun(s, cmds, Promise.resolve(), then);
+  } catch (err) {
+    if ('errorDetected' in cmds && typeof cmds.errorDetected === 'function') {
+      cmds.errorDetected();
+    }
+    throw err;
+  }
+};
+
 /**
  * Run synchronous commands over a `Model` and the `Real` system
  *
@@ -33,10 +66,9 @@ const genericModelRun = <Model extends object, Real, P>(
  */
 export const modelRun = <Model extends object, Real>(
   s: Setup<Model, Real>,
-  cmds: Iterable<Command<Model, Real>>
+  cmds: Iterable<Command<Model, Real>> | CommandsIterable<Model, Real, void>
 ): void => {
-  const then = (p: undefined, c: () => undefined) => c();
-  genericModelRun(s, cmds, undefined, then);
+  internalModelRun(s, cmds);
 };
 
 /**
@@ -47,10 +79,9 @@ export const modelRun = <Model extends object, Real>(
  * @param s Initial state provider
  * @param cmds Asynchronous commands to be executed
  */
-export const asyncModelRun = <Model extends object, Real>(
+export const asyncModelRun = async <Model extends object, Real>(
   s: Setup<Model, Real>,
-  cmds: Iterable<AsyncCommand<Model, Real>>
+  cmds: Iterable<AsyncCommand<Model, Real>> | CommandsIterable<Model, Real, Promise<void>>
 ): Promise<void> => {
-  const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
-  return genericModelRun(s, cmds, Promise.resolve(), then);
+  await internalAsyncModelRun(s, cmds);
 };
