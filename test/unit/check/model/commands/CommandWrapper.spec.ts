@@ -8,14 +8,14 @@ type Model = {};
 type Real = {};
 
 describe('CommandWrapper', () => {
-  it('Should hide name of the command if it has not run', () => {
+  it('Should show name of the command if it has not run', () => {
     const cmd = new class implements Command<Model, Real> {
       check = (m: Readonly<Model>) => true;
       run = (m: Model, r: Real) => {};
       toString = () => 'sync command';
     }();
     const wrapper = new CommandWrapper(cmd);
-    assert.strictEqual(wrapper.toString(), '-');
+    assert.strictEqual(wrapper.toString(), 'sync command');
   });
   it('Should show name of the command if it has run', () => {
     const cmd = new class implements Command<Model, Real> {
