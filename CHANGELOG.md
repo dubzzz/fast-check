@@ -1,3 +1,18 @@
+# 1.7.0
+
+_Switch to another PRNG for better performances, better fc.commands_
+
+## Features
+
+- ([PR#221](/pull/221)) Better shrink capabilities for `fc.commands`
+
+## Fixes
+
+- ([PR#220](/pull/220)) Switch to another PRNG as default random - *more performances*
+- ([PR#217](/pull/217)) Better typings for `fc.record`
+
+---
+
 # 1.6.2
 
 _Performance improvements_
