@@ -79,7 +79,7 @@ describe('CommandWrapper', () => {
       ));
     // TODO: revamp the arbitrary so that this test
     //       can be enabled
-    /*it('Should shrink with failure at the end', () =>
+    it.skip('Should shrink with failure at the end', () =>
         fc.assert(
           fc.property(fc.integer(), (seed: number) => {
             const mrng = new Random(prand.xorshift128plus(seed));
@@ -98,7 +98,7 @@ describe('CommandWrapper', () => {
   
             for (const shrunkCmds of baseCommands.shrink()) {
               logOnCheck.data = [];
-              shrunkCmds.value.forEach(c => c.check(model));
+              [...shrunkCmds.value].forEach(c => c.check(model));
               assert.ok(
                   logOnCheck.data.length === 0
                   || logOnCheck.data[logOnCheck.data.length - 1] === 'failure',
@@ -106,7 +106,7 @@ describe('CommandWrapper', () => {
               );
             }
           })
-        ));*/
+        ));
     it('Should shrink with at most one failure and all successes', () =>
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
