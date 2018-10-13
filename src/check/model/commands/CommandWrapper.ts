@@ -15,6 +15,6 @@ export class CommandWrapper<Model extends object, Real, RunResult> implements IC
     return new CommandWrapper<Model, Real, RunResult>(this.cmd);
   }
   toString(): string {
-    return this.hasRan ? this.cmd.toString() : '-';
+    return this.cmd.toString();
   }
 }
