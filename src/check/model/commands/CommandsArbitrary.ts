@@ -9,6 +9,7 @@ import { ICommand } from '../command/ICommand';
 import { CommandsIterable } from './CommandsIterable';
 import { CommandWrapper } from './CommandWrapper';
 
+/** @hidden */
 class CommandsArbitrary<Model extends object, Real, RunResult> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult>
 > {

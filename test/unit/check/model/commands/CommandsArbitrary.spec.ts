@@ -6,7 +6,6 @@ import { Command } from '../../../../../src/check/model/command/Command';
 import { Random } from '../../../../../src/random/generator/Random';
 import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
 import { commands } from '../../../../../src/check/model/commands/CommandsArbitrary';
-import { modelRun } from '../../../../../src/check/model/ModelRunner';
 
 type Model = {};
 type Real = {};

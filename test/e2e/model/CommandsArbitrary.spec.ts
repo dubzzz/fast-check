@@ -28,7 +28,7 @@ class FailureCommand implements fc.Command<Model, Real> {
 const seed = Date.now();
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {
-    it.skip('Should print only the commands corresponding to the failure', () => {
+    it('Should print only the commands corresponding to the failure', () => {
       // Why this test?
       //
       // fc.commands is one of the rare Arbitrary relying on an internal state.
@@ -57,8 +57,9 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       assert.ok(out.failed, 'Should have failed');
       const cmdsRepr = out.counterexample![1].toString();
       const validSteps = [...out.counterexample![0], ...out.counterexample![2]];
-      assert.ok(
-        /^(-,)*failure(,-)*$/.test(cmdsRepr),
+      assert.equal(
+        cmdsRepr,
+        'failure',
         `Expected the only played command to be 'failure', got: ${cmdsRepr} for steps ${validSteps.sort().join(',')}`
       );
     });
