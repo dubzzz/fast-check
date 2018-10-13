@@ -77,36 +77,33 @@ describe('CommandWrapper', () => {
           }
         })
       ));
-    // TODO: revamp the arbitrary so that this test
-    //       can be enabled
-    it.skip('Should shrink with failure at the end', () =>
-        fc.assert(
-          fc.property(fc.integer(), (seed: number) => {
-            const mrng = new Random(prand.xorshift128plus(seed));
-            let logOnCheck: { data: string[] } = { data: [] };
-  
-            const baseCommands = commands([
-              constant(new SuccessCommand(logOnCheck)),
-              constant(new SkippedCommand(logOnCheck)),
-              constant(new FailureCommand(logOnCheck))
-            ]).generate(mrng);
-            simulateCommands(baseCommands.value);
-  
-            const lastWasFailure = logOnCheck.data[logOnCheck.data.length - 1] === 'failure';
-            const initialData = [...logOnCheck.data];
-            fc.pre(lastWasFailure);
-  
-            for (const shrunkCmds of baseCommands.shrink()) {
-              logOnCheck.data = [];
-              [...shrunkCmds.value].forEach(c => c.check(model));
-              assert.ok(
-                  logOnCheck.data.length === 0
-                  || logOnCheck.data[logOnCheck.data.length - 1] === 'failure',
-                  `Shrunk initial data ${initialData.join(',')} into ${logOnCheck.data.join(',')}`
-              );
-            }
-          })
-        ));
+    it('Should shrink with failure at the end', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed: number) => {
+          const mrng = new Random(prand.xorshift128plus(seed));
+          let logOnCheck: { data: string[] } = { data: [] };
+
+          const baseCommands = commands([
+            constant(new SuccessCommand(logOnCheck)),
+            constant(new SkippedCommand(logOnCheck)),
+            constant(new FailureCommand(logOnCheck))
+          ]).generate(mrng);
+          simulateCommands(baseCommands.value);
+
+          const lastWasFailure = logOnCheck.data[logOnCheck.data.length - 1] === 'failure';
+          const initialData = [...logOnCheck.data];
+          fc.pre(lastWasFailure);
+
+          for (const shrunkCmds of baseCommands.shrink()) {
+            logOnCheck.data = [];
+            [...shrunkCmds.value].forEach(c => c.check(model));
+            assert.ok(
+              logOnCheck.data.length === 0 || logOnCheck.data[logOnCheck.data.length - 1] === 'failure',
+              `Shrunk initial data ${initialData.join(',')} into ${logOnCheck.data.join(',')}`
+            );
+          }
+        })
+      ));
     it('Should shrink with at most one failure and all successes', () =>
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
