@@ -6,13 +6,20 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
+let loremGen = loremIpsum;
+// @ts-ignore
+if (loremIpsum.default) {
+  // @ts-ignore
+  loremGen = loremIpsum.default;
+}
+
 /** @hidden */
 class LoremArbitrary extends Arbitrary<string> {
   constructor(readonly numWords: number, readonly mode: 'words' | 'sentences' | 'paragraphs') {
     super();
   }
   generate(mrng: Random): Shrinkable<string> {
-    const loremString = loremIpsum({
+    const loremString = loremGen({
       count: this.numWords,
       units: this.mode,
       random: () => mrng.nextDouble()
