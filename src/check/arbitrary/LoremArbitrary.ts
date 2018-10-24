@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-var-requires
-const loremIpsum = require('lorem-ipsum');
+import * as loremIpsum from 'lorem-ipsum';
 
 import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
