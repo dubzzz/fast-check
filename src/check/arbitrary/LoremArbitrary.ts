@@ -1,4 +1,3 @@
-// tslint:disable-next-line:no-var-requires
 import * as loremIpsum from 'lorem-ipsum';
 
 import { Random } from '../../random/generator/Random';
