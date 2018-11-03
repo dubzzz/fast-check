@@ -101,6 +101,10 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 - `compareFunc()` generate a comparison function taking two parameters `a` and `b` and producing an integer value. Output is zero when `a` and `b` are considered to be equivalent. Output is strictly inferior to zero means that `a` should be considered strictly inferior to `b` (similar for strictly superior to zero)
 - `func(arb: Arbitrary<TOut>)` generate a function of type `(...args: TArgs) => TOut` outputing values generated using `arb`
 
+## Extended tools
+
+- `context()` generate a `Context` instance for each predicate run. `Context` can be used to log stuff within the run itself. In case of failure, the logs will be attached in the counterexample and visible in the stack trace
+
 ## Model based testing
 
 Model based testing approach extends the power of property based testing to state machines - *eg.: UI, data-structures*.
