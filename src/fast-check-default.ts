@@ -53,8 +53,8 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
-import { Stream, stream } from './stream/Stream';
 import { cloneMethod } from './check/symbols';
+import { Stream, stream } from './stream/Stream';
 
 // boolean
 // floating point types

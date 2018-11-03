@@ -1,8 +1,8 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
-import { cloneMethod } from '../symbols';
 
 /** @hidden */
 class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {

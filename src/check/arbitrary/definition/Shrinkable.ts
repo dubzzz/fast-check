@@ -1,5 +1,5 @@
 import { Stream } from '../../../stream/Stream';
-import { hasCloneMethod, WithCloneMethod, cloneMethod } from '../../symbols';
+import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
 
 /**
  * A Shrinkable<T> holds an internal value of type `T`
@@ -21,6 +21,7 @@ export class Shrinkable<T> {
    * @param value Internal value of the shrinkable
    * @param shrink Function producing Stream of shrinks associated to value
    */
+  // tslint:disable-next-line:variable-name
   constructor(readonly value_: T, readonly shrink: () => Stream<Shrinkable<T>> = () => Stream.nil<Shrinkable<T>>()) {
     this.hasToBeCloned = hasCloneMethod(value_);
     Object.defineProperty(this, 'value', { get: this.getValue });

@@ -1,11 +1,11 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
-import { cloneMethod } from '../symbols';
 
 /** @hidden */
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
