@@ -2,6 +2,8 @@ import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { sample, statistics } from '../../../../src/check/runner/Sampler';
+import { cloneMethod, Shrinkable } from '../../../../src/fast-check';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 
 import * as stubArb from '../../stubs/arbitraries';
 
@@ -60,6 +62,17 @@ describe('Sampler', () => {
     it('Should throw on invalid path', () => {
       const arb = stubArb.forward().noShrink();
       assert.throws(() => sample(arb, { seed: 42, path: 'invalid' }));
+    });
+    it('Should not call clone on cloneable instances', () => {
+      const cloneable = {
+        [cloneMethod]: () => {
+          throw new Error('Unexpected call to [cloneMethod]');
+        }
+      };
+      const arb = new class extends Arbitrary<typeof cloneable> {
+        generate = () => new Shrinkable(cloneable);
+      }();
+      sample(arb, { seed: 42 });
     });
   });
   describe('statistics', () => {
