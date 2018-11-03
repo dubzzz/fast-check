@@ -4,12 +4,14 @@ import * as fc from '../../../../lib/fast-check';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
+import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
+import { hasCloneMethod } from '../../../../src/check/symbols';
 
 class DummyArbitrary extends Arbitrary<{ key: number }> {
   constructor(public value: () => number) {
@@ -54,6 +56,16 @@ describe('ArrayArbitrary', () => {
           return true;
         })
       ));
+    it('Should produce cloneable array if one cloneable children', () => {
+      const mrng = stubRng.mutable.counter(0);
+      let g = array(context(), 1, 10).generate(mrng).value;
+      return hasCloneMethod(g);
+    });
+    it('Should not produce cloneable tuple if no cloneable children', () => {
+      const mrng = stubRng.mutable.counter(0);
+      let g = array(nat(), 1, 10).generate(mrng).value;
+      return hasCloneMethod(g);
+    });
     describe('Given no length constraints', () => {
       genericHelper.isValidArbitrary(() => array(nat()), {
         isStrictlySmallerValue: isStrictlySmallerArray,

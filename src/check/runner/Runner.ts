@@ -36,9 +36,9 @@ function runIt<Ts>(
     done = true;
     let idx = 0;
     for (const v of values) {
-      const out = property.run(v.value) as PreconditionFailure | string | null;
+      const out = property.run(v.value_) as PreconditionFailure | string | null;
       if (out != null && typeof out === 'string') {
-        runExecution.fail(v.value, idx, out);
+        runExecution.fail(v.value_, idx, out);
         values = v.shrink();
         done = false;
         break;
@@ -79,9 +79,9 @@ async function asyncRunIt<Ts>(
     done = true;
     let idx = 0;
     for (const v of values) {
-      const out = await property.run(v.value);
+      const out = await property.run(v.value_);
       if (out != null && typeof out === 'string') {
-        runExecution.fail(v.value, idx, out);
+        runExecution.fail(v.value_, idx, out);
         values = v.shrink();
         done = false;
         break;

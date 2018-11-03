@@ -10,6 +10,7 @@ import { array } from './check/arbitrary/ArrayArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
 import { constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
+import { context, IContext } from './check/arbitrary/ContextArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
@@ -53,6 +54,7 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 import { Random } from './random/generator/Random';
 
 import { Stream, stream } from './stream/Stream';
+import { cloneMethod } from './check/symbols';
 
 // boolean
 // floating point types
@@ -117,6 +119,7 @@ export {
   compareBooleanFunc,
   compareFunc,
   func,
+  context,
   // model-based
   AsyncCommand,
   Command,
@@ -127,7 +130,9 @@ export {
   // extend the framework
   Arbitrary,
   Shrinkable,
+  cloneMethod,
   // interfaces
+  IContext,
   ObjectConstraints,
   Parameters,
   RecordConstraints,

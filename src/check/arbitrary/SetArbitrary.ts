@@ -22,7 +22,7 @@ function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): ((tab: Shrinka
   return (tab: Shrinkable<T>[]): Shrinkable<T>[] => {
     let finalLength = tab.length;
     for (let idx = tab.length - 1; idx !== -1; --idx) {
-      if (subArrayContains(tab, idx, t => compare(t.value, tab[idx].value))) {
+      if (subArrayContains(tab, idx, t => compare(t.value_, tab[idx].value_))) {
         --finalLength;
         swap(tab, idx, finalLength);
       }
