@@ -1,9 +1,12 @@
 import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
-import { constant, constantFrom } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { clonedConstant, constant, constantFrom } from '../../../../src/check/arbitrary/ConstantArbitrary';
 
 import * as stubRng from '../../stubs/generators';
+import { cloneMethod } from '../../../../src/fast-check';
+
+const cloneable = { [cloneMethod]: () => cloneable };
 
 describe('ConstantArbitrary', () => {
   describe('constant', () => {
@@ -19,6 +22,9 @@ describe('ConstantArbitrary', () => {
       assert.deepEqual(g, ['hello']);
       instance.push('world');
       assert.deepEqual(g, ['hello', 'world']);
+    });
+    it('Should throw on cloneable instance', () => {
+      assert.throws(() => constant(cloneable));
     });
   });
   describe('constantFrom', () => {
@@ -45,6 +51,9 @@ describe('ConstantArbitrary', () => {
           return false;
         })
       ));
+    it('Should throw on cloneable instance', () => {
+      assert.throws(() => constantFrom(cloneable));
+    });
     it('Should shrink any of the constants towards the first one', () =>
       fc.assert(
         fc.property(fc.set(fc.string(), 1, 10), fc.integer(), (data, seed) => {
@@ -54,5 +63,21 @@ describe('ConstantArbitrary', () => {
           else assert.deepStrictEqual([...shrinkable.shrink()].map(s => s.value), [data[0]]);
         })
       ));
+  });
+  describe('clonedConstant', () => {
+    it('Should throw on cloneable instance with flag enabled', () => {
+      assert.doesNotThrow(() => clonedConstant(cloneable));
+    });
+    it('Should clone cloneable on generate', () => {
+      let clonedOnce = false;
+      const mrng = stubRng.mutable.nocall();
+      const g = clonedConstant({
+        [cloneMethod]: function() {
+          clonedOnce = true;
+          return this;
+        }
+      }).generate(mrng).value;
+      assert.ok(clonedOnce);
+    });
   });
 });
