@@ -56,6 +56,21 @@ describe('CommandWrapper', () => {
         }
       }
     };
+    it('Should generate a cloneable shrinkable', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed: number) => {
+          const mrng = new Random(prand.xorshift128plus(seed));
+          let logOnCheck: { data: string[] } = { data: [] };
+
+          const baseCommands = commands([
+            constant(new SuccessCommand(logOnCheck)),
+            constant(new SkippedCommand(logOnCheck)),
+            constant(new FailureCommand(logOnCheck))
+          ]).generate(mrng);
+
+          return baseCommands.hasToBeCloned;
+        })
+      ));
     it('Should skip skipped commands on shrink', () =>
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {

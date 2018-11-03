@@ -33,9 +33,6 @@ const internalModelRun = <Model extends object, Real>(
   try {
     return genericModelRun(s, cmds, undefined, then);
   } catch (err) {
-    if ('errorDetected' in cmds && typeof cmds.errorDetected === 'function') {
-      cmds.errorDetected();
-    }
     throw err;
   }
 };
@@ -49,9 +46,6 @@ const internalAsyncModelRun = async <Model extends object, Real>(
   try {
     return await genericModelRun(s, cmds, Promise.resolve(), then);
   } catch (err) {
-    if ('errorDetected' in cmds && typeof cmds.errorDetected === 'function') {
-      cmds.errorDetected();
-    }
     throw err;
   }
 };
