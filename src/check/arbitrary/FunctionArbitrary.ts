@@ -1,5 +1,6 @@
 import { hash } from '../../utils/hash';
 import { stringify } from '../../utils/stringify';
+import { cloneMethod, hasCloneMethod } from '../symbols';
 import { array } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
@@ -17,7 +18,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
       const repr = stringify(args);
       const val = outs[hash(`${seed}${repr}`) % outs.length];
       recorded[repr] = val;
-      return val;
+      return hasCloneMethod(val) ? val[cloneMethod]() : val;
     };
     const toString = () =>
       '<function :: ' +
