@@ -11,7 +11,7 @@ import { Random } from '../../../../src/random/generator/Random';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
-import { hasCloneMethod } from '../../../../src/check/symbols';
+import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
 
 class DummyArbitrary extends Arbitrary<{ key: number }> {
   constructor(public value: () => number) {
@@ -65,6 +65,23 @@ describe('ArrayArbitrary', () => {
       const mrng = stubRng.mutable.counter(0);
       let g = array(nat(), 1, 10).generate(mrng).value;
       return hasCloneMethod(g);
+    });
+    it('Should not clone on generate', () => {
+      let numCallsToClone = 0;
+      const withClonedAndCounter = new class extends Arbitrary<any> {
+        generate() {
+          const v = {
+            [cloneMethod]: () => {
+              ++numCallsToClone;
+              return v;
+            }
+          };
+          return new Shrinkable(v);
+        }
+      }();
+      const mrng = stubRng.mutable.counter(0);
+      array(withClonedAndCounter).generate(mrng);
+      return numCallsToClone === 0;
     });
     describe('Given no length constraints', () => {
       genericHelper.isValidArbitrary(() => array(nat()), {
