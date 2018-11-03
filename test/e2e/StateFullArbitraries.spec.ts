@@ -3,7 +3,7 @@ import * as fc from '../../src/fast-check';
 
 const seed = Date.now();
 describe(`StateFullArbitraries (seed: ${seed})`, () => {
-  describe('Never call with non-cloned cloneable instance', () => {
+  describe('Never call with non-cloned instance and correct counterexample', () => {
     it('normal property', () => {
       let nonClonedDetected = false;
       const status = fc.check(
@@ -11,10 +11,12 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1].size(), 1);
     });
     it('fc.oneof', () => {
       let nonClonedDetected = false;
@@ -23,10 +25,12 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1].size(), 1);
     });
     it('fc.frequency', () => {
       let nonClonedDetected = false;
@@ -35,10 +39,12 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1].size(), 1);
     });
     it('fc.option', () => {
       let nonClonedDetected = false;
@@ -48,11 +54,13 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
           }
-          return ctx != null && a < b;
-        }), {seed}
+          return ctx == null || a < b;
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1]!.size(), 1);
     });
     it('fc.tuple', () => {
       let nonClonedDetected = false;
@@ -61,10 +69,12 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1][1].size(), 1);
     });
     it('fc.tuple (multiple cloneables)', () => {
       let nonClonedDetected = false;
@@ -75,38 +85,46 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
             ctx.log('logging stuff');
           }
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1][0].size(), 1);
+      assert.equal(status.counterexample![1][1].size(), 1);
+      assert.equal(status.counterexample![1][2].size(), 1);
     });
     it('fc.array', () => {
       let nonClonedDetected = false;
       const status = fc.check(
-        fc.property(fc.integer(), fc.array(fc.context()), fc.integer(), (a, ctxs, b) => {
+        fc.property(fc.integer(), fc.array(fc.context(), 1, 10), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
           }
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1][0]!.size(), 1);
     });
     it('fc.set', () => {
       let nonClonedDetected = false;
       const status = fc.check(
-        fc.property(fc.integer(), fc.set(fc.context()), fc.integer(), (a, ctxs, b) => {
+        fc.property(fc.integer(), fc.set(fc.context(), 1, 10), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
           }
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1][0]!.size(), 1);
     });
     it('fc.record', () => {
       let nonClonedDetected = false;
@@ -115,10 +133,12 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
-        }), {seed}
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      assert.equal(status.counterexample![1].ctx.size(), 1);
     });
     it('fc.dictionary', () => {
       let nonClonedDetected = false;
@@ -129,11 +149,16 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
           }
-          return a < b;
-        }), {seed}
+          return Object.keys(dict).length === 0 || a < b;
+        }),
+        { seed }
       );
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
+      const dict = status.counterexample![1];
+      for (const k in dict) {
+        assert.equal(dict[k].size(), 1);
+      }
     });
   });
 });
