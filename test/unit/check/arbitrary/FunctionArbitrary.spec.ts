@@ -1,6 +1,8 @@
+import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { func, compareFunc, compareBooleanFunc } from '../../../../src/check/arbitrary/FunctionArbitrary';
+import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
@@ -31,6 +33,15 @@ describe('FunctionArbitrary', () => {
           return va1 === va2 && vb1 === vb2;
         })
       ));
+    it('Should clone produced values if they implement [fc.cloneMethod]', () => {
+      const mrng = stubRng.mutable.fastincrease(0);
+      const f = func(context()).generate(mrng).value;
+      const ctx1 = f(0);
+      ctx1.log('Logging some stuff');
+      const ctx2 = f(0);
+      assert.equal(ctx1.size(), 1);
+      assert.equal(ctx2.size(), 0);
+    });
     describe('Is valid arbitrary', () => {
       genericHelper.isValidArbitrary(() => func<[number, number], number>(integer()), {
         isEqual: (f1, f2) => f1(0, 42) === f2(0, 42),
