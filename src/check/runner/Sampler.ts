@@ -28,11 +28,11 @@ function streamSample<Ts>(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
   );
   if (qParams.path.length === 0) {
-    return tossedValues.take(qParams.numRuns).map(s => s().value);
+    return tossedValues.take(qParams.numRuns).map(s => s().value_);
   }
   return stream(pathWalk(qParams.path, tossedValues.map(s => s())))
     .take(qParams.numRuns)
-    .map(s => s.value);
+    .map(s => s.value_);
 }
 
 /**
