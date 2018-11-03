@@ -3,9 +3,9 @@ import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
 /**
- * Interface for IContext instances
+ * Execution context attached to one predicate run
  */
-export interface IContext {
+export interface Context {
   /**
    * Log execution details during a test.
    * Very helpful when troubleshooting failures
@@ -19,7 +19,7 @@ export interface IContext {
 }
 
 /** @hidden */
-class ContextImplem implements IContext {
+class ContextImplem implements Context {
   private readonly receivedLogs: string[];
   constructor() {
     this.receivedLogs = [];
@@ -39,6 +39,6 @@ class ContextImplem implements IContext {
 }
 
 /**
- * Produce a {@link IContext} instance
+ * Produce a {@link Context} instance
  */
-export const context = () => constant(new ContextImplem()) as Arbitrary<IContext>;
+export const context = () => constant(new ContextImplem()) as Arbitrary<Context>;
