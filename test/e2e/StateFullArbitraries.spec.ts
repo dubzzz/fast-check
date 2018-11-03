@@ -108,7 +108,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
     });
-    xit('fc.record', () => {
+    it('fc.record', () => {
       let nonClonedDetected = false;
       const status = fc.check(
         fc.property(fc.integer(), fc.record({ ctx: fc.context() }), fc.integer(), (a, { ctx }, b) => {
@@ -120,20 +120,20 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       assert.ok(status.failed);
       assert.ok(!nonClonedDetected);
     });
-  });
-  xit('fc.dictionary', () => {
-    let nonClonedDetected = false;
-    const status = fc.check(
-      fc.property(fc.integer(), fc.dictionary(fc.string(), fc.context()), fc.integer(), (a, dict, b) => {
-        for (const k in dict) {
-          const ctx = dict[k];
-          nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
-          ctx.log('logging stuff');
-        }
-        return a < b;
-      }), {seed}
-    );
-    assert.ok(status.failed);
-    assert.ok(!nonClonedDetected);
+    it('fc.dictionary', () => {
+      let nonClonedDetected = false;
+      const status = fc.check(
+        fc.property(fc.integer(), fc.dictionary(fc.string(), fc.context()), fc.integer(), (a, dict, b) => {
+          for (const k in dict) {
+            const ctx = dict[k];
+            nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
+            ctx.log('logging stuff');
+          }
+          return a < b;
+        }), {seed}
+      );
+      assert.ok(status.failed);
+      assert.ok(!nonClonedDetected);
+    });
   });
 });
