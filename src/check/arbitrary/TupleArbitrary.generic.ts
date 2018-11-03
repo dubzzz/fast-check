@@ -2,6 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
+import { cloneMethod } from '../symbols';
 
 /** @hidden */
 class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
@@ -13,10 +14,29 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
         throw new Error(`Invalid parameter encountered at index ${idx}: expecting an Arbitrary`);
     }
   }
+  private static makeItCloneable<Ts>(vs: Ts[], shrinkables: Shrinkable<Ts>[]) {
+    (vs as any)[cloneMethod] = () => {
+      const cloned = [];
+      for (let idx = 0; idx !== shrinkables.length; ++idx) {
+        cloned.push(shrinkables[idx].value); // push potentially cloned values
+      }
+      GenericTupleArbitrary.makeItCloneable(cloned, shrinkables);
+      return cloned;
+    };
+    return vs;
+  }
   private static wrapper<Ts>(shrinkables: Shrinkable<Ts>[]): Shrinkable<Ts[]> {
-    return new Shrinkable(shrinkables.map(s => s.value), () =>
-      GenericTupleArbitrary.shrinkImpl(shrinkables).map(GenericTupleArbitrary.wrapper)
-    );
+    let cloneable = false;
+    const vs = [];
+    for (let idx = 0; idx !== shrinkables.length; ++idx) {
+      const s = shrinkables[idx];
+      cloneable = cloneable || s.hasToBeCloned;
+      vs.push(s.value); // TODO: it might be possible not to clone some values
+    }
+    if (cloneable) {
+      GenericTupleArbitrary.makeItCloneable(vs, shrinkables);
+    }
+    return new Shrinkable(vs, () => GenericTupleArbitrary.shrinkImpl(shrinkables).map(GenericTupleArbitrary.wrapper));
   }
   generate(mrng: Random): Shrinkable<Ts[]> {
     return GenericTupleArbitrary.wrapper(this.arbs.map(a => a.generate(mrng)));

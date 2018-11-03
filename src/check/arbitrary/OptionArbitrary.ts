@@ -14,7 +14,7 @@ class OptionArbitrary<T> extends Arbitrary<T | null> {
     function* g(): IterableIterator<Shrinkable<T | null>> {
       yield new Shrinkable(null);
     }
-    return new Shrinkable(s.value, () =>
+    return new Shrinkable(s.value_, () =>
       s
         .shrink()
         .map(OptionArbitrary.extendedShrinkable)

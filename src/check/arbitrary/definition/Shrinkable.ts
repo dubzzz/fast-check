@@ -1,4 +1,5 @@
 import { Stream } from '../../../stream/Stream';
+import { hasCloneMethod, WithCloneMethod, cloneMethod } from '../../symbols';
 
 /**
  * A Shrinkable<T> holds an internal value of type `T`
@@ -6,10 +7,32 @@ import { Stream } from '../../../stream/Stream';
  */
 export class Shrinkable<T> {
   /**
+   * State storing the result of hasCloneMethod
+   * If <true> the value will be cloned each time it gets accessed
+   */
+  readonly hasToBeCloned: boolean;
+  /**
+   * Safe value of the shrinkable
+   * Depending on {@link hasToBeCloned} it will either be {@link value_} or a clone of it
+   */
+  readonly value: T;
+
+  /**
    * @param value Internal value of the shrinkable
    * @param shrink Function producing Stream of shrinks associated to value
    */
-  constructor(readonly value: T, readonly shrink: () => Stream<Shrinkable<T>> = () => Stream.nil<Shrinkable<T>>()) {}
+  constructor(readonly value_: T, readonly shrink: () => Stream<Shrinkable<T>> = () => Stream.nil<Shrinkable<T>>()) {
+    this.hasToBeCloned = hasCloneMethod(value_);
+    Object.defineProperty(this, 'value', { get: this.getValue });
+  }
+
+  /** @hidden */
+  private getValue() {
+    if (this.hasToBeCloned) {
+      return ((this.value_ as unknown) as WithCloneMethod<T>)[cloneMethod]();
+    }
+    return this.value_;
+  }
 
   /**
    * Create another shrinkable by mapping all values using the provided `mapper`
