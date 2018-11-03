@@ -20,24 +20,20 @@ class CommandsArbitrary<Model extends object, Real, RunResult> extends Arbitrary
     this.oneCommandArb = oneof(...commandArbs).map(c => new CommandWrapper(c));
     this.lengthArb = nat(maxCommands);
   }
-  private static cloneCommands<Model extends object, Real, RunResult>(
-    cmds: Shrinkable<CommandWrapper<Model, Real, RunResult>>[]
-  ) {
-    return cmds.map(c => new Shrinkable(c.value.clone(), c.shrink));
-  }
   private wrapper(
     items: Shrinkable<CommandWrapper<Model, Real, RunResult>>[],
     shrunkOnce: boolean
   ): Shrinkable<CommandsIterable<Model, Real, RunResult>> {
-    return new Shrinkable(new CommandsIterable(items.map(s => s.value)), () =>
-      this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(CommandsArbitrary.cloneCommands(v), true))
+    return new Shrinkable(new CommandsIterable(items.map(s => s.value_)), () =>
+      this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(v, true))
     );
   }
   generate(mrng: Random): Shrinkable<CommandsIterable<Model, Real, RunResult>> {
     const size = this.lengthArb.generate(mrng);
-    const items: Shrinkable<CommandWrapper<Model, Real, RunResult>>[] = Array(size.value);
-    for (let idx = 0; idx !== size.value; ++idx) {
-      items[idx] = this.oneCommandArb.generate(mrng);
+    const items: Shrinkable<CommandWrapper<Model, Real, RunResult>>[] = Array(size.value_);
+    for (let idx = 0; idx !== size.value_; ++idx) {
+      const item = this.oneCommandArb.generate(mrng);
+      items[idx] = item;
     }
     return this.wrapper(items, false);
   }
@@ -45,7 +41,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult> extends Arbitrary
     itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult>>[],
     shrunkOnce: boolean
   ): Stream<Shrinkable<CommandWrapper<Model, Real, RunResult>>[]> {
-    const items = itemsRaw.filter(c => c.value.hasRan); // filter out commands that have not been executed
+    const items = itemsRaw.filter(c => c.value_.hasRan); // filter out commands that have not been executed
     if (items.length === 0) {
       return Stream.nil<Shrinkable<CommandWrapper<Model, Real, RunResult>>[]>();
     }
@@ -58,7 +54,8 @@ class CommandsArbitrary<Model extends object, Real, RunResult> extends Arbitrary
     return emptyOrNil
       .join(size.shrink().map(l => items.slice(0, l.value).concat(items[items.length - 1]))) // try: remove items except the last one
       .join(this.shrinkImpl(items.slice(0, items.length - 1), false).map(vs => vs.concat(items[items.length - 1]))) // try: keep last, shrink remaining (rec)
-      .join(items[0].shrink().map(v => [v].concat(items.slice(1)))); // try: shrink first, keep others
+      .join(items[0].shrink().map(v => [v].concat(items.slice(1)))) // try: shrink first, keep others
+      .map(shrinkables => shrinkables.map(s => new Shrinkable(s.value_.clone(), s.shrink)));
   }
 }
 
