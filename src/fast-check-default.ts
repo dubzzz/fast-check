@@ -9,7 +9,7 @@ import { sample, statistics } from './check/runner/Sampler';
 import { array } from './check/arbitrary/ArrayArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
-import { constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
+import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
 import { context, Context } from './check/arbitrary/ContextArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
@@ -99,6 +99,7 @@ export {
   lorem,
   constant,
   constantFrom,
+  clonedConstant,
   option,
   oneof,
   frequency,

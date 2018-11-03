@@ -1,5 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { stream } from '../../stream/Stream';
+import { cloneMethod, hasCloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
@@ -27,6 +28,21 @@ class ConstantArbitrary<T> extends Arbitrary<T> {
  * @param value The value to produce
  */
 function constant<T>(value: T): Arbitrary<T> {
+  if (hasCloneMethod(value)) {
+    throw new Error('fc.constant does not accept cloneable values, use fc.clonedConstant instead');
+  }
+  return new ConstantArbitrary<T>([value]);
+}
+
+/**
+ * For `value`
+ * @param value The value to produce
+ */
+function clonedConstant<T>(value: T): Arbitrary<T> {
+  if (hasCloneMethod(value)) {
+    const producer = () => value[cloneMethod]();
+    return new ConstantArbitrary([producer]).map(c => c());
+  }
   return new ConstantArbitrary<T>([value]);
 }
 
@@ -41,7 +57,10 @@ function constantFrom<T>(...values: T[]): Arbitrary<T> {
   if (values.length === 0) {
     throw new Error('fc.constantFrom expects at least one parameter');
   }
+  if (values.find(v => hasCloneMethod(v)) != null) {
+    throw new Error('fc.constantFrom does not accept cloneable values, not supported for the moment');
+  }
   return new ConstantArbitrary<T>([...values]);
 }
 
-export { constant, constantFrom };
+export { clonedConstant, constant, constantFrom };

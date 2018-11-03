@@ -1,5 +1,5 @@
 import { cloneMethod } from '../symbols';
-import { constant } from './ConstantArbitrary';
+import { clonedConstant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
 /**
@@ -41,4 +41,4 @@ class ContextImplem implements Context {
 /**
  * Produce a {@link Context} instance
  */
-export const context = () => constant(new ContextImplem()) as Arbitrary<Context>;
+export const context = () => clonedConstant(new ContextImplem()) as Arbitrary<Context>;
