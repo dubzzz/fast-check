@@ -34,6 +34,18 @@ export class Shrinkable<T> {
     return this.value_;
   }
 
+  /** @hidden */
+  private applyMapper<U>(mapper: (t: T) => U): U {
+    if (this.hasToBeCloned) {
+      const out = mapper(this.value);
+      if (out instanceof Object) {
+        (out as any)[cloneMethod] = () => mapper(this.value);
+      }
+      return out;
+    }
+    return mapper(this.value);
+  }
+
   /**
    * Create another shrinkable by mapping all values using the provided `mapper`
    * Both the original value and the shrunk ones are impacted
@@ -42,7 +54,7 @@ export class Shrinkable<T> {
    * @returns New shrinkable with mapped elements
    */
   map<U>(mapper: (t: T) => U): Shrinkable<U> {
-    return new Shrinkable<U>(mapper(this.value), () => this.shrink().map(v => v.map<U>(mapper)));
+    return new Shrinkable<U>(this.applyMapper(mapper), () => this.shrink().map(v => v.map<U>(mapper)));
   }
 
   /**
