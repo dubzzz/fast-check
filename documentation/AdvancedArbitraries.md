@@ -130,3 +130,25 @@ Some frameworks actually use this approach. Unfortunately using this approach ma
 Let's imagine you are using a `oneof(integer(0, 10), integer(20, 30))` relying on the `DummyArbitrary<number>` above. As soon as you have generated a value - a `number` - you cannot call shrink anymore as you do not know if it has been produced by `integer(0, 10)` or `integer(20, 30)` - in this precise case you can easily infer the producer.
 
 For this reason, the `shrink` method is not part of `Arbitrary` in fast-check but is part of the values instantiated by `generate`.
+
+### Cloneable
+
+Any generated value having a key for `fc.cloneMethod` would be handled a bit differently during the execution. Indeed those values explicitly requires to be cloned before being transmitted again to the predicate.
+
+Cloneable values can be seen as stateful values that would be altered as soon as we use them inside the predicate. For thsi precise reason they have to be recreated if they need to be used inside other runs of the predicate.
+
+Example of usages:
+- `fc.context`: is a stateful instance that gathers all the logs for a given predicate execution. In order to provide only the logs linked to the run itself it has to be cloned between all the runs
+- stream structure
+
+Example of a stream arbitrary:
+
+```typescript
+const streamInt = fc.nat()
+    .map(seed => {
+        return Object.assign(
+            new SeededRandomStream(seed),
+            { [fc.cloneMethod]: () => new SeededRandomStream(seed) }
+        );
+    });
+```
