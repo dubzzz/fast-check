@@ -6,10 +6,11 @@ import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary'
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { genericTuple } from '../../../../src/check/arbitrary/TupleArbitrary';
+import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 import * as stubRng from '../../stubs/generators';
-import { hasCloneMethod } from '../../../../src/check/symbols';
 
 describe('TupleArbitrary', () => {
   describe('genericTuple', () => {
@@ -51,5 +52,23 @@ describe('TupleArbitrary', () => {
           return !hasCloneMethod(g);
         })
       ));
+    it('Should not clone on generate', () => {
+      let numCallsToClone = 0;
+      const withClonedAndCounter = new class extends Arbitrary<any> {
+        generate() {
+          const v = {
+            [cloneMethod]: () => {
+              ++numCallsToClone;
+              return v;
+            }
+          };
+          return new Shrinkable(v);
+        }
+      }();
+      const arbs = [withClonedAndCounter];
+      const mrng = stubRng.mutable.counter(0);
+      genericTuple(arbs).generate(mrng);
+      return numCallsToClone === 0;
+    });
   });
 });

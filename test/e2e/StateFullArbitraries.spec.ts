@@ -3,6 +3,40 @@ import * as fc from '../../src/fast-check';
 
 const seed = Date.now();
 describe(`StateFullArbitraries (seed: ${seed})`, () => {
+  describe('Never call on generate', () => {
+    const cloneableWithCount = (data: { counter: number }) =>
+      new class extends fc.Arbitrary<any> {
+        generate() {
+          const v = {
+            [fc.cloneMethod]: () => {
+              ++data.counter;
+              return v;
+            }
+          };
+          return new fc.Shrinkable(v);
+        }
+      }();
+    it('normal property', () => {
+      const data = { counter: 0 };
+      fc.assert(fc.property(cloneableWithCount(data), () => {}));
+      assert.equal(data.counter, 0);
+    });
+    it('normal property with multiple cloneables', () => {
+      const data = { counter: 0 };
+      fc.assert(fc.property(cloneableWithCount(data), cloneableWithCount(data), () => {}));
+      assert.equal(data.counter, 0);
+    });
+    it('fc.tuple', () => {
+      const data = { counter: 0 };
+      fc.assert(fc.property(fc.tuple(cloneableWithCount(data)), () => {}));
+      assert.equal(data.counter, 0);
+    });
+    it('fc.array', () => {
+      const data = { counter: 0 };
+      fc.assert(fc.property(fc.array(cloneableWithCount(data)), () => {}));
+      assert.equal(data.counter, 0);
+    });
+  });
   describe('Never call with non-cloned instance and correct counterexample', () => {
     it('normal property', () => {
       let nonClonedDetected = false;

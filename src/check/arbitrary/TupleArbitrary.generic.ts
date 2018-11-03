@@ -25,13 +25,13 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
     };
     return vs;
   }
-  private static wrapper<Ts>(shrinkables: Shrinkable<Ts>[]): Shrinkable<Ts[]> {
+  private static wrapper<Ts>(shrinkables: Shrinkable<Ts>[], postGenerate?: boolean): Shrinkable<Ts[]> {
     let cloneable = false;
     const vs = [];
     for (let idx = 0; idx !== shrinkables.length; ++idx) {
       const s = shrinkables[idx];
       cloneable = cloneable || s.hasToBeCloned;
-      vs.push(s.value); // TODO: it might be possible not to clone some values
+      vs.push(postGenerate === true ? s.value_ : s.value);
     }
     if (cloneable) {
       GenericTupleArbitrary.makeItCloneable(vs, shrinkables);
@@ -39,7 +39,7 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
     return new Shrinkable(vs, () => GenericTupleArbitrary.shrinkImpl(shrinkables).map(GenericTupleArbitrary.wrapper));
   }
   generate(mrng: Random): Shrinkable<Ts[]> {
-    return GenericTupleArbitrary.wrapper(this.arbs.map(a => a.generate(mrng)));
+    return GenericTupleArbitrary.wrapper(this.arbs.map(a => a.generate(mrng)), true);
   }
   private static shrinkImpl<Ts>(value: Shrinkable<Ts>[]): Stream<Shrinkable<Ts>[]> {
     // shrinking one by one is the not the most comprehensive
