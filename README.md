@@ -95,6 +95,7 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 - replay directly on the minimal counterexample - *no need to replay the whole sequence, you get directly the counterexample*
 - custom examples in addition of generated ones - *no need to duplicate the code to play the property on custom examples*
 - model based approach - *use the power of property based testing to test UI, APIs or state machines*
+- logger per predicate run - *simplify your troubleshoot with fc.context and its logging feature*
 
 For more details, refer to the documentation in the links above.
 

@@ -164,6 +164,29 @@ Encountered failures were:
 
 With that output, we notice that our `contains` implementation seems to fail when the `pattern` we are looking for is the beginning of the string we are looking in.
 
+## Log within a predicate
+
+In order to ease the diagnosis of red properties, fast-check introduced an internal logger that can be used to log stuff inside the predicate itself.
+
+The advantage of this logger is that one logger is linked to one run so that the counterexample comes with its own logs (and not the ones of previous failures leading to this counterexample). Logs will only be shown in case of failure contrary to `console.log` that would pop everywhere.
+
+Usage is quite simple, logger is one of the features available inside the `Context` interface:
+
+```typescript
+fc.assert(
+    fc.property(
+        fc.string(),
+        fc.string(),
+        fc.context(), // comes with a log method
+        (a: number, b: number, ctx: fc.Context): boolean => {
+            const intermediateResult = /* ... */;
+            ctx.log(`Intermediate: ${intermediateResult}`);
+            return check(intermediateResult);
+        }
+    )
+)
+```
+
 ## Preview generated values
 
 Before writing down your test, it might be great to confirm that the arbitrary you will be using produce the values you want.
