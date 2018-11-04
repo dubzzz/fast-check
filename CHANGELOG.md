@@ -1,3 +1,11 @@
+# 1.7.1
+
+_Fix import of loremIpsum library_
+
+## Fixes
+
+- ([PR#226](/pull/226)) Fix import of loremIpsum library
+
 # 1.7.0
 
 _Switch to another PRNG for better performances, better fc.commands_
