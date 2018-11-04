@@ -32,6 +32,7 @@ import { oneof } from './check/arbitrary/OneOfArbitrary';
 import { option } from './check/arbitrary/OptionArbitrary';
 import { record, RecordConstraints } from './check/arbitrary/RecordArbitrary';
 import { set } from './check/arbitrary/SetArbitrary';
+import { infiniteStream } from './check/arbitrary/StreamArbitrary';
 import {
   asciiString,
   base64String,
@@ -106,6 +107,7 @@ export {
   shuffledSubarray,
   subarray,
   array,
+  infiniteStream,
   set,
   tuple,
   genericTuple,
