@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Examples of usage of fast-check",
   "scripts": {
+    "test:async": "mocha --require ts-node/register async-property/test.ts",
     "test:contains": "mocha contains/test.js",
     "test:knight": "mocha shadows-of-the-knight-codingame/test.js",
     "test:settings": "mocha optional-settings-combination/test.js",
