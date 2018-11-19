@@ -65,6 +65,45 @@ describe('QualifiedParameters', () => {
           assert.throws(() => QualifiedParameters.read({ ...params, randomType: 'invalid' as RandomType }));
         })
       ));
+    describe('Seeds outside of 32 bits range', () => {
+      const seedsOutsideRangeArb = fc.oneof(
+        fc.double(),
+        fc.double(Number.MIN_VALUE, Number.MAX_VALUE),
+        fc.integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER),
+        fc.constantFrom(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN)
+      );
+      it('Should produce 32 bits signed seed', () =>
+        fc.assert(
+          fc.property(seedsOutsideRangeArb, unsafeSeed => {
+            const qparams = QualifiedParameters.read({ seed: unsafeSeed });
+            return (qparams.seed | 0) === qparams.seed;
+          })
+        ));
+      it('Should produce the same seed given the same input', () =>
+        fc.assert(
+          fc.property(seedsOutsideRangeArb, unsafeSeed => {
+            const qparams1 = QualifiedParameters.read({ seed: unsafeSeed });
+            const qparams2 = QualifiedParameters.read({ seed: unsafeSeed });
+            return qparams1.seed === qparams2.seed;
+          })
+        ));
+      it('Should transform distinct values between 0 and 1 into distinct seeds', () =>
+        fc.assert(
+          fc.property(fc.double(), fc.double(), (unsafeSeed1, unsafeSeed2) => {
+            fc.pre(Math.abs(unsafeSeed1 * 0xffffffff - unsafeSeed2 * 0xffffffff) >= 1);
+            const qparams1 = QualifiedParameters.read({ seed: unsafeSeed1 });
+            const qparams2 = QualifiedParameters.read({ seed: unsafeSeed2 });
+            return qparams1.seed !== qparams2.seed;
+          })
+        ));
+      it('Should truncate integer values into a 32 signed bits seed', () =>
+        fc.assert(
+          fc.property(fc.integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER), unsafeSeed => {
+            const qparams = QualifiedParameters.read({ seed: unsafeSeed });
+            return qparams.seed === (unsafeSeed | 0);
+          })
+        ));
+    });
   });
   describe('readOrNumRuns', () => {
     it('Should be equivalent to read with only numRuns when specifying a number', () =>
