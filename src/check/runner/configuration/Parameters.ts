@@ -8,7 +8,10 @@ export interface Parameters<T = void> {
   /**
    * Initial seed of the generator: `Date.now()` by default
    *
-   * It can be forced to replay a failed run
+   * It can be forced to replay a failed run.
+   *
+   * In theory, seeds are supposed to be 32 bits integers.
+   * In case of double value, the seed will be rescaled into a valid 32 bits integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
    */
   seed?: number;
   /**

@@ -20,7 +20,19 @@ export class QualifiedParameters<T> {
   verbose: boolean;
   examples: T[];
 
-  private static readSeed = <T>(p?: Parameters<T>): number => (p != null && p.seed != null ? p.seed : Date.now());
+  private static readSeed = <T>(p?: Parameters<T>): number => {
+    // No seed specified
+    if (p == null || p.seed == null) return Date.now() | 0;
+
+    // Seed is a 32 bits signed integer
+    const seed32 = p.seed | 0;
+    if (p.seed === seed32) return seed32;
+
+    // Seed is either a double or an integer outside the authorized 32 bits
+    const gap = p.seed - seed32;
+    const gapSeed = (0xffffffff * gap) | 0;
+    return (gapSeed + seed32) | 0;
+  };
   private static readRandomType = <T>(p?: Parameters<T>): ((seed: number) => RandomGenerator) => {
     if (p == null || p.randomType == null) return prand.xorshift128plus;
     if (typeof p.randomType === 'string') {
