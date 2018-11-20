@@ -176,7 +176,7 @@ describe(`Shadows (seed: ${seed})`, () => {
     } catch (err) {
       failed = true;
       const msg = err.message as string;
-      assert.ok(msg.indexOf(`seed: ${seed}, path:`) !== -1, `Message contains the seed, got: ${err}`);
+      assert.ok(msg.indexOf(`seed: ${seed | 0}, path:`) !== -1, `Message contains the seed, got: ${err}`);
       assert.ok(
         /\[Space\(grid\{x:\d+,y:\d+\},solution\{x:\d+,y:\d+\},initial\{x:\d+,y:\d+\}\),\d+\]/.exec(msg) !== null,
         `Message contains the failing entry, got: ${err}`
