@@ -1,3 +1,22 @@
+# 1.8.0
+
+_Native handling of stateful generated values_
+
+## Features
+
+- ([PR#245](/pull/245)) `seed` can be any possible `double` value
+- ([PR#229](/pull/229)) Add `context` arbitrary
+- ([PR#237](/pull/237)) Add `infiniteStream` arbitrary
+- ([PR#229](/pull/229)) Add cloneable capabilities for stateful generated values
+
+## Fixes
+
+- ([PR#241](/pull/241)) Doc: Add an example for `asyncProperty`
+- ([PR#238](/pull/238)) Better logs for `fc.func`, `fc.compareFunc` and `fc.compareBooleanFunc`
+- ([PR#235](/pull/235)) Better handling of `fc.commands`
+
+---
+
 # 1.7.1
 
 _Fix import of loremIpsum library_
