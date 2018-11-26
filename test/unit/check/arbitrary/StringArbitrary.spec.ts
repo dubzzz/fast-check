@@ -1,15 +1,14 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { constantFrom } from '../../../../src/check/arbitrary/ConstantArbitrary';
 import {
-  stringOf,
-  string,
   asciiString,
-  string16bits,
-  unicodeString,
+  base64String,
   hexaString,
-  base64String
+  string,
+  string16bits,
+  stringOf,
+  unicodeString
 } from '../../../../src/check/arbitrary/StringArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';

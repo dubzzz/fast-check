@@ -13,7 +13,6 @@
         "no-bitwise": false,
         "no-namespace": false,
         "no-unnecessary-callback-wrapper": false, // a.map(f) != a.map(e => f(e))
-        "no-unused-variable": true,
         "unified-signatures": false,
         // Format (handled by prettier if needed)
         "curly": false,

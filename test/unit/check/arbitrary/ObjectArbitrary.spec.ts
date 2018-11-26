@@ -9,8 +9,7 @@ import {
   jsonObject,
   unicodeJsonObject,
   json,
-  unicodeJson,
-  ObjectConstraints
+  unicodeJson
 } from '../../../../src/check/arbitrary/ObjectArbitrary';
 
 import * as stubRng from '../../stubs/generators';

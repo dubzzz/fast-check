@@ -39,7 +39,7 @@ class Space {
   }
   toString() {
     return `Space(grid{x:${this.dim_x},y:${this.dim_y}},solution{x:${this.solution_x},y:${this.solution_y}},initial{x:${
-      this.initial_y
+      this.initial_x
     },y:${this.initial_y}})`;
   }
 }

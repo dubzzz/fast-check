@@ -1,5 +1,4 @@
 import * as assert from 'assert';
-import * as prand from 'pure-rand';
 import * as fc from '../../src/fast-check';
 
 interface IList<T> {
@@ -8,7 +7,9 @@ interface IList<T> {
   size(): number;
 }
 
-type Model = { num: number };
+interface Model {
+  num: number;
+}
 
 class PushCommand implements fc.Command<Model, IList<number>> {
   constructor(readonly value: number) {}
@@ -66,8 +67,8 @@ describe(`Model Based (seed: ${seed})`, () => {
           start: number = 0;
           end: number = 0;
           data: number[];
-          constructor(size: number) {
-            this.data = [...Array(size)].fill(null);
+          constructor(len: number) {
+            this.data = [...Array(len)].fill(null);
           }
           push = (v: number) => {
             this.data[this.end] = v;
