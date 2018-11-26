@@ -5,6 +5,7 @@
         "alwaysStrict": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
+        "noUnusedLocals": true,
         "removeComments": false,
         "preserveConstEnums": true,
         "strictNullChecks": true,

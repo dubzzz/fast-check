@@ -290,7 +290,6 @@ describe('Stream', () => {
       assert.deepEqual(v, 19);
     });
     it('Should be null for empty streams', () => {
-      function* g(): IterableIterator<number> {}
       let v = Stream.nil<number>().getNthOrLast(10);
       assert.deepEqual(v, null);
     });

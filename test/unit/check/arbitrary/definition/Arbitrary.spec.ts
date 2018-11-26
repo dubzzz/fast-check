@@ -1,9 +1,9 @@
 import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 
+import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
-import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
 import { nat } from '../../../../../src/check/arbitrary/IntegerArbitrary';
 import { tuple } from '../../../../../src/check/arbitrary/TupleArbitrary';
 import { Random } from '../../../../../src/random/generator/Random';
@@ -11,7 +11,6 @@ import { stream } from '../../../../../src/stream/Stream';
 
 import * as genericHelper from '../generic/GenericArbitraryHelper';
 
-import * as stubArb from '../../../stubs/arbitraries';
 import * as stubRng from '../../../stubs/generators';
 
 class ForwardArbitrary extends Arbitrary<number> {

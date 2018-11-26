@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as prand from 'pure-rand';
 import * as fc from '../../src/fast-check';
 

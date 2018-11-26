@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
@@ -19,7 +18,7 @@ describe('FrequencyArbitrary', () => {
             rng(seed)
           ).value;
           const gOneOf = oneof(...choices.map(stubArb.counter)).generate(rng(seed)).value;
-          return gFreq == gOneOf;
+          return gFreq === gOneOf;
         })
       ));
     it('Should produce the same as oneof with sum of weights elements', () =>
@@ -33,7 +32,7 @@ describe('FrequencyArbitrary', () => {
             ...choices.map(c => Object({ weight: c[1], arbitrary: stubArb.counter(c[0]) }))
           ).generate(rng(seed)).value;
           const gOneOf = oneof(...choicesOneOf.map(stubArb.counter)).generate(rng(seed)).value;
-          return gFreq == gOneOf;
+          return gFreq === gOneOf;
         })
       ));
   });

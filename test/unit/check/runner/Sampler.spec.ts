@@ -50,7 +50,7 @@ describe('Sampler', () => {
       fc.assert(
         fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const arb = stubArb.counter(start);
-          const out = sample(arb, num);
+          sample(arb, num);
           assert.equal(arb.generatedValues.length, num, 'Should not call the arbitrary too many times');
         })
       ));
@@ -189,7 +189,7 @@ describe('Sampler', () => {
         fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const classify = (g: number) => g.toString();
           const arb = stubArb.counter(start);
-          const out = statistics(arb, classify, { numRuns: num, logger: (v: string) => {} });
+          statistics(arb, classify, { numRuns: num, logger: (v: string) => {} });
           assert.equal(arb.generatedValues.length, num, 'Should not call the arbitrary too many times');
         })
       ));

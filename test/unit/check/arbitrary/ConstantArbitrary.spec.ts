@@ -2,9 +2,9 @@ import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { clonedConstant, constant, constantFrom } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { cloneMethod } from '../../../../src/fast-check';
 
 import * as stubRng from '../../stubs/generators';
-import { cloneMethod } from '../../../../src/fast-check';
 
 const cloneable = { [cloneMethod]: () => cloneable };
 
@@ -16,7 +16,7 @@ describe('ConstantArbitrary', () => {
       assert.equal(g, 42);
     });
     it('Should always return the original instance', () => {
-      let instance = ['hello'];
+      const instance = ['hello'];
       const mrng = stubRng.mutable.nocall();
       const g = constant(instance).generate(mrng).value;
       assert.deepEqual(g, ['hello']);
@@ -44,7 +44,7 @@ describe('ConstantArbitrary', () => {
         fc.property(fc.array(fc.string(), 1, 10), fc.integer(), fc.nat(), (data, seed, idx) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = constantFrom(...data);
-          for (let id = 0; id != 10000; ++id) {
+          for (let id = 0; id !== 10000; ++id) {
             const g = arb.generate(mrng).value;
             if (g === data[idx % data.length]) return true;
           }
@@ -72,11 +72,12 @@ describe('ConstantArbitrary', () => {
       let clonedOnce = false;
       const mrng = stubRng.mutable.nocall();
       const g = clonedConstant({
-        [cloneMethod]: function() {
+        [cloneMethod]() {
           clonedOnce = true;
           return this;
         }
       }).generate(mrng).value;
+      assert.ok(g != null);
       assert.ok(clonedOnce);
     });
   });
