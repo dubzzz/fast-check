@@ -35,7 +35,7 @@ describe('ModelRunner', () => {
   describe('asyncModelRunner', () => {
     it('Should run in order and skip unchecked', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.boolean()), async runOrNot => {
+        fc.asyncProperty(fc.array(fc.boolean()), fc.boolean(), async (runOrNot, asyncSetup) => {
           const setupData = { model: {}, real: null };
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter(v => v >= 0);
@@ -53,9 +53,35 @@ describe('ModelRunner', () => {
               };
             }();
           });
-          await asyncModelRun(() => setupData, commands);
+          const setup = asyncSetup ? async () => setupData : () => setupData;
+          await asyncModelRun(setup, commands);
           assert.deepEqual(startedRuns, expectedRuns);
         })
       ));
+    it('Should wait setup before launching commands', async () => {
+      let calledBeforeDataReady = false;
+      let setupDataReady = false;
+      const setupData = { model: {}, real: null };
+      const command = new class implements AsyncCommand<{}, {}> {
+        name = 'AsyncCommand';
+        check = () => {
+          calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
+          return true;
+        };
+        run = async (m: {}, r: {}) => {
+          calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
+        };
+      }();
+      const setup = () =>
+        new Promise<typeof setupData>(resolve => {
+          setTimeout(() => {
+            setupDataReady = true;
+            resolve(setupData);
+          }, 0);
+        });
+      await asyncModelRun(setup, [command]);
+      assert.ok(setupDataReady);
+      assert.ok(!calledBeforeDataReady);
+    });
   });
 });
