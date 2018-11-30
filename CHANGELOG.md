@@ -1,3 +1,11 @@
+# 1.8.1
+
+_Support asynchronous model setup_
+
+## Fixes
+
+- ([PR#249](/pull/249)) Bug: `asyncModelRun` must accept asynchonous setup function
+
 # 1.8.0
 
 _Native handling of stateful generated values_
