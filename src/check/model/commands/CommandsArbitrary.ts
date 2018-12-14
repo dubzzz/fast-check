@@ -45,17 +45,18 @@ class CommandsArbitrary<Model extends object, Real, RunResult> extends Arbitrary
     if (items.length === 0) {
       return Stream.nil<Shrinkable<CommandWrapper<Model, Real, RunResult>>[]>();
     }
+
     // The shrinker of commands have to keep the last item
     // because it is the one causing the failure
     const emptyOrNil = shrunkOnce
       ? Stream.nil<Shrinkable<CommandWrapper<Model, Real, RunResult>>[]>()
       : new Stream([[]][Symbol.iterator]());
-    const size = this.lengthArb.shrinkableFor(items.length - 1, shrunkOnce);
+    const size = this.lengthArb.shrinkableFor(items.length - 1, false);
+
     return emptyOrNil
       .join(size.shrink().map(l => items.slice(0, l.value).concat(items[items.length - 1]))) // try: remove items except the last one
       .join(this.shrinkImpl(items.slice(0, items.length - 1), false).map(vs => vs.concat(items[items.length - 1]))) // try: keep last, shrink remaining (rec)
-      .join(items[0].shrink().map(v => [v].concat(items.slice(1)))) // try: shrink first, keep others
-      .map(shrinkables => shrinkables.map(s => new Shrinkable(s.value_.clone(), s.shrink)));
+      .join(items[0].shrink().map(v => [v].concat(items.slice(1)))); // try: shrink first, keep others
   }
 }
 
