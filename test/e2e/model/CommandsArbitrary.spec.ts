@@ -1,52 +1,63 @@
 import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
-type Model = {
-  current: { stepId: number };
-  validSteps: number[];
-};
-type Real = {};
+type M1 = { count: number };
+type R1 = {};
 
-class SuccessAlwaysCommand implements fc.Command<Model, Real> {
-  check = (m: Readonly<Model>) => true;
-  run = (m: Model, r: Real) => {};
-  toString = () => 'success';
-}
-class SuccessCommand implements fc.Command<Model, Real> {
-  check = (m: Readonly<Model>) => m.validSteps.includes(m.current.stepId++);
-  run = (m: Model, r: Real) => {};
-  toString = () => 'success';
-}
-class FailureCommand implements fc.Command<Model, Real> {
-  check = (m: Readonly<Model>) => m.validSteps.includes(m.current.stepId++);
-  run = (m: Model, r: Real) => {
-    throw 'failure';
+class IncreaseCommand implements fc.Command<M1, R1> {
+  check = (m: Readonly<M1>) => true;
+  run = (m: M1, r: R1) => {
+    m.count += 1;
   };
-  toString = () => 'failure';
+  toString = () => 'inc';
+}
+class DecreaseCommand implements fc.Command<M1, R1> {
+  check = (m: Readonly<M1>) => true;
+  run = (m: M1, r: R1) => {
+    m.count -= 1;
+  };
+  toString = () => 'dec';
+}
+class EvenCommand implements fc.Command<M1, R1> {
+  check = (m: Readonly<M1>) => m.count % 2 === 0;
+  run = (m: M1, r: R1) => {};
+  toString = () => 'even';
+}
+class OddCommand implements fc.Command<M1, R1> {
+  check = (m: Readonly<M1>) => m.count % 2 !== 0;
+  run = (m: M1, r: R1) => {};
+  toString = () => 'odd';
+}
+class CheckLessThanCommand implements fc.Command<M1, R1> {
+  constructor(readonly lessThanValue: number) {}
+  check = (m: Readonly<M1>) => true;
+  run = (m: M1, r: R1) => {
+    assert.ok(m.count < this.lessThanValue);
+  };
+  toString = () => `check[${this.lessThanValue}]`;
+}
+class SuccessAlwaysCommand implements fc.Command<M1, R1> {
+  check = (m: Readonly<M1>) => true;
+  run = (m: M1, r: R1) => {};
+  toString = () => 'success';
 }
 
 const seed = Date.now();
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {
     it('Should print only the commands corresponding to the failure', () => {
-      // Why this test?
-      //
-      // fc.commands is one of the rare Arbitrary relying on an internal state.
-      // By generating commands along with other arbitraries, we could highlight states issues.
-      // Basically shrinking will re-use the generated commands multiple times along with a shrunk array.
-      //
-      // First version was failing on this test with the following output:
-      // Expected the only played command to be 'failure', got: -,success,failure for steps 2
-      // The output for 'steps 2' should have been '-,-,failure'
-
       const out = fc.check(
         fc.property(
-          fc.array(fc.nat(9), 0, 3),
-          fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())]),
-          fc.array(fc.nat(9), 0, 3),
-          (validSteps1: number[], cmds: Iterable<fc.Command<Model, Real>>, validSteps2: number[]) => {
+          fc.commands([
+            fc.constant(new IncreaseCommand()),
+            fc.constant(new DecreaseCommand()),
+            fc.constant(new EvenCommand()),
+            fc.constant(new OddCommand()),
+            fc.integer(1, 10).map(v => new CheckLessThanCommand(v))
+          ]),
+          cmds => {
             const setup = () => ({
-              model: { current: { stepId: 0 }, validSteps: [...validSteps1, ...validSteps2] },
+              model: { count: 0 },
               real: {}
             });
             fc.modelRun(setup, cmds);
@@ -55,27 +66,28 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         { seed: seed }
       );
       assert.ok(out.failed, 'Should have failed');
-      const cmdsRepr = out.counterexample![1].toString();
-      const validSteps = [...out.counterexample![0], ...out.counterexample![2]];
-      assert.equal(
-        cmdsRepr,
-        'failure',
-        `Expected the only played command to be 'failure', got: ${cmdsRepr} for steps ${validSteps.sort().join(',')}`
-      );
+
+      const cmdsRepr = out.counterexample![0].toString();
+      const m = /check\[(\d+)\]$/.exec(cmdsRepr);
+      assert.notEqual(m, null, `Expected to end by a check[..] command, got: ${cmdsRepr}`);
+
+      const limit = +m![1];
+      const expectedRepr = `${[...Array(limit)].map(_ => 'inc').join(',')},check[${limit}]`;
+      assert.equal(cmdsRepr, expectedRepr);
+
+      // TODO: Use this expect instead
+      // assert.equal(cmdsRepr, 'inc,check[1]', `Expected the only played command to be 'inc,check[1]', got: ${cmdsRepr}`);
     });
     it('Should result in empty commands if failures happen after the run', () => {
       const out = fc.check(
-        fc.property(
-          fc.commands([fc.constant(new SuccessAlwaysCommand())]),
-          (cmds: Iterable<fc.Command<Model, Real>>) => {
-            const setup = () => ({
-              model: { current: { stepId: 0 }, validSteps: [] },
-              real: {}
-            });
-            fc.modelRun(setup, cmds);
-            return false; // fails after the model, no matter the commands
-          }
-        ),
+        fc.property(fc.commands([fc.constant(new SuccessAlwaysCommand())]), cmds => {
+          const setup = () => ({
+            model: { count: 0 },
+            real: {}
+          });
+          fc.modelRun(setup, cmds);
+          return false; // fails after the model, no matter the commands
+        }),
         { seed: seed }
       );
       assert.ok(out.failed, 'Should have failed');
