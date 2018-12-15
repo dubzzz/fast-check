@@ -30,8 +30,7 @@ export class QualifiedParameters<T> {
 
     // Seed is either a double or an integer outside the authorized 32 bits
     const gap = p.seed - seed32;
-    const gapSeed = (0xffffffff * gap) | 0;
-    return (gapSeed + seed32) | 0;
+    return seed32 ^ (gap * 0x100000000);
   };
   private static readRandomType = <T>(p?: Parameters<T>): ((seed: number) => RandomGenerator) => {
     if (p == null || p.randomType == null) return prand.xorshift128plus;
