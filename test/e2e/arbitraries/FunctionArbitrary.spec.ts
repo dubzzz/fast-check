@@ -34,7 +34,8 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
           return f(a, b) !== 0;
         }),
         {
-          seed: seed
+          seed: seed,
+          numRuns: 5000 // increased numRuns to remove flakiness
         }
       );
       assert.ok(out.failed, 'Should have failed (ie. there is (a, b) such that a != b and a equivalent to b under f)');
