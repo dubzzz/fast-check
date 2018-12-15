@@ -12,6 +12,12 @@ export class Shrinkable<T> {
    */
   readonly hasToBeCloned: boolean;
   /**
+   * Flag indicating whether or not the this.value has already been called once
+   * If so, the underlying will be cloned
+   * Only set when hasToBeCloned = true
+   */
+  private readOnce: boolean;
+  /**
    * Safe value of the shrinkable
    * Depending on {@link hasToBeCloned} it will either be {@link value_} or a clone of it
    */
@@ -24,12 +30,17 @@ export class Shrinkable<T> {
   // tslint:disable-next-line:variable-name
   constructor(readonly value_: T, readonly shrink: () => Stream<Shrinkable<T>> = () => Stream.nil<Shrinkable<T>>()) {
     this.hasToBeCloned = hasCloneMethod(value_);
+    this.readOnce = false;
     Object.defineProperty(this, 'value', { get: this.getValue });
   }
 
   /** @hidden */
   private getValue() {
     if (this.hasToBeCloned) {
+      if (!this.readOnce) {
+        this.readOnce = true;
+        return this.value_;
+      }
       return ((this.value_ as unknown) as WithCloneMethod<T>)[cloneMethod]();
     }
     return this.value_;

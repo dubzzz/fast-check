@@ -194,5 +194,25 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         assert.equal(dict[k].size(), 1);
       }
     });
+    it('fc.infiniteStream', () => {
+      let alwaysWithElements = true;
+      let nonClonedDetected = false;
+      const status = fc.check(
+        fc.property(fc.integer(), fc.infiniteStream(fc.context()), fc.integer(), (a, s, b) => {
+          let accessedCtx = 0;
+          for (const ctx of s.take(3)) {
+            ++accessedCtx;
+            nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
+            ctx.log('logging stuff'); // not really useful as streams are supposed to be cleaned
+          }
+          alwaysWithElements = alwaysWithElements && accessedCtx === 3;
+          return a < b;
+        }),
+        { seed }
+      );
+      assert.ok(status.failed);
+      assert.ok(!nonClonedDetected);
+      assert.ok(alwaysWithElements);
+    });
   });
 });
