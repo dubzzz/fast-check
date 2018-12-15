@@ -51,7 +51,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult> extends Arbitrary
     const emptyOrNil = shrunkOnce
       ? Stream.nil<Shrinkable<CommandWrapper<Model, Real, RunResult>>[]>()
       : new Stream([[]][Symbol.iterator]());
-    const size = this.lengthArb.shrinkableFor(items.length - 1, false);
+    const size = this.lengthArb.shrinkableFor(items.length - 1, shrunkOnce);
 
     return emptyOrNil
       .join(size.shrink().map(l => items.slice(0, l.value).concat(items[items.length - 1]))) // try: remove items except the last one
