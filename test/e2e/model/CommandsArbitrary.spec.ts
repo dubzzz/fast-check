@@ -64,7 +64,7 @@ class FailureCommand implements fc.Command<M2, R2> {
 const seed = Date.now();
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {
-    it('Should shrink up sto the shortest failing commands list', () => {
+    it('Should shrink up to the shortest failing commands list', () => {
       const out = fc.check(
         fc.property(
           fc.commands(
