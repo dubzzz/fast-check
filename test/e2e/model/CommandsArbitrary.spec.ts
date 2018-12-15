@@ -70,13 +70,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       const cmdsRepr = out.counterexample![0].toString();
       const m = /check\[(\d+)\]$/.exec(cmdsRepr);
       assert.notEqual(m, null, `Expected to end by a check[..] command, got: ${cmdsRepr}`);
-
-      const limit = +m![1];
-      const expectedRepr = `${[...Array(limit)].map(_ => 'inc').join(',')},check[${limit}]`;
-      assert.equal(cmdsRepr, expectedRepr);
-
-      // TODO: Use this expect instead
-      // assert.equal(cmdsRepr, 'inc,check[1]', `Expected the only played command to be 'inc,check[1]', got: ${cmdsRepr}`);
+      assert.equal(cmdsRepr, 'inc,check[1]', `Expected the only played command to be 'inc,check[1]', got: ${cmdsRepr}`);
     });
     it('Should result in empty commands if failures happen after the run', () => {
       const out = fc.check(
