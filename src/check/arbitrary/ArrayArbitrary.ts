@@ -37,7 +37,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
     for (let idx = 0; idx !== items.length; ++idx) {
       const s = items[idx];
       cloneable = cloneable || s.hasToBeCloned;
-      vs.push(shrunkOnce ? s.value : s.value_);
+      vs.push(s.value);
     }
     if (cloneable) {
       ArrayArbitrary.makeItCloneable(vs, items);

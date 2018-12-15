@@ -24,7 +24,7 @@ describe('Shrinkable', () => {
     new Shrinkable(cloneable);
     assert.equal(numCalls, 0);
   });
-  it('Should call [cloneMethod] on value accessor', () => {
+  it('Should call [cloneMethod] on second call to value accessor', () => {
     let numCalls = 0;
     const theClone = {};
     const cloneable = {
@@ -34,10 +34,12 @@ describe('Shrinkable', () => {
       }
     };
     const s = new Shrinkable(cloneable);
+    assert.ok(s.value === cloneable);
+    assert.equal(numCalls, 0);
     assert.ok(s.value === theClone);
     assert.equal(numCalls, 1);
   });
-  it('Should not call [cloneMethod] on value accessor', () => {
+  it('Should not call [cloneMethod] on (drity) value_ accessor', () => {
     let numCalls = 0;
     const theClone = {};
     const cloneable = {
