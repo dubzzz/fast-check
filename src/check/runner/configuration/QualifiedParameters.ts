@@ -22,7 +22,7 @@ export class QualifiedParameters<T> {
 
   private static readSeed = <T>(p?: Parameters<T>): number => {
     // No seed specified
-    if (p == null || p.seed == null) return Date.now() | 0;
+    if (p == null || p.seed == null) return Date.now() ^ (Math.random() * 0x100000000);
 
     // Seed is a 32 bits signed integer
     const seed32 = p.seed | 0;
