@@ -48,13 +48,16 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
     it('Should print only the commands corresponding to the failure', () => {
       const out = fc.check(
         fc.property(
-          fc.commands([
-            fc.constant(new IncreaseCommand()),
-            fc.constant(new DecreaseCommand()),
-            fc.constant(new EvenCommand()),
-            fc.constant(new OddCommand()),
-            fc.integer(1, 10).map(v => new CheckLessThanCommand(v))
-          ]),
+          fc.commands(
+            [
+              fc.constant(new IncreaseCommand()),
+              fc.constant(new DecreaseCommand()),
+              fc.constant(new EvenCommand()),
+              fc.constant(new OddCommand()),
+              fc.integer(1, 10).map(v => new CheckLessThanCommand(v))
+            ],
+            1000
+          ),
           cmds => {
             const setup = () => ({
               model: { count: 0 },
