@@ -36,13 +36,16 @@ export class Random {
   /**
    * Generate a random boolean
    */
+
   nextBoolean(): boolean {
     return this.uniformIn(0, 1) === 1;
   }
+
   /**
    * Generate a random integer (32 bits)
    */
   nextInt(): number;
+
   /**
    * Generate a random integer between min (included) and max (included)
    * @param min Minimal integer value
@@ -52,6 +55,18 @@ export class Random {
   nextInt(min?: number, max?: number): number {
     return this.uniformIn(min == null ? Random.MIN_INT : min, max == null ? Random.MAX_INT : max);
   }
+
+  /**
+   * Generate a random bigint between min (included) and max (included)
+   * @param min Minimal bigint value
+   * @param max Maximal bigint value
+   */
+  nextBigInt(min: bigint, max: bigint): bigint {
+    const g = prand.uniformBigIntDistribution(min, max, this.internalRng);
+    this.internalRng = g[1];
+    return g[0];
+  }
+
   /**
    * Generate a random floating point number between 0.0 (included) and 1.0 (excluded)
    */
