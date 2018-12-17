@@ -4,6 +4,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
+import { biasNumeric } from './helpers/BiasNumeric';
 import { shrinkNumber } from './helpers/ShrinkNumeric';
 
 /** @hidden */
@@ -33,17 +34,7 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
       return this.biasedIntegerArbitrary;
     }
     const log2 = (v: number) => Math.floor(Math.log(v) / Math.log(2));
-    if (this.min === this.max) {
-      this.biasedIntegerArbitrary = new IntegerArbitrary(this.min, this.max);
-    } else if (this.min < 0) {
-      this.biasedIntegerArbitrary =
-        this.max > 0
-          ? new IntegerArbitrary(-log2(-this.min), log2(this.max)) // min and max != 0
-          : new IntegerArbitrary(this.max - log2(this.max - this.min), this.max); // max-min != 0
-    } else {
-      // min >= 0, so max >= 0
-      this.biasedIntegerArbitrary = new IntegerArbitrary(this.min, this.min + log2(this.max - this.min)); // max-min != 0
-    }
+    this.biasedIntegerArbitrary = biasNumeric(this.min, this.max, IntegerArbitrary, log2);
     return this.biasedIntegerArbitrary;
   }
   withBias(freq: number): Arbitrary<number> {
