@@ -5,7 +5,13 @@ function stringifyOne<Ts>(value: Ts): string {
   const defaultRepr: string = `${value}`;
   if (/^\[object (Object|Null|Undefined)\]$/.exec(defaultRepr) === null) return defaultRepr;
   try {
-    return JSON.stringify(value);
+    return JSON.stringify(value, (k, v) => {
+      if (typeof v === 'bigint') {
+        return v.toString() + 'n';
+      } else {
+        return v;
+      }
+    });
   } catch (err) {
     // ignored: object cannot be stringified using JSON.stringify
   }
