@@ -1,11 +1,15 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
+import { biasNumeric } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkNumeric';
 
 /** @hidden */
 class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
+  private biasedBigIntArbitrary: Arbitrary<bigint> | null = null;
   constructor(readonly min: bigint, readonly max: bigint) {
     super();
   }
@@ -17,6 +21,20 @@ class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
   }
   shrink(value: bigint, shrunkOnce?: boolean): Stream<bigint> {
     return shrinkBigInt(this.min, this.max, value, shrunkOnce === true);
+  }
+  private pureBiasedArbitrary(): Arbitrary<bigint> {
+    if (this.biasedBigIntArbitrary != null) {
+      return this.biasedBigIntArbitrary;
+    }
+    const logLike = (v: bigint) => {
+      if (v === BigInt(0)) return BigInt(0);
+      return BigInt(v.toString().length);
+    };
+    this.biasedBigIntArbitrary = biasNumeric(this.min, this.max, BigIntArbitrary, logLike);
+    return this.biasedBigIntArbitrary;
+  }
+  withBias(freq: number): Arbitrary<bigint> {
+    return biasWrapper(freq, this, (originalArbitrary: BigIntArbitrary) => originalArbitrary.pureBiasedArbitrary());
   }
 }
 

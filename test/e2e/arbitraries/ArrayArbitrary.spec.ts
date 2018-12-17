@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
+declare function BigInt(n: number | bigint | string): bigint;
 
 const seed = Date.now();
 describe(`ArrayArbitrary (seed: ${seed})`, () => {
@@ -39,43 +40,50 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       assert.equal(out.counterexample![0].length, 1, 'Should shrink to a counterexample having a single element');
       assert.equal(numSuggests, 1, 'Should have suggested [] only once');
     });
-    it('Should be biased by default and suggest small entries', () => {
-      // Falsy implementation of removeDuplicates
-      const removeDuplicates = (arr: number[]) => [...arr];
-      // Expect a failure
-      const out = fc.check(
-        fc.property(fc.array(fc.integer()), (arr: number[]) => {
-          const filtered = removeDuplicates(arr);
-          for (const v of filtered) {
-            if (filtered.filter(i => i === v).length > 1) return false; // duplicates detected
-          }
-          return true;
-        }),
-        { seed, numRuns: 5000 } // increased numRuns to remove flakiness
-      );
-      assert.ok(out.failed, 'Should have failed');
-      assert.equal(out.counterexample![0].length, 2, 'Should provide a counterexample having only two values');
-      assert.strictEqual(
-        out.counterexample![0][0],
-        out.counterexample![0][1],
-        'Should have equal values in counterexample'
-      );
-    });
-    it('Should not be able to find the issue if unbiased (barely impossible)', () => {
-      // Falsy implementation of removeDuplicates
-      const removeDuplicates = (arr: number[]) => [...arr];
-      // Expect a failure
-      const out = fc.check(
-        fc.property(fc.array(fc.integer()), (arr: number[]) => {
-          const filtered = removeDuplicates(arr);
-          for (const v of filtered) {
-            if (filtered.filter(i => i === v).length > 1) return false; // duplicates detected
-          }
-          return true;
-        }),
-        { seed, unbiased: true }
-      );
-      assert.ok(!out.failed, 'Should not have failed');
-    });
+    biasIts('integer', fc.integer());
+    if (typeof BigInt !== 'undefined') {
+      biasIts('bigint', fc.bigInt());
+    }
   });
 });
+
+function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
+  it(`Should be biased by default and suggest small entries [${label}]`, () => {
+    // Falsy implementation of removeDuplicates
+    const removeDuplicates = (arr: T[]) => [...arr];
+    // Expect a failure
+    const out = fc.check(
+      fc.property(fc.array(arb), (arr: T[]) => {
+        const filtered = removeDuplicates(arr);
+        for (const v of filtered) {
+          if (filtered.filter(i => i === v).length > 1) return false; // duplicates detected
+        }
+        return true;
+      }),
+      { seed, numRuns: 5000 } // increased numRuns to remove flakiness
+    );
+    assert.ok(out.failed, 'Should have failed');
+    assert.equal(out.counterexample![0].length, 2, 'Should provide a counterexample having only two values');
+    assert.strictEqual(
+      out.counterexample![0][0],
+      out.counterexample![0][1],
+      'Should have equal values in counterexample'
+    );
+  });
+  it(`Should not be able to find the issue if unbiased (barely impossible) [${label}]`, () => {
+    // Falsy implementation of removeDuplicates
+    const removeDuplicates = (arr: T[]) => [...arr];
+    // Expect a failure
+    const out = fc.check(
+      fc.property(fc.array(arb), (arr: T[]) => {
+        const filtered = removeDuplicates(arr);
+        for (const v of filtered) {
+          if (filtered.filter(i => i === v).length > 1) return false; // duplicates detected
+        }
+        return true;
+      }),
+      { seed, unbiased: true }
+    );
+    assert.ok(!out.failed, 'Should not have failed');
+  });
+}
