@@ -7,6 +7,7 @@ import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
 import { array } from './check/arbitrary/ArrayArbitrary';
+import { bigInt, bigIntN, bigUint, bigUintN } from './check/arbitrary/BigIntArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
 import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
@@ -82,6 +83,10 @@ export {
   double,
   integer,
   nat,
+  bigIntN,
+  bigUintN,
+  bigInt,
+  bigUint,
   char,
   ascii,
   char16bits,
