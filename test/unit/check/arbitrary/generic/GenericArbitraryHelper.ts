@@ -6,6 +6,16 @@ import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitra
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 import { Random } from '../../../../../src/random/generator/Random';
 
+const safeStringify = (v: any) => {
+  return JSON.stringify(v, function(key, value) {
+    if (typeof value === 'bigint') {
+      return value.toString() + 'n';
+    } else {
+      return value;
+    }
+  });
+};
+
 const testSameSeedSameValues = function<U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
@@ -71,7 +81,7 @@ const testShrinkPathStrictlyDecreasing = function<U, T>(
             if (shrinkable !== null) {
               assert.ok(
                 isStrictlySmallerValue(shrinkable.value, prevValue),
-                `Expect ${JSON.stringify(shrinkable.value)} to be strictly inferior to ${JSON.stringify(prevValue)}`
+                `Expect ${safeStringify(shrinkable.value)} to be strictly inferior to ${safeStringify(prevValue)}`
               );
               prevValue = shrinkable.value;
             }
@@ -94,7 +104,7 @@ const testAlwaysGenerateCorrectValues = function<U, T>(
         const shrinkable = arb.generate(new Random(prand.xorshift128plus(seed)));
         assert.ok(
           isValidValue(shrinkable.value, params),
-          `Expect ${JSON.stringify(shrinkable.value)} to be a correct value (built with parameters: ${JSON.stringify(
+          `Expect ${safeStringify(shrinkable.value)} to be a correct value (built with parameters: ${safeStringify(
             params
           )})`
         );
@@ -120,9 +130,9 @@ const testAlwaysShrinkToCorrectValues = function<U, T>(
           while (shrinkable !== null) {
             assert.ok(
               isValidValue(shrinkable.value, params),
-              `Expect ${JSON.stringify(
-                shrinkable.value
-              )} to be a correct value (built with parameters: ${JSON.stringify(params)})`
+              `Expect ${safeStringify(shrinkable.value)} to be a correct value (built with parameters: ${safeStringify(
+                params
+              )})`
             );
             shrinkable = shrinkable.shrink().getNthOrLast(id);
             id = (id + 1) % shrinkPath.length;
@@ -164,5 +174,5 @@ export const isValidArbitrary = function<U, T>(
   testAlwaysShrinkToCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue);
 };
 
-export const minMax = (arb: fc.Arbitrary<number>) =>
-  fc.tuple(arb, arb).map(v => ({ min: Math.min(v[0], v[1]), max: Math.max(v[0], v[1]) }));
+export const minMax = <NType extends number | bigint>(arb: fc.Arbitrary<NType>) =>
+  fc.tuple(arb, arb).map(v => ({ min: v[0] < v[1] ? v[0] : v[1], max: v[0] < v[1] ? v[1] : v[0] }));
