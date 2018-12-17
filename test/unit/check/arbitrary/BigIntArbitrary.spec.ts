@@ -19,7 +19,7 @@ describe('BigIntArbitrary', () => {
   describe('bigIntN', () => {
     describe('Given number of bits N [2^(N-1) <= value < 2^(N-1)]', () => {
       genericHelper.isValidArbitrary((n: number) => bigIntN(n), {
-        seedGenerator: fc.integer(1, 1000),
+        seedGenerator: fc.integer(1, 2000),
         isStrictlySmallerValue: isStrictlySmallerBigInt,
         isValidValue: (g: bigint, n: number) =>
           typeof g === 'bigint' && g >= BigInt(-1) << BigInt(n - 1) && g <= (BigInt(1) << BigInt(n - 1)) - BigInt(1)
@@ -29,7 +29,7 @@ describe('BigIntArbitrary', () => {
   describe('bigUintN', () => {
     describe('Given number of bits N [0 <= value < 2^N]', () => {
       genericHelper.isValidArbitrary((n: number) => bigUintN(n), {
-        seedGenerator: fc.integer(1, 1000),
+        seedGenerator: fc.integer(1, 2000),
         isStrictlySmallerValue: isStrictlySmallerBigInt,
         isValidValue: (g: bigint, n: number) =>
           typeof g === 'bigint' && g >= BigInt(0) && g <= (BigInt(1) << BigInt(n)) - BigInt(1)
