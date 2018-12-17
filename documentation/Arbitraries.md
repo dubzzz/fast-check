@@ -29,6 +29,15 @@ Floating point numbers:
 - `fc.double(max: number)`uniformly distributed `double` value between 0.0 (included) and max (excluded)
 - `fc.double(min: number, max: number)`uniformly distributed `double` value between min (included) and max (excluded)
 
+BigInt (if supported by your JavaScript interpreter):
+
+- `fc.bigIntN(n: number)` all possible `bigint` between -2^(n-1) (included) and 2^(n-1)-1 (included)
+- `fc.bigInt()` uniformly distributed `bigint` values
+- `fc.bigInt(min: bigint, max: bigint)` all possible `bigint` between min (included) and max (included)
+- `fc.bigUintN(n: number)` all possible `bigint` between 0 (included) and 2^n -1 (included)
+- `fc.bigUint()` uniformly distributed `bigint` positive values
+- `fc.bigUint(max: bigint)` all possible `bigint` between 0 (included) and max (included)
+
 ## String (:string)
 
 Single character only:
