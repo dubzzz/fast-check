@@ -1,9 +1,10 @@
 import { Random } from '../../random/generator/Random';
-import { stream, Stream } from '../../stream/Stream';
+import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
+import { shrinkNumber } from './helpers/ShrinkNumeric';
 
 /** @hidden */
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
@@ -24,29 +25,8 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
   generate(mrng: Random): Shrinkable<number> {
     return this.wrapper(mrng.nextInt(this.min, this.max), false);
   }
-  private shrink_to(value: number, target: number, shrunkOnce: boolean): Stream<number> {
-    const realGap = value - target;
-    function* shrink_decr(): IterableIterator<number> {
-      const gap = shrunkOnce ? Math.floor(realGap / 2) : realGap;
-      for (let toremove = gap; toremove > 0; toremove = Math.floor(toremove / 2)) {
-        yield value - toremove;
-      }
-    }
-    function* shrink_incr(): IterableIterator<number> {
-      const gap = shrunkOnce ? Math.ceil(realGap / 2) : realGap;
-      for (let toremove = gap; toremove < 0; toremove = Math.ceil(toremove / 2)) {
-        yield value - toremove;
-      }
-    }
-    return realGap > 0 ? stream(shrink_decr()) : stream(shrink_incr());
-  }
   shrink(value: number, shrunkOnce?: boolean): Stream<number> {
-    if (this.min <= 0 && this.max >= 0) {
-      return this.shrink_to(value, 0, shrunkOnce === true);
-    }
-    return value < 0
-      ? this.shrink_to(value, this.max, shrunkOnce === true)
-      : this.shrink_to(value, this.min, shrunkOnce === true);
+    return shrinkNumber(this.min, this.max, value, shrunkOnce === true);
   }
   private pureBiasedArbitrary(): Arbitrary<number> {
     if (this.biasedIntegerArbitrary != null) {
