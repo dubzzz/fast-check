@@ -20,25 +20,21 @@ describe('Property', () => {
     const p = property(stubArb.single(8), (arg: number) => {
       throw 'predicate throws';
     });
-    assert.equal(
-      p.run(p.generate(stubRng.mutable.nocall()).value),
-      'predicate throws',
-      'Property should fail and attach the exception as string'
-    );
+    const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+    assert.equal(out, 'predicate throws', 'Property should fail and attach the exception as string');
   });
-  it('Should fail if predicate fails on asserts', () => {
+  it('Should fail if predicate throws an Error', () => {
     const p = property(stubArb.single(8), (arg: number) => {
-      assert.ok(false);
+      throw new Error('predicate throws');
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
-    assert.equal(typeof out, 'string');
     assert.ok(
-      (out as string).startsWith('AssertionError'),
-      `Property should fail and attach the exception as string, got: ${out}`
+      (out as string).indexOf('predicate throws') !== -1,
+      'Property should fail and attach the exception as string'
     );
     assert.ok(
       (out as string).indexOf('\n\nStack trace:') !== -1,
-      'Property should include the stack trace when available'
+      `Property should include the stack trace when available, got: ${out}`
     );
   });
   it('Should forward failure of runs with failing precondition', async () => {
