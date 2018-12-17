@@ -68,7 +68,7 @@ describe('TupleArbitrary', () => {
       const arbs = [withClonedAndCounter];
       const mrng = stubRng.mutable.counter(0);
       genericTuple(arbs).generate(mrng);
-      return numCallsToClone === 0;
+      assert.strictEqual(numCallsToClone, 0);
     });
   });
 });
