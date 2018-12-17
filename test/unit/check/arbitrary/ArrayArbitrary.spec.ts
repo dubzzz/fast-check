@@ -59,12 +59,12 @@ describe('ArrayArbitrary', () => {
     it('Should produce cloneable array if one cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
       let g = array(context(), 1, 10).generate(mrng).value;
-      return hasCloneMethod(g);
+      assert.ok(hasCloneMethod(g));
     });
     it('Should not produce cloneable tuple if no cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
       let g = array(nat(), 1, 10).generate(mrng).value;
-      return hasCloneMethod(g);
+      assert.ok(!hasCloneMethod(g));
     });
     it('Should not clone on generate', () => {
       let numCallsToClone = 0;
@@ -81,7 +81,7 @@ describe('ArrayArbitrary', () => {
       }();
       const mrng = stubRng.mutable.counter(0);
       array(withClonedAndCounter).generate(mrng);
-      return numCallsToClone === 0;
+      assert.strictEqual(numCallsToClone, 0);
     });
     describe('Given no length constraints', () => {
       genericHelper.isValidArbitrary(() => array(nat()), {
