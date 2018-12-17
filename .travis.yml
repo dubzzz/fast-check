@@ -13,7 +13,7 @@ script:
   - npm run e2e
 
 after_success:
-  - npm run coverage
+  - if [[ $(node --version) == "v10."* ]]; then npm run coverage; fi
 
 stages:
   - code style
