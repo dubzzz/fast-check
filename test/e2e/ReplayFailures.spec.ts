@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../src/fast-check';
 
 const seed = Date.now();
@@ -19,10 +18,9 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
   describe('fc.sample', () => {
     it('Should rebuild counterexample using sample and (path, seed)', () => {
       const out = fc.check(prop, { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepStrictEqual(
-        fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })[0],
-        out.counterexample![0]
+      expect(out.failed).toBe(true);
+      expect(fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })).toEqual(
+        out.counterexample
       );
     });
     it('Should rebuild the whole shrink path using sample', () => {
@@ -35,7 +33,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
         }),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
 
       let replayedFailures = [];
       const segments = out.counterexamplePath!.split(':');
@@ -44,13 +42,13 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
         const g = fc.sample(propArbitrary, { seed: seed, path: p, numRuns: 1 });
         replayedFailures.push(g[0]);
       }
-      assert.deepStrictEqual(replayedFailures, failuresRecorded);
+      expect(replayedFailures).toEqual(failuresRecorded);
     });
   });
   describe('fc.assert', () => {
     it('Should start from the minimal counterexample given its path', () => {
       const out = fc.check(prop, { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
 
       let numCalls = 0;
       let numValidCalls = 0;
@@ -58,7 +56,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       const out2 = fc.check(
         fc.property(propArbitrary, data => {
           try {
-            assert.deepStrictEqual(data, out.counterexample![0]);
+            expect(data).toEqual(out.counterexample![0]);
             validCallIndex = numCalls;
             ++numValidCalls;
           } catch (err) {}
@@ -67,30 +65,30 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
         }),
         { seed: seed, path: out.counterexamplePath! }
       );
-      assert.equal(numValidCalls, 1);
-      assert.equal(validCallIndex, 0);
-      assert.equal(out2.numRuns, 1);
-      assert.equal(out2.numShrinks, 0);
-      assert.equal(out2.counterexamplePath, out.counterexamplePath);
-      assert.deepStrictEqual(out2.counterexample, out.counterexample);
+      expect(numValidCalls).toEqual(1);
+      expect(validCallIndex).toEqual(0);
+      expect(out2.numRuns).toEqual(1);
+      expect(out2.numShrinks).toEqual(0);
+      expect(out2.counterexamplePath).toEqual(out.counterexamplePath);
+      expect(out2.counterexample).toEqual(out.counterexample);
     });
     it('Should start from any position in the path', () => {
       const out = fc.check(prop, { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
         const outMiddlePath = fc.check(prop, { seed: seed, path: p });
-        assert.equal(outMiddlePath.numRuns, 1);
-        assert.equal(outMiddlePath.numShrinks, out.numShrinks - idx + 1);
-        assert.equal(outMiddlePath.counterexamplePath, out.counterexamplePath);
-        assert.deepStrictEqual(outMiddlePath.counterexample, out.counterexample);
+        expect(outMiddlePath.numRuns).toEqual(1);
+        expect(outMiddlePath.numShrinks).toEqual(out.numShrinks - idx + 1);
+        expect(outMiddlePath.counterexamplePath).toEqual(out.counterexamplePath);
+        expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
     });
     it('Should take initial path into account when computing path', () => {
       const out = fc.check(prop, { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
       const playOnIndex = seed % segments.length;
@@ -98,8 +96,8 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       for (let offset = 0; offset !== +segments[playOnIndex]; ++offset) {
         const p = [...segments.slice(0, playOnIndex), offset].join(':');
         const outMiddlePath = fc.check(prop, { seed: seed, path: p });
-        assert.equal(outMiddlePath.counterexamplePath, out.counterexamplePath);
-        assert.deepStrictEqual(outMiddlePath.counterexample, out.counterexample);
+        expect(outMiddlePath.counterexamplePath).toEqual(out.counterexamplePath);
+        expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
     });
   });

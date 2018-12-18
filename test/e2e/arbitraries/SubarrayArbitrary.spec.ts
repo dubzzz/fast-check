@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 const src = [1, 25, 42, 0, -12];
@@ -24,8 +23,8 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
         fc.property(fc.subarray(src), (arr: number[]) => arr.indexOf(src[0]) === -1 || arr.indexOf(src[3]) === -1),
         { seed: seed }
       );
-      assert.ok(out.failed);
-      assert.deepEqual(out.counterexample, [[src[0], src[3]]]);
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual([[src[0], src[3]]]);
     });
   });
   describe('shuffledSubarray', () => {
@@ -42,9 +41,9 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
         }),
         { seed: seed }
       );
-      assert.ok(out.failed);
-      assert.equal(out.counterexample![0].length, 2);
-      assert.ok(src.indexOf(out.counterexample![0][0]) > src.indexOf(out.counterexample![0][1]));
+      expect(out.failed).toBe(true);
+      expect(out.counterexample![0]).toHaveLength(2);
+      expect(src.indexOf(out.counterexample![0][0])).toBeGreaterThan(src.indexOf(out.counterexample![0][1]));
     });
   });
 });

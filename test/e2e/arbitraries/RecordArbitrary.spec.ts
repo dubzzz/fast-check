@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 const seed = Date.now();
@@ -11,12 +10,8 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         cc: fc.string()
       };
       const out = fc.check(fc.property(fc.record(recordModel), obj => obj.cc.length <= 2), { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(
-        out.counterexample,
-        [{ aa: 0, bb: {}, cc: '   ' }],
-        'Should shrink to counterexample {aa: 0, bb: {}, cc: "   "}'
-      );
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toStrictEqual([{ aa: 0, bb: {}, cc: '   ' }]);
     });
     it('Should shrink on a record with bb as single key', () => {
       const recordModel = {
@@ -27,8 +22,8 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
       const out = fc.check(fc.property(fc.record(recordModel, { withDeletedKeys: true }), obj => obj.bb == null), {
         seed: seed
       });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(out.counterexample, [{ bb: {} }], 'Should shrink to counterexample {bb: {}}');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toStrictEqual([{ bb: {} }]);
     });
     it('Should shrink on the failing conjonction of keys', () => {
       const recordModel = {
@@ -46,12 +41,8 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         }),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(
-        out.counterexample,
-        [{ force_positive_output: true, force_negative_output: true }],
-        'Should shrink to counterexample {force_positive_output:true,force_negative_output:true}'
-      );
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toStrictEqual([{ force_positive_output: true, force_negative_output: true }]);
     });
   });
 });

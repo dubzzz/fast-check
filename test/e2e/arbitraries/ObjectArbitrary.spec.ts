@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 const seed = Date.now();
@@ -36,12 +35,8 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
         }),
         { seed: seed, numRuns: 1000 }
       );
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(
-        out.counterexample![0],
-        '{}',
-        `Should shrink to counterexample {} got ${JSON.stringify(out.counterexample![0])}`
-      );
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual(['{}']);
     });
   });
   describe('object', () => {
@@ -63,12 +58,8 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
         }),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(
-        out.counterexample![0],
-        { '': {} },
-        `Should shrink to counterexample {"":{}} got ${JSON.stringify(out.counterexample![0])}`
-      );
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toStrictEqual([{ '': {} }]);
     });
   });
 });

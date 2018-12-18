@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 const seed = Date.now();
@@ -8,10 +7,10 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
       const out = fc.check(fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)), {
         seed: seed
       });
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
     });
     it('Should print the values and corresponding outputs', () => {
-      try {
+      expect(() =>
         fc.assert(
           fc.property(fc.func(fc.nat()), f => {
             f(0, 8);
@@ -19,11 +18,8 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
             return false;
           }),
           { seed: seed }
-        );
-        assert.fail('Should have failed');
-      } catch (err) {
-        assert.ok(err.message.indexOf('Counterexample: [<function :: [0,8] => 0, [42,1] => 0>]') !== -1);
-      }
+        )
+      ).toThrowError('Counterexample: [<function :: [0,8] => 0, [42,1] => 0>]');
     });
   });
   describe('compareFunc', () => {
@@ -38,9 +34,9 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
           numRuns: 5000 // increased numRuns to remove flakiness
         }
       );
-      assert.ok(out.failed, 'Should have failed (ie. there is (a, b) such that a != b and a equivalent to b under f)');
-      const counter = out.counterexample!;
-      assert.equal(counter[0](counter[1], counter[2]), 0);
+      expect(out.failed).toBe(true);
+      const [f, a, b] = out.counterexample!;
+      expect(f(a, b)).toEqual(0);
     });
   });
 });
