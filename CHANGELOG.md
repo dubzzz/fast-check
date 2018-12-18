@@ -1,3 +1,14 @@
+# 1.8.2
+
+_Fix regression introduced in the shrinking of cloneable_
+
+## Fixes
+
+- ([PR#262](https://github.com/dubzzz/fast-check/pull/262)) Bug: Too many shrinks for `commands`
+- ([PR#261](https://github.com/dubzzz/fast-check/pull/261)) Bug: Unability to shrink mapped `commands`
+- ([PR#259](https://github.com/dubzzz/fast-check/pull/259)) Bug: Move cloning responsability at a single place in the code
+- ([PR#258](https://github.com/dubzzz/fast-check/pull/258)) Bug: Shrinker of commands failed to shrink twice (in depth)
+
 # 1.8.1
 
 _Support asynchronous model setup_
