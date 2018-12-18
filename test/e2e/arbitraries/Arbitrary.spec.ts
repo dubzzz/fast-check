@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 const seed = Date.now();
@@ -12,7 +11,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
         ),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
     });
     it('Should bias source only', () => {
       const out = fc.check(
@@ -22,7 +21,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
         ),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
     });
     it('Should bias destination only', () => {
       const out = fc.check(
@@ -32,7 +31,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
         ),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
     });
     it('Should bias both source and destination', () => {
       const out = fc.check(
@@ -42,17 +41,17 @@ describe(`Arbitrary (seed: ${seed})`, () => {
         ),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
     });
     it('Should shrink chain on source', () => {
       const out = fc.check(fc.property(fc.nat().chain(v => fc.constant(v)), (v: number) => v < 1), { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepStrictEqual(out.counterexample, [1], 'Should have shrunk to the minimal counterexample');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual([1]);
     });
     it('Should shrink chain on destination', () => {
       const out = fc.check(fc.property(fc.constant(42).chain(v => fc.nat()), (v: number) => v < 1), { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepStrictEqual(out.counterexample, [1], 'Should have shrunk to the minimal counterexample');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual([1]);
     });
   });
 });

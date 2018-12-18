@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../src/fast-check';
 
 const seed = Date.now();
@@ -19,22 +18,22 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
     it('normal property', () => {
       const data = { counter: 0 };
       fc.assert(fc.property(cloneableWithCount(data), () => {}));
-      assert.equal(data.counter, 0);
+      expect(data.counter).toEqual(0);
     });
     it('normal property with multiple cloneables', () => {
       const data = { counter: 0 };
       fc.assert(fc.property(cloneableWithCount(data), cloneableWithCount(data), () => {}));
-      assert.equal(data.counter, 0);
+      expect(data.counter).toEqual(0);
     });
     it('fc.tuple', () => {
       const data = { counter: 0 };
       fc.assert(fc.property(fc.tuple(cloneableWithCount(data)), () => {}));
-      assert.equal(data.counter, 0);
+      expect(data.counter).toEqual(0);
     });
     it('fc.array', () => {
       const data = { counter: 0 };
       fc.assert(fc.property(fc.array(cloneableWithCount(data)), () => {}));
-      assert.equal(data.counter, 0);
+      expect(data.counter).toEqual(0);
     });
   });
   describe('Never call with non-cloned instance and correct counterexample', () => {
@@ -48,9 +47,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1].size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1].size()).toEqual(1);
     });
     it('fc.oneof', () => {
       let nonClonedDetected = false;
@@ -62,9 +61,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1].size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1].size()).toEqual(1);
     });
     it('fc.frequency', () => {
       let nonClonedDetected = false;
@@ -76,9 +75,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1].size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1].size()).toEqual(1);
     });
     it('fc.option', () => {
       let nonClonedDetected = false;
@@ -92,9 +91,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1]!.size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1]!.size()).toEqual(1);
     });
     it('fc.tuple', () => {
       let nonClonedDetected = false;
@@ -106,9 +105,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1][1].size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1][1].size()).toEqual(1);
     });
     it('fc.tuple (multiple cloneables)', () => {
       let nonClonedDetected = false;
@@ -122,11 +121,11 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1][0].size(), 1);
-      assert.equal(status.counterexample![1][1].size(), 1);
-      assert.equal(status.counterexample![1][2].size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1][0].size()).toEqual(1);
+      expect(status.counterexample![1][1].size()).toEqual(1);
+      expect(status.counterexample![1][2].size()).toEqual(1);
     });
     it('fc.array', () => {
       let nonClonedDetected = false;
@@ -140,9 +139,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1][0]!.size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1][0]!.size()).toEqual(1);
     });
     it('fc.set', () => {
       let nonClonedDetected = false;
@@ -156,9 +155,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1][0]!.size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1][0]!.size()).toEqual(1);
     });
     it('fc.record', () => {
       let nonClonedDetected = false;
@@ -170,9 +169,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.equal(status.counterexample![1].ctx.size(), 1);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1].ctx.size()).toEqual(1);
     });
     it('fc.dictionary', () => {
       let nonClonedDetected = false;
@@ -187,11 +186,11 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
       const dict = status.counterexample![1];
       for (const k in dict) {
-        assert.equal(dict[k].size(), 1);
+        expect(dict[k].size()).toEqual(1);
       }
     });
     it('fc.infiniteStream', () => {
@@ -210,9 +209,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         }),
         { seed }
       );
-      assert.ok(status.failed);
-      assert.ok(!nonClonedDetected);
-      assert.ok(alwaysWithElements);
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(alwaysWithElements).toBe(true);
     });
   });
 });

@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 const seed = Date.now();
@@ -9,8 +8,8 @@ describe(`TupleArbitrary (seed: ${seed})`, () => {
         fc.property(fc.tuple(fc.nat(), fc.nat()), (v: [number, number]) => v[0] < 100 || v[1] < 50),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(out.counterexample, [[100, 50]], 'Should shrink to counterexample [100,50]');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual([[100, 50]]);
     });
   });
 });

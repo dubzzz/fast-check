@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../src/fast-check';
 
 interface IList<T> {
@@ -26,7 +25,7 @@ class PopCommand implements fc.Command<Model, IList<number>> {
     return m.num > 0;
   }
   run(m: Model, r: IList<number>): void {
-    assert.equal(typeof r.pop(), 'number');
+    expect(typeof r.pop()).toEqual('number');
     --m.num;
   }
   toString = () => 'pop';
@@ -34,7 +33,7 @@ class PopCommand implements fc.Command<Model, IList<number>> {
 class SizeCommand implements fc.Command<Model, IList<number>> {
   check = (m: Readonly<Model>) => true;
   run(m: Model, r: IList<number>): void {
-    assert.equal(r.size(), m.num);
+    expect(r.size()).toEqual(m.num);
   }
   toString = () => 'size';
 }
@@ -84,6 +83,6 @@ describe(`Model Based (seed: ${seed})`, () => {
         fc.modelRun(s, cmds);
       })
     );
-    assert.ok(out.failed);
+    expect(out.failed).toBe(true);
   });
 });

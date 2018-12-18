@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 type M1 = { count: number };
@@ -32,7 +31,7 @@ class CheckLessThanCommand implements fc.Command<M1, R1> {
   constructor(readonly lessThanValue: number) {}
   check = (m: Readonly<M1>) => true;
   run = (m: M1, r: R1) => {
-    assert.ok(m.count < this.lessThanValue);
+    expect(m.count).toBeLessThan(this.lessThanValue);
   };
   toString = () => `check[${this.lessThanValue}]`;
 }
@@ -87,12 +86,11 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         ),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
+      expect(out.failed).toBe(true);
 
       const cmdsRepr = out.counterexample![0].toString();
-      const m = /check\[(\d+)\]$/.exec(cmdsRepr);
-      assert.notEqual(m, null, `Expected to end by a check[..] command, got: ${cmdsRepr}`);
-      assert.equal(cmdsRepr, 'inc,check[1]', `Expected the only played command to be 'inc,check[1]', got: ${cmdsRepr}`);
+      expect(cmdsRepr).toMatch(/check\[(\d+)\]$/);
+      expect(cmdsRepr).toEqual('inc,check[1]');
     });
     it('Should result in empty commands if failures happen after the run', () => {
       const out = fc.check(
@@ -106,8 +104,8 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         }),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
-      assert.equal([...out.counterexample![0]].length, 0);
+      expect(out.failed).toBe(true);
+      expect([...out.counterexample![0]]).toHaveLength(0);
     });
     it('Should shrink towards minimal case even with other arbitraries', () => {
       // Why this test?
@@ -134,14 +132,8 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         ),
         { seed: seed }
       );
-      assert.ok(out.failed, 'Should have failed');
-      const cmdsRepr = out.counterexample![1].toString();
-      const validSteps = [...out.counterexample![0], ...out.counterexample![2]];
-      assert.equal(
-        cmdsRepr,
-        'failure',
-        `Expected the only played command to be 'failure', got: ${cmdsRepr} for steps ${validSteps.sort().join(',')}`
-      );
+      expect(out.failed).toBe(true);
+      expect(out.counterexample![1].toString()).toEqual('failure');
     });
   });
 });

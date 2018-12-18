@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../src/fast-check';
 
 const seed = Date.now();
@@ -6,18 +5,18 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
   describe('base64String', () => {
     it('Should shrink on base64 containing no equal signs', () => {
       const out = fc.check(fc.property(fc.base64String(), (s: string) => /^\w*$/.exec(s) == null), { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(out.counterexample, [''], 'Should shrink to counterexample ""');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual(['']);
     });
     it('Should shrink on base64 containing one equal signs', () => {
       const out = fc.check(fc.property(fc.base64String(), (s: string) => /^\w+=$/.exec(s) == null), { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(out.counterexample, ['AAA='], 'Should shrink to counterexample "AAA="');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual(['AAA=']);
     });
     it('Should shrink on base64 containing two equal signs', () => {
       const out = fc.check(fc.property(fc.base64String(), (s: string) => /^\w+==$/.exec(s) == null), { seed: seed });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(out.counterexample, ['AA=='], 'Should shrink to counterexample "AA=="');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual(['AA==']);
     });
   });
   describe('unicodeString', () => {
@@ -35,26 +34,26 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       const out = fc.check(fc.property(fc.string16bits(), (s: string) => encodeURIComponent(s) !== null), {
         seed: seed
       });
-      assert.ok(out.failed, 'Should have failed');
-      assert.deepEqual(out.counterexample, ['\ud800'], 'Should shrink to counterexample "\\ud800"');
+      expect(out.failed).toBe(true);
+      expect(out.counterexample).toEqual(['\ud800']);
     });
   });
   describe('string', () => {
     it('Should not suggest multiple times the empty string (after first failure)', () => {
       let failedOnce = false;
-      let numSuggests = 0;
+      let numEmptyStringSuggestedByShrink = 0;
       const out = fc.check(
         fc.property(fc.string(), (s: string) => {
-          if (failedOnce && s === '') ++numSuggests;
+          if (failedOnce && s === '') ++numEmptyStringSuggestedByShrink;
           if (s.length === 0) return true;
           failedOnce = true;
           return false;
         }),
         { seed }
       );
-      assert.ok(out.failed, 'Should have failed');
-      assert.equal(out.counterexample![0].length, 1, 'Should shrink to a counterexample having a single char');
-      assert.equal(numSuggests, 1, "Should have suggested '' only once");
+      expect(out.failed).toBe(true);
+      expect(out.counterexample![0]).toHaveLength(1);
+      expect(numEmptyStringSuggestedByShrink).toEqual(1);
     });
   });
 });
