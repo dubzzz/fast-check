@@ -1,13 +1,14 @@
 import * as fc from '../../../../../lib/fast-check';
 
 import { RunExecution } from '../../../../../src/check/runner/reporter/RunExecution';
+import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';
 
 describe('RunExecution', () => {
   it('Should expose data coming from the last failure', () =>
     fc.assert(
       fc.property(
         fc.integer(),
-        fc.boolean(),
+        fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
         fc.array(
           fc.record({
             value: fc.integer(),
@@ -17,9 +18,9 @@ describe('RunExecution', () => {
           1,
           10
         ),
-        (seed, storeFailures, failuresDesc) => {
+        (seed, verbosityLevel, failuresDesc) => {
           // Simulate the run
-          const run = new RunExecution<number>(storeFailures);
+          const run = new RunExecution<number>(verbosityLevel);
           for (let idx = 0; idx !== failuresDesc[0].failureId; ++idx) {
             run.success();
           }
@@ -38,7 +39,9 @@ describe('RunExecution', () => {
           expect(details.numShrinks).toEqual(failuresDesc.length - 1);
           expect(details.counterexample).toEqual(lastFailure.value);
           expect(details.error).toEqual(lastFailure.message);
-          expect(details.failures).toEqual(storeFailures ? failuresDesc.map(f => f.value) : []);
+          expect(details.failures).toEqual(
+            verbosityLevel >= VerbosityLevel.Verbose ? failuresDesc.map(f => f.value) : []
+          );
         }
       )
     ));
@@ -46,7 +49,7 @@ describe('RunExecution', () => {
     fc.assert(
       fc.property(fc.integer(), fc.array(fc.nat(1000), 1, 10), (seed, path) => {
         // Simulate the run
-        const run = new RunExecution<number>(false);
+        const run = new RunExecution<number>(VerbosityLevel.None);
         for (let idx = 0; idx !== path[0]; ++idx) {
           run.success();
         }
@@ -65,7 +68,7 @@ describe('RunExecution', () => {
         fc.array(fc.nat(1000), 1, 10),
         (seed, offsetPath, addedPath) => {
           // Simulate the run
-          const run = new RunExecution<number>(false);
+          const run = new RunExecution<number>(VerbosityLevel.None);
           for (let idx = 0; idx !== addedPath[0]; ++idx) {
             run.success();
           }

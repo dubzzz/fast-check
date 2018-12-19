@@ -1,3 +1,4 @@
+import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { RunDetails } from './RunDetails';
 
 /**
@@ -15,14 +16,14 @@ export class RunExecution<Ts> {
   numSkips: number;
   numSuccesses: number;
 
-  constructor(readonly storeFailures: boolean) {
+  constructor(readonly verbosity: VerbosityLevel) {
     this.allFailures = [];
     this.numSkips = 0;
     this.numSuccesses = 0;
   }
 
   fail(value: Ts, id: number, message: string) {
-    if (this.storeFailures) this.allFailures.push(value);
+    if (this.verbosity >= VerbosityLevel.Verbose) this.allFailures.push(value);
     if (this.pathToFailure == null) this.pathToFailure = `${id}`;
     else this.pathToFailure += `:${id}`;
     this.value = value;

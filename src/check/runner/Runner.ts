@@ -8,6 +8,7 @@ import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
+import { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunDetails } from './reporter/RunDetails';
 import { RunExecution } from './reporter/RunExecution';
 import { toss } from './Tosser';
@@ -20,7 +21,7 @@ function runIt<Ts>(
   initialValues: IterableIterator<() => Shrinkable<Ts>>,
   maxInitialIterations: number,
   remainingSkips: number,
-  verbose: boolean
+  verbose: VerbosityLevel
 ): RunExecution<Ts> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
@@ -63,7 +64,7 @@ async function asyncRunIt<Ts>(
   initialValues: IterableIterator<() => Shrinkable<Ts>>,
   maxInitialIterations: number,
   remainingSkips: number,
-  verbose: boolean
+  verbose: VerbosityLevel
 ): Promise<RunExecution<Ts>> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;

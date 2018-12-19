@@ -55,6 +55,7 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
+import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 
@@ -147,5 +148,6 @@ export {
   RunDetails,
   Random,
   Stream,
-  stream
+  stream,
+  VerbosityLevel
 };
