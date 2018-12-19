@@ -1,5 +1,3 @@
-import * as assert from 'assert';
-
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { IProperty } from '../../../../src/check/property/IProperty';
 import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
@@ -20,12 +18,12 @@ describe('UnbiasedProperty', () => {
 
     const unbiasedAsyncProp = new UnbiasedProperty(pAsync);
 
-    assert.equal(unbiasedAsyncProp.isAsync(), true);
-    assert.equal(unbiasedAsyncProp.generate(stubRng.mutable.nocall()).value, 42);
-    assert.strictEqual(calledWithRunId, undefined);
-    assert.equal(unbiasedAsyncProp.generate(stubRng.mutable.nocall(), 52).value, 42);
-    assert.strictEqual(calledWithRunId, undefined);
-    assert.equal(unbiasedAsyncProp.run(47), 'pAsync:47');
+    expect(unbiasedAsyncProp.isAsync()).toBe(true);
+    expect(unbiasedAsyncProp.generate(stubRng.mutable.nocall()).value).toEqual(42);
+    expect(calledWithRunId).toBe(undefined);
+    expect(unbiasedAsyncProp.generate(stubRng.mutable.nocall(), 52).value).toEqual(42);
+    expect(calledWithRunId).toBe(undefined);
+    expect(unbiasedAsyncProp.run(47)).toEqual('pAsync:47');
   });
   it('Should forward parameters correctly (synchronous property)', () => {
     let calledWithRunId: number | undefined = undefined;
@@ -40,11 +38,11 @@ describe('UnbiasedProperty', () => {
 
     const unbiasedSyncProp = new UnbiasedProperty(pSync);
 
-    assert.equal(unbiasedSyncProp.isAsync(), false);
-    assert.equal(unbiasedSyncProp.generate(stubRng.mutable.nocall()).value, 48);
-    assert.strictEqual(calledWithRunId, undefined);
-    assert.equal(unbiasedSyncProp.generate(stubRng.mutable.nocall(), 52).value, 48);
-    assert.strictEqual(calledWithRunId, undefined);
-    assert.equal(unbiasedSyncProp.run(29), 'pSync:29');
+    expect(unbiasedSyncProp.isAsync()).toBe(false);
+    expect(unbiasedSyncProp.generate(stubRng.mutable.nocall()).value).toEqual(48);
+    expect(calledWithRunId).toBe(undefined);
+    expect(unbiasedSyncProp.generate(stubRng.mutable.nocall(), 52).value).toEqual(48);
+    expect(calledWithRunId).toBe(undefined);
+    expect(unbiasedSyncProp.run(29)).toEqual('pSync:29');
   });
 });

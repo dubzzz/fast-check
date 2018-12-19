@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 
 import { RunExecution } from '../../../../../src/check/runner/reporter/RunExecution';
@@ -30,15 +29,16 @@ describe('RunExecution', () => {
           // Assert the value
           const lastFailure = failuresDesc[failuresDesc.length - 1];
           const details = run.toRunDetails(seed, '', 42, 10000);
-          assert.ok(details.failed);
-          assert.ok(details.counterexamplePath != null && details.counterexamplePath.length > 0);
-          assert.strictEqual(details.seed, seed);
-          assert.strictEqual(details.numRuns, failuresDesc[0].failureId + 1);
-          assert.strictEqual(details.numSkips, 0);
-          assert.strictEqual(details.numShrinks, failuresDesc.length - 1);
-          assert.strictEqual(details.counterexample, lastFailure.value);
-          assert.strictEqual(details.error, lastFailure.message);
-          assert.deepStrictEqual(details.failures, storeFailures ? failuresDesc.map(f => f.value) : []);
+          expect(details.failed).toBe(true);
+          expect(details.counterexamplePath).not.toBe(null);
+          expect(details.counterexamplePath!.length > 0).toBe(true);
+          expect(details.seed).toEqual(seed);
+          expect(details.numRuns).toEqual(failuresDesc[0].failureId + 1);
+          expect(details.numSkips).toEqual(0);
+          expect(details.numShrinks).toEqual(failuresDesc.length - 1);
+          expect(details.counterexample).toEqual(lastFailure.value);
+          expect(details.error).toEqual(lastFailure.message);
+          expect(details.failures).toEqual(storeFailures ? failuresDesc.map(f => f.value) : []);
         }
       )
     ));
@@ -54,7 +54,7 @@ describe('RunExecution', () => {
           run.fail(42, failureId, 'Failed');
         }
         // Assert the value
-        assert.strictEqual(run.toRunDetails(seed, '', 42, 10000).counterexamplePath, path.join(':'));
+        expect(run.toRunDetails(seed, '', 42, 10000).counterexamplePath).toEqual(path.join(':'));
       })
     ));
   it('Should generate correct counterexamplePath given initial offset', () =>
@@ -76,8 +76,7 @@ describe('RunExecution', () => {
           const joinedPath = [...offsetPath, ...addedPath.slice(1)];
           joinedPath[offsetPath.length - 1] += addedPath[0];
           // Assert the value
-          assert.strictEqual(
-            run.toRunDetails(seed, offsetPath.join(':'), 42, 10000).counterexamplePath,
+          expect(run.toRunDetails(seed, offsetPath.join(':'), 42, 10000).counterexamplePath).toEqual(
             joinedPath.join(':')
           );
         }

@@ -36,7 +36,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
       const [f, a, b] = out.counterexample!;
-      expect(f(a, b)).toEqual(0);
+      expect(f(a, b) === 0).toBe(true);
     });
   });
 });

@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { func, compareFunc, compareBooleanFunc } from '../../../../src/check/arbitrary/FunctionArbitrary';
@@ -45,14 +44,14 @@ describe('FunctionArbitrary', () => {
       const ctx1 = f(0);
       ctx1.log('Logging some stuff');
       const ctx2 = f(0);
-      assert.equal(ctx1.size(), 1);
-      assert.equal(ctx2.size(), 0);
+      expect(ctx1.size()).toEqual(1);
+      expect(ctx2.size()).toEqual(0);
     });
     it('Should produce a cloneable function', () => {
       const mrng = stubRng.mutable.counter(0);
       const s = func(integer()).generate(mrng);
-      assert.ok(s.hasToBeCloned);
-      assert.ok(hasCloneMethod(s.value_));
+      expect(s.hasToBeCloned).toBe(true);
+      expect(hasCloneMethod(s.value_)).toBe(true);
     });
     describe('Clone compared to the original function', () => {
       it('Should produce the same values', () =>
@@ -61,7 +60,7 @@ describe('FunctionArbitrary', () => {
             const mrng = stubRng.mutable.counter(seed);
             const f1 = func(integer()).generate(mrng).value_;
             const f2 = forceClone(f1);
-            assert.deepEqual(inputs.map(f1), inputs.map(f2));
+            expect(inputs.map(f1)).toEqual(inputs.map(f2));
           })
         ));
       it('Should handle history the same way (toString)', () =>
@@ -72,7 +71,7 @@ describe('FunctionArbitrary', () => {
             const f2 = forceClone(f1);
             inputs.forEach(f1);
             inputs.forEach(f2);
-            assert.equal(String(f1), String(f2));
+            expect(String(f1)).toEqual(String(f2));
           })
         ));
       it('Should not share history (toString)', () =>
@@ -82,7 +81,7 @@ describe('FunctionArbitrary', () => {
             const f1 = func(integer()).generate(mrng).value_;
             const f2 = forceClone(f1);
             inputs.forEach(f1);
-            assert.notEqual(String(f1), String(f2));
+            expect(String(f1)).not.toEqual(String(f2));
           })
         ));
     });
@@ -140,8 +139,8 @@ describe('FunctionArbitrary', () => {
     it('Should produce a cloneable compare function', () => {
       const mrng = stubRng.mutable.counter(0);
       const s = compareFunc().generate(mrng);
-      assert.ok(s.hasToBeCloned);
-      assert.ok(hasCloneMethod(s.value_));
+      expect(s.hasToBeCloned).toBe(true);
+      expect(hasCloneMethod(s.value_)).toBe(true);
     });
     describe('Clone compared to the original function', () => {
       it('Should produce the same values', () =>
@@ -150,7 +149,7 @@ describe('FunctionArbitrary', () => {
             const mrng = stubRng.mutable.counter(seed);
             const f1 = compareFunc<number>().generate(mrng).value_;
             const f2 = forceClone(f1);
-            assert.deepEqual(inputs.map(([a, b]) => f1(a, b)), inputs.map(([a, b]) => f2(a, b)));
+            expect(inputs.map(([a, b]) => f1(a, b))).toEqual(inputs.map(([a, b]) => f2(a, b)));
           })
         ));
       it('Should handle history the same way (toString)', () =>
@@ -161,7 +160,7 @@ describe('FunctionArbitrary', () => {
             const f2 = forceClone(f1);
             inputs.forEach(([a, b]) => f1(a, b));
             inputs.forEach(([a, b]) => f2(a, b));
-            assert.equal(String(f1), String(f2));
+            expect(String(f1)).toEqual(String(f2));
           })
         ));
       it('Should not share history (toString)', () =>
@@ -171,7 +170,7 @@ describe('FunctionArbitrary', () => {
             const f1 = compareFunc<number>().generate(mrng).value_;
             const f2 = forceClone(f1);
             inputs.forEach(([a, b]) => f1(a, b));
-            assert.notEqual(String(f1), String(f2));
+            expect(String(f1)).not.toEqual(String(f2));
           })
         ));
     });
@@ -226,8 +225,8 @@ describe('FunctionArbitrary', () => {
     it('Should produce a cloneable compare function', () => {
       const mrng = stubRng.mutable.counter(0);
       const s = compareBooleanFunc().generate(mrng);
-      assert.ok(s.hasToBeCloned);
-      assert.ok(hasCloneMethod(s.value_));
+      expect(s.hasToBeCloned).toBe(true);
+      expect(hasCloneMethod(s.value_)).toBe(true);
     });
     describe('Clone compared to the original function', () => {
       it('Should produce the same values', () =>
@@ -236,7 +235,7 @@ describe('FunctionArbitrary', () => {
             const mrng = stubRng.mutable.counter(seed);
             const f1 = compareBooleanFunc<number>().generate(mrng).value_;
             const f2 = forceClone(f1);
-            assert.deepEqual(inputs.map(([a, b]) => f1(a, b)), inputs.map(([a, b]) => f2(a, b)));
+            expect(inputs.map(([a, b]) => f1(a, b))).toEqual(inputs.map(([a, b]) => f2(a, b)));
           })
         ));
       it('Should handle history the same way (toString)', () =>
@@ -247,7 +246,7 @@ describe('FunctionArbitrary', () => {
             const f2 = forceClone(f1);
             inputs.forEach(([a, b]) => f1(a, b));
             inputs.forEach(([a, b]) => f2(a, b));
-            assert.equal(String(f1), String(f2));
+            expect(String(f1)).toEqual(String(f2));
           })
         ));
       it('Should not share history (toString)', () =>
@@ -257,7 +256,7 @@ describe('FunctionArbitrary', () => {
             const f1 = compareBooleanFunc<number>().generate(mrng).value_;
             const f2 = forceClone(f1);
             inputs.forEach(([a, b]) => f1(a, b));
-            assert.notEqual(String(f1), String(f2));
+            expect(String(f1)).not.toEqual(String(f2));
           })
         ));
     });

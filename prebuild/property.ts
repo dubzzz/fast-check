@@ -66,7 +66,6 @@ const generateProperty = (num: number, isAsync: boolean): string => {
 
 const testBasicCall = (num: number, isAsync: boolean): string => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
-  const className = isAsync ? 'AsyncProperty' : 'Property';
   const kAsync = isAsync ? 'async' : '';
   const kAwait = isAsync ? 'await' : '';
   return `
@@ -78,11 +77,8 @@ const testBasicCall = (num: number, isAsync: boolean): string => {
                 data = [${commas(num, v => `a${v}`)}];
                 return true;
             });
-            assert.equal(${kAwait} p.run(p.generate(stubRng.mutable.nocall()).value), null, '${className} should succeed');
-            assert.deepEqual(data, [${commas(
-              num,
-              v => `${v * v}`
-            )}], '${className} should forward values and keep ordering');
+            expect(${kAwait} p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+            expect(data).toEqual([${commas(num, v => `${v * v}`)}]);
         });
     `;
 };
@@ -92,7 +88,6 @@ const generatePropertySpec = (num: number, isAsync: boolean): string => {
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const blocks = [
     // imports
-    `import * as assert from 'assert';`,
     `import * as stubArb from '../../stubs/arbitraries';`,
     `import * as stubRng from '../../stubs/generators';`,
     `import { ${functionName} } from '../../../../src/check/property/${className}';`,

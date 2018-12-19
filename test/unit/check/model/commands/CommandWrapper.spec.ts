@@ -1,5 +1,3 @@
-import * as assert from 'assert';
-
 import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
 import { Command } from '../../../../../src/check/model/command/Command';
 import { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
@@ -15,7 +13,7 @@ describe('CommandWrapper', () => {
       toString = () => 'sync command';
     }();
     const wrapper = new CommandWrapper(cmd);
-    assert.strictEqual(wrapper.toString(), 'sync command');
+    expect(wrapper.toString()).toEqual('sync command');
   });
   it('Should show name of the command if it has run', () => {
     const cmd = new class implements Command<Model, Real> {
@@ -25,7 +23,7 @@ describe('CommandWrapper', () => {
     }();
     const wrapper = new CommandWrapper(cmd);
     wrapper.run({}, {});
-    assert.strictEqual(wrapper.toString(), 'sync command');
+    expect(wrapper.toString()).toEqual('sync command');
   });
   it('Should reset run flag of clone', () => {
     const cmd = new class implements Command<Model, Real> {
@@ -36,8 +34,8 @@ describe('CommandWrapper', () => {
     const wrapper = new CommandWrapper(cmd);
     wrapper.run({}, {});
     const wrapper2 = wrapper.clone();
-    assert.ok(wrapper.hasRan);
-    assert.ok(!wrapper2.hasRan);
+    expect(wrapper.hasRan).toBe(true);
+    expect(wrapper2.hasRan).toBe(false);
   });
   it('Should consider a run on success', () => {
     const cmd = new class implements Command<Model, Real> {
@@ -46,9 +44,9 @@ describe('CommandWrapper', () => {
       toString = () => 'sync command';
     }();
     const wrapper = new CommandWrapper(cmd);
-    assert.ok(!wrapper.hasRan);
+    expect(wrapper.hasRan).toBe(false);
     wrapper.run({}, {});
-    assert.ok(wrapper.hasRan);
+    expect(wrapper.hasRan).toBe(true);
   });
   it('Should consider a run on failure', () => {
     const cmd = new class implements Command<Model, Real> {
@@ -59,14 +57,9 @@ describe('CommandWrapper', () => {
       toString = () => 'sync command';
     }();
     const wrapper = new CommandWrapper(cmd);
-    assert.ok(!wrapper.hasRan);
-    try {
-      wrapper.run({}, {});
-      assert.fail('Should have forwarded the exception');
-    } catch (err) {
-      assert.strictEqual(err, 'failure message');
-    }
-    assert.ok(wrapper.hasRan);
+    expect(wrapper.hasRan).toBe(false);
+    expect(() => wrapper.run({}, {})).toThrowError('failure message');
+    expect(wrapper.hasRan).toBe(true);
   });
   it('Should consider a run on asynchronous success', async () => {
     const cmd = new class implements AsyncCommand<Model, Real> {
@@ -75,9 +68,9 @@ describe('CommandWrapper', () => {
       toString = () => 'async command';
     }();
     const wrapper = new CommandWrapper(cmd);
-    assert.ok(!wrapper.hasRan);
+    expect(wrapper.hasRan).toBe(false);
     await wrapper.run({}, {});
-    assert.ok(wrapper.hasRan);
+    expect(wrapper.hasRan).toBe(true);
   });
   it('Should consider a run on asynchronous failure', async () => {
     const cmd = new class implements AsyncCommand<Model, Real> {
@@ -88,13 +81,8 @@ describe('CommandWrapper', () => {
       toString = () => 'async command';
     }();
     const wrapper = new CommandWrapper(cmd);
-    assert.ok(!wrapper.hasRan);
-    try {
-      await wrapper.run({}, {});
-      assert.fail('Should have forwarded the exception');
-    } catch (err) {
-      assert.strictEqual(err, 'failure message');
-    }
-    assert.ok(wrapper.hasRan);
+    expect(wrapper.hasRan).toBe(false);
+    await expect(wrapper.run({}, {})).rejects.toMatch('failure message');
+    expect(wrapper.hasRan).toBe(true);
   });
 });

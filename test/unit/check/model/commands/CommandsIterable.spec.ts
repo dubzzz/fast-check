@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 
 import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
@@ -30,7 +29,7 @@ describe('CommandsIterable', () => {
       fc.property(fc.array(fc.boolean()), runFlags => {
         const commands = [...new CommandsIterable(buildAlreadyRanCommands(runFlags))];
         for (let idx = 0; idx !== runFlags.length; ++idx) {
-          assert.equal(commands[idx].hasRan, runFlags[idx]);
+          expect(commands[idx].hasRan).toEqual(runFlags[idx]);
         }
       })
     ));
@@ -41,7 +40,7 @@ describe('CommandsIterable', () => {
         originalIterable[cloneMethod]();
         const commands = [...originalIterable];
         for (let idx = 0; idx !== runFlags.length; ++idx) {
-          assert.equal(commands[idx].hasRan, runFlags[idx]);
+          expect(commands[idx].hasRan).toEqual(runFlags[idx]);
         }
       })
     ));
@@ -50,7 +49,7 @@ describe('CommandsIterable', () => {
       fc.property(fc.array(fc.boolean()), runFlags => {
         const commands = [...new CommandsIterable(buildAlreadyRanCommands(runFlags))[cloneMethod]()];
         for (let idx = 0; idx !== runFlags.length; ++idx) {
-          assert.ok(!commands[idx].hasRan);
+          expect(commands[idx].hasRan).toBe(false);
         }
       })
     ));
@@ -62,7 +61,7 @@ describe('CommandsIterable', () => {
           .map((hasRan, idx) => (hasRan ? String(idx) : ''))
           .filter(s => s !== '')
           .join(',');
-        assert.equal(commandsIterable.toString(), expectedToString);
+        expect(commandsIterable.toString()).toEqual(expectedToString);
       })
     ));
 });

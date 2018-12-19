@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 import { dummy } from './TupleArbitrary.properties';
 
@@ -29,9 +28,9 @@ describe('TupleArbitrary', () => {
       }
     });
     it('Should throw on null arbitrary', () =>
-      assert.throws(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])));
+      expect(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])).toThrowError());
     it('Should throw on invalid arbitrary', () =>
-      assert.throws(() => genericTuple([dummy(1), dummy(2), <Arbitrary<any>>{}])));
+      expect(() => genericTuple([dummy(1), dummy(2), <Arbitrary<any>>{}])).toThrowError());
     it('Should produce cloneable tuple if one cloneable children', () =>
       fc.assert(
         fc.property(fc.nat(50), fc.nat(50), (before, after) => {
@@ -68,7 +67,7 @@ describe('TupleArbitrary', () => {
       const arbs = [withClonedAndCounter];
       const mrng = stubRng.mutable.counter(0);
       genericTuple(arbs).generate(mrng);
-      assert.strictEqual(numCallsToClone, 0);
+      expect(numCallsToClone).toEqual(0);
     });
   });
 });

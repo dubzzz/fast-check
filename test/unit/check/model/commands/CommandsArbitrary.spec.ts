@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import prand from 'pure-rand';
 import * as fc from '../../../../../lib/fast-check';
 
@@ -87,7 +86,7 @@ describe('CommandWrapper', () => {
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
             [...shrunkCmds.value].forEach(c => c.check(model));
-            assert.ok(logOnCheck.data.every(e => e !== 'skipped'));
+            expect(logOnCheck.data.every(e => e !== 'skipped')).toBe(true);
           }
         })
       ));
@@ -104,17 +103,15 @@ describe('CommandWrapper', () => {
           ]).generate(mrng);
           simulateCommands(baseCommands.value);
 
-          const lastWasFailure = logOnCheck.data[logOnCheck.data.length - 1] === 'failure';
-          const initialData = [...logOnCheck.data];
-          fc.pre(lastWasFailure);
+          fc.pre(logOnCheck.data[logOnCheck.data.length - 1] === 'failure');
 
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
             [...shrunkCmds.value].forEach(c => c.check(model));
-            assert.ok(
-              logOnCheck.data.length === 0 || logOnCheck.data[logOnCheck.data.length - 1] === 'failure',
-              `Shrunk initial data ${initialData.join(',')} into ${logOnCheck.data.join(',')}`
-            );
+            if (logOnCheck.data.length > 0) {
+              // either empty or ending by the failure
+              expect(logOnCheck.data[logOnCheck.data.length - 1]).toEqual('failure');
+            }
           }
         })
       ));
@@ -134,8 +131,8 @@ describe('CommandWrapper', () => {
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
             [...shrunkCmds.value].forEach(c => c.check(model));
-            assert.ok(logOnCheck.data.every(e => e === 'failure' || e === 'success'));
-            assert.ok(logOnCheck.data.filter(e => e === 'failure').length <= 1);
+            expect(logOnCheck.data.every(e => e === 'failure' || e === 'success')).toBe(true);
+            expect(logOnCheck.data.filter(e => e === 'failure').length <= 1).toBe(true);
           }
         })
       ));

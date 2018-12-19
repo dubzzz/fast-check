@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
@@ -16,8 +15,8 @@ describe('StreamArbitrary', () => {
     it('Should produce a cloneable Stream', () => {
       const mrng = stubRng.mutable.counter(0);
       const s = infiniteStream(nat()).generate(mrng);
-      assert.ok(s.hasToBeCloned);
-      assert.ok(hasCloneMethod(s.value_));
+      expect(s.hasToBeCloned).toBe(true);
+      expect(hasCloneMethod(s.value_)).toBe(true);
     });
     it('Should produce an independant cloned Stream', () => {
       const mrng = stubRng.mutable.counter(0);
@@ -25,8 +24,8 @@ describe('StreamArbitrary', () => {
       const ctx1 = [...g.take(1)][0];
       ctx1.log('plop');
       const ctx2 = [...((g as any) as WithCloneMethod<typeof g>)[cloneMethod]().take(1)][0];
-      assert.equal(ctx1.size(), 1);
-      assert.equal(ctx2.size(), 0);
+      expect(ctx1.size()).toEqual(1);
+      expect(ctx2.size()).toEqual(0);
     });
     it('Should be able to generate any number of values', () =>
       fc.assert(
@@ -43,7 +42,7 @@ describe('StreamArbitrary', () => {
           const g = infiniteStream(nat()).generate(mrng).value_;
           const firstN = [...g.take(numberOfReadsBeforeToString)];
           const expectedToString = `Stream(${firstN.slice(0, 10).join(',')}...)`;
-          assert.equal(g.toString(), expectedToString);
+          expect(g.toString()).toEqual(expectedToString);
         })
       ));
     it('Should be able to produce different values', () =>
@@ -67,7 +66,7 @@ describe('StreamArbitrary', () => {
           if (!hasCloneMethod(g1) || !hasCloneMethod(g2)) {
             throw new Error('No clone method detected');
           }
-          assert.deepStrictEqual([...g1[cloneMethod]().take(5)], [...g2[cloneMethod]().take(5)]);
+          expect([...g1[cloneMethod]().take(5)]).toEqual([...g2[cloneMethod]().take(5)]);
           return true;
         },
         isValidValue: (g: Stream<number>) => {

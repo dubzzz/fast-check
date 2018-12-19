@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../lib/fast-check';
 
 import {
@@ -29,13 +28,13 @@ describe('polyfills', () => {
       it('Should give the same answer as built-it entries', () =>
         fc.assert(
           fc.property(fc.dictionary(fc.fullUnicodeString(), fc.fullUnicodeString()), d => {
-            assert.deepStrictEqual(ObjectEntriesImpl(d), Object.entries(d));
+            expect(ObjectEntriesImpl(d)).toEqual(Object.entries(d));
           })
         ));
     }
     it('Should provide a working polyfilled implementation', () => {
-      if (Object.entries) assert.ok(ObjectEntries === Object.entries);
-      else assert.ok(ObjectEntries === ObjectEntriesImpl);
+      if (Object.entries) expect(ObjectEntries === Object.entries).toBe(true);
+      else expect(ObjectEntries === ObjectEntriesImpl).toBe(true);
     });
   });
   describe('String.fromCodePoint', () => {
@@ -43,13 +42,13 @@ describe('polyfills', () => {
       it('Should give the same answer as built-it entries', () =>
         fc.assert(
           fc.property(fc.nat(0x10ffff), code => {
-            assert.deepStrictEqual(StringFromCodePointLimitedImpl(code), String.fromCodePoint(code));
+            expect(StringFromCodePointLimitedImpl(code)).toEqual(String.fromCodePoint(code));
           })
         ));
     }
     it('Should provide a working polyfilled implementation', () => {
-      if (String.fromCodePoint) assert.ok(StringFromCodePointLimited === String.fromCodePoint);
-      else assert.ok(StringFromCodePointLimited === StringFromCodePointLimitedImpl);
+      if (String.fromCodePoint) expect(StringFromCodePointLimited === String.fromCodePoint).toBe(true);
+      else expect(StringFromCodePointLimited === StringFromCodePointLimitedImpl).toBe(true);
     });
   });
   describe('String.prototype.padEnd', () => {

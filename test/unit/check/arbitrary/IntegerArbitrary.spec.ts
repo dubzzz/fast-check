@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
@@ -100,7 +99,7 @@ describe('IntegerArbitrary', () => {
             shrinkable = null;
             for (const smallerShrinkable of oldShrinkable.shrink()) {
               if (smallerShrinkable.value === 0) {
-                assert.equal(numZeros, 0);
+                expect(numZeros).toEqual(0);
                 ++numZeros;
               }
               if (minValue <= smallerShrinkable.value && smallerShrinkable.value <= maxValue) {

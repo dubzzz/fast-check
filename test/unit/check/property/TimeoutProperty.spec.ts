@@ -1,5 +1,3 @@
-import * as assert from 'assert';
-
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';
 import { IProperty } from '../../../../src/check/property/IProperty';
@@ -16,7 +14,7 @@ describe('TimeoutProperty', () => {
       });
     });
     const timeoutProp = new TimeoutProperty(p, 100);
-    assert.equal(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value), null);
+    expect(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should not timeout if it fails in time', async () => {
     const p = asyncProperty(stubArb.single(0), async (arg: number) => {
@@ -25,7 +23,7 @@ describe('TimeoutProperty', () => {
       });
     });
     const timeoutProp = new TimeoutProperty(p, 100);
-    assert.equal(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value), 'plop');
+    expect(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value)).toEqual('plop');
   });
   it('Should timeout if it takes to long', async () => {
     const p = asyncProperty(stubArb.single(0), async (arg: number) => {
@@ -34,8 +32,7 @@ describe('TimeoutProperty', () => {
       });
     });
     const timeoutProp = new TimeoutProperty(p, 0);
-    assert.equal(
-      await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value),
+    expect(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value)).toEqual(
       `Property timeout: exceeded limit of 0 milliseconds`
     );
   });
@@ -44,8 +41,7 @@ describe('TimeoutProperty', () => {
       return await new Promise<boolean>(function(resolve, reject) {});
     });
     const timeoutProp = new TimeoutProperty(p, 0);
-    assert.equal(
-      await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value),
+    expect(await timeoutProp.run(timeoutProp.generate(stubRng.mutable.nocall()).value)).toEqual(
       `Property timeout: exceeded limit of 0 milliseconds`
     );
   });
@@ -66,9 +62,9 @@ describe('TimeoutProperty', () => {
       }
     }();
     const timeoutProp = new TimeoutProperty(p, 0);
-    assert.equal(timeoutProp.generate(stubRng.mutable.nocall(), 50).value, 42);
-    assert.ok(called);
-    assert.ok(calledWithRightId);
+    expect(timeoutProp.generate(stubRng.mutable.nocall(), 50).value).toEqual(42);
+    expect(called).toBe(true);
+    expect(calledWithRightId).toBe(true);
   });
   it('Should forward any frequency if not any', () => {
     let called = false;
@@ -87,8 +83,8 @@ describe('TimeoutProperty', () => {
       }
     }();
     const timeoutProp = new TimeoutProperty(p, 0);
-    assert.equal(timeoutProp.generate(stubRng.mutable.nocall()).value, 42);
-    assert.ok(called);
-    assert.ok(calledWithRightId);
+    expect(timeoutProp.generate(stubRng.mutable.nocall()).value).toEqual(42);
+    expect(called).toBe(true);
+    expect(calledWithRightId).toBe(true);
   });
 });
