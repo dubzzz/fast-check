@@ -9,8 +9,8 @@ cache:
     - node_modules
 
 script:
-  - npm run test
-  - npm run e2e
+  - npm run test -- --maxWorkers=4
+  - npm run e2e -- --maxWorkers=4
 
 after_success:
   - if [[ $(node --version) == "v10."* ]]; then npm run coverage; fi
@@ -54,7 +54,8 @@ jobs:
         - rm -r node_modules/
         - rm package-lock.json
         - npm install
-        - npm run test
+        - npm run test -- --maxWorkers=4
+        - npm run e2e -- --maxWorkers=4
     - stage: publish documentation
       if: branch = master AND type = push
       script:
