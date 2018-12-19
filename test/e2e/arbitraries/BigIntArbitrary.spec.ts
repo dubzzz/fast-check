@@ -4,6 +4,9 @@ declare function BigInt(n: number | bigint | string): bigint;
 const seed = Date.now();
 describe(`BigIntArbitrary (seed: ${seed})`, () => {
   if (typeof BigInt === 'undefined') {
+    it('no test', () => {
+      expect(true).toBe(true);
+    });
     return;
   }
   describe('bitIntN', () => {

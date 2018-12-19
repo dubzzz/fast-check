@@ -14,6 +14,9 @@ const isStrictlySmallerBigInt = (v1: bigint, v2: bigint) => {
 
 describe('BigIntArbitrary', () => {
   if (typeof BigInt === 'undefined') {
+    it('no test', () => {
+      expect(true).toBe(true);
+    });
     return;
   }
   describe('bigIntN', () => {
