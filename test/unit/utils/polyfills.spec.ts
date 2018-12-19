@@ -12,6 +12,17 @@ import {
   StringFromCodePointLimited
 } from '../../../src/utils/polyfills';
 
+declare module Object {
+  function entries(o: { [key: string]: any }): [string, any][];
+}
+declare module String {
+  function fromCodePoint(codePoint: number): string;
+}
+declare class String {
+  public padEnd(src: string, targetLength: number, padString: string): string;
+  public padStart(src: string, targetLength: number, padString: string): string;
+}
+
 describe('polyfills', () => {
   describe('Object.entries', () => {
     if (Object.entries) {
@@ -49,7 +60,7 @@ describe('polyfills', () => {
             fc.fullUnicodeString(),
             fc.nat(1000),
             fc.fullUnicodeString(),
-            (src, l, pad) => StringPadEndImpl(src, l, pad) === src.padEnd(l, pad)
+            (src, l, pad) => StringPadEndImpl(src, l, pad) === (src as any).padEnd(l, pad)
           )
         ));
     }
@@ -71,7 +82,7 @@ describe('polyfills', () => {
             fc.fullUnicodeString(),
             fc.nat(1000),
             fc.fullUnicodeString(),
-            (src, l, pad) => StringPadStartImpl(src, l, pad) === src.padStart(l, pad)
+            (src, l, pad) => StringPadStartImpl(src, l, pad) === (src as any).padStart(l, pad)
           )
         ));
     }
