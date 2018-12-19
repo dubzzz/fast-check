@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { toss } from '../../../../src/check/runner/Tosser';
@@ -30,25 +29,22 @@ describe('Tosser', () => {
               .take(2)
               .map(f => f().value)
           ];
-          assert.notDeepStrictEqual(g1, g2);
+          expect(g1).not.toStrictEqual(g2);
           return true;
         })
       ));
     it('Should produce the same sequence for the same seed', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
-          assert.deepStrictEqual(
-            [
-              ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
-                .take(num)
-                .map(f => f().value)
-            ],
-            [
-              ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
-                .take(num)
-                .map(f => f().value)
-            ]
-          );
+          expect([
+            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
+              .take(num)
+              .map(f => f().value)
+          ]).toStrictEqual([
+            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
+              .take(num)
+              .map(f => f().value)
+          ]);
         })
       ));
     it('Should not depend on the order of iteration', () =>
@@ -56,13 +52,12 @@ describe('Tosser', () => {
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
           const onGoingItems1 = [...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num)];
           const onGoingItems2 = [...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num)];
-          assert.deepStrictEqual(
+          expect(
             onGoingItems2
               .reverse()
               .map(f => f().value)
-              .reverse(),
-            onGoingItems1.map(f => f().value)
-          );
+              .reverse()
+          ).toStrictEqual(onGoingItems1.map(f => f().value));
         })
       ));
     it('Should offset toss with the provided examples', () =>
@@ -74,7 +69,7 @@ describe('Tosser', () => {
           const examplesProvided = [
             ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, examples)).take(num)
           ].map(f => f().value);
-          assert.deepStrictEqual([...examples, ...noExamplesProvided].slice(0, num), examplesProvided);
+          expect([...examples, ...noExamplesProvided].slice(0, num)).toStrictEqual(examplesProvided);
         })
       ));
   });

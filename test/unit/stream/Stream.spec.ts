@@ -1,5 +1,3 @@
-import * as assert from 'assert';
-
 import { Stream, stream } from '../../../src/stream/Stream';
 
 describe('Stream', () => {
@@ -9,15 +7,15 @@ describe('Stream', () => {
         yield* [1, 42, 350, 0];
       }
       let s = stream(g());
-      assert.deepEqual([...s], [1, 42, 350, 0]);
+      expect([...s]).toEqual([1, 42, 350, 0]);
     });
     it('Should not be able to iterate twice', () => {
       function* g() {
         yield* [1, 42, 350, 0];
       }
       let s = stream(g());
-      assert.deepEqual([...s], [1, 42, 350, 0]);
-      assert.deepEqual([...s], []);
+      expect([...s]).toEqual([1, 42, 350, 0]);
+      expect([...s]).toEqual([]);
     });
     it('Should handle infinite generators', () => {
       function* g() {
@@ -31,13 +29,13 @@ describe('Stream', () => {
       for (let idx = 0; idx !== 5; ++idx) {
         data.push(s.next().value);
       }
-      assert.deepEqual(data, [1, 2, 3, 4, 5]);
+      expect(data).toEqual([1, 2, 3, 4, 5]);
     });
   });
   describe('nil', () => {
     it('Should instantiate an empty stream', () => {
       let s: Stream<number> = Stream.nil<number>();
-      assert.deepEqual([...s], []);
+      expect([...s]).toEqual([]);
     });
   });
   describe('map', () => {
@@ -46,14 +44,14 @@ describe('Stream', () => {
         yield* [1, 2, 3, 5];
       }
       let s = stream(g()).map(v => v * v);
-      assert.deepEqual([...s], [1, 4, 9, 25]);
+      expect([...s]).toEqual([1, 4, 9, 25]);
     });
     it('Should be able to perform conversions', () => {
       function* g() {
         yield* [1, 2, 3, 5];
       }
       let s: Stream<string> = stream(g()).map(v => String(v));
-      assert.deepEqual([...s], ['1', '2', '3', '5']);
+      expect([...s]).toEqual(['1', '2', '3', '5']);
     });
   });
   describe('flatMap', () => {
@@ -67,7 +65,7 @@ describe('Stream', () => {
         }
       }
       let s = stream(g()).flatMap(expand);
-      assert.deepEqual([...s], [1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 5]);
+      expect([...s]).toEqual([1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 5]);
     });
     it('Should handle correctly empty iterables', () => {
       function* g() {
@@ -79,7 +77,7 @@ describe('Stream', () => {
         }
       }
       let s = stream(g()).flatMap(noexpand);
-      assert.deepEqual([...s], [3, 5]);
+      expect([...s]).toEqual([3, 5]);
     });
   });
   describe('drop', () => {
@@ -88,7 +86,7 @@ describe('Stream', () => {
         yield* [1, 2, 3, 4, 5, 6];
       }
       let s = stream(g()).drop(2);
-      assert.deepEqual([...s], [3, 4, 5, 6]);
+      expect([...s]).toEqual([3, 4, 5, 6]);
     });
   });
   describe('dropWhile', () => {
@@ -97,21 +95,21 @@ describe('Stream', () => {
         yield* [-4, -2, -3, 1, -8, 7];
       }
       let s = stream(g()).dropWhile(v => v < 0);
-      assert.deepEqual([...s], [1, -8, 7]);
+      expect([...s]).toEqual([1, -8, 7]);
     });
     it('Should drop everything', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
       let s = stream(g()).dropWhile(v => true);
-      assert.deepEqual([...s], []);
+      expect([...s]).toEqual([]);
     });
     it('Should drop nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
       let s = stream(g()).dropWhile(v => false);
-      assert.deepEqual([...s], [-4, -2, -3, 1, -8, 7]);
+      expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
   });
   describe('take', () => {
@@ -120,7 +118,7 @@ describe('Stream', () => {
         yield* [1, 2, 3, 4, 5, 6];
       }
       let s = stream(g()).take(4);
-      assert.deepEqual([...s], [1, 2, 3, 4]);
+      expect([...s]).toEqual([1, 2, 3, 4]);
     });
   });
   describe('takeWhile', () => {
@@ -129,21 +127,21 @@ describe('Stream', () => {
         yield* [-4, -2, -3, 1, -8, 7];
       }
       let s = stream(g()).takeWhile(v => v < 0);
-      assert.deepEqual([...s], [-4, -2, -3]);
+      expect([...s]).toEqual([-4, -2, -3]);
     });
     it('Should take everything', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
       let s = stream(g()).takeWhile(v => true);
-      assert.deepEqual([...s], [-4, -2, -3, 1, -8, 7]);
+      expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
     it('Should take nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
       let s = stream(g()).takeWhile(v => false);
-      assert.deepEqual([...s], []);
+      expect([...s]).toEqual([]);
     });
   });
   describe('filter', () => {
@@ -152,7 +150,7 @@ describe('Stream', () => {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
       let s = stream(g()).filter(v => v % 2 === 0);
-      assert.deepEqual([...s], [4, 8, 10, 4, 4]);
+      expect([...s]).toEqual([4, 8, 10, 4, 4]);
     });
   });
   describe('every', () => {
@@ -160,31 +158,31 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      assert.ok(stream(g()).every(v => v > 0));
+      expect(stream(g()).every(v => v > 0)).toBe(true);
     });
     it('Should be true for empty streams', () => {
       function* g() {
         yield* [];
       }
-      assert.ok(stream(g()).every(v => v > 0));
+      expect(stream(g()).every(v => v > 0)).toBe(true);
     });
     it('Should be false if it starts by a failing value', () => {
       function* g() {
         yield* [0, 1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      assert.equal(stream(g()).every(v => v > 0), false);
+      expect(stream(g()).every(v => v > 0)).toBe(false);
     });
     it('Should be false if it ends by a failing value', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4, 0];
       }
-      assert.equal(stream(g()).every(v => v > 0), false);
+      expect(stream(g()).every(v => v > 0)).toBe(false);
     });
     it('Should be false if it contains a failing value', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 0, 1, 1, 3, 4, 4];
       }
-      assert.equal(stream(g()).every(v => v > 0), false);
+      expect(stream(g()).every(v => v > 0)).toBe(false);
     });
   });
   describe('has', () => {
@@ -192,25 +190,25 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      assert.deepStrictEqual(stream(g()).has(v => v > 9), [true, 10]);
+      expect(stream(g()).has(v => v > 9)).toEqual([true, 10]);
     });
     it('Should be true if multiple values are ok', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      assert.deepStrictEqual(stream(g()).has(v => v > 4), [true, 7]);
+      expect(stream(g()).has(v => v > 4)).toEqual([true, 7]);
     });
     it('Should be false for empty streams', () => {
       function* g() {
         yield* [];
       }
-      assert.deepStrictEqual(stream(g()).has(v => v > 0), [false, null]);
+      expect(stream(g()).has(v => v > 0)).toEqual([false, null]);
     });
     it('Should be false if no value is ok', () => {
       function* g() {
         yield* [-2, -4, 0];
       }
-      assert.deepStrictEqual(stream(g()).has(v => v > 0), [false, null]);
+      expect(stream(g()).has(v => v > 0)).toEqual([false, null]);
     });
   });
   describe('join', () => {
@@ -219,7 +217,7 @@ describe('Stream', () => {
         yield* [1, 2, 3, 4, 5];
       }
       let s = stream(g()).join();
-      assert.deepEqual([...s], [1, 2, 3, 4, 5]);
+      expect([...s]).toEqual([1, 2, 3, 4, 5]);
     });
     it('Should be able to join another iterable', () => {
       function* g1() {
@@ -229,7 +227,7 @@ describe('Stream', () => {
         yield* [8, 9];
       }
       let s = stream(g1()).join(g2());
-      assert.deepEqual([...s], [1, 2, 3, 4, 5, 8, 9]);
+      expect([...s]).toEqual([1, 2, 3, 4, 5, 8, 9]);
     });
     it('Should be able to join multiple other streams', () => {
       function* g1() {
@@ -239,7 +237,7 @@ describe('Stream', () => {
         yield* [8, 9];
       }
       let s = stream(g1()).join(g2(), g1());
-      assert.deepEqual([...s], [1, 2, 3, 4, 5, 8, 9, 1, 2, 3, 4, 5]);
+      expect([...s]).toEqual([1, 2, 3, 4, 5, 8, 9, 1, 2, 3, 4, 5]);
     });
     it('Should be able to join multiple other streams while mapping the initial stream', () => {
       function* g1() {
@@ -251,7 +249,7 @@ describe('Stream', () => {
       let s = stream(g1())
         .map(v => 10 * v)
         .join(g2(), g1());
-      assert.deepEqual([...s], [10, 20, 30, 40, 50, 8, 9, 1, 2, 3, 4, 5]);
+      expect([...s]).toEqual([10, 20, 30, 40, 50, 8, 9, 1, 2, 3, 4, 5]);
     });
     it('Should be able to join infinite streams', () => {
       function* g1() {
@@ -264,14 +262,14 @@ describe('Stream', () => {
         .map(v => 10 * v)
         .join(g2())
         .take(5);
-      assert.deepEqual([...s], [10, 10, 10, 10, 10]);
+      expect([...s]).toEqual([10, 10, 10, 10, 10]);
     });
     it('Should be able to join on nil', () => {
       function* g1() {
         yield* [1, 2, 3, 4, 5];
       }
       let s = Stream.nil().join(g1());
-      assert.deepEqual([...s], [1, 2, 3, 4, 5]);
+      expect([...s]).toEqual([1, 2, 3, 4, 5]);
     });
   });
   describe('getNthOrLast', () => {
@@ -280,18 +278,18 @@ describe('Stream', () => {
         yield* [42, 5, 43, 8, 19];
       }
       let v = stream(g()).getNthOrLast(2);
-      assert.deepEqual(v, 43);
+      expect(v).toEqual(43);
     });
     it('Should return the last value if the stream is too small', () => {
       function* g() {
         yield* [42, 5, 43, 8, 19];
       }
       let v = stream(g()).getNthOrLast(20);
-      assert.deepEqual(v, 19);
+      expect(v).toEqual(19);
     });
     it('Should be null for empty streams', () => {
       let v = Stream.nil<number>().getNthOrLast(10);
-      assert.deepEqual(v, null);
+      expect(v).toBe(null);
     });
     it('Should be able to run on infinite streams', () => {
       function* g() {
@@ -299,7 +297,7 @@ describe('Stream', () => {
         while (true) yield idx++;
       }
       let v = stream(g()).getNthOrLast(10);
-      assert.deepEqual(v, 10);
+      expect(v).toEqual(10);
     });
   });
 });

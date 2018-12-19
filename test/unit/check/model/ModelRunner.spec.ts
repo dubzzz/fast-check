@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand';
@@ -17,18 +16,18 @@ describe('ModelRunner', () => {
             return new class implements Command<{}, {}> {
               name = 'Command';
               check = (m: {}) => {
-                assert.ok(m === setupData.model);
+                expect(m).toBe(setupData.model);
                 return v;
               };
               run = (m: {}, r: {}) => {
-                assert.ok(m === setupData.model);
-                assert.ok(r === setupData.real);
+                expect(m).toBe(setupData.model);
+                expect(r).toBe(setupData.real);
                 startedRuns.push(idx);
               };
             }();
           });
           modelRun(() => setupData, commands);
-          assert.deepEqual(startedRuns, expectedRuns);
+          expect(startedRuns).toEqual(expectedRuns);
         })
       ));
   });
@@ -43,19 +42,19 @@ describe('ModelRunner', () => {
             return new class implements AsyncCommand<{}, {}> {
               name = 'AsyncCommand';
               check = (m: {}) => {
-                assert.ok(m === setupData.model);
+                expect(m).toBe(setupData.model);
                 return v;
               };
               run = async (m: {}, r: {}) => {
-                assert.ok(m === setupData.model);
-                assert.ok(r === setupData.real);
+                expect(m).toBe(setupData.model);
+                expect(r).toBe(setupData.real);
                 startedRuns.push(idx);
               };
             }();
           });
           const setup = asyncSetup ? async () => setupData : () => setupData;
           await asyncModelRun(setup, commands);
-          assert.deepEqual(startedRuns, expectedRuns);
+          expect(startedRuns).toEqual(expectedRuns);
         })
       ));
     it('Should wait setup before launching commands', async () => {
@@ -80,8 +79,8 @@ describe('ModelRunner', () => {
           }, 0);
         });
       await asyncModelRun(setup, [command]);
-      assert.ok(setupDataReady);
-      assert.ok(!calledBeforeDataReady);
+      expect(setupDataReady).toBe(true);
+      expect(calledBeforeDataReady).toBe(false);
     });
   });
 });

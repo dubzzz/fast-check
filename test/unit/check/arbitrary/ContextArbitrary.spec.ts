@@ -1,5 +1,3 @@
-import * as assert from 'assert';
-
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 
 import * as stubRng from '../../stubs/generators';
@@ -10,7 +8,7 @@ describe('ContextArbitrary', () => {
     it('Should generate a cloneable instance', () => {
       const mrng = stubRng.mutable.nocall();
       const g = context().generate(mrng).value;
-      assert.ok(hasCloneMethod(g));
+      expect(hasCloneMethod(g)).toBe(true);
     });
     it('Should not reset its own logs on clone', () => {
       const mrng = stubRng.mutable.nocall();
@@ -18,9 +16,9 @@ describe('ContextArbitrary', () => {
       if (!hasCloneMethod(g)) throw new Error('context should be a cloneable instance');
       g.log('a');
       const gBeforeClone = String(g);
-      assert.ok(g[cloneMethod]() != null);
-      assert.equal(String(g), gBeforeClone);
-      assert.equal(g.size(), 1);
+      expect(g[cloneMethod]()).toBeDefined();
+      expect(String(g)).toEqual(gBeforeClone);
+      expect(g.size()).toEqual(1);
     });
     it('Should produce a clone without any logs', () => {
       const mrng = stubRng.mutable.nocall();
@@ -29,9 +27,9 @@ describe('ContextArbitrary', () => {
       const gBeforeLogs = String(g);
       g.log('a');
       const g2 = g[cloneMethod]();
-      assert.notEqual(String(g2), String(g));
-      assert.equal(String(g2), gBeforeLogs);
-      assert.equal(g2.size(), 0);
+      expect(String(g2)).not.toEqual(String(g));
+      expect(String(g2)).toEqual(gBeforeLogs);
+      expect(g2.size()).toEqual(0);
     });
   });
 });

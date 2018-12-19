@@ -1,5 +1,3 @@
-import * as assert from 'assert';
-
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';
@@ -14,31 +12,21 @@ describe('AsyncProperty', () => {
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       return false;
     });
-    assert.notEqual(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should fail');
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
   });
   it('Should fail if predicate throws', async () => {
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       throw 'predicate throws';
     });
-    assert.equal(
-      await p.run(p.generate(stubRng.mutable.nocall()).value),
-      'predicate throws',
-      'Property should fail and attach the exception as string'
-    );
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toEqual('predicate throws');
   });
   it('Should fail if predicate throws an Error', async () => {
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       throw new Error('predicate throws');
     });
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
-    assert.ok(
-      (out as string).indexOf('predicate throws') !== -1,
-      'Property should fail and attach the exception as string'
-    );
-    assert.ok(
-      (out as string).indexOf('\n\nStack trace:') !== -1,
-      `Property should include the stack trace when available, got: ${out}`
-    );
+    expect(out).toContain('predicate throws');
+    expect(out).toContain('\n\nStack trace:');
   });
   it('Should forward failure of runs with failing precondition', async () => {
     let doNotResetThisValue: boolean = false;
@@ -48,18 +36,18 @@ describe('AsyncProperty', () => {
       return false;
     });
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
-    assert.ok(PreconditionFailure.isFailure(out));
-    assert.ok(!doNotResetThisValue, 'should not execute the code after the failing precondition');
+    expect(PreconditionFailure.isFailure(out)).toBe(true);
+    expect(doNotResetThisValue).toBe(false); // does not run code after the failing precondition
   });
   it('Should succeed if predicate is true', async () => {
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       return true;
     });
-    assert.equal(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should succeed');
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should succeed if predicate does not return anything', async () => {
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {});
-    assert.equal(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should succeed');
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should wait until completion of the check to follow', async () => {
     const delay = () => new Promise((resolve, reject) => setTimeout(resolve, 0));
@@ -75,15 +63,17 @@ describe('AsyncProperty', () => {
     runner.then(() => (runnerHasCompleted = true));
 
     await delay(); // give back the control for other threads
-    assert.equal(runnerHasCompleted, false, 'Runner should not have completed');
+    expect(runnerHasCompleted).toBe(false);
 
     resolvePromise(true);
     await delay(); // give back the control for other threads
-    assert.equal(runnerHasCompleted, true, 'Runner should have completed');
-    assert.equal(await runner, null, 'Property should succeed');
+    expect(runnerHasCompleted).toBe(true);
+    expect(await runner).toBe(null); // property success
   });
   it('Should throw on invalid arbitrary', () =>
-    assert.throws(() => asyncProperty(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, async () => {})));
+    expect(() =>
+      asyncProperty(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, async () => {})
+    ).toThrowError());
 
   it('Should use the unbiased arbitrary by default', () => {
     const p = asyncProperty(
@@ -97,7 +87,7 @@ describe('AsyncProperty', () => {
       }(),
       async () => {}
     );
-    assert.equal(p.generate(stubRng.mutable.nocall()).value, 69);
+    expect(p.generate(stubRng.mutable.nocall()).value).toEqual([69]);
   });
   it('Should use the biased arbitrary when asked to', () => {
     const p = asyncProperty(
@@ -118,8 +108,8 @@ describe('AsyncProperty', () => {
       }(),
       async () => {}
     );
-    assert.equal(p.generate(stubRng.mutable.nocall(), 0).value, 42);
-    assert.equal(p.generate(stubRng.mutable.nocall(), 2).value, 42);
+    expect(p.generate(stubRng.mutable.nocall(), 0).value).toEqual([42]);
+    expect(p.generate(stubRng.mutable.nocall(), 2).value).toEqual([42]);
   });
   it('Should always execute beforeEach before the test', async () => {
     const prob = { beforeEachCalled: false };
@@ -130,7 +120,7 @@ describe('AsyncProperty', () => {
     }).beforeEach(async () => {
       prob.beforeEachCalled = true;
     });
-    assert.equal(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should not fail');
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should execute afterEach after the test on success', async () => {
     const callOrder: string[] = [];
@@ -140,8 +130,8 @@ describe('AsyncProperty', () => {
     }).afterEach(async () => {
       callOrder.push('afterEach');
     });
-    assert.equal(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should not fail');
-    assert.deepEqual(callOrder, ['test', 'afterEach']);
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    expect(callOrder).toEqual(['test', 'afterEach']);
   });
   it('Should execute afterEach after the test on failure', async () => {
     const callOrder: string[] = [];
@@ -151,8 +141,8 @@ describe('AsyncProperty', () => {
     }).afterEach(async () => {
       callOrder.push('afterEach');
     });
-    assert.notEqual(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should fail');
-    assert.deepEqual(callOrder, ['test', 'afterEach']);
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
+    expect(callOrder).toEqual(['test', 'afterEach']);
   });
   it('Should execute afterEach after the test on uncaught exception', async () => {
     const callOrder: string[] = [];
@@ -162,7 +152,7 @@ describe('AsyncProperty', () => {
     }).afterEach(async () => {
       callOrder.push('afterEach');
     });
-    assert.notEqual(await p.run(p.generate(stubRng.mutable.nocall()).value), null, 'Property should fail');
-    assert.deepEqual(callOrder, ['test', 'afterEach']);
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
+    expect(callOrder).toEqual(['test', 'afterEach']);
   });
 });

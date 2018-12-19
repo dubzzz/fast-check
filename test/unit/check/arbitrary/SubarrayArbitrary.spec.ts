@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { subarray, shuffledSubarray } from '../../../../src/check/arbitrary/SubarrayArbitrary';
@@ -43,10 +42,11 @@ describe('SubarrayArbitrary', () => {
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
-          (originalArray: number[], length: number, otherLength: number) =>
-            assert.throws(() => {
+          (originalArray: number[], length: number, otherLength: number) => {
+            expect(() => {
               subarray(originalArray, -length - 1, otherLength % (originalArray.length + 1));
-            }, /minimal length to be between 0/)
+            }).toThrowError(/minimal length to be between 0/);
+          }
         )
       ));
     it('Should raise an error whenever minLength is greater than array size', () =>
@@ -55,10 +55,11 @@ describe('SubarrayArbitrary', () => {
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
-          (originalArray: number[], offset: number, otherLength: number) =>
-            assert.throws(() => {
+          (originalArray: number[], offset: number, otherLength: number) => {
+            expect(() => {
               subarray(originalArray, originalArray.length + offset + 1, otherLength % (originalArray.length + 1));
-            }, /minimal length to be between 0/)
+            }).toThrowError(/minimal length to be between 0/);
+          }
         )
       ));
     it('Should raise an error whenever maxLength is below zero', () =>
@@ -67,10 +68,11 @@ describe('SubarrayArbitrary', () => {
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
-          (originalArray: number[], length: number, otherLength: number) =>
-            assert.throws(() => {
+          (originalArray: number[], length: number, otherLength: number) => {
+            expect(() => {
               subarray(originalArray, otherLength % (originalArray.length + 1), -length - 1);
-            }, /maximal length to be between 0/)
+            }).toThrowError(/maximal length to be between 0/);
+          }
         )
       ));
     it('Should raise an error whenever maxLength is greater than array size', () =>
@@ -79,10 +81,11 @@ describe('SubarrayArbitrary', () => {
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
-          (originalArray: number[], offset: number, otherLength: number) =>
-            assert.throws(() => {
+          (originalArray: number[], offset: number, otherLength: number) => {
+            expect(() => {
               subarray(originalArray, otherLength % (originalArray.length + 1), originalArray.length + offset + 1);
-            }, /maximal length to be between 0/)
+            }).toThrowError(/maximal length to be between 0/);
+          }
         )
       ));
     it('Should raise an error whenever minLength is greater than maxLength', () =>
@@ -90,10 +93,11 @@ describe('SubarrayArbitrary', () => {
         fc.property(
           genericHelper.minMax(fc.nat(100)).filter(v => v.min !== v.max),
           fc.nat(100),
-          (minMax: { min: number; max: number }, offset: number) =>
-            assert.throws(() => {
+          (minMax: { min: number; max: number }, offset: number) => {
+            expect(() => {
               subarray([...Array(minMax.max + offset)].map(_ => 0), minMax.max, minMax.min);
-            }, /minimal length to be inferior or equal to the maximal length/)
+            }).toThrowError(/minimal length to be inferior or equal to the maximal length/);
+          }
         )
       ));
     describe('Given no length constraints', () => {

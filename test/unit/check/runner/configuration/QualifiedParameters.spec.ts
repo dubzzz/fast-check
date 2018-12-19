@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../../lib/fast-check';
 import * as prand from 'pure-rand';
 
@@ -42,13 +41,8 @@ describe('QualifiedParameters', () => {
         fc.property(parametersArbitrary, params => {
           const qualifiedParams = QualifiedParameters.read(params);
           for (const key of Object.keys(params)) {
-            assert.strictEqual(
-              (qualifiedParams as any)[key],
-              (params as any)[key],
-              `Unexpected value encountered in qualified - ${
-                (qualifiedParams as any)[key]
-              } - for key ${key}, expected: ${(params as any)[key]}`
-            );
+            expect(qualifiedParams).toHaveProperty(key);
+            expect((qualifiedParams as any)[key]).toEqual((params as any)[key]);
           }
         })
       ));
@@ -62,7 +56,7 @@ describe('QualifiedParameters', () => {
     it('Should throw on invalid randomType', () =>
       fc.assert(
         fc.property(parametersArbitrary, params => {
-          assert.throws(() => QualifiedParameters.read({ ...params, randomType: 'invalid' as RandomType }));
+          expect(() => QualifiedParameters.read({ ...params, randomType: 'invalid' as RandomType })).toThrowError();
         })
       ));
     describe('Seeds outside of 32 bits range', () => {
@@ -108,19 +102,17 @@ describe('QualifiedParameters', () => {
   describe('readOrNumRuns', () => {
     it('Should be equivalent to read with only numRuns when specifying a number', () =>
       fc.assert(
-        fc.property(fc.nat(), numRuns =>
-          assert.deepStrictEqual(
-            extractExceptSeed(QualifiedParameters.readOrNumRuns(numRuns)),
+        fc.property(fc.nat(), numRuns => {
+          expect(extractExceptSeed(QualifiedParameters.readOrNumRuns(numRuns))).toEqual(
             extractExceptSeed(QualifiedParameters.read({ numRuns }))
-          )
-        )
+          );
+        })
       ));
     it('Should be equivalent to read for Parameters', () =>
       fc.assert(
         fc.property(parametersArbitrary, params => {
           const extractor = params.seed != null ? extract : extractExceptSeed;
-          assert.deepStrictEqual(
-            extractor(QualifiedParameters.readOrNumRuns(params)),
+          expect(extractor(QualifiedParameters.readOrNumRuns(params))).toEqual(
             extractor(QualifiedParameters.read(params))
           );
         })

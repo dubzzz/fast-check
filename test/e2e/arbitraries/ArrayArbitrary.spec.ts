@@ -7,7 +7,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     it('Should shrink on the size of the array', () => {
       const out = fc.check(fc.property(fc.array(fc.nat()), (arr: number[]) => arr.length < 2), { seed: seed });
       expect(out.failed).toBe(true);
-      expect(out.counterexample).not.toEqual(null);
+      expect(out.counterexample).not.toBe(null);
       expect(out.counterexample![0]).toHaveLength(2);
     });
     it('Should shrink on the content of the array', () => {

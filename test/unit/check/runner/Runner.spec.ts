@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
@@ -13,29 +12,35 @@ import { stream, Stream } from '../../../../src/stream/Stream';
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
-    it('Should throw if property is null', () => assert.throws(() => check((null as any) as IProperty<{}>)));
-    it('Should throw if property is not a property at all', () => assert.throws(() => check(<IProperty<{}>>{})));
-    it('Should throw if property is an Arbitrary', () => assert.throws(() => check(<IProperty<{}>>(<any>char()))));
+    it('Should throw if property is null', () => {
+      expect(() => check((null as any) as IProperty<{}>)).toThrowError();
+    });
+    it('Should throw if property is not a property at all', () => {
+      expect(() => check(<IProperty<{}>>{})).toThrowError();
+    });
+    it('Should throw if property is an Arbitrary', () => {
+      expect(() => check(<IProperty<{}>>(<any>char()))).toThrowError();
+    });
     it('Should call the property 100 times by default (on success)', () => {
       let num_calls_generate = 0;
       let num_calls_run = 0;
       const p: IProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          assert.equal(num_calls_run, num_calls_generate, 'Should have called run before calling back');
+          expect(num_calls_run).toEqual(num_calls_generate); // called run before calling back
           ++num_calls_generate;
           return new Shrinkable([num_calls_generate]) as Shrinkable<[number]>;
         },
         run: (value: [number]) => {
-          assert.equal(value[0], num_calls_generate, 'Should be called with previously generated value');
+          expect(value[0]).toEqual(num_calls_generate); // called with previously generated value
           ++num_calls_run;
           return null;
         }
       };
       const out = check(p) as RunDetails<[number]>;
-      assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
-      assert.equal(num_calls_run, 100, 'Should have called run 100 times');
-      assert.equal(out.failed, false, 'Should not have failed');
+      expect(num_calls_generate).toEqual(100);
+      expect(num_calls_run).toEqual(100);
+      expect(out.failed).toBe(false);
     });
     it('Should ignore precondition failure runs and generate another value', async () => {
       const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
@@ -67,27 +72,19 @@ describe('Runner', () => {
             if (failAtId == null) {
               const expectedGenerate = successIds[successIds.length - 1] + 1;
               const expectedSkips = expectedGenerate - 100;
-              assert.equal(
-                num_calls_generate,
-                expectedGenerate,
-                `Should have called generate ${expectedGenerate} times`
-              );
-              assert.equal(num_calls_run, expectedGenerate, `Should have called run ${expectedGenerate} times`);
-              assert.equal(out.numRuns, 100, 'Should have count 100 runs');
-              assert.equal(out.numSkips, expectedSkips, `Should have count ${expectedSkips} skips`);
-              assert.equal(out.failed, false, 'Should not have failed');
+              expect(num_calls_generate).toEqual(expectedGenerate);
+              expect(num_calls_run).toEqual(expectedGenerate);
+              expect(out.numRuns).toEqual(100);
+              expect(out.numSkips).toEqual(expectedSkips);
+              expect(out.failed).toBe(false);
             } else {
               const expectedGenerate = successIds[failAtId] + 1;
               const expectedSkips = expectedGenerate - failAtId - 1;
-              assert.equal(
-                num_calls_generate,
-                expectedGenerate,
-                `Should have called generate ${expectedGenerate} times`
-              );
-              assert.equal(num_calls_run, expectedGenerate, `Should have called run ${expectedGenerate} times`);
-              assert.equal(out.numRuns, failAtId + 1, `Should have count ${failAtId} runs`);
-              assert.equal(out.numSkips, expectedSkips, `Should have count ${expectedSkips} skips`);
-              assert.equal(out.failed, true, 'Should have failed');
+              expect(num_calls_generate).toEqual(expectedGenerate);
+              expect(num_calls_run).toEqual(expectedGenerate);
+              expect(out.numRuns).toEqual(failAtId + 1);
+              expect(out.numSkips).toEqual(expectedSkips);
+              expect(out.failed).toBe(true);
             }
           }
         )
@@ -113,14 +110,10 @@ describe('Runner', () => {
             const out = await check(p, { numRuns: 2, maxSkipsPerRun: settings.maxSkipsPerRun });
             const expectedSkips = 2 * settings.maxSkipsPerRun + 1;
             const expectedRuns = settings.onlySuccessId === expectedSkips ? 0 : 1;
-            assert.equal(out.numRuns, expectedRuns, `Should have count ${expectedRuns} run`);
-            assert.equal(
-              out.numSkips,
-              expectedSkips,
-              `Should have run ${num_precondition_failures} precondition failures`
-            );
-            assert.equal(out.numSkips, expectedSkips, `Should have count ${expectedSkips} skips`);
-            assert.equal(out.failed, true, 'Should have failed');
+            expect(out.numRuns).toEqual(expectedRuns);
+            expect(num_precondition_failures).toEqual(expectedSkips);
+            expect(out.numSkips).toEqual(expectedSkips);
+            expect(out.failed).toBe(true);
           }
         )
       );
@@ -142,9 +135,9 @@ describe('Runner', () => {
         }
       };
       const out = check(p) as RunDetails<[number]>;
-      assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
-      assert.equal(num_calls_run, 100, 'Should have called run 100 times');
-      assert.equal(out.failed, false, 'Should not have failed');
+      expect(num_calls_generate).toEqual(100);
+      expect(num_calls_run).toEqual(100);
+      expect(out.failed).toBe(false);
     });
     it('Should call the property 100 times by default (except on error)', () =>
       fc.assert(
@@ -162,19 +155,11 @@ describe('Runner', () => {
             }
           };
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
-          assert.equal(
-            num_calls_generate,
-            num,
-            `Should have stopped generate at first failing run (run number ${num})`
-          );
-          assert.equal(
-            num_calls_run,
-            num,
-            `Should have stopped run (because no shrink) at first failing run (run number ${num})`
-          );
-          assert.ok(out.failed, 'Should have failed');
-          assert.equal(out.numRuns, num, `Should have failed after ${num} tests`);
-          assert.equal(out.seed, seed, `Should attach the failing seed`);
+          expect(num_calls_generate).toEqual(num); // stopped generate at first failing run
+          expect(num_calls_run).toEqual(num); //  no shrink for first failing run
+          expect(out.failed).toBe(true);
+          expect(out.numRuns).toEqual(num);
+          expect(out.seed).toEqual(seed);
           return true;
         })
       ));
@@ -195,9 +180,9 @@ describe('Runner', () => {
             }
           };
           const out = check(p, { numRuns: num }) as RunDetails<[number]>;
-          assert.equal(num_calls_generate, num, `Should have called generate ${num} times`);
-          assert.equal(num_calls_run, num, `Should have called run ${num} times`);
-          assert.equal(out.failed, false, 'Should not have failed');
+          expect(num_calls_generate).toEqual(num);
+          expect(num_calls_run).toEqual(num);
+          expect(out.failed).toBe(false);
           return true;
         })
       ));
@@ -221,7 +206,7 @@ describe('Runner', () => {
           let data2: number[] = [];
           check(buildPropertyFor(data1), { seed: seed });
           check(buildPropertyFor(data2), { seed: seed });
-          assert.deepEqual(data2, data1, 'Should run on the same values given the same seed');
+          expect(data2).toEqual(data1);
           return true;
         })
       ));
@@ -232,7 +217,7 @@ describe('Runner', () => {
         run: () => 'failure'
       };
       const out = check(p) as RunDetails<[number]>;
-      assert.ok(out.failures.length === 0);
+      expect(out.failures).toHaveLength(0);
     });
     it('Should provide the list of failures in verbose mode', () => {
       const g = function*() {
@@ -245,8 +230,8 @@ describe('Runner', () => {
         run: () => 'failure'
       };
       const out = check(p, { verbose: true }) as RunDetails<[number]>;
-      assert.ok(out.failures.length !== 0);
-      assert.deepStrictEqual(out.failures, [[42], [48]]);
+      expect(out.failures).not.toHaveLength(0);
+      expect(out.failures).toEqual([[42], [48]]);
     });
     it('Should build the right counterexamplePath', () =>
       fc.assert(
@@ -277,11 +262,11 @@ describe('Runner', () => {
           };
           const expectedFailurePath = failurePoints.join(':');
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
-          assert.ok(out.failed);
-          assert.equal(out.seed, seed);
-          assert.equal(out.numRuns, failurePoints[0] + 1);
-          assert.equal(out.numShrinks, failurePoints.length - 1);
-          assert.equal(out.counterexamplePath, expectedFailurePath);
+          expect(out.failed).toBe(true);
+          expect(out.seed).toEqual(seed);
+          expect(out.numRuns).toEqual(failurePoints[0] + 1);
+          expect(out.numShrinks).toEqual(failurePoints.length - 1);
+          expect(out.counterexamplePath).toEqual(expectedFailurePath);
         })
       ));
     it('Should wait on async properties to complete', async () =>
@@ -315,34 +300,22 @@ describe('Runner', () => {
 
           await delay();
           while (waitingResolve.length > 0) {
-            assert.equal(waitingResolve.length, 1, 'Should not run multiple properties in parallel');
-            assert.equal(runnerHasCompleted, false, 'Should not have completed yet');
+            expect(waitingResolve).toHaveLength(1); // no multiple properties in parallel
+            expect(runnerHasCompleted).toBe(false); // not completed yet
             waitingResolve.shift()!();
             await delay();
           }
 
           await delay();
-          assert.equal(runnerHasCompleted, true, 'Should have completed');
+          expect(runnerHasCompleted).toBe(true);
 
           const out = await checker;
-          assert.equal(
-            num_calls_generate,
-            num,
-            `Should have stopped generate at first failing run (run number ${num})`
-          );
-          assert.equal(
-            num_calls_run,
-            num + 1,
-            `Should have stopped run one shrink after first failing run (run number ${num + 1})`
-          );
-          assert.ok(out.failed, 'Should have failed');
-          assert.equal(out.numRuns, num, `Should have failed after ${num} tests`);
-          assert.equal(out.seed, seed, `Should attach the failing seed`);
-          assert.deepStrictEqual(
-            out.counterexample,
-            [42],
-            `Should have been shrinked to [42] got ${JSON.stringify(out.counterexample)}`
-          );
+          expect(num_calls_generate).toEqual(num); // stopped generate at first failing run
+          expect(num_calls_run).toEqual(num + 1); // stopped run one shrink after first failing run
+          expect(out.failed).toBe(true);
+          expect(out.numRuns).toEqual(num);
+          expect(out.seed).toEqual(seed);
+          expect(out.counterexample).toEqual([42]);
           return true;
         })
       ));
@@ -353,7 +326,7 @@ describe('Runner', () => {
         run: async (value: [number]) => null
       };
       const out = await (check(p) as Promise<RunDetails<[number]>>);
-      assert.equal(out.failed, false, 'Should not have failed');
+      expect(out.failed).toBe(false);
     });
     it('Should not timeout if timeout not reached', async () => {
       const wait = (timeMs: number) => new Promise<null>((resolve, reject) => setTimeout(resolve, timeMs));
@@ -363,7 +336,7 @@ describe('Runner', () => {
         run: async (value: [number]) => await wait(0)
       };
       const out = await (check(p, { timeout: 100 }) as Promise<RunDetails<[number]>>);
-      assert.equal(out.failed, false, 'Should not have failed');
+      expect(out.failed).toBe(false);
     });
     it('Should timeout if it reached the timeout', async () => {
       const wait = (timeMs: number) => new Promise<null>((resolve, reject) => setTimeout(resolve, timeMs));
@@ -373,7 +346,7 @@ describe('Runner', () => {
         run: async (value: [number]) => await wait(100)
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
-      assert.equal(out.failed, true, 'Should have failed');
+      expect(out.failed).toBe(true);
     });
     it('Should timeout if task never ends', async () => {
       const neverEnds = () => new Promise<null>((resolve, reject) => {});
@@ -383,7 +356,7 @@ describe('Runner', () => {
         run: async (value: [number]) => await neverEnds()
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
-      assert.equal(out.failed, true, 'Should have failed');
+      expect(out.failed).toBe(true);
     });
   });
   describe('assert', () => {
@@ -405,81 +378,37 @@ describe('Runner', () => {
       run: (v: [any, any]) => null
     };
 
-    it('Should throw if property is null', () => assert.throws(() => rAssert((null as any) as IProperty<{}>)));
-    it('Should throw if property is not a property at all', () => assert.throws(() => rAssert(<IProperty<{}>>{})));
-    it('Should throw if property is an Arbitrary', () => assert.throws(() => rAssert(<IProperty<{}>>(<any>char()))));
+    it('Should throw if property is null', () => {
+      expect(() => rAssert((null as any) as IProperty<{}>)).toThrowError();
+    });
+    it('Should throw if property is not a property at all', () => {
+      expect(() => rAssert(<IProperty<{}>>{})).toThrowError();
+    });
+    it('Should throw if property is an Arbitrary', () => {
+      expect(() => rAssert(<IProperty<{}>>(<any>char()))).toThrowError();
+    });
     it('Should never throw if no failure occured', () => {
-      try {
-        rAssert(successProperty, { seed: 42 });
-      } catch (err) {
-        assert.ok(false, 'No exception expected on success');
-      }
+      expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();
     });
     it('Should throw on failure', () => {
-      try {
-        rAssert(failingProperty, { seed: 42 });
-      } catch (err) {
-        return;
-      }
-      assert.ok(false, 'Expected an exception, got success');
+      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError();
     });
     it('Should put the seed in error message', () => {
-      try {
-        rAssert(failingProperty, { seed: 42 });
-      } catch (err) {
-        assert.ok(err.message.indexOf(`seed: 42, path:`) !== -1, `Cannot find the seed in: ${err.message}`);
-        return;
-      }
-      assert.ok(false, 'Expected an exception, got success');
+      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`seed: 42, path:`);
     });
     it('Should put the number of tests in error message', () => {
-      try {
-        rAssert(failingProperty, { seed: 42 });
-      } catch (err) {
-        assert.ok(
-          err.message.indexOf(`failed after 1 test`) !== -1,
-          `Cannot find the number of tests in: ${err.message}`
-        );
-        return;
-      }
-      assert.ok(false, 'Expected an exception, got success');
+      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`failed after 1 test`);
     });
     it('Should pretty print the failing example in error message', () => {
-      try {
-        rAssert(failingProperty, { seed: 42 });
-      } catch (err) {
-        assert.ok(
-          err.message.indexOf(`[${v1.toString()},${JSON.stringify(v2)}]`) !== -1,
-          `Cannot find the example in: ${err.message}`
-        );
-        return;
-      }
-      assert.ok(false, 'Expected an exception, got success');
+      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`[${v1.toString()},${JSON.stringify(v2)}]`);
     });
     it('Should pretty print the failing complex example in error message', () => {
-      try {
-        rAssert(failingComplexProperty, { seed: 42 });
-      } catch (err) {
-        assert.ok(
-          err.message.indexOf(`[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`) !==
-            -1,
-          `Cannot find the example in: ${err.message}`
-        );
-        return;
-      }
-      assert.ok(false, 'Expected an exception, got success');
+      expect(() => rAssert(failingComplexProperty, { seed: 42 })).toThrowError(
+        `[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`
+      );
     });
     it('Should put the orginal error in error message', () => {
-      try {
-        rAssert(failingProperty, { seed: 42 });
-      } catch (err) {
-        assert.ok(
-          err.message.indexOf(`Got error: error in failingProperty`) !== -1,
-          `Cannot find the original error in: ${err.message}`
-        );
-        return;
-      }
-      assert.ok(false, 'Expected an exception, got success');
+      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`Got error: error in failingProperty`);
     });
     it('Should not provide list of failures by default (no verbose)', () => {
       const p: IProperty<[number]> = {
@@ -487,11 +416,8 @@ describe('Runner', () => {
         generate: () => new Shrinkable([42]) as Shrinkable<[number]>,
         run: () => 'failure'
       };
-      try {
-        rAssert(p);
-      } catch (err) {
-        assert.ok(err.message.indexOf('Encountered failures were:') === -1);
-      }
+      expect(() => rAssert(p)).toThrowError();
+      expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
     });
     it('Should provide the list of failures in verbose mode', () => {
       const g = function*() {
@@ -503,11 +429,7 @@ describe('Runner', () => {
         generate: () => new Shrinkable([42], () => stream(g())) as Shrinkable<[number]>,
         run: () => 'failure'
       };
-      try {
-        rAssert(p, { verbose: true });
-      } catch (err) {
-        assert.ok(err.message.indexOf('Encountered failures were:\n- [42]\n- [48]') !== -1);
-      }
+      expect(() => rAssert(p, { verbose: true })).toThrowError('Encountered failures were:\n- [42]\n- [48]');
     });
   });
 });

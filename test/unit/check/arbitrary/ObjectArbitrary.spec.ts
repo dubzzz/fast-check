@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
@@ -16,12 +15,12 @@ import * as stubRng from '../../stubs/generators';
 
 describe('ObjectArbitrary', () => {
   const assertShrinkedValue = (original: any, shrinked: any) => {
-    assert.equal(typeof shrinked, typeof original);
+    expect(typeof shrinked).toEqual(typeof original);
     switch (typeof original) {
       case 'boolean':
-        return assert.strictEqual(shrinked, false, 'Should have shrinked towards false');
+        return expect(shrinked).toBe(false);
       case 'number':
-        if (isNaN(original)) return assert.ok(isNaN(shrinked), 'Should be unchanged equal to NaN');
+        if (isNaN(original)) return expect(shrinked).toBeNaN();
         if (
           original == Number.EPSILON ||
           original === Number.MAX_VALUE ||
@@ -29,19 +28,19 @@ describe('ObjectArbitrary', () => {
           original === Number.MAX_SAFE_INTEGER ||
           original === Number.MIN_SAFE_INTEGER ||
           !Number.isFinite(original)
-        )
-          return assert.ok(shrinked === 0 || shrinked === original, 'Should have shrinked toward zero or be the same');
-        return assert.equal(shrinked, 0, 'Should have shrinked towards zero');
+        ) {
+          return expect([original, 0, -0]).toContain(shrinked); // towards zero or itself
+        }
+        return expect([0, -0]).toContain(shrinked); // towards 0 or -0
       case 'undefined':
-        return assert.strictEqual(shrinked, undefined, 'Should have shrinked towards undefined');
+        return expect(shrinked).toBe(undefined);
       case 'string':
-        return assert.strictEqual(shrinked, '', 'Should have shrinked towards empty string');
+        return expect(shrinked).toEqual('');
       default:
-        if (original == null) return assert.strictEqual(shrinked, null, 'Should have shrinked towards null');
-        if (Array.isArray(original))
-          return assert.deepStrictEqual(shrinked, [], 'Should have shrinked towards empty array');
-        assert.equal(typeof original, 'object');
-        return assert.deepStrictEqual(shrinked, {}, 'Should have shrinked towards empty object');
+        if (original == null) return expect(shrinked).toBe(null);
+        if (Array.isArray(original)) return expect(shrinked).toEqual([]);
+        expect(typeof original).toEqual('object');
+        return expect(shrinked).toEqual({});
     }
   };
   const checkCorrect = (allowedKeys: string[], allowedValues: string[]) => {
@@ -132,7 +131,7 @@ describe('ObjectArbitrary', () => {
           while (shrinkable.shrink().has(v => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
-          assert.equal(typeof shrinkable.value, 'string');
+          expect(typeof shrinkable.value).toEqual('string');
           assertShrinkedValue(JSON.parse(originalValue), JSON.parse(shrinkable.value));
         })
       ));
@@ -162,7 +161,7 @@ describe('ObjectArbitrary', () => {
           while (shrinkable.shrink().has(v => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
-          assert.equal(typeof shrinkable.value, 'string');
+          expect(typeof shrinkable.value).toEqual('string');
           assertShrinkedValue(JSON.parse(originalValue), JSON.parse(shrinkable.value));
         })
       ));
@@ -180,7 +179,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const g = jsonObject().generate(mrng).value;
-          assert.deepStrictEqual(JSON.parse(JSON.stringify(g)), g);
+          expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g);
         })
       ));
   });
@@ -197,7 +196,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const g = unicodeJsonObject().generate(mrng).value;
-          assert.deepStrictEqual(JSON.parse(JSON.stringify(g)), g);
+          expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g);
         })
       ));
   });
@@ -256,7 +255,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = object().generate(mrng);
-          for (const s of shrinkable.shrink()) assert.notDeepEqual(s.value, shrinkable.value);
+          for (const s of shrinkable.shrink()) expect(s.value).not.toStrictEqual(shrinkable.value);
         })
       ));
   });

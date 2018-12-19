@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
@@ -14,7 +13,7 @@ describe('LoremArbitrary', () => {
           const mrng2 = new Random(prand.xorshift128plus(seed));
           const g1 = lorem().generate(mrng1).value;
           const g2 = lorem().generate(mrng2).value;
-          assert.equal(g1, g2);
+          expect(g1).toEqual(g2);
           return true;
         })
       ));

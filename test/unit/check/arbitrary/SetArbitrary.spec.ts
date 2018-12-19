@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as fc from '../../../../lib/fast-check';
 
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
@@ -37,7 +36,7 @@ describe('SetArbitrary', () => {
           const filter = buildCompareFilter<number>((a, b) => a === b);
           const adaptedTab = tab.map(v => new Shrinkable(v));
           const filteredTab = filter(adaptedTab);
-          assert.ok(validSet(filteredTab.map(s => s.value)));
+          expect(validSet(filteredTab.map(s => s.value))).toBe(true);
         })
       ));
   });

@@ -73,14 +73,13 @@ const simpleUnitTest = (num: number, biased: boolean): string =>
             const mrng2 = stubRng.mutable.fastincrease(0);
             const g1 = tupleArb.generate(mrng1).value;
             const g2 = genericTupleArb.generate(mrng2).value;
-            assert.deepEqual(g1, g2);
+            expect(g1).toEqual(g2);
         });
     `;
 
 const generateTupleSpec = (num: number): string => {
   const blocks = [
     // imports
-    `import * as assert from 'assert';`,
     `import { dummy } from './TupleArbitrary.properties';`,
     `import * as stubRng from '../../stubs/generators';`,
     `import { tuple, genericTuple } from '../../../../src/check/arbitrary/TupleArbitrary';`,
