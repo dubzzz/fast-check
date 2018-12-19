@@ -164,6 +164,13 @@ Encountered failures were:
 
 With that output, we notice that our `contains` implementation seems to fail when the `pattern` we are looking for is the beginning of the string we are looking in.
 
+Verbosity can be set to produce even more verbose logs by setting `verbose` flag to:
+- `0`: `None` - default, equivalent to `false`
+- `1`: `Verbose` - equivalent to `true`
+- `2`: `VeryVerbose` - logs all the produced values in case of failure
+
+Refer to `fc.VerbosityLevel` for more details.
+
 ## Log within a predicate
 
 In order to ease the diagnosis of red properties, fast-check introduced an internal logger that can be used to log stuff inside the predicate itself.

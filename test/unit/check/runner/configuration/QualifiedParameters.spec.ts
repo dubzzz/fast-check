@@ -3,6 +3,7 @@ import * as prand from 'pure-rand';
 
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
 import { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
+import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';
 
 const extract = <T>(conf: QualifiedParameters<T>) => {
   const { logger, ...others } = conf;
@@ -21,7 +22,7 @@ const parametersArbitrary = fc.record(
     timeout: fc.nat(),
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
     unbiased: fc.boolean(),
-    verbose: fc.boolean(),
+    verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
     examples: fc.array(fc.nat())
   },
   { withDeletedKeys: true }
@@ -44,6 +45,14 @@ describe('QualifiedParameters', () => {
             expect(qualifiedParams).toHaveProperty(key);
             expect((qualifiedParams as any)[key]).toEqual((params as any)[key]);
           }
+        })
+      ));
+    it('Should transform verbose boolean to its corresponding VerbosityLevel', () =>
+      fc.assert(
+        fc.property(parametersArbitrary, fc.boolean(), (params, verbose) => {
+          const expectedVerbosityLevel = verbose ? VerbosityLevel.Verbose : VerbosityLevel.None;
+          const qparams = QualifiedParameters.read({ ...params, verbose });
+          return qparams.verbose === expectedVerbosityLevel;
         })
       ));
     it('Should transform correctly hardcoded randomType', () =>
