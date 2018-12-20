@@ -1,3 +1,6 @@
+import { VerbosityLevel } from '../configuration/VerbosityLevel';
+import { ExecutionTree } from './ExecutionTree';
+
 /**
  * Post-run details produced by {@link check}
  *
@@ -49,7 +52,24 @@ export interface RunDetails<Ts> {
   /**
    * List all failures that have occurred during the run
    *
-   * You must enable verbose mode in {@link Parameters} in order to have values in it
+   * You must enable verbose with at least {@link Verbosity.Verbose} in {@link Parameters}
+   * in order to have values in it
    */
   failures: Ts[];
+  /**
+   * Execution summary of the run
+   *
+   * Traces the origin of each value encountered during the test and its execution status.
+   * Can help to diagnose shrinking issues.
+   *
+   * You must enable verbose with at least {@link Verbosity.Verbose} in {@link Parameters}
+   * in order to have values in it:
+   * - Verbose: Only failures
+   * - VeryVerbose: Failures, Successes and Skipped
+   */
+  executionSummary: ExecutionTree<Ts>[];
+  /**
+   * Verbosity level required by the user
+   */
+  verbose: VerbosityLevel;
 }

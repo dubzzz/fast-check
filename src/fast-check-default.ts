@@ -56,6 +56,8 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 import { Random } from './random/generator/Random';
 
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
+import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
+import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 
@@ -142,6 +144,8 @@ export {
   cloneMethod,
   // interfaces
   Context,
+  ExecutionStatus,
+  ExecutionTree,
   ObjectConstraints,
   Parameters,
   RecordConstraints,
