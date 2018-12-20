@@ -41,12 +41,26 @@ export class RunExecution<Ts> {
     this.value = value;
     this.failure = message;
   }
-  skip() {
+  skip(value: Ts) {
+    if (this.verbosity >= VerbosityLevel.VeryVerbose) {
+      this.currentLevelExecutionTrees.push({
+        status: ExecutionStatus.Skipped,
+        value,
+        children: []
+      });
+    }
     if (this.pathToFailure == null) {
       ++this.numSkips;
     }
   }
-  success() {
+  success(value: Ts) {
+    if (this.verbosity >= VerbosityLevel.VeryVerbose) {
+      this.currentLevelExecutionTrees.push({
+        status: ExecutionStatus.Success,
+        value,
+        children: []
+      });
+    }
     if (this.pathToFailure == null) {
       ++this.numSuccesses;
     }
@@ -90,7 +104,9 @@ export class RunExecution<Ts> {
         counterexample: this.value!,
         counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
         error: this.failure,
-        failures: this.extractFailures()
+        failures: this.extractFailures(),
+        executionSummary: this.rootExecutionTrees,
+        verbose: this.verbosity
       };
     }
     if (this.numSkips > maxSkips) {
@@ -104,7 +120,9 @@ export class RunExecution<Ts> {
         counterexample: null,
         counterexamplePath: null,
         error: null,
-        failures: []
+        failures: [],
+        executionSummary: this.rootExecutionTrees,
+        verbose: this.verbosity
       };
     }
     return {
@@ -116,7 +134,9 @@ export class RunExecution<Ts> {
       counterexample: null,
       counterexamplePath: null,
       error: null,
-      failures: []
+      failures: [],
+      executionSummary: this.rootExecutionTrees,
+      verbose: this.verbosity
     };
   }
 }

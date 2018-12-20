@@ -46,11 +46,11 @@ function runIt<Ts>(
       }
       if (out != null) {
         // skipped the run
-        runExecution.skip();
+        runExecution.skip(v.value_);
         --remainingSkips;
         ++maxInitialIterations;
       } else {
-        runExecution.success();
+        runExecution.success(v.value_);
       }
       ++idx;
     }
@@ -89,11 +89,11 @@ async function asyncRunIt<Ts>(
       }
       if (out != null) {
         // skipped the run
-        runExecution.skip();
+        runExecution.skip(v.value_);
         --remainingSkips;
         ++maxInitialIterations;
       } else {
-        runExecution.success();
+        runExecution.success(v.value_);
       }
       ++idx;
     }
