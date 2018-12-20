@@ -8,6 +8,7 @@ import { Random } from '../../../../src/random/generator/Random';
 import { RunDetails } from '../../../../src/check/runner/reporter/RunDetails';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { stream, Stream } from '../../../../src/stream/Stream';
+import { VerbosityLevel } from '../../../../src/check/runner/configuration/VerbosityLevel';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
@@ -410,26 +411,85 @@ describe('Runner', () => {
     it('Should put the orginal error in error message', () => {
       expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`Got error: error in failingProperty`);
     });
-    it('Should not provide list of failures by default (no verbose)', () => {
+    describe('Impact of VerbosityLevel in case of failure', () => {
+      const baseErrorMessage = '';
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => {
+          const g = function*() {
+            yield new Shrinkable([48]) as Shrinkable<[number]>;
+            yield new Shrinkable([12]) as Shrinkable<[number]>;
+          };
+          return new Shrinkable([42], () => stream(g())) as Shrinkable<[number]>;
+        },
+        run: () => 'failure'
+      };
+      it('Should throw with base message by default (no verbose)', () => {
+        expect(() => rAssert(p)).toThrowError(baseErrorMessage);
+      });
+      it('Should throw without list of failures by default (no verbose)', () => {
+        expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
+      });
+      it('Should throw without execution tree by default (no verbose)', () => {
+        expect(() => rAssert(p)).not.toThrowError('Execution summary:');
+      });
+      it('Should throw with base message in verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError(baseErrorMessage);
+      });
+      it('Should throw with list of failures in verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError('Encountered failures were:');
+      });
+      it('Should throw without execution tree in verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Execution summary:');
+      });
+      it('Should throw with base message in very verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError(baseErrorMessage);
+      });
+      it('Should throw without list of failures in very verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
+          'Encountered failures were:'
+        );
+      });
+      it('Should throw with execution tree in very verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError('Execution summary:');
+      });
+    });
+    describe('Impact of VerbosityLevel in case of too many skipped runs', () => {
+      const baseErrorMessage = 'Failed to run property, too many pre-condition failures encountered';
       const p: IProperty<[number]> = {
         isAsync: () => false,
         generate: () => new Shrinkable([42]) as Shrinkable<[number]>,
-        run: () => 'failure'
+        run: () => new PreconditionFailure()
       };
-      expect(() => rAssert(p)).toThrowError();
-      expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
-    });
-    it('Should provide the list of failures in verbose mode', () => {
-      const g = function*() {
-        yield new Shrinkable([48]) as Shrinkable<[number]>;
-        yield new Shrinkable([12]) as Shrinkable<[number]>;
-      };
-      const p: IProperty<[number]> = {
-        isAsync: () => false,
-        generate: () => new Shrinkable([42], () => stream(g())) as Shrinkable<[number]>,
-        run: () => 'failure'
-      };
-      expect(() => rAssert(p, { verbose: true })).toThrowError('Encountered failures were:\n- [42]\n- [48]');
+      it('Should throw with base message by default (no verbose)', () => {
+        expect(() => rAssert(p)).toThrowError(baseErrorMessage);
+      });
+      it('Should throw without list of failures by default (no verbose)', () => {
+        expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
+      });
+      it('Should throw without execution tree by default (no verbose)', () => {
+        expect(() => rAssert(p)).not.toThrowError('Execution summary:');
+      });
+      it('Should throw with base message in verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError(baseErrorMessage);
+      });
+      it('Should throw without list of failures in verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Encountered failures were:');
+      });
+      it('Should throw without execution tree in verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Execution summary:');
+      });
+      it('Should throw with base message in very verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError(baseErrorMessage);
+      });
+      it('Should throw without list of failures in very verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
+          'Encountered failures were:'
+        );
+      });
+      it('Should throw with execution tree in very verbose mode', () => {
+        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError('Execution summary:');
+      });
     });
   });
 });

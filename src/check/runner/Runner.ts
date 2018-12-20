@@ -13,7 +13,7 @@ import { RunDetails } from './reporter/RunDetails';
 import { RunExecution } from './reporter/RunExecution';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
-import { throwIfFailed } from './utils/utils';
+import { throwIfFailed } from './utils/RunDetailsFormatter';
 
 /** @hidden */
 function runIt<Ts>(
