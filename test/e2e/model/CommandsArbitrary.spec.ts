@@ -135,5 +135,33 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
       expect(out.counterexample![1].toString()).toEqual('failure');
     });
+    it('Should not start a run with already started commands', () => {
+      // Why this test?
+      // fc.commands relies on cloning not to waste the hasRan status of an execution
+      // between two runs it is supposed to clone the commands before resetting the hasRan flag
+      let unexpectedPartiallyExecuted: string[] = [];
+      const out = fc.check(
+        fc.property(
+          fc.array(fc.nat(9), 0, 3),
+          fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())]),
+          fc.array(fc.nat(9), 0, 3),
+          (validSteps1, cmds, validSteps2) => {
+            if (String(cmds) !== '') {
+              // When no command has been started, String(cmds) === ''
+              // Having String(cmds) !== '' implies that some commands have the hasRan flag ON
+              unexpectedPartiallyExecuted.push(String(cmds));
+            }
+            const setup = () => ({
+              model: { current: { stepId: 0 }, validSteps: [...validSteps1, ...validSteps2] },
+              real: {}
+            });
+            fc.modelRun(setup, cmds);
+          }
+        ),
+        { seed: seed }
+      );
+      expect(out.failed).toBe(true);
+      expect(unexpectedPartiallyExecuted).toEqual([]);
+    });
   });
 });
