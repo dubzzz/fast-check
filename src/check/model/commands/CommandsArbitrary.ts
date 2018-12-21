@@ -56,7 +56,12 @@ class CommandsArbitrary<Model extends object, Real, RunResult> extends Arbitrary
     return emptyOrNil
       .join(size.shrink().map(l => items.slice(0, l.value).concat(items[items.length - 1]))) // try: remove items except the last one
       .join(this.shrinkImpl(items.slice(0, items.length - 1), false).map(vs => vs.concat(items[items.length - 1]))) // try: keep last, shrink remaining (rec)
-      .join(items[items.length - 1].shrink().map(v => items.slice(0, -1).concat([v]))); // try: shrink last, keep others
+      .join(items[items.length - 1].shrink().map(v => items.slice(0, -1).concat([v]))) // try: shrink last, keep others
+      .map(shrinkables => {
+        return shrinkables.map(c => {
+          return new Shrinkable(c.value_.clone(), c.shrink);
+        });
+      });
   }
 }
 
