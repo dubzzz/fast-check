@@ -39,15 +39,11 @@ const internalModelRun = <Model extends object, Real>(
   cmds: Iterable<Command<Model, Real>> | CommandsIterable<Model, Real, void>
 ): void => {
   const then = (p: undefined, c: () => undefined) => c();
-  try {
-    const setupProducer = { then: (fun: SetupFun<Model, Real, void>) => fun(s()) };
-    const runSync = (cmd: Command<Model, Real>, m: Model, r: Real) => {
-      if (cmd.check(m)) cmd.run(m, r);
-    };
-    return genericModelRun(setupProducer, cmds, undefined, runSync, then);
-  } catch (err) {
-    throw err;
-  }
+  const setupProducer = { then: (fun: SetupFun<Model, Real, void>) => fun(s()) };
+  const runSync = (cmd: Command<Model, Real>, m: Model, r: Real) => {
+    if (cmd.check(m)) cmd.run(m, r);
+  };
+  return genericModelRun(setupProducer, cmds, undefined, runSync, then);
 };
 
 /** @hidden */
@@ -63,21 +59,17 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Promise<void> => {
   const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
-  try {
-    const setupProducer = {
-      then: (fun: SetupFun<Model, Real, Promise<void>>) => {
-        const out = s();
-        if (isAsyncSetup(out)) return out.then(fun);
-        else return fun(out);
-      }
-    };
-    const runAsync = async (cmd: AsyncCommand<Model, Real, CheckAsync>, m: Model, r: Real) => {
-      if (await cmd.check(m)) await cmd.run(m, r);
-    };
-    return await genericModelRun(setupProducer, cmds, Promise.resolve(), runAsync, then);
-  } catch (err) {
-    throw err;
-  }
+  const setupProducer = {
+    then: (fun: SetupFun<Model, Real, Promise<void>>) => {
+      const out = s();
+      if (isAsyncSetup(out)) return out.then(fun);
+      else return fun(out);
+    }
+  };
+  const runAsync = async (cmd: AsyncCommand<Model, Real, CheckAsync>, m: Model, r: Real) => {
+    if (await cmd.check(m)) await cmd.run(m, r);
+  };
+  return await genericModelRun(setupProducer, cmds, Promise.resolve(), runAsync, then);
 };
 
 /**
