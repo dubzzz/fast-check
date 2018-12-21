@@ -41,7 +41,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     });
     biasIts('integer', fc.integer());
     if (typeof BigInt !== 'undefined') {
-      biasIts('bigint', fc.bigInt());
+      biasIts('bigint', fc.bigIntN(64));
     }
   });
 });
