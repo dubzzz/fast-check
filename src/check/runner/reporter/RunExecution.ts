@@ -26,14 +26,15 @@ export class RunExecution<Ts> {
     this.numSuccesses = 0;
   }
 
+  private appendExecutionTree(status: ExecutionStatus, value: Ts) {
+    const currentTree: ExecutionTree<Ts> = { status, value, children: [] };
+    this.currentLevelExecutionTrees.push(currentTree);
+    return currentTree;
+  }
+
   fail(value: Ts, id: number, message: string) {
     if (this.verbosity >= VerbosityLevel.Verbose) {
-      const currentTree: ExecutionTree<Ts> = {
-        status: ExecutionStatus.Failure,
-        value,
-        children: []
-      };
-      this.currentLevelExecutionTrees.push(currentTree);
+      const currentTree = this.appendExecutionTree(ExecutionStatus.Failure, value);
       this.currentLevelExecutionTrees = currentTree.children;
     }
     if (this.pathToFailure == null) this.pathToFailure = `${id}`;
@@ -43,11 +44,7 @@ export class RunExecution<Ts> {
   }
   skip(value: Ts) {
     if (this.verbosity >= VerbosityLevel.VeryVerbose) {
-      this.currentLevelExecutionTrees.push({
-        status: ExecutionStatus.Skipped,
-        value,
-        children: []
-      });
+      this.appendExecutionTree(ExecutionStatus.Skipped, value);
     }
     if (this.pathToFailure == null) {
       ++this.numSkips;
@@ -55,11 +52,7 @@ export class RunExecution<Ts> {
   }
   success(value: Ts) {
     if (this.verbosity >= VerbosityLevel.VeryVerbose) {
-      this.currentLevelExecutionTrees.push({
-        status: ExecutionStatus.Success,
-        value,
-        children: []
-      });
+      this.appendExecutionTree(ExecutionStatus.Success, value);
     }
     if (this.pathToFailure == null) {
       ++this.numSuccesses;
