@@ -1,12 +1,15 @@
 import * as fc from '../../../../lib/fast-check';
+import * as prand from 'pure-rand';
 import { dummy } from './TupleArbitrary.properties';
 
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
-import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { integer, nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { genericTuple } from '../../../../src/check/arbitrary/TupleArbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
+import { stream } from '../../../../src/stream/Stream';
+import { Random } from '../../../../src/random/generator/Random';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 import * as stubRng from '../../stubs/generators';
@@ -35,7 +38,7 @@ describe('TupleArbitrary', () => {
       fc.assert(
         fc.property(fc.nat(50), fc.nat(50), (before, after) => {
           const arbsBefore = [...Array(before)].map(() => integer(0, 0));
-          const arbsAfter = [...Array(before)].map(() => integer(0, 0));
+          const arbsAfter = [...Array(after)].map(() => integer(0, 0));
           const arbs: Arbitrary<unknown>[] = [...arbsBefore, context(), ...arbsAfter];
           const mrng = stubRng.mutable.counter(0);
           const g = genericTuple(arbs).generate(mrng).value;
@@ -69,5 +72,53 @@ describe('TupleArbitrary', () => {
       genericTuple(arbs).generate(mrng);
       expect(numCallsToClone).toEqual(0);
     });
+  });
+  it('Should use the cloneable instance for a single run only', () => {
+    class CloneableInstance {
+      static SharedId = 0;
+      readonly id: number;
+      constructor() {
+        this.id = ++CloneableInstance.SharedId;
+      }
+      [cloneMethod] = () => new CloneableInstance();
+    }
+    const cloneableArbitrary = new class extends Arbitrary<CloneableInstance> {
+      generate = () => {
+        function* g() {
+          yield new Shrinkable(new CloneableInstance());
+          yield new Shrinkable(new CloneableInstance());
+        }
+        return new Shrinkable(new CloneableInstance(), () => stream(g()));
+      };
+    }();
+    const arbs = genericTuple([nat(16), cloneableArbitrary, nat(16)] as Arbitrary<any>[]);
+    const extractId = (shrinkable: Shrinkable<[number, CloneableInstance, number]>) => shrinkable.value_[1].id;
+    fc.assert(
+      fc.property(fc.integer().noShrink(), fc.infiniteStream(fc.nat()), (seed, shrinkPath) => {
+        // Reset SharedId in order to have reproducible runs
+        CloneableInstance.SharedId = 0;
+
+        // Generate the first shrinkable
+        const it = shrinkPath[Symbol.iterator]();
+        const mrng = new Random(prand.xorshift128plus(seed));
+        let shrinkable: Shrinkable<[number, CloneableInstance, number]> | null = arbs.generate(mrng) as any;
+
+        // Traverse the shrink tree in order to detect already seen ids
+        const alreadySeenIds: { [id: number]: boolean } = {
+          [extractId(shrinkable!)]: true
+        };
+        while (shrinkable !== null) {
+          shrinkable = shrinkable
+            .shrink()
+            .map(nextShrinkable => {
+              const id = extractId(nextShrinkable);
+              if (alreadySeenIds[id]) throw new Error(`Already encountered id ${id}`);
+              alreadySeenIds[id] = true;
+              return nextShrinkable;
+            })
+            .getNthOrLast(it.next().value);
+        }
+      })
+    );
   });
 });
