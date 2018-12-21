@@ -39,16 +39,23 @@ describe('ModelRunner', () => {
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter(v => v >= 0);
           const commands = runOrNot.map((v, idx) => {
-            return new class implements AsyncCommand<{}, {}> {
+            return new class implements AsyncCommand<{}, {}, true> {
               name = 'AsyncCommand';
-              check = (m: {}) => {
-                expect(m).toBe(setupData.model);
-                return v;
+              check = async (m: {}) => {
+                return new Promise<boolean>(resolve => {
+                  setTimeout(() => {
+                    expect(m).toBe(setupData.model);
+                    resolve(v);
+                  }, 0);
+                });
               };
               run = async (m: {}, r: {}) => {
-                expect(m).toBe(setupData.model);
-                expect(r).toBe(setupData.real);
-                startedRuns.push(idx);
+                return new Promise<void>(resolve => {
+                  expect(m).toBe(setupData.model);
+                  expect(r).toBe(setupData.real);
+                  startedRuns.push(idx);
+                  resolve();
+                });
               };
             }();
           });
