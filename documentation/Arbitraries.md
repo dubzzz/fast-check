@@ -128,7 +128,7 @@ The approach relies on commands. Commands can be seen as operations a user can r
 - pre-condition - *implemented by `check`* - confirming whether or not the command can be executed given the current context
 - execution - *implemented by `run`* - responsible to update a simplified context while updating and checking the real system
 
-Commands can either be synchronous - `fc.Command<Model, Real>` - or asynchronous - `fc.AsyncCommand<Model, Real>`:
+Commands can either be synchronous - `fc.Command<Model, Real>` - or asynchronous - `fc.AsyncCommand<Model, Real>` or  `fc.AsyncCommand<Model, Real, true>`.
 
 ```typescript
 // Real : system under test
@@ -148,6 +148,12 @@ export interface Command<Model extends object, Real> {
 
 export interface AsyncCommand<Model extends object, Real> {
   check(m: Readonly<Model>): boolean;
+  run(m: Model, r: Real): Promise<void>;
+  toString(): string;
+}
+
+export interface AsyncCommand<Model extends object, Real, true> {
+  check(m: Readonly<Model>): Promise<boolean>;
   run(m: Model, r: Real): Promise<void>;
   toString(): string;
 }

@@ -12,10 +12,11 @@ interface SetupProducer<Model, Real, P> {
 }
 
 /** @hidden */
-const genericModelRun = <Model extends object, Real, P>(
+const genericModelRun = <Model extends object, Real, P, CheckAsync extends boolean>(
   s: SetupProducer<Model, Real, P>,
-  cmds: Iterable<ICommand<Model, Real, P>>,
+  cmds: Iterable<ICommand<Model, Real, P, CheckAsync>>,
   initialValue: P,
+  runCmd: (cmd: ICommand<Model, Real, P, CheckAsync>, m: Model, r: Real) => P,
   then: (p: P, c: () => P | undefined) => P
 ): P => {
   return s.then((o: { model: Model; real: Real }) => {
@@ -25,7 +26,7 @@ const genericModelRun = <Model extends object, Real, P>(
       state = then(state, () => {
         // No need to check incoming state
         // as c.run "throws" in case of exception
-        if (c.check(model)) return c.run(model, real);
+        return runCmd(c, model, real);
       });
     }
     return state;
@@ -40,7 +41,10 @@ const internalModelRun = <Model extends object, Real>(
   const then = (p: undefined, c: () => undefined) => c();
   try {
     const setupProducer = { then: (fun: SetupFun<Model, Real, void>) => fun(s()) };
-    return genericModelRun(setupProducer, cmds, undefined, then);
+    const runSync = (cmd: Command<Model, Real>, m: Model, r: Real) => {
+      if (cmd.check(m)) cmd.run(m, r);
+    };
+    return genericModelRun(setupProducer, cmds, undefined, runSync, then);
   } catch (err) {
     throw err;
   }
@@ -54,9 +58,9 @@ const isAsyncSetup = <Model, Real>(
 };
 
 /** @hidden */
-const internalAsyncModelRun = async <Model extends object, Real>(
+const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: Setup<Model, Real> | AsyncSetup<Model, Real>,
-  cmds: Iterable<AsyncCommand<Model, Real>> | CommandsIterable<Model, Real, Promise<void>>
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Promise<void> => {
   const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
   try {
@@ -67,7 +71,10 @@ const internalAsyncModelRun = async <Model extends object, Real>(
         else return fun(out);
       }
     };
-    return await genericModelRun(setupProducer, cmds, Promise.resolve(), then);
+    const runAsync = async (cmd: AsyncCommand<Model, Real, CheckAsync>, m: Model, r: Real) => {
+      if (await cmd.check(m)) await cmd.run(m, r);
+    };
+    return await genericModelRun(setupProducer, cmds, Promise.resolve(), runAsync, then);
   } catch (err) {
     throw err;
   }
@@ -96,9 +103,9 @@ export const modelRun = <Model extends object, Real>(
  * @param s Initial state provider
  * @param cmds Asynchronous commands to be executed
  */
-export const asyncModelRun = async <Model extends object, Real>(
+export const asyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: Setup<Model, Real> | AsyncSetup<Model, Real>,
-  cmds: Iterable<AsyncCommand<Model, Real>> | CommandsIterable<Model, Real, Promise<void>>
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Promise<void> => {
   await internalAsyncModelRun(s, cmds);
 };
