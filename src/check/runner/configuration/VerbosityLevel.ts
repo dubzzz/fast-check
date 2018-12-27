@@ -1,7 +1,7 @@
 /**
  * Verbosity level
  */
-export const enum VerbosityLevel {
+export enum VerbosityLevel {
   /**
    * Level 0 (default)
    *
