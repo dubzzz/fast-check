@@ -128,3 +128,15 @@ leftPad('abc', 4, '\u{1f431}') //=> '\u{1f431}abc' -- in: 3 code points, out: 4 
 m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar&bar[]=b"
 m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
 ```
+
+## TypeScript compatibility
+
+### Cannot find name 'bigint'
+
+There are 4 different ways to get rid of this compiler error:
+- Move to TypeScript >=3.2
+- Skip lib checks by adding `"skipLibCheck": true` in your `tsconfig.json`
+- Import a polyfill for type bigint: see https://www.npmjs.com/package/bigint-as-any-ts
+- Add the `declare global { type bigint = any; }` before importing fast-check
+
+More details: https://github.com/dubzzz/fast-check/issues/277
