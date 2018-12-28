@@ -1,3 +1,11 @@
+# 1.9.1
+
+_VerbosityLevel enum is accessible through fc.VerbosityLevel_
+
+## Fixes
+
+- ([PR#278](https://github.com/dubzzz/fast-check/pull/278)) Bug: VerbosityLevel values not accessible
+
 # 1.9.0
 
 _BigInt support and new verbosity level_
