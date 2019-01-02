@@ -10,6 +10,8 @@ import { nat } from '../../../../../src/check/arbitrary/IntegerArbitrary';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 
+import { isStrictlySmallerArray } from '../../arbitrary/ArrayArbitrary.spec';
+
 type Model = {};
 type Real = {};
 type Cmd = Command<Model, Real>;
@@ -17,6 +19,12 @@ type Cmd = Command<Model, Real>;
 const model: Model = Object.freeze({});
 const real: Real = Object.freeze({});
 
+class SuccessIdCommand implements Cmd {
+  constructor(readonly id: number) {}
+  check = () => true;
+  run = () => {};
+  toString = () => `custom(${this.id})`;
+}
 class SuccessCommand implements Cmd {
   constructor(readonly log: { data: string[] }) {}
   check = () => {
@@ -169,6 +177,38 @@ describe('CommandWrapper', () => {
                 assertCommandsNotStarted(nextShrinkable);
                 // Start everything: not supposed to impact any other shrinkable
                 startCommands(nextShrinkable);
+                return nextShrinkable;
+              })
+              .getNthOrLast(it.next().value);
+          }
+        })
+      );
+    });
+    it('Should shrink to smaller values', () => {
+      const commandsArb = commands([nat(3).map(id => new SuccessIdCommand(id))]);
+      fc.assert(
+        fc.property(fc.integer().noShrink(), fc.infiniteStream(fc.nat()), (seed, shrinkPath) => {
+          // Generate the first shrinkable
+          const it = shrinkPath[Symbol.iterator]();
+          const mrng = new Random(prand.xorshift128plus(seed));
+          let shrinkable: Shrinkable<Iterable<Cmd>> | null = commandsArb.generate(mrng);
+
+          // Run all commands of first shrinkable
+          simulateCommands(shrinkable!.value_);
+
+          // Traverse the shrink tree in order to detect already seen ids
+          const extractIdRegex = /^custom\((\d+)\)$/;
+          while (shrinkable !== null) {
+            const currentItems = [...shrinkable.value_].map(c => +extractIdRegex.exec(c.toString())![1]);
+            shrinkable = shrinkable
+              .shrink()
+              .map(nextShrinkable => {
+                // Run all commands of nextShrinkable
+                simulateCommands(nextShrinkable.value_);
+                // Check nextShrinkable is strictly smaller than current one
+                const nextItems = [...nextShrinkable.value_].map(c => +extractIdRegex.exec(c.toString())![1]);
+                expect(isStrictlySmallerArray(nextItems, currentItems)).toBe(true);
+                // Next is eligible for shrinking
                 return nextShrinkable;
               })
               .getNthOrLast(it.next().value);
