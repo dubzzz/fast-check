@@ -21,7 +21,7 @@ class DummyArbitrary extends Arbitrary<{ key: number }> {
   }
 }
 
-const isStrictlySmallerArray = (arr1: number[], arr2: number[]) => {
+export const isStrictlySmallerArray = (arr1: number[], arr2: number[]) => {
   if (arr1.length > arr2.length) return false;
   if (arr1.length === arr2.length) {
     return arr1.every((v, idx) => arr1[idx] <= arr2[idx]) && arr1.find((v, idx) => arr1[idx] < arr2[idx]) != null;
