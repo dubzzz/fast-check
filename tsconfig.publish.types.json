@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.publish.json",
+    "compilerOptions": {
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "outDir": "lib/types"
+    }
+}
