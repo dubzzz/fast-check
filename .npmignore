@@ -6,3 +6,4 @@ perf/
 prebuild/
 src/
 test/
+buildTypes.js
