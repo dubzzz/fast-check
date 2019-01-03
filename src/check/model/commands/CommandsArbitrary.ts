@@ -24,10 +24,11 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
   }
   private wrapper(
     items: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[],
-    shrunkOnce: boolean
+    shrunkOnce: boolean,
+    alwaysKeepOneCommand: boolean
   ): Shrinkable<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
     return new Shrinkable(new CommandsIterable(items.map(s => s.value_)), () =>
-      this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(v, true))
+      this.shrinkImpl(items, shrunkOnce, alwaysKeepOneCommand).map(v => this.wrapper(v, true, true))
     );
   }
   generate(mrng: Random): Shrinkable<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
@@ -37,11 +38,12 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
       const item = this.oneCommandArb.generate(mrng);
       items[idx] = item;
     }
-    return this.wrapper(items, false);
+    return this.wrapper(items, false, false);
   }
   private shrinkImpl(
     itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[],
-    shrunkOnce: boolean
+    shrunkOnce: boolean,
+    alwaysKeepOneCommand: boolean
   ): Stream<Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]> {
     const items = itemsRaw.filter(c => c.value_.hasRan); // filter out commands that have not been executed
     if (items.length === 0) {
@@ -50,14 +52,14 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
 
     // The shrinker of commands have to keep the last item
     // because it is the one causing the failure
-    const emptyOrNil = shrunkOnce
+    const emptyOrNil = alwaysKeepOneCommand
       ? Stream.nil<Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>()
       : new Stream([[]][Symbol.iterator]());
     const size = this.lengthArb.shrinkableFor(items.length - 1, shrunkOnce);
 
     return emptyOrNil
-      .join(size.shrink().map(l => items.slice(0, l.value).concat(items[items.length - 1]))) // try: remove items except the last one
-      .join(this.shrinkImpl(items.slice(0, items.length - 1), false).map(vs => vs.concat(items[items.length - 1]))) // try: keep last, shrink remaining (rec)
+      .join(size.shrink().map(l => items.slice(items.length - (l.value + 1)))) // try: remove items except the last one
+      .join(this.shrinkImpl(items.slice(1), false, true).map(vs => [items[0]].concat(vs))) // try: keep first, shrink remaining (rec)
       .join(items[items.length - 1].shrink().map(v => items.slice(0, -1).concat([v]))) // try: shrink last, keep others
       .map(shrinkables => {
         return shrinkables.map(c => {
