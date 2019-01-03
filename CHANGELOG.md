@@ -1,3 +1,12 @@
+# 1.9.2
+
+_Adapt typings for older versions of TypeScript_
+
+## Fixes
+
+- ([PR#282](https://github.com/dubzzz/fast-check/pull/282)) Bug: Cannot find name 'bigint'
+- ([PR#282](https://github.com/dubzzz/fast-check/pull/282)) Declare umd build in package.json
+
 # 1.9.1
 
 _VerbosityLevel enum is accessible through fc.VerbosityLevel_
