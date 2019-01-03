@@ -1,3 +1,13 @@
+# 1.10.0
+
+_Better shrinking of commands_
+
+## Features
+
+- ([PR#280](https://github.com/dubzzz/fast-check/pull/280)) Better shrinking of commands
+
+---
+
 # 1.9.2
 
 _Adapt typings for older versions of TypeScript_
