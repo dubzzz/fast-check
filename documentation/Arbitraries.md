@@ -19,6 +19,8 @@ Integer values:
 - `fc.integer(min: number, max: number)` all possible integers between min (included) and max (included)
 - `fc.nat()` all possible positive integers ie. from 0 (included) to 2147483647 (included)
 - `fc.nat(max: number)` all possible positive integers between 0 (included) and max (included)
+- `fc.maxSafeInteger()` all possible positive integers between `Number.MIN_SAFE_INTEGER` (included) and `Number.MAX_SAFE_INTEGER` (included)
+- `fc.maxSafeNat()` all possible positive integers between 0 (included) and `Number.MAX_SAFE_INTEGER` (included)
 
 Floating point numbers:
 

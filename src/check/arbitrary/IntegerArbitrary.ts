@@ -63,6 +63,13 @@ function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
 }
 
 /**
+ * For integers between Number.MIN_SAFE_INTEGER (included) and Number.MAX_SAFE_INTEGER (included)
+ */
+function maxSafeInteger(): ArbitraryWithShrink<number> {
+  return integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+}
+
+/**
  * For positive integers between 0 (included) and 2147483647 (included)
  */
 function nat(): ArbitraryWithShrink<number>;
@@ -75,4 +82,11 @@ function nat(a?: number): ArbitraryWithShrink<number> {
   return new IntegerArbitrary(0, a);
 }
 
-export { integer, nat };
+/**
+ * For positive integers between 0 (included) and Number.MAX_SAFE_INTEGER (included)
+ */
+function maxSafeNat(): ArbitraryWithShrink<number> {
+  return nat(Number.MAX_SAFE_INTEGER);
+}
+
+export { integer, nat, maxSafeInteger, maxSafeNat };
