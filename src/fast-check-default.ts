@@ -18,7 +18,7 @@ import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { double, float } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
-import { integer, nat } from './check/arbitrary/IntegerArbitrary';
+import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import {
   anything,
@@ -86,6 +86,8 @@ export {
   double,
   integer,
   nat,
+  maxSafeInteger,
+  maxSafeNat,
   bigIntN,
   bigUintN,
   bigInt,
