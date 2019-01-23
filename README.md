@@ -109,16 +109,6 @@ fast-check has been able to find some unexpected behaviour among famous npm pack
 
 **Code example:** `yaml.dump({toto: -10}, {styles:{'!!int':'binary'}})` produces `toto: 0b-1010` not `toto: -0b1010`
 
-### [left-pad](https://github.com/stevemao/left-pad)
-
-**Issue detected:** unicode characters outside of the BMP plan are not handled consistently \[[more](https://github.com/stevemao/left-pad/issues/58)\]
-
-**Code example:**
-```js
-leftPad('a\u{1f431}b', 4, 'x') //=> 'a\u{1f431}b'  -- in: 3 code points, out: 3 code points
-leftPad('abc', 4, '\u{1f431}') //=> '\u{1f431}abc' -- in: 3 code points, out: 4 code points
-```
-
 ### [query-string](https://github.com/sindresorhus/query-string)
 
 **Issue detected:** enabling the `bracket` setting when exporting arrays containing null values produces an invalid output for the parser \[[more](https://github.com/sindresorhus/query-string/pull/138)\]
@@ -128,3 +118,5 @@ leftPad('abc', 4, '\u{1f431}') //=> '\u{1f431}abc' -- in: 3 code points, out: 4 
 m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar&bar[]=b"
 m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
 ```
+
+**[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/IssuesDiscovered.md)**
