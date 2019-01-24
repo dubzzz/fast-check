@@ -18,7 +18,7 @@ function swap<T>(tab: T[], idx1: number, idx2: number): void {
 }
 
 /** @hidden */
-function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): ((tab: Shrinkable<T>[]) => Shrinkable<T>[]) {
+function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): (tab: Shrinkable<T>[]) => Shrinkable<T>[] {
   return (tab: Shrinkable<T>[]): Shrinkable<T>[] => {
     let finalLength = tab.length;
     for (let idx = tab.length - 1; idx !== -1; --idx) {

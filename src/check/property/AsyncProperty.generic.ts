@@ -10,11 +10,11 @@ import { IProperty, runIdToFrequency } from './IProperty';
  * Prefer using {@link asyncProperty} instead
  */
 export class AsyncProperty<Ts> implements IProperty<Ts> {
-  static dummyHook: (() => Promise<void>) = async () => {
+  static dummyHook: () => Promise<void> = async () => {
     return;
   };
-  private beforeEachHook: (() => Promise<void>) = AsyncProperty.dummyHook;
-  private afterEachHook: (() => Promise<void>) = AsyncProperty.dummyHook;
+  private beforeEachHook: () => Promise<void> = AsyncProperty.dummyHook;
+  private afterEachHook: () => Promise<void> = AsyncProperty.dummyHook;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {}
   isAsync = () => true;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {

@@ -58,7 +58,7 @@
     "browserify": "^16.2.3",
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
-    "prettier": "1.15.3",
+    "prettier": "1.16.1",
     "rollup": "^1.1.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
