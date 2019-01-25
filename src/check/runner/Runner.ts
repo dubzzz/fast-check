@@ -118,6 +118,22 @@ function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<
   return stream(pathWalk(adaptedPath, pathStream)).map(v => () => v);
 }
 
+/** @hidden */
+function buildInitialValues<Ts>(
+  valueProducers: IterableIterator<() => Shrinkable<Ts>>,
+  qParams: QualifiedParameters<Ts>
+) {
+  const rawValues = qParams.path.length === 0 ? stream(valueProducers) : runnerPathWalker(valueProducers, qParams.path);
+  if (!qParams.endOnFailure) return rawValues;
+  // Disable shrinking capabilities
+  return rawValues.map(shrinkableGen => {
+    return () => {
+      const s = shrinkableGen();
+      return new Shrinkable(s.value_);
+    };
+  });
+}
+
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -150,7 +166,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
 
   const maxInitialIterations = qParams.path.length === 0 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const initialValues = qParams.path.length === 0 ? generator : runnerPathWalker(generator, qParams.path);
+  const initialValues = buildInitialValues(generator, qParams);
   return property.isAsync()
     ? asyncRunIt(property, initialValues, maxInitialIterations, maxSkips, qParams.verbose).then(e =>
         e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)

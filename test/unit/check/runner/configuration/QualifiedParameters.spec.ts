@@ -23,7 +23,8 @@ const parametersArbitrary = fc.record(
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
     unbiased: fc.boolean(),
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
-    examples: fc.array(fc.nat())
+    examples: fc.array(fc.nat()),
+    endOnFailure: fc.boolean()
   },
   { withDeletedKeys: true }
 );

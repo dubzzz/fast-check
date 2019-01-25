@@ -86,6 +86,19 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
         expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
     });
+    it('Should only execute one test given path for failure and noShrink flag', () => {
+      const out = fc.check(prop, { seed: seed });
+      expect(out.failed).toBe(true);
+
+      const segments = out.counterexamplePath!.split(':');
+      for (let idx = 1; idx !== segments.length + 1; ++idx) {
+        const p = segments.slice(0, idx).join(':');
+        const outMiddlePath = fc.check(prop, { seed: seed, path: p, endOnFailure: true });
+        expect(outMiddlePath.numRuns).toEqual(1);
+        expect(outMiddlePath.numShrinks).toEqual(0);
+        expect(outMiddlePath.counterexamplePath).toEqual(p);
+      }
+    });
     it('Should take initial path into account when computing path', () => {
       const out = fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
