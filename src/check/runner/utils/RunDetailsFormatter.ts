@@ -73,7 +73,9 @@ function preFormatTooManySkipped<Ts>(out: RunDetails<Ts>) {
 function preFormatFailure<Ts>(out: RunDetails<Ts>) {
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
-  }" }\nCounterexample: ${stringify(out.counterexample)}\nShrunk ${out.numShrinks} time(s)\nGot error: ${out.error}`;
+  }", endOnFailure: true }\nCounterexample: ${stringify(out.counterexample)}\nShrunk ${
+    out.numShrinks
+  } time(s)\nGot error: ${out.error}`;
   let details: string | null = null;
   const hints = [];
 
