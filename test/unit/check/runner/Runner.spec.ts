@@ -211,6 +211,41 @@ describe('Runner', () => {
           return true;
         })
       ));
+    it('Should never call shrink if endOnFailure', () => {
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => {
+          return new Shrinkable([0], () => {
+            throw 'Not implemented';
+          }) as Shrinkable<[number]>;
+        },
+        run: (value: [number]) => {
+          return 'failure';
+        }
+      };
+      const out = check(p, { endOnFailure: true }) as RunDetails<[number]>;
+      expect(out.failed).toBe(true);
+      expect(out.numShrinks).toEqual(0);
+    });
+    it('Should compute values for path before removing shrink if endOnFailure', () => {
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => {
+          const g = function*() {
+            yield new Shrinkable([42], () => {
+              throw 'Not implemented';
+            }) as Shrinkable<[number]>;
+          };
+          return new Shrinkable([0], () => stream(g())) as Shrinkable<[number]>;
+        },
+        run: (value: [number]) => {
+          return value[0] === 42 ? 'failure' : null;
+        }
+      };
+      const out = check(p, { path: '0:0', endOnFailure: true }) as RunDetails<[number]>;
+      expect(out.failed).toBe(true);
+      expect(out.numShrinks).toEqual(0);
+    });
     it('Should not provide list of failures by default (no verbose)', () => {
       const p: IProperty<[number]> = {
         isAsync: () => false,
