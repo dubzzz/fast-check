@@ -231,7 +231,7 @@ fc.statistics(
 Whenever `fc.assert` encounters a failure, it displays an error log featuring both the seed and the path to replay it. For instance, in the output below the seed is 1525890375951 and the path 0:0.
 
 ```
-Error: Property failed after 1 tests (seed: 1525890375951, path: 0:0): [0]
+Error: Property failed after 1 tests (seed: 1525890375951, path: 0:0, endOnFailure: true): [0]
 Shrunk 1 time(s)
 Got error: Property failed by returning false
 ```
