@@ -152,3 +152,4 @@ Then you can play with settings of `fc.assert` like:
 - `{ verbose: true }`: show all the counterexamples encountered along the shrinking path
 - `{ seed: <seed> }`: replay the exact same set of tests
 - `{ seed: <seed>, path: <path> }`: start directly at the entry corresponding to the given `seed` and `path`
+- `{ seed: <seed>, path: <path>, endOnFailure: true }`: start directly at the entry corresponding to the given `seed`, `path` and stop at the first failure without shrinking

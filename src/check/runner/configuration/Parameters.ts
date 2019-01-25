@@ -70,4 +70,13 @@ export interface Parameters<T = void> {
    * It enables users to come with examples they want to test at every run
    */
   examples?: T[];
+  /**
+   * Stop run on failure
+   *
+   * It makes the run stop at the first encountered failure without shrinking.
+   *
+   * When used in complement to `seed` and `path`,
+   * it replays only the minimal counterexample.
+   */
+  endOnFailure?: boolean;
 }

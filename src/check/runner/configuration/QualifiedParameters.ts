@@ -20,6 +20,7 @@ export class QualifiedParameters<T> {
   unbiased: boolean;
   verbose: VerbosityLevel;
   examples: T[];
+  endOnFailure: boolean;
 
   private static readSeed = <T>(p?: Parameters<T>): number => {
     // No seed specified
@@ -51,6 +52,7 @@ export class QualifiedParameters<T> {
     }
     return p.randomType;
   };
+  private static readEndOnFailure = <T>(p?: Parameters<T>): boolean => p != null && p.endOnFailure === true;
   private static readNumRuns = <T>(p?: Parameters<T>): number => {
     const defaultValue = 100;
     if (p == null) return defaultValue;
@@ -101,7 +103,8 @@ export class QualifiedParameters<T> {
       path: QualifiedParameters.readPath(p),
       unbiased: QualifiedParameters.readUnbiased(p),
       verbose: QualifiedParameters.readVerbose(p),
-      examples: QualifiedParameters.readExamples(p)
+      examples: QualifiedParameters.readExamples(p),
+      endOnFailure: QualifiedParameters.readEndOnFailure(p)
     };
   }
 

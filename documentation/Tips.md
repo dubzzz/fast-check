@@ -248,6 +248,7 @@ fc.assert(
 );
 
 // Replay code: straight to the minimal counterexample
+// Only replay the minimal counterexample
 fc.assert(
   fc.property(
     fc.nat(),
@@ -255,7 +256,8 @@ fc.assert(
   ),
   {
     seed: 1525890375951,
-    path: "0:0"
+    path: "0:0",
+    endOnFailure: true
   }
 );
 ```
