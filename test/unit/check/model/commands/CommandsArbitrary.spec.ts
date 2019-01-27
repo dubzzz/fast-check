@@ -149,7 +149,7 @@ describe('CommandWrapper', () => {
         })
       ));
     it('Should provide commands which have not run yet', () => {
-      const commandsArb = commands([constant(new SuccessCommand({ data: [] }))]);
+      const commandsArb = commands([constant(new SuccessCommand({ data: [] }))], { disableReplayLog: true });
       const arbs = genericTuple([nat(16), commandsArb, nat(16)] as Arbitrary<any>[]);
       const assertCommandsNotStarted = (shrinkable: Shrinkable<[number, Iterable<Cmd>, number]>) => {
         expect(String(shrinkable.value_[1])).toEqual('');
@@ -213,6 +213,57 @@ describe('CommandWrapper', () => {
               })
               .getNthOrLast(it.next().value);
           }
+        })
+      );
+    });
+    it.only('Should shrink the same way when based on replay data', () => {
+      fc.assert(
+        fc.property(fc.integer().noShrink(), fc.nat(100), (seed, numValues) => {
+          // create unused logOnCheck
+          const logOnCheck: { data: string[] } = { data: [] };
+
+          // generate scenario and simulate execution
+          const rng = prand.xorshift128plus(seed);
+          const refArbitrary = commands([
+            constant(new SuccessCommand(logOnCheck)),
+            constant(new SkippedCommand(logOnCheck)),
+            constant(new FailureCommand(logOnCheck)),
+            nat().map(v => new SuccessIdCommand(v))
+          ]);
+          const refShrinkable: Shrinkable<Iterable<Cmd>> = refArbitrary.generate(new Random(rng));
+          simulateCommands(refShrinkable.value_);
+
+          // trigger computation of replayPath
+          // and extract shrinks for ref
+          const refShrinks = [
+            ...refShrinkable
+              .shrink()
+              .take(numValues)
+              .map(s => [...s.value_].map(c => c.toString()))
+          ];
+
+          // extract replayPath
+          const replayPath = /\/\*replayPath=['"](.*)['"]\*\//.exec(refShrinkable.value_.toString())![1];
+
+          // generate scenario but do not simulate execution
+          const noExecShrinkable: Shrinkable<Iterable<Cmd>> = commands(
+            [
+              constant(new SuccessCommand(logOnCheck)),
+              constant(new SkippedCommand(logOnCheck)),
+              constant(new FailureCommand(logOnCheck)),
+              nat().map(v => new SuccessIdCommand(v))
+            ],
+            { replayPath }
+          ).generate(new Random(rng));
+
+          // check shrink values are identical
+          const noExecShrinks = [
+            ...noExecShrinkable
+              .shrink()
+              .take(numValues)
+              .map(s => [...s.value_].map(c => c.toString()))
+          ];
+          expect(noExecShrinks).toEqual(refShrinks);
         })
       );
     });
