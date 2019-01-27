@@ -24,13 +24,13 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
   constructor(
     commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
     maxCommands: number,
-    replayPathStr: string | null,
+    readonly sourceReplayPath: string | null,
     readonly disableReplayLog: boolean
   ) {
     super();
     this.oneCommandArb = oneof(...commandArbs).map(c => new CommandWrapper(c));
     this.lengthArb = nat(maxCommands);
-    this.replayPath = replayPathStr !== null ? ReplayPath.parse(replayPathStr) : [];
+    this.replayPath = []; // updated at first shrink
     this.replayPathPosition = 0;
   }
   private metadataForReplay() {
@@ -51,9 +51,13 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
       const item = this.oneCommandArb.generate(mrng);
       items[idx] = item;
     }
+    this.replayPathPosition = 0; // reset replay
     return this.wrapper(items, false);
   }
   private filterNonExecuted(itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
+    if (this.replayPathPosition === 0) {
+      this.replayPath = this.sourceReplayPath !== null ? ReplayPath.parse(this.sourceReplayPath) : [];
+    }
     const items: typeof itemsRaw = [];
     for (let idx = 0; idx !== itemsRaw.length; ++idx) {
       const c = itemsRaw[idx];
