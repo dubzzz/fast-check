@@ -76,7 +76,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
               fc.constant(new OddCommand()),
               fc.nat().map(n => new CheckLessThanCommand(n + 1))
             ],
-            1000
+            { disableReplayLog: true, maxCommands: 1000 }
           ),
           cmds => {
             const setup = () => ({
@@ -122,7 +122,9 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.array(fc.nat(9), 0, 3),
-          fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())]),
+          fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
+            disableReplayLog: true
+          }),
           fc.array(fc.nat(9), 0, 3),
           (validSteps1, cmds, validSteps2) => {
             const setup = () => ({
@@ -145,7 +147,9 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.array(fc.nat(9), 0, 3),
-          fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())]),
+          fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
+            disableReplayLog: true
+          }),
           fc.array(fc.nat(9), 0, 3),
           (validSteps1, cmds, validSteps2) => {
             if (String(cmds) !== '') {
