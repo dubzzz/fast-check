@@ -4,18 +4,20 @@ type M1 = { count: number };
 type R1 = {};
 
 class IncreaseCommand implements fc.Command<M1, R1> {
+  constructor(readonly n: number) {}
   check = (m: Readonly<M1>) => true;
   run = (m: M1, r: R1) => {
-    m.count += 1;
+    m.count += this.n;
   };
-  toString = () => 'inc';
+  toString = () => `inc[${this.n}]`;
 }
 class DecreaseCommand implements fc.Command<M1, R1> {
+  constructor(readonly n: number) {}
   check = (m: Readonly<M1>) => true;
   run = (m: M1, r: R1) => {
-    m.count -= 1;
+    m.count -= this.n;
   };
-  toString = () => 'dec';
+  toString = () => `dec[${this.n}]`;
 }
 class EvenCommand implements fc.Command<M1, R1> {
   check = (m: Readonly<M1>) => m.count % 2 === 0;
@@ -68,11 +70,11 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         fc.property(
           fc.commands(
             [
-              fc.constant(new IncreaseCommand()),
-              fc.constant(new DecreaseCommand()),
+              fc.nat().map(n => new IncreaseCommand(n)),
+              fc.nat().map(n => new DecreaseCommand(n)),
               fc.constant(new EvenCommand()),
               fc.constant(new OddCommand()),
-              fc.integer(1, 10).map(v => new CheckLessThanCommand(v))
+              fc.nat().map(n => new CheckLessThanCommand(n + 1))
             ],
             1000
           ),
@@ -90,7 +92,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
 
       const cmdsRepr = out.counterexample![0].toString();
       expect(cmdsRepr).toMatch(/check\[(\d+)\]$/);
-      expect(cmdsRepr).toEqual('inc,check[1]');
+      expect(cmdsRepr).toEqual('inc[1],check[1]');
     });
     it('Should result in empty commands if failures happen after the run', () => {
       const out = fc.check(
