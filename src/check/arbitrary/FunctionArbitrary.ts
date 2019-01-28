@@ -36,28 +36,17 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
   });
 }
 
-/**
- * For comparison functions
- *
- * A comparison function returns:
- * - negative value whenever a < b
- * - positive value whenever a > b
- * - zero whenever a and b are equivalent
- *
- * Comparison functions are transitive: `a < b and b < c => a < c`
- *
- * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
- */
-export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
+/** @hidden */
+function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbitrary<(a: T, b: T) => TOut> {
   return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
     const producer = () => {
-      const recorded: { [key: string]: number } = {};
+      const recorded: { [key: string]: TOut } = {};
       const f = (a: T, b: T) => {
         const reprA = stringify(a);
         const reprB = stringify(b);
         const hA = hash(`${seed}${reprA}`) % hashEnvSize;
         const hB = hash(`${seed}${reprB}`) % hashEnvSize;
-        const val = hA - hB;
+        const val = cmp(hA, hB);
         recorded[`[${reprA},${reprB}]`] = val;
         return val;
       };
@@ -77,6 +66,22 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
 }
 
 /**
+ * For comparison functions
+ *
+ * A comparison function returns:
+ * - negative value whenever a < b
+ * - positive value whenever a > b
+ * - zero whenever a and b are equivalent
+ *
+ * Comparison functions are transitive: `a < b and b < c => a < c`
+ *
+ * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
+ */
+export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
+  return compareFuncImplem((hA, hB) => hA - hB);
+}
+
+/**
  * For comparison boolean functions
  *
  * A comparison boolean function returns:
@@ -84,29 +89,5 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
  * - false otherwise (ie. a = b or a > b)
  */
 export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
-  return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
-    const producer = () => {
-      const recorded: { [key: string]: boolean } = {};
-      const f = (a: T, b: T) => {
-        const reprA = stringify(a);
-        const reprB = stringify(b);
-        const hA = hash(`${seed}${reprA}`) % hashEnvSize;
-        const hB = hash(`${seed}${reprB}`) % hashEnvSize;
-        const val = hA < hB;
-        recorded[`[${reprA},${reprB}]`] = val;
-        return val;
-      };
-      return Object.assign(f, {
-        toString: () =>
-          '<function :: ' +
-          Object.keys(recorded)
-            .sort()
-            .map(k => `${k} => ${recorded[k]}`)
-            .join(', ') +
-          '>',
-        [cloneMethod]: producer
-      });
-    };
-    return producer();
-  });
+  return compareFuncImplem((hA, hB) => hA < hB);
 }
