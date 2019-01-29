@@ -11,6 +11,7 @@ import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunDetails } from './reporter/RunDetails';
 import { RunExecution } from './reporter/RunExecution';
+import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { throwIfFailed } from './utils/RunDetailsFormatter';
@@ -18,21 +19,12 @@ import { throwIfFailed } from './utils/RunDetailsFormatter';
 /** @hidden */
 function runIt<Ts>(
   property: IProperty<Ts>,
-  initialValues: IterableIterator<() => Shrinkable<Ts>>,
-  maxInitialIterations: number,
-  remainingSkips: number,
+  sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
   verbose: VerbosityLevel
 ): RunExecution<Ts> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
-  function* g() {
-    while (--maxInitialIterations !== -1 && remainingSkips >= 0) {
-      const n = initialValues.next();
-      if (n.done) return;
-      yield n.value();
-    }
-  }
-  let values: IterableIterator<Shrinkable<Ts>> = g();
+  let values: IterableIterator<Shrinkable<Ts>> = sourceValues;
   while (!done) {
     done = true;
     let idx = 0;
@@ -47,8 +39,7 @@ function runIt<Ts>(
       if (out != null) {
         // skipped the run
         runExecution.skip(v.value_);
-        --remainingSkips;
-        ++maxInitialIterations;
+        sourceValues.skippedOne();
       } else {
         runExecution.success(v.value_);
       }
@@ -61,21 +52,12 @@ function runIt<Ts>(
 /** @hidden */
 async function asyncRunIt<Ts>(
   property: IProperty<Ts>,
-  initialValues: IterableIterator<() => Shrinkable<Ts>>,
-  maxInitialIterations: number,
-  remainingSkips: number,
+  sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
   verbose: VerbosityLevel
 ): Promise<RunExecution<Ts>> {
   const runExecution = new RunExecution<Ts>(verbose);
   let done = false;
-  function* g() {
-    while (--maxInitialIterations !== -1 && remainingSkips >= 0) {
-      const n = initialValues.next();
-      if (n.done) return;
-      yield n.value();
-    }
-  }
-  let values: IterableIterator<Shrinkable<Ts>> = g();
+  let values: IterableIterator<Shrinkable<Ts>> = sourceValues;
   while (!done) {
     done = true;
     let idx = 0;
@@ -90,8 +72,7 @@ async function asyncRunIt<Ts>(
       if (out != null) {
         // skipped the run
         runExecution.skip(v.value_);
-        --remainingSkips;
-        ++maxInitialIterations;
+        sourceValues.skippedOne();
       } else {
         runExecution.success(v.value_);
       }
@@ -167,11 +148,12 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
   const maxInitialIterations = qParams.path.length === 0 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const initialValues = buildInitialValues(generator, qParams);
+  const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
-    ? asyncRunIt(property, initialValues, maxInitialIterations, maxSkips, qParams.verbose).then(e =>
+    ? asyncRunIt(property, sourceValues, qParams.verbose).then(e =>
         e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
       )
-    : runIt(property, initialValues, maxInitialIterations, maxSkips, qParams.verbose).toRunDetails(
+    : runIt(property, sourceValues, qParams.verbose).toRunDetails(
         qParams.seed,
         qParams.path,
         qParams.numRuns,
