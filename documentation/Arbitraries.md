@@ -169,7 +169,19 @@ While `fc.array` or any other array arbitrary could be used to generate such dat
 
 Possible signatures:
 - `fc.commands<Model, Real>(commandArbs: Arbitrary<Command<Model, Real>>[], maxCommands?: number)` arrays of `Command` that can be ingested by `fc.modelRun`
+- `fc.commands<Model, Real>(commandArbs: Arbitrary<Command<Model, Real>>[], settings: CommandsSettings)` arrays of `Command` that can be ingested by `fc.modelRun`
 - `fc.commands<Model, Real>(commandArbs: Arbitrary<AsyncCommand<Model, Real>>[], maxCommands?: number)` arrays of `AsyncCommand` that can be ingested by `fc.asyncModelRun`
+- `fc.commands<Model, Real>(commandArbs: Arbitrary<AsyncCommand<Model, Real>>[], settings: CommandsSettings)` arrays of `AsyncCommand` that can be ingested by `fc.asyncModelRun`
+
+Possible settings:
+```typescript
+interface CommandsSettings {
+  maxCommands?: number;       // optional, maximal number of commands to generate per run: 10 by default
+  disableReplayLog?: boolean; // optional, do not show replayPath in the output: false by default
+  replayPath?: string;        // optional, hint for replay purposes only: '' by default
+                              // should be used in conjonction with {seed, path} of fc.assert
+}
+```
 
 ### Model runner
 
