@@ -113,6 +113,8 @@ fc.assert(
 
 The code above can easily be applied to other state machines, APIs or UI. In the case of asynchronous operations you need to implement `AsyncCommand` and use `asyncModelRun`.
 
+**NOTE:** Contrary to other arbitraries, commands built using `fc.commands` requires an extra parameter for replay purposes. In addition of passing `{ seed, path }` to `fc.assert`, `fc.commands` must be called with `{ replayPath: string }`.
+
 ## Opt for verbose failures
 
 By default, the failures reported by `fast-check` feature most relevant data:
@@ -261,6 +263,8 @@ fc.assert(
   }
 );
 ```
+
+**NOTE:** Replaying `fc.commands` requires passing an additional flag called `replayPath` when building this arbitrary.
 
 ## Add custom examples next to generated ones
 
