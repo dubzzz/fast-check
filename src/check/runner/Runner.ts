@@ -11,6 +11,7 @@ import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunDetails } from './reporter/RunDetails';
 import { RunExecution } from './reporter/RunExecution';
+import { RunnerIterator } from './RunnerIterator';
 import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
@@ -22,31 +23,12 @@ function runIt<Ts>(
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
   verbose: VerbosityLevel
 ): RunExecution<Ts> {
-  const runExecution = new RunExecution<Ts>(verbose);
-  let done = false;
-  let values: IterableIterator<Shrinkable<Ts>> = sourceValues;
-  while (!done) {
-    done = true;
-    let idx = 0;
-    for (const v of values) {
-      const out = property.run(v.value_) as PreconditionFailure | string | null;
-      if (out != null && typeof out === 'string') {
-        runExecution.fail(v.value_, idx, out);
-        values = v.shrink();
-        done = false;
-        break;
-      }
-      if (out != null) {
-        // skipped the run
-        runExecution.skip(v.value_);
-        sourceValues.skippedOne();
-      } else {
-        runExecution.success(v.value_);
-      }
-      ++idx;
-    }
+  const runner = new RunnerIterator(sourceValues, verbose);
+  for (const v of runner) {
+    const out = property.run(v) as PreconditionFailure | string | null;
+    runner.handleResult(out);
   }
-  return runExecution;
+  return runner.runExecution;
 }
 
 /** @hidden */
@@ -55,31 +37,12 @@ async function asyncRunIt<Ts>(
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
   verbose: VerbosityLevel
 ): Promise<RunExecution<Ts>> {
-  const runExecution = new RunExecution<Ts>(verbose);
-  let done = false;
-  let values: IterableIterator<Shrinkable<Ts>> = sourceValues;
-  while (!done) {
-    done = true;
-    let idx = 0;
-    for (const v of values) {
-      const out = await property.run(v.value_);
-      if (out != null && typeof out === 'string') {
-        runExecution.fail(v.value_, idx, out);
-        values = v.shrink();
-        done = false;
-        break;
-      }
-      if (out != null) {
-        // skipped the run
-        runExecution.skip(v.value_);
-        sourceValues.skippedOne();
-      } else {
-        runExecution.success(v.value_);
-      }
-      ++idx;
-    }
+  const runner = new RunnerIterator(sourceValues, verbose);
+  for (const v of runner) {
+    const out = await property.run(v);
+    runner.handleResult(out);
   }
-  return runExecution;
+  return runner.runExecution;
 }
 
 /** @hidden */
