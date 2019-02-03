@@ -173,16 +173,13 @@ function commands<Model extends object, Real, RunResult, CheckAsync extends bool
   commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
   settings?: number | CommandsSettings
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
-  const maxCommands: number =
-    settings != null && typeof settings === 'number'
-      ? settings
-      : settings != null && settings.maxCommands != null
-      ? settings.maxCommands
-      : 10;
-  const replayPath: string | null =
-    settings != null && typeof settings !== 'number' ? settings.replayPath || null : null;
-  const disableReplayLog = settings != null && typeof settings !== 'number' && !!settings.disableReplayLog;
-  return new CommandsArbitrary(commandArbs, maxCommands != null ? maxCommands : 10, replayPath, disableReplayLog);
+  const config = settings == null ? {} : typeof settings === 'number' ? { maxCommands: settings } : settings;
+  return new CommandsArbitrary(
+    commandArbs,
+    config.maxCommands != null ? config.maxCommands : 10,
+    config.replayPath != null ? config.replayPath : null,
+    !!config.disableReplayLog
+  );
 }
 
 export { commands };
