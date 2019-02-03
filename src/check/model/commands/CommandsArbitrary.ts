@@ -54,34 +54,43 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     this.replayPathPosition = 0; // reset replay
     return this.wrapper(items, false);
   }
-  private filterNonExecuted(itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
+  /** Filter commands based on the real status of the execution */
+  private filterOnExecution(itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
+    const items: typeof itemsRaw = [];
+    for (const c of itemsRaw) {
+      if (c.value_.hasRan) {
+        this.replayPath.push(true);
+        items.push(c);
+      } else this.replayPath.push(false);
+    }
+    return items;
+  }
+  /** Filter commands based on the internal replay state */
+  private filterOnReplay(itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
+    return itemsRaw.filter((c, idx) => {
+      const state = this.replayPath[this.replayPathPosition + idx];
+      if (state === undefined) throw new Error(`Too short replayPath`);
+      if (!state && c.value_.hasRan) throw new Error(`Mismatch between replayPath and real execution`);
+      return state;
+    });
+  }
+  /** Filter commands for shrinking purposes */
+  private filterForShrinkImpl(itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
     if (this.replayPathPosition === 0) {
       this.replayPath = this.sourceReplayPath !== null ? ReplayPath.parse(this.sourceReplayPath) : [];
     }
-    const items: typeof itemsRaw = [];
-    for (let idx = 0; idx !== itemsRaw.length; ++idx) {
-      const c = itemsRaw[idx];
-      if (this.replayPathPosition < this.replayPath.length) {
-        // we still have replay data for this execution, we apply it
-        if (this.replayPath[this.replayPathPosition]) items.push(c);
-        // checking for mismatches to stop the run in case the replay data is wrong
-        else if (c.value_.hasRan) throw new Error(`Mismatch between replayPath and real execution`);
-      } else {
-        // we do not any replay data, we check the real status
-        if (c.value_.hasRan) {
-          this.replayPath.push(true);
-          items.push(c);
-        } else this.replayPath.push(false);
-      }
-      ++this.replayPathPosition;
-    }
+    const items =
+      this.replayPathPosition < this.replayPath.length
+        ? this.filterOnReplay(itemsRaw)
+        : this.filterOnExecution(itemsRaw);
+    this.replayPathPosition += itemsRaw.length;
     return items;
   }
   private shrinkImpl(
     itemsRaw: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[],
     shrunkOnce: boolean
   ): Stream<Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]> {
-    const items = this.filterNonExecuted(itemsRaw); // filter out commands that have not been executed
+    const items = this.filterForShrinkImpl(itemsRaw); // filter out commands that have not been executed
     if (items.length === 0) {
       return Stream.nil<Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>();
     }
