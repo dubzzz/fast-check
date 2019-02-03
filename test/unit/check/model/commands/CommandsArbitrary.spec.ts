@@ -216,7 +216,7 @@ describe('CommandWrapper', () => {
         })
       );
     });
-    it.only('Should shrink the same way when based on replay data', () => {
+    it('Should shrink the same way when based on replay data', () => {
       fc.assert(
         fc.property(fc.integer().noShrink(), fc.nat(100), (seed, numValues) => {
           // create unused logOnCheck
