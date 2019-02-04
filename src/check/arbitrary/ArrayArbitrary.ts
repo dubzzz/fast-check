@@ -46,9 +46,9 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const size = this.lengthArb.generate(mrng);
-    const items: Shrinkable<T>[] = Array(size.value);
+    const items: Shrinkable<T>[] = [];
     for (let idx = 0; idx !== size.value; ++idx) {
-      items[idx] = this.arb.generate(mrng);
+      items.push(this.arb.generate(mrng));
     }
     return this.wrapper(items, false);
   }
