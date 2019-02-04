@@ -29,10 +29,10 @@ export class ReplayPath {
   }
   /** Base64 value to number */
   private static b64ToInt(c: string): number {
-    if ('A' <= c && c <= 'Z') return c.charCodeAt(0) - 65;
-    if ('a' <= c && c <= 'z') return c.charCodeAt(0) - 97 + 26;
-    if ('0' <= c && c <= '9') return c.charCodeAt(0) - 48 + 52;
-    return c === '+' ? 62 : 63;
+    if (c >= 'a' /*\x61*/) return c.charCodeAt(0) - 97 + 26;
+    if (c >= 'A' /*\x41*/) return c.charCodeAt(0) - 65;
+    if (c >= '0' /*\x30*/) return c.charCodeAt(0) - 48 + 52;
+    return c === '+' ? 62 : 63; // \x2b or \x2f
   }
   /**
    * Divide an incoming replayPath into an array of {value, count}
