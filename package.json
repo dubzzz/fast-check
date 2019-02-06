@@ -2,7 +2,6 @@
   "name": "fast-check",
   "version": "1.9.2",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
-  "browser": "lib/bundle.js",
   "main": "lib/fast-check.js",
   "module": "lib/esm/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
