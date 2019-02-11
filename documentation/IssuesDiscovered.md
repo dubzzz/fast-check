@@ -4,11 +4,11 @@
 
 **Statistics:** ~40000⭐ - *Jan 2019*
 
-**Issue detected #1:** counting sort algorithm was really badly handling negative integer values \[[more](https://github.com/trekhleb/javascript-algorithms/pull/100)\]
+**Issue detected:** counting sort algorithm was really badly handling negative integer values \[[more](https://github.com/trekhleb/javascript-algorithms/pull/100)\]
 
 **Code example:** `sort([-1])` produces `[null]`
 
-**Issue detected #2:** knutt morris pratt implementation considered `""` was not a substring of `""` \[[more](https://github.com/trekhleb/javascript-algorithms/pull/101)\]
+**Issue detected:** knutt morris pratt implementation considered `""` was not a substring of `""` \[[more](https://github.com/trekhleb/javascript-algorithms/pull/101)\]
 
 **Code example:**
 
@@ -17,7 +17,7 @@ knuthMorrisPratt("", "")   //=> -1
 knuthMorrisPratt("a", "a") //=> 0
 ```
 
-**Issue detected #3:** integer overflows and rounding issues in the implementation of rabin karp \[[more](https://github.com/trekhleb/javascript-algorithms/pull/102)\]\[[+](https://github.com/trekhleb/javascript-algorithms/pull/110)\]
+**Issue detected:** integer overflows and rounding issues in the implementation of rabin karp \[[more](https://github.com/trekhleb/javascript-algorithms/pull/102)\]\[[+](https://github.com/trekhleb/javascript-algorithms/pull/110)\]
 
 **Code example:**
 
@@ -32,7 +32,7 @@ rabinKarp("\u0000耀\u0000","耀\u0000")) //=> -1
 // After 2nd fix
 ```
 
-**Issue detected #4:** longest common substring algorithm not properly handling unicode characters outside BMP plan \[[more](https://github.com/trekhleb/javascript-algorithms/pull/129)\]
+**Issue detected:** longest common substring algorithm not properly handling unicode characters outside BMP plan \[[more](https://github.com/trekhleb/javascript-algorithms/pull/129)\]
 
 **Code example:**
 
@@ -92,3 +92,11 @@ YAML.parse('- - :,\n')   //=> YAMLSyntaxError: Document is not valid YAML (bad i
 YAML.parse(YAML.stringify([{k: `!""""""""""""""""""""""""""""""""""#"\\ '`}]))
 //=> [{k: `!""""""""""""""""""""""""""""""""""#"\\'`}]
 ```
+
+## [blakeembrey/javascript-stringify](https://github.com/blakeembrey/javascript-stringify/)
+
+**Statistics:** ~50⭐ ~250k/wk downloads📈 - *Feb 2019*
+
+**Issue detected:** `-0` was not stringified correctly \[[more](https://github.com/blakeembrey/javascript-stringify/pull/20)\]
+
+**Code example:** `stringify(-0)` produces `"0"` instead of `"-0"`
