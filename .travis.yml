@@ -46,8 +46,11 @@ jobs:
       env: STEP=ROLLUP
       script:
         - npm run prebuild
+        - npm run build:publish-cjs
         - npm run build:publish-esm
-        - npm run test:rollup
+        - npm run webbuild
+        - npm run test:rollup-esm
+        - npm run test:rollup-iife
     - stage: test
       env: STEP=HEAD
       script:
