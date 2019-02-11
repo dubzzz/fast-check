@@ -2,9 +2,9 @@ import resolve from 'rollup-plugin-node-resolve';
 import cjs from 'rollup-plugin-commonjs';
 
 export default {
-  input: 'test/rollup/main.js',
+  input: 'test/rollup/esm/main.js',
   output: {
-    file: 'test/rollup/dist/main.js',
+    file: 'test/rollup/esm/dist/main.js',
     format: 'iife',
     name: 'RunFastCheck'
   },
