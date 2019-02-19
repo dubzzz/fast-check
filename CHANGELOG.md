@@ -1,3 +1,11 @@
+# 1.10.1
+
+_Fix browser bundle_
+
+## Fixes
+
+- ([ISSUE#304](https://github.com/dubzzz/fast-check/issues/304)) Fix browser bundle
+
 # 1.10.0
 
 _Better shrinking of commands_
@@ -7,6 +15,14 @@ _Better shrinking of commands_
 - ([PR#280](https://github.com/dubzzz/fast-check/pull/280)) Better shrinking of commands
 
 ---
+
+# 1.9.3
+
+_Fix browser bundle_
+
+## Fixes
+
+- ([ISSUE#304](https://github.com/dubzzz/fast-check/issues/304)) Fix browser bundle
 
 # 1.9.2
 
