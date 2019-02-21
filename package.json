@@ -53,7 +53,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.10",
     "@types/lorem-ipsum": "^1.0.2",
-    "@types/node": "^10.12.9",
+    "@types/node": "^11.9.4",
     "benchmark": "^2.1.4",
     "browserify": "^16.2.3",
     "coveralls": "^3.0.2",
