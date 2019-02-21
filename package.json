@@ -51,7 +51,7 @@
     "pure-rand": "^1.6.2"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.10",
+    "@types/jest": "^24.0.6",
     "@types/lorem-ipsum": "^1.0.2",
     "@types/node": "^10.12.9",
     "benchmark": "^2.1.4",
