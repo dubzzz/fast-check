@@ -12,6 +12,7 @@ import { boolean } from './check/arbitrary/BooleanArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
 import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
 import { context, Context } from './check/arbitrary/ContextArbitrary';
+import { dedup } from './check/arbitrary/DedupArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
@@ -114,6 +115,7 @@ export {
   option,
   oneof,
   frequency,
+  dedup,
   shuffledSubarray,
   subarray,
   array,
