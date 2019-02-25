@@ -13,8 +13,10 @@ function stringifyNumber(numValue: number) {
 }
 
 /** @hidden */
-function stringifyOne<Ts>(value: Ts): string {
+export function stringify<Ts>(value: Ts): string {
   switch (Object.prototype.toString.call(value)) {
+    case '[object Array]':
+      return `[${(value as any).map(stringify).join(',')}]`;
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]':
@@ -48,10 +50,4 @@ function stringifyOne<Ts>(value: Ts): string {
         return Object.prototype.toString.call(value);
       }
   }
-}
-
-/** @hidden */
-export function stringify<Ts>(value: Ts): string {
-  if (Array.isArray(value)) return `[${value.map(stringify).join(',')}]`;
-  return stringifyOne(value);
 }
