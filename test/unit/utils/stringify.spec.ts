@@ -44,6 +44,15 @@ describe('stringify', () => {
         expect(stringify(a)).not.toEqual(stringify(b));
       })
     ));
+  it('Should be able to stringify cyclic object', () => {
+    let cyclic: any = { a: 1, b: 2, c: 3 };
+    cyclic.b = cyclic;
+    const repr = stringify(cyclic);
+    expect(repr).toContain('"a"');
+    expect(repr).toContain('"b"');
+    expect(repr).toContain('"c"');
+    expect(repr).toContain('[cyclic]');
+  });
   it('Should be able to stringify values', () => {
     expect(stringify(null)).toEqual('null');
     expect(stringify(undefined)).toEqual('undefined');
