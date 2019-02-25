@@ -30,13 +30,18 @@ export function stringify<Ts>(value: Ts): string {
     case '[object Object]':
       const defaultRepr: string = `${value}`;
       if (defaultRepr !== '[object Object]') return defaultRepr;
-      return (
-        '{' +
-        Object.keys(value)
-          .map(k => `${JSON.stringify(k)}:${stringify((value as any)[k])}`)
-          .join(',') +
-        '}'
-      );
+      try {
+        return (
+          '{' +
+          Object.keys(value)
+            .map(k => `${JSON.stringify(k)}:${stringify((value as any)[k])}`)
+            .join(',') +
+          '}'
+        );
+      } catch (err) {
+        if (err instanceof RangeError) return '[cyclic]';
+        return '[object Object]';
+      }
     case '[object Set]':
       return `new Set(${stringify(Array.from(value as any))})`;
     case '[object String]':
