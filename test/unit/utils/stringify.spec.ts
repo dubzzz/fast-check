@@ -31,6 +31,12 @@ describe('stringify', () => {
         }
       )
     ));
+  it('Should be readable from eval', () =>
+    fc.assert(
+      fc.property(fc.anything(), obj => {
+        expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj);
+      })
+    ));
   it('Should stringify differently distinct objects', () =>
     fc.assert(
       fc.property(fc.anything(), fc.anything(), (a, b) => {
