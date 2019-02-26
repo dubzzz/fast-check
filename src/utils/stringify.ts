@@ -13,46 +13,55 @@ function stringifyNumber(numValue: number) {
 }
 
 /** @hidden */
-export function stringify<Ts>(value: Ts): string {
+export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string {
+  const currentValues = previousValues.concat([value]);
+  if (typeof value === 'object') {
+    // early cycle detection for objects
+    if (previousValues.indexOf(value) !== -1) return '[cyclic]';
+  }
   switch (Object.prototype.toString.call(value)) {
     case '[object Array]':
-      return `[${(value as any).map(stringify).join(',')}]`;
+      return `[${(value as any).map((v: any) => stringifyInternal(v, currentValues)).join(',')}]`;
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]':
       return typeof value === 'boolean' ? JSON.stringify(value) : `new Boolean(${JSON.stringify(value)})`;
     case '[object Map]':
-      return `new Map(${stringify(Array.from(value as any))})`;
+      return `new Map(${stringifyInternal(Array.from(value as any), currentValues)})`;
     case '[object Null]':
       return `null`;
     case '[object Number]':
       return typeof value === 'number' ? stringifyNumber(value) : `new Number(${stringifyNumber(Number(value))})`;
     case '[object Object]':
-      const defaultRepr: string = `${value}`;
-      if (defaultRepr !== '[object Object]') return defaultRepr;
       try {
+        const defaultRepr: string = value.toString();
+        if (defaultRepr !== '[object Object]') return defaultRepr;
         return (
           '{' +
           Object.keys(value)
-            .map(k => `${JSON.stringify(k)}:${stringify((value as any)[k])}`)
+            .map(k => `${JSON.stringify(k)}:${stringifyInternal((value as any)[k], currentValues)}`)
             .join(',') +
           '}'
         );
       } catch (err) {
-        if (err instanceof RangeError) return '[cyclic]';
         return '[object Object]';
       }
     case '[object Set]':
-      return `new Set(${stringify(Array.from(value as any))})`;
+      return `new Set(${stringifyInternal(Array.from(value as any), currentValues)})`;
     case '[object String]':
       return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
     case '[object Undefined]':
       return `undefined`;
     default:
       try {
-        return `${value}`;
+        return value.toString();
       } catch {
         return Object.prototype.toString.call(value);
       }
   }
+}
+
+/** @hidden */
+export function stringify<Ts>(value: Ts): string {
+  return stringifyInternal(value, []);
 }

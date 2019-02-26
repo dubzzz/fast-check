@@ -13,6 +13,19 @@ const checkEqual = (a: any, b: any): boolean => {
   }
 };
 
+class ThrowingToString {
+  toString = () => {
+    throw new Error('No toString');
+  };
+}
+
+class CustomTagThrowingToString {
+  [Symbol.toStringTag] = 'CustomTagThrowingToString';
+  toString = () => {
+    throw new Error('No toString');
+  };
+}
+
 describe('stringify', () => {
   it('Should be able to stringify fc.anything()', () =>
     fc.assert(fc.property(fc.anything(), a => typeof stringify(a) === 'string')));
@@ -52,6 +65,30 @@ describe('stringify', () => {
     expect(repr).toContain('"b"');
     expect(repr).toContain('"c"');
     expect(repr).toContain('[cyclic]');
+    expect(repr).toEqual('{"a":1,"b":[cyclic],"c":3}');
+  });
+  it('Should be able to stringify cyclic arrays', () => {
+    let cyclic: any[] = [1, 2, 3];
+    cyclic.push(cyclic);
+    cyclic.push(4);
+    const repr = stringify(cyclic);
+    expect(repr).toEqual('[1,2,3,[cyclic],4]');
+  });
+  it('Should be able to stringify cyclic sets', () => {
+    let cyclic: Set<any> = new Set([1, 2, 3]);
+    cyclic.add(cyclic);
+    cyclic.add(4);
+    const repr = stringify(cyclic);
+    expect(repr).toEqual('new Set([1,2,3,[cyclic],4])');
+  });
+  it('Should be able to stringify cyclic maps', () => {
+    let cyclic: Map<any, any> = new Map();
+    cyclic.set(1, 2);
+    cyclic.set(3, cyclic);
+    cyclic.set(cyclic, 4);
+    cyclic.set(5, 6);
+    const repr = stringify(cyclic);
+    expect(repr).toEqual('new Map([[1,2],[3,[cyclic]],[[cyclic],4],[5,6]])');
   });
   it('Should be able to stringify values', () => {
     expect(stringify(null)).toEqual('null');
@@ -81,5 +118,12 @@ describe('stringify', () => {
   });
   it('Should be able to stringify Map', () => {
     expect(stringify(new Map([[1, 2]]))).toEqual('new Map([[1,2]])');
+  });
+  it('Should be able to stringify Symbol', () => {
+    expect(stringify(Symbol.for('fc'))).toEqual('Symbol(fc)');
+  });
+  it('Should be only produce toStringTag for failing toString', () => {
+    expect(stringify(new ThrowingToString())).toEqual('[object Object]');
+    expect(stringify(new CustomTagThrowingToString())).toEqual('[object CustomTagThrowingToString]');
   });
 });
