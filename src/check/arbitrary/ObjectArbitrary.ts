@@ -55,23 +55,25 @@ export class ObjectConstraints {
     const boxedValuesEnabled = getOr(() => settings!.withBoxedValues, false);
     const rawValueArbs = getOr(() => settings!.values, ObjectConstraints.defaultValues());
     const valueArbs = boxedValuesEnabled
-      ? rawValueArbs.map(arb =>
-          arb.map(v => {
-            switch (typeof v) {
-              case 'boolean':
-                // tslint:disable-next-line:no-construct
-                return new Boolean(v);
-              case 'number':
-                // tslint:disable-next-line:no-construct
-                return new Number(v);
-              case 'string':
-                // tslint:disable-next-line:no-construct
-                return new String(v);
-              default:
-                return v;
-            }
-          })
-        )
+      ? rawValueArbs
+          .map(arb =>
+            arb.map(v => {
+              switch (typeof v) {
+                case 'boolean':
+                  // tslint:disable-next-line:no-construct
+                  return new Boolean(v);
+                case 'number':
+                  // tslint:disable-next-line:no-construct
+                  return new Number(v);
+                case 'string':
+                  // tslint:disable-next-line:no-construct
+                  return new String(v);
+                default:
+                  return v;
+              }
+            })
+          )
+          .concat(rawValueArbs)
       : rawValueArbs;
     return new ObjectConstraints(
       getOr(() => settings!.key, string()),
