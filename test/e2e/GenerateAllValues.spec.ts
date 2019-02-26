@@ -52,4 +52,56 @@ describe(`Generate all values (seed: ${seed})`, () => {
         fc.property(fc.set(fc.string(), 1, 40), csts => lookForMissing(fc.constantFrom(...csts), csts.length))
       ));
   });
+  describe('fc.object()', () => {
+    it('should be able to generate boxed Boolean', () => {
+      const mrng = new fc.Random(prand.xorshift128plus(seed));
+      const arb = fc.object({ withBoxedValues: true });
+      while (true) {
+        const { value } = arb.generate(mrng);
+        if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object Boolean]') {
+          return;
+        }
+      }
+    });
+    it('should be able to generate boxed Number', () => {
+      const mrng = new fc.Random(prand.xorshift128plus(seed));
+      const arb = fc.object({ withBoxedValues: true });
+      while (true) {
+        const { value } = arb.generate(mrng);
+        if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object Number]') {
+          return;
+        }
+      }
+    });
+    it('should be able to generate boxed String', () => {
+      const mrng = new fc.Random(prand.xorshift128plus(seed));
+      const arb = fc.object({ withBoxedValues: true });
+      while (true) {
+        const { value } = arb.generate(mrng);
+        if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object String]') {
+          return;
+        }
+      }
+    });
+    it('should be able to generate Set', () => {
+      const mrng = new fc.Random(prand.xorshift128plus(seed));
+      const arb = fc.object({ withSet: true });
+      while (true) {
+        const { value } = arb.generate(mrng);
+        if (Object.prototype.toString.call(value) === '[object Set]') {
+          return;
+        }
+      }
+    });
+    it('should be able to generate Map', () => {
+      const mrng = new fc.Random(prand.xorshift128plus(seed));
+      const arb = fc.object({ withMap: true });
+      while (true) {
+        const { value } = arb.generate(mrng);
+        if (Object.prototype.toString.call(value) === '[object Map]') {
+          return;
+        }
+      }
+    });
+  });
 });
