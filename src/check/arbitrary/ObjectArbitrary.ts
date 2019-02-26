@@ -48,36 +48,42 @@ export class ObjectConstraints {
     ];
   }
 
+  /** @hidden */
+  private static boxArbitraries(arbs: Arbitrary<any>[]): Arbitrary<any>[] {
+    return arbs.map(arb =>
+      arb.map(v => {
+        switch (typeof v) {
+          case 'boolean':
+            // tslint:disable-next-line:no-construct
+            return new Boolean(v);
+          case 'number':
+            // tslint:disable-next-line:no-construct
+            return new Number(v);
+          case 'string':
+            // tslint:disable-next-line:no-construct
+            return new String(v);
+          default:
+            return v;
+        }
+      })
+    );
+  }
+
+  /** @hidden */
+  private static boxArbitrariesIfNeeded(arbs: Arbitrary<any>[], boxEnabled: boolean): Arbitrary<any>[] {
+    return boxEnabled ? this.boxArbitraries(arbs).concat(arbs) : arbs;
+  }
+
   static from(settings?: ObjectConstraints.Settings): ObjectConstraints {
     function getOr<T>(access: () => T | undefined, value: T): T {
       return settings != null && access() != null ? access()! : value;
     }
-    const boxedValuesEnabled = getOr(() => settings!.withBoxedValues, false);
-    const rawValueArbs = getOr(() => settings!.values, ObjectConstraints.defaultValues());
-    const valueArbs = boxedValuesEnabled
-      ? rawValueArbs
-          .map(arb =>
-            arb.map(v => {
-              switch (typeof v) {
-                case 'boolean':
-                  // tslint:disable-next-line:no-construct
-                  return new Boolean(v);
-                case 'number':
-                  // tslint:disable-next-line:no-construct
-                  return new Number(v);
-                case 'string':
-                  // tslint:disable-next-line:no-construct
-                  return new String(v);
-                default:
-                  return v;
-              }
-            })
-          )
-          .concat(rawValueArbs)
-      : rawValueArbs;
     return new ObjectConstraints(
       getOr(() => settings!.key, string()),
-      valueArbs,
+      this.boxArbitrariesIfNeeded(
+        getOr(() => settings!.values, ObjectConstraints.defaultValues()),
+        getOr(() => settings!.withBoxedValues, false)
+      ),
       getOr(() => settings!.maxDepth, 2),
       getOr(() => settings!.withSet, false),
       getOr(() => settings!.withMap, false)

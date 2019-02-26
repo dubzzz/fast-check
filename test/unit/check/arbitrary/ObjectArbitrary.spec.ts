@@ -8,7 +8,8 @@ import {
   jsonObject,
   unicodeJsonObject,
   json,
-  unicodeJson
+  unicodeJson,
+  ObjectConstraints
 } from '../../../../src/check/arbitrary/ObjectArbitrary';
 
 import * as stubRng from '../../stubs/generators';
@@ -104,6 +105,95 @@ describe('ObjectArbitrary', () => {
           } // only check one shrink path
           assertShrinkedValue(originalValue, shrinkable.value);
         })
+      ));
+    const checkProduce = (settings: ObjectConstraints.Settings, f: (v: any) => boolean) => {
+      let numRuns = 0;
+      const seed = 0;
+      const mrng = stubRng.mutable.fastincrease(seed);
+      const arb = anything(settings);
+      while (++numRuns <= 1000) {
+        if (f(arb.generate(mrng).value)) return;
+      }
+      fail('Failed to generate the expected value');
+    };
+    const checkProduceBoxed = <T>(className: string, basicValue: T) => {
+      return checkProduce(
+        { values: [constant(basicValue)], maxDepth: 0, withBoxedValues: true },
+        v => typeof v === 'object' && Object.prototype.toString.call(v) === `[object ${className}]`
+      );
+    };
+    const checkProduceUnboxed = <T>(basicValue: T) => {
+      return checkProduce(
+        { values: [constant(basicValue)], maxDepth: 0, withBoxedValues: true },
+        v => v === basicValue
+      );
+    };
+    it('Should be able to produce boxed Boolean', () => checkProduceBoxed('Boolean', true));
+    it('Should be able to produce boxed Number', () => checkProduceBoxed('Number', 1));
+    it('Should be able to produce boxed String', () => checkProduceBoxed('String', ''));
+    it('Should be able to produce unboxed Boolean', () => checkProduceUnboxed(true));
+    it('Should be able to produce unboxed Number', () => checkProduceUnboxed(1));
+    it('Should be able to produce unboxed String', () => checkProduceUnboxed(''));
+    it('Should be able to produce Set', () =>
+      checkProduce({ values: [constant(0)], maxDepth: 1, withSet: true }, v => v instanceof Set));
+    it('Should be able to produce Map', () =>
+      checkProduce({ values: [constant(0)], maxDepth: 1, withMap: true }, v => v instanceof Map));
+    it('Should not be able to produce Array if maxDepth is zero', () =>
+      fc.assert(
+        fc.property(fc.integer(), seed => {
+          const settings = { maxDepth: 0 };
+          const mrng = stubRng.mutable.fastincrease(seed);
+          return !(anything(settings).generate(mrng).value instanceof Array);
+        })
+      ));
+    it('Should not be able to produce Set if maxDepth is zero', () =>
+      fc.assert(
+        fc.property(fc.integer(), seed => {
+          const settings = { maxDepth: 0, withSet: true };
+          const mrng = stubRng.mutable.fastincrease(seed);
+          return !(anything(settings).generate(mrng).value instanceof Set);
+        })
+      ));
+    it('Should not be able to produce Map if maxDepth is zero', () =>
+      fc.assert(
+        fc.property(fc.integer(), seed => {
+          const settings = { maxDepth: 0, withMap: true };
+          const mrng = stubRng.mutable.fastincrease(seed);
+          return !(anything(settings).generate(mrng).value instanceof Map);
+        })
+      ));
+    it('Should take maxDepth into account whatever the other settings', () =>
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.nat(10),
+          fc.record(
+            {
+              key: fc.constant(constant('single-key')),
+              values: fc.constant([constant('single-value')]),
+              withBoxedValues: fc.boolean(),
+              withMap: fc.boolean(),
+              withSet: fc.boolean()
+            },
+            { withDeletedKeys: true }
+          ),
+          (seed, maxDepth, settings) => {
+            const mrng = stubRng.mutable.fastincrease(seed);
+            const v = anything({ ...settings, maxDepth }).generate(mrng).value;
+            const depthEvaluator = (node: any): number => {
+              let subNodes: any[] = [];
+              if (Array.isArray(node)) subNodes.concat(node);
+              else if (node instanceof Set) subNodes.concat(Array.from(node));
+              else if (node instanceof Map)
+                subNodes.concat(Array.from(node).map(t => t[0]), Array.from(node).map(t => t[1]));
+              else if (Object.prototype.toString.call(node) === '[object Object]') {
+                for (const k of Object.keys(node)) subNodes.push(node[k]);
+              } else return 0;
+              return subNodes.reduce((max, subNode) => Math.max(max, depthEvaluator(subNode)), 0) + 1;
+            };
+            return depthEvaluator(v) <= maxDepth;
+          }
+        )
       ));
   });
   describe('json', () => {
