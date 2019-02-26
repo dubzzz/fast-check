@@ -95,6 +95,9 @@ export module ObjectConstraints {
         maxDepth?: number;         // maximal depth allowed for this object
         key?: Arbitrary<string>;   // arbitrary for key
         values?: Arbitrary<any>[]; // arbitrary responsible for base value
+        withBoxedValues?: boolean; // adapt all entries within `values` to generate boxed version of the value too
+        withMap?: boolean;         // also generate Map
+        withSet?: boolean;         // also generate Set
     };
 };
 ```
