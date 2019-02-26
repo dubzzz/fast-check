@@ -8,11 +8,18 @@ import { double } from './FloatingPointArbitrary';
 import { integer } from './IntegerArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { string, unicodeString } from './StringArbitrary';
+import { tuple } from './TupleArbitrary';
 
 export class ObjectConstraints {
-  constructor(readonly key: Arbitrary<string>, readonly values: Arbitrary<any>[], readonly maxDepth: number) {}
+  constructor(
+    readonly key: Arbitrary<string>,
+    readonly values: Arbitrary<any>[],
+    readonly maxDepth: number,
+    readonly withSet: boolean,
+    readonly withMap: boolean
+  ) {}
   next(): ObjectConstraints {
-    return new ObjectConstraints(this.key, this.values, this.maxDepth - 1);
+    return new ObjectConstraints(this.key, this.values, this.maxDepth - 1, this.withSet, this.withMap);
   }
 
   /**
@@ -45,10 +52,33 @@ export class ObjectConstraints {
     function getOr<T>(access: () => T | undefined, value: T): T {
       return settings != null && access() != null ? access()! : value;
     }
+    const boxedValuesEnabled = getOr(() => settings!.withBoxedValues, false);
+    const rawValueArbs = getOr(() => settings!.values, ObjectConstraints.defaultValues());
+    const valueArbs = boxedValuesEnabled
+      ? rawValueArbs.map(arb =>
+          arb.map(v => {
+            switch (typeof v) {
+              case 'boolean':
+                // tslint:disable-next-line:no-construct
+                return new Boolean(v);
+              case 'number':
+                // tslint:disable-next-line:no-construct
+                return new Number(v);
+              case 'string':
+                // tslint:disable-next-line:no-construct
+                return new String(v);
+              default:
+                return v;
+            }
+          })
+        )
+      : rawValueArbs;
     return new ObjectConstraints(
       getOr(() => settings!.key, string()),
-      getOr(() => settings!.values, ObjectConstraints.defaultValues()),
-      getOr(() => settings!.maxDepth, 2)
+      valueArbs,
+      getOr(() => settings!.maxDepth, 2),
+      getOr(() => settings!.withSet, false),
+      getOr(() => settings!.withMap, false)
     );
   }
 }
@@ -87,6 +117,12 @@ export namespace ObjectConstraints {
      *  - `Number.NEGATIVE_INFINITY`
      */
     values?: Arbitrary<any>[];
+    /** Also generate boxed versions of values */
+    withBoxedValues?: boolean;
+    /** Also generate Set */
+    withSet?: boolean;
+    /** Also generate Map */
+    withMap?: boolean;
   }
 }
 
@@ -94,12 +130,25 @@ export namespace ObjectConstraints {
 const anythingInternal = (subConstraints: ObjectConstraints): Arbitrary<any> => {
   const potentialArbValue = [...subConstraints.values]; // base
   if (subConstraints.maxDepth > 0) {
-    potentialArbValue.push(objectInternal(subConstraints.next())); // sub-object
+    const subAnythingArb = anythingInternal(subConstraints.next());
+    potentialArbValue.push(dictionary(subConstraints.key, subAnythingArb)); // sub-object
     potentialArbValue.push(...subConstraints.values.map(arb => array(arb))); // arrays of base
-    potentialArbValue.push(array(anythingInternal(subConstraints.next()))); // mixed content arrays
+    potentialArbValue.push(array(subAnythingArb)); // mixed content arrays
+    if (subConstraints.withMap) {
+      potentialArbValue.push(array(tuple(subConstraints.key, subAnythingArb)).map(v => new Map(v))); // map string -> obj
+      potentialArbValue.push(array(tuple(subAnythingArb, subAnythingArb)).map(v => new Map(v))); // map obj -> obj
+    }
+    if (subConstraints.withSet) {
+      potentialArbValue.push(...subConstraints.values.map(arb => array(arb).map(v => new Set(v)))); // arrays of base
+      potentialArbValue.push(array(subAnythingArb).map(v => new Set(v))); // mixed content arrays
+    }
   }
   if (subConstraints.maxDepth > 1) {
-    potentialArbValue.push(array(objectInternal(subConstraints.next().next()))); // array of Object
+    const subSubObjectArb = objectInternal(subConstraints.next().next());
+    potentialArbValue.push(array(subSubObjectArb)); // array of Object
+    if (subConstraints.withSet) {
+      potentialArbValue.push(array(subSubObjectArb).map(v => new Set(v))); // set of Object
+    }
   }
   return oneof(...potentialArbValue);
 };
