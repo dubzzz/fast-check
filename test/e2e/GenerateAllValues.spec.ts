@@ -52,56 +52,31 @@ describe(`Generate all values (seed: ${seed})`, () => {
         fc.property(fc.set(fc.string(), 1, 40), csts => lookForMissing(fc.constantFrom(...csts), csts.length))
       ));
   });
-  describe('fc.object()', () => {
-    it('should be able to generate boxed Boolean', () => {
-      const mrng = new fc.Random(prand.xorshift128plus(seed));
-      const arb = fc.object({ withBoxedValues: true });
-      while (true) {
-        const { value } = arb.generate(mrng);
-        if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object Boolean]') {
-          return;
+  describe('fc.anything()', () => {
+    const checkCanProduce = (label: string, typeofLabel: string, toStringLabel: string) => {
+      it(`should be able to generate ${label}`, () => {
+        let numTries = 0;
+        const mrng = new fc.Random(prand.xorshift128plus(seed));
+        const arb = fc.anything({ withBoxedValues: true, withMap: true, withSet: true });
+        while (++numTries <= 10000) {
+          const { value } = arb.generate(mrng);
+          if (typeof value === typeofLabel && Object.prototype.toString.call(value) === toStringLabel) {
+            return;
+          }
         }
-      }
-    });
-    it('should be able to generate boxed Number', () => {
-      const mrng = new fc.Random(prand.xorshift128plus(seed));
-      const arb = fc.object({ withBoxedValues: true });
-      while (true) {
-        const { value } = arb.generate(mrng);
-        if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object Number]') {
-          return;
-        }
-      }
-    });
-    it('should be able to generate boxed String', () => {
-      const mrng = new fc.Random(prand.xorshift128plus(seed));
-      const arb = fc.object({ withBoxedValues: true });
-      while (true) {
-        const { value } = arb.generate(mrng);
-        if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object String]') {
-          return;
-        }
-      }
-    });
-    it('should be able to generate Set', () => {
-      const mrng = new fc.Random(prand.xorshift128plus(seed));
-      const arb = fc.object({ withSet: true });
-      while (true) {
-        const { value } = arb.generate(mrng);
-        if (Object.prototype.toString.call(value) === '[object Set]') {
-          return;
-        }
-      }
-    });
-    it('should be able to generate Map', () => {
-      const mrng = new fc.Random(prand.xorshift128plus(seed));
-      const arb = fc.object({ withMap: true });
-      while (true) {
-        const { value } = arb.generate(mrng);
-        if (Object.prototype.toString.call(value) === '[object Map]') {
-          return;
-        }
-      }
-    });
+        fail(`Was not able to generate ${label}`);
+      });
+    };
+    checkCanProduce('null', 'object', '[object Null]');
+    checkCanProduce('undefined', 'undefined', '[object Undefined]');
+    checkCanProduce('boolean', 'boolean', '[object Boolean]');
+    checkCanProduce('number', 'number', '[object Number]');
+    checkCanProduce('string', 'string', '[object String]');
+    checkCanProduce('boxed Boolean', 'object', '[object Boolean]');
+    checkCanProduce('boxed Number', 'object', '[object Number]');
+    checkCanProduce('boxed String', 'object', '[object String]');
+    checkCanProduce('Array', 'object', '[object Array]');
+    checkCanProduce('Set', 'object', '[object Set]');
+    checkCanProduce('Map', 'object', '[object Map]');
   });
 });
