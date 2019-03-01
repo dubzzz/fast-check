@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "main": "lib/fast-check.js",
   "module": "lib/esm/fast-check.js",
