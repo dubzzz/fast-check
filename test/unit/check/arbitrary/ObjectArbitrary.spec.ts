@@ -196,6 +196,39 @@ describe('ObjectArbitrary', () => {
           }
         )
       ));
+    it('Should be correctly balanced', () => {
+      const numTests = 1000;
+      const seed = 0;
+      const mrng = new Random(prand.xorshift128plus(seed));
+      const arb = anything({ withMap: true, withSet: true });
+      const counters = { numObjects: 0, numArrays: 0, numSets: 0, numMaps: 0, numOthers: 0 };
+      for (let idx = 0; idx !== numTests; ++idx) {
+        const v = arb.generate(mrng).value;
+        switch (Object.prototype.toString.call(v)) {
+          case '[object Array]':
+            ++counters.numArrays;
+            break;
+          case '[object Map]':
+            ++counters.numMaps;
+            break;
+          case '[object Object]':
+            ++counters.numObjects;
+            break;
+          case '[object Set]':
+            ++counters.numSets;
+            break;
+          default:
+            ++counters.numOthers;
+            break;
+        }
+      }
+      // We check that each bucket receive at list 15 % of the values
+      expect(counters.numArrays / numTests).toBeGreaterThanOrEqual(0.15);
+      expect(counters.numMaps / numTests).toBeGreaterThanOrEqual(0.15);
+      expect(counters.numObjects / numTests).toBeGreaterThanOrEqual(0.15);
+      expect(counters.numSets / numTests).toBeGreaterThanOrEqual(0.15);
+      expect(counters.numSets / numTests).toBeGreaterThanOrEqual(0.15);
+    });
   });
   describe('json', () => {
     it('Should produce strings', () =>
