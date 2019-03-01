@@ -7,6 +7,7 @@ import { dictionary } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { integer } from './IntegerArbitrary';
 import { oneof } from './OneOfArbitrary';
+import { set } from './SetArbitrary';
 import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 
@@ -135,30 +136,77 @@ export namespace ObjectConstraints {
 }
 
 /** @hidden */
-const anythingInternal = (subConstraints: ObjectConstraints): Arbitrary<any> => {
-  const potentialArbValue = [...subConstraints.values]; // base
-  if (subConstraints.maxDepth > 0) {
-    const subAnythingArb = anythingInternal(subConstraints.next());
-    potentialArbValue.push(dictionary(subConstraints.key, subAnythingArb)); // sub-object
-    potentialArbValue.push(...subConstraints.values.map(arb => array(arb))); // arrays of base
-    potentialArbValue.push(array(subAnythingArb)); // mixed content arrays
-    if (subConstraints.withMap) {
-      potentialArbValue.push(array(tuple(subConstraints.key, subAnythingArb)).map(v => new Map(v))); // map string -> obj
-      potentialArbValue.push(array(tuple(subAnythingArb, subAnythingArb)).map(v => new Map(v))); // map obj -> obj
+const arrayOfAnything = (
+  arbKeys: Arbitrary<string>,
+  arbitrariesForBase: Arbitrary<any>[],
+  arbAny: Arbitrary<any>
+): Arbitrary<any[]> => {
+  return oneof(
+    oneof(...arbitrariesForBase.map(arb => array(arb))), // base[]
+    array(arbAny) // anything[]
+  );
+};
+
+/** @hidden */
+const setOfAnything = (
+  arbKeys: Arbitrary<string>,
+  arbitrariesForBase: Arbitrary<any>[],
+  arbAny: Arbitrary<any>
+): Arbitrary<Set<any>> => {
+  return oneof(
+    oneof(...arbitrariesForBase.map(arb => set(arb).map(v => new Set(v)))), // Set<base>
+    set(arbAny).map(v => new Set(v)) // Set<anything>
+  );
+};
+
+/** @hidden */
+const objectOfAnything = (
+  arbKeys: Arbitrary<string>,
+  arbitrariesForBase: Arbitrary<any>[],
+  arbAny: Arbitrary<any>
+): Arbitrary<{ [key: string]: any }> => {
+  return oneof(
+    oneof(...arbitrariesForBase.map(arb => dictionary(arbKeys, arb))), // {[key]: base}
+    dictionary(arbKeys, arbAny)
+  );
+};
+
+/** @hidden */
+const mapOfAnything = (
+  arbKeys: Arbitrary<string>,
+  arbitrariesForBase: Arbitrary<any>[],
+  arbAny: Arbitrary<any>
+): Arbitrary<Map<any, any>> => {
+  const mapOf = (keyArb: Arbitrary<any>, valueArb: Arbitrary<any>) =>
+    set(tuple(keyArb, valueArb), (t1, t2) => t1[0] === t2[0]).map(v => new Map(v));
+  return oneof(
+    oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys, arb))), // Map<key, base>
+    oneof(
+      mapOf(arbKeys, arbAny), // Map<key, anything>
+      mapOf(arbAny, arbAny) // Map<anything, anything>
+    )
+  );
+};
+
+/** @hidden */
+const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
+  const arbKeys = constraints.key;
+  const arbitrariesForBase = constraints.values;
+
+  const eligibleArbitraries: Arbitrary<any>[] = [];
+  eligibleArbitraries.push(oneof(...arbitrariesForBase)); // base
+  if (constraints.maxDepth > 0) {
+    const subArbAny = anythingInternal(constraints.next());
+    eligibleArbitraries.push(arrayOfAnything(arbKeys, arbitrariesForBase, subArbAny));
+    eligibleArbitraries.push(objectOfAnything(arbKeys, arbitrariesForBase, subArbAny));
+    if (constraints.withMap) {
+      eligibleArbitraries.push(mapOfAnything(arbKeys, arbitrariesForBase, subArbAny));
     }
-    if (subConstraints.withSet) {
-      potentialArbValue.push(...subConstraints.values.map(arb => array(arb).map(v => new Set(v)))); // arrays of base
-      potentialArbValue.push(array(subAnythingArb).map(v => new Set(v))); // mixed content arrays
+    if (constraints.withSet) {
+      eligibleArbitraries.push(setOfAnything(arbKeys, arbitrariesForBase, subArbAny));
     }
   }
-  if (subConstraints.maxDepth > 1) {
-    const subSubObjectArb = objectInternal(subConstraints.next().next());
-    potentialArbValue.push(array(subSubObjectArb)); // array of Object
-    if (subConstraints.withSet) {
-      potentialArbValue.push(array(subSubObjectArb).map(v => new Set(v))); // set of Object
-    }
-  }
-  return oneof(...potentialArbValue);
+  return oneof(...eligibleArbitraries);
 };
 
 /** @hidden */
