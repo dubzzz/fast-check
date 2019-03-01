@@ -1,3 +1,13 @@
+# 1.12.0
+
+_Better balance between values produced by `fc.anything()`_
+
+## Features
+
+- ([PR#325](https://github.com/dubzzz/fast-check/pull/325)) Better balance between values produced by `fc.anything()`
+
+---
+
 # 1.11.0
 
 _Replay ability for commands and new arbitraries_
