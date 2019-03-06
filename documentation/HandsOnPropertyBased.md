@@ -26,16 +26,16 @@ They have the interesting property that the suggested counterexample is the mini
 
 For instance: if whenever the string `a` contains `.` in it, the check above fails, then the counterexample would be `{a: '.', b: '', c: ''}` and not `{a: 'dfsdkf:!jk.fs', b: 'azda;', c: 'yyy§g'}`.
 
-## Setting up sample project
+## Setting up a sample project
 
 Initialize a new node project:
 
 ```bash
-:~$ mkdir sample-fast-check
-:~$ cd sample-fast-check
-:-$ npm init --yes
-:-$ npm install typescript ts-node
-:-$ echo "{}" > tsconfig.json
+mkdir sample-fast-check
+cd sample-fast-check
+npm init --yes
+npm install typescript ts-node
+echo "{}" > tsconfig.json
 ```
 
 Create a `src` folder and put the file `sort.ts` into it:
