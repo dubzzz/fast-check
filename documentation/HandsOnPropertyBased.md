@@ -69,8 +69,8 @@ export const sort = <T>(tab: T[]): T[] => {
 Install a test framework:
 
 ```bash
-:-$ npm install --save-dev jest ts-jest @types/jest
-:-$ mkdir specs ; touch specs/sort.spec.ts
+npm install --save-dev jest ts-jest @types/jest
+mkdir specs ; touch specs/sort.spec.ts
 ```
 
 Edit `package.json` to configure the test framework:
@@ -95,7 +95,7 @@ Edit `package.json` to configure the test framework:
 Install fast-check:
 
 ```bash
-:-$ npm install --save-dev fast-check
+npm install --save-dev fast-check
 ```
 
 The algorithm under test is an integer sorting algorithm. Basically here are some of the properties we might come with:
