@@ -3,6 +3,7 @@ node_js:
  - '10'
  - '8'
  - '6'
+ - '11'
 
 cache:
   directories:
