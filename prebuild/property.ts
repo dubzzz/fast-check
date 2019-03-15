@@ -20,24 +20,6 @@ const signatureFor = (num: number, isAsync: boolean): string => {
             predicate: ${predicateFor(num, isAsync)}
         ): ${className}<[${txCommas(num)}]>;`;
 };
-const finalSignatureFor = (num: number, isAsync: boolean): string => {
-  const functionName = isAsync ? 'asyncProperty' : 'property';
-  return `
-        function ${functionName}<${txCommas(num)}>(
-            ${commas(num, v => `arb${v}?: Arbitrary<T${v}> | (${predicateFor(v, isAsync)})`)},
-            arb${num}?: ${predicateFor(num, isAsync)}
-        ) {`;
-};
-const ifFor = (num: number, isAsync: boolean): string => {
-  const className = isAsync ? 'AsyncProperty' : 'Property';
-  return `
-        if (arb${num}) {
-            const p = arb${num} as ${predicateFor(num, isAsync)};
-            return new ${className}(
-                    tuple(${commas(num, v => `arb${v} as Arbitrary<T${v}>`)})
-                    , t => p(${commas(num, v => `t[${v}]`)}));
-        }`;
-};
 
 const generateProperty = (num: number, isAsync: boolean): string => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
@@ -45,18 +27,17 @@ const generateProperty = (num: number, isAsync: boolean): string => {
   const blocks = [
     // imports
     `import { Arbitrary } from '../arbitrary/definition/Arbitrary';`,
-    `import { tuple } from '../arbitrary/TupleArbitrary';`,
+    `import { genericTuple } from '../arbitrary/TupleArbitrary';`,
     `import { ${className} } from './${className}.generic';`,
     // declare all signatures
     ...iota(num).map(id => signatureFor(id + 1, isAsync)),
-    // start declare function
-    finalSignatureFor(num + 1, isAsync),
-    // cascade ifs
-    ...iota(num)
-      .reverse()
-      .map(id => ifFor(id + 1, isAsync)),
-    // end declare function
-    `}`,
+    // declare function
+    `function ${functionName}(...args: any[]): any {
+      if (args.length < 2) throw new Error('${functionName} expects at least two parameters');
+      const arbs = args.slice(0, args.length -1);
+      const p = args[args.length -1];
+      return new ${className}(genericTuple(arbs), t => p(...t));
+    }`,
     // export
     `export { ${functionName} };`
   ];
