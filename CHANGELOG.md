@@ -1,3 +1,12 @@
+# 1.12.1
+
+_Lighter package_
+
+## Fixes
+
+- ([PR#327](https://github.com/dubzzz/fast-check/pull/327)) Doc: Ability to copy-paste snippets in HandsOnPropertyBased.md
+- ([PR#334](https://github.com/dubzzz/fast-check/pull/334)) Size: Reduce the size of the bundle - *Potential issue if your code directly references TupleArbitrary<T1...>, it should be replaced by Arbitrary<[T1,...]>*
+
 # 1.12.0
 
 _Better balance between values produced by `fc.anything()`_
