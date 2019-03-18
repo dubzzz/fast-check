@@ -13,21 +13,20 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly totalWeight: number;
   constructor(readonly warbs: WeightedArbitrary<T>[]) {
     super();
-    this.summedWarbs = warbs
-      .reduce(
-        (p: WeightedArbitrary<T>[], c) =>
-          p.concat({
-            weight: p[p.length - 1].weight + c.weight,
-            arbitrary: c.arbitrary
-          }),
-        [{ weight: 0, arbitrary: warbs[0].arbitrary }]
-      )
-      .slice(1);
-    this.totalWeight = this.summedWarbs[this.summedWarbs.length - 1].weight;
+    let currentWeight = 0;
+    this.summedWarbs = [];
+    for (let idx = 0; idx !== warbs.length; ++idx) {
+      currentWeight += warbs[idx].weight;
+      this.summedWarbs.push({ weight: currentWeight, arbitrary: warbs[idx].arbitrary });
+    }
+    this.totalWeight = currentWeight;
   }
   generate(mrng: Random): Shrinkable<T> {
     const selected = mrng.nextInt(0, this.totalWeight - 1);
-    return this.summedWarbs.find(warb => selected < warb.weight)!.arbitrary.generate(mrng);
+    for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
+      if (selected < this.summedWarbs[idx].weight) return this.summedWarbs[idx].arbitrary.generate(mrng);
+    }
+    throw new Error(`Unable to generate from fc.frequency`);
   }
   withBias(freq: number) {
     return new FrequencyArbitrary(this.warbs.map(v => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })));
