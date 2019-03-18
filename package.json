@@ -47,12 +47,10 @@
     "node": ">=0.12"
   },
   "dependencies": {
-    "lorem-ipsum": "~1.0.6",
     "pure-rand": "^1.6.2"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",
-    "@types/lorem-ipsum": "^1.0.2",
     "@types/node": "^11.11.3",
     "benchmark": "^2.1.4",
     "browserify": "^16.2.3",
