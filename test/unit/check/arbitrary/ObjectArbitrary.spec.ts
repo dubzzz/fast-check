@@ -95,6 +95,35 @@ describe('ObjectArbitrary', () => {
           }
         )
       ));
+    it('Should respect the maximal keys parameter', () =>
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.integer(0, 5),
+          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), 1, 10),
+          (seed, maxKeys, keys, values) => {
+            const mrng = new Random(prand.xorshift128plus(seed));
+            const keyArb = oneof(...keys.map(constant));
+            const baseArbs = [...values.map(constant)];
+            const g = anything({ key: keyArb, values: baseArbs, maxKeys }).generate(mrng).value;
+            const check = (obj: any) => {
+              if (typeof obj !== 'object' || obj === null) {
+                return;
+              }
+              if (Array.isArray(obj)) {
+                if (obj.length > maxKeys) throw new Error(`Too many values in the array`);
+                obj.forEach(v => check(v));
+                return;
+              }
+              const ks = Object.keys(obj);
+              if (ks.length > maxKeys) throw new Error(`Too many values in the object`);
+              ks.forEach(k => check(obj[k]));
+            };
+            check(g);
+          }
+        )
+      ));
     it('Should shrink towards minimal value of type', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {

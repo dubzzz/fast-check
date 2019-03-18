@@ -21,4 +21,4 @@ function dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbit
   return set(tuple(keyArb, valueArb), (t1, t2) => t1[0] === t2[0]).map(toObject);
 }
 
-export { dictionary };
+export { toObject, dictionary };

@@ -3,7 +3,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { array } from './ArrayArbitrary';
 import { boolean } from './BooleanArbitrary';
 import { constant } from './ConstantArbitrary';
-import { dictionary } from './DictionaryArbitrary';
+import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { integer } from './IntegerArbitrary';
 import { oneof } from './OneOfArbitrary';
@@ -16,11 +16,12 @@ export class ObjectConstraints {
     readonly key: Arbitrary<string>,
     readonly values: Arbitrary<any>[],
     readonly maxDepth: number,
+    readonly maxKeys: number,
     readonly withSet: boolean,
     readonly withMap: boolean
   ) {}
   next(): ObjectConstraints {
-    return new ObjectConstraints(this.key, this.values, this.maxDepth - 1, this.withSet, this.withMap);
+    return new ObjectConstraints(this.key, this.values, this.maxDepth - 1, this.maxKeys, this.withSet, this.withMap);
   }
 
   /**
@@ -86,6 +87,7 @@ export class ObjectConstraints {
         getOr(() => settings!.withBoxedValues, false)
       ),
       getOr(() => settings!.maxDepth, 2),
+      getOr(() => settings!.maxKeys, 5),
       getOr(() => settings!.withSet, false),
       getOr(() => settings!.withMap, false)
     );
@@ -97,6 +99,8 @@ export namespace ObjectConstraints {
   export interface Settings {
     /** Maximal depth allowed */
     maxDepth?: number;
+    /** Maximal number of keys */
+    maxKeys?: number;
     /**
      * Arbitrary for keys
      *
@@ -139,11 +143,12 @@ export namespace ObjectConstraints {
 const arrayOfAnything = (
   arbKeys: Arbitrary<string>,
   arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>
+  arbAny: Arbitrary<any>,
+  maxKeys: number
 ): Arbitrary<any[]> => {
   return oneof(
-    oneof(...arbitrariesForBase.map(arb => array(arb))), // base[]
-    array(arbAny) // anything[]
+    oneof(...arbitrariesForBase.map(arb => array(arb, 0, maxKeys))), // base[]
+    array(arbAny, 0, maxKeys) // anything[]
   );
 };
 
@@ -151,11 +156,12 @@ const arrayOfAnything = (
 const setOfAnything = (
   arbKeys: Arbitrary<string>,
   arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>
+  arbAny: Arbitrary<any>,
+  maxKeys: number
 ): Arbitrary<Set<any>> => {
   return oneof(
-    oneof(...arbitrariesForBase.map(arb => set(arb).map(v => new Set(v)))), // Set<base>
-    set(arbAny).map(v => new Set(v)) // Set<anything>
+    oneof(...arbitrariesForBase.map(arb => set(arb, 0, maxKeys).map(v => new Set(v)))), // Set<base>
+    set(arbAny, 0, maxKeys).map(v => new Set(v)) // Set<anything>
   );
 };
 
@@ -163,11 +169,14 @@ const setOfAnything = (
 const objectOfAnything = (
   arbKeys: Arbitrary<string>,
   arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>
+  arbAny: Arbitrary<any>,
+  maxKeys: number
 ): Arbitrary<{ [key: string]: any }> => {
+  const dictOf = (keyArb: Arbitrary<string>, valueArb: Arbitrary<any>) =>
+    set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]).map(v => toObject(v));
   return oneof(
-    oneof(...arbitrariesForBase.map(arb => dictionary(arbKeys, arb))), // {[key]: base}
-    dictionary(arbKeys, arbAny)
+    oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys, arb))), // {[key]: base}
+    dictOf(arbKeys, arbAny)
   );
 };
 
@@ -175,10 +184,11 @@ const objectOfAnything = (
 const mapOfAnything = (
   arbKeys: Arbitrary<string>,
   arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>
+  arbAny: Arbitrary<any>,
+  maxKeys: number
 ): Arbitrary<Map<any, any>> => {
   const mapOf = (keyArb: Arbitrary<any>, valueArb: Arbitrary<any>) =>
-    set(tuple(keyArb, valueArb), (t1, t2) => t1[0] === t2[0]).map(v => new Map(v));
+    set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]).map(v => new Map(v));
   return oneof(
     oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys, arb))), // Map<key, base>
     oneof(
@@ -197,13 +207,13 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
   eligibleArbitraries.push(oneof(...arbitrariesForBase)); // base
   if (constraints.maxDepth > 0) {
     const subArbAny = anythingInternal(constraints.next());
-    eligibleArbitraries.push(arrayOfAnything(arbKeys, arbitrariesForBase, subArbAny));
-    eligibleArbitraries.push(objectOfAnything(arbKeys, arbitrariesForBase, subArbAny));
+    eligibleArbitraries.push(arrayOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
+    eligibleArbitraries.push(objectOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
     if (constraints.withMap) {
-      eligibleArbitraries.push(mapOfAnything(arbKeys, arbitrariesForBase, subArbAny));
+      eligibleArbitraries.push(mapOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
     }
     if (constraints.withSet) {
-      eligibleArbitraries.push(setOfAnything(arbKeys, arbitrariesForBase, subArbAny));
+      eligibleArbitraries.push(setOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
     }
   }
   return oneof(...eligibleArbitraries);
