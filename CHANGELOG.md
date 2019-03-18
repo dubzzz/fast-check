@@ -1,6 +1,6 @@
 # 1.12.1
 
-_Lighter package_
+_Lighter bundle_
 
 ## Fixes
 
