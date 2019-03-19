@@ -1,3 +1,15 @@
+# 1.13.0
+
+_Remove dependency to lorem-ipsum and more control over `fc.anything` and `fc.object`_
+
+## Features
+
+- ([PR#336](https://github.com/dubzzz/fast-check/pull/336)) Remove dependency to lorem-ipsum
+- ([PR#337](https://github.com/dubzzz/fast-check/pull/337)) `fc.frequency()` should be compatible with legacy node
+- ([PR#338](https://github.com/dubzzz/fast-check/pull/338)) Add parameter to customize size of `fc.object()` and `fc.anything()`
+
+---
+
 # 1.12.1
 
 _Lighter bundle_
