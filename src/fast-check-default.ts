@@ -20,6 +20,7 @@ import { double, float } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
+import { ipV4, ipV6 } from './check/arbitrary/IpArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import {
   anything,
@@ -109,6 +110,8 @@ export {
   hexaString,
   base64String,
   lorem,
+  ipV4,
+  ipV6,
   constant,
   constantFrom,
   clonedConstant,
