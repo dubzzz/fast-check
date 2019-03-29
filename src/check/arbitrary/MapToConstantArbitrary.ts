@@ -23,20 +23,20 @@ function computeNumChoices<T>(options: { num: number; build: (idInGroup: number)
  * @example
  * ```
  * // generate alphanumeric values (a-z0-9)
- * mapToConstant([
+ * mapToConstant(
  *   { num: 26, build: v => String.fromCharCode(v + 0x61) },
  *   { num: 10, build: v => String.fromCharCode(v + 0x30) },
- * ])
+ * )
  * ```
  */
-export function mapToConstant<T>(options: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T> {
-  const numChoices = computeNumChoices(options);
+export function mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T> {
+  const numChoices = computeNumChoices(entries);
   return nat(numChoices - 1).map(choice => {
     let idx = -1;
     let numSkips = 0;
     while (choice >= numSkips) {
-      numSkips += options[++idx].num;
+      numSkips += entries[++idx].num;
     }
-    return options[idx].build(choice - numSkips + options[idx].num);
+    return entries[idx].build(choice - numSkips + entries[idx].num);
   });
 }

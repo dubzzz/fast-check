@@ -18,13 +18,13 @@ describe('MapToConstantArbitrary', () => {
             const { min: pos, max: numBuilders } = others;
             fc.pre(pos < numBuilders);
 
-            const options: { num: number; build: (v: number) => string }[] = [];
+            const entries: { num: number; build: (v: number) => string }[] = [];
             for (let idx = 0; idx !== numBuilders; ++idx) {
-              options.push({ num: idx === pos ? numValues : 0, build: (v: number) => `Builder #${idx}: ${v}` });
+              entries.push({ num: idx === pos ? numValues : 0, build: (v: number) => `Builder #${idx}: ${v}` });
             }
 
-            const refArb = nat(numValues - 1).map(v => options[pos].build(v));
-            const arb = mapToConstant(options);
+            const refArb = nat(numValues - 1).map(v => entries[pos].build(v));
+            const arb = mapToConstant(...entries);
 
             const refMrng = new Random(prand.xorshift128plus(seed));
             const mrng = new Random(prand.xorshift128plus(seed));
@@ -39,13 +39,13 @@ describe('MapToConstantArbitrary', () => {
           const totalSize = builderSizes.reduce((a, b) => a + b, 0);
           fc.pre(totalSize > 0);
 
-          const options: { num: number; build: (v: number) => any }[] = [];
+          const entries: { num: number; build: (v: number) => any }[] = [];
           for (let idx = 0, currentSize = 0; idx !== builderSizes.length; currentSize += builderSizes[idx], ++idx) {
-            options.push({ num: builderSizes[idx], build: v => v + currentSize });
+            entries.push({ num: builderSizes[idx], build: v => v + currentSize });
           }
 
           const refArb = nat(totalSize - 1);
-          const arb = mapToConstant(options);
+          const arb = mapToConstant(...entries);
 
           const refMrng = new Random(prand.xorshift128plus(seed));
           const mrng = new Random(prand.xorshift128plus(seed));
