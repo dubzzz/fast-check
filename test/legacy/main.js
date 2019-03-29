@@ -70,3 +70,9 @@ testArbitrary(fc.string());
 testArbitrary(fc.fullUnicodeString());
 testArbitrary(fc.lorem());
 testArbitrary(fc.frequency({ weight: 1, arbitrary: fc.nat() }, { weight: 2, arbitrary: fc.double() }));
+testArbitrary(
+  fc.mapToConstant([
+    { num: 26, build: v => String.fromCharCode(v + 0x61) },
+    { num: 10, build: v => String.fromCharCode(v + 0x30) }
+  ])
+);
