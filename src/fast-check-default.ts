@@ -22,6 +22,7 @@ import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/Functio
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
 import { ipV4, ipV6 } from './check/arbitrary/IpArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
+import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import {
   anything,
   json,
@@ -115,6 +116,7 @@ export {
   constant,
   constantFrom,
   clonedConstant,
+  mapToConstant,
   option,
   oneof,
   frequency,
