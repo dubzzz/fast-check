@@ -31,7 +31,9 @@
     "format": "prettier --write \"**/*.{js,ts}\"",
     "format:check": "prettier --list-different \"**/*.{js,ts}\"",
     "lint": "tslint --project tsconfig.json --fix",
-    "lint:check": "tslint --project tsconfig.json"
+    "lint:check": "tslint --project tsconfig.json",
+    "docs:2": "mkdir -p docs/1-Guides && mkdir -p docs/2-API && cp documentation/*.md docs/1-Guides && api-extractor run --local && generate-ts-docs markdown -i docs/2-API -o docs/2-API && cp README.md docs/ && docsify-auto-sidebar",
+    "docs:2:publish":"gh-pages -d docs"
   },
   "repository": {
     "type": "git",
@@ -50,11 +52,14 @@
     "pure-rand": "^1.6.2"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.0.39",
     "@types/jest": "^24.0.11",
     "@types/node": "^11.11.3",
     "benchmark": "^2.1.4",
     "browserify": "^16.2.3",
     "coveralls": "^3.0.3",
+    "docsify-tools": "^1.0.8",
+    "gh-pages": "^2.0.1",
     "jest": "^24.5.0",
     "prettier": "1.16.4",
     "rollup": "^1.6.0",
