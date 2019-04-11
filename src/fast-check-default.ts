@@ -19,6 +19,7 @@ import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { double, float } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
+import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
 import { ipV4, ipV6 } from './check/arbitrary/IpArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
@@ -49,6 +50,15 @@ import {
 } from './check/arbitrary/StringArbitrary';
 import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
+import {
+  webAuthority,
+  WebAuthorityConstraints,
+  webFragments,
+  webQueryParameters,
+  webSegment,
+  webUrl,
+  WebUrlConstraints
+} from './check/arbitrary/WebArbitrary';
 
 import { AsyncCommand } from './check/model/command/AsyncCommand';
 import { Command } from './check/model/command/Command';
@@ -111,8 +121,6 @@ export {
   hexaString,
   base64String,
   lorem,
-  ipV4,
-  ipV6,
   constant,
   constantFrom,
   clonedConstant,
@@ -140,6 +148,15 @@ export {
   compareFunc,
   func,
   context,
+  // web
+  ipV4,
+  ipV6,
+  domain,
+  webAuthority,
+  webSegment,
+  webFragments,
+  webQueryParameters,
+  webUrl,
   // model-based
   AsyncCommand,
   Command,
@@ -158,6 +175,8 @@ export {
   ObjectConstraints,
   Parameters,
   RecordConstraints,
+  WebAuthorityConstraints,
+  WebUrlConstraints,
   RunDetails,
   Random,
   Stream,
