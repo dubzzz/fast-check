@@ -76,6 +76,7 @@ More specific strings:
 - `fc.webQueryParameters()` Query parameters to build an URI. Fragment is the optional part right after the ? in an URI
 - `fc.webSegment()` Web URL path segment
 - `fc.webUrl()` Web URL following the specs specified by RFC 3986 and WHATWG URL Standard
+- `fc.emailAddress()` Email address following RFC 1123 and RFC 5322
 
 ## Combinors of arbitraries (:T)
 

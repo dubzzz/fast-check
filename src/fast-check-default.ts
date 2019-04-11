@@ -16,6 +16,7 @@ import { dedup } from './check/arbitrary/DedupArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
+import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
@@ -157,6 +158,7 @@ export {
   webFragments,
   webQueryParameters,
   webUrl,
+  emailAddress,
   // model-based
   AsyncCommand,
   Command,
