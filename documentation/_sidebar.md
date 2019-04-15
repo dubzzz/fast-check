@@ -5,4 +5,4 @@
   - [Running property tests](/1-Guides/Runners.md)
   - [Tips](/1-Guides/Tips.md)
 - API
-  {{filetree '2-API' 2 '/2-API'}}
+  {{filetree '2-API' 2}}
