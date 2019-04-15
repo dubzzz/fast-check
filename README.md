@@ -21,7 +21,7 @@ Property based testing framework for JavaScript/TypeScript
 
 ## Getting started
 
-Hands-on tutorial and definition of Property Based Testing: [:checkered_flag: see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md).
+Hands-on tutorial and definition of Property Based Testing: [:checkered_flag: see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/HandsOnPropertyBased.md).
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
 
@@ -74,11 +74,11 @@ and
 [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
-- [:checkered_flag: Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md)
-- [:hatching_chick: Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md)
-- [:wrench: Custom arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md)
-- [:running_man: Property based runners](https://github.com/dubzzz/fast-check/blob/master/documentation/Runners.md)
-- [:boom: Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md)
+- [:checkered_flag: Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/HandsOnPropertyBased.md)
+- [:hatching_chick: Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Arbitraries.md)
+- [:wrench: Custom arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/AdvancedArbitraries.md)
+- [:running_man: Property based runners](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Runners.md)
+- [:boom: Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md)
 - [:mag: Generated documentation](https://dubzzz.github.io/fast-check/)
 
 ## Why should I migrate to fast-check?
@@ -86,16 +86,16 @@ Useful documentations:
 fast-check has initially been designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
 - **Types:** strong and up-to-date types - *thanks to TypeScript*
-- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md#transform-values)\] - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
-- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md#transform-arbitraries)\] - *able to bind the output of an arbitrary as input of another one while keeping the shrink working*
-- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - *filtering invalid entries can be done directly inside the check function if needed*
-- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md#combinors-of-arbitraries-t)\] - *surprisingly some frameworks don't*
-- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md#biased-arbitraries)\] - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
-- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#opt-for-verbose-failures)\] - *easier troubleshooting with verbose mode enabled*
-- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#replay-after-failure)\] - *no need to replay the whole sequence, you get directly the counterexample*
-- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#add-custom-examples-next-to-generated-ones)\] - *no need to duplicate the code to play the property on custom examples*
-- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#log-within-a-predicate)\] - *simplify your troubleshoot with fc.context and its logging feature*
-- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - *use the power of property based testing to test UI, APIs or state machines*
+- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/AdvancedArbitraries.md#transform-values)\] - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
+- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/AdvancedArbitraries.md#transform-arbitraries)\] - *able to bind the output of an arbitrary as input of another one while keeping the shrink working*
+- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - *filtering invalid entries can be done directly inside the check function if needed*
+- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Arbitraries.md#combinors-of-arbitraries-t)\] - *surprisingly some frameworks don't*
+- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/AdvancedArbitraries.md#biased-arbitraries)\] - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
+- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#opt-for-verbose-failures)\] - *easier troubleshooting with verbose mode enabled*
+- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#replay-after-failure)\] - *no need to replay the whole sequence, you get directly the counterexample*
+- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#add-custom-examples-next-to-generated-ones)\] - *no need to duplicate the code to play the property on custom examples*
+- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#log-within-a-predicate)\] - *simplify your troubleshoot with fc.context and its logging feature*
+- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - *use the power of property based testing to test UI, APIs or state machines*
 
 For more details, refer to the documentation in the links above.
 
@@ -119,4 +119,4 @@ m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar
 m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
 ```
 
-**[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/IssuesDiscovered.md)**
+**[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/IssuesDiscovered.md)**
