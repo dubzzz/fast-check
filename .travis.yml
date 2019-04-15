@@ -64,7 +64,7 @@ jobs:
       if: branch = master AND type = push
       script:
         - npm run prebuild
-        - mkdir docs
+        - npm run build:publish-types
         - npm run docs
       deploy:
         provider: pages

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "tsdocMetadata": {
+    "enabled": false
+  },
+  "mainEntryPointFilePath": "lib/types/fast-check-default.d.ts",
+  "dtsRollup": {
+    "enabled": false
+  },
+  "docModel": {
+    "enabled": true,
+    "apiJsonFilePath": "docs/2-API/fast-check.api.json"
+  },
+  "apiReport": {
+    "enabled": false
+  }
+}
