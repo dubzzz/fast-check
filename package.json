@@ -56,7 +56,7 @@
     "benchmark": "^2.1.4",
     "browserify": "^16.2.3",
     "coveralls": "^3.0.3",
-    "docsify-tools": "^1.0.10",
+    "docsify-tools": "^1.0.11",
     "jest": "^24.5.0",
     "markdownbars": "^1.0.6",
     "prettier": "1.16.4",
