@@ -1,3 +1,17 @@
+# 1.14.0
+
+_New generated documentation and new arbitraries_
+
+## Features
+
+- ([PR#339](https://github.com/dubzzz/fast-check/pull/339)) Add `fc.ipV4()` and `fc.ipV6()` arbitraries
+- ([PR#340](https://github.com/dubzzz/fast-check/pull/340)) Add `fc.mapToConstant()` arbitrary
+- ([PR#344](https://github.com/dubzzz/fast-check/pull/344)) Add `fc.webUrl()` and other web urls related arbitraries
+- ([PR#345](https://github.com/dubzzz/fast-check/pull/345)) Add `fc.emailAddress()` arbitrary
+- ([PR#343](https://github.com/dubzzz/fast-check/pull/343)) Generate the API documentation with docsify
+
+---
+
 # 1.13.0
 
 _Remove dependency to lorem-ipsum and more control over `fc.anything` and `fc.object`_
