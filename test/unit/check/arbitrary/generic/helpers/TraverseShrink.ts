@@ -5,36 +5,54 @@ import { Arbitrary } from '../../../../../../src/check/arbitrary/definition/Arbi
 import { Shrinkable } from '../../../../../../src/check/arbitrary/definition/Shrinkable';
 import { Random } from '../../../../../../src/random/generator/Random';
 
-export type TestSettings<U> = Parameters<[[number, number[]], U]>;
+export type TestSettings<U> = Parameters<[[number, number, number], U]>;
+
+const seedArbitrary = fc.integer().noShrink();
+const biasArbitrary = fc.option(fc.integer(2, 10).noShrink());
+
+function* zipStreams<T>(allStreams: IterableIterator<Shrinkable<T>>[]): IterableIterator<Shrinkable<T>[]> {
+  let cursors = allStreams.map(i => i.next());
+  while (cursors.some(c => !c.done)) {
+    yield cursors.map(c => c.value);
+    cursors = allStreams.map(i => i.next());
+  }
+}
 
 function traverseShrinkN<T, U>(
   seedProducer: fc.Arbitrary<U>,
   arbitraryBuilders: ((u: U) => Arbitrary<T>)[],
+  resetAssertFunction: () => void,
   assertFunction: (args: T[], u: U) => void,
   testSettings?: TestSettings<U>
 ): void {
   fc.assert(
     fc.property(
-      fc.tuple(fc.integer().noShrink(), fc.array(fc.nat(), 1, 10)),
+      fc.tuple(seedArbitrary, seedArbitrary, biasArbitrary),
       seedProducer,
-      ([seed, shrinkPath], arbitrarySettings) => {
-        const arbs = arbitraryBuilders.map(b => b(arbitrarySettings));
+      ([seed, shrinkPathSeed, bias], arbitrarySettings) => {
+        resetAssertFunction();
+        let arbs = arbitraryBuilders.map(b => b(arbitrarySettings));
+        if (bias !== null) {
+          arbs = arbs.map(a => a.withBias(bias));
+        }
         const shrinkables: (Shrinkable<T> | null)[] = arbs.map(a =>
           a.generate(new Random(prand.xorshift128plus(seed)))
         );
 
         expect(shrinkables.every(s => s !== null)).toBe(true);
 
-        let id = 0;
+        const shrinkPathRandom = new Random(prand.xorshift128plus(shrinkPathSeed));
         while (shrinkables.some(s => s !== null)) {
           // Assert
-          assertFunction(shrinkables.map(s => s!.value), arbitrarySettings); // throw if failure
-
-          // Go to the next level of shrink
-          const shrinkOffset = shrinkPath[id++];
+          const g = zipStreams(shrinkables.map(s => s!.shrink()));
+          let c = g.next();
+          let lastCursorValue = c.done ? undefined : c.value;
+          while (!c.done && shrinkPathRandom.nextDouble() < 0.9) {
+            c = g.next();
+            if (!c.done) lastCursorValue = c.value;
+          }
           for (let i = 0; i !== shrinkables.length; ++i)
-            shrinkables[i] = shrinkables[i]!.shrink().getNthOrLast(shrinkOffset);
-          id = (id + 1) % shrinkPath.length;
+            shrinkables[i] = lastCursorValue !== undefined ? lastCursorValue[i] : null;
         }
       }
     ),
@@ -45,17 +63,19 @@ function traverseShrinkN<T, U>(
 export function traverseShrink1<T, U>(
   seedProducer: fc.Arbitrary<U>,
   arbitraryBuilders: [(u: U) => Arbitrary<T>],
+  resetAssertFunction: () => void,
   assertFunction: (args: [T], u: U) => void,
   testSettings?: TestSettings<U>
 ): void {
-  return traverseShrinkN(seedProducer, arbitraryBuilders, assertFunction, testSettings);
+  return traverseShrinkN(seedProducer, arbitraryBuilders, resetAssertFunction, assertFunction, testSettings);
 }
 
 export function traverseShrink2<T, U>(
   seedProducer: fc.Arbitrary<U>,
   arbitraryBuilders: [(u: U) => Arbitrary<T>, (u: U) => Arbitrary<T>],
+  resetAssertFunction: () => void,
   assertFunction: (args: [T, T], u: U) => void,
   testSettings?: TestSettings<U>
 ): void {
-  return traverseShrinkN(seedProducer, arbitraryBuilders, assertFunction, testSettings);
+  return traverseShrinkN(seedProducer, arbitraryBuilders, resetAssertFunction, assertFunction, testSettings);
 }

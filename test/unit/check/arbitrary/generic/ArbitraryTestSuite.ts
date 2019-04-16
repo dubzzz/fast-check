@@ -39,6 +39,7 @@ class ArbitraryTestSuite<T, U> {
       traverseShrink2(
         this.arbitraryBuilder.seed,
         [this.arbitraryBuilder.builder, this.arbitraryBuilder.builder],
+        () => {},
         ([v1, v2]: [T, T]) => eq(v1, v2),
         testSettings
       );
@@ -56,14 +57,17 @@ class ArbitraryTestSuite<T, U> {
   isNoInfiniteShrink(testSettings?: TestSettings<U>): ArbitraryTestSuite<T, U> {
     it('Should not loop in shrink [isNoInfiniteShrink]', () => {
       const neq = buildNotEq(this.equality);
-      const alreadySeen: T[] = [];
+      let shrinkHistory: T[] = [];
       traverseShrink1(
         this.arbitraryBuilder.seed,
         [this.arbitraryBuilder.builder],
+        () => {
+          shrinkHistory = [];
+        },
         ([t]: [T]) => {
           // Have we seen the value before?
-          alreadySeen.forEach(v => neq(v, t)); // throw if so
-          alreadySeen.push(t);
+          shrinkHistory.forEach(v => neq(v, t)); // throw if so
+          shrinkHistory.push(t);
         },
         testSettings
       );
@@ -80,14 +84,17 @@ class ArbitraryTestSuite<T, U> {
   ): ArbitraryTestSuite<T, U> {
     it('Should strictly decrease during shrink [isAlwaysLowerThanShrink]', () => {
       const lt = buildCmp(lowerThan, 'strictly lower');
-      let lastSeen: null | { value: T } = null;
+      let lastSeenValue: { value: T } | null = null;
       traverseShrink1(
         this.arbitraryBuilder.seed,
         [this.arbitraryBuilder.builder],
+        () => {
+          lastSeenValue = null;
+        },
         ([t]: [T]) => {
           // Strictly lower than the last one
-          if (lastSeen !== null) lt(t, lastSeen.value);
-          lastSeen = { value: t };
+          if (lastSeenValue !== null) lt(t, lastSeenValue.value);
+          lastSeenValue = { value: t };
         },
         testSettings
       );
@@ -106,6 +113,7 @@ class ArbitraryTestSuite<T, U> {
       traverseShrink1(
         this.arbitraryBuilder.seed,
         [this.arbitraryBuilder.builder],
+        () => {},
         ([t]: [T], u: U) => valid(t, u),
         testSettings
       );
@@ -127,6 +135,7 @@ class ArbitraryTestSuite<T, U> {
       traverseShrink2(
         this.arbitraryBuilder.seed,
         [this.arbitraryBuilder.builder, anotherBuilder],
+        () => {},
         ([v1, v2]: [T, T]) => eq(v1, v2),
         testSettings
       );
