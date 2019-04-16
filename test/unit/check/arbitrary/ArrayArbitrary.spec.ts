@@ -11,6 +11,7 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
 import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
+import { arbitraryTestSuite } from './generic/ArbitraryTestSuite';
 
 class DummyArbitrary extends Arbitrary<{ key: number }> {
   constructor(public value: () => number) {
@@ -82,32 +83,43 @@ describe('ArrayArbitrary', () => {
       expect(numCallsToClone).toEqual(0);
     });
     describe('Given no length constraints', () => {
-      genericHelper.isValidArbitrary(() => array(nat()), {
-        isStrictlySmallerValue: isStrictlySmallerArray,
-        isValidValue: (g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number')
-      });
+      arbitraryTestSuite({
+        arbitrary: array(nat())
+      })
+        .isReproducible()
+        .isAlwaysLowerThanShrink(isStrictlySmallerArray)
+        .isValid((g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number'));
     });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), maxLength), {
-        seedGenerator: fc.nat(100),
-        isStrictlySmallerValue: isStrictlySmallerArray,
-        isValidValue: (g: number[], maxLength: number) =>
-          Array.isArray(g) && g.length <= maxLength && g.every(v => typeof v === 'number')
-      });
+      arbitraryTestSuite({
+        arbitrary: {
+          builder: (maxLength: number) => array(nat(), maxLength),
+          seed: fc.nat(100)
+        }
+      })
+        .isReproducible()
+        .isAlwaysLowerThanShrink(isStrictlySmallerArray)
+        .isValid(
+          (g: number[], maxLength: number) =>
+            Array.isArray(g) && g.length <= maxLength && g.every(v => typeof v === 'number')
+        );
     });
     describe('Given minimal and maximal lengths', () => {
-      genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => array(nat(), constraints.min, constraints.max),
-        {
-          seedGenerator: genericHelper.minMax(fc.nat(100)),
-          isStrictlySmallerValue: isStrictlySmallerArray,
-          isValidValue: (g: number[], constraints: { min: number; max: number }) =>
+      arbitraryTestSuite({
+        arbitrary: {
+          builder: (constraints: { min: number; max: number }) => array(nat(), constraints.min, constraints.max),
+          seed: genericHelper.minMax(fc.nat(100))
+        }
+      })
+        .isReproducible()
+        .isAlwaysLowerThanShrink(isStrictlySmallerArray)
+        .isValid(
+          (g: number[], constraints: { min: number; max: number }) =>
             Array.isArray(g) &&
             g.length >= constraints.min &&
             g.length <= constraints.max &&
             g.every(v => typeof v === 'number')
-        }
-      );
+        );
     });
   });
 });
