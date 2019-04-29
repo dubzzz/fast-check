@@ -82,15 +82,16 @@ describe('ArrayArbitrary', () => {
       array(withClonedAndCounter).generate(mrng);
       expect(numCallsToClone).toEqual(0);
     });
-    describe('Given no length constraints', () => {
+    it('Should pass arbitrary test suite: given no length constraints', () => {
       arbitraryTestSuite({
         arbitrary: array(nat())
       })
         .isReproducible()
         .isAlwaysLowerThanShrink(isStrictlySmallerArray)
-        .isValid((g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number'));
+        .isValid((g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number'))
+        .run();
     });
-    describe('Given maximal length only', () => {
+    it('Should pass arbitrary test suite: given maximal length only', () => {
       arbitraryTestSuite({
         arbitrary: {
           builder: (maxLength: number) => array(nat(), maxLength),
@@ -102,9 +103,10 @@ describe('ArrayArbitrary', () => {
         .isValid(
           (g: number[], maxLength: number) =>
             Array.isArray(g) && g.length <= maxLength && g.every(v => typeof v === 'number')
-        );
+        )
+        .run();
     });
-    describe('Given minimal and maximal lengths', () => {
+    it('Should pass arbitrary test suite: given minimal and maximal lengths', () => {
       arbitraryTestSuite({
         arbitrary: {
           builder: (constraints: { min: number; max: number }) => array(nat(), constraints.min, constraints.max),
@@ -119,7 +121,8 @@ describe('ArrayArbitrary', () => {
             g.length >= constraints.min &&
             g.length <= constraints.max &&
             g.every(v => typeof v === 'number')
-        );
+        )
+        .run();
     });
   });
 });

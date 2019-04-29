@@ -18,7 +18,7 @@ function* zipStreams<T>(allStreams: IterableIterator<Shrinkable<T>>[]): Iterable
   }
 }
 
-function traverseShrinkN<T, U>(
+export function traverseShrinkN<T, U>(
   seedProducer: fc.Arbitrary<U>,
   arbitraryBuilders: ((u: U) => Arbitrary<T>)[],
   resetAssertFunction: () => void,
@@ -31,6 +31,8 @@ function traverseShrinkN<T, U>(
       seedProducer,
       ([seed, shrinkPathSeed, bias], arbitrarySettings) => {
         resetAssertFunction();
+
+        // Generate base shrinkables
         let arbs = arbitraryBuilders.map(b => b(arbitrarySettings));
         if (bias !== null) {
           arbs = arbs.map(a => a.withBias(bias));
@@ -38,12 +40,14 @@ function traverseShrinkN<T, U>(
         const shrinkables: (Shrinkable<T> | null)[] = arbs.map(a =>
           a.generate(new Random(prand.xorshift128plus(seed)))
         );
-
         expect(shrinkables.every(s => s !== null)).toBe(true);
 
         const shrinkPathRandom = new Random(prand.xorshift128plus(shrinkPathSeed));
         while (shrinkables.some(s => s !== null)) {
           // Assert
+          assertFunction(shrinkables.map(s => s!.value), arbitrarySettings);
+
+          // Shrink all shrinkables together
           const g = zipStreams(shrinkables.map(s => s!.shrink()));
           let c = g.next();
           let lastCursorValue = c.done ? undefined : c.value;
@@ -58,24 +62,4 @@ function traverseShrinkN<T, U>(
     ),
     testSettings
   );
-}
-
-export function traverseShrink1<T, U>(
-  seedProducer: fc.Arbitrary<U>,
-  arbitraryBuilders: [(u: U) => Arbitrary<T>],
-  resetAssertFunction: () => void,
-  assertFunction: (args: [T], u: U) => void,
-  testSettings?: TestSettings<U>
-): void {
-  return traverseShrinkN(seedProducer, arbitraryBuilders, resetAssertFunction, assertFunction, testSettings);
-}
-
-export function traverseShrink2<T, U>(
-  seedProducer: fc.Arbitrary<U>,
-  arbitraryBuilders: [(u: U) => Arbitrary<T>, (u: U) => Arbitrary<T>],
-  resetAssertFunction: () => void,
-  assertFunction: (args: [T, T], u: U) => void,
-  testSettings?: TestSettings<U>
-): void {
-  return traverseShrinkN(seedProducer, arbitraryBuilders, resetAssertFunction, assertFunction, testSettings);
 }
