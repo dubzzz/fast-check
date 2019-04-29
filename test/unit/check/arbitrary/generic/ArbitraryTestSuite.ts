@@ -113,7 +113,7 @@ class ArbitraryTestSuite<T, U> {
   isValid(validValue: (t: T, u: U) => boolean | void): ArbitraryTestSuite<T, U> {
     const prevAssert = this.assert;
     this.assert = (t: T[], u: U) => {
-      if (!validValue(t[0], u)) throw new Error(`Invalid value encountered: ${fc.stringify(t)}`);
+      if (!validValue(t[0], u)) throw new Error(`Invalid value encountered: ${fc.stringify(t[0])}`);
       prevAssert(t, u);
     };
     return this;
@@ -139,7 +139,26 @@ class ArbitraryTestSuite<T, U> {
   }
 
   run(testSettings?: TestSettings<U>): void {
-    traverseShrinkN(this.arbitraryBuilder.seed, this.builders, this.resetAssert, this.assert, testSettings);
+    let shrinkHistory: T[] = [];
+
+    const withLogResetAssert = () => {
+      shrinkHistory = [];
+      this.resetAssert();
+    };
+    const withLogAssert = (t: T[], u: U) => {
+      shrinkHistory.push(t[0]);
+      try {
+        this.assert(t, u);
+      } catch (err) {
+        const previousErrorMessage = err.message || err;
+        throw new Error(
+          `${previousErrorMessage}\n\nFailed at depth ${shrinkHistory.length -
+            1}\nWith shrink history: ${shrinkHistory.map(v => fc.stringify(v)).join(' > ')}`
+        );
+      }
+    };
+
+    traverseShrinkN(this.arbitraryBuilder.seed, this.builders, withLogResetAssert, withLogAssert, testSettings);
   }
 }
 

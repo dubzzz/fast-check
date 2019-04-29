@@ -5,7 +5,9 @@ import { Arbitrary } from '../../../../../../src/check/arbitrary/definition/Arbi
 import { Shrinkable } from '../../../../../../src/check/arbitrary/definition/Shrinkable';
 import { Random } from '../../../../../../src/random/generator/Random';
 
-export type TestSettings<U> = Parameters<[[number, number, number], U]>;
+export type TestSettings<U> = Parameters<
+  [{ seed: number; shrinkPathSeed: number; bias: number | null; arbitrarySettings: U }]
+>;
 
 const seedArbitrary = fc.integer().noShrink();
 const biasArbitrary = fc.option(fc.integer(2, 10).noShrink());
@@ -27,9 +29,13 @@ export function traverseShrinkN<T, U>(
 ): void {
   fc.assert(
     fc.property(
-      fc.tuple(seedArbitrary, seedArbitrary, biasArbitrary),
-      seedProducer,
-      ([seed, shrinkPathSeed, bias], arbitrarySettings) => {
+      fc.record({
+        seed: seedArbitrary,
+        shrinkPathSeed: seedArbitrary,
+        bias: biasArbitrary,
+        arbitrarySettings: seedProducer
+      }),
+      ({ seed, shrinkPathSeed, bias, arbitrarySettings }) => {
         resetAssertFunction();
 
         // Generate base shrinkables
