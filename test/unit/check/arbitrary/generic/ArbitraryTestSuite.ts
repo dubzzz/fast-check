@@ -8,7 +8,7 @@ class ArbitraryTestSuite<T, U> {
   private readonly arbitraryBuilder: ArbitraryBuilder<T, U>;
   private readonly equality?: (a: T, b: T) => boolean | void;
   private readonly builders: ((u: U) => Arbitrary<T>)[];
-  private internalAssert: (t: T[], u: U, previousValues: ReadonlyArray<T>) => void;
+  private readonly asserts: ((t: T[], u: U, previousValues: ReadonlyArray<T>) => void)[];
 
   private static isArbitraryBuilder<T, U>(
     arbitrary: ArbitraryBuilder<T, U> | Arbitrary<T>
@@ -28,7 +28,7 @@ class ArbitraryTestSuite<T, U> {
     this.arbitraryBuilder = ArbitraryTestSuite.extractBuilder(suiteSettings);
     this.equality = suiteSettings.equal;
     this.builders = [this.arbitraryBuilder.builder];
-    this.internalAssert = () => {};
+    this.asserts = [];
   }
 
   /**
@@ -42,12 +42,7 @@ class ArbitraryTestSuite<T, U> {
     this.builders.push(this.arbitraryBuilder.builder);
 
     const eq = buildEq(this.equality);
-    const prevAssert = this.internalAssert;
-    this.internalAssert = (t: T[], u: U, previousValues: ReadonlyArray<T>) => {
-      eq(t[0], t[builderId]);
-      prevAssert(t, u, previousValues);
-    };
-
+    this.asserts.push((t: T[]) => eq(t[0], t[builderId]));
     return this;
   }
 
@@ -59,15 +54,9 @@ class ArbitraryTestSuite<T, U> {
    * Shrink path is not producing shrank values from which it shrank
    */
   isNoInfiniteShrink(): ArbitraryTestSuite<T, U> {
+    // Have we seen the value before? throw if so
     const neq = buildNotEq(this.equality);
-    const prevAssert = this.internalAssert;
-    this.internalAssert = (t: T[], u: U, previousValues: ReadonlyArray<T>) => {
-      // Have we seen the value before?
-      previousValues.forEach(v => neq(v, t[0])); // throw if so
-
-      // Other assertions
-      prevAssert(t, u, previousValues);
-    };
+    this.asserts.push((t: T[], u: U, previousValues: ReadonlyArray<T>) => previousValues.forEach(v => neq(v, t[0])));
     return this;
   }
 
@@ -75,15 +64,11 @@ class ArbitraryTestSuite<T, U> {
    * Assess shrink path is strictly decreasing
    */
   isAlwaysLowerThanShrink(lowerThan: (a: T, b: T) => boolean | void): ArbitraryTestSuite<T, U> {
+    // Strictly lower than the last one? throw if not
     const lt = buildCmp(lowerThan, 'strictly lower');
-    const prevAssert = this.internalAssert;
-    this.internalAssert = (t: T[], u: U, previousValues: ReadonlyArray<T>) => {
-      // Strictly lower than the last one
+    this.asserts.push((t: T[], u: U, previousValues: ReadonlyArray<T>) => {
       if (previousValues.length > 0) lt(t[0], previousValues[previousValues.length - 1]);
-
-      // Other assertions
-      prevAssert(t, u, previousValues);
-    };
+    });
     return this;
   }
 
@@ -91,11 +76,9 @@ class ArbitraryTestSuite<T, U> {
    * Assess both generation and shrink produce valid values
    */
   isValid(validValue: (t: T, u: U) => boolean | void): ArbitraryTestSuite<T, U> {
-    const prevAssert = this.internalAssert;
-    this.internalAssert = (t: T[], u: U, previousValues: ReadonlyArray<T>) => {
+    this.asserts.push((t: T[], u: U) => {
       if (!validValue(t[0], u)) throw new Error(`Invalid value encountered: ${fc.stringify(t[0])}`);
-      prevAssert(t, u, previousValues);
-    };
+    });
     return this;
   }
 
@@ -109,11 +92,7 @@ class ArbitraryTestSuite<T, U> {
     this.builders.push(anotherBuilder);
 
     const eq = buildEq(this.equality);
-    const prevAssert = this.internalAssert;
-    this.internalAssert = (t: T[], u: U, previousValues: ReadonlyArray<T>) => {
-      eq(t[0], t[builderId]);
-      prevAssert(t, u, previousValues);
-    };
+    this.asserts.push((t: T[]) => eq(t[0], t[builderId]));
 
     return this;
   }
@@ -126,7 +105,7 @@ class ArbitraryTestSuite<T, U> {
     };
     const withLogAssert = (t: T[], u: U) => {
       try {
-        this.internalAssert(t, u, shrinkHistory);
+        this.asserts.forEach(a => a(t, u, shrinkHistory));
         shrinkHistory.push(t[0]);
       } catch (err) {
         const previousErrorMessage = err.message || err;
