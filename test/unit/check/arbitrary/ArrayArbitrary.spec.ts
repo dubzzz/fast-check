@@ -84,7 +84,7 @@ describe('ArrayArbitrary', () => {
     });
     it('Should pass arbitrary test suite: given no length constraints', () => {
       arbitraryTestSuite({
-        arbitrary: array(nat())
+        arbitrary: array(nat(10))
       })
         .isReproducible()
         .isAlwaysLowerThanShrink(isStrictlySmallerArray)
@@ -94,7 +94,7 @@ describe('ArrayArbitrary', () => {
     it('Should pass arbitrary test suite: given maximal length only', () => {
       arbitraryTestSuite({
         arbitrary: {
-          builder: (maxLength: number) => array(nat(), maxLength),
+          builder: (maxLength: number) => array(nat(10), maxLength),
           seed: fc.nat(100)
         }
       })
@@ -109,7 +109,7 @@ describe('ArrayArbitrary', () => {
     it('Should pass arbitrary test suite: given minimal and maximal lengths', () => {
       arbitraryTestSuite({
         arbitrary: {
-          builder: (constraints: { min: number; max: number }) => array(nat(), constraints.min, constraints.max),
+          builder: (constraints: { min: number; max: number }) => array(nat(10), constraints.min, constraints.max),
           seed: genericHelper.minMax(fc.nat(100))
         }
       })
