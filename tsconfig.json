@@ -10,6 +10,7 @@
         "preserveConstEnums": true,
         "strictNullChecks": true,
         "downlevelIteration": true,
+        "importHelpers": true,
         "module": "commonjs",
         "target": "es3",
         "lib": [
