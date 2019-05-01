@@ -66,7 +66,7 @@ describe('ArrayArbitrary', () => {
     });
     it('Should not clone on generate', () => {
       let numCallsToClone = 0;
-      const withClonedAndCounter = new class extends Arbitrary<any> {
+      const withClonedAndCounter = new (class extends Arbitrary<any> {
         generate() {
           const v = {
             [cloneMethod]: () => {
@@ -76,7 +76,7 @@ describe('ArrayArbitrary', () => {
           };
           return new Shrinkable(v);
         }
-      }();
+      })();
       const mrng = stubRng.mutable.counter(0);
       array(withClonedAndCounter).generate(mrng);
       expect(numCallsToClone).toEqual(0);

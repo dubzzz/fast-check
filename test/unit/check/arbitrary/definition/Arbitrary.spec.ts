@@ -24,11 +24,11 @@ class ForwardArbitrary extends Arbitrary<number> {
   }
   withBias(freq: number) {
     const arb = this;
-    return new class extends Arbitrary<number> {
+    return new (class extends Arbitrary<number> {
       generate(mrng: Random): Shrinkable<number> {
         return mrng.nextInt(1, freq) === 1 ? new Shrinkable(42) : arb.generate(mrng);
       }
-    }();
+    })();
   }
 }
 
@@ -46,11 +46,11 @@ class FakeTwoValuesBiasArbitrary extends Arbitrary<number> {
     return new Shrinkable(44);
   }
   withBias(freq: number) {
-    return new class extends Arbitrary<number> {
+    return new (class extends Arbitrary<number> {
       generate(mrng: Random): Shrinkable<number> {
         return mrng.nextInt(1, 2) === 1 ? new Shrinkable(42) : new Shrinkable(43);
       }
-    }();
+    })();
   }
 }
 

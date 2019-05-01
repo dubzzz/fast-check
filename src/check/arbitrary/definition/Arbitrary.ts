@@ -35,7 +35,7 @@ export abstract class Arbitrary<T> {
    */
   filter(predicate: (t: T) => boolean): Arbitrary<T> {
     const arb = this;
-    return new class extends Arbitrary<T> {
+    return new (class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {
         let g = arb.generate(mrng);
         while (!predicate(g.value)) {
@@ -46,7 +46,7 @@ export abstract class Arbitrary<T> {
       withBias(freq: number) {
         return arb.withBias(freq).filter(predicate);
       }
-    }();
+    })();
   }
 
   /**
@@ -65,14 +65,14 @@ export abstract class Arbitrary<T> {
    */
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
     const arb = this;
-    return new class extends Arbitrary<U> {
+    return new (class extends Arbitrary<U> {
       generate(mrng: Random): Shrinkable<U> {
         return arb.generate(mrng).map(mapper);
       }
       withBias(freq: number): Arbitrary<U> {
         return arb.withBias(freq).map(mapper);
       }
-    }();
+    })();
   }
 
   /** @hidden */
@@ -105,7 +105,7 @@ export abstract class Arbitrary<T> {
    */
   chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U> {
     const arb = this;
-    return new class extends Arbitrary<U> {
+    return new (class extends Arbitrary<U> {
       generate(mrng: Random): Shrinkable<U> {
         const clonedMrng = mrng.clone();
         const src = arb.generate(mrng);
@@ -115,7 +115,7 @@ export abstract class Arbitrary<T> {
       withBias(freq: number): Arbitrary<U> {
         return arb.withBias(freq).chain((t: T) => fmapper(t).withBias(freq));
       }
-    }();
+    })();
   }
 
   /**
@@ -132,14 +132,14 @@ export abstract class Arbitrary<T> {
    */
   noShrink(): Arbitrary<T> {
     const arb = this;
-    return new class extends Arbitrary<T> {
+    return new (class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {
         return new Shrinkable(arb.generate(mrng).value);
       }
       withBias(freq: number) {
         return arb.withBias(freq).noShrink();
       }
-    }();
+    })();
   }
 
   /**
@@ -158,10 +158,10 @@ export abstract class Arbitrary<T> {
    */
   noBias(): Arbitrary<T> {
     const arb = this;
-    return new class extends Arbitrary<T> {
+    return new (class extends Arbitrary<T> {
       generate(mrng: Random): Shrinkable<T> {
         return arb.generate(mrng);
       }
-    }();
+    })();
   }
 }

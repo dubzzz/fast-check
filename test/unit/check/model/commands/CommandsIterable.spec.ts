@@ -10,11 +10,11 @@ type Real = {};
 
 const buildAlreadyRanCommands = (runFlags: boolean[]) => {
   return runFlags.map((hasRun, idx) => {
-    const cmd = new class implements Command<Model, Real> {
+    const cmd = new (class implements Command<Model, Real> {
       check = (m: Readonly<Model>) => true;
       run = (m: Model, r: Real) => {};
       toString = () => String(idx);
-    }();
+    })();
     const wrapper = new CommandWrapper(cmd);
     if (hasRun) {
       wrapper.run({}, {});

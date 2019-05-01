@@ -78,21 +78,21 @@ describe('Property', () => {
     expect(() => property(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, () => {})).toThrowError());
   it('Should use the unbiased arbitrary by default', () => {
     const p = property(
-      new class extends Arbitrary<number> {
+      new (class extends Arbitrary<number> {
         generate(): Shrinkable<number> {
           return new Shrinkable(69);
         }
         withBias(): Arbitrary<number> {
           throw 'Should not call withBias if not forced to';
         }
-      }(),
+      })(),
       () => {}
     );
     expect(p.generate(stubRng.mutable.nocall()).value).toEqual([69]);
   });
   it('Should use the biased arbitrary when asked to', () => {
     const p = property(
-      new class extends Arbitrary<number> {
+      new (class extends Arbitrary<number> {
         generate(): Shrinkable<number> {
           return new Shrinkable(69);
         }
@@ -100,13 +100,13 @@ describe('Property', () => {
           if (typeof freq !== 'number' || freq < 2) {
             throw new Error(`freq atribute must always be superior or equal to 2, got: ${freq}`);
           }
-          return new class extends Arbitrary<number> {
+          return new (class extends Arbitrary<number> {
             generate(): Shrinkable<number> {
               return new Shrinkable(42);
             }
-          }();
+          })();
         }
-      }(),
+      })(),
       () => {}
     );
     expect(p.generate(stubRng.mutable.nocall(), 0).value).toEqual([42]);

@@ -10,12 +10,12 @@ import * as stubArb from '../../stubs/arbitraries';
 import prand from 'pure-rand';
 
 const wrap = <T>(arb: Arbitrary<T>): IProperty<T> =>
-  new class implements IProperty<T> {
+  new (class implements IProperty<T> {
     constructor(readonly arb: Arbitrary<T>) {}
     isAsync = () => false;
     generate = (rng: Random) => this.arb.generate(rng);
     run = () => '';
-  }(arb);
+  })(arb);
 
 describe('Tosser', () => {
   describe('toss', () => {
