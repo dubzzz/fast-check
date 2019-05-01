@@ -74,6 +74,7 @@ import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
+import { stringify } from './utils/stringify';
 
 // boolean
 // floating point types
@@ -170,6 +171,8 @@ export {
   Arbitrary,
   Shrinkable,
   cloneMethod,
+  // print values
+  stringify,
   // interfaces
   Context,
   ExecutionStatus,
