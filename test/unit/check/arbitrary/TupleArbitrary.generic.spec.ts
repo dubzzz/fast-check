@@ -56,7 +56,7 @@ describe('TupleArbitrary', () => {
       ));
     it('Should not clone on generate', () => {
       let numCallsToClone = 0;
-      const withClonedAndCounter = new class extends Arbitrary<any> {
+      const withClonedAndCounter = new (class extends Arbitrary<any> {
         generate() {
           const v = {
             [cloneMethod]: () => {
@@ -66,7 +66,7 @@ describe('TupleArbitrary', () => {
           };
           return new Shrinkable(v);
         }
-      }();
+      })();
       const arbs = [withClonedAndCounter];
       const mrng = stubRng.mutable.counter(0);
       genericTuple(arbs).generate(mrng);
@@ -82,7 +82,7 @@ describe('TupleArbitrary', () => {
       }
       [cloneMethod] = () => new CloneableInstance();
     }
-    const cloneableArbitrary = new class extends Arbitrary<CloneableInstance> {
+    const cloneableArbitrary = new (class extends Arbitrary<CloneableInstance> {
       generate = () => {
         function* g() {
           yield new Shrinkable(new CloneableInstance());
@@ -90,7 +90,7 @@ describe('TupleArbitrary', () => {
         }
         return new Shrinkable(new CloneableInstance(), () => stream(g()));
       };
-    }();
+    })();
     const arbs = genericTuple([nat(16), cloneableArbitrary, nat(16)] as Arbitrary<any>[]);
     const extractId = (shrinkable: Shrinkable<[number, CloneableInstance, number]>) => shrinkable.value_[1].id;
     fc.assert(

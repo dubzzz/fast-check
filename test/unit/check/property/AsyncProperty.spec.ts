@@ -77,21 +77,21 @@ describe('AsyncProperty', () => {
 
   it('Should use the unbiased arbitrary by default', () => {
     const p = asyncProperty(
-      new class extends Arbitrary<number> {
+      new (class extends Arbitrary<number> {
         generate(): Shrinkable<number> {
           return new Shrinkable(69);
         }
         withBias(): Arbitrary<number> {
           throw 'Should not call withBias if not forced to';
         }
-      }(),
+      })(),
       async () => {}
     );
     expect(p.generate(stubRng.mutable.nocall()).value).toEqual([69]);
   });
   it('Should use the biased arbitrary when asked to', () => {
     const p = asyncProperty(
-      new class extends Arbitrary<number> {
+      new (class extends Arbitrary<number> {
         generate(): Shrinkable<number> {
           return new Shrinkable(69);
         }
@@ -99,13 +99,13 @@ describe('AsyncProperty', () => {
           if (typeof freq !== 'number' || freq < 2) {
             throw new Error(`freq atribute must always be superior or equal to 2, got: ${freq}`);
           }
-          return new class extends Arbitrary<number> {
+          return new (class extends Arbitrary<number> {
             generate(): Shrinkable<number> {
               return new Shrinkable(42);
             }
-          }();
+          })();
         }
-      }(),
+      })(),
       async () => {}
     );
     expect(p.generate(stubRng.mutable.nocall(), 0).value).toEqual([42]);

@@ -13,7 +13,7 @@ describe('ModelRunner', () => {
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter(v => v >= 0);
           const commands = runOrNot.map((v, idx) => {
-            return new class implements Command<{}, {}> {
+            return new (class implements Command<{}, {}> {
               name = 'Command';
               check = (m: {}) => {
                 expect(m).toBe(setupData.model);
@@ -24,7 +24,7 @@ describe('ModelRunner', () => {
                 expect(r).toBe(setupData.real);
                 startedRuns.push(idx);
               };
-            }();
+            })();
           });
           modelRun(() => setupData, commands);
           expect(startedRuns).toEqual(expectedRuns);
@@ -39,7 +39,7 @@ describe('ModelRunner', () => {
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter(v => v >= 0);
           const commands = runOrNot.map((v, idx) => {
-            return new class implements AsyncCommand<{}, {}, true> {
+            return new (class implements AsyncCommand<{}, {}, true> {
               name = 'AsyncCommand';
               check = async (m: {}) => {
                 return new Promise<boolean>(resolve => {
@@ -57,7 +57,7 @@ describe('ModelRunner', () => {
                   resolve();
                 });
               };
-            }();
+            })();
           });
           const setup = asyncSetup ? async () => setupData : () => setupData;
           await asyncModelRun(setup, commands);
@@ -68,7 +68,7 @@ describe('ModelRunner', () => {
       let calledBeforeDataReady = false;
       let setupDataReady = false;
       const setupData = { model: {}, real: null };
-      const command = new class implements AsyncCommand<{}, {}> {
+      const command = new (class implements AsyncCommand<{}, {}> {
         name = 'AsyncCommand';
         check = () => {
           calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
@@ -77,7 +77,7 @@ describe('ModelRunner', () => {
         run = async (m: {}, r: {}) => {
           calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
         };
-      }();
+      })();
       const setup = () =>
         new Promise<typeof setupData>(resolve => {
           setTimeout(() => {

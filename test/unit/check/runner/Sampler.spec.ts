@@ -68,9 +68,9 @@ describe('Sampler', () => {
           throw new Error('Unexpected call to [cloneMethod]');
         }
       };
-      const arb = new class extends Arbitrary<typeof cloneable> {
+      const arb = new (class extends Arbitrary<typeof cloneable> {
         generate = () => new Shrinkable(cloneable);
-      }();
+      })();
       sample(arb, { seed: 42 });
     });
   });

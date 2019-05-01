@@ -7,7 +7,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 import { Stream, stream } from '../../../../../src/stream/Stream';
 
 describe('ArbitraryWithShrink', () => {
-  const arbWithShrink = new class extends ArbitraryWithShrink<number> {
+  const arbWithShrink = new (class extends ArbitraryWithShrink<number> {
     generate(mrng: Random): Shrinkable<number> {
       throw new Error('Method not implemented.');
     }
@@ -18,7 +18,7 @@ describe('ArbitraryWithShrink', () => {
       }
       return stream(g());
     }
-  }();
+  })();
   it('Should produce a shrinkable from a value', () => {
     expect(arbWithShrink.shrinkableFor(5).value).toEqual(5);
   });
@@ -45,7 +45,7 @@ describe('ArbitraryWithShrink', () => {
     ).toEqual([0, 7, 8, 9, 10, 11, 12, 13]);
   });
 
-  const smallIntWithShrink = new class extends ArbitraryWithShrink<number> {
+  const smallIntWithShrink = new (class extends ArbitraryWithShrink<number> {
     private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
       return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map(v => this.wrapper(v, true)));
     }
@@ -59,7 +59,7 @@ describe('ArbitraryWithShrink', () => {
       }
       return stream(g());
     }
-  }();
+  })();
   it('Should produce the same shrunk values as the generated shrinkable', () => {
     fc.assert(
       fc.property(fc.integer().noShrink(), fc.nat(), (seed, mod) => {

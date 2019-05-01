@@ -48,7 +48,7 @@ describe('TimeoutProperty', () => {
   it('Should forward the frequency to the underlying (when set)', () => {
     let called = false;
     let calledWithRightId = false;
-    const p = new class implements IProperty<number> {
+    const p = new (class implements IProperty<number> {
       isAsync(): boolean {
         return true;
       }
@@ -60,7 +60,7 @@ describe('TimeoutProperty', () => {
       run(v: number): string | Promise<string> {
         throw new Error('Method not implemented.');
       }
-    }();
+    })();
     const timeoutProp = new TimeoutProperty(p, 0);
     expect(timeoutProp.generate(stubRng.mutable.nocall(), 50).value).toEqual(42);
     expect(called).toBe(true);
@@ -69,7 +69,7 @@ describe('TimeoutProperty', () => {
   it('Should forward any frequency if not any', () => {
     let called = false;
     let calledWithRightId = false;
-    const p = new class implements IProperty<number> {
+    const p = new (class implements IProperty<number> {
       isAsync(): boolean {
         return true;
       }
@@ -81,7 +81,7 @@ describe('TimeoutProperty', () => {
       run(v: number): string | Promise<string> {
         throw new Error('Method not implemented.');
       }
-    }();
+    })();
     const timeoutProp = new TimeoutProperty(p, 0);
     expect(timeoutProp.generate(stubRng.mutable.nocall()).value).toEqual(42);
     expect(called).toBe(true);

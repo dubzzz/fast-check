@@ -34,7 +34,7 @@ describe('DedupArbitrary', () => {
     });
     it('Should not clone on generate', () => {
       let numCallsToClone = 0;
-      const withClonedAndCounter = new class extends Arbitrary<any> {
+      const withClonedAndCounter = new (class extends Arbitrary<any> {
         generate() {
           const v = {
             [cloneMethod]: () => {
@@ -44,7 +44,7 @@ describe('DedupArbitrary', () => {
           };
           return new Shrinkable(v);
         }
-      }();
+      })();
       const mrng = stubRng.mutable.counter(0);
       dedup(withClonedAndCounter, 2).generate(mrng);
       expect(numCallsToClone).toEqual(0);

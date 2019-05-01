@@ -7,14 +7,14 @@ import * as stubRng from '../../stubs/generators';
 describe('UnbiasedProperty', () => {
   it('Should forward parameters correctly (asynchronous property)', () => {
     let calledWithRunId: number | undefined = undefined;
-    const pAsync = new class implements IProperty<number> {
+    const pAsync = new (class implements IProperty<number> {
       isAsync = () => true;
       generate = (mrng: any, runId?: number) => {
         calledWithRunId = runId;
         return new Shrinkable(42);
       };
       run = (v: number) => 'pAsync:' + v;
-    }();
+    })();
 
     const unbiasedAsyncProp = new UnbiasedProperty(pAsync);
 
@@ -27,14 +27,14 @@ describe('UnbiasedProperty', () => {
   });
   it('Should forward parameters correctly (synchronous property)', () => {
     let calledWithRunId: number | undefined = undefined;
-    const pSync = new class implements IProperty<number> {
+    const pSync = new (class implements IProperty<number> {
       isAsync = () => false;
       generate = (mrng: any, runId?: number) => {
         calledWithRunId = runId;
         return new Shrinkable(48);
       };
       run = (v: number) => 'pSync:' + v;
-    }();
+    })();
 
     const unbiasedSyncProp = new UnbiasedProperty(pSync);
 

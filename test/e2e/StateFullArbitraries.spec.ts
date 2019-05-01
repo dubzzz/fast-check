@@ -4,7 +4,7 @@ const seed = Date.now();
 describe(`StateFullArbitraries (seed: ${seed})`, () => {
   describe('Never call on generate', () => {
     const cloneableWithCount = (data: { counter: number }) =>
-      new class extends fc.Arbitrary<any> {
+      new (class extends fc.Arbitrary<any> {
         generate() {
           const v = {
             [fc.cloneMethod]: () => {
@@ -14,7 +14,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           };
           return new fc.Shrinkable(v);
         }
-      }();
+      })();
     it('normal property', () => {
       const data = { counter: 0 };
       fc.assert(fc.property(cloneableWithCount(data), () => {}));
