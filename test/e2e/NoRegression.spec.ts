@@ -1,5 +1,4 @@
 import fc from '../../src/fast-check';
-declare function BigInt(n: number | bigint | string): bigint;
 
 const testFunc = (value: unknown) => {
   const repr = fc.stringify(value);
@@ -41,20 +40,6 @@ describe(`NoRegression`, () => {
   it('maxSafeNat', () => {
     expect(() => fc.assert(fc.property(fc.maxSafeNat(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
-  if (typeof BigInt !== 'undefined') {
-    it('bigIntN', () => {
-      expect(() => fc.assert(fc.property(fc.bigIntN(100), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
-    });
-    it('bigUintN', () => {
-      expect(() => fc.assert(fc.property(fc.bigUintN(100), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
-    });
-    it('bigInt', () => {
-      expect(() => fc.assert(fc.property(fc.bigInt(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
-    });
-    it('bigUint', () => {
-      expect(() => fc.assert(fc.property(fc.bigUint(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
-    });
-  }
   it('string', () => {
     expect(() => fc.assert(fc.property(fc.string(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
