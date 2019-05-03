@@ -7,6 +7,7 @@ import { Property } from '../property/Property';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
+import { decorateProperty } from './DecorateProperty';
 import { RunDetails } from './reporter/RunDetails';
 import { RunExecution } from './reporter/RunExecution';
 import { RunnerIterator } from './RunnerIterator';
@@ -14,7 +15,6 @@ import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { throwIfFailed } from './utils/RunDetailsFormatter';
-import { decorateProperty } from './DecorateProperty';
 
 /** @hidden */
 function runIt<Ts>(
