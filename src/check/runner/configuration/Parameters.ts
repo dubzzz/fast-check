@@ -43,6 +43,20 @@ export interface Parameters<T = void> {
    */
   timeout?: number;
   /**
+   * Skip all runs after a given time limit: disabled by default
+   *
+   * NOTE: Relies on `Date.now()`.
+   *
+   * NOTE:
+   * Useful to stop too long shrinking processes.
+   * Replay capability (see {@link seed}, {@link path}) can resume the shrinking.
+   *
+   * WARNING:
+   * It skips runs. Thus test might be marked as failed.
+   * Indeed, it might not reached the requested number of successful runs.
+   */
+  skipAllAfterTimeLimit?: number;
+  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
    */

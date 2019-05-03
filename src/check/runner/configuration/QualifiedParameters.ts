@@ -21,6 +21,7 @@ export class QualifiedParameters<T> {
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
+  skipAllAfterTimeLimit: number | null;
 
   private static readSeed = <T>(p?: Parameters<T>): number => {
     // No seed specified
@@ -64,6 +65,8 @@ export class QualifiedParameters<T> {
     p != null && p.maxSkipsPerRun != null ? p.maxSkipsPerRun : 100;
   private static readTimeout = <T>(p?: Parameters<T>): number | null =>
     p != null && p.timeout != null ? p.timeout : null;
+  private static readSkipAllAfterTimeLimit = <T>(p?: Parameters<T>): number | null =>
+    p != null && p.skipAllAfterTimeLimit != null ? p.skipAllAfterTimeLimit : null;
   private static readPath = <T>(p?: Parameters<T>): string => (p != null && p.path != null ? p.path : '');
   private static readUnbiased = <T>(p?: Parameters<T>): boolean => p != null && p.unbiased === true;
   private static readVerbose = <T>(p?: Parameters<T>): VerbosityLevel => {
@@ -99,6 +102,7 @@ export class QualifiedParameters<T> {
       numRuns: QualifiedParameters.readNumRuns(p),
       maxSkipsPerRun: QualifiedParameters.readMaxSkipsPerRun(p),
       timeout: QualifiedParameters.readTimeout(p),
+      skipAllAfterTimeLimit: QualifiedParameters.readSkipAllAfterTimeLimit(p),
       logger: QualifiedParameters.readLogger(p),
       path: QualifiedParameters.readPath(p),
       unbiased: QualifiedParameters.readUnbiased(p),

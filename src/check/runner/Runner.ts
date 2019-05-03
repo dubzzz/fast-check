@@ -4,8 +4,6 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { AsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/IProperty';
 import { Property } from '../property/Property';
-import { TimeoutProperty } from '../property/TimeoutProperty';
-import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
@@ -16,6 +14,7 @@ import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { throwIfFailed } from './utils/RunDetailsFormatter';
+import { decorateProperty } from './DecorateProperty';
 
 /** @hidden */
 function runIt<Ts>(
@@ -43,13 +42,6 @@ async function asyncRunIt<Ts>(
     runner.handleResult(out);
   }
   return runner.runExecution;
-}
-
-/** @hidden */
-function decorateProperty<Ts>(rawProperty: IProperty<Ts>, qParams: QualifiedParameters<Ts>) {
-  const propA =
-    rawProperty.isAsync() && qParams.timeout != null ? new TimeoutProperty(rawProperty, qParams.timeout) : rawProperty;
-  return qParams.unbiased === true ? new UnbiasedProperty(propA) : propA;
 }
 
 /** @hidden */
