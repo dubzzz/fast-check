@@ -41,6 +41,25 @@ longestCommonSubstr('𐌵𐌵**ABC', '𐌵𐌵--ABC') //=> "𐌵𐌵"
 // expected to be "ABC"
 ```
 
+## [facebook/jest](https://github.com/facebook/jest/)
+
+**Statistics:** ~25000⭐ ~4m/wk downloads📈 - *May 2019*
+
+**Issue detected:** `toStrictEqual` fails to distinguish 0 from 5e-324 \[[more](https://github.com/facebook/jest/issues/7941)\]
+
+**Code example:** `expect(0).toStrictEqual(5e-324)` succeeds
+
+**Issue detected:** `toEqual` not symmetric for Set \[[more](https://github.com/facebook/jest/issues/7975)\]
+
+**Code example:**
+```js
+const s1 = new Set([false, true]);
+const s2 = new Set([new Boolean(true), new Boolean(true)]);
+
+expect(s1).not.toEqual(s2); // success
+expect(s2).not.toEqual(s1); // failure
+```
+
 ## [nodeca/js-yaml](https://github.com/nodeca/js-yaml/)
 
 **Statistics:** ~3000⭐ ~13m/wk downloads📈 - *Jan 2019*
