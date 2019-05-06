@@ -1,4 +1,5 @@
 import * as fc from '../../src/fast-check';
+import * as prand from 'pure-rand';
 
 // Fake commands
 type Model = { counter: number };
@@ -25,17 +26,29 @@ class AlwaysPos implements fc.Command<Model, Real> {
 
 const seed = Date.now();
 describe(`ReplayCommands (seed: ${seed})`, () => {
+  const buildProp = (replayPath?: string, mrng?: fc.Random) => {
+    let alreadyFailed = false;
+    let skipAllRuns = false;
+    return fc.property(
+      fc.commands([fc.nat().map(v => new IncBy(v)), fc.nat().map(v => new DecPosBy(v)), fc.constant(new AlwaysPos())], {
+        replayPath
+      }),
+      cmds => {
+        if (alreadyFailed && mrng !== undefined) {
+          // Simulate the behaviour of skipAllAfterTimeLimit
+          skipAllRuns = skipAllRuns || mrng.nextDouble() < 0.05;
+          fc.pre(!skipAllRuns);
+        }
+        try {
+          fc.modelRun(() => ({ model: { counter: 0 }, real: {} }), cmds);
+        } catch (err) {
+          alreadyFailed = true;
+          throw err;
+        }
+      }
+    );
+  };
   it('Should be able to replay commands by specifying replayPath in fc.commands', () => {
-    const buildProp = (replayPath?: string) => {
-      return fc.property(
-        fc.commands(
-          [fc.nat().map(v => new IncBy(v)), fc.nat().map(v => new DecPosBy(v)), fc.constant(new AlwaysPos())],
-          { replayPath }
-        ),
-        cmds => fc.modelRun(() => ({ model: { counter: 0 }, real: {} }), cmds)
-      );
-    };
-
     const out = fc.check(buildProp(), { seed: seed });
     expect(out.failed).toBe(true);
 
@@ -46,5 +59,17 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
     expect(outReplayed.counterexamplePath).toEqual(out.counterexamplePath);
     expect(outReplayed.counterexample![0].toString()).toEqual(out.counterexample![0].toString());
     expect(outReplayed.numRuns).toEqual(1);
+  });
+  it('Should be able to resume a stopped run by specifying replayPath in fc.commands', () => {
+    const mrng = new fc.Random(prand.mersenne(seed));
+    const out = fc.check(buildProp(undefined, mrng), { seed: seed });
+    expect(out.failed).toBe(true);
+
+    const path = out.counterexamplePath!;
+    const replayPath = /\/\*replayPath=['"](.*)['"]\*\//.exec(out.counterexample![0].toString())![1];
+
+    const outReplayed = fc.check(buildProp(replayPath), { seed, path });
+    expect(outReplayed.counterexamplePath).toContain(out.counterexamplePath);
+    expect(outReplayed.counterexamplePath!.startsWith(out.counterexamplePath!)).toBe(true);
   });
 });
