@@ -21,10 +21,11 @@ export class QualifiedParameters<T> {
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
+  skipAllAfterTimeLimit: number | null;
 
-  private static readSeed = <T>(p?: Parameters<T>): number => {
+  private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
-    if (p == null || p.seed == null) return Date.now() ^ (Math.random() * 0x100000000);
+    if (p.seed == null) return Date.now() ^ (Math.random() * 0x100000000);
 
     // Seed is a 32 bits signed integer
     const seed32 = p.seed | 0;
@@ -34,8 +35,8 @@ export class QualifiedParameters<T> {
     const gap = p.seed - seed32;
     return seed32 ^ (gap * 0x100000000);
   };
-  private static readRandomType = <T>(p?: Parameters<T>): ((seed: number) => RandomGenerator) => {
-    if (p == null || p.randomType == null) return prand.xorshift128plus;
+  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => RandomGenerator) => {
+    if (p.randomType == null) return prand.xorshift128plus;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
         case 'mersenne':
@@ -52,22 +53,14 @@ export class QualifiedParameters<T> {
     }
     return p.randomType;
   };
-  private static readEndOnFailure = <T>(p?: Parameters<T>): boolean => p != null && p.endOnFailure === true;
-  private static readNumRuns = <T>(p?: Parameters<T>): number => {
+  private static readNumRuns = <T>(p: Parameters<T>): number => {
     const defaultValue = 100;
-    if (p == null) return defaultValue;
     if (p.numRuns != null) return p.numRuns;
     if ((p as { num_runs?: number }).num_runs != null) return (p as { num_runs: number }).num_runs;
     return defaultValue;
   };
-  private static readMaxSkipsPerRun = <T>(p?: Parameters<T>): number =>
-    p != null && p.maxSkipsPerRun != null ? p.maxSkipsPerRun : 100;
-  private static readTimeout = <T>(p?: Parameters<T>): number | null =>
-    p != null && p.timeout != null ? p.timeout : null;
-  private static readPath = <T>(p?: Parameters<T>): string => (p != null && p.path != null ? p.path : '');
-  private static readUnbiased = <T>(p?: Parameters<T>): boolean => p != null && p.unbiased === true;
-  private static readVerbose = <T>(p?: Parameters<T>): VerbosityLevel => {
-    if (p == null || p.verbose == null) return VerbosityLevel.None;
+  private static readVerbose = <T>(p: Parameters<T>): VerbosityLevel => {
+    if (p.verbose == null) return VerbosityLevel.None;
     if (typeof p.verbose === 'boolean') {
       return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
     }
@@ -79,32 +72,35 @@ export class QualifiedParameters<T> {
     }
     return p.verbose | 0;
   };
-  private static readLogger = <T>(p?: Parameters<T>): ((v: string) => void) => {
-    if (p != null && p.logger != null) return p.logger;
-    return (v: string) => {
-      // tslint:disable-next-line:no-console
-      console.log(v);
-    };
-  };
-  private static readExamples = <T>(p?: Parameters<T>): T[] => (p != null && p.examples != null ? p.examples : []);
+  private static readBoolean = <T, K extends keyof Parameters<T>>(p: Parameters<T>, key: K): boolean => p[key] === true;
+  private static readOrDefault = <T, K extends keyof Parameters<T>, V>(
+    p: Parameters<T>,
+    key: K,
+    defaultValue: V
+  ): NonNullable<Parameters<T>[K]> | V => (p[key] != null ? p[key]! : defaultValue);
 
   /**
    * Extract a runner configuration from Parameters
    * @param p Incoming Parameters
    */
-  static read<T>(p?: Parameters<T>): QualifiedParameters<T> {
+  static read<T>(op?: Parameters<T>): QualifiedParameters<T> {
+    const p = op || {};
     return {
       seed: QualifiedParameters.readSeed(p),
       randomType: QualifiedParameters.readRandomType(p),
       numRuns: QualifiedParameters.readNumRuns(p),
-      maxSkipsPerRun: QualifiedParameters.readMaxSkipsPerRun(p),
-      timeout: QualifiedParameters.readTimeout(p),
-      logger: QualifiedParameters.readLogger(p),
-      path: QualifiedParameters.readPath(p),
-      unbiased: QualifiedParameters.readUnbiased(p),
       verbose: QualifiedParameters.readVerbose(p),
-      examples: QualifiedParameters.readExamples(p),
-      endOnFailure: QualifiedParameters.readEndOnFailure(p)
+      maxSkipsPerRun: QualifiedParameters.readOrDefault(p, 'maxSkipsPerRun', 100),
+      timeout: QualifiedParameters.readOrDefault(p, 'timeout', null),
+      skipAllAfterTimeLimit: QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null),
+      logger: QualifiedParameters.readOrDefault(p, 'logger', (v: string) => {
+        // tslint:disable-next-line:no-console
+        console.log(v);
+      }),
+      path: QualifiedParameters.readOrDefault(p, 'path', ''),
+      unbiased: QualifiedParameters.readBoolean(p, 'unbiased'),
+      examples: QualifiedParameters.readOrDefault(p, 'examples', []),
+      endOnFailure: QualifiedParameters.readBoolean(p, 'endOnFailure')
     };
   }
 

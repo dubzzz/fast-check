@@ -99,6 +99,8 @@ export interface Parameters<T = void> {
                         // it makes the run stop at the first encountered failure without shrinking
                         // when used in complement to seed and path
                         // it replays only the minimal counterexample
+    skipAllAfterTimeLimit?: number; // optional, skip all runs after a given time limit
+                        // in milliseconds (relies on Date.now): disabled by default
 }
 ```
 
