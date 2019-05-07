@@ -4,3 +4,4 @@ People who commit code to the project are encouraged to add their names here. Pl
 - [Aaron Elligsen](https://github.com/hath995)
 - [Nicolas Dubien](https://github.com/dubzzz)
 - [Gjorgji Kjosev](https://github.com/spion)
+- [Trey Davis](https://github.com/treydavis)
