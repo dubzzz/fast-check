@@ -1,3 +1,19 @@
+# 1.15.0
+
+_Add auto-skip after time limit option for runners_
+
+## Features
+
+- ([PR#352](https://github.com/dubzzz/fast-check/pull/352)) Ability to auto skip runs after time limit
+- ([PR#348](https://github.com/dubzzz/fast-check/pull/348)) Expose `fc.stringify` in the API
+
+## Fixes
+
+- ([PR#354](https://github.com/dubzzz/fast-check/pull/354)) Doc: Add examples of issues discovered using fast-check
+- ([PR#353](https://github.com/dubzzz/fast-check/pull/353)) Doc: Better logo
+- ([PR#351](https://github.com/dubzzz/fast-check/pull/351)) Size: Add dependency to tslib - *should reduce size of the bundle*
+- ([PR#349](https://github.com/dubzzz/fast-check/pull/349)) Test: No regression snapshot tests
+
 # 1.14.0
 
 _New generated documentation and new arbitraries_
@@ -8,7 +24,10 @@ _New generated documentation and new arbitraries_
 - ([PR#340](https://github.com/dubzzz/fast-check/pull/340)) Add `fc.mapToConstant()` arbitrary
 - ([PR#344](https://github.com/dubzzz/fast-check/pull/344)) Add `fc.webUrl()` and other web urls related arbitraries
 - ([PR#345](https://github.com/dubzzz/fast-check/pull/345)) Add `fc.emailAddress()` arbitrary
-- ([PR#343](https://github.com/dubzzz/fast-check/pull/343)) Generate the API documentation with docsify
+
+## Fixes
+
+- ([PR#343](https://github.com/dubzzz/fast-check/pull/343)) Doc: Generate the API documentation with docsify
 
 ---
 
