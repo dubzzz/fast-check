@@ -126,7 +126,7 @@ By default, the failures reported by `fast-check` feature most relevant data:
 
 `fast-check` comes with a verbose mode, which can help users while trying to dig into a failure.
 
-For instance, let's suppose the folowwing property failed:
+For instance, let's suppose the following property failed:
 ```js
 fc.assert(
     fc.property(
