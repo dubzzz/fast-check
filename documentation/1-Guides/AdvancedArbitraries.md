@@ -135,7 +135,7 @@ For this reason, the `shrink` method is not part of `Arbitrary` in fast-check bu
 
 Any generated value having a key for `fc.cloneMethod` would be handled a bit differently during the execution. Indeed those values explicitly requires to be cloned before being transmitted again to the predicate.
 
-Cloneable values can be seen as stateful values that would be altered as soon as we use them inside the predicate. For thsi precise reason they have to be recreated if they need to be used inside other runs of the predicate.
+Cloneable values can be seen as stateful values that would be altered as soon as we use them inside the predicate. For this precise reason they have to be recreated if they need to be used inside other runs of the predicate.
 
 Example of usages:
 - `fc.context`: is a stateful instance that gathers all the logs for a given predicate execution. In order to provide only the logs linked to the run itself it has to be cloned between all the runs
