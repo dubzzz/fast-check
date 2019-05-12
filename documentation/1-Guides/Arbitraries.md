@@ -180,8 +180,6 @@ export interface AsyncCommand<Model extends object, Real, true> {
 
 While `fc.array` or any other array arbitrary could be used to generate such data, it is highly recommended to rely on `fc.commands` to generate arrays of commands. Its shrinker would be more adapted for such cases.
 
-**WARNING:** `fc.commands` cannot be replayed for the moment
-
 Possible signatures:
 - `fc.commands<Model, Real>(commandArbs: Arbitrary<Command<Model, Real>>[], maxCommands?: number)` arrays of `Command` that can be ingested by `fc.modelRun`
 - `fc.commands<Model, Real>(commandArbs: Arbitrary<Command<Model, Real>>[], settings: CommandsSettings)` arrays of `Command` that can be ingested by `fc.modelRun`
