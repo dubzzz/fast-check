@@ -243,43 +243,7 @@ exports[`NoRegression commands 1`] = `
 { seed: 42, path: \\"6:2:3:4:7:8:11:13:16:19:21:22:23:24:28:28:31:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1\\", endOnFailure: true }
 Counterexample: [inc[1],check[1] /*replayPath=\\"CF/d:N\\"*/]
 Shrunk 47 time(s)
-Got error: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
-
-Expected: < [32m1[39m
-Received:   [31m1[39m
-
-Stack trace: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
-
-Expected: < [32m1[39m
-Received:   [31m1[39m
-    at CheckLessThanCommand.run (C:\\\\src\\\\fast-check\\\\test\\\\e2e\\\\model\\\\CounterCommands.ts:36:21)
-    at CommandWrapper.Object.<anonymous>.CommandWrapper.run (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\commands\\\\CommandWrapper.ts:13:21)
-    at runSync (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:44:27)
-    at C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:29:16
-    at then (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:41:54)
-    at _loop_1 (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:26:15)
-    at C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:21:17
-    at Object.then (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:42:71)
-    at genericModelRun (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:22:12)
-    at internalModelRun (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:46:10)
-    at Object.<anonymous>.exports.modelRun (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\model\\\\ModelRunner.ts:87:3)
-    at C:\\\\src\\\\fast-check\\\\test\\\\e2e\\\\NoRegression.spec.ts:239:16
-    at Property.predicate (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\property\\\\Property.generated.ts:459:53)
-    at Property.Object.<anonymous>.Property.run (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\property\\\\Property.generic.ts:26:27)
-    at runIt (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\runner\\\\Runner.ts:27:26)
-    at check (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\runner\\\\Runner.ts:111:7)
-    at Object.assert (C:\\\\src\\\\fast-check\\\\src\\\\check\\\\runner\\\\Runner.ts:143:15)
-    at C:\\\\src\\\\fast-check\\\\test\\\\e2e\\\\NoRegression.spec.ts:225:10
-    at _toThrowErrorMatchingSnapshot (C:\\\\src\\\\fast-check\\\\node_modules\\\\jest-snapshot\\\\build\\\\index.js:468:7)
-    at Object.toThrowErrorMatchingSnapshot (C:\\\\src\\\\fast-check\\\\node_modules\\\\jest-snapshot\\\\build\\\\index.js:395:10)
-    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (C:\\\\src\\\\fast-check\\\\node_modules\\\\expect\\\\build\\\\index.js:342:33)
-    at Object.<anonymous> (C:\\\\src\\\\fast-check\\\\test\\\\e2e\\\\NoRegression.spec.ts:244:7)
-    at Object.asyncJestTest (C:\\\\src\\\\fast-check\\\\node_modules\\\\jest-jasmine2\\\\build\\\\jasmineAsyncInstall.js:102:37)
-    at resolve (C:\\\\src\\\\fast-check\\\\node_modules\\\\jest-jasmine2\\\\build\\\\queueRunner.js:43:12)
-    at new Promise (<anonymous>)
-    at mapper (C:\\\\src\\\\fast-check\\\\node_modules\\\\jest-jasmine2\\\\build\\\\queueRunner.js:26:19)
-    at promise.then (C:\\\\src\\\\fast-check\\\\node_modules\\\\jest-jasmine2\\\\build\\\\queueRunner.js:73:41)
-    at process._tickCallback (internal/process/next_tick.js:68:7)
+Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [even,check[1543881035],dec[1608259546] /*replayPath=\\"CF/d:N\\"*/]

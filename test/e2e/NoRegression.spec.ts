@@ -236,7 +236,12 @@ describe(`NoRegression`, () => {
               model: { count: 0 },
               real: {}
             });
-            fc.modelRun(setup, cmds);
+            try {
+              fc.modelRun(setup, cmds);
+              return true;
+            } catch (err) {
+              return false;
+            }
           }
         ),
         settings
