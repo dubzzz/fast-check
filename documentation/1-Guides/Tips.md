@@ -233,7 +233,9 @@ fc.statistics(
 Whenever `fc.assert` encounters a failure, it displays an error log featuring both the seed and the path to replay it. For instance, in the output below the seed is 1525890375951 and the path 0:0.
 
 ```
-Error: Property failed after 1 tests (seed: 1525890375951, path: 0:0, endOnFailure: true): [0]
+Error: Property failed after 1 tests
+{ seed: 1525890375951, path: 0:0, endOnFailure: true }
+Counterexample: [0]
 Shrunk 1 time(s)
 Got error: Property failed by returning false
 ```
@@ -264,7 +266,57 @@ fc.assert(
 );
 ```
 
-**NOTE:** Replaying `fc.commands` requires passing an additional flag called `replayPath` when building this arbitrary.
+**NOTE:** Replaying `fc.commands` requires passing an additional flag called `replayPath` when building this arbitrary (see below).
+
+## Replay after failure for commands
+
+As any other built-in arbitrary, `fc.commands` is replayable but the process is a bit different.
+
+Whenever `fc.assert` encounters a failure with `fc.commands`, it displays an error log featuring both the seed, path and replayPath to replay it. For instance, in the output below the seed is 670108017, the path 96:5 and the replayPath is AAAAABAAE:VF.
+
+```
+Property failed after 97 tests
+{ seed: 670108017, path: "96:5", endOnFailure: true }
+Counterexample: [PlayToken[0],NewGame,PlayToken[1],Refresh /*replayPath="AAAAABAAE:VF"*/]
+Shrunk 1 time(s)
+Got error: Error: expect(received).toEqual(expected)
+```
+
+In order to replay the failure on the counterexample - `[PlayToken[0],NewGame,PlayToken[1],Refresh]`, you have to change your code as follow:
+
+```typescript
+// Original code
+fc.assert(
+  fc.property(
+    fc.commands(/* array of commands */),
+    checkEverythingIsOk
+  )
+);
+
+// Replay code: straight to the minimal counterexample
+// Only replay the minimal counterexample
+fc.assert(
+  fc.property(
+    fc.commands(
+      /* array of commands */,
+      {
+        replayPath: "AAAAABAAE:VF"
+      }
+    ),
+    checkEverythingIsOk
+  ),
+  {
+    seed: 670108017,
+    path: "96:5",
+    endOnFailure: true
+  }
+);
+```
+
+**NOTE:** Why is there something specific to do for `fc.commands`?
+In order to come with a more efficient and faster shrinker, `fc.commands` takes into account the commands that have really been executed.
+Basically if the framework generated the following commands `[A,B,C,A,A,C]` but only executed `[A,-,C,A,-,-]` it will shrink only `[A,C,A]`.
+The value stored into `replayPath` encodes the history of what was really executed in order not re-run anything on replay.
 
 ## Add custom examples next to generated ones
 
