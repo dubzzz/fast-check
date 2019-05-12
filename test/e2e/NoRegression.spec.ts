@@ -1,4 +1,11 @@
 import fc from '../../src/fast-check';
+import {
+  IncreaseCommand,
+  DecreaseCommand,
+  EvenCommand,
+  OddCommand,
+  CheckLessThanCommand
+} from './model/CounterCommands';
 
 const testFunc = (value: unknown) => {
   const repr = fc.stringify(value);
@@ -212,5 +219,33 @@ describe(`NoRegression`, () => {
   });
   it('emailAddress', () => {
     expect(() => fc.assert(fc.property(fc.emailAddress(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+  });
+  it('commands', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.commands([
+            fc.nat().map(n => new IncreaseCommand(n)),
+            fc.nat().map(n => new DecreaseCommand(n)),
+            fc.constant(new EvenCommand()),
+            fc.constant(new OddCommand()),
+            fc.nat().map(n => new CheckLessThanCommand(n + 1))
+          ]),
+          cmds => {
+            const setup = () => ({
+              model: { count: 0 },
+              real: {}
+            });
+            try {
+              fc.modelRun(setup, cmds);
+              return true;
+            } catch (err) {
+              return false;
+            }
+          }
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
 });

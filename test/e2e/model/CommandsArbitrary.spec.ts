@@ -1,66 +1,13 @@
 import * as fc from '../../../src/fast-check';
-
-type M1 = { count: number };
-type R1 = {};
-
-class IncreaseCommand implements fc.Command<M1, R1> {
-  constructor(readonly n: number) {}
-  check = (m: Readonly<M1>) => true;
-  run = (m: M1, r: R1) => {
-    m.count += this.n;
-  };
-  toString = () => `inc[${this.n}]`;
-}
-class DecreaseCommand implements fc.Command<M1, R1> {
-  constructor(readonly n: number) {}
-  check = (m: Readonly<M1>) => true;
-  run = (m: M1, r: R1) => {
-    m.count -= this.n;
-  };
-  toString = () => `dec[${this.n}]`;
-}
-class EvenCommand implements fc.Command<M1, R1> {
-  check = (m: Readonly<M1>) => m.count % 2 === 0;
-  run = (m: M1, r: R1) => {};
-  toString = () => 'even';
-}
-class OddCommand implements fc.Command<M1, R1> {
-  check = (m: Readonly<M1>) => m.count % 2 !== 0;
-  run = (m: M1, r: R1) => {};
-  toString = () => 'odd';
-}
-class CheckLessThanCommand implements fc.Command<M1, R1> {
-  constructor(readonly lessThanValue: number) {}
-  check = (m: Readonly<M1>) => true;
-  run = (m: M1, r: R1) => {
-    expect(m.count).toBeLessThan(this.lessThanValue);
-  };
-  toString = () => `check[${this.lessThanValue}]`;
-}
-class SuccessAlwaysCommand implements fc.Command<M1, R1> {
-  check = (m: Readonly<M1>) => true;
-  run = (m: M1, r: R1) => {};
-  toString = () => 'success';
-}
-
-type M2 = {
-  current: { stepId: number };
-  validSteps: number[];
-};
-type R2 = {};
-
-class SuccessCommand implements fc.Command<M2, R2> {
-  check = (m: Readonly<M2>) => m.validSteps.includes(m.current.stepId++);
-  run = (m: M2, r: R2) => {};
-  toString = () => 'success';
-}
-class FailureCommand implements fc.Command<M2, R2> {
-  check = (m: Readonly<M2>) => m.validSteps.includes(m.current.stepId++);
-  run = (m: M2, r: R2) => {
-    throw 'failure';
-  };
-  toString = () => 'failure';
-}
+import { FailureCommand, SuccessCommand } from './StepCommands';
+import {
+  IncreaseCommand,
+  DecreaseCommand,
+  EvenCommand,
+  OddCommand,
+  CheckLessThanCommand,
+  SuccessAlwaysCommand
+} from './CounterCommands';
 
 const seed = Date.now();
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
