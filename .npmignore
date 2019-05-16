@@ -8,3 +8,4 @@ prebuild/
 src/
 test/
 buildTypes.js
+tsconfig.tsbuildinfo
