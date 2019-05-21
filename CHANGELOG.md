@@ -1,3 +1,18 @@
+# 1.15.1
+
+_Documentation updates_
+
+## Fixes
+
+- ([PR#363](https://github.com/dubzzz/fast-check/pull/363)) Clean: Bump dev dependencies
+- ([PR#366](https://github.com/dubzzz/fast-check/pull/366)) Clean: Incremental build
+- ([PR#362](https://github.com/dubzzz/fast-check/pull/362)) Clean: Test against node 12
+- ([PR#361](https://github.com/dubzzz/fast-check/pull/361)) Doc: Clarify replay of commands
+- ([PR#368](https://github.com/dubzzz/fast-check/pull/368)) Doc: Direct link to genrated documentation
+- ([PR#364](https://github.com/dubzzz/fast-check/pull/364)) Doc: Extra badges in README
+- ([PR#358](https://github.com/dubzzz/fast-check/pull/358)) Doc: Fix various typos
+- ([PR#355](https://github.com/dubzzz/fast-check/pull/355)) Test: Add no regression snapshot tests
+
 # 1.15.0
 
 _Add auto-skip after time limit option for runners_
