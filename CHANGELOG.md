@@ -29,6 +29,8 @@ _Add auto-skip after time limit option for runners_
 - ([PR#351](https://github.com/dubzzz/fast-check/pull/351)) Size: Add dependency to tslib - *should reduce size of the bundle*
 - ([PR#349](https://github.com/dubzzz/fast-check/pull/349)) Test: No regression snapshot tests
 
+---
+
 # 1.14.0
 
 _New generated documentation and new arbitraries_
