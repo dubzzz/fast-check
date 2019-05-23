@@ -50,6 +50,12 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues)})`;
     case '[object String]':
       return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
+    case '[object Symbol]':
+      const s = (value as unknown) as symbol;
+      if (Symbol.keyFor(s) !== undefined) {
+        return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
+      }
+      return s.description !== undefined ? `Symbol(${JSON.stringify(s.description)})` : `Symbol()`;
     case '[object Undefined]':
       return `undefined`;
     default:

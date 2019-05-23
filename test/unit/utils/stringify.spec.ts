@@ -120,7 +120,9 @@ describe('stringify', () => {
     expect(stringify(new Map([[1, 2]]))).toEqual('new Map([[1,2]])');
   });
   it('Should be able to stringify Symbol', () => {
-    expect(stringify(Symbol.for('fc'))).toEqual('Symbol(fc)');
+    expect(stringify(Symbol())).toEqual('Symbol()');
+    expect(stringify(Symbol('fc'))).toEqual('Symbol("fc")');
+    expect(stringify(Symbol.for('fc'))).toEqual('Symbol.for("fc")');
   });
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');
