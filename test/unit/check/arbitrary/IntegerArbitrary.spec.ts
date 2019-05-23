@@ -146,6 +146,9 @@ describe('IntegerArbitrary', () => {
           return -log2(-min) <= g && g <= log2(max);
         })
       ));
+    it('Should throw when minimum number is greater than maximum one', () => {
+      expect(() => integer(-1, -5)).toThrowError();
+    });
     describe('Given no constraints [between -2**31 and 2**31 -1]', () => {
       genericHelper.isValidArbitrary(() => integer(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
@@ -181,6 +184,9 @@ describe('IntegerArbitrary', () => {
     });
   });
   describe('nat', () => {
+    it('Should throw when the number is less than 0', () => {
+      expect(() => nat(-1)).toThrowError();
+    });
     describe('Given no constraints [between 0 and 2**31 -1]', () => {
       genericHelper.isValidArbitrary(() => nat(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
