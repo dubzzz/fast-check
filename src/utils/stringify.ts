@@ -44,6 +44,9 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return `${value}n`;
     case '[object Boolean]':
       return typeof value === 'boolean' ? JSON.stringify(value) : `new Boolean(${JSON.stringify(value)})`;
+    case '[object Date]':
+      const d = (value as unknown) as Date;
+      return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues)})`;
     case '[object Null]':
