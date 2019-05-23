@@ -113,6 +113,11 @@ describe('stringify', () => {
     expect(stringify(new Number(Number.NaN))).toEqual('new Number(Number.NaN)');
     expect(stringify(new String('Hello'))).toEqual('new String("Hello")');
   });
+  it('Should be able to stringify Date', () => {
+    expect(stringify(new Date(NaN))).toEqual('new Date(NaN)');
+    expect(stringify(new Date('2014-25-23'))).toEqual('new Date(NaN)');
+    expect(stringify(new Date('2019-05-23T22:19:06.049Z'))).toEqual('new Date("2019-05-23T22:19:06.049Z")');
+  });
   it('Should be able to stringify Set', () => {
     expect(stringify(new Set([1, 2]))).toEqual('new Set([1,2])');
   });
