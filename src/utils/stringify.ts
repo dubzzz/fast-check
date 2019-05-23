@@ -1,4 +1,22 @@
 /** @hidden */
+const findSymbolNameRegex = /^Symbol\((.*)\)$/;
+
+/**
+ * @hidden
+ * Only called with symbol produced by Symbol(string | undefined)
+ * Not Symbol.for(string)
+ */
+function getSymbolDescription(s: symbol): string | null {
+  if (s.description !== undefined) return s.description;
+
+  // description is always undefined in node 6, 8, 10 (not 12)
+  const m = findSymbolNameRegex.exec(String(s));
+  // '' considered equivalent to undefined for node <12 (unable to distinguish undefined from '')
+  // s.description would have been equal to '' in node 12+
+  return m && m[1].length ? m[1] : null;
+}
+
+/** @hidden */
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
@@ -55,7 +73,8 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       if (Symbol.keyFor(s) !== undefined) {
         return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
-      return s.description !== undefined ? `Symbol(${JSON.stringify(s.description)})` : `Symbol()`;
+      const desc = getSymbolDescription(s);
+      return desc !== null ? `Symbol(${JSON.stringify(desc)})` : `Symbol()`;
     case '[object Undefined]':
       return `undefined`;
     default:
