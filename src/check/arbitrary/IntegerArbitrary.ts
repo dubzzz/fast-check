@@ -59,6 +59,8 @@ function integer(max: number): ArbitraryWithShrink<number>;
  */
 function integer(min: number, max: number): ArbitraryWithShrink<number>;
 function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
+  if (a !== undefined && b !== undefined && a > b)
+    throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
   return b === undefined ? new IntegerArbitrary(undefined, a) : new IntegerArbitrary(a, b);
 }
 
@@ -79,6 +81,7 @@ function nat(): ArbitraryWithShrink<number>;
  */
 function nat(max: number): ArbitraryWithShrink<number>;
 function nat(a?: number): ArbitraryWithShrink<number> {
+  if (a !== undefined && a < 0) throw new Error('fc.nat value should be greater than or equal to 0');
   return new IntegerArbitrary(0, a);
 }
 
