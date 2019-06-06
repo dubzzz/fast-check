@@ -11,7 +11,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const alreadySeen: any = {};
     while (missing > 0) {
-      const g = arb.generate(mrng).value.toString();
+      const g = (arb.generate(mrng).value as any).toString();
       if (alreadySeen[g]) continue;
       alreadySeen[g] = true;
       --missing;
