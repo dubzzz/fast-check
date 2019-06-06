@@ -55,7 +55,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return typeof value === 'number' ? stringifyNumber(value) : `new Number(${stringifyNumber(Number(value))})`;
     case '[object Object]':
       try {
-        const defaultRepr: string = value.toString();
+        const defaultRepr: string = (value as any).toString();
         if (defaultRepr !== '[object Object]') return defaultRepr;
         return (
           '{' +
@@ -82,7 +82,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return `undefined`;
     default:
       try {
-        return value.toString();
+        return (value as any).toString();
       } catch {
         return Object.prototype.toString.call(value);
       }

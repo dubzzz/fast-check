@@ -66,10 +66,10 @@
     "rollup-plugin-node-resolve": "^4.2.3",
     "source-map-support": "^0.5.12",
     "ts-jest": "^24.0.2",
-    "ts-node": "^8.1.0",
+    "ts-node": "^8.2.0",
     "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.4.5",
+    "typescript": "^3.5.1",
     "uglifyjs": "^2.4.11"
   },
   "keywords": [
