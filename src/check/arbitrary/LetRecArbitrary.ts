@@ -3,7 +3,10 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
 class LazyArbitrary extends Arbitrary<any> {
+  private static readonly MaxBiasLevels = 5;
+  private numBiasLevels = 0;
   underlying: Arbitrary<any> | null = null;
+
   constructor(readonly name: string) {
     super();
   }
@@ -13,12 +16,25 @@ class LazyArbitrary extends Arbitrary<any> {
     }
     return this.underlying.generate(mrng);
   }
-  // withBias(freq: number) {
-  //   if (!this.underlying) {
-  //     throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
-  //   }
-  //   return this.underlying.withBias(freq);
-  // }
+  withBias(freq: number): Arbitrary<any> {
+    if (!this.underlying) {
+      throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
+    }
+    if (this.numBiasLevels >= LazyArbitrary.MaxBiasLevels) {
+      return this;
+    }
+
+    const numBefore = this.numBiasLevels;
+    ++this.numBiasLevels;
+
+    const biasedArb = this.underlying.withBias(freq);
+
+    --this.numBiasLevels;
+    if (this.numBiasLevels !== numBefore) {
+      throw new Error(`Mismatched bias level for ${JSON.stringify(this.name)}`);
+    }
+    return biasedArb;
+  }
 }
 
 function isLazyArbitrary(arb: Arbitrary<any>): arb is LazyArbitrary {
