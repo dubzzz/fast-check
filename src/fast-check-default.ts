@@ -23,6 +23,7 @@ import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/Functio
 import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
 import { ipV4, ipV6 } from './check/arbitrary/IpArbitrary';
+import { letrec } from './check/arbitrary/LetRecArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import {
@@ -146,6 +147,7 @@ export {
   jsonObject,
   unicodeJson,
   unicodeJsonObject,
+  letrec,
   compareBooleanFunc,
   compareFunc,
   func,
