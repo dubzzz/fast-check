@@ -42,7 +42,7 @@ function isLazyArbitrary(arb: Arbitrary<any>): arb is LazyArbitrary {
 }
 
 export function letrec<T>(
-  builder: (tie: (key: string) => Arbitrary<any>) => { [K in keyof T]: Arbitrary<T[K]> }
+  builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }
 ): { [K in keyof T]: Arbitrary<T[K]> } {
   const lazyArbs: { [K in keyof T]?: Arbitrary<T[K]> } = {};
   const tie = (key: keyof T): Arbitrary<any> => {
