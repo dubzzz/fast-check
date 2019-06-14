@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-class LazyArbitrary extends Arbitrary<any> {
+export class LazyArbitrary extends Arbitrary<any> {
   private static readonly MaxBiasLevels = 5;
   private numBiasLevels = 0;
   underlying: Arbitrary<any> | null = null;

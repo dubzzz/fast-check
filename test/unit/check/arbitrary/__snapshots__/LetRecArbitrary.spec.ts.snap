@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LetRecArbitrary LazyArbitrary Should fail to bias when no underlying arbitrary 1`] = `"Lazy arbitrary \\"id008\\" not correctly initialized"`;
+
+exports[`LetRecArbitrary LazyArbitrary Should fail to generate when no underlying arbitrary 1`] = `"Lazy arbitrary \\"id007\\" not correctly initialized"`;
