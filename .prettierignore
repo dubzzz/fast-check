@@ -1,6 +1,7 @@
 lib/
 lib-*/
 coverage/
+dist/
 docs/
 *.generated.ts
 *.generated.spec.ts
