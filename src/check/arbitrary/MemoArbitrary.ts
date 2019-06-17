@@ -17,11 +17,11 @@ class MemoArbitrary<T> extends Arbitrary<T> {
 
 export type Memo<T> = (cur?: number) => Arbitrary<T>;
 
-let contextRemainingDepth = 20;
+let contextRemainingDepth = 10;
 export const memo = <T>(f: (n: number) => Arbitrary<T>): Memo<T> => {
   const previous: { [depth: number]: Arbitrary<T> } = {};
   return ((maxDepth?: number): Arbitrary<T> => {
-    const n = maxDepth || contextRemainingDepth;
+    const n = maxDepth !== undefined ? maxDepth : contextRemainingDepth;
     if (!previous.hasOwnProperty(n)) {
       const prev = contextRemainingDepth;
       contextRemainingDepth = n - 1;
