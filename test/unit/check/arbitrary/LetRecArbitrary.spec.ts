@@ -62,6 +62,20 @@ describe('LetRecArbitrary', () => {
       expect((arb2 as any).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
+    it('Should be able to delay calls to tie', () => {
+      const mrng = stubRng.mutable.nocall();
+      const generateMock = jest.fn();
+      const simpleArb = buildArbitrary(generateMock);
+      const { arb1 } = letrec(tie => ({
+        arb1: buildArbitrary(mrng => tie('arb2').generate(mrng)),
+        arb2: simpleArb
+      }));
+
+      expect(generateMock).not.toHaveBeenCalled();
+      arb1.generate(mrng);
+
+      expect(generateMock).toHaveBeenCalled();
+    });
   });
   describe('LazyArbitrary', () => {
     it('Should fail to generate when no underlying arbitrary', () => {

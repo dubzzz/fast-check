@@ -34,10 +34,8 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to shrink to smaller cases recursively', () => {
       const { tree } = fc.letrec(tie => {
-        const leafArb = tie('leaf');
-        const nodeArb = tie('node');
         return {
-          tree: fc.nat(1).chain(id => (id === 0 ? leafArb : nodeArb)),
+          tree: fc.nat(1).chain(id => (id === 0 ? tie('leaf') : tie('node'))),
           node: fc.tuple(tie('tree'), tie('tree')),
           leaf: fc.nat()
         };

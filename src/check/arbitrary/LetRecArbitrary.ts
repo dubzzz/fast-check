@@ -39,8 +39,8 @@ export class LazyArbitrary extends Arbitrary<any> {
 }
 
 /** @hidden */
-function isLazyArbitrary(arb: Arbitrary<any>): arb is LazyArbitrary {
-  return arb.hasOwnProperty('underlying');
+function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary {
+  return arb !== undefined && arb.hasOwnProperty('underlying');
 }
 
 /**
@@ -66,20 +66,16 @@ export function letrec<T>(
     return lazyArbs[key]!;
   };
   const strictArbs = builder(tie as any);
-  for (const key in lazyArbs) {
-    if (!lazyArbs.hasOwnProperty(key)) {
+  for (const key in strictArbs) {
+    if (!strictArbs.hasOwnProperty(key)) {
       // Prevents accidental iteration over properties inherited from an object’s prototype
       continue;
     }
-    const arb = strictArbs[key];
-    const lazyArb = lazyArbs[key]!;
-    if (!arb) {
-      throw new Error(`Missing arbitrary for ${JSON.stringify(key)}`);
-    }
-    if (!isLazyArbitrary(lazyArb)) {
-      throw new Error(`Invalid lazy arbitrary for ${JSON.stringify(key)}`);
-    }
-    lazyArb.underlying = arb;
+
+    const lazyAtKey = lazyArbs[key];
+    const lazyArb = isLazyArbitrary(lazyAtKey) ? lazyAtKey : new LazyArbitrary(key);
+    lazyArb.underlying = strictArbs[key];
+    lazyArbs[key] = lazyArb;
   }
   return strictArbs;
 }
