@@ -76,6 +76,20 @@ describe('LetRecArbitrary', () => {
 
       expect(generateMock).toHaveBeenCalled();
     });
+    it('Should throw on generate if tie receives an invalid parameter', () => {
+      const mrng = stubRng.mutable.nocall();
+      const { arb1 } = letrec(tie => ({
+        arb1: tie('missing')
+      }));
+      expect(() => arb1.generate(mrng)).toThrowErrorMatchingSnapshot();
+    });
+    it('Should throw on generate if tie receives an invalid parameter after creation', () => {
+      const mrng = stubRng.mutable.nocall();
+      const { arb1 } = letrec(tie => ({
+        arb1: buildArbitrary(mrng => tie('missing').generate(mrng))
+      }));
+      expect(() => arb1.generate(mrng)).toThrowErrorMatchingSnapshot();
+    });
   });
   describe('LazyArbitrary', () => {
     it('Should fail to generate when no underlying arbitrary', () => {
