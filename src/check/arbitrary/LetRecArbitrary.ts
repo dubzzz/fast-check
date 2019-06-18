@@ -2,6 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
+/** @hidden */
 export class LazyArbitrary extends Arbitrary<any> {
   private static readonly MaxBiasLevels = 5;
   private numBiasLevels = 0;
@@ -37,10 +38,25 @@ export class LazyArbitrary extends Arbitrary<any> {
   }
 }
 
+/** @hidden */
 function isLazyArbitrary(arb: Arbitrary<any>): arb is LazyArbitrary {
   return arb.hasOwnProperty('underlying');
 }
 
+/**
+ * For mutually recursive types
+ *
+ * @example
+ * ```typescript
+ * const { tree } = fc.letrec(tie => ({
+ *   tree: fc.oneof(tie('node'), tie('leaf'), tie('leaf')),
+ *   node: fc.tuple(tie('tree'), tie('tree')),
+ *   leaf: fc.nat()
+ * })); // tree is 1 / 3 of node, 2 / 3 of leaf
+ * ```
+ *
+ * @param builder Arbitraries builder based on themselves (through `tie`)
+ */
 export function letrec<T>(
   builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }
 ): { [K in keyof T]: Arbitrary<T[K]> } {
