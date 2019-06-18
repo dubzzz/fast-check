@@ -32,5 +32,19 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true); // depth can be greater or equal to 5
     });
+    it('Should be able to shrink to smaller cases recursively', () => {
+      const { tree } = fc.letrec(tie => {
+        const leafArb = tie('leaf');
+        const nodeArb = tie('node');
+        return {
+          tree: fc.nat(1).chain(id => (id === 0 ? leafArb : nodeArb)),
+          node: fc.tuple(tie('tree'), tie('tree')),
+          leaf: fc.nat()
+        };
+      });
+      const out = fc.check(fc.property(tree, t => typeof t !== 'object'), { seed });
+      expect(out.failed).toBe(true);
+      expect(out.counterexample![0]).toEqual([0, 0]);
+    });
   });
 });
