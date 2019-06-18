@@ -1,9 +1,10 @@
 import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
-import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 
 class MemoArbitrary<T> extends Arbitrary<T> {
+  private lastFreq = -1;
+  private lastBiased: Arbitrary<T> = this;
   constructor(readonly underlying: Arbitrary<T>) {
     super();
   }
@@ -11,7 +12,11 @@ class MemoArbitrary<T> extends Arbitrary<T> {
     return this.underlying.generate(mrng);
   }
   withBias(freq: number): Arbitrary<T> {
-    return biasWrapper(freq, this, (unbiased: MemoArbitrary<T>) => unbiased.underlying.withBias(freq));
+    if (freq !== this.lastFreq) {
+      this.lastFreq = freq;
+      this.lastBiased = this.underlying.withBias(freq);
+    }
+    return this.lastBiased;
   }
 }
 
