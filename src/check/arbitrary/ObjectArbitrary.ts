@@ -6,6 +6,7 @@ import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { integer } from './IntegerArbitrary';
+import { memo } from './MemoArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { set } from './SetArbitrary';
 import { string, unicodeString } from './StringArbitrary';
@@ -20,9 +21,6 @@ export class ObjectConstraints {
     readonly withSet: boolean,
     readonly withMap: boolean
   ) {}
-  next(): ObjectConstraints {
-    return new ObjectConstraints(this.key, this.values, this.maxDepth - 1, this.maxKeys, this.withSet, this.withMap);
-  }
 
   /**
    * Default value of ObjectConstraints.Settings.values field
@@ -203,20 +201,24 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
   const arbKeys = constraints.key;
   const arbitrariesForBase = constraints.values;
 
-  const eligibleArbitraries: Arbitrary<any>[] = [];
-  eligibleArbitraries.push(oneof(...arbitrariesForBase)); // base
-  if (constraints.maxDepth > 0) {
-    const subArbAny = anythingInternal(constraints.next());
-    eligibleArbitraries.push(arrayOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
-    eligibleArbitraries.push(objectOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
-    if (constraints.withMap) {
-      eligibleArbitraries.push(mapOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
+  const anythingArb = memo(n => {
+    const eligibleArbitraries: Arbitrary<any>[] = [];
+    eligibleArbitraries.push(oneof(...arbitrariesForBase)); // base
+    if (n > 0) {
+      const subArbAny = anythingArb();
+      eligibleArbitraries.push(arrayOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
+      eligibleArbitraries.push(objectOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
+      if (constraints.withMap) {
+        eligibleArbitraries.push(mapOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
+      }
+      if (constraints.withSet) {
+        eligibleArbitraries.push(setOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
+      }
     }
-    if (constraints.withSet) {
-      eligibleArbitraries.push(setOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
-    }
-  }
-  return oneof(...eligibleArbitraries);
+    return oneof(...eligibleArbitraries);
+  });
+
+  return anythingArb(constraints.maxDepth);
 };
 
 /** @hidden */
