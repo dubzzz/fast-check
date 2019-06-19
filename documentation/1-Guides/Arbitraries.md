@@ -123,6 +123,22 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 - `fc.jsonObject()` or `fc.jsonObject(maxDepth: number)` generate an object that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
 - `fc.unicodeJsonObject()` or `fc.unicodeJsonObject(maxDepth: number)` generate an object with potentially unicode characters that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
 
+## Recursive structures
+
+- `fc.letrec(builder: (tie) => { [arbitraryName: string]: Arbitrary<T> })` produce arbitraries as specified by builder function. The `tie` function given to builder should be used as a placeholder to handle the recursion. It takes as input the name of the arbitrary to use in the recursion. 
+
+```typescript
+const { tree } = fc.letrec(tie => ({
+  // tree is 1 / 3 of node, 2 / 3 of leaf
+  // Warning: if the probability of nodes equals or is greater
+  //          than the one of leafs we might generate infinite trees
+  tree: fc.oneof(tie('node'), tie('leaf'), tie('leaf')),
+  node: fc.tuple(tie('tree'), tie('tree')),
+  leaf: fc.nat()
+}));
+tree() // Is a tree arbitrary (as fc.nat() is an integer arbitrary)
+```
+
 ## Functions
 
 - `compareBooleanFunc()` generate a comparison function taking two parameters `a` and `b` and producing a boolean value. `true` means that `a < b`, `false` that `a = b` or `a > b`
