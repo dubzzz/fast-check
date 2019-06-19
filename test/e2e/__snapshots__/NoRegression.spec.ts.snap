@@ -1390,6 +1390,28 @@ Execution summary:
 . . . . [31m×[0m [{\\"\\":null}]"
 `;
 
+exports[`NoRegression letrec 1`] = `
+"Property failed after 6 tests
+{ seed: 42, path: \\"5:1:0:1:0\\", endOnFailure: true }
+Counterexample: [{\\"left\\":0,\\"right\\":{\\"left\\":0,\\"right\\":0}}]
+Shrunk 4 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[32m√[0m [16]
+[32m√[0m [1]
+[32m√[0m [{\\"left\\":16,\\"right\\":2}]
+[32m√[0m [8]
+[32m√[0m [19]
+[31m×[0m [{\\"left\\":{\\"left\\":10,\\"right\\":{\\"left\\":17,\\"right\\":2}},\\"right\\":{\\"left\\":8,\\"right\\":2}}]
+. [32m√[0m [3]
+. [31m×[0m [{\\"left\\":11,\\"right\\":{\\"left\\":8,\\"right\\":2}}]
+. . [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":8,\\"right\\":2}}]
+. . . [32m√[0m [{\\"left\\":0,\\"right\\":13}]
+. . . [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":0,\\"right\\":2}}]
+. . . . [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":0,\\"right\\":0}}]"
+`;
+
 exports[`NoRegression lorem 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0:0\\", endOnFailure: true }

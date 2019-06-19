@@ -220,6 +220,22 @@ describe(`NoRegression`, () => {
   it('emailAddress', () => {
     expect(() => fc.assert(fc.property(fc.emailAddress(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
+  it('letrec', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.letrec(tie => ({
+            // Trick to be able to shrink from node to leaf
+            tree: fc.nat(1).chain(id => (id === 0 ? tie('leaf') : tie('node'))),
+            node: fc.record({ left: tie('tree'), right: tie('tree') }),
+            leaf: fc.nat(21)
+          })).tree,
+          v => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('commands', () => {
     expect(() =>
       fc.assert(
