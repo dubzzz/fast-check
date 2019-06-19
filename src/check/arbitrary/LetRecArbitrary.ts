@@ -24,16 +24,9 @@ export class LazyArbitrary extends Arbitrary<any> {
     if (this.numBiasLevels >= LazyArbitrary.MaxBiasLevels) {
       return this;
     }
-
-    const numBefore = this.numBiasLevels;
     ++this.numBiasLevels;
-
     const biasedArb = this.underlying.withBias(freq);
-
     --this.numBiasLevels;
-    if (this.numBiasLevels !== numBefore) {
-      throw new Error(`Mismatched bias level for ${JSON.stringify(this.name)}`);
-    }
     return biasedArb;
   }
 }
