@@ -127,11 +127,28 @@ describe('LetRecArbitrary', () => {
     it('Should be able to bias recursive arbitraries', () => {
       const lazy = new LazyArbitrary('id008');
       const noCallMock = jest.fn();
-      lazy.underlying = buildArbitrary(noCallMock, () => lazy);
+      lazy.underlying = buildArbitrary(noCallMock, n => lazy.withBias(n));
 
       const biasedLazy = lazy.withBias(2);
       expect(biasedLazy).toBe(lazy);
       expect(noCallMock).not.toHaveBeenCalled();
+    });
+    it('Should bias recursive arbitraries at a max depth of 5', () => {
+      const lazyA = new LazyArbitrary('id007');
+      const lazyB = new LazyArbitrary('id008');
+
+      const noCallMock = jest.fn();
+      const biasAMock = jest.fn();
+      const biasBMock = jest.fn();
+      biasAMock.mockImplementation(n => lazyB.withBias(n));
+      biasBMock.mockImplementation(n => lazyB.withBias(n));
+      lazyA.underlying = buildArbitrary(noCallMock, biasAMock);
+      lazyB.underlying = buildArbitrary(noCallMock, biasBMock);
+
+      const biasedLazyA = lazyA.withBias(2);
+      expect(biasedLazyA).toBe(lazyB);
+      expect(biasAMock).toHaveBeenCalledTimes(1);
+      expect(biasBMock).toHaveBeenCalledTimes(5);
     });
   });
 });
