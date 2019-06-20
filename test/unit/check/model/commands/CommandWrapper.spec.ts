@@ -1,6 +1,7 @@
 import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
 import { Command } from '../../../../../src/check/model/command/Command';
 import { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
+import { cloneMethod } from '../../../../../src/check/symbols';
 
 type Model = {};
 type Real = {};
@@ -84,5 +85,35 @@ describe('CommandWrapper', () => {
     expect(wrapper.hasRan).toBe(false);
     await expect(wrapper.run({}, {})).rejects.toMatch('failure message');
     expect(wrapper.hasRan).toBe(true);
+  });
+  it('Should clone cloneable commands on clone', async () => {
+    const cloneMethodOut = {};
+    const cloneMethodMock = jest.fn();
+    cloneMethodMock.mockReturnValueOnce(cloneMethodOut);
+    const cmd = new (class implements Command<Model, Real> {
+      check = jest.fn();
+      run = jest.fn();
+      toString = jest.fn();
+      [cloneMethod] = cloneMethodMock;
+    })();
+
+    const wrapper = new CommandWrapper(cmd);
+    const cloned = wrapper.clone();
+
+    expect(cloneMethodMock).toBeCalledTimes(1);
+    expect(cloned.cmd).toBe(cloneMethodOut);
+  });
+  it('Should keep same ref for non cloneable commands on clone', async () => {
+    const cmd = new (class implements Command<Model, Real> {
+      check = jest.fn();
+      run = jest.fn();
+      toString = jest.fn();
+    })();
+
+    const wrapper = new CommandWrapper(cmd);
+    const cloned = wrapper.clone();
+
+    expect(cloned).not.toBe(wrapper);
+    expect(cloned.cmd).toBe(wrapper.cmd);
   });
 });
