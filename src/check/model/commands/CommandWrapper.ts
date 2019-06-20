@@ -1,3 +1,4 @@
+import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { ICommand } from '../command/ICommand';
 
 /** @hidden */
@@ -13,6 +14,8 @@ export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync ex
     return this.cmd.run(m, r);
   }
   clone(): CommandWrapper<Model, Real, RunResult, CheckAsync> {
+    if (hasCloneMethod(this.cmd))
+      return new CommandWrapper<Model, Real, RunResult, CheckAsync>(this.cmd[cloneMethod]());
     return new CommandWrapper<Model, Real, RunResult, CheckAsync>(this.cmd);
   }
   toString(): string {
