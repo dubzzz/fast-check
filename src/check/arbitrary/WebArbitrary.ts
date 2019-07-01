@@ -1,5 +1,5 @@
-import { constant } from '../../fast-check-default';
 import { array } from './ArrayArbitrary';
+import { constant } from './ConstantArbitrary';
 import { constantFrom } from './ConstantArbitrary';
 import { buildAlphaNumericPercentArb } from './helpers/SpecificCharacterRange';
 import { domain, hostUserInfo } from './HostArbitrary';
