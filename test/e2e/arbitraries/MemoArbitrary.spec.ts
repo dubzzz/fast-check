@@ -15,12 +15,12 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
 
       // tree is 1 / 3 of node, 2 / 3 of leaf
       const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf(), leaf()));
-      const node: fc.Memo<Tree> = fc.memo(remaining => {
-        const subTree = remaining > 1 ? tree : leaf;
-        return fc.record({ left: subTree(), right: subTree() });
+      const node: fc.Memo<Tree> = fc.memo(n => {
+        if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
+        return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
       });
 
-      const maxDepth = 10;
+      const maxDepth = 3;
       const out = fc.check(
         fc.property(tree(maxDepth), t => {
           const depth = (n: Tree): number => {
@@ -38,12 +38,12 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
 
       // tree is 1 / 3 of node, 2 / 3 of leaf
       const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf(), leaf()));
-      const node: fc.Memo<Tree> = fc.memo(remaining => {
-        const subTree = remaining > 1 ? tree : leaf;
-        return fc.record({ left: subTree(), right: subTree() });
+      const node: fc.Memo<Tree> = fc.memo(n => {
+        if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
+        return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
       });
 
-      const maxDepth = 10;
+      const maxDepth = 3;
       const out = fc.check(
         fc.property(tree(maxDepth), t => {
           const depth = (n: Tree): number => {
@@ -55,6 +55,18 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
         { seed }
       );
       expect(out.failed).toBe(false);
+    });
+    it('Should be able to shrink to smaller cases recursively', () => {
+      const leaf = fc.nat;
+      const tree: fc.Memo<Tree> = fc.memo(n => fc.nat(1).chain(id => (id === 0 ? leaf() : node(n))));
+      const node: fc.Memo<Tree> = fc.memo(n => {
+        if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
+        return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
+      });
+
+      const out = fc.check(fc.property(tree(), t => typeof t !== 'object'), { seed });
+      expect(out.failed).toBe(true);
+      expect(out.counterexample![0]).toEqual({ left: 0, right: 0 });
     });
   });
 });
