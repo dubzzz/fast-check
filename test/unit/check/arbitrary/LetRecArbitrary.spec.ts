@@ -150,6 +150,32 @@ describe('LetRecArbitrary', () => {
       expect(biasAMock).toHaveBeenCalledTimes(1);
       expect(biasBMock).toHaveBeenCalledTimes(5);
     });
+    it('Should cache biased arbitrary for same freq', () => {
+      const lazy = new LazyArbitrary('id007');
+
+      const biasMock = jest.fn();
+      biasMock.mockImplementation(n => lazy.withBias(n));
+      lazy.underlying = buildArbitrary(jest.fn(), biasMock);
+
+      lazy.withBias(42);
+      biasMock.mockClear();
+
+      lazy.withBias(42);
+      expect(biasMock).not.toBeCalled();
+    });
+    it('Should not take from cache if freq changed', () => {
+      const lazy = new LazyArbitrary('id007');
+
+      const biasMock = jest.fn();
+      biasMock.mockImplementation(n => lazy.withBias(n));
+      lazy.underlying = buildArbitrary(jest.fn(), biasMock);
+
+      lazy.withBias(42);
+      biasMock.mockClear();
+
+      lazy.withBias(69);
+      expect(biasMock).toBeCalled();
+    });
   });
 });
 

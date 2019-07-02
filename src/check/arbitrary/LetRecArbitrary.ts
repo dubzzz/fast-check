@@ -6,6 +6,12 @@ import { Shrinkable } from './definition/Shrinkable';
 export class LazyArbitrary extends Arbitrary<any> {
   private static readonly MaxBiasLevels = 5;
   private numBiasLevels = 0;
+  private lastBiasedArbitrary: {
+    biasedArb: Arbitrary<any>;
+    arb: Arbitrary<any>;
+    lvl: number;
+    freq: number;
+  } | null = null;
   underlying: Arbitrary<any> | null = null;
 
   constructor(readonly name: string) {
@@ -24,9 +30,23 @@ export class LazyArbitrary extends Arbitrary<any> {
     if (this.numBiasLevels >= LazyArbitrary.MaxBiasLevels) {
       return this;
     }
+    if (
+      this.lastBiasedArbitrary !== null &&
+      this.lastBiasedArbitrary.freq === freq &&
+      this.lastBiasedArbitrary.arb === this.underlying &&
+      this.lastBiasedArbitrary.lvl === this.numBiasLevels
+    ) {
+      return this.lastBiasedArbitrary.biasedArb;
+    }
     ++this.numBiasLevels;
     const biasedArb = this.underlying.withBias(freq);
     --this.numBiasLevels;
+    this.lastBiasedArbitrary = {
+      arb: this.underlying,
+      lvl: this.numBiasLevels,
+      freq,
+      biasedArb
+    };
     return biasedArb;
   }
 }
