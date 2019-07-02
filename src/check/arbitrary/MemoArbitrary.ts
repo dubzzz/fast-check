@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-class MemoArbitrary<T> extends Arbitrary<T> {
+export class MemoArbitrary<T> extends Arbitrary<T> {
   private lastFreq = -1;
   private lastBiased: Arbitrary<T> = this;
   constructor(readonly underlying: Arbitrary<T>) {
