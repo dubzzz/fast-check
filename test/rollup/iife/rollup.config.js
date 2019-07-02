@@ -8,5 +8,8 @@ export default {
     format: 'iife',
     name: 'RunFastCheck'
   },
-  plugins: [resolve(), cjs()]
+  plugins: [resolve(), cjs()],
+  onwarn: warning => {
+    throw warning;
+  }
 };
