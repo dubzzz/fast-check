@@ -125,7 +125,7 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 
 ## Recursive structures
 
-- `fc.letrec(builder: (tie) => { [arbitraryName: string]: Arbitrary<T> })` produce arbitraries as specified by builder function. The `tie` function given to builder should be used as a placeholder to handle the recursion. It takes as input the name of the arbitrary to use in the recursion. 
+- `fc.letrec(builder: (tie) => { [arbitraryName: string]: Arbitrary<T> })` produce arbitraries as specified by builder function. The `tie` function given to builder should be used as a placeholder to handle the recursion. It takes as input the name of the arbitrary to use in the recursion
 
 ```typescript
 const { tree } = fc.letrec(tie => ({
@@ -137,6 +137,20 @@ const { tree } = fc.letrec(tie => ({
   leaf: fc.nat()
 }));
 tree() // Is a tree arbitrary (as fc.nat() is an integer arbitrary)
+```
+
+- `fc.memo<T>(builder: (n: number) => Arbitrary<T>): ((n?: number) => Arbitrary<T>)` produce arbitraries as specified by builder function. Contrary to `fc.letrec`, `fc.memo` can control the maximal depth of your recursive structure by relying on the `n` parameter given as input of the `builder` function
+
+```typescript
+// tree is 1 / 3 of node, 2 / 3 of leaf
+const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf(), leaf()));
+const node: fc.Memo<Tree> = fc.memo(n => {
+  if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
+  return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
+});
+const leaf = fc.nat;
+tree() // Is a tree arbitrary (as fc.nat() is an integer arbitrary)
+       // with maximal depth of 10 (equivalent to tree(10))
 ```
 
 ## Functions

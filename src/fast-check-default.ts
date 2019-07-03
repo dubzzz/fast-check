@@ -26,6 +26,7 @@ import { ipV4, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './check/arbitrary/LetRecArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
+import { memo, Memo } from './check/arbitrary/MemoArbitrary';
 import {
   anything,
   json,
@@ -148,6 +149,7 @@ export {
   unicodeJson,
   unicodeJsonObject,
   letrec,
+  memo,
   compareBooleanFunc,
   compareFunc,
   func,
@@ -179,6 +181,7 @@ export {
   Context,
   ExecutionStatus,
   ExecutionTree,
+  Memo,
   ObjectConstraints,
   Parameters,
   RecordConstraints,
