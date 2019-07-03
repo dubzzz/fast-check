@@ -6,3 +6,4 @@ People who commit code to the project are encouraged to add their names here. Pl
 - [Nicolas Dubien](https://github.com/dubzzz)
 - [Gjorgji Kjosev](https://github.com/spion)
 - [Trey Davis](https://github.com/treydavis)
+- [Peter Hamilton](https://github.com/hamiltop)
