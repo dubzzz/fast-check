@@ -6,6 +6,7 @@ import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { integer } from './IntegerArbitrary';
+import { memo, Memo } from './MemoArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { set } from './SetArbitrary';
 import { string, unicodeString } from './StringArbitrary';
@@ -20,9 +21,6 @@ export class ObjectConstraints {
     readonly withSet: boolean,
     readonly withMap: boolean
   ) {}
-  next(): ObjectConstraints {
-    return new ObjectConstraints(this.key, this.values, this.maxDepth - 1, this.maxKeys, this.withSet, this.withMap);
-  }
 
   /**
    * Default value of ObjectConstraints.Settings.values field
@@ -73,7 +71,7 @@ export class ObjectConstraints {
 
   /** @hidden */
   private static boxArbitrariesIfNeeded(arbs: Arbitrary<any>[], boxEnabled: boolean): Arbitrary<any>[] {
-    return boxEnabled ? this.boxArbitraries(arbs).concat(arbs) : arbs;
+    return boxEnabled ? ObjectConstraints.boxArbitraries(arbs).concat(arbs) : arbs;
   }
 
   static from(settings?: ObjectConstraints.Settings): ObjectConstraints {
@@ -82,7 +80,7 @@ export class ObjectConstraints {
     }
     return new ObjectConstraints(
       getOr(() => settings!.key, string()),
-      this.boxArbitrariesIfNeeded(
+      ObjectConstraints.boxArbitrariesIfNeeded(
         getOr(() => settings!.values, ObjectConstraints.defaultValues()),
         getOr(() => settings!.withBoxedValues, false)
       ),
@@ -140,83 +138,47 @@ export namespace ObjectConstraints {
 }
 
 /** @hidden */
-const arrayOfAnything = (
-  arbKeys: Arbitrary<string>,
-  arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>,
-  maxKeys: number
-): Arbitrary<any[]> => {
-  return oneof(
-    oneof(...arbitrariesForBase.map(arb => array(arb, 0, maxKeys))), // base[]
-    array(arbAny, 0, maxKeys) // anything[]
-  );
-};
-
-/** @hidden */
-const setOfAnything = (
-  arbKeys: Arbitrary<string>,
-  arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>,
-  maxKeys: number
-): Arbitrary<Set<any>> => {
-  return oneof(
-    oneof(...arbitrariesForBase.map(arb => set(arb, 0, maxKeys).map(v => new Set(v)))), // Set<base>
-    set(arbAny, 0, maxKeys).map(v => new Set(v)) // Set<anything>
-  );
-};
-
-/** @hidden */
-const objectOfAnything = (
-  arbKeys: Arbitrary<string>,
-  arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>,
-  maxKeys: number
-): Arbitrary<{ [key: string]: any }> => {
-  const dictOf = (keyArb: Arbitrary<string>, valueArb: Arbitrary<any>) =>
-    set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]).map(v => toObject(v));
-  return oneof(
-    oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys, arb))), // {[key]: base}
-    dictOf(arbKeys, arbAny)
-  );
-};
-
-/** @hidden */
-const mapOfAnything = (
-  arbKeys: Arbitrary<string>,
-  arbitrariesForBase: Arbitrary<any>[],
-  arbAny: Arbitrary<any>,
-  maxKeys: number
-): Arbitrary<Map<any, any>> => {
-  const mapOf = (keyArb: Arbitrary<any>, valueArb: Arbitrary<any>) =>
-    set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]).map(v => new Map(v));
-  return oneof(
-    oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys, arb))), // Map<key, base>
-    oneof(
-      mapOf(arbKeys, arbAny), // Map<key, anything>
-      mapOf(arbAny, arbAny) // Map<anything, anything>
-    )
-  );
-};
-
-/** @hidden */
 const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
   const arbKeys = constraints.key;
   const arbitrariesForBase = constraints.values;
+  const maxDepth = constraints.maxDepth;
+  const maxKeys = constraints.maxKeys;
 
-  const eligibleArbitraries: Arbitrary<any>[] = [];
-  eligibleArbitraries.push(oneof(...arbitrariesForBase)); // base
-  if (constraints.maxDepth > 0) {
-    const subArbAny = anythingInternal(constraints.next());
-    eligibleArbitraries.push(arrayOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
-    eligibleArbitraries.push(objectOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
-    if (constraints.withMap) {
-      eligibleArbitraries.push(mapOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
-    }
-    if (constraints.withSet) {
-      eligibleArbitraries.push(setOfAnything(arbKeys, arbitrariesForBase, subArbAny, constraints.maxKeys));
-    }
-  }
-  return oneof(...eligibleArbitraries);
+  const entriesOf = (keyArb: Arbitrary<any>, valueArb: Arbitrary<any>) =>
+    set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]);
+
+  const mapOf = (ka: Arbitrary<any>, va: Arbitrary<any>) => entriesOf(ka, va).map(v => new Map(v));
+  const dictOf = (ka: Arbitrary<string>, va: Arbitrary<any>) => entriesOf(ka, va).map(v => toObject(v));
+
+  const baseArb = oneof(...arbitrariesForBase);
+  const arrayBaseArb = oneof(...arbitrariesForBase.map(arb => array(arb, 0, maxKeys)));
+  const objectBaseArb = oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys, arb)));
+  const setBaseArb = () => oneof(...arbitrariesForBase.map(arb => set(arb, 0, maxKeys).map(v => new Set(v))));
+  const mapBaseArb = () => oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys, arb)));
+
+  // base[] | anything[]
+  const arrayArb = memo(n => oneof(arrayBaseArb, array(anythingArb(n), 0, maxKeys)));
+  // Set<base> | Set<anything>
+  const setArb = memo(n => oneof(setBaseArb(), set(anythingArb(n), 0, maxKeys).map(v => new Set(v))));
+  // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
+  const mapArb = memo(n =>
+    oneof(mapBaseArb(), oneof(mapOf(arbKeys, anythingArb(n)), mapOf(anythingArb(n), anythingArb(n))))
+  );
+  // {[key:string]: base} | {[key:string]: anything}
+  const objectArb = memo(n => oneof(objectBaseArb, dictOf(arbKeys, anythingArb(n))));
+
+  const anythingArb: Memo<any> = memo(n => {
+    if (n <= 0) return oneof(baseArb);
+    return oneof(
+      baseArb,
+      arrayArb(),
+      objectArb(),
+      ...(constraints.withMap ? [mapArb()] : []),
+      ...(constraints.withSet ? [setArb()] : [])
+    );
+  });
+
+  return anythingArb(maxDepth);
 };
 
 /** @hidden */
