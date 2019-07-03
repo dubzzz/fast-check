@@ -80,8 +80,8 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
  * @param s Initial state provider
  * @param cmds Synchronous commands to be executed
  */
-export const modelRun = <Model extends object, Real>(
-  s: Setup<Model, Real>,
+export const modelRun = <Model extends object, Real, InitialModel extends Model>(
+  s: Setup<InitialModel, Real>,
   cmds: Iterable<Command<Model, Real>> | CommandsIterable<Model, Real, void>
 ): void => {
   internalModelRun(s, cmds);
@@ -95,8 +95,8 @@ export const modelRun = <Model extends object, Real>(
  * @param s Initial state provider
  * @param cmds Asynchronous commands to be executed
  */
-export const asyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
-  s: Setup<Model, Real> | AsyncSetup<Model, Real>,
+export const asyncModelRun = async <Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
+  s: Setup<InitialModel, Real> | AsyncSetup<InitialModel, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Promise<void> => {
   await internalAsyncModelRun(s, cmds);
