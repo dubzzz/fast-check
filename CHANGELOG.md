@@ -1,3 +1,29 @@
+# 1.16.0
+
+_Easier recursive data-structures_
+
+## Features
+
+- ([PR#377](https://github.com/dubzzz/fast-check/pull/377)) Add `fc.letrec` arbitrary
+- ([PR#378](https://github.com/dubzzz/fast-check/pull/378)) Add `fc.memo` arbitrary
+- ([PR#385](https://github.com/dubzzz/fast-check/pull/385)) Add caching for `withBias` of `fc.letrec` arbitrary
+- ([PR#370](https://github.com/dubzzz/fast-check/pull/370)) Add minimum and maximum validation to integer and nat
+- ([PR#382](https://github.com/dubzzz/fast-check/pull/382)) Take `fc.cloneMethod` into account for commands
+- ([PR#372](https://github.com/dubzzz/fast-check/pull/372)) Stringify Date as valid JavaScript
+- ([PR#371](https://github.com/dubzzz/fast-check/pull/371)) Stringify Symbol as valid JavaScript
+
+## Fixes
+
+- ([PR#375](https://github.com/dubzzz/fast-check/pull/375)) Clean: Bump TypeScript to 3.5
+- ([PR#384](https://github.com/dubzzz/fast-check/pull/384)) Clean: Remove circular dependency in WebArbitrary file
+- ([PR#389](https://github.com/dubzzz/fast-check/pull/389)) Test: Check that `fc.memo` and `fc.letrec` are compatible with node 0.12
+- ([PR#376](https://github.com/dubzzz/fast-check/pull/376)) Test: Fix broken e2e tests
+- ([PR#385](https://github.com/dubzzz/fast-check/pull/385)) Test: Mark warnings as errors in rollup config
+- ([PR#388](https://github.com/dubzzz/fast-check/pull/388)) Type: Fix type inferrence bug in `modelRun`
+- ([PR#379](https://github.com/dubzzz/fast-check/pull/379)) Refactoring: Re-implement `fc.object` with `fc.memo`
+
+---
+
 # 1.15.1
 
 _Documentation updates_
