@@ -107,6 +107,33 @@ describe('MemoArbitrary', () => {
       expect(biasedLazy).toBe(biasedArb);
       expect(noCallMock).not.toHaveBeenCalled();
     });
+    it('Should cache biased arbitrary for same freq', () => {
+      const biasArb48 = buildArbitrary(jest.fn());
+      const biasMock = jest.fn();
+      biasMock.mockImplementationOnce(() => biasArb48);
+      const arb = buildArbitrary(jest.fn(), biasMock);
+      const memoArb = new MemoArbitrary(arb);
+
+      memoArb.withBias(48);
+      biasMock.mockClear();
+
+      expect(memoArb.withBias(48)).toBe(biasArb48);
+      expect(biasMock).not.toBeCalled();
+    });
+    it('Should not take from cache if freq changed', () => {
+      const biasArb48 = buildArbitrary(jest.fn());
+      const biasArb69 = buildArbitrary(jest.fn());
+      const biasMock = jest.fn();
+      biasMock.mockImplementationOnce(() => biasArb48).mockImplementationOnce(() => biasArb69);
+      const arb = buildArbitrary(jest.fn(), biasMock);
+      const memoArb = new MemoArbitrary(arb);
+
+      memoArb.withBias(48);
+      biasMock.mockClear();
+
+      expect(memoArb.withBias(69)).toBe(biasArb69);
+      expect(biasMock).toBeCalled();
+    });
   });
 });
 
