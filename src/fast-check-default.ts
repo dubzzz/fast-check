@@ -23,7 +23,7 @@ import { frequency } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
-import { ipV4, ipV6 } from './check/arbitrary/IpArbitrary';
+import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './check/arbitrary/LetRecArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
@@ -160,6 +160,7 @@ export {
   date,
   // web
   ipV4,
+  ipV4Extended,
   ipV6,
   domain,
   webAuthority,

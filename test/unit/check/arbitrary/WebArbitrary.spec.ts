@@ -28,6 +28,7 @@ describe('WebArbitrary', () => {
             {
               withIPv4: fc.boolean(),
               withIPv6: fc.boolean(),
+              withExtendedIP: fc.boolean(),
               withUserInfo: fc.boolean(),
               withPort: fc.boolean()
             },

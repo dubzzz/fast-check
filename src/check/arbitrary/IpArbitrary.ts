@@ -1,4 +1,5 @@
 import { array } from './ArrayArbitrary';
+import { constantFrom } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from './IntegerArbitrary';
 import { oneof } from './OneOfArbitrary';
@@ -14,6 +15,38 @@ import { tuple } from './TupleArbitrary';
 function ipV4(): Arbitrary<string> {
   // IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
   return tuple(nat(255), nat(255), nat(255), nat(255)).map(([a, b, c, d]) => `${a}.${b}.${c}.${d}`);
+}
+
+/**
+ * For valid IP v4 according to WhatWG
+ *
+ * Following WhatWG, the specification for web-browsers
+ * https://url.spec.whatwg.org/
+ *
+ * There is no equivalent for IP v6 according to the IP v6 parser
+ * https://url.spec.whatwg.org/#concept-ipv6-parser
+ */
+function ipV4Extended(): Arbitrary<string> {
+  const natRepr = (maxValue: number) =>
+    tuple(constantFrom('dec', 'oct', 'hex', 'HEX'), nat(maxValue)).map(([style, v]) => {
+      switch (style) {
+        case 'oct':
+          return `0${Number(v).toString(8)}`;
+        case 'hex':
+          return `0x${Number(v).toString(16)}`;
+        case 'HEX':
+          return `0X${Number(v).toString(16)}`;
+        case 'dec':
+        default:
+          return `${v}`;
+      }
+    });
+  return oneof(
+    tuple(natRepr(255), natRepr(255), natRepr(255), natRepr(255)).map(([a, b, c, d]) => `${a}.${b}.${c}.${d}`),
+    tuple(natRepr(255), natRepr(255), natRepr(65535)).map(([a, b, c]) => `${a}.${b}.${c}`),
+    tuple(natRepr(255), natRepr(16777215)).map(([a, b]) => `${a}.${b}`),
+    natRepr(4294967295)
+  );
 }
 
 /**
@@ -55,4 +88,4 @@ function ipV6(): Arbitrary<string> {
   );
 }
 
-export { ipV4, ipV6 };
+export { ipV4, ipV4Extended, ipV6 };

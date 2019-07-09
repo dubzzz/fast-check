@@ -1,10 +1,10 @@
 import { array } from './ArrayArbitrary';
-import { constant } from './ConstantArbitrary';
 import { constantFrom } from './ConstantArbitrary';
+import { constant } from './ConstantArbitrary';
 import { buildAlphaNumericPercentArb } from './helpers/SpecificCharacterRange';
 import { domain, hostUserInfo } from './HostArbitrary';
 import { nat } from './IntegerArbitrary';
-import { ipV4, ipV6 } from './IpArbitrary';
+import { ipV4, ipV4Extended, ipV6 } from './IpArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { option } from './OptionArbitrary';
 import { stringOf } from './StringArbitrary';
@@ -15,6 +15,8 @@ export interface WebAuthorityConstraints {
   withIPv4?: boolean;
   /** Enable IPv6 in host */
   withIPv6?: boolean;
+  /** Enable extented IP format */
+  withExtendedIP?: boolean;
   /** Enable user information prefix */
   withUserInfo?: boolean;
   /** Enable port suffix */
@@ -32,7 +34,8 @@ export function webAuthority(constraints?: WebAuthorityConstraints) {
   const c = constraints || {};
   const hostnameArbs = [domain()]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
-    .concat(c.withIPv6 === true ? [ipV6().map(ip => `[${ip}]`)] : []);
+    .concat(c.withIPv6 === true ? [ipV6().map(ip => `[${ip}]`)] : [])
+    .concat(c.withIPv4 === true && c.withExtendedIP === true ? [ipV4Extended()] : []);
   return tuple(
     c.withUserInfo === true ? option(hostUserInfo()) : constant(null),
     oneof(...hostnameArbs),

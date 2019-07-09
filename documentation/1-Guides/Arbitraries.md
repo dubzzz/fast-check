@@ -69,6 +69,7 @@ More specific strings:
 - `fc.unicodeJson()` or `fc.unicodeJson(maxDepth: number)` json strings having keys generated using `fc.unicodeString()`. String values are also produced by `fc.unicodeString()`
 - `fc.lorem()`, `fc.lorem(maxWordsCount: number)` or `fc.lorem(maxWordsCount: number, sentencesMode: boolean)` lorem ipsum strings. Generator can be configured by giving it a maximum number of characters by using `maxWordsCount` or switching the mode to sentences by setting `sentencesMode` to `true` in which case `maxWordsCount` is used to cap the number of sentences allowed
 - `fc.ipV4()` IP v4 strings
+- `fc.ipV4Extended()` IP v4 strings including all the formats supported by WhatWG standard (for instance: 0x6f.9)
 - `fc.ipV6()` IP v6 strings
 - `fc.domain()` Domain name with extension following RFC 1034, RFC 1123 and WHATWG URL Standard
 - `fc.webAuthority()` Web authority following RFC 3986
