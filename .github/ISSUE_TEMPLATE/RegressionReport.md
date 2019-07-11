@@ -1,6 +1,6 @@
 ---
 name: 💥 Regression Report
-labels: regression report
+labels: '💥 Regression Report'
 about: Report unexpected behavior that worked in previous versions
 ---
 
