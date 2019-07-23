@@ -130,8 +130,11 @@ Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.str
 ```typescript
 const { tree } = fc.letrec(tie => ({
   // tree is 1 / 3 of node, 2 / 3 of leaf
-  // Warning: if the probability of nodes equals or is greater
-  //          than the one of leafs we might generate infinite trees
+  // Warning: as there is no control over the depth of the data-structures generated
+  //   by letrec, high probability of node can lead to very deep trees
+  //   thus we limit the probability of a node to p = 1 / 3 in this example
+  // with p = 0.50 the probability to have a tree of depth above 10 is 13.9 %
+  // with p = 0.33 the probability to have a tree of depth above 10 is  0.6 %
   tree: fc.oneof(tie('node'), tie('leaf'), tie('leaf')),
   node: fc.tuple(tie('tree'), tie('tree')),
   leaf: fc.nat()
@@ -142,8 +145,7 @@ tree() // Is a tree arbitrary (as fc.nat() is an integer arbitrary)
 - `fc.memo<T>(builder: (n: number) => Arbitrary<T>): ((n?: number) => Arbitrary<T>)` produce arbitraries as specified by builder function. Contrary to `fc.letrec`, `fc.memo` can control the maximal depth of your recursive structure by relying on the `n` parameter given as input of the `builder` function
 
 ```typescript
-// tree is 1 / 3 of node, 2 / 3 of leaf
-const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf(), leaf()));
+const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf()));
 const node: fc.Memo<Tree> = fc.memo(n => {
   if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
   return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)

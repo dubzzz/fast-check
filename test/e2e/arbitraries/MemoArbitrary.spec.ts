@@ -12,9 +12,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
   describe('memo', () => {
     it('Should be able to build deep tree instances (manual depth)', () => {
       const leaf = fc.nat;
-
-      // tree is 1 / 3 of node, 2 / 3 of leaf
-      const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf(), leaf()));
+      const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf()));
       const node: fc.Memo<Tree> = fc.memo(n => {
         if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
         return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
@@ -35,9 +33,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to build tree instances with limited depth (manual depth)', () => {
       const leaf = fc.nat;
-
-      // tree is 1 / 3 of node, 2 / 3 of leaf
-      const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf(), leaf()));
+      const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf()));
       const node: fc.Memo<Tree> = fc.memo(n => {
         if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
         return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
