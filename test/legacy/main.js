@@ -98,7 +98,7 @@ testArbitrary(
 testArbitrary(
   (function() {
     const tree = fc.memo(function(n) {
-      return fc.oneof(node(n), leaf(), leaf());
+      return fc.oneof(node(n), leaf());
     });
     const node = fc.memo(function(n) {
       if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
