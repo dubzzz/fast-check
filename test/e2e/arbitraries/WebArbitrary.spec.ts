@@ -35,7 +35,7 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
   it('Should produce valid URL parts', () => {
     fc.assert(
       fc.property(
-        fc.webAuthority({ withIPv4: true, withIPv6: true, withExtendedIP: true, withUserInfo: true, withPort: true }),
+        fc.webAuthority({ withIPv4: true, withIPv6: true, withIPv4Extended: true, withUserInfo: true, withPort: true }),
         fc.array(fc.webSegment()).map(p => p.map(v => `/${v}`).join('')),
         fc.webQueryParameters(),
         fc.webFragments(),

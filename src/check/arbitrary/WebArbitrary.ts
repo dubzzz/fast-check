@@ -15,8 +15,8 @@ export interface WebAuthorityConstraints {
   withIPv4?: boolean;
   /** Enable IPv6 in host */
   withIPv6?: boolean;
-  /** Enable extented IP format */
-  withExtendedIP?: boolean;
+  /** Enable extended IPv4 format */
+  withIPv4Extended?: boolean;
   /** Enable user information prefix */
   withUserInfo?: boolean;
   /** Enable port suffix */
@@ -35,7 +35,7 @@ export function webAuthority(constraints?: WebAuthorityConstraints) {
   const hostnameArbs = [domain()]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
     .concat(c.withIPv6 === true ? [ipV6().map(ip => `[${ip}]`)] : [])
-    .concat(c.withIPv4 === true && c.withExtendedIP === true ? [ipV4Extended()] : []);
+    .concat(c.withIPv4Extended === true ? [ipV4Extended()] : []);
   return tuple(
     c.withUserInfo === true ? option(hostUserInfo()) : constant(null),
     oneof(...hostnameArbs),
