@@ -110,6 +110,7 @@ export module ObjectConstraints {
         withBoxedValues?: boolean; // adapt all entries within `values` to generate boxed version of the value too
         withMap?: boolean;         // also generate Map
         withSet?: boolean;         // also generate Set
+        withObjectString?: boolean;// also generate string representations of object instances
     };
 };
 ```

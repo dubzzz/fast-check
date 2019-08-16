@@ -1,10 +1,12 @@
 import { Arbitrary } from './definition/Arbitrary';
 
+import { stringify } from '../../utils/stringify';
 import { array } from './ArrayArbitrary';
 import { boolean } from './BooleanArbitrary';
 import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
+import { frequency } from './FrequencyArbitrary';
 import { integer } from './IntegerArbitrary';
 import { memo, Memo } from './MemoArbitrary';
 import { oneof } from './OneOfArbitrary';
@@ -19,7 +21,8 @@ export class ObjectConstraints {
     readonly maxDepth: number,
     readonly maxKeys: number,
     readonly withSet: boolean,
-    readonly withMap: boolean
+    readonly withMap: boolean,
+    readonly withObjectString: boolean
   ) {}
 
   /**
@@ -87,7 +90,8 @@ export class ObjectConstraints {
       getOr(() => settings!.maxDepth, 2),
       getOr(() => settings!.maxKeys, 5),
       getOr(() => settings!.withSet, false),
-      getOr(() => settings!.withMap, false)
+      getOr(() => settings!.withMap, false),
+      getOr(() => settings!.withObjectString, false)
     );
   }
 }
@@ -134,12 +138,21 @@ export namespace ObjectConstraints {
     withSet?: boolean;
     /** Also generate Map */
     withMap?: boolean;
+    /** Also generate string representations of object instances */
+    withObjectString?: boolean;
   }
 }
 
 /** @hidden */
 const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
-  const arbKeys = constraints.key;
+  const arbKeys = constraints.withObjectString
+    ? memo(n =>
+        frequency(
+          { arbitrary: constraints.key, weight: 10 },
+          { arbitrary: anythingArb(n).map(o => stringify(o)), weight: 1 }
+        )
+      )
+    : memo(() => constraints.key);
   const arbitrariesForBase = constraints.values;
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
@@ -152,9 +165,9 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
 
   const baseArb = oneof(...arbitrariesForBase);
   const arrayBaseArb = oneof(...arbitrariesForBase.map(arb => array(arb, 0, maxKeys)));
-  const objectBaseArb = oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys, arb)));
+  const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys(n), arb)));
   const setBaseArb = () => oneof(...arbitrariesForBase.map(arb => set(arb, 0, maxKeys).map(v => new Set(v))));
-  const mapBaseArb = () => oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys, arb)));
+  const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
   const arrayArb = memo(n => oneof(arrayBaseArb, array(anythingArb(n), 0, maxKeys)));
@@ -162,10 +175,10 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
   const setArb = memo(n => oneof(setBaseArb(), set(anythingArb(n), 0, maxKeys).map(v => new Set(v))));
   // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
   const mapArb = memo(n =>
-    oneof(mapBaseArb(), oneof(mapOf(arbKeys, anythingArb(n)), mapOf(anythingArb(n), anythingArb(n))))
+    oneof(mapBaseArb(n), oneof(mapOf(arbKeys(n), anythingArb(n)), mapOf(anythingArb(n), anythingArb(n))))
   );
   // {[key:string]: base} | {[key:string]: anything}
-  const objectArb = memo(n => oneof(objectBaseArb, dictOf(arbKeys, anythingArb(n))));
+  const objectArb = memo(n => oneof(objectBaseArb(n), dictOf(arbKeys(n), anythingArb(n))));
 
   const anythingArb: Memo<any> = memo(n => {
     if (n <= 0) return oneof(baseArb);
@@ -174,7 +187,8 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
       arrayArb(),
       objectArb(),
       ...(constraints.withMap ? [mapArb()] : []),
-      ...(constraints.withSet ? [setArb()] : [])
+      ...(constraints.withSet ? [setArb()] : []),
+      ...(constraints.withObjectString ? [anythingArb().map(o => stringify(o))] : [])
     );
   });
 
