@@ -357,3 +357,47 @@ fc.assert(
 ```
 
 Please keep in mind that property based testing frameworks are fully able to find corner-cases with no help at all.
+
+## Combine with other faker or random generator libraries
+
+In order to integrate external faker or random generator libraries within fast-check, the generators have to be wrapped as arbitraries.
+
+The minimal requirement that needs to be fulfilled by the wrapped library is to provide a way to be seeded and reproducible. fast-check cannot offer replay capabilities if the underlying generators are not able to generate the same values from one run to another.
+
+Here are some examples of how external faker libraries can be wrapped within fast-check.
+
+With [faker](https://www.npmjs.com/package/faker) - seed based faker:
+
+```js
+const fc = require('fast-check');
+const faker = require('faker');
+
+const fakerToArb = (fakerGen) => {
+  return fc.integer()
+    .noBias()   // same probability to generate each of the allowed integers
+    .noShrink() // shrink on a seed makes no sense
+    .map(seed => {
+      faker.seed(seed);  // seed the generator
+      return fakerGen(); // call it
+    });
+};
+
+const streetAddressArb = fakerToArb(faker.address.streetAddress);
+const customArb = fakerToArb(() => faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}"));
+```
+
+With [lorem-ipsum](https://www.npmjs.com/package/lorem-ipsum) - random generator based faker:
+
+```js
+const fc = require('fast-check');
+const { loremIpsum } = require("lorem-ipsum");
+
+const loremArb = fc.infiniteStream(fc.double().noBias())
+  .noShrink()
+  .map(s => {
+    const rng = () => s.next().value; // prng like Math.random but controlled by fast-check
+    return loremIpsum({ random: rng });
+  });
+```
+
+Please note that in the two examples above, the resulting arbitraries will not have full shrinking capabilities. But they offer a full support for random value generation.
