@@ -36,7 +36,7 @@ export function webAuthority(constraints?: WebAuthorityConstraints) {
   return tuple(
     c.withUserInfo === true ? option(hostUserInfo()) : constant(null),
     oneof(...hostnameArbs),
-    c.withPort === true ? option(nat(65536)) : constant(null)
+    c.withPort === true ? option(nat(65535)) : constant(null)
   ).map(([u, h, p]) => (u === null ? '' : `${u}@`) + h + (p === null ? '' : `:${p}`));
 }
 
