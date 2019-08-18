@@ -4,10 +4,12 @@ Describe the reason of this PR or give a link towards the associated issue.
 
 ## In a nutshell
 
-- [ ] New feature
-- [ ] Fix an issue
-- [ ] Documentation improvement
-- [ ] Other: *please explain*
+✔️/❌ New feature
+✔️/❌ Fix an issue
+✔️/❌ Documentation improvement
+✔️/❌ Other: *please explain*
+
+(✔️: yes, ❌: no)
 
 ## Potential impacts
 
