@@ -70,6 +70,8 @@ More specific strings:
 - `fc.lorem()`, `fc.lorem(maxWordsCount: number)` or `fc.lorem(maxWordsCount: number, sentencesMode: boolean)` lorem ipsum strings. Generator can be configured by giving it a maximum number of characters by using `maxWordsCount` or switching the mode to sentences by setting `sentencesMode` to `true` in which case `maxWordsCount` is used to cap the number of sentences allowed
 - `fc.ipV4()` IP v4 strings
 - `fc.ipV6()` IP v6 strings
+- `fc.uuid()` UUID strings having only digits in 0-9a-f
+- `fc.uuidExtended()` UUID strings with mixed case - digits can be any of 0-9a-fA-F
 - `fc.domain()` Domain name with extension following RFC 1034, RFC 1123 and WHATWG URL Standard
 - `fc.webAuthority()` Web authority following RFC 3986
 - `fc.webFragments()` Fragments to build an URI. Fragment is the optional part right after the # in an URI

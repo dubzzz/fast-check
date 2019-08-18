@@ -55,6 +55,7 @@ import {
 } from './check/arbitrary/StringArbitrary';
 import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
+import { uuid, uuidExtended } from './check/arbitrary/UuidArbitrary';
 import {
   webAuthority,
   WebAuthorityConstraints,
@@ -168,6 +169,8 @@ export {
   webQueryParameters,
   webUrl,
   emailAddress,
+  uuid,
+  uuidExtended,
   // model-based
   AsyncCommand,
   Command,
