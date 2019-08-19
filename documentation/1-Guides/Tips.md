@@ -401,3 +401,7 @@ const loremArb = fc.infiniteStream(fc.double().noBias())
 ```
 
 Please note that in the two examples above, the resulting arbitraries will not have full shrinking capabilities. But they offer a full support for random value generation.
+
+## Migrate from jsverify to fast-check
+
+The npm package [jsverify-to-fast-check](https://www.npmjs.com/package/jsverify-to-fast-check) comes with a set of tools to help users to migrate from jsverify to fast-check smoothly.
