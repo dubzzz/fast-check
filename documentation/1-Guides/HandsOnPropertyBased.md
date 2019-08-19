@@ -141,7 +141,7 @@ Copy and paste the code above into `specs/sort.spec.ts` and run `npm run test`.
 
 If you want to experiment shrinking you might change the `sort` implementation as follow:
 
-```ts
+```diff
 --- if (!cmp(tab[start], tab[idx])) {
 +++ if (cmp(tab[start], tab[idx])) {
 ```
