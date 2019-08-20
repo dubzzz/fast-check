@@ -435,14 +435,6 @@ _Suggest custom test values with `examples`_
 
 ---
 
-# 1.3.1
-
-_Infinite loop on replays with one-level-deep path_
-
-## Fixes
-
-- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
-
 # 1.3.0
 
 _Filter invalid values directly in predicates using `fc.pre`_
