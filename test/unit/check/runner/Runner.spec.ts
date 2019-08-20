@@ -37,6 +37,49 @@ describe('Runner', () => {
       assert.equal(num_calls_run, 100, 'Should have called run 100 times');
       assert.equal(out.failed, false, 'Should not have failed');
     });
+    it('Should call the property 100 times even when path provided (on success)', () => {
+      let num_calls_generate = 0;
+      let num_calls_run = 0;
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => {
+          expect(num_calls_run).toEqual(num_calls_generate); // called run before calling back
+          ++num_calls_generate;
+          return new Shrinkable([num_calls_generate]) as Shrinkable<[number]>;
+        },
+        run: (value: [number]) => {
+          expect(value[0]).toEqual(num_calls_generate); // called with previously generated value
+          ++num_calls_run;
+          return null;
+        }
+      };
+      const out = check(p, { path: '3002' }) as RunDetails<[number]>;
+      expect(num_calls_generate).toEqual(100);
+      expect(num_calls_run).toEqual(100);
+      expect(out.failed).toBe(false);
+    });
+    it('Should call the property on all shrunk values for path (on success)', () => {
+      let num_calls_generate = 0;
+      let num_calls_run = 0;
+      const p: IProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => {
+          ++num_calls_generate;
+          function* g() {
+            for (let i = 0; i !== 1234; ++i) yield new Shrinkable([0]);
+          }
+          return new Shrinkable([0], () => stream(g())) as Shrinkable<[number]>;
+        },
+        run: () => {
+          ++num_calls_run;
+          return null;
+        }
+      };
+      const out = check(p, { path: '3002:0' }) as RunDetails<[number]>;
+      expect(num_calls_generate).toEqual(1);
+      expect(num_calls_run).toEqual(1234);
+      expect(out.failed).toBe(false);
+    });
     it('Should ignore precondition failure runs and generate another value', async () => {
       const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
       const successfulRunIdsArb = gapsBetweenSuccessesArb.map(gaps =>
