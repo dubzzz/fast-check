@@ -1,3 +1,11 @@
+# 1.16.1
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.16.0
 
 _Easier recursive data-structures_
@@ -23,6 +31,14 @@ _Easier recursive data-structures_
 - ([PR#379](https://github.com/dubzzz/fast-check/pull/379)) Refactoring: Re-implement `fc.object` with `fc.memo`
 
 ---
+
+# 1.15.2
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
 
 # 1.15.1
 
@@ -57,6 +73,14 @@ _Add auto-skip after time limit option for runners_
 
 ---
 
+# 1.14.1
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.14.0
 
 _New generated documentation and new arbitraries_
@@ -74,6 +98,14 @@ _New generated documentation and new arbitraries_
 
 ---
 
+# 1.13.1
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.13.0
 
 _Remove dependency to lorem-ipsum and more control over `fc.anything` and `fc.object`_
@@ -85,6 +117,14 @@ _Remove dependency to lorem-ipsum and more control over `fc.anything` and `fc.ob
 - ([PR#338](https://github.com/dubzzz/fast-check/pull/338)) Add parameter to customize size of `fc.object()` and `fc.anything()`
 
 ---
+
+# 1.12.2
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
 
 # 1.12.1
 
@@ -104,6 +144,14 @@ _Better balance between values produced by `fc.anything()`_
 - ([PR#325](https://github.com/dubzzz/fast-check/pull/325)) Better balance between values produced by `fc.anything()`
 
 ---
+
+# 1.11.1
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
 
 # 1.11.0
 
@@ -133,6 +181,14 @@ _Replay ability for commands and new arbitraries_
 
 ---
 
+# 1.10.2
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.10.1
 
 _Fix browser bundle_
@@ -150,6 +206,14 @@ _Better shrinking of commands_
 - ([PR#280](https://github.com/dubzzz/fast-check/pull/280)) Better shrinking of commands
 
 ---
+
+# 1.9.4
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
 
 # 1.9.3
 
@@ -196,6 +260,14 @@ _BigInt support and new verbosity level_
 
 ---
 
+# 1.8.3
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.8.2
 
 _Fix regression introduced in the shrinking of cloneable_
@@ -234,6 +306,14 @@ _Native handling of stateful generated values_
 
 ---
 
+# 1.7.2
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.7.1
 
 _Fix import of loremIpsum library_
@@ -256,6 +336,14 @@ _Switch to another PRNG for better performances, better fc.commands_
 - ([PR#217](https://github.com/dubzzz/fast-check/pull/217)) Better typings for `fc.record`
 
 ---
+
+# 1.6.3
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
 
 # 1.6.2
 
@@ -295,6 +383,14 @@ _ESM version of the package published to npm, arbitraries to generate functions 
 
 ---
 
+# 1.5.1
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.5.0
 
 _Property based test state machine: UI, automata._
@@ -315,6 +411,14 @@ _Addition of `subarray` and `shuffledSubarray` arbitraries_
 
 ---
 
+# 1.4.1
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
+
 # 1.4.0
 
 _Suggest custom test values with `examples`_
@@ -330,6 +434,14 @@ _Suggest custom test values with `examples`_
 - ([PR#149](https://github.com/dubzzz/fast-check/pull/149)) Bump npm dependencies
 
 ---
+
+# 1.3.1
+
+_Infinite loop on replays with one-level-deep path_
+
+## Fixes
+
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Infinite loop when path is one level deep and all runs succeed
 
 # 1.3.0
 
