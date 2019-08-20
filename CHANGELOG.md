@@ -1,3 +1,11 @@
+# 1.16.2
+
+_Web authority ports should be within 0-65535_
+
+## Fixes
+
+- ([PR#409](https://github.com/dubzzz/fast-check/pull/409)) Web authority should not produce port outside 0-65535
+
 # 1.16.1
 
 _Infinite loop on replays with one-level-deep path_
@@ -31,6 +39,14 @@ _Easier recursive data-structures_
 - ([PR#379](https://github.com/dubzzz/fast-check/pull/379)) Refactoring: Re-implement `fc.object` with `fc.memo`
 
 ---
+
+# 1.15.3
+
+_Web authority ports should be within 0-65535_
+
+## Fixes
+
+- ([PR#409](https://github.com/dubzzz/fast-check/pull/409)) Web authority should not produce port outside 0-65535
 
 # 1.15.2
 
@@ -72,6 +88,14 @@ _Add auto-skip after time limit option for runners_
 - ([PR#349](https://github.com/dubzzz/fast-check/pull/349)) Test: No regression snapshot tests
 
 ---
+
+# 1.14.2
+
+_Web authority ports should be within 0-65535_
+
+## Fixes
+
+- ([PR#409](https://github.com/dubzzz/fast-check/pull/409)) Web authority should not produce port outside 0-65535
 
 # 1.14.1
 
