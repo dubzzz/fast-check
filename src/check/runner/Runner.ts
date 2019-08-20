@@ -100,7 +100,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
   const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 
-  const maxInitialIterations = qParams.path.length === 0 ? qParams.numRuns : -1;
+  const maxInitialIterations = qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const initialValues = buildInitialValues(generator, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
