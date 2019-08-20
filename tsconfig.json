@@ -16,7 +16,8 @@
         ],
         "outDir": "lib/",
         "types": [
-            "node"
+            "node",
+            "mocha"
         ]
     },
     "include": [
