@@ -65,6 +65,7 @@ jobs:
       deploy:
         provider: npm
         email: npm@dubien.org
+        tag: backport
         skip_cleanup: true
         api_key:
           secure: pz02NsBWp2+V7L5ScpFig53wF7PbjROaiAXaPzaegyFMc6aPVVWdvh+wMMwbJPTd/zXY3CL0ktRyWJPLtv5ZGFWyIny6artteZ01ZHTDOy/aZVfvvWCAS3cyrwSWc9WTbOtl7O+yow2AEF6mXzUrfqAJeBgg1vkkP2ig5FaBqgY2aaQmGgvkBxImxwPwj/sKxYmCO4hHKKzXewHQkmP9uwVWs/z6e8EVufZYuBtGqB8OOfWTZuhW4Re9oiwTtp8HYCuiWwQI/Pe7G81rqktMJTqXymo041caucSs27Nko9b37RzPAeN4mgZmRbB2qoJJtjasMk5KJq76CPKAsVNwrDLaS6MzghcncHH50uOP/lzfr/YWGmUKD+PnTi5iOJ+OpY4AXgR/phrYsCkmGMrrQqjlA9e+HONoaEElJ9YnxcN36tb2wVNd+FwQ1dw+AlcSyVmIGZkD9pDNh+BTZ12SdtEu5qHuUotetIke3iOXjjOGbtr0ckCgWHtxFlcZMQEFVO9pTyz+f4mdgbMD9DSL7JD0Ns6pTtbGqBqVJmzA4IDVaD6xAedoMDte5QO+ltbM+vKlPIGIocQ6D+K+Z2l4oeiL5f54Lx28wyld0i5foGZGic2hh6ni6ie86/sLzAVBRHtfaiIrzqPztUBzbW+6/tTZI28zqFHLE7EobA7yB/0=
