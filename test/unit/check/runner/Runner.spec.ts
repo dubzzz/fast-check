@@ -43,20 +43,20 @@ describe('Runner', () => {
       const p: IProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          expect(num_calls_run).toEqual(num_calls_generate); // called run before calling back
+          assert.equal(num_calls_run, num_calls_generate, 'Should have called run before calling back');
           ++num_calls_generate;
           return new Shrinkable([num_calls_generate]) as Shrinkable<[number]>;
         },
         run: (value: [number]) => {
-          expect(value[0]).toEqual(num_calls_generate); // called with previously generated value
+          assert.equal(value[0], num_calls_generate, 'Should be called with previously generated value');
           ++num_calls_run;
           return null;
         }
       };
       const out = check(p, { path: '3002' }) as RunDetails<[number]>;
-      expect(num_calls_generate).toEqual(100);
-      expect(num_calls_run).toEqual(100);
-      expect(out.failed).toBe(false);
+      assert.equal(num_calls_generate, 100, 'Should have called generate 100 times');
+      assert.equal(num_calls_run, 100, 'Should have called run 100 times');
+      assert.equal(out.failed, false, 'Should not have failed');
     });
     it('Should call the property on all shrunk values for path (on success)', () => {
       let num_calls_generate = 0;
@@ -76,9 +76,9 @@ describe('Runner', () => {
         }
       };
       const out = check(p, { path: '3002:0' }) as RunDetails<[number]>;
-      expect(num_calls_generate).toEqual(1);
-      expect(num_calls_run).toEqual(1234);
-      expect(out.failed).toBe(false);
+      assert.equal(num_calls_generate, 1, 'Should have called generate once');
+      assert.equal(num_calls_run, 1234, 'Should have called run 1234 times');
+      assert.equal(out.failed, false, 'Should not have failed');
     });
     it('Should ignore precondition failure runs and generate another value', async () => {
       const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
