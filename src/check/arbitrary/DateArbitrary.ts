@@ -3,10 +3,11 @@ import { integer } from './IntegerArbitrary';
 
 /**
  * For date between constraints.min or new Date(-8640000000000000) (included) and constraints.max or new Date(8640000000000000) (included)
- *
+ *  
  * @param constraints
  */
 export function date(constraints?: { min?: Date; max?: Date }): Arbitrary<Date> {
+  // Date min and max in ECMAScript specification : https://stackoverflow.com/a/11526569/3707828
   let intMin = -8640000000000000;
   let intMax = 8640000000000000;
   if (constraints !== undefined) {
