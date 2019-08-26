@@ -87,4 +87,19 @@ describe('MyArbitrary', () => {
 ```
 
 - No regression test - in `test/e2e/NoRegression.spec.ts`
+
+Then run `npm run e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
+
 - Legacy support test - in `test/legacy/main.js`
+
+The `legacy` spec is responsible to check that most of the arbitraries provided by fast-check are working fine on very old releases of node.
+
+✔️ *Document the arbitrary*
+
+- Provide a minimal JSDoc on top of your new arbitrary and use the `/** @hidden */` tag to hide internals - otherwise they would get published into the generated documentation
+
+- Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Arbitraries.md
+
+✔️ *Add yourself into the contributors*
+
+Update the file `CONTRIBUTORS.md` by adding your name.
