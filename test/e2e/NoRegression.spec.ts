@@ -220,6 +220,9 @@ describe(`NoRegression`, () => {
   it('emailAddress', () => {
     expect(() => fc.assert(fc.property(fc.emailAddress(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
+  it('date', () => {
+    expect(() => fc.assert(fc.property(fc.date(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+  });
   it('letrec', () => {
     expect(() =>
       fc.assert(

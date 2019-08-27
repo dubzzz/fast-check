@@ -78,6 +78,10 @@ More specific strings:
 - `fc.webUrl()` Web URL following the specs specified by RFC 3986 and WHATWG URL Standard
 - `fc.emailAddress()` Email address following RFC 1123 and RFC 5322
 
+## Date (:Date)
+
+- `fc.date()` or `fc.date({min?: Date, max?: Date})` any date between new Date(-8640000000000000) or min (included) to new Date(8640000000000000) or max (included)
+
 ## Combinors of arbitraries (:T)
 
 - `fc.constant<T>(value: T): Arbitrary<T>` constant arbitrary only able to produce `value: T`

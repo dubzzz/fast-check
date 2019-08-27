@@ -605,6 +605,18 @@ Execution summary:
 [31m×[0m [<function :: [1,2] => -1660882897>]"
 `;
 
+exports[`NoRegression date 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:0\\", endOnFailure: true }
+Counterexample: [new Date(\\"1970-01-01T00:00:00.000Z\\")]
+Shrunk 1 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [new Date(\\"1970-01-01T00:00:00.045Z\\")]
+. [31m×[0m [new Date(\\"1970-01-01T00:00:00.000Z\\")]"
+`;
+
 exports[`NoRegression dedup 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0:1:0:1:0:1:0:0:5:0:0:0:4:0:0:1:7:1:2:0:0:0:0:1:0:2:2:3:0:3:2:5:0:3:0:4:2:0:0\\", endOnFailure: true }
