@@ -78,12 +78,9 @@ More specific strings:
 - `fc.webUrl()` Web URL following the specs specified by RFC 3986 and WHATWG URL Standard
 - `fc.emailAddress()` Email address following RFC 1123 and RFC 5322
 
-## Date (:date)
+## Date (:Date)
 
-- `fc.date()` all possible date ie. from new Date(-8640000000000000) (included) to new Date(8640000000000000) (included)
-- `fc.integer({max: Date})` all possible date between new Date(-8640000000000000) (included) and max (included)
-- `fc.integer({min: Date})` all possible date between min (included) and new Date(8640000000000000) (included)
-- `fc.integer({min: Date, max: Date})` all possible date between min (included) and max (included)
+- `fc.date()` or `fc.date({min?: Date, max?: Date})` any date between new Date(-8640000000000000) or min (included) to new Date(8640000000000000) or max (included)
 
 ## Combinors of arbitraries (:T)
 
