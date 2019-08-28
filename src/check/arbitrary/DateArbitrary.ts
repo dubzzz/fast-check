@@ -8,12 +8,10 @@ import { integer } from './IntegerArbitrary';
  */
 export function date(constraints?: { min?: Date; max?: Date }): Arbitrary<Date> {
   // Date min and max in ECMAScript specification : https://stackoverflow.com/a/11526569/3707828
-  let intMin = -8640000000000000;
-  let intMax = 8640000000000000;
-  if (constraints !== undefined) {
-    if (constraints.min !== undefined) intMin = constraints.min.getTime();
-    if (constraints.max !== undefined) intMax = constraints.max.getTime();
-  }
-  if (intMin > intMax) throw new Error('fc.date maximum value should be equal or greater than the minimum one');
+  const intMin = constraints && constraints.min ? constraints.min.getTime() : -8640000000000000;
+  const intMax = constraints && constraints.max ? constraints.max.getTime() : 8640000000000000;
+  if (Number.isNaN(intMin)) throw new Error('fc.date min must be valid instance of Date');
+  if (Number.isNaN(intMin)) throw new Error('fc.date max must be valid instance of Date');
+  if (intMin > intMax) throw new Error('fc.date max must be greater or equal to min');
   return integer(intMin, intMax).map(a => new Date(a));
 }
