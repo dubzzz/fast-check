@@ -3,6 +3,7 @@ import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterPrope
 
 // Mocks
 import { Random } from '../../../../src/random/generator/Random';
+import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 jest.mock('../../../../src/random/generator/Random');
 
 function buildProperty() {
@@ -73,8 +74,9 @@ describe('SkipAfterProperty', () => {
     const { mocks: propertyMock, property } = buildProperty();
 
     const p = new SkipAfterProperty(property, timerMock, timeLimitMs);
-    expect(() => p.run({})).toThrowError();
+    const out = p.run({});
 
+    expect(PreconditionFailure.isFailure(out)).toBe(true);
     expect(timerMock.mock.calls.length).toBe(2);
     expect(propertyMock.isAsync.mock.calls.length).toBe(0);
     expect(propertyMock.generate.mock.calls.length).toBe(0);

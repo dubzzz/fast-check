@@ -1,5 +1,5 @@
 import { Random } from '../../random/generator/Random';
-import { pre } from '../precondition/Pre';
+import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IProperty } from './IProperty';
 
 /** @hidden */
@@ -11,7 +11,9 @@ export class SkipAfterProperty<Ts> implements IProperty<Ts> {
   isAsync = () => this.property.isAsync();
   generate = (mrng: Random, runId?: number) => this.property.generate(mrng, runId);
   run = (v: Ts) => {
-    pre(this.getTime() < this.skipAfterTime);
+    if (this.getTime() >= this.skipAfterTime) {
+      return new PreconditionFailure();
+    }
     return this.property.run(v);
   };
 }
