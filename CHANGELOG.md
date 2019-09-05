@@ -1,3 +1,11 @@
+# 1.16.3
+
+_skipAllAfterTimeLimit throws when it passes time limit_
+
+## Fixes
+
+- ([PR#425](https://github.com/dubzzz/fast-check/pull/425)) skipAllAfterTimeLimit throws when it passes time limit
+
 # 1.16.2
 
 _Web authority ports should be within 0-65535_
@@ -39,6 +47,14 @@ _Easier recursive data-structures_
 - ([PR#379](https://github.com/dubzzz/fast-check/pull/379)) Refactoring: Re-implement `fc.object` with `fc.memo`
 
 ---
+
+# 1.15.4
+
+_skipAllAfterTimeLimit throws when it passes time limit_
+
+## Fixes
+
+- ([PR#425](https://github.com/dubzzz/fast-check/pull/425)) skipAllAfterTimeLimit throws when it passes time limit
 
 # 1.15.3
 
