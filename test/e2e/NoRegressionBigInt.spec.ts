@@ -35,4 +35,9 @@ describe(`NoRegression BigInt`, () => {
   it('bigUint', () => {
     expect(() => fc.assert(fc.property(fc.bigUint(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
+  it('mixedCase', () => {
+    expect(() =>
+      fc.assert(fc.property(fc.mixedCase(fc.hexaString()), v => testFunc(v)), settings)
+    ).toThrowErrorMatchingSnapshot();
+  });
 });
