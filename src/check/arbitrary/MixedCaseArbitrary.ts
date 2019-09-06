@@ -1,11 +1,21 @@
 import { Random } from '../../random/generator/Random';
+import { Stream } from '../../stream/Stream';
+import { bigUintN } from './BigIntArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
-import { bigUintN } from './BigIntArbitrary';
-import { Stream } from '../../stream/Stream';
 
 export interface MixedCaseConstraints {
   toggleCase?: (rawChar: string) => string;
+}
+
+/** @hidden */
+export function countToggledBits(n: bigint): number {
+  let count = 0;
+  while (n > BigInt(0)) {
+    if (n & BigInt(1)) ++count;
+    n >>= BigInt(1);
+  }
+  return count;
 }
 
 /** @hidden */
@@ -13,26 +23,12 @@ class MixedCaseArbitrary extends Arbitrary<string> {
   constructor(private readonly stringArb: Arbitrary<string>, private readonly toggleCase: (rawChar: string) => string) {
     super();
   }
-  // azerty
-  // AzertY
-  // 100101 <- flags
-  // 1011
-  // ay
-  // Ay
   private computeTogglePositions(chars: string[]): number[] {
     const positions: number[] = [];
     for (let idx = 0; idx !== chars.length; ++idx) {
       if (this.toggleCase(chars[idx]) !== chars[idx]) positions.push(idx);
     }
     return positions;
-  }
-  private countToggledBits(n: bigint): number {
-    let count = 0;
-    while (n > BigInt(0)) {
-      if (n & BigInt(1)) ++count;
-      n >>= BigInt(1);
-    }
-    return count;
   }
   private wrapper(
     rawCase: Shrinkable<string>,
@@ -63,7 +59,7 @@ class MixedCaseArbitrary extends Arbitrary<string> {
         // flags: 1000101 -> 10011 or 11001 (second choice for the moment)
         const allowedMask = (BigInt(1) << BigInt(nTogglePositions.length)) - BigInt(1);
         const preservedFlags = flags & allowedMask;
-        let numMissingFlags = this.countToggledBits(flags - preservedFlags);
+        let numMissingFlags = countToggledBits(flags - preservedFlags);
         let nFlags = preservedFlags;
         for (let mask = BigInt(1); mask < allowedMask && numMissingFlags !== 0; mask <<= BigInt(1)) {
           if (!(nFlags & mask)) {
