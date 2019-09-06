@@ -84,14 +84,9 @@ class MixedCaseArbitrary extends Arbitrary<string> {
     const chars = [...rawCaseShrinkable.value_]; // split into valid unicode (keeps surrogate pairs)
     const togglePositions = this.computeTogglePositions(chars);
 
-    // flags: true => toggle the char, false => keep it as-is
     const flagsArb = bigUintN(togglePositions.length);
-    const flags = flagsArb.generate(mrng).value_;
+    const flags = flagsArb.generate(mrng).value_; // true => toggle the char, false => keep it as-is
 
-    const newChars = chars.slice();
-    for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
-      if (flags & mask) newChars[togglePositions[idx]] = this.toggleCase(newChars[togglePositions[idx]]);
-    }
     return this.wrapper(rawCaseShrinkable, chars, togglePositions, flags);
   }
 }
