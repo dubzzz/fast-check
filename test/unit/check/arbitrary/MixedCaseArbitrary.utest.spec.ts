@@ -1,6 +1,14 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { countToggledBits, computeNextFlags } from '../../../../src/check/arbitrary/MixedCaseArbitrary';
+import { mixedCase, countToggledBits, computeNextFlags } from '../../../../src/check/arbitrary/MixedCaseArbitrary';
+
+jest.mock('../../../../src/check/arbitrary/BigIntArbitrary');
+import * as BigIntArbitraryMock from '../../../../src/check/arbitrary/BigIntArbitrary';
+import * as stubRng from '../../stubs/generators';
+import { mockModule } from './generic/MockedModule';
+import { arbitraryFor } from './generic/ArbitraryBuilder';
+
+const mrng = () => stubRng.mutable.nocall();
 
 declare function BigInt(n: number | bigint | string): bigint;
 
@@ -11,6 +19,86 @@ describe('MixedCaseArbitrary', () => {
     });
     return;
   }
+  describe('mixedCase', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+    it('should not toggle any character if flags are null', () => {
+      // Arrange
+      const { bigUintN } = mockModule(BigIntArbitraryMock);
+      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(0) }]));
+      const stringArb = arbitraryFor([{ value: 'azerty' }]);
+
+      // Act
+      const arb = mixedCase(stringArb);
+      const { value_: s } = arb.generate(mrng());
+
+      // Assert
+      expect(s).toBe('azerty');
+      expect(bigUintN).toHaveBeenCalledWith(6);
+    });
+    it('should toggle characters according to flags', () => {
+      // Arrange
+      const { bigUintN } = mockModule(BigIntArbitraryMock);
+      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
+      const stringArb = arbitraryFor([{ value: 'azerty' }]);
+
+      // Act
+      const arb = mixedCase(stringArb);
+      const { value_: s } = arb.generate(mrng());
+
+      // Assert
+      expect(s).toBe('AzeRty');
+      expect(bigUintN).toHaveBeenCalledWith(6);
+    });
+    it('should toggle both lower and upper characters', () => {
+      // Arrange
+      const { bigUintN } = mockModule(BigIntArbitraryMock);
+      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
+      const stringArb = arbitraryFor([{ value: 'azERty' }]);
+
+      // Act
+      const arb = mixedCase(stringArb);
+      const { value_: s } = arb.generate(mrng());
+
+      // Assert
+      expect(s).toBe('AzErty');
+      expect(bigUintN).toHaveBeenCalledWith(6);
+    });
+    it('should not try to toggle characters that do not have lower/upper versions', () => {
+      // Arrange
+      const { bigUintN } = mockModule(BigIntArbitraryMock);
+      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(0) }]));
+      const stringArb = arbitraryFor([{ value: 'az01ty' }]); // 01 upper version is the same
+
+      // Act
+      const arb = mixedCase(stringArb);
+      const { value_: s } = arb.generate(mrng());
+
+      // Assert
+      expect(s).toBe('az01ty');
+      expect(bigUintN).toHaveBeenCalledWith(4);
+    });
+    it('should use toggle function when provided to check what can be toggled or not', () => {
+      // Arrange
+      const { bigUintN } = mockModule(BigIntArbitraryMock);
+      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(63) /* 111111 */ }]));
+      const stringArb = arbitraryFor([{ value: 'azerty' }]);
+      const customToggle = jest.fn();
+      customToggle.mockImplementation((c: string) => {
+        if (c === 'a' || c === 't') return '<Hello>';
+        else return c;
+      });
+
+      // Act
+      const arb = mixedCase(stringArb, { toggleCase: customToggle });
+      const { value_: s } = arb.generate(mrng());
+
+      // Assert
+      expect(s).toBe('<Hello>zer<Hello>y');
+      expect(bigUintN).toHaveBeenCalledWith(2);
+    });
+  });
   describe('countToggledBits', () => {
     it('should properly count when zero bits are toggled', () => {
       expect(countToggledBits(BigInt(0))).toBe(0);
