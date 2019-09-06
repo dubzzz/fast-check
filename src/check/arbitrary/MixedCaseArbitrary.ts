@@ -19,13 +19,13 @@ export function countToggledBits(n: bigint): number {
 }
 
 /** @hidden */
-export function computeNextFlags(flags: bigint, prevSize: number, nextSize: number): bigint {
+export function computeNextFlags(flags: bigint, nextSize: number): bigint {
   // whenever possible we want to preserve the same number of toggled positions
   // whenever possible we want to keep them at the same place
   // flags: 1000101 -> 10011 or 11001 (second choice for the moment)
   const allowedMask = (BigInt(1) << BigInt(nextSize)) - BigInt(1);
-  const preservedFlags = (flags >> BigInt(prevSize - nextSize)) & allowedMask;
-  let numMissingFlags = countToggledBits(flags - (preservedFlags << BigInt(prevSize - nextSize)));
+  const preservedFlags = flags & allowedMask;
+  let numMissingFlags = countToggledBits(flags - preservedFlags);
   let nFlags = preservedFlags;
   for (let mask = BigInt(1); mask < allowedMask && numMissingFlags !== 0; mask <<= BigInt(1)) {
     if (!(nFlags & mask)) {
@@ -71,7 +71,7 @@ class MixedCaseArbitrary extends Arbitrary<string> {
       .map(s => {
         const nChars = [...s.value_];
         const nTogglePositions = this.computeTogglePositions(nChars);
-        const nFlags = computeNextFlags(flags, togglePositions.length, nTogglePositions.length);
+        const nFlags = computeNextFlags(flags, nTogglePositions.length);
         return this.wrapper(s, nChars, nTogglePositions, nFlags);
       })
       .join(
