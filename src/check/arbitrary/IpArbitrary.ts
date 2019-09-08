@@ -28,14 +28,12 @@ function ipV4(): Arbitrary<string> {
  */
 function ipV4Extended(): Arbitrary<string> {
   const natRepr = (maxValue: number) =>
-    tuple(constantFrom('dec', 'oct', 'hex', 'HEX'), nat(maxValue)).map(([style, v]) => {
+    tuple(constantFrom('dec', 'oct', 'hex'), nat(maxValue)).map(([style, v]) => {
       switch (style) {
         case 'oct':
           return `0${Number(v).toString(8)}`;
         case 'hex':
           return `0x${Number(v).toString(16)}`;
-        case 'HEX':
-          return `0X${Number(v).toString(16)}`;
         case 'dec':
         default:
           return `${v}`;
