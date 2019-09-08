@@ -27,7 +27,7 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
   const preservedFlags = flags & allowedMask;
   let numMissingFlags = countToggledBits(flags - preservedFlags);
   let nFlags = preservedFlags;
-  for (let mask = BigInt(1); mask < allowedMask && numMissingFlags !== 0; mask <<= BigInt(1)) {
+  for (let mask = BigInt(1); mask <= allowedMask && numMissingFlags !== 0; mask <<= BigInt(1)) {
     if (!(nFlags & mask)) {
       nFlags |= mask;
       --numMissingFlags;
