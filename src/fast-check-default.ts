@@ -28,6 +28,7 @@ import { letrec } from './check/arbitrary/LetRecArbitrary';
 import { lorem } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import { memo, Memo } from './check/arbitrary/MemoArbitrary';
+import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
 import {
   anything,
   json,
@@ -117,6 +118,7 @@ export {
   fullUnicode,
   hexa,
   base64,
+  mixedCase,
   string,
   asciiString,
   string16bits,
@@ -184,6 +186,7 @@ export {
   ExecutionStatus,
   ExecutionTree,
   Memo,
+  MixedCaseConstraints,
   ObjectConstraints,
   Parameters,
   RecordConstraints,
