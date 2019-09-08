@@ -80,7 +80,7 @@ class MixedCaseArbitrary extends Arbitrary<string> {
           .shrinkableFor(flags)
           .shrink()
           .map(nFlags => {
-            return this.wrapper(rawCase, chars, togglePositions, nFlags.value_);
+            return this.wrapper(new Shrinkable(rawCase.value), chars, togglePositions, nFlags.value_);
           })
       );
   }

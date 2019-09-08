@@ -141,8 +141,8 @@ describe('MixedCaseArbitrary', () => {
         'aZer' /*azer + 0010*/ // <-- bigint shrinker for bigUintN(4)[0b0101]
       ]);
       expect(level2b).toEqual([
-        'azE' /*aze + 100*/,
-        'azEr' /*azer + 0100*/, // <-- string shrinker for 'azerty'
+        // 'azE' /*aze + 100*/,
+        // 'azEr' /*azer + 0100*/, // <-- string shrinker for 'azerty' (removed)
         'azertY' /*azerty + 100000*/ // <-- bigint shrinker for bigUintN(6)[0b000100]
       ]);
     });
