@@ -194,6 +194,9 @@ describe(`NoRegression`, () => {
   it('ipV4', () => {
     expect(() => fc.assert(fc.property(fc.ipV4(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
+  it('ipV4Extended', () => {
+    expect(() => fc.assert(fc.property(fc.ipV4Extended(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+  });
   it('ipV6', () => {
     expect(() => fc.assert(fc.property(fc.ipV6(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });

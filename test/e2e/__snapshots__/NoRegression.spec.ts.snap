@@ -1352,6 +1352,22 @@ Execution summary:
 . . . . . . . [32m√[0m [\\"0.54.0.0\\"]"
 `;
 
+exports[`NoRegression ipV4Extended 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:1\\", endOnFailure: true }
+Counterexample: [\\"00.0\\"]
+Shrunk 2 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [\\"0112.0x0\\"]
+. [32m√[0m [\\"74.0x0\\"]
+. [31m×[0m [\\"00.0x0\\"]
+. . [32m√[0m [\\"0.0x0\\"]
+. . [31m×[0m [\\"00.0\\"]
+. . . [32m√[0m [\\"0.0\\"]"
+`;
+
 exports[`NoRegression ipV6 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0:0:0:0:0:0\\", endOnFailure: true }
