@@ -226,14 +226,6 @@ describe(`NoRegression`, () => {
   it('uuid', () => {
     expect(() => fc.assert(fc.property(fc.uuid(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
-  it('uuidExtended', () => {
-    expect(() =>
-      fc.assert(
-        fc.property(fc.uuidExtended(), v => testFunc(v) || !v.split('').some(d => d >= 'A' && d <= 'F')),
-        settings
-      )
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('letrec', () => {
     expect(() =>
       fc.assert(

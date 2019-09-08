@@ -71,7 +71,6 @@ More specific strings:
 - `fc.ipV4()` IP v4 strings
 - `fc.ipV6()` IP v6 strings
 - `fc.uuid()` UUID strings having only digits in 0-9a-f
-- `fc.uuidExtended()` UUID strings with mixed case - digits can be any of 0-9a-fA-F
 - `fc.domain()` Domain name with extension following RFC 1034, RFC 1123 and WHATWG URL Standard
 - `fc.webAuthority()` Web authority following RFC 3986
 - `fc.webFragments()` Fragments to build an URI. Fragment is the optional part right after the # in an URI
