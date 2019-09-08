@@ -5,6 +5,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
 export interface MixedCaseConstraints {
+  /** Transform a character to its upper and/or lower case version */
   toggleCase?: (rawChar: string) => string;
 }
 
@@ -103,6 +104,12 @@ function defaultToggleCase(rawChar: string) {
   return rawChar.toLowerCase();
 }
 
+/**
+ * For strings using values produced by `stringArb`, switching case character by character (upper/lower)
+ *
+ * @param stringArb Arbitrary able to build string values
+ * @param constraints Constraints to be applied when computing upper/lower case version
+ */
 export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseConstraints): Arbitrary<string> {
   if (typeof BigInt === 'undefined') {
     throw new Error(`mixedCase requires BigInt support`);
