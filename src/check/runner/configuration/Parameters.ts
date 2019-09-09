@@ -66,11 +66,15 @@ export interface Parameters<T = void> {
    * Replay capability (see {@link seed}, {@link path}) can still be used if needed.
    *
    * WARNING:
-   * It interrupts the test execution:
-   * - Test will be considered as success in case no failure have been encountered before the interrupt signal.
-   * - Shrinker will be interrupted at the middle.
+   * If the test got interrupted before any failure occured
+   * and before it reached the requested number of runs specified by {@link numRuns}
+   * it will be marked as success. Except if {@link markInterruptAsFailure} as been set to `true`
    */
   interruptAfterTimeLimit?: number;
+  /**
+   * Mark interrupted runs as failed runs: disabled by default
+   */
+  markInterruptAsFailure?: boolean;
   /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).

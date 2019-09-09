@@ -21,7 +21,7 @@ describe('RunExecution', () => {
         ),
         (seed, verbosityLevel, failuresDesc) => {
           // Simulate the run
-          const run = new RunExecution<number>(verbosityLevel);
+          const run = new RunExecution<number>(verbosityLevel, false);
           for (let idx = 0; idx !== failuresDesc[0].failureId; ++idx) {
             run.success(idx);
           }
@@ -32,6 +32,7 @@ describe('RunExecution', () => {
           const lastFailure = failuresDesc[failuresDesc.length - 1];
           const details = run.toRunDetails(seed, '', 42, 10000);
           expect(details.failed).toBe(true);
+          expect(details.interrupted).toBe(false);
           expect(details.counterexamplePath).not.toBe(null);
           expect(details.counterexamplePath!.length > 0).toBe(true);
           expect(details.seed).toEqual(seed);
@@ -55,7 +56,7 @@ describe('RunExecution', () => {
     fc.assert(
       fc.property(fc.integer(), fc.array(fc.nat(1000), 1, 10), (seed, path) => {
         // Simulate the run
-        const run = new RunExecution<number>(VerbosityLevel.None);
+        const run = new RunExecution<number>(VerbosityLevel.None, false);
         for (let idx = 0; idx !== path[0]; ++idx) {
           run.success(idx);
         }
@@ -74,7 +75,7 @@ describe('RunExecution', () => {
         fc.array(fc.nat(1000), 1, 10),
         (seed, offsetPath, addedPath) => {
           // Simulate the run
-          const run = new RunExecution<number>(VerbosityLevel.None);
+          const run = new RunExecution<number>(VerbosityLevel.None, false);
           for (let idx = 0; idx !== addedPath[0]; ++idx) {
             run.success(idx);
           }
@@ -104,7 +105,7 @@ describe('RunExecution', () => {
         ),
         executionStatuses => {
           // Simulate the run
-          const run = new RunExecution<number>(VerbosityLevel.VeryVerbose);
+          const run = new RunExecution<number>(VerbosityLevel.VeryVerbose, false);
           for (let idx = 0; idx !== executionStatuses.length; ++idx) {
             switch (executionStatuses[idx].status) {
               case ExecutionStatus.Success:

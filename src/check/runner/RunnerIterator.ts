@@ -18,8 +18,12 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   private currentIdx: number;
   private currentShrinkable: Shrinkable<Ts>;
   private nextValues: IterableIterator<Shrinkable<Ts>>;
-  constructor(readonly sourceValues: SourceValuesIterator<Shrinkable<Ts>>, verbose: VerbosityLevel) {
-    this.runExecution = new RunExecution<Ts>(verbose);
+  constructor(
+    readonly sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
+    verbose: VerbosityLevel,
+    interruptedAsFailure: boolean
+  ) {
+    this.runExecution = new RunExecution<Ts>(verbose, interruptedAsFailure);
     this.currentIdx = -1;
     this.nextValues = sourceValues;
   }
@@ -28,7 +32,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   }
   next(value?: any): IteratorResult<Ts> {
     const nextValue = this.nextValues.next();
-    if (nextValue.done) {
+    if (nextValue.done || this.runExecution.interrupted) {
       return { done: true, value };
     }
     this.currentShrinkable = nextValue.value;
@@ -48,14 +52,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
         this.sourceValues.skippedOne();
       } else {
         // interrupt signal
-        const currentNextValues = this.nextValues;
-        this.nextValues = {
-          next: value => ({
-            done: true,
-            value: currentNextValues.next(value).value
-          }),
-          [Symbol.iterator]: () => this.nextValues
-        };
+        this.runExecution.interrupt();
       }
     } else {
       // successful run

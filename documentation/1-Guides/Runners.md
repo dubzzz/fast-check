@@ -103,6 +103,7 @@ export interface Parameters<T = void> {
                         // in milliseconds (relies on Date.now): disabled by default
     interruptAfterTimeLimit?: number; // optional, interrupt test execution after a given time limit
                         // in milliseconds (relies on Date.now): disabled by default
+    markInterruptAsFailure?: boolean; // optional, mark interrupted runs as failure: disabled by default
 }
 ```
 

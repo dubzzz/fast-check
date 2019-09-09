@@ -20,9 +20,10 @@ import { throwIfFailed } from './utils/RunDetailsFormatter';
 function runIt<Ts>(
   property: IProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
-  verbose: VerbosityLevel
+  verbose: VerbosityLevel,
+  interruptedAsFailure: boolean
 ): RunExecution<Ts> {
-  const runner = new RunnerIterator(sourceValues, verbose);
+  const runner = new RunnerIterator(sourceValues, verbose, interruptedAsFailure);
   for (const v of runner) {
     const out = property.run(v) as PreconditionFailure | string | null;
     runner.handleResult(out);
@@ -34,9 +35,10 @@ function runIt<Ts>(
 async function asyncRunIt<Ts>(
   property: IProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
-  verbose: VerbosityLevel
+  verbose: VerbosityLevel,
+  interruptedAsFailure: boolean
 ): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, verbose);
+  const runner = new RunnerIterator(sourceValues, verbose, interruptedAsFailure);
   for (const v of runner) {
     const out = await property.run(v);
     runner.handleResult(out);
@@ -105,10 +107,10 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
   const initialValues = buildInitialValues(generator, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
-    ? asyncRunIt(property, sourceValues, qParams.verbose).then(e =>
+    ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then(e =>
         e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
       )
-    : runIt(property, sourceValues, qParams.verbose).toRunDetails(
+    : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         qParams.numRuns,
