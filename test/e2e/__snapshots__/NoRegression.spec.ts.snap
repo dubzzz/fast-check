@@ -2404,6 +2404,21 @@ Execution summary:
 . [31m×[0m [\\" \\"]"
 `;
 
+exports[`NoRegression uuid 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:0:0:0:0\\", endOnFailure: true }
+Counterexample: [\\"00000000-0000-0000-0000-000000000000\\"]
+Shrunk 4 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [\\"0000000a-dc05-c14a-0000-001a0000001c\\"]
+. [31m×[0m [\\"00000000-dc05-c14a-0000-001a0000001c\\"]
+. . [31m×[0m [\\"00000000-0000-0000-0000-001a0000001c\\"]
+. . . [31m×[0m [\\"00000000-0000-0000-0000-00000000001c\\"]
+. . . . [31m×[0m [\\"00000000-0000-0000-0000-000000000000\\"]"
+`;
+
 exports[`NoRegression webAuthority 1`] = `
 "Property failed after 4 tests
 { seed: 42, path: \\"3:1:10:0:12:11:6:0:1:1\\", endOnFailure: true }

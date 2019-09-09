@@ -71,6 +71,7 @@ More specific strings:
 - `fc.ipV4()` IP v4 strings
 - `fc.ipV4Extended()` IP v4 strings including all the formats supported by WhatWG standard (for instance: 0x6f.9)
 - `fc.ipV6()` IP v6 strings
+- `fc.uuid()` UUID strings having only digits in 0-9a-f
 - `fc.domain()` Domain name with extension following RFC 1034, RFC 1123 and WHATWG URL Standard
 - `fc.webAuthority()` Web authority following RFC 3986
 - `fc.webFragments()` Fragments to build an URI. Fragment is the optional part right after the # in an URI

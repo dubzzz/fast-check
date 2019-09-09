@@ -226,6 +226,9 @@ describe(`NoRegression`, () => {
   it('date', () => {
     expect(() => fc.assert(fc.property(fc.date(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
+  it('uuid', () => {
+    expect(() => fc.assert(fc.property(fc.uuid(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+  });
   it('letrec', () => {
     expect(() =>
       fc.assert(
