@@ -25,7 +25,8 @@ const parametersArbitrary = fc.record(
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),
-    skipAllAfterTimeLimit: fc.nat()
+    skipAllAfterTimeLimit: fc.nat(),
+    interruptAfterTimeLimit: fc.nat()
   },
   { withDeletedKeys: true }
 );

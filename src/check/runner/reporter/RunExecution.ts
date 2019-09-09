@@ -120,7 +120,7 @@ export class RunExecution<Ts> {
     }
     return {
       failed: false,
-      numRuns,
+      numRuns: this.numSuccesses,
       numSkips: this.numSkips,
       numShrinks: 0,
       seed,

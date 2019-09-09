@@ -42,9 +42,21 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
       this.currentIdx = -1;
       this.nextValues = this.currentShrinkable.shrink();
     } else if (result != null) {
-      // skipped run
-      this.runExecution.skip(this.currentShrinkable.value_);
-      this.sourceValues.skippedOne();
+      if (!result.interruptExecution) {
+        // skipped run
+        this.runExecution.skip(this.currentShrinkable.value_);
+        this.sourceValues.skippedOne();
+      } else {
+        // interrupt signal
+        const currentNextValues = this.nextValues;
+        this.nextValues = {
+          next: value => ({
+            done: true,
+            value: currentNextValues.next(value).value
+          }),
+          [Symbol.iterator]: () => this.nextValues
+        };
+      }
     } else {
       // successful run
       this.runExecution.success(this.currentShrinkable.value_);

@@ -101,6 +101,8 @@ export interface Parameters<T = void> {
                         // it replays only the minimal counterexample
     skipAllAfterTimeLimit?: number; // optional, skip all runs after a given time limit
                         // in milliseconds (relies on Date.now): disabled by default
+    interruptAfterTimeLimit?: number; // optional, interrupt test execution after a given time limit
+                        // in milliseconds (relies on Date.now): disabled by default
 }
 ```
 
