@@ -69,7 +69,9 @@ describe('Sampler', () => {
         }
       };
       const arb = new (class extends Arbitrary<typeof cloneable> {
-        generate = () => new Shrinkable(cloneable);
+        generate() {
+          return new Shrinkable(cloneable);
+        }
       })();
       sample(arb, { seed: 42 });
     });

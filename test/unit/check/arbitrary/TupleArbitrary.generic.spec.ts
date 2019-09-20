@@ -83,13 +83,13 @@ describe('TupleArbitrary', () => {
       [cloneMethod] = () => new CloneableInstance();
     }
     const cloneableArbitrary = new (class extends Arbitrary<CloneableInstance> {
-      generate = () => {
+      generate() {
         function* g() {
           yield new Shrinkable(new CloneableInstance());
           yield new Shrinkable(new CloneableInstance());
         }
         return new Shrinkable(new CloneableInstance(), () => stream(g()));
-      };
+      }
     })();
     const arbs = genericTuple([nat(16), cloneableArbitrary, nat(16)] as Arbitrary<any>[]);
     const extractId = (shrinkable: Shrinkable<[number, CloneableInstance, number]>) => shrinkable.value_[1].id;
