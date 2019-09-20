@@ -10,7 +10,10 @@ const timeoutAfter = (timeMs: number) => {
       resolve(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
     }, timeMs);
   });
-  return { clear: () => clearTimeout(timeoutHandle!), promise };
+  return {
+    clear: () => clearTimeout(timeoutHandle!),
+    promise
+  };
 };
 
 /** @hidden */
@@ -23,7 +26,7 @@ export class TimeoutProperty<Ts> implements IProperty<Ts> {
   async run(v: Ts) {
     const t = timeoutAfter(this.timeMs);
     const propRun = Promise.race([this.property.run(v), t.promise]);
-    propRun.then(t.clear, t.clear); // always clear timeout handle (equivalent to finally)
+    propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
     return propRun;
   }
 }
