@@ -57,7 +57,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
       it(`should be able to generate ${label}`, () => {
         let numTries = 0;
         const mrng = new fc.Random(prand.xorshift128plus(seed));
-        const arb = fc.anything({ withBoxedValues: true, withMap: true, withSet: true });
+        const arb = fc.anything({ withBoxedValues: true, withMap: true, withSet: true, withObjectString: true });
         while (++numTries <= 10000) {
           const { value } = arb.generate(mrng);
           if (typeof value === typeofLabel && Object.prototype.toString.call(value) === toStringLabel) {

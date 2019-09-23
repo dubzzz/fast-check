@@ -203,7 +203,8 @@ describe('ObjectArbitrary', () => {
               values: fc.constant([constant('single-value')]),
               withBoxedValues: fc.boolean(),
               withMap: fc.boolean(),
-              withSet: fc.boolean()
+              withSet: fc.boolean(),
+              withObjectString: fc.boolean()
             },
             { withDeletedKeys: true }
           ),
