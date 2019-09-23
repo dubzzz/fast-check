@@ -6,6 +6,23 @@ This documentation lists all the built-in arbitraries provided by fast-check.
 
 You can refer to the [generated API docs](https://dubzzz.github.io/fast-check/#/2-API/fast-check) for more details.
 
+## Table of contents
+
+- [Boolean](#boolean-boolean)
+- [Numeric](#numeric-number)
+- [String](#string-string)
+- [Date](#date-date)
+- [Combinors of arbitraries](#combinors-of-arbitraries-t)
+- [Objects](#objects-any)
+- [Recursive structures](#recursive-structures)
+- [Functions](#functions)
+- [Extended tools](#extended-tools)
+- [Model based testing](#model-based-testing)
+  - [Commands](#commands)
+  - [Arbitrary](#arbitrary)
+  - [Model runner](#model-runner)
+  - [Simplified structure](#simplified-structure)
+
 ## Boolean (:boolean)
 
 - `fc.boolean()` either `true` or `false`

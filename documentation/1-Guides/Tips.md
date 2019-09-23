@@ -2,6 +2,19 @@
 
 Simple tips to unlock all the power of fast-check with only few changes.
 
+## Table of contents
+
+- [Filter invalid combinations using pre-conditions](#filter-invalid-combinations-using-pre-conditions)
+- [Model based testing or UI test](#model-based-testing-or-ui-test)
+- [Opt for verbose failures](#opt-for-verbose-failures)
+- [Log within a predicate](#log-within-a-predicate)
+- [Preview generated values](#preview-generated-values)
+- [Replay after failure](#replay-after-failure)
+- [Replay after failure for commands](#replay-after-failure-for-commands)
+- [Add custom examples next to generated ones](#add-custom-examples-next-to-generated-ones)
+- [Combine with other faker or random generator libraries](#combine-with-other-faker-or-random-generator-libraries)
+- [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
+
 ## Filter invalid combinations using pre-conditions
 
 Filtering invalid combinations of generated entries can be done in two ways in fast-check:

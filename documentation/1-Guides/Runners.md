@@ -6,6 +6,11 @@ This documentation describes all the runners and properties you can use in fast-
 
 You can refer to the  [generated API docs](https://dubzzz.github.io/fast-check/#/2-API/fast-check) for more details.
 
+## Table of contents
+
+- [Properties](#properties)
+- [Runners](#runners)
+
 ## Properties
 
 - `fc.property`: define a new property ie. a list of arbitraries and a test function to assess the success
