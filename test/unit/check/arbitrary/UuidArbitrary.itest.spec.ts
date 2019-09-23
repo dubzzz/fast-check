@@ -4,7 +4,7 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 describe('UuidArbitrary', () => {
   describe('uuid', () => {
     genericHelper.isValidArbitrary(() => uuid(), {
-      isValidValue: (g: string) => /[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}/.test(g),
+      isValidValue: (g: string) => /[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[89ab][0-9a-f]{3}\-[0-9a-f]{12}/.test(g),
       isStrictlySmallerValue: (a, b) => a < b
     });
   });

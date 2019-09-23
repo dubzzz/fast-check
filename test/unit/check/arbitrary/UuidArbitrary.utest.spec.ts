@@ -17,9 +17,10 @@ describe('UuidArbitrary', () => {
     });
     it('Should be able to build the smallest uuid', () => {
       // Arrange
-      const { nat } = mockModule(IntegerArbitraryMock);
+      const { nat, integer } = mockModule(IntegerArbitraryMock);
       const { tuple } = mockModule(TupleArbitraryMock);
-      nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }, { value: 0 }, { value: 0 }]));
+      nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }, { value: 0 }]));
+      integer.mockImplementation((a, b) => arbitraryFor([{ value: a }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
 
       // Act
@@ -27,14 +28,15 @@ describe('UuidArbitrary', () => {
       const { value_: u } = arb.generate(mrng());
 
       // Assert
-      expect(u).toBe(`00000000-0000-0000-0000-000000000000`);
+      expect(u).toBe(`00000000-0000-0000-8000-000000000000`);
       expect(tuple).toHaveBeenCalledTimes(1);
     });
     it('Should be able to build the largest uuid', () => {
       // Arrange
-      const { nat } = mockModule(IntegerArbitraryMock);
+      const { nat, integer } = mockModule(IntegerArbitraryMock);
       const { tuple } = mockModule(TupleArbitraryMock);
-      nat.mockImplementation(a => arbitraryFor([{ value: a }, { value: a }, { value: a }, { value: a }]));
+      nat.mockImplementation(a => arbitraryFor([{ value: a }, { value: a }, { value: a }]));
+      integer.mockImplementation((a, b) => arbitraryFor([{ value: b }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
 
       // Act
@@ -42,7 +44,7 @@ describe('UuidArbitrary', () => {
       const { value_: u } = arb.generate(mrng());
 
       // Assert
-      expect(u).toBe(`ffffffff-ffff-ffff-ffff-ffffffffffff`);
+      expect(u).toBe(`ffffffff-ffff-ffff-bfff-ffffffffffff`);
       expect(tuple).toHaveBeenCalledTimes(1);
     });
   });
