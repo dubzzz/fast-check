@@ -28,7 +28,7 @@ describe('UuidArbitrary', () => {
       const { value_: u } = arb.generate(mrng());
 
       // Assert
-      expect(u).toBe(`00000000-0000-0000-8000-000000000000`);
+      expect(u).toBe(`00000000-0000-1000-8000-000000000000`);
       expect(tuple).toHaveBeenCalledTimes(1);
     });
     it('Should be able to build the largest uuid', () => {
@@ -44,7 +44,7 @@ describe('UuidArbitrary', () => {
       const { value_: u } = arb.generate(mrng());
 
       // Assert
-      expect(u).toBe(`ffffffff-ffff-ffff-bfff-ffffffffffff`);
+      expect(u).toBe(`ffffffff-ffff-5fff-bfff-ffffffffffff`);
       expect(tuple).toHaveBeenCalledTimes(1);
     });
   });
