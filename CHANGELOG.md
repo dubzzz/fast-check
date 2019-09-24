@@ -1,3 +1,36 @@
+# 1.17.0
+
+_Multiple new arbitraries: date, ipv4 extended, uuid, mixed case and many settings_
+
+## Features
+
+- ([PR#420](https://github.com/dubzzz/fast-check/pull/420)) Add `fc.date` arbitrary
+- ([PR#427](https://github.com/dubzzz/fast-check/pull/427)) Add `fc.mixedCase` arbitrary
+- ([PR#393](https://github.com/dubzzz/fast-check/pull/393)) Support all the range of valid ipV4 with `fc.ipV4Extended` arbitrary
+- ([PR#401](https://github.com/dubzzz/fast-check/pull/401)) Add ability to customize the null value of `fc.option`
+- ([PR#411](https://github.com/dubzzz/fast-check/pull/411)) Add `fc.uuid` arbitrary
+- ([PR#433](https://github.com/dubzzz/fast-check/pull/433)) Add `fc.uuidV` to tackle specific version of uuid
+- ([PR#400](https://github.com/dubzzz/fast-check/pull/400)) Add `withObjectString` flag in `fc.object`/`fc.anything`
+
+## Fixes
+
+- ([PR#425](https://github.com/dubzzz/fast-check/pull/425)) Bug: skipAllAfterTimeLimit throws when it passes time limit
+- ([PR#409](https://github.com/dubzzz/fast-check/pull/409)) Bug: Web authority should not produce port outside 0-65535
+- ([PR#418](https://github.com/dubzzz/fast-check/pull/418)) Bug: Infinite loop when path is one level deep and all runs succeed
+- ([PR#430](https://github.com/dubzzz/fast-check/pull/430)) Bug: No timeout expiration on node blocks exit
+- ([PR#396](https://github.com/dubzzz/fast-check/pull/396)) Clean: Update dependencies and dev dependencies
+- ([PR#432](https://github.com/dubzzz/fast-check/pull/432)) Clean: Prepare code for ts3.7-pr33401
+- ([PR#410](https://github.com/dubzzz/fast-check/pull/410)) Contrib: Document how to add new arbitraries in fast-check
+- ([PR#408](https://github.com/dubzzz/fast-check/pull/408)) Doc: Usage in conjonction with faker
+- ([PR#412](https://github.com/dubzzz/fast-check/pull/412)) Doc: Diff format in shrinking example
+- ([PR#414](https://github.com/dubzzz/fast-check/pull/414)) Doc: Update ts-jest config (tsConfigFile -> tsConfig)
+- ([PR#417](https://github.com/dubzzz/fast-check/pull/417)) Doc: Add section "Migrate from jsverify to fast-check"
+- ([PR#434](https://github.com/dubzzz/fast-check/pull/434)) Doc: Add table of contents on top of the documentation
+- ([PR#397](https://github.com/dubzzz/fast-check/pull/397)) Test: Reduce flakyness of tests on letrec
+- ([PR#422](https://github.com/dubzzz/fast-check/pull/422)) Test: Rework unit tests of DateArbitrary
+
+---
+
 # 1.16.3
 
 _skipAllAfterTimeLimit throws when it passes time limit_
