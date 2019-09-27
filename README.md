@@ -8,7 +8,7 @@ Property based testing framework for JavaScript/TypeScript
 
 <p align="center">
   <a href="https://travis-ci.org/dubzzz/fast-check"><img src="https://travis-ci.org/dubzzz/fast-check.svg?branch=master" alt="Build Status" /></a>
-  <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
+  <a href="https://badge.fury.io/js/fast-check"><a href="https://opencollective.com/fast-check" alt="Financial Contributors on Open Collective"><img src="https://opencollective.com/fast-check/all/badge.svg?label=financial+contributors" /></a> <img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dt/fast-check.svg" alt="total downloads" /></a>
   <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/documentation-%23282ea9.svg" title="official documentation" /></a>
 </p>
@@ -126,3 +126,33 @@ m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null,
 ```
 
 **[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/IssuesDiscovered.md)**
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/dubzzz/fast-check/graphs/contributors"><img src="https://opencollective.com/fast-check/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/fast-check/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/fast-check"><img src="https://opencollective.com/fast-check/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/fast-check/contribute)]
+
+<a href="https://opencollective.com/fast-check/organization/0/website"><img src="https://opencollective.com/fast-check/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/1/website"><img src="https://opencollective.com/fast-check/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/2/website"><img src="https://opencollective.com/fast-check/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/3/website"><img src="https://opencollective.com/fast-check/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/4/website"><img src="https://opencollective.com/fast-check/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/5/website"><img src="https://opencollective.com/fast-check/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/6/website"><img src="https://opencollective.com/fast-check/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/7/website"><img src="https://opencollective.com/fast-check/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/8/website"><img src="https://opencollective.com/fast-check/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/organization/9/website"><img src="https://opencollective.com/fast-check/organization/9/avatar.svg"></a>
