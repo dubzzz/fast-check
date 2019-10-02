@@ -17,7 +17,7 @@ import { tuple } from './TupleArbitrary';
 export class ObjectConstraints {
   constructor(
     readonly key: Arbitrary<string>,
-    readonly values: Arbitrary<any>[],
+    readonly values: Arbitrary<unknown>[],
     readonly maxDepth: number,
     readonly maxKeys: number,
     readonly withSet: boolean,
@@ -28,7 +28,7 @@ export class ObjectConstraints {
   /**
    * Default value of ObjectConstraints.Settings.values field
    */
-  static defaultValues(): Arbitrary<any>[] {
+  static defaultValues(): Arbitrary<unknown>[] {
     return [
       boolean(),
       integer(),
@@ -131,7 +131,7 @@ export namespace ObjectConstraints {
      *  - `Number.POSITIVE_INFINITY`,
      *  - `Number.NEGATIVE_INFINITY`
      */
-    values?: Arbitrary<any>[];
+    values?: Arbitrary<unknown>[];
     /** Also generate boxed versions of values */
     withBoxedValues?: boolean;
     /** Also generate Set */
@@ -208,7 +208,7 @@ const objectInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
  * @example
  * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
  */
-function anything(): Arbitrary<any>;
+function anything(): Arbitrary<unknown>;
 /**
  * For any type of values following the constraints defined by `settings`
  *
@@ -234,8 +234,8 @@ function anything(): Arbitrary<any>;
  *
  * @param settings Constraints to apply when building instances
  */
-function anything(settings: ObjectConstraints.Settings): Arbitrary<any>;
-function anything(settings?: ObjectConstraints.Settings): Arbitrary<any> {
+function anything(settings: ObjectConstraints.Settings): Arbitrary<unknown>;
+function anything(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
   return anythingInternal(ObjectConstraints.from(settings));
 }
 
@@ -247,7 +247,7 @@ function anything(settings?: ObjectConstraints.Settings): Arbitrary<any> {
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  */
-function object(): Arbitrary<any>;
+function object(): Arbitrary<unknown>;
 /**
  * For any objects following the constraints defined by `settings`
  *
@@ -258,8 +258,8 @@ function object(): Arbitrary<any>;
  *
  * @param settings Constraints to apply when building instances
  */
-function object(settings: ObjectConstraints.Settings): Arbitrary<any>;
-function object(settings?: ObjectConstraints.Settings): Arbitrary<any> {
+function object(settings: ObjectConstraints.Settings): Arbitrary<unknown>;
+function object(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
   return objectInternal(ObjectConstraints.from(settings));
 }
 
@@ -275,7 +275,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
  *
  * Keys and string values rely on {@link string}
  */
-function jsonObject(): Arbitrary<any>;
+function jsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with a maximal depth
  *
@@ -283,8 +283,8 @@ function jsonObject(): Arbitrary<any>;
  *
  * @param maxDepth Maximal depth of the generated values
  */
-function jsonObject(maxDepth: number): Arbitrary<any>;
-function jsonObject(maxDepth?: number): Arbitrary<any> {
+function jsonObject(maxDepth: number): Arbitrary<unknown>;
+function jsonObject(maxDepth?: number): Arbitrary<unknown> {
   return anything(jsonSettings(string(), maxDepth));
 }
 
@@ -293,7 +293,7 @@ function jsonObject(maxDepth?: number): Arbitrary<any> {
  *
  * Keys and string values rely on {@link unicode}
  */
-function unicodeJsonObject(): Arbitrary<any>;
+function unicodeJsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with unicode support and a maximal depth
  *
@@ -301,8 +301,8 @@ function unicodeJsonObject(): Arbitrary<any>;
  *
  * @param maxDepth Maximal depth of the generated values
  */
-function unicodeJsonObject(maxDepth: number): Arbitrary<any>;
-function unicodeJsonObject(maxDepth?: number): Arbitrary<any> {
+function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
+function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
   return anything(jsonSettings(unicodeString(), maxDepth));
 }
 

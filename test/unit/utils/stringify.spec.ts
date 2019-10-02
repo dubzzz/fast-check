@@ -47,7 +47,7 @@ describe('stringify', () => {
   it('Should be readable from eval', () =>
     fc.assert(
       fc.property(fc.anything(), obj => {
-        expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj);
+        expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj as any);
       })
     ));
   it('Should stringify differently distinct objects', () =>
