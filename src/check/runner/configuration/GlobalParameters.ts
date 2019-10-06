@@ -3,6 +3,8 @@ import { Parameters } from './Parameters';
 
 const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
+export type GlobalParameters = Pick<Parameters, Exclude<keyof Parameters, 'path' | 'examples'>>;
+
 /**
  * Define global parameters that will be used by all the runners
  *
@@ -19,14 +21,14 @@ const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
  *
  * @param parameters Global parameters
  */
-export const configureGlobal = (parameters: Parameters): void => {
+export const configureGlobal = (parameters: GlobalParameters): void => {
   getGlobal()[globalParametersSymbol] = parameters;
 };
 
 /**
  * Read global parameters that will be used by runners
  */
-export const readConfigureGlobal = (): Parameters | undefined => {
+export const readConfigureGlobal = (): GlobalParameters | undefined => {
   return getGlobal()[globalParametersSymbol];
 };
 

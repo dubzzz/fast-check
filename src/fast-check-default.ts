@@ -76,6 +76,7 @@ import { Random } from './random/generator/Random';
 
 import {
   configureGlobal,
+  GlobalParameters,
   readConfigureGlobal,
   resetConfigureGlobal
 } from './check/runner/configuration/GlobalParameters';
@@ -194,6 +195,7 @@ export {
   Context,
   ExecutionStatus,
   ExecutionTree,
+  GlobalParameters,
   Memo,
   MixedCaseConstraints,
   ObjectConstraints,
