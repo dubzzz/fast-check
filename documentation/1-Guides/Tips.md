@@ -13,6 +13,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Replay after failure for commands](#replay-after-failure-for-commands)
 - [Add custom examples next to generated ones](#add-custom-examples-next-to-generated-ones)
 - [Combine with other faker or random generator libraries](#combine-with-other-faker-or-random-generator-libraries)
+- [Setup global settings](#setup-global-settings)
 - [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
 
 ## Filter invalid combinations using pre-conditions
@@ -414,6 +415,56 @@ const loremArb = fc.infiniteStream(fc.double().noBias())
 ```
 
 Please note that in the two examples above, the resulting arbitraries will not have full shrinking capabilities. But they offer a full support for random value generation.
+
+## Setup global settings
+
+All the runners provided by fast-check come with an optional parameter to customize how the runner will behave (see `fc.assert`, `fc.check`, `fc.sample` or `fc.statistics`). In the past, this parameter had to be provided runner by runner otherwise user would have fallbacked on the default values hardcoded in fast-check code. For instance, if one wanted to override the default number of runs of properties, it would have written:
+
+```ts
+test('test #1', () => {
+  fc.assert(
+    myProp1,
+    { numRuns: 10 }
+  )
+})
+test('test #2', () => {
+  fc.assert(
+    myProp2,
+    { numRuns: 10 } // duplicated
+  )
+})
+```
+
+Starting at version `1.18.0`, the code above can be changed into:
+
+```ts
+fc.configureGlobal({ numRuns: 10 }) // see below for the recommended way for Jest
+test('test #1', () => {
+  fc.assert(myProp1)
+})
+test('test #2', () => {
+  fc.assert(myProp2)
+})
+```
+
+**With Jest**
+
+*Edit the configuration of Jest to add your own setup file - usually the configuration is defined in jest.config.js*
+```js
+// jest.config.js
+module.exports = {
+  setupFiles: ["./jest.setup.js"]
+};
+```
+
+*Create a new setup file that will be executed before executing the test code itself*
+
+```js
+// jest.setup.js
+const fc = require("fast-check");
+fc.configureGlobal({ numRuns: 10 });
+```
+
 
 ## Migrate from jsverify to fast-check
 
