@@ -438,13 +438,23 @@ test('test #2', () => {
 Starting at version `1.18.0`, the code above can be changed into:
 
 ```typescript
-fc.configureGlobal({ numRuns: 10 }) // see below for the recommended way for Jest
+fc.configureGlobal({ numRuns: 10 }) // see below for the recommended way (Jest/Mocha)
 test('test #1', () => {
   fc.assert(myProp1)
 })
 test('test #2', () => {
   fc.assert(myProp2)
 })
+```
+
+**With Mocha**
+
+*Create a new setup file that will be executed before executing the test code itself - use `--file=mocha.setup.js` option to reference this file*
+
+```js
+// mocha.setup.js
+const fc = require("fast-check");
+fc.configureGlobal({ numRuns: 10 });
 ```
 
 **With Jest**
@@ -464,7 +474,6 @@ module.exports = {
 const fc = require("fast-check");
 fc.configureGlobal({ numRuns: 10 });
 ```
-
 
 ## Migrate from jsverify to fast-check
 
