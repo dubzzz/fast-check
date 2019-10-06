@@ -74,6 +74,11 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
+import {
+  configureGlobal,
+  readConfigureGlobal,
+  resetConfigureGlobal
+} from './check/runner/configuration/GlobalParameters';
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
@@ -200,5 +205,9 @@ export {
   Random,
   Stream,
   stream,
-  VerbosityLevel
+  VerbosityLevel,
+  // global configuration
+  configureGlobal,
+  readConfigureGlobal,
+  resetConfigureGlobal
 };
