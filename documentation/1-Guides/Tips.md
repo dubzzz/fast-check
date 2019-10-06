@@ -420,7 +420,7 @@ Please note that in the two examples above, the resulting arbitraries will not h
 
 All the runners provided by fast-check come with an optional parameter to customize how the runner will behave (see `fc.assert`, `fc.check`, `fc.sample` or `fc.statistics`). In the past, this parameter had to be provided runner by runner otherwise user would have fallbacked on the default values hardcoded in fast-check code. For instance, if one wanted to override the default number of runs of properties, it would have written:
 
-```ts
+```typescript
 test('test #1', () => {
   fc.assert(
     myProp1,
@@ -437,7 +437,7 @@ test('test #2', () => {
 
 Starting at version `1.18.0`, the code above can be changed into:
 
-```ts
+```typescript
 fc.configureGlobal({ numRuns: 10 }) // see below for the recommended way for Jest
 test('test #1', () => {
   fc.assert(myProp1)

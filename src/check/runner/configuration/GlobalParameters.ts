@@ -6,7 +6,7 @@ const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 /**
  * Define global parameters that will be used by all the runners
  *
- * ```ts
+ * ```typescript
  * fc.configureGlobal({ numRuns: 10 });
  * //...
  * fc.assert(
