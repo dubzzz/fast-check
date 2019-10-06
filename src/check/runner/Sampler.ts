@@ -5,6 +5,7 @@ import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { IProperty } from '../property/IProperty';
 import { Property } from '../property/Property';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
+import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { toss } from './Tosser';
@@ -23,7 +24,11 @@ function streamSample<Ts>(
   generator: IProperty<Ts> | Arbitrary<Ts>,
   params?: Parameters<Ts> | number
 ): IterableIterator<Ts> {
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.readOrNumRuns(params);
+  const extendedParams =
+    typeof params === 'number'
+      ? { ...readConfigureGlobal(), numRuns: params }
+      : { ...readConfigureGlobal(), ...params };
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read(extendedParams);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
   );
@@ -77,7 +82,11 @@ function statistics<Ts>(
   classify: (v: Ts) => string | string[],
   params?: Parameters<Ts> | number
 ): void {
-  const qParams = QualifiedParameters.readOrNumRuns(params);
+  const extendedParams =
+    typeof params === 'number'
+      ? { ...readConfigureGlobal(), numRuns: params }
+      : { ...readConfigureGlobal(), ...params };
+  const qParams = QualifiedParameters.read(extendedParams);
   const recorded: { [key: string]: number } = {};
   for (const g of streamSample(generator, params)) {
     const out = classify(g);
