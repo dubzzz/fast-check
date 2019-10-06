@@ -19,14 +19,14 @@ const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
  *
  * @param parameters Global parameters
  */
-export const configureGlobal = (parameters: Parameters<never>): void => {
+export const configureGlobal = (parameters: Parameters): void => {
   getGlobal()[globalParametersSymbol] = parameters;
 };
 
 /**
  * Read global parameters that will be used by runners
  */
-export const readConfigureGlobal = (): Parameters<never> | undefined => {
+export const readConfigureGlobal = (): Parameters | undefined => {
   return getGlobal()[globalParametersSymbol];
 };
 

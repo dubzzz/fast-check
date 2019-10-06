@@ -182,7 +182,7 @@ function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, numG
 
 In order to define the default parameters that will be used by runners you can use one of the following helpers:
 
-- `fc.configureGlobal(parameters: Parameters<never>)`: define the default parameters to be used by runners
+- `fc.configureGlobal(parameters: Parameters)`: define the default parameters to be used by runners
 - `fc.resetConfigureGlobal()`: reset the default parameters to be used by runners
 - `fc.readConfigureGlobal()`: output the default parameters to be used by runners
 
