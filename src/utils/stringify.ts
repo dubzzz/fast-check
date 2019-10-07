@@ -44,16 +44,17 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return `${value}n`;
     case '[object Boolean]':
       return typeof value === 'boolean' ? JSON.stringify(value) : `new Boolean(${JSON.stringify(value)})`;
-    case '[object Date]':
+    case '[object Date]': {
       const d = (value as unknown) as Date;
       return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
+    }
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues)})`;
     case '[object Null]':
       return `null`;
     case '[object Number]':
       return typeof value === 'number' ? stringifyNumber(value) : `new Number(${stringifyNumber(Number(value))})`;
-    case '[object Object]':
+    case '[object Object]': {
       try {
         const defaultRepr: string = (value as any).toString();
         if (defaultRepr !== '[object Object]') return defaultRepr;
@@ -67,17 +68,19 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       } catch (err) {
         return '[object Object]';
       }
+    }
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues)})`;
     case '[object String]':
       return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
-    case '[object Symbol]':
+    case '[object Symbol]': {
       const s = (value as unknown) as symbol;
       if (Symbol.keyFor(s) !== undefined) {
         return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       return desc !== null ? `Symbol(${JSON.stringify(desc)})` : `Symbol()`;
+    }
     case '[object Undefined]':
       return `undefined`;
     default:
