@@ -43,29 +43,29 @@ class Space {
   }
 }
 class SpaceBuilder {
-  dim_x = 0;
-  dim_y = 0;
-  solution_x = 0;
-  solution_y = 0;
-  current_x = 0;
-  current_y = 0;
+  dimX = 0;
+  dimY = 0;
+  solutionX = 0;
+  solutionY = 0;
+  currentX = 0;
+  currentY = 0;
   withDimension(x: number, y: number) {
-    this.dim_x = x;
-    this.dim_y = y;
+    this.dimX = x;
+    this.dimY = y;
     return this;
   }
   withSolution(x: number, y: number) {
-    this.solution_x = x;
-    this.solution_y = y;
+    this.solutionX = x;
+    this.solutionY = y;
     return this;
   }
   withCurrent(x: number, y: number) {
-    this.current_x = x;
-    this.current_y = y;
+    this.currentX = x;
+    this.currentY = y;
     return this;
   }
   build() {
-    return new Space(this.dim_x, this.dim_y, this.solution_x, this.solution_y, this.current_x, this.current_y);
+    return new Space(this.dimX, this.dimY, this.solutionX, this.solutionY, this.currentX, this.currentY);
   }
 }
 
