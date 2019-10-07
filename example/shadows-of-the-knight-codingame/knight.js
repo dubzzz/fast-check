@@ -16,7 +16,7 @@ const buggyKnight = function(space, rounds) {
 
     let x0 = space.current_x;
     let y0 = space.current_y;
-    let hint = space.hint;
+    const hint = space.hint;
 
     if (hint[0] == 'U') {
       y_max = y0 - 1;
@@ -50,7 +50,7 @@ const knight = function(space, rounds) {
 
     let x0 = space.current_x;
     let y0 = space.current_y;
-    let hint = space.hint;
+    const hint = space.hint;
 
     if (hint[0] == 'U') {
       y_max = y0;

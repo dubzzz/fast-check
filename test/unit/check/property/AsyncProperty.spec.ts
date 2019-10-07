@@ -29,7 +29,7 @@ describe('AsyncProperty', () => {
     expect(out).toContain('\n\nStack trace:');
   });
   it('Should forward failure of runs with failing precondition', async () => {
-    let doNotResetThisValue: boolean = false;
+    let doNotResetThisValue = false;
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       pre(false);
       doNotResetThisValue = true;

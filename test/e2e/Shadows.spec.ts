@@ -4,7 +4,7 @@ import * as fc from '../../src/fast-check';
 // Based on the CodinGame https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1
 
 class Space {
-  hint: string = '';
+  hint = '';
   public current_x: number;
   public current_y: number;
   constructor(
@@ -82,7 +82,7 @@ function locate_in_space_bug(space: Space, rounds: number) {
 
     let x0 = space.current_x;
     let y0 = space.current_y;
-    let hint = space.hint;
+    const hint = space.hint;
 
     if (hint[0] == 'U') {
       y_max = y0 - 1;
@@ -116,7 +116,7 @@ function locate_in_space(space: Space, rounds: number) {
 
     let x0 = space.current_x;
     let y0 = space.current_y;
-    let hint = space.hint;
+    const hint = space.hint;
 
     if (hint[0] == 'U') {
       y_max = y0;

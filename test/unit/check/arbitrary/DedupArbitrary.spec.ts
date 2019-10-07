@@ -24,12 +24,12 @@ describe('DedupArbitrary', () => {
   describe('dedup', () => {
     it('Should produce cloneable tuple if cloneable', () => {
       const mrng = stubRng.mutable.counter(0);
-      let g = dedup(context(), 2).generate(mrng).value;
+      const g = dedup(context(), 2).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(true);
     });
     it('Should not produce cloneable tuple if not cloneable', () => {
       const mrng = stubRng.mutable.counter(0);
-      let g = dedup(nat(), 2).generate(mrng).value;
+      const g = dedup(nat(), 2).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(false);
     });
     it('Should not clone on generate', () => {

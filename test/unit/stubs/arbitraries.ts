@@ -60,7 +60,7 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
  * other calls will throw an exception
  */
 class SingleUseArbitrary<T> extends Arbitrary<T> {
-  called_once: boolean = false;
+  called_once = false;
   constructor(public id: T) {
     super();
   }

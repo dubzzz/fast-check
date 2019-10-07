@@ -90,7 +90,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       // Why this test?
       // fc.commands relies on cloning not to waste the hasRan status of an execution
       // between two runs it is supposed to clone the commands before resetting the hasRan flag
-      let unexpectedPartiallyExecuted: string[] = [];
+      const unexpectedPartiallyExecuted: string[] = [];
       const out = fc.check(
         fc.property(
           fc.array(fc.nat(9), 0, 3),

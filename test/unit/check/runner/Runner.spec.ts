@@ -246,8 +246,8 @@ describe('Runner', () => {
             };
             return p;
           };
-          let data1: number[] = [];
-          let data2: number[] = [];
+          const data1: number[] = [];
+          const data2: number[] = [];
           check(buildPropertyFor(data1), { seed: seed });
           check(buildPropertyFor(data2), { seed: seed });
           expect(data2).toEqual(data1);
@@ -354,7 +354,7 @@ describe('Runner', () => {
           const delay = () => new Promise((resolve, reject) => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;
-          let waitingResolve: (() => void)[] = [];
+          const waitingResolve: (() => void)[] = [];
           let num_calls_generate = 0;
           let num_calls_run = 0;
           const p: IProperty<[number]> = {

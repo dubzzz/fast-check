@@ -212,7 +212,7 @@ describe('ObjectArbitrary', () => {
             const mrng = new Random(prand.xorshift128plus(seed));
             const v = anything({ ...settings, maxDepth }).generate(mrng).value;
             const depthEvaluator = (node: any): number => {
-              let subNodes: any[] = [];
+              const subNodes: any[] = [];
               if (Array.isArray(node)) subNodes.concat(node);
               else if (node instanceof Set) subNodes.concat(Array.from(node));
               else if (node instanceof Map)

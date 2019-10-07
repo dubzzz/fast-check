@@ -63,8 +63,8 @@ describe(`Model Based (seed: ${seed})`, () => {
     const out = fc.check(
       fc.property(fc.integer(1, 1000), fc.commands(allCommands, 100), (size, cmds) => {
         class CircularList implements IList<number> {
-          start: number = 0;
-          end: number = 0;
+          start = 0;
+          end = 0;
           data: number[];
           constructor(len: number) {
             this.data = [...Array(len)].fill(null);
