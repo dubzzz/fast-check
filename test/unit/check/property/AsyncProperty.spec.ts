@@ -72,7 +72,7 @@ describe('AsyncProperty', () => {
   });
   it('Should throw on invalid arbitrary', () =>
     expect(() =>
-      asyncProperty(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, async () => {})
+      asyncProperty(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, async () => {})
     ).toThrowError());
 
   it('Should use the unbiased arbitrary by default', () => {

@@ -1,4 +1,8 @@
+example/
 node_modules/
 lib/
+perf/
 test/legacy/
 test/rollup/
+buildTypes.js
+jest*.js

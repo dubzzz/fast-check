@@ -59,7 +59,9 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
             expect(data).toEqual(out.counterexample![0]);
             validCallIndex = numCalls;
             ++numValidCalls;
-          } catch (err) {}
+          } catch (err) {
+            // noop
+          }
           ++numCalls;
           return propCheck(data);
         }),

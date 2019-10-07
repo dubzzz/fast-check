@@ -30,8 +30,8 @@
     "docs": "mkdir -p docs/2-API && docsify-init --editDir documentation && cp -R documentation/* docs/ && api-extractor run --local && generate-ts-docs markdown -i docs/2-API -o docs/2-API && cat README.md | sed 's/https:\\/\\/github.com\\/dubzzz\\/fast-check\\/blob\\/master\\/documentation//g' > docs/README.md && markdownbars -i docs/_sidebar.md -o docs/_sidebar.md",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "format:check": "prettier --list-different \"**/*.{js,ts}\"",
-    "lint": "eslint \"src/**/*.{js,ts}\" --fix",
-    "lint:check": "eslint \"src/**/*.{js,ts}\""
+    "lint": "eslint \"**/*.{js,ts}\" --fix",
+    "lint:check": "eslint \"**/*.{js,ts}\""
   },
   "repository": {
     "type": "git",

@@ -166,8 +166,8 @@ describe(`Shadows (seed: ${seed})`, () => {
     let failed = false;
     try {
       fc.assert(
-        fc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
-          locateInSpaceBug(space, max_guesses);
+        fc.property(SpaceArbitrary, ([space, maxGuesses]: [Space, number]) => {
+          locateInSpaceBug(space, maxGuesses);
           return space.solved();
         }),
         { seed: seed }
@@ -184,8 +184,8 @@ describe(`Shadows (seed: ${seed})`, () => {
   });
   it('Should not detect any issue', () => {
     fc.assert(
-      fc.property(SpaceArbitrary, ([space, max_guesses]: [Space, number]) => {
-        locateInSpace(space, max_guesses);
+      fc.property(SpaceArbitrary, ([space, maxGuesses]: [Space, number]) => {
+        locateInSpace(space, maxGuesses);
         return space.solved();
       }),
       { seed: seed }

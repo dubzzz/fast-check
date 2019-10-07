@@ -75,7 +75,7 @@ describe('Property', () => {
     }
   });
   it('Should throw on invalid arbitrary', () =>
-    expect(() => property(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, () => {})).toThrowError());
+    expect(() => property(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, () => {})).toThrowError());
   it('Should use the unbiased arbitrary by default', () => {
     const p = property(
       new (class extends Arbitrary<number> {
