@@ -60,15 +60,15 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
  * other calls will throw an exception
  */
 class SingleUseArbitrary<T> extends Arbitrary<T> {
-  called_once = false;
+  calledOnce = false;
   constructor(public id: T) {
     super();
   }
   generate(mrng: Random) {
-    if (this.called_once) {
+    if (this.calledOnce) {
       throw 'Arbitrary has already been called once';
     }
-    this.called_once = true;
+    this.calledOnce = true;
     return new Shrinkable(this.id);
   }
 }

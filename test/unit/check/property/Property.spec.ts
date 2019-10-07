@@ -51,27 +51,27 @@ describe('Property', () => {
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should call and forward arbitraries one time', () => {
-    let one_call_to_predicate = false;
+    let oneCallToPredicate = false;
     const arbs: [
       stubArb.SingleUseArbitrary<number>,
       stubArb.SingleUseArbitrary<string>,
       stubArb.SingleUseArbitrary<string>
     ] = [stubArb.single(3), stubArb.single('hello'), stubArb.single('world')];
     const p = property(arbs[0], arbs[1], arbs[2], (arg1: number, arb2: string, arg3: string) => {
-      if (one_call_to_predicate) {
+      if (oneCallToPredicate) {
         throw 'Predicate has already been evaluated once';
       }
-      one_call_to_predicate = true;
+      oneCallToPredicate = true;
       return arg1 === arbs[0].id;
     });
-    expect(one_call_to_predicate).toBe(false); // property creation does not trigger call to predicate
+    expect(oneCallToPredicate).toBe(false); // property creation does not trigger call to predicate
     for (let idx = 0; idx !== arbs.length; ++idx) {
-      expect(arbs[idx].called_once).toBe(false); // property creation does not trigger call to generator #${idx + 1}
+      expect(arbs[idx].calledOnce).toBe(false); // property creation does not trigger call to generator #${idx + 1}
     }
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    expect(one_call_to_predicate).toBe(true);
+    expect(oneCallToPredicate).toBe(true);
     for (let idx = 0; idx !== arbs.length; ++idx) {
-      expect(arbs[idx].called_once).toBe(true); //  Generator #${idx + 1} called by run
+      expect(arbs[idx].calledOnce).toBe(true); //  Generator #${idx + 1} called by run
     }
   });
   it('Should throw on invalid arbitrary', () =>
