@@ -4,8 +4,8 @@ import * as fc from '../../lib/fast-check';
 import { MusicPlayer, MusicPlayerA, MusicPlayerB } from './MusicPlayer';
 
 class MusicPlayerModel {
-  isPlaying: boolean = false;
-  numTracks: number = 0;
+  isPlaying = false;
+  numTracks = 0;
   tracksAlreadySeen: { [Key: string]: boolean } = {}; // our model forbid to append twice the same track
 }
 type MusicPlayerCommand = fc.Command<MusicPlayerModel, MusicPlayer>;

@@ -63,7 +63,7 @@ export class Stream<T> implements IterableIterator<T> {
    * @param f Drop condition
    */
   dropWhile(f: (v: T) => boolean): Stream<T> {
-    let foundEligible: boolean = false;
+    let foundEligible = false;
     function* helper(v: T): IterableIterator<T> {
       if (foundEligible || !f(v)) {
         foundEligible = true;

@@ -15,19 +15,19 @@ function shrinkNumericInternal<NType extends Numeric>(
   halveNeg: (n: NType) => NType
 ): Stream<NType> {
   const realGap: NType = (current - target) as any;
-  function* shrink_decr(): IterableIterator<NType> {
+  function* shrinkDecr(): IterableIterator<NType> {
     const gap = shrunkOnce ? halvePos(realGap) : realGap;
     for (let toremove = gap; toremove > 0; toremove = halvePos(toremove)) {
       yield (current - toremove) as any;
     }
   }
-  function* shrink_incr(): IterableIterator<NType> {
+  function* shrinkIncr(): IterableIterator<NType> {
     const gap = shrunkOnce ? halveNeg(realGap) : realGap;
     for (let toremove = gap; toremove < 0; toremove = halveNeg(toremove)) {
       yield (current - toremove) as any;
     }
   }
-  return realGap > 0 ? stream(shrink_decr()) : stream(shrink_incr());
+  return realGap > 0 ? stream(shrinkDecr()) : stream(shrinkIncr());
 }
 
 /**

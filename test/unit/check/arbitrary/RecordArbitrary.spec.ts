@@ -34,7 +34,7 @@ describe('RecordArbitrary', () => {
           const recordModel: { [key: string]: Arbitrary<string> } = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
 
-          const arb = record(recordModel, { with_deleted_keys: true });
+          const arb = record(recordModel, { withDeletedKeys: true });
           for (let idx = 0; idx != 1000; ++idx) {
             const g = arb.generate(mrng).value;
             if (g[keys[missingIdx % keys.length]] === `_${keys[missingIdx % keys.length]}_`) return true;

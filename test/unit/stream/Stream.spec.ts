@@ -6,14 +6,14 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 42, 350, 0];
       }
-      let s = stream(g());
+      const s = stream(g());
       expect([...s]).toEqual([1, 42, 350, 0]);
     });
     it('Should not be able to iterate twice', () => {
       function* g() {
         yield* [1, 42, 350, 0];
       }
-      let s = stream(g());
+      const s = stream(g());
       expect([...s]).toEqual([1, 42, 350, 0]);
       expect([...s]).toEqual([]);
     });
@@ -24,8 +24,8 @@ describe('Stream', () => {
           yield ++idx;
         }
       }
-      let s = stream(g());
-      let data = [];
+      const s = stream(g());
+      const data = [];
       for (let idx = 0; idx !== 5; ++idx) {
         data.push(s.next().value);
       }
@@ -34,7 +34,7 @@ describe('Stream', () => {
   });
   describe('nil', () => {
     it('Should instantiate an empty stream', () => {
-      let s: Stream<number> = Stream.nil<number>();
+      const s: Stream<number> = Stream.nil<number>();
       expect([...s]).toEqual([]);
     });
   });
@@ -43,14 +43,14 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 2, 3, 5];
       }
-      let s = stream(g()).map(v => v * v);
+      const s = stream(g()).map(v => v * v);
       expect([...s]).toEqual([1, 4, 9, 25]);
     });
     it('Should be able to perform conversions', () => {
       function* g() {
         yield* [1, 2, 3, 5];
       }
-      let s: Stream<string> = stream(g()).map(v => String(v));
+      const s: Stream<string> = stream(g()).map(v => String(v));
       expect([...s]).toEqual(['1', '2', '3', '5']);
     });
   });
@@ -64,7 +64,7 @@ describe('Stream', () => {
           yield n;
         }
       }
-      let s = stream(g()).flatMap(expand);
+      const s = stream(g()).flatMap(expand);
       expect([...s]).toEqual([1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 5]);
     });
     it('Should handle correctly empty iterables', () => {
@@ -76,7 +76,7 @@ describe('Stream', () => {
           yield n;
         }
       }
-      let s = stream(g()).flatMap(noexpand);
+      const s = stream(g()).flatMap(noexpand);
       expect([...s]).toEqual([3, 5]);
     });
   });
@@ -85,7 +85,7 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 2, 3, 4, 5, 6];
       }
-      let s = stream(g()).drop(2);
+      const s = stream(g()).drop(2);
       expect([...s]).toEqual([3, 4, 5, 6]);
     });
   });
@@ -94,21 +94,21 @@ describe('Stream', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      let s = stream(g()).dropWhile(v => v < 0);
+      const s = stream(g()).dropWhile(v => v < 0);
       expect([...s]).toEqual([1, -8, 7]);
     });
     it('Should drop everything', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      let s = stream(g()).dropWhile(v => true);
+      const s = stream(g()).dropWhile(v => true);
       expect([...s]).toEqual([]);
     });
     it('Should drop nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      let s = stream(g()).dropWhile(v => false);
+      const s = stream(g()).dropWhile(v => false);
       expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
   });
@@ -117,7 +117,7 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 2, 3, 4, 5, 6];
       }
-      let s = stream(g()).take(4);
+      const s = stream(g()).take(4);
       expect([...s]).toEqual([1, 2, 3, 4]);
     });
   });
@@ -126,21 +126,21 @@ describe('Stream', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      let s = stream(g()).takeWhile(v => v < 0);
+      const s = stream(g()).takeWhile(v => v < 0);
       expect([...s]).toEqual([-4, -2, -3]);
     });
     it('Should take everything', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      let s = stream(g()).takeWhile(v => true);
+      const s = stream(g()).takeWhile(v => true);
       expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
     it('Should take nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      let s = stream(g()).takeWhile(v => false);
+      const s = stream(g()).takeWhile(v => false);
       expect([...s]).toEqual([]);
     });
   });
@@ -149,7 +149,7 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      let s = stream(g()).filter(v => v % 2 === 0);
+      const s = stream(g()).filter(v => v % 2 === 0);
       expect([...s]).toEqual([4, 8, 10, 4, 4]);
     });
   });
@@ -216,7 +216,7 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 2, 3, 4, 5];
       }
-      let s = stream(g()).join();
+      const s = stream(g()).join();
       expect([...s]).toEqual([1, 2, 3, 4, 5]);
     });
     it('Should be able to join another iterable', () => {
@@ -226,7 +226,7 @@ describe('Stream', () => {
       function* g2() {
         yield* [8, 9];
       }
-      let s = stream(g1()).join(g2());
+      const s = stream(g1()).join(g2());
       expect([...s]).toEqual([1, 2, 3, 4, 5, 8, 9]);
     });
     it('Should be able to join multiple other streams', () => {
@@ -236,7 +236,7 @@ describe('Stream', () => {
       function* g2() {
         yield* [8, 9];
       }
-      let s = stream(g1()).join(g2(), g1());
+      const s = stream(g1()).join(g2(), g1());
       expect([...s]).toEqual([1, 2, 3, 4, 5, 8, 9, 1, 2, 3, 4, 5]);
     });
     it('Should be able to join multiple other streams while mapping the initial stream', () => {
@@ -246,7 +246,7 @@ describe('Stream', () => {
       function* g2() {
         yield* [8, 9];
       }
-      let s = stream(g1())
+      const s = stream(g1())
         .map(v => 10 * v)
         .join(g2(), g1());
       expect([...s]).toEqual([10, 20, 30, 40, 50, 8, 9, 1, 2, 3, 4, 5]);
@@ -258,7 +258,7 @@ describe('Stream', () => {
       function* g2() {
         while (true) yield 2;
       }
-      let s = stream(g1())
+      const s = stream(g1())
         .map(v => 10 * v)
         .join(g2())
         .take(5);
@@ -268,7 +268,7 @@ describe('Stream', () => {
       function* g1() {
         yield* [1, 2, 3, 4, 5];
       }
-      let s = Stream.nil().join(g1());
+      const s = Stream.nil().join(g1());
       expect([...s]).toEqual([1, 2, 3, 4, 5]);
     });
   });
@@ -277,18 +277,18 @@ describe('Stream', () => {
       function* g() {
         yield* [42, 5, 43, 8, 19];
       }
-      let v = stream(g()).getNthOrLast(2);
+      const v = stream(g()).getNthOrLast(2);
       expect(v).toEqual(43);
     });
     it('Should return the last value if the stream is too small', () => {
       function* g() {
         yield* [42, 5, 43, 8, 19];
       }
-      let v = stream(g()).getNthOrLast(20);
+      const v = stream(g()).getNthOrLast(20);
       expect(v).toEqual(19);
     });
     it('Should be null for empty streams', () => {
-      let v = Stream.nil<number>().getNthOrLast(10);
+      const v = Stream.nil<number>().getNthOrLast(10);
       expect(v).toBe(null);
     });
     it('Should be able to run on infinite streams', () => {
@@ -296,7 +296,7 @@ describe('Stream', () => {
         let idx = 0;
         while (true) yield idx++;
       }
-      let v = stream(g()).getNthOrLast(10);
+      const v = stream(g()).getNthOrLast(10);
       expect(v).toEqual(10);
     });
   });

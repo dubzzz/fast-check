@@ -4,7 +4,7 @@ const seed = Date.now();
 describe(`VerbosityChecks (seed: ${seed})`, () => {
   it('should produce the right list of failing cases in verbose mode', () => {
     let failed = false;
-    let expectedLines: string[] = [];
+    const expectedLines: string[] = [];
     try {
       fc.assert(
         fc.property(fc.integer(), fc.integer(), (x, y) => {
@@ -28,7 +28,7 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
   });
   it('should produce the right execution tree in very verbose mode', () => {
     let failed = false;
-    let expectedLines: string[] = [];
+    const expectedLines: string[] = [];
     let indent = '';
     try {
       fc.assert(

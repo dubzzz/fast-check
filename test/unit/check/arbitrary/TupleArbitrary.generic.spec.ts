@@ -33,7 +33,7 @@ describe('TupleArbitrary', () => {
     it('Should throw on null arbitrary', () =>
       expect(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])).toThrowError());
     it('Should throw on invalid arbitrary', () =>
-      expect(() => genericTuple([dummy(1), dummy(2), <Arbitrary<any>>{}])).toThrowError());
+      expect(() => genericTuple([dummy(1), dummy(2), {} as Arbitrary<any>])).toThrowError());
     it('Should produce cloneable tuple if one cloneable children', () =>
       fc.assert(
         fc.property(fc.nat(50), fc.nat(50), (before, after) => {
