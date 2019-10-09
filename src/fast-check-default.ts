@@ -19,7 +19,7 @@ import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float } from './check/arbitrary/FloatingPointArbitrary';
-import { frequency } from './check/arbitrary/FrequencyArbitrary';
+import { frequency, WeightedArbitrary } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
@@ -208,6 +208,7 @@ export {
   Stream,
   stream,
   VerbosityLevel,
+  WeightedArbitrary,
   // global configuration
   configureGlobal,
   readConfigureGlobal,

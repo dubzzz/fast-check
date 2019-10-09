@@ -3,7 +3,7 @@ import * as fc from '../../../../lib/fast-check';
 
 import { Random } from '../../../../src/random/generator/Random';
 
-const MAX_SIZE: number = 2048;
+const MAX_SIZE = 2048;
 describe('Random', () => {
   describe('next', () => {
     it('Should produce values within 0 and 2 ** n - 1', () =>

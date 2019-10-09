@@ -11,10 +11,10 @@ import {
   StringFromCodePointLimited
 } from '../../../src/utils/polyfills';
 
-declare module Object {
+declare namespace Object {
   function entries(o: { [key: string]: any }): [string, any][];
 }
-declare module String {
+declare namespace String {
   function fromCodePoint(codePoint: number): string;
 }
 declare class String {

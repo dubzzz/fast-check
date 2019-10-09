@@ -29,7 +29,7 @@ describe('AsyncProperty', () => {
     expect(out).toContain('\n\nStack trace:');
   });
   it('Should forward failure of runs with failing precondition', async () => {
-    let doNotResetThisValue: boolean = false;
+    let doNotResetThisValue = false;
     const p = asyncProperty(stubArb.single(8), async (arg: number) => {
       pre(false);
       doNotResetThisValue = true;
@@ -72,7 +72,7 @@ describe('AsyncProperty', () => {
   });
   it('Should throw on invalid arbitrary', () =>
     expect(() =>
-      asyncProperty(stubArb.single(8), stubArb.single(8), <Arbitrary<any>>{}, async () => {})
+      asyncProperty(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, async () => {})
     ).toThrowError());
 
   it('Should use the unbiased arbitrary by default', () => {
