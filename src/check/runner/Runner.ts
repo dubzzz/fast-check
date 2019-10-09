@@ -4,6 +4,7 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { AsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/IProperty';
 import { Property } from '../property/Property';
+import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
@@ -96,7 +97,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
-  const qParams = QualifiedParameters.read(params);
+  const qParams = QualifiedParameters.read({ ...readConfigureGlobal(), ...params });
   const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 

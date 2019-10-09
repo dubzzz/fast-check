@@ -74,6 +74,12 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
+import {
+  configureGlobal,
+  GlobalParameters,
+  readConfigureGlobal,
+  resetConfigureGlobal
+} from './check/runner/configuration/GlobalParameters';
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
@@ -189,6 +195,7 @@ export {
   Context,
   ExecutionStatus,
   ExecutionTree,
+  GlobalParameters,
   Memo,
   MixedCaseConstraints,
   ObjectConstraints,
@@ -201,5 +208,9 @@ export {
   Stream,
   stream,
   VerbosityLevel,
-  WeightedArbitrary
+  WeightedArbitrary,
+  // global configuration
+  configureGlobal,
+  readConfigureGlobal,
+  resetConfigureGlobal
 };

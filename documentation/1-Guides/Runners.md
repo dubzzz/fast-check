@@ -10,6 +10,7 @@ You can refer to the  [generated API docs](https://dubzzz.github.io/fast-check/#
 
 - [Properties](#properties)
 - [Runners](#runners)
+- [Global configuration](#global-configuration)
 
 ## Properties
 
@@ -176,3 +177,13 @@ function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>): voi
 function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, params: Parameters): void;
 function statistics<Ts>(generator: Generator<Ts>, classify: Classifier<Ts>, numGenerated: number): void;
 ```
+
+## Global configuration
+
+In order to define the default parameters that will be used by runners you can use one of the following helpers:
+
+- `fc.configureGlobal(parameters: GlobalParameters)`: define the default parameters to be used by runners
+- `fc.resetConfigureGlobal()`: reset the default parameters to be used by runners
+- `fc.readConfigureGlobal()`: output the default parameters to be used by runners
+
+See [Tips / Setup global settings](./Tips.md#setup-global-settings) for more details.
