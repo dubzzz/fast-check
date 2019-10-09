@@ -123,7 +123,3 @@ The `legacy` spec is responsible to check that most of the arbitraries provided 
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @hidden */` tag to hide internals - otherwise they would get published into the generated documentation
 
 - Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Arbitraries.md
-
-✔️ *Add yourself into the contributors*
-
-Update the file `CONTRIBUTORS.md` by adding your name.
