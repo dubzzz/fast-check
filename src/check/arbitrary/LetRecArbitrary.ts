@@ -53,7 +53,7 @@ export class LazyArbitrary extends Arbitrary<any> {
 
 /** @hidden */
 function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary {
-  return arb !== undefined && arb.hasOwnProperty('underlying');
+  return arb !== undefined && Object.prototype.hasOwnProperty.call(arb, 'underlying');
 }
 
 /**
@@ -80,7 +80,7 @@ export function letrec<T>(
   };
   const strictArbs = builder(tie as any);
   for (const key in strictArbs) {
-    if (!strictArbs.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(strictArbs, key)) {
       // Prevents accidental iteration over properties inherited from an object’s prototype
       continue;
     }

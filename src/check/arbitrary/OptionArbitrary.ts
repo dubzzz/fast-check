@@ -62,7 +62,7 @@ function option<T, TNil>(arb: Arbitrary<T>, constraints?: number | OptionConstra
   return new OptionArbitrary(
     arb,
     constraints.freq == null ? 5 : constraints.freq,
-    constraints.hasOwnProperty('nil') ? constraints.nil : (null as any)
+    Object.prototype.hasOwnProperty.call(constraints, 'nil') ? constraints.nil : (null as any)
   );
 }
 
