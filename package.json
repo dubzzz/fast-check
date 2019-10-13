@@ -23,7 +23,7 @@
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm",
     "webbuild": "browserify lib/fast-check.js --s fastcheck | uglifyjs -cm > lib/bundle.js",
     "watch": "tsc -w",
-    "test": "npm run build && jest --config jest.unit.config.js --coverage",
+    "test": "yarn build && jest --config jest.unit.config.js --coverage",
     "e2e": "jest --config jest.e2e.config.js",
     "test:rollup-esm": "rollup --config test/rollup/esm/rollup.config.js && node test/rollup/esm/dist/main.js",
     "test:rollup-iife": "rollup --config test/rollup/iife/rollup.config.js && node test/rollup/iife/dist/main.js",

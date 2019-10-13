@@ -10,11 +10,11 @@ cache:
     - node_modules
 
 script:
-  - npm run test -- --maxWorkers=4
-  - npm run e2e -- --maxWorkers=4
+  - yarn test -- --maxWorkers=4
+  - yarn e2e -- --maxWorkers=4
 
 after_success:
-  - if [[ $(node --version) == "v12."* ]]; then npm run coverage; fi
+  - if [[ $(node --version) == "v12."* ]]; then yarn coverage; fi
 
 stages:
   - test
@@ -26,21 +26,21 @@ jobs:
     - stage: test
       env: STEP=FORMAT_LINT
       script:
-        - npm run format:check
-        - npm run lint:check
+        - yarn format:check
+        - yarn lint:check
     - stage: test
       env: STEP=EXAMPLES_ROLLUP_LEGACY
       script:
-        - npm run build
+        - yarn build
         - cd example ;
           bash run.sh ;
           cd ..
-        - npm run prebuild
-        - npm run build:publish-cjs
-        - npm run build:publish-esm
-        - npm run webbuild
-        - npm run test:rollup-esm
-        - npm run test:rollup-iife
+        - yarn prebuild
+        - yarn build:publish-cjs
+        - yarn build:publish-esm
+        - yarn webbuild
+        - yarn test:rollup-esm
+        - yarn test:rollup-iife
         - nvm install 0.12 ;
           node test/legacy/main.js
     - stage: test
@@ -48,15 +48,15 @@ jobs:
       script:
         - rm -r node_modules/
         - rm package-lock.json
-        - npm install
-        - npm run test -- --maxWorkers=4
-        - npm run e2e -- --maxWorkers=4
+        - yarn
+        - yarn test -- --maxWorkers=4
+        - yarn e2e -- --maxWorkers=4
     - stage: publish documentation
       if: branch = master AND type = push
       script:
-        - npm run prebuild
-        - npm run build:publish-types
-        - npm run docs
+        - yarn prebuild
+        - yarn build:publish-types
+        - yarn docs
       deploy:
         provider: pages
         skip-cleanup: true
@@ -68,11 +68,11 @@ jobs:
     - stage: deploy
       if: tag =~ ^v\d+\.
       script:
-        - npm run prebuild
-        - npm run build:publish-types
-        - npm run build:publish-cjs
-        - npm run build:publish-esm
-        - npm run webbuild
+        - yarn prebuild
+        - yarn build:publish-types
+        - yarn build:publish-cjs
+        - yarn build:publish-esm
+        - yarn webbuild
       deploy:
         provider: npm
         email: npm@dubien.org

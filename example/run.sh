@@ -1,7 +1,7 @@
 #!/bin/sh
 
 mkdir -p output
-npm install
+yarn
 
 status=0
 
@@ -11,8 +11,8 @@ do
     success=`echo "${testUnit}" | cut -d: -f2`
     failure=`echo "${testUnit}" | cut -d: -f3`
 
-    echo "Expect 'npm run test:${name}' to have ${success} passed and ${failure} failed"
-    npm run "test:${name}" > "output/${name}" 2> /dev/null
+    echo "Expect 'yarn test:${name}' to have ${success} passed and ${failure} failed"
+    yarn "test:${name}" > "output/${name}" 2> /dev/null
     cat "output/${name}"
 
     if [ ${success} -ne 0 ]; then
