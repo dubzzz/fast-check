@@ -49,7 +49,7 @@ export const memo = <T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> =>
   const previous: { [depth: number]: Arbitrary<T> } = {};
   return ((maxDepth?: number): Arbitrary<T> => {
     const n = maxDepth !== undefined ? maxDepth : contextRemainingDepth;
-    if (!previous.hasOwnProperty(n)) {
+    if (!Object.prototype.hasOwnProperty.call(previous, n)) {
       const prev = contextRemainingDepth;
       contextRemainingDepth = n - 1;
       previous[n] = new MemoArbitrary(builder(n));

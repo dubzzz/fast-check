@@ -13,7 +13,7 @@ import { pathWalk } from './utils/PathWalker';
 
 /** @hidden */
 function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters<Ts>): IProperty<Ts> {
-  const prop = !generator.hasOwnProperty('isAsync')
+  const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
     : (generator as IProperty<Ts>);
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
