@@ -57,7 +57,7 @@ jobs:
     - stage: test
       env: STEP=HEAD
       script:
-        - yarn --no-progress --frozen-lockfile --ignore-engines
+        - yarn --no-progress --no-lockfile --ignore-engines
         - yarn test -- --maxWorkers=4
         - yarn e2e -- --maxWorkers=4
     - stage: publish documentation
