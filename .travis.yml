@@ -43,6 +43,7 @@ jobs:
         - yarn --no-progress --frozen-lockfile --ignore-engines
         - yarn build
         - cd example ;
+          yarn --no-progress --frozen-lockfile --ignore-engines ;
           bash run.sh ;
           cd ..
         - yarn prebuild

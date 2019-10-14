@@ -1,7 +1,6 @@
 #!/bin/sh
 
 mkdir -p output
-yarn
 
 status=0
 
