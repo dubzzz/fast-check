@@ -49,7 +49,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual([1]);
     });
     it('Should shrink chain on destination', () => {
-      const out = fc.check(fc.property(fc.constant(42).chain(v => fc.nat()), (v: number) => v < 1), { seed: seed });
+      const out = fc.check(fc.property(fc.constant(42).chain(_v => fc.nat()), (v: number) => v < 1), { seed: seed });
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([1]);
     });
