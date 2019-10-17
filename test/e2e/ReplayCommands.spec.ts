@@ -6,19 +6,19 @@ type Model = { counter: number };
 type Real = {};
 class IncBy implements fc.Command<Model, Real> {
   constructor(readonly v: number) {}
-  check = (m: Readonly<Model>) => true;
-  run = (m: Model, r: Real) => (m.counter += this.v);
+  check = (_m: Readonly<Model>) => true;
+  run = (m: Model, _r: Real) => (m.counter += this.v);
   toString = () => `IncBy(${this.v})`;
 }
 class DecPosBy implements fc.Command<Model, Real> {
   constructor(readonly v: number) {}
   check = (m: Readonly<Model>) => m.counter > 0;
-  run = (m: Model, r: Real) => (m.counter -= this.v);
+  run = (m: Model, _r: Real) => (m.counter -= this.v);
   toString = () => `DecPosBy(${this.v})`;
 }
 class AlwaysPos implements fc.Command<Model, Real> {
-  check = (m: Readonly<Model>) => true;
-  run = (m: Model, r: Real) => {
+  check = (_m: Readonly<Model>) => true;
+  run = (m: Model, _r: Real) => {
     if (m.counter < 0) throw new Error('counter is supposed to be always greater or equal to zero');
   };
   toString = () => `AlwaysPos()`;
