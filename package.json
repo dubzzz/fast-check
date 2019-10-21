@@ -48,8 +48,8 @@
     "node": ">=0.12"
   },
   "dependencies": {
-    "pure-rand": "^1.6.2",
-    "tslib": "^1.9.3"
+    "pure-rand": "^1.7.0",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.1.1",
