@@ -49,7 +49,7 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
 
 /** @hidden */
 function preFormatTooManySkipped<Ts>(out: RunDetails<Ts>) {
-  const message = `Failed to run property, too many pre-condition failures encountered\n\nRan ${
+  const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${
     out.numRuns
   } time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
@@ -91,10 +91,32 @@ function preFormatFailure<Ts>(out: RunDetails<Ts>) {
 }
 
 /** @hidden */
+function preFormatEarlyInterrupted<Ts>(out: RunDetails<Ts>) {
+  const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
+  let details: string | null = null;
+  const hints = [];
+
+  if (out.verbose >= VerbosityLevel.VeryVerbose) {
+    details = formatExecutionSummary(out.executionSummary);
+  } else {
+    hints.push(
+      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status'
+    );
+  }
+
+  return { message, details, hints };
+}
+
+/** @hidden */
 function throwIfFailed<Ts>(out: RunDetails<Ts>) {
   if (!out.failed) return;
 
-  const { message, details, hints } = out.counterexample == null ? preFormatTooManySkipped(out) : preFormatFailure(out);
+  const { message, details, hints } =
+    out.counterexample == null
+      ? out.interrupted
+        ? preFormatEarlyInterrupted(out)
+        : preFormatTooManySkipped(out)
+      : preFormatFailure(out);
 
   let errorMessage = message;
   if (details != null) errorMessage += `\n\n${details}`;
