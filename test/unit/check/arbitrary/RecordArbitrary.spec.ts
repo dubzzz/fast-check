@@ -22,7 +22,7 @@ describe('RecordArbitrary', () => {
           const arb = record(recordModel, { withDeletedKeys: true });
           for (let idx = 0; idx != 1000; ++idx) {
             const g = arb.generate(mrng).value;
-            if (!g.hasOwnProperty(keys[missingIdx % keys.length])) return true;
+            if (!Object.prototype.hasOwnProperty.call(g, keys[missingIdx % keys.length])) return true;
           }
           return false;
         })
@@ -34,7 +34,7 @@ describe('RecordArbitrary', () => {
           const recordModel: { [key: string]: Arbitrary<string> } = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
 
-          const arb = record(recordModel, { with_deleted_keys: true });
+          const arb = record(recordModel, { withDeletedKeys: true });
           for (let idx = 0; idx != 1000; ++idx) {
             const g = arb.generate(mrng).value;
             if (g[keys[missingIdx % keys.length]] === `_${keys[missingIdx % keys.length]}_`) return true;
@@ -68,7 +68,7 @@ describe('RecordArbitrary', () => {
             }
             for (const m of metas) {
               // values are associated to the right key (if key required)
-              if (constraints.withDeletedKeys === true && !(r as any).hasOwnProperty(m.key)) continue;
+              if (constraints.withDeletedKeys === true && !Object.prototype.hasOwnProperty.call(r, m.key)) continue;
               if (typeof r[m.key] !== 'number') return false;
               if (r[m.key] < m.valueStart) return false;
               if (r[m.key] > m.valueStart + 10) return false;

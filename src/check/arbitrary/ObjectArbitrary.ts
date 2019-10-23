@@ -1,10 +1,12 @@
 import { Arbitrary } from './definition/Arbitrary';
 
+import { stringify } from '../../utils/stringify';
 import { array } from './ArrayArbitrary';
 import { boolean } from './BooleanArbitrary';
 import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
+import { frequency } from './FrequencyArbitrary';
 import { integer } from './IntegerArbitrary';
 import { memo, Memo } from './MemoArbitrary';
 import { oneof } from './OneOfArbitrary';
@@ -15,17 +17,18 @@ import { tuple } from './TupleArbitrary';
 export class ObjectConstraints {
   constructor(
     readonly key: Arbitrary<string>,
-    readonly values: Arbitrary<any>[],
+    readonly values: Arbitrary<unknown>[],
     readonly maxDepth: number,
     readonly maxKeys: number,
     readonly withSet: boolean,
-    readonly withMap: boolean
+    readonly withMap: boolean,
+    readonly withObjectString: boolean
   ) {}
 
   /**
    * Default value of ObjectConstraints.Settings.values field
    */
-  static defaultValues(): Arbitrary<any>[] {
+  static defaultValues(): Arbitrary<unknown>[] {
     return [
       boolean(),
       integer(),
@@ -87,7 +90,8 @@ export class ObjectConstraints {
       getOr(() => settings!.maxDepth, 2),
       getOr(() => settings!.maxKeys, 5),
       getOr(() => settings!.withSet, false),
-      getOr(() => settings!.withMap, false)
+      getOr(() => settings!.withMap, false),
+      getOr(() => settings!.withObjectString, false)
     );
   }
 }
@@ -127,19 +131,28 @@ export namespace ObjectConstraints {
      *  - `Number.POSITIVE_INFINITY`,
      *  - `Number.NEGATIVE_INFINITY`
      */
-    values?: Arbitrary<any>[];
+    values?: Arbitrary<unknown>[];
     /** Also generate boxed versions of values */
     withBoxedValues?: boolean;
     /** Also generate Set */
     withSet?: boolean;
     /** Also generate Map */
     withMap?: boolean;
+    /** Also generate string representations of object instances */
+    withObjectString?: boolean;
   }
 }
 
 /** @hidden */
 const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
-  const arbKeys = constraints.key;
+  const arbKeys = constraints.withObjectString
+    ? memo(n =>
+        frequency(
+          { arbitrary: constraints.key, weight: 10 },
+          { arbitrary: anythingArb(n).map(o => stringify(o)), weight: 1 }
+        )
+      )
+    : memo(() => constraints.key);
   const arbitrariesForBase = constraints.values;
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
@@ -152,9 +165,9 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
 
   const baseArb = oneof(...arbitrariesForBase);
   const arrayBaseArb = oneof(...arbitrariesForBase.map(arb => array(arb, 0, maxKeys)));
-  const objectBaseArb = oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys, arb)));
+  const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys(n), arb)));
   const setBaseArb = () => oneof(...arbitrariesForBase.map(arb => set(arb, 0, maxKeys).map(v => new Set(v))));
-  const mapBaseArb = () => oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys, arb)));
+  const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
   const arrayArb = memo(n => oneof(arrayBaseArb, array(anythingArb(n), 0, maxKeys)));
@@ -162,10 +175,10 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
   const setArb = memo(n => oneof(setBaseArb(), set(anythingArb(n), 0, maxKeys).map(v => new Set(v))));
   // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
   const mapArb = memo(n =>
-    oneof(mapBaseArb(), oneof(mapOf(arbKeys, anythingArb(n)), mapOf(anythingArb(n), anythingArb(n))))
+    oneof(mapBaseArb(n), oneof(mapOf(arbKeys(n), anythingArb(n)), mapOf(anythingArb(n), anythingArb(n))))
   );
   // {[key:string]: base} | {[key:string]: anything}
-  const objectArb = memo(n => oneof(objectBaseArb, dictOf(arbKeys, anythingArb(n))));
+  const objectArb = memo(n => oneof(objectBaseArb(n), dictOf(arbKeys(n), anythingArb(n))));
 
   const anythingArb: Memo<any> = memo(n => {
     if (n <= 0) return oneof(baseArb);
@@ -174,7 +187,8 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
       arrayArb(),
       objectArb(),
       ...(constraints.withMap ? [mapArb()] : []),
-      ...(constraints.withSet ? [setArb()] : [])
+      ...(constraints.withSet ? [setArb()] : []),
+      ...(constraints.withObjectString ? [anythingArb().map(o => stringify(o))] : [])
     );
   });
 
@@ -194,7 +208,7 @@ const objectInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
  * @example
  * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
  */
-function anything(): Arbitrary<any>;
+function anything(): Arbitrary<unknown>;
 /**
  * For any type of values following the constraints defined by `settings`
  *
@@ -220,8 +234,8 @@ function anything(): Arbitrary<any>;
  *
  * @param settings Constraints to apply when building instances
  */
-function anything(settings: ObjectConstraints.Settings): Arbitrary<any>;
-function anything(settings?: ObjectConstraints.Settings): Arbitrary<any> {
+function anything(settings: ObjectConstraints.Settings): Arbitrary<unknown>;
+function anything(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
   return anythingInternal(ObjectConstraints.from(settings));
 }
 
@@ -233,7 +247,7 @@ function anything(settings?: ObjectConstraints.Settings): Arbitrary<any> {
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  */
-function object(): Arbitrary<any>;
+function object(): Arbitrary<unknown>;
 /**
  * For any objects following the constraints defined by `settings`
  *
@@ -244,8 +258,8 @@ function object(): Arbitrary<any>;
  *
  * @param settings Constraints to apply when building instances
  */
-function object(settings: ObjectConstraints.Settings): Arbitrary<any>;
-function object(settings?: ObjectConstraints.Settings): Arbitrary<any> {
+function object(settings: ObjectConstraints.Settings): Arbitrary<unknown>;
+function object(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
   return objectInternal(ObjectConstraints.from(settings));
 }
 
@@ -261,7 +275,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
  *
  * Keys and string values rely on {@link string}
  */
-function jsonObject(): Arbitrary<any>;
+function jsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with a maximal depth
  *
@@ -269,8 +283,8 @@ function jsonObject(): Arbitrary<any>;
  *
  * @param maxDepth Maximal depth of the generated values
  */
-function jsonObject(maxDepth: number): Arbitrary<any>;
-function jsonObject(maxDepth?: number): Arbitrary<any> {
+function jsonObject(maxDepth: number): Arbitrary<unknown>;
+function jsonObject(maxDepth?: number): Arbitrary<unknown> {
   return anything(jsonSettings(string(), maxDepth));
 }
 
@@ -279,7 +293,7 @@ function jsonObject(maxDepth?: number): Arbitrary<any> {
  *
  * Keys and string values rely on {@link unicode}
  */
-function unicodeJsonObject(): Arbitrary<any>;
+function unicodeJsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with unicode support and a maximal depth
  *
@@ -287,8 +301,8 @@ function unicodeJsonObject(): Arbitrary<any>;
  *
  * @param maxDepth Maximal depth of the generated values
  */
-function unicodeJsonObject(maxDepth: number): Arbitrary<any>;
-function unicodeJsonObject(maxDepth?: number): Arbitrary<any> {
+function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
+function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
   return anything(jsonSettings(unicodeString(), maxDepth));
 }
 

@@ -71,7 +71,7 @@ describe('CommandWrapper', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = new Random(prand.xorshift128plus(seed));
-          let logOnCheck: { data: string[] } = { data: [] };
+          const logOnCheck: { data: string[] } = { data: [] };
 
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),
@@ -86,7 +86,7 @@ describe('CommandWrapper', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = new Random(prand.xorshift128plus(seed));
-          let logOnCheck: { data: string[] } = { data: [] };
+          const logOnCheck: { data: string[] } = { data: [] };
 
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),
@@ -106,7 +106,7 @@ describe('CommandWrapper', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = new Random(prand.xorshift128plus(seed));
-          let logOnCheck: { data: string[] } = { data: [] };
+          const logOnCheck: { data: string[] } = { data: [] };
 
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),
@@ -131,7 +131,7 @@ describe('CommandWrapper', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = new Random(prand.xorshift128plus(seed));
-          let logOnCheck: { data: string[] } = { data: [] };
+          const logOnCheck: { data: string[] } = { data: [] };
 
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),

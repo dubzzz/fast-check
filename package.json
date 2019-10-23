@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "1.16.0",
+  "version": "1.18.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "main": "lib/fast-check.js",
   "module": "lib/esm/fast-check.js",
@@ -12,6 +12,7 @@
       ]
     }
   },
+  "sideEffects": false,
   "scripts": {
     "perf": "node perf/benchmark.js",
     "profile": "node --prof --no-logfile-per-isolate --trace-deopt --trace-opt-verbose perf/profiler.js > deopt.out && node --prof-process v8.log > v8.out",
@@ -30,8 +31,8 @@
     "docs": "mkdir -p docs/2-API && docsify-init --editDir documentation && cp -R documentation/* docs/ && api-extractor run --local && generate-ts-docs markdown -i docs/2-API -o docs/2-API && cat README.md | sed 's/https:\\/\\/github.com\\/dubzzz\\/fast-check\\/blob\\/master\\/documentation//g' > docs/README.md && markdownbars -i docs/_sidebar.md -o docs/_sidebar.md",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "format:check": "prettier --list-different \"**/*.{js,ts}\"",
-    "lint": "tslint --project tsconfig.json --fix",
-    "lint:check": "tslint --project tsconfig.json"
+    "lint": "eslint \"**/*.{js,ts}\" --fix",
+    "lint:check": "eslint \"**/*.{js,ts}\""
   },
   "repository": {
     "type": "git",
@@ -47,17 +48,21 @@
     "node": ">=0.12"
   },
   "dependencies": {
-    "pure-rand": "^1.6.2",
-    "tslib": "^1.9.3"
+    "pure-rand": "^1.7.0",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.1.1",
     "@types/jest": "^24.0.12",
     "@types/node": "^12.0.0",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
     "benchmark": "^2.1.4",
     "browserify": "^16.2.3",
     "coveralls": "^3.0.3",
     "docsify-tools": "^1.0.18",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
     "jest": "^24.7.1",
     "markdownbars": "^1.0.9",
     "prettier": "1.17.0",
@@ -67,7 +72,6 @@
     "source-map-support": "^0.5.12",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.2.0",
-    "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.1",
     "uglifyjs": "^2.4.11"

@@ -69,18 +69,20 @@ describe('Sampler', () => {
         }
       };
       const arb = new (class extends Arbitrary<typeof cloneable> {
-        generate = () => new Shrinkable(cloneable);
+        generate() {
+          return new Shrinkable(cloneable);
+        }
       })();
       sample(arb, { seed: 42 });
     });
   });
   describe('statistics', () => {
-    const customGen = (m: number = 7) => stubArb.forward().map(v => ((v % m) + m) % m);
+    const customGen = (m = 7) => stubArb.forward().map(v => ((v % m) + m) % m);
     const rePercent = /(\d+\.\d+)%$/;
     it('Should always produce for non null number of runs', () =>
       fc.assert(
         fc.property(fc.integer(), fc.integer(1, MAX_NUM_RUNS), (seed, runs) => {
-          let logs: string[] = [];
+          const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, numRuns: runs, logger: (v: string) => logs.push(v) });
           expect(logs.length).not.toEqual(0); // at least one log
@@ -89,8 +91,8 @@ describe('Sampler', () => {
     it('Should produce the same statistics given the same seed', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
-          let logs1: string[] = [];
-          let logs2: string[] = [];
+          const logs1: string[] = [];
+          const logs2: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs1.push(v) });
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs2.push(v) });
@@ -100,7 +102,7 @@ describe('Sampler', () => {
     it('Should start log lines with labels', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
-          let logs: string[] = [];
+          const logs: string[] = [];
           const classify = (g: number) => `my_label_${g.toString()}!`;
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
           for (const l of logs) {
@@ -111,7 +113,7 @@ describe('Sampler', () => {
     it('Should end log lines with percentage', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
-          let logs: string[] = [];
+          const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
           for (const l of logs) {
@@ -122,7 +124,7 @@ describe('Sampler', () => {
     it('Should sum to 100% when provided a single classifier', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
-          let logs: string[] = [];
+          const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
           const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)![1]));
@@ -135,11 +137,11 @@ describe('Sampler', () => {
     it('Should order percentages from the highest to the lowest', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
-          let logs: string[] = [];
+          const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
           const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)![1]));
-          for (var idx = 1; idx < extractedPercents.length; ++idx) {
+          for (let idx = 1; idx < extractedPercents.length; ++idx) {
             expect(extractedPercents[idx - 1]).toBeGreaterThanOrEqual(extractedPercents[idx]);
           }
         })
@@ -147,7 +149,7 @@ describe('Sampler', () => {
     it('Should be able to handle multiple classifiers', () =>
       fc.assert(
         fc.property(fc.integer(), seed => {
-          let logs: string[] = [];
+          const logs: string[] = [];
           const classify = (g: number) => (g % 2 === 0 ? [`a::${g}`, `b::${g}`, `c::${g}`] : [`a::${g}`, `b::${g}`]);
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
           const extractedPercents = logs.map(l => parseFloat(rePercent.exec(l)![1]));
@@ -169,7 +171,7 @@ describe('Sampler', () => {
     it('Should not produce more logs than the number of classified values', () =>
       fc.assert(
         fc.property(fc.integer(), fc.integer(1, 100), (seed, mod) => {
-          let logs: string[] = [];
+          const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(mod), classify, { seed: seed, logger: (v: string) => logs.push(v) });
           expect(logs.length).toBeGreaterThanOrEqual(1); // at least one log

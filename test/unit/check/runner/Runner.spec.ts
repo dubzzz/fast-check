@@ -17,73 +17,73 @@ describe('Runner', () => {
       expect(() => check((null as any) as IProperty<{}>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => check(<IProperty<{}>>{})).toThrowError();
+      expect(() => check({} as IProperty<{}>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => check(<IProperty<{}>>(<any>char()))).toThrowError();
+      expect(() => check((char() as any) as IProperty<{}>)).toThrowError();
     });
     it('Should call the property 100 times by default (on success)', () => {
-      let num_calls_generate = 0;
-      let num_calls_run = 0;
+      let numCallsGenerate = 0;
+      let numCallsRun = 0;
       const p: IProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          expect(num_calls_run).toEqual(num_calls_generate); // called run before calling back
-          ++num_calls_generate;
-          return new Shrinkable([num_calls_generate]) as Shrinkable<[number]>;
+          expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
+          ++numCallsGenerate;
+          return new Shrinkable([numCallsGenerate]) as Shrinkable<[number]>;
         },
         run: (value: [number]) => {
-          expect(value[0]).toEqual(num_calls_generate); // called with previously generated value
-          ++num_calls_run;
+          expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
+          ++numCallsRun;
           return null;
         }
       };
       const out = check(p) as RunDetails<[number]>;
-      expect(num_calls_generate).toEqual(100);
-      expect(num_calls_run).toEqual(100);
+      expect(numCallsGenerate).toEqual(100);
+      expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
     it('Should call the property 100 times even when path provided (on success)', () => {
-      let num_calls_generate = 0;
-      let num_calls_run = 0;
+      let numCallsGenerate = 0;
+      let numCallsRun = 0;
       const p: IProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          expect(num_calls_run).toEqual(num_calls_generate); // called run before calling back
-          ++num_calls_generate;
-          return new Shrinkable([num_calls_generate]) as Shrinkable<[number]>;
+          expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
+          ++numCallsGenerate;
+          return new Shrinkable([numCallsGenerate]) as Shrinkable<[number]>;
         },
         run: (value: [number]) => {
-          expect(value[0]).toEqual(num_calls_generate); // called with previously generated value
-          ++num_calls_run;
+          expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
+          ++numCallsRun;
           return null;
         }
       };
       const out = check(p, { path: '3002' }) as RunDetails<[number]>;
-      expect(num_calls_generate).toEqual(100);
-      expect(num_calls_run).toEqual(100);
+      expect(numCallsGenerate).toEqual(100);
+      expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
     it('Should call the property on all shrunk values for path (on success)', () => {
-      let num_calls_generate = 0;
-      let num_calls_run = 0;
+      let numCallsGenerate = 0;
+      let numCallsRun = 0;
       const p: IProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          ++num_calls_generate;
+          ++numCallsGenerate;
           function* g() {
             for (let i = 0; i !== 1234; ++i) yield new Shrinkable([0]);
           }
           return new Shrinkable([0], () => stream(g())) as Shrinkable<[number]>;
         },
         run: () => {
-          ++num_calls_run;
+          ++numCallsRun;
           return null;
         }
       };
       const out = check(p, { path: '3002:0' }) as RunDetails<[number]>;
-      expect(num_calls_generate).toEqual(1);
-      expect(num_calls_run).toEqual(1234);
+      expect(numCallsGenerate).toEqual(1);
+      expect(numCallsRun).toEqual(1234);
       expect(out.failed).toBe(false);
     });
     it('Should ignore precondition failure runs and generate another value', async () => {
@@ -100,13 +100,13 @@ describe('Runner', () => {
           fc.boolean(),
           fc.option(fc.nat(99)),
           async (successIds, isAsyncProp, failAtId) => {
-            let num_calls_generate = 0;
-            let num_calls_run = 0;
+            let numCallsGenerate = 0;
+            let numCallsRun = 0;
             const p: IProperty<[number]> = {
               isAsync: () => isAsyncProp,
-              generate: () => new Shrinkable([num_calls_generate++]) as Shrinkable<[number]>,
+              generate: () => new Shrinkable([numCallsGenerate++]) as Shrinkable<[number]>,
               run: (value: [number]) => {
-                ++num_calls_run;
+                ++numCallsRun;
                 const successId = successIds.indexOf(value[0]);
                 if (successId !== -1) return successId === failAtId ? 'failed' : null;
                 return new PreconditionFailure();
@@ -116,16 +116,16 @@ describe('Runner', () => {
             if (failAtId == null) {
               const expectedGenerate = successIds[successIds.length - 1] + 1;
               const expectedSkips = expectedGenerate - 100;
-              expect(num_calls_generate).toEqual(expectedGenerate);
-              expect(num_calls_run).toEqual(expectedGenerate);
+              expect(numCallsGenerate).toEqual(expectedGenerate);
+              expect(numCallsRun).toEqual(expectedGenerate);
               expect(out.numRuns).toEqual(100);
               expect(out.numSkips).toEqual(expectedSkips);
               expect(out.failed).toBe(false);
             } else {
               const expectedGenerate = successIds[failAtId] + 1;
               const expectedSkips = expectedGenerate - failAtId - 1;
-              expect(num_calls_generate).toEqual(expectedGenerate);
-              expect(num_calls_run).toEqual(expectedGenerate);
+              expect(numCallsGenerate).toEqual(expectedGenerate);
+              expect(numCallsRun).toEqual(expectedGenerate);
               expect(out.numRuns).toEqual(failAtId + 1);
               expect(out.numSkips).toEqual(expectedSkips);
               expect(out.failed).toBe(true);
@@ -140,14 +140,14 @@ describe('Runner', () => {
           fc.nat(1000).chain(v => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
           fc.boolean(),
           async (settings, isAsyncProp) => {
-            let num_calls_generate = 0;
-            let num_precondition_failures = 0;
+            let numCallsGenerate = 0;
+            let numPreconditionFailures = 0;
             const p: IProperty<[number]> = {
               isAsync: () => isAsyncProp,
-              generate: () => new Shrinkable([num_calls_generate++]) as Shrinkable<[number]>,
+              generate: () => new Shrinkable([numCallsGenerate++]) as Shrinkable<[number]>,
               run: (value: [number]) => {
                 if (value[0] === settings.onlySuccessId) return null;
-                ++num_precondition_failures;
+                ++numPreconditionFailures;
                 return new PreconditionFailure();
               }
             };
@@ -155,7 +155,7 @@ describe('Runner', () => {
             const expectedSkips = 2 * settings.maxSkipsPerRun + 1;
             const expectedRuns = settings.onlySuccessId === expectedSkips ? 0 : 1;
             expect(out.numRuns).toEqual(expectedRuns);
-            expect(num_precondition_failures).toEqual(expectedSkips);
+            expect(numPreconditionFailures).toEqual(expectedSkips);
             expect(out.numSkips).toEqual(expectedSkips);
             expect(out.failed).toBe(true);
           }
@@ -163,44 +163,44 @@ describe('Runner', () => {
       );
     });
     it('Should never call shrink on success', () => {
-      let num_calls_generate = 0;
-      let num_calls_run = 0;
+      let numCallsGenerate = 0;
+      let numCallsRun = 0;
       const p: IProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          ++num_calls_generate;
+          ++numCallsGenerate;
           return new Shrinkable([0], () => {
             throw 'Not implemented';
           }) as Shrinkable<[number]>;
         },
         run: (value: [number]) => {
-          ++num_calls_run;
+          ++numCallsRun;
           return null;
         }
       };
       const out = check(p) as RunDetails<[number]>;
-      expect(num_calls_generate).toEqual(100);
-      expect(num_calls_run).toEqual(100);
+      expect(numCallsGenerate).toEqual(100);
+      expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
     it('Should call the property 100 times by default (except on error)', () =>
       fc.assert(
         fc.property(fc.integer(1, 100), fc.integer(), (num, seed) => {
-          let num_calls_generate = 0;
-          let num_calls_run = 0;
+          let numCallsGenerate = 0;
+          let numCallsRun = 0;
           const p: IProperty<[number]> = {
             isAsync: () => false,
             generate: () => {
-              ++num_calls_generate;
+              ++numCallsGenerate;
               return new Shrinkable([0]) as Shrinkable<[number]>;
             },
             run: (value: [number]) => {
-              return ++num_calls_run < num ? null : 'error';
+              return ++numCallsRun < num ? null : 'error';
             }
           };
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
-          expect(num_calls_generate).toEqual(num); // stopped generate at first failing run
-          expect(num_calls_run).toEqual(num); //  no shrink for first failing run
+          expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
+          expect(numCallsRun).toEqual(num); //  no shrink for first failing run
           expect(out.failed).toBe(true);
           expect(out.numRuns).toEqual(num);
           expect(out.seed).toEqual(seed);
@@ -210,22 +210,22 @@ describe('Runner', () => {
     it('Should alter the number of runs when asked to', () =>
       fc.assert(
         fc.property(fc.nat(MAX_NUM_RUNS), num => {
-          let num_calls_generate = 0;
-          let num_calls_run = 0;
+          let numCallsGenerate = 0;
+          let numCallsRun = 0;
           const p: IProperty<[number]> = {
             isAsync: () => false,
             generate: () => {
-              ++num_calls_generate;
+              ++numCallsGenerate;
               return new Shrinkable([0]) as Shrinkable<[number]>;
             },
             run: (value: [number]) => {
-              ++num_calls_run;
+              ++numCallsRun;
               return null;
             }
           };
           const out = check(p, { numRuns: num }) as RunDetails<[number]>;
-          expect(num_calls_generate).toEqual(num);
-          expect(num_calls_run).toEqual(num);
+          expect(numCallsGenerate).toEqual(num);
+          expect(numCallsRun).toEqual(num);
           expect(out.failed).toBe(false);
           return true;
         })
@@ -246,8 +246,8 @@ describe('Runner', () => {
             };
             return p;
           };
-          let data1: number[] = [];
-          let data2: number[] = [];
+          const data1: number[] = [];
+          const data2: number[] = [];
           check(buildPropertyFor(data1), { seed: seed });
           check(buildPropertyFor(data2), { seed: seed });
           expect(data2).toEqual(data1);
@@ -354,13 +354,13 @@ describe('Runner', () => {
           const delay = () => new Promise((resolve, reject) => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;
-          let waitingResolve: (() => void)[] = [];
-          let num_calls_generate = 0;
-          let num_calls_run = 0;
+          const waitingResolve: (() => void)[] = [];
+          let numCallsGenerate = 0;
+          let numCallsRun = 0;
           const p: IProperty<[number]> = {
             isAsync: () => true,
             generate: () => {
-              ++num_calls_generate;
+              ++numCallsGenerate;
               const shrinkedValue = new Shrinkable([42]) as Shrinkable<[number]>;
               const g = function*() {
                 yield shrinkedValue;
@@ -371,7 +371,7 @@ describe('Runner', () => {
               await new Promise((resolve, reject) => {
                 waitingResolve.push(resolve);
               });
-              return ++num_calls_run < num ? null : 'error';
+              return ++numCallsRun < num ? null : 'error';
             }
           };
           const checker = check(p, { seed: seed }) as Promise<RunDetails<[number]>>;
@@ -389,8 +389,8 @@ describe('Runner', () => {
           expect(runnerHasCompleted).toBe(true);
 
           const out = await checker;
-          expect(num_calls_generate).toEqual(num); // stopped generate at first failing run
-          expect(num_calls_run).toEqual(num + 1); // stopped run one shrink after first failing run
+          expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
+          expect(numCallsRun).toEqual(num + 1); // stopped run one shrink after first failing run
           expect(out.failed).toBe(true);
           expect(out.numRuns).toEqual(num);
           expect(out.seed).toEqual(seed);
@@ -461,10 +461,10 @@ describe('Runner', () => {
       expect(() => rAssert((null as any) as IProperty<{}>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => rAssert(<IProperty<{}>>{})).toThrowError();
+      expect(() => rAssert({} as IProperty<{}>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => rAssert(<IProperty<{}>>(<any>char()))).toThrowError();
+      expect(() => rAssert((char() as any) as IProperty<{}>)).toThrowError();
     });
     it('Should never throw if no failure occured', () => {
       expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();

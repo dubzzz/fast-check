@@ -229,6 +229,9 @@ describe(`NoRegression`, () => {
   it('uuid', () => {
     expect(() => fc.assert(fc.property(fc.uuid(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
   });
+  it('uuidV', () => {
+    expect(() => fc.assert(fc.property(fc.uuidV(4), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+  });
   it('letrec', () => {
     expect(() =>
       fc.assert(

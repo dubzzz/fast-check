@@ -1,5 +1,5 @@
 exports.runComplexFailure = function(fc) {
-  let loremIpsum = fc.record({
+  const loremIpsum = fc.record({
     text: fc.lorem(100),
     type: fc.constant('x'),
     attrs: fc.constant({}),
@@ -16,7 +16,7 @@ exports.runComplexFailure = function(fc) {
     )
   });
 
-  let section = n =>
+  const section = n =>
     fc.record({
       heading: loremIpsum,
       children: fc.array(n > 0 ? fc.oneof(loremIpsum, loremIpsum, loremIpsum, section(n - 1)) : loremIpsum, 10)

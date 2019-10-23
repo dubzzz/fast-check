@@ -52,6 +52,30 @@ You should also check for linting by running `npm run lint:check`.
 All pull requests will trigger Travis CI builds.
 It ensures that the pull request follow the code style of the project and do not break existing tests.
 
+#### Update your PR
+
+If you plan to update your PR with either a fix for the tests or change following code reviews please directly commit your new commit in your branch, PR will get updated automatically.
+
+Before your fix:
+```
+--*---> master    on dubzzz/fast-check
+   \
+   #1   branch-pr on your fork
+```
+
+After your fix:
+```
+--*--->        master    on dubzzz/fast-check
+   \
+   #1 --- #2   branch-pr on your fork
+```
+
+#### Resync PR with master
+
+Ideally to resync your branch with master prefer a merge of master branch into your PR branch. It has the advantage to preserves the commit history on GitHub PR (contrary to rebase and force push).
+
+### Examples
+
 #### Adding a new arbitrary
 
 ✔️ *Create a feature request*
@@ -99,7 +123,3 @@ The `legacy` spec is responsible to check that most of the arbitraries provided 
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @hidden */` tag to hide internals - otherwise they would get published into the generated documentation
 
 - Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Arbitraries.md
-
-✔️ *Add yourself into the contributors*
-
-Update the file `CONTRIBUTORS.md` by adding your name.

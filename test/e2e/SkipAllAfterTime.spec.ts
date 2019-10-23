@@ -5,7 +5,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   it('should skip as soon as delay expires and mark run as failed', () => {
     let numRuns = 0;
     const out = fc.check(
-      fc.property(fc.integer(), x => {
+      fc.property(fc.integer(), _x => {
         ++numRuns;
         return true;
       }),

@@ -139,7 +139,11 @@ describe('MemoArbitrary', () => {
 
 const buildArbitrary = (generate: (mrng: Random) => Shrinkable<any>, withBias?: (n: number) => Arbitrary<any>) => {
   return new (class extends Arbitrary<any> {
-    generate = generate;
-    withBias = (n: number): Arbitrary<any> => (withBias ? withBias(n) : this);
+    generate(mrng: Random) {
+      return generate(mrng);
+    }
+    withBias(n: number): Arbitrary<any> {
+      return withBias ? withBias(n) : this;
+    }
   })();
 };

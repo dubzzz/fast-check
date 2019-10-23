@@ -6,6 +6,19 @@ This documentation covers the definition of new arbitraries. It can be an arbitr
 
 Please do not hesitate to open issues to ask for new arbitraries.
 
+## Table of contents
+
+- [Derive existing arbitraries](#derive-existing-arbitraries)
+  - [Filter values](#filter-values)
+  - [Transform values](#transform-values)
+  - [Transform arbitraries](#transform-arbitraries)
+  - [Remove the shrinker](#remove-the-shrinker)
+- [Build your own](#build-your-own)
+- [Advanced features of arbitraries](#advanced-features-of-arbitraries)
+  - [Biased arbitraries](#biased-arbitraries)
+  - [Shrinking](#shrinking)
+  - [Cloneable](#cloneable)
+
 ## Derive existing arbitraries
 
 All generated arbitraries inherit from the same base class: [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts).

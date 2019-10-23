@@ -71,13 +71,17 @@ describe('ArbitraryWithShrink', () => {
         // Only consider a single path of the tree, does not check all the branches
         let generatedShrinks = generated.shrink();
         let fromValueShrinks = fromValue.shrink();
-        while (true) {
+        let stop = false;
+        while (stop) {
           const generatedTab = Array.from(generatedShrinks);
           const fromValueTab = Array.from(fromValueShrinks);
           expect(generatedTab.map(s => s.value)).toEqual(fromValueTab.map(s => s.value));
-          if (generatedTab.length === 0) break;
-          generatedShrinks = generatedTab[mod % generatedTab.length].shrink();
-          fromValueShrinks = fromValueTab[mod % fromValueTab.length].shrink();
+          if (generatedTab.length === 0) {
+            stop = true;
+          } else {
+            generatedShrinks = generatedTab[mod % generatedTab.length].shrink();
+            fromValueShrinks = fromValueTab[mod % fromValueTab.length].shrink();
+          }
         }
       })
     );

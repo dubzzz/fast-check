@@ -56,12 +56,12 @@ describe('ArrayArbitrary', () => {
       ));
     it('Should produce cloneable array if one cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
-      let g = array(context(), 1, 10).generate(mrng).value;
+      const g = array(context(), 1, 10).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(true);
     });
     it('Should not produce cloneable tuple if no cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
-      let g = array(nat(), 1, 10).generate(mrng).value;
+      const g = array(nat(), 1, 10).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(false);
     });
     it('Should not clone on generate', () => {

@@ -203,7 +203,8 @@ describe('ObjectArbitrary', () => {
               values: fc.constant([constant('single-value')]),
               withBoxedValues: fc.boolean(),
               withMap: fc.boolean(),
-              withSet: fc.boolean()
+              withSet: fc.boolean(),
+              withObjectString: fc.boolean()
             },
             { withDeletedKeys: true }
           ),
@@ -211,7 +212,7 @@ describe('ObjectArbitrary', () => {
             const mrng = new Random(prand.xorshift128plus(seed));
             const v = anything({ ...settings, maxDepth }).generate(mrng).value;
             const depthEvaluator = (node: any): number => {
-              let subNodes: any[] = [];
+              const subNodes: any[] = [];
               if (Array.isArray(node)) subNodes.concat(node);
               else if (node instanceof Set) subNodes.concat(Array.from(node));
               else if (node instanceof Map)
@@ -332,7 +333,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = jsonObject().generate(mrng).value;
-          expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g);
+          expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g as any);
         })
       ));
   });
@@ -349,7 +350,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = unicodeJsonObject().generate(mrng).value;
-          expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g);
+          expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g as any);
         })
       ));
   });
@@ -400,7 +401,7 @@ describe('ObjectArbitrary', () => {
           while (shrinkable.shrink().has(v => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
-          return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value).length === 0;
+          return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value as any).length === 0;
         })
       ));
     it('Should not suggest input in shrinked values', () =>
@@ -408,7 +409,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const shrinkable = object().generate(mrng);
-          for (const s of shrinkable.shrink()) expect(s.value).not.toStrictEqual(shrinkable.value);
+          for (const s of shrinkable.shrink()) expect(s.value).not.toStrictEqual(shrinkable.value as any);
         })
       ));
   });

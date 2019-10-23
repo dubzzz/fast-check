@@ -47,7 +47,7 @@ describe('stringify', () => {
   it('Should be readable from eval', () =>
     fc.assert(
       fc.property(fc.anything(), obj => {
-        expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj);
+        expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj as any);
       })
     ));
   it('Should stringify differently distinct objects', () =>
@@ -58,7 +58,7 @@ describe('stringify', () => {
       })
     ));
   it('Should be able to stringify cyclic object', () => {
-    let cyclic: any = { a: 1, b: 2, c: 3 };
+    const cyclic: any = { a: 1, b: 2, c: 3 };
     cyclic.b = cyclic;
     const repr = stringify(cyclic);
     expect(repr).toContain('"a"');
@@ -68,21 +68,21 @@ describe('stringify', () => {
     expect(repr).toEqual('{"a":1,"b":[cyclic],"c":3}');
   });
   it('Should be able to stringify cyclic arrays', () => {
-    let cyclic: any[] = [1, 2, 3];
+    const cyclic: any[] = [1, 2, 3];
     cyclic.push(cyclic);
     cyclic.push(4);
     const repr = stringify(cyclic);
     expect(repr).toEqual('[1,2,3,[cyclic],4]');
   });
   it('Should be able to stringify cyclic sets', () => {
-    let cyclic: Set<any> = new Set([1, 2, 3]);
+    const cyclic: Set<any> = new Set([1, 2, 3]);
     cyclic.add(cyclic);
     cyclic.add(4);
     const repr = stringify(cyclic);
     expect(repr).toEqual('new Set([1,2,3,[cyclic],4])');
   });
   it('Should be able to stringify cyclic maps', () => {
-    let cyclic: Map<any, any> = new Map();
+    const cyclic: Map<any, any> = new Map();
     cyclic.set(1, 2);
     cyclic.set(3, cyclic);
     cyclic.set(cyclic, 4);

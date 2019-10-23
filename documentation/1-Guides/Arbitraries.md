@@ -6,6 +6,23 @@ This documentation lists all the built-in arbitraries provided by fast-check.
 
 You can refer to the [generated API docs](https://dubzzz.github.io/fast-check/#/2-API/fast-check) for more details.
 
+## Table of contents
+
+- [Boolean](#boolean-boolean)
+- [Numeric](#numeric-number)
+- [String](#string-string)
+- [Date](#date-date)
+- [Combinors of arbitraries](#combinors-of-arbitraries-t)
+- [Objects](#objects-any)
+- [Recursive structures](#recursive-structures)
+- [Functions](#functions)
+- [Extended tools](#extended-tools)
+- [Model based testing](#model-based-testing)
+  - [Commands](#commands)
+  - [Arbitrary](#arbitrary)
+  - [Model runner](#model-runner)
+  - [Simplified structure](#simplified-structure)
+
 ## Boolean (:boolean)
 
 - `fc.boolean()` either `true` or `false`
@@ -71,7 +88,8 @@ More specific strings:
 - `fc.ipV4()` IP v4 strings
 - `fc.ipV4Extended()` IP v4 strings including all the formats supported by WhatWG standard (for instance: 0x6f.9)
 - `fc.ipV6()` IP v6 strings
-- `fc.uuid()` UUID strings having only digits in 0-9a-f
+- `fc.uuid()` UUID strings having only digits in 0-9a-f (only versions in v1 to v5)
+- `fc.uuidV(versionNumber: 1|2|3|4|5)` UUID strings for a specific UUID version only digits in 0-9a-f
 - `fc.domain()` Domain name with extension following RFC 1034, RFC 1123 and WHATWG URL Standard
 - `fc.webAuthority()` Web authority following RFC 3986
 - `fc.webFragments()` Fragments to build an URI. Fragment is the optional part right after the # in an URI
@@ -92,6 +110,7 @@ More specific strings:
 - `fc.clonedConstant<T>(value: T): Arbitrary<T>` constant arbitrary only able to produce `value: T`. If it exists, it called its `[fc.cloneMethod]` at each call to generate
 - `fc.mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T>` generates non-contiguous ranges of values by mapping integer values to constant
 - `fc.oneof<T>(...arbs: Arbitrary<T>[]): Arbitrary<T>` randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not accross arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries)
+- `fc.frequency<T>(...warbs: WeightedArbitrary<T>[]): Arbitrary<T>` randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight, the higher it is the more it will be probable. It preserves the shrinking capabilities of the underlying arbitrary
 - `fc.option<T>(arb: Arbitrary<T>): Arbitrary<T | null>` or `fc.option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>` arbitrary able to nullify its generated value. When provided a custom `freq` value it changes the frequency of `null` values so that they occur one time over `freq` tries (eg.: `freq=5` means that 20% of generated values will be `null` and 80% would be produced through `arb`). By default: `freq=5`
 - `fc.subarray<T>(originalArray: T[]): Arbitrary<T[]>`, or `fc.subarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>` subarray of `originalArray`. Values inside the subarray are ordered the same way they are in `originalArray`. By setting the parameters `minLength` and/or `maxLength`, the user can change the minimal (resp. maximal) size allowed for the generated subarray. By default: `minLength=0` and `maxLength=originalArray.length`
 - `fc.shuffledSubarray<T>(originalArray: T[]): Arbitrary<T[]>`, or `fc.shuffledSubarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>` subarray of `originalArray`. Values within the subarray are ordered randomly. By setting the parameters `minLength` and/or `maxLength`, the user can change the minimal (resp. maximal) size allowed for the generated subarray. By default: `minLength=0` and `maxLength=originalArray.length`
@@ -117,6 +136,7 @@ export module ObjectConstraints {
         withBoxedValues?: boolean; // adapt all entries within `values` to generate boxed version of the value too
         withMap?: boolean;         // also generate Map
         withSet?: boolean;         // also generate Set
+        withObjectString?: boolean;// also generate string representations of object instances
     };
 };
 ```

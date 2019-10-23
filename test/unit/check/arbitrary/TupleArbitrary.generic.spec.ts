@@ -33,7 +33,7 @@ describe('TupleArbitrary', () => {
     it('Should throw on null arbitrary', () =>
       expect(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])).toThrowError());
     it('Should throw on invalid arbitrary', () =>
-      expect(() => genericTuple([dummy(1), dummy(2), <Arbitrary<any>>{}])).toThrowError());
+      expect(() => genericTuple([dummy(1), dummy(2), {} as Arbitrary<any>])).toThrowError());
     it('Should produce cloneable tuple if one cloneable children', () =>
       fc.assert(
         fc.property(fc.nat(50), fc.nat(50), (before, after) => {
@@ -83,13 +83,13 @@ describe('TupleArbitrary', () => {
       [cloneMethod] = () => new CloneableInstance();
     }
     const cloneableArbitrary = new (class extends Arbitrary<CloneableInstance> {
-      generate = () => {
+      generate() {
         function* g() {
           yield new Shrinkable(new CloneableInstance());
           yield new Shrinkable(new CloneableInstance());
         }
         return new Shrinkable(new CloneableInstance(), () => stream(g()));
-      };
+      }
     })();
     const arbs = genericTuple([nat(16), cloneableArbitrary, nat(16)] as Arbitrary<any>[]);
     const extractId = (shrinkable: Shrinkable<[number, CloneableInstance, number]>) => shrinkable.value_[1].id;

@@ -27,22 +27,22 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink on the failing conjonction of keys', () => {
       const recordModel = {
-        enable_a: fc.boolean(),
-        enable_b: fc.boolean(),
-        enable_c: fc.boolean(),
-        enable_d: fc.boolean(),
-        force_positive_output: fc.boolean(),
-        force_negative_output: fc.boolean()
+        enableA: fc.boolean(),
+        enableB: fc.boolean(),
+        enableC: fc.boolean(),
+        enableD: fc.boolean(),
+        forcePositiveOutput: fc.boolean(),
+        forceNegativeOutput: fc.boolean()
       };
       const out = fc.check(
         fc.property(fc.record(recordModel, { withDeletedKeys: true }), obj => {
-          if (obj.force_positive_output === true && obj.force_negative_output === true) return false;
+          if (obj.forcePositiveOutput === true && obj.forceNegativeOutput === true) return false;
           return true;
         }),
         { seed: seed }
       );
       expect(out.failed).toBe(true);
-      expect(out.counterexample).toStrictEqual([{ force_positive_output: true, force_negative_output: true }]);
+      expect(out.counterexample).toStrictEqual([{ forcePositiveOutput: true, forceNegativeOutput: true }]);
     });
   });
 });

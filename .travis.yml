@@ -17,41 +17,32 @@ after_success:
   - if [[ $(node --version) == "v12."* ]]; then npm run coverage; fi
 
 stages:
-  - code style
   - test
   - publish documentation
   - deploy
 
 jobs:
   include:
-    - stage: code style
-      env: STEP=FORMAT
-      script: npm run format:check
-    - stage: code style
-      env: STEP=LINT
-      script: npm run lint:check
     - stage: test
-      env: STEP=EXAMPLES
+      env: STEP=FORMAT_LINT
+      script:
+        - npm run format:check
+        - npm run lint:check
+    - stage: test
+      env: STEP=EXAMPLES_ROLLUP_LEGACY
       script:
         - npm run build
         - cd example ;
           bash run.sh ;
           cd ..
-    - stage: test
-      env: STEP=LEGACY
-      script:
-        - npm run build
-        - nvm install 0.12
-        - node test/legacy/main.js
-    - stage: test
-      env: STEP=ROLLUP
-      script:
         - npm run prebuild
         - npm run build:publish-cjs
         - npm run build:publish-esm
         - npm run webbuild
         - npm run test:rollup-esm
         - npm run test:rollup-iife
+        - nvm install 0.12 ;
+          node test/legacy/main.js
     - stage: test
       env: STEP=HEAD
       script:
@@ -87,7 +78,7 @@ jobs:
         email: npm@dubien.org
         skip_cleanup: true
         api_key:
-          secure: pz02NsBWp2+V7L5ScpFig53wF7PbjROaiAXaPzaegyFMc6aPVVWdvh+wMMwbJPTd/zXY3CL0ktRyWJPLtv5ZGFWyIny6artteZ01ZHTDOy/aZVfvvWCAS3cyrwSWc9WTbOtl7O+yow2AEF6mXzUrfqAJeBgg1vkkP2ig5FaBqgY2aaQmGgvkBxImxwPwj/sKxYmCO4hHKKzXewHQkmP9uwVWs/z6e8EVufZYuBtGqB8OOfWTZuhW4Re9oiwTtp8HYCuiWwQI/Pe7G81rqktMJTqXymo041caucSs27Nko9b37RzPAeN4mgZmRbB2qoJJtjasMk5KJq76CPKAsVNwrDLaS6MzghcncHH50uOP/lzfr/YWGmUKD+PnTi5iOJ+OpY4AXgR/phrYsCkmGMrrQqjlA9e+HONoaEElJ9YnxcN36tb2wVNd+FwQ1dw+AlcSyVmIGZkD9pDNh+BTZ12SdtEu5qHuUotetIke3iOXjjOGbtr0ckCgWHtxFlcZMQEFVO9pTyz+f4mdgbMD9DSL7JD0Ns6pTtbGqBqVJmzA4IDVaD6xAedoMDte5QO+ltbM+vKlPIGIocQ6D+K+Z2l4oeiL5f54Lx28wyld0i5foGZGic2hh6ni6ie86/sLzAVBRHtfaiIrzqPztUBzbW+6/tTZI28zqFHLE7EobA7yB/0=
+          secure: GizKIQllRzN5PJ00VsmLgT4HFxrufIkrWHj+kjW7FIxWBvBu/ii02DV3+DHcIKOc082wCJ3MAJjpU098oOG4omKl0D36COIl92JP1L0hz5D0ZTshCnUsd0YXHcYYtjDEU0hK6iHoEETQl1+ejncqkoXyJFd9XmdT8vnXLvbUDvNpFmIFFFOVJ6aZX3nj2irgLHutC8cspYzjCs8OqRm1gftd5JhaOMfE6NgjiX5AHI8NJ8zHWYShb2vMpOG/ajzCrfMISvtsvU4Wa2K0cYhW9CkO7WAqSG/jFF6ZxDqzfch0SH+fZBu9u8iIk0GUwtEhv0SURFD0nJqLCN4AjGH0HkRXA6b8GCBD7ZRpnbmTKoB/HRROzEAvErqtWGO0qWZ8lF4U47i5rNCYC4DW/WB776MWsEDy0XQDcYRSfiLsVy544lsKjBXhziFWSqx2gL5GwAQiCUVKqZVZ9ouAZGcANzyq1v28tN38WsjMAjI96rcWaWeeY14zQ92NHhPLbFJUg/8F7Ddn2aRLp3JSyxVm+YubFHOl15oF0ZO6FjHkLhklse5o0seqljBkSrZwd6f/RV99+ziAAm8wenfODae/qrgVwS02CttsHOGlWTpjTbU96iAa8FiCpN9yWa9LYf+QNG5Dhjgm69WTVjA0SWkPA3PA4vI5uxUsnBCtBPawEVo=
         on:
           tags: true
       repo: dubzzz/fast-check

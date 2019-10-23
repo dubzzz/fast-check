@@ -107,16 +107,4 @@ export class QualifiedParameters<T> {
       endOnFailure: QualifiedParameters.readBoolean(p, 'endOnFailure')
     };
   }
-
-  /**
-   * Extract a runner configuration from Parameters
-   * or build one based on a maximal number of runs
-   *
-   * @param p Incoming Parameters or maximal number of runs
-   */
-  static readOrNumRuns<T>(p?: Parameters<T> | number): QualifiedParameters<T> {
-    if (p == null) return QualifiedParameters.read();
-    if (typeof p === 'number') return QualifiedParameters.read({ numRuns: p });
-    return QualifiedParameters.read(p);
-  }
 }

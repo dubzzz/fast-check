@@ -20,7 +20,7 @@ import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float } from './check/arbitrary/FloatingPointArbitrary';
-import { frequency } from './check/arbitrary/FrequencyArbitrary';
+import { frequency, WeightedArbitrary } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
@@ -56,7 +56,7 @@ import {
 } from './check/arbitrary/StringArbitrary';
 import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
-import { uuid } from './check/arbitrary/UuidArbitrary';
+import { uuid, uuidV } from './check/arbitrary/UuidArbitrary';
 import {
   webAuthority,
   WebAuthorityConstraints,
@@ -75,6 +75,12 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
+import {
+  configureGlobal,
+  GlobalParameters,
+  readConfigureGlobal,
+  resetConfigureGlobal
+} from './check/runner/configuration/GlobalParameters';
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
@@ -173,6 +179,7 @@ export {
   webUrl,
   emailAddress,
   uuid,
+  uuidV,
   // model-based
   AsyncCommand,
   Command,
@@ -190,6 +197,7 @@ export {
   Context,
   ExecutionStatus,
   ExecutionTree,
+  GlobalParameters,
   Memo,
   MixedCaseConstraints,
   ObjectConstraints,
@@ -201,5 +209,10 @@ export {
   Random,
   Stream,
   stream,
-  VerbosityLevel
+  VerbosityLevel,
+  WeightedArbitrary,
+  // global configuration
+  configureGlobal,
+  readConfigureGlobal,
+  resetConfigureGlobal
 };

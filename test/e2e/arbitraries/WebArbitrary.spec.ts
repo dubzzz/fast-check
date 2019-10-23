@@ -23,7 +23,7 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
           withPort: true
         }),
         authority => {
-          const domain = /(^|@)([-a-z0-9\.]+)(:\d+$|$)/.exec(authority)![2];
+          const domain = /(^|@)([-a-z0-9.]+)(:\d+$|$)/.exec(authority)![2];
           const p = `http://${authority}`;
           const u = new URL(p);
           expect(u.hostname).toEqual(domain);
