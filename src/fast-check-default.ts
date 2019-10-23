@@ -1,4 +1,3 @@
-import { interrupt } from './check/precondition/Interrupt';
 import { pre } from './check/precondition/Pre';
 import { asyncProperty } from './check/property/AsyncProperty';
 import { property } from './check/property/Property';
@@ -104,7 +103,6 @@ export {
   assert,
   // pre conditions
   pre,
-  interrupt,
   // property definition
   property,
   asyncProperty,

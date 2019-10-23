@@ -6,6 +6,6 @@ import { PreconditionFailure } from './PreconditionFailure';
  */
 export const pre = (expectTruthy: boolean): void => {
   if (!expectTruthy) {
-    throw new PreconditionFailure(false);
+    throw new PreconditionFailure();
   }
 };
