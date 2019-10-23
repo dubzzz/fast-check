@@ -1,6 +1,6 @@
 import { uuid, uuidV } from '../../../../src/check/arbitrary/UuidArbitrary';
 import * as stubRng from '../../stubs/generators';
-import { mockModule } from './generic/MockedModule';
+import { mocked } from 'ts-jest/utils';
 
 jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
 jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
@@ -17,8 +17,8 @@ describe('UuidArbitrary', () => {
     });
     it('Should be able to build the smallest uuid', () => {
       // Arrange
-      const { nat, integer } = mockModule(IntegerArbitraryMock);
-      const { tuple } = mockModule(TupleArbitraryMock);
+      const { nat, integer } = mocked(IntegerArbitraryMock);
+      const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }, { value: 0 }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: a }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
@@ -33,8 +33,8 @@ describe('UuidArbitrary', () => {
     });
     it('Should be able to build the largest uuid', () => {
       // Arrange
-      const { nat, integer } = mockModule(IntegerArbitraryMock);
-      const { tuple } = mockModule(TupleArbitraryMock);
+      const { nat, integer } = mocked(IntegerArbitraryMock);
+      const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(a => arbitraryFor([{ value: a }, { value: a }, { value: a }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: b }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
@@ -54,8 +54,8 @@ describe('UuidArbitrary', () => {
     });
     it('Should be able to build the smallest versioned uuid', () => {
       // Arrange
-      const { nat, integer } = mockModule(IntegerArbitraryMock);
-      const { tuple } = mockModule(TupleArbitraryMock);
+      const { nat, integer } = mocked(IntegerArbitraryMock);
+      const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: a }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
@@ -70,8 +70,8 @@ describe('UuidArbitrary', () => {
     });
     it('Should be able to build the largest versioned uuid', () => {
       // Arrange
-      const { nat, integer } = mockModule(IntegerArbitraryMock);
-      const { tuple } = mockModule(TupleArbitraryMock);
+      const { nat, integer } = mocked(IntegerArbitraryMock);
+      const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(a => arbitraryFor([{ value: a }, { value: a }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: b }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
