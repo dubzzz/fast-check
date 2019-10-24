@@ -1,3 +1,11 @@
+# 1.18.1
+
+_Typings regression for `fc.object`_
+
+## Fixes
+
+- Bug: Typing regression on `fc.object`
+
 # 1.18.0
 
 _Support for global parameters with `fc.configureGlobal(parameters)`_
