@@ -52,7 +52,7 @@ export class ObjectConstraints {
   }
 
   /** @hidden */
-  private static boxArbitraries(arbs: Arbitrary<any>[]): Arbitrary<any>[] {
+  private static boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
     return arbs.map(arb =>
       arb.map(v => {
         switch (typeof v) {
@@ -73,7 +73,7 @@ export class ObjectConstraints {
   }
 
   /** @hidden */
-  private static boxArbitrariesIfNeeded(arbs: Arbitrary<any>[], boxEnabled: boolean): Arbitrary<any>[] {
+  private static boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
     return boxEnabled ? ObjectConstraints.boxArbitraries(arbs).concat(arbs) : arbs;
   }
 
@@ -144,7 +144,7 @@ export namespace ObjectConstraints {
 }
 
 /** @hidden */
-const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
+const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> => {
   const arbKeys = constraints.withObjectString
     ? memo(n =>
         frequency(
@@ -157,11 +157,11 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
 
-  const entriesOf = (keyArb: Arbitrary<any>, valueArb: Arbitrary<any>) =>
+  const entriesOf = <T, U>(keyArb: Arbitrary<T>, valueArb: Arbitrary<U>) =>
     set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]);
 
-  const mapOf = (ka: Arbitrary<any>, va: Arbitrary<any>) => entriesOf(ka, va).map(v => new Map(v));
-  const dictOf = (ka: Arbitrary<string>, va: Arbitrary<any>) => entriesOf(ka, va).map(v => toObject(v));
+  const mapOf = <T, U>(ka: Arbitrary<T>, va: Arbitrary<U>) => entriesOf(ka, va).map(v => new Map(v));
+  const dictOf = <U>(ka: Arbitrary<string>, va: Arbitrary<U>) => entriesOf(ka, va).map(v => toObject(v));
 
   const baseArb = oneof(...arbitrariesForBase);
   const arrayBaseArb = oneof(...arbitrariesForBase.map(arb => array(arb, 0, maxKeys)));
@@ -180,7 +180,7 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
   // {[key:string]: base} | {[key:string]: anything}
   const objectArb = memo(n => oneof(objectBaseArb(n), dictOf(arbKeys(n), anythingArb(n))));
 
-  const anythingArb: Memo<any> = memo(n => {
+  const anythingArb: Memo<unknown> = memo(n => {
     if (n <= 0) return oneof(baseArb);
     return oneof(
       baseArb,
@@ -196,7 +196,7 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
 };
 
 /** @hidden */
-const objectInternal = (constraints: ObjectConstraints): Arbitrary<any> => {
+const objectInternal = (constraints: ObjectConstraints): Arbitrary<object> => {
   return dictionary(constraints.key, anythingInternal(constraints));
 };
 
@@ -247,7 +247,7 @@ function anything(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  */
-function object(): Arbitrary<unknown>;
+function object(): Arbitrary<object>;
 /**
  * For any objects following the constraints defined by `settings`
  *
@@ -258,8 +258,8 @@ function object(): Arbitrary<unknown>;
  *
  * @param settings Constraints to apply when building instances
  */
-function object(settings: ObjectConstraints.Settings): Arbitrary<unknown>;
-function object(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
+function object(settings: ObjectConstraints.Settings): Arbitrary<object>;
+function object(settings?: ObjectConstraints.Settings): Arbitrary<object> {
   return objectInternal(ObjectConstraints.from(settings));
 }
 

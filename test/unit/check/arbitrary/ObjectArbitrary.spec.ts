@@ -401,7 +401,7 @@ describe('ObjectArbitrary', () => {
           while (shrinkable.shrink().has(v => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
-          return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value as any).length === 0;
+          return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value).length === 0;
         })
       ));
     it('Should not suggest input in shrinked values', () =>
@@ -409,7 +409,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const shrinkable = object().generate(mrng);
-          for (const s of shrinkable.shrink()) expect(s.value).not.toStrictEqual(shrinkable.value as any);
+          for (const s of shrinkable.shrink()) expect(s.value).not.toStrictEqual(shrinkable.value);
         })
       ));
   });
