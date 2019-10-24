@@ -1,9 +1,8 @@
 language: node_js
 node_js:
- - '12'
- - '10'
- - '8'
- - '6'
+  - "12"
+  - "10"
+  - "8"
 
 cache:
   yarn: true
@@ -17,7 +16,8 @@ before_install:
   - sudo apt-get install -y -qq yarn=1.19.1-1
 
 script:
-  - yarn --no-progress --frozen-lockfile --ignore-engines
+  - yarn prebuild
+  - yarn build
   - yarn test -- --maxWorkers=4
   - yarn e2e -- --maxWorkers=4
 
@@ -34,22 +34,19 @@ jobs:
     - stage: test
       env: STEP=FORMAT_LINT
       script:
-        - yarn --no-progress --frozen-lockfile --ignore-engines
         - yarn format:check
         - yarn lint:check
     - stage: test
       env: STEP=EXAMPLES_ROLLUP_LEGACY
       script:
-        - yarn --no-progress --frozen-lockfile --ignore-engines
-        - yarn build
-        - cd example ;
-          yarn --no-progress --frozen-lockfile --ignore-engines ;
-          bash run.sh ;
-          cd ..
         - yarn prebuild
         - yarn build:publish-cjs
         - yarn build:publish-esm
         - yarn webbuild
+        - cd example ;
+          yarn --no-progress --frozen-lockfile --ignore-engines ;
+          bash run.sh ;
+          cd ..
         - yarn test:rollup-esm
         - yarn test:rollup-iife
         - nvm install 0.12 ;
@@ -57,13 +54,13 @@ jobs:
     - stage: test
       env: STEP=HEAD
       script:
-        - yarn --no-progress --no-lockfile --ignore-engines
+        - yarn prebuild
+        - yarn build
         - yarn test -- --maxWorkers=4
         - yarn e2e -- --maxWorkers=4
     - stage: publish documentation
       if: branch = master AND type = push
       script:
-        - yarn --no-progress --frozen-lockfile --ignore-engines
         - yarn prebuild
         - yarn build:publish-types
         - yarn docs
@@ -78,7 +75,6 @@ jobs:
     - stage: deploy
       if: tag =~ ^v\d+\.
       script:
-        - yarn --no-progress --frozen-lockfile --ignore-engines
         - yarn prebuild
         - yarn build:publish-types
         - yarn build:publish-cjs
