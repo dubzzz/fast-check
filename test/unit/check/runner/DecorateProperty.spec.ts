@@ -27,6 +27,7 @@ describe('decorateProperty', () => {
   it('Should enable none when needed', () => {
     decorateProperty(buildProperty(true), {
       skipAllAfterTimeLimit: null,
+      interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: false
     });
@@ -34,9 +35,10 @@ describe('decorateProperty', () => {
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
   });
-  it('Should enable SkipAfterProperty when needed', () => {
+  it('Should enable SkipAfterProperty on skipAllAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
       skipAllAfterTimeLimit: 1,
+      interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: false
     });
@@ -44,9 +46,21 @@ describe('decorateProperty', () => {
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
   });
-  it('Should enable TimeoutProperty when needed', () => {
+  it('Should enable SkipAfterProperty on interruptAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
       skipAllAfterTimeLimit: null,
+      interruptAfterTimeLimit: 1,
+      timeout: null,
+      unbiased: false
+    });
+    expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
+    expect(TimeoutProperty).toHaveBeenCalledTimes(0);
+    expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+  });
+  it('Should enable TimeoutProperty on timeout', () => {
+    decorateProperty(buildProperty(true), {
+      skipAllAfterTimeLimit: null,
+      interruptAfterTimeLimit: null,
       timeout: 1,
       unbiased: false
     });
@@ -54,9 +68,10 @@ describe('decorateProperty', () => {
     expect(TimeoutProperty).toHaveBeenCalledTimes(1);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
   });
-  it('Should enable UnbiasedProperty when needed', () => {
+  it('Should enable UnbiasedProperty on unbiased', () => {
     decorateProperty(buildProperty(true), {
       skipAllAfterTimeLimit: null,
+      interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: true
     });
@@ -67,6 +82,7 @@ describe('decorateProperty', () => {
   it('Should not enable TimeoutProperty on synchronous property', () => {
     decorateProperty(buildProperty(false), {
       skipAllAfterTimeLimit: null,
+      interruptAfterTimeLimit: null,
       timeout: 1,
       unbiased: false
     });
@@ -77,10 +93,11 @@ describe('decorateProperty', () => {
   it('Should enable multiple wrappers when needed', () => {
     decorateProperty(buildProperty(true), {
       skipAllAfterTimeLimit: 1,
+      interruptAfterTimeLimit: 1,
       timeout: 1,
       unbiased: true
     });
-    expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
+    expect(SkipAfterProperty).toHaveBeenCalledTimes(2);
     expect(TimeoutProperty).toHaveBeenCalledTimes(1);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(1);
   });

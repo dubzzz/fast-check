@@ -22,6 +22,8 @@ export class QualifiedParameters<T> {
   examples: T[];
   endOnFailure: boolean;
   skipAllAfterTimeLimit: number | null;
+  interruptAfterTimeLimit: number | null;
+  markInterruptAsFailure: boolean;
 
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
@@ -93,6 +95,8 @@ export class QualifiedParameters<T> {
       maxSkipsPerRun: QualifiedParameters.readOrDefault(p, 'maxSkipsPerRun', 100),
       timeout: QualifiedParameters.readOrDefault(p, 'timeout', null),
       skipAllAfterTimeLimit: QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null),
+      interruptAfterTimeLimit: QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null),
+      markInterruptAsFailure: QualifiedParameters.readBoolean(p, 'markInterruptAsFailure'),
       logger: QualifiedParameters.readOrDefault(p, 'logger', (v: string) => {
         // tslint:disable-next-line:no-console
         console.log(v);

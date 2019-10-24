@@ -1,3 +1,22 @@
+# 1.18.0
+
+_Support for global parameters with `fc.configureGlobal(parameters)`_
+
+## Features
+
+- ([PR#439](https://github.com/dubzzz/fast-check/pull/439)) Support for global parameters
+
+## Fixes
+
+- ([PR#438](https://github.com/dubzzz/fast-check/pull/438)) Clean: Add sideEffects flag into package.json
+- ([PR#440](https://github.com/dubzzz/fast-check/pull/440)) Clean: Migrate from tslint to eslint - ([PR#447](https://github.com/dubzzz/fast-check/pull/447)), ([PR#451](https://github.com/dubzzz/fast-check/pull/451))
+- ([PR#443](https://github.com/dubzzz/fast-check/pull/443)) Doc: Export missing `WeightedArbitrary`
+- ([PR#444](https://github.com/dubzzz/fast-check/pull/444)) Doc: Add missing documentation for `fc.frequency`
+- ([PR#446](https://github.com/dubzzz/fast-check/pull/446)) Doc: Add code contributors widget directly in README.md
+- ([PR#436](https://github.com/dubzzz/fast-check/pull/436)) Typings: Better typings for `fc.anything`-like arbitraries
+
+---
+
 # 1.17.0
 
 _Multiple new arbitraries: date, ipv4 extended, uuid, mixed case and many settings_
