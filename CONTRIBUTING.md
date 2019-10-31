@@ -33,9 +33,9 @@ In order to start playing with the code locally you must run the following set o
 
 ```bash
 git clone https://github.com/dubzzz/fast-check.git && cd fast-check
-npm install
-npm run prebuild #generate missing implementations: tuple and properties
-npm run build    #compile the code in ./src, build the ./lib content
+yarn
+yarn prebuild #generate missing implementations: tuple and properties
+yarn build    #compile the code in ./src, build the ./lib content
 ```
 
 Once done, everything is ready for you to start working on the code.
@@ -43,9 +43,9 @@ Once done, everything is ready for you to start working on the code.
 #### Code style
 
 Code style standard is enforced by Prettier.
-Once done with your development you can check it follow the recommended code style by running `npm run format:check` or run autofixes with `npm run format:fix`.
+Once done with your development you can check it follow the recommended code style by running `yarn format:check` or run autofixes with `yarn format:fix`.
 
-You should also check for linting by running `npm run lint:check`.
+You should also check for linting by running `yarn lint:check`.
 
 #### Travis CI integration
 
@@ -112,7 +112,7 @@ describe('MyArbitrary', () => {
 
 - No regression test - in `test/e2e/NoRegression.spec.ts`
 
-Then run `npm run e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
+Then run `yarn e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
 
 - Legacy support test - in `test/legacy/main.js`
 

@@ -30,7 +30,7 @@ Hands-on tutorial and definition of Property Based Testing: [:checkered_flag: se
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
 
-Install the module with: `npm install fast-check --save-dev`
+Install the module with: `yarn add fast-check --dev` or `npm install fast-check --save-dev`
 
 Example of integration in [mocha](http://mochajs.org/):
 
