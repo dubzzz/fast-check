@@ -1,3 +1,6 @@
+import { cloneMethod } from '../symbols';
+import { Random } from '../../random/generator/Random';
+
 // asyncScheduler
 // taskScheduler
 // asyncOrchestrator
@@ -6,7 +9,7 @@
 // with schedule and schedulable method
 // plus waitAll and waitOne methods
 
-interface IScheduler {
+interface Scheduler {
   schedule: <T>(task: PromiseLike<T>) => PromiseLike<T>;
   schedulable: <TArgs extends any[], T>(
     asyncFunction: (...args: TArgs) => PromiseLike<T>
@@ -22,8 +25,15 @@ type ScheduledTask = {
   trigger: () => void;
 };
 
-class Scheduler implements IScheduler {
+class SchedulerImplem implements Scheduler {
+  private readonly sourceMrng: Random;
+  private readonly mrng: Random;
   private readonly scheduledTasks: ScheduledTask[];
+
+  constructor(mrng: Random) {
+    this.sourceMrng = mrng.clone(); // TODO check if we need to clone twice
+    this.mrng = mrng.clone();
+  }
 
   schedule<T>(task: PromiseLike<T>) {
     let trigger: (() => void) | null = null;
@@ -43,8 +53,7 @@ class Scheduler implements IScheduler {
   }
 
   async waitOne() {
-    // TODO random id
-    const taskIndex = 0;
+    const taskIndex = this.mrng.nextInt(0, this.scheduledTasks.length - 1);
     const [scheduledTask] = this.scheduledTasks.splice(taskIndex, 1);
     scheduledTask.trigger(); // release the promise
     await scheduledTask.scheduled; // wait for its completion
@@ -54,5 +63,9 @@ class Scheduler implements IScheduler {
     while (this.scheduledTasks.length > 0) {
       await this.waitOne();
     }
+  }
+
+  [cloneMethod]() {
+    return new SchedulerImplem(this.sourceMrng);
   }
 }
