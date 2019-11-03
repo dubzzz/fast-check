@@ -33,6 +33,8 @@ do
     fi
 done
 
+# Take published version of fast-check
 yarn unlink "fast-check"
+yarn --force
 
 exit $status
