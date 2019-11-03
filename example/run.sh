@@ -14,18 +14,18 @@ do
     failure=`echo "${testUnit}" | cut -d: -f3`
 
     echo "Expect 'yarn test:${name}' to have ${success} passed and ${failure} failed"
-    yarn "test:${name}" > "output/${name}" 2> /dev/null
+    yarn "test:${name}" > "output/${name}" 2>&1
     cat "output/${name}"
 
     if [ ${success} -ne 0 ]; then
-        cat "output/${name}" | grep "  ${success} passing" >/dev/null 2>&1
+        cat "output/${name}" | grep "Tests:" | grep "${success} passed," >/dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo "Failure [passing]"
             status=1
         fi
     fi
     if [ ${failure} -ne 0 ]; then
-        cat "output/${name}" | grep "  ${failure} failing" >/dev/null 2>&1
+        cat "output/${name}" | grep "Tests:" | grep "${failure} failed," >/dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo "Failure [failing]"
             status=1
