@@ -42,6 +42,7 @@ jobs:
         - yarn prebuild
         - yarn build:publish-cjs
         - yarn build:publish-esm
+        - yarn build:publish-types
         - yarn webbuild
         - yarn link
         - cd example ;
