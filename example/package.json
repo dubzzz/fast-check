@@ -11,7 +11,7 @@
     "test:tree": "mocha --require ts-node/register binary-trees/test.ts"
   },
   "devDependencies": {
-    "fast-check": "file:..",
+    "fast-check": "*",
     "mocha": "^5.0.0",
     "ts-node": "^6.1.0"
   },
