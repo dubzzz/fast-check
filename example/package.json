@@ -11,11 +11,14 @@
     "test:model": "jest --testPathPattern model-based-testing",
     "test:tree": "jest --testPathPattern binary-trees"
   },
+  "dependencies": {
+    "fast-check": "*"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.21",
-    "fast-check": "*",
     "jest": "^24.9.0",
-    "ts-jest": "^24.1.0"
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.4"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
