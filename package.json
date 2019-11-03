@@ -30,6 +30,7 @@
     "e2e:watch": "jest --config jest.e2e.config.js --watch",
     "test:rollup-esm": "rollup --config test/rollup/esm/rollup.config.js && node test/rollup/esm/dist/main.js",
     "test:rollup-iife": "rollup --config test/rollup/iife/rollup.config.js && node test/rollup/iife/dist/main.js",
+    "test:type": "tsd",
     "coverage": "cat ./coverage/lcov.info | coveralls",
     "docs": "mkdir -p docs/2-API && docsify-init --editDir documentation && cp -R documentation/* docs/ && api-extractor run --local && generate-ts-docs markdown -i docs/2-API -o docs/2-API && cat README.md | sed 's/https:\\/\\/github.com\\/dubzzz\\/fast-check\\/blob\\/master\\/documentation//g' > docs/README.md && markdownbars -i docs/_sidebar.md -o docs/_sidebar.md",
     "format": "prettier --write \"**/*.{js,ts}\"",
@@ -75,6 +76,7 @@
     "source-map-support": "^0.5.13",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
+    "tsd": "^0.10.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.6.4",
     "uglifyjs": "^2.4.11"
@@ -87,5 +89,8 @@
     "quickcheck",
     "jscheck",
     "jsverify"
-  ]
+  ],
+  "tsd": {
+		"directory": "test/type"
+	}
 }
