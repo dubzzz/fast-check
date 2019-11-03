@@ -1,4 +1,4 @@
-import { IProperty } from '../../../../src/check/property/IProperty';
+import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
 
 // Mocks
@@ -12,7 +12,7 @@ function buildProperty() {
     generate: jest.fn(),
     run: jest.fn()
   };
-  return { mocks, property: mocks as IProperty<any> };
+  return { mocks, property: mocks as IRawProperty<any> };
 }
 
 function buildRandom() {
