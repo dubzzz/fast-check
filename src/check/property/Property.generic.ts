@@ -2,14 +2,19 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IProperty, runIdToFrequency } from './IProperty';
+import { IRawProperty, runIdToFrequency } from './IRawProperty';
+
+/**
+ * Interface for synchronous property, see {@link IRawProperty}
+ */
+export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
 /**
  * Property, see {@link IProperty}
  *
  * Prefer using {@link property} instead
  */
-export class Property<Ts> implements IProperty<Ts, false> {
+export class Property<Ts> implements IProperty<Ts> {
   static dummyHook: () => void = () => {
     return;
   };

@@ -1,12 +1,12 @@
 import { Random } from '../../random/generator/Random';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IProperty } from './IProperty';
+import { IRawProperty } from './IRawProperty';
 
 /** @hidden */
-export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IProperty<Ts, IsAsync> {
+export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
   private skipAfterTime: number;
   constructor(
-    readonly property: IProperty<Ts, IsAsync>,
+    readonly property: IRawProperty<Ts, IsAsync>,
     readonly getTime: () => number,
     timeLimit: number,
     readonly interruptExecution: boolean

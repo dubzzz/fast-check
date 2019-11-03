@@ -1,7 +1,7 @@
 import { pre } from './check/precondition/Pre';
-import { asyncProperty } from './check/property/AsyncProperty';
-import { property } from './check/property/Property';
-import { IProperty } from './check/property/IProperty';
+import { asyncProperty, IAsyncProperty } from './check/property/AsyncProperty';
+import { property, IProperty } from './check/property/Property';
+import { IRawProperty } from './check/property/IRawProperty';
 import { Parameters } from './check/runner/configuration/Parameters';
 import { RunDetails } from './check/runner/reporter/RunDetails';
 import { assert, check } from './check/runner/Runner';
@@ -107,7 +107,9 @@ export {
   // property definition
   property,
   asyncProperty,
+  IRawProperty,
   IProperty,
+  IAsyncProperty,
   // pre-built arbitraries
   boolean,
   float,

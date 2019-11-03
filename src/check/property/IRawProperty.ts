@@ -9,7 +9,7 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
  * - Arbitraries: how to generate the inputs for the algorithm
  * - Predicate: how to confirm the algorithm succeeded?
  */
-export interface IProperty<Ts, IsAsync extends boolean = boolean> {
+export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   /**
    * Is the property asynchronous?
    *

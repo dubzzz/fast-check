@@ -1,7 +1,7 @@
 import { stream } from '../../stream/Stream';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IProperty } from '../property/IProperty';
+import { IRawProperty } from '../property/IRawProperty';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
@@ -14,10 +14,12 @@ import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { throwIfFailed } from './utils/RunDetailsFormatter';
+import { IAsyncProperty } from '../property/AsyncProperty';
+import { IProperty } from '../property/Property';
 
 /** @hidden */
 function runIt<Ts>(
-  property: IProperty<Ts>,
+  property: IRawProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
@@ -32,7 +34,7 @@ function runIt<Ts>(
 
 /** @hidden */
 async function asyncRunIt<Ts>(
-  property: IProperty<Ts>,
+  property: IRawProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
@@ -81,7 +83,7 @@ function buildInitialValues<Ts>(
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: IProperty<Ts, true>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
+function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -90,9 +92,9 @@ function check<Ts>(property: IProperty<Ts, true>, params?: Parameters<Ts>): Prom
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: IProperty<Ts, false>, params?: Parameters<Ts>): RunDetails<Ts>;
-function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
-function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
+function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
+function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
+function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   if (rawProperty == null || rawProperty.generate == null)
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
@@ -128,7 +130,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
  * @param property Asynchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: IProperty<Ts, true>, params?: Parameters<Ts>): Promise<void>;
+function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
 /**
  * Run the property, throw in case of failure
  *
@@ -138,9 +140,9 @@ function assert<Ts>(property: IProperty<Ts, true>, params?: Parameters<Ts>): Pro
  * @param property Synchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: IProperty<Ts, false>, params?: Parameters<Ts>): void;
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>) {
+function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
+function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
+function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(throwIfFailed);
   else throwIfFailed(out as RunDetails<Ts>);

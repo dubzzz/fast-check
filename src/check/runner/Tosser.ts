@@ -2,16 +2,16 @@ import * as prand from 'pure-rand';
 
 import { Random } from '../../random/generator/Random';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
-import { IProperty } from '../property/IProperty';
+import { IRawProperty } from '../property/IRawProperty';
 
 /** @hidden */
-function lazyGenerate<Ts>(generator: IProperty<Ts>, rng: prand.RandomGenerator, idx: number): () => Shrinkable<Ts> {
+function lazyGenerate<Ts>(generator: IRawProperty<Ts>, rng: prand.RandomGenerator, idx: number): () => Shrinkable<Ts> {
   return () => generator.generate(new Random(rng), idx);
 }
 
 /** @hidden */
 export function* toss<Ts>(
-  generator: IProperty<Ts>,
+  generator: IRawProperty<Ts>,
   seed: number,
   random: (seed: number) => prand.RandomGenerator,
   examples: Ts[]
