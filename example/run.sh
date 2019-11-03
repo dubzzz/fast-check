@@ -2,6 +2,9 @@
 
 mkdir -p output
 
+# Run `yarn link` in parent directory first
+yarn link "fast-check"
+
 status=0
 
 for testUnit in "async:1:1" "contains:6:0" "knight:15:1" "settings:0:1" "model:1:1" "tree:12:8"
@@ -29,5 +32,9 @@ do
         fi
     fi
 done
+
+# Take published version of fast-check
+yarn unlink "fast-check"
+yarn --force
 
 exit $status

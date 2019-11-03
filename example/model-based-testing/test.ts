@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import * as fc from '../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { MusicPlayer, MusicPlayerA, MusicPlayerB } from './MusicPlayer';
 
