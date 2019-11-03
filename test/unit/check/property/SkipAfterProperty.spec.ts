@@ -78,7 +78,7 @@ describe('SkipAfterProperty', () => {
 
     expect(PreconditionFailure.isFailure(out)).toBe(true);
     expect(timerMock.mock.calls.length).toBe(2);
-    expect(propertyMock.isAsync.mock.calls.length).toBe(0);
+    expect(propertyMock.isAsync.mock.calls.length).toBe(1); // check expected return type: return a resolved Promise if async, a value otherwise
     expect(propertyMock.generate.mock.calls.length).toBe(0);
     expect(propertyMock.run.mock.calls.length).toBe(0);
   });

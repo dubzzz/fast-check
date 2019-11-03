@@ -9,14 +9,14 @@ import { IProperty, runIdToFrequency } from './IProperty';
  *
  * Prefer using {@link asyncProperty} instead
  */
-export class AsyncProperty<Ts> implements IProperty<Ts> {
+export class AsyncProperty<Ts> implements IProperty<Ts, true> {
   static dummyHook: () => Promise<void> = async () => {
     return;
   };
   private beforeEachHook: () => Promise<void> = AsyncProperty.dummyHook;
   private afterEachHook: () => Promise<void> = AsyncProperty.dummyHook;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {}
-  isAsync = () => true;
+  isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }

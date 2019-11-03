@@ -1,9 +1,7 @@
 import { stream } from '../../stream/Stream';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { AsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/IProperty';
-import { Property } from '../property/Property';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
@@ -83,7 +81,7 @@ function buildInitialValues<Ts>(
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
+function check<Ts>(property: IProperty<Ts, true>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -92,7 +90,7 @@ function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promis
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
+function check<Ts>(property: IProperty<Ts, false>, params?: Parameters<Ts>): RunDetails<Ts>;
 function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
 function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
   if (rawProperty == null || rawProperty.generate == null)
@@ -130,7 +128,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
  * @param property Asynchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
+function assert<Ts>(property: IProperty<Ts, true>, params?: Parameters<Ts>): Promise<void>;
 /**
  * Run the property, throw in case of failure
  *
@@ -140,7 +138,7 @@ function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  * @param property Synchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): void;
+function assert<Ts>(property: IProperty<Ts, false>, params?: Parameters<Ts>): void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>) {
   const out = check(property, params);

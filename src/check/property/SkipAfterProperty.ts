@@ -3,10 +3,10 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IProperty } from './IProperty';
 
 /** @hidden */
-export class SkipAfterProperty<Ts> implements IProperty<Ts> {
+export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IProperty<Ts, IsAsync> {
   private skipAfterTime: number;
   constructor(
-    readonly property: IProperty<Ts>,
+    readonly property: IProperty<Ts, IsAsync>,
     readonly getTime: () => number,
     timeLimit: number,
     readonly interruptExecution: boolean
@@ -17,7 +17,12 @@ export class SkipAfterProperty<Ts> implements IProperty<Ts> {
   generate = (mrng: Random, runId?: number) => this.property.generate(mrng, runId);
   run = (v: Ts) => {
     if (this.getTime() >= this.skipAfterTime) {
-      return new PreconditionFailure(this.interruptExecution);
+      const preconditionFailure = new PreconditionFailure(this.interruptExecution);
+      if (this.isAsync()) {
+        return Promise.resolve(preconditionFailure) as any; // IsAsync => Promise<PreconditionFailure | string | null>
+      } else {
+        return preconditionFailure as any; // !IsAsync => PreconditionFailure | string | null
+      }
     }
     return this.property.run(v);
   };

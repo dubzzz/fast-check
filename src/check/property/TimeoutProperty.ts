@@ -17,9 +17,9 @@ const timeoutAfter = (timeMs: number) => {
 };
 
 /** @hidden */
-export class TimeoutProperty<Ts> implements IProperty<Ts> {
+export class TimeoutProperty<Ts> implements IProperty<Ts, true> {
   constructor(readonly property: IProperty<Ts>, readonly timeMs: number) {}
-  isAsync = () => true;
+  isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return this.property.generate(mrng, runId);
   }
