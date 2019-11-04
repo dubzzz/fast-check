@@ -47,7 +47,8 @@ jobs:
         - yarn link
         - cd example ;
           yarn --ignore-engines ;
-          bash run.sh ;
+          yarn link "fast-check" ;
+          yarn test ;
           cd ..
         - yarn test:rollup-esm
         - yarn test:rollup-iife
