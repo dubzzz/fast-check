@@ -1,5 +1,5 @@
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
-import { IProperty } from '../../../../src/check/property/IProperty';
+import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 
 // Mocks
@@ -15,7 +15,7 @@ function buildProperty(asyncProp: boolean) {
     isAsync: () => asyncProp,
     generate: () => new Shrinkable({}),
     run: () => null
-  } as IProperty<any>;
+  } as IRawProperty<any>;
 }
 
 describe('decorateProperty', () => {

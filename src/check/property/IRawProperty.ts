@@ -9,13 +9,13 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
  * - Arbitraries: how to generate the inputs for the algorithm
  * - Predicate: how to confirm the algorithm succeeded?
  */
-export interface IProperty<Ts> {
+export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   /**
    * Is the property asynchronous?
    *
    * true in case of asynchronous property, false otherwise
    */
-  isAsync(): boolean;
+  isAsync(): IsAsync;
   /**
    * Generate values of type Ts
    *
@@ -27,7 +27,11 @@ export interface IProperty<Ts> {
    * Check the predicate for v
    * @param v Value of which we want to check the predicate
    */
-  run(v: Ts): Promise<PreconditionFailure | string | null> | (PreconditionFailure | string | null);
+  run(
+    v: Ts
+  ):
+    | (IsAsync extends true ? Promise<PreconditionFailure | string | null> : never)
+    | (IsAsync extends false ? (PreconditionFailure | string | null) : never);
 }
 
 /**
