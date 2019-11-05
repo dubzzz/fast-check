@@ -2,7 +2,6 @@ import fc from 'fast-check';
 import { SpaceArbitrary } from './arbitraries/SpaceArbitrary';
 import { SpaceBuilder } from './src/space';
 import { knight } from './src/knight';
-import * as assert from 'assert';
 
 // const solver = buggyKnight; // with bugs
 const solver = knight;
@@ -26,7 +25,7 @@ describe('knight', () => {
       .withCurrent(2, 3)
       .build();
     solver(space, 40);
-    assert.ok(space.solved());
+    expect(space.solved()).toBe(true);
   });
   it('should succeed on: Less jumps', () => {
     const space = new SpaceBuilder()
@@ -35,7 +34,7 @@ describe('knight', () => {
       .withCurrent(24, 2)
       .build();
     solver(space, 49);
-    assert.ok(space.solved());
+    expect(space.solved()).toBe(true);
   });
   it('should succeed on: Lesser jumps', () => {
     const space = new SpaceBuilder()
@@ -44,7 +43,7 @@ describe('knight', () => {
       .withCurrent(6, 6)
       .build();
     solver(space, 32);
-    assert.ok(space.solved());
+    expect(space.solved()).toBe(true);
   });
   it('should succeed on: Tower', () => {
     const space = new SpaceBuilder()
@@ -53,7 +52,7 @@ describe('knight', () => {
       .withCurrent(0, 1)
       .build();
     solver(space, 6);
-    assert.ok(space.solved());
+    expect(space.solved()).toBe(true);
   });
   it('should succeed on: Correct cutting', () => {
     const space = new SpaceBuilder()
@@ -62,7 +61,7 @@ describe('knight', () => {
       .withCurrent(0, 0)
       .build();
     solver(space, 6);
-    assert.ok(space.solved());
+    expect(space.solved()).toBe(true);
   });
   it('should succeed on: Evasive', () => {
     const space = new SpaceBuilder()
@@ -71,7 +70,7 @@ describe('knight', () => {
       .withCurrent(5, 98)
       .build();
     solver(space, 7);
-    assert.ok(space.solved());
+    expect(space.solved()).toBe(true);
   });
   it('should succeed on: Not there', () => {
     const space = new SpaceBuilder()
@@ -80,6 +79,6 @@ describe('knight', () => {
       .withCurrent(54, 77)
       .build();
     solver(space, 14);
-    assert.ok(space.solved());
+    expect(space.solved()).toBe(true);
   });
 });

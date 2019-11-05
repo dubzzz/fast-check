@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import * as _ from 'lodash';
 
 describe('mazeGenerator', () => {
-  fit('should contain a single start point located at the specified point', () => {
+  it('should contain a single start point located at the specified point', () => {
     fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
@@ -36,11 +36,10 @@ describe('mazeGenerator', () => {
     fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
-
         const alreadyVisited = new Set<string>();
-        const ptsToVisit = [ins.startPt];
+        const ptsToVisit = [{ pt: ins.startPt, src: ins.startPt }];
         while (ptsToVisit.length > 0) {
-          const [pt] = ptsToVisit.splice(ptsToVisit.length - 1);
+          const [{ pt, src }] = ptsToVisit.splice(ptsToVisit.length - 1);
           const ptString = `x:${pt.x},y:${pt.y}`;
           if (alreadyVisited.has(ptString)) {
             // We already got to this cell from another path
@@ -49,10 +48,15 @@ describe('mazeGenerator', () => {
           }
           alreadyVisited.add(ptString);
           ptsToVisit.push(
-            ...neighboorsFor(pt).filter(nPt => {
-              const cell = cellTypeAt(maze, nPt);
-              return cell !== null && cell !== CellType.Wall;
-            })
+            ...neighboorsFor(pt)
+              // We do not go back on our tracks
+              .filter(nPt => nPt.x !== src.x || nPt.y !== src.y)
+              .filter(nPt => {
+                const cell = cellTypeAt(maze, nPt);
+                return cell !== null && cell !== CellType.Wall;
+              })
+              // Keep the src aka source point in order not to go back on our tracks
+              .map(nPt => ({ pt: nPt, src: pt }))
           );
         }
         return true;
@@ -64,7 +68,6 @@ describe('mazeGenerator', () => {
     fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
-        console.log(maze);
         const numPathsLeavingEnd = neighboorsFor(ins.endPt).reduce((count, pt) => {
           const cell = cellTypeAt(maze, pt);
           if (cell === null || cell === CellType.Wall) return count;

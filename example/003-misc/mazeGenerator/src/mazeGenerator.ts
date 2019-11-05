@@ -17,7 +17,12 @@ export enum CellType {
   End = 'End'
 }
 
-const mazeGeneratorInternal = (mrng: Random, dim: Dimension, startPt: Point, endPt: Point): CellType[][] => {
+const mazeGeneratorInternal = (
+  mrng: Random,
+  dim: Dimension,
+  startPt: Point,
+  endPt: Point
+): { maze: CellType[][]; hasPathLeadingToTheEnd: boolean } => {
   // Initialize grid
   const maze: CellType[][] = [...Array(dim.height)].map(_ => [...Array(dim.width)].fill(CellType.Wall));
   maze[startPt.y][startPt.x] = CellType.Start;
@@ -81,43 +86,14 @@ const mazeGeneratorInternal = (mrng: Random, dim: Dimension, startPt: Point, end
     addNeighboorsInPtsToScan(pt);
   }
 
-  return maze;
-};
-
-const removedEnoughWalls = (maze: CellType[][], dim: Dimension): boolean => {
-  const { height, width } = dim;
-  const cellTypeAt = (pt: Point): CellType | null => {
-    return pt.x < 0 || pt.x >= dim.width || pt.y < 0 || pt.y >= dim.height ? null : maze[pt.y][pt.x];
-  };
-  for (let j = 0; j !== height; ++j) {
-    for (let i = 0; i !== width; ++i) {
-      if (maze[j][i] !== CellType.Wall) continue;
-      const numWallsInBlock = [
-        { x: i - 1, y: j - 1 },
-        { x: i - 1, y: j },
-        { x: i - 1, y: j + 1 },
-        { x: i, y: j - 1 },
-        { x: i, y: j + 1 },
-        { x: i + 1, y: j - 1 },
-        { x: i + 1, y: j },
-        { x: i + 1, y: j + 1 }
-      ].reduce((count, pt) => {
-        if (cellTypeAt(pt) === CellType.Wall) return count + 1;
-        else return count;
-      }, 0);
-      if (numWallsInBlock === 8) {
-        return false; // Unreacheable path
-      }
-    }
-  }
-  return true;
+  return { maze, hasPathLeadingToTheEnd: alreadyReachedEnd };
 };
 
 export const mazeGenerator = (seed: number, dim: Dimension, startPt: Point, endPt: Point): CellType[][] => {
   const mrng = new Random(prand.xorshift128plus(seed));
 
   while (true) {
-    const maze = mazeGeneratorInternal(mrng, dim, startPt, endPt);
-    if (removedEnoughWalls(maze, dim) || true) return maze;
+    const { maze, hasPathLeadingToTheEnd } = mazeGeneratorInternal(mrng, dim, startPt, endPt);
+    if (hasPathLeadingToTheEnd) return maze;
   }
 };
