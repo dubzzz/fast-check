@@ -129,6 +129,6 @@ m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null,
 
 ## Code Contributors
 
-This project would not be the same with them 💖 - [Become one of them](CONTRIBUTING.md)
+This project would not be the same without them 💖 - [Become one of them](CONTRIBUTING.md)
 
 <a href="https://github.com/dubzzz/fast-check/graphs/contributors"><img src="https://opencollective.com/fast-check/contributors.svg?width=890&button=false" /></a>
