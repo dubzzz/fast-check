@@ -3,16 +3,13 @@
   "version": "1.0.0",
   "description": "Examples of usage of fast-check",
   "scripts": {
-    "test": "jest",
-    "test:async": "jest --testPathPattern async-property",
-    "test:contains": "jest --testPathPattern contains",
-    "test:knight": "jest --testPathPattern shadows-of-the-knight-codingame",
-    "test:settings": "jest --testPathPattern optional-settings-combination",
-    "test:model": "jest --testPathPattern model-based-testing",
-    "test:tree": "jest --testPathPattern binary-trees"
+    "test": "jest"
   },
   "dependencies": {
-    "fast-check": "*"
+    "@types/lodash": "^4.14.144",
+    "fast-check": "*",
+    "lodash": "^4.17.15",
+    "pure-rand": "^1.7.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.21",
@@ -24,7 +21,12 @@
   "license": "MIT",
   "private": true,
   "jest": {
-    "moduleFileExtensions": ["ts", "js"],
-    "transform": {"^.+\\.(ts|tsx)$": "ts-jest"}
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    }
   }
 }
