@@ -12,17 +12,25 @@ export const binarySearchTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tre
   const node = (minValue: number, maxValue: number): fc.Memo<Tree<number>> =>
     fc.memo(n => {
       if (n <= 1) return leaf(minValue, maxValue);
-      return fc.integer(minValue, maxValue).chain(v =>
+      return fc.integer(minValue, maxValue).chain(v => {
         // tree(minValue, v)(n - 1) is equivalent to tree(minValue, v)()
-        fc.record({ value: fc.constant(v), left: tree(minValue, v)(n - 1), right: tree(v + 1, maxValue)(n - 1) })
-      );
+        if (minValue > maxValue) {
+          return fc.constant({
+            value: v,
+            left: null,
+            right: null
+          } as Tree<number>);
+        }
+        return fc.record({
+          value: fc.constant(v),
+          left: tree(minValue, v)(n - 1),
+          right: tree(v + 1, maxValue)(n - 1)
+        });
+      });
     });
 
   const tree = (minValue: number, maxValue: number): fc.Memo<Tree<number>> =>
-    fc.memo(n => {
-      if (minValue > maxValue) leaf(minValue, maxValue);
-      return fc.oneof(leaf(minValue, maxValue), node(minValue, maxValue)(n));
-    });
+    fc.memo(n => fc.oneof(leaf(minValue, maxValue), node(minValue, maxValue)(n)));
 
   return tree(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)(maxDepth);
 };

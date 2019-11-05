@@ -26,6 +26,7 @@ Let's see how to generate recursive inputs using `letrec`, `memo` or even none o
 Various algorithms to have more random examples:
 
 - `knight` - Multi dimensional dichotomy gievn as a coding exercise
+- `mazeGenerator` - Maze generator
 
 **State machines to user interfaces**
 
