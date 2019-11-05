@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { SpaceBuilder } from '../src/space';
+import { SpaceBuilder, Space } from '../src/space';
 
 export const SpaceArbitrary = fc
   .record({
@@ -18,4 +18,4 @@ export const SpaceArbitrary = fc
       .withCurrent(sx, sy)
       .build()
   )
-  .map(space => [space, Math.ceil(Math.log(Math.max(space.dim_x, space.dim_y)) / Math.log(2))] as const);
+  .map(space => [space, Math.ceil(Math.log(Math.max(space.dim_x, space.dim_y)) / Math.log(2))] as [Space, number]);
