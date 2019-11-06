@@ -1,5 +1,5 @@
 import { expectType, expectError } from 'tsd';
-import fc from '../../lib/fast-check';
+import * as fc from '../../src/fast-check';
 
 // assert
 expectType<void>(fc.assert(fc.property(fc.nat(), () => {})));

@@ -40,9 +40,9 @@ jobs:
       env: STEP=EXAMPLES_ROLLUP_LEGACY_TYPES
       script:
         - yarn prebuild
+        - yarn build:publish-types
         - yarn build:publish-cjs
         - yarn build:publish-esm
-        - yarn build:publish-types
         - yarn webbuild
         - yarn link
         - cd example ;
