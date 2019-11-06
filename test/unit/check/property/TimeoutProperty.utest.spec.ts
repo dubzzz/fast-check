@@ -60,7 +60,7 @@ describe('TimeoutProperty', () => {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
-        new Promise(function(resolve, reject) {
+        new Promise(function(resolve) {
           setTimeout(() => resolve(null), 10);
         })
       )
@@ -81,7 +81,7 @@ describe('TimeoutProperty', () => {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
-        new Promise(function(resolve, reject) {
+        new Promise(function(resolve) {
           // underlying property is not supposed to throw (reject)
           setTimeout(() => resolve('plop'), 10);
         })
@@ -137,7 +137,7 @@ describe('TimeoutProperty', () => {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
-        new Promise(function(resolve, reject) {
+        new Promise(function(resolve) {
           setTimeout(() => resolve(null), 100);
         })
       )
@@ -157,7 +157,7 @@ describe('TimeoutProperty', () => {
     const p: IRawProperty<{}> = {
       isAsync: () => true,
       generate: jest.fn(),
-      run: jest.fn().mockReturnValueOnce(new Promise(function(resolve, reject) {}))
+      run: jest.fn().mockReturnValueOnce(new Promise(() => {}))
     };
 
     // Act

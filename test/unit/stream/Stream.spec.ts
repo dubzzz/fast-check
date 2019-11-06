@@ -101,14 +101,14 @@ describe('Stream', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).dropWhile(v => true);
+      const s = stream(g()).dropWhile(_ => true);
       expect([...s]).toEqual([]);
     });
     it('Should drop nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).dropWhile(v => false);
+      const s = stream(g()).dropWhile(_ => false);
       expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
   });
@@ -133,14 +133,14 @@ describe('Stream', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).takeWhile(v => true);
+      const s = stream(g()).takeWhile(_ => true);
       expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
     it('Should take nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).takeWhile(v => false);
+      const s = stream(g()).takeWhile(_ => false);
       expect([...s]).toEqual([]);
     });
   });

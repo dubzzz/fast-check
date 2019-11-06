@@ -8,7 +8,7 @@ import { Stream, stream } from '../../../../../src/stream/Stream';
 
 describe('ArbitraryWithShrink', () => {
   const arbWithShrink = new (class extends ArbitraryWithShrink<number> {
-    generate(mrng: Random): Shrinkable<number> {
+    generate(_mrng: Random): Shrinkable<number> {
       throw new Error('Method not implemented.');
     }
     shrink(value: number, shrunkOnce?: boolean): Stream<number> {
