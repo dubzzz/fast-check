@@ -9,7 +9,7 @@ cache:
   directories:
     - node_modules
 
-if: branch = master
+if: branch = master OR branch =~ ^fix-v\d+\. OR tag =~ ^v\d+\.
 
 before_install:
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
