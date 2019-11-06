@@ -25,6 +25,27 @@ export class QualifiedParameters<T> {
   interruptAfterTimeLimit: number | null;
   markInterruptAsFailure: boolean;
 
+  constructor(op?: Parameters<T>) {
+    const p = op || {};
+    this.seed = QualifiedParameters.readSeed(p);
+    this.randomType = QualifiedParameters.readRandomType(p);
+    this.numRuns = QualifiedParameters.readNumRuns(p);
+    this.verbose = QualifiedParameters.readVerbose(p);
+    this.maxSkipsPerRun = QualifiedParameters.readOrDefault(p, 'maxSkipsPerRun', 100);
+    this.timeout = QualifiedParameters.readOrDefault(p, 'timeout', null);
+    this.skipAllAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null);
+    this.interruptAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null);
+    this.markInterruptAsFailure = QualifiedParameters.readBoolean(p, 'markInterruptAsFailure');
+    this.logger = QualifiedParameters.readOrDefault(p, 'logger', (v: string) => {
+      // tslint:disable-next-line:no-console
+      console.log(v);
+    });
+    this.path = QualifiedParameters.readOrDefault(p, 'path', '');
+    this.unbiased = QualifiedParameters.readBoolean(p, 'unbiased');
+    this.examples = QualifiedParameters.readOrDefault(p, 'examples', []);
+    this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
+  }
+
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
     if (p.seed == null) return Date.now() ^ (Math.random() * 0x100000000);
@@ -86,25 +107,6 @@ export class QualifiedParameters<T> {
    * @param p Incoming Parameters
    */
   static read<T>(op?: Parameters<T>): QualifiedParameters<T> {
-    const p = op || {};
-    return {
-      seed: QualifiedParameters.readSeed(p),
-      randomType: QualifiedParameters.readRandomType(p),
-      numRuns: QualifiedParameters.readNumRuns(p),
-      verbose: QualifiedParameters.readVerbose(p),
-      maxSkipsPerRun: QualifiedParameters.readOrDefault(p, 'maxSkipsPerRun', 100),
-      timeout: QualifiedParameters.readOrDefault(p, 'timeout', null),
-      skipAllAfterTimeLimit: QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null),
-      interruptAfterTimeLimit: QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null),
-      markInterruptAsFailure: QualifiedParameters.readBoolean(p, 'markInterruptAsFailure'),
-      logger: QualifiedParameters.readOrDefault(p, 'logger', (v: string) => {
-        // tslint:disable-next-line:no-console
-        console.log(v);
-      }),
-      path: QualifiedParameters.readOrDefault(p, 'path', ''),
-      unbiased: QualifiedParameters.readBoolean(p, 'unbiased'),
-      examples: QualifiedParameters.readOrDefault(p, 'examples', []),
-      endOnFailure: QualifiedParameters.readBoolean(p, 'endOnFailure')
-    };
+    return new QualifiedParameters(op);
   }
 }
