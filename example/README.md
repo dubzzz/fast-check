@@ -29,6 +29,7 @@ Various algorithms to have more random examples:
 
 - `knight` - Multi dimensional dichotomy gievn as a coding exercise
 - `mazeGenerator` - Maze generator
+- `roman` - Convert from and to roman notation for numbers
 
 **State machines to user interfaces**
 

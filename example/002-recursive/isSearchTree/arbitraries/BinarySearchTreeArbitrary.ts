@@ -14,17 +14,10 @@ export const binarySearchTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tre
       if (n <= 1) return leaf(minValue, maxValue);
       return fc.integer(minValue, maxValue).chain(v => {
         // tree(minValue, v)(n - 1) is equivalent to tree(minValue, v)()
-        if (minValue > maxValue) {
-          return fc.constant({
-            value: v,
-            left: null,
-            right: null
-          } as Tree<number>);
-        }
         return fc.record({
           value: fc.constant(v),
-          left: tree(minValue, v)(n - 1),
-          right: tree(v + 1, maxValue)(n - 1)
+          left: minValue <= v ? tree(minValue, v)(n - 1) : fc.constant(null),
+          right: v + 1 <= maxValue ? tree(v + 1, maxValue)(n - 1) : fc.constant(null)
         });
       });
     });
