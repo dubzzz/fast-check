@@ -34,7 +34,7 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
       return this.biasedIntegerArbitrary;
     }
     const log2 = (v: number) => Math.floor(Math.log(v) / Math.log(2));
-    this.biasedIntegerArbitrary = biasNumeric(this.min, this.max, IntegerArbitrary, log2);
+    this.biasedIntegerArbitrary = biasNumeric<number>(this.min, this.max, IntegerArbitrary, log2);
     return this.biasedIntegerArbitrary;
   }
   withBias(freq: number): Arbitrary<number> {

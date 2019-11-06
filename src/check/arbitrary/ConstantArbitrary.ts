@@ -6,7 +6,6 @@ import { Shrinkable } from './definition/Shrinkable';
 
 /** @hidden */
 class ConstantArbitrary<T> extends Arbitrary<T> {
-  readonly idArb: Arbitrary<number>;
   constructor(readonly values: T[]) {
     super();
   }

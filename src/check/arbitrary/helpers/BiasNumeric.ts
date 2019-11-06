@@ -4,7 +4,7 @@ import { Arbitrary } from '../definition/Arbitrary';
 type Numeric = number | bigint;
 
 /** @hidden */
-type NumericArbitrary<NType> = new (min?: NType, max?: NType) => Arbitrary<NType>;
+type NumericArbitrary<NType> = new (min: NType, max: NType) => Arbitrary<NType>;
 
 /** @hidden */
 export function biasNumeric<NType extends Numeric>(

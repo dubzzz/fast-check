@@ -15,7 +15,7 @@ export class RunExecution<Ts> {
   currentLevelExecutionTrees: ExecutionTree<Ts>[];
   pathToFailure?: string;
   value?: Ts;
-  failure: string;
+  failure: string | null;
   numSkips: number;
   numSuccesses: number;
   interrupted: boolean;
@@ -23,6 +23,7 @@ export class RunExecution<Ts> {
   constructor(readonly verbosity: VerbosityLevel, readonly interruptedAsFailure: boolean) {
     this.rootExecutionTrees = [];
     this.currentLevelExecutionTrees = this.rootExecutionTrees;
+    this.failure = null;
     this.numSkips = 0;
     this.numSuccesses = 0;
     this.interrupted = false;
