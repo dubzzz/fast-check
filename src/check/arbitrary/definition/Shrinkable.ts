@@ -21,7 +21,7 @@ export class Shrinkable<T> {
    * Safe value of the shrinkable
    * Depending on {@link hasToBeCloned} it will either be {@link value_} or a clone of it
    */
-  readonly value: T;
+  readonly value!: T;
 
   /**
    * @param value Internal value of the shrinkable
