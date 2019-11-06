@@ -14,7 +14,7 @@ class CounterArbitrary extends Arbitrary<number> {
   constructor(private value: number) {
     super();
   }
-  generate(rng: Random): Shrinkable<number> {
+  generate(_mrng: Random): Shrinkable<number> {
     const last = this.value++ | 0; // keep it in integer range
     this.generatedValues.push(last);
     return new Shrinkable(last);
@@ -44,10 +44,10 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
   constructor(readonly num: number) {
     super();
   }
-  generate(rng: Random): Shrinkable<number[]> {
+  generate(mrng: Random): Shrinkable<number[]> {
     const out = [];
     for (let idx = 0; idx !== this.num; ++idx) {
-      out.push(rng.nextInt());
+      out.push(mrng.nextInt());
     }
     return new Shrinkable(out);
   }
@@ -64,7 +64,7 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
   constructor(public id: T) {
     super();
   }
-  generate(mrng: Random) {
+  generate(_mrng: Random) {
     if (this.calledOnce) {
       throw 'Arbitrary has already been called once';
     }
@@ -94,7 +94,7 @@ class WithShrinkArbitrary extends Arbitrary<number> {
     }
     return new Shrinkable(v, () => stream(g()));
   }
-  generate(rng: Random): Shrinkable<number> {
+  generate(_mrng: Random): Shrinkable<number> {
     const last = this.value++ | 0; // keep it in integer range
     return WithShrinkArbitrary.shrinkIt(last);
   }

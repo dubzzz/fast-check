@@ -130,7 +130,7 @@ describe('ObjectArbitrary', () => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = anything().generate(mrng);
           const originalValue = shrinkable.value;
-          while (shrinkable.shrink().has(v => true)[0]) {
+          while (shrinkable.shrink().has(_ => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           assertShrinkedValue(originalValue, shrinkable.value);
@@ -282,7 +282,7 @@ describe('ObjectArbitrary', () => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = json().generate(mrng);
           const originalValue = shrinkable.value;
-          while (shrinkable.shrink().has(v => true)[0]) {
+          while (shrinkable.shrink().has(_ => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           expect(typeof shrinkable.value).toEqual('string');
@@ -312,7 +312,7 @@ describe('ObjectArbitrary', () => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = unicodeJson().generate(mrng);
           const originalValue = shrinkable.value;
-          while (shrinkable.shrink().has(v => true)[0]) {
+          while (shrinkable.shrink().has(_ => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           expect(typeof shrinkable.value).toEqual('string');
@@ -398,7 +398,7 @@ describe('ObjectArbitrary', () => {
         fc.property(fc.integer(), seed => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = object().generate(mrng);
-          while (shrinkable.shrink().has(v => true)[0]) {
+          while (shrinkable.shrink().has(_ => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value).length === 0;

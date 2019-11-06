@@ -74,7 +74,7 @@ describe('ModelRunner', () => {
           calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
           return true;
         };
-        run = async (m: {}, r: {}) => {
+        run = async (_m: {}, _r: {}) => {
           calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
         };
       })();

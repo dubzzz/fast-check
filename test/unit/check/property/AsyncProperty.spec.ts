@@ -9,19 +9,19 @@ import * as stubRng from '../../stubs/generators';
 
 describe('AsyncProperty', () => {
   it('Should fail if predicate fails', async () => {
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       return false;
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
   });
   it('Should fail if predicate throws', async () => {
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       throw 'predicate throws';
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toEqual('predicate throws');
   });
   it('Should fail if predicate throws an Error', async () => {
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       throw new Error('predicate throws');
     });
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
@@ -30,7 +30,7 @@ describe('AsyncProperty', () => {
   });
   it('Should forward failure of runs with failing precondition', async () => {
     let doNotResetThisValue = false;
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       pre(false);
       doNotResetThisValue = true;
       return false;
@@ -40,22 +40,22 @@ describe('AsyncProperty', () => {
     expect(doNotResetThisValue).toBe(false); // does not run code after the failing precondition
   });
   it('Should succeed if predicate is true', async () => {
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       return true;
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should succeed if predicate does not return anything', async () => {
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {});
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {});
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should wait until completion of the check to follow', async () => {
-    const delay = () => new Promise((resolve, reject) => setTimeout(resolve, 0));
+    const delay = () => new Promise(resolve => setTimeout(resolve, 0));
 
     let runnerHasCompleted = false;
     let resolvePromise: (t: boolean) => void = (null as any) as ((t: boolean) => void);
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
-      return await new Promise<boolean>(function(resolve, reject) {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+      return await new Promise<boolean>(function(resolve) {
         resolvePromise = resolve;
       });
     });
@@ -113,7 +113,7 @@ describe('AsyncProperty', () => {
   });
   it('Should always execute beforeEach before the test', async () => {
     const prob = { beforeEachCalled: false };
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       const beforeEachCalled = prob.beforeEachCalled;
       prob.beforeEachCalled = false;
       return beforeEachCalled;
@@ -124,7 +124,7 @@ describe('AsyncProperty', () => {
   });
   it('Should execute afterEach after the test on success', async () => {
     const callOrder: string[] = [];
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       callOrder.push('test');
       return true;
     }).afterEach(async () => {
@@ -135,7 +135,7 @@ describe('AsyncProperty', () => {
   });
   it('Should execute afterEach after the test on failure', async () => {
     const callOrder: string[] = [];
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       callOrder.push('test');
       return false;
     }).afterEach(async () => {
@@ -146,7 +146,7 @@ describe('AsyncProperty', () => {
   });
   it('Should execute afterEach after the test on uncaught exception', async () => {
     const callOrder: string[] = [];
-    const p = asyncProperty(stubArb.single(8), async (arg: number) => {
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       callOrder.push('test');
       throw new Error('uncaught');
     }).afterEach(async () => {

@@ -173,7 +173,7 @@ describe('Runner', () => {
             throw 'Not implemented';
           }) as Shrinkable<[number]>;
         },
-        run: (value: [number]) => {
+        run: (_value: [number]) => {
           ++numCallsRun;
           return null;
         }
@@ -194,7 +194,7 @@ describe('Runner', () => {
               ++numCallsGenerate;
               return new Shrinkable([0]) as Shrinkable<[number]>;
             },
-            run: (value: [number]) => {
+            run: (_value: [number]) => {
               return ++numCallsRun < num ? null : 'error';
             }
           };
@@ -218,7 +218,7 @@ describe('Runner', () => {
               ++numCallsGenerate;
               return new Shrinkable([0]) as Shrinkable<[number]>;
             },
-            run: (value: [number]) => {
+            run: (_value: [number]) => {
               ++numCallsRun;
               return null;
             }
@@ -262,7 +262,7 @@ describe('Runner', () => {
             throw 'Not implemented';
           }) as Shrinkable<[number]>;
         },
-        run: (value: [number]) => {
+        run: (_value: [number]) => {
           return 'failure';
         }
       };
@@ -332,8 +332,8 @@ describe('Runner', () => {
           let remainingBeforeFailure = failurePoints[idx];
           const p: IRawProperty<[number]> = {
             isAsync: () => false,
-            generate: (rng: Random) => deepShrinkable(failurePoints.length - 1),
-            run: (value: [number]) => {
+            generate: (_mrng: Random) => deepShrinkable(failurePoints.length - 1),
+            run: (_value: [number]) => {
               if (--remainingBeforeFailure >= 0) return null;
               remainingBeforeFailure = failurePoints[++idx];
               return 'failure';
@@ -351,7 +351,7 @@ describe('Runner', () => {
     it('Should wait on async properties to complete', async () =>
       fc.assert(
         fc.asyncProperty(fc.integer(1, 100), fc.integer(), async (num, seed) => {
-          const delay = () => new Promise((resolve, reject) => setTimeout(resolve, 0));
+          const delay = () => new Promise(resolve => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;
           const waitingResolve: (() => void)[] = [];
@@ -367,8 +367,8 @@ describe('Runner', () => {
               };
               return new Shrinkable([1], () => new Stream(g())) as Shrinkable<[number]>;
             },
-            run: async (value: [number]) => {
-              await new Promise((resolve, reject) => {
+            run: async (_value: [number]) => {
+              await new Promise(resolve => {
                 waitingResolve.push(resolve);
               });
               return ++numCallsRun < num ? null : 'error';
@@ -402,37 +402,37 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (value: [number]) => null
+        run: async (_value: [number]) => null
       };
       const out = await (check(p) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(false);
     });
     it('Should not timeout if timeout not reached', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve, reject) => setTimeout(resolve, timeMs));
+      const wait = (timeMs: number) => new Promise<null>(resolve => setTimeout(resolve, timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (value: [number]) => await wait(0)
+        run: async (_value: [number]) => await wait(0)
       };
       const out = await (check(p, { timeout: 100 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(false);
     });
     it('Should timeout if it reached the timeout', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve, reject) => setTimeout(resolve, timeMs));
+      const wait = (timeMs: number) => new Promise<null>(resolve => setTimeout(resolve, timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (value: [number]) => await wait(100)
+        run: async (_value: [number]) => await wait(100)
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(true);
     });
     it('Should timeout if task never ends', async () => {
-      const neverEnds = () => new Promise<null>((resolve, reject) => {});
+      const neverEnds = () => new Promise<null>(() => {});
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (value: [number]) => await neverEnds()
+        run: async (_value: [number]) => await neverEnds()
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(true);
@@ -444,17 +444,17 @@ describe('Runner', () => {
     const failingProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
       generate: () => new Shrinkable([v1, v2]) as Shrinkable<[any, any]>,
-      run: (v: [any, any]) => 'error in failingProperty'
+      run: (_v: [any, any]) => 'error in failingProperty'
     };
     const failingComplexProperty: IRawProperty<[any, any, any]> = {
       isAsync: () => false,
       generate: () => new Shrinkable([[v1, v2], v2, v1]) as Shrinkable<[any, any, any]>,
-      run: (v: [any, any, any]) => 'error in failingComplexProperty'
+      run: (_v: [any, any, any]) => 'error in failingComplexProperty'
     };
     const successProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
       generate: () => new Shrinkable([v1, v2]) as Shrinkable<[any, any]>,
-      run: (v: [any, any]) => null
+      run: (_v: [any, any]) => null
     };
 
     it('Should throw if property is null', () => {
