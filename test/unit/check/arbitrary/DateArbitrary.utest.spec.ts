@@ -17,7 +17,7 @@ describe('DateArbitrary', () => {
     it('Should be able to build the minimal valid date', () => {
       // Arrange
       const { integer } = mocked(IntegerArbitraryMock);
-      integer.mockImplementationOnce((a, b) => arbitraryFor([{ value: a }]));
+      integer.mockImplementationOnce((a, _b) => arbitraryFor([{ value: a }]));
 
       // Act
       const arb = date();

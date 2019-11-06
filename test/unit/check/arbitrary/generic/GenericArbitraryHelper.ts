@@ -134,7 +134,7 @@ export const isValidArbitrary = function<U, T>(
   const biasedArbitraryBuilder = ([biasedFactor, u]: [(number | null), U]) => {
     return biasedFactor != null ? arbitraryBuilder(u).withBias(biasedFactor) : arbitraryBuilder(u);
   };
-  const biasedIsValidValue = (g: T, [biasedFactor, u]: [(number | null), U]) => {
+  const biasedIsValidValue = (g: T, [_biasedFactor, u]: [(number | null), U]) => {
     return settings.isValidValue(g, u);
   };
 

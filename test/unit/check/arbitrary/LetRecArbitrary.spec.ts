@@ -11,7 +11,7 @@ describe('LetRecArbitrary', () => {
       const expectedArb1 = buildArbitrary(jest.fn());
       const expectedArb2 = buildArbitrary(jest.fn());
 
-      const { arb1, arb2 } = letrec(tie => ({
+      const { arb1, arb2 } = letrec(_tie => ({
         arb1: expectedArb1,
         arb2: expectedArb2
       }));
@@ -20,7 +20,7 @@ describe('LetRecArbitrary', () => {
       expect(arb2).toBe(expectedArb2);
     });
     it('Should not produce LazyArbitrary for no-tie constructs', () => {
-      const { arb } = letrec(tie => ({
+      const { arb } = letrec(_tie => ({
         arb: buildArbitrary(jest.fn())
       }));
       expect(arb).not.toBeInstanceOf(LazyArbitrary);

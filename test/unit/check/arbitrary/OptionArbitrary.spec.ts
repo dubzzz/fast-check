@@ -28,7 +28,7 @@ describe('OptionArbitrary', () => {
         fc.property(fc.integer(), fc.integer(), (seed, start) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           let shrinkable = option(stubArb.withShrink(start)).generate(mrng);
-          while (shrinkable.shrink().has(v => true)[0]) {
+          while (shrinkable.shrink().has(_ => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           return shrinkable.value === null;
