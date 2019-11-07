@@ -9,6 +9,8 @@ cache:
   directories:
     - node_modules
 
+if: branch = master OR branch =~ ^fix-v\d+\. OR tag =~ ^v\d+\.
+
 before_install:
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
   - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -37,12 +39,12 @@ jobs:
         - yarn format:check
         - yarn lint:check
     - stage: test
-      env: STEP=EXAMPLES_ROLLUP_LEGACY
+      env: STEP=EXAMPLES_ROLLUP_LEGACY_TYPES
       script:
         - yarn prebuild
+        - yarn build:publish-types
         - yarn build:publish-cjs
         - yarn build:publish-esm
-        - yarn build:publish-types
         - yarn webbuild
         - yarn link
         - cd example ;
@@ -52,6 +54,7 @@ jobs:
           cd ..
         - yarn test:rollup-esm
         - yarn test:rollup-iife
+        - yarn test:type
         - nvm install 0.12 ;
           node test/legacy/main.js
     - stage: test
