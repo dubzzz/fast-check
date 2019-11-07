@@ -81,7 +81,7 @@ export class Stream<T> implements IterableIterator<T> {
    */
   drop(n: number): Stream<T> {
     let idx = 0;
-    function helper(v: T): boolean {
+    function helper(): boolean {
       return idx++ < n;
     }
     return this.dropWhile(helper);
@@ -106,7 +106,7 @@ export class Stream<T> implements IterableIterator<T> {
    */
   take(n: number): Stream<T> {
     let idx = 0;
-    function helper(v: T): boolean {
+    function helper(): boolean {
       return idx++ < n;
     }
     return this.takeWhile(helper);
