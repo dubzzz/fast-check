@@ -1,6 +1,14 @@
 // Implementation inspired from https://github.com/dubzzz/various-algorithms/blob/master/algorithms/numbers/roman-numbers/implem.cpp
 
-export const LettersValue = [[1, 'I'], [5, 'V'], [10, 'X'], [50, 'L'], [100, 'C'], [500, 'D'], [1000, 'M']] as const;
+export const LettersValue: [number, string][] = [
+  [1, 'I'],
+  [5, 'V'],
+  [10, 'X'],
+  [50, 'L'],
+  [100, 'C'],
+  [500, 'D'],
+  [1000, 'M']
+];
 export const MaxRoman = 4 * LettersValue[LettersValue.length - 1][0] - 1;
 export const NumLetters = LettersValue.length;
 
