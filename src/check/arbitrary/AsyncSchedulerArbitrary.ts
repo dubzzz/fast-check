@@ -47,36 +47,39 @@ type ScheduledTask = {
 };
 
 export class SchedulerImplem implements Scheduler {
+  private lastTaskId: number;
   private readonly sourceMrng: Random;
   private readonly scheduledTasks: ScheduledTask[];
   private readonly triggeredTasksLogs: string[];
 
   constructor(private readonly mrng: Random) {
+    this.lastTaskId = 0;
     // here we should received an already cloned mrng so that we can do whatever we want on it
     this.sourceMrng = mrng.clone();
     this.scheduledTasks = [];
     this.triggeredTasksLogs = [];
   }
 
-  private buildLog(meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
-    return `[${meta}][${type}] ${stringify(data)}`;
+  private buildLog(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
+    return `[task#${taskId}][${meta}][${type}] ${stringify(data)}`;
   }
 
-  private log(meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
-    this.triggeredTasksLogs.push(this.buildLog(meta, type, data));
+  private log(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
+    this.triggeredTasksLogs.push(this.buildLog(taskId, meta, type, data));
   }
 
   private scheduleInternal<T>(meta: string, task: PromiseLike<T>) {
     let trigger: (() => void) | null = null;
+    const taskId = ++this.lastTaskId;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
         task.then(
           (...args) => {
-            this.log(meta, 'resolve', args);
+            this.log(taskId, meta, 'resolve', args);
             return resolve(...args);
           },
           (...args) => {
-            this.log(meta, 'reject', args);
+            this.log(taskId, meta, 'reject', args);
             return reject(...args);
           }
         );
@@ -86,7 +89,7 @@ export class SchedulerImplem implements Scheduler {
       original: task,
       scheduled: scheduledPromise,
       trigger: trigger!,
-      label: this.buildLog(meta, 'pending', [])
+      label: this.buildLog(taskId, meta, 'pending', [])
     });
     return scheduledPromise;
   }
