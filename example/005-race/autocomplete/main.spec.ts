@@ -1,4 +1,9 @@
-// Remark: Many "as any" casts - should be fixed by providing a better configuration to ts-jest
+// DISCLAIMER:
+// CodeSandbox does not handle jest.* calls for the moment
+// If you want to run this test suite, you'll need to sync the code locally
+//
+// Detecting race conditions using fast-check is still a feature under dev.
+// See https://github.com/dubzzz/fast-check/pull/479
 
 import fc from 'fast-check';
 import AutocompleteField from './src/AutocompleteField';
