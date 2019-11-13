@@ -33,7 +33,7 @@ describe('AutocompleteField', () => {
 
             // Act
             const { getByRole, queryAllByRole } = await renderAutoCompleteField();
-            await fireOnByOneForQuery(getByRole('input') as HTMLElement, query);
+            await fireOneByOneForQuery(getByRole('input') as HTMLElement, query);
 
             // Assert
 
@@ -87,7 +87,7 @@ describe('AutocompleteField', () => {
             // Act
             const { getByRole, queryAllByRole } = await renderAutoCompleteField();
             for (const q of queries) {
-              await fireOnByOneForQuery(getByRole('input') as HTMLElement, q);
+              await fireOneByOneForQuery(getByRole('input') as HTMLElement, q);
             }
 
             // Assert
@@ -155,7 +155,7 @@ const renderAutoCompleteField = async () => {
   return { getByRole, queryAllByRole };
 };
 
-const fireOnByOneForQuery = async (input: HTMLElement, query: string) => {
+const fireOneByOneForQuery = async (input: HTMLElement, query: string) => {
   // Fire characters of query one by one
   for (let idx = 0; idx !== query.length; ++idx) {
     await act(async () => {
