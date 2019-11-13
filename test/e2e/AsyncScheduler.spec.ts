@@ -44,9 +44,80 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].toString()).toMatchInlineSnapshot(`
-      "-> [task#2][function::fetchHeroesById][resolve] [[{\\"name\\":\\"James Bond\\"}]]
-      -> [task#1][function::fetchHeroName][pending] []"
+      "-> [task#2][function::fetchHeroesById()][resolve] [[{\\"name\\":\\"James Bond\\"}]]
+      -> [task#1][function::fetchHeroName()][pending] []"
     `);
     expect(out.error).toContain(`Cannot read property 'toLowerCase' of undefined`);
+  });
+
+  it('should detect race conditions leading to infinite loops', async () => {
+    // Following case is an example of code trying to scan all the dependencies of a given package
+    // In order to build a nice graph
+    type PackageDefinition = {
+      dependencies: { [packageName: string]: string };
+    };
+    type AllPackagesDefinition = { [packageName: string]: PackageDefinition };
+    const allPackages: AllPackagesDefinition = {
+      toto: {
+        dependencies: {
+          titi: '^1.0.0',
+          tata: '^2.0.0',
+          tutu: '^3.0.0'
+        }
+      },
+      titi: {
+        dependencies: {
+          noop: '^1.0.0',
+          tutu: '^3.0.0'
+        }
+      },
+      tata: {
+        dependencies: {
+          noop: '^1.0.0'
+        }
+      },
+      noop: {
+        dependencies: {}
+      },
+      tutu: {
+        dependencies: {
+          titi: '^1.0.0'
+        }
+      }
+    };
+    const buildGraph = async (
+      initialPackageName: string,
+      fetch: (packageName: string) => Promise<PackageDefinition>
+    ) => {
+      const cache: AllPackagesDefinition = {};
+      // // Uncomment to remove the bug
+      //const cachePending = new Set<string>();
+      const feedCache = async (packageName: string) => {
+        // // Uncomment to remove the bug
+        // if (cachePending.has(packageName)) return;
+        // cachePending.add(packageName);
+        if (cache[packageName]) return;
+
+        const packageDef = await fetch(packageName); // cache miss
+        await Promise.all(Object.keys(packageDef.dependencies).map(dependencyName => feedCache(dependencyName)));
+      };
+      await feedCache(initialPackageName);
+      return cache; // we just return the cache instead of the garph for simplicity
+    };
+    const out = await fc.check(
+      fc.asyncProperty(fc.constantFrom(...Object.keys(allPackages)), fc.scheduler(), async (initialPackageName, s) => {
+        const originalFetch = (packageName: string) => Promise.resolve(allPackages[packageName]);
+        const fetch = s.scheduleFunction(originalFetch);
+        const handle = buildGraph(initialPackageName, fetch);
+        // Or: await s.waitAll();
+        while (s.count() !== 0) {
+          expect(s.count()).toBeLessThanOrEqual(Object.keys(allPackages).length);
+          await s.waitOne();
+        }
+        await handle; // nothing should block now
+      }),
+      { seed }
+    );
+    expect(out.failed).toBe(true);
   });
 });

@@ -101,7 +101,11 @@ export class SchedulerImplem implements Scheduler {
   scheduleFunction<TArgs extends any[], T>(
     asyncFunction: (...args: TArgs) => Promise<T>
   ): (...args: TArgs) => Promise<T> {
-    return (...args: TArgs) => this.scheduleInternal(`function::${asyncFunction.name}`, asyncFunction(...args));
+    return (...args: TArgs) =>
+      this.scheduleInternal(
+        `function::${asyncFunction.name}(${args.map(stringify).join(',')})`,
+        asyncFunction(...args)
+      );
   }
 
   count() {
