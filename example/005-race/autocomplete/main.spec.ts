@@ -19,7 +19,7 @@ describe('AutocompleteField', () => {
     fc.assert(
       fc
         .asyncProperty(
-          fc.array(fc.uuidV(4), 0, 1000),
+          fc.set(fc.uuidV(4), 0, 1000),
           fc.hexaString(0, 4),
           fc.scheduler(),
           async (allResults, query, s) => {
@@ -71,7 +71,7 @@ describe('AutocompleteField', () => {
     fc.assert(
       fc
         .asyncProperty(
-          fc.array(fc.uuidV(4), 0, 1000),
+          fc.set(fc.uuidV(4), 0, 1000),
           fc.array(fc.hexaString(0, 4), 1, 10),
           fc.scheduler(),
           async (allResults, queries, s) => {
