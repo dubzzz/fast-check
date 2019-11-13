@@ -1,11 +1,11 @@
 import { Random } from '../../random/generator/Random';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
-import { IProperty } from './IProperty';
+import { IRawProperty } from './IRawProperty';
 
 /** @hidden */
 const timeoutAfter = (timeMs: number) => {
   let timeoutHandle: (ReturnType<typeof setTimeout>) | null = null;
-  const promise = new Promise<string>((resolve, reject) => {
+  const promise = new Promise<string>(resolve => {
     timeoutHandle = setTimeout(() => {
       resolve(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
     }, timeMs);
@@ -17,9 +17,9 @@ const timeoutAfter = (timeMs: number) => {
 };
 
 /** @hidden */
-export class TimeoutProperty<Ts> implements IProperty<Ts> {
-  constructor(readonly property: IProperty<Ts>, readonly timeMs: number) {}
-  isAsync = () => true;
+export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
+  constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {}
+  isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return this.property.generate(mrng, runId);
   }

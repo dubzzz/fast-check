@@ -2,11 +2,11 @@ import { Random } from '../../../random/generator/Random';
 import { Arbitrary } from './Arbitrary';
 
 /** @hidden */
-class BiasedArbitraryWrapper<T> extends Arbitrary<T> {
+class BiasedArbitraryWrapper<T, TSourceArbitrary extends Arbitrary<T>> extends Arbitrary<T> {
   constructor(
     readonly freq: number,
-    readonly arb: Arbitrary<T>,
-    readonly biasedArbBuilder: (unbiased: Arbitrary<T>) => Arbitrary<T>
+    readonly arb: TSourceArbitrary,
+    readonly biasedArbBuilder: (unbiased: TSourceArbitrary) => Arbitrary<T>
   ) {
     super();
   }
@@ -21,10 +21,10 @@ class BiasedArbitraryWrapper<T> extends Arbitrary<T> {
  * Helper function automatically choosing between the biased and unbiased versions of an Arbitrary.
  * This helper has been introduced in order to provide higher performances when building custom biased arbitraries
  */
-export function biasWrapper<T>(
+export function biasWrapper<T, TSourceArbitrary extends Arbitrary<T>>(
   freq: number,
-  arb: Arbitrary<T>,
-  biasedArbBuilder: (unbiased: Arbitrary<T>) => Arbitrary<T>
+  arb: TSourceArbitrary,
+  biasedArbBuilder: (unbiased: TSourceArbitrary) => Arbitrary<T>
 ): Arbitrary<T> {
   return new BiasedArbitraryWrapper(freq, arb, biasedArbBuilder);
 }

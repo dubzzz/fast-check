@@ -1,4 +1,4 @@
-import { IProperty } from '../property/IProperty';
+import { IRawProperty } from '../property/IRawProperty';
 import { SkipAfterProperty } from '../property/SkipAfterProperty';
 import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
@@ -11,7 +11,7 @@ type MinimalQualifiedParameters<Ts> = Pick<
 >;
 
 /** @hidden */
-export function decorateProperty<Ts>(rawProperty: IProperty<Ts>, qParams: MinimalQualifiedParameters<Ts>) {
+export function decorateProperty<Ts>(rawProperty: IRawProperty<Ts>, qParams: MinimalQualifiedParameters<Ts>) {
   let prop = rawProperty;
   if (rawProperty.isAsync() && qParams.timeout != null) prop = new TimeoutProperty(prop, qParams.timeout);
   if (qParams.unbiased === true) prop = new UnbiasedProperty(prop);

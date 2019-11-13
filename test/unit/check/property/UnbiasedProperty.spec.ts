@@ -1,5 +1,5 @@
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { IProperty } from '../../../../src/check/property/IProperty';
+import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
 
 import * as stubRng from '../../stubs/generators';
@@ -7,7 +7,7 @@ import * as stubRng from '../../stubs/generators';
 describe('UnbiasedProperty', () => {
   it('Should forward parameters correctly (asynchronous property)', () => {
     let calledWithRunId: number | undefined = undefined;
-    const pAsync = new (class implements IProperty<number> {
+    const pAsync = new (class implements IRawProperty<number> {
       isAsync = () => true;
       generate = (mrng: any, runId?: number) => {
         calledWithRunId = runId;
@@ -27,7 +27,7 @@ describe('UnbiasedProperty', () => {
   });
   it('Should forward parameters correctly (synchronous property)', () => {
     let calledWithRunId: number | undefined = undefined;
-    const pSync = new (class implements IProperty<number> {
+    const pSync = new (class implements IRawProperty<number> {
       isAsync = () => false;
       generate = (mrng: any, runId?: number) => {
         calledWithRunId = runId;

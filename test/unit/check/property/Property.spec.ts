@@ -9,20 +9,20 @@ import * as stubRng from '../../stubs/generators';
 
 describe('Property', () => {
   it('Should fail if predicate fails', () => {
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       return false;
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
   });
   it('Should fail if predicate throws', () => {
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       throw 'predicate throws';
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
     expect(out).toEqual('predicate throws');
   });
   it('Should fail if predicate throws an Error', () => {
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       throw new Error('predicate throws');
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
@@ -31,7 +31,7 @@ describe('Property', () => {
   });
   it('Should forward failure of runs with failing precondition', async () => {
     let doNotResetThisValue = false;
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       pre(false);
       doNotResetThisValue = true;
       return false;
@@ -41,13 +41,13 @@ describe('Property', () => {
     expect(doNotResetThisValue).toBe(false); // does not run code after the failing precondition
   });
   it('Should succeed if predicate is true', () => {
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       return true;
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should succeed if predicate does not return anything', () => {
-    const p = property(stubArb.single(8), (arg: number) => {});
+    const p = property(stubArb.single(8), (_arg: number) => {});
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should call and forward arbitraries one time', () => {
@@ -57,7 +57,7 @@ describe('Property', () => {
       stubArb.SingleUseArbitrary<string>,
       stubArb.SingleUseArbitrary<string>
     ] = [stubArb.single(3), stubArb.single('hello'), stubArb.single('world')];
-    const p = property(arbs[0], arbs[1], arbs[2], (arg1: number, arb2: string, arg3: string) => {
+    const p = property(arbs[0], arbs[1], arbs[2], (arg1: number, _arb2: string, _arg3: string) => {
       if (oneCallToPredicate) {
         throw 'Predicate has already been evaluated once';
       }
@@ -114,7 +114,7 @@ describe('Property', () => {
   });
   it('Should always execute beforeEach before the test', () => {
     const prob = { beforeEachCalled: false };
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       const beforeEachCalled = prob.beforeEachCalled;
       prob.beforeEachCalled = false;
       return beforeEachCalled;
@@ -123,7 +123,7 @@ describe('Property', () => {
   });
   it('Should execute afterEach after the test on success', () => {
     const callOrder: string[] = [];
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       callOrder.push('test');
       return true;
     }).afterEach(() => callOrder.push('afterEach'));
@@ -132,7 +132,7 @@ describe('Property', () => {
   });
   it('Should execute afterEach after the test on failure', () => {
     const callOrder: string[] = [];
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       callOrder.push('test');
       return false;
     }).afterEach(() => callOrder.push('afterEach'));
@@ -141,7 +141,7 @@ describe('Property', () => {
   });
   it('Should execute afterEach after the test on uncaught exception', () => {
     const callOrder: string[] = [];
-    const p = property(stubArb.single(8), (arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       callOrder.push('test');
       throw new Error('uncaught');
     }).afterEach(() => callOrder.push('afterEach'));

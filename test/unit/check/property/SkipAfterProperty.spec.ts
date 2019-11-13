@@ -1,4 +1,4 @@
-import { IProperty } from '../../../../src/check/property/IProperty';
+import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
 
 // Mocks
@@ -12,7 +12,7 @@ function buildProperty() {
     generate: jest.fn(),
     run: jest.fn()
   };
-  return { mocks, property: mocks as IProperty<any> };
+  return { mocks, property: mocks as IRawProperty<any> };
 }
 
 function buildRandom() {
@@ -78,7 +78,7 @@ describe('SkipAfterProperty', () => {
 
     expect(PreconditionFailure.isFailure(out)).toBe(true);
     expect(timerMock.mock.calls.length).toBe(2);
-    expect(propertyMock.isAsync.mock.calls.length).toBe(0);
+    expect(propertyMock.isAsync.mock.calls.length).toBe(1); // check expected return type: return a resolved Promise if async, a value otherwise
     expect(propertyMock.generate.mock.calls.length).toBe(0);
     expect(propertyMock.run.mock.calls.length).toBe(0);
   });

@@ -26,7 +26,7 @@ describe('MixedCaseArbitrary', () => {
     it('should not toggle any character if flags are null', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(0) }]));
+      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(0) }]));
       const stringArb = arbitraryFor([{ value: 'azerty' }]);
 
       // Act
@@ -40,7 +40,7 @@ describe('MixedCaseArbitrary', () => {
     it('should toggle characters according to flags', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
+      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
       const stringArb = arbitraryFor([{ value: 'azerty' }]);
 
       // Act
@@ -54,7 +54,7 @@ describe('MixedCaseArbitrary', () => {
     it('should toggle both lower and upper characters', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
+      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
       const stringArb = arbitraryFor([{ value: 'azERty' }]);
 
       // Act
@@ -68,7 +68,7 @@ describe('MixedCaseArbitrary', () => {
     it('should not try to toggle characters that do not have lower/upper versions', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(0) }]));
+      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(0) }]));
       const stringArb = arbitraryFor([{ value: 'az01ty' }]); // 01 upper version is the same
 
       // Act
@@ -149,7 +149,7 @@ describe('MixedCaseArbitrary', () => {
     it('should use toggle function when provided to check what can be toggled or not', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(n => arbitraryFor([{ value: BigInt(63) /* 111111 */ }]));
+      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(63) /* 111111 */ }]));
       const stringArb = arbitraryFor([{ value: 'azerty' }]);
       const customToggle = jest.fn();
       customToggle.mockImplementation((c: string) => {

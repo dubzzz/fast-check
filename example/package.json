@@ -3,19 +3,30 @@
   "version": "1.0.0",
   "description": "Examples of usage of fast-check",
   "scripts": {
-    "test:async": "mocha --require ts-node/register async-property/test.ts",
-    "test:contains": "mocha contains/test.js",
-    "test:knight": "mocha shadows-of-the-knight-codingame/test.js",
-    "test:settings": "mocha optional-settings-combination/test.js",
-    "test:model": "mocha --require ts-node/register model-based-testing/test.ts",
-    "test:tree": "mocha --require ts-node/register binary-trees/test.ts"
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.144",
+    "fast-check": "*",
+    "lodash": "^4.17.15",
+    "pure-rand": "^1.7.0"
   },
   "devDependencies": {
-    "fast-check": "file:..",
-    "mocha": "^5.0.0",
-    "ts-node": "^6.1.0"
+    "@types/jest": "^24.0.21",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.4"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    }
+  }
 }

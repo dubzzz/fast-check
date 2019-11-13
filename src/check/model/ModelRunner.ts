@@ -36,14 +36,26 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
 /** @hidden */
 const internalModelRun = <Model extends object, Real>(
   s: Setup<Model, Real>,
-  cmds: Iterable<Command<Model, Real>> | CommandsIterable<Model, Real, void>
+  cmds: Iterable<Command<Model, Real>> | CommandsIterable<Model, Real, undefined>
 ): void => {
   const then = (p: undefined, c: () => undefined) => c();
-  const setupProducer = { then: (fun: SetupFun<Model, Real, void>) => fun(s()) };
+  const setupProducer: SetupProducer<Model, Real, undefined> = {
+    then: (fun: SetupFun<Model, Real, void>) => {
+      fun(s());
+      return undefined;
+    }
+  };
   const runSync = (cmd: Command<Model, Real>, m: Model, r: Real) => {
     if (cmd.check(m)) cmd.run(m, r);
+    return undefined;
   };
-  return genericModelRun(setupProducer, cmds, undefined, runSync, then);
+  return genericModelRun(
+    setupProducer,
+    cmds as Iterable<ICommand<Model, Real, undefined, false>>,
+    undefined,
+    runSync,
+    then
+  );
 };
 
 /** @hidden */

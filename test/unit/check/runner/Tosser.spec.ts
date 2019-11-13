@@ -3,14 +3,14 @@ import * as fc from '../../../../lib/fast-check';
 import { toss } from '../../../../src/check/runner/Tosser';
 import { stream } from '../../../../src/stream/Stream';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { IProperty } from '../../../../src/check/property/IProperty';
+import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { Random } from '../../../../src/random/generator/Random';
 
 import * as stubArb from '../../stubs/arbitraries';
 import prand from 'pure-rand';
 
-const wrap = <T>(arb: Arbitrary<T>): IProperty<T> =>
-  new (class implements IProperty<T> {
+const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
+  new (class implements IRawProperty<T> {
     constructor(readonly arb: Arbitrary<T>) {}
     isAsync = () => false;
     generate = (rng: Random) => this.arb.generate(rng);

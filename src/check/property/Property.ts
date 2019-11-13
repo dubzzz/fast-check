@@ -1,4 +1,4 @@
 import { property } from './Property.generated';
-import { Property } from './Property.generic';
+import { IProperty } from './Property.generic';
 
-export { property, Property };
+export { property, IProperty };

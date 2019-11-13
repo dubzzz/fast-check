@@ -2,7 +2,12 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IProperty, runIdToFrequency } from './IProperty';
+import { IRawProperty, runIdToFrequency } from './IRawProperty';
+
+/**
+ * Interface for synchronous property, see {@link IRawProperty}
+ */
+export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
 /**
  * Property, see {@link IProperty}
@@ -16,7 +21,7 @@ export class Property<Ts> implements IProperty<Ts> {
   private beforeEachHook: () => void = Property.dummyHook;
   private afterEachHook: () => void = Property.dummyHook;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {}
-  isAsync = () => false;
+  isAsync = () => false as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }

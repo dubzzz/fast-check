@@ -16,7 +16,7 @@ class CustomArbitrary extends Arbitrary<number> {
   constructor(readonly value: number) {
     super();
   }
-  generate(mrng: Random): Shrinkable<number> {
+  generate(_mrng: Random): Shrinkable<number> {
     function* g(v: number) {
       yield new Shrinkable(v - 42);
     }

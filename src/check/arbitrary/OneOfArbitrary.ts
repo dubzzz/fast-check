@@ -4,7 +4,6 @@ import { Shrinkable } from './definition/Shrinkable';
 
 /** @hidden */
 class OneOfArbitrary<T> extends Arbitrary<T> {
-  readonly idArb: Arbitrary<number>;
   constructor(readonly arbs: Arbitrary<T>[]) {
     super();
   }

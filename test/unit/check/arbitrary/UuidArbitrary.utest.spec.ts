@@ -20,7 +20,7 @@ describe('UuidArbitrary', () => {
       const { nat, integer } = mocked(IntegerArbitraryMock);
       const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }, { value: 0 }]));
-      integer.mockImplementation((a, b) => arbitraryFor([{ value: a }]));
+      integer.mockImplementation((a, _b) => arbitraryFor([{ value: a }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
 
       // Act
@@ -57,7 +57,7 @@ describe('UuidArbitrary', () => {
       const { nat, integer } = mocked(IntegerArbitraryMock);
       const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }]));
-      integer.mockImplementation((a, b) => arbitraryFor([{ value: a }]));
+      integer.mockImplementation((a, _b) => arbitraryFor([{ value: a }]));
       tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
 
       // Act
