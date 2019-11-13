@@ -1,0 +1,9 @@
+
+
+{
+    "installCommand": "ci",
+    "buildCommand": "build",
+    "sandboxes": ["vanilla", "/example"]
+  }
+  
+  
