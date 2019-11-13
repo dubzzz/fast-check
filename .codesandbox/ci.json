@@ -1,7 +1,7 @@
 
 
 {
-    "installCommand": "ci",
+    "installCommand": "install",
     "buildCommand": "build",
     "sandboxes": ["vanilla", "/example"]
   }
