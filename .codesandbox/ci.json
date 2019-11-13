@@ -1,0 +1,8 @@
+
+
+{
+    "buildCommand": "build",
+    "sandboxes": ["vanilla", "/example"]
+  }
+  
+  
