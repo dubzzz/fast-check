@@ -7,7 +7,6 @@ module.exports = {
     'prettier/@typescript-eslint'
   ],
   rules: {
-    'no-prototype-builtins': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-empty-function': 'warn',
@@ -15,6 +14,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-namespace': 'warn',
     '@typescript-eslint/no-this-alias': 'warn',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-use-before-define': 'warn'
   }
 };

@@ -16,7 +16,7 @@ class DummyArbitrary extends Arbitrary<{ key: number }> {
   constructor(public value: () => number) {
     super();
   }
-  generate(mrng: Random): Shrinkable<{ key: number }> {
+  generate(_mrng: Random): Shrinkable<{ key: number }> {
     return new Shrinkable({ key: this.value() });
   }
 }

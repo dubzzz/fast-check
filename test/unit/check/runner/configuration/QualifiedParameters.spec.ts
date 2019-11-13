@@ -5,15 +5,6 @@ import { QualifiedParameters } from '../../../../../src/check/runner/configurati
 import { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';
 
-const extract = <T>(conf: QualifiedParameters<T>) => {
-  const { logger, ...others } = conf;
-  return others;
-};
-const extractExceptSeed = <T>(conf: QualifiedParameters<T>) => {
-  const { seed, ...others } = extract(conf);
-  return others;
-};
-
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
@@ -25,7 +16,9 @@ const parametersArbitrary = fc.record(
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),
-    skipAllAfterTimeLimit: fc.nat()
+    skipAllAfterTimeLimit: fc.nat(),
+    interruptAfterTimeLimit: fc.nat(),
+    markInterruptAsFailure: fc.boolean()
   },
   { withDeletedKeys: true }
 );
@@ -109,24 +102,5 @@ describe('QualifiedParameters', () => {
           })
         ));
     });
-  });
-  describe('readOrNumRuns', () => {
-    it('Should be equivalent to read with only numRuns when specifying a number', () =>
-      fc.assert(
-        fc.property(fc.nat(), numRuns => {
-          expect(extractExceptSeed(QualifiedParameters.readOrNumRuns(numRuns))).toEqual(
-            extractExceptSeed(QualifiedParameters.read({ numRuns }))
-          );
-        })
-      ));
-    it('Should be equivalent to read for Parameters', () =>
-      fc.assert(
-        fc.property(parametersArbitrary, params => {
-          const extractor = params.seed != null ? extract : extractExceptSeed;
-          expect(extractor(QualifiedParameters.readOrNumRuns(params))).toEqual(
-            extractor(QualifiedParameters.read(params))
-          );
-        })
-      ));
   });
 });

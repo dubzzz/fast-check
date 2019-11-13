@@ -1,9 +1,8 @@
 import { stream } from '../../stream/Stream';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { AsyncProperty } from '../property/AsyncProperty';
-import { IProperty } from '../property/IProperty';
-import { Property } from '../property/Property';
+import { IRawProperty } from '../property/IRawProperty';
+import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
@@ -15,14 +14,17 @@ import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { throwIfFailed } from './utils/RunDetailsFormatter';
+import { IAsyncProperty } from '../property/AsyncProperty';
+import { IProperty } from '../property/Property';
 
 /** @hidden */
 function runIt<Ts>(
-  property: IProperty<Ts>,
+  property: IRawProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
-  verbose: VerbosityLevel
+  verbose: VerbosityLevel,
+  interruptedAsFailure: boolean
 ): RunExecution<Ts> {
-  const runner = new RunnerIterator(sourceValues, verbose);
+  const runner = new RunnerIterator(sourceValues, verbose, interruptedAsFailure);
   for (const v of runner) {
     const out = property.run(v) as PreconditionFailure | string | null;
     runner.handleResult(out);
@@ -32,11 +34,12 @@ function runIt<Ts>(
 
 /** @hidden */
 async function asyncRunIt<Ts>(
-  property: IProperty<Ts>,
+  property: IRawProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
-  verbose: VerbosityLevel
+  verbose: VerbosityLevel,
+  interruptedAsFailure: boolean
 ): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, verbose);
+  const runner = new RunnerIterator(sourceValues, verbose, interruptedAsFailure);
   for (const v of runner) {
     const out = await property.run(v);
     runner.handleResult(out);
@@ -80,7 +83,7 @@ function buildInitialValues<Ts>(
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
+function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -89,14 +92,14 @@ function check<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promis
  *
  * @returns Test status and other useful details
  */
-function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
-function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
-function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
+function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
+function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
+function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   if (rawProperty == null || rawProperty.generate == null)
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
-  const qParams = QualifiedParameters.read(params);
+  const qParams = QualifiedParameters.read({ ...readConfigureGlobal(), ...params });
   const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 
@@ -105,10 +108,10 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
   const initialValues = buildInitialValues(generator, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
-    ? asyncRunIt(property, sourceValues, qParams.verbose).then(e =>
+    ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then(e =>
         e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
       )
-    : runIt(property, sourceValues, qParams.verbose).toRunDetails(
+    : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         qParams.numRuns,
@@ -127,7 +130,7 @@ function check<Ts>(rawProperty: IProperty<Ts>, params?: Parameters<Ts>) {
  * @param property Asynchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
+function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
 /**
  * Run the property, throw in case of failure
  *
@@ -137,9 +140,9 @@ function assert<Ts>(property: AsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  * @param property Synchronous property to be checked
  * @param params Optional parameters to customize the execution
  */
-function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): void;
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>) {
+function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
+function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
+function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(throwIfFailed);
   else throwIfFailed(out as RunDetails<Ts>);

@@ -26,11 +26,11 @@ Property based testing framework for JavaScript/TypeScript
 
 ## Getting started
 
-Hands-on tutorial and definition of Property Based Testing: [:checkered_flag: see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/HandsOnPropertyBased.md).
+Hands-on tutorial and definition of Property Based Testing: [:checkered_flag: see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?previewwindow=tests).
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
 
-Install the module with: `npm install fast-check --save-dev`
+Install the module with: `yarn add fast-check --dev` or `npm install fast-check --save-dev`
 
 Example of integration in [mocha](http://mochajs.org/):
 
@@ -126,3 +126,9 @@ m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null,
 ```
 
 **[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/IssuesDiscovered.md)**
+
+## Code Contributors
+
+This project would not be the same without them 💖 - [Become one of them](CONTRIBUTING.md)
+
+<a href="https://github.com/dubzzz/fast-check/graphs/contributors"><img src="https://opencollective.com/fast-check/contributors.svg?width=890&button=false" /></a>

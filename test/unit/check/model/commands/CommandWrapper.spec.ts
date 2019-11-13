@@ -9,8 +9,8 @@ type Real = {};
 describe('CommandWrapper', () => {
   it('Should show name of the command if it has not run', () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = (m: Readonly<Model>) => true;
-      run = (m: Model, r: Real) => {};
+      check = (_m: Readonly<Model>) => true;
+      run = (_m: Model, _r: Real) => {};
       toString = () => 'sync command';
     })();
     const wrapper = new CommandWrapper(cmd);
@@ -18,8 +18,8 @@ describe('CommandWrapper', () => {
   });
   it('Should show name of the command if it has run', () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = (m: Readonly<Model>) => true;
-      run = (m: Model, r: Real) => {};
+      check = (_m: Readonly<Model>) => true;
+      run = (_m: Model, _r: Real) => {};
       toString = () => 'sync command';
     })();
     const wrapper = new CommandWrapper(cmd);
@@ -28,8 +28,8 @@ describe('CommandWrapper', () => {
   });
   it('Should reset run flag of clone', () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = (m: Readonly<Model>) => true;
-      run = (m: Model, r: Real) => {};
+      check = (_m: Readonly<Model>) => true;
+      run = (_m: Model, _r: Real) => {};
       toString = () => 'sync command';
     })();
     const wrapper = new CommandWrapper(cmd);
@@ -40,8 +40,8 @@ describe('CommandWrapper', () => {
   });
   it('Should consider a run on success', () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = (m: Readonly<Model>) => true;
-      run = (m: Model, r: Real) => {};
+      check = (_m: Readonly<Model>) => true;
+      run = (_m: Model, _r: Real) => {};
       toString = () => 'sync command';
     })();
     const wrapper = new CommandWrapper(cmd);
@@ -51,8 +51,8 @@ describe('CommandWrapper', () => {
   });
   it('Should consider a run on failure', () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = (m: Readonly<Model>) => true;
-      run = (m: Model, r: Real) => {
+      check = (_m: Readonly<Model>) => true;
+      run = (_m: Model, _r: Real) => {
         throw 'failure message';
       };
       toString = () => 'sync command';
@@ -64,8 +64,8 @@ describe('CommandWrapper', () => {
   });
   it('Should consider a run on asynchronous success', async () => {
     const cmd = new (class implements AsyncCommand<Model, Real> {
-      check = (m: Readonly<Model>) => true;
-      run = async (m: Model, r: Real) => {};
+      check = (_m: Readonly<Model>) => true;
+      run = async (_m: Model, _r: Real) => {};
       toString = () => 'async command';
     })();
     const wrapper = new CommandWrapper(cmd);
@@ -75,8 +75,8 @@ describe('CommandWrapper', () => {
   });
   it('Should consider a run on asynchronous failure', async () => {
     const cmd = new (class implements AsyncCommand<Model, Real> {
-      check = (m: Readonly<Model>) => true;
-      run = async (m: Model, r: Real) => {
+      check = (_m: Readonly<Model>) => true;
+      run = async (_m: Model, _r: Real) => {
         throw 'failure message';
       };
       toString = () => 'async command';

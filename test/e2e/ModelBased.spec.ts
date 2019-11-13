@@ -12,7 +12,7 @@ interface Model {
 
 class PushCommand implements fc.Command<Model, IList<number>> {
   constructor(readonly value: number) {}
-  check = (m: Readonly<Model>) => true;
+  check = (_m: Readonly<Model>) => true;
   run(m: Model, r: IList<number>): void {
     r.push(this.value);
     ++m.num;
@@ -31,7 +31,7 @@ class PopCommand implements fc.Command<Model, IList<number>> {
   toString = () => 'pop';
 }
 class SizeCommand implements fc.Command<Model, IList<number>> {
-  check = (m: Readonly<Model>) => true;
+  check = (_m: Readonly<Model>) => true;
   run(m: Model, r: IList<number>): void {
     expect(r.size()).toEqual(m.num);
   }

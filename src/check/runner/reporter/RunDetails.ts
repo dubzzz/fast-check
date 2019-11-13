@@ -12,6 +12,10 @@ export interface RunDetails<Ts> {
    */
   failed: boolean;
   /**
+   * Was the execution interrupted?
+   */
+  interrupted: boolean;
+  /**
    * Number of runs
    *
    * - In case of failed property: Number of runs up to the first failure (including the failure run)

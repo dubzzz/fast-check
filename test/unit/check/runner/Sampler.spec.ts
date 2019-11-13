@@ -183,7 +183,7 @@ describe('Sampler', () => {
         fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const classify = (g: number) => g.toString();
           const arb = stubArb.counter(start);
-          statistics(arb, classify, { numRuns: num, logger: (v: string) => {} });
+          statistics(arb, classify, { numRuns: num, logger: (_v: string) => {} });
           expect(arb.generatedValues).toHaveLength(num); // only call the arbitrary once per asked value
         })
       ));

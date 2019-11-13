@@ -1,5 +1,5 @@
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { IProperty } from '../../../../src/check/property/IProperty';
+import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 
 import * as stubRng from '../../stubs/generators';
@@ -18,7 +18,7 @@ describe('TimeoutProperty', () => {
     const expectedMrng = mrng();
     const expectedRunId = 42;
     const expectedOut = new Shrinkable({});
-    const p: IProperty<number> = {
+    const p: IRawProperty<number> = {
       isAsync: () => true,
       generate: jest.fn().mockReturnValueOnce(expectedOut),
       run: jest.fn()
@@ -37,7 +37,7 @@ describe('TimeoutProperty', () => {
   it('Should forward inputs to run', async () => {
     // Arrange
     const runInput = {};
-    const p: IProperty<typeof runInput> = {
+    const p: IRawProperty<typeof runInput> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn()
@@ -56,11 +56,11 @@ describe('TimeoutProperty', () => {
 
   it('Should not timeout if it succeeds in time', async () => {
     // Arrange
-    const p: IProperty<{}> = {
+    const p: IRawProperty<{}> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
-        new Promise(function(resolve, reject) {
+        new Promise(function(resolve) {
           setTimeout(() => resolve(null), 10);
         })
       )
@@ -77,11 +77,11 @@ describe('TimeoutProperty', () => {
 
   it('Should not timeout if it fails in time', async () => {
     // Arrange
-    const p: IProperty<{}> = {
+    const p: IRawProperty<{}> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
-        new Promise(function(resolve, reject) {
+        new Promise(function(resolve) {
           // underlying property is not supposed to throw (reject)
           setTimeout(() => resolve('plop'), 10);
         })
@@ -99,7 +99,7 @@ describe('TimeoutProperty', () => {
 
   it('Should clear all started timeouts on success', async () => {
     // Arrange
-    const p: IProperty<{}> = {
+    const p: IRawProperty<{}> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockResolvedValueOnce(null)
@@ -116,7 +116,7 @@ describe('TimeoutProperty', () => {
 
   it('Should clear all started timeouts on failure', async () => {
     // Arrange
-    const p: IProperty<{}> = {
+    const p: IRawProperty<{}> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockResolvedValueOnce('plop')
@@ -133,11 +133,11 @@ describe('TimeoutProperty', () => {
 
   it('Should timeout if it takes to long', async () => {
     // Arrange
-    const p: IProperty<{}> = {
+    const p: IRawProperty<{}> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
-        new Promise(function(resolve, reject) {
+        new Promise(function(resolve) {
           setTimeout(() => resolve(null), 100);
         })
       )
@@ -154,10 +154,10 @@ describe('TimeoutProperty', () => {
 
   it('Should timeout if it never ends', async () => {
     // Arrange
-    const p: IProperty<{}> = {
+    const p: IRawProperty<{}> = {
       isAsync: () => true,
       generate: jest.fn(),
-      run: jest.fn().mockReturnValueOnce(new Promise(function(resolve, reject) {}))
+      run: jest.fn().mockReturnValueOnce(new Promise(() => {}))
     };
 
     // Act

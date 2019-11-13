@@ -147,7 +147,7 @@ export abstract class Arbitrary<T> {
    *
    * @param freq The biased version will be used one time over freq - if it exists - freq must be superior or equal to 2 to avoid any lock
    */
-  withBias(freq: number): Arbitrary<T> {
+  withBias(_freq: number): Arbitrary<T> {
     return this;
   }
 

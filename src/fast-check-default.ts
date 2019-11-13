@@ -1,6 +1,7 @@
 import { pre } from './check/precondition/Pre';
-import { asyncProperty } from './check/property/AsyncProperty';
-import { property } from './check/property/Property';
+import { asyncProperty, IAsyncProperty } from './check/property/AsyncProperty';
+import { property, IProperty } from './check/property/Property';
+import { IRawProperty } from './check/property/IRawProperty';
 import { Parameters } from './check/runner/configuration/Parameters';
 import { RunDetails } from './check/runner/reporter/RunDetails';
 import { assert, check } from './check/runner/Runner';
@@ -19,7 +20,7 @@ import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float } from './check/arbitrary/FloatingPointArbitrary';
-import { frequency } from './check/arbitrary/FrequencyArbitrary';
+import { frequency, WeightedArbitrary } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
@@ -74,6 +75,12 @@ import { asyncModelRun, modelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
+import {
+  configureGlobal,
+  GlobalParameters,
+  readConfigureGlobal,
+  resetConfigureGlobal
+} from './check/runner/configuration/GlobalParameters';
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
@@ -100,6 +107,9 @@ export {
   // property definition
   property,
   asyncProperty,
+  IRawProperty,
+  IProperty,
+  IAsyncProperty,
   // pre-built arbitraries
   boolean,
   float,
@@ -189,6 +199,7 @@ export {
   Context,
   ExecutionStatus,
   ExecutionTree,
+  GlobalParameters,
   Memo,
   MixedCaseConstraints,
   ObjectConstraints,
@@ -200,5 +211,10 @@ export {
   Random,
   Stream,
   stream,
-  VerbosityLevel
+  VerbosityLevel,
+  WeightedArbitrary,
+  // global configuration
+  configureGlobal,
+  readConfigureGlobal,
+  resetConfigureGlobal
 };

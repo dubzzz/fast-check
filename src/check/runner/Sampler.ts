@@ -2,28 +2,36 @@ import { Stream, stream } from '../../stream/Stream';
 import { ObjectEntries, StringPadEnd, StringPadStart } from '../../utils/polyfills';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
-import { IProperty } from '../property/IProperty';
-import { Property } from '../property/Property';
+import { IRawProperty } from '../property/IRawProperty';
+import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
+import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
 /** @hidden */
-function toProperty<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters<Ts>): IProperty<Ts> {
-  const prop = !generator.hasOwnProperty('isAsync')
+function toProperty<Ts>(
+  generator: IRawProperty<Ts> | Arbitrary<Ts>,
+  qParams: QualifiedParameters<Ts>
+): IRawProperty<Ts> {
+  const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
-    : (generator as IProperty<Ts>);
+    : (generator as IRawProperty<Ts>);
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }
 
 /** @hidden */
 function streamSample<Ts>(
-  generator: IProperty<Ts> | Arbitrary<Ts>,
+  generator: IRawProperty<Ts> | Arbitrary<Ts>,
   params?: Parameters<Ts> | number
 ): IterableIterator<Ts> {
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.readOrNumRuns(params);
+  const extendedParams =
+    typeof params === 'number'
+      ? { ...readConfigureGlobal(), numRuns: params }
+      : { ...readConfigureGlobal(), ...params };
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read(extendedParams);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
   );
@@ -47,7 +55,7 @@ function streamSample<Ts>(
  * @param generator {@link IProperty} or {@link Arbitrary} to extract the values from
  * @param params Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
  */
-function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
+function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
   return [...streamSample(generator, params)];
 }
 
@@ -73,11 +81,15 @@ function sample<Ts>(generator: IProperty<Ts> | Arbitrary<Ts>, params?: Parameter
  * @param params Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
  */
 function statistics<Ts>(
-  generator: IProperty<Ts> | Arbitrary<Ts>,
+  generator: IRawProperty<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: Parameters<Ts> | number
 ): void {
-  const qParams = QualifiedParameters.readOrNumRuns(params);
+  const extendedParams =
+    typeof params === 'number'
+      ? { ...readConfigureGlobal(), numRuns: params }
+      : { ...readConfigureGlobal(), ...params };
+  const qParams = QualifiedParameters.read(extendedParams);
   const recorded: { [key: string]: number } = {};
   for (const g of streamSample(generator, params)) {
     const out = classify(g);

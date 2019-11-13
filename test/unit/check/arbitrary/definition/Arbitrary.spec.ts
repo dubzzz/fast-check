@@ -36,16 +36,16 @@ class FakeNoBiasArbitrary extends Arbitrary<number> {
   generate(mrng: Random): Shrinkable<number> {
     return new ForwardArbitrary().generate(mrng);
   }
-  withBias(freq: number) {
+  withBias(_freq: number) {
     return new ForwardArbitrary();
   }
 }
 
 class FakeTwoValuesBiasArbitrary extends Arbitrary<number> {
-  generate(mrng: Random): Shrinkable<number> {
+  generate(_mrng: Random): Shrinkable<number> {
     return new Shrinkable(44);
   }
-  withBias(freq: number) {
+  withBias(_freq: number) {
     return new (class extends Arbitrary<number> {
       generate(mrng: Random): Shrinkable<number> {
         return mrng.nextInt(1, 2) === 1 ? new Shrinkable(42) : new Shrinkable(43);
@@ -175,7 +175,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const fmapper = (v: number) => new ForwardArbitrary();
+          const fmapper = (_v: number) => new ForwardArbitrary();
           const arb = constant(0).chain(fmapper);
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
           const g = biasedArb.generate(mrng).value;

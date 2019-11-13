@@ -15,15 +15,18 @@ export class RunExecution<Ts> {
   currentLevelExecutionTrees: ExecutionTree<Ts>[];
   pathToFailure?: string;
   value?: Ts;
-  failure: string;
+  failure: string | null;
   numSkips: number;
   numSuccesses: number;
+  interrupted: boolean;
 
-  constructor(readonly verbosity: VerbosityLevel) {
+  constructor(readonly verbosity: VerbosityLevel, readonly interruptedAsFailure: boolean) {
     this.rootExecutionTrees = [];
     this.currentLevelExecutionTrees = this.rootExecutionTrees;
+    this.failure = null;
     this.numSkips = 0;
     this.numSuccesses = 0;
+    this.interrupted = false;
   }
 
   private appendExecutionTree(status: ExecutionStatus, value: Ts) {
@@ -58,6 +61,9 @@ export class RunExecution<Ts> {
       ++this.numSuccesses;
     }
   }
+  interrupt() {
+    this.interrupted = true;
+  }
 
   private isSuccess = (): boolean => this.pathToFailure == null;
   private firstFailure = (): number => (this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1);
@@ -90,6 +96,7 @@ export class RunExecution<Ts> {
       // encountered a property failure
       return {
         failed: true,
+        interrupted: this.interrupted,
         numRuns: this.firstFailure() + 1 - this.numSkips,
         numSkips: this.numSkips,
         numShrinks: this.numShrinks(),
@@ -106,6 +113,7 @@ export class RunExecution<Ts> {
       // too many skips
       return {
         failed: true,
+        interrupted: this.interrupted,
         numRuns: this.numSuccesses,
         numSkips: this.numSkips,
         numShrinks: 0,
@@ -119,8 +127,9 @@ export class RunExecution<Ts> {
       };
     }
     return {
-      failed: false,
-      numRuns,
+      failed: this.interrupted ? this.interruptedAsFailure : false,
+      interrupted: this.interrupted,
+      numRuns: this.numSuccesses,
       numSkips: this.numSkips,
       numShrinks: 0,
       seed,

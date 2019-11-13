@@ -57,6 +57,25 @@ export interface Parameters<T = void> {
    */
   skipAllAfterTimeLimit?: number;
   /**
+   * Interrupt test execution after a given time limit: disabled by default
+   *
+   * NOTE: Relies on `Date.now()`.
+   *
+   * NOTE:
+   * Useful to avoid having too long running processes in your CI.
+   * Replay capability (see {@link seed}, {@link path}) can still be used if needed.
+   *
+   * WARNING:
+   * If the test got interrupted before any failure occured
+   * and before it reached the requested number of runs specified by {@link numRuns}
+   * it will be marked as success. Except if {@link markInterruptAsFailure} as been set to `true`
+   */
+  interruptAfterTimeLimit?: number;
+  /**
+   * Mark interrupted runs as failed runs: disabled by default
+   */
+  markInterruptAsFailure?: boolean;
+  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
    */

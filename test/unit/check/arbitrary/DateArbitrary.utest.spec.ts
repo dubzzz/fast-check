@@ -1,6 +1,6 @@
 import { date } from '../../../../src/check/arbitrary/DateArbitrary';
 import * as stubRng from '../../stubs/generators';
-import { mockModule } from './generic/MockedModule';
+import { mocked } from 'ts-jest/utils';
 import * as fc from '../../../../lib/fast-check';
 
 jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
@@ -16,8 +16,8 @@ describe('DateArbitrary', () => {
     });
     it('Should be able to build the minimal valid date', () => {
       // Arrange
-      const { integer } = mockModule(IntegerArbitraryMock);
-      integer.mockImplementationOnce((a, b) => arbitraryFor([{ value: a }]));
+      const { integer } = mocked(IntegerArbitraryMock);
+      integer.mockImplementationOnce((a, _b) => arbitraryFor([{ value: a }]));
 
       // Act
       const arb = date();
@@ -30,7 +30,7 @@ describe('DateArbitrary', () => {
     });
     it('Should be able to build the maximal valid date', () => {
       // Arrange
-      const { integer } = mockModule(IntegerArbitraryMock);
+      const { integer } = mocked(IntegerArbitraryMock);
       integer.mockImplementationOnce((a, b) => arbitraryFor([{ value: b }]));
 
       // Act
@@ -47,7 +47,7 @@ describe('DateArbitrary', () => {
         fc
           .property(constraintsArb(), fc.nat(), (constraints, seed) => {
             // Arrange
-            const { integer } = mockModule(IntegerArbitraryMock);
+            const { integer } = mocked(IntegerArbitraryMock);
             integer.mockImplementationOnce((a, b) => {
               const d = b - a + 1;
               const r = (seed % d) + a; // random between a and b
@@ -94,7 +94,7 @@ describe('DateArbitrary', () => {
     });
     it('Should preserve shrinking capabilities', () => {
       // Arrange
-      const { integer } = mockModule(IntegerArbitraryMock);
+      const { integer } = mocked(IntegerArbitraryMock);
       integer.mockReturnValueOnce(arbitraryFor([{ value: 42, shrinks: [{ value: 48 }, { value: 69 }] }]));
 
       // Act
