@@ -66,6 +66,59 @@ describe('AutocompleteField', () => {
           cleanup();
         })
     ));
+
+  it('should display results corresponding to the longest available subsequence of the current query', () =>
+    fc.assert(
+      fc
+        .asyncProperty(
+          fc.array(fc.uuidV(4), 0, 1000),
+          fc.array(fc.hexaString(0, 4), 1, 10),
+          fc.scheduler(),
+          async (allResults, queries, s) => {
+            // Arrange
+            const { search } = mockModule(ApiMock);
+            search.mockImplementation(
+              s.scheduleFunction(function search(query, maxResults) {
+                return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
+              })
+            );
+            const query = queries[queries.length - 1];
+
+            // Act
+            const { getByRole, queryAllByRole } = await renderAutoCompleteField();
+            for (const q of queries) {
+              await fireOnByOneForQuery(getByRole('input') as HTMLElement, q);
+            }
+
+            // Assert
+
+            //// Resolve query by query in a random order
+            //// Example for final query abd - first query was for abcd, second one for abd:
+            //// (1) abc resolves  - we still get results matching '' (abc ignored - not substring of abd)
+            //// (2) ab  resolves  - we get results matching ab
+            //// (3) abcd resolves - we still get results matching ab (abcd ignored - not substring of abd)
+            //// (4) abd  resolves - we get results matching abd
+            let lastMatchingSubquery = '';
+            while (s.count() !== 0) {
+              await act(async () => {
+                await s.waitOne();
+              });
+              lastMatchingSubquery = await checkSuggestions(
+                queryAllByRole('listitem') as HTMLElement[],
+                query,
+                lastMatchingSubquery
+              );
+            }
+
+            //// At the end we expect to get results matching the final query
+            expect(lastMatchingSubquery).toBe(query);
+          }
+        )
+        .beforeEach(async () => {
+          jest.resetAllMocks();
+          cleanup();
+        })
+    ));
 });
 
 // Helpers
@@ -107,6 +160,11 @@ const fireOnByOneForQuery = async (input: HTMLElement, query: string) => {
   for (let idx = 0; idx !== query.length; ++idx) {
     await act(async () => {
       fireEvent.change(input, { target: { value: query.substring(0, idx + 1) } });
+    });
+  }
+  if (query.length === 0) {
+    await act(async () => {
+      fireEvent.change(input, { target: { value: query } });
     });
   }
 
