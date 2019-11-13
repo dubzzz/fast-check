@@ -1,5 +1,4 @@
-// Remark: No tsx to keep setup simple but we might definitely add it
-import * as React from 'react';
+import React from 'react';
 import { search } from './Api';
 
 type Props = {
@@ -41,18 +40,22 @@ export default function AutocompleteField(props: Props) {
     runQuery();
   }, [query, props]);
 
-  return React.createElement(
-    'div',
-    {},
-    React.createElement('input', {
-      role: 'input',
-      value: query,
-      onChange: evt => {
-        const value = (evt.target as any).value;
-        lastQueryRef.current = value;
-        setQuery(value);
-      }
-    }),
-    React.createElement('ul', {}, searchResults.map(r => React.createElement('li', { key: r }, r)))
+  return (
+    <div>
+      <input
+        role="input"
+        value={query}
+        onChange={evt => {
+          const value = (evt.target as any).value;
+          lastQueryRef.current = value;
+          setQuery(value);
+        }}
+      />
+      <ul>
+        {searchResults.map(r => (
+          <li key={r}>{r}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
