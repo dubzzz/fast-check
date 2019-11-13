@@ -14,12 +14,12 @@ import { stringify } from '../../utils/stringify';
 
 export interface Scheduler {
   /** Wrap a new task using the Scheduler */
-  schedule: <T>(task: PromiseLike<T>) => PromiseLike<T>;
+  schedule: <T>(task: Promise<T>) => Promise<T>;
 
   /** Automatically wrap function output using the Scheduler */
   scheduleFunction: <TArgs extends any[], T>(
-    asyncFunction: (...args: TArgs) => PromiseLike<T>
-  ) => (...args: TArgs) => PromiseLike<T>;
+    asyncFunction: (...args: TArgs) => Promise<T>
+  ) => (...args: TArgs) => Promise<T>;
 
   /**
    * Count of pending scheduled tasks
@@ -43,6 +43,7 @@ type ScheduledTask = {
   original: PromiseLike<unknown>;
   scheduled: PromiseLike<unknown>;
   trigger: () => void;
+  label: string;
 };
 
 export class SchedulerImplem implements Scheduler {
@@ -54,10 +55,15 @@ export class SchedulerImplem implements Scheduler {
     // here we should received an already cloned mrng so that we can do whatever we want on it
     this.sourceMrng = mrng.clone();
     this.scheduledTasks = [];
+    this.triggeredTasksLogs = [];
   }
 
-  private log(meta: string, type: 'resolve' | 'reject', data: any[]) {
-    this.triggeredTasksLogs.push(`[${meta}][${type}] ${stringify(data)}`);
+  private buildLog(meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
+    return `[${meta}][${type}] ${stringify(data)}`;
+  }
+
+  private log(meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
+    this.triggeredTasksLogs.push(this.buildLog(meta, type, data));
   }
 
   private scheduleInternal<T>(meta: string, task: PromiseLike<T>) {
@@ -76,17 +82,22 @@ export class SchedulerImplem implements Scheduler {
         );
       };
     });
-    this.scheduledTasks.push({ original: task, scheduled: scheduledPromise, trigger: trigger! });
+    this.scheduledTasks.push({
+      original: task,
+      scheduled: scheduledPromise,
+      trigger: trigger!,
+      label: this.buildLog(meta, 'pending', [])
+    });
     return scheduledPromise;
   }
 
-  schedule<T>(task: PromiseLike<T>) {
+  schedule<T>(task: Promise<T>) {
     return this.scheduleInternal('promise', task);
   }
 
   scheduleFunction<TArgs extends any[], T>(
-    asyncFunction: (...args: TArgs) => PromiseLike<T>
-  ): (...args: TArgs) => PromiseLike<T> {
+    asyncFunction: (...args: TArgs) => Promise<T>
+  ): (...args: TArgs) => Promise<T> {
     return (...args: TArgs) => this.scheduleInternal(`function::${asyncFunction.name}`, asyncFunction(...args));
   }
 
@@ -111,7 +122,10 @@ export class SchedulerImplem implements Scheduler {
   }
 
   toString() {
-    return this.triggeredTasksLogs.map(log => `-> ${log}`).join('\n');
+    return this.triggeredTasksLogs
+      .concat(this.scheduledTasks.map(t => t.label))
+      .map(log => `-> ${log}`)
+      .join('\n');
   }
 
   [cloneMethod]() {

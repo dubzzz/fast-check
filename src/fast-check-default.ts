@@ -86,6 +86,7 @@ import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { stringify } from './utils/stringify';
+import { scheduler, Scheduler } from './check/arbitrary/AsyncSchedulerArbitrary';
 
 // boolean
 // floating point types
@@ -185,6 +186,9 @@ export {
   asyncModelRun,
   modelRun,
   commands,
+  // scheduler
+  scheduler,
+  Scheduler,
   // extend the framework
   Arbitrary,
   Shrinkable,
