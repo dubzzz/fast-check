@@ -32,23 +32,8 @@ describe('AutocompleteField', () => {
             );
 
             // Act
-            let getByRole: ReturnType<typeof render>['getByRole'] = null as any;
-            let queryAllByRole: ReturnType<typeof render>['queryAllByRole'] = null as any;
-            await act(async () => {
-              const wrapper = render(React.createElement(AutocompleteField));
-              getByRole = wrapper.getByRole;
-              queryAllByRole = wrapper.queryAllByRole;
-            });
-
-            //// Fire characters of the query one by one
-            for (let idx = 0; idx !== query.length; ++idx) {
-              await act(async () => {
-                fireEvent.change(getByRole('input') as HTMLElement, { target: { value: query.substring(0, idx + 1) } });
-              });
-            }
-
-            //// Sanity check: input has the right value
-            expect(getByRole('input')).toHaveAttribute('value', query);
+            const { getByRole, queryAllByRole } = await renderAutoCompleteField();
+            await fireOnByOneForQuery(getByRole('input') as HTMLElement, query);
 
             // Assert
 
@@ -65,17 +50,11 @@ describe('AutocompleteField', () => {
               await act(async () => {
                 await s.waitOne();
               });
-              const suggestions = (queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
-              const longest = extractLongestSubqueryMatchingAll(suggestions, query);
-              expect(
-                // Trick to get nicer error message
-                longest.length < lastMatchingSubquery.length
-                  ? `Previous results were matching ${JSON.stringify(
-                      lastMatchingSubquery
-                    )} while current ones are matching ${JSON.stringify(longest)}`
-                  : null
-              ).toBe(null);
-              lastMatchingSubquery = longest;
+              lastMatchingSubquery = await checkSuggestions(
+                queryAllByRole('listitem') as HTMLElement[],
+                query,
+                lastMatchingSubquery
+              );
             }
 
             //// At the end we expect to get results matching the final query
@@ -108,4 +87,45 @@ const extractLongestSubqueryMatchingAll = (suggestions: string[], query: string)
     }
   }
   return '';
+};
+
+const renderAutoCompleteField = async () => {
+  let getByRole: ReturnType<typeof render>['getByRole'] = null as any;
+  let queryAllByRole: ReturnType<typeof render>['queryAllByRole'] = null as any;
+
+  await act(async () => {
+    const wrapper = render(React.createElement(AutocompleteField));
+    getByRole = wrapper.getByRole;
+    queryAllByRole = wrapper.queryAllByRole;
+  });
+
+  return { getByRole, queryAllByRole };
+};
+
+const fireOnByOneForQuery = async (input: HTMLElement, query: string) => {
+  // Fire characters of query one by one
+  for (let idx = 0; idx !== query.length; ++idx) {
+    await act(async () => {
+      fireEvent.change(input, { target: { value: query.substring(0, idx + 1) } });
+    });
+  }
+
+  // Sanity check: input has the right value
+  expect(input).toHaveAttribute('value', query);
+};
+
+const checkSuggestions = async (items: HTMLElement[], query: string, lastMatchingSubquery: string): Promise<string> => {
+  const suggestions = items.map(getNodeText);
+  const longest = extractLongestSubqueryMatchingAll(suggestions, query);
+
+  expect(
+    // Trick to get nicer error message
+    longest.length < lastMatchingSubquery.length
+      ? `Previous results were matching ${JSON.stringify(
+          lastMatchingSubquery
+        )} while current ones are matching ${JSON.stringify(longest)}`
+      : null
+  ).toBe(null);
+
+  return longest;
 };
