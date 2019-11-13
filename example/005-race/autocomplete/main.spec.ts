@@ -45,7 +45,7 @@ describe('AutocompleteField', () => {
             //// (1) abc resolves  - we get results matching abc
             //// (2) ab  resolves  - we still get results matching abc (ab ignored)
             //// (3) abcd resolves - we get results matching abcd
-            let lastMatchingSubquery = '';
+            let lastMatchingSubquery = { longest: '', suggestions: [] as string[] };
             while (s.count() !== 0) {
               await act(async () => {
                 await s.waitOne();
@@ -58,7 +58,7 @@ describe('AutocompleteField', () => {
             }
 
             //// At the end we expect to get results matching the final query
-            expect(lastMatchingSubquery).toBe(query);
+            expect(lastMatchingSubquery.longest).toBe(query);
           }
         )
         .beforeEach(async () => {
@@ -98,7 +98,7 @@ describe('AutocompleteField', () => {
             //// (2) ab  resolves  - we get results matching ab
             //// (3) abcd resolves - we still get results matching ab (abcd ignored - not substring of abd)
             //// (4) abd  resolves - we get results matching abd
-            let lastMatchingSubquery = '';
+            let lastMatchingSubquery = { longest: '', suggestions: [] as string[] };
             while (s.count() !== 0) {
               await act(async () => {
                 await s.waitOne();
@@ -111,7 +111,7 @@ describe('AutocompleteField', () => {
             }
 
             //// At the end we expect to get results matching the final query
-            expect(lastMatchingSubquery).toBe(query);
+            expect(lastMatchingSubquery.longest).toBe(query);
           }
         )
         .beforeEach(async () => {
@@ -172,18 +172,22 @@ const fireOnByOneForQuery = async (input: HTMLElement, query: string) => {
   expect(input).toHaveAttribute('value', query);
 };
 
-const checkSuggestions = async (items: HTMLElement[], query: string, lastMatchingSubquery: string): Promise<string> => {
+const checkSuggestions = async (
+  items: HTMLElement[],
+  query: string,
+  lastMatchingSubquery: { longest: string; suggestions: string[] }
+): Promise<{ longest: string; suggestions: string[] }> => {
   const suggestions = items.map(getNodeText);
   const longest = extractLongestSubqueryMatchingAll(suggestions, query);
 
   expect(
     // Trick to get nicer error message
-    longest.length < lastMatchingSubquery.length
-      ? `Previous results were matching ${JSON.stringify(
-          lastMatchingSubquery
-        )} while current ones are matching ${JSON.stringify(longest)}`
+    lastMatchingSubquery.suggestions.length > 0 && longest.length < lastMatchingSubquery.longest.length
+      ? `Previous results were matching ${JSON.stringify(lastMatchingSubquery.longest)} (${JSON.stringify(
+          lastMatchingSubquery.suggestions
+        )}) while current ones are matching ${JSON.stringify(longest)} (${JSON.stringify(suggestions)})`
       : null
   ).toBe(null);
 
-  return longest;
+  return { longest, suggestions };
 };
