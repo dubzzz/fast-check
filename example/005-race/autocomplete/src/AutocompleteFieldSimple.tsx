@@ -1,8 +1,12 @@
 import React from 'react';
-import { search } from './Api';
+
+// Injected as a props because CodeSandbox fails to provide jest.mock
+// So it makes such import difficult to test
+//// import { search } from './Api';
 
 type Props = {
   bugId?: 1;
+  search: (query: string, maxResults: number) => Promise<string[]>;
 };
 
 export default function AutocompleteField(props: Props) {
@@ -12,7 +16,7 @@ export default function AutocompleteField(props: Props) {
   React.useEffect(() => {
     let canceled = false;
     const runQuery = async () => {
-      const results = await search(query, 10);
+      const results = await props.search(query, 10);
       if (canceled && props.bugId !== 1) return;
       setSearchResults(results);
     };

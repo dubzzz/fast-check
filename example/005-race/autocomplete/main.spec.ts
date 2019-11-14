@@ -1,7 +1,4 @@
 // DISCLAIMER:
-// CodeSandbox does not handle jest.* calls for the moment
-// If you want to run this test suite, you'll need to sync the code locally
-//
 // Detecting race conditions using fast-check is still a feature under dev.
 // See https://github.com/dubzzz/fast-check/pull/479
 
@@ -12,8 +9,7 @@ import * as React from 'react';
 import { render, cleanup, fireEvent, act, getNodeText } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import * as ApiMock from './src/Api';
-jest.mock('./src/Api');
+import { search } from './src/Api';
 
 // If you want to test the behaviour of fast-check in case of a bug
 //// Replace: React.createElement(AutocompleteField)
@@ -29,15 +25,13 @@ describe('AutocompleteField', () => {
           fc.scheduler(),
           async (allResults, query, s) => {
             // Arrange
-            const { search } = mockModule(ApiMock);
-            search.mockImplementation(
-              s.scheduleFunction(function search(query, maxResults) {
-                return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
-              })
-            );
+            // TODO Do not inject search into props, use mockImplementation instead
+            const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
+              return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
+            });
 
             // Act
-            const { getByRole, queryAllByRole } = await renderAutoCompleteField();
+            const { getByRole, queryAllByRole } = await renderAutoCompleteField(searchImplem);
             await fireOneByOneForQuery(getByRole('input') as HTMLElement, query);
 
             // Assert
@@ -63,7 +57,14 @@ describe('AutocompleteField', () => {
             }
 
             //// At the end we expect to get results matching the final query
-            expect(lastMatchingSubquery.longest).toBe(query);
+            // TODO Replace by: expect(lastMatchingSubquery.longest).toBe(query); // Not supported in CodeSandbox
+            if (lastMatchingSubquery.longest !== query) {
+              throw new Error(
+                `Expected last matching subquery to be ${JSON.stringify(query)}, got: ${JSON.stringify(
+                  lastMatchingSubquery.longest
+                )}`
+              );
+            }
           }
         )
         .beforeEach(async () => {
@@ -81,16 +82,14 @@ describe('AutocompleteField', () => {
           fc.scheduler(),
           async (allResults, queries, s) => {
             // Arrange
-            const { search } = mockModule(ApiMock);
-            search.mockImplementation(
-              s.scheduleFunction(function search(query, maxResults) {
-                return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
-              })
-            );
+            // TODO Do not inject search into props, use mockImplementation instead
+            const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
+              return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
+            });
             const query = queries[queries.length - 1];
 
             // Act
-            const { getByRole, queryAllByRole } = await renderAutoCompleteField();
+            const { getByRole, queryAllByRole } = await renderAutoCompleteField(searchImplem);
             for (const q of queries) {
               await fireOneByOneForQuery(getByRole('input') as HTMLElement, q);
             }
@@ -116,7 +115,14 @@ describe('AutocompleteField', () => {
             }
 
             //// At the end we expect to get results matching the final query
-            expect(lastMatchingSubquery.longest).toBe(query);
+            // TODO Replace by: expect(lastMatchingSubquery.longest).toBe(query); // Not supported in CodeSandbox
+            if (lastMatchingSubquery.longest !== query) {
+              throw new Error(
+                `Expected last matching subquery to be ${JSON.stringify(query)}, got: ${JSON.stringify(
+                  lastMatchingSubquery.longest
+                )}`
+              );
+            }
           }
         )
         .beforeEach(async () => {
@@ -127,14 +133,6 @@ describe('AutocompleteField', () => {
 });
 
 // Helpers
-
-type MockedFunction<T> = T extends (...args: infer Args) => infer Result
-  ? jest.Mock<Result, Args>
-  : jest.Mock<any, any>;
-
-type MockedModule<T> = { [K in keyof T]: MockedFunction<T[K]> };
-
-const mockModule = <T>(module: T): MockedModule<T> => module as any;
 
 const extractLongestSubqueryMatchingAll = (suggestions: string[], query: string) => {
   // Dummy implementation
@@ -147,12 +145,12 @@ const extractLongestSubqueryMatchingAll = (suggestions: string[], query: string)
   return '';
 };
 
-const renderAutoCompleteField = async () => {
+const renderAutoCompleteField = async (searchImplem: typeof search) => {
   let getByRole: ReturnType<typeof render>['getByRole'] = null as any;
   let queryAllByRole: ReturnType<typeof render>['queryAllByRole'] = null as any;
 
   await act(async () => {
-    const wrapper = render(React.createElement(AutocompleteField));
+    const wrapper = render(React.createElement(AutocompleteField, { search: searchImplem }));
     getByRole = wrapper.getByRole;
     queryAllByRole = wrapper.queryAllByRole;
   });
@@ -174,7 +172,14 @@ const fireOneByOneForQuery = async (input: HTMLElement, query: string) => {
   }
 
   // Sanity check: input has the right value
-  expect(input).toHaveAttribute('value', query);
+  // TODO Replace by: expect(input).toHaveAttribute('value', query); // Not supported in CodeSandbox
+  if (input.attributes.getNamedItem('value')!.value !== query) {
+    throw new Error(
+      `Expected input content to be ${JSON.stringify(query)}, got: ${JSON.stringify(
+        input.attributes.getNamedItem('value')!.value
+      )}`
+    );
+  }
 };
 
 const checkSuggestions = async (
@@ -185,14 +190,13 @@ const checkSuggestions = async (
   const suggestions = items.map(getNodeText);
   const longest = extractLongestSubqueryMatchingAll(suggestions, query);
 
-  expect(
-    // Trick to get nicer error message
-    lastMatchingSubquery.suggestions.length > 0 && longest.length < lastMatchingSubquery.longest.length
-      ? `Previous results were matching ${JSON.stringify(lastMatchingSubquery.longest)} (${JSON.stringify(
-          lastMatchingSubquery.suggestions
-        )}) while current ones are matching ${JSON.stringify(longest)} (${JSON.stringify(suggestions)})`
-      : null
-  ).toBe(null);
+  if (lastMatchingSubquery.suggestions.length > 0 && longest.length < lastMatchingSubquery.longest.length) {
+    throw new Error(
+      `Previous results were matching ${JSON.stringify(lastMatchingSubquery.longest)} (${JSON.stringify(
+        lastMatchingSubquery.suggestions
+      )}) while current ones are matching ${JSON.stringify(longest)} (${JSON.stringify(suggestions)})`
+    );
+  }
 
   return { longest, suggestions };
 };
