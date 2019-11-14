@@ -12,6 +12,8 @@ import { stringify } from '../../utils/stringify';
 // with schedule and schedulable method
 // plus waitAll and waitOne methods
 
+type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
+
 export interface Scheduler {
   /** Wrap a new task using the Scheduler */
   schedule: <T>(task: Promise<T>) => Promise<T>;
@@ -20,6 +22,17 @@ export interface Scheduler {
   scheduleFunction: <TArgs extends any[], T>(
     asyncFunction: (...args: TArgs) => Promise<T>
   ) => (...args: TArgs) => Promise<T>;
+
+  /**
+   * Schedule a sequence of Promise to be executed sequencially
+   * but might be interleaved by other scheduled operations
+   *
+   * Equivalent to:
+   * s.schedule(typeWordA) // TODO
+   *   .then(() => s.schedule(typeWordB)
+   *     .then(() => s.schedule(typeWordC)))
+   */
+  scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): void;
 
   /**
    * Count of pending scheduled tasks
@@ -106,6 +119,19 @@ export class SchedulerImplem implements Scheduler {
         `function::${asyncFunction.name}(${args.map(stringify).join(',')})`,
         asyncFunction(...args)
       );
+  }
+
+  scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]) {
+    // We run all the builders sequencially
+    // BUT we allow tasks scheduled outside of this sequence
+    //     to be called between two of our builders
+    sequenceBuilders.reduce((previouslyScheduled: Promise<any>, item: SchedulerSequenceItem) => {
+      const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
+      return previouslyScheduled.then(() => {
+        // We schedule a successful promise that will trigger builder directly when triggered
+        return this.scheduleInternal(`sequence::${label}`, Promise.resolve()).then(() => builder());
+      });
+    }, Promise.resolve());
   }
 
   count() {

@@ -5,7 +5,7 @@ import React from 'react';
 //// import { search } from './Api';
 
 type Props = {
-  bugId?: 1 | 2;
+  bugId?: 1 | 2 | 3 | 4;
   search: (query: string, maxResults: number) => Promise<string[]>;
 };
 
@@ -20,6 +20,12 @@ export default function AutocompleteField(props: Props) {
   const [searchResults, setSearchResults] = React.useState([] as string[]);
 
   React.useEffect(() => {
+    const shouldPreFilterInFront = !props.bugId || props.bugId > 3;
+
+    const preFilterInFront = (r: string[]): string[] => {
+      const preFilterQuery = !props.bugId || props.bugId > 4 ? lastQueryRef.current : query;
+      return shouldPreFilterInFront ? r.filter(s => s.includes(preFilterQuery)) : r;
+    };
     const runQuery = async () => {
       const results = await props.search(query, 10);
 
@@ -39,8 +45,12 @@ export default function AutocompleteField(props: Props) {
       }
 
       lastSuccessfulQueryRef.current = query;
-      setSearchResults(results);
+      setSearchResults(preFilterInFront(results));
     };
+    if (shouldPreFilterInFront) {
+      // We filter currently visible results in the front
+      setSearchResults(preFilterInFront);
+    }
     runQuery();
   }, [query, props]);
 

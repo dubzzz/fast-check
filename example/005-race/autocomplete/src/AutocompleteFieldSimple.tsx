@@ -5,7 +5,7 @@ import React from 'react';
 //// import { search } from './Api';
 
 type Props = {
-  bugId?: 1;
+  bugId?: 1 | 2;
   search: (query: string, maxResults: number) => Promise<string[]>;
 };
 
@@ -20,6 +20,9 @@ export default function AutocompleteField(props: Props) {
       if (canceled && props.bugId !== 1) return;
       setSearchResults(results);
     };
+    if (!props.bugId || props.bugId > 2) {
+      setSearchResults(r => r.filter(s => s.includes(query)));
+    }
     runQuery();
     return () => {
       canceled = true;

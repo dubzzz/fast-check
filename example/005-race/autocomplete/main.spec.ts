@@ -24,6 +24,59 @@ if (!fc.readConfigureGlobal()) {
 }
 
 describe('AutocompleteField', () => {
+  it('should suggest results matching the value of the autocomplete field', () =>
+    fc.assert(
+      fc
+        .asyncProperty(
+          fc.set(fc.uuidV(4), 0, 1000),
+          fc.array(fc.hexaString(0, 4), 1, 10),
+          fc.scheduler(),
+          async (allResults, queries, s) => {
+            // Arrange
+            const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
+              return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
+            });
+
+            // Act
+            const { getByRole, queryAllByRole } = await renderAutoCompleteField(searchImplem);
+            const buildTypeQuerySequence = (input: HTMLElement, query: string) => {
+              return [...query]
+                .map((_, idx) => query.substring(0, idx))
+                .map(subquery => ({
+                  builder: async () => {
+                    await act(async () => {
+                      fireEvent.change(input, { target: { value: subquery } });
+                    });
+                  },
+                  label: `typing(${JSON.stringify(subquery)})`
+                }));
+            };
+            const input = getByRole('input') as HTMLElement;
+            s.scheduleSequence(queries.flatMap(query => buildTypeQuerySequence(input, query)));
+
+            // Assert
+            while (s.count() !== 0) {
+              await act(async () => {
+                await s.waitOne();
+              });
+              const autocompletionValue = input.attributes.getNamedItem('value')!.value;
+              const suggestions = (queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
+              if (!suggestions.every(suggestion => suggestion.includes(autocompletionValue))) {
+                throw new Error(
+                  `Current suggestions are invalid given the value of the autocomplete field ${JSON.stringify(
+                    autocompletionValue
+                  )}, suggestions are: ${JSON.stringify(suggestions)}`
+                );
+              }
+            }
+          }
+        )
+        .beforeEach(async () => {
+          jest.resetAllMocks();
+          cleanup();
+        })
+    ));
+
   it('should display results corresponding to the longest available subsequence of query', () =>
     fc.assert(
       fc
@@ -33,7 +86,6 @@ describe('AutocompleteField', () => {
           fc.scheduler(),
           async (allResults, query, s) => {
             // Arrange
-            // TODO Do not inject search into props, use mockImplementation instead
             const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
               return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
             });
@@ -90,7 +142,6 @@ describe('AutocompleteField', () => {
           fc.scheduler(),
           async (allResults, queries, s) => {
             // Arrange
-            // TODO Do not inject search into props, use mockImplementation instead
             const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
               return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
             });
