@@ -17,6 +17,12 @@ import { search } from './src/Api';
 //// Replace: React.createElement(AutocompleteField)
 //// By: React.createElement(AutocompleteField, { bugId: 1 })
 
+if (!fc.readConfigureGlobal()) {
+  // Global config of Jest has been ignored, we will have a timeout after 5000ms
+  // (CodeSandbox falls in this category)
+  fc.configureGlobal({ interruptAfterTimeLimit: 4000 });
+}
+
 describe('AutocompleteField', () => {
   it('should display results corresponding to the longest available subsequence of query', () =>
     fc.assert(
