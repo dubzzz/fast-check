@@ -44,8 +44,9 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].toString()).toMatchInlineSnapshot(`
-      "-> [task#2][function::fetchHeroesById()][resolve] [[{\\"name\\":\\"James Bond\\"}]]
-      -> [task#1][function::fetchHeroName()][pending] []"
+      "Scheduler\`
+      -> [task#2][function::fetchHeroesById()] resolve with value [{\\"name\\":\\"James Bond\\"}]
+      -> [task#1][function::fetchHeroName()] pending\`"
     `);
     expect(out.error).toContain(`Cannot read property 'toLowerCase' of undefined`);
   });

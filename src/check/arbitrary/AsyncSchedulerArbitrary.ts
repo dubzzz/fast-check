@@ -73,11 +73,11 @@ export class SchedulerImplem implements Scheduler {
     this.triggeredTasksLogs = [];
   }
 
-  private buildLog(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
-    return `[task#${taskId}][${meta}][${type}] ${stringify(data)}`;
+  private buildLog(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: unknown) {
+    return `[task#${taskId}][${meta}] ${type}${data !== undefined ? ` with value ${stringify(data)}` : ''}`;
   }
 
-  private log(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: any[]) {
+  private log(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: unknown) {
     this.triggeredTasksLogs.push(this.buildLog(taskId, meta, type, data));
   }
 
@@ -87,13 +87,13 @@ export class SchedulerImplem implements Scheduler {
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
         task.then(
-          (...args) => {
-            this.log(taskId, meta, 'resolve', args);
-            return resolve(...args);
+          data => {
+            this.log(taskId, meta, 'resolve', data);
+            return resolve(data);
           },
-          (...args) => {
-            this.log(taskId, meta, 'reject', args);
-            return reject(...args);
+          err => {
+            this.log(taskId, meta, 'reject', err);
+            return reject(err);
           }
         );
       };
@@ -102,7 +102,7 @@ export class SchedulerImplem implements Scheduler {
       original: task,
       scheduled: scheduledPromise,
       trigger: trigger!,
-      label: this.buildLog(taskId, meta, 'pending', [])
+      label: this.buildLog(taskId, meta, 'pending', undefined)
     });
     return scheduledPromise;
   }
@@ -155,10 +155,14 @@ export class SchedulerImplem implements Scheduler {
   }
 
   toString() {
-    return this.triggeredTasksLogs
-      .concat(this.scheduledTasks.map(t => t.label))
-      .map(log => `-> ${log}`)
-      .join('\n');
+    return (
+      'Scheduler`\n' +
+      this.triggeredTasksLogs
+        .concat(this.scheduledTasks.map(t => t.label))
+        .map(log => `-> ${log}`)
+        .join('\n') +
+      '`'
+    );
   }
 
   [cloneMethod]() {
