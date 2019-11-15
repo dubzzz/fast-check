@@ -73,11 +73,11 @@ export class SchedulerImplem implements Scheduler {
     this.triggeredTasksLogs = [];
   }
 
-  private buildLog(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: unknown) {
-    return `[task#${taskId}][${meta}] ${type}${data !== undefined ? ` with value ${stringify(data)}` : ''}`;
+  private buildLog(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
+    return `[task#${taskId}] ${meta} ${type}${data !== undefined ? ` with value ${stringify(data)}` : ''}`;
   }
 
-  private log(taskId: number, meta: string, type: 'resolve' | 'reject' | 'pending', data: unknown) {
+  private log(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
     this.triggeredTasksLogs.push(this.buildLog(taskId, meta, type, data));
   }
 
@@ -88,11 +88,11 @@ export class SchedulerImplem implements Scheduler {
       trigger = () => {
         task.then(
           data => {
-            this.log(taskId, meta, 'resolve', data);
+            this.log(taskId, meta, 'resolved', data);
             return resolve(data);
           },
           err => {
-            this.log(taskId, meta, 'reject', err);
+            this.log(taskId, meta, 'rejected', err);
             return reject(err);
           }
         );
