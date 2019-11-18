@@ -5,30 +5,31 @@ import React from 'react';
 //// import { search } from './Api';
 
 type Props = {
+  enableBugUnrelatedResults?: boolean;
+  enableBugUnfilteredResults?: boolean;
   search: (query: string, maxResults: number) => Promise<string[]>;
 };
 
 export default function AutocompleteField(props: Props) {
-  // Contrary to the other implementation of AutocompleteField
-  // This one shows last available answer cominng from the api
-  // Which is basically not what we expect from an autocomplete field (check it with the test suite)
-
+  const lastQueryRef = React.useRef('');
   const lastQueryIdRef = React.useRef(0);
   const lastSuccessfulQueryIdRef = React.useRef(lastQueryIdRef.current);
-  const [query, setQuery] = React.useState('');
+  const [query, setQuery] = React.useState(lastQueryRef.current);
   const [searchResults, setSearchResults] = React.useState([] as string[]);
 
   React.useEffect(() => {
     const queryId = ++lastQueryIdRef.current;
     const runQuery = async () => {
       const results = await props.search(query, 10);
-
       if (lastSuccessfulQueryIdRef.current > queryId) {
-        // If a more recent query already succeeded
-        // Then we discard this query
-        return;
+        return; // A more recent query already succeeded
       }
-
+      if (!lastQueryRef.current.startsWith(query) && !props.enableBugUnrelatedResults) {
+        // FIXED BUG:
+        // We show results for queries that are unrelated to the latest started query
+        // eg.: AZ resolves while we look for QS, we show its results even if totally unrelated
+        return; // Current query does not start with the query that just resolved
+      }
       lastSuccessfulQueryIdRef.current = queryId;
       setSearchResults(results);
     };
@@ -42,13 +43,19 @@ export default function AutocompleteField(props: Props) {
         value={query}
         onChange={evt => {
           const value = (evt.target as any).value;
+          lastQueryRef.current = value;
           setQuery(value);
         }}
       />
       <ul>
-        {searchResults.map(r => (
-          <li key={r}>{r}</li>
-        ))}
+        {searchResults
+          // FIXED BUG: We don't filter the results we receive
+          // As we want to display results as soon as possible, even if our searchResults
+          // are related to a past query we want to use them to provide the user with some hints
+          .filter(r => (props.enableBugUnfilteredResults ? true : r.startsWith(query)))
+          .map(r => (
+            <li key={r}>{r}</li>
+          ))}
       </ul>
     </div>
   );

@@ -12,7 +12,7 @@ import { stringify } from '../../utils/stringify';
 // with schedule and schedulable method
 // plus waitAll and waitOne methods
 
-type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
+export type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
 
 export interface Scheduler {
   /** Wrap a new task using the Scheduler */

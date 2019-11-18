@@ -27,7 +27,7 @@ Let's see how to generate recursive inputs using `letrec`, `memo` or even none o
 
 Various algorithms to have more random examples:
 
-- `knight` - Multi dimensional dichotomy gievn as a coding exercise
+- `knight` - Multi dimensional dichotomy given as a coding exercise
 - `mazeGenerator` - Maze generator
 - `roman` - Convert from and to roman notation for numbers
 
@@ -36,6 +36,12 @@ Various algorithms to have more random examples:
 Property based testing applied to state machines or user interfaces:
 
 - `MusicPlayer` - Simple music player with `play`, `pause`, `addTrack` and `next`
+
+**Race conditions**
+
+Property based testing used to detect race conditions in various kind of JavaScript snippets:
+
+- `AutocompleteField` - An autocomplete field written in React providing suggestions as soon as possible
 
 ## Rules of property based
 

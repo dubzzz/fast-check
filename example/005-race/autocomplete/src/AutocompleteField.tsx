@@ -5,52 +5,44 @@ import React from 'react';
 //// import { search } from './Api';
 
 type Props = {
-  bugId?: 1 | 2 | 3 | 4;
+  enableBugUnrelatedResults?: boolean;
+  enableBugBetterResults?: boolean;
+  enableBugUnfilteredResults?: boolean;
   search: (query: string, maxResults: number) => Promise<string[]>;
 };
 
 export default function AutocompleteField(props: Props) {
-  // Contrary to the other implementation of AutocompleteField
-  // This one shows intermediate results as soon as they get available
-  // Instead of rejecting all intermediate results
-
   const lastQueryRef = React.useRef('');
   const lastSuccessfulQueryRef = React.useRef('');
   const [query, setQuery] = React.useState(lastQueryRef.current);
   const [searchResults, setSearchResults] = React.useState([] as string[]);
 
   React.useEffect(() => {
-    const shouldPreFilterInFront = !props.bugId || props.bugId > 3;
-
-    const preFilterInFront = (r: string[]): string[] => {
-      const preFilterQuery = !props.bugId || props.bugId > 4 ? lastQueryRef.current : query;
-      return shouldPreFilterInFront ? r.filter(s => s.includes(preFilterQuery)) : r;
-    };
     const runQuery = async () => {
       const results = await props.search(query, 10);
 
-      if (!lastQueryRef.current.startsWith(query) && props.bugId !== 1) {
-        // If current field value does not start by query
-        // Then we discard this query
+      if (!lastQueryRef.current.startsWith(query) && !props.enableBugUnrelatedResults) {
+        // FIXED BUG:
+        // We show results for queries that are unrelated to the latest started query
+        // eg.: AZ resolves while we look for QS, we show its results even if totally unrelated
         return;
       }
       if (
         lastQueryRef.current.startsWith(lastSuccessfulQueryRef.current) &&
         lastSuccessfulQueryRef.current.length > query.length &&
-        !(props.bugId === 1 || props.bugId === 2)
+        !props.enableBugBetterResults
       ) {
-        // If we already got a longest subquery for current field value
-        // Then we discard this query
+        // FIXED BUG:
+        // We might update results while we already received results
+        // for a query less strict than the last this one
+        // eg.: We receice AZ while we already have results for AZE
         return;
       }
 
       lastSuccessfulQueryRef.current = query;
-      setSearchResults(preFilterInFront(results));
+      setSearchResults(results);
     };
-    if (shouldPreFilterInFront) {
-      // We filter currently visible results in the front
-      setSearchResults(preFilterInFront);
-    }
+
     runQuery();
   }, [query, props]);
 
@@ -66,9 +58,14 @@ export default function AutocompleteField(props: Props) {
         }}
       />
       <ul>
-        {searchResults.map(r => (
-          <li key={r}>{r}</li>
-        ))}
+        {searchResults
+          // FIXED BUG: We don't filter the results we receive
+          // As we want to display results as soon as possible, even if our searchResults
+          // are related to a past query we want to use them to provide the user with some hints
+          .filter(r => (props.enableBugUnfilteredResults ? true : r.startsWith(query)))
+          .map(r => (
+            <li key={r}>{r}</li>
+          ))}
       </ul>
     </div>
   );

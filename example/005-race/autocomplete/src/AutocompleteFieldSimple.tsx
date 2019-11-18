@@ -5,7 +5,8 @@ import React from 'react';
 //// import { search } from './Api';
 
 type Props = {
-  bugId?: 1 | 2;
+  enableBugDoNotDiscardOldQueries?: boolean;
+  enableBugUnfilteredResults?: boolean;
   search: (query: string, maxResults: number) => Promise<string[]>;
 };
 
@@ -17,12 +18,9 @@ export default function AutocompleteField(props: Props) {
     let canceled = false;
     const runQuery = async () => {
       const results = await props.search(query, 10);
-      if (canceled && props.bugId !== 1) return;
+      if (canceled && !props.enableBugDoNotDiscardOldQueries) return;
       setSearchResults(results);
     };
-    if (!props.bugId || props.bugId > 2) {
-      setSearchResults(r => r.filter(s => s.includes(query)));
-    }
     runQuery();
     return () => {
       canceled = true;
@@ -40,9 +38,14 @@ export default function AutocompleteField(props: Props) {
         }}
       />
       <ul>
-        {searchResults.map(r => (
-          <li key={r}>{r}</li>
-        ))}
+        {searchResults
+          // FIXED BUG: We don't filter the results we receive
+          // As we want to display results as soon as possible, even if our searchResults
+          // are related to a past query we want to use them to provide the user with some hints
+          .filter(r => (props.enableBugUnfilteredResults ? true : r.startsWith(query)))
+          .map(r => (
+            <li key={r}>{r}</li>
+          ))}
       </ul>
     </div>
   );
