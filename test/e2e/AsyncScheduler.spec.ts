@@ -100,6 +100,8 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         if (cache[packageName]) return;
 
         const packageDef = await fetch(packageName); // cache miss
+        cache[packageName] = packageDef;
+
         await Promise.all(Object.keys(packageDef.dependencies).map(dependencyName => feedCache(dependencyName)));
       };
       await feedCache(initialPackageName);

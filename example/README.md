@@ -42,6 +42,7 @@ Property based testing applied to state machines or user interfaces:
 Property based testing used to detect race conditions in various kind of JavaScript snippets:
 
 - `AutocompleteField` - An autocomplete field written in React providing suggestions as soon as possible
+- `dependencyTree` - Fetch recursively dependencies for a npm package
 
 ## Rules of property based
 
