@@ -1,3 +1,28 @@
+# 1.19.0
+
+_Interrupt test-suites after a given delay while the number of runs have not been reached_
+
+## Features
+
+- ([PR#428](https://github.com/dubzzz/fast-check/pull/428)) Implement `interruptAfterTimeLimit`
+- ([PR#463](https://github.com/dubzzz/fast-check/pull/463)) Adapt and expose `IRawProperty`, `IProperty` and `IAsyncProperty` types
+
+## Fixes
+
+- ([PR#455](https://github.com/dubzzz/fast-check/pull/455)) Clean: Add watch mode test and build scripts
+- ([PR#456](https://github.com/dubzzz/fast-check/pull/456)) Clean: Bump all dev dependencies
+- ([PR#457](https://github.com/dubzzz/fast-check/pull/457)) Clean: Use `ts-jest/utils` `mocked` instead of our own `mockModule`
+- ([PR#449](https://github.com/dubzzz/fast-check/pull/449)) Clean: Moving away from npm, switching to yarn
+- ([PR#471](https://github.com/dubzzz/fast-check/pull/471)) Clean: Minor fixes related to internal typings
+- ([PR#473](https://github.com/dubzzz/fast-check/pull/473)) Clean: Remove unused variables in units
+- ([PR#474](https://github.com/dubzzz/fast-check/pull/474)) Clean: Enable no-unused-vars eslint rule
+- ([PR#465](https://github.com/dubzzz/fast-check/pull/465)) Doc: Examples served by CodeSandbox and improvement of the examples - ([PR#466](https://github.com/dubzzz/fast-check/pull/466)), ([PR#467](https://github.com/dubzzz/fast-check/pull/467)), ([PR#469](https://github.com/dubzzz/fast-check/pull/469)), ([PR#470](https://github.com/dubzzz/fast-check/pull/470)), ([PR#472](https://github.com/dubzzz/fast-check/pull/472)), ([PR#476](https://github.com/dubzzz/fast-check/pull/476))
+- ([PR#475](https://github.com/dubzzz/fast-check/pull/475)) Test: Do not run travis outside of master and PRs for master
+- ([PR#464](https://github.com/dubzzz/fast-check/pull/464)) Test: Add tests for typings based on tsd
+- ([PR#481](https://github.com/dubzzz/fast-check/pull/481)) Test: Configure CodeSandbox CI
+
+---
+
 # 1.18.1
 
 _Typings regression for `fc.object`_
