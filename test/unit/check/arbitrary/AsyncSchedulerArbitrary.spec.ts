@@ -110,6 +110,78 @@ describe('AsyncSchedulerArbitrary', () => {
       });
     });
 
+    describe('scheduleFunction', () => {
+      it('Should schedule a new promise when calling a scheduled function', async () => {
+        // Arrange
+        const firstCallInput = 1;
+        const expectedThenValue = 123;
+        const thenFunction = jest.fn();
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        const scheduledFun = s.scheduleFunction(async id => id + expectedThenValue);
+
+        // Assert
+        expect(s.count()).toBe(0);
+        expect(thenFunction).not.toHaveBeenCalled();
+        scheduledFun(firstCallInput).then(thenFunction);
+        expect(s.count()).toBe(1);
+        expect(thenFunction).not.toHaveBeenCalled();
+        await s.waitOne();
+        expect(thenFunction).toHaveBeenCalled();
+        expect(thenFunction).toHaveBeenCalledTimes(1);
+        expect(thenFunction).toHaveBeenCalledWith(firstCallInput + expectedThenValue);
+      });
+
+      it('Should be able to call a scheduled function multiple times', async () => {
+        // Arrange
+        const firstCallInput = 1;
+        const secondCallInput = 10;
+        const expectedThenValue = 123;
+        const thenFunction = jest.fn();
+        const then2Function = jest.fn();
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        const scheduledFun = s.scheduleFunction(async id => id + expectedThenValue);
+
+        // Assert
+        expect(s.count()).toBe(0);
+        scheduledFun(firstCallInput).then(thenFunction);
+        scheduledFun(secondCallInput).then(then2Function);
+        expect(s.count()).toBe(2);
+        expect(thenFunction).not.toHaveBeenCalled();
+        expect(then2Function).not.toHaveBeenCalled();
+        await s.waitAll();
+        expect(thenFunction).toHaveBeenCalledWith(firstCallInput + expectedThenValue);
+        expect(then2Function).toHaveBeenCalledWith(secondCallInput + expectedThenValue);
+      });
+
+      it('Should be able to waitAll for a scheduled function calling itself', async () => {
+        // Arrange
+        const firstCallInput = 10;
+        const thenFunction = jest.fn();
+        const thenImplem = (remaining: number) => {
+          thenFunction();
+          if (remaining <= 0) return;
+          scheduledFun(remaining - 1).then(thenImplem);
+        };
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        const scheduledFun = s.scheduleFunction(async id => id);
+
+        // Assert
+        expect(s.count()).toBe(0);
+        scheduledFun(firstCallInput).then(thenImplem);
+        await s.waitAll();
+        expect(thenFunction).toHaveBeenCalledTimes(firstCallInput + 1);
+      });
+    });
+
     describe('scheduleSequence', () => {
       it('Should accept empty sequences', async () => {
         // Arrange
