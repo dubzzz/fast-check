@@ -4,6 +4,7 @@ import * as stubRng from '../../stubs/generators';
 import { Random } from '../../../../src/random/generator/Random';
 
 import prand from 'pure-rand';
+import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 
 describe('AsyncSchedulerArbitrary', () => {
   describe('context', () => {
@@ -201,6 +202,32 @@ describe('AsyncSchedulerArbitrary', () => {
           -> [task#9] promise resolved with value 8\`"
         `);
         expect(s.count()).toBe(0);
+      });
+
+      it('Should properly replay schedule on cloned instance', async () => {
+        // Arrange
+        const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
+        const then1Function = jest.fn();
+        const then2Function = jest.fn();
+
+        // Act
+        const mrng = new Random(new ControlledRandom([2, 0, 0]));
+        const s1 = scheduler().generate(mrng).value;
+        for (const p of promises) {
+          s1.schedule(p).then(then1Function);
+        }
+        await s1.waitAll();
+        if (!hasCloneMethod(s1)) {
+          throw new Error('Expected s1 to be cloneable');
+        }
+        const s2 = s1[cloneMethod]();
+        for (const p of promises) {
+          s2.schedule(p).then(then2Function);
+        }
+        await s2.waitAll();
+
+        // Assert
+        expect(then1Function.mock.calls).toEqual(then2Function.mock.calls);
       });
     });
 
