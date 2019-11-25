@@ -4,6 +4,112 @@ import * as stubRng from '../../stubs/generators';
 
 describe('AsyncSchedulerArbitrary', () => {
   describe('context', () => {
+    describe('schedule', () => {
+      it('Should postpone completion of promise but call it with right parameters in case of success', async () => {
+        // Arrange
+        const expectedThenValue = 123;
+        const thenFunction = jest.fn();
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        s.schedule(Promise.resolve(expectedThenValue)).then(thenFunction);
+
+        // Assert
+        expect(s.count()).toBe(1);
+        expect(thenFunction).not.toHaveBeenCalled();
+        await s.waitOne();
+        expect(thenFunction).toHaveBeenCalled();
+        expect(thenFunction).toHaveBeenCalledTimes(1);
+        expect(thenFunction).toHaveBeenCalledWith(expectedThenValue);
+      });
+
+      it('Should postpone completion of promise but call it with right parameters in case of failure', async () => {
+        // Arrange
+        const expectedThenValue = 123;
+        const catchFunction = jest.fn();
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        s.schedule(Promise.reject(expectedThenValue)).then(() => {}, catchFunction);
+
+        // Assert
+        expect(s.count()).toBe(1);
+        expect(catchFunction).not.toHaveBeenCalled();
+        await s.waitOne();
+        expect(catchFunction).toHaveBeenCalled();
+        expect(catchFunction).toHaveBeenCalledTimes(1);
+        expect(catchFunction).toHaveBeenCalledWith(expectedThenValue);
+      });
+
+      it('Should be able to schedule multiple promises', async () => {
+        // Arrange
+        const tasks = [Promise.resolve(1), Promise.resolve(8), Promise.resolve(2)];
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        for (const t of tasks) {
+          s.schedule(t);
+        }
+
+        // Assert
+        expect(s.count()).toBe(tasks.length);
+        await s.waitAll();
+        expect(s.count()).toBe(0);
+      });
+
+      it('Should be able to waitAll promises scheduling others', async () => {
+        // Arrange
+        const status = { done: false };
+        const nothingResolved = {
+          1: false,
+          2: false,
+          3: false,
+          4: false,
+          5: false
+        };
+        const resolved = { ...nothingResolved };
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        s.schedule(Promise.resolve(1)).then(() => {
+          resolved[1] = true;
+          Promise.all([
+            s.schedule(Promise.resolve(2)).then(() => {
+              resolved[2] = true;
+            }),
+            s.schedule(Promise.resolve(3)).then(() => {
+              resolved[3] = true;
+              s.schedule(Promise.resolve(4)).then(() => {
+                resolved[4] = true;
+              });
+            })
+          ]).then(() => {
+            s.schedule(Promise.resolve(5)).then(() => {
+              resolved[5] = true;
+              status.done = true;
+            });
+          });
+        });
+
+        // Assert
+        expect(status.done).toBe(false);
+        expect(resolved).toEqual(nothingResolved);
+        await s.waitAll();
+        expect(status.done).toBe(true);
+        expect(resolved).toEqual({
+          1: true,
+          2: true,
+          3: true,
+          4: true,
+          5: true
+        });
+      });
+    });
+
     describe('scheduleSequence', () => {
       it('Should accept empty sequences', async () => {
         // Arrange

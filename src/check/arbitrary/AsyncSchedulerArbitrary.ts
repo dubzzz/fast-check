@@ -151,7 +151,11 @@ export class SchedulerImplem implements Scheduler {
     const taskIndex = this.mrng.nextInt(0, this.scheduledTasks.length - 1);
     const [scheduledTask] = this.scheduledTasks.splice(taskIndex, 1);
     scheduledTask.trigger(); // release the promise
-    await scheduledTask.scheduled; // wait for its completion
+    try {
+      await scheduledTask.scheduled; // wait for its completion
+    } catch (_err) {
+      // We ignore failures here, we just want to wait the promise to be resolved (failure or success)
+    }
   }
 
   async waitAll() {
