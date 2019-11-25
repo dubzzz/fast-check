@@ -16,19 +16,16 @@ export interface Scheduler {
   ) => (...args: TArgs) => Promise<T>;
 
   /**
-   * Schedule a sequence of Promise to be executed sequencially
-   * but might be interleaved by other scheduled operations
+   * Schedule a sequence of Promise to be executed sequencially.
+   * Items within the sequence might be interleaved by other scheduled operations.
+   *
+   * Please note that whenever an item from the sequence has started,
+   * the scheduler will wait until its end before moving to another scheduled task.
    *
    * A handle is returned by the function in order to monitor the state of the sequence.
    * Sequence will be marked:
    * - done if all the promises have been executed properly
    * - faulty if one of the promises within the sequence throws
-   *
-   *
-   * Equivalent to:
-   * s.schedule(typeWordA) // TODO
-   *   .then(() => s.schedule(typeWordB)
-   *     .then(() => s.schedule(typeWordC)))
    */
   scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): { done: boolean; faulty: boolean };
 
@@ -79,12 +76,12 @@ export class SchedulerImplem implements Scheduler {
     this.triggeredTasksLogs.push(this.buildLog(taskId, meta, type, data));
   }
 
-  private scheduleInternal<T>(meta: string, task: PromiseLike<T>) {
+  private scheduleInternal<T>(meta: string, task: PromiseLike<T>, thenTaskToBeAwaited?: () => PromiseLike<T>) {
     let trigger: (() => void) | null = null;
     const taskId = ++this.lastTaskId;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
-        task.then(
+        (thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task).then(
           data => {
             this.log(taskId, meta, 'resolved', data);
             return resolve(data);
@@ -130,7 +127,7 @@ export class SchedulerImplem implements Scheduler {
         const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
         return previouslyScheduled.then(() => {
           // We schedule a successful promise that will trigger builder directly when triggered
-          const scheduled = this.scheduleInternal(`sequence::${label}`, dummyResolvedPromise).then(() => builder());
+          const scheduled = this.scheduleInternal(`sequence::${label}`, dummyResolvedPromise, () => builder());
           scheduled.catch(() => (status.faulty = true));
           return scheduled;
         });
