@@ -553,7 +553,8 @@ describe('AsyncSchedulerArbitrary', () => {
 
       it('Should wait the full completion of items coming from the scheduled sequence before taking any other scheduled promise', async () => {
         // Arrange
-        let p1BuilderSteps = { a: false, b: false, c: false, d: false };
+        const delay = () => new Promise(resolve => setTimeout(resolve, 0));
+        const p1BuilderSteps = { a: false, b: false, c: false, d: false };
         const p2Builder = jest.fn().mockResolvedValue(2);
 
         // Act
@@ -564,11 +565,11 @@ describe('AsyncSchedulerArbitrary', () => {
             builder: () => {
               const complexSequenceItem = async () => {
                 p1BuilderSteps.a = true;
-                await Promise.resolve();
+                await delay();
                 p1BuilderSteps.b = true;
-                await Promise.resolve();
+                await delay();
                 p1BuilderSteps.c = true;
-                await Promise.resolve();
+                await delay();
                 p1BuilderSteps.d = true;
               };
               return complexSequenceItem();
@@ -601,12 +602,12 @@ describe('AsyncSchedulerArbitrary', () => {
         ]);
 
         // Assert
-        await s.waitAll(); // for sequence resolved means started not successful
+        await s.waitAll();
         expect(s.toString()).toMatchInlineSnapshot(`
           "Scheduler\`
-          -> [task#1] sequence::firstStep resolved
-          -> [task#2] sequence::anotherStep resolved
-          -> [task#3] sequence::rejectedStep resolved\`"
+          -> [task#1] sequence::firstStep resolved with value 42
+          -> [task#2] sequence::anotherStep resolved with value 48
+          -> [task#3] sequence::rejectedStep rejected with value 1\`"
         `);
         expect(s.count()).toBe(0);
       });
