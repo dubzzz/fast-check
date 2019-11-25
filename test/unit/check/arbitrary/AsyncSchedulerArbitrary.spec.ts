@@ -551,6 +551,42 @@ describe('AsyncSchedulerArbitrary', () => {
         expect(s.count()).toBe(0);
       });
 
+      it('Should wait the full completion of items coming from the scheduled sequence before taking any other scheduled promise', async () => {
+        // Arrange
+        let p1BuilderSteps = { a: false, b: false, c: false, d: false };
+        const p2Builder = jest.fn().mockResolvedValue(2);
+
+        // Act
+        const mrng = stubRng.mutable.counter(48);
+        const s = scheduler().generate(mrng).value;
+        s.scheduleSequence([
+          {
+            builder: () => {
+              const complexSequenceItem = async () => {
+                p1BuilderSteps.a = true;
+                await Promise.resolve();
+                p1BuilderSteps.b = true;
+                await Promise.resolve();
+                p1BuilderSteps.c = true;
+                await Promise.resolve();
+                p1BuilderSteps.d = true;
+              };
+              return complexSequenceItem();
+            },
+            label: 'p1'
+          },
+          { builder: p2Builder, label: 'p2' }
+        ]);
+
+        // Assert
+        expect(p1BuilderSteps).toEqual({ a: false, b: false, c: false, d: false });
+        expect(p2Builder).not.toHaveBeenCalled();
+        await s.waitOne();
+        expect(p1BuilderSteps).toEqual({ a: true, b: true, c: true, d: true });
+        expect(p2Builder).not.toHaveBeenCalled();
+        await s.waitAll();
+      });
+
       it('Should show item name declared in sequence in toString', async () => {
         // Arrange
 
