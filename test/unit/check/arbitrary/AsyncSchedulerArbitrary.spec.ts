@@ -1,6 +1,9 @@
 import { scheduler } from '../../../../src/check/arbitrary/AsyncSchedulerArbitrary';
 
 import * as stubRng from '../../stubs/generators';
+import { Random } from '../../../../src/random/generator/Random';
+
+import prand from 'pure-rand';
 
 describe('AsyncSchedulerArbitrary', () => {
   describe('context', () => {
@@ -108,6 +111,97 @@ describe('AsyncSchedulerArbitrary', () => {
           5: true
         });
       });
+
+      it('Should show both resolved, rejected and pending promises in toString', async () => {
+        // Arrange
+
+        // Act
+        const mrng = new Random(
+          new ControlledRandom([
+            5, // task#6 resolved, state was: [0,1,2,3,4,5,6,7,8,9]
+            5, // task#7 resolved, state was: [0,1,2,3,4,6,7,8,9]
+            1, // task#2 resolved, state was: [0,1,2,3,4,7,8,9]
+            0, // task#1 resolved, state was: [0,2,3,4,7,8,9]
+            1, // task#4 resolved, state was: [2,3,4,7,8,9]
+            2, // task#8 resolved, state was: [2,4,7,8,9]
+            3, // task#10 resolved, state was: [2,4,8,9]
+            0, // task#3 resolved, state was: [2,4,8]
+            0, // task#5 resolved, state was: [4,8]
+            0 // task#9 resolved, state was: [8]
+          ])
+        );
+        const s = scheduler().generate(mrng).value;
+        for (let idx = 0; idx !== 10; ++idx) {
+          if (idx % 2 === 0) s.schedule(Promise.resolve(idx));
+          else s.schedule(Promise.reject(idx));
+        }
+
+        // Assert
+        expect(s.count()).toBe(10);
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#1] promise pending
+          -> [task#2] promise pending
+          -> [task#3] promise pending
+          -> [task#4] promise pending
+          -> [task#5] promise pending
+          -> [task#6] promise pending
+          -> [task#7] promise pending
+          -> [task#8] promise pending
+          -> [task#9] promise pending
+          -> [task#10] promise pending\`"
+        `);
+        await s.waitOne();
+        await s.waitOne();
+        await s.waitOne();
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#6] promise rejected with value 5
+          -> [task#7] promise resolved with value 6
+          -> [task#2] promise rejected with value 1
+          -> [task#1] promise pending
+          -> [task#3] promise pending
+          -> [task#4] promise pending
+          -> [task#5] promise pending
+          -> [task#8] promise pending
+          -> [task#9] promise pending
+          -> [task#10] promise pending\`"
+        `);
+        await s.waitOne();
+        await s.waitOne();
+        await s.waitOne();
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#6] promise rejected with value 5
+          -> [task#7] promise resolved with value 6
+          -> [task#2] promise rejected with value 1
+          -> [task#1] promise resolved with value 0
+          -> [task#4] promise rejected with value 3
+          -> [task#8] promise rejected with value 7
+          -> [task#3] promise pending
+          -> [task#5] promise pending
+          -> [task#9] promise pending
+          -> [task#10] promise pending\`"
+        `);
+        await s.waitOne();
+        await s.waitOne();
+        await s.waitOne();
+        await s.waitOne();
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#6] promise rejected with value 5
+          -> [task#7] promise resolved with value 6
+          -> [task#2] promise rejected with value 1
+          -> [task#1] promise resolved with value 0
+          -> [task#4] promise rejected with value 3
+          -> [task#8] promise rejected with value 7
+          -> [task#10] promise rejected with value 9
+          -> [task#3] promise resolved with value 2
+          -> [task#5] promise resolved with value 4
+          -> [task#9] promise resolved with value 8\`"
+        `);
+        expect(s.count()).toBe(0);
+      });
     });
 
     describe('scheduleFunction', () => {
@@ -179,6 +273,93 @@ describe('AsyncSchedulerArbitrary', () => {
         scheduledFun(firstCallInput).then(thenImplem);
         await s.waitAll();
         expect(thenFunction).toHaveBeenCalledTimes(firstCallInput + 1);
+      });
+
+      it('Should show both resolved, rejected and pending promises in toString', async () => {
+        // Arrange
+        const calls: [number, number][] = [[0, 3], [1, 4], [6, 0]];
+
+        // Act
+        const mrng = new Random(
+          new ControlledRandom([
+            2, // task#3 resolved, state was: [0,1,2]
+            0, // task#1 resolved, state was: [0,1]
+            0 // task#2 resolved, state was: [1]
+          ])
+        );
+        const s = scheduler().generate(mrng).value;
+        const scheduledFun = s.scheduleFunction(async (a: number, b: number) => {
+          if (a >= b) throw new Error(`Unexpected: ${a} >= ${b}`);
+          return a;
+        });
+        for (const ins of calls) {
+          scheduledFun(...ins);
+        }
+
+        // Assert
+        expect(s.count()).toBe(calls.length);
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#1] function::(0,3) pending
+          -> [task#2] function::(1,4) pending
+          -> [task#3] function::(6,0) pending\`"
+        `);
+        await s.waitOne();
+        await s.waitOne();
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#3] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
+          -> [task#1] function::(0,3) resolved with value 0
+          -> [task#2] function::(1,4) pending\`"
+        `);
+        await s.waitOne();
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#3] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
+          -> [task#1] function::(0,3) resolved with value 0
+          -> [task#2] function::(1,4) resolved with value 1\`"
+        `);
+        expect(s.count()).toBe(0);
+      });
+
+      it('Should show function name if any in toString', async () => {
+        // Arrange
+
+        // Act
+        const mrng = new Random(
+          new ControlledRandom([
+            2, // task#3 resolved, state was: [0,1,2]
+            0, // task#1 resolved, state was: [0,1]
+            0 // task#2 resolved, state was: [1]
+          ])
+        );
+        const s = scheduler().generate(mrng).value;
+        s.scheduleFunction(async function taskA() {
+          return { response: 'dummy response for task A' };
+        })();
+        s.scheduleFunction(async function anotherTaskNameForB(input: number) {
+          return 3;
+        })(42);
+        s.scheduleFunction(async function somethingElseForC(complexInstance: any, anotherInput: number) {
+          return 'c';
+        })({ a: { b: 5 }, c: 0 }, 4);
+
+        // Assert
+        expect(s.count()).toBe(3);
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#1] function::taskA() pending
+          -> [task#2] function::anotherTaskNameForB(42) pending
+          -> [task#3] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) pending\`"
+        `);
+        await s.waitAll();
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#3] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) resolved with value \\"c\\"
+          -> [task#1] function::taskA() resolved with value {\\"response\\":\\"dummy response for task A\\"}
+          -> [task#2] function::anotherTaskNameForB(42) resolved with value 3\`"
+        `);
+        expect(s.count()).toBe(0);
       });
     });
 
@@ -342,6 +523,45 @@ describe('AsyncSchedulerArbitrary', () => {
         expect(p4Builder).toHaveBeenCalled();
         expect(s.count()).toBe(0);
       });
+
+      it('Should show item name declared in sequence in toString', async () => {
+        // Arrange
+
+        // Act
+        const mrng = stubRng.mutable.counter(48);
+        const s = scheduler().generate(mrng).value;
+        s.scheduleSequence([
+          { builder: () => Promise.resolve(42), label: 'firstStep' },
+          { builder: () => Promise.resolve(48), label: 'anotherStep' },
+          { builder: () => Promise.reject(1), label: 'rejectedStep' },
+          { builder: () => Promise.resolve(8), label: 'neverCalled' }
+        ]);
+
+        // Assert
+        await s.waitAll(); // for sequence resolved means started not successful
+        expect(s.toString()).toMatchInlineSnapshot(`
+          "Scheduler\`
+          -> [task#1] sequence::firstStep resolved
+          -> [task#2] sequence::anotherStep resolved
+          -> [task#3] sequence::rejectedStep resolved\`"
+        `);
+        expect(s.count()).toBe(0);
+      });
     });
   });
 });
+
+// Helpers
+
+class ControlledRandom implements prand.RandomGenerator {
+  constructor(private readonly values: number[], private readonly offset: number = 0) {}
+  next(): [number, prand.RandomGenerator] {
+    return [this.values[this.offset], new ControlledRandom(this.values, this.offset + 1)];
+  }
+  min(): number {
+    return 0x00000000;
+  }
+  max(): number {
+    return 0x7fffffff;
+  }
+}
