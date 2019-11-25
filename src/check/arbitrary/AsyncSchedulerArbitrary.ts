@@ -4,14 +4,6 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 import { stringify } from '../../utils/stringify';
 
-// asyncScheduler
-// taskScheduler
-// asyncOrchestrator
-
-// produce a scheduler
-// with schedule and schedulable method
-// plus waitAll and waitOne methods
-
 export type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
 
 export interface Scheduler {
@@ -27,12 +19,18 @@ export interface Scheduler {
    * Schedule a sequence of Promise to be executed sequencially
    * but might be interleaved by other scheduled operations
    *
+   * A handle is returned by the function in order to monitor the state of the sequence.
+   * Sequence will be marked:
+   * - done if all the promises have been executed properly
+   * - faulty if one of the promises within the sequence throws
+   *
+   *
    * Equivalent to:
    * s.schedule(typeWordA) // TODO
    *   .then(() => s.schedule(typeWordB)
    *     .then(() => s.schedule(typeWordC)))
    */
-  scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): void;
+  scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): { done: boolean; faulty: boolean };
 
   /**
    * Count of pending scheduled tasks
@@ -125,13 +123,21 @@ export class SchedulerImplem implements Scheduler {
     // We run all the builders sequencially
     // BUT we allow tasks scheduled outside of this sequence
     //     to be called between two of our builders
-    sequenceBuilders.reduce((previouslyScheduled: Promise<any>, item: SchedulerSequenceItem) => {
-      const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
-      return previouslyScheduled.then(() => {
-        // We schedule a successful promise that will trigger builder directly when triggered
-        return this.scheduleInternal(`sequence::${label}`, Promise.resolve()).then(() => builder());
-      });
-    }, Promise.resolve());
+    const status = { done: false, faulty: false };
+    const dummyResolvedPromise = { then: (f: () => any) => f() };
+    sequenceBuilders
+      .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem) => {
+        const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
+        return previouslyScheduled.then(() => {
+          // We schedule a successful promise that will trigger builder directly when triggered
+          const scheduled = this.scheduleInternal(`sequence::${label}`, dummyResolvedPromise).then(() => builder());
+          scheduled.catch(() => (status.faulty = true));
+          return scheduled;
+        });
+      }, dummyResolvedPromise)
+      .then(() => (status.done = true));
+
+    return status;
   }
 
   count() {
