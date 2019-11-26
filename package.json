@@ -74,7 +74,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "source-map-support": "^0.5.13",
-    "ts-jest": "^24.1.0",
+    "ts-jest": "^24.2.0",
     "ts-node": "^8.4.1",
     "tsd": "^0.10.0",
     "tslint-config-prettier": "^1.18.0",
