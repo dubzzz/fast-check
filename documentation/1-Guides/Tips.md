@@ -172,36 +172,27 @@ function UserPageProfile(props) {
 test('should not display data related to another user', () =>
   fc.assert(
     fc.asyncProperty(
-      fc.array(fc.uuid(), 1, 10), fc.scheduler(),
-      async (loadedUserIds, s) => {
+      fc.array(fc.uuid(), fc.uuid(), fc.scheduler(),
+      async (uid1, uid2, s) => {
         // Arrange
         getUserProfile.mockImplementation(
           s.scheduleFunction(async (userId) => ({ id: userId, name: userId })));
 
         // Act
-        let currentUid = loadedUserIds[0];
-        const { rerender, queryByText, queryByTestId } = render(<UserProfilePage userId={currentUid} />);
-        s.scheduleSequence(
-          loadedUserIds.slice(1).map(uid => async () => {
-            currentUid = uid;
-            rerender(<UserProfilePage userId={uid} />);
-          }))
-        );
-
-        // Assert
+        const { rerender, queryByTestId } = render(<UserProfilePage userId={uid1} />);
+        s.scheduleSequence([
+          async () => {
+            rerender(<UserProfilePage userId={uid2} />);
+          }
+        ]);
         while (s.count() !== 0) {
           await act(async () => {
-            // Execute queued promises one by one
             await s.waitOne();
           });
-          // We expect to see either a 'Loading...' message or data concerning this user
-          const isLoading = (await queryByText('Loading...')) !== null;
-          if (!isLoading) {
-            const idField = await queryByTestId('user-id');
-            expect(idField).not.toBe(null);
-            expect(idField!.textContent).toBe(`Id: ${currentUid}`);
-          }
         }
+
+        // Assert
+        expect((await queryByTestId('user-id')).textContent).toBe(`Id: ${uid2}`);
       })
       .beforeEach(async () => {
         jest.resetAllMocks();
