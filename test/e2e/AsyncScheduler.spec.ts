@@ -100,6 +100,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         if (cache[packageName]) return;
 
         const packageDef = await fetch(packageName); // cache miss
+        // eslint-disable-next-line require-atomic-updates
         cache[packageName] = packageDef;
 
         await Promise.all(Object.keys(packageDef.dependencies).map(dependencyName => feedCache(dependencyName)));

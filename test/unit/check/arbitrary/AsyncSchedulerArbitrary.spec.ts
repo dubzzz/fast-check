@@ -394,10 +394,10 @@ describe('AsyncSchedulerArbitrary', () => {
         s.scheduleFunction(async function taskA() {
           return { response: 'dummy response for task A' };
         })();
-        s.scheduleFunction(async function anotherTaskNameForB(input: number) {
+        s.scheduleFunction(async function anotherTaskNameForB(_input: number) {
           return 3;
         })(42);
-        s.scheduleFunction(async function somethingElseForC(complexInstance: any, anotherInput: number) {
+        s.scheduleFunction(async function somethingElseForC(_complexInstance: any, _anotherInput: number) {
           return 'c';
         })({ a: { b: 5 }, c: 0 }, 4);
 
