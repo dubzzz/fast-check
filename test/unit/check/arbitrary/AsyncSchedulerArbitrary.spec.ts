@@ -12,6 +12,32 @@ beforeEach(() => {
 
 describe('AsyncSchedulerArbitrary', () => {
   describe('context', () => {
+    describe('waitOne', () => {
+      it('Should throw when there is no scheduled promise in the pipe', async () => {
+        // Arrange
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+
+        // Assert
+        expect(s.waitOne()).rejects.toMatchInlineSnapshot(`[Error: No task scheduled]`);
+      });
+    });
+
+    describe('waitAll', () => {
+      it('Should not throw when there is no scheduled promise in the pipe', async () => {
+        // Arrange
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+
+        // Assert
+        await s.waitAll();
+      });
+    });
+
     describe('schedule', () => {
       it('Should postpone completion of promise but call it with right parameters in case of success', async () => {
         // Arrange
