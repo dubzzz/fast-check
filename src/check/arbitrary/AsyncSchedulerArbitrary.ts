@@ -121,7 +121,7 @@ export class SchedulerImplem implements Scheduler {
     // BUT we allow tasks scheduled outside of this sequence
     //     to be called between two of our builders
     const status = { done: false, faulty: false };
-    const dummyResolvedPromise = { then: (f: () => any) => f() };
+    const dummyResolvedPromise: PromiseLike<any> = { then: (f: () => any) => f() };
     sequenceBuilders
       .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem) => {
         const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
@@ -132,7 +132,12 @@ export class SchedulerImplem implements Scheduler {
           return scheduled;
         });
       }, dummyResolvedPromise)
-      .then(() => (status.done = true));
+      .then(
+        () => (status.done = true),
+        () => {
+          /* Discarding UnhandledPromiseRejectionWarning */
+        }
+      );
 
     return status;
   }
