@@ -4,8 +4,13 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 import { stringify } from '../../utils/stringify';
 
+/** Define an item to be passed to `scheduleSequence` */
 export type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
 
+/**
+ * Instance able to reschedule the ordering of promises
+ * for a given app
+ */
 export interface Scheduler {
   /** Wrap a new task using the Scheduler */
   schedule: <T>(task: Promise<T>) => Promise<T>;
@@ -47,6 +52,7 @@ export interface Scheduler {
   waitAll: () => Promise<void>;
 }
 
+/** @hidden */
 type ScheduledTask = {
   original: PromiseLike<unknown>;
   scheduled: PromiseLike<unknown>;
@@ -54,7 +60,8 @@ type ScheduledTask = {
   label: string;
 };
 
-export class SchedulerImplem implements Scheduler {
+/** @hidden */
+class SchedulerImplem implements Scheduler {
   private lastTaskId: number;
   private readonly sourceMrng: Random;
   private readonly scheduledTasks: ScheduledTask[];
@@ -182,12 +189,14 @@ export class SchedulerImplem implements Scheduler {
   }
 }
 
+/** @hidden */
 class SchedulerArbitrary extends Arbitrary<Scheduler> {
   generate(mrng: Random) {
     return new Shrinkable(new SchedulerImplem(mrng.clone()));
   }
 }
 
+/** For scheduler of promises */
 export function scheduler(): Arbitrary<Scheduler> {
   return new SchedulerArbitrary();
 }
