@@ -304,3 +304,11 @@ By doing this it can highlight potential race conditions in your code. Please re
 - `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler.
 - `waitOne: () => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks.
 - `waitAll: () => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - *see CodeSandbox example on userProfile*.
+
+With:
+```ts
+type SchedulerSequenceItem =
+    { builder: () => Promise<any>; label: string } |
+    (() => Promise<any>)
+;
+```
