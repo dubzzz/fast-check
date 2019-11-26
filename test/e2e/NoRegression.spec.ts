@@ -276,4 +276,24 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('scheduler', async () => {
+    await expect(
+      fc.assert(
+        fc.asyncProperty(fc.scheduler(), async s => {
+          const received = [] as string[];
+          for (const v of ['a', 'b', 'c']) {
+            s.schedule(Promise.resolve(v)).then(out => {
+              received.push(out);
+              s.schedule(Promise.resolve(out.toUpperCase())).then(out2 => {
+                received.push(out2);
+              });
+            });
+          }
+          await s.waitAll();
+          expect(received.join('')).not.toContain('aBc');
+        }),
+        settings
+      )
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
 });
