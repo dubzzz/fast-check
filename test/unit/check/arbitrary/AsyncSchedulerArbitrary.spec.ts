@@ -600,7 +600,9 @@ describe('AsyncSchedulerArbitrary', () => {
         const s = scheduler().generate(mrng).value;
         s.scheduleSequence([
           { builder: () => Promise.resolve(42), label: 'firstStep' },
-          { builder: () => Promise.resolve(48), label: 'anotherStep' },
+          function anotherStep() {
+            return Promise.resolve(48);
+          },
           { builder: () => Promise.reject(1), label: 'rejectedStep' },
           { builder: () => Promise.resolve(8), label: 'neverCalled' }
         ]);
