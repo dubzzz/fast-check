@@ -47,7 +47,7 @@ export interface Scheduler {
 
   /**
    * Wait all scheduled tasks,
-   * including the ones that might be greated by one of the resolved task
+   * including the ones that might be created by one of the resolved task
    */
   waitAll: () => Promise<void>;
 }
