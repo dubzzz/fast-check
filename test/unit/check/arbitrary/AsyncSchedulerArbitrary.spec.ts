@@ -6,6 +6,10 @@ import { Random } from '../../../../src/random/generator/Random';
 import prand from 'pure-rand';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe('AsyncSchedulerArbitrary', () => {
   describe('context', () => {
     describe('schedule', () => {
@@ -459,7 +463,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Arrange
         const p1Builder = jest.fn().mockResolvedValue(1);
         const p2Builder = jest.fn().mockResolvedValue(2);
-        const p3Builder = jest.fn().mockRejectedValue(3); // UnhandledPromiseRejectionWarning
+        const p3Builder = jest.fn().mockRejectedValue(3);
         const p4Builder = jest.fn().mockResolvedValue(4);
 
         // Act
@@ -485,7 +489,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Arrange
         const p1Builder = jest.fn().mockResolvedValue(1);
         const p2Builder = jest.fn().mockResolvedValue(2);
-        const p3Builder = jest.fn().mockRejectedValue(3); // UnhandledPromiseRejectionWarning
+        const p3Builder = jest.fn().mockRejectedValue(3);
         const p4Builder = jest.fn().mockResolvedValue(4);
 
         // Act
