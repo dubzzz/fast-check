@@ -109,12 +109,16 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     };
     const out = await fc.check(
       fc.asyncProperty(fc.constantFrom(...Object.keys(allPackages)), fc.scheduler(), async (initialPackageName, s) => {
-        const originalFetch = (packageName: string) => Promise.resolve(allPackages[packageName]);
+        let numFetches = 0;
+        const originalFetch = (packageName: string) => {
+          ++numFetches;
+          return Promise.resolve(allPackages[packageName]);
+        };
         const fetch = s.scheduleFunction(originalFetch);
         const handle = buildGraph(initialPackageName, fetch);
         // Or: await s.waitAll();
         while (s.count() !== 0) {
-          expect(s.count()).toBeLessThanOrEqual(Object.keys(allPackages).length);
+          expect(numFetches).toBeLessThanOrEqual(Object.keys(allPackages).length);
           await s.waitOne();
         }
         await handle; // nothing should block now
