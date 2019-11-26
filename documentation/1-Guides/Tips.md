@@ -6,6 +6,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 
 - [Filter invalid combinations using pre-conditions](#filter-invalid-combinations-using-pre-conditions)
 - [Model based testing or UI test](#model-based-testing-or-ui-test)
+- [Detect race conditions](#detect-race-conditions)
 - [Opt for verbose failures](#opt-for-verbose-failures)
 - [Log within a predicate](#log-within-a-predicate)
 - [Preview generated values](#preview-generated-values)
@@ -128,6 +129,86 @@ fc.assert(
 The code above can easily be applied to other state machines, APIs or UI. In the case of asynchronous operations you need to implement `AsyncCommand` and use `asyncModelRun`.
 
 **NOTE:** Contrary to other arbitraries, commands built using `fc.commands` requires an extra parameter for replay purposes. In addition of passing `{ seed, path }` to `fc.assert`, `fc.commands` must be called with `{ replayPath: string }`.
+
+## Detect race conditions
+
+Even if JavaScript is mostly a mono-threaded language, it is quite easy to introduce race conditions in your code.
+
+`fast-check` comes with a built-in feature accessible through `fc.scheduler` that will help you to detect such issues earlier during the development. It basically re-orders the execution of your promises or async tasks in order to make it crash under unexpected orderings.
+
+The best way to see it in action is certainly to check the snippets provided in our [CodeSandbox@005-race](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests).
+
+Here is a very simple React-based example that you can play with on [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?hidenavigation=1&module=%2F005-race%2FuserProfile%2Fmain.spec.tsx&previewwindow=tests):
+
+```jsx
+/* Component */
+
+import { getUserProfile } from './api.js'
+function UserPageProfile(props) {
+  const { userId } = props;
+  const [userData, setUserData] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      const data = await getUserProfile(props.userId);
+      setUserData(data);
+    };
+    fetchUser();
+  }, [userId]);
+
+  if (userData === null) {
+    return <div>Loading...</div>;
+  }
+  return (
+    <div>
+      <div data-testid="user-id">Id: {userData.id}</div>
+      <div data-testid="user-name">Name: {userData.name}</div>
+    </div>
+  );
+}
+
+/* Test with react testing library */
+
+test('should not display data related to another user', () =>
+  fc.assert(
+    fc.asyncProperty(
+      fc.array(fc.uuid(), 1, 10), fc.scheduler(),
+      async (loadedUserIds, s) => {
+        // Arrange
+        getUserProfile.mockImplementation(
+          s.scheduleFunction(async (userId) => ({ id: userId, name: userId })));
+
+        // Act
+        let currentUid = loadedUserIds[0];
+        const { rerender, queryByText, queryByTestId } = render(<UserProfilePage userId={currentUid} />);
+        s.scheduleSequence(
+          loadedUserIds.slice(1).map(uid => async () => {
+            currentUid = uid;
+            rerender(<UserProfilePage userId={uid} />);
+          }))
+        );
+
+        // Assert
+        while (s.count() !== 0) {
+          await act(async () => {
+            // Execute queued promises one by one
+            await s.waitOne();
+          });
+          // We expect to see either a 'Loading...' message or data concerning this user
+          const isLoading = (await queryByText('Loading...')) !== null;
+          if (!isLoading) {
+            const idField = await queryByTestId('user-id');
+            expect(idField).not.toBe(null);
+            expect(idField!.textContent).toBe(`Id: ${currentUid}`);
+          }
+        }
+      })
+      .beforeEach(async () => {
+        jest.resetAllMocks();
+        cleanup();
+      })
+  ));
+```
 
 ## Opt for verbose failures
 
