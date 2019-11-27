@@ -10,8 +10,13 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { search } from './src/Api';
 
-// If you want to test the behaviour of fast-check in case of a bug
-// You can use the 'enableBug*' attribute passed to <AutocompleteField />
+// If you want to test the behaviour of fast-check in case of a bug:
+const bugs = {
+  //  enableBugBetterResults: true,
+  //  enableBugUnfilteredResults: true,
+  //  enableBugUnrelatedResults: true,
+  //  enableBugDoNotDiscardOldQueries: true
+};
 
 if (!fc.readConfigureGlobal()) {
   // Global config of Jest has been ignored, we will have a timeout after 5000ms
@@ -30,7 +35,7 @@ describe('AutocompleteField', () => {
           });
 
           // Act
-          const { getByRole, queryAllByRole } = await renderAutoCompleteField(searchImplem);
+          const { getByRole, queryAllByRole } = render(<AutocompleteField search={searchImplem} {...bugs} />);
           const input = getByRole('input') as HTMLElement;
           s.scheduleSequence(buildAutocompleteEvents(input, queries));
 
@@ -48,7 +53,10 @@ describe('AutocompleteField', () => {
             }
           }
         })
-        .beforeEach(commonBeforeEach)
+        .beforeEach(async () => {
+          jest.resetAllMocks();
+          cleanup();
+        })
     ));
 
   it('should display more and more sugestions as results come', () =>
@@ -62,7 +70,7 @@ describe('AutocompleteField', () => {
           });
 
           // Act
-          const { getByRole, queryAllByRole } = await renderAutoCompleteField(searchImplem);
+          const { getByRole, queryAllByRole } = render(<AutocompleteField search={searchImplem} {...bugs} />);
           const input = getByRole('input') as HTMLElement;
           for (const event of buildAutocompleteEvents(input, queries)) {
             await event.builder();
@@ -95,7 +103,10 @@ describe('AutocompleteField', () => {
             throw new Error(`Must start with ${JSON.stringify(query)}, got: ${JSON.stringify(suggestions)}`);
           }
         })
-        .beforeEach(commonBeforeEach)
+        .beforeEach(async () => {
+          jest.resetAllMocks();
+          cleanup();
+        })
     ));
 });
 
@@ -103,34 +114,6 @@ describe('AutocompleteField', () => {
 
 const AllResultsArbitrary = fc.set(fc.string(), 0, 1000);
 const QueriesArbitrary = fc.array(fc.string(), 1, 10);
-
-/** beforeEach helper */
-const commonBeforeEach = async () => {
-  jest.resetAllMocks();
-  cleanup();
-};
-
-/** Render the `<AutocompleteField />` component */
-const renderAutoCompleteField = async (searchImplem: typeof search) => {
-  let getByRole: ReturnType<typeof render>['getByRole'] = null as any;
-  let queryAllByRole: ReturnType<typeof render>['queryAllByRole'] = null as any;
-
-  await act(async () => {
-    const wrapper = render(
-      <AutocompleteField
-        search={searchImplem}
-        // enableBugBetterResults={true}
-        // enableBugUnfilteredResults={true}
-        // enableBugUnrelatedResults={true}
-        // enableBugDoNotDiscardOldQueries={true}
-      />
-    );
-    getByRole = wrapper.getByRole;
-    queryAllByRole = wrapper.queryAllByRole;
-  });
-
-  return { getByRole, queryAllByRole };
-};
 
 /**
  * Generate a sequence of events that have to be fired onto the component
