@@ -1,3 +1,17 @@
+# 1.20.0
+
+_Built-in support for race condition detection_
+
+## Features
+
+- ([PR#479](https://github.com/dubzzz/fast-check/pull/479)) Add `fc.scheduler` arbitrary
+
+## Fixes
+
+- ([PR#487](https://github.com/dubzzz/fast-check/pull/487)) Doc: Clean autocomplete example
+
+---
+
 # 1.19.0
 
 _Interrupt test-suites after a given delay while the number of runs have not been reached_
