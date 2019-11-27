@@ -2103,6 +2103,358 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [{}]"
 `;
 
+exports[`NoRegression scheduler 1`] = `
+"Property failed after 48 tests
+{ seed: 42, path: \\"47\\", endOnFailure: true }
+Counterexample: [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"A\\"\`]
+Shrunk 0 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#4] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"
+-> [task#5] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#6] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#6] promise resolved with value \\"B\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#6] promise resolved with value \\"B\\"
+-> [task#5] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"
+-> [task#4] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#6] promise resolved with value \\"B\\"
+-> [task#5] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#6] promise resolved with value \\"B\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#4] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#4] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#6] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#4] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#5] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"
+-> [task#5] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#4] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"A\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#6] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#5] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#4] promise resolved with value \\"A\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"
+-> [task#5] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#5] promise resolved with value \\"C\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"
+-> [task#5] promise resolved with value \\"B\\"\`]
+[32m√[0m [Scheduler\`
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#5] promise resolved with value \\"B\\"
+-> [task#4] promise resolved with value \\"C\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#6] promise resolved with value \\"A\\"\`]
+[31m×[0m [Scheduler\`
+-> [task#2] promise resolved with value \\"b\\"
+-> [task#1] promise resolved with value \\"a\\"
+-> [task#4] promise resolved with value \\"B\\"
+-> [task#3] promise resolved with value \\"c\\"
+-> [task#6] promise resolved with value \\"C\\"
+-> [task#5] promise resolved with value \\"A\\"\`]"
+`;
+
 exports[`NoRegression set 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: \\"1:1:0:1:0:0:0:0:0:0:0:2:0:0:0:0:0:0:0:0:2:2:0:0\\", endOnFailure: true }
