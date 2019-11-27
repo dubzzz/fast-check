@@ -21,7 +21,7 @@ describe('AsyncSchedulerArbitrary', () => {
         const s = scheduler().generate(mrng).value;
 
         // Assert
-        expect(s.waitOne()).rejects.toMatchInlineSnapshot(`[Error: No task scheduled]`);
+        await expect(s.waitOne()).rejects.toMatchInlineSnapshot(`[Error: No task scheduled]`);
       });
     });
 

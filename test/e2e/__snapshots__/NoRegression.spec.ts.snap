@@ -2114,20 +2114,7 @@ Counterexample: [Scheduler\`
 -> [task#6] promise resolved with value \\"C\\"
 -> [task#5] promise resolved with value \\"A\\"\`]
 Shrunk 0 time(s)
-Got error: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
-
-Expected substring: not [32m\\"aBc\\"[39m
-Received string:        [31m\\"b[7maBc[27mCA\\"[39m
-
-Stack trace: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
-
-Expected substring: not [32m\\"aBc\\"[39m
-Received string:        [31m\\"b[7maBc[27mCA\\"[39m
-    at C:\\\\dev\\\\fast-check\\\\test\\\\e2e\\\\NoRegression.spec.ts:293:41
-    at step (C:\\\\dev\\\\fast-check\\\\node_modules\\\\tslib\\\\tslib.js:136:27)
-    at Object.next (C:\\\\dev\\\\fast-check\\\\node_modules\\\\tslib\\\\tslib.js:117:57)
-    at fulfilled (C:\\\\dev\\\\fast-check\\\\node_modules\\\\tslib\\\\tslib.js:107:62)
-    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [Scheduler\`

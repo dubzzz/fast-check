@@ -290,7 +290,7 @@ describe(`NoRegression`, () => {
             });
           }
           await s.waitAll();
-          expect(received.join('')).not.toContain('aBc');
+          return !received.join('').includes('aBc');
         }),
         settings
       )
