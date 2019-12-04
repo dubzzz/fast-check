@@ -8,11 +8,14 @@ expectType<Promise<void>>(fc.assert(fc.asyncProperty(fc.nat(), async () => {})))
 // property
 expectType(fc.property(fc.nat(), a => {}) as fc.IProperty<[number]>);
 expectType(fc.property(fc.nat(), fc.string(), (a, b) => {}) as fc.IProperty<[number, string]>);
+expectType(fc.property(fc.nat(), () => {}).beforeEach(() => 123).afterEach(() => "anything"));
 expectError(fc.property(fc.nat(), fc.string(), (a: number, b: number) => {}));
 
 // asyncProperty
 expectType(fc.asyncProperty(fc.nat(), async a => {}) as fc.IAsyncProperty<[number]>);
 expectType(fc.asyncProperty(fc.nat(), fc.string(), async (a, b) => {}) as fc.IAsyncProperty<[number, string]>);
+expectType(fc.asyncProperty(fc.nat(), async () => {}).beforeEach(async () => 123).afterEach(async () => "anything"));
+expectType(fc.asyncProperty(fc.nat(), async () => {}).beforeEach(() => 123).afterEach(() => "anything"));
 expectError(fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {}));
 
 // record arbitrary
