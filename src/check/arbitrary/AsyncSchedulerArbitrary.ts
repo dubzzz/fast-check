@@ -7,6 +7,11 @@ import { stringify } from '../../utils/stringify';
 /** Define an item to be passed to `scheduleSequence` */
 export type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
 
+export interface SchedulerConstraints {
+  /** Ensure that all scheduled tasks will be executed in the right context (for instance it can be the `act` of React) */
+  act: (f: () => Promise<void>) => Promise<unknown>;
+}
+
 /**
  * Instance able to reschedule the ordering of promises
  * for a given app
@@ -69,7 +74,7 @@ class SchedulerImplem implements Scheduler {
   private readonly scheduledTasks: ScheduledTask[];
   private readonly triggeredTasksLogs: string[];
 
-  constructor(private readonly mrng: Random) {
+  constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>, private readonly mrng: Random) {
     this.lastTaskId = 0;
     // here we should received an already cloned mrng so that we can do whatever we want on it
     this.sourceMrng = mrng.clone();
@@ -177,7 +182,7 @@ class SchedulerImplem implements Scheduler {
     return this.scheduledTasks.length;
   }
 
-  async waitOne() {
+  private async internalWaitOne() {
     if (this.scheduledTasks.length === 0) {
       throw new Error('No task scheduled');
     }
@@ -189,6 +194,10 @@ class SchedulerImplem implements Scheduler {
     } catch (_err) {
       // We ignore failures here, we just want to wait the promise to be resolved (failure or success)
     }
+  }
+
+  async waitOne() {
+    await this.act(async () => await this.internalWaitOne());
   }
 
   async waitAll() {
@@ -209,18 +218,25 @@ class SchedulerImplem implements Scheduler {
   }
 
   [cloneMethod]() {
-    return new SchedulerImplem(this.sourceMrng);
+    return new SchedulerImplem(this.act, this.sourceMrng);
   }
 }
 
 /** @hidden */
 class SchedulerArbitrary extends Arbitrary<Scheduler> {
+  constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>) {
+    super();
+  }
+
   generate(mrng: Random) {
-    return new Shrinkable(new SchedulerImplem(mrng.clone()));
+    return new Shrinkable(new SchedulerImplem(this.act, mrng.clone()));
   }
 }
 
-/** For scheduler of promises */
-export function scheduler(): Arbitrary<Scheduler> {
-  return new SchedulerArbitrary();
+/**
+ * For scheduler of promises
+ */
+export function scheduler(constraints?: SchedulerConstraints): Arbitrary<Scheduler> {
+  const { act = (f: () => Promise<void>) => f() } = constraints || {};
+  return new SchedulerArbitrary(act);
 }

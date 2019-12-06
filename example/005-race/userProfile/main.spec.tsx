@@ -19,7 +19,7 @@ describe('UserProfilePage', () => {
   it('should not display data related to another user', () =>
     fc.assert(
       fc
-        .asyncProperty(fc.uuid(), fc.uuid(), fc.scheduler(), async (uid1, uid2, s) => {
+        .asyncProperty(fc.uuid(), fc.uuid(), fc.scheduler({ act }), async (uid1, uid2, s) => {
           // Arrange
           const getUserProfileImplem = s.scheduleFunction(function getUserProfile(userId: string) {
             return Promise.resolve({ id: userId, name: userId });
@@ -34,13 +34,7 @@ describe('UserProfilePage', () => {
               rerender(<UserProfilePage userId={uid2} getUserProfile={getUserProfileImplem} bug={bugId} />);
             }
           ]);
-          while (s.count() !== 0) {
-            await act(async () => {
-              // All calls to waitOne have to be wrapped into an act
-              // in the context of tests targeting React (waitAll fails here)
-              await s.waitOne();
-            });
-          }
+          await s.waitAll();
 
           // Assert
           expect(await queryByText('Loading...')).toBe(null);
