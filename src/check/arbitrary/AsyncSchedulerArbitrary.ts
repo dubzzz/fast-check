@@ -131,20 +131,31 @@ class SchedulerImplem implements Scheduler {
     //     to be called between two of our builders
     const status = { done: false, faulty: false };
     const dummyResolvedPromise: PromiseLike<any> = { then: (f: () => any) => f() };
-    const sequenceTask = sequenceBuilders
+
+    let resolveSequenceTask = () => {};
+    const sequenceTask = new Promise<void>(resolve => (resolveSequenceTask = resolve));
+
+    sequenceBuilders
       .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem) => {
         const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
         return previouslyScheduled.then(() => {
           // We schedule a successful promise that will trigger builder directly when triggered
           const scheduled = this.scheduleInternal(`sequence::${label}`, dummyResolvedPromise, () => builder());
-          scheduled.catch(() => (status.faulty = true));
+          scheduled.catch(() => {
+            status.faulty = true;
+            resolveSequenceTask();
+          });
           return scheduled;
         });
       }, dummyResolvedPromise)
       .then(
-        () => (status.done = true),
+        () => {
+          status.done = true;
+          resolveSequenceTask();
+        },
         () => {
           /* Discarding UnhandledPromiseRejectionWarning */
+          /* No need to call resolveSequenceTask as it should already have been triggered */
         }
       );
 
@@ -154,7 +165,12 @@ class SchedulerImplem implements Scheduler {
     //   get done() { return status.done },
     //   get faulty() { return status.faulty }
     // };
-    return Object.assign(status, { task: Promise.resolve(sequenceTask).then(() => status) });
+    return Object.assign(status, {
+      task: Promise.resolve(sequenceTask).then(() => {
+        const { task, ...resolvedStatus } = status as any;
+        return resolvedStatus;
+      })
+    });
   }
 
   count() {
