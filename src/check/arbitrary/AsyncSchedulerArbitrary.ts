@@ -32,7 +32,9 @@ export interface Scheduler {
    * - done if all the promises have been executed properly
    * - faulty if one of the promises within the sequence throws
    */
-  scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): { done: boolean; faulty: boolean };
+  scheduleSequence(
+    sequenceBuilders: SchedulerSequenceItem[]
+  ): { done: boolean; faulty: boolean; task: Promise<{ done: boolean; faulty: boolean }> };
 
   /**
    * Count of pending scheduled tasks
@@ -129,7 +131,7 @@ class SchedulerImplem implements Scheduler {
     //     to be called between two of our builders
     const status = { done: false, faulty: false };
     const dummyResolvedPromise: PromiseLike<any> = { then: (f: () => any) => f() };
-    sequenceBuilders
+    const sequenceTask = sequenceBuilders
       .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem) => {
         const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
         return previouslyScheduled.then(() => {
@@ -146,7 +148,13 @@ class SchedulerImplem implements Scheduler {
         }
       );
 
-    return status;
+    // TODO Prefer getter instead of sharing the variable itself
+    //      Would need to stop supporting <es5
+    // return {
+    //   get done() { return status.done },
+    //   get faulty() { return status.faulty }
+    // };
+    return Object.assign(status, { task: Promise.resolve(sequenceTask).then(() => status) });
   }
 
   count() {
