@@ -28,7 +28,7 @@ describe('AutocompleteField', () => {
   it('should suggest results matching the value of the autocomplete field', () =>
     fc.assert(
       fc
-        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler(), async (allResults, queries, s) => {
+        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
           const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
             return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
@@ -41,9 +41,8 @@ describe('AutocompleteField', () => {
 
           // Assert
           while (s.count() !== 0) {
-            await act(async () => {
-              await s.waitOne();
-            });
+            await s.waitOne();
+
             const autocompletionValue = input.attributes.getNamedItem('value')!.value;
             const suggestions = (queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
             if (!suggestions.every(suggestion => suggestion.includes(autocompletionValue))) {
@@ -62,7 +61,7 @@ describe('AutocompleteField', () => {
   it('should display more and more sugestions as results come', () =>
     fc.assert(
       fc
-        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler(), async (allResults, queries, s) => {
+        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
           const query = queries[queries.length - 1];
           const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
@@ -80,9 +79,7 @@ describe('AutocompleteField', () => {
           let suggestions: string[] = [];
           while (s.count() !== 0) {
             // Resolving one async query in a random order
-            await act(async () => {
-              await s.waitOne();
-            });
+            await s.waitOne();
 
             // Read suggestions shown by the component
             const prevSuggestions = suggestions;
