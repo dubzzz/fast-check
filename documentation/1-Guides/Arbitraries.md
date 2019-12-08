@@ -312,3 +312,50 @@ type SchedulerSequenceItem =
     (() => Promise<any>)
 ;
 ```
+
+### Wrapping calls automatically using `act`
+
+`fc.scheduler({ act })` can be given an `act` function that will be called in order to wrap all the scheduled tasks. A code like the following one:
+
+```js
+fc.assert(
+  fc.asyncProperty(fc.scheduler(), async s => () {
+    // Pushing tasks into the scheduler ...
+    // ....................................
+    while (s.count() !== 0) {
+      await act(async () => {
+        // This construct is mostly needed when you want to test stuff in React
+        // In the context of act from React, using waitAll would not have worked
+        // as some scheduled tasks are triggered after waitOne resolved
+        // and because of act (effects...)
+        await s.waitOne();
+      });
+    }
+  }))
+```
+
+Is equivalent to:
+
+```js
+fc.assert(
+  fc.asyncProperty(fc.scheduler({ act }), async s => () {
+    // Pushing tasks into the scheduler ...
+    // ....................................
+    await s.waitAll();
+  }))
+```
+
+A simplified implementation for `waitOne` would be:
+
+```js
+async waitOne() {
+  await act(async () => {
+    await getTaskToBeResolved();
+  })
+}
+async waitAll() {
+  while (count() !== 0) {
+    await waitOne();
+  }
+}
+```

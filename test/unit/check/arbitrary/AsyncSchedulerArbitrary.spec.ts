@@ -23,6 +23,62 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         await expect(s.waitOne()).rejects.toMatchInlineSnapshot(`[Error: No task scheduled]`);
       });
+
+      it('Should wrap waitOne call using act whenever specified', async () => {
+        // Arrange
+        const act = jest.fn().mockImplementationOnce(f => f());
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler({ act }).generate(mrng).value;
+        s.schedule(Promise.resolve(42));
+
+        // Assert
+        expect(act).not.toHaveBeenCalled();
+        await s.waitOne();
+        expect(act).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should wait the end of act before resolving waitOne', async () => {
+        // Arrange
+        const buildUnresolved = () => {
+          let resolve = () => {};
+          const p = new Promise(r => (resolve = r));
+          return { p, resolve };
+        };
+        const delay = () => new Promise(r => setTimeout(r, 0));
+
+        const p1 = buildUnresolved();
+        const p2 = buildUnresolved();
+        const act = jest.fn().mockImplementation(async f => {
+          await p1.p;
+          await f();
+          await p2.p;
+        });
+
+        // Act
+        let promiseResolved = false;
+        let waitOneResolved = false;
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler({ act }).generate(mrng).value;
+        s.schedule(Promise.resolve(1)).then(() => (promiseResolved = true));
+
+        // Assert
+        s.waitOne().then(() => (waitOneResolved = true));
+        await delay();
+        expect(promiseResolved).toBe(false);
+        expect(waitOneResolved).toBe(false);
+
+        p1.resolve();
+        await delay();
+        expect(promiseResolved).toBe(true);
+        expect(waitOneResolved).toBe(false);
+
+        p2.resolve();
+        await delay();
+        expect(promiseResolved).toBe(true);
+        expect(waitOneResolved).toBe(true);
+      });
     });
 
     describe('waitAll', () => {
@@ -35,6 +91,46 @@ describe('AsyncSchedulerArbitrary', () => {
 
         // Assert
         await s.waitAll();
+      });
+
+      it('Should wrap waitAll call using act whenever specified', async () => {
+        // Arrange
+        const act = jest.fn().mockImplementation(f => f());
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler({ act }).generate(mrng).value;
+        s.schedule(Promise.resolve(1));
+        s.schedule(Promise.resolve(8));
+        s.schedule(Promise.resolve(42));
+
+        // Assert
+        expect(act).not.toHaveBeenCalled();
+        await s.waitAll();
+        expect(act).toHaveBeenCalledTimes(3);
+      });
+
+      it('Should wait the end of act before moving to the next task', async () => {
+        // Arrange
+        let locked = false;
+        const updateLocked = (newLocked: boolean) => (locked = newLocked);
+        const act = jest.fn().mockImplementation(async f => {
+          expect(locked).toBe(false);
+          updateLocked(true); // equivalent to: locked = true
+          await f();
+          updateLocked(false); // equivalent to: locked = false
+        });
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler({ act }).generate(mrng).value;
+        s.schedule(Promise.resolve(1));
+        s.schedule(Promise.resolve(8));
+        s.schedule(Promise.resolve(42));
+
+        // Assert
+        await s.waitAll();
+        expect(locked).toBe(false);
       });
     });
 
