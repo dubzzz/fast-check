@@ -739,6 +739,49 @@ describe('AsyncSchedulerArbitrary', () => {
         `);
         expect(s.count()).toBe(0);
       });
+
+      it('should issue a task that resolves when the sequence ends successfully', async () => {
+        // Arrange
+
+        // Act
+        let taskResolvedValue: { done: boolean; faulty: boolean } | null = null;
+        const mrng = stubRng.mutable.counter(48);
+        const s = scheduler().generate(mrng).value;
+        const { task } = s.scheduleSequence([
+          { builder: () => Promise.resolve(42), label: 'firstStep' },
+          { builder: () => Promise.resolve(8), label: 'secondStep' }
+        ]);
+        task.then(v => (taskResolvedValue = v));
+
+        // Assert
+        while (s.count() !== 0) {
+          expect(taskResolvedValue).toBe(null);
+          await s.waitOne();
+        }
+        expect(taskResolvedValue).toEqual({ done: true, faulty: false });
+      });
+
+      it('should issue a task that resolves when the sequence fails', async () => {
+        // Arrange
+
+        // Act
+        let taskResolvedValue: { done: boolean; faulty: boolean } | null = null;
+        const mrng = stubRng.mutable.counter(48);
+        const s = scheduler().generate(mrng).value;
+        const { task } = s.scheduleSequence([
+          { builder: () => Promise.resolve(42), label: 'firstStep' },
+          { builder: () => Promise.reject(8), label: 'secondStep' },
+          { builder: () => Promise.resolve(8), label: 'neverCalledStep' }
+        ]);
+        task.then(v => (taskResolvedValue = v));
+
+        // Assert
+        while (s.count() !== 0) {
+          expect(taskResolvedValue).toBe(null);
+          await s.waitOne();
+        }
+        expect(taskResolvedValue).toEqual({ done: false, faulty: true });
+      });
     });
   });
 });

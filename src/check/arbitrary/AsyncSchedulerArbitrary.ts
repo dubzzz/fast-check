@@ -37,7 +37,9 @@ export interface Scheduler {
    * - done if all the promises have been executed properly
    * - faulty if one of the promises within the sequence throws
    */
-  scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): { done: boolean; faulty: boolean };
+  scheduleSequence(
+    sequenceBuilders: SchedulerSequenceItem[]
+  ): { done: boolean; faulty: boolean; task: Promise<{ done: boolean; faulty: boolean }> };
 
   /**
    * Count of pending scheduled tasks
@@ -134,24 +136,45 @@ class SchedulerImplem implements Scheduler {
     //     to be called between two of our builders
     const status = { done: false, faulty: false };
     const dummyResolvedPromise: PromiseLike<any> = { then: (f: () => any) => f() };
+
+    let resolveSequenceTask = () => {};
+    const sequenceTask = new Promise<void>(resolve => (resolveSequenceTask = resolve));
+
     sequenceBuilders
       .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem) => {
         const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
         return previouslyScheduled.then(() => {
           // We schedule a successful promise that will trigger builder directly when triggered
           const scheduled = this.scheduleInternal(`sequence::${label}`, dummyResolvedPromise, () => builder());
-          scheduled.catch(() => (status.faulty = true));
+          scheduled.catch(() => {
+            status.faulty = true;
+            resolveSequenceTask();
+          });
           return scheduled;
         });
       }, dummyResolvedPromise)
       .then(
-        () => (status.done = true),
+        () => {
+          status.done = true;
+          resolveSequenceTask();
+        },
         () => {
           /* Discarding UnhandledPromiseRejectionWarning */
+          /* No need to call resolveSequenceTask as it should already have been triggered */
         }
       );
 
-    return status;
+    // TODO Prefer getter instead of sharing the variable itself
+    //      Would need to stop supporting <es5
+    // return {
+    //   get done() { return status.done },
+    //   get faulty() { return status.faulty }
+    // };
+    return Object.assign(status, {
+      task: Promise.resolve(sequenceTask).then(() => {
+        return { done: status.done, faulty: status.faulty };
+      })
+    });
   }
 
   count() {
