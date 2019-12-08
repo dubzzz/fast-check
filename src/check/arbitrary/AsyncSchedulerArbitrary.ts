@@ -167,8 +167,7 @@ class SchedulerImplem implements Scheduler {
     // };
     return Object.assign(status, {
       task: Promise.resolve(sequenceTask).then(() => {
-        const { task, ...resolvedStatus } = status as any;
-        return resolvedStatus;
+        return { done: status.done, faulty: status.faulty };
       })
     });
   }
