@@ -65,74 +65,68 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     }
   );
 
-  const addTodo = s.scheduleFunction(
-    async (
-      label: string
-    ): Promise<
-      | {
-          status: 'success';
-          response: ApiTodoItem;
-        }
-      | { status: 'error' }
-    > => {
-      const newTodo = {
-        id: `${Math.random()
-          .toString(16)
-          .substring(2)}-${++lastIdx}`,
-        label,
-        checked: false
-      };
-      if (allFailures.next().value) {
-        return { status: 'error' };
+  const addTodo = s.scheduleFunction(async function addTodo(
+    label: string
+  ): Promise<
+    | {
+        status: 'success';
+        response: ApiTodoItem;
       }
-      allTodos.push(newTodo);
-      return { status: 'success', response: newTodo };
+    | { status: 'error' }
+  > {
+    const newTodo = {
+      id: `${Math.random()
+        .toString(16)
+        .substring(2)}-${++lastIdx}`,
+      label,
+      checked: false
+    };
+    if (allFailures.next().value) {
+      return { status: 'error' };
     }
-  );
+    allTodos.push(newTodo);
+    return { status: 'success', response: newTodo };
+  });
 
-  const toggleTodo = s.scheduleFunction(
-    async (
-      id: string
-    ): Promise<
-      | {
-          status: 'success';
-          response: ApiTodoItem;
-        }
-      | { status: 'error' }
-    > => {
-      const foundTodo = allTodos.find(t => t.id === id);
-      if (!foundTodo || allFailures.next().value) {
-        return { status: 'error' };
+  const toggleTodo = s.scheduleFunction(async function toggleTodo(
+    id: string
+  ): Promise<
+    | {
+        status: 'success';
+        response: ApiTodoItem;
       }
-      allTodos = allTodos.map(t => {
-        if (t.id !== id) return t;
-        return { id, label: t.label, checked: !t.checked };
-      });
-      return { status: 'success', response: { ...foundTodo, checked: !foundTodo.checked } };
+    | { status: 'error' }
+  > {
+    const foundTodo = allTodos.find(t => t.id === id);
+    if (!foundTodo || allFailures.next().value) {
+      return { status: 'error' };
     }
-  );
+    allTodos = allTodos.map(t => {
+      if (t.id !== id) return t;
+      return { id, label: t.label, checked: !t.checked };
+    });
+    return { status: 'success', response: { ...foundTodo, checked: !foundTodo.checked } };
+  });
 
-  const removeTodo = s.scheduleFunction(
-    async (
-      id: string
-    ): Promise<
-      | {
-          status: 'success';
-          response: ApiTodoItem;
-        }
-      | { status: 'error' }
-    > => {
-      const foundTodo = allTodos.find(t => t.id === id);
-      if (!foundTodo || allFailures.next().value) {
-        return { status: 'error' };
+  const removeTodo = s.scheduleFunction(async function removeTodo(
+    id: string
+  ): Promise<
+    | {
+        status: 'success';
+        response: ApiTodoItem;
       }
-      allTodos = allTodos.filter(t => {
-        if (t.id !== id) return true;
-        return false;
-      });
-      return { status: 'success', response: foundTodo };
+    | { status: 'error' }
+  > {
+    const foundTodo = allTodos.find(t => t.id === id);
+    if (!foundTodo || allFailures.next().value) {
+      return { status: 'error' };
     }
-  );
+    allTodos = allTodos.filter(t => {
+      if (t.id !== id) return true;
+      return false;
+    });
+    return { status: 'success', response: foundTodo };
+  });
 
   return {
     mockedApi: {
