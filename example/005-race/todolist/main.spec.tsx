@@ -56,14 +56,12 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
   let lastIdx = 0;
   let allTodos = [...initialTodos];
 
-  const fetchAllTodos = s.scheduleFunction(
-    async (): Promise<{
-      status: 'success';
-      response: ApiTodoItem[];
-    }> => {
-      return { status: 'success', response: allTodos.slice() };
-    }
-  );
+  const fetchAllTodos = s.scheduleFunction(async function fetchAllTodos(): Promise<{
+    status: 'success';
+    response: ApiTodoItem[];
+  }> {
+    return { status: 'success', response: allTodos.slice() };
+  });
 
   const addTodo = s.scheduleFunction(async function addTodo(
     label: string

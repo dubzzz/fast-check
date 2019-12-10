@@ -70,7 +70,8 @@ const isAsyncSetup = <Model, Real>(
 /** @hidden */
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: Setup<Model, Real> | AsyncSetup<Model, Real>,
-  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>,
+  defaultPromise = Promise.resolve()
 ): Promise<void> => {
   const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
   const setupProducer = {
@@ -83,7 +84,7 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
   const runAsync = async (cmd: AsyncCommand<Model, Real, CheckAsync>, m: Model, r: Real) => {
     if (await cmd.check(m)) await cmd.run(m, r);
   };
-  return await genericModelRun(setupProducer, cmds, Promise.resolve(), runAsync, then);
+  return await genericModelRun(setupProducer, cmds, defaultPromise, runAsync, then);
 };
 
 /**
@@ -136,7 +137,7 @@ export const scheduledModelRun = async <
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Promise<void> => {
   const scheduledCommands = scheduleCommands(scheduler, cmds);
-  const out = internalAsyncModelRun(s, scheduledCommands);
+  const out = internalAsyncModelRun(s, scheduledCommands, scheduler.schedule(Promise.resolve()));
   await scheduler.waitAll();
   await out;
 };
