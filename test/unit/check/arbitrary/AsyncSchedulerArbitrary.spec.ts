@@ -113,11 +113,12 @@ describe('AsyncSchedulerArbitrary', () => {
       it('Should wait the end of act before moving to the next task', async () => {
         // Arrange
         let locked = false;
+        const updateLocked = (newLocked: boolean) => (locked = newLocked);
         const act = jest.fn().mockImplementation(async f => {
           expect(locked).toBe(false);
-          locked = true;
+          updateLocked(true); // equivalent to: locked = true
           await f();
-          locked = false;
+          updateLocked(false); // equivalent to: locked = false
         });
 
         // Act
