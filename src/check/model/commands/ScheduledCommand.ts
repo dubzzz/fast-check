@@ -9,34 +9,46 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
   constructor(readonly s: Scheduler, readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>) {}
 
   async check(m: Readonly<Model>): Promise<boolean> {
+    let error: unknown = null;
     let checkPassed = false;
     const status = await this.s.scheduleSequence([
       {
         label: `check@${this.cmd.toString()}`,
         builder: async () => {
-          checkPassed = await Promise.resolve(this.cmd.check(m));
+          try {
+            checkPassed = await Promise.resolve(this.cmd.check(m));
+          } catch (err) {
+            error = err;
+            throw err;
+          }
         }
       }
     ]).task;
 
     if (status.faulty) {
-      throw new Error(`Exception encountered during the execution of check`);
+      throw error;
     }
     return checkPassed;
   }
 
   async run(m: Model, r: Real): Promise<void> {
+    let error: unknown = null;
     const status = await this.s.scheduleSequence([
       {
         label: `run@${this.cmd.toString()}`,
         builder: async () => {
-          await this.cmd.run(m, r);
+          try {
+            await this.cmd.run(m, r);
+          } catch (err) {
+            error = err;
+            throw err;
+          }
         }
       }
     ]).task;
 
     if (status.faulty) {
-      throw new Error(`Exception encountered during the execution of run`);
+      throw error;
     }
   }
 }

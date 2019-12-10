@@ -71,7 +71,7 @@ import { AsyncCommand } from './check/model/command/AsyncCommand';
 import { Command } from './check/model/command/Command';
 import { ICommand } from './check/model/command/ICommand';
 import { commands } from './check/model/commands/CommandsArbitrary';
-import { asyncModelRun, modelRun } from './check/model/ModelRunner';
+import { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
@@ -189,6 +189,7 @@ export {
   ICommand,
   asyncModelRun,
   modelRun,
+  scheduledModelRun,
   commands,
   // scheduler
   scheduler,
