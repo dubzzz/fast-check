@@ -1,3 +1,5 @@
+.codesandbox
+.github
 .nyc_output/
 coverage/
 docs/
@@ -8,4 +10,4 @@ prebuild/
 src/
 test/
 buildTypes.js
-tsconfig.tsbuildinfo
+*.tsbuildinfo
