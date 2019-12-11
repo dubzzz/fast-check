@@ -1,3 +1,12 @@
+# 1.20.1
+
+_Reduce bundle size_
+
+## Fixes
+
+- ([PR#494](https://github.com/dubzzz/fast-check/pull/494)) Clean: Remove tsbuildinfo files from the bundle
+- ([PR#495](https://github.com/dubzzz/fast-check/pull/495)) Clean: Remove unneeded `@param` in JSDoc of `property` and `tuple`
+
 # 1.20.0
 
 _Built-in support for race condition detection_
