@@ -1,4 +1,4 @@
-import { commas, iota, joiner, txCommas } from './helpers';
+import { commas, iota, txCommas } from './helpers';
 
 const predicateFor = (num: number, isAsync: boolean): string =>
   isAsync
@@ -11,7 +11,6 @@ const signatureFor = (num: number, isAsync: boolean): string => {
   return `
         /**
          * Instantiate a new {@link ${className}}
-         * ${joiner(num, v => `@param arb${v} Generate the parameter at position #${v + 1} of predicate`, '\n* ')}
          * @param predicate Assess the success of the property. Would be considered falsy if its throws or if its output evaluates to false
          */
         function ${functionName}<${txCommas(num)}>(
