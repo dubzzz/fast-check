@@ -1,24 +1,26 @@
 import * as fc from '../../src/fast-check';
 import { Shrinkable } from '../../src/fast-check';
 
+const computeMaximalDepth = () => {
+  // Compute the maximal call stack size
+  let depth = 0;
+  const f = () => {
+    ++depth;
+    f();
+  };
+  try {
+    f();
+  } catch (_err) {
+    // throws 'RangeError: Maximum call stack size exceeded'
+  }
+  return depth;
+};
+
+const maximalDepth = computeMaximalDepth();
 const seed = Date.now();
-describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
+describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () => {
   it('should not run into stack overflow during very deep shrink tasks', () => {
-    const computeMaximalDepth = () => {
-      // Compute the maximal call stack size
-      let depth = 0;
-      const f = () => {
-        ++depth;
-        f();
-      };
-      try {
-        f();
-      } catch (_err) {
-        // throws 'RangeError: Maximum call stack size exceeded'
-      }
-      return depth;
-    };
-    const stopAtShrinkDepth = computeMaximalDepth() + 10000; // More than maximal call stack size
+    const stopAtShrinkDepth = maximalDepth + 10000; // More than maximal call stack size
     class InfiniteShrinkingDepth extends fc.Arbitrary<number> {
       private static buildInfiniteShrinkable(n: number): fc.Shrinkable<number> {
         function* g() {
