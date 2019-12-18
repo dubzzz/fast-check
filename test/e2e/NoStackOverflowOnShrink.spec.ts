@@ -17,10 +17,11 @@ const computeMaximalDepth = () => {
 };
 
 const maximalDepth = computeMaximalDepth();
+const maximalDepthOffset = 10000;
 const seed = Date.now();
 describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () => {
   it('should not run into stack overflow during very deep shrink tasks', () => {
-    const stopAtShrinkDepth = maximalDepth + 10000; // More than maximal call stack size
+    const stopAtShrinkDepth = maximalDepth + maximalDepthOffset; // More than maximal call stack size
     class InfiniteShrinkingDepth extends fc.Arbitrary<number> {
       private static buildInfiniteShrinkable(n: number): fc.Shrinkable<number> {
         function* g() {
@@ -39,5 +40,21 @@ describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () 
     const out = fc.check(fc.property(new InfiniteShrinkingDepth(), _n => false), { seed });
     expect(out.failed).toBe(true);
     expect(out.counterexamplePath).toBe([...Array(stopAtShrinkDepth + 1)].map(() => '0').join(':'));
+  });
+
+  it('should not run into stack overflow while shrinking very large arrays', () => {
+    let canStartToFail = false;
+    const out = fc.check(
+      fc.property(fc.array(fc.integer(), maximalDepth + maximalDepthOffset), data => {
+        // We only start to fail when we get a very large array
+        // so that it has to run an higher number of shrinks to reach the minimal failure
+        canStartToFail = canStartToFail || data.length > maximalDepth;
+        if (!canStartToFail) return;
+        const reversed = [...data].reverse();
+        expect(data).toEqual(reversed);
+      }),
+      { seed }
+    );
+    expect(out.failed).toBe(true);
   });
 });
