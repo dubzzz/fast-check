@@ -48,7 +48,10 @@ describe('properties', () => {
   });
   // string a + b + c always contains b, whatever the values of a, b and c
   it('should always contain its substrings', () => {
-    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => contains(a+b+c, b)));
+    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
+      // Alternatively: no return statement and direct usage of expect or assert
+      return contains(a+b+c, b));
+    });
   });
 });
 ```
