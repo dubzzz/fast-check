@@ -43,15 +43,9 @@ describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () 
   });
 
   it('should not run into stack overflow while shrinking very large arrays', () => {
-    let canStartToFail = false;
     const out = fc.check(
       fc.property(fc.array(fc.boolean(), maximalDepth + maximalDepthOffset), data => {
-        // We only start to fail when we get a very large array
-        // so that it has to run an higher number of shrinks to reach the minimal failure
-        canStartToFail = canStartToFail || data.length > maximalDepth;
-        if (!canStartToFail) return;
-        const reversed = [...data].reverse();
-        expect(data).toEqual(reversed);
+        return data.length === 0;
       }),
       { seed }
     );
@@ -59,15 +53,9 @@ describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () 
   });
 
   it('should not run into stack overflow while shrinking very large shuffled sub-arrays', () => {
-    let canStartToFail = false;
     const out = fc.check(
       fc.property(fc.shuffledSubarray([...Array(maximalDepth + maximalDepthOffset)].map((_, i) => i)), data => {
-        // We only start to fail when we get a very large array
-        // so that it has to run an higher number of shrinks to reach the minimal failure
-        canStartToFail = canStartToFail || data.length > maximalDepth;
-        if (!canStartToFail) return;
-        const reversed = [...data].reverse();
-        expect(data).toEqual(reversed);
+        return data.length === 0;
       }),
       { seed }
     );
