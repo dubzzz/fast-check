@@ -53,7 +53,7 @@ export class LazyArbitrary extends Arbitrary<any> {
 
 /** @hidden */
 function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary {
-  return arb !== undefined && Object.prototype.hasOwnProperty.call(arb, 'underlying');
+  return typeof arb === 'object' && arb !== null && Object.prototype.hasOwnProperty.call(arb, 'underlying');
 }
 
 /** @hidden */
