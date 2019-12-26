@@ -1,4 +1,5 @@
 import { Stream, stream } from '../../stream/Stream';
+import { ObjectEntries, StringPadEnd, StringPadStart } from '../../utils/polyfills';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { IRawProperty } from '../property/IRawProperty';
@@ -97,13 +98,13 @@ function statistics<Ts>(
       recorded[c] = (recorded[c] || 0) + 1;
     }
   }
-  const data = Object.entries(recorded)
+  const data = ObjectEntries(recorded)
     .sort((a, b) => b[1] - a[1])
     .map(i => [i[0], `${((i[1] * 100.0) / qParams.numRuns).toFixed(2)}%`]);
   const longestName = data.map(i => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map(i => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
-    qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
+    qParams.logger(`${StringPadEnd(item[0], longestName, '.')}..${StringPadStart(item[1], longestPercent, '.')}`);
   }
 }
 
