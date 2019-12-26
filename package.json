@@ -52,8 +52,7 @@
     "node": ">=6.5.0"
   },
   "dependencies": {
-    "pure-rand": "^1.7.0",
-    "tslib": "^1.10.0"
+    "pure-rand": "^1.7.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.5.2",
