@@ -1,10 +1,9 @@
-import { StringFromCodePointLimited } from '../../utils/polyfills';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 
 /** @hidden */
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number) {
-  return integer(min, max).map(n => StringFromCodePointLimited(mapToCode(n)));
+  return integer(min, max).map(n => String.fromCodePoint(mapToCode(n)));
 }
 
 /** @hidden */
