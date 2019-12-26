@@ -12,7 +12,7 @@
     "prebuild": "ts-node prebuild/prebuild.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && node ./buildTypes.js",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm",
     "webbuild": "browserify lib/fast-check.js --s fastcheck | uglifyjs -cm > lib/bundle.js",
