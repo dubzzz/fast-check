@@ -5,13 +5,6 @@
   "main": "lib/fast-check.js",
   "module": "lib/esm/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
-  "typesVersions": {
-    ">=3.2": {
-      "*": [
-        "lib/ts3.2/fast-check.d.ts"
-      ]
-    }
-  },
   "sideEffects": false,
   "scripts": {
     "perf": "node perf/benchmark.js",
