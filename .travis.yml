@@ -55,7 +55,7 @@ jobs:
         - yarn test:rollup-esm
         - yarn test:rollup-iife
         - yarn test:type
-        - nvm install 0.12 ;
+        - nvm install 6.5.0 ;
           node --version ;
           node test/legacy/main.js
     - stage: test
