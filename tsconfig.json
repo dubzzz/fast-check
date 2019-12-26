@@ -14,7 +14,7 @@
         "importHelpers": true,
         "module": "commonjs",
         "target": "es6",
-        "lib": ["es6"],
+        "lib": ["es6", "es2019.Symbol"],
         "outDir": "lib/"
     },
     "include": [
