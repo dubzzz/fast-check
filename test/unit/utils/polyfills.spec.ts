@@ -6,9 +6,7 @@ import {
   StringPadStart,
   ObjectEntriesImpl,
   StringPadEndImpl,
-  StringPadStartImpl,
-  StringFromCodePointLimitedImpl,
-  StringFromCodePointLimited
+  StringPadStartImpl
 } from '../../../src/utils/polyfills';
 
 declare namespace Object {
@@ -35,20 +33,6 @@ describe('polyfills', () => {
     it('Should provide a working polyfilled implementation', () => {
       if (Object.entries) expect(ObjectEntries === Object.entries).toBe(true);
       else expect(ObjectEntries === ObjectEntriesImpl).toBe(true);
-    });
-  });
-  describe('String.fromCodePoint', () => {
-    if (String.fromCodePoint) {
-      it('Should give the same answer as built-it entries', () =>
-        fc.assert(
-          fc.property(fc.nat(0x10ffff), code => {
-            expect(StringFromCodePointLimitedImpl(code)).toEqual(String.fromCodePoint(code));
-          })
-        ));
-    }
-    it('Should provide a working polyfilled implementation', () => {
-      if (String.fromCodePoint) expect(StringFromCodePointLimited === String.fromCodePoint).toBe(true);
-      else expect(StringFromCodePointLimited === StringFromCodePointLimitedImpl).toBe(true);
     });
   });
   describe('String.prototype.padEnd', () => {

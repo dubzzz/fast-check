@@ -9,7 +9,12 @@ export const ObjectEntriesImpl = (obj: any): [string, any][] => {
   return resArray;
 };
 
-/** @hidden */
+/**
+ * @hidden
+ * Specified in ES2017
+ * Available since node 6.5.0 with --harmony (flag)
+ * Available since node 7.0.0 without any flag
+ */
 export const ObjectEntries = Object.entries ? Object.entries : ObjectEntriesImpl;
 
 /** @hidden */
@@ -44,20 +49,18 @@ const wrapStringPad = (method?: (targetLength: number, padString: string) => str
   );
 };
 
-/** @hidden */
+/**
+ * @hidden
+ * Specified in ES2017
+ * Available since node 7.0.0 with --harmony (flag)
+ * Available since node 8.0.0 without any flag
+ */
 export const StringPadEnd = wrapStringPad(String.prototype.padEnd) || StringPadEndImpl;
 
-/** @hidden */
+/**
+ * @hidden
+ * Specified in ES2017
+ * Available since node 7.0.0 with --harmony (flag)
+ * Available since node 8.0.0 without any flag
+ */
 export const StringPadStart = wrapStringPad(String.prototype.padStart) || StringPadStartImpl;
-
-/** @hidden */
-export const StringFromCodePointLimitedImpl = (codePoint: number): string => {
-  if (codePoint < 0x10000) return String.fromCharCode(codePoint);
-
-  codePoint -= 0x10000;
-  return String.fromCharCode((codePoint >> 10) + 0xd800) + String.fromCharCode((codePoint % 0x400) + 0xdc00);
-};
-
-/** @hidden */
-export const StringFromCodePointLimited = String.fromCodePoint ? String.fromCodePoint : StringFromCodePointLimitedImpl;
-// only takes into account a single code point
