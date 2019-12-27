@@ -11,6 +11,7 @@
     }
   },
   "module": "lib/esm/fast-check.js",
+  "browser": "lib/esm/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
   "files": [
     "lib"
