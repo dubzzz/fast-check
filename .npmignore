@@ -5,6 +5,7 @@ coverage/
 docs/
 documentation/
 example/
+lib-*/
 perf/
 prebuild/
 src/
