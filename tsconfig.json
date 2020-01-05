@@ -11,12 +11,10 @@
         "preserveConstEnums": true,
         "strictNullChecks": true,
         "downlevelIteration": true,
-        "importHelpers": true,
+        "importHelpers": false,
         "module": "commonjs",
-        "target": "es3",
-        "lib": [
-            "esnext"
-        ],
+        "target": "es2017",
+        "lib": ["es2017", "es2019.Symbol"],
         "outDir": "lib/"
     },
     "include": [
