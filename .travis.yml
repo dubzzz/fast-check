@@ -39,7 +39,7 @@ jobs:
         - yarn format:check
         - yarn lint:check
     - stage: test
-      env: STEP=EXAMPLES_ROLLUP_LEGACY_TYPES
+      env: STEP=EXAMPLES_ROLLUP_TYPES
       script:
         - PROJECT_ROOT_PATH="$(pwd)"
         - yarn build:prod
@@ -50,9 +50,6 @@ jobs:
         - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
         - yarn test:rollup-iife
-        - nvm install 0.12 ;
-          node --version ;
-          node test/legacy/main.js
     - stage: test
       env: STEP=COMMONJS_ESM
       script:
