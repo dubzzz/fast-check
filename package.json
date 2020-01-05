@@ -25,7 +25,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json && node ./buildTypes.js",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm",
-    "webbuild": "browserify lib/fast-check.js --s fastcheck | uglifyjs -cm > lib/bundle.js",
+    "webbuild": "browserify lib/fast-check.js --s fastcheck | terser -c -m > lib/bundle.js",
     "build:prod": "yarn prebuild && yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && yarn webbuild && node postbuild/main.js",
     "watch": "tsc -w",
     "test": "jest --config jest.unit.config.js --coverage",
@@ -52,11 +52,10 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check#readme",
   "engines": {
-    "node": ">=0.12"
+    "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^2.0.0",
-    "tslib": "^1.10.0"
+    "pure-rand": "^2.0.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.8",
@@ -78,11 +77,11 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "source-map-support": "^0.5.16",
+    "terser ": "^4.4.3",
     "ts-jest": "^24.2.0",
     "ts-node": "^8.6.2",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.8.2",
-    "uglifyjs": "^2.4.11"
+    "typescript": "^3.8.2"
   },
   "keywords": [
     "property-based testing",
