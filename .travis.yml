@@ -60,10 +60,6 @@ jobs:
         - cd test/type && yarn --ignore-engines --frozen-lockfile && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - cd test/legacy/typescript-3.0 && yarn --ignore-engines --frozen-lockfile && yarn link "fast-check" && yarn build
-        - cd "$PROJECT_ROOT_PATH"
-        - nvm install 0.12 ;
-          node --version ;
-          node test/legacy/main.js
     - stage: test
       env: STEP=COMMONJS_ESM
       script:
