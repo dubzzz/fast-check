@@ -13,8 +13,8 @@
         "downlevelIteration": true,
         "importHelpers": false,
         "module": "commonjs",
-        "target": "es6",
-        "lib": ["es6", "es2019.Symbol"],
+        "target": "es2017",
+        "lib": ["es2017", "es2019.Symbol"],
         "outDir": "lib/"
     },
     "include": [
