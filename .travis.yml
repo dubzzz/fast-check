@@ -52,14 +52,11 @@ jobs:
         - cd "$PROJECT_ROOT_PATH"
         - ls -l ~/.config/yarn/link 2> /dev/null || echo "no-op"
         - ls -l ~/AppData/Local/Yarn/Data/link 2> /dev/null || echo "no-op"
-        # For an unknown reason TypeScript 3.0.3 seems to take into account node_modules
-        # that are defined in parent directories. As a consequence we clean them just in case.
-        - rm -rf node_modules/
         - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
-        - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn link "fast-check" && yarn build
+        - cd test/legacy/typescript-3.2 && yarn --ignore-engines && yarn link "fast-check" && yarn build
     - stage: test
       env: STEP=COMMONJS_ESM
       script:
