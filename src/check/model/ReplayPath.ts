@@ -1,10 +1,10 @@
-/** @hidden */
+/** @internal */
 interface Count {
   value: boolean;
   count: number;
 }
 
-/** @hidden */
+/** @internal */
 export class ReplayPath {
   /** Parse a serialized replayPath */
   static parse(replayPathStr: string): boolean[] {

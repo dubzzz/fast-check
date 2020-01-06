@@ -5,7 +5,7 @@ import { RunDetails } from './RunDetails';
 import { QualifiedParameters } from '../configuration/QualifiedParameters';
 
 /**
- * @hidden
+ * @internal
  *
  * Report the status of a run
  *
