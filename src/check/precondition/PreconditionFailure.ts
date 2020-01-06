@@ -1,4 +1,4 @@
-/** @hidden */
+/** @internal */
 export class PreconditionFailure extends Error {
   private static readonly SharedFootPrint: symbol = Symbol.for('fast-check/PreconditionFailure');
   private readonly footprint: symbol;

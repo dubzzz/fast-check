@@ -4,7 +4,7 @@ import { cloneMethod, hasCloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @hidden */
+/** @internal */
 class ConstantArbitrary<T> extends Arbitrary<T> {
   constructor(readonly values: T[]) {
     super();

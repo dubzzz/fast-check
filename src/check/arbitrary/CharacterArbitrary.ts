@@ -2,12 +2,12 @@ import { StringFromCodePointLimited } from '../../utils/polyfills';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 
-/** @hidden */
+/** @internal */
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number) {
   return integer(min, max).map(n => StringFromCodePointLimited(mapToCode(n)));
 }
 
-/** @hidden */
+/** @internal */
 const preferPrintableMapper = (v: number): number => {
   if (v < 95) return v + 0x20; // 0x20-0x7e
   if (v <= 0x7e) return v - 95;

@@ -7,7 +7,7 @@ import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric } from './helpers/BiasNumeric';
 import { shrinkNumber } from './helpers/ShrinkNumeric';
 
-/** @hidden */
+/** @internal */
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
   static MIN_INT: number = 0x80000000 | 0;
   static MAX_INT: number = 0x7fffffff | 0;

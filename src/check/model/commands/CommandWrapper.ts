@@ -1,7 +1,7 @@
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { ICommand } from '../command/ICommand';
 
-/** @hidden */
+/** @internal */
 export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean>
   implements ICommand<Model, Real, RunResult, CheckAsync> {
   hasRan = false;

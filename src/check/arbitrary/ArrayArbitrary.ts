@@ -7,7 +7,7 @@ import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
-/** @hidden */
+/** @internal */
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: ArbitraryWithShrink<number>;
   constructor(

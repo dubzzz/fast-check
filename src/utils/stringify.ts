@@ -1,8 +1,8 @@
-/** @hidden */
+/** @internal */
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
 
 /**
- * @hidden
+ * @internal
  * Only called with symbol produced by Symbol(string | undefined)
  * Not Symbol.for(string)
  */
@@ -16,7 +16,7 @@ function getSymbolDescription(s: symbol): string | null {
   return m && m[1].length ? m[1] : null;
 }
 
-/** @hidden */
+/** @internal */
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
@@ -30,7 +30,7 @@ function stringifyNumber(numValue: number) {
   }
 }
 
-/** @hidden */
+/** @internal */
 export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string {
   const currentValues = previousValues.concat([value]);
   if (typeof value === 'object') {

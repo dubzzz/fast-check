@@ -4,7 +4,7 @@ import { ExecutionStatus } from '../reporter/ExecutionStatus';
 import { ExecutionTree } from '../reporter/ExecutionTree';
 import { RunDetails } from '../reporter/RunDetails';
 
-/** @hidden */
+/** @internal */
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
     return `Hint: ${hints[0]}`;
@@ -12,12 +12,12 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-/** @hidden */
+/** @internal */
 function formatFailures<Ts>(failures: Ts[]): string {
   return `Encountered failures were:\n- ${failures.map(stringify).join('\n- ')}`;
 }
 
-/** @hidden */
+/** @internal */
 function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string {
   const summaryLines: string[] = [];
   const remainingTreesAndDepth: { depth: number; tree: ExecutionTree<Ts> }[] = [];
@@ -47,7 +47,7 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
   return `Execution summary:\n${summaryLines.join('\n')}`;
 }
 
-/** @hidden */
+/** @internal */
 function preFormatTooManySkipped<Ts>(out: RunDetails<Ts>) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${
     out.numRuns
@@ -69,7 +69,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetails<Ts>) {
   return { message, details, hints };
 }
 
-/** @hidden */
+/** @internal */
 function preFormatFailure<Ts>(out: RunDetails<Ts>) {
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
@@ -90,7 +90,7 @@ function preFormatFailure<Ts>(out: RunDetails<Ts>) {
   return { message, details, hints };
 }
 
-/** @hidden */
+/** @internal */
 function preFormatEarlyInterrupted<Ts>(out: RunDetails<Ts>) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
   let details: string | null = null;
@@ -107,7 +107,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetails<Ts>) {
   return { message, details, hints };
 }
 
-/** @hidden */
+/** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>) {
   if (!out.failed) return;
 

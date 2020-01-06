@@ -23,7 +23,7 @@ type ConstrainedArbitrary<T, Constraints> = Constraints extends DeletedKeys | De
   ? Arbitrary<Partial<T>>
   : Arbitrary<T>;
 
-/** @hidden */
+/** @internal */
 function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
   const keys = Object.keys(recordModel);
   const arbs: Arbitrary<any>[] = keys.map(v => (recordModel as { [key: string]: Arbitrary<any> })[v]);

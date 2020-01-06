@@ -4,7 +4,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { frequency } from './FrequencyArbitrary';
 
 /**
- * @hidden
+ * @internal
  * Helper function responsible to build the entries for frequency
  */
 const h = (v: string, w: number) => {
@@ -12,7 +12,7 @@ const h = (v: string, w: number) => {
 };
 
 /**
- * @hidden
+ * @internal
  * Number of occurences extracted from the lorem ipsum:
  * https://fr.wikipedia.org/wiki/Faux-texte#Lorem_ipsum_(version_populaire)
  *

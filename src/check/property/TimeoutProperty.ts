@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { IRawProperty } from './IRawProperty';
 
-/** @hidden */
+/** @internal */
 const timeoutAfter = (timeMs: number) => {
   let timeoutHandle: (ReturnType<typeof setTimeout>) | null = null;
   const promise = new Promise<string>(resolve => {
@@ -16,7 +16,7 @@ const timeoutAfter = (timeMs: number) => {
   };
 };
 
-/** @hidden */
+/** @internal */
 export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
   constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {}
   isAsync = () => true as const;

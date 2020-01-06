@@ -1,7 +1,7 @@
 import { Random } from '../../random/generator/Random';
 import { IRawProperty } from './IRawProperty';
 
-/** @hidden */
+/** @internal */
 export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
   constructor(readonly property: IRawProperty<Ts, IsAsync>) {}
   isAsync = () => this.property.isAsync();

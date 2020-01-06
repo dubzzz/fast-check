@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from './IntegerArbitrary';
 
-/** @hidden */
+/** @internal */
 function computeNumChoices<T>(options: { num: number; build: (idInGroup: number) => T }[]): number {
   if (options.length === 0) throw new Error(`fc.mapToConstant expects at least one option`);
   let numChoices = 0;

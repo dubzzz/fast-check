@@ -1,7 +1,7 @@
 import { cloneMethod } from '../../symbols';
 import { CommandWrapper } from './CommandWrapper';
 
-/** @hidden */
+/** @internal */
 export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync extends boolean = false>
   implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>> {
   constructor(

@@ -4,7 +4,7 @@ import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @hidden */
+/** @internal */
 class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
   constructor(readonly arbs: Arbitrary<Ts>[]) {
     super();

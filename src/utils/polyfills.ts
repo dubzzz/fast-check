@@ -1,6 +1,6 @@
 // All the implementations below are directly taken from https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference
 
-/** @hidden */
+/** @internal */
 export const ObjectEntriesImpl = (obj: any): [string, any][] => {
   const ownProps = Object.keys(obj);
   let i = ownProps.length;
@@ -9,16 +9,16 @@ export const ObjectEntriesImpl = (obj: any): [string, any][] => {
   return resArray;
 };
 
-/** @hidden */
+/** @internal */
 export const ObjectEntries = Object.entries ? Object.entries : ObjectEntriesImpl;
 
-/** @hidden */
+/** @internal */
 const repeatUpToLength = (src: string, targetLength: number): string => {
   for (; targetLength > src.length; src += src);
   return src;
 };
 
-/** @hidden */
+/** @internal */
 export const StringPadEndImpl = (src: string, targetLength: number, padString: string) => {
   targetLength = targetLength >> 0;
   if (padString === '' || src.length > targetLength) return String(src);
@@ -27,7 +27,7 @@ export const StringPadEndImpl = (src: string, targetLength: number, padString: s
   return String(src) + padString.slice(0, targetLength);
 };
 
-/** @hidden */
+/** @internal */
 export const StringPadStartImpl = (src: string, targetLength: number, padString: string) => {
   targetLength = targetLength >> 0;
   if (padString === '' || src.length > targetLength) return String(src);
@@ -36,7 +36,7 @@ export const StringPadStartImpl = (src: string, targetLength: number, padString:
   return padString.slice(0, targetLength) + String(src);
 };
 
-/** @hidden */
+/** @internal */
 const wrapStringPad = (method?: (targetLength: number, padString: string) => string) => {
   return (
     method &&
@@ -44,13 +44,13 @@ const wrapStringPad = (method?: (targetLength: number, padString: string) => str
   );
 };
 
-/** @hidden */
+/** @internal */
 export const StringPadEnd = wrapStringPad(String.prototype.padEnd) || StringPadEndImpl;
 
-/** @hidden */
+/** @internal */
 export const StringPadStart = wrapStringPad(String.prototype.padStart) || StringPadStartImpl;
 
-/** @hidden */
+/** @internal */
 export const StringFromCodePointLimitedImpl = (codePoint: number): string => {
   if (codePoint < 0x10000) return String.fromCharCode(codePoint);
 
@@ -58,6 +58,6 @@ export const StringFromCodePointLimitedImpl = (codePoint: number): string => {
   return String.fromCharCode((codePoint >> 10) + 0xd800) + String.fromCharCode((codePoint % 0x400) + 0xdc00);
 };
 
-/** @hidden */
+/** @internal */
 export const StringFromCodePointLimited = String.fromCodePoint ? String.fromCodePoint : StringFromCodePointLimitedImpl;
 // only takes into account a single code point

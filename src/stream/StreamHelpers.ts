@@ -14,26 +14,26 @@ class Nil<T> implements IterableIterator<T> {
   static nil = new Nil<any>();
 }
 
-/** @hidden */
+/** @internal */
 export function nilHelper<T>(): IterableIterator<T> {
   return Nil.nil;
 }
 
-/** @hidden */
+/** @internal */
 export function* mapHelper<T, U>(g: IterableIterator<T>, f: (v: T) => U): IterableIterator<U> {
   for (const v of g) {
     yield f(v);
   }
 }
 
-/** @hidden */
+/** @internal */
 export function* flatMapHelper<T, U>(g: IterableIterator<T>, f: (v: T) => IterableIterator<U>): IterableIterator<U> {
   for (const v of g) {
     yield* f(v);
   }
 }
 
-/** @hidden */
+/** @internal */
 export function* filterHelper<T>(g: IterableIterator<T>, f: (v: T) => boolean): IterableIterator<T> {
   for (const v of g) {
     if (f(v)) {
@@ -42,7 +42,7 @@ export function* filterHelper<T>(g: IterableIterator<T>, f: (v: T) => boolean): 
   }
 }
 
-/** @hidden */
+/** @internal */
 export function* takeWhileHelper<T>(g: IterableIterator<T>, f: (v: T) => boolean): IterableIterator<T> {
   let cur = g.next();
   while (!cur.done && f(cur.value)) {
@@ -51,7 +51,7 @@ export function* takeWhileHelper<T>(g: IterableIterator<T>, f: (v: T) => boolean
   }
 }
 
-/** @hidden */
+/** @internal */
 export function* joinHelper<T>(g: IterableIterator<T>, others: IterableIterator<T>[]): IterableIterator<T> {
   for (let cur = g.next(); !cur.done; cur = g.next()) {
     yield cur.value;

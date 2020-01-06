@@ -75,7 +75,7 @@ export abstract class Arbitrary<T> {
     })();
   }
 
-  /** @hidden */
+  /** @internal */
   private static shrinkChain<T, U>(
     mrng: Random,
     src: Shrinkable<T>,

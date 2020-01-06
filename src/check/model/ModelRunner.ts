@@ -11,7 +11,7 @@ interface SetupProducer<Model, Real, P> {
   then: (fun: SetupFun<Model, Real, P>) => P;
 }
 
-/** @hidden */
+/** @internal */
 const genericModelRun = <Model extends object, Real, P, CheckAsync extends boolean>(
   s: SetupProducer<Model, Real, P>,
   cmds: Iterable<ICommand<Model, Real, P, CheckAsync>>,
@@ -33,7 +33,7 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
   });
 };
 
-/** @hidden */
+/** @internal */
 const internalModelRun = <Model extends object, Real>(
   s: Setup<Model, Real>,
   cmds: Iterable<Command<Model, Real>> | CommandsIterable<Model, Real, undefined>
@@ -58,14 +58,14 @@ const internalModelRun = <Model extends object, Real>(
   );
 };
 
-/** @hidden */
+/** @internal */
 const isAsyncSetup = <Model, Real>(
   s: ReturnType<Setup<Model, Real>> | ReturnType<AsyncSetup<Model, Real>>
 ): s is ReturnType<AsyncSetup<Model, Real>> => {
   return typeof (s as any).then === 'function';
 };
 
-/** @hidden */
+/** @internal */
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: Setup<Model, Real> | AsyncSetup<Model, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>

@@ -13,7 +13,7 @@ import { CommandsIterable } from './CommandsIterable';
 import { CommandsSettings } from './CommandsSettings';
 import { CommandWrapper } from './CommandWrapper';
 
-/** @hidden */
+/** @internal */
 class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {
