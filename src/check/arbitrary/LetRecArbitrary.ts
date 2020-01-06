@@ -56,18 +56,6 @@ function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary 
   return typeof arb === 'object' && arb !== null && Object.prototype.hasOwnProperty.call(arb, 'underlying');
 }
 
-/** @internal */
-function updateLazy(
-  strictArbs: { [K: string]: Arbitrary<unknown> },
-  lazyArbs: { [K: string]: Arbitrary<unknown> | undefined },
-  key: string
-) {
-  const lazyAtKey = lazyArbs[key];
-  const lazyArb = isLazyArbitrary(lazyAtKey) ? lazyAtKey : new LazyArbitrary(key);
-  lazyArb.underlying = strictArbs[key];
-  lazyArbs[key] = lazyArb;
-}
-
 /**
  * For mutually recursive types
  *
@@ -96,15 +84,10 @@ export function letrec<T>(
       // Prevents accidental iteration over properties inherited from an object’s prototype
       continue;
     }
-    updateLazy(strictArbs, lazyArbs, key);
-  }
-  if (
-    !Object.prototype.hasOwnProperty.call(strictArbs, '__proto__') &&
-    isLazyArbitrary(strictArbs[('__proto__' as any) as keyof T])
-  ) {
-    // We only run this code if the __proto__ key was not scanned before
-    // while it points to a valid LazyArbitrary
-    updateLazy(strictArbs, lazyArbs, '__proto__');
+    const lazyAtKey = lazyArbs[key];
+    const lazyArb = isLazyArbitrary(lazyAtKey) ? lazyAtKey : new LazyArbitrary(key);
+    lazyArb.underlying = strictArbs[key];
+    lazyArbs[key] = lazyArb;
   }
   return strictArbs;
 }
