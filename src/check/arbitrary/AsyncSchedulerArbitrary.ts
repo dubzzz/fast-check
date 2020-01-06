@@ -100,7 +100,7 @@ export interface Scheduler<TMetaData = unknown> {
   report: () => SchedulerReportItem<TMetaData>[];
 }
 
-/** @hidden */
+/** @internal */
 type TriggeredTask<TMetaData> = {
   status: 'resolved' | 'rejected';
   schedulingType: 'promise' | 'function' | 'sequence';
@@ -110,7 +110,7 @@ type TriggeredTask<TMetaData> = {
   outputValue: string | undefined;
 };
 
-/** @hidden */
+/** @internal */
 type ScheduledTask<TMetaData> = {
   original: PromiseLike<unknown>;
   scheduled: PromiseLike<unknown>;
@@ -121,13 +121,13 @@ type ScheduledTask<TMetaData> = {
   metadata?: TMetaData;
 };
 
-/** @hidden */
+/** @internal */
 type TaskSelector<TMetaData> = {
   clone: () => TaskSelector<TMetaData>;
   nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]) => number;
 };
 
-/** @hidden */
+/** @internal */
 class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   private lastTaskId: number;
   private readonly sourceTaskSelector: TaskSelector<TMetaData>;
@@ -328,7 +328,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   }
 }
 
-/** @hidden */
+/** @internal */
 class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
   constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>) {
     super();

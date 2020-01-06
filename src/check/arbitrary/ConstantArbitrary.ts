@@ -5,7 +5,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 import { findOrUndefined } from './helpers/ArrayHelper';
 
-/** @hidden */
+/** @internal */
 class ConstantArbitrary<T> extends Arbitrary<T> {
   constructor(readonly values: T[]) {
     super();

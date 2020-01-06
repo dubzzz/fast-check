@@ -52,7 +52,7 @@ export class ObjectConstraints {
     ];
   }
 
-  /** @hidden */
+  /** @internal */
   private static boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
     return arbs.map((arb) =>
       arb.map((v) => {
@@ -73,7 +73,7 @@ export class ObjectConstraints {
     );
   }
 
-  /** @hidden */
+  /** @internal */
   private static boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
     return boxEnabled ? ObjectConstraints.boxArbitraries(arbs).concat(arbs) : arbs;
   }
@@ -147,7 +147,7 @@ export namespace ObjectConstraints {
   }
 }
 
-/** @hidden */
+/** @internal */
 const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> => {
   const arbKeys = constraints.withObjectString
     ? memo((n) =>
@@ -205,7 +205,7 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
   return anythingArb(maxDepth);
 };
 
-/** @hidden */
+/** @internal */
 const objectInternal = (constraints: ObjectConstraints): Arbitrary<Record<string, unknown>> => {
   return dictionary(constraints.key, anythingInternal(constraints));
 };
@@ -273,7 +273,7 @@ function object(settings?: ObjectConstraints.Settings): Arbitrary<Record<string,
   return objectInternal(ObjectConstraints.from(settings));
 }
 
-/** @hidden */
+/** @internal */
 function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
   const key = stringArbitrary;
   const values = [boolean(), integer(), double(), stringArbitrary, constant(null)];

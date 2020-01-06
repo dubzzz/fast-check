@@ -9,7 +9,7 @@ import {
   RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails';
 
-/** @hidden */
+/** @internal */
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
     return `Hint: ${hints[0]}`;
@@ -17,12 +17,12 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-/** @hidden */
+/** @internal */
 function formatFailures<Ts>(failures: Ts[]): string {
   return `Encountered failures were:\n- ${failures.map(stringify).join('\n- ')}`;
 }
 
-/** @hidden */
+/** @internal */
 function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string {
   const summaryLines: string[] = [];
   const remainingTreesAndDepth: { depth: number; tree: ExecutionTree<Ts> }[] = [];
@@ -52,7 +52,7 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
   return `Execution summary:\n${summaryLines.join('\n')}`;
 }
 
-/** @hidden */
+/** @internal */
 function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
@@ -72,7 +72,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>) {
   return { message, details, hints };
 }
 
-/** @hidden */
+/** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>) {
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
@@ -93,7 +93,7 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>) {
   return { message, details, hints };
 }
 
-/** @hidden */
+/** @internal */
 function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
   let details: string | null = null;
@@ -147,14 +147,14 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined {
   return errorMessage;
 }
 
-/** @hidden */
+/** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
   if (!out.failed) return;
   throw new Error(defaultReportMessage(out));
 }
 
 /**
- * @hidden
+ * @internal
  * In case this code has to be executed synchronously the caller
  * has to make sure that no asyncReporter has been defined
  * otherwise it might trigger an unchecked promise

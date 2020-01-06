@@ -36,7 +36,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
   });
 }
 
-/** @hidden */
+/** @internal */
 function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbitrary<(a: T, b: T) => TOut> {
   return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
     const producer = () => {

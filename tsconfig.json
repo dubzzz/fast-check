@@ -10,6 +10,7 @@
         "removeComments": false,
         "preserveConstEnums": true,
         "strictNullChecks": true,
+        "stripInternal": true,
         "downlevelIteration": true,
         "importHelpers": false,
         "module": "commonjs",

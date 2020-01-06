@@ -4,7 +4,7 @@ import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @hidden */
+/** @internal */
 class DedupArbitrary<T> extends Arbitrary<T[]> {
   constructor(readonly arb: Arbitrary<T>, readonly numValues: number) {
     super();

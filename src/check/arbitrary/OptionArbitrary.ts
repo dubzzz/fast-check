@@ -10,7 +10,7 @@ export interface OptionConstraints<TNil = null> {
   nil?: TNil;
 }
 
-/** @hidden */
+/** @internal */
 class OptionArbitrary<T, TNil> extends Arbitrary<T | TNil> {
   readonly isOptionArb: Arbitrary<number>;
   constructor(readonly arb: Arbitrary<T>, readonly frequency: number, readonly nil: TNil) {

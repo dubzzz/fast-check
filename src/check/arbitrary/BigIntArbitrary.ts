@@ -7,7 +7,7 @@ import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkNumeric';
 
-/** @hidden */
+/** @internal */
 class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
   private biasedBigIntArbitrary: Arbitrary<bigint> | null = null;
   constructor(readonly min: bigint, readonly max: bigint) {

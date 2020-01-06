@@ -13,7 +13,7 @@ interface SetupProducer<Model, Real, P> {
   then: (fun: SetupFun<Model, Real, P>) => P;
 }
 
-/** @hidden */
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 const genericModelRun = <Model extends object, Real, P, CheckAsync extends boolean>(
   s: SetupProducer<Model, Real, P>,
@@ -36,7 +36,7 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
   });
 };
 
-/** @hidden */
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 const internalModelRun = <Model extends object, Real>(
   s: Setup<Model, Real>,
@@ -62,14 +62,14 @@ const internalModelRun = <Model extends object, Real>(
   );
 };
 
-/** @hidden */
+/** @internal */
 const isAsyncSetup = <Model, Real>(
   s: ReturnType<Setup<Model, Real>> | ReturnType<AsyncSetup<Model, Real>>
 ): s is ReturnType<AsyncSetup<Model, Real>> => {
   return typeof (s as any).then === 'function';
 };
 
-/** @hidden */
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: Setup<Model, Real> | AsyncSetup<Model, Real>,
