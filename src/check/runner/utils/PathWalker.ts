@@ -1,7 +1,7 @@
 import { Stream, stream } from '../../../stream/Stream';
 import { Shrinkable } from '../../arbitrary/definition/Shrinkable';
 
-/** @hidden */
+/** @internal */
 export function pathWalk<Ts>(
   path: string,
   initialValues: IterableIterator<Shrinkable<Ts>>

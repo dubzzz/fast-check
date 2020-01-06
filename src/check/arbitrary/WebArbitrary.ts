@@ -57,7 +57,7 @@ export function webSegment() {
   return stringOf(buildAlphaNumericPercentArb(others));
 }
 
-/** @hidden */
+/** @internal */
 function uriQueryOrFragment() {
   // query         = *( pchar / "/" / "?" )
   // fragment      = *( pchar / "/" / "?" )

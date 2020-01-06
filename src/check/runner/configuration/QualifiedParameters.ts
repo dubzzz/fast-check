@@ -3,7 +3,7 @@ import { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
 
 /**
- * @hidden
+ * @internal
  *
  * Configuration extracted from incoming Parameters
  *

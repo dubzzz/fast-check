@@ -1,7 +1,7 @@
 import { Random } from '../../../random/generator/Random';
 import { Arbitrary } from './Arbitrary';
 
-/** @hidden */
+/** @internal */
 class BiasedArbitraryWrapper<T, TSourceArbitrary extends Arbitrary<T>> extends Arbitrary<T> {
   constructor(
     readonly freq: number,
@@ -16,7 +16,7 @@ class BiasedArbitraryWrapper<T, TSourceArbitrary extends Arbitrary<T>> extends A
 }
 
 /**
- * @hidden
+ * @internal
  *
  * Helper function automatically choosing between the biased and unbiased versions of an Arbitrary.
  * This helper has been introduced in order to provide higher performances when building custom biased arbitraries

@@ -4,7 +4,7 @@ import { ExecutionTree } from './ExecutionTree';
 import { RunDetails } from './RunDetails';
 
 /**
- * @hidden
+ * @internal
  *
  * Report the status of a run
  *

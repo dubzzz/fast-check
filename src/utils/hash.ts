@@ -1,4 +1,4 @@
-/** @hidden */
+/** @internal */
 const crc32Table = [
   0x00000000,
   0x77073096,
@@ -258,7 +258,7 @@ const crc32Table = [
   0x2d02ef8d
 ];
 
-/** @hidden */
+/** @internal */
 export function hash(repr: string): number {
   // Derived from 32-Bit CRC Algorithm
   // More at https://msdn.microsoft.com/en-us/library/dd905031.aspx

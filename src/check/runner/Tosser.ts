@@ -4,12 +4,12 @@ import { Random } from '../../random/generator/Random';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { IRawProperty } from '../property/IRawProperty';
 
-/** @hidden */
+/** @internal */
 function lazyGenerate<Ts>(generator: IRawProperty<Ts>, rng: prand.RandomGenerator, idx: number): () => Shrinkable<Ts> {
   return () => generator.generate(new Random(rng), idx);
 }
 
-/** @hidden */
+/** @internal */
 export function* toss<Ts>(
   generator: IRawProperty<Ts>,
   seed: number,

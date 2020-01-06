@@ -1,10 +1,10 @@
 import { Stream, stream } from '../../../stream/Stream';
 
-/** @hidden */
+/** @internal */
 type Numeric = number | bigint;
 
 /**
- * @hidden
+ * @internal
  * Compute shrunk values to move from current to target
  */
 function shrinkNumericInternal<NType extends Numeric>(
@@ -31,23 +31,23 @@ function shrinkNumericInternal<NType extends Numeric>(
 }
 
 /**
- * @hidden
+ * @internal
  * Halve towards zero
  */
 function halveBigInt(n: bigint): bigint {
   return n / BigInt(2);
 }
-/** @hidden */
+/** @internal */
 function halvePosNumber(n: number): number {
   return Math.floor(n / 2);
 }
-/** @hidden */
+/** @internal */
 function halveNegNumber(n: number): number {
   return Math.ceil(n / 2);
 }
 
 /**
- * @hidden
+ * @internal
  * Compute shrunk values for current given the accepted range
  * If the range includes zero, the shrunk values will target zero
  * Otherwise they will target the min or max depending which one is closer to zero
@@ -69,12 +69,12 @@ function shrinkNumeric<NType extends Numeric>(
     : shrinkNumericInternal(current, min, shrunkOnce, halvePos, halveNeg);
 }
 
-/** @hidden */
+/** @internal */
 export function shrinkNumber(min: number, max: number, current: number, shrunkOnce: boolean) {
   return shrinkNumeric(0, min, max, current, shrunkOnce, halvePosNumber, halveNegNumber);
 }
 
-/** @hidden */
+/** @internal */
 export function shrinkBigInt(min: bigint, max: bigint, current: bigint, shrunkOnce: boolean) {
   return shrinkNumeric(BigInt(0), min, max, current, shrunkOnce, halveBigInt, halveBigInt);
 }

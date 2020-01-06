@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @hidden */
+/** @internal */
 export class MemoArbitrary<T> extends Arbitrary<T> {
   private lastFreq = -1;
   private lastBiased: Arbitrary<T> = this;
@@ -26,7 +26,7 @@ export class MemoArbitrary<T> extends Arbitrary<T> {
  */
 export type Memo<T> = (maxDepth?: number) => Arbitrary<T>;
 
-/** @hidden */
+/** @internal */
 let contextRemainingDepth = 10;
 
 /**

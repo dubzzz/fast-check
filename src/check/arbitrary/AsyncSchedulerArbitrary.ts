@@ -59,7 +59,7 @@ export interface Scheduler {
   waitAll: () => Promise<void>;
 }
 
-/** @hidden */
+/** @internal */
 type ScheduledTask = {
   original: PromiseLike<unknown>;
   scheduled: PromiseLike<unknown>;
@@ -67,7 +67,7 @@ type ScheduledTask = {
   label: string;
 };
 
-/** @hidden */
+/** @internal */
 class SchedulerImplem implements Scheduler {
   private lastTaskId: number;
   private readonly sourceMrng: Random;
@@ -221,7 +221,7 @@ class SchedulerImplem implements Scheduler {
   }
 }
 
-/** @hidden */
+/** @internal */
 class SchedulerArbitrary extends Arbitrary<Scheduler> {
   constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>) {
     super();

@@ -2,12 +2,12 @@ import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 import { tuple } from './TupleArbitrary';
 
-/** @hidden */
+/** @internal */
 function next(n: number): Arbitrary<number> {
   return integer(0, (1 << n) - 1);
 }
 
-/** @hidden */
+/** @internal */
 const floatInternal = (): Arbitrary<number> => {
   // uniformaly in the range 0 (inc.), 1 (exc.)
   return next(24).map(v => v / (1 << 24));
@@ -34,10 +34,10 @@ function float(a?: number, b?: number): Arbitrary<number> {
   return floatInternal().map(v => a + v * (b - a));
 }
 
-/** @hidden */ const doubleFactor = Math.pow(2, 27);
-/** @hidden */ const doubleDivisor = Math.pow(2, -53);
+/** @internal */ const doubleFactor = Math.pow(2, 27);
+/** @internal */ const doubleDivisor = Math.pow(2, -53);
 
-/** @hidden */
+/** @internal */
 const doubleInternal = (): Arbitrary<number> => {
   // uniformaly in the range 0 (inc.), 1 (exc.)
   return tuple(next(26), next(27)).map(v => (v[0] * doubleFactor + v[1]) * doubleDivisor);

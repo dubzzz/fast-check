@@ -35,7 +35,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
 }
 
 /**
- * @hidden
+ * @internal
  * Convert runId (IProperty) into a frequency (Arbitrary)
  *
  * @param runId Id of the run starting at 0
