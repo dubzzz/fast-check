@@ -5,7 +5,7 @@ import { RunExecution } from './reporter/RunExecution';
 import { SourceValuesIterator } from './SourceValuesIterator';
 
 /**
- * @hidden
+ * @internal
  * Responsible for the iteration logic
  *
  * Workflow:

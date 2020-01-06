@@ -10,12 +10,12 @@
  */
 export const cloneMethod = Symbol.for('fast-check/cloneMethod');
 
-/** @hidden */
+/** @internal */
 export interface WithCloneMethod<T> {
   [cloneMethod]: () => T;
 }
 
-/** @hidden */
+/** @internal */
 export const hasCloneMethod = <T>(instance: T | WithCloneMethod<T>): instance is WithCloneMethod<T> => {
   // Valid values for `instanceof Object`:
   //   [], {}, () => {}, function() {}, async () => {}, async function() {}

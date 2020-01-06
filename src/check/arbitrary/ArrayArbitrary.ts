@@ -8,7 +8,7 @@ import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 
-/** @hidden */
+/** @internal */
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: ArbitraryWithShrink<number>;
   constructor(

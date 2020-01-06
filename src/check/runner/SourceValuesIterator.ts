@@ -1,5 +1,5 @@
 /**
- * @hidden
+ * @internal
  * Try to extract maxInitialIterations non-skipped values
  * with a maximal number of remainingSkips skipped values
  * from initialValues source

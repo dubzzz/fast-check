@@ -2,14 +2,14 @@ import { array } from './ArrayArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './CharacterArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
-/** @hidden */
+/** @internal */
 function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
   const arrayArb =
     aLength != null ? (bLength != null ? array(charArb, aLength, bLength) : array(charArb, aLength)) : array(charArb);
   return arrayArb.map(tab => tab.join(''));
 }
 
-/** @hidden */
+/** @internal */
 function Base64StringArbitrary(minLength: number, maxLength: number) {
   if (minLength > maxLength) throw new Error('Minimal length should be inferior or equal to maximal length');
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');

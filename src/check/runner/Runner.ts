@@ -17,7 +17,7 @@ import { throwIfFailed } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
 
-/** @hidden */
+/** @internal */
 function runIt<Ts>(
   property: IRawProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
@@ -32,7 +32,7 @@ function runIt<Ts>(
   return runner.runExecution;
 }
 
-/** @hidden */
+/** @internal */
 async function asyncRunIt<Ts>(
   property: IRawProperty<Ts>,
   sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
@@ -47,7 +47,7 @@ async function asyncRunIt<Ts>(
   return runner.runExecution;
 }
 
-/** @hidden */
+/** @internal */
 function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<Ts>>, path: string) {
   const pathPoints = path.split(':');
   const pathStream = stream(valueProducers)
@@ -57,7 +57,7 @@ function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<
   return stream(pathWalk(adaptedPath, pathStream)).map(v => () => v);
 }
 
-/** @hidden */
+/** @internal */
 function buildInitialValues<Ts>(
   valueProducers: IterableIterator<() => Shrinkable<Ts>>,
   qParams: QualifiedParameters<Ts>

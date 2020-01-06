@@ -14,7 +14,7 @@ import { CommandsSettings } from './CommandsSettings';
 import { CommandWrapper } from './CommandWrapper';
 import { makeLazy } from '../../../stream/LazyIterableIterator';
 
-/** @hidden */
+/** @internal */
 class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {
