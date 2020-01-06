@@ -37,7 +37,7 @@ export class Shrinkable<T, TShrink extends T = T> {
     Object.defineProperty(this, 'value', { get: this.getValue });
   }
 
-  /** @hidden */
+  /** @internal */
   private getValue() {
     if (this.hasToBeCloned) {
       if (!this.readOnce) {
@@ -49,7 +49,7 @@ export class Shrinkable<T, TShrink extends T = T> {
     return this.value_;
   }
 
-  /** @hidden */
+  /** @internal */
   private applyMapper<U>(mapper: (t: T) => U): U {
     if (this.hasToBeCloned) {
       const out = mapper(this.value);

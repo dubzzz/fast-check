@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty } from './IRawProperty';
 
-/** @hidden */
+/** @internal */
 export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
   private skipAfterTime: number;
   constructor(

@@ -1,5 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "compiler": {
+    "tsconfigFilePath": "<projectFolder>/tsconfig.publish.types.json"
+  },
   "tsdocMetadata": {
     "enabled": false
   },

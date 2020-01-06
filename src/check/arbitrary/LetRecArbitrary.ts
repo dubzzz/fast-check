@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @hidden */
+/** @internal */
 export class LazyArbitrary extends Arbitrary<any> {
   private static readonly MaxBiasLevels = 5;
   private numBiasLevels = 0;
@@ -51,7 +51,7 @@ export class LazyArbitrary extends Arbitrary<any> {
   }
 }
 
-/** @hidden */
+/** @internal */
 function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary {
   return typeof arb === 'object' && arb !== null && Object.prototype.hasOwnProperty.call(arb, 'underlying');
 }

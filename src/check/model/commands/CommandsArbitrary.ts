@@ -14,7 +14,7 @@ import { CommandsSettings } from './CommandsSettings';
 import { CommandWrapper } from './CommandWrapper';
 import { makeLazy } from '../../../stream/LazyIterableIterator';
 
-/** @hidden */
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult, CheckAsync>

@@ -9,7 +9,7 @@ import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
-/** @hidden */
+/** @internal */
 function subdomain() {
   const alphaNumericArb = buildLowerAlphaNumericArb([]);
   const alphaNumericHyphenArb = buildLowerAlphaNumericArb(['-']);
@@ -42,7 +42,7 @@ export function domain(): Arbitrary<string> {
     .filter((d) => d.length <= 255);
 }
 
-/** @hidden */
+/** @internal */
 export function hostUserInfo(): Arbitrary<string> {
   const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':'];
   return stringOf(buildAlphaNumericPercentArb(others));
