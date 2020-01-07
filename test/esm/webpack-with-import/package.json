@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "build": "webpack",
+    "out": "node dist/main.js > out.txt",
+    "start": "yarn build && yarn out"
+  },
+  "dependencies": {
+    "fast-check": "^1.21.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}

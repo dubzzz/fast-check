@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "node main.js > out.txt"
+  },
+  "dependencies": {
+    "fast-check": "^1.21.0"
+  }
+}
