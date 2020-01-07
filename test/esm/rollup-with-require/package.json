@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "build": "rollup --config rollup.config.js",
+    "out": "node dist/main.js > out.txt",
+    "start": "yarn build && yarn out"
+  },
+  "dependencies": {
+    "fast-check": "^1.21.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "rollup": "^1.25.2"
+  }
+}
