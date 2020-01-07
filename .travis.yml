@@ -47,14 +47,8 @@ jobs:
         - yarn build:publish-esm
         - yarn webbuild
         - yarn link
-        - cd example ;
-          yarn --ignore-engines ;
-          yarn link "fast-check" ;
-          yarn test ;
-          cd ..
-        - cd test/esm ;
-          sh run.sh ;
-          cd ../..
+        - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test && cd ..
+        - cd test/esm && sh run.sh && cd ../..
         - yarn test:rollup-esm
         - yarn test:rollup-iife
         - yarn test:type
