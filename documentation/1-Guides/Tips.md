@@ -566,6 +566,8 @@ fc.configureGlobal({
 });
 ```
 
+If you opt for `markInterruptAsFailure: true`, you can still limit the time taken by long running tests locally by tweaking the settings passed into `fc.assert` with a value of `numRuns` smaller than your default one. 
+
 ## Migrate from jsverify to fast-check
 
 The npm package [jsverify-to-fast-check](https://www.npmjs.com/package/jsverify-to-fast-check) comes with a set of tools to help users to migrate from jsverify to fast-check smoothly.
