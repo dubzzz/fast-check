@@ -12,7 +12,7 @@ You can refer to the [generated API docs](https://dubzzz.github.io/fast-check/#/
 - [Numeric](#numeric-number)
 - [String](#string-string)
 - [Date](#date-date)
-- [Combinors of arbitraries](#combinors-of-arbitraries-t)
+- [Combinators](#combinators-t)
 - [Objects](#objects-any)
 - [Recursive structures](#recursive-structures)
 - [Functions](#functions)
@@ -104,7 +104,7 @@ More specific strings:
 
 - `fc.date()` or `fc.date({min?: Date, max?: Date})` any date between new Date(-8640000000000000) or min (included) to new Date(8640000000000000) or max (included)
 
-## Combinors of arbitraries (:T)
+## Combinators (:T)
 
 - `fc.constant<T>(value: T): Arbitrary<T>` constant arbitrary only able to produce `value: T`
 - `fc.constantFrom<T>(...values: T[]): Arbitrary<T>` randomly chooses among the values provided. It considers the first value as the default value so that in case of failure it will shrink to it. It expects a minimum of one value and throws whether it receives no value as parameters. It can easily be used on arrays with `fc.constantFrom(...myArray)` (or `fc.constantFrom.apply(null, myArray)` for older versions of TypeScript/JavaScript)
