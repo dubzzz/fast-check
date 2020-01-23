@@ -20,7 +20,7 @@ export function* toss<Ts>(
   let idx = 0;
   let rng = random(seed);
   for (;;) {
-    rng = prand.skipN(rng, 42);
+    rng = rng.jump ? rng.jump() : prand.skipN(rng, 42);
     yield lazyGenerate(generator, rng, idx++);
   }
 }
