@@ -8,13 +8,26 @@ import { option } from './OptionArbitrary';
 import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 
+export interface DomainConstraints {
+  validPunycodeOnly?: boolean;
+}
+
 /** @hidden */
-function subdomain() {
+function subdomain(constraints?: DomainConstraints) {
   const alphaNumericArb = buildLowerAlphaNumericArb([]);
   const alphaNumericHyphenArb = buildLowerAlphaNumericArb(['-']);
-  return tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb), alphaNumericArb)))
+  const rawSubdomainArb = tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb), alphaNumericArb)))
     .map(([f, d]) => (d === null ? f : `${f}${d[0]}${d[1]}`))
     .filter(d => d.length <= 63);
+  if (constraints && constraints.validPunycodeOnly) {
+    return rawSubdomainArb.filter(d => {
+      if (d.indexOf('xn--') !== 0) {
+        return true; // valid, it does not start by xn--
+      }
+      return false;
+    });
+  }
+  return rawSubdomainArb;
 }
 
 /**
@@ -26,10 +39,10 @@ function subdomain() {
  * - https://www.ietf.org/rfc/rfc1123.txt
  * - https://url.spec.whatwg.org/
  */
-export function domain() {
+export function domain(constraints?: DomainConstraints) {
   const alphaNumericArb = buildLowerAlphaArb([]);
   const extensionArb = stringOf(alphaNumericArb, 2, 10);
-  return tuple(array(subdomain(), 1, 5), extensionArb)
+  return tuple(array(subdomain(constraints), 1, 5), extensionArb)
     .map(([mid, ext]) => `${mid.join('.')}.${ext}`)
     .filter(d => d.length <= 255);
 }
