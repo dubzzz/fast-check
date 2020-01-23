@@ -52,7 +52,7 @@
     "node": ">=0.12"
   },
   "dependencies": {
-    "pure-rand": "^1.7.0",
+    "pure-rand": "^2.0.0",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
