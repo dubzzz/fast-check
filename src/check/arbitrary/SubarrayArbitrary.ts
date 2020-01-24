@@ -7,9 +7,6 @@ import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 
 /** @hidden */
-const MaximalSubArrayShrinkDepth = 100;
-
-/** @hidden */
 class SubarrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: ArbitraryWithShrink<number>;
   constructor(
@@ -31,10 +28,8 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       throw new Error('fc.*{s|S}ubarrayOf expects the minimal length to be inferior or equal to the maximal length');
     this.lengthArb = integer(minLength, maxLength);
   }
-  private wrapper(items: T[], shrunkOnce: boolean, shrinkDepth: number): Shrinkable<T[]> {
-    return new Shrinkable(items, () =>
-      this.shrinkImpl(items, shrunkOnce, shrinkDepth).map(v => this.wrapper(v, true, shrinkDepth + 1))
-    );
+  private wrapper(items: T[], shrunkOnce: boolean): Shrinkable<T[]> {
+    return new Shrinkable(items, () => this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const remainingElements = this.originalArray.map((v, idx) => idx);
@@ -46,12 +41,12 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       remainingElements.splice(selectedIdIndex, 1);
     }
     if (this.isOrdered) ids.sort((a, b) => a - b);
-    return this.wrapper(ids.map(i => this.originalArray[i]), false, 0);
+    return this.wrapper(ids.map(i => this.originalArray[i]), false);
   }
-  private shrinkImpl(items: T[], shrunkOnce: boolean, shrinkDepth: number): Stream<T[]> {
+  private shrinkImpl(items: T[], shrunkOnce: boolean): Stream<T[]> {
     // shrinking one by one is the not the most comprehensive
     // but allows a reasonable number of entries in the shrink
-    if (items.length === 0 || shrinkDepth > MaximalSubArrayShrinkDepth) {
+    if (items.length === 0) {
       return Stream.nil<T[]>();
     }
     const size = this.lengthArb.shrinkableFor(items.length, shrunkOnce);
@@ -60,7 +55,7 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       .map(l => items.slice(items.length - l.value))
       .join(
         items.length > this.minLength
-          ? this.shrinkImpl(items.slice(1), false, shrinkDepth + 1)
+          ? this.shrinkImpl(items.slice(1), false)
               .filter(vs => this.minLength <= vs.length + 1)
               .map(vs => [items[0]].concat(vs))
           : Stream.nil<T[]>()
