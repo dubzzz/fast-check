@@ -16,12 +16,14 @@ const computeMaximalDepth = () => {
   return depth;
 };
 
-const maximalDepth = computeMaximalDepth();
-const maximalDepthOffset = 10000;
+const stopAtShrinkDepth = 20000;
 const seed = Date.now();
-describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () => {
+describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
   it('should not run into stack overflow during very deep shrink tasks', () => {
-    const stopAtShrinkDepth = maximalDepth + maximalDepthOffset; // More than maximal call stack size
+    // We expect the depth used by this test to be greater than
+    // the maximal depth we computed before reaching a stack overflow
+    expect(stopAtShrinkDepth).toBeGreaterThan(computeMaximalDepth());
+
     class InfiniteShrinkingDepth extends fc.Arbitrary<number> {
       private static buildInfiniteShrinkable(n: number): fc.Shrinkable<number> {
         function* g() {
@@ -43,8 +45,12 @@ describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () 
   });
 
   it('should not run into stack overflow while shrinking very large arrays', () => {
+    // We expect the depth used by this test to be greater than
+    // the maximal depth we computed before reaching a stack overflow
+    expect(stopAtShrinkDepth).toBeGreaterThan(computeMaximalDepth());
+
     const out = fc.check(
-      fc.property(fc.array(fc.boolean(), maximalDepth + maximalDepthOffset), data => {
+      fc.property(fc.array(fc.boolean(), stopAtShrinkDepth), data => {
         return data.length === 0;
       }),
       { seed }
@@ -53,8 +59,12 @@ describe(`NoStackOverflowOnShrink (depth: ${maximalDepth}) (seed: ${seed})`, () 
   });
 
   it('should not run into stack overflow while shrinking very large shuffled sub-arrays', () => {
+    // We expect the depth used by this test to be greater than
+    // the maximal depth we computed before reaching a stack overflow
+    expect(stopAtShrinkDepth).toBeGreaterThan(computeMaximalDepth());
+
     const out = fc.check(
-      fc.property(fc.shuffledSubarray([...Array(maximalDepth + maximalDepthOffset)].map((_, i) => i)), data => {
+      fc.property(fc.shuffledSubarray([...Array(stopAtShrinkDepth)].map((_, i) => i)), data => {
         return data.length === 0;
       }),
       { seed }

@@ -12,6 +12,7 @@ import { ReplayPath } from '../ReplayPath';
 import { CommandsIterable } from './CommandsIterable';
 import { CommandsSettings } from './CommandsSettings';
 import { CommandWrapper } from './CommandWrapper';
+import { makeLazy } from '../../../stream/LazyIterableIterator';
 
 /** @hidden */
 class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
@@ -107,14 +108,14 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
       const size = this.lengthArb.shrinkableFor(items.length - 1 - numToKeep, false);
       const fixedStart = items.slice(0, numToKeep);
       allShrinks = allShrinks.join(
-        size.shrink().map(l => fixedStart.concat(items.slice(items.length - (l.value + 1))))
+        makeLazy(() => size.shrink().map(l => fixedStart.concat(items.slice(items.length - (l.value + 1)))))
       );
     }
 
     // shrink one by one
     for (let itemAt = 0; itemAt !== items.length; ++itemAt) {
       allShrinks = allShrinks.join(
-        items[itemAt].shrink().map(v => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1)))
+        makeLazy(() => items[itemAt].shrink().map(v => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1))))
       );
     }
 
