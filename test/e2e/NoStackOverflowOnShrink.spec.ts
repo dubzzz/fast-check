@@ -1,5 +1,6 @@
 import * as fc from '../../src/fast-check';
 import { Shrinkable } from '../../src/fast-check';
+import { SuccessCommand } from './model/StepCommands';
 
 const computeMaximalDepth = () => {
   // Compute the maximal call stack size
@@ -66,6 +67,20 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     const out = fc.check(
       fc.property(fc.shuffledSubarray([...Array(stopAtShrinkDepth)].map((_, i) => i)), data => {
         return data.length === 0;
+      }),
+      { seed }
+    );
+    expect(out.failed).toBe(true);
+  });
+
+  it('should not run into stack overflow while shrinking very large arrays of commands', () => {
+    // We expect the depth used by this test to be greater than
+    // the maximal depth we computed before reaching a stack overflow
+    expect(stopAtShrinkDepth).toBeGreaterThan(computeMaximalDepth());
+
+    const out = fc.check(
+      fc.property(fc.commands([fc.constant(new SuccessCommand())], { maxCommands: stopAtShrinkDepth }), cmds => {
+        return [...cmds].length === 0;
       }),
       { seed }
     );
