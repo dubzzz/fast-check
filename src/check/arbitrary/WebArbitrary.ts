@@ -21,6 +21,8 @@ export interface WebAuthorityConstraints {
   withUserInfo?: boolean;
   /** Enable port suffix */
   withPort?: boolean;
+  /** Remove domains starting by xn-- */
+  excludeInternationalizedDomains?: boolean;
 }
 
 /**
@@ -32,7 +34,7 @@ export interface WebAuthorityConstraints {
  */
 export function webAuthority(constraints?: WebAuthorityConstraints) {
   const c = constraints || {};
-  const hostnameArbs = [domain()]
+  const hostnameArbs = [domain({ excludeInternationalizedDomains: c.excludeInternationalizedDomains })]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
     .concat(c.withIPv6 === true ? [ipV6().map(ip => `[${ip}]`)] : [])
     .concat(c.withIPv4Extended === true ? [ipV4Extended()] : []);
