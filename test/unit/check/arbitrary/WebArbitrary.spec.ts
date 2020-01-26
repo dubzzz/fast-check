@@ -19,38 +19,26 @@ const isValidUrl = (t: string) => {
 
 describe('WebArbitrary', () => {
   describe('webUrl', () => {
-    genericHelper.isValidArbitrary(
-      c =>
-        webUrl({
-          ...c,
-          authoritySettings: {
-            ...c.authoritySettings,
-            // some domains starting by xn-- might not be valid internationalized domains
-            // they raise an exception when encountered by 'new URL' in node
-            excludeInternationalizedDomains: true
-          }
-        }),
-      {
-        isValidValue: (g: string) => isValidUrl(g),
-        seedGenerator: fc.record(
-          {
-            validSchemes: fc.constant(['ftp']),
-            authoritySettings: fc.record(
-              {
-                withIPv4: fc.boolean(),
-                withIPv6: fc.boolean(),
-                withIPv4Extended: fc.boolean(),
-                withUserInfo: fc.boolean(),
-                withPort: fc.boolean()
-              },
-              { withDeletedKeys: true }
-            ),
-            withQueryParameters: fc.boolean(),
-            withFragments: fc.boolean()
-          },
-          { withDeletedKeys: true }
-        )
-      }
-    );
+    genericHelper.isValidArbitrary(webUrl, {
+      isValidValue: (g: string) => isValidUrl(g),
+      seedGenerator: fc.record(
+        {
+          validSchemes: fc.constant(['ftp']),
+          authoritySettings: fc.record(
+            {
+              withIPv4: fc.boolean(),
+              withIPv6: fc.boolean(),
+              withIPv4Extended: fc.boolean(),
+              withUserInfo: fc.boolean(),
+              withPort: fc.boolean()
+            },
+            { withDeletedKeys: true }
+          ),
+          withQueryParameters: fc.boolean(),
+          withFragments: fc.boolean()
+        },
+        { withDeletedKeys: true }
+      )
+    });
   });
 });
