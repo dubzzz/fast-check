@@ -70,6 +70,8 @@ export class QualifiedParameters<T> {
           return prand.congruential32;
         case 'xorshift128plus':
           return prand.xorshift128plus;
+        case 'xoroshiro128plus':
+          return prand.xoroshiro128plus;
         default:
           throw new Error(`Invalid random specified: '${p.randomType}'`);
       }
