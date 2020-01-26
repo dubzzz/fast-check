@@ -1,4 +1,5 @@
 import * as fc from '../../src/fast-check';
+import * as prand from 'pure-rand';
 import { Shrinkable } from '../../src/fast-check';
 
 const computeMaximalStackSize = () => {
@@ -14,30 +15,6 @@ const computeMaximalStackSize = () => {
     // throws 'RangeError: Maximum call stack size exceeded'
   }
   return depth;
-};
-
-class ShrinkLimitedArbitrary<T> extends fc.Arbitrary<T> {
-  constructor(private readonly arb: fc.Arbitrary<T>, private readonly maxDepth: number) {
-    super();
-  }
-  private static wrapShrinkable<T>(s: fc.Shrinkable<T>, remainingDepth: number): fc.Shrinkable<T> {
-    if (remainingDepth <= 0) {
-      return new fc.Shrinkable(s.value_);
-    }
-    return new fc.Shrinkable(s.value_, () => {
-      return s
-        .shrink()
-        .take(100)
-        .map(i => ShrinkLimitedArbitrary.wrapShrinkable(i, remainingDepth - 1));
-    });
-  }
-  generate(mrng: fc.Random): fc.Shrinkable<T> {
-    return ShrinkLimitedArbitrary.wrapShrinkable(this.arb.generate(mrng), this.maxDepth);
-  }
-}
-
-const shrinkLimiter = <T>(arb: fc.Arbitrary<T>): fc.Arbitrary<T> => {
-  return new ShrinkLimitedArbitrary(arb, 10);
 };
 
 const callStackSize = computeMaximalStackSize();
@@ -70,54 +47,37 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     expect(out.counterexamplePath).toBe([...Array(stopAtShrinkDepth + 1)].map(() => '0').join(':'));
   });
 
-  it('should not run into stack overflow while shrinking very large arrays', () => {
+  it('should not run into stack overflow while calling shrink on very large arrays', () => {
     // We expect the depth used by this test to be greater than
     // the maximal depth we computed before reaching a stack overflow
     expect(stopAtShrinkDepth).toBeGreaterThan(callStackSizeWithMargin);
 
-    const out = fc.check(
-      fc.property(shrinkLimiter(fc.array(fc.boolean(), stopAtShrinkDepth)), data => {
-        return data.length < callStackSize;
-      }),
-      { seed }
-    );
-    expect(out.failed).toBe(true);
-  });
-
-  it('should not run into stack overflow while shrinking very large shuffled sub-arrays', () => {
-    // We expect the depth used by this test to be greater than
-    // the maximal depth we computed before reaching a stack overflow
-    expect(stopAtShrinkDepth).toBeGreaterThan(callStackSizeWithMargin);
-
-    const out = fc.check(
-      fc.property(shrinkLimiter(fc.shuffledSubarray([...Array(stopAtShrinkDepth)].map((_, i) => i))), data => {
-        return data.length < callStackSize;
-      }),
-      { seed }
-    );
-    expect(out.failed).toBe(true);
-  });
-
-  it('should not run into stack overflow while shrinking very large arrays of commands', () => {
-    // We expect the depth used by this test to be greater than
-    // the maximal depth we computed before reaching a stack overflow
-    expect(stopAtShrinkDepth).toBeGreaterThan(callStackSizeWithMargin);
-
-    class DummyCommand implements fc.Command<{}, {}> {
-      check = () => true;
-      run = () => {};
+    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const arb = fc.array(fc.boolean(), stopAtShrinkDepth);
+    let s: Shrinkable<boolean[]> | null = null;
+    while (s === null) {
+      const tempShrinkable = arb.generate(mrng);
+      if (tempShrinkable.value.length >= callStackSize) {
+        s = tempShrinkable;
+      }
     }
+    expect(() => s!.shrink()).not.toThrow();
+  });
 
-    const out = fc.check(
-      fc.property(
-        shrinkLimiter(fc.commands([fc.constant(new DummyCommand())], { maxCommands: stopAtShrinkDepth })),
-        cmds => {
-          fc.modelRun(() => ({ model: {}, real: {} }), cmds);
-          return [...cmds].length === 0;
-        }
-      ),
-      { seed }
-    );
-    expect(out.failed).toBe(true);
+  it('should not run into stack overflow while calling shrink on very large shuffled sub-arrays', () => {
+    // We expect the depth used by this test to be greater than
+    // the maximal depth we computed before reaching a stack overflow
+    expect(stopAtShrinkDepth).toBeGreaterThan(callStackSizeWithMargin);
+
+    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const arb = fc.shuffledSubarray([...Array(stopAtShrinkDepth)].map((_, i) => i));
+    let s: Shrinkable<number[]> | null = null;
+    while (s === null) {
+      const tempShrinkable = arb.generate(mrng);
+      if (tempShrinkable.value.length >= callStackSize) {
+        s = tempShrinkable;
+      }
+    }
+    expect(() => s!.shrink()).not.toThrow();
   });
 });
