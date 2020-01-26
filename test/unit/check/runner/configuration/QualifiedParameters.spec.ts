@@ -8,7 +8,13 @@ import { VerbosityLevel } from '../../../../../src/check/runner/configuration/Ve
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
-    randomType: fc.constantFrom(prand.mersenne, prand.congruential, prand.congruential32, prand.xorshift128plus),
+    randomType: fc.constantFrom(
+      prand.mersenne,
+      prand.congruential,
+      prand.congruential32,
+      prand.xorshift128plus,
+      prand.xoroshiro128plus
+    ),
     numRuns: fc.nat(),
     timeout: fc.nat(),
     path: fc.array(fc.nat()).map(arr => arr.join(':')),
@@ -27,7 +33,8 @@ const hardCodedRandomType = fc.constantFrom(
   'mersenne',
   'congruential',
   'congruential32',
-  'xorshift128plus'
+  'xorshift128plus',
+  'xoroshiro128plus'
 ) as fc.Arbitrary<RandomType>;
 
 describe('QualifiedParameters', () => {

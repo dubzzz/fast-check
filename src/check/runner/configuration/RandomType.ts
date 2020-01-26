@@ -1,4 +1,4 @@
 /**
  * Random generator type
  */
-export type RandomType = 'mersenne' | 'congruential' | 'congruential32' | 'xorshift128plus';
+export type RandomType = 'mersenne' | 'congruential' | 'congruential32' | 'xorshift128plus' | 'xoroshiro128plus';
