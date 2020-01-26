@@ -80,4 +80,29 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     }
     expect(() => s!.shrink()).not.toThrow();
   });
+
+  it('should not run into stack overflow while calling shrink on very large arrays of commands', () => {
+    // We expect the depth used by this test to be greater than
+    // the maximal depth we computed before reaching a stack overflow
+    expect(stopAtShrinkDepth).toBeGreaterThan(callStackSizeWithMargin);
+
+    class AnyCommand implements fc.Command<{}, {}> {
+      constructor(readonly b: boolean) {}
+      check = () => true;
+      run = () => {};
+    }
+
+    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const arb = fc.commands([fc.boolean().map(b => new AnyCommand(b))], { maxCommands: stopAtShrinkDepth });
+    let s: Shrinkable<Iterable<fc.Command<{}, {}>>> | null = null;
+    while (s === null) {
+      const tempShrinkable = arb.generate(mrng);
+      const cmds = [...tempShrinkable.value];
+      if (cmds.length >= callStackSize) {
+        fc.modelRun(() => ({ model: {}, real: {} }), cmds);
+        s = tempShrinkable;
+      }
+    }
+    expect(() => s!.shrink()).not.toThrow();
+  });
 });
