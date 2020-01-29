@@ -18,6 +18,6 @@ const sortInternal = <T>(tab: T[], start: number, end: number, cmp: (a: T, b: T)
   return tab;
 };
 
-export const sort = <T>(tab: T[]): T[] => {
-  return sortInternal([...tab], 0, tab.length, (a, b) => a < b);
+export const sort = <T>(tab: T[], compare?: (a: T, b: T) => boolean): T[] => {
+  return sortInternal([...tab], 0, tab.length, compare || ((a, b) => a < b));
 };
