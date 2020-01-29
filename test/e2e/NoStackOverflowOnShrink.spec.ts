@@ -1,6 +1,5 @@
 import * as fc from '../../src/fast-check';
 import * as prand from 'pure-rand';
-import { Shrinkable } from '../../src/fast-check';
 
 const computeMaximalStackSize = () => {
   // Compute the maximal call stack size
@@ -30,7 +29,7 @@ const maxShrinksToAsk = 100;
 
 const seed = Date.now();
 describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
-  const iterateOverShrunkValues = <T>(s: Shrinkable<T>) => {
+  const iterateOverShrunkValues = <T>(s: fc.Shrinkable<T>) => {
     const it = s
       .shrink()
       .take(maxShrinksToAsk)
@@ -52,9 +51,9 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
           yield n - 1;
         }
         if (n <= -maxDepthForArrays) {
-          return new Shrinkable(n);
+          return new fc.Shrinkable(n);
         }
-        return new Shrinkable(n, () => fc.stream(g()).map(InfiniteShrinkingDepth.buildInfiniteShrinkable));
+        return new fc.Shrinkable(n, () => fc.stream(g()).map(InfiniteShrinkingDepth.buildInfiniteShrinkable));
       }
       generate(_mrng: fc.Random): fc.Shrinkable<number> {
         return InfiniteShrinkingDepth.buildInfiniteShrinkable(0);
@@ -73,7 +72,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.array(fc.boolean(), maxDepthForArrays);
-    let s: Shrinkable<boolean[]> | null = null;
+    let s: fc.Shrinkable<boolean[]> | null = null;
     while (s === null) {
       const tempShrinkable = arb.generate(mrng);
       if (tempShrinkable.value.length >= callStackSize) {
@@ -90,7 +89,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.shuffledSubarray([...Array(maxDepthForArrays)].map((_, i) => i));
-    let s: Shrinkable<number[]> | null = null;
+    let s: fc.Shrinkable<number[]> | null = null;
     while (s === null) {
       const tempShrinkable = arb.generate(mrng);
       if (tempShrinkable.value.length >= callStackSize) {
@@ -113,7 +112,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.commands([fc.boolean().map(b => new AnyCommand(b))], { maxCommands: maxDepthForArrays });
-    let s: Shrinkable<Iterable<fc.Command<{}, {}>>> | null = null;
+    let s: fc.Shrinkable<Iterable<fc.Command<{}, {}>>> | null = null;
     while (s === null) {
       const tempShrinkable = arb.generate(mrng);
       const cmds = [...tempShrinkable.value];
