@@ -72,7 +72,7 @@ jobs:
       deploy:
         provider: pages
         skip-cleanup: true
-      github-token: "$GITHUB_TOKEN"
+        github-token: "$GITHUB_TOKEN"
         target-branch: gh-pages
         local-dir: docs
         on:
