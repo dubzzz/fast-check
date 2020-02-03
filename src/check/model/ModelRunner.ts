@@ -137,7 +137,7 @@ export const scheduledModelRun = async <
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Promise<void> => {
   const scheduledCommands = scheduleCommands(scheduler, cmds);
-  const out = internalAsyncModelRun(s, scheduledCommands, scheduler.schedule(Promise.resolve()));
+  const out = internalAsyncModelRun(s, scheduledCommands, scheduler.schedule(Promise.resolve(), 'startModel'));
   await scheduler.waitAll();
   await out;
 };
