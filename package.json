@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "1.20.0",
+  "version": "1.22.1",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "main": "lib/fast-check.js",
   "module": "lib/esm/fast-check.js",
@@ -23,6 +23,7 @@
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm",
     "webbuild": "browserify lib/fast-check.js --s fastcheck | uglifyjs -cm > lib/bundle.js",
+    "build:prod": "yarn prebuild && yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && yarn webbuild && node postbuild/main.js",
     "watch": "tsc -w",
     "test": "jest --config jest.unit.config.js --coverage",
     "test:watch": "jest --config jest.unit.config.js --watch",
@@ -52,7 +53,7 @@
     "node": ">=0.12"
   },
   "dependencies": {
-    "pure-rand": "^1.7.0",
+    "pure-rand": "^2.0.0",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
@@ -70,6 +71,7 @@
     "jest": "^24.9.0",
     "markdownbars": "^1.0.9",
     "prettier": "1.17.0",
+    "replace-in-file": "^5.0.2",
     "rollup": "^1.25.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",

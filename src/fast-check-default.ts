@@ -89,6 +89,10 @@ import { Stream, stream } from './stream/Stream';
 import { stringify } from './utils/stringify';
 import { scheduler, Scheduler, SchedulerSequenceItem } from './check/arbitrary/AsyncSchedulerArbitrary';
 
+// Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
+const __type = '__PACKAGE_TYPE__' as string;
+const __version = '__PACKAGE_VERSION__' as string;
+
 // boolean
 // floating point types
 // integer types
@@ -97,6 +101,9 @@ import { scheduler, Scheduler, SchedulerSequenceItem } from './check/arbitrary/A
 // combination of others
 // complex combinations
 export {
+  // meta
+  __type,
+  __version,
   // assess the property
   sample,
   statistics,

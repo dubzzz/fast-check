@@ -1,7 +1,7 @@
 
 
 {
-    "buildCommand": "build",
+    "buildCommand": "build:prod",
     "sandboxes": ["vanilla", "/example"]
   }
   

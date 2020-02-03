@@ -5,6 +5,7 @@ import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
+import { makeLazy } from '../../stream/LazyIterableIterator';
 
 /** @hidden */
 class SubarrayArbitrary<T> extends Arbitrary<T[]> {
@@ -55,9 +56,11 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       .map(l => items.slice(items.length - l.value))
       .join(
         items.length > this.minLength
-          ? this.shrinkImpl(items.slice(1), false)
-              .filter(vs => this.minLength <= vs.length + 1)
-              .map(vs => [items[0]].concat(vs))
+          ? makeLazy(() =>
+              this.shrinkImpl(items.slice(1), false)
+                .filter(vs => this.minLength <= vs.length + 1)
+                .map(vs => [items[0]].concat(vs))
+            )
           : Stream.nil<T[]>()
       );
   }

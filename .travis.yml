@@ -9,7 +9,7 @@ cache:
   directories:
     - node_modules
 
-if: branch = master OR branch =~ ^fix-v\d+\. OR tag =~ ^v\d+\.
+if: branch = master OR branch =~ ^next- OR branch =~ ^fix-v\d+\. OR tag =~ ^v\d+\.
 
 before_install:
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
@@ -41,11 +41,7 @@ jobs:
     - stage: test
       env: STEP=EXAMPLES_ROLLUP_LEGACY_TYPES
       script:
-        - yarn prebuild
-        - yarn build:publish-types
-        - yarn build:publish-cjs
-        - yarn build:publish-esm
-        - yarn webbuild
+        - yarn build:prod
         - yarn link
         - cd example ;
           yarn --ignore-engines ;
@@ -56,10 +52,13 @@ jobs:
         - yarn test:rollup-iife
         - yarn test:type
         - nvm install 0.12 ;
+          node --version ;
           node test/legacy/main.js
     - stage: test
       env: STEP=HEAD
       script:
+        - nvm install node
+        - node --version
         - yarn prebuild
         - yarn build
         - yarn test --maxWorkers=4
@@ -73,7 +72,7 @@ jobs:
       deploy:
         provider: pages
         skip-cleanup: true
-        github-token: $GITHUB_TOKEN
+        github-token: "$GITHUB_TOKEN"
         target-branch: gh-pages
         local-dir: docs
         on:
@@ -81,17 +80,13 @@ jobs:
     - stage: deploy
       if: tag =~ ^v\d+\.
       script:
-        - yarn prebuild
-        - yarn build:publish-types
-        - yarn build:publish-cjs
-        - yarn build:publish-esm
-        - yarn webbuild
+        - yarn build:prod
       deploy:
         provider: npm
+        edge: true
+        cleanup: false
         email: npm@dubien.org
-        skip_cleanup: true
-        api_key:
-          secure: GizKIQllRzN5PJ00VsmLgT4HFxrufIkrWHj+kjW7FIxWBvBu/ii02DV3+DHcIKOc082wCJ3MAJjpU098oOG4omKl0D36COIl92JP1L0hz5D0ZTshCnUsd0YXHcYYtjDEU0hK6iHoEETQl1+ejncqkoXyJFd9XmdT8vnXLvbUDvNpFmIFFFOVJ6aZX3nj2irgLHutC8cspYzjCs8OqRm1gftd5JhaOMfE6NgjiX5AHI8NJ8zHWYShb2vMpOG/ajzCrfMISvtsvU4Wa2K0cYhW9CkO7WAqSG/jFF6ZxDqzfch0SH+fZBu9u8iIk0GUwtEhv0SURFD0nJqLCN4AjGH0HkRXA6b8GCBD7ZRpnbmTKoB/HRROzEAvErqtWGO0qWZ8lF4U47i5rNCYC4DW/WB776MWsEDy0XQDcYRSfiLsVy544lsKjBXhziFWSqx2gL5GwAQiCUVKqZVZ9ouAZGcANzyq1v28tN38WsjMAjI96rcWaWeeY14zQ92NHhPLbFJUg/8F7Ddn2aRLp3JSyxVm+YubFHOl15oF0ZO6FjHkLhklse5o0seqljBkSrZwd6f/RV99+ziAAm8wenfODae/qrgVwS02CttsHOGlWTpjTbU96iAa8FiCpN9yWa9LYf+QNG5Dhjgm69WTVjA0SWkPA3PA4vI5uxUsnBCtBPawEVo=
+        api_token:
+          secure: uh9D3ESY6ea+sVoe5NhhilSSw9qM6UGO0uiDLya0Bu96O30yqkTHKWVcxBADWmQTpC39uapq1g7pQ/ybiTlhuWymL2dcsJyGgCDSgBA5LXkAhgt+0j1JbWQRajAt9N1+RPXWMaGMdWOJnl6v5qrzR+9WgXUlo3zjulMtGMPYjkN22cUdFLKl4jEadwcAJJvKVXvS9LbWeD/g46TopPOgIAEn008EySzpBtpBHa2O0pWH6yCpHLqhk0vUz7ltIjO3khxD6EcrvcPjdIMI9swc8JIvXn4LK24z0mjzLaQOwlrjSbkPQ7Kf172lKOX2DC1hQQHYRGIPw2ln3KGMRwhTUayErjB1uM6x9l0eGmESzmVEsizjb5DbAnh+j/UWG+lEelxbp+PmTm0b1goF3Lmc6eK5IGkaa212UX4+zjK06Gkyu/c9nfeT2v3GPMlNTQoDWMFZvMuk6d+QVHXBlkh6zBdQ5NWoCz+fBegVD6wK24Lf1+HH83T3jk7OWcvNpru9B3D2L/u6LTHF2C/Ij01HWcvtavlRaJo1JJYbsysM9zxLydMR2BrwzQkoPLXoqj5Ambk8NoSPAARp63h82YRkJwAygqHhbaNgofOTy8iqLmZXqfQPXH7/0DGh4E0QXcdhcRuhZC315LARZAbJ0RVhc2wFJ+EqFYPJEeAFbKT5x28=
         on:
           tags: true
-      repo: dubzzz/fast-check

@@ -1,3 +1,57 @@
+# 1.22.0
+
+_Better random values and ability to shrink very large data-structures_
+
+## Features
+
+- ([PR#534](https://github.com/dubzzz/fast-check/pull/534)) Better independance between generated values during a test suite :warning:
+- ([PR#536](https://github.com/dubzzz/fast-check/pull/536)) Exclude internationalized-like domains :warning: - ([PR#538](https://github.com/dubzzz/fast-check/pull/538))
+- ([PR#537](https://github.com/dubzzz/fast-check/pull/537)) Add xoroshiro128plsu in the list of random generators
+- ([PR#539](https://github.com/dubzzz/fast-check/pull/539)) Add js extension onto esm files
+- ([PR#540](https://github.com/dubzzz/fast-check/pull/540)) Add metadata on the generated sources (see `fc.__version`)
+
+## Fixes
+
+- ([PR#505](https://github.com/dubzzz/fast-check/pull/505)) Bug: Fix stack overflow when shrinking large arrays
+- ([PR#541](https://github.com/dubzzz/fast-check/pull/541)) Bug: Fix stack overflow when shrinking large arrays of commands
+- ([PR#511](https://github.com/dubzzz/fast-check/pull/511)) Doc: Add Jest example in the README
+- ([PR#542](https://github.com/dubzzz/fast-check/pull/542)) Doc: Example with function arbitrary
+- ([PR#518](https://github.com/dubzzz/fast-check/pull/518)) Doc: Fix typos in Arbitraries.md
+- ([PR#523](https://github.com/dubzzz/fast-check/pull/523)) Doc: Fix typos in Arbitraries.md
+- ([PR#533](https://github.com/dubzzz/fast-check/pull/533)) Doc: Fix typos in Arbitraries.md
+- ([PR#529](https://github.com/dubzzz/fast-check/pull/529)) Doc: Tip explaining how to avoid timeouts
+- ([PR#519](https://github.com/dubzzz/fast-check/pull/519)) Clean: Add missing files in \*ignore
+- ([PR#535](https://github.com/dubzzz/fast-check/pull/535)) Clean: Better logs for GenericArbitraryHelper
+
+---
+
+# 1.21.0
+
+_Better typings for `beforeEach` and `afterEach` and more options on `fc.scheduler`_
+
+## Features
+
+- ([PR#493](https://github.com/dubzzz/fast-check/pull/493)) Automatically wrap tasks using an `act` function in `fc.scheduler` if provided
+- ([PR#492](https://github.com/dubzzz/fast-check/pull/492)) Also return the sequence task in `fc.scheduleSequence`
+- ([PR#489](https://github.com/dubzzz/fast-check/pull/489)) Allow looser types for beforeEach and afterEach, more accurate and stricter types :warning:
+
+## Fixes
+
+- ([PR#509](https://github.com/dubzzz/fast-check/pull/509)) Bug: `letrec` crashed when asking to generate `__proto__`
+- ([PR#510](https://github.com/dubzzz/fast-check/pull/510)) Bug: `letrec` crashed when builder instantiates an object having `__proto__` set to `null`
+- ([PR#503](https://github.com/dubzzz/fast-check/pull/503)) Doc: Note on `expect` or `assert`
+
+---
+
+# 1.20.1
+
+_Reduce bundle size_
+
+## Fixes
+
+- ([PR#494](https://github.com/dubzzz/fast-check/pull/494)) Clean: Remove tsbuildinfo files from the bundle
+- ([PR#495](https://github.com/dubzzz/fast-check/pull/495)) Clean: Remove unneeded `@param` in JSDoc of `property` and `tuple`
+
 # 1.20.0
 
 _Built-in support for race condition detection_

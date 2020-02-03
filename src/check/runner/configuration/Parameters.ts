@@ -19,7 +19,7 @@ export interface Parameters<T = void> {
    * Random number generator: `xorshift128plus` by default
    *
    * Random generator is the core element behind the generation of random values - changing it might directly impact the quality and performances of the generation of random values.
-   * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus'
+   * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus', 'xoroshiro128plus'
    * Or any function able to build a `RandomGenerator` based on a seed
    */
   randomType?: RandomType | ((seed: number) => RandomGenerator);

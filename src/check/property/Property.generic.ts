@@ -9,17 +9,17 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
  */
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
+type HookFunction = () => void;
+
 /**
  * Property, see {@link IProperty}
  *
  * Prefer using {@link property} instead
  */
 export class Property<Ts> implements IProperty<Ts> {
-  static dummyHook: () => void = () => {
-    return;
-  };
-  private beforeEachHook: () => void = Property.dummyHook;
-  private afterEachHook: () => void = Property.dummyHook;
+  static dummyHook: HookFunction = () => {};
+  private beforeEachHook: HookFunction = Property.dummyHook;
+  private afterEachHook: HookFunction = Property.dummyHook;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {}
   isAsync = () => false as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
@@ -45,7 +45,11 @@ export class Property<Ts> implements IProperty<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction Function to be called
    */
-  beforeEach(hookFunction: () => void): Property<Ts> {
+  beforeEach(
+    invalidHookFunction: () => Promise<unknown>
+  ): 'beforeEach expects a synchronous function but was given a function returning a Promise';
+  beforeEach(validHookFunction: HookFunction): Property<Ts>;
+  beforeEach(hookFunction: HookFunction): unknown {
     this.beforeEachHook = hookFunction;
     return this;
   }
@@ -53,7 +57,11 @@ export class Property<Ts> implements IProperty<Ts> {
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction Function to be called
    */
-  afterEach(hookFunction: () => void): Property<Ts> {
+  afterEach(
+    invalidHookFunction: () => Promise<unknown>
+  ): 'afterEach expects a synchronous function but was given a function returning a Promise';
+  afterEach(validHookFunction: HookFunction): Property<Ts>;
+  afterEach(hookFunction: HookFunction): unknown {
     this.afterEachHook = hookFunction;
     return this;
   }

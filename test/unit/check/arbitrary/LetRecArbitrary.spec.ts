@@ -90,6 +90,66 @@ describe('LetRecArbitrary', () => {
       }));
       expect(() => arb1.generate(mrng)).toThrowErrorMatchingSnapshot();
     });
+    it('Should apply tie correctly', () => {
+      const expectedArb = buildArbitrary(jest.fn());
+      const { arb1, arb2, arb3 } = letrec(tie => ({
+        arb1: tie('arb2'),
+        arb2: tie('arb3'),
+        arb3: expectedArb
+      }));
+
+      expect(arb1).toBeInstanceOf(LazyArbitrary);
+      expect(arb2).toBeInstanceOf(LazyArbitrary);
+      expect(arb3).not.toBeInstanceOf(LazyArbitrary);
+
+      expect((arb1 as any).underlying).toBe(arb2);
+      expect((arb2 as any).underlying).toBe(arb3);
+      expect(arb3).toBe(expectedArb);
+    });
+    it('Should accept "reserved" keys', () => {
+      const mrng = stubRng.mutable.nocall();
+      const generateMock = jest.fn();
+      const simpleArb = buildArbitrary(generateMock);
+      const { tie } = letrec(tie => ({
+        tie: tie('__proto__'),
+        ['__proto__']: tie('__defineGetter__​​'),
+        ['__defineGetter__​​']: tie('__defineSetter__​​'),
+        ['__defineSetter__​​']: tie('__lookupGetter__​​'),
+        ['__lookupGetter__​​']: tie('__lookupSetter__​​'),
+        ['__lookupSetter__​​']: tie('__proto__​​'),
+        ['__proto__​​']: tie('constructor​​'),
+        ['constructor​​']: tie('hasOwnProperty​​'),
+        ['hasOwnProperty​​']: tie('isPrototypeOf​​'),
+        ['isPrototypeOf​​']: tie('propertyIsEnumerable​​'),
+        ['propertyIsEnumerable​​']: tie('toLocaleString​​'),
+        ['toLocaleString​​']: tie('toSource​​'),
+        ['toSource​​']: tie('toString​​'),
+        ['toString​​']: tie('valueOf'),
+        ['valueOf']: tie('constructor'),
+        constructor: simpleArb
+      }));
+
+      expect(generateMock).not.toHaveBeenCalled();
+      tie.generate(mrng);
+
+      expect(generateMock).toHaveBeenCalled();
+    });
+    it('Should accept builders producing objects based on Object.create(null)', () => {
+      const mrng = stubRng.mutable.nocall();
+      const generateMock = jest.fn();
+      const simpleArb = buildArbitrary(generateMock);
+      const { a } = letrec(tie =>
+        Object.assign(Object.create(null), {
+          a: tie('b'),
+          b: simpleArb
+        })
+      );
+
+      expect(generateMock).not.toHaveBeenCalled();
+      a.generate(mrng);
+
+      expect(generateMock).toHaveBeenCalled();
+    });
   });
   describe('LazyArbitrary', () => {
     it('Should fail to generate when no underlying arbitrary', () => {

@@ -48,7 +48,10 @@ describe('properties', () => {
   });
   // string a + b + c always contains b, whatever the values of a, b and c
   it('should always contain its substrings', () => {
-    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => contains(a+b+c, b)));
+    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
+      // Alternatively: no return statement and direct usage of expect or assert
+      return contains(a+b+c, b));
+    });
   });
 });
 ```
@@ -64,19 +67,9 @@ In case of failure, the test raises a red flag. Its output should help you to di
     Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
 ```
 
-Integration with other test frameworks:
-[ava](https://github.com/dubzzz/fast-check-examples/blob/master/test-ava/example.spec.js),
-[jasmine](https://github.com/dubzzz/fast-check-examples/blob/master/test-jasmine/example.spec.js),
-[jest](https://github.com/dubzzz/fast-check-examples/blob/master/test-jest/example.spec.js),
-[mocha](https://github.com/dubzzz/fast-check-examples/blob/master/test/longest%20common%20substr/test.js)
-and
-[tape](https://github.com/dubzzz/fast-check-examples/blob/master/test-tape/example.spec.js).
+Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-check-examples/blob/master/test-ava/example.spec.js), [jasmine](https://github.com/dubzzz/fast-check-examples/blob/master/test-jasmine/example.spec.js), [jest](https://github.com/dubzzz/fast-check-examples/blob/master/test-jest/example.spec.js), [mocha](https://github.com/dubzzz/fast-check-examples/blob/master/test/longest%20common%20substr/test.js) and [tape](https://github.com/dubzzz/fast-check-examples/blob/master/test-tape/example.spec.js).
 
-More examples:
-[simple examples](https://github.com/dubzzz/fast-check/tree/master/example),
-[fuzzing](https://github.com/dubzzz/fuzz-rest-api)
-and
-[against various algorithms](https://github.com/dubzzz/fast-check-examples).
+More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/master/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
 - [:checkered_flag: Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/HandsOnPropertyBased.md)
@@ -109,6 +102,12 @@ For more details, refer to the documentation in the links above.
 ## Issues found by fast-check in famous packages
 
 fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
+
+### [jest](https://github.com/facebook/jest/)
+
+**Issue detected:** `toStrictEqual` fails to distinguish 0 from 5e-324 \[[more](https://github.com/facebook/jest/issues/7941)\]
+
+**Code example:** `expect(0).toStrictEqual(5e-324)` succeeds
 
 ### [js-yaml](https://github.com/nodeca/js-yaml/)
 

@@ -19,7 +19,7 @@ const isValidUrl = (t: string) => {
 
 describe('WebArbitrary', () => {
   describe('webUrl', () => {
-    genericHelper.isValidArbitrary(c => webUrl(c), {
+    genericHelper.isValidArbitrary(webUrl, {
       isValidValue: (g: string) => isValidUrl(g),
       seedGenerator: fc.record(
         {

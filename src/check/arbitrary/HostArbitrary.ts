@@ -14,7 +14,14 @@ function subdomain() {
   const alphaNumericHyphenArb = buildLowerAlphaNumericArb(['-']);
   return tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb), alphaNumericArb)))
     .map(([f, d]) => (d === null ? f : `${f}${d[0]}${d[1]}`))
-    .filter(d => d.length <= 63);
+    .filter(d => d.length <= 63)
+    .filter(d => {
+      // We discard any subdomain starting by xn--
+      // as they would require lots of checks to confirm if they are valid internationalized domains.
+      // While they still are valid subdomains they might be problematic with some libs,
+      // so we prefer not to include them by default (eg.: new URL in Node does not accept invalid internationalized domains)
+      return d.length < 4 || d[0] !== 'x' || d[1] !== 'n' || d[2] !== '-' || d[3] !== '-';
+    });
 }
 
 /**
