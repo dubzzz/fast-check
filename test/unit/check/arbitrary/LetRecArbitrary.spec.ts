@@ -116,8 +116,7 @@ describe('LetRecArbitrary', () => {
         ['__defineGetter__​​']: tie('__defineSetter__​​'),
         ['__defineSetter__​​']: tie('__lookupGetter__​​'),
         ['__lookupGetter__​​']: tie('__lookupSetter__​​'),
-        ['__lookupSetter__​​']: tie('__proto__​​'),
-        ['__proto__​​']: tie('constructor​​'),
+        ['__lookupSetter__​​']: tie('constructor​​'),
         ['constructor​​']: tie('hasOwnProperty​​'),
         ['hasOwnProperty​​']: tie('isPrototypeOf​​'),
         ['isPrototypeOf​​']: tie('propertyIsEnumerable​​'),
@@ -125,8 +124,7 @@ describe('LetRecArbitrary', () => {
         ['toLocaleString​​']: tie('toSource​​'),
         ['toSource​​']: tie('toString​​'),
         ['toString​​']: tie('valueOf'),
-        ['valueOf']: tie('constructor'),
-        constructor: simpleArb
+        ['valueOf']: simpleArb
       }));
 
       expect(generateMock).not.toHaveBeenCalled();
