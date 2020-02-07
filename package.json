@@ -12,6 +12,7 @@
       ]
     }
   },
+  "files": ["lib"],
   "sideEffects": false,
   "scripts": {
     "perf": "node perf/benchmark.js",
