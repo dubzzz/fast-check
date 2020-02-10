@@ -19,8 +19,8 @@ describe('dependencyTree', () => {
         });
 
         // Act
-        // dependencyTree(selectedPackage, fetch); // without bugs
-        dependencyTree(selectedPackage, fetch, true); // or with bugs
+        dependencyTree(selectedPackage, fetch); // without bugs
+        // dependencyTree(selectedPackage, fetch, true); // or with bugs
 
         // Assert
         let numQueries = 0;
