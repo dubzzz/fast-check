@@ -31,7 +31,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     return;
   }
 
-  const packageVersion = 'Just to confirm we have the right fast-check';
+  const packageVersion = JSON.parse(data.toString()).version;
 
   const commonJsReplacement = replace.sync({
     files: 'lib/fast-check-default.js',
@@ -41,16 +41,6 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   if (commonJsReplacement.length === 1 && commonJsReplacement[0].hasChanged) {
     // eslint-disable-next-line
     console.info(`Package details added onto commonjs version`);
-  }
-
-  const dTsReplacement = replace.sync({
-    files: 'lib/**/fast-check-default.d.ts',
-    from: [/__version: string/g],
-    to: ['__version: number']
-  });
-  if (dTsReplacement.length === 1 && dTsReplacement[0].hasChanged) {
-    // eslint-disable-next-line
-    console.info(`d.ts changes added onto commonjs version`);
   }
 
   const moduleReplacement = replace.sync({

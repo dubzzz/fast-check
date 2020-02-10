@@ -1,8 +1,6 @@
 import { expectType, expectError } from 'tsd';
 import * as fc from 'fast-check';
 
-expectType<string>(fc.__version);
-
 // assert
 expectType<void>(fc.assert(fc.property(fc.nat(), () => {})));
 expectType<Promise<void>>(fc.assert(fc.asyncProperty(fc.nat(), async () => {})));
