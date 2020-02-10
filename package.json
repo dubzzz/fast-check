@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "1.22.1",
+  "version": "1.22.2",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "main": "lib/fast-check.js",
   "module": "lib/esm/fast-check.js",
@@ -12,7 +12,9 @@
       ]
     }
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "sideEffects": false,
   "scripts": {
     "perf": "node perf/benchmark.js",
