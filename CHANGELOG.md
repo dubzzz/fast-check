@@ -1,3 +1,18 @@
+# 1.22.2
+
+_Remove unused files from the final bundle_
+
+## Fixes
+
+- ([PR#550](https://github.com/dubzzz/fast-check/pull/550)) Clean: Switch from npmignore to files to whitelist bundled files instead of blacklisting them
+- ([PR#549](https://github.com/dubzzz/fast-check/pull/549)) Clean: Various typos in letrec unit-test
+- ([PR#551](https://github.com/dubzzz/fast-check/pull/551)) Clean: CI was not considered as failed when examples failed
+
+
+# 1.22.1
+
+_Fix broken bundle_
+
 # 1.22.0
 
 _Better random values and ability to shrink very large data-structures_
