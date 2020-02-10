@@ -41,10 +41,13 @@ jobs:
     - stage: test
       env: STEP=EXAMPLES_ROLLUP_LEGACY_TYPES
       script:
+        - PROJECT_ROOT_PATH="$(pwd)"
         - yarn build:prod
         - yarn link
-        - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test && cd ..
-        - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test && cd ../..
+        - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test
+        - cd "$PROJECT_ROOT_PATH"
+        - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test
+        - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
         - yarn test:rollup-iife
         - nvm install 0.12 ;
