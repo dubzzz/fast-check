@@ -1,9 +1,6 @@
 import { expectType, expectError } from 'tsd';
 import * as fc from 'fast-check';
 
-// BUG DO_NOT_MERGE
-expectType<number>(fc.assert(fc.property(fc.nat(), () => {})));
-
 // assert
 expectType<void>(fc.assert(fc.property(fc.nat(), () => {})));
 expectType<Promise<void>>(fc.assert(fc.asyncProperty(fc.nat(), async () => {})));
