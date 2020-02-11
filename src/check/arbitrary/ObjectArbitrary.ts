@@ -22,7 +22,8 @@ export class ObjectConstraints {
     readonly maxKeys: number,
     readonly withSet: boolean,
     readonly withMap: boolean,
-    readonly withObjectString: boolean
+    readonly withObjectString: boolean,
+    readonly withNullPrototype: boolean
   ) {}
 
   /**
@@ -91,7 +92,8 @@ export class ObjectConstraints {
       getOr(() => settings!.maxKeys, 5),
       getOr(() => settings!.withSet, false),
       getOr(() => settings!.withMap, false),
-      getOr(() => settings!.withObjectString, false)
+      getOr(() => settings!.withObjectString, false),
+      getOr(() => settings!.withNullPrototype, false)
     );
   }
 }
@@ -140,6 +142,8 @@ export namespace ObjectConstraints {
     withMap?: boolean;
     /** Also generate string representations of object instances */
     withObjectString?: boolean;
+    /** Also generate object with null prototype */
+    withNullPrototype?: boolean;
   }
 }
 
@@ -188,7 +192,8 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
       objectArb(),
       ...(constraints.withMap ? [mapArb()] : []),
       ...(constraints.withSet ? [setArb()] : []),
-      ...(constraints.withObjectString ? [anythingArb().map(o => stringify(o))] : [])
+      ...(constraints.withObjectString ? [anythingArb().map(o => stringify(o))] : []),
+      ...(constraints.withNullPrototype ? objectArb().map(o => Object.assign(Object.create(null), o)) : [])
     );
   });
 

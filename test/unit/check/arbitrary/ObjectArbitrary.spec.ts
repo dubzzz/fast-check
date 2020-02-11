@@ -204,7 +204,8 @@ describe('ObjectArbitrary', () => {
               withBoxedValues: fc.boolean(),
               withMap: fc.boolean(),
               withSet: fc.boolean(),
-              withObjectString: fc.boolean()
+              withObjectString: fc.boolean(),
+              withNullPrototype: fc.boolean()
             },
             { withDeletedKeys: true }
           ),
