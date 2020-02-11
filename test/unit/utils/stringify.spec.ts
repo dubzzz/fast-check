@@ -14,16 +14,16 @@ const checkEqual = (a: any, b: any): boolean => {
 };
 
 class ThrowingToString {
-  toString = () => {
+  toString() {
     throw new Error('No toString');
-  };
+  }
 }
 
 class CustomTagThrowingToString {
   [Symbol.toStringTag] = 'CustomTagThrowingToString';
-  toString = () => {
+  toString() {
     throw new Error('No toString');
-  };
+  }
 }
 
 describe('stringify', () => {
@@ -144,5 +144,13 @@ describe('stringify', () => {
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');
     expect(stringify(new CustomTagThrowingToString())).toEqual('[object CustomTagThrowingToString]');
+    // TODO Move to getter-based implementation instead - es5 required
+    const instance = Object.create(null);
+    Object.defineProperty(instance, 'toString', {
+      get: () => {
+        throw new Error('No such accessor');
+      }
+    });
+    expect(stringify(instance)).toEqual('[object Object]');
   });
 });

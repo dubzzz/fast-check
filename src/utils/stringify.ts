@@ -55,14 +55,15 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
     case '[object Number]':
       return typeof value === 'number' ? stringifyNumber(value) : `new Number(${stringifyNumber(Number(value))})`;
     case '[object Object]': {
-      if (typeof (value as any).toString === 'function' && (value as any).toString !== Object.prototype.toString) {
-        // Instance (or one of its parent prototypes) overrides the default toString of Object
-        try {
-          return (value as any).toString();
-        } catch (err) {
-          // Only return what would have been the default toString on Object
-          return '[object Object]';
+      try {
+        const toStringAccessor = (value as any).toString; // <-- Can throw
+        if (typeof toStringAccessor === 'function' && toStringAccessor !== Object.prototype.toString) {
+          // Instance (or one of its parent prototypes) overrides the default toString of Object
+          return (value as any).toString(); // <-- Can throw
         }
+      } catch (err) {
+        // Only return what would have been the default toString on Object
+        return '[object Object]';
       }
       const rawRepr =
         '{' +
