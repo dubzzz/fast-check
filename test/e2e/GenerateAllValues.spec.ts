@@ -53,7 +53,12 @@ describe(`Generate all values (seed: ${seed})`, () => {
       ));
   });
   describe('fc.anything()', () => {
-    const checkCanProduce = (label: string, typeofLabel: string, toStringLabel: string) => {
+    const checkCanProduce = (
+      label: string,
+      typeofLabel: string,
+      toStringLabel: string,
+      additionalCheck?: (v: unknown) => boolean
+    ) => {
       it(`should be able to generate ${label}`, () => {
         let numTries = 0;
         const mrng = new fc.Random(prand.xorshift128plus(seed));
@@ -67,7 +72,9 @@ describe(`Generate all values (seed: ${seed})`, () => {
         while (++numTries <= 10000) {
           const { value } = arb.generate(mrng);
           if (typeof value === typeofLabel && Object.prototype.toString.call(value) === toStringLabel) {
-            return;
+            if (additionalCheck === undefined || additionalCheck(value)) {
+              return;
+            }
           }
         }
         fail(`Was not able to generate ${label}`);
@@ -85,5 +92,8 @@ describe(`Generate all values (seed: ${seed})`, () => {
     checkCanProduce('Array', 'object', '[object Array]');
     checkCanProduce('Set', 'object', '[object Set]');
     checkCanProduce('Map', 'object', '[object Map]');
+    checkCanProduce('null prototype object', 'object', '[object Object]', (instance: unknown) => {
+      return Object.getPrototypeOf(instance) === null;
+    });
   });
 });
