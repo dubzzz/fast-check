@@ -26,9 +26,17 @@ class CustomTagThrowingToString {
   }
 }
 
+const anythingEnableAll = {
+  withBoxedValues: true,
+  withMap: true,
+  withSet: true,
+  withObjectString: true,
+  withNullPrototype: true
+};
+
 describe('stringify', () => {
   it('Should be able to stringify fc.anything()', () =>
-    fc.assert(fc.property(fc.anything(), a => typeof stringify(a) === 'string')));
+    fc.assert(fc.property(fc.anything(anythingEnableAll), a => typeof stringify(a) === 'string')));
   it('Should be able to stringify fc.char16bits() (ie. possibly invalid strings)', () =>
     fc.assert(fc.property(fc.char16bits(), a => typeof stringify(a) === 'string')));
   if (typeof BigInt !== 'undefined') {
@@ -46,7 +54,7 @@ describe('stringify', () => {
     ));
   it('Should be readable from eval', () =>
     fc.assert(
-      fc.property(fc.anything(), obj => {
+      fc.property(fc.anything(anythingEnableAll), obj => {
         expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj as any);
       })
     ));

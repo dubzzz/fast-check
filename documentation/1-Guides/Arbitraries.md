@@ -130,14 +130,15 @@ The framework is able to generate totally random objects in order to adapt to pr
 ```typescript
 export module ObjectConstraints {
     export interface Settings {
-        maxDepth?: number;         // maximal depth allowed for this object
-        maxKeys?: number;          // maximal number of keys (and values)
-        key?: Arbitrary<string>;   // arbitrary for key
-        values?: Arbitrary<any>[]; // arbitrary responsible for base value
-        withBoxedValues?: boolean; // adapt all entries within `values` to generate boxed version of the value too
-        withMap?: boolean;         // also generate Map
-        withSet?: boolean;         // also generate Set
-        withObjectString?: boolean;// also generate string representations of object instances
+        maxDepth?: number;          // maximal depth allowed for this object
+        maxKeys?: number;           // maximal number of keys (and values)
+        key?: Arbitrary<string>;    // arbitrary for key
+        values?: Arbitrary<any>[];  // arbitrary responsible for base value
+        withBoxedValues?: boolean;  // adapt all entries within `values` to generate boxed version of the value too
+        withMap?: boolean;          // also generate Map
+        withSet?: boolean;          // also generate Set
+        withObjectString?: boolean; // also generate string representations of object instances
+        withNullPrototype?: boolean;// also generate string representations of object instances
     };
 };
 ```
