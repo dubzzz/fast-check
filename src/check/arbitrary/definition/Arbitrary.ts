@@ -30,21 +30,39 @@ export abstract class Arbitrary<T> {
    * // new Arbitrary only keeps even values
    * ```
    *
+   * @param refinement Predicate, to test each produced element. Return true to keep the element, false otherwise
+   * @returns New arbitrary filtered using predicate
+   */
+  filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U>;
+  /**
+   * Create another arbitrary by filtering values against `predicate`
+   *
+   * All the values produced by the resulting arbitrary
+   * satisfy `predicate(value) == true`
+   *
+   * @example
+   * ```typescript
+   * const integerGenerator: Arbitrary<number> = ...;
+   * const evenIntegerGenerator: Arbitrary<number> = integerGenerator.filter(e => e % 2 === 0);
+   * // new Arbitrary only keeps even values
+   * ```
+   *
    * @param predicate Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New arbitrary filtered using predicate
    */
-  filter(predicate: (t: T) => boolean): Arbitrary<T> {
+  filter(predicate: (t: T) => boolean): Arbitrary<T>;
+  filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U> {
     const arb = this;
-    return new (class extends Arbitrary<T> {
-      generate(mrng: Random): Shrinkable<T> {
+    return new (class extends Arbitrary<U> {
+      generate(mrng: Random): Shrinkable<U> {
         let g = arb.generate(mrng);
-        while (!predicate(g.value)) {
+        while (!refinement(g.value)) {
           g = arb.generate(mrng);
         }
-        return g.filter(predicate);
+        return g.filter(refinement);
       }
       withBias(freq: number) {
-        return arb.withBias(freq).filter(predicate);
+        return arb.withBias(freq).filter(refinement);
       }
     })();
   }

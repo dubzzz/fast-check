@@ -76,14 +76,30 @@ export class Shrinkable<T> {
    * All the shrunk values produced by the resulting `Shrinkable<T>`
    * satisfy `predicate(value) == true`
    *
+   * WARNING:
+   * When using refinement - `(t: T) => t is U` - only the shrunk values are ensured to be of type U.
+   * The type of the current value of the Shrinkable is your responsability.
+   *
+   * @param refinement Predicate, to test each produced element. Return true to keep the element, false otherwise
+   * @returns New shrinkable filtered using predicate
+   */
+  filter<U extends T>(refinement: (t: T) => t is U): Shrinkable<U>;
+  /**
+   * Create another shrinkable
+   * by filtering its shrunk values against `predicate`
+   *
+   * All the shrunk values produced by the resulting `Shrinkable<T>`
+   * satisfy `predicate(value) == true`
+   *
    * @param predicate Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
    */
-  filter(predicate: (t: T) => boolean): Shrinkable<T> {
-    return new Shrinkable<T>(this.value, () =>
+  filter(predicate: (t: T) => boolean): Shrinkable<T>;
+  filter<U extends T>(refinement: (t: T) => t is U): Shrinkable<U> {
+    return new Shrinkable<U>(this.value as U, () =>
       this.shrink()
-        .filter(v => predicate(v.value))
-        .map(v => v.filter(predicate))
+        .filter(v => refinement(v.value))
+        .map(v => v.filter(refinement))
     );
   }
 }
