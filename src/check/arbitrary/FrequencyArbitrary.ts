@@ -40,11 +40,13 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
  *
  * @param warbs (Arbitrary, weight)s that might be called to produce a value
  */
-function frequency<T>(...warbs: WeightedArbitrary<T>[]): Arbitrary<T> {
+function frequency<Ts extends WeightedArbitrary<unknown>[]>(
+  ...warbs: Ts
+): Arbitrary<{ [K in keyof Ts]: Ts[K] extends WeightedArbitrary<infer U> ? U : never }[number]> {
   if (warbs.length === 0) {
     throw new Error('fc.frequency expects at least one parameter');
   }
-  return new FrequencyArbitrary([...warbs]);
+  return new FrequencyArbitrary([...warbs]) as any;
 }
 
 export { frequency };

@@ -23,11 +23,13 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
  *
  * @param arbs Arbitraries that might be called to produce a value
  */
-function oneof<T>(...arbs: Arbitrary<T>[]): Arbitrary<T> {
+function oneof<Ts extends Arbitrary<unknown>[]>(
+  ...arbs: Ts
+): Arbitrary<{ [K in keyof Ts]: Ts[K] extends Arbitrary<infer U> ? U : never }[number]> {
   if (arbs.length === 0) {
     throw new Error('fc.oneof expects at least one parameter');
   }
-  return new OneOfArbitrary([...arbs]);
+  return new OneOfArbitrary([...arbs]) as any;
 }
 
 export { oneof };
