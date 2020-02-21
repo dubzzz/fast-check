@@ -2,10 +2,10 @@ import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
 
 /**
- * A Shrinkable<T> holds an internal value of type `T`
- * and can shrink it to smaller `T` values
+ * A Shrinkable<T, TShrink = T> holds an internal value of type `T`
+ * and can shrink it to smaller `TShrink` values
  */
-export class Shrinkable<T> {
+export class Shrinkable<T, TShrink extends T = T> {
   /**
    * State storing the result of hasCloneMethod
    * If <true> the value will be cloned each time it gets accessed
@@ -28,7 +28,10 @@ export class Shrinkable<T> {
    * @param shrink Function producing Stream of shrinks associated to value
    */
   // tslint:disable-next-line:variable-name
-  constructor(readonly value_: T, readonly shrink: () => Stream<Shrinkable<T>> = () => Stream.nil<Shrinkable<T>>()) {
+  constructor(
+    readonly value_: T,
+    readonly shrink: () => Stream<Shrinkable<TShrink>> = () => Stream.nil<Shrinkable<TShrink>>()
+  ) {
     this.hasToBeCloned = hasCloneMethod(value_);
     this.readOnce = false;
     Object.defineProperty(this, 'value', { get: this.getValue });
@@ -83,7 +86,7 @@ export class Shrinkable<T> {
    * @param refinement Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
    */
-  filter<U extends T>(refinement: (t: T) => t is U): Shrinkable<U>;
+  filter<U extends TShrink>(refinement: (t: TShrink) => t is U): Shrinkable<T, U>;
   /**
    * Create another shrinkable
    * by filtering its shrunk values against `predicate`
@@ -94,11 +97,14 @@ export class Shrinkable<T> {
    * @param predicate Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
    */
-  filter(predicate: (t: T) => boolean): Shrinkable<T>;
-  filter<U extends T>(refinement: (t: T) => t is U): Shrinkable<U> {
-    return new Shrinkable<U>(this.value as U, () =>
+  filter(predicate: (t: TShrink) => boolean): Shrinkable<T, TShrink>;
+  filter<U extends TShrink>(refinement: (t: TShrink) => t is U): Shrinkable<T, U> {
+    const refinementOnShrinkable = (s: Shrinkable<TShrink, TShrink>): s is Shrinkable<U, U> => {
+      return refinement(s.value);
+    };
+    return new Shrinkable<T, U>(this.value, () =>
       this.shrink()
-        .filter(v => refinement(v.value))
+        .filter(refinementOnShrinkable)
         .map(v => v.filter(refinement))
     );
   }

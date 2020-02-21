@@ -53,10 +53,13 @@ export abstract class Arbitrary<T> {
   filter(predicate: (t: T) => boolean): Arbitrary<T>;
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U> {
     const arb = this;
+    const refinementOnShrinkable = (s: Shrinkable<T>): s is Shrinkable<U> => {
+      return refinement(s.value);
+    };
     return new (class extends Arbitrary<U> {
       generate(mrng: Random): Shrinkable<U> {
         let g = arb.generate(mrng);
-        while (!refinement(g.value)) {
+        while (!refinementOnShrinkable(g)) {
           g = arb.generate(mrng);
         }
         return g.filter(refinement);
