@@ -72,9 +72,9 @@ describe('Runner', () => {
         generate: () => {
           ++numCallsGenerate;
           function* g() {
-            for (let i = 0; i !== 1234; ++i) yield new Shrinkable([0]);
+            for (let i = 0; i !== 1234; ++i) yield new Shrinkable<[number]>([0]);
           }
-          return new Shrinkable([0], () => stream(g())) as Shrinkable<[number]>;
+          return new Shrinkable<[number]>([0], () => stream(g()));
         },
         run: () => {
           ++numCallsRun;

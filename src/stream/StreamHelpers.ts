@@ -34,7 +34,7 @@ export function* flatMapHelper<T, U>(g: IterableIterator<T>, f: (v: T) => Iterab
 }
 
 /** @hidden */
-export function* filterHelper<T>(g: IterableIterator<T>, f: (v: T) => boolean): IterableIterator<T> {
+export function* filterHelper<T, U extends T>(g: IterableIterator<T>, f: (v: T) => v is U): IterableIterator<U> {
   for (const v of g) {
     if (f(v)) {
       yield v;
