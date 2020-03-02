@@ -34,10 +34,10 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * @hidden
- * @internal
+ * Infer the type of the Arbitrary produced by oneof
+ * given the type of the source arbitraries
  */
-type InferArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
+type FrequencyArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
   [K in keyof Ts]: Ts[K] extends WeightedArbitrary<infer U> ? U : never
 }[number];
 
@@ -48,13 +48,13 @@ type InferArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
  *
  * @param warbs (Arbitrary, weight)s that might be called to produce a value
  */
-function frequency<Ts extends WeightedArbitrary<unknown>[]>(
-  ...warbs: Ts
-): Arbitrary<{ [K in keyof Ts]: Ts[K] extends WeightedArbitrary<infer U> ? U : never }[number]> {
+function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyArbitraryType<Ts>> {
   if (warbs.length === 0) {
     throw new Error('fc.frequency expects at least one parameter');
   }
-  return new FrequencyArbitrary<InferArbitraryType<Ts>>([...warbs] as WeightedArbitrary<InferArbitraryType<Ts>>[]);
+  return new FrequencyArbitrary<FrequencyArbitraryType<Ts>>([...warbs] as WeightedArbitrary<
+    FrequencyArbitraryType<Ts>
+  >[]);
 }
 
 export { frequency };

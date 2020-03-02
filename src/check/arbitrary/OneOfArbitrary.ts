@@ -17,10 +17,10 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * @hidden
- * @internal
+ * Infer the type of the Arbitrary produced by oneof
+ * given the type of the source arbitraries
  */
-type InferArbitraryType<Ts extends Arbitrary<unknown>[]> = {
+type OneOfArbitraryType<Ts extends Arbitrary<unknown>[]> = {
   [K in keyof Ts]: Ts[K] extends Arbitrary<infer U> ? U : never
 }[number];
 
@@ -31,13 +31,11 @@ type InferArbitraryType<Ts extends Arbitrary<unknown>[]> = {
  *
  * @param arbs Arbitraries that might be called to produce a value
  */
-function oneof<Ts extends Arbitrary<unknown>[]>(
-  ...arbs: Ts
-): Arbitrary<{ [K in keyof Ts]: Ts[K] extends Arbitrary<infer U> ? U : never }[number]> {
+function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfArbitraryType<Ts>> {
   if (arbs.length === 0) {
     throw new Error('fc.oneof expects at least one parameter');
   }
-  return new OneOfArbitrary<InferArbitraryType<Ts>>([...arbs] as Arbitrary<InferArbitraryType<Ts>>[]);
+  return new OneOfArbitrary<OneOfArbitraryType<Ts>>([...arbs] as Arbitrary<OneOfArbitraryType<Ts>>[]);
 }
 
 export { oneof };
