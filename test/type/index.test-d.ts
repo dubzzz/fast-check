@@ -60,8 +60,7 @@ expectError(fc.tuple(fc.nat(), ''));
 
 // oneof arbitrary
 expectType<fc.Arbitrary<string>>(fc.oneof(fc.string(), fc.fullUnicodeString()));
-expectType<fc.Arbitrary<number | string>>(fc.oneof(fc.string() as fc.Arbitrary<number | string>, fc.nat()));
-expectError(fc.oneof(fc.string(), fc.nat())); // TODO Typings should be improved
+expectType<fc.Arbitrary<string | number>>(fc.oneof(fc.string(), fc.nat()));
 expectError(fc.oneof(fc.string(), '1'));
 
 // frequency arbitrary
@@ -69,12 +68,8 @@ expectType<fc.Arbitrary<string>>(
   fc.frequency({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.fullUnicodeString(), weight: 1 })
 );
 expectType<fc.Arbitrary<number | string>>(
-  fc.frequency(
-    { arbitrary: fc.string() as fc.Arbitrary<number | string>, weight: 1 },
-    { arbitrary: fc.nat(), weight: 1 }
-  )
+  fc.frequency({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })
 );
-expectError(fc.frequency({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })); // TODO Typings should be improved
 expectError(fc.frequency({ arbitrary: fc.string(), weight: 1 }, { arbitrary: '1', weight: 1 }));
 
 // option arbitrary
