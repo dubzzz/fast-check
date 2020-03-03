@@ -1,3 +1,21 @@
+# 1.23.0
+
+_Better typings for `filter` and `oneof` plus support for null prototypes_
+
+## Features
+
+- ([PR#548](https://github.com/dubzzz/fast-check/pull/548)) Stringify should distinguish `{}` from `Object.create(null)` 
+- ([PR#552](https://github.com/dubzzz/fast-check/pull/552)) Add ability to generate objects without prototype
+- ([PR#555](https://github.com/dubzzz/fast-check/pull/555)) Support type guards while filtering :warning:
+- ([PR#556](https://github.com/dubzzz/fast-check/pull/556)) Better typings for oneof and frequency :warning:
+
+## Fixes
+
+- ([PR#554](https://github.com/dubzzz/fast-check/pull/554)) Doc: Add an example on atomic Counter for race conditions feature
+- ([PR#557](https://github.com/dubzzz/fast-check/pull/557)) Doc: Add example based on decomposition in prime numbers
+
+---
+
 # 1.22.2
 
 _Remove unused files from the final bundle_
@@ -7,7 +25,6 @@ _Remove unused files from the final bundle_
 - ([PR#550](https://github.com/dubzzz/fast-check/pull/550)) Clean: Switch from npmignore to files to whitelist bundled files instead of blacklisting them
 - ([PR#549](https://github.com/dubzzz/fast-check/pull/549)) Clean: Various typos in letrec unit-test
 - ([PR#551](https://github.com/dubzzz/fast-check/pull/551)) Clean: CI was not considered as failed when examples failed
-
 
 # 1.22.1
 
