@@ -110,4 +110,34 @@ describe('ScheduledCommand', () => {
     // Act / Assert
     await expect(scheduledCommand.run({}, {})).rejects.toMatchInlineSnapshot(`[Error: Call to run failed]`);
   });
+
+  it('Should wrap calls to check and run using the scheduler', async () => {
+    // Arrange
+    const check = jest.fn();
+    const run = jest.fn();
+    const cmd = new (class implements AsyncCommand<Model, Real> {
+      check = check;
+      run = run;
+      toString = () => 'command';
+    })();
+    const s = {
+      ...buildFakeScheduler(),
+      scheduleSequence: () => {
+        return {
+          done: false,
+          faulty: false,
+          task: Promise.resolve({ done: true, faulty: false })
+        };
+      }
+    };
+    const scheduledCommand = new ScheduledCommand(s, cmd);
+
+    // Act
+    await scheduledCommand.check({});
+    await scheduledCommand.run({}, {});
+
+    // Assert
+    expect(check).not.toHaveBeenCalled();
+    expect(run).not.toHaveBeenCalled();
+  });
 });
