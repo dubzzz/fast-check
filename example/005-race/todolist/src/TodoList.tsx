@@ -35,10 +35,12 @@ export default function TodoList(props: Props) {
         return;
       }
       setAllTodos(allTodos => {
-        // We update all todos that are not drafts
+        // The call to fetch all the todos might be related to outdated data
+        // We want to preserve all our todos that are not in the result of the query
+        const knownTodosInQuery = new Set<string | undefined>(query.response.map(todo => todo.id));
         return [
           ...query.response.map(todo => ({ ...todo, loading: false })),
-          ...allTodos.filter(todo => todo.id === undefined)
+          ...allTodos.filter(todo => !knownTodosInQuery.has(todo.id))
         ];
       });
     };
