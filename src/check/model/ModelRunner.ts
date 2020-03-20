@@ -2,6 +2,8 @@ import { AsyncCommand } from './command/AsyncCommand';
 import { Command } from './command/Command';
 import { ICommand } from './command/ICommand';
 import { CommandsIterable } from './commands/CommandsIterable';
+import { Scheduler } from '../arbitrary/AsyncSchedulerArbitrary';
+import { scheduleCommands } from './commands/ScheduledCommand';
 
 type Setup<Model, Real> = () => { model: Model; real: Real };
 type AsyncSetup<Model, Real> = () => Promise<{ model: Model; real: Real }>;
@@ -68,7 +70,8 @@ const isAsyncSetup = <Model, Real>(
 /** @hidden */
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: Setup<Model, Real> | AsyncSetup<Model, Real>,
-  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>,
+  defaultPromise = Promise.resolve()
 ): Promise<void> => {
   const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
   const setupProducer = {
@@ -81,7 +84,7 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
   const runAsync = async (cmd: AsyncCommand<Model, Real, CheckAsync>, m: Model, r: Real) => {
     if (await cmd.check(m)) await cmd.run(m, r);
   };
-  return await genericModelRun(setupProducer, cmds, Promise.resolve(), runAsync, then);
+  return await genericModelRun(setupProducer, cmds, defaultPromise, runAsync, then);
 };
 
 /**
@@ -112,4 +115,29 @@ export const asyncModelRun = async <Model extends object, Real, CheckAsync exten
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Promise<void> => {
   await internalAsyncModelRun(s, cmds);
+};
+
+/**
+ * Run asynchronous and scheduled commands over a `Model` and the `Real` system
+ *
+ * Throw in case of inconsistency
+ *
+ * @param scheduler Scheduler
+ * @param s Initial state provider
+ * @param cmds Asynchronous commands to be executed
+ */
+export const scheduledModelRun = async <
+  Model extends object,
+  Real,
+  CheckAsync extends boolean,
+  InitialModel extends Model
+>(
+  scheduler: Scheduler,
+  s: Setup<InitialModel, Real> | AsyncSetup<InitialModel, Real>,
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
+): Promise<void> => {
+  const scheduledCommands = scheduleCommands(scheduler, cmds);
+  const out = internalAsyncModelRun(s, scheduledCommands, scheduler.schedule(Promise.resolve(), 'startModel'));
+  await scheduler.waitAll();
+  await out;
 };

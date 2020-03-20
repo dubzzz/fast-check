@@ -45,6 +45,7 @@ Property based testing used to detect race conditions in various kind of JavaScr
 - `AutocompleteField` - An autocomplete field written in React providing suggestions as soon as possible
 - `Counter` - Increment a counter stored in a DB - non atomic and atomic versions
 - `dependencyTree` - Fetch recursively dependencies for a npm package
+- `TodoList` - Simple todolist React app
 - `UserProfilePage` - A simple React component loading user profile on mount
 
 ## Rules of property based

@@ -18,7 +18,7 @@ export interface SchedulerConstraints {
  */
 export interface Scheduler {
   /** Wrap a new task using the Scheduler */
-  schedule: <T>(task: Promise<T>) => Promise<T>;
+  schedule: <T>(task: Promise<T>, label?: string) => Promise<T>;
 
   /** Automatically wrap function output using the Scheduler */
   scheduleFunction: <TArgs extends any[], T>(
@@ -116,8 +116,8 @@ class SchedulerImplem implements Scheduler {
     return scheduledPromise;
   }
 
-  schedule<T>(task: Promise<T>) {
-    return this.scheduleInternal('promise', task);
+  schedule<T>(task: Promise<T>, label?: string) {
+    return this.scheduleInternal(label === undefined ? 'promise' : `promise::${label}`, task);
   }
 
   scheduleFunction<TArgs extends any[], T>(
