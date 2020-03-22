@@ -1,0 +1,7 @@
+{
+    "out": "docs",
+    "mode": "file",    
+    "theme": "default",
+    "name": "fast-check — Property based testing framework",
+    "readme": "none"  
+  }
