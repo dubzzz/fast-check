@@ -23,6 +23,9 @@ You can refer to the [generated API docs](https://dubzzz.github.io/fast-check/#/
   - [Model runner](#model-runner)
   - [Simplified structure](#simplified-structure)
 - [Race conditions detection](#race-conditions-detection)
+  - [Scheduling methods](#scheduling-methods)
+  - [Wrapping calls automatically using act](#wrapping-calls-automatically-using-act)
+  - [Model based testing and race conditions](#model-based-testing-and-race-conditions)
 
 ## Boolean (:boolean)
 
@@ -259,7 +262,7 @@ interface CommandsSettings {
 
 ### Model runner
 
-In order to execute the commands properly a call to either `fc.modelRun` or `fc.asyncModelRun` as to be done within classical runners - *ie. `fc.assert` or `fc.check`*.
+In order to execute the commands properly a call to either `fc.modelRun`, `fc.asyncModelRun` or `fc.scheduledModelRun` as to be done within classical runners - *ie. `fc.assert` or `fc.check`*.
 
 ### Simplified structure
 
@@ -299,7 +302,7 @@ The aim of the scheduler - `fc.scheduler()` - is to reorder the order in which y
 By doing this it can highlight potential race conditions in your code. Please refer to [code snippets](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests) for more details.
 
 `fc.scheduler()` is just an `Arbitrary` providing a `Scheduler` instance. The generated scheduler has the following interface:
-- `schedule: <T>(task: Promise<T>) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
+- `schedule: <T>(task: Promise<T>, label?: string) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
 - `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
 - `scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
 - `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler.
@@ -312,6 +315,194 @@ type SchedulerSequenceItem =
     { builder: () => Promise<any>; label: string } |
     (() => Promise<any>)
 ;
+```
+
+### Scheduling methods
+
+#### `schedule`
+
+Create a scheduled `Promise` based on an existing one - _aka. wrapped `Promise`_.
+The life-cycle of the wrapped `Promise` will not be altered at all.
+On its side the scheduled `Promise` will only resolve when the scheduler decides it to be resolved.
+
+Once scheduled by the scheduler, the scheduler will wait the wrapped `Promise` to resolve - _if it was not already the case_ - before sheduling anything else.
+
+**Signature:**
+
+```ts
+schedule: <T>(task: Promise<T>) => Promise<T>
+schedule: <T>(task: Promise<T, label: string>) => Promise<T>
+```
+
+**Usages:**
+
+Any algorithm taking raw `Promise` as input might be tested using this scheduler.
+
+For instance, `Promise.all` and `Promise.race` are examples of such algorithms.
+
+**More:**
+
+```ts
+// Let suppose:
+// - s        : Scheduler
+// - shortTask: Promise   - Very quick operation
+// - longTask : Promise   - Relatively long operation
+
+shortTask.then(() => {
+  // not impacted by the scheduler
+  // as it is directly using the original promise
+})
+
+const scheduledShortTask = s.schedule(shortTask)
+const scheduledLongTask = s.schedule(longTask)
+
+// Even if in practice, shortTask is quicker than longTask
+// If the scheduler selected longTask to end first,
+// it will wait longTask to end, then once ended it will resolve scheduledLongTask,
+// while scheduledShortTask will still be pending until scheduled.
+await s.waitOne()
+```
+
+#### `scheduleFunction`
+
+Create a producer of scheduled `Promise`.
+
+Lots of our asynchronous codes make use of functions able to generate `Promise` based on inputs.
+Fetching from a REST API using `fetch("http://domain/")` or accessing data from a database `db.query("SELECT * FROM table")` are examples of such producers.
+
+`scheduleFunction` makes it possible to re-order when those outputed `Promise` resolve by providing a function that under the hood **directly** calls the producer but schedules its resolution so that it has to be scheduled by the scheduler.
+
+**Signature:**
+
+```ts
+scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) => (...args: TArgs) => Promise<T>
+```
+
+**Usages:**
+
+Any algorithm making calls to asynchronous APIs can highly benefit from this wrapper to re-order calls.
+
+WARNING: `scheduleFunction` is only postponing the resolution of the function. The call to the function itself is started immediately when the caller calls something on the scheduled function.
+
+**More:**
+
+```ts
+// Let suppose:
+// - s             : Scheduler
+// - getUserDetails: (uid: string) => Promise - API call to get details for a User
+
+
+const getUserDetailsScheduled = s.scheduleFunction(getUserDetails)
+
+getUserDetailsScheduled('user-001')
+// What happened under the hood?
+// - A call to getUserDetails('user-001') has been triggered
+// - The promise returned by the call to getUserDetails('user-001') has been registered to the scheduler
+  .then((dataUser001) => {
+    // This block will only be executed when the scheduler
+    // will schedule this Promise
+  })
+
+// Unlock one of the scheduled Promise registered on s
+// Not necessarily the first one that resolves
+await s.waitOne()
+```
+
+#### `scheduleSequence`
+
+A scheduled sequence can be seen as a sequence a asynchronous calls we want to run in a precise order.
+
+One important fact about scheduled sequence is that whenever one task of the sequence gets scheduled, **no other scheduled task in the scheduler can be unqueued** while this task has not ended. It means that tasks defined within a scheduled sequence must not require other scheduled task to end to fulfill themselves - _it does not mean that they should not force the scheduling of other scheduled tasks_.
+
+**Signature:**
+
+```ts
+type SchedulerSequenceItem =
+    { builder: () => Promise<any>; label: string } |
+    (() => Promise<any>)
+;
+
+scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }
+```
+
+**Usages:**
+
+You want to check the status of a database, a webpage after many known operations.
+
+Most of the time, model based testing might be a better fit for that purpose.
+
+**More:**
+
+```jsx
+// Let suppose:
+// - s: Scheduler
+
+const initialUserId = '001';
+const otherUserId1 = '002';
+const otherUserId2 = '003';
+
+// render profile for user {initialUserId}
+// Note: api calls to get back details for one user are also scheduled
+const { rerender } = render(
+  <UserProfilePage userId={initialUserId} />
+)
+
+s.scheduleSequence([
+  async () => rerender(<UserProfilePage userId={otherUserId1} />),
+  async () => rerender(<UserProfilePage userId={otherUserId2} />),
+])
+
+await s.waitAll()
+// expect to see profile for user otherUserId2
+```
+
+#### Missing helpers
+
+**Scheduling a function call**
+
+In some tests, we want to try cases where we launch multiple concurrent queries towards our service in order to see how it behaves in the context of concurrent operations.
+
+```ts
+const scheduleCall = <T>(s: Scheduler, f: () => Promise<T>) => {
+  s.schedule(Promise.resolve("Start the call"))
+    .then(() => f());
+}
+
+// Calling doStuff will be part of the task scheduled in s
+scheduleCall(s, () => doStuff())
+```
+
+**Scheduling a call to a mocked server**
+
+Contrary the behaviour of `scheduleFunction`, real calls to servers are not immediate and you might want to also schedule when the call _reaches_ your mocked-server.
+
+Let's imagine you are building a TODO-list app. Your users can add a TODO only if no other TODO has the same label. If you use the built-in `scheduleFunction` to test it, the mocked-server will always receive the calls in the same order as the one they were done.
+
+```ts
+const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(s: Scheduler, f: (...args: TArgs) => Promise<TOut>) => {
+  return (...args: TArgs) => {
+    return s.schedule(Promise.resolve("Server received the call"))
+      .then(() => f(...args));
+  }
+}
+
+const newAddTodo = scheduleMockedServerFunction(s, (label) => mockedApi.addTodo(label))
+// With newAddTodo = s.scheduleFunction((label) => mockedApi.addTodo(label))
+// The mockedApi would have received todo-1 first, followed by todo-2
+// When each of those calls resolve would have been the responsability of s
+// In the contrary, with scheduleMockedServerFunction, the mockedApi might receive todo-2 first.
+newAddTodo('todo-1') // .then
+newAddTodo('todo-2') // .then
+
+// or...
+
+const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(s: Scheduler, f: (...args: TArgs) => Promise<TOut>) => {
+  const scheduledF = s.scheduleFunction(f);
+  return (...args: TArgs) => {
+    return s.schedule(Promise.resolve("Server received the call"))
+      .then(() => scheduledF(...args));
+  }
+}
 ```
 
 ### Wrapping calls automatically using `act`
@@ -360,3 +551,11 @@ async waitAll() {
   }
 }
 ```
+
+### Model based testing and race conditions
+
+Model based testing capabilities can be used to help race conditions detection by using the runner `fc.scheduledModelRun`.
+
+By using `fc.scheduledModelRun` even the execution of the model is scheduled using the scheduler.
+
+One important fact to know when mixing model based testing with schedulers is that neither `check` nor `run` should rely on the completion of other scheduled tasks to fulfill themselves but they can - _and most of the time have to_ - trigger new scheduled tasks. No other scheduled task will be resolved during the execution of `check` or `run`.
