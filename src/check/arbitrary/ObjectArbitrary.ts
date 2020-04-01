@@ -193,7 +193,7 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
       ...(constraints.withMap ? [mapArb()] : []),
       ...(constraints.withSet ? [setArb()] : []),
       ...(constraints.withObjectString ? [anythingArb().map(o => stringify(o))] : []),
-      ...(constraints.withNullPrototype ? objectArb().map(o => Object.assign(Object.create(null), o)) : [])
+      ...(constraints.withNullPrototype ? [objectArb().map(o => Object.assign(Object.create(null), o))] : [])
     );
   });
 
