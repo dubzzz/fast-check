@@ -18,7 +18,7 @@ function swap<T>(tab: T[], idx1: number, idx2: number): void {
 }
 
 /** @internal */
-function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): (tab: Shrinkable<T>[]) => Shrinkable<T>[] {
+export function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): (tab: Shrinkable<T>[]) => Shrinkable<T>[] {
   return (tab: Shrinkable<T>[]): Shrinkable<T>[] => {
     let finalLength = tab.length;
     for (let idx = tab.length - 1; idx !== -1; --idx) {
@@ -98,4 +98,4 @@ function set<T>(
   return arrayArb.filter(tab => tab.length >= minLength);
 }
 
-export { set, buildCompareFilter };
+export { set };

@@ -9,7 +9,7 @@ import { integer } from './IntegerArbitrary';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 
 /** @internal */
-class ArrayArbitrary<T> extends Arbitrary<T[]> {
+export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: ArbitraryWithShrink<number>;
   constructor(
     readonly arb: Arbitrary<T>,
@@ -124,4 +124,4 @@ function array<T>(arb: Arbitrary<T>, aLength?: number, bLength?: number): Arbitr
   return new ArrayArbitrary<T>(arb, aLength || 0, bLength);
 }
 
-export { array, ArrayArbitrary };
+export { array };

@@ -5,7 +5,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
 /** @internal */
-class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
+export class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
   constructor(readonly arbs: Arbitrary<Ts>[]) {
     super();
     for (let idx = 0; idx !== arbs.length; ++idx) {
@@ -70,4 +70,4 @@ function genericTuple<Ts>(arbs: Arbitrary<Ts>[]): Arbitrary<Ts[]> {
   return new GenericTupleArbitrary(arbs);
 }
 
-export { GenericTupleArbitrary, genericTuple };
+export { genericTuple };
