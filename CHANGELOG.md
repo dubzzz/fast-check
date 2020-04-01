@@ -1,3 +1,18 @@
+# 1.24.0
+
+_Model based testing and race condition detection_
+
+## Features
+
+- ([PR#491](https://github.com/dubzzz/fast-check/pull/491)) Add ability to run commands in a scheduled context
+
+## Fixes
+
+- ([PR#565](https://github.com/dubzzz/fast-check/pull/565)) Doc: Broken documentation build
+- ([PR#566](https://github.com/dubzzz/fast-check/pull/566)) Doc: Document how race conditions can be detected
+
+---
+
 # 1.23.0
 
 _Better typings for `filter` and `oneof` plus support for null prototypes_
