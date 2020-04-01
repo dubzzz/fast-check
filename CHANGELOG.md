@@ -1,3 +1,11 @@
+# 1.24.1
+
+_Fixes a code issue detected in `fc.object()` when using `withNullPrototype`_
+
+## Fixes
+
+- ([PR#567](https://github.com/dubzzz/fast-check/pull/567)) Bug: Error in the code of `fc.object()` when using `withNullPrototype`
+
 # 1.24.0
 
 _Model based testing and race condition detection_
