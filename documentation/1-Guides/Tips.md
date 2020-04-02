@@ -56,7 +56,7 @@ Model based testing approach have been introduced into fast-check to ease UI tes
 
 The idea of the approach is to define commands that could be applied to your system. The framework then picks zero, one or more commands and run them sequentially if they can be executed on the current state.
 
-A full example is available [here](https://github.com/dubzzz/fast-check/tree/master/example/model-based-testing).
+A full example is available [here](https://github.com/dubzzz/fast-check/tree/master/example/004-stateMachine/musicPlayer).
 
 Let's take the case of a list class with `pop`, `push`, `size` methods as an example.
 

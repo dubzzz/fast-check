@@ -90,7 +90,7 @@ const intNoShrink = fc.integer().noShrink();
 
 ## Build your own
 
-**NOTE:** Before writing your own arbitrary from scratch you should have a look to the [examples](https://github.com/dubzzz/fast-check/tree/master/example) provided in the repository. There are examples for: [recursive structures](https://github.com/dubzzz/fast-check/tree/master/example/binary-trees), [properties for automata or state machine](https://github.com/dubzzz/fast-check/tree/master/example/model-based-testing) and others.
+**NOTE:** Before writing your own arbitrary from scratch you should have a look to the [examples](https://github.com/dubzzz/fast-check/tree/master/example) provided in the repository. There are examples for: [recursive structures](https://github.com/dubzzz/fast-check/tree/master/example/002-recursive/isSearchTree), [properties for automata or state machine](https://github.com/dubzzz/fast-check/tree/master/example/004-stateMachine/musicPlayer) and others.
 
 You can also fully customize your arbitrary: not derive it from any of the buit-in arbitraries. What you have to do is to extend [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: Random): Shrinkable<T>`.
 
