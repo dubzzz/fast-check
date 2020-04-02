@@ -2,7 +2,6 @@ language: node_js
 node_js:
   - "12"
   - "10"
-  - "8"
 
 cache:
   yarn: true
@@ -52,6 +51,19 @@ jobs:
         - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
         - yarn test:rollup-iife
+    - stage: test
+      env: STEP=LEGACY_NODE_8
+      script:
+        # Some of our deep dependencies are incompatible with this version of node
+        # As a consequence we trigger this job separately
+        # By default travis runs: yarn --frozen-lockfile
+        # But we would need --ignore-engines to be added for the purpose of node 8
+        - nvm install 8
+        - node --version
+        - yarn prebuild
+        - yarn build
+        - yarn test --maxWorkers=4
+        - yarn e2e --maxWorkers=4
     - stage: test
       env: STEP=HEAD
       script:
