@@ -19,7 +19,7 @@
   "scripts": {
     "perf": "node perf/benchmark.js",
     "profile": "node --prof --no-logfile-per-isolate --trace-deopt --trace-opt-verbose perf/profiler.js > deopt.out && node --prof-process v8.log > v8.out",
-    "prebuild": "ts-node prebuild/prebuild.ts",
+    "prebuild": "node prebuild/prebuild.cjs",
     "build": "tsc",
     "build:watch": "tsc -w",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && node ./buildTypes.js",
@@ -79,7 +79,6 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "source-map-support": "^0.5.16",
     "ts-jest": "^24.2.0",
-    "ts-node": "^8.6.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.2",
     "uglifyjs": "^2.4.11"

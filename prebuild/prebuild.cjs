@@ -1,6 +1,7 @@
-import { writeFileSync } from 'fs';
-import { generateProperty, generatePropertySpec } from './property';
-import { generateTuple, generateTupleSpec } from './tuple';
+// @ts-check
+const { writeFileSync } = require('fs');
+const { generateProperty, generatePropertySpec } = require('./property.cjs');
+const { generateTuple, generateTupleSpec } = require('./tuple.cjs');
 
 const NUM_PARAMETERS = 22;
 

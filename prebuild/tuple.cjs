@@ -1,6 +1,11 @@
-import { commas, iota, txCommas } from './helpers';
+// @ts-check
+const { commas, iota, txCommas } = require('./helpers.cjs');
 
-const signatureFor = (num: number, opt?: boolean): string =>
+/**
+ * @param num {number}
+ * @param opt {(boolean | undefined)=}
+ */
+const signatureFor = (num, opt) =>
   `
         /**
          * For tuples of [${txCommas(num)}]
@@ -9,7 +14,10 @@ const signatureFor = (num: number, opt?: boolean): string =>
                 ${commas(num, v => `arb${v}${opt === true ? '?' : ''}: Arbitrary<T${v}>`)}
                 )`;
 
-const generateTuple = (num: number): string => {
+/**
+ * @param num {number}
+ */
+const generateTuple = num => {
   const blocks = [
     // imports
     `import { Arbitrary } from './definition/Arbitrary';`,
@@ -27,7 +35,11 @@ const generateTuple = (num: number): string => {
   return blocks.join('\n');
 };
 
-const simpleUnitTest = (num: number, biased: boolean): string =>
+/**
+ * @param num {number}
+ * @param biased {boolean}
+ */
+const simpleUnitTest = (num, biased) =>
   `
         it('Should produce the same output for tuple${num} and genericTuple${biased ? ' (enforced bias)' : ''}', () => {
             const tupleArb = tuple(${commas(num, v => `dummy(${v * v})`)})${biased ? '.withBias(1)' : ''};
@@ -42,7 +54,10 @@ const simpleUnitTest = (num: number, biased: boolean): string =>
         });
     `;
 
-const generateTupleSpec = (num: number): string => {
+/**
+ * @param num {number}
+ */
+const generateTupleSpec = num => {
   const blocks = [
     // imports
     `import { dummy } from './TupleArbitrary.properties';`,
@@ -62,4 +77,5 @@ const generateTupleSpec = (num: number): string => {
   return blocks.join('\n');
 };
 
-export { generateTuple, generateTupleSpec };
+exports.generateTuple = generateTuple;
+exports.generateTupleSpec = generateTupleSpec;
