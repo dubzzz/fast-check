@@ -14,7 +14,7 @@ NODE_MINOR=$(node --version | cut -d. -f 2)
 
 if [ $NODE_MAJOR -gt 13 ] || [ $NODE_MAJOR -eq 13 ] && [ $NODE_MINOR -ge 2 ]; then
     cd node-with-import
-    yarn
+    yarn --frozen-lockfile --ignore-engines
     yarn link "fast-check"
     yarn run dry
     yarn run start
@@ -23,7 +23,7 @@ if [ $NODE_MAJOR -gt 13 ] || [ $NODE_MAJOR -eq 13 ] && [ $NODE_MINOR -ge 2 ]; th
 fi
 
 cd node-with-require
-yarn
+yarn --frozen-lockfile --ignore-engines
 yarn link "fast-check"
 yarn run dry
 yarn run start
@@ -31,7 +31,7 @@ diff expectedResult.txt out.txt
 cd ..
 
 cd rollup-with-import
-yarn
+yarn --frozen-lockfile --ignore-engines
 yarn link "fast-check"
 yarn run dry
 yarn run start
@@ -39,7 +39,7 @@ diff expectedResult.txt out.txt
 cd ..
 
 cd rollup-with-require
-yarn
+yarn --frozen-lockfile --ignore-engines
 yarn link "fast-check"
 yarn run dry
 yarn run start
@@ -47,7 +47,7 @@ diff expectedResult.txt out.txt
 cd ..
 
 cd webpack-with-import
-yarn
+yarn --frozen-lockfile --ignore-engines
 yarn link "fast-check"
 yarn run dry
 yarn run start
@@ -55,7 +55,7 @@ diff expectedResult.txt out.txt
 cd ..
 
 cd webpack-with-require
-yarn
+yarn --frozen-lockfile --ignore-engines
 yarn link "fast-check"
 yarn run dry
 yarn run start
