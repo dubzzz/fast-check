@@ -5,8 +5,6 @@ set -x
 
 # Autoquit on crash
 set -e
-# Return the exit status of the last command
-set -o pipefail
 
 # Versions of node >=13.2.0 support es modules without any flag
 NODE_MAJOR=$(node --version | cut -d. -f 1 | cut -dv -f 2)
