@@ -48,7 +48,6 @@ jobs:
         - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
-        - yarn test:rollup-iife
     - stage: test
       env: STEP=COMMONJS_ESM
       script:
