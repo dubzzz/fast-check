@@ -8,13 +8,13 @@ set -e
 # Return the exit status of the last command
 set -o pipefail
 
-#cd node-with-import
-#yarn
-#yarn link "fast-check"
-#yarn run dry
-#yarn run start
-#diff expectedResult.txt out.txt
-#cd ..
+cd node-with-import
+yarn
+yarn link "fast-check"
+yarn run dry
+yarn run start
+diff expectedResult.txt out.txt
+cd ..
 
 cd node-with-require
 yarn

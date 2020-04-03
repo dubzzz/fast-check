@@ -1,1 +1,1 @@
-commonjs
+module
