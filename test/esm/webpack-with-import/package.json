@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "webpack",
+    "build": "webpack && webpack --config webpack.config.dry.js",
     "out:dry": "node dist/dry.js",
     "out:start": "node dist/main.js > out.txt",
     "dry": "yarn build && yarn out:dry",

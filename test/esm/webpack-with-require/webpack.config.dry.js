@@ -2,4 +2,4 @@
 const buildWebpackConfig = require('./buildWebpackConfig');
 
 // eslint-disable-next-line
-module.exports = buildWebpackConfig('main.js');
+module.exports = buildWebpackConfig('dry.js');

@@ -1,13 +1,3 @@
-import resolve from '@rollup/plugin-node-resolve';
-import cjs from '@rollup/plugin-commonjs';
+import buildRollupConfig from './buildRollupConfig';
 
-export default {
-  input: 'main.js',
-  output: {
-    file: 'dist/main.js',
-    format: 'iife',
-    name: 'RunFastCheck'
-  },
-  plugins: [resolve(), cjs()],
-  onwarn: () => {}
-};
+export default buildRollupConfig('main.js');

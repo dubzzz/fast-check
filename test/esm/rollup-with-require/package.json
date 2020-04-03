@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "rollup --config rollup.config.js",
+    "build": "rollup --config rollup.config.js && rollup --config rollup.config.dry.js",
     "out:dry": "node dist/dry.js",
     "out:start": "node dist/main.js > out.txt",
     "dry": "yarn build && yarn out:dry",
@@ -12,7 +12,8 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
-    "rollup": "^1.25.2"
+    "rollup": "^1.25.2",
+    "rollup-plugin-node-builtins": "^2.1.2"
   },
   "license": "MIT"
 }
