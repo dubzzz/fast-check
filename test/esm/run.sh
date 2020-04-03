@@ -11,6 +11,7 @@ set -o pipefail
 #cd node-with-import
 #yarn
 #yarn link "fast-check"
+#yarn run dry
 #yarn run start
 #diff expectedResult.txt out.txt
 #cd ..
@@ -18,6 +19,7 @@ set -o pipefail
 cd node-with-require
 yarn
 yarn link "fast-check"
+yarn run dry
 yarn run start
 diff expectedResult.txt out.txt
 cd ..
@@ -25,6 +27,7 @@ cd ..
 cd rollup-with-import
 yarn
 yarn link "fast-check"
+yarn run dry
 yarn run start
 diff expectedResult.txt out.txt
 cd ..
@@ -32,6 +35,7 @@ cd ..
 cd rollup-with-require
 yarn
 yarn link "fast-check"
+yarn run dry
 yarn run start
 diff expectedResult.txt out.txt
 cd ..
@@ -39,6 +43,7 @@ cd ..
 cd webpack-with-import
 yarn
 yarn link "fast-check"
+yarn run dry
 yarn run start
 diff expectedResult.txt out.txt
 cd ..
@@ -46,6 +51,7 @@ cd ..
 cd webpack-with-require
 yarn
 yarn link "fast-check"
+yarn run dry
 yarn run start
 diff expectedResult.txt out.txt
 cd ..

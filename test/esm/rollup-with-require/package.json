@@ -1,8 +1,10 @@
 {
   "scripts": {
     "build": "rollup --config rollup.config.js",
-    "out": "node dist/main.js > out.txt",
-    "start": "yarn build && yarn out"
+    "out:dry": "node dist/dry.js",
+    "out:start": "node dist/main.js > out.txt",
+    "dry": "yarn build && yarn out:dry",
+    "start": "yarn build && yarn out:start"
   },
   "dependencies": {
     "fast-check": "^1.21.0"

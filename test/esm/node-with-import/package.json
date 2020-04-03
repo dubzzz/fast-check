@@ -1,6 +1,7 @@
 {
   "type": "module",
   "scripts": {
+    "dry": "node dry.js",
     "start": "node main.js > out.txt"
   },
   "dependencies": {
