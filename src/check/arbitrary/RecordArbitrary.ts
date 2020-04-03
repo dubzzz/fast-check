@@ -6,22 +6,13 @@ import { genericTuple } from './TupleArbitrary';
 export interface RecordConstraints {
   /** Allow to remove keys from the generated record */
   withDeletedKeys?: boolean;
-
-  /** @depreciated Prefer withDeletedKeys */
-  with_deleted_keys?: boolean;
 }
 
 interface DeletedKeys {
   withDeletedKeys: true;
 }
 
-interface DeletedKeysDepreciated {
-  with_deleted_keys: true;
-}
-
-type ConstrainedArbitrary<T, Constraints> = Constraints extends DeletedKeys | DeletedKeysDepreciated
-  ? Arbitrary<Partial<T>>
-  : Arbitrary<T>;
+type ConstrainedArbitrary<T, Constraints> = Constraints extends DeletedKeys ? Arbitrary<Partial<T>> : Arbitrary<T>;
 
 /** @internal */
 function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
@@ -63,8 +54,9 @@ function record<T, Constraints extends RecordConstraints>(
   constraints: Constraints
 ): ConstrainedArbitrary<{ [K in keyof T]: T[K] }, Constraints>;
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints) {
-  if (constraints == null || (constraints.withDeletedKeys !== true && constraints.with_deleted_keys !== true))
+  if (constraints == null || constraints.withDeletedKeys !== true) {
     return rawRecord(recordModel);
+  }
 
   const updatedRecordModel: {
     [key: string]: Arbitrary<{ value: T } | null>;
