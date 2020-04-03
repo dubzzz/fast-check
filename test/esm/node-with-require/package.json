@@ -4,5 +4,6 @@
   },
   "dependencies": {
     "fast-check": "^1.21.0"
-  }
+  },
+  "license": "MIT"
 }
