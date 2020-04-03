@@ -2,11 +2,13 @@
   "name": "fast-check",
   "version": "1.24.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
-  "type": "module",
+  "type": "commonjs",
   "main": "lib/fast-check.js",
   "exports": {
-    "default": "./lib/esm/fast-check.js",
-    "require": "./lib/fast-check.js"
+    ".": {
+      "require": "./lib/fast-check.js",
+      "default": "./lib/esm/fast-check.js"
+    }
   },
   "module": "lib/esm/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
@@ -22,7 +24,7 @@
     "build:watch": "tsc -w",
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && echo {\"type\": \"module\"} > lib/esm/package.json",
     "webbuild": "browserify lib/fast-check.js --s fastcheck | terser -c -m > lib/bundle.js",
     "build:prod": "yarn prebuild && yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && yarn webbuild && node postbuild/main.cjs",
     "watch": "tsc -w",
