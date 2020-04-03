@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Echo commands in the logs
+set -x
+
 #cd node-with-import
 #yarn
 #yarn link "fast-check"
