@@ -47,16 +47,19 @@ jobs:
         - cd "$PROJECT_ROOT_PATH"
         - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
-        - cd test/esm && sh run.sh
-        - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
         - yarn test:rollup-iife
-        # Node 8 does not understand esm
+        # Node 8 does not understand ES modules
         - nvm install 8
         - node --version
         - cd test/esm && sh run.sh
         - cd "$PROJECT_ROOT_PATH"
-        # Node >=13.2.0 enables support for esm by default
+        # Node 12 requires a flag to support ES modules but can understand them
+        - nvm install 12
+        - node --version
+        - cd test/esm && sh run.sh
+        - cd "$PROJECT_ROOT_PATH"
+        # Node >=13.2.0 enables support for ES modules by default
         - nvm install 13
         - node --version
         - cd test/esm && sh run.sh
