@@ -1,11 +1,21 @@
-import { commas, iota, txCommas } from './helpers';
+// @ts-check
+const { commas, iota, txCommas } = require('./helpers.cjs');
 
-const predicateFor = (num: number, isAsync: boolean): string =>
-  isAsync
+/**
+ * @param num {number}
+ * @param isAsync {boolean}
+ */
+const predicateFor = function(num, isAsync) {
+  return isAsync
     ? `(${commas(num, v => `t${v}:T${v}`)}) => Promise<boolean|void>`
     : `(${commas(num, v => `t${v}:T${v}`)}) => (boolean|void)`;
+};
 
-const signatureFor = (num: number, isAsync: boolean): string => {
+/**
+ * @param num {number}
+ * @param isAsync {boolean}
+ */
+const signatureFor = (num, isAsync) => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
   return `
@@ -19,7 +29,11 @@ const signatureFor = (num: number, isAsync: boolean): string => {
         ): ${className}<[${txCommas(num)}]>;`;
 };
 
-const generateProperty = (num: number, isAsync: boolean): string => {
+/**
+ * @param num {number}
+ * @param isAsync {boolean}
+ */
+const generateProperty = (num, isAsync) => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const blocks = [
@@ -43,7 +57,11 @@ const generateProperty = (num: number, isAsync: boolean): string => {
   return blocks.join('\n');
 };
 
-const testBasicCall = (num: number, isAsync: boolean): string => {
+/**
+ * @param num {number}
+ * @param isAsync {boolean}
+ */
+const testBasicCall = (num, isAsync) => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const kAsync = isAsync ? 'async' : '';
   const kAwait = isAsync ? 'await' : '';
@@ -62,7 +80,11 @@ const testBasicCall = (num: number, isAsync: boolean): string => {
     `;
 };
 
-const generatePropertySpec = (num: number, isAsync: boolean): string => {
+/**
+ * @param num {number}
+ * @param isAsync {boolean}
+ */
+const generatePropertySpec = (num, isAsync) => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
   const blocks = [
@@ -81,4 +103,5 @@ const generatePropertySpec = (num: number, isAsync: boolean): string => {
   return blocks.join('\n');
 };
 
-export { generateProperty, generatePropertySpec };
+exports.generateProperty = generateProperty;
+exports.generatePropertySpec = generatePropertySpec;
