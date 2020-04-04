@@ -111,6 +111,7 @@ jobs:
         edge: true
         cleanup: false
         email: npm@dubien.org
+        tag: next
         api_token:
           secure: uh9D3ESY6ea+sVoe5NhhilSSw9qM6UGO0uiDLya0Bu96O30yqkTHKWVcxBADWmQTpC39uapq1g7pQ/ybiTlhuWymL2dcsJyGgCDSgBA5LXkAhgt+0j1JbWQRajAt9N1+RPXWMaGMdWOJnl6v5qrzR+9WgXUlo3zjulMtGMPYjkN22cUdFLKl4jEadwcAJJvKVXvS9LbWeD/g46TopPOgIAEn008EySzpBtpBHa2O0pWH6yCpHLqhk0vUz7ltIjO3khxD6EcrvcPjdIMI9swc8JIvXn4LK24z0mjzLaQOwlrjSbkPQ7Kf172lKOX2DC1hQQHYRGIPw2ln3KGMRwhTUayErjB1uM6x9l0eGmESzmVEsizjb5DbAnh+j/UWG+lEelxbp+PmTm0b1goF3Lmc6eK5IGkaa212UX4+zjK06Gkyu/c9nfeT2v3GPMlNTQoDWMFZvMuk6d+QVHXBlkh6zBdQ5NWoCz+fBegVD6wK24Lf1+HH83T3jk7OWcvNpru9B3D2L/u6LTHF2C/Ij01HWcvtavlRaJo1JJYbsysM9zxLydMR2BrwzQkoPLXoqj5Ambk8NoSPAARp63h82YRkJwAygqHhbaNgofOTy8iqLmZXqfQPXH7/0DGh4E0QXcdhcRuhZC315LARZAbJ0RVhc2wFJ+EqFYPJEeAFbKT5x28=
         on:
