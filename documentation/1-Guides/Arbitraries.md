@@ -505,6 +505,90 @@ const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(s: Schedule
 }
 ```
 
+**Scheduling timers like setTimeout or setInterval**
+
+Sometimes our asynchronous code rely on the use of native timers offered by the JavaScript engine like: `setTimeout` or `setInterval`.
+Contrary to other asynchronous operations, timers are ordered. A timer waiting 10ms will be executed before a timer waiting 100ms.
+As a consequence, they need a very special treatment.
+
+The following snippet is relying on Jest.
+Nonetheless it can be adapted for other test runners if needed.
+
+```js
+// You should call: `jest.useFakeTimers()` at the beginning of your test
+
+// The method will automatically schedule tasks to enqueue pending timers if needed.
+// Instead of calling: `await s.waitAll()`
+// You can call: `await waitAllWithTimers(s)`
+const waitAllWithTimers = async (s) => {
+  let alreadyScheduledTaskToUnqueueTimers = false;
+  const countWithTimers = () => {
+    // Append a scheduled task to unqueue pending timers (if task missing and pending timers)
+    if (!alreadyScheduledTaskToUnqueueTimers && jest.getTimerCount() !== 0) {
+      alreadyScheduledTaskToUnqueueTimers = true;
+      s.schedule(Promise.resolve('advance timers if any')).then(() => {
+        alreadyScheduledTaskToUnqueueTimers = false;
+        jest.advanceTimersToNextTimer();
+      });
+    }
+    return s.count();
+  };
+  while (countWithTimers() !== 0) {
+    await s.waitOne();
+  }
+};
+```
+
+Alternatively you can wrap the scheduler produced by fast-check to add timer capabilities to it:
+
+```js
+// You should call: `jest.useFakeTimers()` at the beginning of your test
+// You should replace: `fc.scheduler()` by `fc.scheduler().map(withTimers)`
+
+const withTimers = (s) => {
+  let alreadyScheduledTaskToUnqueueTimers = false;
+  const appendScheduledTaskToUnqueueTimersIfNeeded = () => {
+    // Append a scheduled task to unqueue pending timers (if task missing and pending timers)
+    if (!alreadyScheduledTaskToUnqueueTimers && jest.getTimerCount() !== 0) {
+      alreadyScheduledTaskToUnqueueTimers = true;
+      s.schedule(Promise.resolve('advance timers if any')).then(() => {
+        alreadyScheduledTaskToUnqueueTimers = false;
+        jest.advanceTimersToNextTimer();
+      });
+    }
+  };
+
+  return {
+    schedule(...args) {
+      return s.schedule(...args);
+    },
+    scheduleFunction(...args) {
+      return s.scheduleFunction(...args);
+    },
+    scheduleSequence(...args) {
+      return s.scheduleSequence(...args);
+    },
+    count() {
+      return s.count();
+    },
+    toString() {
+      return s.toString();
+    },
+    async waitOne() {
+      appendScheduledTaskToUnqueueTimersIfNeeded();
+      await s.waitOne();
+    },
+    async waitAll() {
+      appendScheduledTaskToUnqueueTimersIfNeeded();
+      while (s.count()) {
+        await s.waitOne();
+        appendScheduledTaskToUnqueueTimersIfNeeded();
+      }
+    },
+  };
+};
+```
+
 ### Wrapping calls automatically using `act`
 
 `fc.scheduler({ act })` can be given an `act` function that will be called in order to wrap all the scheduled tasks. A code like the following one:
