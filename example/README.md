@@ -15,6 +15,7 @@ Following examples show how you could think about properties given algorithms ra
 101 for property based:
 
 - `decompPrime` - Returns the list of prime factors corresponding to the input value
+- `fibonacci` - Returns the item at a given position in the sequence of Fibonacci
 - `indexOf` - Returns the position of the first occurrence of `pattern` in `text`
 - `sort` - Returns a sorted copy of the input array
 
