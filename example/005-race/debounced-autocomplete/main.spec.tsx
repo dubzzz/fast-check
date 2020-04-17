@@ -24,7 +24,7 @@ describe('DebouncedAutocomplete', () => {
             // Arrange
             jest.useFakeTimers();
             const suggestionsFor = s.scheduleFunction(async (query: string) => {
-              return allResults.filter(r => r.includes(query)).slice(0, 10);
+              return allResults.filter(r => r.includes(query));
             });
             const expectedResults = allResults.filter(r => r.includes(userQuery));
 
@@ -33,7 +33,7 @@ describe('DebouncedAutocomplete', () => {
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(getByRole('textbox'), userQuery.substr(0, idx + 1), { allAtOnce: true })
+                builder: () => userEvent.type(getByRole('textbox'), userQuery.substr(idx, 1))
               }))
             );
             await waitAllWithTimers(s);
@@ -62,7 +62,7 @@ describe('DebouncedAutocomplete', () => {
             // Arrange
             jest.useFakeTimers();
             const suggestionsFor = s.scheduleFunction(async (query: string) => {
-              return allResults.filter(r => r.includes(query)).slice(0, 10);
+              return allResults.filter(r => r.includes(query));
             });
             const expectedResults = allResults.filter(r => r.includes(userQuery));
 
@@ -71,7 +71,7 @@ describe('DebouncedAutocomplete', () => {
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(getByRole('textbox'), userQuery.substr(0, idx + 1), { allAtOnce: true })
+                builder: () => userEvent.type(getByRole('textbox'), userQuery.substr(idx, 1), { allAtOnce: true })
               }))
             );
             await s.waitAll();
