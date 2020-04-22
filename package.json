@@ -94,5 +94,9 @@
   ],
   "tsd": {
     "directory": "test/type"
+  },
+  "funding":{
+    "type":"opencollective",
+    "url": "https://opencollective.com/fast-check"
   }
 }
