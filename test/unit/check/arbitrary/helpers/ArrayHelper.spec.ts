@@ -2,8 +2,8 @@ import * as fc from '../../../../../lib/fast-check';
 import { findOrUndefined } from '../../../../../src/check/arbitrary/helpers/ArrayHelper';
 
 describe('ArrayHelper', () => {
-  describe('findOrNull', () => {
-    it('should return null for empty array', () => {
+  describe('findOrUndefined', () => {
+    it('should return undefined for empty array', () => {
       expect(
         findOrUndefined<number>([], () => {
           throw new Error('⊥');
@@ -17,7 +17,7 @@ describe('ArrayHelper', () => {
         })
       );
     });
-    it('should return null when not present', () => {
+    it('should return undefined when not present', () => {
       fc.assert(
         fc.property(
           fc.array(fc.integer(0, 100)),
