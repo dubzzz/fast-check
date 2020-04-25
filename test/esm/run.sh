@@ -18,7 +18,23 @@ set -e
 #    yarn run start
 #    diff expectedResult.txt out.txt
 #    cd ..
+#
+#    cd node-extension-mjs
+#    yarn --frozen-lockfile --ignore-engines
+#    yarn link "fast-check"
+#    yarn run dry
+#    yarn run start
+#    diff expectedResult.txt out.txt
+#    cd ..
 #fi
+
+cd node-extension-cjs
+yarn --frozen-lockfile --ignore-engines
+yarn link "fast-check"
+yarn run dry
+yarn run start
+diff expectedResult.txt out.txt
+cd ..
 
 cd node-with-require
 yarn --frozen-lockfile --ignore-engines
