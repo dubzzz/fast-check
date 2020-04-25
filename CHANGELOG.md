@@ -1,3 +1,19 @@
+# 1.24.2
+
+_Fix `constantFrom` not compatible with older versions of node_
+
+# Fixes
+
+- ([PR#583](https://github.com/dubzzz/fast-check/pull/583)) Bug: `constantFrom` not compatible with old browsers
+- ([PR#569](https://github.com/dubzzz/fast-check/pull/569)) Clean: Prebuild to cjs extension 
+- ([PR#568](https://github.com/dubzzz/fast-check/pull/568)) Doc: Broken links
+- ([PR#575](https://github.com/dubzzz/fast-check/pull/575)) Doc: Invalid code in example of the README 
+- ([PR#578](https://github.com/dubzzz/fast-check/pull/578)) Doc: Schedule native timers
+- ([PR#576](https://github.com/dubzzz/fast-check/pull/576)) Example: Fibonacci example
+- ([PR#577](https://github.com/dubzzz/fast-check/pull/577)) Example: Fix decompPrime example for CodeSandbox
+- ([PR#581](https://github.com/dubzzz/fast-check/pull/581)) Example: Fix wrong usages of userEvent.type
+- ([PR#579](https://github.com/dubzzz/fast-check/pull/579)) Example: Race conditions with timers
+
 # 1.24.1
 
 _Fixes a code issue detected in `fc.object()` when using `withNullPrototype`_
