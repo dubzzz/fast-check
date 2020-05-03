@@ -261,9 +261,21 @@ export function scheduler(constraints?: SchedulerConstraints): Arbitrary<Schedul
   return new SchedulerArbitrary(act);
 }
 
-scheduler.for = function(constraints?: SchedulerConstraints) {
-  const { act = (f: () => Promise<void>) => f() } = constraints || {};
-  return function(_strs: TemplateStringsArray, ...ordering: number[]) {
+function hardcodedScheduler(
+  constraints?: SchedulerConstraints
+): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler;
+function hardcodedScheduler(customOrdering: number[], constraints?: SchedulerConstraints): Scheduler;
+
+function hardcodedScheduler(
+  customOrderingOrConstraints: number[] | SchedulerConstraints | undefined,
+  constraintsOrUndefined?: SchedulerConstraints
+): any {
+  // Extract passed constraints
+  const { act = (f: () => Promise<void>) => f() } = Array.isArray(customOrderingOrConstraints)
+    ? constraintsOrUndefined || {}
+    : customOrderingOrConstraints || {};
+
+  const builder = function(_strs: TemplateStringsArray, ...ordering: number[]) {
     const buildNextTaskIndex = () => {
       let numTasks = 0;
       return {
@@ -281,7 +293,14 @@ scheduler.for = function(constraints?: SchedulerConstraints) {
         }
       };
     };
-
     return new SchedulerImplem(act, buildNextTaskIndex());
   };
-};
+  if (Array.isArray(customOrderingOrConstraints)) {
+    const strs = Object.assign([], { raw: [] });
+    return builder(strs, ...customOrderingOrConstraints);
+  } else {
+    return builder;
+  }
+}
+
+scheduler.for = hardcodedScheduler;
