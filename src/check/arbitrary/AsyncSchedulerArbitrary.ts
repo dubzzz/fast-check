@@ -64,26 +64,38 @@ type ScheduledTask = {
   original: PromiseLike<unknown>;
   scheduled: PromiseLike<unknown>;
   trigger: () => void;
+  taskId: number;
   label: string;
+};
+
+/** @hidden */
+type TaskSelector = {
+  clone: () => TaskSelector;
+  nextTaskIndex: (scheduledTasks: ScheduledTask[]) => number;
 };
 
 /** @hidden */
 class SchedulerImplem implements Scheduler {
   private lastTaskId: number;
-  private readonly sourceMrng: Random;
+  private readonly sourceTaskSelector: TaskSelector;
   private readonly scheduledTasks: ScheduledTask[];
   private readonly triggeredTasksLogs: string[];
 
-  constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>, private readonly mrng: Random) {
+  constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>, private readonly taskSelector: TaskSelector) {
     this.lastTaskId = 0;
-    // here we should received an already cloned mrng so that we can do whatever we want on it
-    this.sourceMrng = mrng.clone();
+    this.sourceTaskSelector = taskSelector.clone();
     this.scheduledTasks = [];
     this.triggeredTasksLogs = [];
   }
 
   private buildLog(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
-    return `[task#${taskId}] ${meta} ${type}${data !== undefined ? ` with value ${stringify(data)}` : ''}`;
+    return `[task#\${${taskId}}] ${meta} ${type}${
+      data !== undefined
+        ? ` with value ${stringify(data)
+            .replace(/$/g, '\\$')
+            .replace(/`/g, '\\`')}`
+        : ''
+    }`;
   }
 
   private log(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
@@ -111,6 +123,7 @@ class SchedulerImplem implements Scheduler {
       original: task,
       scheduled: scheduledPromise,
       trigger: trigger!,
+      taskId,
       label: this.buildLog(taskId, meta, 'pending', undefined)
     });
     return scheduledPromise;
@@ -185,7 +198,7 @@ class SchedulerImplem implements Scheduler {
     if (this.scheduledTasks.length === 0) {
       throw new Error('No task scheduled');
     }
-    const taskIndex = this.mrng.nextInt(0, this.scheduledTasks.length - 1);
+    const taskIndex = this.taskSelector.nextTaskIndex(this.scheduledTasks);
     const [scheduledTask] = this.scheduledTasks.splice(taskIndex, 1);
     scheduledTask.trigger(); // release the promise
     try {
@@ -207,7 +220,7 @@ class SchedulerImplem implements Scheduler {
 
   toString() {
     return (
-      'Scheduler`\n' +
+      'scheduler.for()`\n' +
       this.triggeredTasksLogs
         .concat(this.scheduledTasks.map(t => t.label))
         .map(log => `-> ${log}`)
@@ -217,7 +230,7 @@ class SchedulerImplem implements Scheduler {
   }
 
   [cloneMethod]() {
-    return new SchedulerImplem(this.act, this.sourceMrng);
+    return new SchedulerImplem(this.act, this.sourceTaskSelector);
   }
 }
 
@@ -228,7 +241,15 @@ class SchedulerArbitrary extends Arbitrary<Scheduler> {
   }
 
   generate(mrng: Random) {
-    return new Shrinkable(new SchedulerImplem(this.act, mrng.clone()));
+    const buildNextTaskIndex = (r: Random) => {
+      return {
+        clone: () => buildNextTaskIndex(r.clone()),
+        nextTaskIndex: (scheduledTasks: ScheduledTask[]) => {
+          return r.nextInt(0, scheduledTasks.length - 1);
+        }
+      };
+    };
+    return new Shrinkable(new SchedulerImplem(this.act, buildNextTaskIndex(mrng.clone())));
   }
 }
 
@@ -239,3 +260,28 @@ export function scheduler(constraints?: SchedulerConstraints): Arbitrary<Schedul
   const { act = (f: () => Promise<void>) => f() } = constraints || {};
   return new SchedulerArbitrary(act);
 }
+
+scheduler.for = function(constraints?: SchedulerConstraints) {
+  const { act = (f: () => Promise<void>) => f() } = constraints || {};
+  return function(_strs: TemplateStringsArray, ...ordering: number[]) {
+    const buildNextTaskIndex = () => {
+      let numTasks = 0;
+      return {
+        clone: () => buildNextTaskIndex(),
+        nextTaskIndex: (scheduledTasks: ScheduledTask[]) => {
+          if (ordering.length >= numTasks) {
+            throw new Error(`Invalid scheduler.for defined: too many tasks have been scheduled`);
+          }
+          const taskIndex = scheduledTasks.findIndex(t => t.taskId === ordering[numTasks]);
+          if (taskIndex === -1) {
+            throw new Error(`Invalid scheduler.for defined: unable to find next task`);
+          }
+          ++numTasks;
+          return taskIndex;
+        }
+      };
+    };
+
+    return new SchedulerImplem(act, buildNextTaskIndex());
+  };
+};
