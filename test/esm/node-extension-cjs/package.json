@@ -5,7 +5,7 @@
     "start": "node main.cjs > out.txt"
   },
   "dependencies": {
-    "fast-check": "^1.21.0"
+    "fast-check": "*"
   },
   "license": "MIT"
 }
