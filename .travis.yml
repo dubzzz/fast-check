@@ -1,5 +1,6 @@
 language: node_js
 node_js:
+  - "14"
   - "12"
   - "10"
 
@@ -23,7 +24,7 @@ script:
   - yarn e2e --maxWorkers=4
 
 after_success:
-  - if [[ $(node --version) == "v12."* ]]; then yarn coverage; fi
+  - if [[ $(node --version) == "v14."* ]]; then yarn coverage; fi
 
 stages:
   - test
@@ -67,7 +68,7 @@ jobs:
         - node --version
         - sh run.sh
         # Node >=13.2.0 enables support for ES modules by default
-        - nvm install 13
+        - nvm install 14
         - node --version
         - sh run.sh
     - stage: test
