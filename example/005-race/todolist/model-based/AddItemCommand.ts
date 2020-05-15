@@ -1,5 +1,6 @@
 import { TodolistCommand, TodolistModel, TodolistReal, listTodos, sortTodos, ExtractedTodoItem } from './Model';
 import { fireEvent } from '@testing-library/dom';
+import { screen } from '@testing-library/react';
 
 export class AddItemCommand implements TodolistCommand {
   constructor(readonly label: string) {}
@@ -9,12 +10,10 @@ export class AddItemCommand implements TodolistCommand {
   }
 
   async run(m: TodolistModel, r: TodolistReal) {
-    const { wrapper } = m;
-
-    const todosBefore = await listTodos(wrapper);
-    fireEvent.change(wrapper.getByTestId('todo-new-item-input'), { target: { value: this.label } });
-    fireEvent.click(wrapper.getByTestId('todo-new-item-button'));
-    const todosAfter = await listTodos(wrapper);
+    const todosBefore = await listTodos();
+    fireEvent.change(screen.getByTestId('todo-new-item-input'), { target: { value: this.label } });
+    fireEvent.click(screen.getByTestId('todo-new-item-button'));
+    const todosAfter = await listTodos();
 
     // We expect the todolist to have a new unchecked item with the added label (withour any specific ordering)
     const expectedTodos = [...todosBefore, { label: this.label, checked: false }];

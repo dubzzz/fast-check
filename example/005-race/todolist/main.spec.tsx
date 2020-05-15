@@ -30,14 +30,12 @@ describe('TodoList', () => {
 
             // Check the final state (no more items should be loading)
             expect(
-              sortTodos(
-                (await listTodos(wrapper)).map(t => ({ label: t.label, checked: t.checked, loading: t.loading }))
-              )
+              sortTodos((await listTodos()).map(t => ({ label: t.label, checked: t.checked, loading: t.loading })))
             ).toEqual(sortTodos(expectedTodos().map(t => ({ label: t.label, checked: t.checked, loading: false }))));
           }
         )
         .beforeEach(async () => {
-          cleanup();
+          await cleanup();
         })
     ));
 });

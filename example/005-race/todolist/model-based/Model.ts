@@ -1,9 +1,8 @@
 import fc from 'fast-check';
-import { RenderResult, fireEvent } from '@testing-library/react';
+import { RenderResult, fireEvent, screen } from '@testing-library/react';
 
 export type TodolistModel = {
   todos: { label: string; checked: boolean }[];
-  wrapper: RenderResult;
 };
 
 export type TodolistReal = {};
@@ -20,8 +19,8 @@ export type ExtractedTodoItem = {
   label: string;
 };
 
-export const listTodos = async (wrapper: RenderResult): Promise<ExtractedTodoItem[]> => {
-  const allTodoDomItems = await wrapper.queryAllByTestId('todo-item');
+export const listTodos = async (): Promise<ExtractedTodoItem[]> => {
+  const allTodoDomItems = await screen.queryAllByTestId('todo-item');
   return allTodoDomItems.map(dom => {
     const toggleHtmlElement = dom.getElementsByTagName('input')[0];
     const removeHtmlElement = dom.getElementsByTagName('button')[0];
