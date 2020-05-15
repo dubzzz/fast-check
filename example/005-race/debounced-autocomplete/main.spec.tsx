@@ -2,14 +2,13 @@
 import React from 'react';
 import DebouncedAutocomplete from './src/DebouncedAutocomplete';
 
-import { act, cleanup, render } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fc from 'fast-check';
 
 beforeEach(() => {
   jest.clearAllTimers();
   jest.resetAllMocks();
-  cleanup();
 });
 
 describe('DebouncedAutocomplete', () => {
@@ -29,24 +28,24 @@ describe('DebouncedAutocomplete', () => {
             const expectedResults = allResults.filter(r => r.includes(userQuery));
 
             // Act
-            const { getByRole, queryAllByRole } = render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
+            render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(getByRole('textbox'), userQuery.substr(idx, 1))
+                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1))
               }))
             );
             await waitAllWithTimers(s);
 
             // Assert
-            const displayedSuggestions = queryAllByRole('listitem');
+            const displayedSuggestions = screen.queryAllByRole('listitem');
             expect(displayedSuggestions.map(el => el.textContent)).toEqual(expectedResults);
           }
         )
-        .beforeEach(() => {
+        .beforeEach(async () => {
           jest.clearAllTimers();
           jest.resetAllMocks();
-          cleanup();
+          await cleanup();
         })
     );
   });
@@ -67,24 +66,25 @@ describe('DebouncedAutocomplete', () => {
             const expectedResults = allResults.filter(r => r.includes(userQuery));
 
             // Act
-            const { getByRole, queryAllByRole } = render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
+            render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(getByRole('textbox'), userQuery.substr(idx, 1), { allAtOnce: true })
+                builder: () =>
+                  userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1), { allAtOnce: true })
               }))
             );
             await s.waitAll();
 
             // Assert
-            const displayedSuggestions = queryAllByRole('listitem');
+            const displayedSuggestions = screen.queryAllByRole('listitem');
             expect(displayedSuggestions.map(el => el.textContent)).toEqual(expectedResults);
           }
         )
-        .beforeEach(() => {
+        .beforeEach(async () => {
           jest.clearAllTimers();
           jest.resetAllMocks();
-          cleanup();
+          await cleanup();
         })
     );
   });
