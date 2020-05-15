@@ -7,5 +7,6 @@
   "dependencies": {
     "fast-check": "*"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

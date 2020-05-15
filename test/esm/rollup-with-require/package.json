@@ -15,5 +15,6 @@
     "rollup": "^2.10.0",
     "rollup-plugin-node-builtins": "^2.1.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
