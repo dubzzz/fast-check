@@ -5,24 +5,20 @@ export class RemoveItemCommand implements TodolistCommand {
   constructor(readonly position: number) {}
 
   async check(m: TodolistModel) {
-    const { wrapper } = m;
-
     // Only non loading todos can be edited
-    const todos = await listTodos(wrapper);
+    const todos = await listTodos();
     return !todos.every(t => t.loading);
   }
 
   async run(m: TodolistModel, _r: TodolistReal) {
-    const { wrapper } = m;
-
-    const todosBefore = await listTodos(wrapper);
+    const todosBefore = await listTodos();
 
     const nonLoadingTodos = todosBefore.filter(t => !t.loading);
     const selectedTodoIndex = todosBefore.indexOf(nonLoadingTodos[this.position % nonLoadingTodos.length]);
     todosBefore[selectedTodoIndex].actions.remove();
     this.runDetails = prettyDetails(todosBefore[selectedTodoIndex]);
 
-    const todosAfter = await listTodos(wrapper);
+    const todosAfter = await listTodos();
 
     // We expect the resulting list of todos not to contain the removed todo
     // At least for the moment, if the server request fails then it might re-appear

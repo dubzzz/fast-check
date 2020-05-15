@@ -5,7 +5,7 @@ import AutocompleteField from './src/AutocompleteField';
 //import AutocompleteField from './src/AutocompleteFieldMostRecentQuery';
 //import AutocompleteField from './src/AutocompleteFieldSimple';
 
-import { render, cleanup, fireEvent, act, getNodeText } from '@testing-library/react';
+import { render, cleanup, fireEvent, act, getNodeText, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { search } from './src/Api';
@@ -35,8 +35,8 @@ describe('AutocompleteField', () => {
           });
 
           // Act
-          const { getByRole, queryAllByRole } = render(<AutocompleteField search={searchImplem} {...bugs} />);
-          const input = getByRole('input') as HTMLElement;
+          render(<AutocompleteField search={searchImplem} {...bugs} />);
+          const input = screen.getByRole('input') as HTMLElement;
           s.scheduleSequence(buildAutocompleteEvents(input, queries));
 
           // Assert
@@ -44,7 +44,7 @@ describe('AutocompleteField', () => {
             await s.waitOne();
 
             const autocompletionValue = input.attributes.getNamedItem('value')!.value;
-            const suggestions = (queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
+            const suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
             if (!suggestions.every(suggestion => suggestion.includes(autocompletionValue))) {
               throw new Error(
                 `Invalid suggestions for ${JSON.stringify(autocompletionValue)}, got: ${JSON.stringify(suggestions)}`
@@ -54,7 +54,7 @@ describe('AutocompleteField', () => {
         })
         .beforeEach(async () => {
           jest.resetAllMocks();
-          cleanup();
+          await cleanup();
         })
     ));
 
@@ -69,8 +69,8 @@ describe('AutocompleteField', () => {
           });
 
           // Act
-          const { getByRole, queryAllByRole } = render(<AutocompleteField search={searchImplem} {...bugs} />);
-          const input = getByRole('input') as HTMLElement;
+          render(<AutocompleteField search={searchImplem} {...bugs} />);
+          const input = screen.getByRole('input') as HTMLElement;
           for (const event of buildAutocompleteEvents(input, queries)) {
             await event.builder();
           } // All the user's inputs have been fired onto the AutocompleField
@@ -83,7 +83,7 @@ describe('AutocompleteField', () => {
 
             // Read suggestions shown by the component
             const prevSuggestions = suggestions;
-            suggestions = (queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
+            suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
 
             // We expect the number of suggestions to increase up to the final number
             // of suggestions for <query> or 10 (max number of suggestions)
@@ -102,7 +102,7 @@ describe('AutocompleteField', () => {
         })
         .beforeEach(async () => {
           jest.resetAllMocks();
-          cleanup();
+          await cleanup();
         })
     ));
 });

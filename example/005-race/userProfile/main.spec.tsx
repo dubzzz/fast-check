@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import UserProfilePage from './src/UserProfilePage';
 
-import { render, cleanup, act } from '@testing-library/react';
+import { render, cleanup, act, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 // If you want to test the behaviour of fast-check in case of a bug:
@@ -26,7 +26,7 @@ describe('UserProfilePage', () => {
           });
 
           // Act
-          const { rerender, queryByText, queryByTestId } = render(
+          const { rerender } = render(
             <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} bug={bugId} />
           );
           s.scheduleSequence([
@@ -37,12 +37,12 @@ describe('UserProfilePage', () => {
           await s.waitAll();
 
           // Assert
-          expect(await queryByText('Loading...')).toBe(null);
-          expect((await queryByTestId('user-id'))!.textContent).toBe(`Id: ${uid2}`);
+          expect(await screen.queryByText('Loading...')).toBe(null);
+          expect((await screen.queryByTestId('user-id'))!.textContent).toBe(`Id: ${uid2}`);
         })
         .beforeEach(async () => {
           jest.resetAllMocks();
-          cleanup();
+          await cleanup();
         })
     ));
 
@@ -57,7 +57,7 @@ describe('UserProfilePage', () => {
 
           // Act
           let currentUid = loadedUserIds[0];
-          const { rerender, queryByText, queryByTestId } = render(
+          const { rerender } = render(
             <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} bug={bugId} />
           );
           s.scheduleSequence(
@@ -75,9 +75,9 @@ describe('UserProfilePage', () => {
             await act(async () => {
               await s.waitOne();
             });
-            const isLoading = (await queryByText('Loading...')) !== null;
+            const isLoading = (await screen.queryByText('Loading...')) !== null;
             if (!isLoading) {
-              const idField = await queryByTestId('user-id');
+              const idField = await screen.queryByTestId('user-id');
               expect(idField).not.toBe(null);
               expect(idField!.textContent).toBe(`Id: ${currentUid}`);
             }
@@ -85,7 +85,7 @@ describe('UserProfilePage', () => {
         })
         .beforeEach(async () => {
           jest.resetAllMocks();
-          cleanup();
+          await cleanup();
         })
     ));
 });

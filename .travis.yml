@@ -1,8 +1,8 @@
 language: node_js
 node_js:
+  - "14"
   - "12"
   - "10"
-  - "8"
 
 cache:
   yarn: true
@@ -24,7 +24,7 @@ script:
   - yarn e2e --maxWorkers=4
 
 after_success:
-  - if [[ $(node --version) == "v12."* ]]; then yarn coverage; fi
+  - if [[ $(node --version) == "v14."* ]]; then yarn coverage; fi
 
 stages:
   - test
@@ -53,6 +53,37 @@ jobs:
         - nvm install 0.12 ;
           node --version ;
           node test/legacy/main.js
+    - stage: test
+      env: STEP=COMMONJS_ESM
+      script:
+        - yarn build:prod
+        - yarn link
+        - cd test/esm
+        # Node 10 does not understand ES modules
+        - nvm install 10
+        - node --version
+        - sh run.sh
+        # Node 12 requires a flag to support ES modules but can understand them
+        - nvm install 12
+        - node --version
+        - sh run.sh
+        # Node >=13.2.0 enables support for ES modules by default
+        - nvm install 14
+        - node --version
+        - sh run.sh
+    - stage: test
+      env: STEP=LEGACY_NODE_8
+      script:
+        # Some of our deep dependencies are incompatible with this version of node
+        # As a consequence we trigger this job separately
+        # By default travis runs: yarn --frozen-lockfile
+        # But we would need --ignore-engines to be added for the purpose of node 8
+        - nvm install 8
+        - node --version
+        - yarn prebuild
+        - yarn build
+        - yarn test --maxWorkers=4
+        - yarn e2e --maxWorkers=4
     - stage: test
       env: STEP=HEAD
       script:
