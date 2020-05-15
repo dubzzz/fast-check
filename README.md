@@ -127,8 +127,30 @@ m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null,
 
 **[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/IssuesDiscovered.md)**
 
-## Code Contributors
+## Credits
+
+### Code Contributors
 
 This project would not be the same without them 💖 - [Become one of them](CONTRIBUTING.md)
 
 <a href="https://github.com/dubzzz/fast-check/graphs/contributors"><img src="https://opencollective.com/fast-check/contributors.svg?width=890&button=false" /></a>
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/fast-check/contribute)] and help us sustain our community.
+<a href="https://opencollective.com/fast-check#backers"><img src="https://opencollective.com/fast-check/backers.svg?width=890"></a>
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/fast-check#sponsor)]
+
+<a href="https://opencollective.com/fast-check/sponsor/0/website"><img src="https://opencollective.com/fast-check/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/1/website"><img src="https://opencollective.com/fast-check/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/2/website"><img src="https://opencollective.com/fast-check/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/3/website"><img src="https://opencollective.com/fast-check/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/4/website"><img src="https://opencollective.com/fast-check/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/5/website"><img src="https://opencollective.com/fast-check/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/6/website"><img src="https://opencollective.com/fast-check/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/7/website"><img src="https://opencollective.com/fast-check/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/8/website"><img src="https://opencollective.com/fast-check/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/9/website"><img src="https://opencollective.com/fast-check/sponsor/9/avatar.svg"></a>
