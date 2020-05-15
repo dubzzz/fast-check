@@ -3,6 +3,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 import { stringify } from '../../utils/stringify';
+import { escapeForTemplateString } from './helpers/TextEscaper';
 
 /** Define an item to be passed to `scheduleSequence` */
 export type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
@@ -90,11 +91,7 @@ class SchedulerImplem implements Scheduler {
 
   private buildLog(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
     return `[task\${${taskId}}] ${meta} ${type}${
-      data !== undefined
-        ? ` with value ${stringify(data)
-            .replace(/\$/g, '\\$')
-            .replace(/`/g, '\\`')}`
-        : ''
+      data !== undefined ? ` with value ${escapeForTemplateString(stringify(data))}` : ''
     }`;
   }
 
