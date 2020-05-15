@@ -89,10 +89,10 @@ class SchedulerImplem implements Scheduler {
   }
 
   private buildLog(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
-    return `[task#\${${taskId}}] ${meta} ${type}${
+    return `[task\${${taskId}}] ${meta} ${type}${
       data !== undefined
         ? ` with value ${stringify(data)
-            .replace(/$/g, '\\$')
+            .replace(/\$/g, '\\$')
             .replace(/`/g, '\\`')}`
         : ''
     }`;
@@ -256,17 +256,27 @@ class SchedulerArbitrary extends Arbitrary<Scheduler> {
 /**
  * For scheduler of promises
  */
-export function scheduler(constraints?: SchedulerConstraints): Arbitrary<Scheduler> {
+function scheduler(constraints?: SchedulerConstraints): Arbitrary<Scheduler> {
   const { act = (f: () => Promise<void>) => f() } = constraints || {};
   return new SchedulerArbitrary(act);
 }
 
-function hardcodedScheduler(
+/**
+ * For custom scheduler with predefined resolution order
+ *
+ * Ordering is defined by using a template string like the one generated in case of failure of a {@link scheduler}
+ */
+function schedulerFor(
   constraints?: SchedulerConstraints
 ): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler;
-function hardcodedScheduler(customOrdering: number[], constraints?: SchedulerConstraints): Scheduler;
-
-function hardcodedScheduler(
+/**
+ * For custom scheduler with predefined resolution order
+ *
+ * @param customOrdering Array defining in which order the promises will be resolved.
+ * Id of the promises start at 1. 1 means first scheduled promise, 2 second scheduled promise and so on.
+ */
+function schedulerFor(customOrdering: number[], constraints?: SchedulerConstraints): Scheduler;
+function schedulerFor(
   customOrderingOrConstraints: number[] | SchedulerConstraints | undefined,
   constraintsOrUndefined?: SchedulerConstraints
 ): any {
@@ -303,4 +313,4 @@ function hardcodedScheduler(
   }
 }
 
-scheduler.for = hardcodedScheduler;
+export { scheduler, schedulerFor };
