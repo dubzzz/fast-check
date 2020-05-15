@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Examples of usage of fast-check",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.7.0",
@@ -14,7 +16,8 @@
     "lodash": "^4.17.15",
     "pure-rand": "^2.0.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "snyk": "^1.321.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.2",
@@ -35,6 +38,9 @@
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"]
-  }
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ]
+  },
+  "snyk": true
 }
