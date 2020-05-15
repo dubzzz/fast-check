@@ -281,8 +281,13 @@ function scheduler(constraints?: SchedulerConstraints): Arbitrary<Scheduler> {
  * ```
  *
  * WARNING:
- * Custom scheduler will not check if all the referred promises have been scheduled.
- * But if one the promise is wrongly defined - for instance asking to resolve 5 while 5 does not exist - it will fail.
+ * Custom scheduler will
+ * neither check that all the referred promises have been scheduled
+ * nor that they resolved with the same status and value.
+ *
+ *
+ * WARNING:
+ * If one the promises is wrongly defined it will fail - for instance asking to resolve 5 while 5 does not exist.
  */
 function schedulerFor(
   constraints?: SchedulerConstraints
@@ -291,8 +296,11 @@ function schedulerFor(
  * For custom scheduler with predefined resolution order
  *
  * WARNING:
- * Custom scheduler will not check if all the referred promises have been scheduled.
- * But if one the promise is wrongly defined - for instance asking to resolve 5 while 5 does not exist - it will fail.
+ * Custom scheduler will not check that all the referred promises have been scheduled.
+ *
+ *
+ * WARNING:
+ * If one the promises is wrongly defined it will fail - for instance asking to resolve 5 while 5 does not exist.
  *
  * @param customOrdering Array defining in which order the promises will be resolved.
  * Id of the promises start at 1. 1 means first scheduled promise, 2 second scheduled promise and so on.
