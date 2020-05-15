@@ -217,7 +217,7 @@ class SchedulerImplem implements Scheduler {
 
   toString() {
     return (
-      'scheduler.for()`\n' +
+      'schedulerFor()`\n' +
       this.triggeredTasksLogs
         .concat(this.scheduledTasks.map(t => t.label))
         .map(log => `-> ${log}`)
@@ -262,12 +262,37 @@ function scheduler(constraints?: SchedulerConstraints): Arbitrary<Scheduler> {
  * For custom scheduler with predefined resolution order
  *
  * Ordering is defined by using a template string like the one generated in case of failure of a {@link scheduler}
+ *
+ * It may be something like:
+ * ```typescript
+ * fc.schedulerFor()`
+ *   -> [task\${2}] promise pending
+ *   -> [task\${3}] promise pending
+ *   -> [task\${1}] promise pending
+ * `
+ * ```
+ *
+ * Or more generally:
+ * ```typescript
+ * fc.schedulerFor()`
+ *   This scheduler will resolve task ${2} first
+ *   followed by ${3} and only then task ${1}
+ * `
+ * ```
+ *
+ * WARNING:
+ * Custom scheduler will not check if all the referred promises have been scheduled.
+ * But if one the promise is wrongly defined - for instance asking to resolve 5 while 5 does not exist - it will fail.
  */
 function schedulerFor(
   constraints?: SchedulerConstraints
 ): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler;
 /**
  * For custom scheduler with predefined resolution order
+ *
+ * WARNING:
+ * Custom scheduler will not check if all the referred promises have been scheduled.
+ * But if one the promise is wrongly defined - for instance asking to resolve 5 while 5 does not exist - it will fail.
  *
  * @param customOrdering Array defining in which order the promises will be resolved.
  * Id of the promises start at 1. 1 means first scheduled promise, 2 second scheduled promise and so on.
@@ -282,18 +307,18 @@ function schedulerFor(
     ? constraintsOrUndefined || {}
     : customOrderingOrConstraints || {};
 
-  const builder = function(_strs: TemplateStringsArray, ...ordering: number[]) {
+  const buildSchedulerFor = function(ordering: number[]) {
     const buildNextTaskIndex = () => {
       let numTasks = 0;
       return {
         clone: () => buildNextTaskIndex(),
         nextTaskIndex: (scheduledTasks: ScheduledTask[]) => {
           if (ordering.length >= numTasks) {
-            throw new Error(`Invalid scheduler.for defined: too many tasks have been scheduled`);
+            throw new Error(`Invalid schedulerFor defined: too many tasks have been scheduled`);
           }
           const taskIndex = scheduledTasks.findIndex(t => t.taskId === ordering[numTasks]);
           if (taskIndex === -1) {
-            throw new Error(`Invalid scheduler.for defined: unable to find next task`);
+            throw new Error(`Invalid schedulerFor defined: unable to find next task`);
           }
           ++numTasks;
           return taskIndex;
@@ -303,10 +328,11 @@ function schedulerFor(
     return new SchedulerImplem(act, buildNextTaskIndex());
   };
   if (Array.isArray(customOrderingOrConstraints)) {
-    const strs = Object.assign([], { raw: [] });
-    return builder(strs, ...customOrderingOrConstraints);
+    return buildSchedulerFor(customOrderingOrConstraints);
   } else {
-    return builder;
+    return function(_strs: TemplateStringsArray, ...ordering: number[]) {
+      return buildSchedulerFor(ordering);
+    };
   }
 }
 

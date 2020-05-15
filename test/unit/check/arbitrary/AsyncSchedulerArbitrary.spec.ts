@@ -266,7 +266,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         expect(s.count()).toBe(10);
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${1}] promise pending
           -> [task\${2}] promise pending
           -> [task\${3}] promise pending
@@ -282,7 +282,7 @@ describe('AsyncSchedulerArbitrary', () => {
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${6}] promise rejected with value 5
           -> [task\${7}] promise resolved with value 6
           -> [task\${2}] promise rejected with value 1
@@ -298,7 +298,7 @@ describe('AsyncSchedulerArbitrary', () => {
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${6}] promise rejected with value 5
           -> [task\${7}] promise resolved with value 6
           -> [task\${2}] promise rejected with value 1
@@ -315,7 +315,7 @@ describe('AsyncSchedulerArbitrary', () => {
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${6}] promise rejected with value 5
           -> [task\${7}] promise resolved with value 6
           -> [task\${2}] promise rejected with value 1
@@ -452,7 +452,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         expect(s.count()).toBe(calls.length);
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${1}] function::(0,3) pending
           -> [task\${2}] function::(1,4) pending
           -> [task\${3}] function::(6,0) pending\`"
@@ -460,14 +460,14 @@ describe('AsyncSchedulerArbitrary', () => {
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${3}] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
           -> [task\${1}] function::(0,3) resolved with value 0
           -> [task\${2}] function::(1,4) pending\`"
         `);
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${3}] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
           -> [task\${1}] function::(0,3) resolved with value 0
           -> [task\${2}] function::(1,4) resolved with value 1\`"
@@ -500,14 +500,14 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         expect(s.count()).toBe(3);
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${1}] function::taskA() pending
           -> [task\${2}] function::anotherTaskNameForB(42) pending
           -> [task\${3}] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) pending\`"
         `);
         await s.waitAll();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${3}] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) resolved with value \\"c\\"
           -> [task\${1}] function::taskA() resolved with value {\\"response\\":\\"dummy response for task A\\"}
           -> [task\${2}] function::anotherTaskNameForB(42) resolved with value 3\`"
@@ -732,7 +732,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         await s.waitAll();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "scheduler.for()\`
+          "schedulerFor()\`
           -> [task\${1}] sequence::firstStep resolved with value 42
           -> [task\${2}] sequence::anotherStep resolved with value 48
           -> [task\${3}] sequence::rejectedStep rejected with value 1\`"
