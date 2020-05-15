@@ -321,7 +321,7 @@ function schedulerFor(
       return {
         clone: () => buildNextTaskIndex(),
         nextTaskIndex: (scheduledTasks: ScheduledTask[]) => {
-          if (ordering.length >= numTasks) {
+          if (ordering.length <= numTasks) {
             throw new Error(`Invalid schedulerFor defined: too many tasks have been scheduled`);
           }
           const taskIndex = scheduledTasks.findIndex(t => t.taskId === ordering[numTasks]);
