@@ -44,9 +44,9 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].toString()).toMatchInlineSnapshot(`
-      "Scheduler\`
-      -> [task#2] function::fetchHeroesById() resolved with value [{\\"name\\":\\"James Bond\\"}]
-      -> [task#1] function::fetchHeroName() pending\`"
+      "schedulerFor()\`
+      -> [task\${2}] function::fetchHeroesById() resolved with value [{\\"name\\":\\"James Bond\\"}]
+      -> [task\${1}] function::fetchHeroName() pending\`"
     `);
     expect(out.error).toContain(`Cannot read property 'toLowerCase' of undefined`);
   });
@@ -127,5 +127,52 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       { seed }
     );
     expect(out.failed).toBe(true);
+  });
+
+  it('should be able to replay failures using examples and the value of schedulerFor extracted from error logs', async () => {
+    const inc = async (db: { read: () => Promise<number>; write: (n: number) => Promise<void> }) => {
+      const v = await db.read();
+      await db.write(v + 1);
+    };
+    const propertyValidator = async (s: fc.Scheduler) => {
+      let value = 0;
+      const db = {
+        read: s.scheduleFunction(async function read() {
+          return value;
+        }),
+        write: s.scheduleFunction(async function write(n: number) {
+          value = n;
+        })
+      };
+      s.schedule(Promise.resolve('A')).then(() => inc(db));
+      s.schedule(Promise.resolve('B')).then(() => inc(db));
+      s.schedule(Promise.resolve('C')).then(() => inc(db));
+      await s.waitAll();
+
+      expect(value).toBe(3);
+    };
+
+    const out = await fc.check(fc.asyncProperty(fc.scheduler(), propertyValidator));
+    expect(out.failed).toBe(true);
+
+    const schedulerTemplatedString = String(out.counterexample![0]);
+    const argsForSchedulerFor: any[] = eval(`(() => {
+      // Extract template string parameters
+      function schedulerFor() {
+        return function(strs, ...ordering) {
+          return [strs, ...ordering];
+        }
+      }
+      return ${schedulerTemplatedString};
+    })()`);
+
+    const outRetry = await fc.check(fc.asyncProperty(fc.scheduler(), propertyValidator), {
+      examples: [[(fc.schedulerFor() as any)(...argsForSchedulerFor)]]
+    });
+    expect(outRetry.failed).toBe(true);
+    expect(outRetry.numRuns).toBe(1);
+
+    expect(outRetry.error).toBe(out.error);
+    expect(String(outRetry.counterexample![0])).toBe(String(out.counterexample![0]));
   });
 });

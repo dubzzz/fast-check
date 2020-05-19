@@ -202,6 +202,40 @@ test('should not display data related to another user', () =>
   ));
 ```
 
+In case of failure, the reported error will contain the scheduler that caused the issue along with other generated values if any.
+Here is what an error can look like in case we only asked for a scheduler:
+
+```
+ Property failed after 1 tests
+ { seed: -22040264, path: "0", endOnFailure: true }
+ Counterexample: [schedulerFor()`
+ -> [task${1}] promise resolved with value "A"     
+ -> [task${3}] promise resolved with value "C"
+ -> [task${2}] promise resolved with value "B"`]
+ Shrunk 0 time(s)
+```
+
+Given such failure you can either replay it by using the provided `{ seed, path, endOnFailure }` - _see [Replay after failure](#replay-after-failure)_ -
+or put the scheduler as an example to be used for every future run - _see [Add custom examples next to generated ones](#add-custom-examples-next-to-generated-ones)_.
+
+If you want to add this example in your set of custom examples you have to use `fc.schedulerFor` and copy the counterexample coming from the stack trace into the `examples` given to `fc.assert` as follow:
+
+```js
+test('should run with custom scheduler then generated ones', () =>
+  fc.assert(
+    fc.property(fc.scheduler(), (s) => {/* Test */}),
+    {
+      examples: [
+        [fc.schedulerFor()`
+ -> [task${1}] promise resolved with value "A"     
+ -> [task${3}] promise resolved with value "C"
+ -> [task${2}] promise resolved with value "B"`]
+      ]
+    }
+  ));
+```
+```
+
 ## Opt for verbose failures
 
 By default, the failures reported by `fast-check` feature most relevant data:

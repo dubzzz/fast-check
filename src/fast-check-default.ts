@@ -87,7 +87,7 @@ import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { stringify } from './utils/stringify';
-import { scheduler, Scheduler, SchedulerSequenceItem } from './check/arbitrary/AsyncSchedulerArbitrary';
+import { scheduler, schedulerFor, Scheduler, SchedulerSequenceItem } from './check/arbitrary/AsyncSchedulerArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 const __type = '__PACKAGE_TYPE__' as string;
@@ -200,6 +200,7 @@ export {
   commands,
   // scheduler
   scheduler,
+  schedulerFor,
   Scheduler,
   SchedulerSequenceItem,
   // extend the framework

@@ -1,4 +1,4 @@
-import { scheduler } from '../../../../src/check/arbitrary/AsyncSchedulerArbitrary';
+import { scheduler, schedulerFor } from '../../../../src/check/arbitrary/AsyncSchedulerArbitrary';
 
 import * as stubRng from '../../stubs/generators';
 import { Random } from '../../../../src/random/generator/Random';
@@ -266,66 +266,66 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         expect(s.count()).toBe(10);
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#1] promise pending
-          -> [task#2] promise pending
-          -> [task#3] promise pending
-          -> [task#4] promise pending
-          -> [task#5] promise pending
-          -> [task#6] promise pending
-          -> [task#7] promise pending
-          -> [task#8] promise pending
-          -> [task#9] promise pending
-          -> [task#10] promise pending\`"
+          "schedulerFor()\`
+          -> [task\${1}] promise pending
+          -> [task\${2}] promise pending
+          -> [task\${3}] promise pending
+          -> [task\${4}] promise pending
+          -> [task\${5}] promise pending
+          -> [task\${6}] promise pending
+          -> [task\${7}] promise pending
+          -> [task\${8}] promise pending
+          -> [task\${9}] promise pending
+          -> [task\${10}] promise pending\`"
         `);
         await s.waitOne();
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#6] promise rejected with value 5
-          -> [task#7] promise resolved with value 6
-          -> [task#2] promise rejected with value 1
-          -> [task#1] promise pending
-          -> [task#3] promise pending
-          -> [task#4] promise pending
-          -> [task#5] promise pending
-          -> [task#8] promise pending
-          -> [task#9] promise pending
-          -> [task#10] promise pending\`"
+          "schedulerFor()\`
+          -> [task\${6}] promise rejected with value 5
+          -> [task\${7}] promise resolved with value 6
+          -> [task\${2}] promise rejected with value 1
+          -> [task\${1}] promise pending
+          -> [task\${3}] promise pending
+          -> [task\${4}] promise pending
+          -> [task\${5}] promise pending
+          -> [task\${8}] promise pending
+          -> [task\${9}] promise pending
+          -> [task\${10}] promise pending\`"
         `);
         await s.waitOne();
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#6] promise rejected with value 5
-          -> [task#7] promise resolved with value 6
-          -> [task#2] promise rejected with value 1
-          -> [task#1] promise resolved with value 0
-          -> [task#4] promise rejected with value 3
-          -> [task#8] promise rejected with value 7
-          -> [task#3] promise pending
-          -> [task#5] promise pending
-          -> [task#9] promise pending
-          -> [task#10] promise pending\`"
+          "schedulerFor()\`
+          -> [task\${6}] promise rejected with value 5
+          -> [task\${7}] promise resolved with value 6
+          -> [task\${2}] promise rejected with value 1
+          -> [task\${1}] promise resolved with value 0
+          -> [task\${4}] promise rejected with value 3
+          -> [task\${8}] promise rejected with value 7
+          -> [task\${3}] promise pending
+          -> [task\${5}] promise pending
+          -> [task\${9}] promise pending
+          -> [task\${10}] promise pending\`"
         `);
         await s.waitOne();
         await s.waitOne();
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#6] promise rejected with value 5
-          -> [task#7] promise resolved with value 6
-          -> [task#2] promise rejected with value 1
-          -> [task#1] promise resolved with value 0
-          -> [task#4] promise rejected with value 3
-          -> [task#8] promise rejected with value 7
-          -> [task#10] promise rejected with value 9
-          -> [task#3] promise resolved with value 2
-          -> [task#5] promise resolved with value 4
-          -> [task#9] promise resolved with value 8\`"
+          "schedulerFor()\`
+          -> [task\${6}] promise rejected with value 5
+          -> [task\${7}] promise resolved with value 6
+          -> [task\${2}] promise rejected with value 1
+          -> [task\${1}] promise resolved with value 0
+          -> [task\${4}] promise rejected with value 3
+          -> [task\${8}] promise rejected with value 7
+          -> [task\${10}] promise rejected with value 9
+          -> [task\${3}] promise resolved with value 2
+          -> [task\${5}] promise resolved with value 4
+          -> [task\${9}] promise resolved with value 8\`"
         `);
         expect(s.count()).toBe(0);
       });
@@ -452,25 +452,25 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         expect(s.count()).toBe(calls.length);
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#1] function::(0,3) pending
-          -> [task#2] function::(1,4) pending
-          -> [task#3] function::(6,0) pending\`"
+          "schedulerFor()\`
+          -> [task\${1}] function::(0,3) pending
+          -> [task\${2}] function::(1,4) pending
+          -> [task\${3}] function::(6,0) pending\`"
         `);
         await s.waitOne();
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#3] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
-          -> [task#1] function::(0,3) resolved with value 0
-          -> [task#2] function::(1,4) pending\`"
+          "schedulerFor()\`
+          -> [task\${3}] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
+          -> [task\${1}] function::(0,3) resolved with value 0
+          -> [task\${2}] function::(1,4) pending\`"
         `);
         await s.waitOne();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#3] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
-          -> [task#1] function::(0,3) resolved with value 0
-          -> [task#2] function::(1,4) resolved with value 1\`"
+          "schedulerFor()\`
+          -> [task\${3}] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
+          -> [task\${1}] function::(0,3) resolved with value 0
+          -> [task\${2}] function::(1,4) resolved with value 1\`"
         `);
         expect(s.count()).toBe(0);
       });
@@ -500,17 +500,17 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         expect(s.count()).toBe(3);
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#1] function::taskA() pending
-          -> [task#2] function::anotherTaskNameForB(42) pending
-          -> [task#3] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) pending\`"
+          "schedulerFor()\`
+          -> [task\${1}] function::taskA() pending
+          -> [task\${2}] function::anotherTaskNameForB(42) pending
+          -> [task\${3}] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) pending\`"
         `);
         await s.waitAll();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#3] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) resolved with value \\"c\\"
-          -> [task#1] function::taskA() resolved with value {\\"response\\":\\"dummy response for task A\\"}
-          -> [task#2] function::anotherTaskNameForB(42) resolved with value 3\`"
+          "schedulerFor()\`
+          -> [task\${3}] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) resolved with value \\"c\\"
+          -> [task\${1}] function::taskA() resolved with value {\\"response\\":\\"dummy response for task A\\"}
+          -> [task\${2}] function::anotherTaskNameForB(42) resolved with value 3\`"
         `);
         expect(s.count()).toBe(0);
       });
@@ -732,10 +732,10 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         await s.waitAll();
         expect(s.toString()).toMatchInlineSnapshot(`
-          "Scheduler\`
-          -> [task#1] sequence::firstStep resolved with value 42
-          -> [task#2] sequence::anotherStep resolved with value 48
-          -> [task#3] sequence::rejectedStep rejected with value 1\`"
+          "schedulerFor()\`
+          -> [task\${1}] sequence::firstStep resolved with value 42
+          -> [task\${2}] sequence::anotherStep resolved with value 48
+          -> [task\${3}] sequence::rejectedStep rejected with value 1\`"
         `);
         expect(s.count()).toBe(0);
       });
@@ -782,6 +782,111 @@ describe('AsyncSchedulerArbitrary', () => {
         }
         expect(taskResolvedValue).toEqual({ done: false, faulty: true });
       });
+    });
+  });
+  describe('schedulerFor', () => {
+    it('Should execute tasks in the required order when using template string from error logs', async () => {
+      // Arrange
+      const px = jest.fn();
+      const py = jest.fn();
+      const pz = jest.fn();
+
+      // Act
+      const s = schedulerFor()`
+      -> [task${3}] promise rejected with value "pz"
+      -> [task${1}] promise resolved with value "px"
+      -> [task${2}] promise rejected with value "py"`;
+      s.schedule(Promise.resolve('px')).then(px);
+      s.schedule(Promise.resolve('py')).then(py);
+      s.schedule(Promise.resolve('pz')).then(pz);
+
+      // Assert
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+    });
+
+    it('Should execute tasks in the required order when using custom template string', async () => {
+      // Arrange
+      const px = jest.fn();
+      const py = jest.fn();
+      const pz = jest.fn();
+
+      // Act
+      const s = schedulerFor()`
+        This scheduler will resolve task ${2} first
+        followed by ${3} and only then task ${1}`;
+      s.schedule(Promise.resolve('px')).then(px);
+      s.schedule(Promise.resolve('py')).then(py);
+      s.schedule(Promise.resolve('pz')).then(pz);
+
+      // Assert
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+    });
+
+    it('Should execute tasks in the required order when using ordering array', async () => {
+      // Arrange
+      const px = jest.fn();
+      const py = jest.fn();
+      const pz = jest.fn();
+
+      // Act
+      const s = schedulerFor([2, 3, 1]);
+      s.schedule(Promise.resolve('px')).then(px);
+      s.schedule(Promise.resolve('py')).then(py);
+      s.schedule(Promise.resolve('pz')).then(pz);
+
+      // Assert
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
     });
   });
 });
