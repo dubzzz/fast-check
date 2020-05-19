@@ -317,6 +317,8 @@ type SchedulerSequenceItem =
 ;
 ```
 
+You can also define an hardcoded scheduler by using `fc.schedulerFor(ordering: number[])` - _should be passed through `fc.constant` if you want to use it as an arbitrary_. For instance: `fc.schedulerFor([1,3,2])` means that the first scheduled promise will resolve first, the third one second and at the end we will resolve the second one that have been scheduled.
+
 ### Scheduling methods
 
 #### `schedule`
