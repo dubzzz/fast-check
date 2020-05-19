@@ -1,4 +1,4 @@
-import { scheduler } from '../../../../src/check/arbitrary/AsyncSchedulerArbitrary';
+import { scheduler, schedulerFor } from '../../../../src/check/arbitrary/AsyncSchedulerArbitrary';
 
 import * as stubRng from '../../stubs/generators';
 import { Random } from '../../../../src/random/generator/Random';
@@ -782,6 +782,111 @@ describe('AsyncSchedulerArbitrary', () => {
         }
         expect(taskResolvedValue).toEqual({ done: false, faulty: true });
       });
+    });
+  });
+  describe('schedulerFor', () => {
+    it('Should execute tasks in the required order when using template string from error logs', async () => {
+      // Arrange
+      const px = jest.fn();
+      const py = jest.fn();
+      const pz = jest.fn();
+
+      // Act
+      const s = schedulerFor()`
+      -> [task${3}] promise rejected with value "pz"
+      -> [task${1}] promise resolved with value "px"
+      -> [task${2}] promise rejected with value "py"`;
+      s.schedule(Promise.resolve('px')).then(px);
+      s.schedule(Promise.resolve('py')).then(py);
+      s.schedule(Promise.resolve('pz')).then(pz);
+
+      // Assert
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+    });
+
+    it('Should execute tasks in the required order when using custom template string', async () => {
+      // Arrange
+      const px = jest.fn();
+      const py = jest.fn();
+      const pz = jest.fn();
+
+      // Act
+      const s = schedulerFor()`
+        This scheduler will resolve task ${2} first
+        followed by ${3} and only then task ${1}`;
+      s.schedule(Promise.resolve('px')).then(px);
+      s.schedule(Promise.resolve('py')).then(py);
+      s.schedule(Promise.resolve('pz')).then(pz);
+
+      // Assert
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+    });
+
+    it('Should execute tasks in the required order when using ordering array', async () => {
+      // Arrange
+      const px = jest.fn();
+      const py = jest.fn();
+      const pz = jest.fn();
+
+      // Act
+      const s = schedulerFor([2, 3, 1]);
+      s.schedule(Promise.resolve('px')).then(px);
+      s.schedule(Promise.resolve('py')).then(py);
+      s.schedule(Promise.resolve('pz')).then(pz);
+
+      // Assert
+      expect(px).not.toHaveBeenCalled();
+      expect(py).not.toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).not.toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).not.toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
+
+      await s.waitOne();
+      expect(px).toHaveBeenCalled();
+      expect(py).toHaveBeenCalled();
+      expect(pz).toHaveBeenCalled();
     });
   });
 });
