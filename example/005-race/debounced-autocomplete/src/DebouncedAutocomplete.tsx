@@ -34,7 +34,7 @@ export default function DebouncedAutocomplete(props: Props) {
   return (
     <div>
       <label htmlFor="autocomplete-field">Select a package: </label>
-      <input id="autocomplete-field" role="textbox" value={query} onChange={e => setQuery(e.target.value)} />
+      <input type="text" id="autocomplete-field" value={query} onChange={e => setQuery(e.target.value)} />
       <ul role="list">
         {suggestions.map(s => (
           <li key={s} role="listitem">

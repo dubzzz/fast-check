@@ -39,7 +39,7 @@ export default function AutocompleteField(props: Props) {
   return (
     <div>
       <input
-        role="input"
+        type="text"
         value={query}
         onChange={evt => {
           const value = (evt.target as any).value;
