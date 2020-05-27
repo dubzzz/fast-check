@@ -36,7 +36,7 @@ describe('AutocompleteField', () => {
 
           // Act
           render(<AutocompleteField search={searchImplem} {...bugs} />);
-          const input = screen.getByRole('input') as HTMLElement;
+          const input = screen.getByRole('textbox') as HTMLElement;
           s.scheduleSequence(buildAutocompleteEvents(input, queries));
 
           // Assert
@@ -70,7 +70,7 @@ describe('AutocompleteField', () => {
 
           // Act
           render(<AutocompleteField search={searchImplem} {...bugs} />);
-          const input = screen.getByRole('input') as HTMLElement;
+          const input = screen.getByRole('textbox') as HTMLElement;
           for (const event of buildAutocompleteEvents(input, queries)) {
             await event.builder();
           } // All the user's inputs have been fired onto the AutocompleField
