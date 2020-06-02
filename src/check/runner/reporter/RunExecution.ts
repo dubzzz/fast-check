@@ -96,38 +96,43 @@ export class RunExecution<Ts> {
       // encountered a property failure
       return {
         failed: true,
-        interrupted: false,
+        interrupted: this.interrupted,
         numRuns: this.firstFailure() + 1 - this.numSkips,
         numSkips: this.numSkips,
         numShrinks: this.numShrinks(),
         seed,
+        // Rq: isSuccess() true => this.pathToFailure == null
+        //     The only path assigning a value to this.pathToFailure is fail
+        //     At the same time it also assigns a non-null value to this.value
+        //     And this is the only path assigning a value to this.value
+        // =>  this.value !== undefined
         counterexample: this.value!,
         counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
+        // Rq: Same as this.value
+        // =>  this.failure !== undefined
         error: this.failure!,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity
       };
     }
-    if (this.numSkips > maxSkips) {
-      // too many skips
-      return {
-        failed: true,
-        interrupted: false,
-        numRuns: this.numSuccesses,
-        numSkips: this.numSkips,
-        numShrinks: 0,
-        seed,
-        counterexample: null,
-        counterexamplePath: null,
-        error: null,
-        failures: [],
-        executionSummary: this.rootExecutionTrees,
-        verbose: this.verbosity
-      };
-    }
+
+    // Either 'too many skips' or 'interrupted' with flag interruptedAsFailure enabled
+    // The two cases are exclusive (the two cannot be true at the same time)
+    const failed = this.numSkips > maxSkips || (this.interrupted && this.interruptedAsFailure);
+
+    // -- Let's suppose: this.numSkips > maxSkips
+    // In the context of RunnerIterator we pull values from the stream
+    // using the underlying SourceValuesIterator until we reach a first failure.
+    // By definition this.numSkips > maxSkips means that we were not even able to generate
+    // enough values to reach this point. So we never reached first failure.
+    // For each of these values, we call one of: fail, skip, interrupt or success.
+    // In case of skip we also notify the SourceValuesIterator for the skip.
+    // SourceValuesIterator automatically ends as soon as we skip too many values
+    // so no subsequent values will be pulled from it, so no call to interrupt after this last skip.
+    // -- Similarly, when interrupted, RunnerIterator stops everything so no call to skip after being interrupted.
     return {
-      failed: this.interrupted ? this.interruptedAsFailure : false,
+      failed,
       interrupted: this.interrupted,
       numRuns: this.numSuccesses,
       numSkips: this.numSkips,

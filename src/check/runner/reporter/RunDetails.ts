@@ -18,7 +18,7 @@ export type RunDetails<Ts> =
  */
 export type PropertyFailureRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
   failed: true;
-  interrupted: false;
+  interrupted: boolean;
   counterexample: Ts;
   counterexamplePath: string;
   error: string;
