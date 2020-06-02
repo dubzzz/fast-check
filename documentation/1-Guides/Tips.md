@@ -17,6 +17,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Setup global settings](#setup-global-settings)
 - [Avoid tests to reach the timeout of your test runner](#avoid-tests-to-reach-the-timeout-of-your-test-runner)
 - [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
+- [Supported targets from node to deno](#supported-targets-from-node-to-deno)
 
 ## Filter invalid combinations using pre-conditions
 
@@ -605,3 +606,22 @@ If you opt for `markInterruptAsFailure: true`, you can still limit the time take
 ## Migrate from jsverify to fast-check
 
 The npm package [jsverify-to-fast-check](https://www.npmjs.com/package/jsverify-to-fast-check) comes with a set of tools to help users to migrate from jsverify to fast-check smoothly.
+
+## Supported targets from node to deno
+
+Here are some alternatives ways to import fast-check into your project.
+
+Node with CommonJS:
+```js
+const fc = require('fast-check');
+```
+
+Node with ES Modules:
+```js
+import fc from 'fast-check';
+```
+
+Deno:
+```js
+import fc from "https://cdn.pika.dev/fast-check";
+```
