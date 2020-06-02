@@ -625,3 +625,13 @@ Deno:
 ```js
 import fc from "https://cdn.pika.dev/fast-check";
 ```
+
+Web Browser:
+```html
+<script type="module">
+  import fc from "https://cdn.pika.dev/fast-check";
+  // code...
+</script>
+```
+
+More details on [pika](https://www.pika.dev/npm/fast-check/code).
