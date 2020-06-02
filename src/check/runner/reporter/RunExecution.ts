@@ -96,14 +96,14 @@ export class RunExecution<Ts> {
       // encountered a property failure
       return {
         failed: true,
-        interrupted: this.interrupted,
+        interrupted: false,
         numRuns: this.firstFailure() + 1 - this.numSkips,
         numSkips: this.numSkips,
         numShrinks: this.numShrinks(),
         seed,
         counterexample: this.value!,
         counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
-        error: this.failure,
+        error: this.failure!,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity
@@ -113,7 +113,7 @@ export class RunExecution<Ts> {
       // too many skips
       return {
         failed: true,
-        interrupted: this.interrupted,
+        interrupted: false,
         numRuns: this.numSuccesses,
         numSkips: this.numSkips,
         numShrinks: 0,
