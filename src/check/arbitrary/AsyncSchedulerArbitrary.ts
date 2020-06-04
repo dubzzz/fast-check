@@ -92,8 +92,8 @@ export interface Scheduler<TMetaData = unknown> {
   waitAll: () => Promise<void>;
 
   /**
-   * Produce an array containing all the scheduled tasks so far their execution status.
-   * If the task has been executed, it includes the associated output or error produced by the task if any.
+   * Produce an array containing all the scheduled tasks so far with their execution status.
+   * If the task has been executed, it includes a string representation of the associated output or error produced by the task if any.
    *
    * Tasks will be returned in the order they get executed by the scheduler.
    */
