@@ -6,7 +6,39 @@ import { stringify } from '../../utils/stringify';
 import { escapeForTemplateString } from './helpers/TextEscaper';
 
 /** Define an item to be passed to `scheduleSequence` */
-export type SchedulerSequenceItem = { builder: () => Promise<any>; label: string } | (() => Promise<any>);
+export type SchedulerSequenceItem<TMetaData = unknown> =
+  | {
+      builder: () => Promise<any>;
+      label: string;
+      metadata?: TMetaData;
+    }
+  | (() => Promise<any>);
+
+/** Describe a task for the report produced by the scheduler */
+export type SchedulerReportItem<TMetaData = unknown> = {
+  /**
+   * Execution status for this task
+   * - resolved: task released by the scheduler and successful
+   * - rejected: task released by the scheduler but with errors
+   * - pending:  task still pending in the scheduler, not released yet
+   */
+  status: 'resolved' | 'rejected' | 'pending';
+  /**
+   * How was this task scheduled?
+   * - promise: schedule
+   * - function: scheduleFunction
+   * - sequence: scheduleSequence
+   */
+  schedulingType: 'promise' | 'function' | 'sequence';
+  /** Incremental id for the task, first received task has taskId = 1 */
+  taskId: number;
+  /** Label of the task */
+  label: string;
+  /** Metadata linked when scheduling the task */
+  metadata?: TMetaData;
+  /** Stringified version of the output or error computed using fc.stringify */
+  outputValue?: string;
+};
 
 export interface SchedulerConstraints {
   /** Ensure that all scheduled tasks will be executed in the right context (for instance it can be the `act` of React) */
@@ -17,9 +49,9 @@ export interface SchedulerConstraints {
  * Instance able to reschedule the ordering of promises
  * for a given app
  */
-export interface Scheduler {
+export interface Scheduler<TMetaData = unknown> {
   /** Wrap a new task using the Scheduler */
-  schedule: <T>(task: Promise<T>, label?: string) => Promise<T>;
+  schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetaData) => Promise<T>;
 
   /** Automatically wrap function output using the Scheduler */
   scheduleFunction: <TArgs extends any[], T>(
@@ -39,7 +71,7 @@ export interface Scheduler {
    * - faulty if one of the promises within the sequence throws
    */
   scheduleSequence(
-    sequenceBuilders: SchedulerSequenceItem[]
+    sequenceBuilders: SchedulerSequenceItem<TMetaData>[]
   ): { done: boolean; faulty: boolean; task: Promise<{ done: boolean; faulty: boolean }> };
 
   /**
@@ -58,59 +90,102 @@ export interface Scheduler {
    * including the ones that might be created by one of the resolved task
    */
   waitAll: () => Promise<void>;
+
+  /**
+   * Produce an array containing all the scheduled tasks so far with their execution status.
+   * If the task has been executed, it includes a string representation of the associated output or error produced by the task if any.
+   *
+   * Tasks will be returned in the order they get executed by the scheduler.
+   */
+  report: () => SchedulerReportItem<TMetaData>[];
 }
 
 /** @hidden */
-type ScheduledTask = {
+type TriggeredTask<TMetaData> = {
+  status: 'resolved' | 'rejected';
+  schedulingType: 'promise' | 'function' | 'sequence';
+  taskId: number;
+  label: string;
+  metadata?: TMetaData;
+  outputValue: string | undefined;
+};
+
+/** @hidden */
+type ScheduledTask<TMetaData> = {
   original: PromiseLike<unknown>;
   scheduled: PromiseLike<unknown>;
   trigger: () => void;
+  schedulingType: 'promise' | 'function' | 'sequence';
   taskId: number;
   label: string;
+  metadata?: TMetaData;
 };
 
 /** @hidden */
-type TaskSelector = {
-  clone: () => TaskSelector;
-  nextTaskIndex: (scheduledTasks: ScheduledTask[]) => number;
+type TaskSelector<TMetaData> = {
+  clone: () => TaskSelector<TMetaData>;
+  nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]) => number;
 };
 
 /** @hidden */
-class SchedulerImplem implements Scheduler {
+class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   private lastTaskId: number;
-  private readonly sourceTaskSelector: TaskSelector;
-  private readonly scheduledTasks: ScheduledTask[];
-  private readonly triggeredTasksLogs: string[];
+  private readonly sourceTaskSelector: TaskSelector<TMetaData>;
+  private readonly scheduledTasks: ScheduledTask<TMetaData>[];
+  private readonly triggeredTasks: TriggeredTask<TMetaData>[];
 
-  constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>, private readonly taskSelector: TaskSelector) {
+  constructor(
+    readonly act: (f: () => Promise<void>) => Promise<unknown>,
+    private readonly taskSelector: TaskSelector<TMetaData>
+  ) {
     this.lastTaskId = 0;
     this.sourceTaskSelector = taskSelector.clone();
     this.scheduledTasks = [];
-    this.triggeredTasksLogs = [];
+    this.triggeredTasks = [];
   }
 
-  private buildLog(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
-    return `[task\${${taskId}}] ${meta} ${type}${
-      data !== undefined ? ` with value ${escapeForTemplateString(stringify(data))}` : ''
+  private static buildLog<TMetaData>(reportItem: SchedulerReportItem<TMetaData>) {
+    return `[task\${${reportItem.taskId}}] ${
+      reportItem.label.length !== 0 ? `${reportItem.schedulingType}::${reportItem.label}` : reportItem.schedulingType
+    } ${reportItem.status}${
+      reportItem.outputValue !== undefined ? ` with value ${escapeForTemplateString(reportItem.outputValue)}` : ''
     }`;
   }
 
-  private log(taskId: number, meta: string, type: 'resolved' | 'rejected' | 'pending', data: unknown) {
-    this.triggeredTasksLogs.push(this.buildLog(taskId, meta, type, data));
+  private log(
+    schedulingType: 'promise' | 'function' | 'sequence',
+    taskId: number,
+    label: string,
+    status: 'resolved' | 'rejected',
+    data: unknown
+  ) {
+    this.triggeredTasks.push({
+      status,
+      schedulingType,
+      taskId,
+      label,
+      outputValue: data !== undefined ? stringify(data) : undefined
+    });
   }
 
-  private scheduleInternal<T>(meta: string, task: PromiseLike<T>, thenTaskToBeAwaited?: () => PromiseLike<T>) {
+  private scheduleInternal<T>(
+    schedulingType: 'promise' | 'function' | 'sequence',
+    label: string,
+    task: PromiseLike<T>,
+    metadata: TMetaData | undefined,
+    thenTaskToBeAwaited?: () => PromiseLike<T>
+  ) {
     let trigger: (() => void) | null = null;
     const taskId = ++this.lastTaskId;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
         (thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task).then(
           data => {
-            this.log(taskId, meta, 'resolved', data);
+            this.log(schedulingType, taskId, label, 'resolved', data);
             return resolve(data);
           },
           err => {
-            this.log(taskId, meta, 'rejected', err);
+            this.log(schedulingType, taskId, label, 'rejected', err);
             return reject(err);
           }
         );
@@ -120,14 +195,15 @@ class SchedulerImplem implements Scheduler {
       original: task,
       scheduled: scheduledPromise,
       trigger: trigger!,
+      schedulingType,
       taskId,
-      label: this.buildLog(taskId, meta, 'pending', undefined)
+      label
     });
     return scheduledPromise;
   }
 
-  schedule<T>(task: Promise<T>, label?: string) {
-    return this.scheduleInternal(label === undefined ? 'promise' : `promise::${label}`, task);
+  schedule<T>(task: Promise<T>, label?: string, metadata?: TMetaData) {
+    return this.scheduleInternal('promise', label || '', task, metadata);
   }
 
   scheduleFunction<TArgs extends any[], T>(
@@ -135,8 +211,10 @@ class SchedulerImplem implements Scheduler {
   ): (...args: TArgs) => Promise<T> {
     return (...args: TArgs) =>
       this.scheduleInternal(
-        `function::${asyncFunction.name}(${args.map(stringify).join(',')})`,
-        asyncFunction(...args)
+        'function',
+        `${asyncFunction.name}(${args.map(stringify).join(',')})`,
+        asyncFunction(...args),
+        undefined
       );
   }
 
@@ -151,11 +229,12 @@ class SchedulerImplem implements Scheduler {
     const sequenceTask = new Promise<void>(resolve => (resolveSequenceTask = resolve));
 
     sequenceBuilders
-      .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem) => {
-        const [builder, label] = typeof item === 'function' ? [item, item.name] : [item.builder, item.label];
+      .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem<TMetaData>) => {
+        const [builder, label, metadata] =
+          typeof item === 'function' ? [item, item.name, undefined] : [item.builder, item.label, item.metadata];
         return previouslyScheduled.then(() => {
           // We schedule a successful promise that will trigger builder directly when triggered
-          const scheduled = this.scheduleInternal(`sequence::${label}`, dummyResolvedPromise, () => builder());
+          const scheduled = this.scheduleInternal('sequence', label, dummyResolvedPromise, metadata, () => builder());
           scheduled.catch(() => {
             status.faulty = true;
             resolveSequenceTask();
@@ -215,11 +294,25 @@ class SchedulerImplem implements Scheduler {
     }
   }
 
+  report() {
+    return [
+      ...this.triggeredTasks,
+      ...this.scheduledTasks.map(
+        (t): SchedulerReportItem<TMetaData> => ({
+          status: 'pending',
+          schedulingType: t.schedulingType,
+          taskId: t.taskId,
+          label: t.label
+        })
+      )
+    ];
+  }
+
   toString() {
     return (
       'schedulerFor()`\n' +
-      this.triggeredTasksLogs
-        .concat(this.scheduledTasks.map(t => t.label))
+      this.report()
+        .map(SchedulerImplem.buildLog)
         .map(log => `-> ${log}`)
         .join('\n') +
       '`'
@@ -232,7 +325,7 @@ class SchedulerImplem implements Scheduler {
 }
 
 /** @hidden */
-class SchedulerArbitrary extends Arbitrary<Scheduler> {
+class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
   constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>) {
     super();
   }
@@ -241,21 +334,21 @@ class SchedulerArbitrary extends Arbitrary<Scheduler> {
     const buildNextTaskIndex = (r: Random) => {
       return {
         clone: () => buildNextTaskIndex(r.clone()),
-        nextTaskIndex: (scheduledTasks: ScheduledTask[]) => {
+        nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]) => {
           return r.nextInt(0, scheduledTasks.length - 1);
         }
       };
     };
-    return new Shrinkable(new SchedulerImplem(this.act, buildNextTaskIndex(mrng.clone())));
+    return new Shrinkable(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())));
   }
 }
 
 /**
  * For scheduler of promises
  */
-function scheduler(constraints?: SchedulerConstraints): Arbitrary<Scheduler> {
+function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arbitrary<Scheduler<TMetaData>> {
   const { act = (f: () => Promise<void>) => f() } = constraints || {};
-  return new SchedulerArbitrary(act);
+  return new SchedulerArbitrary<TMetaData>(act);
 }
 
 /**
@@ -289,9 +382,9 @@ function scheduler(constraints?: SchedulerConstraints): Arbitrary<Scheduler> {
  * WARNING:
  * If one the promises is wrongly defined it will fail - for instance asking to resolve 5 while 5 does not exist.
  */
-function schedulerFor(
+function schedulerFor<TMetaData = unknown>(
   constraints?: SchedulerConstraints
-): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler;
+): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>;
 /**
  * For custom scheduler with predefined resolution order
  *
@@ -305,8 +398,11 @@ function schedulerFor(
  * @param customOrdering Array defining in which order the promises will be resolved.
  * Id of the promises start at 1. 1 means first scheduled promise, 2 second scheduled promise and so on.
  */
-function schedulerFor(customOrdering: number[], constraints?: SchedulerConstraints): Scheduler;
-function schedulerFor(
+function schedulerFor<TMetaData = unknown>(
+  customOrdering: number[],
+  constraints?: SchedulerConstraints
+): Scheduler<TMetaData>;
+function schedulerFor<TMetaData = unknown>(
   customOrderingOrConstraints: number[] | SchedulerConstraints | undefined,
   constraintsOrUndefined?: SchedulerConstraints
 ): any {
@@ -320,7 +416,7 @@ function schedulerFor(
       let numTasks = 0;
       return {
         clone: () => buildNextTaskIndex(),
-        nextTaskIndex: (scheduledTasks: ScheduledTask[]) => {
+        nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]) => {
           if (ordering.length <= numTasks) {
             throw new Error(`Invalid schedulerFor defined: too many tasks have been scheduled`);
           }
@@ -333,7 +429,7 @@ function schedulerFor(
         }
       };
     };
-    return new SchedulerImplem(act, buildNextTaskIndex());
+    return new SchedulerImplem<TMetaData>(act, buildNextTaskIndex());
   };
   if (Array.isArray(customOrderingOrConstraints)) {
     return buildSchedulerFor(customOrderingOrConstraints);

@@ -32,7 +32,8 @@ function buildFakeScheduler(): Scheduler {
           }
         )
       });
-    }
+    },
+    report: jest.fn()
   };
 }
 
