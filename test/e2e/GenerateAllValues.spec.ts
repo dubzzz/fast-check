@@ -49,7 +49,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>
       fc.assert(
-        fc.property(fc.set(fc.string(), 1, 40), csts => lookForMissing(fc.constantFrom(...csts), csts.length))
+        fc.property(fc.set(fc.string(), 1, 40), (csts) => lookForMissing(fc.constantFrom(...csts), csts.length))
       ));
   });
   describe('fc.anything()', () => {
@@ -67,7 +67,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
           withMap: true,
           withSet: true,
           withObjectString: true,
-          withNullPrototype: true
+          withNullPrototype: true,
         });
         while (++numTries <= 10000) {
           const { value } = arb.generate(mrng);

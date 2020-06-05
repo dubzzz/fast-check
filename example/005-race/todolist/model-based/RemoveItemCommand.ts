@@ -7,13 +7,13 @@ export class RemoveItemCommand implements TodolistCommand {
   async check(m: TodolistModel) {
     // Only non loading todos can be edited
     const todos = await listTodos();
-    return !todos.every(t => t.loading);
+    return !todos.every((t) => t.loading);
   }
 
   async run(m: TodolistModel, _r: TodolistReal) {
     const todosBefore = await listTodos();
 
-    const nonLoadingTodos = todosBefore.filter(t => !t.loading);
+    const nonLoadingTodos = todosBefore.filter((t) => !t.loading);
     const selectedTodoIndex = todosBefore.indexOf(nonLoadingTodos[this.position % nonLoadingTodos.length]);
     todosBefore[selectedTodoIndex].actions.remove();
     this.runDetails = prettyDetails(todosBefore[selectedTodoIndex]);

@@ -36,11 +36,16 @@ function streamSample<Ts>(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
   );
   if (qParams.path.length === 0) {
-    return tossedValues.take(qParams.numRuns).map(s => s().value_);
+    return tossedValues.take(qParams.numRuns).map((s) => s().value_);
   }
-  return stream(pathWalk(qParams.path, tossedValues.map(s => s())))
+  return stream(
+    pathWalk(
+      qParams.path,
+      tossedValues.map((s) => s())
+    )
+  )
     .take(qParams.numRuns)
-    .map(s => s.value_);
+    .map((s) => s.value_);
 }
 
 /**
@@ -100,9 +105,9 @@ function statistics<Ts>(
   }
   const data = ObjectEntries(recorded)
     .sort((a, b) => b[1] - a[1])
-    .map(i => [i[0], `${((i[1] * 100.0) / qParams.numRuns).toFixed(2)}%`]);
-  const longestName = data.map(i => i[0].length).reduce((p, c) => Math.max(p, c), 0);
-  const longestPercent = data.map(i => i[1].length).reduce((p, c) => Math.max(p, c), 0);
+    .map((i) => [i[0], `${((i[1] * 100.0) / qParams.numRuns).toFixed(2)}%`]);
+  const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
+  const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
     qParams.logger(`${StringPadEnd(item[0], longestName, '.')}..${StringPadStart(item[1], longestPercent, '.')}`);
   }

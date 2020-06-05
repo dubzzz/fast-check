@@ -42,17 +42,17 @@ class DedupArbitrary<T> extends Arbitrary<T[]> {
     if (cloneable) {
       DedupArbitrary.makeItCloneable(vs, items);
     }
-    return new Shrinkable(vs, () => stream(this.shrinkImpl(items)).map(v => this.wrapper(v)));
+    return new Shrinkable(vs, () => stream(this.shrinkImpl(items)).map((v) => this.wrapper(v)));
   }
   private *shrinkImpl(items: Shrinkable<T>[]): IterableIterator<Shrinkable<T>[]> {
     if (items.length === 0) {
       return;
     }
-    const its = items.map(s => s.shrink()[Symbol.iterator]());
-    let cur = its.map(it => it.next());
+    const its = items.map((s) => s.shrink()[Symbol.iterator]());
+    let cur = its.map((it) => it.next());
     while (!cur[0].done) {
-      yield cur.map(c => c.value);
-      cur = its.map(it => it.next());
+      yield cur.map((c) => c.value);
+      cur = its.map((it) => it.next());
     }
   }
 }

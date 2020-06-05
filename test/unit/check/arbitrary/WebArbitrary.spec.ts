@@ -30,15 +30,15 @@ describe('WebArbitrary', () => {
               withIPv6: fc.boolean(),
               withIPv4Extended: fc.boolean(),
               withUserInfo: fc.boolean(),
-              withPort: fc.boolean()
+              withPort: fc.boolean(),
             },
             { withDeletedKeys: true }
           ),
           withQueryParameters: fc.boolean(),
-          withFragments: fc.boolean()
+          withFragments: fc.boolean(),
         },
         { withDeletedKeys: true }
-      )
+      ),
     });
   });
 });

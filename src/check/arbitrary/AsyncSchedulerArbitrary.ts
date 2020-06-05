@@ -164,7 +164,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       schedulingType,
       taskId,
       label,
-      outputValue: data !== undefined ? stringify(data) : undefined
+      outputValue: data !== undefined ? stringify(data) : undefined,
     });
   }
 
@@ -180,11 +180,11 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
         (thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task).then(
-          data => {
+          (data) => {
             this.log(schedulingType, taskId, label, 'resolved', data);
             return resolve(data);
           },
-          err => {
+          (err) => {
             this.log(schedulingType, taskId, label, 'rejected', err);
             return reject(err);
           }
@@ -197,7 +197,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       trigger: trigger!,
       schedulingType,
       taskId,
-      label
+      label,
     });
     return scheduledPromise;
   }
@@ -226,7 +226,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const dummyResolvedPromise: PromiseLike<any> = { then: (f: () => any) => f() };
 
     let resolveSequenceTask = () => {};
-    const sequenceTask = new Promise<void>(resolve => (resolveSequenceTask = resolve));
+    const sequenceTask = new Promise<void>((resolve) => (resolveSequenceTask = resolve));
 
     sequenceBuilders
       .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem<TMetaData>) => {
@@ -262,7 +262,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     return Object.assign(status, {
       task: Promise.resolve(sequenceTask).then(() => {
         return { done: status.done, faulty: status.faulty };
-      })
+      }),
     });
   }
 
@@ -302,9 +302,9 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           status: 'pending',
           schedulingType: t.schedulingType,
           taskId: t.taskId,
-          label: t.label
+          label: t.label,
         })
-      )
+      ),
     ];
   }
 
@@ -313,7 +313,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       'schedulerFor()`\n' +
       this.report()
         .map(SchedulerImplem.buildLog)
-        .map(log => `-> ${log}`)
+        .map((log) => `-> ${log}`)
         .join('\n') +
       '`'
     );
@@ -336,7 +336,7 @@ class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
         clone: () => buildNextTaskIndex(r.clone()),
         nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]) => {
           return r.nextInt(0, scheduledTasks.length - 1);
-        }
+        },
       };
     };
     return new Shrinkable(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())));
@@ -411,7 +411,7 @@ function schedulerFor<TMetaData = unknown>(
     ? constraintsOrUndefined || {}
     : customOrderingOrConstraints || {};
 
-  const buildSchedulerFor = function(ordering: number[]) {
+  const buildSchedulerFor = function (ordering: number[]) {
     const buildNextTaskIndex = () => {
       let numTasks = 0;
       return {
@@ -420,13 +420,13 @@ function schedulerFor<TMetaData = unknown>(
           if (ordering.length <= numTasks) {
             throw new Error(`Invalid schedulerFor defined: too many tasks have been scheduled`);
           }
-          const taskIndex = scheduledTasks.findIndex(t => t.taskId === ordering[numTasks]);
+          const taskIndex = scheduledTasks.findIndex((t) => t.taskId === ordering[numTasks]);
           if (taskIndex === -1) {
             throw new Error(`Invalid schedulerFor defined: unable to find next task`);
           }
           ++numTasks;
           return taskIndex;
-        }
+        },
       };
     };
     return new SchedulerImplem<TMetaData>(act, buildNextTaskIndex());
@@ -434,7 +434,7 @@ function schedulerFor<TMetaData = unknown>(
   if (Array.isArray(customOrderingOrConstraints)) {
     return buildSchedulerFor(customOrderingOrConstraints);
   } else {
-    return function(_strs: TemplateStringsArray, ...ordering: number[]) {
+    return function (_strs: TemplateStringsArray, ...ordering: number[]) {
       return buildSchedulerFor(ordering);
     };
   }

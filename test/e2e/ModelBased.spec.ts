@@ -38,16 +38,16 @@ class SizeCommand implements fc.Command<Model, IList<number>> {
   toString = () => 'size';
 }
 const allCommands = [
-  fc.integer().map(v => new PushCommand(v)),
+  fc.integer().map((v) => new PushCommand(v)),
   fc.constant(new PopCommand()),
-  fc.constant(new SizeCommand())
+  fc.constant(new SizeCommand()),
 ];
 
 const seed = Date.now();
 describe(`Model Based (seed: ${seed})`, () => {
   it('should not detect any issue on built-in list', () => {
     fc.assert(
-      fc.property(fc.commands(allCommands, 100), cmds => {
+      fc.property(fc.commands(allCommands, 100), (cmds) => {
         class BuiltinList implements IList<number> {
           data: number[] = [];
           push = (v: number) => this.data.push(v);

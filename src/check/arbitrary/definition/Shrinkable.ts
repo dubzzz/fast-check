@@ -69,7 +69,7 @@ export class Shrinkable<T, TShrink extends T = T> {
    * @returns New shrinkable with mapped elements
    */
   map<U>(mapper: (t: T) => U): Shrinkable<U> {
-    return new Shrinkable<U>(this.applyMapper(mapper), () => this.shrink().map(v => v.map<U>(mapper)));
+    return new Shrinkable<U>(this.applyMapper(mapper), () => this.shrink().map((v) => v.map<U>(mapper)));
   }
 
   /**
@@ -105,7 +105,7 @@ export class Shrinkable<T, TShrink extends T = T> {
     return new Shrinkable<T, U>(this.value, () =>
       this.shrink()
         .filter(refinementOnShrinkable)
-        .map(v => v.filter(refinement))
+        .map((v) => v.filter(refinement))
     );
   }
 }

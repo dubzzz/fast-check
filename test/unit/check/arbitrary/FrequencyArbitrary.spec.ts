@@ -14,7 +14,7 @@ describe('FrequencyArbitrary', () => {
     it('Should produce the same as oneof when called on weights of 1', () =>
       fc.assert(
         fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, choices) => {
-          const gFreq = frequency(...choices.map(c => Object({ weight: 1, arbitrary: stubArb.counter(c) }))).generate(
+          const gFreq = frequency(...choices.map((c) => Object({ weight: 1, arbitrary: stubArb.counter(c) }))).generate(
             rng(seed)
           ).value;
           const gOneOf = oneof(...choices.map(stubArb.counter)).generate(rng(seed)).value;
@@ -29,7 +29,7 @@ describe('FrequencyArbitrary', () => {
           const choicesOneOf = [...choices].reduce((p: number[], c) => p.concat(...expand(c[0], c[1])), []);
 
           const gFreq = frequency(
-            ...choices.map(c => Object({ weight: c[1], arbitrary: stubArb.counter(c[0]) }))
+            ...choices.map((c) => Object({ weight: c[1], arbitrary: stubArb.counter(c[0]) }))
           ).generate(rng(seed)).value;
           const gOneOf = oneof(...choicesOneOf.map(stubArb.counter)).generate(rng(seed)).value;
           return gFreq === gOneOf;

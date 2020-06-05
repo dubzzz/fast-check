@@ -30,10 +30,7 @@ const maxShrinksToAsk = 100;
 const seed = Date.now();
 describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
   const iterateOverShrunkValues = <T>(s: fc.Shrinkable<T>) => {
-    const it = s
-      .shrink()
-      .take(maxShrinksToAsk)
-      [Symbol.iterator]();
+    const it = s.shrink().take(maxShrinksToAsk)[Symbol.iterator]();
     let cur = it.next();
     while (!cur.done) {
       cur = it.next();
@@ -60,7 +57,10 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
       }
     }
 
-    const out = fc.check(fc.property(new InfiniteShrinkingDepth(), _n => false), { seed });
+    const out = fc.check(
+      fc.property(new InfiniteShrinkingDepth(), (_n) => false),
+      { seed }
+    );
     expect(out.failed).toBe(true);
     expect(out.counterexamplePath).toBe([...Array(maxDepthForArrays + 1)].map(() => '0').join(':'));
   });
@@ -111,7 +111,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     }
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
-    const arb = fc.commands([fc.boolean().map(b => new AnyCommand(b))], { maxCommands: maxDepthForArrays });
+    const arb = fc.commands([fc.boolean().map((b) => new AnyCommand(b))], { maxCommands: maxDepthForArrays });
     let s: fc.Shrinkable<Iterable<fc.Command<{}, {}>>> | null = null;
     while (s === null) {
       const tempShrinkable = arb.generate(mrng);

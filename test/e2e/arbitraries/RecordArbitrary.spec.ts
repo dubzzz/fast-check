@@ -7,9 +7,12 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
       const recordModel = {
         aa: fc.integer(),
         bb: fc.object(),
-        cc: fc.string()
+        cc: fc.string(),
       };
-      const out = fc.check(fc.property(fc.record(recordModel), obj => obj.cc.length <= 2), { seed: seed });
+      const out = fc.check(
+        fc.property(fc.record(recordModel), (obj) => obj.cc.length <= 2),
+        { seed: seed }
+      );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toStrictEqual([{ aa: 0, bb: {}, cc: '   ' }]);
     });
@@ -17,11 +20,14 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
       const recordModel = {
         aa: fc.integer(),
         bb: fc.object(),
-        cc: fc.string()
+        cc: fc.string(),
       };
-      const out = fc.check(fc.property(fc.record(recordModel, { withDeletedKeys: true }), obj => obj.bb == null), {
-        seed: seed
-      });
+      const out = fc.check(
+        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj) => obj.bb == null),
+        {
+          seed: seed,
+        }
+      );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toStrictEqual([{ bb: {} }]);
     });
@@ -32,10 +38,10 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         enableC: fc.boolean(),
         enableD: fc.boolean(),
         forcePositiveOutput: fc.boolean(),
-        forceNegativeOutput: fc.boolean()
+        forceNegativeOutput: fc.boolean(),
       };
       const out = fc.check(
-        fc.property(fc.record(recordModel, { withDeletedKeys: true }), obj => {
+        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj) => {
           if (obj.forcePositiveOutput === true && obj.forceNegativeOutput === true) return false;
           return true;
         }),

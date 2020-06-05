@@ -14,7 +14,7 @@ class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
     super();
   }
   private wrapper(value: bigint, shrunkOnce: boolean): Shrinkable<bigint> {
-    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map(v => this.wrapper(v, true)));
+    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<bigint> {
     return this.wrapper(mrng.nextBigInt(this.min, this.max), false);

@@ -11,15 +11,15 @@ const sampler = (fc, arb) => fc.sample(arb.noShrink());
 const algos = [
   { name: 'run.complex', run: runComplexFailure },
   { name: 'run.array', run: runArraySuccess },
-  { name: 'gen.array', run: fc => sampler(fc, fc.array(fc.constant('a'))) },
-  { name: 'gen.stringOf', run: fc => sampler(fc, fc.stringOf(fc.constant('a'))) },
-  { name: 'gen.string', run: fc => sampler(fc, fc.string()) },
-  { name: 'gen.asciiString', run: fc => sampler(fc, fc.asciiString()) },
-  { name: 'gen.string16bits', run: fc => sampler(fc, fc.string16bits()) },
-  { name: 'gen.unicodeString', run: fc => sampler(fc, fc.unicodeString()) },
-  { name: 'gen.fullUnicodeString', run: fc => sampler(fc, fc.fullUnicodeString()) },
-  { name: 'gen.hexaString', run: fc => sampler(fc, fc.hexaString()) },
-  { name: 'gen.base64String', run: fc => sampler(fc, fc.base64String()) }
+  { name: 'gen.array', run: (fc) => sampler(fc, fc.array(fc.constant('a'))) },
+  { name: 'gen.stringOf', run: (fc) => sampler(fc, fc.stringOf(fc.constant('a'))) },
+  { name: 'gen.string', run: (fc) => sampler(fc, fc.string()) },
+  { name: 'gen.asciiString', run: (fc) => sampler(fc, fc.asciiString()) },
+  { name: 'gen.string16bits', run: (fc) => sampler(fc, fc.string16bits()) },
+  { name: 'gen.unicodeString', run: (fc) => sampler(fc, fc.unicodeString()) },
+  { name: 'gen.fullUnicodeString', run: (fc) => sampler(fc, fc.fullUnicodeString()) },
+  { name: 'gen.hexaString', run: (fc) => sampler(fc, fc.hexaString()) },
+  { name: 'gen.base64String', run: (fc) => sampler(fc, fc.base64String()) },
 ];
 
 for (const a of algos) {
@@ -28,12 +28,12 @@ for (const a of algos) {
       new Benchmark(`Reference..${a.name}`, () => a.run(fcOld), benchConf),
       new Benchmark(`Test.......${a.name}`, () => a.run(fcNew), benchConf),
       new Benchmark(`Reference..${a.name}`, () => a.run(fcOld), benchConf),
-      new Benchmark(`Test.......${a.name}`, () => a.run(fcNew), benchConf)
+      new Benchmark(`Test.......${a.name}`, () => a.run(fcNew), benchConf),
     ],
     {
       name: 'run',
       queued: true,
-      onCycle: event => console.log(String(event.target))
+      onCycle: (event) => console.log(String(event.target)),
     }
   );
 }

@@ -28,7 +28,7 @@ describe('ArbitraryWithShrink', () => {
         arbWithShrink
           .shrinkableFor(5)
           .shrink()
-          .map(s => s.value)
+          .map((s) => s.value)
       )
     ).toEqual([5, 6, 7, 8, 9]);
   });
@@ -40,14 +40,14 @@ describe('ArbitraryWithShrink', () => {
           .shrink()
           .getNthOrLast(2)!
           .shrink()
-          .map(s => s.value)
+          .map((s) => s.value)
       )
     ).toEqual([0, 7, 8, 9, 10, 11, 12, 13]);
   });
 
   const smallIntWithShrink = new (class extends ArbitraryWithShrink<number> {
     private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
-      return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map(v => this.wrapper(v, true)));
+      return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
     }
     generate(mrng: Random): Shrinkable<number> {
       return this.wrapper(mrng.nextInt(0, 10), false);
@@ -75,7 +75,7 @@ describe('ArbitraryWithShrink', () => {
         while (stop) {
           const generatedTab = Array.from(generatedShrinks);
           const fromValueTab = Array.from(fromValueShrinks);
-          expect(generatedTab.map(s => s.value)).toEqual(fromValueTab.map(s => s.value));
+          expect(generatedTab.map((s) => s.value)).toEqual(fromValueTab.map((s) => s.value));
           if (generatedTab.length === 0) {
             stop = true;
           } else {

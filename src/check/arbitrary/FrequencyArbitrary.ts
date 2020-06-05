@@ -29,7 +29,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     throw new Error(`Unable to generate from fc.frequency`);
   }
   withBias(freq: number) {
-    return new FrequencyArbitrary(this.warbs.map(v => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })));
+    return new FrequencyArbitrary(this.warbs.map((v) => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })));
   }
 }
 
@@ -38,7 +38,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
  * given the type of the source arbitraries
  */
 type FrequencyArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
-  [K in keyof Ts]: Ts[K] extends WeightedArbitrary<infer U> ? U : never
+  [K in keyof Ts]: Ts[K] extends WeightedArbitrary<infer U> ? U : never;
 }[number];
 
 /**

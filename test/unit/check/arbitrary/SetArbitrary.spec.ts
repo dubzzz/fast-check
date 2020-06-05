@@ -11,8 +11,8 @@ const customMapper = (v: number) => {
 };
 const customCompare = (a: { key: number }, b: { key: number }) => a.key === b.key;
 
-const validSet = (s: number[]) => s.length === new Set(s).size && s.every(e => typeof e === 'number');
-const validCustomSet = (s: { key: number }[]) => validSet(s.map(v => v.key));
+const validSet = (s: number[]) => s.length === new Set(s).size && s.every((e) => typeof e === 'number');
+const validCustomSet = (s: { key: number }[]) => validSet(s.map((v) => v.key));
 
 const isStrictlySmallerSet = (arr1: number[], arr2: number[]) => {
   if (arr1.length > arr2.length) return false;
@@ -26,17 +26,20 @@ const isStrictlySmallerSet = (arr1: number[], arr2: number[]) => {
   return true;
 };
 const isStrictlySmallerCustomSet = (arr1: { key: number }[], arr2: { key: number }[]) =>
-  isStrictlySmallerSet(arr1.map(v => v.key), arr2.map(v => v.key));
+  isStrictlySmallerSet(
+    arr1.map((v) => v.key),
+    arr2.map((v) => v.key)
+  );
 
 describe('SetArbitrary', () => {
   describe('buildCompareFilter', () => {
     it('Should filter array from duplicated values', () =>
       fc.assert(
-        fc.property(fc.array(fc.nat()), tab => {
+        fc.property(fc.array(fc.nat()), (tab) => {
           const filter = buildCompareFilter<number>((a, b) => a === b);
-          const adaptedTab = tab.map(v => new Shrinkable(v));
+          const adaptedTab = tab.map((v) => new Shrinkable(v));
           const filteredTab = filter(adaptedTab);
-          expect(validSet(filteredTab.map(s => s.value))).toBe(true);
+          expect(validSet(filteredTab.map((s) => s.value))).toBe(true);
         })
       ));
   });
@@ -44,20 +47,20 @@ describe('SetArbitrary', () => {
     describe('Given no length constraints [unique items only]', () => {
       genericHelper.isValidArbitrary(() => set(nat()), {
         isStrictlySmallerValue: isStrictlySmallerSet,
-        isValidValue: (g: number[]) => validSet(g)
+        isValidValue: (g: number[]) => validSet(g),
       });
     });
     describe('Given no length constraints but comparator [unique items for the specified comparator]', () => {
       genericHelper.isValidArbitrary(() => set(nat().map(customMapper), customCompare), {
         isStrictlySmallerValue: isStrictlySmallerCustomSet,
-        isValidValue: (g: { key: number }[]) => validCustomSet(g)
+        isValidValue: (g: { key: number }[]) => validCustomSet(g),
       });
     });
     describe('Given maximal length only', () => {
       genericHelper.isValidArbitrary((maxLength: number) => set(nat(), maxLength), {
         seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerSet,
-        isValidValue: (g: number[], maxLength: number) => validSet(g) && g.length <= maxLength
+        isValidValue: (g: number[], maxLength: number) => validSet(g) && g.length <= maxLength,
       });
     });
     describe('Given minimal and maximal lengths', () => {
@@ -67,7 +70,7 @@ describe('SetArbitrary', () => {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
           isStrictlySmallerValue: isStrictlySmallerSet,
           isValidValue: (g: number[], constraints: { min: number; max: number }) =>
-            validSet(g) && g.length >= constraints.min && g.length <= constraints.max
+            validSet(g) && g.length >= constraints.min && g.length <= constraints.max,
         }
       );
     });

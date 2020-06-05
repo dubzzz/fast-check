@@ -106,7 +106,7 @@ export class RunExecution<Ts> {
         error: this.failure,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,
-        verbose: this.verbosity
+        verbose: this.verbosity,
       };
     }
     if (this.numSkips > maxSkips) {
@@ -123,7 +123,7 @@ export class RunExecution<Ts> {
         error: null,
         failures: [],
         executionSummary: this.rootExecutionTrees,
-        verbose: this.verbosity
+        verbose: this.verbosity,
       };
     }
     return {
@@ -138,7 +138,7 @@ export class RunExecution<Ts> {
       error: null,
       failures: [],
       executionSummary: this.rootExecutionTrees,
-      verbose: this.verbosity
+      verbose: this.verbosity,
     };
   }
 }

@@ -45,7 +45,7 @@ export class LazyArbitrary extends Arbitrary<any> {
       arb: this.underlying,
       lvl: this.numBiasLevels,
       freq,
-      biasedArb
+      biasedArb,
     };
     return biasedArb;
   }

@@ -36,7 +36,7 @@ describe('Runner', () => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
           ++numCallsRun;
           return null;
-        }
+        },
       };
       const out = check(p) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(100);
@@ -57,7 +57,7 @@ describe('Runner', () => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
           ++numCallsRun;
           return null;
-        }
+        },
       };
       const out = check(p, { path: '3002' }) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(100);
@@ -79,7 +79,7 @@ describe('Runner', () => {
         run: () => {
           ++numCallsRun;
           return null;
-        }
+        },
       };
       const out = check(p, { path: '3002:0' }) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(1);
@@ -88,7 +88,7 @@ describe('Runner', () => {
     });
     it('Should ignore precondition failure runs and generate another value', async () => {
       const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
-      const successfulRunIdsArb = gapsBetweenSuccessesArb.map(gaps =>
+      const successfulRunIdsArb = gapsBetweenSuccessesArb.map((gaps) =>
         gaps.reduce((prev: number[], cur: number) => {
           prev.push(prev.length === 0 ? cur : prev[prev.length - 1] + cur + 1);
           return prev;
@@ -110,7 +110,7 @@ describe('Runner', () => {
                 const successId = successIds.indexOf(value[0]);
                 if (successId !== -1) return successId === failAtId ? 'failed' : null;
                 return new PreconditionFailure();
-              }
+              },
             };
             const out = await check(p);
             if (failAtId == null) {
@@ -137,7 +137,7 @@ describe('Runner', () => {
     it('Should fail on too many precondition failures', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.nat(1000).chain(v => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
+          fc.nat(1000).chain((v) => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
           fc.boolean(),
           async (settings, isAsyncProp) => {
             let numCallsGenerate = 0;
@@ -149,7 +149,7 @@ describe('Runner', () => {
                 if (value[0] === settings.onlySuccessId) return null;
                 ++numPreconditionFailures;
                 return new PreconditionFailure();
-              }
+              },
             };
             const out = await check(p, { numRuns: 2, maxSkipsPerRun: settings.maxSkipsPerRun });
             const expectedSkips = 2 * settings.maxSkipsPerRun + 1;
@@ -176,7 +176,7 @@ describe('Runner', () => {
         run: (_value: [number]) => {
           ++numCallsRun;
           return null;
-        }
+        },
       };
       const out = check(p) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(100);
@@ -196,7 +196,7 @@ describe('Runner', () => {
             },
             run: (_value: [number]) => {
               return ++numCallsRun < num ? null : 'error';
-            }
+            },
           };
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
           expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
@@ -209,7 +209,7 @@ describe('Runner', () => {
       ));
     it('Should alter the number of runs when asked to', () =>
       fc.assert(
-        fc.property(fc.nat(MAX_NUM_RUNS), num => {
+        fc.property(fc.nat(MAX_NUM_RUNS), (num) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: IRawProperty<[number]> = {
@@ -221,7 +221,7 @@ describe('Runner', () => {
             run: (_value: [number]) => {
               ++numCallsRun;
               return null;
-            }
+            },
           };
           const out = check(p, { numRuns: num }) as RunDetails<[number]>;
           expect(numCallsGenerate).toEqual(num);
@@ -232,8 +232,8 @@ describe('Runner', () => {
       ));
     it('Should generate the same values given the same seeds', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
-          const buildPropertyFor = function(runOn: number[]) {
+        fc.property(fc.integer(), (seed) => {
+          const buildPropertyFor = function (runOn: number[]) {
             const p: IRawProperty<[number]> = {
               isAsync: () => false,
               generate: (rng: Random) => {
@@ -242,7 +242,7 @@ describe('Runner', () => {
               run: (value: [number]) => {
                 runOn.push(value[0]);
                 return null;
-              }
+              },
             };
             return p;
           };
@@ -264,7 +264,7 @@ describe('Runner', () => {
         },
         run: (_value: [number]) => {
           return 'failure';
-        }
+        },
       };
       const out = check(p, { endOnFailure: true }) as RunDetails<[number]>;
       expect(out.failed).toBe(true);
@@ -274,7 +274,7 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          const g = function*() {
+          const g = function* () {
             yield new Shrinkable([42], () => {
               throw 'Not implemented';
             }) as Shrinkable<[number]>;
@@ -283,7 +283,7 @@ describe('Runner', () => {
         },
         run: (value: [number]) => {
           return value[0] === 42 ? 'failure' : null;
-        }
+        },
       };
       const out = check(p, { path: '0:0', endOnFailure: true }) as RunDetails<[number]>;
       expect(out.failed).toBe(true);
@@ -293,20 +293,20 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => new Shrinkable([42]) as Shrinkable<[number]>,
-        run: () => 'failure'
+        run: () => 'failure',
       };
       const out = check(p) as RunDetails<[number]>;
       expect(out.failures).toHaveLength(0);
     });
     it('Should provide the list of failures in verbose mode', () => {
-      const g = function*() {
+      const g = function* () {
         yield new Shrinkable([48]) as Shrinkable<[number]>;
         yield new Shrinkable([12]) as Shrinkable<[number]>;
       };
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => new Shrinkable([42], () => stream(g())) as Shrinkable<[number]>,
-        run: () => 'failure'
+        run: () => 'failure',
       };
       const out = check(p, { verbose: true }) as RunDetails<[number]>;
       expect(out.failures).not.toHaveLength(0);
@@ -320,7 +320,7 @@ describe('Runner', () => {
           // Basically it must fail before the end of the execution (100 runs by default)
           // so failure points are between 0 and 99 inclusive
 
-          const deepShrinkable = function(depth: number): Shrinkable<[number]> {
+          const deepShrinkable = function (depth: number): Shrinkable<[number]> {
             if (depth <= 0) return new Shrinkable([0]) as Shrinkable<[number]>;
             function* g(subDepth: number): IterableIterator<Shrinkable<[number]>> {
               while (true) yield deepShrinkable(subDepth);
@@ -337,7 +337,7 @@ describe('Runner', () => {
               if (--remainingBeforeFailure >= 0) return null;
               remainingBeforeFailure = failurePoints[++idx];
               return 'failure';
-            }
+            },
           };
           const expectedFailurePath = failurePoints.join(':');
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
@@ -351,7 +351,7 @@ describe('Runner', () => {
     it('Should wait on async properties to complete', async () =>
       fc.assert(
         fc.asyncProperty(fc.integer(1, 100), fc.integer(), async (num, seed) => {
-          const delay = () => new Promise(resolve => setTimeout(resolve, 0));
+          const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;
           const waitingResolve: (() => void)[] = [];
@@ -362,17 +362,17 @@ describe('Runner', () => {
             generate: () => {
               ++numCallsGenerate;
               const shrinkedValue = new Shrinkable([42]) as Shrinkable<[number]>;
-              const g = function*() {
+              const g = function* () {
                 yield shrinkedValue;
               };
               return new Shrinkable([1], () => new Stream(g())) as Shrinkable<[number]>;
             },
             run: async (_value: [number]) => {
-              await new Promise(resolve => {
+              await new Promise((resolve) => {
                 waitingResolve.push(resolve);
               });
               return ++numCallsRun < num ? null : 'error';
-            }
+            },
           };
           const checker = check(p, { seed: seed }) as Promise<RunDetails<[number]>>;
           checker.then(() => (runnerHasCompleted = true));
@@ -402,27 +402,27 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (_value: [number]) => null
+        run: async (_value: [number]) => null,
       };
       const out = await (check(p) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(false);
     });
     it('Should not timeout if timeout not reached', async () => {
-      const wait = (timeMs: number) => new Promise<null>(resolve => setTimeout(resolve, timeMs));
+      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(resolve, timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (_value: [number]) => await wait(0)
+        run: async (_value: [number]) => await wait(0),
       };
       const out = await (check(p, { timeout: 100 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(false);
     });
     it('Should timeout if it reached the timeout', async () => {
-      const wait = (timeMs: number) => new Promise<null>(resolve => setTimeout(resolve, timeMs));
+      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(resolve, timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (_value: [number]) => await wait(100)
+        run: async (_value: [number]) => await wait(100),
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(true);
@@ -432,7 +432,7 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
-        run: async (_value: [number]) => await neverEnds()
+        run: async (_value: [number]) => await neverEnds(),
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(true);
@@ -444,17 +444,17 @@ describe('Runner', () => {
     const failingProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
       generate: () => new Shrinkable([v1, v2]) as Shrinkable<[any, any]>,
-      run: (_v: [any, any]) => 'error in failingProperty'
+      run: (_v: [any, any]) => 'error in failingProperty',
     };
     const failingComplexProperty: IRawProperty<[any, any, any]> = {
       isAsync: () => false,
       generate: () => new Shrinkable([[v1, v2], v2, v1]) as Shrinkable<[any, any, any]>,
-      run: (_v: [any, any, any]) => 'error in failingComplexProperty'
+      run: (_v: [any, any, any]) => 'error in failingComplexProperty',
     };
     const successProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
       generate: () => new Shrinkable([v1, v2]) as Shrinkable<[any, any]>,
-      run: (_v: [any, any]) => null
+      run: (_v: [any, any]) => null,
     };
 
     it('Should throw if property is null', () => {
@@ -494,13 +494,13 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          const g = function*() {
+          const g = function* () {
             yield new Shrinkable([48]) as Shrinkable<[number]>;
             yield new Shrinkable([12]) as Shrinkable<[number]>;
           };
           return new Shrinkable([42], () => stream(g())) as Shrinkable<[number]>;
         },
-        run: () => 'failure'
+        run: () => 'failure',
       };
       it('Should throw with base message by default (no verbose)', () => {
         expect(() => rAssert(p)).toThrowError(baseErrorMessage);
@@ -537,7 +537,7 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => new Shrinkable([42]) as Shrinkable<[number]>,
-        run: () => new PreconditionFailure()
+        run: () => new PreconditionFailure(),
       };
       it('Should throw with base message by default (no verbose)', () => {
         expect(() => rAssert(p)).toThrowError(baseErrorMessage);

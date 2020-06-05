@@ -17,7 +17,7 @@ class ForwardArbitrary extends Arbitrary<number> {
     function* g(vv: number): IterableIterator<number> {
       yield* [...Array(50)].map((u, i) => i + vv);
     }
-    return new Shrinkable(v, () => stream(g(v)).map(vv => this.shrinkableFor(vv)));
+    return new Shrinkable(v, () => stream(g(v)).map((vv) => this.shrinkableFor(vv)));
   }
   generate(mrng: Random): Shrinkable<number> {
     return this.shrinkableFor(mrng.nextInt());
@@ -60,7 +60,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng).value;
+          const g = new ForwardArbitrary().filter((v) => v % 3 === 0).generate(mrng).value;
           expect(g % 3 === 0).toBe(true);
           return true;
         })
@@ -69,8 +69,8 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng);
-          expect(shrinkable.shrink().every(s => s.value % 3 === 0)).toBe(true);
+          const shrinkable = new ForwardArbitrary().filter((v) => v % 3 === 0).generate(mrng);
+          expect(shrinkable.shrink().every((s) => s.value % 3 === 0)).toBe(true);
           return true;
         })
       ));
@@ -78,12 +78,12 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = new ForwardArbitrary().filter(v => v % 3 === 0).generate(mrng);
+          const shrinkable = new ForwardArbitrary().filter((v) => v % 3 === 0).generate(mrng);
           expect(
             shrinkable
               .shrink()
-              .flatMap(s => s.shrink())
-              .every(s => s.value % 3 === 0)
+              .flatMap((s) => s.shrink())
+              .every((s) => s.value % 3 === 0)
           ).toBe(true);
           return true;
         })
@@ -92,7 +92,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const arb = new FakeTwoValuesBiasArbitrary().filter(v => v !== 42);
+          const arb = new FakeTwoValuesBiasArbitrary().filter((v) => v !== 42);
           const biasedArb = arb.withBias(2); // this arbitrary is always 100% biased (see its code)
           const g = biasedArb.generate(mrng).value;
           expect(g).toEqual(43);
@@ -103,7 +103,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const arb = new ForwardArbitrary().filter(v => v !== 42);
+          const arb = new ForwardArbitrary().filter((v) => v !== 42);
           const biasedArb = arb.withBias(2);
           const g = biasedArb.generate(mrng).value;
           expect(g).not.toEqual(42);
@@ -117,7 +117,7 @@ describe('Arbitrary', () => {
         fc.property(fc.integer(), (seed: number) => {
           const mrng1 = stubRng.mutable.fastincrease(seed);
           const mrng2 = stubRng.mutable.fastincrease(seed);
-          const g = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng1).value;
+          const g = new ForwardArbitrary().map((v) => `value = ${v}`).generate(mrng1).value;
           expect(g).toEqual(`value = ${new ForwardArbitrary().generate(mrng2).value}`);
           return true;
         })
@@ -126,8 +126,8 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng);
-          expect(shrinkable.shrink().every(s => s.value.startsWith('value = '))).toBe(true);
+          const shrinkable = new ForwardArbitrary().map((v) => `value = ${v}`).generate(mrng);
+          expect(shrinkable.shrink().every((s) => s.value.startsWith('value = '))).toBe(true);
           return true;
         })
       ));
@@ -135,12 +135,12 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = new ForwardArbitrary().map(v => `value = ${v}`).generate(mrng);
+          const shrinkable = new ForwardArbitrary().map((v) => `value = ${v}`).generate(mrng);
           expect(
             shrinkable
               .shrink()
-              .flatMap(s => s.shrink())
-              .every(s => s.value.startsWith('value = '))
+              .flatMap((s) => s.shrink())
+              .every((s) => s.value.startsWith('value = '))
           ).toBe(true);
           return true;
         })
@@ -149,7 +149,7 @@ describe('Arbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed: number) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const arb = new ForwardArbitrary().map(v => `value = ${v}`);
+          const arb = new ForwardArbitrary().map((v) => `value = ${v}`);
           const biasedArb = arb.withBias(1); // 100% of bias - not recommended outside of tests
           const g = biasedArb.generate(mrng).value;
           expect(g).toEqual(`value = 42`);
@@ -186,7 +186,7 @@ describe('Arbitrary', () => {
 
     describe('Should abide by arbitraries rules', () => {
       genericHelper.isValidArbitrary(() => nat(100).chain((v: number) => tuple(nat(v), constant(v))), {
-        isValidValue: (g: [number, number]) => g[0] <= g[1]
+        isValidValue: (g: [number, number]) => g[0] <= g[1],
       });
     });
   });

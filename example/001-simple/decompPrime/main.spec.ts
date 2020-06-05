@@ -7,7 +7,7 @@ const MAX_INPUT = 65536;
 describe('decompPrime', () => {
   it('should produce an array such as the product equals the input', () => {
     fc.assert(
-      fc.property(fc.nat(MAX_INPUT), n => {
+      fc.property(fc.nat(MAX_INPUT), (n) => {
         const factors = decompPrime(n);
         const productOfFactors = factors.reduce((a, b) => a * b, 1);
         return productOfFactors === n;

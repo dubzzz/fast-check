@@ -2,7 +2,7 @@
 
 /** @hidden */
 // tslint:disable
-const internalGlobalThis: any = (function(global) {
+const internalGlobalThis: any = (function (global) {
   return global.globalThis ? global.globalThis : global;
 })(typeof this === 'object' ? this : Function('return this')());
 

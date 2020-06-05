@@ -6,7 +6,7 @@ import {
   EvenCommand,
   OddCommand,
   CheckLessThanCommand,
-  SuccessAlwaysCommand
+  SuccessAlwaysCommand,
 } from './CounterCommands';
 
 const seed = Date.now();
@@ -17,18 +17,18 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         fc.property(
           fc.commands(
             [
-              fc.nat().map(n => new IncreaseCommand(n)),
-              fc.nat().map(n => new DecreaseCommand(n)),
+              fc.nat().map((n) => new IncreaseCommand(n)),
+              fc.nat().map((n) => new DecreaseCommand(n)),
               fc.constant(new EvenCommand()),
               fc.constant(new OddCommand()),
-              fc.nat().map(n => new CheckLessThanCommand(n + 1))
+              fc.nat().map((n) => new CheckLessThanCommand(n + 1)),
             ],
             { disableReplayLog: true, maxCommands: 1000 }
           ),
-          cmds => {
+          (cmds) => {
             const setup = () => ({
               model: { count: 0 },
-              real: {}
+              real: {},
             });
             fc.modelRun(setup, cmds);
           }
@@ -43,10 +43,10 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
     });
     it('Should result in empty commands if failures happen after the run', () => {
       const out = fc.check(
-        fc.property(fc.commands([fc.constant(new SuccessAlwaysCommand())]), cmds => {
+        fc.property(fc.commands([fc.constant(new SuccessAlwaysCommand())]), (cmds) => {
           const setup = () => ({
             model: { count: 0 },
-            real: {}
+            real: {},
           });
           fc.modelRun(setup, cmds);
           return false; // fails after the model, no matter the commands
@@ -70,13 +70,13 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         fc.property(
           fc.array(fc.nat(9), 0, 3),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
-            disableReplayLog: true
+            disableReplayLog: true,
           }),
           fc.array(fc.nat(9), 0, 3),
           (validSteps1, cmds, validSteps2) => {
             const setup = () => ({
               model: { current: { stepId: 0 }, validSteps: [...validSteps1, ...validSteps2] },
-              real: {}
+              real: {},
             });
             fc.modelRun(setup, cmds);
           }
@@ -95,7 +95,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
         fc.property(
           fc.array(fc.nat(9), 0, 3),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
-            disableReplayLog: true
+            disableReplayLog: true,
           }),
           fc.array(fc.nat(9), 0, 3),
           (validSteps1, cmds, validSteps2) => {
@@ -106,7 +106,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
             }
             const setup = () => ({
               model: { current: { stepId: 0 }, validSteps: [...validSteps1, ...validSteps2] },
-              real: {}
+              real: {},
             });
             fc.modelRun(setup, cmds);
           }

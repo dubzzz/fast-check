@@ -5,7 +5,7 @@ import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitra
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 import { Random } from '../../../../../src/random/generator/Random';
 
-const testSameSeedSameValues = function<U, T>(
+const testSameSeedSameValues = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
   assertEquality: (v1: T, v2: T) => void,
@@ -23,7 +23,7 @@ const testSameSeedSameValues = function<U, T>(
     ));
 };
 
-const testSameSeedSameShrinks = function<U, T>(
+const testSameSeedSameShrinks = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
   assertEquality: (v1: T, v2: T) => void,
@@ -54,7 +54,7 @@ const testSameSeedSameShrinks = function<U, T>(
     ));
 };
 
-const testShrinkPathStrictlyDecreasing = function<U, T>(
+const testShrinkPathStrictlyDecreasing = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
   isStrictlySmallerValue: (g1: T, g2: T) => boolean,
@@ -85,7 +85,7 @@ const testShrinkPathStrictlyDecreasing = function<U, T>(
     ));
 };
 
-const testAlwaysGenerateCorrectValues = function<U, T>(
+const testAlwaysGenerateCorrectValues = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
   isValidValue: (g: T, seed: U) => boolean,
@@ -103,7 +103,7 @@ const testAlwaysGenerateCorrectValues = function<U, T>(
     ));
 };
 
-const testAlwaysShrinkToCorrectValues = function<U, T>(
+const testAlwaysShrinkToCorrectValues = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
   isValidValue: (g: T, seed: U) => boolean,
@@ -131,7 +131,7 @@ const testAlwaysShrinkToCorrectValues = function<U, T>(
     ));
 };
 
-export const isValidArbitrary = function<U, T>(
+export const isValidArbitrary = function <U, T>(
   arbitraryBuilder: (u: U) => Arbitrary<T>,
   settings: {
     seedGenerator?: fc.Arbitrary<U>;
@@ -144,10 +144,10 @@ export const isValidArbitrary = function<U, T>(
   const seedGenerator = settings.seedGenerator || fc.constant(undefined);
 
   const biasedSeedGenerator = fc.tuple(fc.option(fc.integer(2, 100), 2), seedGenerator);
-  const biasedArbitraryBuilder = ([biasedFactor, u]: [(number | null), U]) => {
+  const biasedArbitraryBuilder = ([biasedFactor, u]: [number | null, U]) => {
     return biasedFactor != null ? arbitraryBuilder(u).withBias(biasedFactor) : arbitraryBuilder(u);
   };
-  const biasedIsValidValue = (g: T, [_biasedFactor, u]: [(number | null), U]) => {
+  const biasedIsValidValue = (g: T, [_biasedFactor, u]: [number | null, U]) => {
     return settings.isValidValue(g, u);
   };
 
@@ -170,4 +170,4 @@ export const isValidArbitrary = function<U, T>(
 };
 
 export const minMax = <NType extends number | bigint>(arb: fc.Arbitrary<NType>) =>
-  fc.tuple(arb, arb).map(v => ({ min: v[0] < v[1] ? v[0] : v[1], max: v[0] < v[1] ? v[1] : v[0] }));
+  fc.tuple(arb, arb).map((v) => ({ min: v[0] < v[1] ? v[0] : v[1], max: v[0] < v[1] ? v[1] : v[0] }));

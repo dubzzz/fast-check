@@ -10,5 +10,5 @@ export const MusicPlayerCommands = fc.commands([
   fc.constant(new PlayCommand()),
   fc.constant(new PauseCommand()),
   fc.constant(new NextCommand()),
-  fc.record({ position: fc.nat(), trackName: TrackNameArb }).map(d => new AddTrackCommand(d.position, d.trackName))
+  fc.record({ position: fc.nat(), trackName: TrackNameArb }).map((d) => new AddTrackCommand(d.position, d.trackName)),
 ]);

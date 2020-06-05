@@ -7,7 +7,7 @@ const glob = require('glob');
  * @param {string} fileDir
  * @returns {void}
  */
-const mkdirRec = fileDir => {
+const mkdirRec = (fileDir) => {
   if (fs.existsSync(fileDir)) return;
 
   const parentDir = path.dirname(fileDir);
@@ -23,7 +23,7 @@ const mkdirRec = fileDir => {
  * @returns {void}
  */
 const rewriteTypesTo = (toLabel, transformations) => {
-  glob('lib/types/**/*.d.ts', {}, function(err, files) {
+  glob('lib/types/**/*.d.ts', {}, function (err, files) {
     for (const f of files) {
       const newFileName = f.replace('/types/', '/' + toLabel + '/');
       const directoryPath = path.dirname(newFileName);
@@ -42,7 +42,7 @@ const rewriteTypesTo = (toLabel, transformations) => {
  * @param {string} content
  * @returns {string}
  */
-const bigintToAny = content => {
+const bigintToAny = (content) => {
   return content.replace(/([^\w\d]|^)bigint([^\w\d]|$)/g, '$1any$2');
 };
 

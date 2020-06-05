@@ -88,7 +88,7 @@ describe('FunctionArbitrary', () => {
     describe('Is valid arbitrary', () => {
       genericHelper.isValidArbitrary(() => func<[number, number], number>(integer()), {
         isEqual: (f1, f2) => f1(0, 42) === f2(0, 42),
-        isValidValue: f => typeof f === 'function' && typeof f(0, 0) === 'number' && hasCloneMethod(f)
+        isValidValue: (f) => typeof f === 'function' && typeof f(0, 0) === 'number' && hasCloneMethod(f),
       });
     });
   });
@@ -177,7 +177,7 @@ describe('FunctionArbitrary', () => {
     describe('Is valid arbitrary', () => {
       genericHelper.isValidArbitrary(() => compareFunc(), {
         isEqual: (f1, f2) => f1({ k: 0 }, { k: 42 }) === f2({ k: 0 }, { k: 42 }),
-        isValidValue: f => typeof f === 'function' && typeof f({ k: 0 }, { k: 42 }) === 'number' && hasCloneMethod(f)
+        isValidValue: (f) => typeof f === 'function' && typeof f({ k: 0 }, { k: 42 }) === 'number' && hasCloneMethod(f),
       });
     });
   });
@@ -263,7 +263,8 @@ describe('FunctionArbitrary', () => {
     describe('Is valid arbitrary', () => {
       genericHelper.isValidArbitrary(() => compareBooleanFunc(), {
         isEqual: (f1, f2) => f1({ k: 0 }, { k: 42 }) === f2({ k: 0 }, { k: 42 }),
-        isValidValue: f => typeof f === 'function' && typeof f({ k: 0 }, { k: 42 }) === 'boolean' && hasCloneMethod(f)
+        isValidValue: (f) =>
+          typeof f === 'function' && typeof f({ k: 0 }, { k: 42 }) === 'boolean' && hasCloneMethod(f),
       });
     });
   });

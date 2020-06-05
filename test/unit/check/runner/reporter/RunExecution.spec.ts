@@ -14,7 +14,7 @@ describe('RunExecution', () => {
           fc.record({
             value: fc.integer(),
             failureId: fc.nat(1000),
-            message: fc.fullUnicodeString()
+            message: fc.fullUnicodeString(),
           }),
           1,
           10
@@ -43,7 +43,7 @@ describe('RunExecution', () => {
           expect(details.error).toEqual(lastFailure.message);
           expect(details.verbose).toEqual(verbosityLevel);
           expect(details.failures).toEqual(
-            verbosityLevel >= VerbosityLevel.Verbose ? failuresDesc.map(f => f.value) : []
+            verbosityLevel >= VerbosityLevel.Verbose ? failuresDesc.map((f) => f.value) : []
           );
           if (verbosityLevel === VerbosityLevel.None) expect(details.executionSummary).toHaveLength(0);
           else if (verbosityLevel === VerbosityLevel.Verbose) expect(details.executionSummary).toHaveLength(1);
@@ -98,12 +98,12 @@ describe('RunExecution', () => {
         fc.array(
           fc.record({
             status: fc.constantFrom(ExecutionStatus.Success, ExecutionStatus.Failure, ExecutionStatus.Skipped),
-            value: fc.nat()
+            value: fc.nat(),
           }),
           1,
           100
         ),
-        executionStatuses => {
+        (executionStatuses) => {
           // Simulate the run
           const run = new RunExecution<number>(VerbosityLevel.VeryVerbose, false);
           for (let idx = 0; idx !== executionStatuses.length; ++idx) {
@@ -138,7 +138,7 @@ describe('RunExecution', () => {
             }
           }
           expect(details.failures).toEqual(
-            executionStatuses.filter(v => v.status === ExecutionStatus.Failure).map(v => v.value)
+            executionStatuses.filter((v) => v.status === ExecutionStatus.Failure).map((v) => v.value)
           );
         }
       )

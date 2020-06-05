@@ -25,5 +25,5 @@ export enum VerbosityLevel {
    * - {@link VerbosityLevel.None}
    * - all runs with their associated status displayed as a tree
    */
-  VeryVerbose = 2
+  VeryVerbose = 2,
 }

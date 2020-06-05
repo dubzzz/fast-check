@@ -4,15 +4,15 @@ import { IRawProperty } from './IRawProperty';
 
 /** @hidden */
 const timeoutAfter = (timeMs: number) => {
-  let timeoutHandle: (ReturnType<typeof setTimeout>) | null = null;
-  const promise = new Promise<string>(resolve => {
+  let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+  const promise = new Promise<string>((resolve) => {
     timeoutHandle = setTimeout(() => {
       resolve(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
     }, timeMs);
   });
   return {
     clear: () => clearTimeout(timeoutHandle!),
-    promise
+    promise,
   };
 };
 

@@ -83,7 +83,7 @@ export class ReplayPath {
    * Parse switch of value
    */
   private static parseChanges(serializedChanges: string): boolean[] {
-    const changesInt = serializedChanges.split('').map(c => this.b64ToInt(c));
+    const changesInt = serializedChanges.split('').map((c) => this.b64ToInt(c));
     const changes: boolean[] = [];
     for (let idx = 0; idx !== changesInt.length; ++idx) {
       let current = changesInt[idx];
@@ -103,6 +103,6 @@ export class ReplayPath {
    * Parse counts
    */
   private static parseCounts(serializedCount: string): number[] {
-    return serializedCount.split('').map(c => this.b64ToInt(c) + 1);
+    return serializedCount.split('').map((c) => this.b64ToInt(c) + 1);
   }
 }

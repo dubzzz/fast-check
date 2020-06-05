@@ -5,7 +5,7 @@ const seed = Date.now();
 describe(`WebArbitrary (seed: ${seed})`, () => {
   it('Should produce valid domains', () => {
     fc.assert(
-      fc.property(fc.domain(), domain => {
+      fc.property(fc.domain(), (domain) => {
         const p = `http://user:pass@${domain}/path/?query#fragment`;
         const u = new URL(p);
         expect(u.hostname).toEqual(domain);
@@ -20,9 +20,9 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
           withIPv4: false,
           withIPv6: false,
           withUserInfo: true,
-          withPort: true
+          withPort: true,
         }),
-        authority => {
+        (authority) => {
           const domain = /(^|@)([-a-z0-9.]+)(:\d+$|$)/.exec(authority)![2];
           const p = `http://${authority}`;
           const u = new URL(p);
@@ -40,9 +40,9 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
           withIPv6: true,
           withIPv4Extended: true,
           withUserInfo: true,
-          withPort: true
+          withPort: true,
         }),
-        fc.array(fc.webSegment()).map(p => p.map(v => `/${v}`).join('')),
+        fc.array(fc.webSegment()).map((p) => p.map((v) => `/${v}`).join('')),
         fc.webQueryParameters(),
         fc.webFragments(),
         (authority, path, query, fragment) => {
@@ -50,7 +50,7 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
           const u = new URL(p);
           expect({ search: decodeURIComponent(u.search), hash: u.hash }).toEqual({
             search: query === '' ? '' : decodeURIComponent(`?${query}`),
-            hash: fragment === '' ? '' : `#${fragment}`
+            hash: fragment === '' ? '' : `#${fragment}`,
           });
 
           const dotSanitizedPath = path

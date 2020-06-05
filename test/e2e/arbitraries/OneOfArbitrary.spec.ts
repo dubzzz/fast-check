@@ -4,9 +4,12 @@ const seed = Date.now();
 describe(`OneOfArbitrary (seed: ${seed})`, () => {
   describe('oneof', () => {
     it('Should one of the possible element', () => {
-      const out = fc.check(fc.property(fc.oneof(fc.constant(42), fc.constant(5)), (v: number) => v === 42 || v === 5), {
-        seed: seed
-      });
+      const out = fc.check(
+        fc.property(fc.oneof(fc.constant(42), fc.constant(5)), (v: number) => v === 42 || v === 5),
+        {
+          seed: seed,
+        }
+      );
       expect(out.failed).toBe(false);
     });
     it('Should shrink on the underlying arbitrary', () => {

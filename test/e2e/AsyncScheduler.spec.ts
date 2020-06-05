@@ -15,17 +15,17 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         this.state = { heroName: undefined, heroes: undefined };
       }
       componentDidMount() {
-        this.props.fetchHeroName().then(heroName => (this.state = { ...this.state, heroName }));
-        this.props.fetchHeroes().then(heroes => (this.state = { ...this.state, heroes }));
+        this.props.fetchHeroName().then((heroName) => (this.state = { ...this.state, heroName }));
+        this.props.fetchHeroes().then((heroes) => (this.state = { ...this.state, heroes }));
       }
       render() {
         const { heroName, heroes } = this.state;
         if (!heroes) return null;
-        return `got: ${heroes.find(h => h.name === heroName!.toLowerCase())}`;
+        return `got: ${heroes.find((h) => h.name === heroName!.toLowerCase())}`;
       }
     }
     const out = await fc.check(
-      fc.asyncProperty(fc.scheduler(), async s => {
+      fc.asyncProperty(fc.scheduler(), async (s) => {
         const fetchHeroName = s.scheduleFunction(function fetchHeroName() {
           return Promise.resolve('James Bond');
         });
@@ -63,28 +63,28 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         dependencies: {
           titi: '^1.0.0',
           tata: '^2.0.0',
-          tutu: '^3.0.0'
-        }
+          tutu: '^3.0.0',
+        },
       },
       titi: {
         dependencies: {
           noop: '^1.0.0',
-          tutu: '^3.0.0'
-        }
+          tutu: '^3.0.0',
+        },
       },
       tata: {
         dependencies: {
-          noop: '^1.0.0'
-        }
+          noop: '^1.0.0',
+        },
       },
       noop: {
-        dependencies: {}
+        dependencies: {},
       },
       tutu: {
         dependencies: {
-          titi: '^1.0.0'
-        }
-      }
+          titi: '^1.0.0',
+        },
+      },
     };
     const buildGraph = async (
       initialPackageName: string,
@@ -103,7 +103,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         // eslint-disable-next-line require-atomic-updates
         cache[packageName] = packageDef;
 
-        await Promise.all(Object.keys(packageDef.dependencies).map(dependencyName => feedCache(dependencyName)));
+        await Promise.all(Object.keys(packageDef.dependencies).map((dependencyName) => feedCache(dependencyName)));
       };
       await feedCache(initialPackageName);
       return cache; // we just return the cache instead of the garph for simplicity
@@ -142,7 +142,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         }),
         write: s.scheduleFunction(async function write(n: number) {
           value = n;
-        })
+        }),
       };
       s.schedule(Promise.resolve('A')).then(() => inc(db));
       s.schedule(Promise.resolve('B')).then(() => inc(db));
@@ -167,7 +167,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     })()`);
 
     const outRetry = await fc.check(fc.asyncProperty(fc.scheduler(), propertyValidator), {
-      examples: [[(fc.schedulerFor() as any)(...argsForSchedulerFor)]]
+      examples: [[(fc.schedulerFor() as any)(...argsForSchedulerFor)]],
     });
     expect(outRetry.failed).toBe(true);
     expect(outRetry.numRuns).toBe(1);

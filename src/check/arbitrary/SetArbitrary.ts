@@ -22,7 +22,7 @@ function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): (tab: Shrinkab
   return (tab: Shrinkable<T>[]): Shrinkable<T>[] => {
     let finalLength = tab.length;
     for (let idx = tab.length - 1; idx !== -1; --idx) {
-      if (subArrayContains(tab, idx, t => compare(t.value_, tab[idx].value_))) {
+      if (subArrayContains(tab, idx, (t) => compare(t.value_, tab[idx].value_))) {
         --finalLength;
         swap(tab, idx, finalLength);
       }
@@ -95,7 +95,7 @@ function set<T>(
 
   const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, buildCompareFilter(compare));
   if (minLength === 0) return arrayArb;
-  return arrayArb.filter(tab => tab.length >= minLength);
+  return arrayArb.filter((tab) => tab.length >= minLength);
 }
 
 export { set, buildCompareFilter };

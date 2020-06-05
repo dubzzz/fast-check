@@ -6,10 +6,10 @@ export default {
   output: {
     file: 'test/rollup/esm/dist/main.js',
     format: 'iife',
-    name: 'RunFastCheck'
+    name: 'RunFastCheck',
   },
   plugins: [resolve(), cjs()],
-  onwarn: warning => {
+  onwarn: (warning) => {
     if (warning.code !== 'THIS_IS_UNDEFINED') throw warning;
-  }
+  },
 };

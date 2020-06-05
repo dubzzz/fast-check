@@ -26,7 +26,7 @@ type ConstrainedArbitrary<T, Constraints> = Constraints extends DeletedKeys | De
 /** @hidden */
 function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
   const keys = Object.keys(recordModel);
-  const arbs: Arbitrary<any>[] = keys.map(v => (recordModel as { [key: string]: Arbitrary<any> })[v]);
+  const arbs: Arbitrary<any>[] = keys.map((v) => (recordModel as { [key: string]: Arbitrary<any> })[v]);
   return genericTuple(arbs).map((gs: any[]) => {
     const obj: { [key: string]: any } = {};
     for (let idx = 0; idx !== keys.length; ++idx) obj[keys[idx]] = gs[idx];
@@ -70,8 +70,8 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
     [key: string]: Arbitrary<{ value: T } | null>;
   } = {};
   for (const k of Object.keys(recordModel))
-    updatedRecordModel[k] = option((recordModel as { [key: string]: Arbitrary<any> })[k].map(v => ({ value: v })));
-  return rawRecord(updatedRecordModel).map(obj => {
+    updatedRecordModel[k] = option((recordModel as { [key: string]: Arbitrary<any> })[k].map((v) => ({ value: v })));
+  return rawRecord(updatedRecordModel).map((obj) => {
     const nobj: { [key: string]: T } = {};
     for (const k of Object.keys(obj)) {
       if (obj[k] != null) nobj[k] = (obj[k] as { value: T }).value;

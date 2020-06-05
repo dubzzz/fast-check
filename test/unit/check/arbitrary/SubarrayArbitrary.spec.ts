@@ -17,7 +17,10 @@ const isOrderedSubarray = (originalArray: number[], subarray: number[]): boolean
 };
 
 const isSubarray = (originalArray: number[], subarray: number[]): boolean => {
-  return isOrderedSubarray([...originalArray].sort((a, b) => a - b), [...subarray].sort((a, b) => a - b));
+  return isOrderedSubarray(
+    [...originalArray].sort((a, b) => a - b),
+    [...subarray].sort((a, b) => a - b)
+  );
 };
 
 const isStrictlySmallerValue = (current: number[], prev: number[]) => {
@@ -30,7 +33,7 @@ const computeMinMaxFor = (constraints: SubarrayMinMaxConstraits) => {
   const b = constraints.b % (constraints.src.length + 1);
   return {
     min: Math.min(a, b),
-    max: Math.max(a, b)
+    max: Math.max(a, b),
   };
 };
 
@@ -91,11 +94,15 @@ describe('SubarrayArbitrary', () => {
     it('Should raise an error whenever minLength is greater than maxLength', () =>
       fc.assert(
         fc.property(
-          genericHelper.minMax(fc.nat(100)).filter(v => v.min !== v.max),
+          genericHelper.minMax(fc.nat(100)).filter((v) => v.min !== v.max),
           fc.nat(100),
           (minMax: { min: number; max: number }, offset: number) => {
             expect(() => {
-              subarray([...Array(minMax.max + offset)].map(_ => 0), minMax.max, minMax.min);
+              subarray(
+                [...Array(minMax.max + offset)].map((_) => 0),
+                minMax.max,
+                minMax.min
+              );
             }).toThrowError(/minimal length to be inferior or equal to the maximal length/);
           }
         )
@@ -105,7 +112,7 @@ describe('SubarrayArbitrary', () => {
         seedGenerator: fc.record({ src: fc.array(fc.integer()) }),
         isStrictlySmallerValue,
         isValidValue: (g: number[], constraints: { src: number[] }) =>
-          Array.isArray(g) && isOrderedSubarray(constraints.src, g)
+          Array.isArray(g) && isOrderedSubarray(constraints.src, g),
       });
     });
     describe('Given minimal and maximal lengths', () => {
@@ -122,7 +129,7 @@ describe('SubarrayArbitrary', () => {
             return (
               Array.isArray(g) && g.length >= dims.min && g.length <= dims.max && isOrderedSubarray(constraints.src, g)
             );
-          }
+          },
         }
       );
     });
@@ -133,7 +140,7 @@ describe('SubarrayArbitrary', () => {
         seedGenerator: fc.record({ src: fc.array(fc.integer()) }),
         isStrictlySmallerValue,
         isValidValue: (g: number[], constraints: { src: number[] }) =>
-          Array.isArray(g) && isSubarray(constraints.src, g)
+          Array.isArray(g) && isSubarray(constraints.src, g),
       });
     });
     describe('Given minimal and maximal lengths', () => {
@@ -148,7 +155,7 @@ describe('SubarrayArbitrary', () => {
           isValidValue: (g: number[], constraints: SubarrayMinMaxConstraits) => {
             const dims = computeMinMaxFor(constraints);
             return Array.isArray(g) && g.length >= dims.min && g.length <= dims.max && isSubarray(constraints.src, g);
-          }
+          },
         }
       );
     });

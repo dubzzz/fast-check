@@ -20,7 +20,10 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
     expect(out.failed).toBe(true);
   });
   it('should not failed when no skips on no skips allowed', () => {
-    const out = fc.check(fc.property(fc.integer(), fc.integer(), (_x, _y) => true), { maxSkipsPerRun: 0 });
+    const out = fc.check(
+      fc.property(fc.integer(), fc.integer(), (_x, _y) => true),
+      { maxSkipsPerRun: 0 }
+    );
     expect(out.failed).toBe(false);
   });
 });
