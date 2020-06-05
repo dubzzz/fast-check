@@ -6,7 +6,60 @@ import { ExecutionTree } from './ExecutionTree';
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
  */
-export interface RunDetails<Ts> {
+export type RunDetails<Ts> =
+  | RunDetailsFailureProperty<Ts>
+  | RunDetailsFailureTooManySkips<Ts>
+  | RunDetailsFailureInterrupted<Ts>
+  | RunDetailsSuccess<Ts>;
+
+/**
+ * Run reported as failed because
+ * the property failed
+ */
+export type RunDetailsFailureProperty<Ts> = RunDetailsWithDoc<Ts> & {
+  failed: true;
+  interrupted: boolean;
+  counterexample: Ts;
+  counterexamplePath: string;
+  error: string;
+};
+
+/**
+ * Run reported as failed because
+ * too many retries have been attempted to generate valid values
+ */
+export type RunDetailsFailureTooManySkips<Ts> = RunDetailsWithDoc<Ts> & {
+  failed: true;
+  interrupted: false;
+  counterexample: null;
+  counterexamplePath: null;
+  error: null;
+};
+
+/**
+ * Run reported as failed because
+ * it took too long and thus has been interrupted
+ */
+export type RunDetailsFailureInterrupted<Ts> = RunDetailsWithDoc<Ts> & {
+  failed: true;
+  interrupted: true;
+  counterexample: null;
+  counterexamplePath: null;
+  error: null;
+};
+
+/**
+ * Run reported as success
+ */
+export type RunDetailsSuccess<Ts> = RunDetailsWithDoc<Ts> & {
+  failed: false;
+  interrupted: boolean;
+  counterexample: null;
+  counterexamplePath: null;
+  error: null;
+};
+
+interface RunDetailsWithDoc<Ts> {
   /**
    * Does the property failed during the execution of {@link check}?
    */

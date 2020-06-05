@@ -123,7 +123,11 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters);
 
 It should never throw whatever the status of the test.
 
-It can be parametrized with the same parameters than `fc.assert`.
+It can be parametrized with the same parameters as `fc.assert`.
+
+```typescript
+function check<Ts>(property: IProperty<Ts>, params?: Parameters);
+```
 
 The details returned by `fc.check` are the following:
 
@@ -143,11 +147,14 @@ interface RunDetails<Ts> {
 }
 ```
 
-*Please note that in case of too many pre-condition failures, the run will be marked as failed. However it will come with no value for failure specific details: counterexample, counterexamplePath and error.*
+Sub-types are available in TypeScript to distinguish between the different types of failures:
 
-```typescript
-function check<Ts>(property: IProperty<Ts>, params?: Parameters);
-```
+| Sub-type                            | When | `failed` | `interrupted` | `counterexample`/`counterexamplePath`/`error` |
+|-------------------------------------|:----:|:----:|:----:|:----:|
+| `RunDetailsFailureProperty<Ts>`     | failure of the predicate | `true` | `true`/`false` | *not null* | 
+| `RunDetailsFailureTooManySkips<Ts>` | too many pre-conditions failures | `true` | `false` | `null` | 
+| `RunDetailsFailureInterrupted<Ts>`  | execution took too long given `interruptAfterTimeLimit` | `true` | `true` | `null` | 
+| `RunDetailsSuccess<Ts>`             | successful run | `false` | `true`/`false` | `null` | 
 
 - `fc.sample`: sample generated values of an `Arbitrary<T>` or `Property<T>`
 

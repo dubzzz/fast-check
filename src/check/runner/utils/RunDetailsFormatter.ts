@@ -2,7 +2,12 @@ import { stringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
 import { ExecutionTree } from '../reporter/ExecutionTree';
-import { RunDetails } from '../reporter/RunDetails';
+import {
+  RunDetails,
+  RunDetailsFailureInterrupted,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
+} from '../reporter/RunDetails';
 
 /** @hidden */
 function formatHints(hints: string[]): string {
@@ -48,7 +53,7 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
 }
 
 /** @hidden */
-function preFormatTooManySkipped<Ts>(out: RunDetails<Ts>) {
+function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
   const hints = [
@@ -68,7 +73,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetails<Ts>) {
 }
 
 /** @hidden */
-function preFormatFailure<Ts>(out: RunDetails<Ts>) {
+function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>) {
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringify(out.counterexample)}\nShrunk ${
@@ -89,7 +94,7 @@ function preFormatFailure<Ts>(out: RunDetails<Ts>) {
 }
 
 /** @hidden */
-function preFormatEarlyInterrupted<Ts>(out: RunDetails<Ts>) {
+function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
   let details: string | null = null;
   const hints = [];
@@ -110,7 +115,7 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>) {
   if (!out.failed) return;
 
   const { message, details, hints } =
-    out.counterexample == null
+    out.counterexamplePath === null
       ? out.interrupted
         ? preFormatEarlyInterrupted(out)
         : preFormatTooManySkipped(out)
