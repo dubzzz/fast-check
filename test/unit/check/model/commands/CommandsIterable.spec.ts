@@ -5,8 +5,8 @@ import { CommandsIterable } from '../../../../../src/check/model/commands/Comman
 import { Command } from '../../../../../src/check/model/command/Command';
 import { cloneMethod } from '../../../../../src/check/symbols';
 
-type Model = {};
-type Real = {};
+type Model = Record<string, unknown>;
+type Real = unknown;
 
 const buildAlreadyRanCommands = (runFlags: boolean[]) => {
   return runFlags.map((hasRun, idx) => {

@@ -2,8 +2,8 @@ import { ScheduledCommand } from '../../../../../src/check/model/commands/Schedu
 import { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
 import { Scheduler, SchedulerSequenceItem } from '../../../../../src/check/arbitrary/AsyncSchedulerArbitrary';
 
-type Model = {};
-type Real = {};
+type Model = Record<string, unknown>;
+type Real = unknown;
 
 function buildFakeScheduler(): Scheduler {
   return {

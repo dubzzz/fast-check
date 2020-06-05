@@ -206,6 +206,7 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
 };
 
 /** @hidden */
+// eslint-disable-next-line @typescript-eslint/ban-types
 const objectInternal = (constraints: ObjectConstraints): Arbitrary<object> => {
   return dictionary(constraints.key, anythingInternal(constraints));
 };
@@ -257,6 +258,7 @@ function anything(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 function object(): Arbitrary<object>;
 /**
  * For any objects following the constraints defined by `settings`
@@ -268,7 +270,9 @@ function object(): Arbitrary<object>;
  *
  * @param settings Constraints to apply when building instances
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 function object(settings: ObjectConstraints.Settings): Arbitrary<object>;
+// eslint-disable-next-line @typescript-eslint/ban-types
 function object(settings?: ObjectConstraints.Settings): Arbitrary<object> {
   return objectInternal(ObjectConstraints.from(settings));
 }

@@ -3,8 +3,8 @@ import { Command } from '../../../../../src/check/model/command/Command';
 import { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
 import { cloneMethod } from '../../../../../src/check/symbols';
 
-type Model = {};
-type Real = {};
+type Model = Record<string, unknown>;
+type Real = unknown;
 
 describe('CommandWrapper', () => {
   it('Should show name of the command if it has not run', () => {

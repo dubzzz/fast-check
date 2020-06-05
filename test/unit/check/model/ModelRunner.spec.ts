@@ -4,6 +4,9 @@ import { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand';
 import { Command } from '../../../../src/check/model/command/Command';
 import { modelRun, asyncModelRun } from '../../../../src/check/model/ModelRunner';
 
+type Model = Record<string, unknown>;
+type Real = unknown;
+
 describe('ModelRunner', () => {
   describe('modelRunner', () => {
     it('Should run in order and skip unchecked', () =>
@@ -13,13 +16,13 @@ describe('ModelRunner', () => {
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter((v) => v >= 0);
           const commands = runOrNot.map((v, idx) => {
-            return new (class implements Command<{}, {}> {
+            return new (class implements Command<Model, Real> {
               name = 'Command';
-              check = (m: {}) => {
+              check = (m: Model) => {
                 expect(m).toBe(setupData.model);
                 return v;
               };
-              run = (m: {}, r: {}) => {
+              run = (m: Model, r: Real) => {
                 expect(m).toBe(setupData.model);
                 expect(r).toBe(setupData.real);
                 startedRuns.push(idx);
@@ -39,9 +42,9 @@ describe('ModelRunner', () => {
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter((v) => v >= 0);
           const commands = runOrNot.map((v, idx) => {
-            return new (class implements AsyncCommand<{}, {}, true> {
+            return new (class implements AsyncCommand<Model, Real, true> {
               name = 'AsyncCommand';
-              check = async (m: {}) => {
+              check = async (m: Model) => {
                 return new Promise<boolean>((resolve) => {
                   setTimeout(() => {
                     expect(m).toBe(setupData.model);
@@ -49,7 +52,7 @@ describe('ModelRunner', () => {
                   }, 0);
                 });
               };
-              run = async (m: {}, r: {}) => {
+              run = async (m: Model, r: Real) => {
                 return new Promise<void>((resolve) => {
                   expect(m).toBe(setupData.model);
                   expect(r).toBe(setupData.real);
@@ -68,13 +71,13 @@ describe('ModelRunner', () => {
       let calledBeforeDataReady = false;
       let setupDataReady = false;
       const setupData = { model: {}, real: null };
-      const command = new (class implements AsyncCommand<{}, {}> {
+      const command = new (class implements AsyncCommand<Model, Real> {
         name = 'AsyncCommand';
         check = () => {
           calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
           return true;
         };
-        run = async (_m: {}, _r: {}) => {
+        run = async (_m: Model, _r: Real) => {
           calledBeforeDataReady = calledBeforeDataReady || !setupDataReady;
         };
       })();

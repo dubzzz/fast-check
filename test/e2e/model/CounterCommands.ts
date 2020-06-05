@@ -1,7 +1,7 @@
 import * as fc from '../../../src/fast-check';
 
 type M1 = { count: number };
-type R1 = {};
+type R1 = unknown;
 
 export class IncreaseCommand implements fc.Command<M1, R1> {
   constructor(readonly n: number) {}
