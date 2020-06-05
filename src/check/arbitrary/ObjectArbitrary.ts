@@ -206,7 +206,7 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
 };
 
 /** @hidden */
-const objectInternal = (constraints: ObjectConstraints): Arbitrary<object> => {
+const objectInternal = (constraints: ObjectConstraints): Arbitrary<Record<string, unknown>> => {
   return dictionary(constraints.key, anythingInternal(constraints));
 };
 
@@ -257,7 +257,7 @@ function anything(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  */
-function object(): Arbitrary<object>;
+function object(): Arbitrary<Record<string, unknown>>;
 /**
  * For any objects following the constraints defined by `settings`
  *
@@ -268,8 +268,8 @@ function object(): Arbitrary<object>;
  *
  * @param settings Constraints to apply when building instances
  */
-function object(settings: ObjectConstraints.Settings): Arbitrary<object>;
-function object(settings?: ObjectConstraints.Settings): Arbitrary<object> {
+function object(settings: ObjectConstraints.Settings): Arbitrary<Record<string, unknown>>;
+function object(settings?: ObjectConstraints.Settings): Arbitrary<Record<string, unknown>> {
   return objectInternal(ObjectConstraints.from(settings));
 }
 

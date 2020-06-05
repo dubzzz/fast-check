@@ -14,13 +14,13 @@ const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
     it('Should throw if property is null', () => {
-      expect(() => check((null as any) as IRawProperty<{}>)).toThrowError();
+      expect(() => check((null as any) as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => check({} as IRawProperty<{}>)).toThrowError();
+      expect(() => check({} as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => check((char() as any) as IRawProperty<{}>)).toThrowError();
+      expect(() => check((char() as any) as IRawProperty<unknown>)).toThrowError();
     });
     it('Should call the property 100 times by default (on success)', () => {
       let numCallsGenerate = 0;
@@ -458,13 +458,13 @@ describe('Runner', () => {
     };
 
     it('Should throw if property is null', () => {
-      expect(() => rAssert((null as any) as IRawProperty<{}>)).toThrowError();
+      expect(() => rAssert((null as any) as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => rAssert({} as IRawProperty<{}>)).toThrowError();
+      expect(() => rAssert({} as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => rAssert((char() as any) as IRawProperty<{}>)).toThrowError();
+      expect(() => rAssert((char() as any) as IRawProperty<unknown>)).toThrowError();
     });
     it('Should never throw if no failure occured', () => {
       expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();

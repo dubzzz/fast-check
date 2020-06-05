@@ -12,8 +12,8 @@ import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrink
 
 import { isStrictlySmallerArray } from '../../arbitrary/ArrayArbitrary.spec';
 
-type Model = {};
-type Real = {};
+type Model = Record<string, unknown>;
+type Real = unknown;
 type Cmd = Command<Model, Real>;
 
 const model: Model = Object.freeze({});

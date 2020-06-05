@@ -52,7 +52,7 @@ describe('polyfills', () => {
     });
   });
   describe('String.prototype.padEnd', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (String.prototype.padEnd) {
       it('Should give the same answer as built-it padEnd', () =>
@@ -76,7 +76,7 @@ describe('polyfills', () => {
       ));
   });
   describe('String.prototype.padStart', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (String.prototype.padStart) {
       it('Should give the same answer as built-it padStart', () =>

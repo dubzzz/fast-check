@@ -104,7 +104,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     // the maximal depth we computed before reaching a stack overflow
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
-    class AnyCommand implements fc.Command<{}, {}> {
+    class AnyCommand implements fc.Command<Record<string, unknown>, unknown> {
       constructor(readonly b: boolean) {}
       check = () => true;
       run = () => {};
@@ -112,7 +112,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.commands([fc.boolean().map((b) => new AnyCommand(b))], { maxCommands: maxDepthForArrays });
-    let s: fc.Shrinkable<Iterable<fc.Command<{}, {}>>> | null = null;
+    let s: fc.Shrinkable<Iterable<fc.Command<Record<string, unknown>, unknown>>> | null = null;
     while (s === null) {
       const tempShrinkable = arb.generate(mrng);
       const cmds = [...tempShrinkable.value];

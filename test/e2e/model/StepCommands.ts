@@ -4,7 +4,7 @@ type M2 = {
   current: { stepId: number };
   validSteps: number[];
 };
-type R2 = {};
+type R2 = unknown;
 
 export class SuccessCommand implements fc.Command<M2, R2> {
   check = (m: Readonly<M2>) => m.validSteps.includes(m.current.stepId++);

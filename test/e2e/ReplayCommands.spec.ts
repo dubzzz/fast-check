@@ -3,7 +3,7 @@ import * as prand from 'pure-rand';
 
 // Fake commands
 type Model = { counter: number };
-type Real = {};
+type Real = unknown;
 class IncBy implements fc.Command<Model, Real> {
   constructor(readonly v: number) {}
   check = (_m: Readonly<Model>) => true;

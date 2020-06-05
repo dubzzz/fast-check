@@ -15,6 +15,7 @@ import { CommandWrapper } from './CommandWrapper';
 import { makeLazy } from '../../../stream/LazyIterableIterator';
 
 /** @hidden */
+// eslint-disable-next-line @typescript-eslint/ban-types
 class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {
@@ -150,6 +151,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  * @param commandArbs Arbitraries responsible to build commands
  * @param maxCommands Maximal number of commands to build
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
   commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
   maxCommands?: number
@@ -163,6 +165,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * @param commandArbs Arbitraries responsible to build commands
  * @param maxCommands Maximal number of commands to build
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(
   commandArbs: Arbitrary<Command<Model, Real>>[],
   maxCommands?: number
@@ -176,6 +179,7 @@ function commands<Model extends object, Real>(
  * @param commandArbs Arbitraries responsible to build commands
  * @param maxCommands Maximal number of commands to build
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
   commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
   settings?: CommandsSettings
@@ -189,10 +193,12 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * @param commandArbs Arbitraries responsible to build commands
  * @param maxCommands Maximal number of commands to build
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(
   commandArbs: Arbitrary<Command<Model, Real>>[],
   settings?: CommandsSettings
 ): Arbitrary<Iterable<Command<Model, Real>>>;
+// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, RunResult, CheckAsync extends boolean>(
   commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
   settings?: number | CommandsSettings

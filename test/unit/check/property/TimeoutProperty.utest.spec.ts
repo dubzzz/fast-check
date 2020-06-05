@@ -56,7 +56,7 @@ describe('TimeoutProperty', () => {
 
   it('Should not timeout if it succeeds in time', async () => {
     // Arrange
-    const p: IRawProperty<{}> = {
+    const p: IRawProperty<unknown> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
@@ -77,7 +77,7 @@ describe('TimeoutProperty', () => {
 
   it('Should not timeout if it fails in time', async () => {
     // Arrange
-    const p: IRawProperty<{}> = {
+    const p: IRawProperty<unknown> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
@@ -99,7 +99,7 @@ describe('TimeoutProperty', () => {
 
   it('Should clear all started timeouts on success', async () => {
     // Arrange
-    const p: IRawProperty<{}> = {
+    const p: IRawProperty<unknown> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockResolvedValueOnce(null),
@@ -116,7 +116,7 @@ describe('TimeoutProperty', () => {
 
   it('Should clear all started timeouts on failure', async () => {
     // Arrange
-    const p: IRawProperty<{}> = {
+    const p: IRawProperty<unknown> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockResolvedValueOnce('plop'),
@@ -133,7 +133,7 @@ describe('TimeoutProperty', () => {
 
   it('Should timeout if it takes to long', async () => {
     // Arrange
-    const p: IRawProperty<{}> = {
+    const p: IRawProperty<unknown> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(
@@ -154,7 +154,7 @@ describe('TimeoutProperty', () => {
 
   it('Should timeout if it never ends', async () => {
     // Arrange
-    const p: IRawProperty<{}> = {
+    const p: IRawProperty<unknown> = {
       isAsync: () => true,
       generate: jest.fn(),
       run: jest.fn().mockReturnValueOnce(new Promise(() => {})),
