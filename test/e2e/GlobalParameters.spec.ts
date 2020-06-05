@@ -41,19 +41,19 @@ describe('GlobalParameters', () => {
     const globalConfig = { seed: 42, numRuns: 10 };
 
     const withLocalConfiguration: string[] = [];
-    fc.statistics(fc.nat(), v => String(v), {
+    fc.statistics(fc.nat(), (v) => String(v), {
       ...globalConfig,
       logger: (v: string) => {
         withLocalConfiguration.push(v);
-      }
+      },
     });
 
     fc.configureGlobal(globalConfig);
     const withGlobalConfiguratioOverriden: string[] = [];
-    fc.statistics(fc.nat(), v => String(v), {
+    fc.statistics(fc.nat(), (v) => String(v), {
       logger: (v: string) => {
         withGlobalConfiguratioOverriden.push(v);
-      }
+      },
     });
 
     expect(withGlobalConfiguratioOverriden).toEqual(withLocalConfiguration);
@@ -66,7 +66,7 @@ describe('GlobalParameters', () => {
 
     const withLocalConfiguration: number[] = [];
     fc.check(
-      fc.property(fc.nat(), v => {
+      fc.property(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
       { ...globalConfig, numRuns: overridenNumRuns }
@@ -75,7 +75,7 @@ describe('GlobalParameters', () => {
     fc.configureGlobal(globalConfig);
     const withGlobalConfigurationOverriden: number[] = [];
     fc.check(
-      fc.property(fc.nat(), v => {
+      fc.property(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
       { numRuns: overridenNumRuns }
@@ -91,7 +91,7 @@ describe('GlobalParameters', () => {
 
     const withLocalConfiguration: number[] = [];
     fc.assert(
-      fc.property(fc.nat(), v => {
+      fc.property(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
       { ...globalConfig, numRuns: overridenNumRuns }
@@ -100,7 +100,7 @@ describe('GlobalParameters', () => {
     fc.configureGlobal(globalConfig);
     const withGlobalConfigurationOverriden: number[] = [];
     fc.assert(
-      fc.property(fc.nat(), v => {
+      fc.property(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
       { numRuns: overridenNumRuns }

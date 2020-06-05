@@ -1,6 +1,8 @@
+docs/
 example/
 node_modules/
 lib/
+lib-*/
 perf/
 test/legacy/
 test/type/

@@ -52,9 +52,9 @@ function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<
   const pathPoints = path.split(':');
   const pathStream = stream(valueProducers)
     .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
-    .map(producer => producer());
+    .map((producer) => producer());
   const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
-  return stream(pathWalk(adaptedPath, pathStream)).map(v => () => v);
+  return stream(pathWalk(adaptedPath, pathStream)).map((v) => () => v);
 }
 
 /** @hidden */
@@ -65,7 +65,7 @@ function buildInitialValues<Ts>(
   const rawValues = qParams.path.length === 0 ? stream(valueProducers) : runnerPathWalker(valueProducers, qParams.path);
   if (!qParams.endOnFailure) return rawValues;
   // Disable shrinking capabilities
-  return rawValues.map(shrinkableGen => {
+  return rawValues.map((shrinkableGen) => {
     return () => {
       const s = shrinkableGen();
       return new Shrinkable(s.value_);
@@ -108,7 +108,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const initialValues = buildInitialValues(generator, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
-    ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then(e =>
+    ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
         e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
       )
     : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(

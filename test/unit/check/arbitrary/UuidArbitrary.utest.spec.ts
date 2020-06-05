@@ -21,7 +21,9 @@ describe('UuidArbitrary', () => {
       const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }, { value: 0 }]));
       integer.mockImplementation((a, _b) => arbitraryFor([{ value: a }]));
-      tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
+      tuple.mockImplementation((...arbs) =>
+        arbitraryFor([{ value: arbs.map((a) => a.generate(mrng()).value_) as any }])
+      );
 
       // Act
       const arb = uuid();
@@ -35,9 +37,11 @@ describe('UuidArbitrary', () => {
       // Arrange
       const { nat, integer } = mocked(IntegerArbitraryMock);
       const { tuple } = mocked(TupleArbitraryMock);
-      nat.mockImplementation(a => arbitraryFor([{ value: a }, { value: a }, { value: a }]));
+      nat.mockImplementation((a) => arbitraryFor([{ value: a }, { value: a }, { value: a }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: b }]));
-      tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
+      tuple.mockImplementation((...arbs) =>
+        arbitraryFor([{ value: arbs.map((a) => a.generate(mrng()).value_) as any }])
+      );
 
       // Act
       const arb = uuid();
@@ -58,7 +62,9 @@ describe('UuidArbitrary', () => {
       const { tuple } = mocked(TupleArbitraryMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }]));
       integer.mockImplementation((a, _b) => arbitraryFor([{ value: a }]));
-      tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
+      tuple.mockImplementation((...arbs) =>
+        arbitraryFor([{ value: arbs.map((a) => a.generate(mrng()).value_) as any }])
+      );
 
       // Act
       const arb = uuidV(3);
@@ -72,9 +78,11 @@ describe('UuidArbitrary', () => {
       // Arrange
       const { nat, integer } = mocked(IntegerArbitraryMock);
       const { tuple } = mocked(TupleArbitraryMock);
-      nat.mockImplementation(a => arbitraryFor([{ value: a }, { value: a }]));
+      nat.mockImplementation((a) => arbitraryFor([{ value: a }, { value: a }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: b }]));
-      tuple.mockImplementation((...arbs) => arbitraryFor([{ value: arbs.map(a => a.generate(mrng()).value_) as any }]));
+      tuple.mockImplementation((...arbs) =>
+        arbitraryFor([{ value: arbs.map((a) => a.generate(mrng()).value_) as any }])
+      );
 
       // Act
       const arb = uuidV(3);

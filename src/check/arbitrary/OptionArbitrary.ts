@@ -21,10 +21,10 @@ class OptionArbitrary<T, TNil> extends Arbitrary<T | TNil> {
     function* g(): IterableIterator<Shrinkable<T | TNil>> {
       yield new Shrinkable(nil);
     }
-    return new Shrinkable(s.value_, () =>
+    return new Shrinkable(s.value_ as T | TNil, () =>
       s
         .shrink()
-        .map(v => OptionArbitrary.extendedShrinkable(v, nil))
+        .map((v) => OptionArbitrary.extendedShrinkable(v, nil))
         .join(g())
     );
   }

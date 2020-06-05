@@ -7,9 +7,9 @@ Property based testing framework for JavaScript/TypeScript
 </p>
 
 <p align="center">
-  <a href="https://travis-ci.org/dubzzz/fast-check"><img src="https://travis-ci.org/dubzzz/fast-check.svg?branch=master" alt="Build Status" /></a>
+  <a href="https://travis-ci.com/dubzzz/fast-check"><img src="https://travis-ci.com/dubzzz/fast-check.svg?branch=master" alt="Build Status" /></a>
   <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dt/fast-check.svg" alt="total downloads" /></a>
+  <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
   <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/documentation-%23282ea9.svg" title="official documentation" /></a>
 </p>
 <p align="center">
@@ -42,14 +42,17 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
 describe('properties', () => {
-  // string text always contains itself
-  it('should always contain itself', () => {
-    fc.assert(fc.property(fc.string(), text => contains(text, text)));
-  });
-  // string a + b + c always contains b, whatever the values of a, b and c
-  it('should always contain its substrings', () => {
-    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => contains(a+b+c, b)));
-  });
+	// string text always contains itself
+	it('should always contain itself', () => {
+		fc.assert(fc.property(fc.string(), text => contains(text, text)));
+	});
+	// string a + b + c always contains b, whatever the values of a, b and c
+	it('should always contain its substrings', () => {
+		fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
+			// Alternatively: no return statement and direct usage of expect or assert
+			return contains(a+b+c, b);
+		}));
+	});
 });
 ```
 
@@ -64,19 +67,9 @@ In case of failure, the test raises a red flag. Its output should help you to di
     Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
 ```
 
-Integration with other test frameworks:
-[ava](https://github.com/dubzzz/fast-check-examples/blob/master/test-ava/example.spec.js),
-[jasmine](https://github.com/dubzzz/fast-check-examples/blob/master/test-jasmine/example.spec.js),
-[jest](https://github.com/dubzzz/fast-check-examples/blob/master/test-jest/example.spec.js),
-[mocha](https://github.com/dubzzz/fast-check-examples/blob/master/test/longest%20common%20substr/test.js)
-and
-[tape](https://github.com/dubzzz/fast-check-examples/blob/master/test-tape/example.spec.js).
+Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-check-examples/blob/master/test-ava/example.spec.js), [jasmine](https://github.com/dubzzz/fast-check-examples/blob/master/test-jasmine/example.spec.js), [jest](https://github.com/dubzzz/fast-check-examples/blob/master/test-jest/example.spec.js), [mocha](https://github.com/dubzzz/fast-check-examples/blob/master/test/longest%20common%20substr/test.js) and [tape](https://github.com/dubzzz/fast-check-examples/blob/master/test-tape/example.spec.js).
 
-More examples:
-[simple examples](https://github.com/dubzzz/fast-check/tree/master/example),
-[fuzzing](https://github.com/dubzzz/fuzz-rest-api)
-and
-[against various algorithms](https://github.com/dubzzz/fast-check-examples).
+More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/master/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
 - [:checkered_flag: Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/HandsOnPropertyBased.md)
@@ -102,12 +95,19 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 - **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#add-custom-examples-next-to-generated-ones)\] - *no need to duplicate the code to play the property on custom examples*
 - **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#log-within-a-predicate)\] - *simplify your troubleshoot with fc.context and its logging feature*
 - **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - *use the power of property based testing to test UI, APIs or state machines*
+- **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md#detect-race-conditions)\] - *shuffle the way your promises and async calls resolve using the power of property based testing to detect races*
 
 For more details, refer to the documentation in the links above.
 
 ## Issues found by fast-check in famous packages
 
 fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
+
+### [jest](https://github.com/facebook/jest/)
+
+**Issue detected:** `toStrictEqual` fails to distinguish 0 from 5e-324 \[[more](https://github.com/facebook/jest/issues/7941)\]
+
+**Code example:** `expect(0).toStrictEqual(5e-324)` succeeds
 
 ### [js-yaml](https://github.com/nodeca/js-yaml/)
 
@@ -127,8 +127,30 @@ m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null,
 
 **[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/IssuesDiscovered.md)**
 
-## Code Contributors
+## Credits
+
+### Code Contributors
 
 This project would not be the same without them 💖 - [Become one of them](CONTRIBUTING.md)
 
 <a href="https://github.com/dubzzz/fast-check/graphs/contributors"><img src="https://opencollective.com/fast-check/contributors.svg?width=890&button=false" /></a>
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/fast-check/contribute)] and help us sustain our community.
+<a href="https://opencollective.com/fast-check#backers"><img src="https://opencollective.com/fast-check/backers.svg?width=890"></a>
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/fast-check#sponsor)]
+
+<a href="https://opencollective.com/fast-check/sponsor/0/website"><img src="https://opencollective.com/fast-check/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/1/website"><img src="https://opencollective.com/fast-check/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/2/website"><img src="https://opencollective.com/fast-check/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/3/website"><img src="https://opencollective.com/fast-check/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/4/website"><img src="https://opencollective.com/fast-check/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/5/website"><img src="https://opencollective.com/fast-check/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/6/website"><img src="https://opencollective.com/fast-check/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/7/website"><img src="https://opencollective.com/fast-check/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/8/website"><img src="https://opencollective.com/fast-check/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/fast-check/sponsor/9/website"><img src="https://opencollective.com/fast-check/sponsor/9/avatar.svg"></a>

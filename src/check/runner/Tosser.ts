@@ -16,11 +16,11 @@ export function* toss<Ts>(
   random: (seed: number) => prand.RandomGenerator,
   examples: Ts[]
 ): IterableIterator<() => Shrinkable<Ts>> {
-  yield* examples.map(e => () => new Shrinkable(e));
+  yield* examples.map((e) => () => new Shrinkable(e));
   let idx = 0;
   let rng = random(seed);
   for (;;) {
-    rng = prand.skipN(rng, 42);
+    rng = rng.jump ? rng.jump() : prand.skipN(rng, 42);
     yield lazyGenerate(generator, rng, idx++);
   }
 }

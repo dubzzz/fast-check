@@ -4,5 +4,5 @@
 export enum ExecutionStatus {
   Success = 0,
   Skipped = -1,
-  Failure = 1
+  Failure = 1,
 }

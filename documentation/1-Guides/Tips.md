@@ -6,6 +6,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 
 - [Filter invalid combinations using pre-conditions](#filter-invalid-combinations-using-pre-conditions)
 - [Model based testing or UI test](#model-based-testing-or-ui-test)
+- [Detect race conditions](#detect-race-conditions)
 - [Opt for verbose failures](#opt-for-verbose-failures)
 - [Log within a predicate](#log-within-a-predicate)
 - [Preview generated values](#preview-generated-values)
@@ -14,7 +15,9 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Add custom examples next to generated ones](#add-custom-examples-next-to-generated-ones)
 - [Combine with other faker or random generator libraries](#combine-with-other-faker-or-random-generator-libraries)
 - [Setup global settings](#setup-global-settings)
+- [Avoid tests to reach the timeout of your test runner](#avoid-tests-to-reach-the-timeout-of-your-test-runner)
 - [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
+- [Supported targets from node to deno](#supported-targets-from-node-to-deno)
 
 ## Filter invalid combinations using pre-conditions
 
@@ -54,7 +57,7 @@ Model based testing approach have been introduced into fast-check to ease UI tes
 
 The idea of the approach is to define commands that could be applied to your system. The framework then picks zero, one or more commands and run them sequentially if they can be executed on the current state.
 
-A full example is available [here](https://github.com/dubzzz/fast-check/tree/master/example/model-based-testing).
+A full example is available [here](https://github.com/dubzzz/fast-check/tree/master/example/004-stateMachine/musicPlayer).
 
 Let's take the case of a list class with `pop`, `push`, `size` methods as an example.
 
@@ -128,6 +131,111 @@ fc.assert(
 The code above can easily be applied to other state machines, APIs or UI. In the case of asynchronous operations you need to implement `AsyncCommand` and use `asyncModelRun`.
 
 **NOTE:** Contrary to other arbitraries, commands built using `fc.commands` requires an extra parameter for replay purposes. In addition of passing `{ seed, path }` to `fc.assert`, `fc.commands` must be called with `{ replayPath: string }`.
+
+## Detect race conditions
+
+Even if JavaScript is mostly a mono-threaded language, it is quite easy to introduce race conditions in your code.
+
+`fast-check` comes with a built-in feature accessible through `fc.scheduler` that will help you to detect such issues earlier during the development. It basically re-orders the execution of your promises or async tasks in order to make it crash under unexpected orderings.
+
+The best way to see it in action is certainly to check the snippets provided in our [CodeSandbox@005-race](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests).
+
+Here is a very simple React-based example that you can play with on [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?hidenavigation=1&module=%2F005-race%2FuserProfile%2Fmain.spec.tsx&previewwindow=tests):
+
+```jsx
+/* Component */
+
+import { getUserProfile } from './api.js'
+function UserPageProfile(props) {
+  const { userId } = props;
+  const [userData, setUserData] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      const data = await getUserProfile(props.userId);
+      setUserData(data);
+    };
+    fetchUser();
+  }, [userId]);
+
+  if (userData === null) {
+    return <div>Loading...</div>;
+  }
+  return (
+    <div>
+      <div data-testid="user-id">Id: {userData.id}</div>
+      <div data-testid="user-name">Name: {userData.name}</div>
+    </div>
+  );
+}
+
+/* Test with react testing library */
+
+test('should not display data related to another user', () =>
+  fc.assert(
+    fc.asyncProperty(
+      fc.array(fc.uuid(), fc.uuid(), fc.scheduler(),
+      async (uid1, uid2, s) => {
+        // Arrange
+        getUserProfile.mockImplementation(
+          s.scheduleFunction(async (userId) => ({ id: userId, name: userId })));
+
+        // Act
+        const { rerender, queryByTestId } = render(<UserProfilePage userId={uid1} />);
+        s.scheduleSequence([
+          async () => {
+            rerender(<UserProfilePage userId={uid2} />);
+          }
+        ]);
+        while (s.count() !== 0) {
+          await act(async () => {
+            await s.waitOne();
+          });
+        }
+
+        // Assert
+        expect((await queryByTestId('user-id')).textContent).toBe(`Id: ${uid2}`);
+      })
+      .beforeEach(async () => {
+        jest.resetAllMocks();
+        cleanup();
+      })
+  ));
+```
+
+In case of failure, the reported error will contain the scheduler that caused the issue along with other generated values if any.
+Here is what an error can look like in case we only asked for a scheduler:
+
+```
+ Property failed after 1 tests
+ { seed: -22040264, path: "0", endOnFailure: true }
+ Counterexample: [schedulerFor()`
+ -> [task${1}] promise resolved with value "A"     
+ -> [task${3}] promise resolved with value "C"
+ -> [task${2}] promise resolved with value "B"`]
+ Shrunk 0 time(s)
+```
+
+Given such failure you can either replay it by using the provided `{ seed, path, endOnFailure }` - _see [Replay after failure](#replay-after-failure)_ -
+or put the scheduler as an example to be used for every future run - _see [Add custom examples next to generated ones](#add-custom-examples-next-to-generated-ones)_.
+
+If you want to add this example in your set of custom examples you have to use `fc.schedulerFor` and copy the counterexample coming from the stack trace into the `examples` given to `fc.assert` as follow:
+
+```js
+test('should run with custom scheduler then generated ones', () =>
+  fc.assert(
+    fc.property(fc.scheduler(), (s) => {/* Test */}),
+    {
+      examples: [
+        [fc.schedulerFor()`
+ -> [task${1}] promise resolved with value "A"     
+ -> [task${3}] promise resolved with value "C"
+ -> [task${2}] promise resolved with value "B"`]
+      ]
+    }
+  ));
+```
+```
 
 ## Opt for verbose failures
 
@@ -475,6 +583,55 @@ const fc = require("fast-check");
 fc.configureGlobal({ numRuns: 10 });
 ```
 
+## Avoid tests to reach the timeout of your test runner
+
+Most of the time, test runners like Jest, Mocha or even Jasmine come with default timeouts. Whenever one test takes longer than this time limit, the test runner might stop it immediately. Unfortunately whenever fast-check gets stopped at the middle of a run, it cannot give back the seed nor the path that were used during this test.
+
+Here are some possible reasons why you may encounter timeouts with property based testing:
+- (1) an entry generated by fast-check took longer than expected
+- (2) shrinking process takes longer than expected - the main target of shrinking process is to report the user with the very minimal failing case, in order to achieve that it has to try many sub-inputs
+
+In order to prevent your tests from timing out in your CI, you may [setup global settings](#setup-global-settings) with the following configuration:
+
+```js
+fc.configureGlobal({
+  interruptAfterTimeLimit: 4000, // Default timeout in Jest 5000ms
+  markInterruptAsFailure: true,  // When set to true, timeout during initial cases (1) will be marked as an error
+                                 // When set to false, timeout during initial cases (1) will not be considered as a failure
+});
+```
+
+If you opt for `markInterruptAsFailure: true`, you can still limit the time taken by long running tests locally by tweaking the settings passed into `fc.assert` with a value of `numRuns` smaller than your default one. 
+
 ## Migrate from jsverify to fast-check
 
 The npm package [jsverify-to-fast-check](https://www.npmjs.com/package/jsverify-to-fast-check) comes with a set of tools to help users to migrate from jsverify to fast-check smoothly.
+
+## Supported targets from node to deno
+
+Here are some alternatives ways to import fast-check into your project.
+
+Node with CommonJS:
+```js
+const fc = require('fast-check');
+```
+
+Node with ES Modules:
+```js
+import fc from 'fast-check';
+```
+
+Deno:
+```js
+import fc from "https://cdn.pika.dev/fast-check";
+```
+
+Web Browser:
+```html
+<script type="module">
+  import fc from "https://cdn.pika.dev/fast-check";
+  // code...
+</script>
+```
+
+More details on [pika](https://www.pika.dev/npm/fast-check/code).

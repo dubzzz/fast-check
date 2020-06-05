@@ -22,7 +22,8 @@ export class ObjectConstraints {
     readonly maxKeys: number,
     readonly withSet: boolean,
     readonly withMap: boolean,
-    readonly withObjectString: boolean
+    readonly withObjectString: boolean,
+    readonly withNullPrototype: boolean
   ) {}
 
   /**
@@ -47,14 +48,14 @@ export class ObjectConstraints {
         constant(Number.MAX_VALUE),
         constant(Number.MIN_SAFE_INTEGER),
         constant(Number.MAX_SAFE_INTEGER)
-      )
+      ),
     ];
   }
 
   /** @hidden */
   private static boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
-    return arbs.map(arb =>
-      arb.map(v => {
+    return arbs.map((arb) =>
+      arb.map((v) => {
         switch (typeof v) {
           case 'boolean':
             // tslint:disable-next-line:no-construct
@@ -91,7 +92,8 @@ export class ObjectConstraints {
       getOr(() => settings!.maxKeys, 5),
       getOr(() => settings!.withSet, false),
       getOr(() => settings!.withMap, false),
-      getOr(() => settings!.withObjectString, false)
+      getOr(() => settings!.withObjectString, false),
+      getOr(() => settings!.withNullPrototype, false)
     );
   }
 }
@@ -140,16 +142,18 @@ export namespace ObjectConstraints {
     withMap?: boolean;
     /** Also generate string representations of object instances */
     withObjectString?: boolean;
+    /** Also generate object with null prototype */
+    withNullPrototype?: boolean;
   }
 }
 
 /** @hidden */
 const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> => {
   const arbKeys = constraints.withObjectString
-    ? memo(n =>
+    ? memo((n) =>
         frequency(
           { arbitrary: constraints.key, weight: 10 },
-          { arbitrary: anythingArb(n).map(o => stringify(o)), weight: 1 }
+          { arbitrary: anythingArb(n).map((o) => stringify(o)), weight: 1 }
         )
       )
     : memo(() => constraints.key);
@@ -160,27 +164,32 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
   const entriesOf = <T, U>(keyArb: Arbitrary<T>, valueArb: Arbitrary<U>) =>
     set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]);
 
-  const mapOf = <T, U>(ka: Arbitrary<T>, va: Arbitrary<U>) => entriesOf(ka, va).map(v => new Map(v));
-  const dictOf = <U>(ka: Arbitrary<string>, va: Arbitrary<U>) => entriesOf(ka, va).map(v => toObject(v));
+  const mapOf = <T, U>(ka: Arbitrary<T>, va: Arbitrary<U>) => entriesOf(ka, va).map((v) => new Map(v));
+  const dictOf = <U>(ka: Arbitrary<string>, va: Arbitrary<U>) => entriesOf(ka, va).map((v) => toObject(v));
 
   const baseArb = oneof(...arbitrariesForBase);
-  const arrayBaseArb = oneof(...arbitrariesForBase.map(arb => array(arb, 0, maxKeys)));
-  const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map(arb => dictOf(arbKeys(n), arb)));
-  const setBaseArb = () => oneof(...arbitrariesForBase.map(arb => set(arb, 0, maxKeys).map(v => new Set(v))));
-  const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map(arb => mapOf(arbKeys(n), arb)));
+  const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, 0, maxKeys)));
+  const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => dictOf(arbKeys(n), arb)));
+  const setBaseArb = () => oneof(...arbitrariesForBase.map((arb) => set(arb, 0, maxKeys).map((v) => new Set(v))));
+  const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
-  const arrayArb = memo(n => oneof(arrayBaseArb, array(anythingArb(n), 0, maxKeys)));
+  const arrayArb = memo((n) => oneof(arrayBaseArb, array(anythingArb(n), 0, maxKeys)));
   // Set<base> | Set<anything>
-  const setArb = memo(n => oneof(setBaseArb(), set(anythingArb(n), 0, maxKeys).map(v => new Set(v))));
+  const setArb = memo((n) =>
+    oneof(
+      setBaseArb(),
+      set(anythingArb(n), 0, maxKeys).map((v) => new Set(v))
+    )
+  );
   // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
-  const mapArb = memo(n =>
+  const mapArb = memo((n) =>
     oneof(mapBaseArb(n), oneof(mapOf(arbKeys(n), anythingArb(n)), mapOf(anythingArb(n), anythingArb(n))))
   );
   // {[key:string]: base} | {[key:string]: anything}
-  const objectArb = memo(n => oneof(objectBaseArb(n), dictOf(arbKeys(n), anythingArb(n))));
+  const objectArb = memo((n) => oneof(objectBaseArb(n), dictOf(arbKeys(n), anythingArb(n))));
 
-  const anythingArb: Memo<unknown> = memo(n => {
+  const anythingArb: Memo<unknown> = memo((n) => {
     if (n <= 0) return oneof(baseArb);
     return oneof(
       baseArb,
@@ -188,7 +197,8 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
       objectArb(),
       ...(constraints.withMap ? [mapArb()] : []),
       ...(constraints.withSet ? [setArb()] : []),
-      ...(constraints.withObjectString ? [anythingArb().map(o => stringify(o))] : [])
+      ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
+      ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : [])
     );
   });
 

@@ -7,7 +7,7 @@ import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries
 describe('isSearchTree', () => {
   it('should always mark binary search trees as search trees', () => {
     fc.assert(
-      fc.property(binarySearchTreeWithMaxDepth(3), tree => {
+      fc.property(binarySearchTreeWithMaxDepth(3), (tree) => {
         return isSearchTree(tree);
       })
     );
@@ -15,8 +15,8 @@ describe('isSearchTree', () => {
 
   it('should detect invalid search trees whenever tree traversal produces unordered arrays', () => {
     fc.assert(
-      fc.property(binaryTreeWithMaxDepth(3), tree => {
-        fc.pre(!isSorted(traversal(tree, t => t.value)));
+      fc.property(binaryTreeWithMaxDepth(3), (tree) => {
+        fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
       })
     );
@@ -24,8 +24,8 @@ describe('isSearchTree', () => {
 
   it('should detect invalid search trees whenever tree traversal produces unordered arrays (2)', () => {
     fc.assert(
-      fc.property(binaryTreeWithoutMaxDepth(), tree => {
-        fc.pre(!isSorted(traversal(tree, t => t.value)));
+      fc.property(binaryTreeWithoutMaxDepth(), (tree) => {
+        fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
       })
     );
@@ -33,9 +33,11 @@ describe('isSearchTree', () => {
 
   it('should detect invalid search trees whenever one node in the tree has an invalid direct child', () => {
     fc.assert(
-      fc.property(binaryTreeWithMaxDepth(3), tree => {
+      fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(
-          traversal(tree, t => t).some(t => (t.left && t.left.value > t.value) || (t.right && t.right.value <= t.value))
+          traversal(tree, (t) => t).some(
+            (t) => (t.left && t.left.value > t.value) || (t.right && t.right.value <= t.value)
+          )
         );
         return !isSearchTree(tree);
       })
@@ -53,5 +55,8 @@ function traversal<TOut>(t: Tree<number>, extract: (node: Tree<number>) => TOut,
 }
 
 function isSorted(d: number[]): boolean {
-  return _.isEqual(d, [...d].sort((a, b) => a - b));
+  return _.isEqual(
+    d,
+    [...d].sort((a, b) => a - b)
+  );
 }

@@ -119,7 +119,16 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * @param f Elements to keep
    */
-  filter(f: (v: T) => boolean): Stream<T> {
+  filter<U extends T>(f: (v: T) => v is U): Stream<U>;
+  /**
+   * Filter elements of the Stream
+   *
+   * WARNING: It closes the current stream
+   *
+   * @param f Elements to keep
+   */
+  filter(f: (v: T) => boolean): Stream<T>;
+  filter<U extends T>(f: (v: T) => v is U): Stream<U> {
     // /*DEBUG*/ this.closeCurrentStream();
     return new Stream(filterHelper(this.g, f));
   }

@@ -26,10 +26,10 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
           '<function :: ' +
           Object.keys(recorded)
             .sort()
-            .map(k => `${k} => ${stringify(recorded[k])}`)
+            .map((k) => `${k} => ${stringify(recorded[k])}`)
             .join(', ') +
           '>',
-        [cloneMethod]: producer
+        [cloneMethod]: producer,
       });
     };
     return producer();
@@ -55,10 +55,10 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
           '<function :: ' +
           Object.keys(recorded)
             .sort()
-            .map(k => `${k} => ${recorded[k]}`)
+            .map((k) => `${k} => ${recorded[k]}`)
             .join(', ') +
           '>',
-        [cloneMethod]: producer
+        [cloneMethod]: producer,
       });
     };
     return producer();

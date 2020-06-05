@@ -1,4 +1,4 @@
-exports.runComplexFailure = function(fc) {
+exports.runComplexFailure = function (fc) {
   const loremIpsum = fc.record({
     text: fc.lorem(100),
     type: fc.constant('x'),
@@ -8,23 +8,29 @@ exports.runComplexFailure = function(fc) {
         fc.record({
           type: fc.oneof(fc.constant('b'), fc.constant('i'), fc.constant('u')),
           start: fc.nat(1),
-          end: fc.nat(100)
+          end: fc.nat(100),
         }),
         1,
         10
       )
-    )
+    ),
   });
 
-  const section = n =>
+  const section = (n) =>
     fc.record({
       heading: loremIpsum,
-      children: fc.array(n > 0 ? fc.oneof(loremIpsum, loremIpsum, loremIpsum, section(n - 1)) : loremIpsum, 10)
+      children: fc.array(n > 0 ? fc.oneof(loremIpsum, loremIpsum, loremIpsum, section(n - 1)) : loremIpsum, 10),
     });
 
-  fc.check(fc.property(section(5), s => !(s.children.length === 4 && s.children[0].text == null)), { seed: 42 });
+  fc.check(
+    fc.property(section(5), (s) => !(s.children.length === 4 && s.children[0].text == null)),
+    { seed: 42 }
+  );
 };
 
-exports.runArraySuccess = function(fc) {
-  fc.check(fc.property(fc.array(fc.nat()), _ => true), { seed: 42 });
+exports.runArraySuccess = function (fc) {
+  fc.check(
+    fc.property(fc.array(fc.nat()), (_) => true),
+    { seed: 42 }
+  );
 };

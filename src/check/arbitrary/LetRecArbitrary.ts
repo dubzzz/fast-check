@@ -45,7 +45,7 @@ export class LazyArbitrary extends Arbitrary<any> {
       arb: this.underlying,
       lvl: this.numBiasLevels,
       freq,
-      biasedArb
+      biasedArb,
     };
     return biasedArb;
   }
@@ -53,7 +53,19 @@ export class LazyArbitrary extends Arbitrary<any> {
 
 /** @hidden */
 function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary {
-  return arb !== undefined && Object.prototype.hasOwnProperty.call(arb, 'underlying');
+  return typeof arb === 'object' && arb !== null && Object.prototype.hasOwnProperty.call(arb, 'underlying');
+}
+
+/** @hidden */
+function updateLazy(
+  strictArbs: { [K: string]: Arbitrary<unknown> },
+  lazyArbs: { [K: string]: Arbitrary<unknown> | undefined },
+  key: string
+) {
+  const lazyAtKey = lazyArbs[key];
+  const lazyArb = isLazyArbitrary(lazyAtKey) ? lazyAtKey : new LazyArbitrary(key);
+  lazyArb.underlying = strictArbs[key];
+  lazyArbs[key] = lazyArb;
 }
 
 /**
@@ -73,9 +85,9 @@ function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary 
 export function letrec<T>(
   builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }
 ): { [K in keyof T]: Arbitrary<T[K]> } {
-  const lazyArbs: { [K in keyof T]?: Arbitrary<T[K]> } = {};
+  const lazyArbs: { [K in keyof T]?: Arbitrary<T[K]> } = Object.create(null);
   const tie = (key: keyof T): Arbitrary<any> => {
-    if (!lazyArbs[key]) lazyArbs[key] = new LazyArbitrary(key as any);
+    if (!Object.prototype.hasOwnProperty.call(lazyArbs, key)) lazyArbs[key] = new LazyArbitrary(key as any);
     return lazyArbs[key]!;
   };
   const strictArbs = builder(tie as any);
@@ -84,11 +96,15 @@ export function letrec<T>(
       // Prevents accidental iteration over properties inherited from an object’s prototype
       continue;
     }
-
-    const lazyAtKey = lazyArbs[key];
-    const lazyArb = isLazyArbitrary(lazyAtKey) ? lazyAtKey : new LazyArbitrary(key);
-    lazyArb.underlying = strictArbs[key];
-    lazyArbs[key] = lazyArb;
+    updateLazy(strictArbs, lazyArbs, key);
+  }
+  if (
+    !Object.prototype.hasOwnProperty.call(strictArbs, '__proto__') &&
+    isLazyArbitrary(strictArbs[('__proto__' as any) as keyof T])
+  ) {
+    // We only run this code if the __proto__ key was not scanned before
+    // while it points to a valid LazyArbitrary
+    updateLazy(strictArbs, lazyArbs, '__proto__');
   }
   return strictArbs;
 }

@@ -14,6 +14,8 @@ Following examples show how you could think about properties given algorithms ra
 
 101 for property based:
 
+- `decompPrime` - Returns the list of prime factors corresponding to the input value
+- `fibonacci` - Returns the item at a given position in the sequence of Fibonacci
 - `indexOf` - Returns the position of the first occurrence of `pattern` in `text`
 - `sort` - Returns a sorted copy of the input array
 
@@ -27,7 +29,7 @@ Let's see how to generate recursive inputs using `letrec`, `memo` or even none o
 
 Various algorithms to have more random examples:
 
-- `knight` - Multi dimensional dichotomy gievn as a coding exercise
+- `knight` - Multi dimensional dichotomy given as a coding exercise
 - `mazeGenerator` - Maze generator
 - `roman` - Convert from and to roman notation for numbers
 
@@ -36,6 +38,17 @@ Various algorithms to have more random examples:
 Property based testing applied to state machines or user interfaces:
 
 - `MusicPlayer` - Simple music player with `play`, `pause`, `addTrack` and `next`
+
+**Race conditions**
+
+Property based testing used to detect race conditions in various kind of JavaScript snippets:
+
+- `AutocompleteField` - An autocomplete field written in React providing suggestions as soon as possible
+- `Counter` - Increment a counter stored in a DB - non atomic and atomic versions
+- `DebouncedAutocomplete` - An autocomplete field written in React providing suggestions in a debounced way (uses timers)
+- `dependencyTree` - Fetch recursively dependencies for a npm package
+- `TodoList` - Simple todolist React app
+- `UserProfilePage` - A simple React component loading user profile on mount
 
 ## Rules of property based
 

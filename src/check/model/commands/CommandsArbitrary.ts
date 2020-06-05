@@ -12,6 +12,7 @@ import { ReplayPath } from '../ReplayPath';
 import { CommandsIterable } from './CommandsIterable';
 import { CommandsSettings } from './CommandsSettings';
 import { CommandWrapper } from './CommandWrapper';
+import { makeLazy } from '../../../stream/LazyIterableIterator';
 
 /** @hidden */
 class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
@@ -28,7 +29,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     readonly disableReplayLog: boolean
   ) {
     super();
-    this.oneCommandArb = oneof(...commandArbs).map(c => new CommandWrapper(c));
+    this.oneCommandArb = oneof(...commandArbs).map((c) => new CommandWrapper(c));
     this.lengthArb = nat(maxCommands);
     this.replayPath = []; // updated at first shrink
     this.replayPathPosition = 0;
@@ -40,8 +41,12 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     items: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[],
     shrunkOnce: boolean
   ): Shrinkable<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
-    return new Shrinkable(new CommandsIterable(items.map(s => s.value_), () => this.metadataForReplay()), () =>
-      this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(v, true))
+    return new Shrinkable(
+      new CommandsIterable(
+        items.map((s) => s.value_),
+        () => this.metadataForReplay()
+      ),
+      () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true))
     );
   }
   generate(mrng: Random): Shrinkable<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
@@ -97,29 +102,39 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
 
     // The shrinker of commands have to keep the last item
     // because it is the one causing the failure
-    let allShrinks = shrunkOnce
+    const rootShrink = shrunkOnce
       ? Stream.nil<Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>()
       : new Stream([[]][Symbol.iterator]());
 
-    // keep fixed number commands at the beginnign
+    // If the resulting shrinkable was simply built by joining the streams one by one,
+    //  > stream[n] = stream[n-1].join(nextFor[n]) -- with nextFor[-1] = rootShrink
+    // we would run into stack overflows when calling next to get back the 1st element (for huge n).
+    // Indeed calling stream[n].next() would require to call stream[n-1].next() and so on...
+    // Instead of that we define stream[n] = rootShrink.join(nextFor[0], ..., nextFor[n])
+    // So that calling next on stream[n] will not have to run too many recursions
+    const nextShrinks: IterableIterator<Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>[] = [];
+
+    // keep fixed number commands at the beginning
     // remove items in remaining part except the last one
     for (let numToKeep = 0; numToKeep !== items.length; ++numToKeep) {
-      const size = this.lengthArb.shrinkableFor(items.length - 1 - numToKeep, false);
-      const fixedStart = items.slice(0, numToKeep);
-      allShrinks = allShrinks.join(
-        size.shrink().map(l => fixedStart.concat(items.slice(items.length - (l.value + 1))))
+      nextShrinks.push(
+        makeLazy(() => {
+          const size = this.lengthArb.shrinkableFor(items.length - 1 - numToKeep, false);
+          const fixedStart = items.slice(0, numToKeep);
+          return size.shrink().map((l) => fixedStart.concat(items.slice(items.length - (l.value + 1))));
+        })
       );
     }
 
     // shrink one by one
     for (let itemAt = 0; itemAt !== items.length; ++itemAt) {
-      allShrinks = allShrinks.join(
-        items[itemAt].shrink().map(v => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1)))
+      nextShrinks.push(
+        makeLazy(() => items[itemAt].shrink().map((v) => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1))))
       );
     }
 
-    return allShrinks.map(shrinkables => {
-      return shrinkables.map(c => {
+    return rootShrink.join(...nextShrinks).map((shrinkables) => {
+      return shrinkables.map((c) => {
         return new Shrinkable(c.value_.clone(), c.shrink);
       });
     });

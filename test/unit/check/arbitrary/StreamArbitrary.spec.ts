@@ -47,7 +47,7 @@ describe('StreamArbitrary', () => {
       ));
     it('Should be able to produce different values', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.counter(seed);
           const g = infiniteStream(nat()).generate(mrng).value_;
           let first: number | null = null;
@@ -72,8 +72,8 @@ describe('StreamArbitrary', () => {
         isValidValue: (g: Stream<number>) => {
           if (!hasCloneMethod(g)) return false;
           const first5 = [...g.take(5)];
-          return first5.length === 5 && first5.every(v => typeof v === 'number');
-        }
+          return first5.length === 5 && first5.every((v) => typeof v === 'number');
+        },
       });
     });
   });

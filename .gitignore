@@ -12,3 +12,4 @@ node_modules/
 deopt.out
 v8.log
 v8.out
+test/esm/**/out.txt

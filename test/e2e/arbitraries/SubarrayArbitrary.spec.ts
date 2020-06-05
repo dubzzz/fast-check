@@ -7,7 +7,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
     it('Should not re-order the values', () => {
       fc.assert(
         fc.property(fc.subarray(src), (arr: number[]) => {
-          const correspondingIndexes = arr.map(v => src.indexOf(v));
+          const correspondingIndexes = arr.map((v) => src.indexOf(v));
           let prev = -1;
           for (const item of correspondingIndexes) {
             if (item <= prev) return false; // wrongly ordered or duplicated
@@ -31,7 +31,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
     it('Should be able to shrink to counterexample restricted to an inverted pair', () => {
       const out = fc.check(
         fc.property(fc.shuffledSubarray(src), (arr: number[]) => {
-          const correspondingIndexes = arr.map(v => src.indexOf(v));
+          const correspondingIndexes = arr.map((v) => src.indexOf(v));
           let prev = -1;
           for (const item of correspondingIndexes) {
             if (item <= prev) return false; // wrongly ordered or duplicated

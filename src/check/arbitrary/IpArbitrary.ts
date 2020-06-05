@@ -66,7 +66,10 @@ function ipV6(): Arbitrary<string> {
   //               / [ *5( h16 ":" ) h16 ] "::"              h16
   //               / [ *6( h16 ":" ) h16 ] "::"
   const h16Arb = hexaString(1, 4);
-  const ls32Arb = oneof(tuple(h16Arb, h16Arb).map(([a, b]) => `${a}:${b}`), ipV4());
+  const ls32Arb = oneof(
+    tuple(h16Arb, h16Arb).map(([a, b]) => `${a}:${b}`),
+    ipV4()
+  );
   return oneof(
     tuple(array(h16Arb, 6, 6), ls32Arb).map(([eh, l]) => `${eh.join(':')}:${l}`),
     tuple(array(h16Arb, 5, 5), ls32Arb).map(([eh, l]) => `::${eh.join(':')}:${l}`),

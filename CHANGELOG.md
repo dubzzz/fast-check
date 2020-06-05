@@ -1,3 +1,167 @@
+# 1.24.2
+
+_Fix `constantFrom` not compatible with older versions of node_
+
+# Fixes
+
+- ([PR#583](https://github.com/dubzzz/fast-check/pull/583)) Bug: `constantFrom` not compatible with old browsers
+- ([PR#569](https://github.com/dubzzz/fast-check/pull/569)) Clean: Prebuild to cjs extension 
+- ([PR#568](https://github.com/dubzzz/fast-check/pull/568)) Doc: Broken links
+- ([PR#575](https://github.com/dubzzz/fast-check/pull/575)) Doc: Invalid code in example of the README 
+- ([PR#578](https://github.com/dubzzz/fast-check/pull/578)) Doc: Schedule native timers
+- ([PR#576](https://github.com/dubzzz/fast-check/pull/576)) Example: Fibonacci example
+- ([PR#577](https://github.com/dubzzz/fast-check/pull/577)) Example: Fix decompPrime example for CodeSandbox
+- ([PR#581](https://github.com/dubzzz/fast-check/pull/581)) Example: Fix wrong usages of userEvent.type
+- ([PR#579](https://github.com/dubzzz/fast-check/pull/579)) Example: Race conditions with timers
+
+# 1.24.1
+
+_Fixes a code issue detected in `fc.object()` when using `withNullPrototype`_
+
+## Fixes
+
+- ([PR#567](https://github.com/dubzzz/fast-check/pull/567)) Bug: Error in the code of `fc.object()` when using `withNullPrototype`
+
+# 1.24.0
+
+_Model based testing and race condition detection_
+
+## Features
+
+- ([PR#491](https://github.com/dubzzz/fast-check/pull/491)) Add ability to run commands in a scheduled context
+
+## Fixes
+
+- ([PR#565](https://github.com/dubzzz/fast-check/pull/565)) Doc: Broken documentation build
+- ([PR#566](https://github.com/dubzzz/fast-check/pull/566)) Doc: Document how race conditions can be detected
+
+---
+
+# 1.23.0
+
+_Better typings for `filter` and `oneof` plus support for null prototypes_
+
+## Features
+
+- ([PR#548](https://github.com/dubzzz/fast-check/pull/548)) Stringify should distinguish `{}` from `Object.create(null)` 
+- ([PR#552](https://github.com/dubzzz/fast-check/pull/552)) Add ability to generate objects without prototype
+- ([PR#555](https://github.com/dubzzz/fast-check/pull/555)) Support type guards while filtering :warning:
+- ([PR#556](https://github.com/dubzzz/fast-check/pull/556)) Better typings for oneof and frequency :warning:
+
+## Fixes
+
+- ([PR#554](https://github.com/dubzzz/fast-check/pull/554)) Doc: Add an example on atomic Counter for race conditions feature
+- ([PR#557](https://github.com/dubzzz/fast-check/pull/557)) Doc: Add example based on decomposition in prime numbers
+
+---
+
+# 1.22.2
+
+_Remove unused files from the final bundle_
+
+## Fixes
+
+- ([PR#550](https://github.com/dubzzz/fast-check/pull/550)) Clean: Switch from npmignore to files to whitelist bundled files instead of blacklisting them
+- ([PR#549](https://github.com/dubzzz/fast-check/pull/549)) Clean: Various typos in letrec unit-test
+- ([PR#551](https://github.com/dubzzz/fast-check/pull/551)) Clean: CI was not considered as failed when examples failed
+
+# 1.22.1
+
+_Fix broken bundle_
+
+# 1.22.0
+
+_Better random values and ability to shrink very large data-structures_
+
+## Features
+
+- ([PR#534](https://github.com/dubzzz/fast-check/pull/534)) Better independance between generated values during a test suite :warning:
+- ([PR#536](https://github.com/dubzzz/fast-check/pull/536)) Exclude internationalized-like domains :warning: - ([PR#538](https://github.com/dubzzz/fast-check/pull/538))
+- ([PR#537](https://github.com/dubzzz/fast-check/pull/537)) Add xoroshiro128plsu in the list of random generators
+- ([PR#539](https://github.com/dubzzz/fast-check/pull/539)) Add js extension onto esm files
+- ([PR#540](https://github.com/dubzzz/fast-check/pull/540)) Add metadata on the generated sources (see `fc.__version`)
+
+## Fixes
+
+- ([PR#505](https://github.com/dubzzz/fast-check/pull/505)) Bug: Fix stack overflow when shrinking large arrays
+- ([PR#541](https://github.com/dubzzz/fast-check/pull/541)) Bug: Fix stack overflow when shrinking large arrays of commands
+- ([PR#511](https://github.com/dubzzz/fast-check/pull/511)) Doc: Add Jest example in the README
+- ([PR#542](https://github.com/dubzzz/fast-check/pull/542)) Doc: Example with function arbitrary
+- ([PR#518](https://github.com/dubzzz/fast-check/pull/518)) Doc: Fix typos in Arbitraries.md
+- ([PR#523](https://github.com/dubzzz/fast-check/pull/523)) Doc: Fix typos in Arbitraries.md
+- ([PR#533](https://github.com/dubzzz/fast-check/pull/533)) Doc: Fix typos in Arbitraries.md
+- ([PR#529](https://github.com/dubzzz/fast-check/pull/529)) Doc: Tip explaining how to avoid timeouts
+- ([PR#519](https://github.com/dubzzz/fast-check/pull/519)) Clean: Add missing files in \*ignore
+- ([PR#535](https://github.com/dubzzz/fast-check/pull/535)) Clean: Better logs for GenericArbitraryHelper
+
+---
+
+# 1.21.0
+
+_Better typings for `beforeEach` and `afterEach` and more options on `fc.scheduler`_
+
+## Features
+
+- ([PR#493](https://github.com/dubzzz/fast-check/pull/493)) Automatically wrap tasks using an `act` function in `fc.scheduler` if provided
+- ([PR#492](https://github.com/dubzzz/fast-check/pull/492)) Also return the sequence task in `fc.scheduleSequence`
+- ([PR#489](https://github.com/dubzzz/fast-check/pull/489)) Allow looser types for beforeEach and afterEach, more accurate and stricter types :warning:
+
+## Fixes
+
+- ([PR#509](https://github.com/dubzzz/fast-check/pull/509)) Bug: `letrec` crashed when asking to generate `__proto__`
+- ([PR#510](https://github.com/dubzzz/fast-check/pull/510)) Bug: `letrec` crashed when builder instantiates an object having `__proto__` set to `null`
+- ([PR#503](https://github.com/dubzzz/fast-check/pull/503)) Doc: Note on `expect` or `assert`
+
+---
+
+# 1.20.1
+
+_Reduce bundle size_
+
+## Fixes
+
+- ([PR#494](https://github.com/dubzzz/fast-check/pull/494)) Clean: Remove tsbuildinfo files from the bundle
+- ([PR#495](https://github.com/dubzzz/fast-check/pull/495)) Clean: Remove unneeded `@param` in JSDoc of `property` and `tuple`
+
+# 1.20.0
+
+_Built-in support for race condition detection_
+
+## Features
+
+- ([PR#479](https://github.com/dubzzz/fast-check/pull/479)) Add `fc.scheduler` arbitrary
+
+## Fixes
+
+- ([PR#487](https://github.com/dubzzz/fast-check/pull/487)) Doc: Clean autocomplete example
+
+---
+
+# 1.19.0
+
+_Interrupt test-suites after a given delay while the number of runs have not been reached_
+
+## Features
+
+- ([PR#428](https://github.com/dubzzz/fast-check/pull/428)) Implement `interruptAfterTimeLimit`
+- ([PR#463](https://github.com/dubzzz/fast-check/pull/463)) Adapt and expose `IRawProperty`, `IProperty` and `IAsyncProperty` types
+
+## Fixes
+
+- ([PR#455](https://github.com/dubzzz/fast-check/pull/455)) Clean: Add watch mode test and build scripts
+- ([PR#456](https://github.com/dubzzz/fast-check/pull/456)) Clean: Bump all dev dependencies
+- ([PR#457](https://github.com/dubzzz/fast-check/pull/457)) Clean: Use `ts-jest/utils` `mocked` instead of our own `mockModule`
+- ([PR#449](https://github.com/dubzzz/fast-check/pull/449)) Clean: Moving away from npm, switching to yarn
+- ([PR#471](https://github.com/dubzzz/fast-check/pull/471)) Clean: Minor fixes related to internal typings
+- ([PR#473](https://github.com/dubzzz/fast-check/pull/473)) Clean: Remove unused variables in units
+- ([PR#474](https://github.com/dubzzz/fast-check/pull/474)) Clean: Enable no-unused-vars eslint rule
+- ([PR#465](https://github.com/dubzzz/fast-check/pull/465)) Doc: Examples served by CodeSandbox and improvement of the examples - ([PR#466](https://github.com/dubzzz/fast-check/pull/466)), ([PR#467](https://github.com/dubzzz/fast-check/pull/467)), ([PR#469](https://github.com/dubzzz/fast-check/pull/469)), ([PR#470](https://github.com/dubzzz/fast-check/pull/470)), ([PR#472](https://github.com/dubzzz/fast-check/pull/472)), ([PR#476](https://github.com/dubzzz/fast-check/pull/476))
+- ([PR#475](https://github.com/dubzzz/fast-check/pull/475)) Test: Do not run travis outside of master and PRs for master
+- ([PR#464](https://github.com/dubzzz/fast-check/pull/464)) Test: Add tests for typings based on tsd
+- ([PR#481](https://github.com/dubzzz/fast-check/pull/481)) Test: Configure CodeSandbox CI
+
+---
+
 # 1.18.1
 
 _Typings regression for `fc.object`_

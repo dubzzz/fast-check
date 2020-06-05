@@ -8,7 +8,7 @@ import {
   StringPadEndImpl,
   StringPadStartImpl,
   StringFromCodePointLimitedImpl,
-  StringFromCodePointLimited
+  StringFromCodePointLimited,
 } from '../../../src/utils/polyfills';
 
 declare namespace Object {
@@ -27,7 +27,7 @@ describe('polyfills', () => {
     if (Object.entries) {
       it('Should give the same answer as built-it entries', () =>
         fc.assert(
-          fc.property(fc.dictionary(fc.fullUnicodeString(), fc.fullUnicodeString()), d => {
+          fc.property(fc.dictionary(fc.fullUnicodeString(), fc.fullUnicodeString()), (d) => {
             expect(ObjectEntriesImpl(d)).toEqual(Object.entries(d));
           })
         ));
@@ -41,7 +41,7 @@ describe('polyfills', () => {
     if (String.fromCodePoint) {
       it('Should give the same answer as built-it entries', () =>
         fc.assert(
-          fc.property(fc.nat(0x10ffff), code => {
+          fc.property(fc.nat(0x10ffff), (code) => {
             expect(StringFromCodePointLimitedImpl(code)).toEqual(String.fromCodePoint(code));
           })
         ));
@@ -52,6 +52,8 @@ describe('polyfills', () => {
     });
   });
   describe('String.prototype.padEnd', () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     if (String.prototype.padEnd) {
       it('Should give the same answer as built-it padEnd', () =>
         fc.assert(
@@ -59,7 +61,7 @@ describe('polyfills', () => {
             fc.fullUnicodeString(),
             fc.nat(1000),
             fc.fullUnicodeString(),
-            (src, l, pad) => StringPadEndImpl(src, l, pad) === (src as any).padEnd(l, pad)
+            (src, l, pad) => StringPadEndImpl(src, l, pad) === src.padEnd(l, pad)
           )
         ));
     }
@@ -74,6 +76,8 @@ describe('polyfills', () => {
       ));
   });
   describe('String.prototype.padStart', () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     if (String.prototype.padStart) {
       it('Should give the same answer as built-it padStart', () =>
         fc.assert(
@@ -81,7 +85,7 @@ describe('polyfills', () => {
             fc.fullUnicodeString(),
             fc.nat(1000),
             fc.fullUnicodeString(),
-            (src, l, pad) => StringPadStartImpl(src, l, pad) === (src as any).padStart(l, pad)
+            (src, l, pad) => StringPadStartImpl(src, l, pad) === src.padStart(l, pad)
           )
         ));
     }

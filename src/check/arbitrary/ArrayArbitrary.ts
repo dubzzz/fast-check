@@ -6,6 +6,7 @@ import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
+import { makeLazy } from '../../stream/LazyIterableIterator';
 
 /** @hidden */
 class ArrayArbitrary<T> extends Arbitrary<T[]> {
@@ -14,7 +15,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
     readonly arb: Arbitrary<T>,
     readonly minLength: number,
     readonly maxLength: number,
-    readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = tab => tab
+    readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = (tab) => tab
   ) {
     super();
     this.lengthArb = integer(minLength, maxLength);
@@ -42,7 +43,7 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
     if (cloneable) {
       ArrayArbitrary.makeItCloneable(vs, items);
     }
-    return new Shrinkable(vs, () => this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(v, true)));
+    return new Shrinkable(vs, () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const size = this.lengthArb.generate(mrng);
@@ -59,13 +60,15 @@ class ArrayArbitrary<T> extends Arbitrary<T[]> {
     const size = this.lengthArb.shrinkableFor(items.length, shrunkOnce);
     return size
       .shrink()
-      .map(l => items.slice(items.length - l.value))
-      .join(items[0].shrink().map(v => [v].concat(items.slice(1))))
+      .map((l) => items.slice(items.length - l.value))
+      .join(items[0].shrink().map((v) => [v].concat(items.slice(1))))
       .join(
         items.length > this.minLength
-          ? this.shrinkImpl(items.slice(1), false)
-              .filter(vs => this.minLength <= vs.length + 1)
-              .map(vs => [items[0]].concat(vs))
+          ? makeLazy(() =>
+              this.shrinkImpl(items.slice(1), false)
+                .filter((vs) => this.minLength <= vs.length + 1)
+                .map((vs) => [items[0]].concat(vs))
+            )
           : Stream.nil<Shrinkable<T>[]>()
       );
   }

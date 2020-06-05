@@ -14,7 +14,7 @@ export enum CellType {
   Wall = 'Wall',
   Path = 'Path',
   Start = 'Start',
-  End = 'End'
+  End = 'End',
 }
 
 const mazeGeneratorInternal = (
@@ -24,7 +24,7 @@ const mazeGeneratorInternal = (
   endPt: Point
 ): { maze: CellType[][]; hasPathLeadingToTheEnd: boolean } => {
   // Initialize grid
-  const maze: CellType[][] = [...Array(dim.height)].map(_ => [...Array(dim.width)].fill(CellType.Wall));
+  const maze: CellType[][] = [...Array(dim.height)].map((_) => [...Array(dim.width)].fill(CellType.Wall));
   maze[startPt.y][startPt.x] = CellType.Start;
   maze[endPt.y][endPt.x] = CellType.End;
 
@@ -46,14 +46,19 @@ const mazeGeneratorInternal = (
     if (cellTypeAt(pt) === CellType.Wall) ptsToScan.push(pt);
   };
   const neighboorsFor = (pt: Point) => {
-    return [{ x: pt.x - 1, y: pt.y }, { x: pt.x + 1, y: pt.y }, { x: pt.x, y: pt.y - 1 }, { x: pt.x, y: pt.y + 1 }];
+    return [
+      { x: pt.x - 1, y: pt.y },
+      { x: pt.x + 1, y: pt.y },
+      { x: pt.x, y: pt.y - 1 },
+      { x: pt.x, y: pt.y + 1 },
+    ];
   };
   const addNeighboorsInPtsToScan = (pt: Point) => {
     const neighboors = neighboorsFor(pt);
-    shuffleInPlace(neighboors).forEach(nPt => addInPtsToScanIfWall(nPt));
+    shuffleInPlace(neighboors).forEach((nPt) => addInPtsToScanIfWall(nPt));
   };
   const isNextToEnd = (pt: Point): boolean => {
-    return neighboorsFor(pt).find(nPt => cellTypeAt(nPt) === CellType.End) !== undefined;
+    return neighboorsFor(pt).find((nPt) => cellTypeAt(nPt) === CellType.End) !== undefined;
   };
 
   // Random journey in the grid

@@ -56,18 +56,31 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return typeof value === 'number' ? stringifyNumber(value) : `new Number(${stringifyNumber(Number(value))})`;
     case '[object Object]': {
       try {
-        const defaultRepr: string = (value as any).toString();
-        if (defaultRepr !== '[object Object]') return defaultRepr;
-        return (
-          '{' +
-          Object.keys(value)
-            .map(k => `${JSON.stringify(k)}:${stringifyInternal((value as any)[k], currentValues)}`)
-            .join(',') +
-          '}'
-        );
+        const toStringAccessor = (value as any).toString; // <-- Can throw
+        if (typeof toStringAccessor === 'function' && toStringAccessor !== Object.prototype.toString) {
+          // Instance (or one of its parent prototypes) overrides the default toString of Object
+          return (value as any).toString(); // <-- Can throw
+        }
       } catch (err) {
+        // Only return what would have been the default toString on Object
         return '[object Object]';
       }
+      const rawRepr =
+        '{' +
+        Object.keys(value)
+          .map(
+            (k) =>
+              `${k === '__proto__' ? '["__proto__"]' : JSON.stringify(k)}:${stringifyInternal(
+                (value as any)[k],
+                currentValues
+              )}`
+          )
+          .join(',') +
+        '}';
+      if (Object.getPrototypeOf(value) === null) {
+        return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
+      }
+      return rawRepr;
     }
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues)})`;

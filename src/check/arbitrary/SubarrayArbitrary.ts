@@ -5,6 +5,7 @@ import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
+import { makeLazy } from '../../stream/LazyIterableIterator';
 
 /** @hidden */
 class SubarrayArbitrary<T> extends Arbitrary<T[]> {
@@ -29,7 +30,7 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     this.lengthArb = integer(minLength, maxLength);
   }
   private wrapper(items: T[], shrunkOnce: boolean): Shrinkable<T[]> {
-    return new Shrinkable(items, () => this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(v, true)));
+    return new Shrinkable(items, () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const remainingElements = this.originalArray.map((v, idx) => idx);
@@ -41,7 +42,10 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       remainingElements.splice(selectedIdIndex, 1);
     }
     if (this.isOrdered) ids.sort((a, b) => a - b);
-    return this.wrapper(ids.map(i => this.originalArray[i]), false);
+    return this.wrapper(
+      ids.map((i) => this.originalArray[i]),
+      false
+    );
   }
   private shrinkImpl(items: T[], shrunkOnce: boolean): Stream<T[]> {
     // shrinking one by one is the not the most comprehensive
@@ -52,12 +56,14 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     const size = this.lengthArb.shrinkableFor(items.length, shrunkOnce);
     return size
       .shrink()
-      .map(l => items.slice(items.length - l.value))
+      .map((l) => items.slice(items.length - l.value))
       .join(
         items.length > this.minLength
-          ? this.shrinkImpl(items.slice(1), false)
-              .filter(vs => this.minLength <= vs.length + 1)
-              .map(vs => [items[0]].concat(vs))
+          ? makeLazy(() =>
+              this.shrinkImpl(items.slice(1), false)
+                .filter((vs) => this.minLength <= vs.length + 1)
+                .map((vs) => [items[0]].concat(vs))
+            )
           : Stream.nil<T[]>()
       );
   }

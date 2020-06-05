@@ -16,7 +16,7 @@ import * as stubRng from '../../stubs/generators';
 
 describe('TupleArbitrary', () => {
   describe('genericTuple', () => {
-    genericHelper.isValidArbitrary((mins: number[]) => genericTuple(mins.map(m => integer(m, m + 10))), {
+    genericHelper.isValidArbitrary((mins: number[]) => genericTuple(mins.map((m) => integer(m, m + 10))), {
       seedGenerator: fc.array(fc.nat(1000)),
       isStrictlySmallerValue: (g1: number[], g2: number[]) => g1.findIndex((v, idx) => v < g2[idx]) !== -1,
       isValidValue: (g: number[], mins: number[]) => {
@@ -28,7 +28,7 @@ describe('TupleArbitrary', () => {
           if (g[idx] > mins[idx] + 10) return false;
         }
         return true;
-      }
+      },
     });
     it('Should throw on null arbitrary', () =>
       expect(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])).toThrowError());
@@ -47,7 +47,7 @@ describe('TupleArbitrary', () => {
       ));
     it('Should not produce cloneable tuple if no cloneable children', () =>
       fc.assert(
-        fc.property(fc.nat(100), num => {
+        fc.property(fc.nat(100), (num) => {
           const arbs = [...Array(num)].map(() => integer(0, 0));
           const mrng = stubRng.mutable.counter(0);
           const g = genericTuple(arbs).generate(mrng).value;
@@ -62,7 +62,7 @@ describe('TupleArbitrary', () => {
             [cloneMethod]: () => {
               ++numCallsToClone;
               return v;
-            }
+            },
           };
           return new Shrinkable(v);
         }
@@ -105,12 +105,12 @@ describe('TupleArbitrary', () => {
 
         // Traverse the shrink tree in order to detect already seen ids
         const alreadySeenIds: { [id: number]: boolean } = {
-          [extractId(shrinkable!)]: true
+          [extractId(shrinkable!)]: true,
         };
         while (shrinkable !== null) {
           shrinkable = shrinkable
             .shrink()
-            .map(nextShrinkable => {
+            .map((nextShrinkable) => {
               const id = extractId(nextShrinkable);
               if (alreadySeenIds[id]) throw new Error(`Already encountered id ${id}`);
               alreadySeenIds[id] = true;

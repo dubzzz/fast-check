@@ -8,10 +8,10 @@ describe('ModelRunner', () => {
   describe('modelRunner', () => {
     it('Should run in order and skip unchecked', () =>
       fc.assert(
-        fc.property(fc.array(fc.boolean()), runOrNot => {
+        fc.property(fc.array(fc.boolean()), (runOrNot) => {
           const setupData = { model: {}, real: {} };
           const startedRuns: number[] = [];
-          const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter(v => v >= 0);
+          const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter((v) => v >= 0);
           const commands = runOrNot.map((v, idx) => {
             return new (class implements Command<{}, {}> {
               name = 'Command';
@@ -37,12 +37,12 @@ describe('ModelRunner', () => {
         fc.asyncProperty(fc.array(fc.boolean()), fc.boolean(), async (runOrNot, asyncSetup) => {
           const setupData = { model: {}, real: null };
           const startedRuns: number[] = [];
-          const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter(v => v >= 0);
+          const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter((v) => v >= 0);
           const commands = runOrNot.map((v, idx) => {
             return new (class implements AsyncCommand<{}, {}, true> {
               name = 'AsyncCommand';
               check = async (m: {}) => {
-                return new Promise<boolean>(resolve => {
+                return new Promise<boolean>((resolve) => {
                   setTimeout(() => {
                     expect(m).toBe(setupData.model);
                     resolve(v);
@@ -50,7 +50,7 @@ describe('ModelRunner', () => {
                 });
               };
               run = async (m: {}, r: {}) => {
-                return new Promise<void>(resolve => {
+                return new Promise<void>((resolve) => {
                   expect(m).toBe(setupData.model);
                   expect(r).toBe(setupData.real);
                   startedRuns.push(idx);
@@ -79,7 +79,7 @@ describe('ModelRunner', () => {
         };
       })();
       const setup = () =>
-        new Promise<typeof setupData>(resolve => {
+        new Promise<typeof setupData>((resolve) => {
           setTimeout(() => {
             setupDataReady = true;
             resolve(setupData);

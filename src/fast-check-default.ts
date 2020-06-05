@@ -37,7 +37,7 @@ import {
   object,
   ObjectConstraints,
   unicodeJson,
-  unicodeJsonObject
+  unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
 import { oneof } from './check/arbitrary/OneOfArbitrary';
 import { option } from './check/arbitrary/OptionArbitrary';
@@ -52,7 +52,7 @@ import {
   string,
   string16bits,
   stringOf,
-  unicodeString
+  unicodeString,
 } from './check/arbitrary/StringArbitrary';
 import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
@@ -64,14 +64,14 @@ import {
   webQueryParameters,
   webSegment,
   webUrl,
-  WebUrlConstraints
+  WebUrlConstraints,
 } from './check/arbitrary/WebArbitrary';
 
 import { AsyncCommand } from './check/model/command/AsyncCommand';
 import { Command } from './check/model/command/Command';
 import { ICommand } from './check/model/command/ICommand';
 import { commands } from './check/model/commands/CommandsArbitrary';
-import { asyncModelRun, modelRun } from './check/model/ModelRunner';
+import { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
@@ -79,7 +79,7 @@ import {
   configureGlobal,
   GlobalParameters,
   readConfigureGlobal,
-  resetConfigureGlobal
+  resetConfigureGlobal,
 } from './check/runner/configuration/GlobalParameters';
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
@@ -87,6 +87,17 @@ import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { stringify } from './utils/stringify';
+import {
+  scheduler,
+  schedulerFor,
+  Scheduler,
+  SchedulerSequenceItem,
+  SchedulerReportItem,
+} from './check/arbitrary/AsyncSchedulerArbitrary';
+
+// Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
+const __type = '__PACKAGE_TYPE__' as string;
+const __version = '__PACKAGE_VERSION__' as string;
 
 // boolean
 // floating point types
@@ -96,6 +107,9 @@ import { stringify } from './utils/stringify';
 // combination of others
 // complex combinations
 export {
+  // meta
+  __type,
+  __version,
   // assess the property
   sample,
   statistics,
@@ -188,7 +202,14 @@ export {
   ICommand,
   asyncModelRun,
   modelRun,
+  scheduledModelRun,
   commands,
+  // scheduler
+  scheduler,
+  schedulerFor,
+  Scheduler,
+  SchedulerSequenceItem,
+  SchedulerReportItem,
   // extend the framework
   Arbitrary,
   Shrinkable,
@@ -216,5 +237,5 @@ export {
   // global configuration
   configureGlobal,
   readConfigureGlobal,
-  resetConfigureGlobal
+  resetConfigureGlobal,
 };

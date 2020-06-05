@@ -5,7 +5,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   it('should skip as soon as delay expires and mark run as failed', () => {
     let numRuns = 0;
     const out = fc.check(
-      fc.property(fc.integer(), _x => {
+      fc.property(fc.integer(), (_x) => {
         ++numRuns;
         return true;
       }),
@@ -21,7 +21,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   it('should interrupt as soon as delay expires and mark run as success (no failure before)', () => {
     let numRuns = 0;
     const out = fc.check(
-      fc.property(fc.integer(), _n => {
+      fc.property(fc.integer(), (_n) => {
         ++numRuns;
         return true;
       }),
@@ -37,7 +37,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   it('should interrupt as soon as delay expires and mark run as failure if asked to', () => {
     let numRuns = 0;
     const out = fc.check(
-      fc.property(fc.integer(), _n => {
+      fc.property(fc.integer(), (_n) => {
         ++numRuns;
         return true;
       }),
@@ -53,7 +53,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   it('should consider interrupt with higer priority than skip', () => {
     let numRuns = 0;
     const out = fc.check(
-      fc.property(fc.integer(), _n => {
+      fc.property(fc.integer(), (_n) => {
         ++numRuns;
         return true;
       }),

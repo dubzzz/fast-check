@@ -33,7 +33,7 @@ abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
    * @returns Shrinkable associated to value
    */
   shrinkableFor(value: T, shrunkOnce?: boolean): Shrinkable<T> {
-    return new Shrinkable(value, () => this.shrink(value, shrunkOnce === true).map(v => this.shrinkableFor(v, true)));
+    return new Shrinkable(value, () => this.shrink(value, shrunkOnce === true).map((v) => this.shrinkableFor(v, true)));
   }
 }
 

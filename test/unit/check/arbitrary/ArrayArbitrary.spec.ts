@@ -37,7 +37,7 @@ describe('ArrayArbitrary', () => {
   describe('array', () => {
     it('Should generate an array using specified arbitrary', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const g = array(new DummyArbitrary(() => 42)).generate(mrng).value;
           expect(g).toEqual([...Array(g.length)].map(() => ({ key: 42 })));
@@ -46,7 +46,7 @@ describe('ArrayArbitrary', () => {
       ));
     it('Should generate an array calling multiple times arbitrary generator', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           let num = 0;
           const g = array(new DummyArbitrary(() => ++num)).generate(mrng).value;
@@ -72,7 +72,7 @@ describe('ArrayArbitrary', () => {
             [cloneMethod]: () => {
               ++numCallsToClone;
               return v;
-            }
+            },
           };
           return new Shrinkable(v);
         }
@@ -84,7 +84,7 @@ describe('ArrayArbitrary', () => {
     describe('Given no length constraints', () => {
       genericHelper.isValidArbitrary(() => array(nat()), {
         isStrictlySmallerValue: isStrictlySmallerArray,
-        isValidValue: (g: number[]) => Array.isArray(g) && g.every(v => typeof v === 'number')
+        isValidValue: (g: number[]) => Array.isArray(g) && g.every((v) => typeof v === 'number'),
       });
     });
     describe('Given maximal length only', () => {
@@ -92,7 +92,7 @@ describe('ArrayArbitrary', () => {
         seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerArray,
         isValidValue: (g: number[], maxLength: number) =>
-          Array.isArray(g) && g.length <= maxLength && g.every(v => typeof v === 'number')
+          Array.isArray(g) && g.length <= maxLength && g.every((v) => typeof v === 'number'),
       });
     });
     describe('Given minimal and maximal lengths', () => {
@@ -105,7 +105,7 @@ describe('ArrayArbitrary', () => {
             Array.isArray(g) &&
             g.length >= constraints.min &&
             g.length <= constraints.max &&
-            g.every(v => typeof v === 'number')
+            g.every((v) => typeof v === 'number'),
         }
       );
     });

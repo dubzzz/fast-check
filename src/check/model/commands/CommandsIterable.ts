@@ -12,12 +12,15 @@ export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync 
     return this.commands[Symbol.iterator]();
   }
   [cloneMethod]() {
-    return new CommandsIterable(this.commands.map(c => c.clone()), this.metadataForReplay);
+    return new CommandsIterable(
+      this.commands.map((c) => c.clone()),
+      this.metadataForReplay
+    );
   }
   toString(): string {
     const serializedCommands = this.commands
-      .filter(c => c.hasRan)
-      .map(c => c.toString())
+      .filter((c) => c.hasRan)
+      .map((c) => c.toString())
       .join(',');
     const metadata = this.metadataForReplay();
     return metadata.length !== 0 ? `${serializedCommands} /*${metadata}*/` : serializedCommands;

@@ -21,7 +21,7 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     this.max = max === undefined ? IntegerArbitrary.MAX_INT : max;
   }
   private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
-    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map(v => this.wrapper(v, true)));
+    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<number> {
     return this.wrapper(mrng.nextInt(this.min, this.max), false);

@@ -4,7 +4,7 @@ import { integer } from './IntegerArbitrary';
 
 /** @hidden */
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number) {
-  return integer(min, max).map(n => StringFromCodePointLimited(mapToCode(n)));
+  return integer(min, max).map((n) => StringFromCodePointLimited(mapToCode(n)));
 }
 
 /** @hidden */
@@ -20,7 +20,7 @@ const preferPrintableMapper = (v: number): number => {
  */
 function char(): Arbitrary<string> {
   // Only printable characters: https://www.ascii-code.com/
-  return CharacterArbitrary(0x20, 0x7e, v => v);
+  return CharacterArbitrary(0x20, 0x7e, (v) => v);
 }
 
 /**

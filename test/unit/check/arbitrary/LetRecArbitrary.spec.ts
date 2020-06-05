@@ -11,47 +11,47 @@ describe('LetRecArbitrary', () => {
       const expectedArb1 = buildArbitrary(jest.fn());
       const expectedArb2 = buildArbitrary(jest.fn());
 
-      const { arb1, arb2 } = letrec(_tie => ({
+      const { arb1, arb2 } = letrec((_tie) => ({
         arb1: expectedArb1,
-        arb2: expectedArb2
+        arb2: expectedArb2,
       }));
 
       expect(arb1).toBe(expectedArb1);
       expect(arb2).toBe(expectedArb2);
     });
     it('Should not produce LazyArbitrary for no-tie constructs', () => {
-      const { arb } = letrec(_tie => ({
-        arb: buildArbitrary(jest.fn())
+      const { arb } = letrec((_tie) => ({
+        arb: buildArbitrary(jest.fn()),
       }));
       expect(arb).not.toBeInstanceOf(LazyArbitrary);
     });
     it('Should not produce LazyArbitrary for indirect tie constructs', () => {
-      const { arb } = letrec(tie => ({
+      const { arb } = letrec((tie) => ({
         // arb is an arbitrary wrapping the tie value (as fc.array)
-        arb: buildArbitrary(mrng => tie('arb').generate(mrng))
+        arb: buildArbitrary((mrng) => tie('arb').generate(mrng)),
       }));
       expect(arb).not.toBeInstanceOf(LazyArbitrary);
     });
     it('Should produce LazyArbitrary for direct tie constructs', () => {
-      const { arb } = letrec(tie => ({
-        arb: tie('arb')
+      const { arb } = letrec((tie) => ({
+        arb: tie('arb'),
       }));
       expect(arb).toBeInstanceOf(LazyArbitrary);
     });
     it('Should be able to construct mutually recursive arbitraries', () => {
-      const { arb1, arb2 } = letrec(tie => ({
+      const { arb1, arb2 } = letrec((tie) => ({
         arb1: tie('arb2'),
-        arb2: tie('arb1')
+        arb2: tie('arb1'),
       }));
       expect(arb1).toBeDefined();
       expect(arb2).toBeDefined();
     });
     it('Should apply tie correctly', () => {
       const expectedArb = buildArbitrary(jest.fn());
-      const { arb1, arb2, arb3 } = letrec(tie => ({
+      const { arb1, arb2, arb3 } = letrec((tie) => ({
         arb1: tie('arb2'),
         arb2: tie('arb3'),
-        arb3: expectedArb
+        arb3: expectedArb,
       }));
 
       expect(arb1).toBeInstanceOf(LazyArbitrary);
@@ -66,9 +66,9 @@ describe('LetRecArbitrary', () => {
       const mrng = stubRng.mutable.nocall();
       const generateMock = jest.fn();
       const simpleArb = buildArbitrary(generateMock);
-      const { arb1 } = letrec(tie => ({
-        arb1: buildArbitrary(mrng => tie('arb2').generate(mrng)),
-        arb2: simpleArb
+      const { arb1 } = letrec((tie) => ({
+        arb1: buildArbitrary((mrng) => tie('arb2').generate(mrng)),
+        arb2: simpleArb,
       }));
 
       expect(generateMock).not.toHaveBeenCalled();
@@ -78,17 +78,75 @@ describe('LetRecArbitrary', () => {
     });
     it('Should throw on generate if tie receives an invalid parameter', () => {
       const mrng = stubRng.mutable.nocall();
-      const { arb1 } = letrec(tie => ({
-        arb1: tie('missing')
+      const { arb1 } = letrec((tie) => ({
+        arb1: tie('missing'),
       }));
       expect(() => arb1.generate(mrng)).toThrowErrorMatchingSnapshot();
     });
     it('Should throw on generate if tie receives an invalid parameter after creation', () => {
       const mrng = stubRng.mutable.nocall();
-      const { arb1 } = letrec(tie => ({
-        arb1: buildArbitrary(mrng => tie('missing').generate(mrng))
+      const { arb1 } = letrec((tie) => ({
+        arb1: buildArbitrary((mrng) => tie('missing').generate(mrng)),
       }));
       expect(() => arb1.generate(mrng)).toThrowErrorMatchingSnapshot();
+    });
+    it('Should apply tie correctly', () => {
+      const expectedArb = buildArbitrary(jest.fn());
+      const { arb1, arb2, arb3 } = letrec((tie) => ({
+        arb1: tie('arb2'),
+        arb2: tie('arb3'),
+        arb3: expectedArb,
+      }));
+
+      expect(arb1).toBeInstanceOf(LazyArbitrary);
+      expect(arb2).toBeInstanceOf(LazyArbitrary);
+      expect(arb3).not.toBeInstanceOf(LazyArbitrary);
+
+      expect((arb1 as any).underlying).toBe(arb2);
+      expect((arb2 as any).underlying).toBe(arb3);
+      expect(arb3).toBe(expectedArb);
+    });
+    it('Should accept "reserved" keys', () => {
+      const mrng = stubRng.mutable.nocall();
+      const generateMock = jest.fn();
+      const simpleArb = buildArbitrary(generateMock);
+      const { tie } = letrec((tie) => ({
+        tie: tie('__proto__'),
+        ['__proto__']: tie('__defineGetter__​​'),
+        ['__defineGetter__​​']: tie('__defineSetter__​​'),
+        ['__defineSetter__​​']: tie('__lookupGetter__​​'),
+        ['__lookupGetter__​​']: tie('__lookupSetter__​​'),
+        ['__lookupSetter__​​']: tie('constructor​​'),
+        ['constructor​​']: tie('hasOwnProperty​​'),
+        ['hasOwnProperty​​']: tie('isPrototypeOf​​'),
+        ['isPrototypeOf​​']: tie('propertyIsEnumerable​​'),
+        ['propertyIsEnumerable​​']: tie('toLocaleString​​'),
+        ['toLocaleString​​']: tie('toSource​​'),
+        ['toSource​​']: tie('toString​​'),
+        ['toString​​']: tie('valueOf'),
+        ['valueOf']: simpleArb,
+      }));
+
+      expect(generateMock).not.toHaveBeenCalled();
+      tie.generate(mrng);
+
+      expect(generateMock).toHaveBeenCalled();
+    });
+    it('Should accept builders producing objects based on Object.create(null)', () => {
+      const mrng = stubRng.mutable.nocall();
+      const generateMock = jest.fn();
+      const simpleArb = buildArbitrary(generateMock);
+      const { a } = letrec((tie) =>
+        Object.assign(Object.create(null), {
+          a: tie('b'),
+          b: simpleArb,
+        })
+      );
+
+      expect(generateMock).not.toHaveBeenCalled();
+      a.generate(mrng);
+
+      expect(generateMock).toHaveBeenCalled();
     });
   });
   describe('LazyArbitrary', () => {
@@ -127,7 +185,7 @@ describe('LetRecArbitrary', () => {
     it('Should be able to bias recursive arbitraries', () => {
       const lazy = new LazyArbitrary('id008');
       const noCallMock = jest.fn();
-      lazy.underlying = buildArbitrary(noCallMock, n => lazy.withBias(n));
+      lazy.underlying = buildArbitrary(noCallMock, (n) => lazy.withBias(n));
 
       const biasedLazy = lazy.withBias(2);
       expect(biasedLazy).toBe(lazy);
@@ -140,8 +198,8 @@ describe('LetRecArbitrary', () => {
       const noCallMock = jest.fn();
       const biasAMock = jest.fn();
       const biasBMock = jest.fn();
-      biasAMock.mockImplementation(n => lazyB.withBias(n));
-      biasBMock.mockImplementation(n => lazyB.withBias(n));
+      biasAMock.mockImplementation((n) => lazyB.withBias(n));
+      biasBMock.mockImplementation((n) => lazyB.withBias(n));
       lazyA.underlying = buildArbitrary(noCallMock, biasAMock);
       lazyB.underlying = buildArbitrary(noCallMock, biasBMock);
 
@@ -154,7 +212,7 @@ describe('LetRecArbitrary', () => {
       const lazy = new LazyArbitrary('id007');
 
       const biasMock = jest.fn();
-      biasMock.mockImplementation(n => lazy.withBias(n));
+      biasMock.mockImplementation((n) => lazy.withBias(n));
       lazy.underlying = buildArbitrary(jest.fn(), biasMock);
 
       lazy.withBias(42);
@@ -167,7 +225,7 @@ describe('LetRecArbitrary', () => {
       const lazy = new LazyArbitrary('id007');
 
       const biasMock = jest.fn();
-      biasMock.mockImplementation(n => lazy.withBias(n));
+      biasMock.mockImplementation((n) => lazy.withBias(n));
       lazy.underlying = buildArbitrary(jest.fn(), biasMock);
 
       lazy.withBias(42);
