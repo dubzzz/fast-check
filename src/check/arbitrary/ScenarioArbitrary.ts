@@ -17,7 +17,7 @@ export function scenario<TModel, TAction>(
     // Extract eligible actions
     const actions = scenario.length < finalScenarioLength ? eligibleActions(current.model) : [];
     if (actions.length === 0) return constant(current);
-    return oneof(...eligibleActions(current.model)).chain(a =>
+    return oneof(...eligibleActions(current.model)).chain((a) =>
       extendScenario({ model: modelUpdater(current.model, a), scenario: [...current.scenario, a] })
     );
   };
