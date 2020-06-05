@@ -40,7 +40,7 @@ class ArbitraryFor<T> extends ArbitraryWithShrink<T> {
     const def = this.findDefinitionFor(this.defs, value);
     if (def === null) return Stream.nil();
 
-    const g = function*(): IterableIterator<T> {
+    const g = function* (): IterableIterator<T> {
       for (const s of def.shrinks || []) {
         yield s.value;
       }

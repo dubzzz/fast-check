@@ -29,7 +29,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     readonly disableReplayLog: boolean
   ) {
     super();
-    this.oneCommandArb = oneof(...commandArbs).map(c => new CommandWrapper(c));
+    this.oneCommandArb = oneof(...commandArbs).map((c) => new CommandWrapper(c));
     this.lengthArb = nat(maxCommands);
     this.replayPath = []; // updated at first shrink
     this.replayPathPosition = 0;
@@ -41,8 +41,12 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     items: Shrinkable<CommandWrapper<Model, Real, RunResult, CheckAsync>>[],
     shrunkOnce: boolean
   ): Shrinkable<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
-    return new Shrinkable(new CommandsIterable(items.map(s => s.value_), () => this.metadataForReplay()), () =>
-      this.shrinkImpl(items, shrunkOnce).map(v => this.wrapper(v, true))
+    return new Shrinkable(
+      new CommandsIterable(
+        items.map((s) => s.value_),
+        () => this.metadataForReplay()
+      ),
+      () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true))
     );
   }
   generate(mrng: Random): Shrinkable<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
@@ -117,7 +121,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
         makeLazy(() => {
           const size = this.lengthArb.shrinkableFor(items.length - 1 - numToKeep, false);
           const fixedStart = items.slice(0, numToKeep);
-          return size.shrink().map(l => fixedStart.concat(items.slice(items.length - (l.value + 1))));
+          return size.shrink().map((l) => fixedStart.concat(items.slice(items.length - (l.value + 1))));
         })
       );
     }
@@ -125,12 +129,12 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     // shrink one by one
     for (let itemAt = 0; itemAt !== items.length; ++itemAt) {
       nextShrinks.push(
-        makeLazy(() => items[itemAt].shrink().map(v => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1))))
+        makeLazy(() => items[itemAt].shrink().map((v) => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1))))
       );
     }
 
-    return rootShrink.join(...nextShrinks).map(shrinkables => {
-      return shrinkables.map(c => {
+    return rootShrink.join(...nextShrinks).map((shrinkables) => {
+      return shrinkables.map((c) => {
         return new Shrinkable(c.value_.clone(), c.shrink);
       });
     });

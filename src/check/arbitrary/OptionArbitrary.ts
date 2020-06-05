@@ -24,7 +24,7 @@ class OptionArbitrary<T, TNil> extends Arbitrary<T | TNil> {
     return new Shrinkable(s.value_ as T | TNil, () =>
       s
         .shrink()
-        .map(v => OptionArbitrary.extendedShrinkable(v, nil))
+        .map((v) => OptionArbitrary.extendedShrinkable(v, nil))
         .join(g())
     );
   }

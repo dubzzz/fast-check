@@ -69,7 +69,7 @@ class MixedCaseArbitrary extends Arbitrary<string> {
   ): Stream<Shrinkable<string>> {
     return rawCase
       .shrink()
-      .map(s => {
+      .map((s) => {
         const nChars = [...s.value_];
         const nTogglePositions = this.computeTogglePositions(nChars);
         const nFlags = computeNextFlags(flags, nTogglePositions.length);
@@ -79,7 +79,7 @@ class MixedCaseArbitrary extends Arbitrary<string> {
         bigUintN(togglePositions.length)
           .shrinkableFor(flags)
           .shrink()
-          .map(nFlags => {
+          .map((nFlags) => {
             return this.wrapper(new Shrinkable(rawCase.value), chars, togglePositions, nFlags.value_);
           })
       );

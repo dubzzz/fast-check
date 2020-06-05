@@ -6,10 +6,10 @@ export default {
   output: {
     file: 'test/rollup/iife/dist/main.js',
     format: 'iife',
-    name: 'RunFastCheck'
+    name: 'RunFastCheck',
   },
   plugins: [resolve(), cjs()],
-  onwarn: warning => {
+  onwarn: (warning) => {
     throw warning;
-  }
+  },
 };

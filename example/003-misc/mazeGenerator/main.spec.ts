@@ -8,7 +8,7 @@ describe('mazeGenerator', () => {
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         expect(maze[ins.startPt.y][ins.startPt.x]).toBe(CellType.Start);
-        expect(_.flatten(maze).filter(c => c === CellType.Start)).toHaveLength(1);
+        expect(_.flatten(maze).filter((c) => c === CellType.Start)).toHaveLength(1);
       })
     );
   });
@@ -18,7 +18,7 @@ describe('mazeGenerator', () => {
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         expect(maze[ins.endPt.y][ins.endPt.x]).toBe(CellType.End);
-        expect(_.flatten(maze).filter(c => c === CellType.End)).toHaveLength(1);
+        expect(_.flatten(maze).filter((c) => c === CellType.End)).toHaveLength(1);
       })
     );
   });
@@ -50,13 +50,13 @@ describe('mazeGenerator', () => {
           ptsToVisit.push(
             ...neighboorsFor(pt)
               // We do not go back on our tracks
-              .filter(nPt => nPt.x !== src.x || nPt.y !== src.y)
-              .filter(nPt => {
+              .filter((nPt) => nPt.x !== src.x || nPt.y !== src.y)
+              .filter((nPt) => {
                 const cell = cellTypeAt(maze, nPt);
                 return cell !== null && cell !== CellType.Wall;
               })
               // Keep the src aka source point in order not to go back on our tracks
-              .map(nPt => ({ pt: nPt, src: pt }))
+              .map((nPt) => ({ pt: nPt, src: pt }))
           );
         }
         return true;
@@ -89,14 +89,14 @@ describe('mazeGenerator', () => {
           maze[pt.y][pt.x] = 'Visited';
 
           ptsToVisit.push(
-            ...neighboorsFor(pt).filter(nPt => {
+            ...neighboorsFor(pt).filter((nPt) => {
               const cell = cellTypeAt(maze, nPt);
               return cell !== null && cell !== CellType.Wall && cell !== 'Visited';
             })
           );
         }
         // All cells are either Walls or marked as visited
-        expect(_.flatten(maze).filter(c => c !== CellType.Wall && c !== 'Visited')).toHaveLength(0);
+        expect(_.flatten(maze).filter((c) => c !== CellType.Wall && c !== 'Visited')).toHaveLength(0);
       })
     );
   });
@@ -104,31 +104,33 @@ describe('mazeGenerator', () => {
 
 // Helpers
 
-const seedArb = fc
-  .integer()
-  .noBias()
-  .noShrink();
+const seedArb = fc.integer().noBias().noShrink();
 
 const dimensionArb = fc.record({
   width: fc.integer(2, 20),
-  height: fc.integer(2, 20)
+  height: fc.integer(2, 20),
 });
 
 const inputsArb = dimensionArb
-  .chain(dim => {
+  .chain((dim) => {
     return fc.record({
       dim: fc.constant(dim),
       startPt: fc.record({ x: fc.nat(dim.width - 1), y: fc.nat(dim.height - 1) }),
-      endPt: fc.record({ x: fc.nat(dim.width - 1), y: fc.nat(dim.height - 1) })
+      endPt: fc.record({ x: fc.nat(dim.width - 1), y: fc.nat(dim.height - 1) }),
     });
   })
-  .filter(ins => ins.startPt.x !== ins.endPt.x || ins.startPt.y !== ins.endPt.y);
+  .filter((ins) => ins.startPt.x !== ins.endPt.x || ins.startPt.y !== ins.endPt.y);
 
 const neighboorsFor = (pt: Point): Point[] => {
-  return [{ x: pt.x - 1, y: pt.y }, { x: pt.x + 1, y: pt.y }, { x: pt.x, y: pt.y - 1 }, { x: pt.x, y: pt.y + 1 }];
+  return [
+    { x: pt.x - 1, y: pt.y },
+    { x: pt.x + 1, y: pt.y },
+    { x: pt.x, y: pt.y - 1 },
+    { x: pt.x, y: pt.y + 1 },
+  ];
 };
 const nonWallNeighboorsFor = (maze: CellType[][], pt: Point): Point[] => {
-  return neighboorsFor(pt).filter(nPt => {
+  return neighboorsFor(pt).filter((nPt) => {
     const cell = cellTypeAt(maze, nPt);
     return cell !== null && cell !== CellType.Wall;
   });

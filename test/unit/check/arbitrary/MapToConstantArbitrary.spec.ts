@@ -23,7 +23,7 @@ describe('MapToConstantArbitrary', () => {
               entries.push({ num: idx === pos ? numValues : 0, build: (v: number) => `Builder #${idx}: ${v}` });
             }
 
-            const refArb = nat(numValues - 1).map(v => entries[pos].build(v));
+            const refArb = nat(numValues - 1).map((v) => entries[pos].build(v));
             const arb = mapToConstant(...entries);
 
             const refMrng = new Random(prand.xorshift128plus(seed));
@@ -41,7 +41,7 @@ describe('MapToConstantArbitrary', () => {
 
           const entries: { num: number; build: (v: number) => any }[] = [];
           for (let idx = 0, currentSize = 0; idx !== builderSizes.length; currentSize += builderSizes[idx], ++idx) {
-            entries.push({ num: builderSizes[idx], build: v => v + currentSize });
+            entries.push({ num: builderSizes[idx], build: (v) => v + currentSize });
           }
 
           const refArb = nat(totalSize - 1);

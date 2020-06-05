@@ -69,7 +69,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
         '{' +
         Object.keys(value)
           .map(
-            k =>
+            (k) =>
               `${k === '__proto__' ? '["__proto__"]' : JSON.stringify(k)}:${stringifyInternal(
                 (value as any)[k],
                 currentValues

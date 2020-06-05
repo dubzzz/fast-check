@@ -8,7 +8,7 @@ describe('BooleanArbitrary', () => {
   describe('boolean', () => {
     it('Should produce true and false uniformaly', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.counter(seed);
           const g1 = boolean().generate(mrng).value;
           const g2 = boolean().generate(mrng).value;

@@ -26,7 +26,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     it('Should rebuild the whole shrink path using sample', () => {
       const failuresRecorded: string[][] = [];
       const out = fc.check(
-        fc.property(propArbitrary, data => {
+        fc.property(propArbitrary, (data) => {
           if (propCheck(data)) return true;
           failuresRecorded.push(data);
           return false;
@@ -54,7 +54,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       let numValidCalls = 0;
       let validCallIndex = -1;
       const out2 = fc.check(
-        fc.property(propArbitrary, data => {
+        fc.property(propArbitrary, (data) => {
           try {
             expect(data).toEqual(out.counterexample![0]);
             validCallIndex = numCalls;

@@ -1,7 +1,7 @@
 import {
   configureGlobal,
   readConfigureGlobal,
-  resetConfigureGlobal
+  resetConfigureGlobal,
 } from '../../../../../src/check/runner/configuration/GlobalParameters';
 
 describe('GlobalParameters', () => {

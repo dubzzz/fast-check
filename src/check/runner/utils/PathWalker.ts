@@ -9,7 +9,7 @@ export function pathWalk<Ts>(
   let values: Stream<Shrinkable<Ts>> = stream(initialValues);
   const segments: number[] = path.split(':').map((text: string) => +text);
   if (segments.length === 0) return values;
-  if (!segments.every(v => !Number.isNaN(v))) {
+  if (!segments.every((v) => !Number.isNaN(v))) {
     throw new Error(`Unable to replay, got invalid path=${path}`);
   }
   values = values.drop(segments[0]);

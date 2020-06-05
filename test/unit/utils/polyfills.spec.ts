@@ -8,7 +8,7 @@ import {
   StringPadEndImpl,
   StringPadStartImpl,
   StringFromCodePointLimitedImpl,
-  StringFromCodePointLimited
+  StringFromCodePointLimited,
 } from '../../../src/utils/polyfills';
 
 declare namespace Object {
@@ -27,7 +27,7 @@ describe('polyfills', () => {
     if (Object.entries) {
       it('Should give the same answer as built-it entries', () =>
         fc.assert(
-          fc.property(fc.dictionary(fc.fullUnicodeString(), fc.fullUnicodeString()), d => {
+          fc.property(fc.dictionary(fc.fullUnicodeString(), fc.fullUnicodeString()), (d) => {
             expect(ObjectEntriesImpl(d)).toEqual(Object.entries(d));
           })
         ));
@@ -41,7 +41,7 @@ describe('polyfills', () => {
     if (String.fromCodePoint) {
       it('Should give the same answer as built-it entries', () =>
         fc.assert(
-          fc.property(fc.nat(0x10ffff), code => {
+          fc.property(fc.nat(0x10ffff), (code) => {
             expect(StringFromCodePointLimitedImpl(code)).toEqual(String.fromCodePoint(code));
           })
         ));

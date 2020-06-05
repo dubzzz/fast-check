@@ -11,16 +11,11 @@ class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
     super();
   }
   generate(mrng: Random): Shrinkable<Stream<T>> {
-    const g = function*(arb: Arbitrary<T>, clonedMrng: Random) {
+    const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
       while (true) yield arb.generate(clonedMrng).value_;
     };
     const producer = () => new Stream(g(this.arb, mrng.clone()));
-    const toString = () =>
-      `Stream(${[
-        ...producer()
-          .take(10)
-          .map(stringify)
-      ].join(',')}...)`;
+    const toString = () => `Stream(${[...producer().take(10).map(stringify)].join(',')}...)`;
     const enrichedProducer = () => Object.assign(producer(), { toString, [cloneMethod]: enrichedProducer });
     return new Shrinkable(enrichedProducer());
   }

@@ -14,12 +14,12 @@ describe('MixedCaseArbitrary', () => {
     return;
   }
   describe('mixedCase', () => {
-    const stringArb = stringOf(nat(3).map(id => ['0', '1', 'A', 'B'][id]));
+    const stringArb = stringOf(nat(3).map((id) => ['0', '1', 'A', 'B'][id]));
     genericHelper.isValidArbitrary(() => mixedCase(stringArb), {
       isStrictlySmallerValue: (v1, v2) => {
         return v1.length < v2.length || v1 < v2 /* '0' < 'A' < 'a' */;
       },
-      isValidValue: (g: string) => typeof g === 'string' && [...g].every(c => '01abAB'.includes(c))
+      isValidValue: (g: string) => typeof g === 'string' && [...g].every((c) => '01abAB'.includes(c)),
     });
   });
 });

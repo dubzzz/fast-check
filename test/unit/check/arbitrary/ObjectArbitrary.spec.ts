@@ -10,7 +10,7 @@ import {
   unicodeJsonObject,
   json,
   unicodeJson,
-  ObjectConstraints
+  ObjectConstraints,
 } from '../../../../src/check/arbitrary/ObjectArbitrary';
 
 import { Random } from '../../../../src/random/generator/Random';
@@ -48,9 +48,9 @@ describe('ObjectArbitrary', () => {
   const checkCorrect = (allowedKeys: string[], allowedValues: string[]) => {
     const check = (value: any): boolean => {
       if (Array.isArray(value)) return value.every(check);
-      if (allowedValues.findIndex(v => v === value) !== -1) return true;
+      if (allowedValues.findIndex((v) => v === value) !== -1) return true;
       const keys = Object.getOwnPropertyNames(value);
-      return keys.every(k => allowedKeys.indexOf(k) !== -1 && check(value[k]));
+      return keys.every((k) => allowedKeys.indexOf(k) !== -1 && check(value[k]));
     };
     return check;
   };
@@ -58,7 +58,7 @@ describe('ObjectArbitrary', () => {
     if (Array.isArray(value)) return 1 + value.map(evaluateDepth).reduce((p, c) => Math.max(p, c), 0);
     if (typeof value === 'string') return 0;
     const keys = Object.getOwnPropertyNames(value);
-    return 1 + keys.map(k => evaluateDepth(value[k])).reduce((p, c) => Math.max(p, c), 0);
+    return 1 + keys.map((k) => evaluateDepth(value[k])).reduce((p, c) => Math.max(p, c), 0);
   };
 
   describe('anything', () => {
@@ -113,12 +113,12 @@ describe('ObjectArbitrary', () => {
               }
               if (Array.isArray(obj)) {
                 if (obj.length > maxKeys) throw new Error(`Too many values in the array`);
-                obj.forEach(v => check(v));
+                obj.forEach((v) => check(v));
                 return;
               }
               const ks = Object.keys(obj);
               if (ks.length > maxKeys) throw new Error(`Too many values in the object`);
-              ks.forEach(k => check(obj[k]));
+              ks.forEach((k) => check(obj[k]));
             };
             check(g);
           }
@@ -126,11 +126,11 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should shrink towards minimal value of type', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = anything().generate(mrng);
           const originalValue = shrinkable.value;
-          while (shrinkable.shrink().has(_ => true)[0]) {
+          while (shrinkable.shrink().has((_) => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           assertShrinkedValue(originalValue, shrinkable.value);
@@ -149,13 +149,13 @@ describe('ObjectArbitrary', () => {
     const checkProduceBoxed = <T>(className: string, basicValue: T) => {
       return checkProduce(
         { values: [constant(basicValue)], maxDepth: 0, withBoxedValues: true },
-        v => typeof v === 'object' && Object.prototype.toString.call(v) === `[object ${className}]`
+        (v) => typeof v === 'object' && Object.prototype.toString.call(v) === `[object ${className}]`
       );
     };
     const checkProduceUnboxed = <T>(basicValue: T) => {
       return checkProduce(
         { values: [constant(basicValue)], maxDepth: 0, withBoxedValues: true },
-        v => v === basicValue
+        (v) => v === basicValue
       );
     };
     it('Should be able to produce boxed Boolean', () => checkProduceBoxed('Boolean', true));
@@ -165,12 +165,12 @@ describe('ObjectArbitrary', () => {
     it('Should be able to produce unboxed Number', () => checkProduceUnboxed(1));
     it('Should be able to produce unboxed String', () => checkProduceUnboxed(''));
     it('Should be able to produce Set', () =>
-      checkProduce({ values: [constant(0)], maxDepth: 1, withSet: true }, v => v instanceof Set));
+      checkProduce({ values: [constant(0)], maxDepth: 1, withSet: true }, (v) => v instanceof Set));
     it('Should be able to produce Map', () =>
-      checkProduce({ values: [constant(0)], maxDepth: 1, withMap: true }, v => v instanceof Map));
+      checkProduce({ values: [constant(0)], maxDepth: 1, withMap: true }, (v) => v instanceof Map));
     it('Should not be able to produce Array if maxDepth is zero', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const settings = { maxDepth: 0 };
           const mrng = new Random(prand.xorshift128plus(seed));
           return !(anything(settings).generate(mrng).value instanceof Array);
@@ -178,7 +178,7 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should not be able to produce Set if maxDepth is zero', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const settings = { maxDepth: 0, withSet: true };
           const mrng = new Random(prand.xorshift128plus(seed));
           return !(anything(settings).generate(mrng).value instanceof Set);
@@ -186,7 +186,7 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should not be able to produce Map if maxDepth is zero', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const settings = { maxDepth: 0, withMap: true };
           const mrng = new Random(prand.xorshift128plus(seed));
           return !(anything(settings).generate(mrng).value instanceof Map);
@@ -205,7 +205,7 @@ describe('ObjectArbitrary', () => {
               withMap: fc.boolean(),
               withSet: fc.boolean(),
               withObjectString: fc.boolean(),
-              withNullPrototype: fc.boolean()
+              withNullPrototype: fc.boolean(),
             },
             { withDeletedKeys: true }
           ),
@@ -217,7 +217,10 @@ describe('ObjectArbitrary', () => {
               if (Array.isArray(node)) subNodes.concat(node);
               else if (node instanceof Set) subNodes.concat(Array.from(node));
               else if (node instanceof Map)
-                subNodes.concat(Array.from(node).map(t => t[0]), Array.from(node).map(t => t[1]));
+                subNodes.concat(
+                  Array.from(node).map((t) => t[0]),
+                  Array.from(node).map((t) => t[1])
+                );
               else if (Object.prototype.toString.call(node) === '[object Object]') {
                 for (const k of Object.keys(node)) subNodes.push(node[k]);
               } else return 0;
@@ -264,7 +267,7 @@ describe('ObjectArbitrary', () => {
   describe('json', () => {
     it('Should produce strings', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = json().generate(mrng).value;
           return typeof g === 'string';
@@ -272,18 +275,18 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should generate a parsable JSON', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           JSON.parse(json().generate(mrng).value);
         })
       ));
     it('Should shrink towards minimal value of type', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = json().generate(mrng);
           const originalValue = shrinkable.value;
-          while (shrinkable.shrink().has(_ => true)[0]) {
+          while (shrinkable.shrink().has((_) => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           expect(typeof shrinkable.value).toEqual('string');
@@ -294,7 +297,7 @@ describe('ObjectArbitrary', () => {
   describe('unicodeJson', () => {
     it('Should produce strings', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = unicodeJson().generate(mrng).value;
           return typeof g === 'string';
@@ -302,18 +305,18 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should generate a parsable JSON', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           JSON.parse(unicodeJson().generate(mrng).value);
         })
       ));
     it('Should shrink towards minimal value of type', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = unicodeJson().generate(mrng);
           const originalValue = shrinkable.value;
-          while (shrinkable.shrink().has(_ => true)[0]) {
+          while (shrinkable.shrink().has((_) => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           expect(typeof shrinkable.value).toEqual('string');
@@ -324,14 +327,14 @@ describe('ObjectArbitrary', () => {
   describe('jsonObject', () => {
     it('Should generate a stringifyable object', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           return typeof JSON.stringify(jsonObject().generate(mrng).value) === 'string';
         })
       ));
     it('Should be re-created from its json representation', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = jsonObject().generate(mrng).value;
           expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g as any);
@@ -341,14 +344,14 @@ describe('ObjectArbitrary', () => {
   describe('unicodeJsonObject', () => {
     it('Should generate a stringifyable object', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           return typeof JSON.stringify(unicodeJsonObject().generate(mrng).value) === 'string';
         })
       ));
     it('Should be re-created from its json representation', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = unicodeJsonObject().generate(mrng).value;
           expect(JSON.parse(JSON.stringify(g))).toStrictEqual(g as any);
@@ -358,7 +361,7 @@ describe('ObjectArbitrary', () => {
   describe('object', () => {
     it('Should generate an object', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = object().generate(mrng).value;
           return typeof g === 'object' && !Array.isArray(g);
@@ -396,10 +399,10 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should shrink towards empty object', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let shrinkable = object().generate(mrng);
-          while (shrinkable.shrink().has(_ => true)[0]) {
+          while (shrinkable.shrink().has((_) => true)[0]) {
             shrinkable = shrinkable.shrink().next().value;
           } // only check one shrink path
           return typeof shrinkable.value === 'object' && Object.keys(shrinkable.value).length === 0;
@@ -407,7 +410,7 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should not suggest input in shrinked values', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const shrinkable = object().generate(mrng);
           for (const s of shrinkable.shrink()) expect(s.value).not.toStrictEqual(shrinkable.value);

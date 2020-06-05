@@ -64,7 +64,7 @@ describe('RecordArbitrary', () => {
           isValidValue: (r: { [key: string]: number }, [metas, constraints]: [Meta[], RecordConstraints]) => {
             for (const k of Object.keys(r)) {
               // generated object should not have more keys
-              if (metas.findIndex(m => m.key === k) === -1) return false;
+              if (metas.findIndex((m) => m.key === k) === -1) return false;
             }
             for (const m of metas) {
               // values are associated to the right key (if key required)
@@ -74,7 +74,7 @@ describe('RecordArbitrary', () => {
               if (r[m.key] > m.valueStart + 10) return false;
             }
             return true;
-          }
+          },
         }
       );
     });

@@ -45,7 +45,7 @@ const internalModelRun = <Model extends object, Real>(
     then: (fun: SetupFun<Model, Real, void>) => {
       fun(s());
       return undefined;
-    }
+    },
   };
   const runSync = (cmd: Command<Model, Real>, m: Model, r: Real) => {
     if (cmd.check(m)) cmd.run(m, r);
@@ -79,7 +79,7 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
       const out = s();
       if (isAsyncSetup(out)) return out.then(fun);
       else return fun(out);
-    }
+    },
   };
   const runAsync = async (cmd: AsyncCommand<Model, Real, CheckAsync>, m: Model, r: Real) => {
     if (await cmd.check(m)) await cmd.run(m, r);

@@ -41,7 +41,7 @@ function constant<T>(value: T): Arbitrary<T> {
 function clonedConstant<T>(value: T): Arbitrary<T> {
   if (hasCloneMethod(value)) {
     const producer = () => value[cloneMethod]();
-    return new ConstantArbitrary([producer]).map(c => c());
+    return new ConstantArbitrary([producer]).map((c) => c());
   }
   return new ConstantArbitrary<T>([value]);
 }
@@ -57,7 +57,7 @@ function constantFrom<T>(...values: T[]): Arbitrary<T> {
   if (values.length === 0) {
     throw new Error('fc.constantFrom expects at least one parameter');
   }
-  if (findOrUndefined(values, v => hasCloneMethod(v)) != undefined) {
+  if (findOrUndefined(values, (v) => hasCloneMethod(v)) != undefined) {
     throw new Error('fc.constantFrom does not accept cloneable values, not supported for the moment');
   }
   return new ConstantArbitrary<T>([...values]);

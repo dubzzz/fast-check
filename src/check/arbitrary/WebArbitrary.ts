@@ -34,7 +34,7 @@ export function webAuthority(constraints?: WebAuthorityConstraints) {
   const c = constraints || {};
   const hostnameArbs = [domain()]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
-    .concat(c.withIPv6 === true ? [ipV6().map(ip => `[${ip}]`)] : [])
+    .concat(c.withIPv6 === true ? [ipV6().map((ip) => `[${ip}]`)] : [])
     .concat(c.withIPv4Extended === true ? [ipV4Extended()] : []);
   return tuple(
     c.withUserInfo === true ? option(hostUserInfo()) : constant(null),
@@ -117,7 +117,7 @@ export function webUrl(constraints?: {
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
   const authorityArb = webAuthority(c.authoritySettings);
-  const pathArb = array(webSegment()).map(p => p.map(v => `/${v}`).join(''));
+  const pathArb = array(webSegment()).map((p) => p.map((v) => `/${v}`).join(''));
   return tuple(
     schemeArb,
     authorityArb,

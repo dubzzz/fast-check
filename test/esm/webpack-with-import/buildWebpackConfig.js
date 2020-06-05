@@ -6,13 +6,13 @@ module.exports = function buildWebpackConfig(fileName) {
   return {
     mode: 'production',
     entry: {
-      app: `./${fileName}`
+      app: `./${fileName}`,
     },
     plugins: [],
     output: {
       filename: fileName,
       // eslint-disable-next-line
-      path: path.resolve(__dirname, 'dist')
-    }
+      path: path.resolve(__dirname, 'dist'),
+    },
   };
 };

@@ -113,7 +113,7 @@ export class RunExecution<Ts> {
         error: this.failure!,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,
-        verbose: this.verbosity
+        verbose: this.verbosity,
       };
     }
 
@@ -143,7 +143,7 @@ export class RunExecution<Ts> {
       error: null,
       failures: [],
       executionSummary: this.rootExecutionTrees,
-      verbose: this.verbosity
+      verbose: this.verbosity,
     };
   }
 }

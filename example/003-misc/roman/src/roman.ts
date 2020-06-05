@@ -7,7 +7,7 @@ export const LettersValue: [number, string][] = [
   [50, 'L'],
   [100, 'C'],
   [500, 'D'],
-  [1000, 'M']
+  [1000, 'M'],
 ];
 export const MaxRoman = 4 * LettersValue[LettersValue.length - 1][0] - 1;
 export const NumLetters = LettersValue.length;

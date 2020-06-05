@@ -6,7 +6,7 @@ expectType<void>(fc.assert(fc.property(fc.nat(), () => {})));
 expectType<Promise<void>>(fc.assert(fc.asyncProperty(fc.nat(), async () => {})));
 
 // property
-expectType(fc.property(fc.nat(), a => {}) as fc.IProperty<[number]>);
+expectType(fc.property(fc.nat(), (a) => {}) as fc.IProperty<[number]>);
 expectType(fc.property(fc.nat(), fc.string(), (a, b) => {}) as fc.IProperty<[number, string]>);
 expectType(
   fc.assert(
@@ -21,7 +21,7 @@ expectError(fc.assert(fc.property(fc.nat(), () => {}).beforeEach(async () => {})
 expectError(fc.assert(fc.property(fc.nat(), () => {}).afterEach(async () => {})));
 
 // asyncProperty
-expectType(fc.asyncProperty(fc.nat(), async a => {}) as fc.IAsyncProperty<[number]>);
+expectType(fc.asyncProperty(fc.nat(), async (a) => {}) as fc.IAsyncProperty<[number]>);
 expectType(fc.asyncProperty(fc.nat(), fc.string(), async (a, b) => {}) as fc.IAsyncProperty<[number, string]>);
 expectType(
   fc
@@ -38,9 +38,9 @@ expectType(
 expectError(fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {}));
 
 // base arbitrary
-expectType<fc.Arbitrary<string[]>>(fc.nat().chain(n => fc.array(fc.char(), 0, n)));
+expectType<fc.Arbitrary<string[]>>(fc.nat().chain((n) => fc.array(fc.char(), 0, n)));
 expectType<fc.Arbitrary<number>>(fc.option(fc.nat()).filter((n): n is number => n !== null));
-expectType<fc.Arbitrary<string>>(fc.nat().map(n => String(n)));
+expectType<fc.Arbitrary<string>>(fc.nat().map((n) => String(n)));
 
 // record arbitrary
 expectType<fc.Arbitrary<{ a: number; b: string }>>(fc.record({ a: fc.nat(), b: fc.string() }));
@@ -79,23 +79,23 @@ expectType<fc.Arbitrary<number | 'custom_default'>>(fc.option(fc.nat(), { nil: '
 expectError(fc.option(1));
 
 // tie arbitrary
-expectType<{}>(fc.letrec(tie => ({})));
+expectType<{}>(fc.letrec((tie) => ({})));
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>(
-  fc.letrec(tie => ({
+  fc.letrec((tie) => ({
     a: fc.nat(),
-    b: fc.string()
+    b: fc.string(),
   }))
 );
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>(
-  fc.letrec(tie => ({
+  fc.letrec((tie) => ({
     a: fc.nat(),
-    b: tie('a')
+    b: tie('a'),
   }))
 ); // TODO Typings should be improved: b type might be infered from a
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>(
-  fc.letrec(tie => ({
+  fc.letrec((tie) => ({
     a: fc.nat(),
-    b: tie('c')
+    b: tie('c'),
   }))
 ); // TODO Typings should be improved: referencing an undefined key should failed
 

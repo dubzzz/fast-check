@@ -39,7 +39,7 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
     return new Shrinkable(vs, () => GenericTupleArbitrary.shrinkImpl(shrinkables).map(GenericTupleArbitrary.wrapper));
   }
   generate(mrng: Random): Shrinkable<Ts[]> {
-    return GenericTupleArbitrary.wrapper(this.arbs.map(a => a.generate(mrng)));
+    return GenericTupleArbitrary.wrapper(this.arbs.map((a) => a.generate(mrng)));
   }
   private static shrinkImpl<Ts>(value: Shrinkable<Ts>[]): Stream<Shrinkable<Ts>[]> {
     // shrinking one by one is the not the most comprehensive
@@ -47,7 +47,7 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
     let s = Stream.nil<Shrinkable<Ts>[]>();
     for (let idx = 0; idx !== value.length; ++idx) {
       s = s.join(
-        value[idx].shrink().map(v =>
+        value[idx].shrink().map((v) =>
           value
             .slice(0, idx)
             .concat([v])
@@ -58,7 +58,7 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
     return s;
   }
   withBias(freq: number) {
-    return new GenericTupleArbitrary(this.arbs.map(a => a.withBias(freq)));
+    return new GenericTupleArbitrary(this.arbs.map((a) => a.withBias(freq)));
   }
 }
 

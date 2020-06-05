@@ -12,7 +12,7 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
     return this.arbs[id].generate(mrng);
   }
   withBias(freq: number) {
-    return new OneOfArbitrary(this.arbs.map(a => a.withBias(freq)));
+    return new OneOfArbitrary(this.arbs.map((a) => a.withBias(freq)));
   }
 }
 
@@ -21,7 +21,7 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
  * given the type of the source arbitraries
  */
 type OneOfArbitraryType<Ts extends Arbitrary<unknown>[]> = {
-  [K in keyof Ts]: Ts[K] extends Arbitrary<infer U> ? U : never
+  [K in keyof Ts]: Ts[K] extends Arbitrary<infer U> ? U : never;
 }[number];
 
 /**

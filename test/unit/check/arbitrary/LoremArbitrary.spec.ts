@@ -8,7 +8,7 @@ describe('LoremArbitrary', () => {
   describe('lorem', () => {
     it('Should generate the same text with the same random', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng1 = new Random(prand.xorshift128plus(seed));
           const mrng2 = new Random(prand.xorshift128plus(seed));
           const g1 = lorem().generate(mrng1).value;
@@ -35,7 +35,7 @@ describe('LoremArbitrary', () => {
       ));
     it('Should generate sentences ending by dot', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = lorem(5, true).generate(mrng).value;
           expect(g).toContain('.');

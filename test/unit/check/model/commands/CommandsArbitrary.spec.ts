@@ -76,7 +76,7 @@ describe('CommandWrapper', () => {
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),
             constant(new SkippedCommand(logOnCheck)),
-            constant(new FailureCommand(logOnCheck))
+            constant(new FailureCommand(logOnCheck)),
           ]).generate(mrng);
 
           return baseCommands.hasToBeCloned;
@@ -91,14 +91,14 @@ describe('CommandWrapper', () => {
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),
             constant(new SkippedCommand(logOnCheck)),
-            constant(new FailureCommand(logOnCheck))
+            constant(new FailureCommand(logOnCheck)),
           ]).generate(mrng);
           simulateCommands(baseCommands.value);
 
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
-            [...shrunkCmds.value].forEach(c => c.check(model));
-            expect(logOnCheck.data.every(e => e !== 'skipped')).toBe(true);
+            [...shrunkCmds.value].forEach((c) => c.check(model));
+            expect(logOnCheck.data.every((e) => e !== 'skipped')).toBe(true);
           }
         })
       ));
@@ -111,7 +111,7 @@ describe('CommandWrapper', () => {
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),
             constant(new SkippedCommand(logOnCheck)),
-            constant(new FailureCommand(logOnCheck))
+            constant(new FailureCommand(logOnCheck)),
           ]).generate(mrng);
           simulateCommands(baseCommands.value);
 
@@ -119,7 +119,7 @@ describe('CommandWrapper', () => {
 
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
-            [...shrunkCmds.value].forEach(c => c.check(model));
+            [...shrunkCmds.value].forEach((c) => c.check(model));
             if (logOnCheck.data.length > 0) {
               // either empty or ending by the failure
               expect(logOnCheck.data[logOnCheck.data.length - 1]).toEqual('failure');
@@ -136,15 +136,15 @@ describe('CommandWrapper', () => {
           const baseCommands = commands([
             constant(new SuccessCommand(logOnCheck)),
             constant(new SkippedCommand(logOnCheck)),
-            constant(new FailureCommand(logOnCheck))
+            constant(new FailureCommand(logOnCheck)),
           ]).generate(mrng);
           simulateCommands(baseCommands.value);
 
           for (const shrunkCmds of baseCommands.shrink()) {
             logOnCheck.data = [];
-            [...shrunkCmds.value].forEach(c => c.check(model));
-            expect(logOnCheck.data.every(e => e === 'failure' || e === 'success')).toBe(true);
-            expect(logOnCheck.data.filter(e => e === 'failure').length <= 1).toBe(true);
+            [...shrunkCmds.value].forEach((c) => c.check(model));
+            expect(logOnCheck.data.every((e) => e === 'failure' || e === 'success')).toBe(true);
+            expect(logOnCheck.data.filter((e) => e === 'failure').length <= 1).toBe(true);
           }
         })
       ));
@@ -172,7 +172,7 @@ describe('CommandWrapper', () => {
           while (shrinkable !== null) {
             shrinkable = shrinkable
               .shrink()
-              .map(nextShrinkable => {
+              .map((nextShrinkable) => {
                 // Check nothing starting for the next one
                 assertCommandsNotStarted(nextShrinkable);
                 // Start everything: not supposed to impact any other shrinkable
@@ -185,7 +185,7 @@ describe('CommandWrapper', () => {
       );
     });
     it('Should shrink to smaller values', () => {
-      const commandsArb = commands([nat(3).map(id => new SuccessIdCommand(id))]);
+      const commandsArb = commands([nat(3).map((id) => new SuccessIdCommand(id))]);
       fc.assert(
         fc.property(fc.integer().noShrink(), fc.infiniteStream(fc.nat()), (seed, shrinkPath) => {
           // Generate the first shrinkable
@@ -199,14 +199,14 @@ describe('CommandWrapper', () => {
           // Traverse the shrink tree in order to detect already seen ids
           const extractIdRegex = /^custom\((\d+)\)$/;
           while (shrinkable !== null) {
-            const currentItems = [...shrinkable.value_].map(c => +extractIdRegex.exec(c.toString())![1]);
+            const currentItems = [...shrinkable.value_].map((c) => +extractIdRegex.exec(c.toString())![1]);
             shrinkable = shrinkable
               .shrink()
-              .map(nextShrinkable => {
+              .map((nextShrinkable) => {
                 // Run all commands of nextShrinkable
                 simulateCommands(nextShrinkable.value_);
                 // Check nextShrinkable is strictly smaller than current one
-                const nextItems = [...nextShrinkable.value_].map(c => +extractIdRegex.exec(c.toString())![1]);
+                const nextItems = [...nextShrinkable.value_].map((c) => +extractIdRegex.exec(c.toString())![1]);
                 expect(isStrictlySmallerArray(nextItems, currentItems)).toBe(true);
                 // Next is eligible for shrinking
                 return nextShrinkable;
@@ -228,7 +228,7 @@ describe('CommandWrapper', () => {
             constant(new SuccessCommand(logOnCheck)),
             constant(new SkippedCommand(logOnCheck)),
             constant(new FailureCommand(logOnCheck)),
-            nat().map(v => new SuccessIdCommand(v))
+            nat().map((v) => new SuccessIdCommand(v)),
           ]);
           const refShrinkable: Shrinkable<Iterable<Cmd>> = refArbitrary.generate(new Random(rng));
           simulateCommands(refShrinkable.value_);
@@ -239,7 +239,7 @@ describe('CommandWrapper', () => {
             ...refShrinkable
               .shrink()
               .take(numValues)
-              .map(s => [...s.value_].map(c => c.toString()))
+              .map((s) => [...s.value_].map((c) => c.toString())),
           ];
 
           // extract replayPath
@@ -251,7 +251,7 @@ describe('CommandWrapper', () => {
               constant(new SuccessCommand(logOnCheck)),
               constant(new SkippedCommand(logOnCheck)),
               constant(new FailureCommand(logOnCheck)),
-              nat().map(v => new SuccessIdCommand(v))
+              nat().map((v) => new SuccessIdCommand(v)),
             ],
             { replayPath }
           ).generate(new Random(rng));
@@ -261,7 +261,7 @@ describe('CommandWrapper', () => {
             ...noExecShrinkable
               .shrink()
               .take(numValues)
-              .map(s => [...s.value_].map(c => c.toString()))
+              .map((s) => [...s.value_].map((c) => c.toString())),
           ];
           expect(noExecShrinks).toEqual(refShrinks);
         })

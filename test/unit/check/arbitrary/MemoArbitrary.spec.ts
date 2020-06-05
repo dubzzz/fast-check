@@ -40,7 +40,7 @@ describe('MemoArbitrary', () => {
     it('Should automatically decrease depth for self recursive', () => {
       const expectedArb = buildArbitrary(jest.fn());
       const memoFun = jest.fn();
-      memoFun.mockImplementation(n => (n <= 6 ? expectedArb : builder()));
+      memoFun.mockImplementation((n) => (n <= 6 ? expectedArb : builder()));
       const builder = memo(memoFun);
 
       builder();
@@ -50,9 +50,9 @@ describe('MemoArbitrary', () => {
     it('Should automatically interleave decrease depth for mutually recursive', () => {
       const expectedArb = buildArbitrary(jest.fn());
       const memoFunA = jest.fn();
-      memoFunA.mockImplementation(n => (n <= 6 ? expectedArb : builderB()));
+      memoFunA.mockImplementation((n) => (n <= 6 ? expectedArb : builderB()));
       const memoFunB = jest.fn();
-      memoFunB.mockImplementation(n => (n <= 6 ? expectedArb : builderA()));
+      memoFunB.mockImplementation((n) => (n <= 6 ? expectedArb : builderA()));
       const builderA = memo(memoFunA);
       const builderB = memo(memoFunB);
 
@@ -64,7 +64,7 @@ describe('MemoArbitrary', () => {
     it('Should be able to override decrease depth', () => {
       const expectedArb = buildArbitrary(jest.fn());
       const memoFun = jest.fn();
-      memoFun.mockImplementation(n => (n <= 0 ? expectedArb : builder(n - 3)));
+      memoFun.mockImplementation((n) => (n <= 0 ? expectedArb : builder(n - 3)));
       const builder = memo(memoFun);
 
       builder();
@@ -75,7 +75,7 @@ describe('MemoArbitrary', () => {
       const mrng = stubRng.mutable.nocall();
       const generateMock = jest.fn();
       const simpleArb = buildArbitrary(generateMock);
-      const builderA = memo(() => buildArbitrary(mrng => builderB().generate(mrng)));
+      const builderA = memo(() => buildArbitrary((mrng) => builderB().generate(mrng)));
       const builderB = memo(() => simpleArb);
 
       expect(generateMock).not.toHaveBeenCalled();

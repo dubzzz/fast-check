@@ -13,7 +13,7 @@ if (!fc.readConfigureGlobal()) {
 describe('Counter', () => {
   it('should handle two concurrent calls to "inc"', () =>
     fc.assert(
-      fc.asyncProperty(fc.scheduler(), async s => {
+      fc.asyncProperty(fc.scheduler(), async (s) => {
         // Arrange
         let dbValue = 0;
         const db = {
@@ -24,7 +24,7 @@ describe('Counter', () => {
             if (oldValue !== undefined && dbValue !== oldValue) return false;
             dbValue = newValue;
             return true;
-          })
+          }),
         };
         const counter = new Counter(db);
 
@@ -51,7 +51,7 @@ describe('Counter', () => {
             if (oldValue !== undefined && dbValue !== oldValue) return false;
             dbValue = newValue;
             return true;
-          })
+          }),
         };
         const counter = new Counter(db);
 
@@ -79,7 +79,7 @@ describe('Counter', () => {
             if (oldValue !== undefined && dbValue !== oldValue) return false;
             dbValue = newValue;
             return true;
-          })
+          }),
         };
 
         // Act

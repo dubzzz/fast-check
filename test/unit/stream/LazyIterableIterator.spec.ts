@@ -9,7 +9,7 @@ describe('makeLazy', () => {
   });
   it('Should only call producer once when iterating', () => {
     const content = [1, 42, 350, 0];
-    const g = jest.fn().mockImplementation(function*() {
+    const g = jest.fn().mockImplementation(function* () {
       yield* content;
     });
 
@@ -19,7 +19,7 @@ describe('makeLazy', () => {
   });
   it('Should only call producer once even when iterating twice', () => {
     const content = [1, 42, 350, 0];
-    const g = jest.fn().mockImplementation(function*() {
+    const g = jest.fn().mockImplementation(function* () {
       yield* content;
     });
 

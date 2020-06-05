@@ -43,14 +43,14 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 2, 3, 5];
       }
-      const s = stream(g()).map(v => v * v);
+      const s = stream(g()).map((v) => v * v);
       expect([...s]).toEqual([1, 4, 9, 25]);
     });
     it('Should be able to perform conversions', () => {
       function* g() {
         yield* [1, 2, 3, 5];
       }
-      const s: Stream<string> = stream(g()).map(v => String(v));
+      const s: Stream<string> = stream(g()).map((v) => String(v));
       expect([...s]).toEqual(['1', '2', '3', '5']);
     });
   });
@@ -94,21 +94,21 @@ describe('Stream', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).dropWhile(v => v < 0);
+      const s = stream(g()).dropWhile((v) => v < 0);
       expect([...s]).toEqual([1, -8, 7]);
     });
     it('Should drop everything', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).dropWhile(_ => true);
+      const s = stream(g()).dropWhile((_) => true);
       expect([...s]).toEqual([]);
     });
     it('Should drop nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).dropWhile(_ => false);
+      const s = stream(g()).dropWhile((_) => false);
       expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
   });
@@ -126,21 +126,21 @@ describe('Stream', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).takeWhile(v => v < 0);
+      const s = stream(g()).takeWhile((v) => v < 0);
       expect([...s]).toEqual([-4, -2, -3]);
     });
     it('Should take everything', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).takeWhile(_ => true);
+      const s = stream(g()).takeWhile((_) => true);
       expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
     });
     it('Should take nothing', () => {
       function* g() {
         yield* [-4, -2, -3, 1, -8, 7];
       }
-      const s = stream(g()).takeWhile(_ => false);
+      const s = stream(g()).takeWhile((_) => false);
       expect([...s]).toEqual([]);
     });
   });
@@ -149,7 +149,7 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      const s = stream(g()).filter(v => v % 2 === 0);
+      const s = stream(g()).filter((v) => v % 2 === 0);
       expect([...s]).toEqual([4, 8, 10, 4, 4]);
     });
   });
@@ -158,31 +158,31 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      expect(stream(g()).every(v => v > 0)).toBe(true);
+      expect(stream(g()).every((v) => v > 0)).toBe(true);
     });
     it('Should be true for empty streams', () => {
       function* g() {
         yield* [];
       }
-      expect(stream(g()).every(v => v > 0)).toBe(true);
+      expect(stream(g()).every((v) => v > 0)).toBe(true);
     });
     it('Should be false if it starts by a failing value', () => {
       function* g() {
         yield* [0, 1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      expect(stream(g()).every(v => v > 0)).toBe(false);
+      expect(stream(g()).every((v) => v > 0)).toBe(false);
     });
     it('Should be false if it ends by a failing value', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4, 0];
       }
-      expect(stream(g()).every(v => v > 0)).toBe(false);
+      expect(stream(g()).every((v) => v > 0)).toBe(false);
     });
     it('Should be false if it contains a failing value', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 0, 1, 1, 3, 4, 4];
       }
-      expect(stream(g()).every(v => v > 0)).toBe(false);
+      expect(stream(g()).every((v) => v > 0)).toBe(false);
     });
   });
   describe('has', () => {
@@ -190,25 +190,25 @@ describe('Stream', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      expect(stream(g()).has(v => v > 9)).toEqual([true, 10]);
+      expect(stream(g()).has((v) => v > 9)).toEqual([true, 10]);
     });
     it('Should be true if multiple values are ok', () => {
       function* g() {
         yield* [1, 3, 4, 7, 8, 10, 1, 1, 3, 4, 4];
       }
-      expect(stream(g()).has(v => v > 4)).toEqual([true, 7]);
+      expect(stream(g()).has((v) => v > 4)).toEqual([true, 7]);
     });
     it('Should be false for empty streams', () => {
       function* g() {
         yield* [];
       }
-      expect(stream(g()).has(v => v > 0)).toEqual([false, null]);
+      expect(stream(g()).has((v) => v > 0)).toEqual([false, null]);
     });
     it('Should be false if no value is ok', () => {
       function* g() {
         yield* [-2, -4, 0];
       }
-      expect(stream(g()).has(v => v > 0)).toEqual([false, null]);
+      expect(stream(g()).has((v) => v > 0)).toEqual([false, null]);
     });
   });
   describe('join', () => {
@@ -247,7 +247,7 @@ describe('Stream', () => {
         yield* [8, 9];
       }
       const s = stream(g1())
-        .map(v => 10 * v)
+        .map((v) => 10 * v)
         .join(g2(), g1());
       expect([...s]).toEqual([10, 20, 30, 40, 50, 8, 9, 1, 2, 3, 4, 5]);
     });
@@ -259,7 +259,7 @@ describe('Stream', () => {
         while (true) yield 2;
       }
       const s = stream(g1())
-        .map(v => 10 * v)
+        .map((v) => 10 * v)
         .join(g2())
         .take(5);
       expect([...s]).toEqual([10, 10, 10, 10, 10]);

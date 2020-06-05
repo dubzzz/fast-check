@@ -26,7 +26,7 @@ describe('AsyncSchedulerArbitrary', () => {
 
       it('Should wrap waitOne call using act whenever specified', async () => {
         // Arrange
-        const act = jest.fn().mockImplementationOnce(f => f());
+        const act = jest.fn().mockImplementationOnce((f) => f());
 
         // Act
         const mrng = stubRng.mutable.counter(42);
@@ -43,14 +43,14 @@ describe('AsyncSchedulerArbitrary', () => {
         // Arrange
         const buildUnresolved = () => {
           let resolve = () => {};
-          const p = new Promise(r => (resolve = r));
+          const p = new Promise((r) => (resolve = r));
           return { p, resolve };
         };
-        const delay = () => new Promise(r => setTimeout(r, 0));
+        const delay = () => new Promise((r) => setTimeout(r, 0));
 
         const p1 = buildUnresolved();
         const p2 = buildUnresolved();
-        const act = jest.fn().mockImplementation(async f => {
+        const act = jest.fn().mockImplementation(async (f) => {
           await p1.p;
           await f();
           await p2.p;
@@ -95,7 +95,7 @@ describe('AsyncSchedulerArbitrary', () => {
 
       it('Should wrap waitAll call using act whenever specified', async () => {
         // Arrange
-        const act = jest.fn().mockImplementation(f => f());
+        const act = jest.fn().mockImplementation((f) => f());
 
         // Act
         const mrng = stubRng.mutable.counter(42);
@@ -114,7 +114,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Arrange
         let locked = false;
         const updateLocked = (newLocked: boolean) => (locked = newLocked);
-        const act = jest.fn().mockImplementation(async f => {
+        const act = jest.fn().mockImplementation(async (f) => {
           expect(locked).toBe(false);
           updateLocked(true); // equivalent to: locked = true
           await f();
@@ -198,7 +198,7 @@ describe('AsyncSchedulerArbitrary', () => {
           2: false,
           3: false,
           4: false,
-          5: false
+          5: false,
         };
         const resolved = { ...nothingResolved };
 
@@ -216,7 +216,7 @@ describe('AsyncSchedulerArbitrary', () => {
               s.schedule(Promise.resolve(4)).then(() => {
                 resolved[4] = true;
               });
-            })
+            }),
           ]).then(() => {
             s.schedule(Promise.resolve(5)).then(() => {
               resolved[5] = true;
@@ -235,7 +235,7 @@ describe('AsyncSchedulerArbitrary', () => {
           2: true,
           3: true,
           4: true,
-          5: true
+          5: true,
         });
       });
 
@@ -254,7 +254,7 @@ describe('AsyncSchedulerArbitrary', () => {
             3, // task#10 resolved, state was: [2,4,8,9]
             0, // task#3 resolved, state was: [2,4,8]
             0, // task#5 resolved, state was: [4,8]
-            0 // task#9 resolved, state was: [8]
+            0, // task#9 resolved, state was: [8]
           ])
         );
         const s = scheduler().generate(mrng).value;
@@ -367,7 +367,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Act
         const mrng = stubRng.mutable.counter(42);
         const s = scheduler().generate(mrng).value;
-        const scheduledFun = s.scheduleFunction(async id => id + expectedThenValue);
+        const scheduledFun = s.scheduleFunction(async (id) => id + expectedThenValue);
 
         // Assert
         expect(s.count()).toBe(0);
@@ -392,7 +392,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Act
         const mrng = stubRng.mutable.counter(42);
         const s = scheduler().generate(mrng).value;
-        const scheduledFun = s.scheduleFunction(async id => id + expectedThenValue);
+        const scheduledFun = s.scheduleFunction(async (id) => id + expectedThenValue);
 
         // Assert
         expect(s.count()).toBe(0);
@@ -419,7 +419,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Act
         const mrng = stubRng.mutable.counter(42);
         const s = scheduler().generate(mrng).value;
-        const scheduledFun = s.scheduleFunction(async id => id);
+        const scheduledFun = s.scheduleFunction(async (id) => id);
 
         // Assert
         expect(s.count()).toBe(0);
@@ -430,14 +430,18 @@ describe('AsyncSchedulerArbitrary', () => {
 
       it('Should show both resolved, rejected and pending promises in toString', async () => {
         // Arrange
-        const calls: [number, number][] = [[0, 3], [1, 4], [6, 0]];
+        const calls: [number, number][] = [
+          [0, 3],
+          [1, 4],
+          [6, 0],
+        ];
 
         // Act
         const mrng = new Random(
           new ControlledRandom([
             2, // task#3 resolved, state was: [0,1,2]
             0, // task#1 resolved, state was: [0,1]
-            0 // task#2 resolved, state was: [1]
+            0, // task#2 resolved, state was: [1]
           ])
         );
         const s = scheduler().generate(mrng).value;
@@ -483,7 +487,7 @@ describe('AsyncSchedulerArbitrary', () => {
           new ControlledRandom([
             2, // task#3 resolved, state was: [0,1,2]
             0, // task#1 resolved, state was: [0,1]
-            0 // task#2 resolved, state was: [1]
+            0, // task#2 resolved, state was: [1]
           ])
         );
         const s = scheduler().generate(mrng).value;
@@ -545,7 +549,7 @@ describe('AsyncSchedulerArbitrary', () => {
           { builder: p1Builder, label: 'p1' },
           { builder: p2Builder, label: 'p2' },
           { builder: p3Builder, label: 'p3' },
-          { builder: p4Builder, label: 'p4' }
+          { builder: p4Builder, label: 'p4' },
         ]);
 
         // Assert
@@ -568,7 +572,7 @@ describe('AsyncSchedulerArbitrary', () => {
           { builder: p1Builder, label: 'p1' },
           { builder: p2Builder, label: 'p2' },
           { builder: p3Builder, label: 'p3' },
-          { builder: p4Builder, label: 'p4' }
+          { builder: p4Builder, label: 'p4' },
         ]);
 
         // Assert
@@ -595,7 +599,7 @@ describe('AsyncSchedulerArbitrary', () => {
           { builder: p1Builder, label: 'p1' },
           { builder: p2Builder, label: 'p2' },
           { builder: p3Builder, label: 'p3' },
-          { builder: p4Builder, label: 'p4' }
+          { builder: p4Builder, label: 'p4' },
         ]);
 
         // Assert
@@ -621,7 +625,7 @@ describe('AsyncSchedulerArbitrary', () => {
           { builder: p1Builder, label: 'p1' },
           { builder: p2Builder, label: 'p2' },
           { builder: p3Builder, label: 'p3' },
-          { builder: p4Builder, label: 'p4' }
+          { builder: p4Builder, label: 'p4' },
         ]);
 
         // Assert
@@ -646,7 +650,7 @@ describe('AsyncSchedulerArbitrary', () => {
           { builder: p1Builder, label: 'p1' },
           { builder: p2Builder, label: 'p2' },
           { builder: p3Builder, label: 'p3' },
-          { builder: p4Builder, label: 'p4' }
+          { builder: p4Builder, label: 'p4' },
         ]);
 
         // Assert
@@ -679,7 +683,7 @@ describe('AsyncSchedulerArbitrary', () => {
 
       it('Should wait the full completion of items coming from the scheduled sequence before taking any other scheduled promise', async () => {
         // Arrange
-        const delay = () => new Promise(resolve => setTimeout(resolve, 0));
+        const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
         const p1BuilderSteps = { a: false, b: false, c: false, d: false };
         const p2Builder = jest.fn().mockResolvedValue(2);
 
@@ -700,9 +704,9 @@ describe('AsyncSchedulerArbitrary', () => {
               };
               return complexSequenceItem();
             },
-            label: 'p1'
+            label: 'p1',
           },
-          { builder: p2Builder, label: 'p2' }
+          { builder: p2Builder, label: 'p2' },
         ]);
 
         // Assert
@@ -726,7 +730,7 @@ describe('AsyncSchedulerArbitrary', () => {
             return Promise.resolve(48);
           },
           { builder: () => Promise.reject(1), label: 'rejectedStep' },
-          { builder: () => Promise.resolve(8), label: 'neverCalled' }
+          { builder: () => Promise.resolve(8), label: 'neverCalled' },
         ]);
 
         // Assert
@@ -749,9 +753,9 @@ describe('AsyncSchedulerArbitrary', () => {
         const s = scheduler().generate(mrng).value;
         const { task } = s.scheduleSequence([
           { builder: () => Promise.resolve(42), label: 'firstStep' },
-          { builder: () => Promise.resolve(8), label: 'secondStep' }
+          { builder: () => Promise.resolve(8), label: 'secondStep' },
         ]);
-        task.then(v => (taskResolvedValue = v));
+        task.then((v) => (taskResolvedValue = v));
 
         // Assert
         while (s.count() !== 0) {
@@ -771,9 +775,9 @@ describe('AsyncSchedulerArbitrary', () => {
         const { task } = s.scheduleSequence([
           { builder: () => Promise.resolve(42), label: 'firstStep' },
           { builder: () => Promise.reject(8), label: 'secondStep' },
-          { builder: () => Promise.resolve(8), label: 'neverCalledStep' }
+          { builder: () => Promise.resolve(8), label: 'neverCalledStep' },
         ]);
-        task.then(v => (taskResolvedValue = v));
+        task.then((v) => (taskResolvedValue = v));
 
         // Assert
         while (s.count() !== 0) {

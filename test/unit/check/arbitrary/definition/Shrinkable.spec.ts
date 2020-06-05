@@ -18,7 +18,7 @@ describe('Shrinkable', () => {
       [cloneMethod]: () => {
         ++numCalls;
         return cloneable;
-      }
+      },
     };
     new Shrinkable(cloneable);
     expect(numCalls).toEqual(0);
@@ -30,7 +30,7 @@ describe('Shrinkable', () => {
       [cloneMethod]: () => {
         ++numCalls;
         return theClone;
-      }
+      },
     };
     const s = new Shrinkable(cloneable);
     expect(s.value).toBe(cloneable);
@@ -45,7 +45,7 @@ describe('Shrinkable', () => {
       [cloneMethod]: () => {
         ++numCalls;
         return theClone;
-      }
+      },
     };
     const s = new Shrinkable(cloneable);
     expect(s.value_).toBe(cloneable);

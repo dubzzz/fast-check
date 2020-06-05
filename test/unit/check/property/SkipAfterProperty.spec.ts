@@ -10,7 +10,7 @@ function buildProperty() {
   const mocks = {
     isAsync: jest.fn(),
     generate: jest.fn(),
-    run: jest.fn()
+    run: jest.fn(),
   };
   return { mocks, property: mocks as IRawProperty<any> };
 }

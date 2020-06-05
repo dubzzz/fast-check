@@ -6,7 +6,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
     const revJson = (json: string): string => {
       return json
         .split('')
-        .map(c => {
+        .map((c) => {
           switch (c) {
             case '{':
               return '}';
@@ -48,11 +48,11 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
           };
           const objectInObject = (ins: any): boolean => {
             if (typeof ins !== 'object') return false;
-            if (Array.isArray(ins)) return ins.map(objectInObject).some(v => v === true);
+            if (Array.isArray(ins)) return ins.map(objectInObject).some((v) => v === true);
             if (!isObject(ins)) return false;
             return Object.keys(ins)
-              .map(k => isObject(ins[k]) || objectInObject(ins[k]))
-              .some(v => v === true);
+              .map((k) => isObject(ins[k]) || objectInObject(ins[k]))
+              .some((v) => v === true);
           };
           return !objectInObject(obj);
         }),

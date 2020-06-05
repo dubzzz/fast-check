@@ -30,10 +30,13 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
     let alreadyFailed = false;
     let skipAllRuns = false;
     return fc.property(
-      fc.commands([fc.nat().map(v => new IncBy(v)), fc.nat().map(v => new DecPosBy(v)), fc.constant(new AlwaysPos())], {
-        replayPath
-      }),
-      cmds => {
+      fc.commands(
+        [fc.nat().map((v) => new IncBy(v)), fc.nat().map((v) => new DecPosBy(v)), fc.constant(new AlwaysPos())],
+        {
+          replayPath,
+        }
+      ),
+      (cmds) => {
         if (alreadyFailed && mrng !== undefined) {
           // Simulate the behaviour of skipAllAfterTimeLimit
           skipAllRuns = skipAllRuns || mrng.nextDouble() < 0.05;

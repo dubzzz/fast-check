@@ -8,9 +8,9 @@ export default function buildRollupConfig(fileName) {
     output: {
       file: `dist/${fileName}`,
       format: 'iife',
-      name: 'RunFastCheck'
+      name: 'RunFastCheck',
     },
     plugins: [builtins(), resolve(), cjs()],
-    onwarn: () => {}
+    onwarn: () => {},
   };
 }

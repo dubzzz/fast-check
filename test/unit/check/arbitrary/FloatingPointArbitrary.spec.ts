@@ -23,7 +23,7 @@ describe('FloatingPointArbitrary', () => {
   describe('float', () => {
     it('Should be able to generate a floating point number value', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           return canGenerateFloatingPoint(mrng, float());
         })
@@ -31,14 +31,14 @@ describe('FloatingPointArbitrary', () => {
     describe('Given no constraints [between 0 (included) and 1 (excluded)]', () => {
       genericHelper.isValidArbitrary(() => float(), {
         isStrictlySmallerValue: (a, b) => a < b,
-        isValidValue: (g: number) => typeof g === 'number' && 0.0 <= g && g < 1.0
+        isValidValue: (g: number) => typeof g === 'number' && 0.0 <= g && g < 1.0,
       });
     });
     describe('Given maximal value only [between 0 (included) and max (excluded)]', () => {
       genericHelper.isValidArbitrary((maxValue: number) => float(maxValue), {
-        seedGenerator: fc.nat().map(v => (v + 1) / 100.0), // must be != 0
+        seedGenerator: fc.nat().map((v) => (v + 1) / 100.0), // must be != 0
         isStrictlySmallerValue: (a, b) => a < b,
-        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && 0.0 <= g && g < maxValue
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && 0.0 <= g && g < maxValue,
       });
     });
     describe('Given minimal and maximal values [between min (included) and max (excluded)]', () => {
@@ -50,7 +50,7 @@ describe('FloatingPointArbitrary', () => {
             .filter(({ min, max }: { min: number; max: number }) => min !== max)
             .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
           isValidValue: (g: number, constraints: { min: number; max: number }) =>
-            typeof g === 'number' && constraints.min <= g && g < constraints.max
+            typeof g === 'number' && constraints.min <= g && g < constraints.max,
         }
       );
     });
@@ -58,7 +58,7 @@ describe('FloatingPointArbitrary', () => {
   describe('double', () => {
     it('Should be able to generate a floating point number value', () =>
       fc.assert(
-        fc.property(fc.integer(), seed => {
+        fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           return canGenerateFloatingPoint(mrng, double());
         })
@@ -66,14 +66,14 @@ describe('FloatingPointArbitrary', () => {
     describe('Given no constraints [between 0 (included) and 1 (excluded)]', () => {
       genericHelper.isValidArbitrary(() => double(), {
         isStrictlySmallerValue: (a, b) => a < b,
-        isValidValue: (g: number) => typeof g === 'number' && 0.0 <= g && g < 1.0
+        isValidValue: (g: number) => typeof g === 'number' && 0.0 <= g && g < 1.0,
       });
     });
     describe('Given maximal value only [between 0 (included) and max (excluded)]', () => {
       genericHelper.isValidArbitrary((maxValue: number) => double(maxValue), {
-        seedGenerator: fc.nat().map(v => (v + 1) / 100.0), // must be != 0
+        seedGenerator: fc.nat().map((v) => (v + 1) / 100.0), // must be != 0
         isStrictlySmallerValue: (a, b) => a < b,
-        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && 0.0 <= g && g < maxValue
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && 0.0 <= g && g < maxValue,
       });
     });
     describe('Given minimal and maximal values [between min (included) and max (excluded)]', () => {
@@ -85,7 +85,7 @@ describe('FloatingPointArbitrary', () => {
             .filter(({ min, max }: { min: number; max: number }) => min !== max)
             .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
           isValidValue: (g: number, constraints: { min: number; max: number }) =>
-            typeof g === 'number' && constraints.min <= g && g < constraints.max
+            typeof g === 'number' && constraints.min <= g && g < constraints.max,
         }
       );
     });
