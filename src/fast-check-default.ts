@@ -3,7 +3,13 @@ import { asyncProperty, IAsyncProperty } from './check/property/AsyncProperty';
 import { property, IProperty } from './check/property/Property';
 import { IRawProperty } from './check/property/IRawProperty';
 import { Parameters } from './check/runner/configuration/Parameters';
-import { RunDetails } from './check/runner/reporter/RunDetails';
+import {
+  RunDetails,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
+  RunDetailsFailureInterrupted,
+  RunDetailsSuccess,
+} from './check/runner/reporter/RunDetails';
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
@@ -229,6 +235,10 @@ export {
   WebAuthorityConstraints,
   WebUrlConstraints,
   RunDetails,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
+  RunDetailsFailureInterrupted,
+  RunDetailsSuccess,
   Random,
   Stream,
   stream,

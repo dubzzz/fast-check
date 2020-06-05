@@ -4,9 +4,9 @@ import { ExecutionStatus } from '../reporter/ExecutionStatus';
 import { ExecutionTree } from '../reporter/ExecutionTree';
 import {
   RunDetails,
-  InterruptedRunDetails,
-  PropertyFailureRunDetails,
-  TooManySkipsRunDetails,
+  RunDetailsFailureInterrupted,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails';
 
 /** @hidden */
@@ -53,7 +53,7 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
 }
 
 /** @hidden */
-function preFormatTooManySkipped<Ts>(out: TooManySkipsRunDetails<Ts>) {
+function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
   const hints = [
@@ -73,7 +73,7 @@ function preFormatTooManySkipped<Ts>(out: TooManySkipsRunDetails<Ts>) {
 }
 
 /** @hidden */
-function preFormatFailure<Ts>(out: PropertyFailureRunDetails<Ts>) {
+function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>) {
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringify(out.counterexample)}\nShrunk ${
@@ -94,7 +94,7 @@ function preFormatFailure<Ts>(out: PropertyFailureRunDetails<Ts>) {
 }
 
 /** @hidden */
-function preFormatEarlyInterrupted<Ts>(out: InterruptedRunDetails<Ts>) {
+function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
   let details: string | null = null;
   const hints = [];

@@ -7,16 +7,16 @@ import { ExecutionTree } from './ExecutionTree';
  * A failing property can easily detected by checking the `failed` flag of this structure
  */
 export type RunDetails<Ts> =
-  | PropertyFailureRunDetails<Ts>
-  | TooManySkipsRunDetails<Ts>
-  | InterruptedRunDetails<Ts>
-  | SuccessfulRunDetails<Ts>;
+  | RunDetailsFailureProperty<Ts>
+  | RunDetailsFailureTooManySkips<Ts>
+  | RunDetailsFailureInterrupted<Ts>
+  | RunDetailsSuccess<Ts>;
 
 /**
  * Run reported as failed because
  * the property failed
  */
-export type PropertyFailureRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsFailureProperty<Ts> = RunDetailsWithDoc<Ts> & {
   failed: true;
   interrupted: boolean;
   counterexample: Ts;
@@ -28,7 +28,7 @@ export type PropertyFailureRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
  * Run reported as failed because
  * too many retries have been attempted to generate valid values
  */
-export type TooManySkipsRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsFailureTooManySkips<Ts> = RunDetailsWithDoc<Ts> & {
   failed: true;
   interrupted: false;
   counterexample: null;
@@ -40,7 +40,7 @@ export type TooManySkipsRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
  * Run reported as failed because
  * it took too long and thus has been interrupted
  */
-export type InterruptedRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsFailureInterrupted<Ts> = RunDetailsWithDoc<Ts> & {
   failed: true;
   interrupted: true;
   counterexample: null;
@@ -51,7 +51,7 @@ export type InterruptedRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
 /**
  * Run reported as success
  */
-export type SuccessfulRunDetails<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsSuccess<Ts> = RunDetailsWithDoc<Ts> & {
   failed: false;
   interrupted: boolean;
   counterexample: null;
