@@ -8,7 +8,7 @@ const MaxN = 1000;
 describe('fibonacci', () => {
   it('should be equal to the sum of fibo(n-1) and fibo(n-2)', () => {
     fc.assert(
-      fc.property(fc.integer(2, MaxN), n => {
+      fc.property(fc.integer(2, MaxN), (n) => {
         expect(fibo(n)).toBe(fibo(n - 1) + fibo(n - 2));
       })
     );
@@ -28,7 +28,7 @@ describe('fibonacci', () => {
   it('should fulfill fibo(2p-1) = fibo²(p-1)+fibo²(p)', () => {
     // Special case of the property above
     fc.assert(
-      fc.property(fc.integer(1, MaxN), p => {
+      fc.property(fc.integer(1, MaxN), (p) => {
         expect(fibo(2 * p - 1)).toBe(fibo(p - 1) * fibo(p - 1) + fibo(p) * fibo(p));
       })
     );
@@ -46,7 +46,7 @@ describe('fibonacci', () => {
 
   it('should fulfill Cassini identity', () => {
     fc.assert(
-      fc.property(fc.integer(1, MaxN), fc.integer(0, MaxN), p => {
+      fc.property(fc.integer(1, MaxN), fc.integer(0, MaxN), (p) => {
         const sign = p % 2 === 0 ? 1n : -1n; // (-1)^p
         expect(fibo(p + 1) * fibo(p - 1) - fibo(p) * fibo(p)).toBe(sign);
       })

@@ -5,19 +5,25 @@ const seed = Date.now();
 describe(`ArrayArbitrary (seed: ${seed})`, () => {
   describe('array', () => {
     it('Should shrink on the size of the array', () => {
-      const out = fc.check(fc.property(fc.array(fc.nat()), (arr: number[]) => arr.length < 2), { seed: seed });
+      const out = fc.check(
+        fc.property(fc.array(fc.nat()), (arr: number[]) => arr.length < 2),
+        { seed: seed }
+      );
       expect(out.failed).toBe(true);
       expect(out.counterexample).not.toBe(null);
       expect(out.counterexample![0]).toHaveLength(2);
     });
     it('Should shrink on the content of the array', () => {
-      const out = fc.check(fc.property(fc.array(fc.integer(3, 10)), (arr: number[]) => arr.length < 2), { seed: seed });
+      const out = fc.check(
+        fc.property(fc.array(fc.integer(3, 10)), (arr: number[]) => arr.length < 2),
+        { seed: seed }
+      );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([[3, 3]]);
     });
     it('Should shrink removing unecessary entries in the array', () => {
       const out = fc.check(
-        fc.property(fc.array(fc.integer(0, 10)), (arr: number[]) => arr.filter(v => v >= 5).length < 2),
+        fc.property(fc.array(fc.integer(0, 10)), (arr: number[]) => arr.filter((v) => v >= 5).length < 2),
         { seed: seed }
       );
       expect(out.failed).toBe(true);
@@ -55,7 +61,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
         for (const v of filtered) {
-          if (filtered.filter(i => i === v).length > 1) return false; // duplicates detected
+          if (filtered.filter((i) => i === v).length > 1) return false; // duplicates detected
         }
         return true;
       }),
@@ -73,7 +79,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
         for (const v of filtered) {
-          if (filtered.filter(i => i === v).length > 1) return false; // duplicates detected
+          if (filtered.filter((i) => i === v).length > 1) return false; // duplicates detected
         }
         return true;
       }),

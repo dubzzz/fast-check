@@ -21,7 +21,7 @@ export type ExtractedTodoItem = {
 
 export const listTodos = async (): Promise<ExtractedTodoItem[]> => {
   const allTodoDomItems = await screen.queryAllByTestId('todo-item');
-  return allTodoDomItems.map(dom => {
+  return allTodoDomItems.map((dom) => {
     const toggleHtmlElement = dom.getElementsByTagName('input')[0];
     const removeHtmlElement = dom.getElementsByTagName('button')[0];
     const toggle = () => {
@@ -34,7 +34,7 @@ export const listTodos = async (): Promise<ExtractedTodoItem[]> => {
       actions: { toggle, remove },
       loading: !!toggleHtmlElement.disabled,
       checked: !!toggleHtmlElement.checked,
-      label: dom.getElementsByTagName('span')[0].textContent!
+      label: dom.getElementsByTagName('span')[0].textContent!,
     };
   });
 };

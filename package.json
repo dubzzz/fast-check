@@ -72,7 +72,7 @@
     "eslint-config-prettier": "^6.11.0",
     "jest": "^25.5.4",
     "markdownbars": "^1.0.10",
-    "prettier": "1.17.0",
+    "prettier": "2.0.5",
     "replace-in-file": "^6.0.0",
     "rollup": "^2.10.0",
     "rollup-plugin-commonjs": "^10.1.0",

@@ -24,20 +24,43 @@ describe(`NoRegression BigInt`, () => {
   const settings = { seed: 42, verbose: 2 };
 
   it('bigIntN', () => {
-    expect(() => fc.assert(fc.property(fc.bigIntN(100), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigIntN(100), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
   it('bigUintN', () => {
-    expect(() => fc.assert(fc.property(fc.bigUintN(100), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigUintN(100), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
   it('bigInt', () => {
-    expect(() => fc.assert(fc.property(fc.bigInt(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
   it('bigUint', () => {
-    expect(() => fc.assert(fc.property(fc.bigUint(), v => testFunc(v)), settings)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigUint(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
   it('mixedCase', () => {
     expect(() =>
-      fc.assert(fc.property(fc.mixedCase(fc.hexaString()), v => testFunc(v)), settings)
+      fc.assert(
+        fc.property(fc.mixedCase(fc.hexaString()), (v) => testFunc(v)),
+        settings
+      )
     ).toThrowErrorMatchingSnapshot();
   });
 });

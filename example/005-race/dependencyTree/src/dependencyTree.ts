@@ -17,7 +17,7 @@ export const dependencyTree = async (
     cache[packageName] = packageDef;
 
     await Promise.all(
-      Object.keys(packageDef.dependencies).map(async dependencyName => {
+      Object.keys(packageDef.dependencies).map(async (dependencyName) => {
         //if (dependencyName === packageName) return;
         await feedCache(dependencyName);
       })

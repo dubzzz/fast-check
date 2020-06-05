@@ -30,7 +30,7 @@ describe('TextEscaper', () => {
     });
     it('Should escape properly any string', () =>
       fc.assert(
-        fc.property(fc.fullUnicodeString(), text => {
+        fc.property(fc.fullUnicodeString(), (text) => {
           const escapedText = escapeForTemplateString(text);
           expect(eval('`' + escapedText + '`')).toBe(text);
         })

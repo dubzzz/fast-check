@@ -36,15 +36,18 @@ describe('dependencyTree', () => {
 
 // Helpers
 
-const AllPackagesArbitrary = fc.integer(1, 5).chain(numPackages => {
+const AllPackagesArbitrary = fc.integer(1, 5).chain((numPackages) => {
   const packageNames = [...Array(numPackages)].map((_, id) => `package-${String.fromCharCode('a'.charCodeAt(0) + id)}`);
   return fc
     .genericTuple(
-      packageNames.map(pname =>
-        fc.tuple(fc.constant(pname), fc.record({
-          dependencies: fc.dictionary(fc.constantFrom(...packageNames), fc.constant('1.0.0'))
-        }) as fc.Arbitrary<PackageDefinition>)
+      packageNames.map((pname) =>
+        fc.tuple(
+          fc.constant(pname),
+          fc.record({
+            dependencies: fc.dictionary(fc.constantFrom(...packageNames), fc.constant('1.0.0')),
+          }) as fc.Arbitrary<PackageDefinition>
+        )
       )
     )
-    .map(entries => Object.fromEntries(entries));
+    .map((entries) => Object.fromEntries(entries));
 });

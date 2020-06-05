@@ -26,7 +26,7 @@ describe('MixedCaseArbitrary', () => {
     it('should not toggle any character if flags are null', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(0) }]));
+      bigUintN.mockImplementationOnce((_n) => arbitraryFor([{ value: BigInt(0) }]));
       const stringArb = arbitraryFor([{ value: 'azerty' }]);
 
       // Act
@@ -40,7 +40,7 @@ describe('MixedCaseArbitrary', () => {
     it('should toggle characters according to flags', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
+      bigUintN.mockImplementationOnce((_n) => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
       const stringArb = arbitraryFor([{ value: 'azerty' }]);
 
       // Act
@@ -54,7 +54,7 @@ describe('MixedCaseArbitrary', () => {
     it('should toggle both lower and upper characters', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
+      bigUintN.mockImplementationOnce((_n) => arbitraryFor([{ value: BigInt(9) /* 001001 */ }]));
       const stringArb = arbitraryFor([{ value: 'azERty' }]);
 
       // Act
@@ -68,7 +68,7 @@ describe('MixedCaseArbitrary', () => {
     it('should not try to toggle characters that do not have lower/upper versions', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(0) }]));
+      bigUintN.mockImplementationOnce((_n) => arbitraryFor([{ value: BigInt(0) }]));
       const stringArb = arbitraryFor([{ value: 'az01ty' }]); // 01 upper version is the same
 
       // Act
@@ -82,7 +82,7 @@ describe('MixedCaseArbitrary', () => {
     it('should shrink by merging string and flags shrinkers', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementation(n => {
+      bigUintN.mockImplementation((n) => {
         switch (n) {
           case 6: // azerty
             return arbitraryFor([
@@ -90,16 +90,16 @@ describe('MixedCaseArbitrary', () => {
                 value: BigInt(0b100100),
                 shrinks: [
                   { value: BigInt(0b000100), shrinks: [{ value: BigInt(0b100000) }] },
-                  { value: BigInt(0b000000) }
-                ]
-              }
+                  { value: BigInt(0b000000) },
+                ],
+              },
             ]);
           case 3: // aze
             return arbitraryFor([{ value: BigInt(0b010), shrinks: [{ value: BigInt(0b000) }] }]);
           case 4: // azer
             return arbitraryFor([
               { value: BigInt(0b1011), shrinks: [{ value: BigInt(0b1111) }, { value: BigInt(0b1000) }] },
-              { value: BigInt(0b0101), shrinks: [{ value: BigInt(0b0011) }, { value: BigInt(0b0010) }] }
+              { value: BigInt(0b0101), shrinks: [{ value: BigInt(0b0011) }, { value: BigInt(0b0010) }] },
             ]);
           case 0: //
           default:
@@ -111,20 +111,20 @@ describe('MixedCaseArbitrary', () => {
           value: 'azerty',
           shrinks: [
             { value: 'aze', shrinks: [{ value: '' }] },
-            { value: 'azer', shrinks: [{ value: 'az' }, { value: '' }] }
-          ]
-        }
+            { value: 'azer', shrinks: [{ value: 'az' }, { value: '' }] },
+          ],
+        },
       ]);
 
       // Act
       const arb = mixedCase(stringArb);
       const s0 = arb.generate(mrng());
       const level0 = s0.value_;
-      const level1 = [...s0.shrink().map(s => s.value_)];
+      const level1 = [...s0.shrink().map((s) => s.value_)];
       const s1a = s0.shrink().getNthOrLast(1)!;
-      const level2a = [...s1a.shrink().map(s => s.value_)];
+      const level2a = [...s1a.shrink().map((s) => s.value_)];
       const s1b = s0.shrink().getNthOrLast(2)!;
-      const level2b = [...s1b.shrink().map(s => s.value_)];
+      const level2b = [...s1b.shrink().map((s) => s.value_)];
 
       // Assert
       expect(level0).toEqual('azErtY' /*azerty + 100100*/);
@@ -132,24 +132,24 @@ describe('MixedCaseArbitrary', () => {
         'AzE' /*aze + 101*/,
         'AzEr' /*azer + 0101*/, // <-- string shrinker for 'azerty'
         'azErty' /*azerty + 000100*/,
-        'azerty' /*azerty + 000000*/ // <-- bigint shrinker for bigUintN(6)[0b100100]
+        'azerty' /*azerty + 000000*/, // <-- bigint shrinker for bigUintN(6)[0b100100]
       ]);
       expect(level2a).toEqual([
         'AZ' /*az + 11*/,
         '' /* + */, // <-- string shrinker for 'azer'
         'AZer' /*azer + 0011*/,
-        'aZer' /*azer + 0010*/ // <-- bigint shrinker for bigUintN(4)[0b0101]
+        'aZer' /*azer + 0010*/, // <-- bigint shrinker for bigUintN(4)[0b0101]
       ]);
       expect(level2b).toEqual([
         // 'azE' /*aze + 100*/,
         // 'azEr' /*azer + 0100*/, // <-- string shrinker for 'azerty' (removed)
-        'azertY' /*azerty + 100000*/ // <-- bigint shrinker for bigUintN(6)[0b000100]
+        'azertY' /*azerty + 100000*/, // <-- bigint shrinker for bigUintN(6)[0b000100]
       ]);
     });
     it('should use toggle function when provided to check what can be toggled or not', () => {
       // Arrange
       const { bigUintN } = mocked(BigIntArbitraryMock);
-      bigUintN.mockImplementationOnce(_n => arbitraryFor([{ value: BigInt(63) /* 111111 */ }]));
+      bigUintN.mockImplementationOnce((_n) => arbitraryFor([{ value: BigInt(63) /* 111111 */ }]));
       const stringArb = arbitraryFor([{ value: 'azerty' }]);
       const customToggle = jest.fn();
       customToggle.mockImplementation((c: string) => {

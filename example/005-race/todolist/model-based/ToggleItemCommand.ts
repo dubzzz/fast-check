@@ -7,13 +7,13 @@ export class ToggleItemCommand implements TodolistCommand {
   async check(m: TodolistModel) {
     // Only non loading todos can be edited
     const todos = await listTodos();
-    return !todos.every(t => t.loading);
+    return !todos.every((t) => t.loading);
   }
 
   async run(m: TodolistModel, _r: TodolistReal) {
     const todosBefore = await listTodos();
 
-    const nonLoadingTodos = todosBefore.filter(t => !t.loading);
+    const nonLoadingTodos = todosBefore.filter((t) => !t.loading);
     const selectedTodoIndex = todosBefore.indexOf(nonLoadingTodos[this.position % nonLoadingTodos.length]);
     todosBefore[selectedTodoIndex].actions.toggle();
     this.runDetails = prettyDetails(todosBefore[selectedTodoIndex]);
@@ -23,7 +23,7 @@ export class ToggleItemCommand implements TodolistCommand {
     // We expect the checked to have switched from checked to unchecked (or the opposite)
     const expectedNewStateAtIndex = {
       label: todosBefore[selectedTodoIndex].label,
-      checked: !todosBefore[selectedTodoIndex].checked
+      checked: !todosBefore[selectedTodoIndex].checked,
     };
     expect(extractItemData(todosAfter[selectedTodoIndex])).toEqual(expectedNewStateAtIndex);
 

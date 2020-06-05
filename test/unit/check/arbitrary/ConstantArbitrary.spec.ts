@@ -59,7 +59,7 @@ describe('ConstantArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = constantFrom(...data).generate(mrng);
           if (data.indexOf(shrinkable.value) === 0) expect([...shrinkable.shrink()]).toEqual([]);
-          else expect([...shrinkable.shrink()].map(s => s.value)).toEqual([data[0]]);
+          else expect([...shrinkable.shrink()].map((s) => s.value)).toEqual([data[0]]);
         })
       ));
   });
@@ -74,7 +74,7 @@ describe('ConstantArbitrary', () => {
         [cloneMethod]() {
           clonedOnce = true;
           return this;
-        }
+        },
       }).generate(mrng).value;
       expect(g).toBeDefined();
       expect(clonedOnce).toBe(true);

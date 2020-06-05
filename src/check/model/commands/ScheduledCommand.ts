@@ -21,8 +21,8 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
             error = err;
             throw err;
           }
-        }
-      }
+        },
+      },
     ]).task;
 
     if (status.faulty) {
@@ -43,8 +43,8 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
             error = err;
             throw err;
           }
-        }
-      }
+        },
+      },
     ]).task;
 
     if (status.faulty) {
@@ -54,7 +54,7 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
 }
 
 /** @hidden */
-export const scheduleCommands = function*<Model extends object, Real, CheckAsync extends boolean>(
+export const scheduleCommands = function* <Model extends object, Real, CheckAsync extends boolean>(
   s: Scheduler,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
 ): Iterable<AsyncCommand<Model, Real, true>> {

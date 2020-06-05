@@ -30,10 +30,10 @@ function buildFakeScheduler(): Scheduler {
             state.faulty = true;
             return state;
           }
-        )
+        ),
       });
     },
-    report: jest.fn()
+    report: jest.fn(),
   };
 }
 
@@ -127,9 +127,9 @@ describe('ScheduledCommand', () => {
         return {
           done: false,
           faulty: false,
-          task: Promise.resolve({ done: true, faulty: false })
+          task: Promise.resolve({ done: true, faulty: false }),
         };
-      }
+      },
     };
     const scheduledCommand = new ScheduledCommand(s, cmd);
 

@@ -6,7 +6,7 @@ import { Arbitrary } from './definition/Arbitrary';
 function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
   const arrayArb =
     aLength != null ? (bLength != null ? array(charArb, aLength, bLength) : array(charArb, aLength)) : array(charArb);
-  return arrayArb.map(tab => tab.join(''));
+  return arrayArb.map((tab) => tab.join(''));
 }
 
 /** @hidden */
@@ -14,7 +14,7 @@ function Base64StringArbitrary(minLength: number, maxLength: number) {
   if (minLength > maxLength) throw new Error('Minimal length should be inferior or equal to maximal length');
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');
   if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
-  return StringArbitrary(base64(), minLength, maxLength).map(s => {
+  return StringArbitrary(base64(), minLength, maxLength).map((s) => {
     switch (s.length % 4) {
       case 0:
         return s;

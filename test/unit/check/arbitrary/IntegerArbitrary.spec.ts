@@ -25,7 +25,7 @@ describe('IntegerArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = integer(min, min + num);
           const shrinkable = arb.generate(mrng);
-          return shrinkable.shrink().every(s => s.value != shrinkable.value);
+          return shrinkable.shrink().every((s) => s.value != shrinkable.value);
         })
       ));
     it('Should shrink towards zero', () =>
@@ -35,8 +35,8 @@ describe('IntegerArbitrary', () => {
           const arb = integer(min, min + num);
           const shrinkable = arb.generate(mrng);
           return shrinkable.value >= 0
-            ? shrinkable.shrink().every(s => s.value <= shrinkable.value)
-            : shrinkable.shrink().every(s => s.value >= shrinkable.value);
+            ? shrinkable.shrink().every((s) => s.value <= shrinkable.value)
+            : shrinkable.shrink().every((s) => s.value >= shrinkable.value);
         })
       ));
     it('Should be able to call shrink multiple times', () =>
@@ -45,8 +45,8 @@ describe('IntegerArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = integer(min, min + num);
           const shrinkable = arb.generate(mrng);
-          const s1 = [...shrinkable.shrink()].map(s => s.value);
-          const s2 = [...shrinkable.shrink()].map(s => s.value);
+          const s1 = [...shrinkable.shrink()].map((s) => s.value);
+          const s2 = [...shrinkable.shrink()].map((s) => s.value);
           return s1.length === s2.length && s1.every((v, idx) => v === s2[idx]);
         })
       ));
@@ -71,7 +71,7 @@ describe('IntegerArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = integer(min, min + num);
           const shrinkable = arb.generate(mrng);
-          const shrinksInstance = [...shrinkable.shrink()].map(s => s.value);
+          const shrinksInstance = [...shrinkable.shrink()].map((s) => s.value);
           const shrinksArb = [...arb.shrink(shrinkable.value)];
           return (
             shrinksInstance.length === shrinksArb.length && shrinksInstance.every((v, idx) => v === shrinksArb[idx])
@@ -80,7 +80,7 @@ describe('IntegerArbitrary', () => {
       ));
     it('Should not shrink twice towards zero', () =>
       fc.assert(
-        fc.property(fc.integer().noShrink(), seed => {
+        fc.property(fc.integer().noShrink(), (seed) => {
           // all value between <sA> and <sB> are failure cases
           // we have a contiguous range of failures
           const mrng = stubRng.mutable.fastincrease(seed);
@@ -157,14 +157,14 @@ describe('IntegerArbitrary', () => {
     describe('Given no constraints [between -2**31 and 2**31 -1]', () => {
       genericHelper.isValidArbitrary(() => integer(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
-        isValidValue: (g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff
+        isValidValue: (g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff,
       });
     });
     describe('Given maximal value only [between -2**31 and max]', () => {
       genericHelper.isValidArbitrary((maxValue: number) => integer(maxValue), {
         seedGenerator: fc.integer(),
         isStrictlySmallerValue: isStrictlySmallerInteger,
-        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && -0x80000000 <= g && g <= maxValue
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && -0x80000000 <= g && g <= maxValue,
       });
     });
     describe('Given minimal and maximal values [between min and max]', () => {
@@ -174,7 +174,7 @@ describe('IntegerArbitrary', () => {
           seedGenerator: genericHelper.minMax(fc.integer()),
           isStrictlySmallerValue: isStrictlySmallerInteger,
           isValidValue: (g: number, constraints: { min: number; max: number }) =>
-            typeof g === 'number' && constraints.min <= g && g <= constraints.max
+            typeof g === 'number' && constraints.min <= g && g <= constraints.max,
         }
       );
     });
@@ -184,28 +184,28 @@ describe('IntegerArbitrary', () => {
       genericHelper.isValidArbitrary(() => maxSafeInteger(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
         isValidValue: (g: number) =>
-          typeof g === 'number' && g >= Number.MIN_SAFE_INTEGER && g <= Number.MAX_SAFE_INTEGER
+          typeof g === 'number' && g >= Number.MIN_SAFE_INTEGER && g <= Number.MAX_SAFE_INTEGER,
       });
     });
   });
   describe('nat', () => {
     it('Should throw when the number is less than 0', () =>
       fc.assert(
-        fc.property(fc.integer(Number.MIN_SAFE_INTEGER, -1), n => {
+        fc.property(fc.integer(Number.MIN_SAFE_INTEGER, -1), (n) => {
           expect(() => nat(n)).toThrowError();
         })
       ));
     describe('Given no constraints [between 0 and 2**31 -1]', () => {
       genericHelper.isValidArbitrary(() => nat(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
-        isValidValue: (g: number) => typeof g === 'number' && g >= 0 && g <= 0x7fffffff
+        isValidValue: (g: number) => typeof g === 'number' && g >= 0 && g <= 0x7fffffff,
       });
     });
     describe('Given maximal value only [between 0 and max]', () => {
       genericHelper.isValidArbitrary((maxValue: number) => nat(maxValue), {
         seedGenerator: fc.nat(),
         isStrictlySmallerValue: isStrictlySmallerInteger,
-        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && g >= 0 && g <= maxValue
+        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && g >= 0 && g <= maxValue,
       });
     });
   });
@@ -213,7 +213,7 @@ describe('IntegerArbitrary', () => {
     describe('Given no constraints [between 0 and MAX_SAFE_INTEGER]', () => {
       genericHelper.isValidArbitrary(() => maxSafeNat(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
-        isValidValue: (g: number) => typeof g === 'number' && g >= 0 && g <= Number.MAX_SAFE_INTEGER
+        isValidValue: (g: number) => typeof g === 'number' && g >= 0 && g <= Number.MAX_SAFE_INTEGER,
       });
     });
   });

@@ -70,7 +70,7 @@ describe('DateArbitrary', () => {
     });
     it('Should throw whenever min is an invalid date', () => {
       fc.assert(
-        fc.property(invalidMinConstraintsArb(), constraints => {
+        fc.property(invalidMinConstraintsArb(), (constraints) => {
           // Act / Assert
           expect(() => date(constraints)).toThrowError();
         })
@@ -78,7 +78,7 @@ describe('DateArbitrary', () => {
     });
     it('Should throw whenever max is an invalid date', () => {
       fc.assert(
-        fc.property(invalidMaxConstraintsArb(), constraints => {
+        fc.property(invalidMaxConstraintsArb(), (constraints) => {
           // Act / Assert
           expect(() => date(constraints)).toThrowError();
         })
@@ -86,7 +86,7 @@ describe('DateArbitrary', () => {
     });
     it('Should throw whenever min is greater than max', () => {
       fc.assert(
-        fc.property(invalidRangeConstraintsArb(), constraints => {
+        fc.property(invalidRangeConstraintsArb(), (constraints) => {
           // Act / Assert
           expect(() => date(constraints)).toThrowError();
         })
@@ -100,7 +100,7 @@ describe('DateArbitrary', () => {
       // Act
       const arb = date();
       const { shrink } = arb.generate(mrng());
-      const shrinks = [...shrink()].map(s => s.value_);
+      const shrinks = [...shrink()].map((s) => s.value_);
 
       // Assert
       expect(shrinks).toEqual([new Date(48), new Date(69)]);
@@ -127,11 +127,11 @@ const invalidRangeConstraintsArb = () =>
 const invalidMinConstraintsArb = () =>
   fc
     .option(fc.date(), 100)
-    .map(optMax => optMax || undefined)
-    .map(max => ({ min: new Date(Number.NaN), max }));
+    .map((optMax) => optMax || undefined)
+    .map((max) => ({ min: new Date(Number.NaN), max }));
 
 const invalidMaxConstraintsArb = () =>
   fc
     .option(fc.date(), 100)
-    .map(optMin => optMin || undefined)
-    .map(min => ({ min, max: new Date(Number.NaN) }));
+    .map((optMin) => optMin || undefined)
+    .map((min) => ({ min, max: new Date(Number.NaN) }));

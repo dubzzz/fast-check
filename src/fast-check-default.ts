@@ -37,7 +37,7 @@ import {
   object,
   ObjectConstraints,
   unicodeJson,
-  unicodeJsonObject
+  unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
 import { oneof } from './check/arbitrary/OneOfArbitrary';
 import { option } from './check/arbitrary/OptionArbitrary';
@@ -52,7 +52,7 @@ import {
   string,
   string16bits,
   stringOf,
-  unicodeString
+  unicodeString,
 } from './check/arbitrary/StringArbitrary';
 import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
@@ -64,7 +64,7 @@ import {
   webQueryParameters,
   webSegment,
   webUrl,
-  WebUrlConstraints
+  WebUrlConstraints,
 } from './check/arbitrary/WebArbitrary';
 
 import { AsyncCommand } from './check/model/command/AsyncCommand';
@@ -79,7 +79,7 @@ import {
   configureGlobal,
   GlobalParameters,
   readConfigureGlobal,
-  resetConfigureGlobal
+  resetConfigureGlobal,
 } from './check/runner/configuration/GlobalParameters';
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
@@ -92,7 +92,7 @@ import {
   schedulerFor,
   Scheduler,
   SchedulerSequenceItem,
-  SchedulerReportItem
+  SchedulerReportItem,
 } from './check/arbitrary/AsyncSchedulerArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
@@ -237,5 +237,5 @@ export {
   // global configuration
   configureGlobal,
   readConfigureGlobal,
-  resetConfigureGlobal
+  resetConfigureGlobal,
 };

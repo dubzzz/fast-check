@@ -10,7 +10,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
             [fc.cloneMethod]: () => {
               ++data.counter;
               return v;
-            }
+            },
           };
           return new fc.Shrinkable(v);
         }

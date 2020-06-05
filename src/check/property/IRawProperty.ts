@@ -31,7 +31,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
     v: Ts
   ):
     | (IsAsync extends true ? Promise<PreconditionFailure | string | null> : never)
-    | (IsAsync extends false ? (PreconditionFailure | string | null) : never);
+    | (IsAsync extends false ? PreconditionFailure | string | null : never);
 }
 
 /**

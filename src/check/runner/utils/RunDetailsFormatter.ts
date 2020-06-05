@@ -49,13 +49,11 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
 
 /** @hidden */
 function preFormatTooManySkipped<Ts>(out: RunDetails<Ts>) {
-  const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${
-    out.numRuns
-  } time(s)\nSkipped ${out.numSkips} time(s)`;
+  const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
   const hints = [
     'Try to reduce the number of rejected values by combining map, flatMap and built-in arbitraries',
-    'Increase failure tolerance by setting maxSkipsPerRun to an higher value'
+    'Increase failure tolerance by setting maxSkipsPerRun to an higher value',
   ];
 
   if (out.verbose >= VerbosityLevel.VeryVerbose) {

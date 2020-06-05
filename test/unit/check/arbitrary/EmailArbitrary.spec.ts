@@ -18,12 +18,12 @@ describe('EmailArbitrary', () => {
   describe('emailAddress', () => {
     describe('RFC 1123', () => {
       genericHelper.isValidArbitrary(() => emailAddress(), {
-        isValidValue: (g: string) => isValidEmailRfc1123(g)
+        isValidValue: (g: string) => isValidEmailRfc1123(g),
       });
     });
     describe('RFC 5322', () => {
       genericHelper.isValidArbitrary(() => emailAddress(), {
-        isValidValue: (g: string) => isValidEmailRfc5322(g)
+        isValidValue: (g: string) => isValidEmailRfc5322(g),
       });
     });
   });

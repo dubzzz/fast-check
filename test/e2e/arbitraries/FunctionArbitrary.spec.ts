@@ -4,15 +4,18 @@ const seed = Date.now();
 describe(`FunctionArbitrary (seed: ${seed})`, () => {
   describe('func', () => {
     it('Should be able to generate multiple values', () => {
-      const out = fc.check(fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)), {
-        seed: seed
-      });
+      const out = fc.check(
+        fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
+        {
+          seed: seed,
+        }
+      );
       expect(out.failed).toBe(true);
     });
     it('Should print the values and corresponding outputs', () => {
       expect(() =>
         fc.assert(
-          fc.property(fc.func(fc.nat()), f => {
+          fc.property(fc.func(fc.nat()), (f) => {
             f(0, 8);
             f(42, 1);
             return false;
@@ -31,7 +34,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
         }),
         {
           seed: seed,
-          numRuns: 5000 // increased numRuns to remove flakiness
+          numRuns: 5000, // increased numRuns to remove flakiness
         }
       );
       expect(out.failed).toBe(true);

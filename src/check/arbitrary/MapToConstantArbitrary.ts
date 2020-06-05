@@ -31,7 +31,7 @@ function computeNumChoices<T>(options: { num: number; build: (idInGroup: number)
  */
 export function mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T> {
   const numChoices = computeNumChoices(entries);
-  return nat(numChoices - 1).map(choice => {
+  return nat(numChoices - 1).map((choice) => {
     let idx = -1;
     let numSkips = 0;
     while (choice >= numSkips) {

@@ -40,7 +40,7 @@ describe('DedupArbitrary', () => {
             [cloneMethod]: () => {
               ++numCallsToClone;
               return v;
-            }
+            },
           };
           return new Shrinkable(v);
         }
@@ -66,7 +66,7 @@ describe('DedupArbitrary', () => {
         seedGenerator: fc.nat(20),
         isStrictlySmallerValue: isStrictlySmaller,
         isValidValue: (g: number[], numValues: number) =>
-          Array.isArray(g) && g.length === numValues && g.every(v => v === g[0])
+          Array.isArray(g) && g.length === numValues && g.every((v) => v === g[0]),
       });
     });
   });

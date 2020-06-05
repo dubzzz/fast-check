@@ -25,7 +25,7 @@ describe('BigIntArbitrary', () => {
         seedGenerator: fc.integer(1, 2000),
         isStrictlySmallerValue: isStrictlySmallerBigInt,
         isValidValue: (g: bigint, n: number) =>
-          typeof g === 'bigint' && g >= BigInt(-1) << BigInt(n - 1) && g <= (BigInt(1) << BigInt(n - 1)) - BigInt(1)
+          typeof g === 'bigint' && g >= BigInt(-1) << BigInt(n - 1) && g <= (BigInt(1) << BigInt(n - 1)) - BigInt(1),
       });
     });
   });
@@ -35,7 +35,7 @@ describe('BigIntArbitrary', () => {
         seedGenerator: fc.integer(1, 2000),
         isStrictlySmallerValue: isStrictlySmallerBigInt,
         isValidValue: (g: bigint, n: number) =>
-          typeof g === 'bigint' && g >= BigInt(0) && g <= (BigInt(1) << BigInt(n)) - BigInt(1)
+          typeof g === 'bigint' && g >= BigInt(0) && g <= (BigInt(1) << BigInt(n)) - BigInt(1),
       });
     });
   });
@@ -43,7 +43,7 @@ describe('BigIntArbitrary', () => {
     describe('Given no constraints', () => {
       genericHelper.isValidArbitrary(() => bigInt(), {
         isStrictlySmallerValue: isStrictlySmallerBigInt,
-        isValidValue: (g: bigint) => typeof g === 'bigint'
+        isValidValue: (g: bigint) => typeof g === 'bigint',
       });
     });
     describe('Given minimal and maximal values [between min and max]', () => {
@@ -53,7 +53,7 @@ describe('BigIntArbitrary', () => {
           seedGenerator: genericHelper.minMax(fc.bigInt()),
           isStrictlySmallerValue: isStrictlySmallerBigInt,
           isValidValue: (g: bigint, constraints: { min: bigint; max: bigint }) =>
-            typeof g === 'bigint' && constraints.min <= g && g <= constraints.max
+            typeof g === 'bigint' && constraints.min <= g && g <= constraints.max,
         }
       );
     });
@@ -62,14 +62,14 @@ describe('BigIntArbitrary', () => {
     describe('Given no constraints [positive values]', () => {
       genericHelper.isValidArbitrary(() => bigUint(), {
         isStrictlySmallerValue: isStrictlySmallerBigInt,
-        isValidValue: (g: bigint) => typeof g === 'bigint' && g >= BigInt(0)
+        isValidValue: (g: bigint) => typeof g === 'bigint' && g >= BigInt(0),
       });
     });
     describe('Given maximal value [between 0 and max]', () => {
       genericHelper.isValidArbitrary((max: bigint) => bigUint(max), {
         seedGenerator: fc.bigUint(),
         isStrictlySmallerValue: isStrictlySmallerBigInt,
-        isValidValue: (g: bigint, max: bigint) => typeof g === 'bigint' && g >= BigInt(0) && g <= max
+        isValidValue: (g: bigint, max: bigint) => typeof g === 'bigint' && g >= BigInt(0) && g <= max,
       });
     });
   });

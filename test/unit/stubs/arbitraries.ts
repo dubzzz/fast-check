@@ -116,5 +116,5 @@ export {
   ForwardArbitrary,
   ForwardArrayArbitrary,
   SingleUseArbitrary,
-  WithShrinkArbitrary
+  WithShrinkArbitrary,
 };

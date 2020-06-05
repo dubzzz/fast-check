@@ -16,7 +16,7 @@ export function* toss<Ts>(
   random: (seed: number) => prand.RandomGenerator,
   examples: Ts[]
 ): IterableIterator<() => Shrinkable<Ts>> {
-  yield* examples.map(e => () => new Shrinkable(e));
+  yield* examples.map((e) => () => new Shrinkable(e));
   let idx = 0;
   let rng = random(seed);
   for (;;) {

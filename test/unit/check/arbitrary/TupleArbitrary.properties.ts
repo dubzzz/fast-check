@@ -9,7 +9,7 @@ export class DummyArbitrary extends Arbitrary<string> {
   generate(mrng: Random) {
     return integer()
       .generate(mrng)
-      .map(v => `key${this.id}_${v}`);
+      .map((v) => `key${this.id}_${v}`);
   }
   withBias(freq: number) {
     return new DummyArbitrary(2 * this.id + freq);

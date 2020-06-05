@@ -14,7 +14,7 @@ function buildProperty(asyncProp: boolean) {
   return {
     isAsync: () => asyncProp,
     generate: () => new Shrinkable({}),
-    run: () => null
+    run: () => null,
   } as IRawProperty<any>;
 }
 
@@ -29,7 +29,7 @@ describe('decorateProperty', () => {
       skipAllAfterTimeLimit: null,
       interruptAfterTimeLimit: null,
       timeout: null,
-      unbiased: false
+      unbiased: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
@@ -40,7 +40,7 @@ describe('decorateProperty', () => {
       skipAllAfterTimeLimit: 1,
       interruptAfterTimeLimit: null,
       timeout: null,
-      unbiased: false
+      unbiased: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
@@ -51,7 +51,7 @@ describe('decorateProperty', () => {
       skipAllAfterTimeLimit: null,
       interruptAfterTimeLimit: 1,
       timeout: null,
-      unbiased: false
+      unbiased: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
@@ -62,7 +62,7 @@ describe('decorateProperty', () => {
       skipAllAfterTimeLimit: null,
       interruptAfterTimeLimit: null,
       timeout: 1,
-      unbiased: false
+      unbiased: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(1);
@@ -73,7 +73,7 @@ describe('decorateProperty', () => {
       skipAllAfterTimeLimit: null,
       interruptAfterTimeLimit: null,
       timeout: null,
-      unbiased: true
+      unbiased: true,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
@@ -84,7 +84,7 @@ describe('decorateProperty', () => {
       skipAllAfterTimeLimit: null,
       interruptAfterTimeLimit: null,
       timeout: 1,
-      unbiased: false
+      unbiased: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
@@ -95,7 +95,7 @@ describe('decorateProperty', () => {
       skipAllAfterTimeLimit: 1,
       interruptAfterTimeLimit: 1,
       timeout: 1,
-      unbiased: true
+      unbiased: true,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(2);
     expect(TimeoutProperty).toHaveBeenCalledTimes(1);

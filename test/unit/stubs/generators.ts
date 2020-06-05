@@ -70,13 +70,13 @@ class CounterRandomGenerator implements RandomGenerator {
 const raw = {
   counter: (value: number) => new CounterRandomGenerator(value),
   nocall: () => new NoCallGenerator(),
-  fastincrease: (value: number) => new FastIncreaseRandomGenerator(value)
+  fastincrease: (value: number) => new FastIncreaseRandomGenerator(value),
 };
 
 const mutable = {
   counter: (value: number) => new Random(new CounterRandomGenerator(value)),
   nocall: () => new Random(new NoCallGenerator()),
-  fastincrease: (value: number) => new Random(new FastIncreaseRandomGenerator(value))
+  fastincrease: (value: number) => new Random(new FastIncreaseRandomGenerator(value)),
 };
 
 export { mutable, raw, CounterRandomGenerator, NoCallGenerator, FastIncreaseRandomGenerator };
