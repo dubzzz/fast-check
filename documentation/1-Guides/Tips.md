@@ -235,7 +235,6 @@ test('should run with custom scheduler then generated ones', () =>
     }
   ));
 ```
-```
 
 ## Opt for verbose failures
 
