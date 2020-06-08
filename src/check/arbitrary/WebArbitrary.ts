@@ -9,6 +9,7 @@ import { oneof } from './OneOfArbitrary';
 import { option } from './OptionArbitrary';
 import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
+import { Arbitrary } from './definition/Arbitrary';
 
 export interface WebAuthorityConstraints {
   /** Enable IPv4 in host */
@@ -30,7 +31,7 @@ export interface WebAuthorityConstraints {
  *
  * @param constraints
  */
-export function webAuthority(constraints?: WebAuthorityConstraints) {
+export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<string> {
   const c = constraints || {};
   const hostnameArbs = [domain()]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
@@ -50,7 +51,7 @@ export function webAuthority(constraints?: WebAuthorityConstraints) {
  *
  * eg.: In the url `https://github.com/dubzzz/fast-check/`, `dubzzz` and `fast-check` are segments
  */
-export function webSegment() {
+export function webSegment(): Arbitrary<string> {
   // pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
   // segment       = *pchar
   const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':', '@'];
@@ -72,7 +73,7 @@ function uriQueryOrFragment() {
  *
  * eg.: In the url `https://domain/plop/?hello=1&world=2`, `?hello=1&world=2` are query parameters
  */
-export function webQueryParameters() {
+export function webQueryParameters(): Arbitrary<string> {
   return uriQueryOrFragment();
 }
 
@@ -83,7 +84,7 @@ export function webQueryParameters() {
  *
  * eg.: In the url `https://domain/plop?page=1#hello=1&world=2`, `?hello=1&world=2` are query parameters
  */
-export function webFragments() {
+export function webFragments(): Arbitrary<string> {
   return uriQueryOrFragment();
 }
 
@@ -112,7 +113,7 @@ export function webUrl(constraints?: {
   authoritySettings?: WebAuthorityConstraints;
   withQueryParameters?: boolean;
   withFragments?: boolean;
-}) {
+}): Arbitrary<string> {
   const c = constraints || {};
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
