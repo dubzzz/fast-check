@@ -7,6 +7,7 @@ import {
 import { option } from './OptionArbitrary';
 import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
+import { Arbitrary } from './definition/Arbitrary';
 
 /** @hidden */
 function subdomain() {
@@ -33,7 +34,7 @@ function subdomain() {
  * - https://www.ietf.org/rfc/rfc1123.txt
  * - https://url.spec.whatwg.org/
  */
-export function domain() {
+export function domain(): Arbitrary<string> {
   const alphaNumericArb = buildLowerAlphaArb([]);
   const extensionArb = stringOf(alphaNumericArb, 2, 10);
   return tuple(array(subdomain(), 1, 5), extensionArb)
@@ -42,7 +43,7 @@ export function domain() {
 }
 
 /** @hidden */
-export function hostUserInfo() {
+export function hostUserInfo(): Arbitrary<string> {
   const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':'];
   return stringOf(buildAlphaNumericPercentArb(others));
 }

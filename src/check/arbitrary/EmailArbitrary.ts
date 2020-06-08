@@ -3,13 +3,14 @@ import { buildLowerAlphaNumericArb } from './helpers/SpecificCharacterRange';
 import { domain } from './HostArbitrary';
 import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
+import { Arbitrary } from './definition/Arbitrary';
 
 /**
  * For email address
  *
  * According to RFC 5322 - https://www.ietf.org/rfc/rfc5322.txt
  */
-export function emailAddress() {
+export function emailAddress(): Arbitrary<string> {
   const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];
   const atextArb = buildLowerAlphaNumericArb(others);
   const dotAtomArb = array(stringOf(atextArb, 1, 10), 1, 5).map((a) => a.join('.'));
