@@ -1,6 +1,7 @@
 import prand, { RandomGenerator } from 'pure-rand';
 import { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
+import { RunDetails } from '../reporter/RunDetails';
 
 /**
  * @hidden
@@ -24,6 +25,8 @@ export class QualifiedParameters<T> {
   skipAllAfterTimeLimit: number | null;
   interruptAfterTimeLimit: number | null;
   markInterruptAsFailure: boolean;
+  reporter: ((runDetails: RunDetails<T>) => void) | null;
+  asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -44,6 +47,43 @@ export class QualifiedParameters<T> {
     this.unbiased = QualifiedParameters.readBoolean(p, 'unbiased');
     this.examples = QualifiedParameters.readOrDefault(p, 'examples', []);
     this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
+    this.reporter = QualifiedParameters.readOrDefault(p, 'reporter', null);
+    this.asyncReporter = QualifiedParameters.readOrDefault(p, 'asyncReporter', null);
+  }
+
+  toParameters(): Parameters<T> {
+    const orUndefined = <V>(value: V | null) => (value !== null ? value : undefined);
+    const parameters = {
+      seed: this.seed,
+      randomType: this.randomType,
+      numRuns: this.numRuns,
+      maxSkipsPerRun: this.maxSkipsPerRun,
+      timeout: orUndefined(this.timeout),
+      skipAllAfterTimeLimit: orUndefined(this.skipAllAfterTimeLimit),
+      interruptAfterTimeLimit: orUndefined(this.interruptAfterTimeLimit),
+      markInterruptAsFailure: this.markInterruptAsFailure,
+      path: this.path,
+      logger: this.logger,
+      unbiased: this.unbiased,
+      verbose: this.verbose,
+      examples: this.examples,
+      endOnFailure: this.endOnFailure,
+      reporter: orUndefined(this.reporter),
+      asyncReporter: orUndefined(this.asyncReporter),
+    };
+
+    // As we do not want to miss any of the parameters,
+    // we want the compilation to fail in case we missed one when building `parameters`
+    // in the code above. `failIfMissing` is ensuring that for us.
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _failIfMissing: keyof Parameters<T> extends keyof typeof parameters
+      ? true
+      : 'Some properties of Parameters<T> have not been specified' = true;
+
+    return parameters;
   }
 
   private static readSeed = <T>(p: Parameters<T>): number => {

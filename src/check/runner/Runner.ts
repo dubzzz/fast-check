@@ -13,7 +13,7 @@ import { RunnerIterator } from './RunnerIterator';
 import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
-import { throwIfFailed } from './utils/RunDetailsFormatter';
+import { reportRunDetails } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
 
@@ -99,7 +99,14 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
-  const qParams = QualifiedParameters.read({ ...readConfigureGlobal(), ...params });
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
+    ...readConfigureGlobal(),
+    ...params,
+  });
+  if (qParams.reporter !== null && qParams.asyncReporter !== null)
+    throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
+  if (qParams.asyncReporter !== null && rawProperty.isAsync())
+    throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 
@@ -109,13 +116,14 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
     ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
+        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips, qParams)
       )
     : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         qParams.numRuns,
-        maxSkips
+        maxSkips,
+        qParams
       );
 }
 
@@ -144,8 +152,8 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const out = check(property, params);
-  if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(throwIfFailed);
-  else throwIfFailed(out as RunDetails<Ts>);
+  if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(reportRunDetails);
+  else reportRunDetails(out as RunDetails<Ts>);
 }
 
 export { check, assert };

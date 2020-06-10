@@ -1,6 +1,7 @@
 import { RandomGenerator } from 'pure-rand';
 import { RandomType } from './RandomType';
 import { VerbosityLevel } from './VerbosityLevel';
+import { RunDetails } from '../reporter/RunDetails';
 
 /**
  * Customization of the parameters used to run the properties
@@ -112,4 +113,11 @@ export interface Parameters<T = void> {
    * it replays only the minimal counterexample.
    */
   endOnFailure?: boolean;
+
+  // TODO Default typings when T=void should be unknown
+  // Add note explaining that only one of them can be specified
+  // Add note explaining that specifying asyncReporter require users to use asyncProperty everywhere
+  // TODO ensure reporter is not asynchronous in typings
+  reporter?: (runDetails: RunDetails<T>) => void;
+  asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
 }
