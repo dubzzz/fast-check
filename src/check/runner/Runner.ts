@@ -109,13 +109,14 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
     ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips)
+        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips, qParams)
       )
     : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         qParams.numRuns,
-        maxSkips
+        maxSkips,
+        qParams
       );
 }
 

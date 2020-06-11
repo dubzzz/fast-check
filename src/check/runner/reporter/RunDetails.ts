@@ -1,5 +1,6 @@
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionTree } from './ExecutionTree';
+import { Parameters } from '../configuration/Parameters';
 
 /**
  * Post-run details produced by {@link check}
@@ -129,4 +130,11 @@ interface RunDetailsWithDoc<Ts> {
    * Verbosity level required by the user
    */
   verbose: VerbosityLevel;
+  /**
+   * Configuration of the run
+   *
+   * It includes both local parameters set on `fc.assert` or `fc.check`
+   * and global ones specified using `fc.configureGlobal`
+   */
+  runConfiguration: Parameters<Ts>;
 }
