@@ -31,7 +31,7 @@ _Add ability to customize reported errors_
 
 _Fix `constantFrom` not compatible with older versions of node_
 
-# Fixes
+## Fixes
 
 - ([PR#583](https://github.com/dubzzz/fast-check/pull/583)) Bug: `constantFrom` not compatible with old browsers
 - ([PR#569](https://github.com/dubzzz/fast-check/pull/569)) Clean: Prebuild to cjs extension 
