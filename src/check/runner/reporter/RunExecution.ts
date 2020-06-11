@@ -2,6 +2,7 @@ import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from './ExecutionStatus';
 import { ExecutionTree } from './ExecutionTree';
 import { RunDetails } from './RunDetails';
+import { QualifiedParameters } from '../configuration/QualifiedParameters';
 
 /**
  * @hidden
@@ -91,7 +92,13 @@ export class RunExecution<Ts> {
     return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
   };
 
-  toRunDetails(seed: number, basePath: string, numRuns: number, maxSkips: number): RunDetails<Ts> {
+  toRunDetails(
+    seed: number,
+    basePath: string,
+    numRuns: number,
+    maxSkips: number,
+    qParams: QualifiedParameters<Ts>
+  ): RunDetails<Ts> {
     if (!this.isSuccess()) {
       // encountered a property failure
       return {
@@ -114,6 +121,7 @@ export class RunExecution<Ts> {
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity,
+        runConfiguration: qParams.toParameters(),
       };
     }
 
@@ -144,6 +152,7 @@ export class RunExecution<Ts> {
       failures: [],
       executionSummary: this.rootExecutionTrees,
       verbose: this.verbosity,
+      runConfiguration: qParams.toParameters(),
     };
   }
 }

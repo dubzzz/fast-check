@@ -132,6 +132,7 @@ The details returned by `fc.check` are the following:
 ```typescript
 interface RunDetails<Ts> {
     failed: boolean;         // true in case of failure or too many skips, false otherwise
+    interrupted: boolean;    // true in case of interrupted run, false otherwise
     numRuns: number;         // number of runs (all runs if success, up and including the first failure if failed)
     numSkips: number;        // number of skipped entries due to failed pre-condition (before the first failure)
     numShrinks: number;      // number of shrinks (depth required to get the minimal failing example)
@@ -142,6 +143,10 @@ interface RunDetails<Ts> {
                                      // this value as to be set as path attribute in the Parameters (with the seed)
                                      // of assert, check, sample or even statistics
     error: string|null;      // failure only: stack trace and error details
+    failures: Ts[];          // verbose>=1 only: failures that have occurred during the run
+    executionSummary: ExecutionTree<Ts>[]; // verbose>=1 only: traces the origin of each value
+                                           // encountered during the test and its status
+    runConfiguration: Parameters<Ts>; // configuration of the run, it includes local and global paramaters
 }
 ```
 

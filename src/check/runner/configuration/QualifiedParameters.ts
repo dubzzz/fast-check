@@ -46,6 +46,26 @@ export class QualifiedParameters<T> {
     this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
   }
 
+  toParameters(): Parameters<T> {
+    const orUndefined = <V>(value: V | null) => (value !== null ? value : undefined);
+    return {
+      seed: this.seed,
+      randomType: this.randomType,
+      numRuns: this.numRuns,
+      maxSkipsPerRun: this.maxSkipsPerRun,
+      timeout: orUndefined(this.timeout),
+      skipAllAfterTimeLimit: orUndefined(this.skipAllAfterTimeLimit),
+      interruptAfterTimeLimit: orUndefined(this.interruptAfterTimeLimit),
+      markInterruptAsFailure: this.markInterruptAsFailure,
+      path: this.path,
+      logger: this.logger,
+      unbiased: this.unbiased,
+      verbose: this.verbose,
+      examples: this.examples,
+      endOnFailure: this.endOnFailure,
+    };
+  }
+
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
     if (p.seed == null) return Date.now() ^ (Math.random() * 0x100000000);
