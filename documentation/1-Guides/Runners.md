@@ -110,6 +110,17 @@ export interface Parameters<T = void> {
     interruptAfterTimeLimit?: number; // optional, interrupt test execution after a given time limit
                         // in milliseconds (relies on Date.now): disabled by default
     markInterruptAsFailure?: boolean; // optional, mark interrupted runs as failure: disabled by default
+    reporter?: (runDetails: RunDetails<T>) => void; // optional, custom reporter replacing the default one
+                        // reporter is responsible to throw in case of failure, as an example default one throws
+                        // whenever `runDetails.failed` is true but it is up to you
+                        // it cannot be used in conjonction with asyncReporter
+                        // it will be used by assert for both synchronous and asynchronous properties
+    asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>; // optional, custom reporter replacing the default one
+                        // reporter is responsible to throw in case of failure, as an example default one throws
+                        // whenever `runDetails.failed` is true but it is up to you
+                        // it cannot be used in conjonction with reporter
+                        // it cannot be set on synchronous properties
+                        // it will be used by assert for asynchronous properties
 }
 ```
 

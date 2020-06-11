@@ -113,11 +113,25 @@ export interface Parameters<T = void> {
    * it replays only the minimal counterexample.
    */
   endOnFailure?: boolean;
-
-  // TODO Default typings when T=void should be unknown
-  // Add note explaining that only one of them can be specified
-  // Add note explaining that specifying asyncReporter require users to use asyncProperty everywhere
-  // TODO ensure reporter is not asynchronous in typings
+  /**
+   * Replace the default reporter handling errors by a custom one
+   *
+   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
+   * But you may want to change this behaviour in yours.
+   *
+   * Only used when calling `fc.assert`
+   * Cannot be defined in conjonction with `asyncReporter`
+   */
   reporter?: (runDetails: RunDetails<T>) => void;
+  /**
+   * Replace the default reporter handling errors by a custom one
+   *
+   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
+   * But you may want to change this behaviour in yours.
+   *
+   * Only used when calling `fc.assert`
+   * Cannot be defined in conjonction with `reporter`
+   * Not compatible with synchronous properties: runner will throw
+   */
   asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
 }
