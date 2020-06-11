@@ -17,6 +17,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Setup global settings](#setup-global-settings)
 - [Avoid tests to reach the timeout of your test runner](#avoid-tests-to-reach-the-timeout-of-your-test-runner)
 - [Customize the reported error](#customize-the-reported-error)
+- [Create a CodeSandbox link on error](#create-a-codesandbox-link-on-error)
 - [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
 - [Supported targets from node to deno](#supported-targets-from-node-to-deno)
 
@@ -650,6 +651,56 @@ const myCustomAssert = (property, parameters) => {
   throwIfFailed(out);
 }
 ```
+
+## Create a CodeSandbox link on error
+
+_If you have not read about ways to customize the reporter used by `fc.assert` please refer to the section above._
+
+In some situations, it can be useful to directly publish a minimal reproduction of an issue in order to be able to play with it.
+Custom reporters can be used to provide such capabilities.
+
+For instance, you can automatically generate CodeSandbox environments in case of failed property with the snippet below:
+
+```javascript
+import { getParameters } from 'codesandbox/lib/api/define';
+
+const buildCodeSandboxReporter = (createFiles) => {
+  return function reporter(runDetails) {
+    if (!runDetails.failed) {
+      return;
+    }
+    const counterexample = runDetails.counterexample;
+    const originalErrorMessage = fc.defaultReportMessage(runDetails);
+    if (counterexample === undefined) {
+      throw new Error(originalErrorMessage);
+    }
+    const files = {
+      ...createFiles(counterexample),
+      'counterexample.js': {
+        content: `export const counterexample = ${fc.stringify(counterexample)}`
+      },
+      'report.txt': {
+        content: originalErrorMessage
+      }
+    }
+    const url = `https://codesandbox.io/api/v1/sandboxes/define?parameters=${getParameters({ files })}`;
+    throw new Error(`${originalErrorMessage}\n\nPlay with the failure here: ${url}`);
+  }
+}
+
+fc.assert(
+  fc.property(...),
+  {
+    reporter: buildCodeSandboxReporter(counterexample => ({
+      'index.js': {
+        content: 'console.log("Code to reproduce the issue")'
+      }
+    }))
+  }
+)
+```
+
+The official documentation explaining how to build CodeSandbox environments from an url is available here: https://codesandbox.io/docs/importing#get-request
 
 ## Migrate from jsverify to fast-check
 
