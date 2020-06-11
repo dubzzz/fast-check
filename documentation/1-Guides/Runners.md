@@ -121,9 +121,7 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters);
 
 **This function has to be awaited in case it is called on an asynchronous property.**
 
-It should never throw whatever the status of the test.
-
-It can be parametrized with the same parameters as `fc.assert`.
+Calling this function should never throw whatever the status of the test. It can be parametrized with the same parameters as `fc.assert`.
 
 ```typescript
 function check<Ts>(property: IProperty<Ts>, params?: Parameters);
@@ -155,6 +153,8 @@ Sub-types are available in TypeScript to distinguish between the different types
 | `RunDetailsFailureTooManySkips<Ts>` | too many pre-conditions failures | `true` | `false` | `null` | 
 | `RunDetailsFailureInterrupted<Ts>`  | execution took too long given `interruptAfterTimeLimit` | `true` | `true` | `null` | 
 | `RunDetailsSuccess<Ts>`             | successful run | `false` | `true`/`false` | `null` | 
+
+In case you want to base your report on what would have been the default output of fast-check, you can use `fc.defaultReportMessage(out: RunDetails<t>): string | undefined`. It builds the string corresponding to the error message that would have been used by `fc.assert` in case of failure and returns `undefined` if there is no failure.
 
 - `fc.sample`: sample generated values of an `Arbitrary<T>` or `Property<T>`
 

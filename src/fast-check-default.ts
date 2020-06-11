@@ -100,6 +100,7 @@ import {
   SchedulerSequenceItem,
   SchedulerReportItem,
 } from './check/arbitrary/AsyncSchedulerArbitrary';
+import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 const __type = '__PACKAGE_TYPE__' as string;
@@ -222,6 +223,7 @@ export {
   cloneMethod,
   // print values
   stringify,
+  defaultReportMessage,
   // interfaces
   Context,
   ExecutionStatus,
