@@ -1,6 +1,7 @@
 import prand, { RandomGenerator } from 'pure-rand';
 import { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
+import { RunDetails } from '../reporter/RunDetails';
 
 /**
  * @hidden
@@ -24,6 +25,8 @@ export class QualifiedParameters<T> {
   skipAllAfterTimeLimit: number | null;
   interruptAfterTimeLimit: number | null;
   markInterruptAsFailure: boolean;
+  reporter: ((runDetails: RunDetails<T>) => void) | null;
+  asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -44,6 +47,8 @@ export class QualifiedParameters<T> {
     this.unbiased = QualifiedParameters.readBoolean(p, 'unbiased');
     this.examples = QualifiedParameters.readOrDefault(p, 'examples', []);
     this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
+    this.reporter = QualifiedParameters.readOrDefault(p, 'reporter', null);
+    this.asyncReporter = QualifiedParameters.readOrDefault(p, 'asyncReporter', null);
   }
 
   toParameters(): Parameters<T> {
@@ -63,6 +68,8 @@ export class QualifiedParameters<T> {
       verbose: this.verbose,
       examples: this.examples,
       endOnFailure: this.endOnFailure,
+      reporter: orUndefined(this.reporter),
+      asyncReporter: orUndefined(this.asyncReporter),
     };
   }
 

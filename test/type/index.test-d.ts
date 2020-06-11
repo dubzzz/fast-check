@@ -5,6 +5,28 @@ import * as fc from 'fast-check';
 expectType<void>(fc.assert(fc.property(fc.nat(), () => {})));
 expectType<Promise<void>>(fc.assert(fc.asyncProperty(fc.nat(), async () => {})));
 
+// assert (beforeEach, afterEach)
+expectError(fc.assert(fc.property(fc.nat(), () => {}).beforeEach(async () => {})));
+expectError(fc.assert(fc.property(fc.nat(), () => {}).afterEach(async () => {})));
+
+// assert (reporter)
+expectType(
+  fc.assert(
+    fc.property(fc.nat(), fc.string(), () => {}),
+    {
+      reporter: (out: fc.RunDetails<[number, string]>) => {},
+    }
+  )
+);
+expectError(
+  fc.assert(
+    fc.property(fc.nat(), () => {}),
+    {
+      reporter: (out: fc.RunDetails<[string, string]>) => {},
+    }
+  )
+);
+
 // property
 expectType(fc.property(fc.nat(), (a) => {}) as fc.IProperty<[number]>);
 expectType(fc.property(fc.nat(), fc.string(), (a, b) => {}) as fc.IProperty<[number, string]>);
@@ -17,8 +39,6 @@ expectType(
   )
 );
 expectError(fc.property(fc.nat(), fc.string(), (a: number, b: number) => {}));
-expectError(fc.assert(fc.property(fc.nat(), () => {}).beforeEach(async () => {})));
-expectError(fc.assert(fc.property(fc.nat(), () => {}).afterEach(async () => {})));
 
 // asyncProperty
 expectType(fc.asyncProperty(fc.nat(), async (a) => {}) as fc.IAsyncProperty<[number]>);
@@ -110,3 +130,7 @@ expectType<fc.Arbitrary<number[]>>(fc.dedup(fc.nat(), 5)); // TODO Typings shoul
 // func arbitrary
 expectType<fc.Arbitrary<() => number>>(fc.func(fc.nat()));
 expectError(fc.func(1));
+
+// configureGlobal
+expectType(fc.configureGlobal({ reporter: (out: fc.RunDetails<unknown>) => {} }));
+expectError(fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} }));

@@ -31,7 +31,7 @@ function streamSample<Ts>(
     typeof params === 'number'
       ? { ...readConfigureGlobal(), numRuns: params }
       : { ...readConfigureGlobal(), ...params };
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read(extendedParams);
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
   );
@@ -94,7 +94,7 @@ function statistics<Ts>(
     typeof params === 'number'
       ? { ...readConfigureGlobal(), numRuns: params }
       : { ...readConfigureGlobal(), ...params };
-  const qParams = QualifiedParameters.read(extendedParams);
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const recorded: { [key: string]: number } = {};
   for (const g of streamSample(generator, params)) {
     const out = classify(g);

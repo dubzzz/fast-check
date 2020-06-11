@@ -153,4 +153,16 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
   throw new Error(defaultReportMessage(out));
 }
 
-export { defaultReportMessage, throwIfFailed };
+/**
+ * @hidden
+ * In case this code has to be executed synchronously the caller
+ * has to make sure that no asyncReporter has been defined
+ * otherwise it might trigger an unchecked promise
+ */
+function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+  if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);
+  else if (out.runConfiguration.reporter) return out.runConfiguration.reporter(out);
+  else return throwIfFailed(out);
+}
+
+export { defaultReportMessage, reportRunDetails };

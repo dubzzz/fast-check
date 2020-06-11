@@ -1,6 +1,7 @@
 import { RandomGenerator } from 'pure-rand';
 import { RandomType } from './RandomType';
 import { VerbosityLevel } from './VerbosityLevel';
+import { RunDetails } from '../reporter/RunDetails';
 
 /**
  * Customization of the parameters used to run the properties
@@ -112,4 +113,25 @@ export interface Parameters<T = void> {
    * it replays only the minimal counterexample.
    */
   endOnFailure?: boolean;
+  /**
+   * Replace the default reporter handling errors by a custom one
+   *
+   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
+   * But you may want to change this behaviour in yours.
+   *
+   * Only used when calling `fc.assert`
+   * Cannot be defined in conjonction with `asyncReporter`
+   */
+  reporter?: (runDetails: RunDetails<T>) => void;
+  /**
+   * Replace the default reporter handling errors by a custom one
+   *
+   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
+   * But you may want to change this behaviour in yours.
+   *
+   * Only used when calling `fc.assert`
+   * Cannot be defined in conjonction with `reporter`
+   * Not compatible with synchronous properties: runner will throw
+   */
+  asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
 }
