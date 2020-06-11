@@ -30,11 +30,11 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
     remainingTreesAndDepth.push({ depth: 1, tree });
   }
   while (remainingTreesAndDepth.length !== 0) {
-    const currentTreeAndDepth = remainingTreesAndDepth.pop();
+    const currentTreeAndDepth = remainingTreesAndDepth.pop()!;
 
     // format current tree according to its depth
-    const currentTree = currentTreeAndDepth!.tree;
-    const currentDepth = currentTreeAndDepth!.depth;
+    const currentTree = currentTreeAndDepth.tree;
+    const currentDepth = currentTreeAndDepth.depth;
     const statusIcon =
       currentTree.status === ExecutionStatus.Success
         ? '\x1b[32m\u221A\x1b[0m'
@@ -110,8 +110,28 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
   return { message, details, hints };
 }
 
-/** @hidden */
-function throwIfFailed<Ts>(out: RunDetails<Ts>) {
+/**
+ * Format output of `fc.check` using the default error reporting of `fc.assert`
+ *
+ * Produce a string containing the formated error in case of failed run,
+ * undefined otherwise.
+ */
+function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
+/**
+ * Format output of `fc.check` using the default error reporting of `fc.assert`
+ *
+ * Produce a string containing the formated error in case of failed run,
+ * undefined otherwise.
+ */
+function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
+/**
+ * Format output of `fc.check` using the default error reporting of `fc.assert`
+ *
+ * Produce a string containing the formated error in case of failed run,
+ * undefined otherwise.
+ */
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined;
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined {
   if (!out.failed) return;
 
   const { message, details, hints } =
@@ -124,7 +144,13 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>) {
   let errorMessage = message;
   if (details != null) errorMessage += `\n\n${details}`;
   if (hints.length > 0) errorMessage += `\n\n${formatHints(hints)}`;
-  throw new Error(errorMessage);
+  return errorMessage;
 }
 
-export { throwIfFailed };
+/** @hidden */
+function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
+  if (!out.failed) return;
+  throw new Error(defaultReportMessage(out));
+}
+
+export { defaultReportMessage, throwIfFailed };
