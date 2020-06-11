@@ -1,3 +1,32 @@
+# 1.25.0
+
+_Add ability to customize reported errors_
+
+## Features
+
+- ([PR#622](https://github.com/dubzzz/fast-check/pull/622)) Add the ability to provide a custom reporter
+- ([PR#623](https://github.com/dubzzz/fast-check/pull/623)) Report the configuration, that has been used, in `RunDetails`
+- ([PR#621](https://github.com/dubzzz/fast-check/pull/621)) Expose `fc.defaultReportMessage`
+- ([PR#607](https://github.com/dubzzz/fast-check/pull/607)) Better typings for `fc.object` and `fc.dictionnary` :warning:
+- ([PR#600](https://github.com/dubzzz/fast-check/pull/600)) Better typings for `RunDetails` :warning:
+- ([PR#604](https://github.com/dubzzz/fast-check/pull/604)) Introduce a report method on the scheduler
+- ([PR#588](https://github.com/dubzzz/fast-check/pull/588)) Easier replay of failing scheduler
+
+## Fixes
+
+- ([PR#609](https://github.com/dubzzz/fast-check/pull/609)) Clean: Generated typings where causing the doc generation to crash
+- ([PR#608](https://github.com/dubzzz/fast-check/pull/608)) Doc: Fix markdown section
+- ([PR#602](https://github.com/dubzzz/fast-check/pull/602)) Test: Check compatibility with node 12.x and >= 12.18
+- ([PR#599](https://github.com/dubzzz/fast-check/pull/599)) Doc: Document how to use fast-check in web using pika
+- ([PR#596](https://github.com/dubzzz/fast-check/pull/596)) Clean: Clean examples based on getByRole
+- ([PR#585](https://github.com/dubzzz/fast-check/pull/585)) Doc: Update README with Credits section
+- ([PR#594](https://github.com/dubzzz/fast-check/pull/594)) Clean: Add missing `"private": true` on package.json used for tests
+- ([PR#592](https://github.com/dubzzz/fast-check/pull/592)) Clean: Update travis configuration to use Node 14
+- ([PR#587](https://github.com/dubzzz/fast-check/pull/587)) Test: Check package can be properly imported
+- ([PR#586](https://github.com/dubzzz/fast-check/pull/586)) Clean: Rename build scripts to cjs
+
+---
+
 # 1.24.2
 
 _Fix `constantFrom` not compatible with older versions of node_
