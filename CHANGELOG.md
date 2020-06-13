@@ -1,3 +1,11 @@
+# 1.25.1
+
+_Scheduler was not putting the metadata into the generated report_
+
+## Fixes
+
+- ([PR#625](https://github.com/dubzzz/fast-check/pull/625)) Bug: Scheduler forgets to pass the metadata when calling report
+
 # 1.25.0
 
 _Add ability to customize reported errors_
