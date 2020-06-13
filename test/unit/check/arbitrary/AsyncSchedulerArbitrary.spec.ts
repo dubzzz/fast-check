@@ -355,6 +355,39 @@ describe('AsyncSchedulerArbitrary', () => {
         // Assert
         expect(then1Function.mock.calls).toEqual(then2Function.mock.calls);
       });
+
+      it('Should attach passed metadata into the report', async () => {
+        // Arrange
+        const expectedMetadata = Symbol('123');
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        s.schedule(Promise.resolve(), 'label', expectedMetadata);
+
+        // Assert
+        await s.waitAll();
+        const report = s.report();
+        expect(report).toHaveLength(1);
+        expect(report[0].status).toBe('resolved');
+        expect(report[0].metadata).toBe(expectedMetadata);
+      });
+
+      it('Should attach passed metadata into the report even if not executed', async () => {
+        // Arrange
+        const expectedMetadata = Symbol('123');
+
+        // Act
+        const mrng = stubRng.mutable.counter(42);
+        const s = scheduler().generate(mrng).value;
+        s.schedule(Promise.resolve(), 'label', expectedMetadata);
+
+        // Assert
+        const report = s.report();
+        expect(report).toHaveLength(1);
+        expect(report[0].status).toBe('pending');
+        expect(report[0].metadata).toBe(expectedMetadata);
+      });
     });
 
     describe('scheduleFunction', () => {
@@ -786,6 +819,49 @@ describe('AsyncSchedulerArbitrary', () => {
         }
         expect(taskResolvedValue).toEqual({ done: false, faulty: true });
       });
+    });
+
+    it('Should attach passed metadata into the report', async () => {
+      // Arrange
+      const expectedMetadataFirst = Symbol('123');
+      const expectedMetadataSecond = Symbol('1234');
+
+      // Act
+      const mrng = stubRng.mutable.counter(42);
+      const s = scheduler().generate(mrng).value;
+      s.scheduleSequence([
+        { builder: () => Promise.resolve(42), label: 'firstStep', metadata: expectedMetadataFirst },
+        { builder: () => Promise.reject(8), label: 'secondStep', metadata: expectedMetadataSecond },
+      ]);
+
+      // Assert
+      await s.waitAll();
+      const report = s.report();
+      expect(report).toHaveLength(2);
+      expect(report[0].status).toBe('resolved');
+      expect(report[0].metadata).toBe(expectedMetadataFirst);
+      expect(report[1].status).toBe('rejected');
+      expect(report[1].metadata).toBe(expectedMetadataSecond);
+    });
+
+    it('Should attach passed metadata into the report even if not executed', async () => {
+      // Arrange
+      const expectedMetadataFirst = Symbol('123');
+      const expectedMetadataSecond = Symbol('1234');
+
+      // Act
+      const mrng = stubRng.mutable.counter(42);
+      const s = scheduler().generate(mrng).value;
+      s.scheduleSequence([
+        { builder: () => Promise.resolve(42), label: 'firstStep', metadata: expectedMetadataFirst },
+        { builder: () => Promise.reject(8), label: 'secondStep', metadata: expectedMetadataSecond },
+      ]);
+
+      // Assert
+      const report = s.report();
+      expect(report).toHaveLength(1); // second task cannot be scheduled as first one is still pending
+      expect(report[0].status).toBe('pending');
+      expect(report[0].metadata).toBe(expectedMetadataFirst);
     });
   });
   describe('schedulerFor', () => {

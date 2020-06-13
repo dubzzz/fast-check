@@ -156,6 +156,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     schedulingType: 'promise' | 'function' | 'sequence',
     taskId: number,
     label: string,
+    metadata: TMetaData | undefined,
     status: 'resolved' | 'rejected',
     data: unknown
   ) {
@@ -164,6 +165,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       schedulingType,
       taskId,
       label,
+      metadata,
       outputValue: data !== undefined ? stringify(data) : undefined,
     });
   }
@@ -181,11 +183,11 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       trigger = () => {
         (thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task).then(
           (data) => {
-            this.log(schedulingType, taskId, label, 'resolved', data);
+            this.log(schedulingType, taskId, label, metadata, 'resolved', data);
             return resolve(data);
           },
           (err) => {
-            this.log(schedulingType, taskId, label, 'rejected', err);
+            this.log(schedulingType, taskId, label, metadata, 'rejected', err);
             return reject(err);
           }
         );
@@ -198,6 +200,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       schedulingType,
       taskId,
       label,
+      metadata,
     });
     return scheduledPromise;
   }
@@ -303,6 +306,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           schedulingType: t.schedulingType,
           taskId: t.taskId,
           label: t.label,
+          metadata: t.metadata,
         })
       ),
     ];
