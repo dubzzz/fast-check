@@ -172,7 +172,10 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     expect(outRetry.failed).toBe(true);
     expect(outRetry.numRuns).toBe(1);
 
-    expect(outRetry.error).toBe(out.error);
+    const cleanError = (error: string) => {
+      return error.replace(/AsyncScheduler\.spec\.ts:\d+:\d+/g, 'AsyncScheduler.spec.ts:*:*');
+    };
+    expect(cleanError(outRetry.error!)).toBe(cleanError(out.error!));
     expect(String(outRetry.counterexample![0])).toBe(String(out.counterexample![0]));
   });
 });
