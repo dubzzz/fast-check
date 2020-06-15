@@ -12,6 +12,7 @@ You can refer to the [generated API docs](https://dubzzz.github.io/fast-check/#/
 - [Numeric](#numeric-number)
 - [String](#string-string)
 - [Date](#date-date)
+- [Falsy](#falsy-any)
 - [Combinators](#combinators-t)
 - [Objects](#objects-any)
 - [Recursive structures](#recursive-structures)
@@ -106,6 +107,10 @@ More specific strings:
 ## Date (:Date)
 
 - `fc.date()` or `fc.date({min?: Date, max?: Date})` any date between new Date(-8640000000000000) or min (included) to new Date(8640000000000000) or max (included)
+
+## Falsy (:any)
+
+- `fc.falsy()` one of `false`, `null`, `undefined`, `0`, `''`, or `Number.NaN`
 
 ## Combinators (:T)
 
