@@ -159,10 +159,10 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
  * has to make sure that no asyncReporter has been defined
  * otherwise it might trigger an unchecked promise
  */
-function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);
   else if (out.runConfiguration.reporter) return out.runConfiguration.reporter(out);
   else return throwIfFailed(out);
 }
 
-export { defaultReportMessage, reportRunDetails };
+export { defaultReportMessage };

@@ -1,7 +1,10 @@
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { ICommand } from '../command/ICommand';
 
-/** @internal */
+/**
+ * Wrapper around commands used internally by fast-check to wrap existing commands
+ * in order to add them a flag to know whether or not they already have been executed
+ */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean>
   implements ICommand<Model, Real, RunResult, CheckAsync> {
