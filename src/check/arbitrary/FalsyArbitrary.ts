@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 import { constantFrom } from './ConstantArbitrary';
 
-type FalsyType = boolean | null | number | string | typeof NaN | undefined;
+type FalsyType = false | null | 0 | '' | typeof NaN | undefined;
 
 /**
  * For falsy values:
