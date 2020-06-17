@@ -39,10 +39,11 @@ jobs:
         - yarn format:check
         - yarn lint:check
     - stage: test
-      env: STEP=EXAMPLES_ROLLUP_LEGACY_TYPES
+      env: STEP=EXAMPLES_ROLLUP_LEGACY_TYPES_DOCS
       script:
         - PROJECT_ROOT_PATH="$(pwd)"
         - yarn build:prod
+        - yarn docs
         - yarn link
         - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
