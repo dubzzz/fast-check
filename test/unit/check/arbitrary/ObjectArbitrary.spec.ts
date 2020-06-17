@@ -136,7 +136,7 @@ describe('ObjectArbitrary', () => {
           assertShrinkedValue(originalValue, shrinkable.value);
         })
       ));
-    const checkProduce = (settings: ObjectConstraints.Settings, f: (v: any) => boolean) => {
+    const checkProduce = (settings: ObjectConstraints, f: (v: any) => boolean) => {
       let numRuns = 0;
       const seed = 0;
       const mrng = new Random(prand.xorshift128plus(seed));
