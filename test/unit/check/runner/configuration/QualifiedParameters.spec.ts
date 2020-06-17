@@ -16,15 +16,19 @@ const parametersArbitrary = fc.record(
       prand.xoroshiro128plus
     ),
     numRuns: fc.nat(),
+    maxSkipsPerRun: fc.nat(),
     timeout: fc.nat(),
+    skipAllAfterTimeLimit: fc.nat(),
+    interruptAfterTimeLimit: fc.nat(),
+    markInterruptAsFailure: fc.boolean(),
     path: fc.array(fc.nat()).map((arr) => arr.join(':')),
+    logger: fc.func(fc.constant(undefined)),
     unbiased: fc.boolean(),
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),
-    skipAllAfterTimeLimit: fc.nat(),
-    interruptAfterTimeLimit: fc.nat(),
-    markInterruptAsFailure: fc.boolean(),
+    reporter: fc.func(fc.constant(undefined)),
+    asyncReporter: fc.func(fc.constant(Promise.resolve(undefined))),
   },
   { withDeletedKeys: true }
 );
