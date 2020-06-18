@@ -17,7 +17,7 @@ import { tuple } from './TupleArbitrary';
 /**
  * Constraints for `fc.anything` and `fc.object`
  */
-export interface ObjectConstraints = {
+export type ObjectConstraints = {
   /** Maximal depth allowed */
   maxDepth?: number;
   /** Maximal number of keys */
