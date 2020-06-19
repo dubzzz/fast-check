@@ -61,7 +61,7 @@ export type ObjectConstraints = {
   withObjectString?: boolean;
   /** Also generate object with null prototype */
   withNullPrototype?: boolean;
-}
+};
 
 /**
  * @internal
