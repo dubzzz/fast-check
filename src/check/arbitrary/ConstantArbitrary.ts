@@ -53,14 +53,14 @@ function clonedConstant<T>(value: T): Arbitrary<T> {
  *
  * @param values Constant values to be produced (all values shrink to the first one)
  */
-function constantFrom<T>(...values: T[]): Arbitrary<T> {
+function constantFrom<TArgs extends any[] | [any]>(...values: TArgs): Arbitrary<TArgs[number]> {
   if (values.length === 0) {
     throw new Error('fc.constantFrom expects at least one parameter');
   }
   if (findOrUndefined(values, (v) => hasCloneMethod(v)) != undefined) {
     throw new Error('fc.constantFrom does not accept cloneable values, not supported for the moment');
   }
-  return new ConstantArbitrary<T>([...values]);
+  return new ConstantArbitrary<TArgs[number]>([...values]);
 }
 
 export { clonedConstant, constant, constantFrom };
