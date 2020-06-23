@@ -34,8 +34,8 @@ export type FalsyType<TConstraints extends FalsyContraints = {}> =
  * @param constraints
  */
 function falsy<TConstraints extends FalsyContraints>(constraints?: TConstraints): Arbitrary<FalsyType<TConstraints>> {
-  if (!constraints || !constraints.withBigInt) return constantFrom<FalsyType>(false, null, undefined, 0, '', NaN);
-  else return constantFrom<FalsyType<TConstraints>>(false, null, undefined, 0, '', NaN, BigInt(0) as any);
+  if (!constraints || !constraints.withBigInt) return constantFrom<FalsyType[]>(false, null, undefined, 0, '', NaN);
+  else return constantFrom<FalsyType<TConstraints>[]>(false, null, undefined, 0, '', NaN, BigInt(0) as any);
 }
 
 export { falsy };
