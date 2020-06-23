@@ -62,6 +62,12 @@ expectType<fc.Arbitrary<string[]>>(fc.nat().chain((n) => fc.array(fc.char(), 0, 
 expectType<fc.Arbitrary<number>>(fc.option(fc.nat()).filter((n): n is number => n !== null));
 expectType<fc.Arbitrary<string>>(fc.nat().map((n) => String(n)));
 
+// constantFrom arbitrary
+expectType<fc.Arbitrary<number>>(fc.constantFrom(1, 2));
+expectType<fc.Arbitrary<1 | 2>>(fc.constantFrom(...([1, 2] as const)));
+expectType<fc.Arbitrary<number | string>>(fc.constantFrom(1, 2, 'hello'));
+expectType<fc.Arbitrary<1 | 2 | 'hello'>>(fc.constantFrom(...([1, 2, 'hello'] as const)));
+
 // record arbitrary
 expectType<fc.Arbitrary<{ a: number; b: string }>>(fc.record({ a: fc.nat(), b: fc.string() }));
 expectType<fc.Arbitrary<{ a?: number; b?: string }>>(
