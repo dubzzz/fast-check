@@ -15,7 +15,61 @@ import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
 
-export class ObjectConstraints {
+/**
+ * Constraints for `fc.anything` and `fc.object`
+ */
+export type ObjectConstraints = {
+  /** Maximal depth allowed */
+  maxDepth?: number;
+  /** Maximal number of keys */
+  maxKeys?: number;
+  /**
+   * Arbitrary for keys
+   *
+   * Default for `key` is: `fc.string()`
+   */
+  key?: Arbitrary<string>;
+  /**
+   * Arbitrary for values
+   *
+   * Default for `values` are:
+   * - `fc.boolean()`,
+   * - `fc.integer()`,
+   * - `fc.double()`,
+   * - `fc.string()`
+   * - constants among:
+   *  - `null`,
+   *  - `undefined`,
+   *  - `Number.NaN`,
+   *  - `+0`,
+   *  - `-0`,
+   *  - `Number.EPSILON`,
+   *  - `Number.MIN_VALUE`,
+   *  - `Number.MAX_VALUE`,
+   *  - `Number.MIN_SAFE_INTEGER`,
+   *  - `Number.MAX_SAFE_INTEGER`,
+   *  - `Number.POSITIVE_INFINITY`,
+   *  - `Number.NEGATIVE_INFINITY`
+   */
+  values?: Arbitrary<unknown>[];
+  /** Also generate boxed versions of values */
+  withBoxedValues?: boolean;
+  /** Also generate Set */
+  withSet?: boolean;
+  /** Also generate Map */
+  withMap?: boolean;
+  /** Also generate string representations of object instances */
+  withObjectString?: boolean;
+  /** Also generate object with null prototype */
+  withNullPrototype?: boolean;
+  /** Also generate BigInt */
+  withBigInt?: boolean;
+};
+
+/**
+ * @internal
+ */
+class QualifiedObjectConstraints {
   constructor(
     readonly key: Arbitrary<string>,
     readonly values: Arbitrary<unknown>[],
@@ -29,7 +83,7 @@ export class ObjectConstraints {
   ) {}
 
   /**
-   * Default value of ObjectConstraints.Settings.values field
+   * Default value of ObjectConstraints.values field
    */
   static defaultValues(): Arbitrary<unknown>[] {
     return [
@@ -54,7 +108,6 @@ export class ObjectConstraints {
     ];
   }
 
-  /** @internal */
   private static boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
     return arbs.map((arb) =>
       arb.map((v) => {
@@ -75,19 +128,18 @@ export class ObjectConstraints {
     );
   }
 
-  /** @internal */
   private static boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
-    return boxEnabled ? ObjectConstraints.boxArbitraries(arbs).concat(arbs) : arbs;
+    return boxEnabled ? QualifiedObjectConstraints.boxArbitraries(arbs).concat(arbs) : arbs;
   }
 
-  static from(settings?: ObjectConstraints.Settings): ObjectConstraints {
+  static from(settings?: ObjectConstraints): QualifiedObjectConstraints {
     function getOr<T>(access: () => T | undefined, value: T): T {
       return settings != null && access() != null ? access()! : value;
     }
-    return new ObjectConstraints(
+    return new QualifiedObjectConstraints(
       getOr(() => settings!.key, string()),
-      ObjectConstraints.boxArbitrariesIfNeeded(
-        getOr(() => settings!.values, ObjectConstraints.defaultValues()),
+      QualifiedObjectConstraints.boxArbitrariesIfNeeded(
+        getOr(() => settings!.values, QualifiedObjectConstraints.defaultValues()),
         getOr(() => settings!.withBoxedValues, false)
       ),
       getOr(() => settings!.maxDepth, 2),
@@ -101,59 +153,8 @@ export class ObjectConstraints {
   }
 }
 
-export namespace ObjectConstraints {
-  /** Constraints to be applied during object generation */
-  export interface Settings {
-    /** Maximal depth allowed */
-    maxDepth?: number;
-    /** Maximal number of keys */
-    maxKeys?: number;
-    /**
-     * Arbitrary for keys
-     *
-     * Default for `key` is: `fc.string()`
-     */
-    key?: Arbitrary<string>;
-    /**
-     * Arbitrary for values
-     *
-     * Default for `values` are:
-     * - `fc.boolean()`,
-     * - `fc.integer()`,
-     * - `fc.double()`,
-     * - `fc.string()`
-     * - constants among:
-     *  - `null`,
-     *  - `undefined`,
-     *  - `Number.NaN`,
-     *  - `+0`,
-     *  - `-0`,
-     *  - `Number.EPSILON`,
-     *  - `Number.MIN_VALUE`,
-     *  - `Number.MAX_VALUE`,
-     *  - `Number.MIN_SAFE_INTEGER`,
-     *  - `Number.MAX_SAFE_INTEGER`,
-     *  - `Number.POSITIVE_INFINITY`,
-     *  - `Number.NEGATIVE_INFINITY`
-     */
-    values?: Arbitrary<unknown>[];
-    /** Also generate boxed versions of values */
-    withBoxedValues?: boolean;
-    /** Also generate Set */
-    withSet?: boolean;
-    /** Also generate Map */
-    withMap?: boolean;
-    /** Also generate string representations of object instances */
-    withObjectString?: boolean;
-    /** Also generate object with null prototype */
-    withNullPrototype?: boolean;
-    /** Also generate BigInt */
-    withBigInt?: boolean;
-  }
-}
-
 /** @internal */
-const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> => {
+const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<unknown> => {
   const arbKeys = constraints.withObjectString
     ? memo((n) =>
         frequency(
@@ -212,7 +213,7 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
 };
 
 /** @internal */
-const objectInternal = (constraints: ObjectConstraints): Arbitrary<Record<string, unknown>> => {
+const objectInternal = (constraints: QualifiedObjectConstraints): Arbitrary<Record<string, unknown>> => {
   return dictionary(constraints.key, anythingInternal(constraints));
 };
 
@@ -248,11 +249,11 @@ function anything(): Arbitrary<unknown>;
  * // - [42,42,42]...
  * ```
  *
- * @param settings - Constraints to apply when building instances
+ * @param constraints - Constraints to apply when building instances
  */
-function anything(settings: ObjectConstraints.Settings): Arbitrary<unknown>;
-function anything(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
-  return anythingInternal(ObjectConstraints.from(settings));
+function anything(constraints: ObjectConstraints): Arbitrary<unknown>;
+function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
+  return anythingInternal(QualifiedObjectConstraints.from(constraints));
 }
 
 /**
@@ -272,11 +273,11 @@ function object(): Arbitrary<Record<string, unknown>>;
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  *
- * @param settings - Constraints to apply when building instances
+ * @param constraints - Constraints to apply when building instances
  */
-function object(settings: ObjectConstraints.Settings): Arbitrary<Record<string, unknown>>;
-function object(settings?: ObjectConstraints.Settings): Arbitrary<Record<string, unknown>> {
-  return objectInternal(ObjectConstraints.from(settings));
+function object(constraints: ObjectConstraints): Arbitrary<Record<string, unknown>>;
+function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unknown>> {
+  return objectInternal(QualifiedObjectConstraints.from(constraints));
 }
 
 /** @internal */
