@@ -461,8 +461,8 @@ miniFc.string = () => map(
     characters => characters.join(''),
     s => s.split('')
 )
-miniFc.dictionary = () => map(
-    miniFc.array(miniFc.tuple(miniFc.string(), miniFc.string())),
+miniFc.dictionary = (valueGenerator) => map(
+    miniFc.array(miniFc.tuple(miniFc.string(), valueGenerator)),
     Object.fromEntries,
     Object.entries,
 )
@@ -470,7 +470,7 @@ miniFc.dictionary = () => map(
 // > [...miniFc.boolean().shrink(true)]
 // > [...miniFc.character().shrink("h")]
 // > [...miniFc.string().shrink("hello")]
-// > [...miniFc.dictionary().shrink({"hello": "world"})]
+// > [...miniFc.dictionary(miniFc.string()).shrink({"hello": "world"})]
 ```
 
 ## Runner with shrink
