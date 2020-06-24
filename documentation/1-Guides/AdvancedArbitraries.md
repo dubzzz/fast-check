@@ -63,7 +63,7 @@ Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/mas
 
 `chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U>` (aka flatMap) It takes one entry from an Arbitrary and uses it to create a new Arbitrary based on that value.
 
-:warning: Be aware that the shrinker of such construct might not be able to shrink as much as possible
+:warning: Be aware that the shrinker of such construct might not be able to shrink as much as possible (more details on [this](https://github.com/dubzzz/fast-check/issues/650#issuecomment-648397230))
 
 For example you can create arbitraries based on generated values:
 
