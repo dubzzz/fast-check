@@ -308,7 +308,7 @@ miniFc.integer = (min, max) => {
 
 Let's now consider our next root generators: the one for tuples and the one for arrays.
 
-As tuples is simpler let's consider it first. As described in the diagram below a possible way to implement it on tuples is basically to shrink on the first item only, then shrink on the second item only and so on and so forth.
+As tuples is simpler let's consider it first. As described in the diagram below a possible way to implement shrink on tuples is to shrink on the first item only, then on the second one only and so on and so forth.
 
 ![Shrinking a tuple with an example](./images/shrinker-tuple.png)
 
@@ -335,9 +335,147 @@ miniFc.tuple = (...itemGenerators) => {
 // > [...miniFc.tuple(miniFc.integer(0, 100), miniFc.integer(0, 100), miniFc.integer(0, 100)).shrink([4, 3, 4])]
 ```
 
+Concerning arrays, the algorithm needs to shrink on two dimensions:
+- the size of the array
+- the content of the array
+
+When impacting the size, it should not only cover the cases in which we keep the N first items. It should also consider cases in which last item is required to reproduce the failure while the first ones can be partially removed.
+
+For instance, if we consider an algorithm that fails whenever an array contains twice the same item. If it first failed on `[4, 1, 2, 1, 3]` shrinker will have to be able to remove one item at the beginning, one at the middle and one at the end in order to converge towards the minimal case `[1, 1]`.
+
+Shrinking strategy on arrays is divided into three different steps.
+
+1. As most of the time, smaller arrays are simpler to understand, the first step will focus on reducing the size of the array and preserving only the N last items
+2. As for tuples, arrays are made of values and shrinking them might also simplify investigations. The second step shrink the first element and concatenate it to the remaining ones (not impacted).
+3. We keep the first item as is and apply recursively 1. and 2. on the tail of the array.
+
+Let's apply this logic onto our example `[4, 1, 2, 1, 3]`:
+- `[2, 1, 3]` (due to 1.)
+- `[1, 2, 1, 3]` (due to 1.)
+- `[2, 1, 2, 1, 3]` (due to 2.)
+- `[1, 1, 2, 1, 3]` (due to 2.)
+- `[0, 1, 2, 1, 3]` (due to 2.)
+- `[4, 1, 3]` = `[4] :: [1, 3]` (due to 3.1.)
+- `[4, 2, 1, 3]` = `[4] :: [2, 1, 3]` (due to 3.1.)
+- `[4, 0, 2, 1, 3]` = `[4] :: [0, 2, 1, 3]` (due to 3.2.)
+- ...
+
+We can adapt our implementation of array to to support shrinking as follow:
+
+```js
+miniFc.array = (itemGenerator) => {
+    return {
+        generate(mrng) {
+            const size = mrng.next(0, 10);
+            const content = [];
+            for (let index = 0 ; index !== size ; ++index) {
+                content.push(itemGenerator.generate(mrng));
+            }
+            return content;
+        },
+        *shrink(value) {
+            // No shrink on empty arrays
+            if (value.length === 0) {
+                return;
+            }
+            // Step 1. Shrink on size first by keeping last items
+            let removedSize = Math.floor(value.length / 2);
+            while (removedSize > 0) {
+                yield value.slice(removedSize);
+                removedSize = Math.floor(removedSize / 2);
+            }
+            // Step 2. Shrink the first item alone
+            for (const shrunkItemValue of itemGenerator.shrink(value[0])) {
+                yield [shrunkItemValue, ...value.slice(1)];
+            }
+            // Step 3. Keep first item untouched
+            for (const shrunkValue of this.shrink(value.slice(1))) {
+                yield [value[0], ...shrunkValue];
+            }
+        }
+    }
+}
+// You can check the output by calling:
+// > [...miniFc.array(miniFc.integer(0, 100)).shrink([4, 1, 2, 1, 3])]
+```
+
+Now that all our root generators have been covered let's adapt the generators based on them. When defined those derived generators we introduced a `map` function to help us in our task.
+
+Generator for characters has been defined as follow:
+```js
+miniFc.character = () => map(
+    miniFc.integer(0, 25),
+    n => String.fromCharCode(97 + n)
+)
+```
+
+As it generates `string` (of a single character), shrinker will consume `string` and produce smaller `string`. But how can `map` know how to convert the `string` received as input of the shrinker to passe it the shrinker of mapped generator (or `miniFc.integer(0, 25)` in our case)?
+
+Actually if we wanted to define the shrinker function for `miniFc.character` we would have written something like:
+```js
+const shrinker = (character) => {
+    const derivedGenerator = miniFc.integer(0, 25);
+    const initialValue = character.codePointAt(0) - 97;
+    for (const shrunkValue of derivedGenerator.shrink(initialValue)) {
+        yield String.fromCharCode(97 + shrunkValue);
+    }
+}
+```
+
+In other words, it means that mapping a generator to derive it requires the user to declare two helper functions:
+- one to map - _eg.: from integer to character in our example_
+- another one to unmap - _eg.: from character to integer in our example_
+
+With that in mind, `map` can be changed into:
+
+```js
+const map = (g, mapper, unmapper) => {
+    return {
+        generate(mrng) {
+            return mapper(g.generate(mrng));
+        },
+        *shrink(value) {
+            for (const shrunkValue of g.shrink(unmapper(value))) {
+                yield mapper(shrunkValue);
+            }
+        }
+    };
+};
+```
+
+And all our derived generators can be adapted to add support for shrink:
+
+```js
+miniFc.boolean = () => map(
+    miniFc.integer(0, 1),
+    Boolean,
+    b => b ? 1 : 0,
+)
+miniFc.character = () => map(
+    miniFc.integer(0, 25),
+    n => String.fromCharCode(97 + n),
+    c => c.codePointAt(0) - 97,
+)
+miniFc.string = () => map(
+    miniFc.array(miniFc.character()),
+    characters => characters.join(''),
+    s => s.split('')
+)
+miniFc.dictionary = () => map(
+    miniFc.array(miniFc.tuple(miniFc.string(), miniFc.string())),
+    Object.fromEntries,
+    Object.entries,
+)
+
+// > [...miniFc.boolean().shrink(true)]
+// > [...miniFc.character().shrink("h")]
+// > [...miniFc.string().shrink("hello")]
+// > [...miniFc.dictionary().shrink({"hello": "world"})]
+```
+
 ## Runner with shrink
 
-## Arbitrarties
+## Arbitraries
 
 While our current shape for `Generator` seems to be able to deal with many kind of values it implies two major difficulties:
 
