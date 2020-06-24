@@ -127,6 +127,8 @@ For `fc.array`:
   - remaining: full range array with biased values
 - remaining: the full range arbitrary
 
+Some more details on how `withBias` works can befound [here](https://github.com/dubzzz/fast-check/issues/644).
+
 ### Shrinking
 
 A basic way to implement a property based testing framework is to define arbitraries with the following structure:
