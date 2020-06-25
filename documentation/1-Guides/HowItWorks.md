@@ -475,6 +475,66 @@ miniFc.dictionary = (valueGenerator) => map(
 
 ## Runner with shrink
 
+At this point, our runner is not using shrinker capabilities we introduced in previous part.
+
+Shrinkers have been introduced in an attempt to find the smallest failing case.
+They achieve one main purpose: given one value they compute strictly smaller ones.
+
+From a runner perspective, in order to get the smallest possible failing case we want to shrink as soon as we find an issue.
+So we generate values and run the predicate on it and as soon as we find an issue we take this value and shrint it.
+Moreover while iterating over those shrunk entries we might find another one that will fail, we shrink it and iterate over it until we cannot find smaller bugs.
+
+The process is summarized into the diagram below:
+
+![Shrinking from a runner point of view](./images/shrink-runner.png)
+
+In terms of code, we can adapt our `miniFc.assert` as follow:
+
+```js
+miniFc.property = (generator, predicate) => {
+    return {
+        generate(mrng) {
+            return generator.generate(mrng);
+        },
+        shrink(value) {
+            return generator.shrink(value);
+        },
+        run(valueUnderTest) {
+            return predicate(valueUnderTest);
+        }
+    }
+}
+
+function executeAndShrink(valueUnderTest, property) {
+    if (!property.run(valueUnderTest)) {
+        for (const shrunkValue of property.shrink(valueUnderTest)) {
+            const shrunkResults = executeAndShrink(shrunkValue, property);
+            if (shrunkResults.failed) {
+                return shrunkResults;
+            }
+        }
+        return { failed: true, value: valueUnderTest };
+    }
+    return { failed: false };
+}
+
+miniFc.assert = (property, { seed = Date.now() } = {}) => {
+    let rng = prand.xoroshiro128plus(seed);
+    for (let runId = 0 ; runId !== 100 ; ++runId) {
+        const valueUnderTest = property.generate(new Random(rng));
+        const testResults = executeAndShrink(valueUnderTest, property);
+        if (testResults.failed) {
+            throw new Error(`Property failed after ${runId + 1} runs with value ${JSON.stringify(testResults.value)} (seed: ${seed})`);
+        }
+        rng = rng.jump();
+    }
+}
+```
+
+Here we are, our home-made property based framework is now able to generate values, run tests and find failures, and in case of failure to shrink it towards something smaller to help our users.
+
+But unfortunately this design was not solid enough...
+
 ## Arbitraries
 
 While our current shape for `Generator` seems to be able to deal with many kind of values it implies two major difficulties:
