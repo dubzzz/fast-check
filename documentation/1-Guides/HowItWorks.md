@@ -14,6 +14,7 @@ Once fully introduced, the document will cover the limitations it has and how fa
 - [Shrinkers](#shrinkers)
 - [Runner with shrink](#runner-with-shrink)
 - [Arbitraries](#arbitraries)
+- [Bias](#bias)
 
 ## Generators
 
@@ -572,3 +573,5 @@ type Shrinkable<T> = {
     shrink(): IterableIterator<Shrinkable<T>>;
 }
 ```
+
+## Bias
