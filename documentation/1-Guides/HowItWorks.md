@@ -3,7 +3,9 @@
 Let's take a deep dive into how property based testing frameworks work behind the scene.
 Understanding how to implement a simple one should give you a better knowledge of fast-check and its internals.
 
-In this document we will describe how to build a property based testing framework (with limited functionalities) from scratch. Our home-made property based testing framework will be called `miniFc` and will rely on `pure-rand` to generate random values.
+In this document we will describe how to build a property based testing framework (with limited functionalities) from scratch. Our home-made property based testing framework will be called `miniFc` and will rely on `pure-rand` to generate random values. It should help into understanding the big picture.
+
+Once fully introduced, the document will cover the limitations it has and how fast-check dealt with them.
 
 ## Table of contents
 
