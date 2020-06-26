@@ -743,3 +743,17 @@ For `fc.array`:
 - remaining: full range array with full range of values
 
 ## Cloneable
+
+Theoritically every generator should produce only pure values that should never be modified by the user.
+
+For instance, you should never alter the array produced by the generator of arrays of fast-check otherwise you may face strange behaviour when shrinking. To be honest, fast-check more or less prevents such bugs internally so that most of the time it will not cause any problems with built-in arbitraries. But the less you do that, the more you avoid strange bugs.
+
+But purity comes with one major drawback in that case: How can I do arbitraries that need to know what happens to the generated value in order to shrink properly?
+
+In fast-check there are at least two arbitraries that has those needs:
+- `fc.context` - it allows users to log stuff during the execution of the test, in other words the generated value is a context and you alter it during the execution
+- `fc.commands` - it allows users to use fast-check for model based testing
+
+Let's focus on the later one. In the context of model based testing, fast-check has to generate large arrays of commands. This task is the responsability of `fc.commands`. As soon as we get our commands, we can play the test: the test will take the commands one by one, ignore some of them because some preconditions have not been fulfilled and may find a bug before reaching the end of the commands. As a consequence if the generated commands where `[a, b, c, d, e]` and the test failed at `d` while it skipped `b` and `c`, shrinking `[a, b, c, d, e]` would make no sense. What we should shrink should be `[a, d]`. And this is why fast-check introduced the notion of cloneable: sometimes we want to alter the generated value.
+
+Any generator can produce cloneable values. A cloneable value is a generated value that has the method `fc.cloneMethod` implemented. Whenever this method is exposed by an instance, fast-check knows that this instance needs a special treatment. Such instance will never be re-used twice, instead each time fast-check needs the _same value_ it will call the `fc.cloneMethod` method of the instance to get a similar instance.
