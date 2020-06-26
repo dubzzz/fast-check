@@ -15,6 +15,7 @@ Once fully introduced, the document will cover the limitations it has and how fa
 - [Runner with shrink](#runner-with-shrink)
 - [Arbitraries](#arbitraries)
 - [Bias](#bias)
+- [Cloneable](#cloneable)
 
 ## Generators
 
@@ -575,3 +576,170 @@ type Shrinkable<T> = {
 ```
 
 ## Bias
+
+Have you ever wonder why some frameworks introduced the idea of `size` in the options of their runners?
+For instance **jsverify** defines it, as the:
+
+> maximum size of generated values
+
+Actually finding bugs with equiprobable random and no special tricks is hard in many cases. Let's for instance consider an algorithm taking two values as input - for instance `compare` - and returning `true` if the two values are equal. Let's write a property for it:
+
+> For any a, b integers (integers are just possible values we may encounter)
+> compare(a, b) should be equivalent to a === b
+
+With our fresh new framework we could write it that way:
+
+```js
+// Buggy implementation for `compare`
+const compare = (a, b) => false;
+
+miniFc.assert(
+    miniFc.property(
+        miniFc.tuple(
+            miniFc.integer(-0x80000000, 0x7fffffff),
+            miniFc.integer(-0x80000000, 0x7fffffff),
+        ),
+        ([a, b]) => compare(a, b) === (a === b),
+    )
+)
+```
+
+Unfortunately, our framework might not find any bug - _disclaimer: **fast-check** will find the bug_.
+
+Let's zoom on the arbitrary we just defined:
+```js
+miniFc.tuple(
+    miniFc.integer(-0x80000000, 0x7fffffff),
+    miniFc.integer(-0x80000000, 0x7fffffff),
+)
+```
+
+Given this arbitrary we have 2<sup>32</sup> equiprobable possible choices for `a` and 2<sup>32</sup> for `b`. The probability to generate `[a, b]` such as `a === b` would be 1 over 2<sup>32</sup> which is obviously very close to zero.
+
+With that in mind, we have to come with some tricks to get better bug detection. Let's first see some of the technics that are used in some existing solutions.
+
+**Limit the size of generated values and let the user tweak it if needed**:
+
+This solution has been selected by **jsverify**. The idea is to say that most of the time bugs will occur with small values so why do we want to care about large ones?
+
+And anyway in case our users want they can but have to do it themselves.
+
+In terms of implementation, when calling generate the framework passes it a fixed value corresponding to the size factor that should be applied. This factor is constant throughout the execution whatever the run.
+
+As a consequence when using **jsverify** with its default configuration of size the following properties will we considered truthy and will not fail:
+
+```js
+const jsc = require('jsverify'); // 0.8.4
+
+jsc.assert(
+    jsc.forall(
+        jsc.integer(),
+        n => Math.abs(n) <= 50
+    )
+)
+// As a consequence, the property:
+// > all integers are smaller or equal to 50 in absolute value
+// is true for the framework. Users have to explicitely ask for large values.
+```
+
+But let's say we know about this issue, so we artificially increase the size for some of our tests. Then we fallback into the original issue: we will never detect some easy issues because our values will always by too large. For instance, this property succeeds in **jsverify**:
+
+```js
+const jsc = require('jsverify'); // 0.8.4
+
+jsc.assert(
+    jsc.forall(
+        jsc.integer(-0x80000000, 0x7fffffff),
+        n => Math.abs(n) > 50
+    )
+)
+// We generate values from -0x80000000 to 0x7fffffff
+// The probability to generate one value such as abs(n) <= 50
+// is: 101 / 2**32 which is close to zero
+
+// Same issue if we use size option...
+jsc.assert(
+    jsc.forall(
+        jsc.integer(),
+        n => Math.abs(n) > 50
+    ),
+    { size: 0x7fffffff }
+)
+```
+
+The last issue with this approach is that you cannot really say that one arbitrary should be large while another should not. The size apply to all the arbitaries.
+
+_This approach has been rejected by fast-check. The motto of the framework is to hide such complexity for most of the users. Users should not have to tell the framework if large values will cause bugs or not. They should only say that large values are considered as valid inputs or not. Then the framework should do its best to find bugs either with large or small values or even combination of both._
+
+**Increasing values across the runs**:
+
+**RapidCheck**, a property based testing framework for C++, adopted another technic that has the benefit to cover both small and large values.
+
+The observation is the following: smallest values have most of the time the benefit of being less costly to manage and as a consequence may find bugs earlier. Indeed sorting and array of 0 items will be quicker than sorting one with a billion of items. But not all algorithms fail with small items so randomly generated values should also cover large ones.
+
+As a consequence the approach is the following: the more we play runs, the more we increase the size of the generated values. During the first runs we try with very small values because they will most of the time execute quickly and may find specific corner cases (think about bugs due to `-1`, `0` or `1`). And at the end we generate values covering the full range of allowed values;
+
+For example, when you ask for arrays - _of size 0 to 10_ - containing only natural numbers - _between 0 to 2147483647_ - here is what you may have with such approach:
+- run 1/100: arrays having `0` to `floor(10 / 100) = 0` items of values between `0` and `floor(2147483647 / 100) = 21474836`
+- run 2/100: arrays having `0` to `floor(2 * 10 / 100) = 0` items of values between `0` and `floor(2 * 2147483647 / 100)`
+- ...
+- run 100/100: arrays having `0` to `floor(100 * 10 / 100) = 10` items of values between `0` and `floor(100 * 2147483647 / 100) = 2147483647`
+
+Even if this approach has lots of benefits it still misses one class of bugs.
+
+What if our bug only occurs when we have a small array containing very large values or a large array containing only small values? You can for instance think about a sort that is supposed to be stable. In order to test such sort we will do something like (written in fast-check to keep code in JavaScript):
+
+```js
+const fc = require('fast-check');
+
+fc.assert(
+    fc.property(
+        fc.array(
+            fc.record({
+                x: fc.integer(),
+                y: fc.integer(),
+            })
+        ),
+        points => {
+            expect(
+                sortWith(
+                    sortWith([...points], (a, b) => a.y - b.y),
+                    () => a.x - b.x
+                )
+            ).toEqual(
+                sortWith([...points], (a, b) => {
+                    if (a.x === b.x) return a.y - b.y;
+                    else return a.x - b.x;
+                })
+            )
+        }
+    )
+)
+// In other words when a sort is stable it means that if two items
+// are considered equivalent regarding the comparison operator
+// they we stay respectively in the same order.
+// In the code above, we a stable sort, sorting by y then by x
+// is equivalent to sort by x and for equal values of x sort by y.
+```
+
+If we apply the suggestion above, during early runs we will generate very small arrays thus the chance to have cases in which `a.x === b.x` will be limited. Then as we reach the end, we will generate larger arrays but with large scopes of values for `x` thus the probabilty to have twice the same value for `x` will be once again low.
+
+_fast-check approach is close to this one but adds an extra trick to it._
+
+**More chance to produce small values during early runs than after**:
+
+The approach implemented in fast-check is pretty close to the one of **RapidCheck**. The only difference is that instead of generating only small values for early runs and only large values for latest ones, it biases early runs so that they will have a higher probability to generate small values.
+
+The choice is to bias the arbitrary 1 time over `freq` - _where `freq` is a value specified into the call to generate (a bit like `size` was passed to generate in **jsverify** instead that this time the value increases over the runs)_.
+
+For `fc.integer`:
+- 1 over `freq`: smaller values
+- remaining: the full range of values
+
+For `fc.array`:
+- 1 over `freq`:
+  - 1 over `freq`: small array with smaller values
+  - remaining: full range array with smaller values
+- remaining: full range array with full range of values
+
+## Cloneable
