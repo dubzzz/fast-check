@@ -79,6 +79,7 @@ Useful documentations:
 - [:boom: Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/Tips.md)
 - [:mag: Generated documentation](https://dubzzz.github.io/fast-check/)
 - [:star: Awesome fast-check](https://github.com/dubzzz/awesome-fast-check)
+- [:exploding_head: How fast-check works?](https://github.com/dubzzz/fast-check/blob/master/documentation/1-Guides/HowItWorks.md)
 
 ## Why should I migrate to fast-check?
 
