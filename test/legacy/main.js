@@ -1,6 +1,6 @@
 // @ts-check
 var assert = require('assert');
-var fc = require('../../lib/fast-check');
+var fc = require('../../package/lib/fast-check');
 var process = require('process');
 
 function log() {

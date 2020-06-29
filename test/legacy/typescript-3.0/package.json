@@ -3,7 +3,7 @@
       "build": "tsc"
     },
     "dependencies": {
-      "fast-check": "*"
+      "fast-check": "file:../../../package/"
     },
     "devDependencies": {
       "typescript": "3.0.3"

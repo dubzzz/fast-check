@@ -43,15 +43,15 @@ jobs:
       script:
         - PROJECT_ROOT_PATH="$(pwd)"
         - yarn build:prod
+        - yarn pack && tar -zxvf fast-check-*.tgz
         - yarn docs
-        - yarn link
         - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
         - yarn test:rollup-iife
-        - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn link "fast-check" && yarn build
+        - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn build
         - cd "$PROJECT_ROOT_PATH"
         - nvm install 0.12 ;
           node --version ;
