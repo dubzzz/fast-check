@@ -51,6 +51,8 @@ jobs:
         - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
         - yarn test:rollup-iife
+        - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn link "fast-check" && yarn build
+        - cd "$PROJECT_ROOT_PATH"
         - nvm install 0.12 ;
           node --version ;
           node test/legacy/main.js
