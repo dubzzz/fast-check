@@ -17,7 +17,7 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.2",
+    "@types/jest": "^26.0.3",
     "jest": "^25.5.4",
     "ts-jest": "^25.5.1",
     "typescript": "^3.9.2"
