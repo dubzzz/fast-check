@@ -44,24 +44,21 @@ jobs:
         - PROJECT_ROOT_PATH="$(pwd)"
         - yarn build:prod
         - yarn docs
+        - yarn test:rollup-esm
+        - yarn test:rollup-iife
         # Instead of linking on ., we pack the package as if it was released on npm registry
         # then we link towards this version (no devDependencies installed, no unpublished files available...).
         - yarn pack && mkdir -p bundle && tar -C bundle -zxvf fast-check-*.tgz && cd bundle/package && yarn install --production && ls -l node_modules && yarn link
         - ls -l ~/.config/yarn/link 2> /dev/null || echo "no-op"
         - ls -l ~/AppData/Local/Yarn/Data/link 2> /dev/null || echo "no-op"
-        - cd "$PROJECT_ROOT_PATH"
+        # For an unknown reason TypeScript 3.0.3 seems to take into account node_modules
+        # that are defined in parent directories. As a consequence we clean them just in case.
+        - rm -rf node_modules/
         - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
-        - yarn test:rollup-esm
-        - yarn test:rollup-iife
         - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn link "fast-check" && yarn build
-        - ls -l ~/.config/yarn/link
-        - ls -l ../../../../../../.config/yarn/link/fast-check
-        - ls -l node_modules/
-        - ls -l node_modules/fast-check/
-        - ls -l node_modules/fast-check/node_modules/
         - cd "$PROJECT_ROOT_PATH"
         - nvm install 0.12 ;
           node --version ;
