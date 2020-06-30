@@ -6,6 +6,7 @@
       "fast-check": "*"
     },
     "devDependencies": {
+      "@types/node": "^14.0.14",
       "typescript": "3.0.3"
     },
     "license": "MIT",
