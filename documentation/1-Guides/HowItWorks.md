@@ -48,7 +48,7 @@ class Random {
 // > const seed = 0;
 // > const mrng = new Random(prand.xoroshiro128plus(seed));
 // > mrng.next(0, 50); // generate a random value between 0 (incl.) and 50 (incl.)
-// >                   // using a uniform districution, all values have the same probability
+// >                   // using a uniform distribution, all values have the same probability
 ```
 
 For the moment, let's focus on generators. We will discuss later why pure random generators can be useful when doing property based testing.
@@ -267,7 +267,7 @@ Property failed after 11 runs with value ["","w","vmethwd"] (seed: 42)
 
 While our small framework already detect some bugs, it still misses one important feature of property based testing frameworks: shrinking.
 
-Indeed, in such frameworks, whenever a failure occur it will try to reduce it to something smaller so that the end-suer only has to cope with a very simple and small input. I'd say that it helps developers focusing on the real cause without having to manually investigate several potential source of bugs.
+Indeed, in such frameworks, whenever a failure occur it will try to reduce it to something smaller so that the end-user only has to cope with a very simple and small input. I'd say that it helps developers focusing on the real cause without having to manually investigate several potential source of bugs.
 
 For instance: If our `isSubstring` reported an error like: `["", "null$¤¤", "\\undefined.NaN"]`. We may have investigate potentially useless source of bugs.
 
@@ -704,7 +704,7 @@ fc.assert(
             expect(
                 sortWith(
                     sortWith([...points], (a, b) => a.y - b.y),
-                    () => a.x - b.x
+                    (a,b) => a.x - b.x
                 )
             ).toEqual(
                 sortWith([...points], (a, b) => {
@@ -718,7 +718,7 @@ fc.assert(
 // In other words when a sort is stable it means that if two items
 // are considered equivalent regarding the comparison operator
 // they we stay respectively in the same order.
-// In the code above, we a stable sort, sorting by y then by x
+// In the code above, with stable sort, sorting by y then by x
 // is equivalent to sort by x and for equal values of x sort by y.
 ```
 
