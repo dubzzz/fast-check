@@ -1,6 +1,6 @@
 {
     "scripts": {
-      "build": "tsc"
+      "build": "tsc --extendedDiagnostics"
     },
     "dependencies": {
       "fast-check": "*"
