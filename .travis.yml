@@ -43,15 +43,18 @@ jobs:
       script:
         - PROJECT_ROOT_PATH="$(pwd)"
         - yarn build:prod
-        - yarn pack && tar -zxvf fast-check-*.tgz
         - yarn docs
+        # Instead of linking on ., we pack the package as if it was released on npm registry
+        # then we link towards this version (no devDependencies installed, no unpublished files available...).
+        - yarn pack && mkdir -p bundle && tar -C bundle -zxvf fast-check-*.tgz && cd bundle/package && yarn install --production && yarn link
+        - cd "$PROJECT_ROOT_PATH"
         - cd example && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - cd test/type && yarn --ignore-engines && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
         - yarn test:rollup-esm
         - yarn test:rollup-iife
-        - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn build
+        - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn link "fast-check" && yarn build
         - cd "$PROJECT_ROOT_PATH"
         - nvm install 0.12 ;
           node --version ;

@@ -2,8 +2,10 @@
 # yarn lockfile v1
 
 
-"fast-check@file:../../../package":
+fast-check@*:
   version "1.25.1"
+  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-1.25.1.tgz#aab6e34496a23ba7d7d20188699d9abdcaaa2dcc"
+  integrity sha512-4lyIDY2YKpSiPXpceCQBTfDxLh/7/C3OHgvzToea3y1YAlv38Wz9mfIsu+MD4go0NX3ow/g98kEmlW00+CoH3w==
   dependencies:
     pure-rand "^2.0.0"
     tslib "^2.0.0"
