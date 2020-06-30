@@ -1,11 +1,6 @@
 // @ts-check
 var assert = require('assert');
-var fc = require('../../lib/fast-check');
-var process = require('process');
-
-function log() {
-  process.stdout.write('.');
-}
+var fc = require('../../bundle/package/lib/fast-check');
 
 function testArbitrary(arb) {
   // should not crash if running a succesful property
@@ -14,7 +9,6 @@ function testArbitrary(arb) {
       return true;
     })
   );
-  log();
 
   // should be able to detect failing runs and report them correctly
   // should be able to shrink with no crash
@@ -32,7 +26,6 @@ function testArbitrary(arb) {
     successfulAssert = successfulAssert && e.message.indexOf('Property failed after') === 0;
   }
   assert.ok(successfulAssert, 'Assert failed with an unexpected failure');
-  log();
 
   // should be able to replay a failing case
   var runId = 0;
@@ -43,7 +36,6 @@ function testArbitrary(arb) {
   );
   var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
   assert.deepEqual(replay[0], details.counterexample[0]);
-  log();
 
   // should be able to retrieve statistics
   var stats = [];
@@ -59,7 +51,6 @@ function testArbitrary(arb) {
     }
   );
   assert.notEqual(stats.length, 0);
-  log();
 }
 
 testArbitrary(fc.nat());

@@ -1,0 +1,14 @@
+{
+    "scripts": {
+      "build": "tsc"
+    },
+    "dependencies": {
+      "fast-check": "*"
+    },
+    "devDependencies": {
+      "typescript": "3.0.3"
+    },
+    "license": "MIT",
+    "private": true
+  }
+  
