@@ -1,6 +1,6 @@
 {
     "scripts": {
-      "build": "tsc --extendedDiagnostics"
+      "build": "tsc --extendedDiagnostics --traceResolution"
     },
     "dependencies": {
       "fast-check": "*"
