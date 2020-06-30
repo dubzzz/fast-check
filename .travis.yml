@@ -61,6 +61,7 @@ jobs:
         - ls -l ../../../../../../.config/yarn/link/fast-check
         - ls -l node_modules/
         - ls -l node_modules/fast-check/
+        - ls -l node_modules/fast-check/node_modules/
         - cd "$PROJECT_ROOT_PATH"
         - nvm install 0.12 ;
           node --version ;
