@@ -58,7 +58,7 @@ jobs:
         - yarn test:rollup-iife
         - cd test/legacy/typescript-3.0 && yarn --ignore-engines && yarn link "fast-check" && yarn build
         - ls -l ~/.config/yarn/link
-        - ls -l ../../../../../../../.config/yarn/link/fast-check
+        - ls -l ../../../../../../.config/yarn/link/fast-check
         - ls -l node_modules/
         - ls -l node_modules/fast-check/
         - cd "$PROJECT_ROOT_PATH"
