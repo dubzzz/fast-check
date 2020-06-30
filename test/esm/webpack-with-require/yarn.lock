@@ -907,12 +907,12 @@ extglob@^2.0.4:
     to-regex "^3.0.1"
 
 fast-check@*:
-  version "1.24.2"
-  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-1.24.2.tgz#1f5e4a3c20530c3a85a861e60f680c32229d4fcb"
-  integrity sha512-ZL48cyZZLJnVsUj127Zi1mfFLM98yzw0LlSSH8CMeVmpL5RCfSRcZSZZ0kJWrRK4eOgNFnXXKNDbzuRb3Vsdhg==
+  version "1.25.1"
+  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-1.25.1.tgz#aab6e34496a23ba7d7d20188699d9abdcaaa2dcc"
+  integrity sha512-4lyIDY2YKpSiPXpceCQBTfDxLh/7/C3OHgvzToea3y1YAlv38Wz9mfIsu+MD4go0NX3ow/g98kEmlW00+CoH3w==
   dependencies:
     pure-rand "^2.0.0"
-    tslib "^1.10.0"
+    tslib "^2.0.0"
 
 fast-deep-equal@^2.0.1:
   version "2.0.1"
@@ -2428,10 +2428,15 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-tslib@^1.10.0, tslib@^1.9.0:
+tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
+
+tslib@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.0.tgz#18d13fc2dce04051e20f074cc8387fd8089ce4f3"
+  integrity sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
 
 tty-browserify@0.0.0:
   version "0.0.0"
