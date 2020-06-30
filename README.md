@@ -100,6 +100,16 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 
 For more details, refer to the documentation in the links above.
 
+## Compatibility
+
+Here are the minimal requirements to use fast-check properly without any polyfills:
+
+| fast-check | node                | TypeScript |
+|------------|---------------------|------------|
+| **1.x**    | ≥0.12<sup>(1)</sup> | ≥3.0       |
+
+(1) Most of the arbitraries will be usable on version `0.12` of node. Tests are executed at each build to ensure that users of node `0.12` will still be able able to use major features of fast-check (see [test file](https://github.com/dubzzz/fast-check/blob/ea8d455566faa095592d2186f0e57ab8290b18cd/test/legacy/main.js)). Officially fast-check@1.x targets ES3. Nonetheless some arbitraries will not be usable by users not running a recent runtime because features cannot be polyfilled such as `bigint`-related ones.
+
 ## Issues found by fast-check in famous packages
 
 fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
