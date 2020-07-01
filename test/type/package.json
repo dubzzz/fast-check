@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "fast-check": "*",
-    "tsd": "^0.11.0"
+    "tsd": "^0.12.0"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
