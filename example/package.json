@@ -20,7 +20,7 @@
     "@types/jest": "^26.0.3",
     "jest": "^25.5.4",
     "ts-jest": "^25.5.1",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.5"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
