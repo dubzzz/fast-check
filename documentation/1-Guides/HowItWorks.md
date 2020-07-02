@@ -257,7 +257,7 @@ No matter how many times our property will call the passed mutable random genera
 - relying on the offset applied by the property to the passed instance of `Random` is problematic as it makes replays difficult to implement except if we re-generate all the values one-by-one whenever replaying stuff
 - instance of `Random` might be kept and re-used later by the property and its `Generator` (we will see that it might be the case in some implementations of shrink), thus calls to generate in subsequent iterations might alter it
 
-We can now use our small framework on the property we discussed earlier in this section. As we were expecting, it finds an issue and reports it. When running it locally you should have an ouput similar to:
+We can now use our small framework on the property we discussed earlier in this section. As we were expecting, it finds an issue and reports it. When running it locally you should have an output similar to:
 
 ```
 Property failed after 11 runs with value ["","w","vmethwd"] (seed: 42)
