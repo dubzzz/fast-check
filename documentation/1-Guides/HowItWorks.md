@@ -242,7 +242,7 @@ miniFc.assert = (property, { seed = Date.now() } = {}) => {
 }
 ```
 
-In previous section, we did not cover the reason why we opted for pure random generators. In property based we want properties to be reproducible no matter the seed, no matter the hardware and no matter the time... But we also want to have independant runs for each iteration in the loop.
+In previous section, we did not cover the reason why we opted for pure random generators. In property based we want properties to be reproducible no matter the seed, no matter the hardware and no matter the time... But we also want to have independent runs for each iteration in the loop.
 
 For instance, in the implementation defined above, we call generate with the following instances of `Random`:
 - `runId = 0` - Call with `new Random(prand.xoroshiro128plus(seed))`
