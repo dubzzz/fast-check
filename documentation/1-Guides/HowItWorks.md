@@ -265,7 +265,7 @@ Property failed after 11 runs with value ["","w","vmethwd"] (seed: 42)
 
 ## Shrinkers
 
-While our small framework already detect some bugs, it still misses one important feature of property based testing frameworks: shrinking.
+While our small framework already detects some bugs, it still misses one important feature of property based testing frameworks: shrinking.
 
 Indeed, in such frameworks, whenever a failure occur it will try to reduce it to something smaller so that the end-user only has to cope with a very simple and small input. I'd say that it helps developers focusing on the real cause without having to manually investigate several potential source of bugs.
 
