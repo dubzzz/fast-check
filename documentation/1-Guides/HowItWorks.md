@@ -485,7 +485,7 @@ Shrinkers have been introduced in an attempt to find the smallest failing case.
 They achieve one main purpose: given one value they compute strictly smaller ones.
 
 From a runner perspective, in order to get the smallest possible failing case we want to shrink as soon as we find an issue.
-So we generate values and run the predicate on it and as soon as we find an issue we take this value and shrint it.
+So we generate values and run the predicate on it and as soon as we find an issue we take this value and shrink it.
 Moreover while iterating over those shrunk entries we might find another one that will fail, we shrink it and iterate over it until we cannot find smaller bugs.
 
 The process is summarized into the diagram below:
