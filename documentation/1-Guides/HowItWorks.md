@@ -267,7 +267,7 @@ Property failed after 11 runs with value ["","w","vmethwd"] (seed: 42)
 
 While our small framework already detects some bugs, it still misses one important feature of property based testing frameworks: shrinking.
 
-Indeed, in such frameworks, whenever a failure occur it will try to reduce it to something smaller so that the end-user only has to cope with a very simple and small input. I'd say that it helps developers focusing on the real cause without having to manually investigate several potential source of bugs.
+Indeed, in such frameworks, whenever a failure occurs it will try to reduce it to something smaller so that the end-user only has to cope with a very simple and small input. I'd say that it helps developers focusing on the real cause without having to manually investigate several potential source of bugs.
 
 For instance: If our `isSubstring` reported an error like: `["", "null$¤¤", "\\undefined.NaN"]`. We may have investigate potentially useless source of bugs.
 
@@ -289,7 +289,7 @@ const arb = miniFc.integer(0, 100);
 abr.shrink(64) // potential output: 32, 16, 8, 4, 2, 1, 0
 ```
 
-For integers, the implementation will use a classical technic used in programming: dichotomy. Given the technic we want to use we can adapt the code for `integers` as follow:
+For integers, the implementation will use a classical technique used in programming: dichotomy. Given the technique we want to use we can adapt the code for `integers` as follow:
 
 ```js
 miniFc.integer = (min, max) => {
