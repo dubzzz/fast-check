@@ -19,13 +19,13 @@ const floatInternal = (): Arbitrary<number> => {
 function float(): Arbitrary<number>;
 /**
  * For floating point numbers between 0.0 (included) and max (excluded) - accuracy of `max / 2**24`
- * @param max Upper bound of the generated floating point
+ * @param max - Upper bound of the generated floating point
  */
 function float(max: number): Arbitrary<number>;
 /**
  * For floating point numbers between min (included) and max (excluded) - accuracy of `(max - min) / 2**24`
- * @param min Lower bound of the generated floating point
- * @param max Upper bound of the generated floating point
+ * @param min - Lower bound of the generated floating point
+ * @param max - Upper bound of the generated floating point
  */
 function float(min: number, max: number): Arbitrary<number>;
 function float(a?: number, b?: number): Arbitrary<number> {
@@ -49,13 +49,13 @@ const doubleInternal = (): Arbitrary<number> => {
 function double(): Arbitrary<number>;
 /**
  * For floating point numbers between 0.0 (included) and max (excluded) - accuracy of `max / 2**53`
- * @param max Upper bound of the generated floating point
+ * @param max - Upper bound of the generated floating point
  */
 function double(max: number): Arbitrary<number>;
 /**
  * For floating point numbers between min (included) and max (excluded) - accuracy of `(max - min) / 2**53`
- * @param min Lower bound of the generated floating point
- * @param max Upper bound of the generated floating point
+ * @param min - Lower bound of the generated floating point
+ * @param max - Upper bound of the generated floating point
  */
 function double(min: number, max: number): Arbitrary<number>;
 function double(a?: number, b?: number): Arbitrary<number> {

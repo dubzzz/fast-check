@@ -43,7 +43,7 @@ export class AsyncProperty<Ts> implements IAsyncProperty<Ts> {
 
   /**
    * Define a function that should be called before all calls to the predicate
-   * @param hookFunction Function to be called
+   * @param hookFunction - Function to be called
    */
   beforeEach(hookFunction: HookFunction): AsyncProperty<Ts> {
     this.beforeEachHook = hookFunction;
@@ -51,7 +51,7 @@ export class AsyncProperty<Ts> implements IAsyncProperty<Ts> {
   }
   /**
    * Define a function that should be called after all calls to the predicate
-   * @param hookFunction Function to be called
+   * @param hookFunction - Function to be called
    */
   afterEach(hookFunction: HookFunction): AsyncProperty<Ts> {
     this.afterEachHook = hookFunction;

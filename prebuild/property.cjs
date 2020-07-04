@@ -5,10 +5,10 @@ const { commas, iota, txCommas } = require('./helpers.cjs');
  * @param num {number}
  * @param isAsync {boolean}
  */
-const predicateFor = function(num, isAsync) {
+const predicateFor = function (num, isAsync) {
   return isAsync
-    ? `(${commas(num, v => `t${v}:T${v}`)}) => Promise<boolean|void>`
-    : `(${commas(num, v => `t${v}:T${v}`)}) => (boolean|void)`;
+    ? `(${commas(num, (v) => `t${v}:T${v}`)}) => Promise<boolean|void>`
+    : `(${commas(num, (v) => `t${v}:T${v}`)}) => (boolean|void)`;
 };
 
 /**
@@ -21,10 +21,10 @@ const signatureFor = (num, isAsync) => {
   return `
         /**
          * Instantiate a new {@link ${className}}
-         * @param predicate Assess the success of the property. Would be considered falsy if its throws or if its output evaluates to false
+         * @param predicate - Assess the success of the property. Would be considered falsy if its throws or if its output evaluates to false
          */
         function ${functionName}<${txCommas(num)}>(
-            ${commas(num, v => `arb${v}:Arbitrary<T${v}>`)},
+            ${commas(num, (v) => `arb${v}:Arbitrary<T${v}>`)},
             predicate: ${predicateFor(num, isAsync)}
         ): ${className}<[${txCommas(num)}]>;`;
 };
@@ -42,7 +42,7 @@ const generateProperty = (num, isAsync) => {
     `import { genericTuple } from '../arbitrary/TupleArbitrary';`,
     `import { ${className} } from './${className}.generic';`,
     // declare all signatures
-    ...iota(num).map(id => signatureFor(id + 1, isAsync)),
+    ...iota(num).map((id) => signatureFor(id + 1, isAsync)),
     // declare function
     `function ${functionName}(...args: any[]): any {
       if (args.length < 2) throw new Error('${functionName} expects at least two parameters');
@@ -51,7 +51,7 @@ const generateProperty = (num, isAsync) => {
       return new ${className}(genericTuple(arbs), t => p(...t));
     }`,
     // export
-    `export { ${functionName} };`
+    `export { ${functionName} };`,
   ];
 
   return blocks.join('\n');
@@ -69,13 +69,13 @@ const testBasicCall = (num, isAsync) => {
         it('Should call the underlying arbitraries in ${functionName}${num}', ${kAsync} () => {
             let data = null;
             const p = ${functionName}(
-                        ${commas(num, v => `stubArb.single(${v * v})`)},
-                        ${kAsync} (${commas(num, v => `a${v}:number`)}) => {
-                data = [${commas(num, v => `a${v}`)}];
+                        ${commas(num, (v) => `stubArb.single(${v * v})`)},
+                        ${kAsync} (${commas(num, (v) => `a${v}:number`)}) => {
+                data = [${commas(num, (v) => `a${v}`)}];
                 return true;
             });
             expect(${kAwait} p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-            expect(data).toEqual([${commas(num, v => `${v * v}`)}]);
+            expect(data).toEqual([${commas(num, (v) => `${v * v}`)}]);
         });
     `;
 };
@@ -95,9 +95,9 @@ const generatePropertySpec = (num, isAsync) => {
     // start blocks
     `describe('${className}', () => {`,
     // tests
-    ...iota(num).map(id => testBasicCall(id + 1, isAsync)),
+    ...iota(num).map((id) => testBasicCall(id + 1, isAsync)),
     // end blocks
-    `});`
+    `});`,
   ];
 
   return blocks.join('\n');

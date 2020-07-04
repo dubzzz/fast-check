@@ -29,7 +29,7 @@ type OneOfArbitraryType<Ts extends Arbitrary<unknown>[]> = {
  *
  * **WARNING**: It expects at least one arbitrary
  *
- * @param arbs Arbitraries that might be called to produce a value
+ * @param arbs - Arbitraries that might be called to produce a value
  */
 function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfArbitraryType<Ts>> {
   if (arbs.length === 0) {

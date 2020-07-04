@@ -111,8 +111,8 @@ function defaultToggleCase(rawChar: string) {
  * Require bigint support.
  * Under-the-hood the arbitrary relies on bigint to compute the flags that should be toggled or not.
  *
- * @param stringArb Arbitrary able to build string values
- * @param constraints Constraints to be applied when computing upper/lower case version
+ * @param stringArb - Arbitrary able to build string values
+ * @param constraints - Constraints to be applied when computing upper/lower case version
  */
 export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseConstraints): Arbitrary<string> {
   if (typeof BigInt === 'undefined') {

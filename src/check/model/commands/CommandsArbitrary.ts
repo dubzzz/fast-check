@@ -148,8 +148,8 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  * This implementation comes with a shrinker adapted for commands.
  * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
  *
- * @param commandArbs Arbitraries responsible to build commands
- * @param maxCommands Maximal number of commands to build
+ * @param commandArbs - Arbitraries responsible to build commands
+ * @param maxCommands - Maximal number of commands to build
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
@@ -162,8 +162,8 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * This implementation comes with a shrinker adapted for commands.
  * It should shrink more efficiently than {@link array} for {@link Command} arrays.
  *
- * @param commandArbs Arbitraries responsible to build commands
- * @param maxCommands Maximal number of commands to build
+ * @param commandArbs - Arbitraries responsible to build commands
+ * @param maxCommands - Maximal number of commands to build
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(
@@ -176,8 +176,8 @@ function commands<Model extends object, Real>(
  * This implementation comes with a shrinker adapted for commands.
  * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
  *
- * @param commandArbs Arbitraries responsible to build commands
- * @param maxCommands Maximal number of commands to build
+ * @param commandArbs - Arbitraries responsible to build commands
+ * @param maxCommands - Maximal number of commands to build
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
@@ -190,8 +190,8 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * This implementation comes with a shrinker adapted for commands.
  * It should shrink more efficiently than {@link array} for {@link Command} arrays.
  *
- * @param commandArbs Arbitraries responsible to build commands
- * @param maxCommands Maximal number of commands to build
+ * @param commandArbs - Arbitraries responsible to build commands
+ * @param maxCommands - Maximal number of commands to build
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(

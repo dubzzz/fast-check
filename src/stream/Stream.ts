@@ -13,7 +13,7 @@ export class Stream<T> implements IterableIterator<T> {
 
   /**
    * Create a Stream based on `g`
-   * @param g Underlying data of the Stream
+   * @param g - Underlying data of the Stream
    */
   constructor(private readonly g: IterableIterator<T>) {
     // /*DEBUG*/ this.isLive = true;
@@ -37,7 +37,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Mapper function
+   * @param f - Mapper function
    */
   map<U>(f: (v: T) => U): Stream<U> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -48,7 +48,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Mapper function
+   * @param f - Mapper function
    */
   flatMap<U>(f: (v: T) => IterableIterator<U>): Stream<U> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -60,7 +60,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Drop condition
+   * @param f - Drop condition
    */
   dropWhile(f: (v: T) => boolean): Stream<T> {
     let foundEligible = false;
@@ -77,7 +77,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param n Number of elements to drop
+   * @param n - Number of elements to drop
    */
   drop(n: number): Stream<T> {
     let idx = 0;
@@ -91,7 +91,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Take condition
+   * @param f - Take condition
    */
   takeWhile(f: (v: T) => boolean): Stream<T> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -102,7 +102,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param n Number of elements to take
+   * @param n - Number of elements to take
    */
   take(n: number): Stream<T> {
     let idx = 0;
@@ -117,7 +117,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Elements to keep
+   * @param f - Elements to keep
    */
   filter<U extends T>(f: (v: T) => v is U): Stream<U>;
   /**
@@ -125,7 +125,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Elements to keep
+   * @param f - Elements to keep
    */
   filter(f: (v: T) => boolean): Stream<T>;
   filter<U extends T>(f: (v: T) => v is U): Stream<U> {
@@ -138,7 +138,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Condition to check
+   * @param f - Condition to check
    */
   every(f: (v: T) => boolean): boolean {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -154,7 +154,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param f Condition to check
+   * @param f - Condition to check
    */
   has(f: (v: T) => boolean): [boolean, T | null] {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -171,7 +171,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream and the other ones (as soon as it iterates over them)
    *
-   * @param others Streams to join to the current Stream
+   * @param others - Streams to join to the current Stream
    */
   join(...others: IterableIterator<T>[]): Stream<T> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -183,7 +183,7 @@ export class Stream<T> implements IterableIterator<T> {
    *
    * WARNING: It closes the current stream
    *
-   * @param nth Position of the element to extract
+   * @param nth - Position of the element to extract
    */
   getNthOrLast(nth: number): T | null {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -199,7 +199,7 @@ export class Stream<T> implements IterableIterator<T> {
 
 /**
  * Create a Stream based on `g`
- * @param g Underlying data of the Stream
+ * @param g - Underlying data of the Stream
  */
 export function stream<T>(g: IterableIterator<T>): Stream<T> {
   return new Stream<T>(g);

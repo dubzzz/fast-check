@@ -64,7 +64,7 @@ class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
 
 /**
  * For tuples produced by the provided `arbs`
- * @param arbs Ordered list of arbitraries
+ * @param arbs - Ordered list of arbitraries
  */
 function genericTuple<Ts>(arbs: Arbitrary<Ts>[]): Arbitrary<Ts[]> {
   return new GenericTupleArbitrary(arbs);

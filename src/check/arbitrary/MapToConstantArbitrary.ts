@@ -18,7 +18,7 @@ function computeNumChoices<T>(options: { num: number; build: (idInGroup: number)
  * Generate non-contiguous ranges of values
  * by mapping integer values to constant
  *
- * @param options Builders to be called to generate the values
+ * @param options - Builders to be called to generate the values
  *
  * @example
  * ```
