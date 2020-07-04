@@ -23,23 +23,23 @@ describe('DebouncedAutocomplete', () => {
             // Arrange
             jest.useFakeTimers();
             const suggestionsFor = s.scheduleFunction(async (query: string) => {
-              return allResults.filter(r => r.includes(query));
+              return allResults.filter((r) => r.includes(query));
             });
-            const expectedResults = allResults.filter(r => r.includes(userQuery));
+            const expectedResults = allResults.filter((r) => r.includes(userQuery));
 
             // Act
             render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1))
+                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1)),
               }))
             );
             await waitAllWithTimers(s);
 
             // Assert
             const displayedSuggestions = screen.queryAllByRole('listitem');
-            expect(displayedSuggestions.map(el => el.textContent)).toEqual(expectedResults);
+            expect(displayedSuggestions.map((el) => el.textContent)).toEqual(expectedResults);
           }
         )
         .beforeEach(async () => {
@@ -61,24 +61,23 @@ describe('DebouncedAutocomplete', () => {
             // Arrange
             jest.useFakeTimers();
             const suggestionsFor = s.scheduleFunction(async (query: string) => {
-              return allResults.filter(r => r.includes(query));
+              return allResults.filter((r) => r.includes(query));
             });
-            const expectedResults = allResults.filter(r => r.includes(userQuery));
+            const expectedResults = allResults.filter((r) => r.includes(userQuery));
 
             // Act
             render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () =>
-                  userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1), { allAtOnce: true })
+                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1), { delay: 0 }),
               }))
             );
             await s.waitAll();
 
             // Assert
             const displayedSuggestions = screen.queryAllByRole('listitem');
-            expect(displayedSuggestions.map(el => el.textContent)).toEqual(expectedResults);
+            expect(displayedSuggestions.map((el) => el.textContent)).toEqual(expectedResults);
           }
         )
         .beforeEach(async () => {
@@ -153,6 +152,6 @@ const withTimers = (s: fc.Scheduler): fc.Scheduler => {
         await s.waitOne();
         appendScheduledTaskToUnqueueTimersIfNeeded();
       }
-    }
+    },
   } as fc.Scheduler;
 };
