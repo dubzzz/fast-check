@@ -95,8 +95,8 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
  *
  * Throw in case of inconsistency
  *
- * @param s Initial state provider
- * @param cmds Synchronous commands to be executed
+ * @param s - Initial state provider
+ * @param cmds - Synchronous commands to be executed
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const modelRun = <Model extends object, Real, InitialModel extends Model>(
@@ -111,8 +111,8 @@ export const modelRun = <Model extends object, Real, InitialModel extends Model>
  *
  * Throw in case of inconsistency
  *
- * @param s Initial state provider
- * @param cmds Asynchronous commands to be executed
+ * @param s - Initial state provider
+ * @param cmds - Asynchronous commands to be executed
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const asyncModelRun = async <Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
@@ -127,9 +127,9 @@ export const asyncModelRun = async <Model extends object, Real, CheckAsync exten
  *
  * Throw in case of inconsistency
  *
- * @param scheduler Scheduler
- * @param s Initial state provider
- * @param cmds Asynchronous commands to be executed
+ * @param scheduler - Scheduler
+ * @param s - Initial state provider
+ * @param cmds - Asynchronous commands to be executed
  */
 export const scheduledModelRun = async <
   // eslint-disable-next-line @typescript-eslint/ban-types

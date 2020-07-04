@@ -12,7 +12,7 @@ export abstract class Arbitrary<T> {
    * Generate a value of type `T` along with its shrink method
    * based on the provided random number generator
    *
-   * @param mrng Random number generator
+   * @param mrng - Random number generator
    * @returns Random value of type `T` and its shrinker
    */
   abstract generate(mrng: Random): Shrinkable<T>;
@@ -30,7 +30,7 @@ export abstract class Arbitrary<T> {
    * // new Arbitrary only keeps even values
    * ```
    *
-   * @param refinement Predicate, to test each produced element. Return true to keep the element, false otherwise
+   * @param refinement - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New arbitrary filtered using predicate
    */
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U>;
@@ -47,7 +47,7 @@ export abstract class Arbitrary<T> {
    * // new Arbitrary only keeps even values
    * ```
    *
-   * @param predicate Predicate, to test each produced element. Return true to keep the element, false otherwise
+   * @param predicate - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New arbitrary filtered using predicate
    */
   filter(predicate: (t: T) => boolean): Arbitrary<T>;
@@ -81,7 +81,7 @@ export abstract class Arbitrary<T> {
    * // transform an Arbitrary producing {r,g,b} integers into an Arbitrary of '#rrggbb'
    * ```
    *
-   * @param mapper Map function, to produce a new element based on an old one
+   * @param mapper - Map function, to produce a new element based on an old one
    * @returns New arbitrary with mapped elements
    */
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
@@ -121,7 +121,7 @@ export abstract class Arbitrary<T> {
    * const arrayAndLimitArbitrary = fc.nat().chain((c: number) => fc.tuple( fc.array(fc.nat(c)), fc.constant(c)));
    * ```
    *
-   * @param fmapper Chain function, to produce a new Arbitrary using a value from another Arbitrary
+   * @param fmapper - Chain function, to produce a new Arbitrary using a value from another Arbitrary
    * @returns New arbitrary of new type
    */
   chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U> {
@@ -166,7 +166,7 @@ export abstract class Arbitrary<T> {
   /**
    * Create another Arbitrary having bias - by default return itself
    *
-   * @param freq The biased version will be used one time over freq - if it exists - freq must be superior or equal to 2 to avoid any lock
+   * @param freq - The biased version will be used one time over freq - if it exists - freq must be superior or equal to 2 to avoid any lock
    */
   withBias(_freq: number): Arbitrary<T> {
     return this;
@@ -175,7 +175,7 @@ export abstract class Arbitrary<T> {
   /**
    * Create another Arbitrary that cannot be biased
    *
-   * @param freq The biased version will be used one time over freq - if it exists
+   * @param freq - The biased version will be used one time over freq - if it exists
    */
   noBias(): Arbitrary<T> {
     const arb = this;

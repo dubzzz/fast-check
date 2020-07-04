@@ -78,8 +78,8 @@ function buildInitialValues<Ts>(
  *
  * WARNING: Has to be awaited
  *
- * @param property Asynchronous property to be checked
- * @param params Optional parameters to customize the execution
+ * @param property - Asynchronous property to be checked
+ * @param params - Optional parameters to customize the execution
  *
  * @returns Test status and other useful details
  */
@@ -87,8 +87,8 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
- * @param property Synchronous property to be checked
- * @param params Optional parameters to customize the execution
+ * @param property - Synchronous property to be checked
+ * @param params - Optional parameters to customize the execution
  *
  * @returns Test status and other useful details
  */
@@ -135,8 +135,8 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
  *
  * WARNING: Has to be awaited
  *
- * @param property Asynchronous property to be checked
- * @param params Optional parameters to customize the execution
+ * @param property - Asynchronous property to be checked
+ * @param params - Optional parameters to customize the execution
  */
 function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
 /**
@@ -145,8 +145,8 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
  * It can be called directly from describe/it blocks of Mocha.
  * It does not return anything in case of success.
  *
- * @param property Synchronous property to be checked
- * @param params Optional parameters to customize the execution
+ * @param property - Synchronous property to be checked
+ * @param params - Optional parameters to customize the execution
  */
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;

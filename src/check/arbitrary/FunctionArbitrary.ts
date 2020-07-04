@@ -9,7 +9,7 @@ import { tuple } from './TupleArbitrary';
 /**
  * For pure functions
  *
- * @param arb Arbitrary responsible to produce the values
+ * @param arb - Arbitrary responsible to produce the values
  */
 export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary<(...args: TArgs) => TOut> {
   return tuple(array(arb, 1, 10), integer().noShrink()).map(([outs, seed]) => {

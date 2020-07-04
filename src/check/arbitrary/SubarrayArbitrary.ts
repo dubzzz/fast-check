@@ -84,14 +84,14 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
 
 /**
  * For subarrays of `originalArray` (keeps ordering)
- * @param originalArray Original array
+ * @param originalArray - Original array
  */
 function subarray<T>(originalArray: T[]): Arbitrary<T[]>;
 /**
  * For subarrays of `originalArray` (keeps ordering)
- * @param originalArray Original array
- * @param minLength Lower bound of the generated array size
- * @param maxLength Upper bound of the generated array size
+ * @param originalArray - Original array
+ * @param minLength - Lower bound of the generated array size
+ * @param maxLength - Upper bound of the generated array size
  */
 function subarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>;
 function subarray<T>(originalArray: T[], minLength?: number, maxLength?: number): Arbitrary<T[]> {
@@ -101,14 +101,14 @@ function subarray<T>(originalArray: T[], minLength?: number, maxLength?: number)
 
 /**
  * For subarrays of `originalArray`
- * @param originalArray Original array
+ * @param originalArray - Original array
  */
 function shuffledSubarray<T>(originalArray: T[]): Arbitrary<T[]>;
 /**
  * For subarrays of `originalArray`
- * @param originalArray Original array
- * @param minLength Lower bound of the generated array size
- * @param maxLength Upper bound of the generated array size
+ * @param originalArray - Original array
+ * @param minLength - Lower bound of the generated array size
+ * @param maxLength - Upper bound of the generated array size
  */
 function shuffledSubarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>;
 function shuffledSubarray<T>(originalArray: T[], minLength?: number, maxLength?: number): Arbitrary<T[]> {
