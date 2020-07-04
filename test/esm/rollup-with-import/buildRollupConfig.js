@@ -1,6 +1,5 @@
 import resolve from '@rollup/plugin-node-resolve';
 import cjs from '@rollup/plugin-commonjs';
-import builtins from 'rollup-plugin-node-builtins';
 
 export default function buildRollupConfig(fileName) {
   return {
@@ -10,7 +9,7 @@ export default function buildRollupConfig(fileName) {
       format: 'iife',
       name: 'RunFastCheck',
     },
-    plugins: [builtins(), resolve(), cjs()],
+    plugins: [resolve(), cjs()],
     onwarn: () => {},
   };
 }
