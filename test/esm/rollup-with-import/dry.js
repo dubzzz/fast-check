@@ -1,3 +1,3 @@
-import querystring from 'querystring';
+import serialize from './dry-import';
 // eslint-disable-next-line
-console.log(querystring.encode({ it: 'works' }));
+console.log(serialize({ it: 'works' }));
