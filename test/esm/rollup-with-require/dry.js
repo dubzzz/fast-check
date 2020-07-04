@@ -1,4 +1,4 @@
 // eslint-disable-next-line
-const querystring = require('querystring');
+const serialize = require('./dry-import');
 // eslint-disable-next-line
-console.log(querystring.encode({ it: 'works' }));
+console.log(serialize({ it: 'works' }));
