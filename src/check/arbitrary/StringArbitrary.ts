@@ -34,13 +34,13 @@ function Base64StringArbitrary(minLength: number, maxLength: number) {
 function stringOf(charArb: Arbitrary<string>): Arbitrary<string>;
 /**
  * For strings using the characters produced by `charArb`
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function stringOf(charArb: Arbitrary<string>, maxLength: number): Arbitrary<string>;
 /**
  * For strings using the characters produced by `charArb`
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: number): Arbitrary<string>;
 function stringOf(charArb: Arbitrary<string>, aLength?: number, bLength?: number): Arbitrary<string> {
@@ -53,13 +53,13 @@ function stringOf(charArb: Arbitrary<string>, aLength?: number, bLength?: number
 function string(): Arbitrary<string>;
 /**
  * For strings of {@link char}
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function string(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link char}
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function string(minLength: number, maxLength: number): Arbitrary<string>;
 function string(aLength?: number, bLength?: number): Arbitrary<string> {
@@ -72,13 +72,13 @@ function string(aLength?: number, bLength?: number): Arbitrary<string> {
 function asciiString(): Arbitrary<string>;
 /**
  * For strings of {@link ascii}
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function asciiString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link ascii}
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
 function asciiString(aLength?: number, bLength?: number): Arbitrary<string> {
@@ -91,13 +91,13 @@ function asciiString(aLength?: number, bLength?: number): Arbitrary<string> {
 function string16bits(): Arbitrary<string>;
 /**
  * For strings of {@link string16bits}
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function string16bits(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link string16bits}
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
 function string16bits(aLength?: number, bLength?: number): Arbitrary<string> {
@@ -110,13 +110,13 @@ function string16bits(aLength?: number, bLength?: number): Arbitrary<string> {
 function unicodeString(): Arbitrary<string>;
 /**
  * For strings of {@link unicode}
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function unicodeString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link unicode}
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
 function unicodeString(aLength?: number, bLength?: number): Arbitrary<string> {
@@ -129,13 +129,13 @@ function unicodeString(aLength?: number, bLength?: number): Arbitrary<string> {
 function fullUnicodeString(): Arbitrary<string>;
 /**
  * For strings of {@link fullUnicode}
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function fullUnicodeString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link fullUnicode}
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function fullUnicodeString(minLength: number, maxLength: number): Arbitrary<string>;
 function fullUnicodeString(aLength?: number, bLength?: number): Arbitrary<string> {
@@ -148,13 +148,13 @@ function fullUnicodeString(aLength?: number, bLength?: number): Arbitrary<string
 function hexaString(): Arbitrary<string>;
 /**
  * For strings of {@link hexa}
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function hexaString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link hexa}
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
 function hexaString(aLength?: number, bLength?: number): Arbitrary<string> {
@@ -172,7 +172,7 @@ function base64String(): Arbitrary<string>;
  *
  * A base64 string will always have a length multiple of 4 (padded with =)
  *
- * @param maxLength - Upper bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function base64String(maxLength: number): Arbitrary<string>;
 /**
@@ -180,8 +180,8 @@ function base64String(maxLength: number): Arbitrary<string>;
  *
  * A base64 string will always have a length multiple of 4 (padded with =)
  *
- * @param minLength - Lower bound of the generated string length
- * @param maxLength - Upper bound of the generated string length
+ * @param minLength Lower bound of the generated string length
+ * @param maxLength Upper bound of the generated string length
  */
 function base64String(minLength: number, maxLength: number): Arbitrary<string>;
 function base64String(aLength?: number, bLength?: number): Arbitrary<string> {

@@ -58,7 +58,7 @@ function streamSample<Ts>(
  * ```
  *
  * @param generator {@link IProperty} or {@link Arbitrary} to extract the values from
- * @param params - Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
+ * @param params Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
  */
 function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
   return [...streamSample(generator, params)];
@@ -82,8 +82,8 @@ function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parame
  * ```
  *
  * @param generator {@link IProperty} or {@link Arbitrary} to extract the values from
- * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
- * @param params - Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
+ * @param classify Classifier function that can classify the generated value in zero, one or more categories (with free labels)
+ * @param params Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
  */
 function statistics<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,

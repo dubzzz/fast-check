@@ -8,7 +8,7 @@ export class Random {
 
   /**
    * Create a mutable random number generator
-   * @param internalRng - Immutable random generator from pure-rand library
+   * @param internalRng Immutable random generator from pure-rand library
    */
   constructor(private internalRng: prand.RandomGenerator) {}
 
@@ -27,7 +27,7 @@ export class Random {
 
   /**
    * Generate an integer having `bits` random bits
-   * @param bits - Number of bits to generate
+   * @param bits Number of bits to generate
    */
   next(bits: number): number {
     return this.uniformIn(0, (1 << bits) - 1);
@@ -48,8 +48,8 @@ export class Random {
 
   /**
    * Generate a random integer between min (included) and max (included)
-   * @param min - Minimal integer value
-   * @param max - Maximal integer value
+   * @param min Minimal integer value
+   * @param max Maximal integer value
    */
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
@@ -58,8 +58,8 @@ export class Random {
 
   /**
    * Generate a random bigint between min (included) and max (included)
-   * @param min - Minimal bigint value
-   * @param max - Maximal bigint value
+   * @param min Minimal bigint value
+   * @param max Maximal bigint value
    */
   nextBigInt(min: bigint, max: bigint): bigint {
     const g = prand.uniformBigIntDistribution(min, max, this.internalRng);

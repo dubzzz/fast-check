@@ -133,7 +133,7 @@ export class QualifiedParameters<T> {
 
   /**
    * Extract a runner configuration from Parameters
-   * @param p - Incoming Parameters
+   * @param p Incoming Parameters
    */
   static read<T>(op?: Parameters<T>): QualifiedParameters<T> {
     return new QualifiedParameters(op);

@@ -80,7 +80,7 @@ function updateLazy(
  * })); // tree is 1 / 3 of node, 2 / 3 of leaf
  * ```
  *
- * @param builder - Arbitraries builder based on themselves (through `tie`)
+ * @param builder Arbitraries builder based on themselves (through `tie`)
  */
 export function letrec<T>(
   builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }

@@ -46,7 +46,7 @@ type FrequencyArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
  *
  * **WARNING**: It expects at least one (Arbitrary, weight)
  *
- * @param warbs - (Arbitrary, weight)s that might be called to produce a value
+ * @param warbs (Arbitrary, weight)s that might be called to produce a value
  */
 function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyArbitraryType<Ts>> {
   if (warbs.length === 0) {

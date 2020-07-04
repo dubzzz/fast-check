@@ -11,7 +11,7 @@ abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
    * Generate a value of type `T` along with its shrink method
    * based on the provided random number generator
    *
-   * @param mrng - Random number generator
+   * @param mrng Random number generator
    * @returns Random value of type `T` and its shrinker
    */
   abstract generate(mrng: Random): Shrinkable<T>;
@@ -19,8 +19,8 @@ abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
   /**
    * Produce a stream of shrinks of value
    *
-   * @param value - Value to shrink
-   * @param shrunkOnce - Indicate whether its the first shrink (default: false)
+   * @param value Value to shrink
+   * @param shrunkOnce Indicate whether its the first shrink (default: false)
    * @returns Stream of shrinks associated to value
    */
   abstract shrink(value: T, shrunkOnce?: boolean): Stream<T>;
@@ -28,8 +28,8 @@ abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
   /**
    * Build the Shrinkable associated to value
    *
-   * @param value - Value to shrink
-   * @param shrunkOnce - Indicate whether its the first shrink
+   * @param value Value to shrink
+   * @param shrunkOnce Indicate whether its the first shrink
    * @returns Shrinkable associated to value
    */
   shrinkableFor(value: T, shrunkOnce?: boolean): Shrinkable<T> {
