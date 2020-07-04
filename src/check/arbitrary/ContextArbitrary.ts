@@ -9,7 +9,7 @@ export interface Context {
   /**
    * Log execution details during a test.
    * Very helpful when troubleshooting failures
-   * @param data Data to be logged into the current context
+   * @param data - Data to be logged into the current context
    */
   log(data: string): void;
   /**

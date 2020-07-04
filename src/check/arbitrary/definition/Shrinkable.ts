@@ -24,8 +24,8 @@ export class Shrinkable<T, TShrink extends T = T> {
   readonly value!: T;
 
   /**
-   * @param value Internal value of the shrinkable
-   * @param shrink Function producing Stream of shrinks associated to value
+   * @param value - Internal value of the shrinkable
+   * @param shrink - Function producing Stream of shrinks associated to value
    */
   // tslint:disable-next-line:variable-name
   constructor(
@@ -65,7 +65,7 @@ export class Shrinkable<T, TShrink extends T = T> {
    * Create another shrinkable by mapping all values using the provided `mapper`
    * Both the original value and the shrunk ones are impacted
    *
-   * @param mapper Map function, to produce a new element based on an old one
+   * @param mapper - Map function, to produce a new element based on an old one
    * @returns New shrinkable with mapped elements
    */
   map<U>(mapper: (t: T) => U): Shrinkable<U> {
@@ -83,7 +83,7 @@ export class Shrinkable<T, TShrink extends T = T> {
    * When using refinement - `(t: T) => t is U` - only the shrunk values are ensured to be of type U.
    * The type of the current value of the Shrinkable is your responsability.
    *
-   * @param refinement Predicate, to test each produced element. Return true to keep the element, false otherwise
+   * @param refinement - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
    */
   filter<U extends TShrink>(refinement: (t: TShrink) => t is U): Shrinkable<T, U>;
@@ -94,7 +94,7 @@ export class Shrinkable<T, TShrink extends T = T> {
    * All the shrunk values produced by the resulting `Shrinkable<T>`
    * satisfy `predicate(value) == true`
    *
-   * @param predicate Predicate, to test each produced element. Return true to keep the element, false otherwise
+   * @param predicate - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
    */
   filter(predicate: (t: TShrink) => boolean): Shrinkable<T, TShrink>;

@@ -10,7 +10,7 @@ export interface ICommand<Model extends object, Real, RunResult, CheckAsync exte
    *
    * WARNING: does not change the model
    *
-   * @param m Model, simplified or schematic representation of real system
+   * @param m - Model, simplified or schematic representation of real system
    */
   check(m: Readonly<Model>): CheckAsync extends false ? boolean : Promise<boolean>;
 
@@ -19,8 +19,8 @@ export interface ICommand<Model extends object, Real, RunResult, CheckAsync exte
    * Perform the checks post-execution - Throw in case of invalid state.
    * Update the model accordingly
    *
-   * @param m Model, simplified or schematic representation of real system
-   * @param r Sytem under test
+   * @param m - Model, simplified or schematic representation of real system
+   * @param r - Sytem under test
    */
   run(m: Model, r: Real): RunResult;
 

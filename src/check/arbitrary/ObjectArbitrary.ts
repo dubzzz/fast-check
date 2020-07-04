@@ -242,7 +242,7 @@ function anything(): Arbitrary<unknown>;
  * // - [42,42,42]...
  * ```
  *
- * @param settings Constraints to apply when building instances
+ * @param settings - Constraints to apply when building instances
  */
 function anything(settings: ObjectConstraints.Settings): Arbitrary<unknown>;
 function anything(settings?: ObjectConstraints.Settings): Arbitrary<unknown> {
@@ -266,7 +266,7 @@ function object(): Arbitrary<Record<string, unknown>>;
  * @example
  * ```{} or {k: [{}, 1, 2]}```
  *
- * @param settings Constraints to apply when building instances
+ * @param settings - Constraints to apply when building instances
  */
 function object(settings: ObjectConstraints.Settings): Arbitrary<Record<string, unknown>>;
 function object(settings?: ObjectConstraints.Settings): Arbitrary<Record<string, unknown>> {
@@ -291,7 +291,7 @@ function jsonObject(): Arbitrary<unknown>;
  *
  * Keys and string values rely on {@link string}
  *
- * @param maxDepth Maximal depth of the generated values
+ * @param maxDepth - Maximal depth of the generated values
  */
 function jsonObject(maxDepth: number): Arbitrary<unknown>;
 function jsonObject(maxDepth?: number): Arbitrary<unknown> {
@@ -309,7 +309,7 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  *
  * Keys and string values rely on {@link unicode}
  *
- * @param maxDepth Maximal depth of the generated values
+ * @param maxDepth - Maximal depth of the generated values
  */
 function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
 function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
@@ -327,7 +327,7 @@ function json(): Arbitrary<string>;
  *
  * Keys and string values rely on {@link string}
  *
- * @param maxDepth Maximal depth of the generated objects
+ * @param maxDepth - Maximal depth of the generated objects
  */
 function json(maxDepth: number): Arbitrary<string>;
 function json(maxDepth?: number): Arbitrary<string> {
@@ -346,7 +346,7 @@ function unicodeJson(): Arbitrary<string>;
  *
  * Keys and string values rely on {@link unicode}
  *
- * @param maxDepth Maximal depth of the generated objects
+ * @param maxDepth - Maximal depth of the generated objects
  */
 function unicodeJson(maxDepth: number): Arbitrary<string>;
 function unicodeJson(maxDepth?: number): Arbitrary<string> {

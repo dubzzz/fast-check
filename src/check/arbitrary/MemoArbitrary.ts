@@ -43,7 +43,7 @@ let contextRemainingDepth = 10;
  * const leaf = fc.nat;
  * ```
  *
- * @param builder Arbitrary builder taken the maximal depth allowed as input (parameter `n`)
+ * @param builder - Arbitrary builder taken the maximal depth allowed as input (parameter `n`)
  */
 export const memo = <T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> => {
   const previous: { [depth: number]: Arbitrary<T> } = {};
