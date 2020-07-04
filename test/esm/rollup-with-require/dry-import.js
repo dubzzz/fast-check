@@ -1,3 +1,3 @@
-export default function serialize(data) {
+module.exports = function serialize(data) {
   return JSON.stringify(data);
-}
+};
