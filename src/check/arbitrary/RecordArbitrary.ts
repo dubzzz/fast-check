@@ -43,7 +43,7 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
  * // merge two integer arbitraries to produce a {x, y} record
  * ```
  *
- * @param recordModel - Schema of the record
+ * @param recordModel Schema of the record
  */
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }>;
 /**
@@ -55,8 +55,8 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  * // merge two integer arbitraries to produce a {x, y}, {x}, {y} or {} record
  * ```
  *
- * @param recordModel - Schema of the record
- * @param constraints - Contraints on the generated record
+ * @param recordModel Schema of the record
+ * @param constraints Contraints on the generated record
  */
 function record<T, Constraints extends RecordConstraints>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },

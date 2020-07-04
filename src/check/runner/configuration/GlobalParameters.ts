@@ -19,7 +19,7 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
  * ) // equivalent to { numRuns: 10, seed: 42 }
  * ```
  *
- * @param parameters - Global parameters
+ * @param parameters Global parameters
  */
 export const configureGlobal = (parameters: GlobalParameters): void => {
   getGlobal()[globalParametersSymbol] = parameters;

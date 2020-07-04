@@ -29,7 +29,7 @@ class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
  *
  * WARNING: Requires Object.assign
  *
- * @param arb - Arbitrary used to generate the values
+ * @param arb Arbitrary used to generate the values
  */
 function infiniteStream<T>(arb: Arbitrary<T>): Arbitrary<Stream<T>> {
   return new StreamArbitrary(arb);

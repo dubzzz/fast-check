@@ -43,7 +43,7 @@ export class Property<Ts> implements IProperty<Ts> {
 
   /**
    * Define a function that should be called before all calls to the predicate
-   * @param hookFunction - Function to be called
+   * @param hookFunction Function to be called
    */
   beforeEach(
     invalidHookFunction: () => Promise<unknown>
@@ -55,7 +55,7 @@ export class Property<Ts> implements IProperty<Ts> {
   }
   /**
    * Define a function that should be called after all calls to the predicate
-   * @param hookFunction - Function to be called
+   * @param hookFunction Function to be called
    */
   afterEach(
     invalidHookFunction: () => Promise<unknown>

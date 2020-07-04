@@ -19,13 +19,13 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   /**
    * Generate values of type Ts
    *
-   * @param mrng - Random number generator
-   * @param runId - Id of the generation, starting at 0 - if set the generation might be biased
+   * @param mrng Random number generator
+   * @param runId Id of the generation, starting at 0 - if set the generation might be biased
    */
   generate(mrng: Random, runId?: number): Shrinkable<Ts>;
   /**
    * Check the predicate for v
-   * @param v - Value of which we want to check the predicate
+   * @param v Value of which we want to check the predicate
    */
   run(
     v: Ts
@@ -38,7 +38,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
  * @hidden
  * Convert runId (IProperty) into a frequency (Arbitrary)
  *
- * @param runId - Id of the run starting at 0
+ * @param runId Id of the run starting at 0
  * @returns Frequency of bias starting at 2
  */
 export const runIdToFrequency = (runId: number): number => 2 + Math.floor(Math.log(runId + 1) / Math.log(10));

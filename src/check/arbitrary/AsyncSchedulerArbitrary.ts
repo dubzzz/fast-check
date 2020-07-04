@@ -399,7 +399,7 @@ function schedulerFor<TMetaData = unknown>(
  * WARNING:
  * If one the promises is wrongly defined it will fail - for instance asking to resolve 5 while 5 does not exist.
  *
- * @param customOrdering - Array defining in which order the promises will be resolved.
+ * @param customOrdering Array defining in which order the promises will be resolved.
  * Id of the promises start at 1. 1 means first scheduled promise, 2 second scheduled promise and so on.
  */
 function schedulerFor<TMetaData = unknown>(
