@@ -99,15 +99,6 @@ jobs:
         - yarn build
         - yarn test --maxWorkers=4
         - yarn e2e --maxWorkers=4
-    - stage: test
-      env: STEP=HEAD
-      script:
-        - nvm install node
-        - node --version
-        - yarn prebuild
-        - yarn build
-        - yarn test --maxWorkers=4
-        - yarn e2e --maxWorkers=4
     - stage: publish documentation
       if: branch = master AND type = push
       script:
