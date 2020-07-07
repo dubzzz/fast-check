@@ -31,6 +31,8 @@ const anythingEnableAll = {
   withMap: true,
   withSet: true,
   withObjectString: true,
+  withObjectString: true,
+  withNullPrototype: true,
   ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
 };
 
