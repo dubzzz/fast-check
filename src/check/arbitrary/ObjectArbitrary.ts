@@ -13,6 +13,7 @@ import { oneof } from './OneOfArbitrary';
 import { set } from './SetArbitrary';
 import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
+import { bigInt } from './BigIntArbitrary';
 
 export class ObjectConstraints {
   constructor(
@@ -23,7 +24,8 @@ export class ObjectConstraints {
     readonly withSet: boolean,
     readonly withMap: boolean,
     readonly withObjectString: boolean,
-    readonly withNullPrototype: boolean
+    readonly withNullPrototype: boolean,
+    readonly withBigInt: boolean
   ) {}
 
   /**
@@ -93,7 +95,8 @@ export class ObjectConstraints {
       getOr(() => settings!.withSet, false),
       getOr(() => settings!.withMap, false),
       getOr(() => settings!.withObjectString, false),
-      getOr(() => settings!.withNullPrototype, false)
+      getOr(() => settings!.withNullPrototype, false),
+      getOr(() => settings!.withBigInt, false)
     );
   }
 }
@@ -144,6 +147,8 @@ export namespace ObjectConstraints {
     withObjectString?: boolean;
     /** Also generate object with null prototype */
     withNullPrototype?: boolean;
+    /** Also generate BigInt */
+    withBigInt?: boolean;
   }
 }
 
@@ -198,7 +203,8 @@ const anythingInternal = (constraints: ObjectConstraints): Arbitrary<unknown> =>
       ...(constraints.withMap ? [mapArb()] : []),
       ...(constraints.withSet ? [setArb()] : []),
       ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
-      ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : [])
+      ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : []),
+      ...(constraints.withBigInt ? [bigInt()] : [])
     );
   });
 

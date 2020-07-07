@@ -15,6 +15,8 @@ import {
 
 import { Random } from '../../../../src/random/generator/Random';
 
+declare function BigInt(n: number | bigint | string): bigint;
+
 describe('ObjectArbitrary', () => {
   const assertShrinkedValue = (original: any, shrinked: any) => {
     expect(typeof shrinked).toEqual(typeof original);
@@ -206,6 +208,7 @@ describe('ObjectArbitrary', () => {
               withSet: fc.boolean(),
               withObjectString: fc.boolean(),
               withNullPrototype: fc.boolean(),
+              ...(typeof BigInt !== 'undefined' ? { withBigInt: fc.boolean() } : {}),
             },
             { withDeletedKeys: true }
           ),

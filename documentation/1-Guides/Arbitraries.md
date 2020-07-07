@@ -147,6 +147,7 @@ export module ObjectConstraints {
         withSet?: boolean;          // also generate Set
         withObjectString?: boolean; // also generate string representations of object instances
         withNullPrototype?: boolean;// also generate string representations of object instances
+        withBigInt?: boolean;       // also generate BigInt
     };
 };
 ```
