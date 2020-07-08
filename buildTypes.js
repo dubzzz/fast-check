@@ -46,5 +46,13 @@ const bigintToAny = (content) => {
   return content.replace(/([^\w\d]|^)bigint([^\w\d]|$)/g, '$1any$2');
 };
 
+/**
+ * @param {string} content
+ * @returns {string}
+ */
+const bigint0nToNever = (content) => {
+  return content.replace(/([^\w\d]|^)0n([^\w\d]|$)/g, '$never$2');
+};
+
 rewriteTypesTo('ts3.2', []);
-rewriteTypesTo('types', [bigintToAny]);
+rewriteTypesTo('types', [bigintToAny, bigint0nToNever]);
