@@ -1,5 +1,4 @@
 import { falsy } from '../../../../src/check/arbitrary/FalsyArbitrary';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { mocked } from 'ts-jest/utils';
 
 jest.mock('../../../../src/check/arbitrary/ConstantArbitrary');
