@@ -1,6 +1,7 @@
 # 1.25.1
 
 _Scheduler was not putting the metadata into the generated report_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.25.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.25.0...v1.25.1)]
 
 ## Fixes
 
@@ -9,6 +10,7 @@ _Scheduler was not putting the metadata into the generated report_
 # 1.25.0
 
 _Add ability to customize reported errors_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.25.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.24.2...v1.25.0)]
 
 ## Features
 
@@ -38,6 +40,7 @@ _Add ability to customize reported errors_
 # 1.24.2
 
 _Fix `constantFrom` not compatible with older versions of node_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.24.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.24.1...v1.24.2)]
 
 ## Fixes
 
@@ -54,6 +57,7 @@ _Fix `constantFrom` not compatible with older versions of node_
 # 1.24.1
 
 _Fixes a code issue detected in `fc.object()` when using `withNullPrototype`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.24.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.24.0...v1.24.1)]
 
 ## Fixes
 
@@ -62,6 +66,7 @@ _Fixes a code issue detected in `fc.object()` when using `withNullPrototype`_
 # 1.24.0
 
 _Model based testing and race condition detection_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.24.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.23.0...v1.24.0)]
 
 ## Features
 
@@ -77,6 +82,7 @@ _Model based testing and race condition detection_
 # 1.23.0
 
 _Better typings for `filter` and `oneof` plus support for null prototypes_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.23.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.22.2...v1.23.0)]
 
 ## Features
 
@@ -95,6 +101,7 @@ _Better typings for `filter` and `oneof` plus support for null prototypes_
 # 1.22.2
 
 _Remove unused files from the final bundle_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.22.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.22.1...v1.22.2)]
 
 ## Fixes
 
@@ -105,10 +112,12 @@ _Remove unused files from the final bundle_
 # 1.22.1
 
 _Fix broken bundle_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.22.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.22.0...v1.22.1)]
 
 # 1.22.0
 
 _Better random values and ability to shrink very large data-structures_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.22.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.21.0...v1.22.0)]
 
 ## Features
 
@@ -136,6 +145,7 @@ _Better random values and ability to shrink very large data-structures_
 # 1.21.0
 
 _Better typings for `beforeEach` and `afterEach` and more options on `fc.scheduler`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.21.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.20.1...v1.21.0)]
 
 ## Features
 
@@ -154,6 +164,7 @@ _Better typings for `beforeEach` and `afterEach` and more options on `fc.schedul
 # 1.20.1
 
 _Reduce bundle size_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.20.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.20.0...v1.20.1)]
 
 ## Fixes
 
@@ -163,6 +174,7 @@ _Reduce bundle size_
 # 1.20.0
 
 _Built-in support for race condition detection_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.20.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.19.0...v1.20.0)]
 
 ## Features
 
@@ -177,6 +189,7 @@ _Built-in support for race condition detection_
 # 1.19.0
 
 _Interrupt test-suites after a given delay while the number of runs have not been reached_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.19.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.18.1...v1.19.0)]
 
 ## Features
 
@@ -202,6 +215,7 @@ _Interrupt test-suites after a given delay while the number of runs have not bee
 # 1.18.1
 
 _Typings regression for `fc.object`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.18.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.18.0...v1.18.1)]
 
 ## Fixes
 
@@ -210,6 +224,7 @@ _Typings regression for `fc.object`_
 # 1.18.0
 
 _Support for global parameters with `fc.configureGlobal(parameters)`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.18.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.17.0...v1.18.0)]
 
 ## Features
 
@@ -229,6 +244,7 @@ _Support for global parameters with `fc.configureGlobal(parameters)`_
 # 1.17.0
 
 _Multiple new arbitraries: date, ipv4 extended, uuid, mixed case and many settings_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.17.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.16.3...v1.17.0)]
 
 ## Features
 
@@ -262,6 +278,7 @@ _Multiple new arbitraries: date, ipv4 extended, uuid, mixed case and many settin
 # 1.16.3
 
 _skipAllAfterTimeLimit throws when it passes time limit_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.16.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.16.2...v1.16.3)]
 
 ## Fixes
 
@@ -270,6 +287,7 @@ _skipAllAfterTimeLimit throws when it passes time limit_
 # 1.16.2
 
 _Web authority ports should be within 0-65535_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.16.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.16.1...v1.16.2)]
 
 ## Fixes
 
@@ -278,6 +296,7 @@ _Web authority ports should be within 0-65535_
 # 1.16.1
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.16.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.16.0...v1.16.1)]
 
 ## Fixes
 
@@ -286,6 +305,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.16.0
 
 _Easier recursive data-structures_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.16.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.15.4...v1.16.0)]
 
 ## Features
 
@@ -312,6 +332,7 @@ _Easier recursive data-structures_
 # 1.15.4
 
 _skipAllAfterTimeLimit throws when it passes time limit_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.15.4)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.15.3...v1.15.4)]
 
 ## Fixes
 
@@ -320,6 +341,7 @@ _skipAllAfterTimeLimit throws when it passes time limit_
 # 1.15.3
 
 _Web authority ports should be within 0-65535_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.15.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.15.2...v1.15.3)]
 
 ## Fixes
 
@@ -328,6 +350,7 @@ _Web authority ports should be within 0-65535_
 # 1.15.2
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.15.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.15.1...v1.15.2)]
 
 ## Fixes
 
@@ -336,6 +359,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.15.1
 
 _Documentation updates_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.15.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.15.0...v1.15.1)]
 
 ## Fixes
 
@@ -351,6 +375,7 @@ _Documentation updates_
 # 1.15.0
 
 _Add auto-skip after time limit option for runners_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.15.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.14.2...v1.15.0)]
 
 ## Features
 
@@ -369,6 +394,7 @@ _Add auto-skip after time limit option for runners_
 # 1.14.2
 
 _Web authority ports should be within 0-65535_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.14.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.14.1...v1.14.2)]
 
 ## Fixes
 
@@ -377,6 +403,7 @@ _Web authority ports should be within 0-65535_
 # 1.14.1
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.14.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.14.0...v1.14.1)]
 
 ## Fixes
 
@@ -385,6 +412,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.14.0
 
 _New generated documentation and new arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.14.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.13.1...v1.14.0)]
 
 ## Features
 
@@ -402,6 +430,7 @@ _New generated documentation and new arbitraries_
 # 1.13.1
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.13.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.13.0...v1.13.1)]
 
 ## Fixes
 
@@ -410,6 +439,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.13.0
 
 _Remove dependency to lorem-ipsum and more control over `fc.anything` and `fc.object`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.13.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.12.2...v1.13.0)]
 
 ## Features
 
@@ -422,6 +452,7 @@ _Remove dependency to lorem-ipsum and more control over `fc.anything` and `fc.ob
 # 1.12.2
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.12.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.12.1...v1.12.2)]
 
 ## Fixes
 
@@ -430,6 +461,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.12.1
 
 _Lighter bundle_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.12.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.12.0...v1.12.1)]
 
 ## Fixes
 
@@ -439,6 +471,7 @@ _Lighter bundle_
 # 1.12.0
 
 _Better balance between values produced by `fc.anything()`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.12.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.11.1...v1.12.0)]
 
 ## Features
 
@@ -449,6 +482,7 @@ _Better balance between values produced by `fc.anything()`_
 # 1.11.1
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.11.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.11.0...v1.11.1)]
 
 ## Fixes
 
@@ -457,6 +491,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.11.0
 
 _Replay ability for commands and new arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.11.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.10.2...v1.11.0)]
 
 ## Features
 
@@ -485,6 +520,7 @@ _Replay ability for commands and new arbitraries_
 # 1.10.2
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.10.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.10.1...v1.10.2)]
 
 ## Fixes
 
@@ -493,6 +529,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.10.1
 
 _Fix browser bundle_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.10.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.10.0...v1.10.1)]
 
 ## Fixes
 
@@ -501,6 +538,7 @@ _Fix browser bundle_
 # 1.10.0
 
 _Better shrinking of commands_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.9.4...v1.10.0)]
 
 ## Features
 
@@ -511,6 +549,7 @@ _Better shrinking of commands_
 # 1.9.4
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.9.4)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.9.3...v1.9.4)]
 
 ## Fixes
 
@@ -519,6 +558,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.9.3
 
 _Fix browser bundle_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.9.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.9.2...v1.9.3)]
 
 ## Fixes
 
@@ -527,6 +567,7 @@ _Fix browser bundle_
 # 1.9.2
 
 _Adapt typings for older versions of TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.9.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.9.1...v1.9.2)]
 
 ## Fixes
 
@@ -536,6 +577,7 @@ _Adapt typings for older versions of TypeScript_
 # 1.9.1
 
 _VerbosityLevel enum is accessible through fc.VerbosityLevel_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.9.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.9.0...v1.9.1)]
 
 ## Fixes
 
@@ -544,6 +586,7 @@ _VerbosityLevel enum is accessible through fc.VerbosityLevel_
 # 1.9.0
 
 _BigInt support and new verbosity level_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.9.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.8.3...v1.9.0)]
 
 ## Features
 
@@ -564,6 +607,7 @@ _BigInt support and new verbosity level_
 # 1.8.3
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.8.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.8.2...v1.8.3)]
 
 ## Fixes
 
@@ -572,6 +616,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.8.2
 
 _Fix regression introduced in the shrinking of cloneable_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.8.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.8.1...v1.8.2)]
 
 ## Fixes
 
@@ -583,6 +628,7 @@ _Fix regression introduced in the shrinking of cloneable_
 # 1.8.1
 
 _Support asynchronous model setup_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.8.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.8.0...v1.8.1)]
 
 ## Fixes
 
@@ -591,6 +637,7 @@ _Support asynchronous model setup_
 # 1.8.0
 
 _Native handling of stateful generated values_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.7.2...v1.8.0)]
 
 ## Features
 
@@ -610,6 +657,7 @@ _Native handling of stateful generated values_
 # 1.7.2
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.7.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.7.1...v1.7.2)]
 
 ## Fixes
 
@@ -618,6 +666,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.7.1
 
 _Fix import of loremIpsum library_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.7.0...v1.7.1)]
 
 ## Fixes
 
@@ -626,6 +675,7 @@ _Fix import of loremIpsum library_
 # 1.7.0
 
 _Switch to another PRNG for better performances, better fc.commands_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.6.3...v1.7.0)]
 
 ## Features
 
@@ -641,6 +691,7 @@ _Switch to another PRNG for better performances, better fc.commands_
 # 1.6.3
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.6.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.6.2...v1.6.3)]
 
 ## Fixes
 
@@ -649,6 +700,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.6.2
 
 _Performance improvements_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.6.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.6.1...v1.6.2)]
 
 ## Fixes
 
@@ -661,6 +713,7 @@ _Performance improvements_
 # 1.6.1
 
 _Performance improvements_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.6.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.6.0...v1.6.1)]
 
 ## Fixes
 
@@ -669,6 +722,7 @@ _Performance improvements_
 # 1.6.0
 
 _ESM version of the package published to npm, arbitraries to generate functions and more settings to be able to tweak the execution_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.5.1...v1.6.0)]
 
 ## Features
 
@@ -687,6 +741,7 @@ _ESM version of the package published to npm, arbitraries to generate functions 
 # 1.5.1
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.5.0...v1.5.1)]
 
 ## Fixes
 
@@ -695,6 +750,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.5.0
 
 _Property based test state machine: UI, automata._
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.4.1...v1.5.0)]
 _Addition of `subarray` and `shuffledSubarray` arbitraries_
 
 ## Features
@@ -715,6 +771,7 @@ _Addition of `subarray` and `shuffledSubarray` arbitraries_
 # 1.4.1
 
 _Infinite loop on replays with one-level-deep path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.4.0...v1.4.1)]
 
 ## Fixes
 
@@ -723,6 +780,7 @@ _Infinite loop on replays with one-level-deep path_
 # 1.4.0
 
 _Suggest custom test values with `examples`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.3.0...v1.4.0)]
 
 ## Features
 
@@ -739,6 +797,7 @@ _Suggest custom test values with `examples`_
 # 1.3.0
 
 _Filter invalid values directly in predicates using `fc.pre`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.2.3...v1.3.0)]
 
 ## Features
 
@@ -751,6 +810,7 @@ _Filter invalid values directly in predicates using `fc.pre`_
 # 1.2.3
 
 _Reduce package footprint and less restrictive API for `oneof`/`frequency`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.2.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.2.2...v1.2.3)]
 
 ## Fixes
 
@@ -763,6 +823,7 @@ _Reduce package footprint and less restrictive API for `oneof`/`frequency`_
 # 1.2.2
 
 _Less restrictive API for `constantFrom`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.2.1...v1.2.2)]
 
 ## Fixes
 
@@ -771,6 +832,7 @@ _Less restrictive API for `constantFrom`_
 # 1.2.1
 
 _Readme update_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.2.0...v1.2.1)]
 
 ## Fixes
 
@@ -780,6 +842,7 @@ _Readme update_
 # 1.2.0
 
 _Built-in chaining of arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.1.4...v1.2.0)]
 
 ## Features
 
@@ -797,6 +860,7 @@ _Built-in chaining of arbitraries_
 # 1.1.4
 
 _Better performance for biased arbitraries (=default)_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.1.3...v1.1.4)]
 
 ## Fixes
 
@@ -806,6 +870,7 @@ _Better performance for biased arbitraries (=default)_
 # 1.1.3
 
 _Export missing `fc.stringOf`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.1.2...v1.1.3)]
 
 ## Fixes
 
@@ -814,6 +879,7 @@ _Export missing `fc.stringOf`_
 # 1.1.2
 
 _Readme update_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.1.1...v1.1.2)]
 
 ## Fixes
 
@@ -824,6 +890,7 @@ _Readme update_
 # 1.1.1
 
 _Ability to use min and max boundaries outside of 32 bits integers for `fc.integer`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.1.0...v1.1.1)]
 
 ## Fixes
 
@@ -832,6 +899,7 @@ _Ability to use min and max boundaries outside of 32 bits integers for `fc.integ
 # 1.1.0
 
 _Straight to corner cases and verbose mode_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.0.4...v1.1.0)]
 
 ## Features
 
@@ -844,6 +912,7 @@ _Straight to corner cases and verbose mode_
 # 1.0.4
 
 _TypeScript and JavaScript documentation of the code using TypeDoc_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.0.3...v1.0.4)]
 
 ## Features
 
@@ -857,6 +926,7 @@ _TypeScript and JavaScript documentation of the code using TypeDoc_
 # 1.0.3
 
 _Reduce risk of using an unimplemented method of Node (older releases <6)_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.0.2...v1.0.3)]
 
 ## Fixes
 
@@ -866,6 +936,7 @@ _Reduce risk of using an unimplemented method of Node (older releases <6)_
 # 1.0.2
 
 _Readme update following removal of depreciated devDependencies_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.0.1...v1.0.2)]
 
 ## Fixes
 
@@ -875,6 +946,7 @@ _Readme update following removal of depreciated devDependencies_
 # 1.0.1
 
 _Fix infinite loop when shrinking array having a minimal length defined_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.0.0...v1.0.1)]
 
 ## Fixes
 
@@ -883,6 +955,7 @@ _Fix infinite loop when shrinking array having a minimal length defined_
 # 1.0.0
 
 _Easier replay of failures_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.13...v1.0.0)]
 
 _Faster shrinks_
 
@@ -916,6 +989,7 @@ _No recursion when shrinking_
 # 0.0.13
 
 _Readme update_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.13)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.12...v0.0.13)]
 
 ## Fixes
 
@@ -924,6 +998,7 @@ _Readme update_
 # 0.0.12
 
 _New arbitraries: constantFrom and record_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.12)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.11...v0.0.12)]
 
 ## Features:
 
@@ -941,6 +1016,7 @@ _New arbitraries: constantFrom and record_
 # 0.0.11
 
 _Bundled for web-browsers and node_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.11)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.10...v0.0.11)]
 
 ## Features:
 - Add bundle for web-browsers
@@ -956,6 +1032,7 @@ _Bundled for web-browsers and node_
 # 0.0.10
 
 _Fix shrink of async properties_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.10)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.9...v0.0.10)]
 
 ## Fixes:
 
@@ -964,6 +1041,7 @@ _Fix shrink of async properties_
 # 0.0.9
 
 _JSON arbitraries and shrinker kill switch_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.9)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.8...v0.0.9)]
 
 ## Features:
 
@@ -974,6 +1052,7 @@ _JSON arbitraries and shrinker kill switch_
 # 0.0.8
 
 _Code and documentation alignment_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.7...v0.0.8)]
 
 ## Fixes:
 
@@ -983,6 +1062,7 @@ _Code and documentation alignment_
 # 0.0.7
 
 _Going async/await_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.6...v0.0.7)]
 
 ## Features:
 
@@ -997,6 +1077,7 @@ _Going async/await_
 # 0.0.6
 
 _Force ready to be used version_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.5...v0.0.6)]
 
 ## Features:
 
