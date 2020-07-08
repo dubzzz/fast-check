@@ -71,3 +71,9 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+  - package-ecosystem: "npm"
+    directory: "/legacy/typescript-3.0"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "⬆️"
