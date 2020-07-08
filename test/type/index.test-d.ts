@@ -132,10 +132,10 @@ expectType<fc.Arbitrary<() => number>>(fc.func(fc.nat()));
 expectError(fc.func(1));
 
 // falsy arbitary
-expectType < fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>(fc.falsy());
-expectType < fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>(fc.falsy({}));
-expectType < fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>(fc.falsy({ withBigInt: false }));
-expectType < fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>(fc.falsy({ withBigInt: true }));
+expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>(fc.falsy());
+expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>(fc.falsy({}));
+expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>(fc.falsy({ withBigInt: false }));
+expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>>(fc.falsy({ withBigInt: true }));
 
 // configureGlobal
 expectType(fc.configureGlobal({ reporter: (out: fc.RunDetails<unknown>) => {} }));
