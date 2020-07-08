@@ -16,7 +16,7 @@ import { sample, statistics } from './check/runner/Sampler';
 import { array } from './check/arbitrary/ArrayArbitrary';
 import { bigInt, bigIntN, bigUint, bigUintN } from './check/arbitrary/BigIntArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
-import { falsy } from './check/arbitrary/FalsyArbitrary';
+import { falsy, FalsyContraints, FalsyType } from './check/arbitrary/FalsyArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
 import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
 import { context, Context } from './check/arbitrary/ContextArbitrary';
@@ -232,6 +232,8 @@ export {
   ExecutionTree,
   GlobalParameters,
   Memo,
+  FalsyContraints,
+  FalsyType,
   MixedCaseConstraints,
   ObjectConstraints,
   Parameters,

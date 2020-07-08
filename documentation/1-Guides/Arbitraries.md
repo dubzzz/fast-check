@@ -111,6 +111,7 @@ More specific strings:
 ## Falsy (:any)
 
 - `fc.falsy()` one of `false`, `null`, `undefined`, `0`, `''`, or `Number.NaN`
+- `fc.falsy({ withBigInt: true })` one of `false`, `null`, `undefined`, `0`, `''`, `Number.NaN` or `0n`
 
 ## Combinators (:T)
 
