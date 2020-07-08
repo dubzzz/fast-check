@@ -1,3 +1,31 @@
+# 1.26.0
+
+_New arbitrary to generate falsy values_
+[[Code](https://github.com/dubzzz/fast-check/tree/v1.26.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.25.1...v1.26.0)]
+
+## Features
+
+- ([PR#627](https://github.com/dubzzz/fast-check/pull/627)) New arbitrary to generate falsy values
+- ([PR#719](https://github.com/dubzzz/fast-check/pull/719)) Add `withBigInt` flag for `fc.falsy`
+- ([PR#718](https://github.com/dubzzz/fast-check/pull/718)) Add `withBigInt` flag for `fc.anything`
+
+## Fixes
+
+- ([PR#632](https://github.com/dubzzz/fast-check/pull/632)) Doc: Script generating the documentation compatible with Windows
+- ([PR#652](https://github.com/dubzzz/fast-check/pull/652)) Doc: Add note on chain shrink issues
+- ([PR#658](https://github.com/dubzzz/fast-check/pull/658)) Doc: Document how fast-check works under-the-hood
+- ([PR#664](https://github.com/dubzzz/fast-check/pull/664)) Doc: Add a compatibility section into the README
+- ([PR#665](https://github.com/dubzzz/fast-check/pull/665)) Doc: Fix some typos
+- ([PR#700](https://github.com/dubzzz/fast-check/pull/700)) Doc: Remove warnings related to badly set `@param` for ts-docs
+- ([PR#729](https://github.com/dubzzz/fast-check/pull/729)) Doc: Add links to commit diff into the CHANGELOG
+- ([PR#630](https://github.com/dubzzz/fast-check/pull/630)) Test: Enhance stability of e2e test for AsyncScheduler
+- ([PR#636](https://github.com/dubzzz/fast-check/pull/636)) Test: Ensure we can generate the documentation for each PR
+- ([PR#637](https://github.com/dubzzz/fast-check/pull/637)) Test: Add missing parameters in QualifiedParameters tests
+- ([PR#661](https://github.com/dubzzz/fast-check/pull/661)) Test: Compilation against old releases of TypeScript
+- ([PR#720](https://github.com/dubzzz/fast-check/pull/720)) Test: Remove useless CI stage (HEAD)
+
+---
+
 # 1.25.1
 
 _Scheduler was not putting the metadata into the generated report_
