@@ -6,7 +6,7 @@
       "fast-check": "*"
     },
     "devDependencies": {
-      "typescript": "3.0.3"
+      "typescript": "3.9.6"
     },
     "license": "MIT",
     "private": true
