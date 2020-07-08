@@ -51,7 +51,7 @@ const bigintToAny = (content) => {
  * @returns {string}
  */
 const bigint0nToNever = (content) => {
-  return content.replace(/([^\w\d]|^)0n([^\w\d]|$)/g, '$never$2');
+  return content.replace(/([^\w\d]|^)0n([^\w\d]|$)/g, '$1never$2');
 };
 
 rewriteTypesTo('ts3.2', []);
