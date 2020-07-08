@@ -16,7 +16,7 @@ describe('FalsyArbitrary', () => {
       let calledWithValues: unknown[] = [];
       constantFrom.mockImplementationOnce((...values: unknown[]) => {
         calledWithValues = values;
-        return null as Arbitrary<unknown>;
+        return null as any;
       });
 
       // Act
@@ -32,7 +32,7 @@ describe('FalsyArbitrary', () => {
       let calledWithValues: unknown[] = [];
       constantFrom.mockImplementationOnce((...values: unknown[]) => {
         calledWithValues = values;
-        return null as Arbitrary<unknown>;
+        return null as any;
       });
 
       // Act
@@ -49,7 +49,7 @@ describe('FalsyArbitrary', () => {
         let calledWithValues: unknown[] = [];
         constantFrom.mockImplementationOnce((...values: unknown[]) => {
           calledWithValues = values;
-          return null as Arbitrary<unknown>;
+          return null as any;
         });
 
         // Act
