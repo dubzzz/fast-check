@@ -9,7 +9,7 @@ export interface MixedCaseConstraints {
   toggleCase?: (rawChar: string) => string;
 }
 
-/** @hidden */
+/** @internal */
 export function countToggledBits(n: bigint): number {
   let count = 0;
   while (n > BigInt(0)) {
@@ -19,7 +19,7 @@ export function countToggledBits(n: bigint): number {
   return count;
 }
 
-/** @hidden */
+/** @internal */
 export function computeNextFlags(flags: bigint, nextSize: number): bigint {
   // whenever possible we want to preserve the same number of toggled positions
   // whenever possible we want to keep them at the same place
@@ -37,7 +37,7 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
   return nFlags;
 }
 
-/** @hidden */
+/** @internal */
 class MixedCaseArbitrary extends Arbitrary<string> {
   constructor(private readonly stringArb: Arbitrary<string>, private readonly toggleCase: (rawChar: string) => string) {
     super();
@@ -97,7 +97,7 @@ class MixedCaseArbitrary extends Arbitrary<string> {
   }
 }
 
-/** @hidden */
+/** @internal */
 function defaultToggleCase(rawChar: string) {
   const upper = rawChar.toUpperCase();
   if (upper !== rawChar) return upper;

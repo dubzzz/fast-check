@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @hidden */
+/** @internal */
 class OneOfArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arbs: Arbitrary<T>[]) {
     super();

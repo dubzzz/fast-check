@@ -4,7 +4,7 @@ import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
 
 /**
- * @hidden
+ * @internal
  *
  * Configuration extracted from incoming Parameters
  *
