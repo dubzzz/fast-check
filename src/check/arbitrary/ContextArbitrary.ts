@@ -18,7 +18,7 @@ export interface Context {
   size(): number;
 }
 
-/** @hidden */
+/** @internal */
 class ContextImplem implements Context {
   private readonly receivedLogs: string[];
   constructor() {
