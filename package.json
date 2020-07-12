@@ -79,7 +79,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "source-map-support": "^0.5.19",
     "terser ": "^4.4.3",
-    "ts-jest": "^25.5.1",
+    "ts-jest": "^26.1.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.5"
   },
