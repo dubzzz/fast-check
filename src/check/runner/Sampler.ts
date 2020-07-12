@@ -10,7 +10,7 @@ import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
-/** @hidden */
+/** @internal */
 function toProperty<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   qParams: QualifiedParameters<Ts>
@@ -21,7 +21,7 @@ function toProperty<Ts>(
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }
 
-/** @hidden */
+/** @internal */
 function streamSample<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   params?: Parameters<Ts> | number

@@ -3,7 +3,7 @@ import { AsyncCommand } from '../command/AsyncCommand';
 import { Scheduler } from '../../arbitrary/AsyncSchedulerArbitrary';
 import { CommandsIterable } from './CommandsIterable';
 
-/** @hidden */
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync extends boolean>
   implements AsyncCommand<Model, Real, true> {
@@ -54,7 +54,7 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
   }
 }
 
-/** @hidden */
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const scheduleCommands = function* <Model extends object, Real, CheckAsync extends boolean>(
   s: Scheduler,

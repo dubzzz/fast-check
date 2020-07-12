@@ -12,13 +12,6 @@
   },
   "module": "lib/esm/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
-  "typesVersions": {
-    ">=3.2": {
-      "*": [
-        "lib/ts3.2/fast-check.d.ts"
-      ]
-    }
-  },
   "files": [
     "lib"
   ],
@@ -29,7 +22,7 @@
     "prebuild": "node prebuild/prebuild.cjs",
     "build": "tsc",
     "build:watch": "tsc -w",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && node ./buildTypes.js",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "webbuild": "browserify lib/fast-check.js --s fastcheck | terser -c -m > lib/bundle.js",
@@ -62,7 +55,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^2.0.0"
+    "pure-rand": "^3.0.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.8.10",
