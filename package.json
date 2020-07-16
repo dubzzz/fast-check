@@ -25,7 +25,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "build:prod": "yarn prebuild && yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && yarn webbuild && node postbuild/main.cjs",
+    "build:prod": "yarn prebuild && yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && yarn webbuildnode postbuild/main.cjs",
     "watch": "tsc -w",
     "test": "jest --config jest.unit.config.cjs --coverage",
     "test:watch": "jest --config jest.unit.config.cjs --watch",
