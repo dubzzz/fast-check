@@ -729,11 +729,11 @@
     "@types/yargs-parser" "*"
 
 "@typescript-eslint/eslint-plugin@^3.1.0":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-3.6.1.tgz#5ced8fd2087fbb83a76973dea4a0d39d9cb4a642"
-  integrity sha512-06lfjo76naNeOMDl+mWG9Fh/a0UHKLGhin+mGaIw72FUMbMGBkdi/FEJmgEDzh4eE73KIYzHWvOCYJ0ak7nrJQ==
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-3.7.0.tgz#0f91aa3c83d019591719e597fbdb73a59595a263"
+  integrity sha512-4OEcPON3QIx0ntsuiuFP/TkldmBGXf0uKxPQlGtS/W2F3ndYm8Vgdpj/woPJkzUc65gd3iR+qi3K8SDQP/obFg==
   dependencies:
-    "@typescript-eslint/experimental-utils" "3.6.1"
+    "@typescript-eslint/experimental-utils" "3.7.0"
     debug "^4.1.1"
     functional-red-black-tree "^1.0.1"
     regexpp "^3.0.0"
