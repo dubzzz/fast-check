@@ -5,8 +5,7 @@
   "scripts": {
     "test": "tsd"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "fast-check": "*",
     "tsd": "^0.13.1"

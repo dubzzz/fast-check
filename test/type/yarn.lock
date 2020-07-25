@@ -363,12 +363,11 @@ eslint-rule-docs@^1.1.5:
   integrity sha512-8fghxJ97BeqR1ozncJucZVMRq83zgCxiA66mWaPgr30+NxIdTN3AHaEd3u9q4eVcBGERQ0sGMayeLJ3EVwMHhw==
 
 fast-check@*:
-  version "1.26.0"
-  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-1.26.0.tgz#3a85998a9c30ed7f58976276e06046645e0de18a"
-  integrity sha512-B1AjSfe0bmi6FdFIzmrrGSjrsF6e2MCmZiM6zJaRbBMP+gIvdNakle5FIMKi0xbS9KlN9BZho1R7oB/qoNIQuA==
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-2.0.0.tgz#e460ebb5f615c026467c5a7734b4112c50b9a32f"
+  integrity sha512-ef4Au3VLUnqVZVd5vccLd4/cgRsu5lmfj7wpfMdS7OlgS2z3QNd5WmpocHCk/XSQ07Ps8phg0KgLbNzLByp4fw==
   dependencies:
-    pure-rand "^2.0.0"
-    tslib "^2.0.0"
+    pure-rand "^3.0.0"
 
 fast-glob@^3.1.1:
   version "3.2.4"
@@ -852,10 +851,10 @@ pupa@^2.0.1:
   dependencies:
     escape-goat "^2.0.0"
 
-pure-rand@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-2.0.0.tgz#3324633545207907fe964c2f0ebf05d8e9a7f129"
-  integrity sha512-mk98aayyd00xbfHgE3uEmAUGzz3jCdm8Mkf5DUXUhc7egmOaGG2D7qhVlynGenNe9VaNJZvzO9hkc8myuTkDgw==
+pure-rand@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-3.0.0.tgz#9dd90685e0c6ff98871f656a5e37fe90d2bfe0e4"
+  integrity sha512-7/U3rk8elhZPagxdheW1UHEhRr0IF8wCs3qyYVVswSxLoRrrrCMyaTKtAYIrCfuTeUoX/O3rN1piY/pX8JEcEA==
 
 quick-lru@^4.0.1:
   version "4.0.1"
@@ -1089,11 +1088,6 @@ tsd@^0.13.1:
     path-exists "^4.0.0"
     read-pkg-up "^7.0.0"
     update-notifier "^4.1.0"
-
-tslib@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.0.tgz#18d13fc2dce04051e20f074cc8387fd8089ce4f3"
-  integrity sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
 
 type-fest@^0.11.0:
   version "0.11.0"

@@ -3,22 +3,16 @@
 
 
 fast-check@*:
-  version "1.25.1"
-  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-1.25.1.tgz#aab6e34496a23ba7d7d20188699d9abdcaaa2dcc"
-  integrity sha512-4lyIDY2YKpSiPXpceCQBTfDxLh/7/C3OHgvzToea3y1YAlv38Wz9mfIsu+MD4go0NX3ow/g98kEmlW00+CoH3w==
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-2.0.0.tgz#e460ebb5f615c026467c5a7734b4112c50b9a32f"
+  integrity sha512-ef4Au3VLUnqVZVd5vccLd4/cgRsu5lmfj7wpfMdS7OlgS2z3QNd5WmpocHCk/XSQ07Ps8phg0KgLbNzLByp4fw==
   dependencies:
-    pure-rand "^2.0.0"
-    tslib "^2.0.0"
+    pure-rand "^3.0.0"
 
-pure-rand@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-2.0.0.tgz#3324633545207907fe964c2f0ebf05d8e9a7f129"
-  integrity sha512-mk98aayyd00xbfHgE3uEmAUGzz3jCdm8Mkf5DUXUhc7egmOaGG2D7qhVlynGenNe9VaNJZvzO9hkc8myuTkDgw==
-
-tslib@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.0.tgz#18d13fc2dce04051e20f074cc8387fd8089ce4f3"
-  integrity sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
+pure-rand@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-3.0.0.tgz#9dd90685e0c6ff98871f656a5e37fe90d2bfe0e4"
+  integrity sha512-7/U3rk8elhZPagxdheW1UHEhRr0IF8wCs3qyYVVswSxLoRrrrCMyaTKtAYIrCfuTeUoX/O3rN1piY/pX8JEcEA==
 
 typescript@3.2.4:
   version "3.2.4"
