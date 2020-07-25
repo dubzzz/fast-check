@@ -1,3 +1,34 @@
+# 2.0.0
+
+_Hybrid and full support for both ES Modules and CommonJS_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.26.0...v2.0.0)]
+
+This new major of fast-check is:
+- **lighter**: 906kB with 385 files to 505kB with 287 files
+- **faster**: takes between -15% (sync) to -40% (async) less time to run properties ([more](https://github.com/dubzzz/fast-check/pull/748))
+- **es-module** compatible: can be executed with `type:module`
+
+## Breaking changes
+
+- ([PR#748](https://github.com/dubzzz/fast-check/pull/748)) Drop support for old runtimes of JavaScript, requirements: node>=8 and ES2017+
+- ([PR#747](https://github.com/dubzzz/fast-check/pull/747)) Better typings of `fc.constantFrom`
+- ([PR#749](https://github.com/dubzzz/fast-check/pull/749)) Remove depreciated `with_deleted_keys` on `fc.record`
+- ([PR#750](https://github.com/dubzzz/fast-check/pull/750)) Drop support for TypeScript <3.2
+- ([PR#751](https://github.com/dubzzz/fast-check/pull/751)) Strip internal code at build time
+- ([PR#753](https://github.com/dubzzz/fast-check/pull/753)) Bump `pure-rand` package to use its hybrid build
+- ([PR#755](https://github.com/dubzzz/fast-check/pull/755)) Replace namespace `ObjectConstraints` by an type
+- ([PR#752](https://github.com/dubzzz/fast-check/pull/752)) Support ES Modules and CommonJS
+- ([PR#756](https://github.com/dubzzz/fast-check/pull/756)) Drop browser build
+
+*You may refer to our migration guide in case of issue: https://github.com/dubzzz/fast-check/blob/master/MIGRATION_1.X_TO_2.X.md*
+
+## Fixes
+
+- ([PR#752](https://github.com/dubzzz/fast-check/pull/752)) Doc: Update compatibility table
+- ([PR#730](https://github.com/dubzzz/fast-check/pull/730)) Test: Reproducible tests by adding missing lockfiles
+
+---
+
 # 1.26.0
 
 _New arbitrary to generate falsy values_
