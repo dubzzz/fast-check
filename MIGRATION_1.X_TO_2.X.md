@@ -1,11 +1,11 @@
 # Migration 1.x to 2.x
 
 Migration from version `1.x` to `2.x` of fast-check should be pretty straightforward as no major breaking changes have been released.
-Nonetheless as some of the changes may break existing code, a mojor bump have been required.
+Nonetheless as some of the changes may break existing code, a major bump has been required.
 
 The following documentation describes what has to be updated and how in case you encounter some troubles during this migration.
 
-Most of the time the migration will just require to run one of the following command:
+Most of the time the migration will just require to run one of the following commands:
 
 ```bash
 # For yarn users
@@ -68,7 +68,7 @@ Associated Pull Requests: [#755](https://github.com/dubzzz/fast-check/pull/755)
 
 ## No more browser build
 
-In previous major, fast-check was building a specific bundle for browsers. This bundle was easily *fetch-able* from CDNs like unpkg.
+In the previous major, fast-check was building a specific bundle for browsers. This bundle was easily *fetch-able* from CDNs like unpkg.
 
 Example of bundled version of fast-check: https://unpkg.com/browse/fast-check@1.22.1/lib/bundle.js
 
@@ -99,7 +99,7 @@ You can also produce a minified version of the bundle by running:
 npx -p browserify -p terser -c "browserify node_modules/fast-check/lib/fast-check.js --s fastcheck | terser -c -m > node_modules/fast-check/lib/bundle.js"
 ```
 
-For support of older browsers, you mayb have a look to [babelify](https://github.com/babel/babelify).
+For support of older browsers, you may have a look to [babelify](https://github.com/babel/babelify).
 
 Associated Pull Requests: [#756](https://github.com/dubzzz/fast-check/pull/756)
 
