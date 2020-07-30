@@ -166,6 +166,7 @@ describe('ObjectArbitrary', () => {
     it('Should be able to produce unboxed Boolean', () => checkProduceUnboxed(true));
     it('Should be able to produce unboxed Number', () => checkProduceUnboxed(1));
     it('Should be able to produce unboxed String', () => checkProduceUnboxed(''));
+    it('Should be able to produce "unboxed" anything', () => checkProduceUnboxed({}));
     it('Should be able to produce Set', () =>
       checkProduce({ values: [constant(0)], maxDepth: 1, withSet: true }, (v) => v instanceof Set));
     it('Should be able to produce Map', () =>
