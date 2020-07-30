@@ -34,5 +34,17 @@ describe('OptionArbitrary', () => {
           return shrinkable.value === null;
         })
       ));
+    it('Should shrink towards the custom nil value if any', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.integer(), (seed, start) => {
+          const nil = Symbol();
+          const mrng = stubRng.mutable.fastincrease(seed);
+          let shrinkable = option(stubArb.withShrink(start), { nil }).generate(mrng);
+          while (shrinkable.shrink().has((_) => true)[0]) {
+            shrinkable = shrinkable.shrink().next().value;
+          } // only check one shrink path
+          return shrinkable.value === nil;
+        })
+      ));
   });
 });
