@@ -778,14 +778,14 @@
     eslint-utils "^2.0.0"
 
 "@typescript-eslint/parser@^3.1.0":
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-3.7.1.tgz#5d9ccecb116d12d9c6073e9861c57c9b1aa88128"
-  integrity sha512-W4QV/gXvfIsccN8225784LNOorcm7ch68Fi3V4Wg7gmkWSQRKevO4RrRqWo6N/Z/myK1QAiGgeaXN57m+R/8iQ==
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-3.8.0.tgz#8e1dcd404299bf79492409c81c415fa95a7c622b"
+  integrity sha512-u5vjOBaCsnMVQOvkKCXAmmOhyyMmFFf5dbkM3TIbg3MZ2pyv5peE4gj81UAbTHwTOXEwf7eCQTUMKrDl/+qGnA==
   dependencies:
     "@types/eslint-visitor-keys" "^1.0.0"
-    "@typescript-eslint/experimental-utils" "3.7.1"
-    "@typescript-eslint/types" "3.7.1"
-    "@typescript-eslint/typescript-estree" "3.7.1"
+    "@typescript-eslint/experimental-utils" "3.8.0"
+    "@typescript-eslint/types" "3.8.0"
+    "@typescript-eslint/typescript-estree" "3.8.0"
     eslint-visitor-keys "^1.1.0"
 
 "@typescript-eslint/types@3.7.1":
