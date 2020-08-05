@@ -3,7 +3,6 @@ import { stream } from '../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
-import { findOrUndefined } from './helpers/ArrayHelper';
 
 /** @internal */
 class ConstantArbitrary<T> extends Arbitrary<T> {
@@ -57,7 +56,7 @@ function constantFrom<TArgs extends any[] | [any]>(...values: TArgs): Arbitrary<
   if (values.length === 0) {
     throw new Error('fc.constantFrom expects at least one parameter');
   }
-  if (findOrUndefined(values, (v) => hasCloneMethod(v)) != undefined) {
+  if (values.find((v) => hasCloneMethod(v)) != undefined) {
     throw new Error('fc.constantFrom does not accept cloneable values, not supported for the moment');
   }
   return new ConstantArbitrary<TArgs[number]>([...values]);
