@@ -132,23 +132,23 @@ class QualifiedObjectConstraints {
     return boxEnabled ? QualifiedObjectConstraints.boxArbitraries(arbs).concat(arbs) : arbs;
   }
 
-  static from(settings?: ObjectConstraints): QualifiedObjectConstraints {
-    function getOr<T>(access: () => T | undefined, value: T): T {
-      return settings != null && access() != null ? access()! : value;
+  static from(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
+    function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
+      return optionalValue !== undefined ? optionalValue : defaultValue;
     }
     return new QualifiedObjectConstraints(
-      getOr(() => settings!.key, string()),
+      orDefault(settings.key, string()),
       QualifiedObjectConstraints.boxArbitrariesIfNeeded(
-        getOr(() => settings!.values, QualifiedObjectConstraints.defaultValues()),
-        getOr(() => settings!.withBoxedValues, false)
+        orDefault(settings.values, QualifiedObjectConstraints.defaultValues()),
+        orDefault(settings.withBoxedValues, false)
       ),
-      getOr(() => settings!.maxDepth, 2),
-      getOr(() => settings!.maxKeys, 5),
-      getOr(() => settings!.withSet, false),
-      getOr(() => settings!.withMap, false),
-      getOr(() => settings!.withObjectString, false),
-      getOr(() => settings!.withNullPrototype, false),
-      getOr(() => settings!.withBigInt, false)
+      orDefault(settings.maxDepth, 2),
+      orDefault(settings.maxKeys, 5),
+      orDefault(settings.withSet, false),
+      orDefault(settings.withMap, false),
+      orDefault(settings.withObjectString, false),
+      orDefault(settings.withNullPrototype, false),
+      orDefault(settings.withBigInt, false)
     );
   }
 }
