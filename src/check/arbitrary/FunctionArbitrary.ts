@@ -5,6 +5,7 @@ import { array } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 import { tuple } from './TupleArbitrary';
+import { escapeForMultilineComments } from './helpers/TextEscaper';
 
 /**
  * For pure functions
@@ -22,13 +23,16 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
         return hasCloneMethod(val) ? val[cloneMethod]() : val;
       };
       return Object.assign(f, {
-        toString: () =>
-          '<function :: ' +
-          Object.keys(recorded)
-            .sort()
-            .map((k) => `${k} => ${stringify(recorded[k])}`)
-            .join(', ') +
-          '>',
+        toString: () => `function(...args) {
+  // With hash and stringify coming from fast-check
+  ${Object.keys(recorded)
+    .sort()
+    .map((k) => `${k} => ${stringify(recorded[k])}`)
+    .map((line) => `/* ${escapeForMultilineComments(line)} */`)
+    .join('\n  ')}
+  const outs = ${stringify(outs)};
+  return outs[hash('${seed}' + stringify(args)) % outs.length];
+}`,
         [cloneMethod]: producer,
       });
     };
@@ -51,13 +55,18 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
         return val;
       };
       return Object.assign(f, {
-        toString: () =>
-          '<function :: ' +
-          Object.keys(recorded)
-            .sort()
-            .map((k) => `${k} => ${recorded[k]}`)
-            .join(', ') +
-          '>',
+        toString: () => `function(a, b) {
+  // With hash and stringify coming from fast-check
+  ${Object.keys(recorded)
+    .sort()
+    .map((k) => `${k} => ${stringify(recorded[k])}`)
+    .map((line) => `/* ${escapeForMultilineComments(line)} */`)
+    .join('\n  ')}
+  const cmp = ${cmp};
+  const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
+  const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};
+  return cmp(hA, hB);
+}`,
         [cloneMethod]: producer,
       });
     };
@@ -78,7 +87,15 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
  * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
  */
 export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
-  return compareFuncImplem((hA, hB) => hA - hB);
+  return compareFuncImplem(
+    Object.assign((hA: number, hB: number) => hA - hB, {
+      toString() {
+        // istanbul coverage tool may override the function for its needs (thus its string representation)
+        // assigning explicitly a toString representation avoids this issue
+        return '(hA, hB) => hA - hB';
+      },
+    })
+  );
 }
 
 /**
@@ -89,5 +106,13 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
  * - false otherwise (ie. a = b or a > b)
  */
 export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
-  return compareFuncImplem((hA, hB) => hA < hB);
+  return compareFuncImplem(
+    Object.assign((hA: number, hB: number) => hA < hB, {
+      toString() {
+        // istanbul coverage tool may override the function for its needs (thus its string representation)
+        // assigning explicitly a toString representation avoids this issue
+        return '(hA, hB) => hA < hB';
+      },
+    })
+  );
 }

@@ -22,7 +22,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
           }),
           { seed: seed }
         )
-      ).toThrowError('Counterexample: [<function :: [0,8] => 0, [42,1] => 0>]');
+      ).toThrowError(/\[0,8\] => 0.*\[42,1\] => 0/s);
     });
   });
   describe('compareFunc', () => {
