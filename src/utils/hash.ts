@@ -258,7 +258,12 @@ const crc32Table = [
   0x2d02ef8d,
 ];
 
-/** @internal */
+/**
+ * CRC-32 based hash function
+ *
+ * Used internally by fast-check in {@link func}, {@link compareFunc} or even {@link compareBooleanFunc}.
+ * @param repr String value to be hashed
+ */
 export function hash(repr: string): number {
   // Derived from 32-Bit CRC Algorithm
   // More at https://msdn.microsoft.com/en-us/library/dd905031.aspx
