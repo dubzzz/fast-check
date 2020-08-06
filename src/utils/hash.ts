@@ -273,14 +273,22 @@ export function hash(repr: string): number {
     if (c < 0x80) buf.push(c);
     else if (c < 0x800) buf.push(192 | ((c >> 6) & 31), 128 | (c & 63));
     else if (c >= 0xd800 && c < 0xe000) {
-      const c1 = (c & 1023) + 64;
-      const c2 = repr.charCodeAt(++idx) & 1023;
-      buf.push(
-        240 | ((c1 >> 8) & 7),
-        128 | ((c1 >> 2) & 63),
-        128 | ((c2 >> 6) & 15) | ((c1 & 3) << 4),
-        128 | (c2 & 63)
-      );
+      const cNext = repr.charCodeAt(++idx);
+      if (c >= 0xdc00 || cNext < 0xdc00 || cNext > 0xdfff || Number.isNaN(cNext)) {
+        // invalid surrogate pair => <ef bf bd> with Buffer.from
+        idx -= 1;
+        buf.push(0xef, 0xbf, 0xbd);
+      } else {
+        // (c, cNext) is a valid surrogate pair: [0xd800-0xdbff][0xdc00-0xdfff]
+        const c1 = (c & 1023) + 64;
+        const c2 = cNext & 1023;
+        buf.push(
+          240 | ((c1 >> 8) & 7),
+          128 | ((c1 >> 2) & 63),
+          128 | ((c2 >> 6) & 15) | ((c1 & 3) << 4),
+          128 | (c2 & 63)
+        );
+      }
     } else buf.push(224 | ((c >> 12) & 15), 128 | ((c >> 6) & 63), 128 | (c & 63));
   }
   let crc = 0xffffffff;
