@@ -80,7 +80,7 @@ If the browsers you are targeting are compatible with esm-modules, you can impor
 
 ```html
 <script type="module">
-  import fc from "https://cdn.pika.dev/fast-check";
+  import fc from "https://cdn.skypack.dev/fast-check";
   // code...
 </script>
 ```
