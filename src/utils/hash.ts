@@ -265,9 +265,24 @@ const crc32Table = [
  * @param repr String value to be hashed
  */
 export function hash(repr: string): number {
-  // Derived from 32-Bit CRC Algorithm
-  // More at https://msdn.microsoft.com/en-us/library/dd905031.aspx
-  const buf = Buffer.from(repr);
+  // Based on https://github.com/SheetJS/js-crc32/blob/master/crc32.js
+  // and https://msdn.microsoft.com/en-us/library/dd905031.aspx
+  const buf: number[] = [];
+  for (let idx = 0; idx < repr.length; ++idx) {
+    const c = repr.charCodeAt(idx);
+    if (c < 0x80) buf.push(c);
+    else if (c < 0x800) buf.push(192 | ((c >> 6) & 31), 128 | (c & 63));
+    else if (c >= 0xd800 && c < 0xe000) {
+      const c1 = (c & 1023) + 64;
+      const c2 = repr.charCodeAt(++idx) & 1023;
+      buf.push(
+        240 | ((c1 >> 8) & 7),
+        128 | ((c1 >> 2) & 63),
+        128 | ((c2 >> 6) & 15) | ((c1 & 3) << 4),
+        128 | (c2 & 63)
+      );
+    } else buf.push(224 | ((c >> 12) & 15), 128 | ((c >> 6) & 63), 128 | (c & 63));
+  }
   let crc = 0xffffffff;
   for (let idx = 0; idx !== buf.length; ++idx) {
     crc = crc32Table[(crc & 0xff) ^ buf[idx]] ^ (crc >> 8);
