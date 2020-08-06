@@ -722,15 +722,15 @@ import fc from 'fast-check';
 
 Deno:
 ```js
-import fc from "https://cdn.pika.dev/fast-check";
+import fc from "https://cdn.skypack.dev/fast-check";
 ```
 
 Web Browser:
 ```html
 <script type="module">
-  import fc from "https://cdn.pika.dev/fast-check";
+  import fc from "https://cdn.skypack.dev/fast-check";
   // code...
 </script>
 ```
 
-More details on [pika](https://www.pika.dev/npm/fast-check/code).
+More details on [pika](https://www.pika.dev/npm/fast-check/).
