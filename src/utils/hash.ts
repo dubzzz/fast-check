@@ -267,33 +267,36 @@ const crc32Table = [
 export function hash(repr: string): number {
   // Based on https://github.com/SheetJS/js-crc32/blob/master/crc32.js
   // and https://msdn.microsoft.com/en-us/library/dd905031.aspx
-  const buf: number[] = [];
+  let crc = 0xffffffff;
   for (let idx = 0; idx < repr.length; ++idx) {
     const c = repr.charCodeAt(idx);
-    if (c < 0x80) buf.push(c);
-    else if (c < 0x800) buf.push(192 | ((c >> 6) & 31), 128 | (c & 63));
-    else if (c >= 0xd800 && c < 0xe000) {
+    if (c < 0x80) {
+      crc = crc32Table[(crc & 0xff) ^ c] ^ (crc >> 8);
+    } else if (c < 0x800) {
+      crc = crc32Table[(crc & 0xff) ^ (192 | ((c >> 6) & 31))] ^ (crc >> 8);
+      crc = crc32Table[(crc & 0xff) ^ (128 | (c & 63))] ^ (crc >> 8);
+    } else if (c >= 0xd800 && c < 0xe000) {
       const cNext = repr.charCodeAt(++idx);
       if (c >= 0xdc00 || cNext < 0xdc00 || cNext > 0xdfff || Number.isNaN(cNext)) {
         // invalid surrogate pair => <ef bf bd> with Buffer.from
         idx -= 1;
-        buf.push(0xef, 0xbf, 0xbd);
+        crc = crc32Table[(crc & 0xff) ^ 0xef] ^ (crc >> 8);
+        crc = crc32Table[(crc & 0xff) ^ 0xbf] ^ (crc >> 8);
+        crc = crc32Table[(crc & 0xff) ^ 0xbd] ^ (crc >> 8);
       } else {
         // (c, cNext) is a valid surrogate pair: [0xd800-0xdbff][0xdc00-0xdfff]
         const c1 = (c & 1023) + 64;
         const c2 = cNext & 1023;
-        buf.push(
-          240 | ((c1 >> 8) & 7),
-          128 | ((c1 >> 2) & 63),
-          128 | ((c2 >> 6) & 15) | ((c1 & 3) << 4),
-          128 | (c2 & 63)
-        );
+        crc = crc32Table[(crc & 0xff) ^ (240 | ((c1 >> 8) & 7))] ^ (crc >> 8);
+        crc = crc32Table[(crc & 0xff) ^ (128 | ((c1 >> 2) & 63))] ^ (crc >> 8);
+        crc = crc32Table[(crc & 0xff) ^ (128 | ((c2 >> 6) & 15) | ((c1 & 3) << 4))] ^ (crc >> 8);
+        crc = crc32Table[(crc & 0xff) ^ (128 | (c2 & 63))] ^ (crc >> 8);
       }
-    } else buf.push(224 | ((c >> 12) & 15), 128 | ((c >> 6) & 63), 128 | (c & 63));
-  }
-  let crc = 0xffffffff;
-  for (let idx = 0; idx !== buf.length; ++idx) {
-    crc = crc32Table[(crc & 0xff) ^ buf[idx]] ^ (crc >> 8);
+    } else {
+      crc = crc32Table[(crc & 0xff) ^ (224 | ((c >> 12) & 15))] ^ (crc >> 8);
+      crc = crc32Table[(crc & 0xff) ^ (128 | ((c >> 6) & 63))] ^ (crc >> 8);
+      crc = crc32Table[(crc & 0xff) ^ (128 | (c & 63))] ^ (crc >> 8);
+    }
   }
   return (crc | 0) + 0x80000000;
 }
