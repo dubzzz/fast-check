@@ -93,6 +93,7 @@ import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
+import { hash } from './utils/hash';
 import { stringify } from './utils/stringify';
 import {
   scheduler,
@@ -226,6 +227,7 @@ export {
   // print values
   stringify,
   defaultReportMessage,
+  hash,
   // interfaces
   Context,
   ExecutionStatus,
