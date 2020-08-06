@@ -4,6 +4,8 @@ import { func, compareFunc, compareBooleanFunc } from '../../../../src/check/arb
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
+import { hash } from '../../../../src/utils/hash';
+import { stringify } from '../../../../src/utils/stringify';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
@@ -12,6 +14,29 @@ import * as stubRng from '../../stubs/generators';
 const forceClone = <T>(instance: T) => {
   if (!hasCloneMethod(instance)) throw new Error('Missing [cloneMethod]');
   return instance[cloneMethod]();
+};
+
+const assertToStringIsTheSameFunction = <T extends any[] | [any], TOut>(inputs: T[], f: (...args: T) => TOut) => {
+  let assertionHasBeenExecuted = false;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  (function (hash, stringify) {
+    assertionHasBeenExecuted = true;
+    try {
+      // As the output of toString might be different if the function has been called
+      // before or after toString, we assess both cases
+      const dataFromToStringBefore = eval(`(function() { const f = ${f}; return inputs.map((ins) => f(...ins)); })()`);
+      const data = inputs.map((ins) => f(...ins));
+      const dataFromToString = eval(`(function() { const f = ${f}; return inputs.map((ins) => f(...ins)); })()`);
+
+      expect(dataFromToStringBefore).toStrictEqual(data);
+      expect(dataFromToString).toStrictEqual(data);
+    } catch (err) {
+      throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`);
+    }
+  })(hash, stringify);
+
+  expect(assertionHasBeenExecuted).toBe(true);
 };
 
 describe('FunctionArbitrary', () => {
@@ -38,6 +63,15 @@ describe('FunctionArbitrary', () => {
           return va1 === va2 && vb1 === vb2;
         })
       ));
+    it('Should give a re-usable string representation of the function', () => {
+      fc.assert(
+        fc.property(fc.integer(), fc.array(fc.array(fc.anything())), (seed, inputs) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const f = func(integer()).generate(mrng).value;
+          assertToStringIsTheSameFunction(inputs, f);
+        })
+      );
+    });
     it('Should clone produced values if they implement [fc.cloneMethod]', () => {
       const mrng = stubRng.mutable.fastincrease(0);
       const f = func(context()).generate(mrng).value;
@@ -136,6 +170,15 @@ describe('FunctionArbitrary', () => {
           else return ba < 0;
         })
       ));
+    it('Should give a re-usable string representation of the function', () => {
+      fc.assert(
+        fc.property(fc.integer(), fc.array(fc.tuple(fc.anything(), fc.anything())), (seed, inputs) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const f = compareFunc().generate(mrng).value;
+          assertToStringIsTheSameFunction(inputs, f);
+        })
+      );
+    });
     it('Should produce a cloneable compare function', () => {
       const mrng = stubRng.mutable.counter(0);
       const s = compareFunc().generate(mrng);
@@ -222,6 +265,15 @@ describe('FunctionArbitrary', () => {
           return f1(a, b) === f2(a, b) < 0;
         })
       ));
+    it('Should give a re-usable string representation of the function', () => {
+      fc.assert(
+        fc.property(fc.integer(), fc.array(fc.tuple(fc.anything(), fc.anything())), (seed, inputs) => {
+          const mrng = stubRng.mutable.fastincrease(seed);
+          const f = compareBooleanFunc().generate(mrng).value;
+          assertToStringIsTheSameFunction(inputs, f);
+        })
+      );
+    });
     it('Should produce a cloneable compare function', () => {
       const mrng = stubRng.mutable.counter(0);
       const s = compareBooleanFunc().generate(mrng);

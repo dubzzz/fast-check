@@ -471,20 +471,90 @@ Execution summary:
 exports[`NoRegression compareFunc 1`] = `
 "Property failed after 9 tests
 { seed: 42, path: \\"8\\", endOnFailure: true }
-Counterexample: [<function :: [1,2] => -1761005734>]
+Counterexample: [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => -1761005734 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('18' + stringify(a)) % 2407995820;
+  const hB = hash('18' + stringify(b)) % 2407995820;
+  return cmp(hA, hB);
+}]
 Shrunk 0 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [<function :: [1,2] => 8>]
-[32m√[0m [<function :: [1,2] => 2>]
-[32m√[0m [<function :: [1,2] => -4>]
-[32m√[0m [<function :: [1,2] => -12>]
-[32m√[0m [<function :: [1,2] => 2>]
-[32m√[0m [<function :: [1,2] => 0>]
-[32m√[0m [<function :: [1,2] => -3>]
-[32m√[0m [<function :: [1,2] => -842483754>]
-[31m×[0m [<function :: [1,2] => -1761005734>]"
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => 8 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('-15' + stringify(a)) % 10;
+  const hB = hash('-15' + stringify(b)) % 10;
+  return cmp(hA, hB);
+}]
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => 2 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('-994490854' + stringify(a)) % 24;
+  const hB = hash('-994490854' + stringify(b)) % 24;
+  return cmp(hA, hB);
+}]
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => -4 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('-1536816376' + stringify(a)) % 23;
+  const hB = hash('-1536816376' + stringify(b)) % 23;
+  return cmp(hA, hB);
+}]
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => -12 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('7' + stringify(a)) % 29;
+  const hB = hash('7' + stringify(b)) % 29;
+  return cmp(hA, hB);
+}]
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => 2 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('-30' + stringify(a)) % 6;
+  const hB = hash('-30' + stringify(b)) % 6;
+  return cmp(hA, hB);
+}]
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => 0 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('-2094954216' + stringify(a)) % 2;
+  const hB = hash('-2094954216' + stringify(b)) % 2;
+  return cmp(hA, hB);
+}]
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => -3 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('1080227326' + stringify(a)) % 13;
+  const hB = hash('1080227326' + stringify(b)) % 13;
+  return cmp(hA, hB);
+}]
+[32m√[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => -842483754 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('11' + stringify(a)) % 2873137524;
+  const hB = hash('11' + stringify(b)) % 2873137524;
+  return cmp(hA, hB);
+}]
+[31m×[0m [function(a, b) {
+  // With hash and stringify coming from fast-check
+  /* [1,2] => -1761005734 */
+  const cmp = (hA, hB) => hA - hB;
+  const hA = hash('18' + stringify(a)) % 2407995820;
+  const hB = hash('18' + stringify(b)) % 2407995820;
+  return cmp(hA, hB);
+}]"
 `;
 
 exports[`NoRegression date 1`] = `
@@ -985,72 +1055,382 @@ Execution summary:
 exports[`NoRegression func 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0:1:1:0:0:0:0:2:0:0:1:1:2:0:0:0:0:0:0:3:1:2:0:0:0:0:1:0:2:5\\", endOnFailure: true }
-Counterexample: [<function :: [] => 988>]
+Counterexample: [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 988 */
+  const outs = [988];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
 Shrunk 29 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [<function :: [] => 2014944498>]
-. [32m√[0m [<function :: [] => 0>]
-. [31m×[0m [<function :: [] => 1007472249>]
-. . [32m√[0m [<function :: [] => 503736125>]
-. . [31m×[0m [<function :: [] => 755604187>]
-. . . [31m×[0m [<function :: [] => 377802094>]
-. . . . [31m×[0m [<function :: [] => 188901047>]
-. . . . . [31m×[0m [<function :: [] => 94450524>]
-. . . . . . [31m×[0m [<function :: [] => 47225262>]
-. . . . . . . [32m√[0m [<function :: [] => 23612631>]
-. . . . . . . [32m√[0m [<function :: [] => 35418947>]
-. . . . . . . [31m×[0m [<function :: [] => 41322105>]
-. . . . . . . . [31m×[0m [<function :: [] => 20661053>]
-. . . . . . . . . [31m×[0m [<function :: [] => 10330527>]
-. . . . . . . . . . [32m√[0m [<function :: [] => 5165264>]
-. . . . . . . . . . [31m×[0m [<function :: [] => 7747896>]
-. . . . . . . . . . . [32m√[0m [<function :: [] => 3873948>]
-. . . . . . . . . . . [31m×[0m [<function :: [] => 5810922>]
-. . . . . . . . . . . . [32m√[0m [<function :: [] => 2905461>]
-. . . . . . . . . . . . [32m√[0m [<function :: [] => 4358192>]
-. . . . . . . . . . . . [31m×[0m [<function :: [] => 5084557>]
-. . . . . . . . . . . . . [31m×[0m [<function :: [] => 2542279>]
-. . . . . . . . . . . . . . [31m×[0m [<function :: [] => 1271140>]
-. . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 635570>]
-. . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 317785>]
-. . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 158893>]
-. . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 79447>]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 39724>]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 59586>]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 69517>]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 74482>]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 37241>]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 55862>]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 27931>]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 41897>]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 48880>]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 24440>]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 12220>]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 6110>]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 3055>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 1528>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 2292>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 1146>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 573>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 860>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 1003>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 502>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 753>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 878>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 941>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 972>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [<function :: [] => 988>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 494>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 741>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 865>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 927>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 958>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 973>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 981>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 985>]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [<function :: [] => 987>]"
+[31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 2014944498 */
+  const outs = [2014944498];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 0 */
+  const outs = [0];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 1007472249 */
+  const outs = [1007472249];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 503736125 */
+  const outs = [503736125];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 755604187 */
+  const outs = [755604187];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 377802094 */
+  const outs = [377802094];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 188901047 */
+  const outs = [188901047];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 94450524 */
+  const outs = [94450524];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 47225262 */
+  const outs = [47225262];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 23612631 */
+  const outs = [23612631];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 35418947 */
+  const outs = [35418947];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 41322105 */
+  const outs = [41322105];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 20661053 */
+  const outs = [20661053];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 10330527 */
+  const outs = [10330527];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 5165264 */
+  const outs = [5165264];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 7747896 */
+  const outs = [7747896];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 3873948 */
+  const outs = [3873948];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 5810922 */
+  const outs = [5810922];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 2905461 */
+  const outs = [2905461];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 4358192 */
+  const outs = [4358192];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 5084557 */
+  const outs = [5084557];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 2542279 */
+  const outs = [2542279];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 1271140 */
+  const outs = [1271140];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 635570 */
+  const outs = [635570];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 317785 */
+  const outs = [317785];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 158893 */
+  const outs = [158893];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 79447 */
+  const outs = [79447];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 39724 */
+  const outs = [39724];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 59586 */
+  const outs = [59586];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 69517 */
+  const outs = [69517];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 74482 */
+  const outs = [74482];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 37241 */
+  const outs = [37241];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 55862 */
+  const outs = [55862];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 27931 */
+  const outs = [27931];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 41897 */
+  const outs = [41897];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 48880 */
+  const outs = [48880];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 24440 */
+  const outs = [24440];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 12220 */
+  const outs = [12220];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 6110 */
+  const outs = [6110];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 3055 */
+  const outs = [3055];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 1528 */
+  const outs = [1528];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 2292 */
+  const outs = [2292];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 1146 */
+  const outs = [1146];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 573 */
+  const outs = [573];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 860 */
+  const outs = [860];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 1003 */
+  const outs = [1003];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 502 */
+  const outs = [502];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 753 */
+  const outs = [753];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 878 */
+  const outs = [878];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 941 */
+  const outs = [941];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 972 */
+  const outs = [972];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 988 */
+  const outs = [988];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 494 */
+  const outs = [494];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 741 */
+  const outs = [741];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 865 */
+  const outs = [865];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 927 */
+  const outs = [927];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 958 */
+  const outs = [958];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 973 */
+  const outs = [973];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 981 */
+  const outs = [981];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 985 */
+  const outs = [985];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => 987 */
+  const outs = [987];
+  return outs[hash('-22' + stringify(args)) % outs.length];
+}]"
 `;
 
 exports[`NoRegression hexaString 1`] = `

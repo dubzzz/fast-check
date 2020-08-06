@@ -1,6 +1,9 @@
 import * as fc from '../../../../../lib/fast-check';
 
-import { escapeForTemplateString } from '../../../../../src/check/arbitrary/helpers/TextEscaper';
+import {
+  escapeForTemplateString,
+  escapeForMultilineComments,
+} from '../../../../../src/check/arbitrary/helpers/TextEscaper';
 
 describe('TextEscaper', () => {
   describe('escapeForTemplateString', () => {
@@ -33,6 +36,27 @@ describe('TextEscaper', () => {
         fc.property(fc.fullUnicodeString(), (text) => {
           const escapedText = escapeForTemplateString(text);
           expect(eval('`' + escapedText + '`')).toBe(text);
+        })
+      ));
+  });
+
+  describe('escapeForMultilineComments', () => {
+    it('Should not escape normal characters', () => {
+      expect(escapeForMultilineComments('a')).toBe('a');
+      expect(escapeForMultilineComments('z')).toBe('z');
+    });
+    it('Should escape properly known issues', () => {
+      expect(escapeForMultilineComments('*/')).toBe('*\\/');
+    });
+    it('Should escape properly string containing multiple issues', () => {
+      expect(escapeForMultilineComments('*/ */ */')).toBe('*\\/ *\\/ *\\/');
+      expect(escapeForMultilineComments('*/ /*/ **// * / /*')).toBe('*\\/ /*\\/ **\\// * / /*');
+    });
+    it('Should escape properly any string', () =>
+      fc.assert(
+        fc.property(fc.fullUnicodeString(), (text) => {
+          const escapedText = escapeForMultilineComments(text);
+          expect(eval('/*' + escapedText + '*/"success"')).toBe('success');
         })
       ));
   });
