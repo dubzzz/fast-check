@@ -1,3 +1,26 @@
+# 2.1.0
+
+_Better reported errors for `func`, `compareFunc` and `compareBooleanFunc`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.0.0...v2.1.0)]
+
+## Features
+
+- ([PR#843](https://github.com/dubzzz/fast-check/pull/843)) Report a valid `function` on `func` and `compareFunc`
+- ([PR#844](https://github.com/dubzzz/fast-check/pull/844)) Export internal `hash` function
+- ([PR#845](https://github.com/dubzzz/fast-check/pull/845)) Rewrite `hash` without using node specific APIs
+
+## Fixes
+
+- ([PR#833](https://github.com/dubzzz/fast-check/pull/833)) CI: Enable CodeQL Analysis
+- ([PR#837](https://github.com/dubzzz/fast-check/pull/837)) Clean: Remove usages of `!` operator in `ObjectArbitrary`
+- ([PR#838](https://github.com/dubzzz/fast-check/pull/838)) Clean: Remove custom implementation of `Array.prototype.find`
+- ([PR#816](https://github.com/dubzzz/fast-check/pull/816)) Doc: Fix typos in migration guide
+- ([PR#846](https://github.com/dubzzz/fast-check/pull/846)) Doc: Update links for `pika.dev` to `skypack.dev`
+- ([PR#819](https://github.com/dubzzz/fast-check/pull/819)) Test: Better test coverage for `fc.option`
+- ([PR#818](https://github.com/dubzzz/fast-check/pull/818)) Test: Reduce flakiness of coverage
+
+---
+
 # 2.0.0
 
 _Hybrid and full support for both ES Modules and CommonJS_
