@@ -20,4 +20,11 @@ describe('ReplayPath', () => {
         expect(ReplayPath.parse(ReplayPath.stringify(replayPath))).toEqual(replayPath);
       })
     ));
+  it('Should be able to read back itself when all elements of replayPath are equal', () =>
+    fc.assert(
+      fc.property(fc.nat(10000), fc.boolean(), (n, v) => {
+        const replayPath = Array(n).fill(v);
+        expect(ReplayPath.parse(ReplayPath.stringify(replayPath))).toEqual(replayPath);
+      })
+    ));
 });
