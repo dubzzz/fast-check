@@ -11,63 +11,109 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+
   - package-ecosystem: "npm"
     directory: "/example"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+
   - package-ecosystem: "npm"
     directory: "/test/type"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/node-extension-cjs"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/node-extension-mjs"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/node-with-import"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/node-with-require"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/rollup-with-import"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/rollup-with-require"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/webpack-with-import"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
   - package-ecosystem: "npm"
     directory: "/test/esm/webpack-with-require"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
