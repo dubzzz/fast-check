@@ -1,6 +1,5 @@
 import { TodolistCommand, TodolistModel, TodolistReal, listTodos, sortTodos, ExtractedTodoItem } from './Model';
-import { fireEvent } from '@testing-library/dom';
-import { screen } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 
 export class AddItemCommand implements TodolistCommand {
   constructor(readonly label: string) {}
