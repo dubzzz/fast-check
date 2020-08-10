@@ -1,8 +1,8 @@
 {
   "type": "commonjs",
   "scripts": {
-    "dry": "node dry.mjs",
-    "start": "node main.mjs > out.txt"
+    "dry": "yarn node dry.mjs",
+    "start": "yarn node main.mjs > out.txt"
   },
   "dependencies": {
     "fast-check": "*"

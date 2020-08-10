@@ -1,8 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "dry": "node dry.cjs",
-    "start": "node main.cjs > out.txt"
+    "dry": "yarn node dry.cjs",
+    "start": "yarn node main.cjs > out.txt"
   },
   "dependencies": {
     "fast-check": "*"
