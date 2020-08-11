@@ -41,7 +41,7 @@ jobs:
         - yarn test:rollup-esm
         # Instead of linking on ., we pack the package as if it was released on npm registry
         # then we link towards this version (no devDependencies installed, no unpublished files available...).
-        - yarn pack && mkdir -p bundle && tar -C bundle -zxvf fast-check-*.tgz && cd bundle/package && yarn workspaces focus --all --production && ls -l node_modules && yarn link
+        - yarn pack && mkdir -p bundle && tar -C bundle -zxvf package.tgz && cd bundle/package && yarn workspaces focus --all --production && ls -l node_modules && yarn link
         - cd "$PROJECT_ROOT_PATH"
         - ls -l ~/.config/yarn/link 2> /dev/null || echo "no-op"
         - ls -l ~/AppData/Local/Yarn/Data/link 2> /dev/null || echo "no-op"
