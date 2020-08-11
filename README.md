@@ -16,7 +16,6 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://coveralls.io/github/dubzzz/fast-check"><img src="https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg" alt="Coverage Status" /></a>
   <a href="https://david-dm.org/dubzzz/fast-check"><img src="https://david-dm.org/dubzzz/fast-check/status.svg" alt="dependencies Status" /></a>
   <a href="https://david-dm.org/dubzzz/fast-check?type=dev"><img src="https://david-dm.org/dubzzz/fast-check/dev-status.svg" alt="devDependencies Status" /></a>
-  <a href="https://snyk.io/test/github/dubzzz/fast-check?targetFile=package.json"><img src="https://snyk.io/test/github/dubzzz/fast-check/badge.svg?targetFile=package.json" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/dubzzz/fast-check?targetFile=package.json" style="max-width:100%;"></a>
 </p>
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/labels/good%20first%20issue"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
