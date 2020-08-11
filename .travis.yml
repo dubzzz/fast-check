@@ -45,11 +45,11 @@ jobs:
         - cd "$PROJECT_ROOT_PATH"
         - ls -l ~/.config/yarn/link 2> /dev/null || echo "no-op"
         - ls -l ~/AppData/Local/Yarn/Data/link 2> /dev/null || echo "no-op"
-        - cd example && yarn --ignore-engines --frozen-lockfile && yarn link "fast-check" && yarn test
+        - cd example && yarn --immutable && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
-        - cd test/type && yarn --ignore-engines --frozen-lockfile && yarn link "fast-check" && yarn test
+        - cd test/type && yarn --immutable && yarn link "fast-check" && yarn test
         - cd "$PROJECT_ROOT_PATH"
-        - cd test/legacy/typescript-3.2 && yarn --ignore-engines --frozen-lockfile && yarn link "fast-check" && yarn build
+        - cd test/legacy/typescript-3.2 && yarn --immutable && yarn link "fast-check" && yarn build
         - cd "$PROJECT_ROOT_PATH"
         - nvm install 8 ;
           node --version ;
