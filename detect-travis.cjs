@@ -1,1 +1,1 @@
-console.log('TRAVIS' in process.env, process.env.TRAVIS, 'CI' in process.env, process.env.CI)
+console.log('Running in Travis CI? -- ', !!process.env.TRAVIS && !!process.env.CI)
