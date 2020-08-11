@@ -1,3 +1,4 @@
+.yarn/
 lib/
 lib-*/
 coverage/
