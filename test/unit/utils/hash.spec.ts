@@ -20,6 +20,15 @@ describe('hash', () => {
     fc.assert(fc.property(fc.fullUnicodeString(), (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for potentially invalid strings', () =>
     fc.assert(fc.property(fc.char16bits(), (s) => hash(s) === hashReference(s))));
+  it('Should consider any invalid surrogate pair as <ef bf bd> or 0xfffd', () => {
+    // This is the behaviour of the reference implementation based on Buffer.from (see below)
+    // Buffer.from([0xef,0xbf,0xbd]).toString('utf8') === '\ufffd'
+    expect(hash('\ud800\ud800invalid pair')).toBe(hash('\ufffd\ufffdinvalid pair'));
+    expect(hash('\ud800incomplete pair no end')).toBe(hash('\ufffdincomplete pair no end'));
+    expect(hash('\udfffincomplete pair no start')).toBe(hash('\ufffdincomplete pair no start'));
+    expect(hash('end by incomplete no start\udfff')).toBe(hash('end by incomplete no start\ufffd'));
+    expect(hash('end by incomplete no end\ud800')).toBe(hash('end by incomplete no end\ufffd'));
+  });
 });
 
 // Helpers
