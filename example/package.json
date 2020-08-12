@@ -20,7 +20,7 @@
     "@types/jest": "^26.0.9",
     "@types/lodash": "^4.14.159",
     "@types/react": "^16.9.46",
-    "jest": "^26.2.2",
+    "jest": "^26.3.0",
     "ts-jest": "^26.1.4",
     "typescript": "^3.9.7"
   },
