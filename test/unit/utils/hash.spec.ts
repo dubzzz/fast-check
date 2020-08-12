@@ -28,6 +28,7 @@ describe('hash', () => {
     expect(hash('\udfffincomplete pair no start')).toBe(hash('\ufffdincomplete pair no start'));
     expect(hash('end by incomplete no start\udfff')).toBe(hash('end by incomplete no start\ufffd'));
     expect(hash('end by incomplete no end\ud800')).toBe(hash('end by incomplete no end\ufffd'));
+    expect(hash('wrongly ordered\udfff\ud800pair')).toBe(hash('wrongly ordered\ufffd\ufffdpair'));
   });
 });
 
