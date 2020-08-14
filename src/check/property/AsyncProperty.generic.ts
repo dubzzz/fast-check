@@ -4,20 +4,41 @@ import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 
+/** @public */
+type HookFunction = (() => Promise<unknown>) | (() => void);
+
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
  * @public
  */
 export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
 
-type HookFunction = (() => Promise<unknown>) | (() => void);
+/**
+ * Interface for asynchronous property defining hooks, see {@link IAsyncProperty}
+ * @public
+ */
+export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
+  /**
+   * Define a function that should be called before all calls to the predicate
+   * @param hookFunction - Function to be called
+   */
+  beforeEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+
+  /**
+   * Define a function that should be called after all calls to the predicate
+   * @param hookFunction - Function to be called
+   */
+  afterEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+}
 
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
  * Prefer using {@link asyncProperty} instead
+ *
+ * @internal
  */
-export class AsyncProperty<Ts> implements IAsyncProperty<Ts> {
+export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   static dummyHook: HookFunction = () => {};
   private beforeEachHook: HookFunction = AsyncProperty.dummyHook;
   private afterEachHook: HookFunction = AsyncProperty.dummyHook;
