@@ -81,6 +81,7 @@ jobs:
       script:
         - yarn prebuild
         - yarn build:publish-types
+        - node postbuild/main.cjs
         - yarn docs
       deploy:
         provider: pages
