@@ -17,7 +17,7 @@ export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
  * Interface for synchronous property defining hooks, see {@link IProperty}
  * @public
  */
-export interface IPropertyWithHooks<Ts> {
+export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param invalidHookFunction - Function to be called, please provide a valid hook function

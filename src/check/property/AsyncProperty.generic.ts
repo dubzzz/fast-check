@@ -17,7 +17,7 @@ export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
  * Interface for asynchronous property defining hooks, see {@link IAsyncProperty}
  * @public
  */
-export interface IAsyncPropertyWithHooks<Ts> {
+export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
