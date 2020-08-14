@@ -104,12 +104,14 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
 /**
  * For arrays of values coming from `arb`
  * @param arb - Arbitrary used to generate the values inside the array
+ * @public
  */
 function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
 /**
  * For arrays of values coming from `arb` having an upper bound size
  * @param arb - Arbitrary used to generate the values inside the array
  * @param maxLength - Upper bound of the generated array size
+ * @public
  */
 function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
 /**
@@ -117,6 +119,7 @@ function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  * @param arb - Arbitrary used to generate the values inside the array
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
+ * @public
  */
 function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, aLength?: number, bLength?: number): Arbitrary<T[]> {

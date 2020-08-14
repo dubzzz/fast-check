@@ -2,6 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
+/** @public */
 export interface WeightedArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;
@@ -36,6 +37,8 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
 /**
  * Infer the type of the Arbitrary produced by oneof
  * given the type of the source arbitraries
+ *
+ * @public
  */
 type FrequencyArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
   [K in keyof Ts]: Ts[K] extends WeightedArbitrary<infer U> ? U : never;
@@ -47,6 +50,8 @@ type FrequencyArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
  * **WARNING**: It expects at least one (Arbitrary, weight)
  *
  * @param warbs - (Arbitrary, weight)s that might be called to produce a value
+ *
+ * @public
  */
 function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyArbitraryType<Ts>> {
   if (warbs.length === 0) {

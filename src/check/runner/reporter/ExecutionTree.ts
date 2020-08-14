@@ -2,6 +2,7 @@ import { ExecutionStatus } from './ExecutionStatus';
 
 /**
  * Summary of the execution process
+ * @public
  */
 export interface ExecutionTree<Ts> {
   /** Status of the property */

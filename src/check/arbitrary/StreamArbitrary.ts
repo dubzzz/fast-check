@@ -6,6 +6,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 
+/** @internal */
 class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
   constructor(readonly arb: Arbitrary<T>) {
     super();
@@ -30,6 +31,8 @@ class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
  * WARNING: Requires Object.assign
  *
  * @param arb - Arbitrary used to generate the values
+ *
+ * @public
  */
 function infiniteStream<T>(arb: Arbitrary<T>): Arbitrary<Stream<T>> {
   return new StreamArbitrary(arb);

@@ -8,7 +8,9 @@ import { Arbitrary } from './definition/Arbitrary';
 /**
  * For email address
  *
- * According to RFC 5322 - https://www.ietf.org/rfc/rfc5322.txt
+ * According to {@link https://www.ietf.org/rfc/rfc5322.txt | RFC 5322}
+ *
+ * @public
  */
 export function emailAddress(): Arbitrary<string> {
   const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];

@@ -4,6 +4,7 @@ import { Arbitrary } from './definition/Arbitrary';
 
 /**
  * Execution context attached to one predicate run
+ * @public
  */
 export interface Context {
   /**
@@ -40,5 +41,6 @@ class ContextImplem implements Context {
 
 /**
  * Produce a {@link Context} instance
+ * @public
  */
 export const context = () => clonedConstant(new ContextImplem()) as Arbitrary<Context>;

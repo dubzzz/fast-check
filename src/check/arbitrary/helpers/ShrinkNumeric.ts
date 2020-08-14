@@ -4,8 +4,8 @@ import { Stream, stream } from '../../../stream/Stream';
 type Numeric = number | bigint;
 
 /**
- * @internal
  * Compute shrunk values to move from current to target
+ * @internal
  */
 function shrinkNumericInternal<NType extends Numeric>(
   current: NType,
@@ -31,8 +31,8 @@ function shrinkNumericInternal<NType extends Numeric>(
 }
 
 /**
- * @internal
  * Halve towards zero
+ * @internal
  */
 function halveBigInt(n: bigint): bigint {
   return n / BigInt(2);
@@ -47,10 +47,10 @@ function halveNegNumber(n: number): number {
 }
 
 /**
- * @internal
  * Compute shrunk values for current given the accepted range
  * If the range includes zero, the shrunk values will target zero
  * Otherwise they will target the min or max depending which one is closer to zero
+ * @internal
  */
 function shrinkNumeric<NType extends Numeric>(
   zero: NType,

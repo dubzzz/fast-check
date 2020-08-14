@@ -5,7 +5,10 @@ import { Shrinkable } from './definition/Shrinkable';
 import { stringify } from '../../utils/stringify';
 import { escapeForTemplateString } from './helpers/TextEscaper';
 
-/** Define an item to be passed to `scheduleSequence` */
+/**
+ * Define an item to be passed to `scheduleSequence`
+ * @public
+ */
 export type SchedulerSequenceItem<TMetaData = unknown> =
   | {
       builder: () => Promise<any>;
@@ -14,7 +17,10 @@ export type SchedulerSequenceItem<TMetaData = unknown> =
     }
   | (() => Promise<any>);
 
-/** Describe a task for the report produced by the scheduler */
+/**
+ * Describe a task for the report produced by the scheduler
+ * @public
+ */
 export type SchedulerReportItem<TMetaData = unknown> = {
   /**
    * Execution status for this task
@@ -40,6 +46,7 @@ export type SchedulerReportItem<TMetaData = unknown> = {
   outputValue?: string;
 };
 
+/** @public */
 export interface SchedulerConstraints {
   /** Ensure that all scheduled tasks will be executed in the right context (for instance it can be the `act` of React) */
   act: (f: () => Promise<void>) => Promise<unknown>;
@@ -48,6 +55,7 @@ export interface SchedulerConstraints {
 /**
  * Instance able to reschedule the ordering of promises
  * for a given app
+ * @public
  */
 export interface Scheduler<TMetaData = unknown> {
   /** Wrap a new task using the Scheduler */
@@ -349,6 +357,7 @@ class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
 
 /**
  * For scheduler of promises
+ * @public
  */
 function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arbitrary<Scheduler<TMetaData>> {
   const { act = (f: () => Promise<void>) => f() } = constraints || {};
@@ -385,6 +394,8 @@ function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arb
  *
  * WARNING:
  * If one the promises is wrongly defined it will fail - for instance asking to resolve 5 while 5 does not exist.
+ *
+ * @public
  */
 function schedulerFor<TMetaData = unknown>(
   constraints?: SchedulerConstraints
@@ -401,6 +412,8 @@ function schedulerFor<TMetaData = unknown>(
  *
  * @param customOrdering - Array defining in which order the promises will be resolved.
  * Id of the promises start at 1. 1 means first scheduled promise, 2 second scheduled promise and so on.
+ *
+ * @public
  */
 function schedulerFor<TMetaData = unknown>(
   customOrdering: number[],

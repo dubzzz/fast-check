@@ -3,15 +3,18 @@ import { Arbitrary } from './definition/Arbitrary';
 import { option } from './OptionArbitrary';
 import { genericTuple } from './TupleArbitrary';
 
+/** @public */
 export interface RecordConstraints {
   /** Allow to remove keys from the generated record */
   withDeletedKeys?: boolean;
 }
 
+/** @public */
 interface DeletedKeys {
   withDeletedKeys: true;
 }
 
+/** @public */
 type ConstrainedArbitrary<T, Constraints> = Constraints extends DeletedKeys ? Arbitrary<Partial<T>> : Arbitrary<T>;
 
 /** @internal */
@@ -35,6 +38,8 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
  * ```
  *
  * @param recordModel - Schema of the record
+ *
+ * @public
  */
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }>;
 /**
@@ -48,6 +53,8 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  *
  * @param recordModel - Schema of the record
  * @param constraints - Contraints on the generated record
+ *
+ * @public
  */
 function record<T, Constraints extends RecordConstraints>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },

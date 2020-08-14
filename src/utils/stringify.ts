@@ -2,9 +2,9 @@
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
 
 /**
- * @internal
  * Only called with symbol produced by Symbol(string | undefined)
  * Not Symbol.for(string)
+ * @internal
  */
 function getSymbolDescription(s: symbol): string | null {
   if (s.description !== undefined) return s.description;
@@ -107,7 +107,10 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
 
 /**
  * Convert any value to its fast-check string representation
+ *
  * @param value - Value to be converted into a string
+ *
+ * @public
  */
 export function stringify<Ts>(value: Ts): string {
   return stringifyInternal(value, []);

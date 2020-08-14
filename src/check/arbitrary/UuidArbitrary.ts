@@ -8,9 +8,11 @@ const padEight = (arb: Arbitrary<number>) => arb.map((n) => n.toString(16).padSt
 /**
  * For UUID from v1 to v5
  *
- * According to RFC 4122 - https://tools.ietf.org/html/rfc4122
+ * According to {@link https://tools.ietf.org/html/rfc4122 | RFC 4122}
  *
  * No mixed case, only lower case digits (0-9a-f)
+ *
+ * @public
  */
 export function uuid() {
   // According to RFC 4122: Set the two most significant bits (bits 6 and 7) of the clock_seq_hi_and_reserved to zero and one, respectively
@@ -28,9 +30,11 @@ export function uuid() {
 /**
  * For UUID of a given version (in v1 to v5)
  *
- * According to RFC 4122 - https://tools.ietf.org/html/rfc4122
+ * According to {@link https://tools.ietf.org/html/rfc4122 | RFC 4122}
  *
  * No mixed case, only lower case digits (0-9a-f)
+ *
+ * @public
  */
 export function uuidV(versionNumber: 1 | 2 | 3 | 4 | 5) {
   const padded = padEight(nat(0xffffffff));

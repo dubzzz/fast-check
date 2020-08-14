@@ -19,6 +19,7 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
 /**
  * Infer the type of the Arbitrary produced by oneof
  * given the type of the source arbitraries
+ * @public
  */
 type OneOfArbitraryType<Ts extends Arbitrary<unknown>[]> = {
   [K in keyof Ts]: Ts[K] extends Arbitrary<infer U> ? U : never;
@@ -30,6 +31,8 @@ type OneOfArbitraryType<Ts extends Arbitrary<unknown>[]> = {
  * **WARNING**: It expects at least one arbitrary
  *
  * @param arbs - Arbitraries that might be called to produce a value
+ *
+ * @public
  */
 function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfArbitraryType<Ts>> {
   if (arbs.length === 0) {

@@ -1,5 +1,6 @@
 /**
  * Error type produced whenever a precondition fails
+ * @public
  */
 export class PreconditionFailure extends Error {
   private static readonly SharedFootPrint: symbol = Symbol.for('fast-check/PreconditionFailure');

@@ -6,6 +6,7 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
 
 /**
  * Interface for synchronous property, see {@link IRawProperty}
+ * @public
  */
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 

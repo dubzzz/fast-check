@@ -69,6 +69,8 @@ function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary 
  * ```
  *
  * @param builder - Arbitraries builder based on themselves (through `tie`)
+ *
+ * @public
  */
 export function letrec<T>(
   builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }

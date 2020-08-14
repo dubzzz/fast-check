@@ -1,8 +1,10 @@
 import { getGlobal } from '../../../utils/globalThis';
 import { Parameters } from './Parameters';
 
+/** @internal */
 const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
+/** @public */
 export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>>;
 
 /**
@@ -20,6 +22,8 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
  * ```
  *
  * @param parameters - Global parameters
+ *
+ * @public
  */
 export const configureGlobal = (parameters: GlobalParameters): void => {
   getGlobal()[globalParametersSymbol] = parameters;
@@ -27,6 +31,7 @@ export const configureGlobal = (parameters: GlobalParameters): void => {
 
 /**
  * Read global parameters that will be used by runners
+ * @public
  */
 export const readConfigureGlobal = (): GlobalParameters | undefined => {
   return getGlobal()[globalParametersSymbol];
@@ -34,6 +39,7 @@ export const readConfigureGlobal = (): GlobalParameters | undefined => {
 
 /**
  * Reset global parameters
+ * @public
  */
 export const resetConfigureGlobal = (): void => {
   delete getGlobal()[globalParametersSymbol];

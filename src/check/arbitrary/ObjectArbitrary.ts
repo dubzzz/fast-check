@@ -17,6 +17,7 @@ import { bigInt } from './BigIntArbitrary';
 
 /**
  * Constraints for `fc.anything` and `fc.object`
+ * @public
  */
 export type ObjectConstraints = {
   /** Maximal depth allowed */
@@ -66,9 +67,7 @@ export type ObjectConstraints = {
   withBigInt?: boolean;
 };
 
-/**
- * @internal
- */
+/** @internal */
 class QualifiedObjectConstraints {
   constructor(
     readonly key: Arbitrary<string>,
@@ -223,7 +222,11 @@ const objectInternal = (constraints: QualifiedObjectConstraints): Arbitrary<Reco
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * null, undefined, 42, 6.5, 'Hello', {}, {k: [{}, 1, 2]}
+ * ```
+ *
+ * @public
  */
 function anything(): Arbitrary<unknown>;
 /**
@@ -232,7 +235,9 @@ function anything(): Arbitrary<unknown>;
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * null, undefined, 42, 6.5, 'Hello', {}, {k: [{}, 1, 2]}
+ * ```
  *
  * @example
  * ```typescript
@@ -250,6 +255,8 @@ function anything(): Arbitrary<unknown>;
  * ```
  *
  * @param constraints - Constraints to apply when building instances
+ *
+ * @public
  */
 function anything(constraints: ObjectConstraints): Arbitrary<unknown>;
 function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
@@ -262,7 +269,11 @@ function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```{} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * {}, {k: [{}, 1, 2]}
+ * ```
+ *
+ * @public
  */
 function object(): Arbitrary<Record<string, unknown>>;
 /**
@@ -271,9 +282,13 @@ function object(): Arbitrary<Record<string, unknown>>;
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```{} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * {}, {k: [{}, 1, 2]}
+ * ```
  *
  * @param constraints - Constraints to apply when building instances
+ *
+ * @public
  */
 function object(constraints: ObjectConstraints): Arbitrary<Record<string, unknown>>;
 function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unknown>> {
@@ -291,6 +306,8 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
  * For any JSON compliant values
  *
  * Keys and string values rely on {@link string}
+ *
+ * @public
  */
 function jsonObject(): Arbitrary<unknown>;
 /**
@@ -299,6 +316,8 @@ function jsonObject(): Arbitrary<unknown>;
  * Keys and string values rely on {@link string}
  *
  * @param maxDepth - Maximal depth of the generated values
+ *
+ * @public
  */
 function jsonObject(maxDepth: number): Arbitrary<unknown>;
 function jsonObject(maxDepth?: number): Arbitrary<unknown> {
@@ -309,6 +328,8 @@ function jsonObject(maxDepth?: number): Arbitrary<unknown> {
  * For any JSON compliant values with unicode support
  *
  * Keys and string values rely on {@link unicode}
+ *
+ * @public
  */
 function unicodeJsonObject(): Arbitrary<unknown>;
 /**
@@ -317,6 +338,8 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  * Keys and string values rely on {@link unicode}
  *
  * @param maxDepth - Maximal depth of the generated values
+ *
+ * @public
  */
 function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
 function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
@@ -327,6 +350,8 @@ function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
  * For any JSON strings
  *
  * Keys and string values rely on {@link string}
+ *
+ * @public
  */
 function json(): Arbitrary<string>;
 /**
@@ -335,6 +360,8 @@ function json(): Arbitrary<string>;
  * Keys and string values rely on {@link string}
  *
  * @param maxDepth - Maximal depth of the generated objects
+ *
+ * @public
  */
 function json(maxDepth: number): Arbitrary<string>;
 function json(maxDepth?: number): Arbitrary<string> {
@@ -346,6 +373,8 @@ function json(maxDepth?: number): Arbitrary<string> {
  * For any JSON strings with unicode support
  *
  * Keys and string values rely on {@link unicode}
+ *
+ * @public
  */
 function unicodeJson(): Arbitrary<string>;
 /**
@@ -354,6 +383,8 @@ function unicodeJson(): Arbitrary<string>;
  * Keys and string values rely on {@link unicode}
  *
  * @param maxDepth - Maximal depth of the generated objects
+ *
+ * @public
  */
 function unicodeJson(maxDepth: number): Arbitrary<string>;
 function unicodeJson(maxDepth?: number): Arbitrary<string> {

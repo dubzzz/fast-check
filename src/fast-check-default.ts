@@ -105,7 +105,15 @@ import {
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
+/**
+ * Type of module (commonjs or module)
+ * @public
+ */
 const __type = '__PACKAGE_TYPE__' as string;
+/**
+ * Version of fast-check used by your project (eg.: __PACKAGE_VERSION__)
+ * @public
+ */
 const __version = '__PACKAGE_VERSION__' as string;
 
 // boolean

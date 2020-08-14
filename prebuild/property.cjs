@@ -22,6 +22,7 @@ const signatureFor = (num, isAsync) => {
         /**
          * Instantiate a new {@link ${className}}
          * @param predicate - Assess the success of the property. Would be considered falsy if its throws or if its output evaluates to false
+         * @public
          */
         function ${functionName}<${txCommas(num)}>(
             ${commas(num, (v) => `arb${v}:Arbitrary<T${v}>`)},

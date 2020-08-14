@@ -16,10 +16,9 @@ class BiasedArbitraryWrapper<T, TSourceArbitrary extends Arbitrary<T>> extends A
 }
 
 /**
- * @internal
- *
  * Helper function automatically choosing between the biased and unbiased versions of an Arbitrary.
  * This helper has been introduced in order to provide higher performances when building custom biased arbitraries
+ * @internal
  */
 export function biasWrapper<T, TSourceArbitrary extends Arbitrary<T>>(
   freq: number,

@@ -9,6 +9,7 @@ const signatureFor = (num, opt) =>
   `
         /**
          * For tuples of [${txCommas(num)}]
+         * @public
          */
         function tuple<${txCommas(num)}>(
                 ${commas(num, v => `arb${v}${opt === true ? '?' : ''}: Arbitrary<T${v}>`)}
