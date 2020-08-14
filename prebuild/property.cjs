@@ -27,7 +27,7 @@ const signatureFor = (num, isAsync) => {
         function ${functionName}<${txCommas(num)}>(
             ${commas(num, (v) => `arb${v}:Arbitrary<T${v}>`)},
             predicate: ${predicateFor(num, isAsync)}
-        ): I${className}WithHooks<[${txCommas(num)}], true>;`;
+        ): I${className}WithHooks<[${txCommas(num)}]>;`;
 };
 
 /**
