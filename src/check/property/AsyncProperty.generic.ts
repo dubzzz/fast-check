@@ -4,13 +4,19 @@ import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 
+/** @public */
+type HookFunction = (() => Promise<unknown>) | (() => void);
+
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
  * @public
  */
-export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
-
-type HookFunction = (() => Promise<unknown>) | (() => void);
+export type IAsyncProperty<Ts, WithHooks extends boolean = false> = WithHooks extends true
+  ? IRawProperty<Ts, true> & {
+      beforeEach: (hookFunction: HookFunction) => IAsyncProperty<Ts, true>;
+      afterEach: (hookFunction: HookFunction) => IAsyncProperty<Ts, true>;
+    }
+  : IRawProperty<Ts, true>;
 
 /**
  * Asynchronous property, see {@link IAsyncProperty}

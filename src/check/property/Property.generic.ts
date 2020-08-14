@@ -4,13 +4,27 @@ import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 
+/** @public */
+type HookFunction = () => void;
+
 /**
  * Interface for synchronous property, see {@link IRawProperty}
  * @public
  */
-export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
-
-type HookFunction = () => void;
+export type IProperty<Ts, WithHooks extends boolean = false> = WithHooks extends true
+  ? IRawProperty<Ts, false> & {
+      beforeEach:
+        | ((
+            invalidHookFunction: () => Promise<unknown>
+          ) => 'beforeEach expects a synchronous function but was given a function returning a Promise')
+        | ((validHookFunction: HookFunction) => IProperty<Ts, true>);
+      afterEach:
+        | ((
+            invalidHookFunction: () => Promise<unknown>
+          ) => 'afterEach expects a synchronous function but was given a function returning a Promise')
+        | ((validHookFunction: HookFunction) => IProperty<Ts, true>);
+    }
+  : IRawProperty<Ts, false>;
 
 /**
  * Property, see {@link IProperty}
@@ -48,11 +62,7 @@ export class Property<Ts> implements IProperty<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  beforeEach(
-    invalidHookFunction: () => Promise<unknown>
-  ): 'beforeEach expects a synchronous function but was given a function returning a Promise';
-  beforeEach(validHookFunction: HookFunction): Property<Ts>;
-  beforeEach(hookFunction: HookFunction): unknown {
+  beforeEach(hookFunction: HookFunction): Property<Ts> {
     this.beforeEachHook = hookFunction;
     return this;
   }
@@ -60,11 +70,7 @@ export class Property<Ts> implements IProperty<Ts> {
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  afterEach(
-    invalidHookFunction: () => Promise<unknown>
-  ): 'afterEach expects a synchronous function but was given a function returning a Promise';
-  afterEach(validHookFunction: HookFunction): Property<Ts>;
-  afterEach(hookFunction: HookFunction): unknown {
+  afterEach(hookFunction: HookFunction): Property<Ts> {
     this.afterEachHook = hookFunction;
     return this;
   }
