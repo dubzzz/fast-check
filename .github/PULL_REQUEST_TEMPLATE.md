@@ -1,6 +1,5 @@
-## Why is this PR for?
-
-Describe the reason of this PR or give a link towards the associated issue.
+<!-- Why is this PR for? -->
+<!-- Describe the reason why you opened this PR or give a link towards the associated issue. -->
 
 ## In a nutshell
 
