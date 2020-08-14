@@ -1,6 +1,6 @@
 import { pre } from './check/precondition/Pre';
-import { asyncProperty, IAsyncProperty, IAsyncPropertyWithHooks } from './check/property/AsyncProperty';
-import { property, IProperty, IPropertyWithHooks } from './check/property/Property';
+import { asyncProperty, IAsyncProperty } from './check/property/AsyncProperty';
+import { property, IProperty } from './check/property/Property';
 import { IRawProperty } from './check/property/IRawProperty';
 import { Parameters } from './check/runner/configuration/Parameters';
 import {
@@ -141,9 +141,7 @@ export {
   asyncProperty,
   IRawProperty,
   IProperty,
-  IPropertyWithHooks,
   IAsyncProperty,
-  IAsyncPropertyWithHooks,
   // pre-built arbitraries
   boolean,
   falsy,
