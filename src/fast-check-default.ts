@@ -47,7 +47,7 @@ import {
   unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
 import { oneof } from './check/arbitrary/OneOfArbitrary';
-import { option } from './check/arbitrary/OptionArbitrary';
+import { option, OptionConstraints } from './check/arbitrary/OptionArbitrary';
 import { record, RecordConstraints } from './check/arbitrary/RecordArbitrary';
 import { set } from './check/arbitrary/SetArbitrary';
 import { infiniteStream } from './check/arbitrary/StreamArbitrary';
@@ -101,6 +101,7 @@ import {
   Scheduler,
   SchedulerSequenceItem,
   SchedulerReportItem,
+  SchedulerConstraints,
 } from './check/arbitrary/AsyncSchedulerArbitrary';
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 
@@ -245,8 +246,10 @@ export {
   FalsyContraints,
   FalsyType,
   MixedCaseConstraints,
+  SchedulerConstraints,
   ObjectConstraints,
   Parameters,
+  OptionConstraints,
   RecordConstraints,
   WebAuthorityConstraints,
   WebUrlConstraints,
