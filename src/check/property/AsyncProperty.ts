@@ -1,4 +1,4 @@
 import { asyncProperty } from './AsyncProperty.generated';
-import { IAsyncProperty } from './AsyncProperty.generic';
+import { IAsyncProperty, IAsyncPropertyWithHooks } from './AsyncProperty.generic';
 
-export { asyncProperty, IAsyncProperty };
+export { asyncProperty, IAsyncProperty, IAsyncPropertyWithHooks };

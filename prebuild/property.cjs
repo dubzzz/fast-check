@@ -27,7 +27,7 @@ const signatureFor = (num, isAsync) => {
         function ${functionName}<${txCommas(num)}>(
             ${commas(num, (v) => `arb${v}:Arbitrary<T${v}>`)},
             predicate: ${predicateFor(num, isAsync)}
-        ): I${className}<[${txCommas(num)}], true>;`;
+        ): I${className}WithHooks<[${txCommas(num)}], true>;`;
 };
 
 /**
@@ -41,7 +41,7 @@ const generateProperty = (num, isAsync) => {
     // imports
     `import { Arbitrary } from '../arbitrary/definition/Arbitrary';`,
     `import { genericTuple } from '../arbitrary/TupleArbitrary';`,
-    `import { ${className}, I${className} } from './${className}.generic';`,
+    `import { ${className}, I${className}WithHooks } from './${className}.generic';`,
     // declare all signatures
     ...iota(num).map((id) => signatureFor(id + 1, isAsync)),
     // declare function

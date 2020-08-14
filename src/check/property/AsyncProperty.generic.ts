@@ -11,12 +11,25 @@ type HookFunction = (() => Promise<unknown>) | (() => void);
  * Interface for asynchronous property, see {@link IRawProperty}
  * @public
  */
-export type IAsyncProperty<Ts, WithHooks extends boolean = false> = WithHooks extends true
-  ? IRawProperty<Ts, true> & {
-      beforeEach: (hookFunction: HookFunction) => IAsyncProperty<Ts, true>;
-      afterEach: (hookFunction: HookFunction) => IAsyncProperty<Ts, true>;
-    }
-  : IRawProperty<Ts, true>;
+export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
+
+/**
+ * Interface for asynchronous property defining hooks, see {@link IAsyncProperty}
+ * @public
+ */
+export interface IAsyncPropertyWithHooks<Ts> {
+  /**
+   * Define a function that should be called before all calls to the predicate
+   * @param hookFunction - Function to be called
+   */
+  beforeEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+
+  /**
+   * Define a function that should be called after all calls to the predicate
+   * @param hookFunction - Function to be called
+   */
+  afterEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+}
 
 /**
  * Asynchronous property, see {@link IAsyncProperty}
@@ -25,7 +38,7 @@ export type IAsyncProperty<Ts, WithHooks extends boolean = false> = WithHooks ex
  *
  * @internal
  */
-export class AsyncProperty<Ts> implements IAsyncProperty<Ts> {
+export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   static dummyHook: HookFunction = () => {};
   private beforeEachHook: HookFunction = AsyncProperty.dummyHook;
   private afterEachHook: HookFunction = AsyncProperty.dummyHook;
