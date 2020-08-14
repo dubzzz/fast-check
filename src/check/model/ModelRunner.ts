@@ -5,10 +5,14 @@ import { CommandsIterable } from './commands/CommandsIterable';
 import { Scheduler } from '../arbitrary/AsyncSchedulerArbitrary';
 import { scheduleCommands } from './commands/ScheduledCommand';
 
+/** @public */
 type Setup<Model, Real> = () => { model: Model; real: Real };
+/** @public */
 type AsyncSetup<Model, Real> = () => Promise<{ model: Model; real: Real }>;
 
+/** @internal */
 type SetupFun<Model, Real, P> = (s: { model: Model; real: Real }) => P;
+/** @internal */
 interface SetupProducer<Model, Real, P> {
   then: (fun: SetupFun<Model, Real, P>) => P;
 }
@@ -97,6 +101,8 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
  *
  * @param s - Initial state provider
  * @param cmds - Synchronous commands to be executed
+ *
+ * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const modelRun = <Model extends object, Real, InitialModel extends Model>(
@@ -113,6 +119,8 @@ export const modelRun = <Model extends object, Real, InitialModel extends Model>
  *
  * @param s - Initial state provider
  * @param cmds - Asynchronous commands to be executed
+ *
+ * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const asyncModelRun = async <Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
@@ -130,6 +138,8 @@ export const asyncModelRun = async <Model extends object, Real, CheckAsync exten
  * @param scheduler - Scheduler
  * @param s - Initial state provider
  * @param cmds - Asynchronous commands to be executed
+ *
+ * @public
  */
 export const scheduledModelRun = async <
   // eslint-disable-next-line @typescript-eslint/ban-types

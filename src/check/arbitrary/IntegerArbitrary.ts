@@ -44,11 +44,15 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
 
 /**
  * For integers between -2147483648 (included) and 2147483647 (included)
+ * @public
  */
 function integer(): ArbitraryWithShrink<number>;
 /**
  * For integers between -2147483648 (included) and max (included)
+ *
  * @param max - Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
+ *
+ * @public
  */
 function integer(max: number): ArbitraryWithShrink<number>;
 /**
@@ -56,6 +60,8 @@ function integer(max: number): ArbitraryWithShrink<number>;
  *
  * @param min - Lower bound for the generated integers (eg.: 0, Number.MIN_SAFE_INTEGER)
  * @param max - Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
+ *
+ * @public
  */
 function integer(min: number, max: number): ArbitraryWithShrink<number>;
 function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
@@ -66,6 +72,7 @@ function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
 
 /**
  * For integers between Number.MIN_SAFE_INTEGER (included) and Number.MAX_SAFE_INTEGER (included)
+ * @public
  */
 function maxSafeInteger(): ArbitraryWithShrink<number> {
   return integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
@@ -73,11 +80,15 @@ function maxSafeInteger(): ArbitraryWithShrink<number> {
 
 /**
  * For positive integers between 0 (included) and 2147483647 (included)
+ * @public
  */
 function nat(): ArbitraryWithShrink<number>;
 /**
  * For positive integers between 0 (included) and max (included)
+ *
  * @param max - Upper bound for the generated integers
+ *
+ * @public
  */
 function nat(max: number): ArbitraryWithShrink<number>;
 function nat(a?: number): ArbitraryWithShrink<number> {
@@ -87,6 +98,7 @@ function nat(a?: number): ArbitraryWithShrink<number> {
 
 /**
  * For positive integers between 0 (included) and Number.MAX_SAFE_INTEGER (included)
+ * @public
  */
 function maxSafeNat(): ArbitraryWithShrink<number> {
   return nat(Number.MAX_SAFE_INTEGER);

@@ -1,5 +1,6 @@
 import * as prand from 'pure-rand';
 
+/** @public */
 export class Random {
   private static MIN_INT: number = 0x80000000 | 0;
   private static MAX_INT: number = 0x7fffffff | 0;

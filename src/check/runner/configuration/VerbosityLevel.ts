@@ -1,5 +1,6 @@
 /**
  * Verbosity level
+ * @public
  */
 export enum VerbosityLevel {
   /**

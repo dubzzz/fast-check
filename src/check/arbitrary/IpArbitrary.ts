@@ -9,8 +9,9 @@ import { tuple } from './TupleArbitrary';
 /**
  * For valid IP v4
  *
- * Following RFC 3986
- * https://tools.ietf.org/html/rfc3986#section-3.2.2
+ * Following {@link https://tools.ietf.org/html/rfc3986#section-3.2.2 | RFC 3986}
+ *
+ * @public
  */
 function ipV4(): Arbitrary<string> {
   // IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
@@ -20,11 +21,11 @@ function ipV4(): Arbitrary<string> {
 /**
  * For valid IP v4 according to WhatWG
  *
- * Following WhatWG, the specification for web-browsers
- * https://url.spec.whatwg.org/
+ * Following {@link https://url.spec.whatwg.org/ | WhatWG}, the specification for web-browsers
  *
- * There is no equivalent for IP v6 according to the IP v6 parser
- * https://url.spec.whatwg.org/#concept-ipv6-parser
+ * There is no equivalent for IP v6 according to the {@link https://url.spec.whatwg.org/#concept-ipv6-parser | IP v6 parser}
+ *
+ * @public
  */
 function ipV4Extended(): Arbitrary<string> {
   const natRepr = (maxValue: number) =>
@@ -50,8 +51,9 @@ function ipV4Extended(): Arbitrary<string> {
 /**
  * For valid IP v6
  *
- * Following RFC 3986
- * https://tools.ietf.org/html/rfc3986#section-3.2.2
+ * Following {@link https://tools.ietf.org/html/rfc3986#section-3.2.2 | RFC 3986}
+ *
+ * @public
  */
 function ipV6(): Arbitrary<string> {
   // h16 = 1*4HEXDIG

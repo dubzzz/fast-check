@@ -47,7 +47,7 @@ import {
   unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
 import { oneof } from './check/arbitrary/OneOfArbitrary';
-import { option } from './check/arbitrary/OptionArbitrary';
+import { option, OptionConstraints } from './check/arbitrary/OptionArbitrary';
 import { record, RecordConstraints } from './check/arbitrary/RecordArbitrary';
 import { set } from './check/arbitrary/SetArbitrary';
 import { infiniteStream } from './check/arbitrary/StreamArbitrary';
@@ -101,11 +101,20 @@ import {
   Scheduler,
   SchedulerSequenceItem,
   SchedulerReportItem,
+  SchedulerConstraints,
 } from './check/arbitrary/AsyncSchedulerArbitrary';
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
+/**
+ * Type of module (commonjs or module)
+ * @public
+ */
 const __type = '__PACKAGE_TYPE__' as string;
+/**
+ * Version of fast-check used by your project (eg.: __PACKAGE_VERSION__)
+ * @public
+ */
 const __version = '__PACKAGE_VERSION__' as string;
 
 // boolean
@@ -237,8 +246,10 @@ export {
   FalsyContraints,
   FalsyType,
   MixedCaseConstraints,
+  SchedulerConstraints,
   ObjectConstraints,
   Parameters,
+  OptionConstraints,
   RecordConstraints,
   WebAuthorityConstraints,
   WebUrlConstraints,

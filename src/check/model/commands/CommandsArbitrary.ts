@@ -150,6 +150,8 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
+ *
+ * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
@@ -164,6 +166,8 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
+ *
+ * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(
@@ -178,6 +182,8 @@ function commands<Model extends object, Real>(
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
+ *
+ * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
@@ -192,6 +198,8 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
+ *
+ * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(

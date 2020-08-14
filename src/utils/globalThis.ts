@@ -7,7 +7,7 @@ const internalGlobalThis: any = (function (global) {
 })(typeof this === 'object' ? this : Function('return this')());
 
 /**
- * @internal
  * Internal polyfill for `globalThis`
+ * @internal
  */
 export const getGlobal = () => internalGlobalThis;

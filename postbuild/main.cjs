@@ -52,4 +52,14 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     // eslint-disable-next-line
     console.info(`Package details added onto module version`);
   }
+
+  const dTsReplacement = replace.sync({
+    files: 'lib/types/fast-check-default.d.ts',
+    from: [/__PACKAGE_VERSION__/g],
+    to: [packageVersion],
+  });
+  if (dTsReplacement.length === 1 && dTsReplacement[0].hasChanged) {
+    // eslint-disable-next-line
+    console.info(`Package details added onto d.ts version`);
+  }
 });

@@ -57,6 +57,7 @@ class DedupArbitrary<T> extends Arbitrary<T[]> {
   }
 }
 
+/** @public */
 type TupleOf<T, N extends number> = N extends 0
   ? []
   : N extends 1
@@ -75,6 +76,8 @@ type TupleOf<T, N extends number> = N extends 0
  *
  * @param arb - Source arbitrary
  * @param numValues - Number of values to produce
+ *
+ * @public
  */
 function dedup<T, N extends number>(arb: Arbitrary<T>, numValues: N): Arbitrary<TupleOf<T, N>>;
 function dedup<T>(arb: Arbitrary<T>, numValues: number): Arbitrary<T[]> {

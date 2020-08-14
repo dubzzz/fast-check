@@ -25,6 +25,7 @@ class ConstantArbitrary<T> extends Arbitrary<T> {
 /**
  * For `value`
  * @param value - The value to produce
+ * @public
  */
 function constant<T>(value: T): Arbitrary<T> {
   if (hasCloneMethod(value)) {
@@ -36,6 +37,7 @@ function constant<T>(value: T): Arbitrary<T> {
 /**
  * For `value`
  * @param value - The value to produce
+ * @public
  */
 function clonedConstant<T>(value: T): Arbitrary<T> {
   if (hasCloneMethod(value)) {
@@ -51,6 +53,8 @@ function clonedConstant<T>(value: T): Arbitrary<T> {
  * **WARNING**: It expects at least one value, otherwise it should throw
  *
  * @param values - Constant values to be produced (all values shrink to the first one)
+ *
+ * @public
  */
 function constantFrom<TArgs extends any[] | [any]>(...values: TArgs): Arbitrary<TArgs[number]> {
   if (values.length === 0) {

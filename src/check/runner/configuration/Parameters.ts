@@ -5,6 +5,7 @@ import { RunDetails } from '../reporter/RunDetails';
 
 /**
  * Customization of the parameters used to run the properties
+ * @public
  */
 export interface Parameters<T = void> {
   /**
@@ -50,7 +51,7 @@ export interface Parameters<T = void> {
    *
    * NOTE:
    * Useful to stop too long shrinking processes.
-   * Replay capability (see {@link seed}, {@link path}) can resume the shrinking.
+   * Replay capability (see `seed`, `path`) can resume the shrinking.
    *
    * WARNING:
    * It skips runs. Thus test might be marked as failed.
@@ -64,12 +65,12 @@ export interface Parameters<T = void> {
    *
    * NOTE:
    * Useful to avoid having too long running processes in your CI.
-   * Replay capability (see {@link seed}, {@link path}) can still be used if needed.
+   * Replay capability (see `seed`, `path`) can still be used if needed.
    *
    * WARNING:
    * If the test got interrupted before any failure occured
-   * and before it reached the requested number of runs specified by {@link numRuns}
-   * it will be marked as success. Except if {@link markInterruptAsFailure} as been set to `true`
+   * and before it reached the requested number of runs specified by `numRuns`
+   * it will be marked as success. Except if `markInterruptAsFailure` as been set to `true`
    */
   interruptAfterTimeLimit?: number;
   /**

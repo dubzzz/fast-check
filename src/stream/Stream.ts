@@ -1,5 +1,6 @@
 import { filterHelper, flatMapHelper, joinHelper, mapHelper, nilHelper, takeWhileHelper } from './StreamHelpers';
 
+/** @public */
 export class Stream<T> implements IterableIterator<T> {
   /**
    * Create an empty stream of T
@@ -199,7 +200,10 @@ export class Stream<T> implements IterableIterator<T> {
 
 /**
  * Create a Stream based on `g`
+ *
  * @param g - Underlying data of the Stream
+ *
+ * @public
  */
 export function stream<T>(g: IterableIterator<T>): Stream<T> {
   return new Stream<T>(g);

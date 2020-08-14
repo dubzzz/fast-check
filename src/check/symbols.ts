@@ -7,6 +7,8 @@
  * Implementing [cloneMethod] on the generated Stream would force
  * the framework to clone it whenever it has to re-use it
  * (mainly required for chrinking process)
+ *
+ * @public
  */
 export const cloneMethod = Symbol.for('fast-check/cloneMethod');
 

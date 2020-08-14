@@ -4,17 +4,16 @@ import { Arbitrary } from './definition/Arbitrary';
 import { frequency } from './FrequencyArbitrary';
 
 /**
- * @internal
  * Helper function responsible to build the entries for frequency
+ * @internal
  */
 const h = (v: string, w: number) => {
   return { arbitrary: constant(v), weight: w };
 };
 
 /**
- * @internal
  * Number of occurences extracted from the lorem ipsum:
- * https://fr.wikipedia.org/wiki/Faux-texte#Lorem_ipsum_(version_populaire)
+ * {@link https://fr.wikipedia.org/wiki/Faux-texte#Lorem_ipsum_(version_populaire)}
  *
  * Code generated using:
  * >  Object.entries(
@@ -29,6 +28,8 @@ const h = (v: string, w: number) => {
  * >  .sort(([w1, n1], [w2, n2]) => n2 - n1)
  * >  .reduce((acc, [w, n]) => acc.concat([`h(${JSON.stringify(w)}, ${n})`]), [])
  * >  .join(',')
+ *
+ * @internal
  */
 const loremWord = () =>
   frequency(
@@ -186,17 +187,24 @@ const loremWord = () =>
 
 /**
  * For lorem ipsum strings of words
+ * @public
  */
 function lorem(): Arbitrary<string>;
 /**
  * For lorem ipsum string of words with maximal number of words
+ *
  * @param maxWordsCount - Upper bound of the number of words allowed
+ *
+ * @public
  */
 function lorem(maxWordsCount: number): Arbitrary<string>;
 /**
  * For lorem ipsum string of words or sentences with maximal number of words or sentences
+ *
  * @param maxWordsCount - Upper bound of the number of words/sentences allowed
  * @param sentencesMode - If enabled, multiple sentences might be generated
+ *
+ * @public
  */
 function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;
 function lorem(maxWordsCount?: number, sentencesMode?: boolean): Arbitrary<string> {

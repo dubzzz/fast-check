@@ -11,6 +11,8 @@ import { escapeForMultilineComments } from './helpers/TextEscaper';
  * For pure functions
  *
  * @param arb - Arbitrary responsible to produce the values
+ *
+ * @public
  */
 export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary<(...args: TArgs) => TOut> {
   return tuple(array(arb, 1, 10), integer().noShrink()).map(([outs, seed]) => {
@@ -78,13 +80,15 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
  * For comparison functions
  *
  * A comparison function returns:
- * - negative value whenever a < b
- * - positive value whenever a > b
- * - zero whenever a and b are equivalent
+ * - negative value whenever `a < b`
+ * - positive value whenever `a > b`
+ * - zero whenever `a` and `b` are equivalent
  *
  * Comparison functions are transitive: `a < b and b < c => a < c`
  *
  * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
+ *
+ * @public
  */
 export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
   return compareFuncImplem(
@@ -102,8 +106,10 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
  * For comparison boolean functions
  *
  * A comparison boolean function returns:
- * - true whenever a < b
- * - false otherwise (ie. a = b or a > b)
+ * - `true` whenever `a < b`
+ * - `false` otherwise (ie. `a = b` or `a > b`)
+ *
+ * @public
  */
 export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
   return compareFuncImplem(

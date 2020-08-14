@@ -2,13 +2,15 @@ import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
 
 /**
- * A Shrinkable<T, TShrink = T> holds an internal value of type `T`
+ * A `Shrinkable<T, TShrink = T>` holds an internal value of type `T`
  * and can shrink it to smaller `TShrink` values
+ *
+ * @public
  */
 export class Shrinkable<T, TShrink extends T = T> {
   /**
    * State storing the result of hasCloneMethod
-   * If <true> the value will be cloned each time it gets accessed
+   * If `true` the value will be cloned each time it gets accessed
    */
   readonly hasToBeCloned: boolean;
   /**
@@ -19,7 +21,7 @@ export class Shrinkable<T, TShrink extends T = T> {
   private readOnce: boolean;
   /**
    * Safe value of the shrinkable
-   * Depending on {@link hasToBeCloned} it will either be {@link value_} or a clone of it
+   * Depending on `hasToBeCloned` it will either be `value_` or a clone of it
    */
   readonly value!: T;
 

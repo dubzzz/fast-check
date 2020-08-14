@@ -6,6 +6,7 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
 
 /**
  * Interface for synchronous property, see {@link IRawProperty}
+ * @public
  */
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
@@ -15,6 +16,8 @@ type HookFunction = () => void;
  * Property, see {@link IProperty}
  *
  * Prefer using {@link property} instead
+ *
+ * @internal
  */
 export class Property<Ts> implements IProperty<Ts> {
   static dummyHook: HookFunction = () => {};

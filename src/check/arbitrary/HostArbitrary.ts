@@ -29,10 +29,11 @@ function subdomain() {
  * For domains
  * having an extension with at least two lowercase characters
  *
- * According to RFC 1034, RFC 1123 and WHATWG URL Standard
- * - https://www.ietf.org/rfc/rfc1034.txt
- * - https://www.ietf.org/rfc/rfc1123.txt
- * - https://url.spec.whatwg.org/
+ * According to {@link https://www.ietf.org/rfc/rfc1034.txt | RFC 1034},
+ * {@link https://www.ietf.org/rfc/rfc1123.txt | RFC 1123} and
+ * {@link https://url.spec.whatwg.org/ | WHATWG URL Standard}
+ *
+ * @public
  */
 export function domain(): Arbitrary<string> {
   const alphaNumericArb = buildLowerAlphaArb([]);

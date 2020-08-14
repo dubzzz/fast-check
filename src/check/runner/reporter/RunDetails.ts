@@ -6,6 +6,8 @@ import { Parameters } from '../configuration/Parameters';
  * Post-run details produced by {@link check}
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
+ *
+ * @public
  */
 export type RunDetails<Ts> =
   | RunDetailsFailureProperty<Ts>
@@ -16,6 +18,8 @@ export type RunDetails<Ts> =
 /**
  * Run reported as failed because
  * the property failed
+ *
+ * @public
  */
 export type RunDetailsFailureProperty<Ts> = RunDetailsWithDoc<Ts> & {
   failed: true;
@@ -28,6 +32,8 @@ export type RunDetailsFailureProperty<Ts> = RunDetailsWithDoc<Ts> & {
 /**
  * Run reported as failed because
  * too many retries have been attempted to generate valid values
+ *
+ * @public
  */
 export type RunDetailsFailureTooManySkips<Ts> = RunDetailsWithDoc<Ts> & {
   failed: true;
@@ -40,6 +46,8 @@ export type RunDetailsFailureTooManySkips<Ts> = RunDetailsWithDoc<Ts> & {
 /**
  * Run reported as failed because
  * it took too long and thus has been interrupted
+ *
+ * @public
  */
 export type RunDetailsFailureInterrupted<Ts> = RunDetailsWithDoc<Ts> & {
   failed: true;
@@ -51,6 +59,7 @@ export type RunDetailsFailureInterrupted<Ts> = RunDetailsWithDoc<Ts> & {
 
 /**
  * Run reported as success
+ * @public
  */
 export type RunDetailsSuccess<Ts> = RunDetailsWithDoc<Ts> & {
   failed: false;
@@ -60,6 +69,10 @@ export type RunDetailsSuccess<Ts> = RunDetailsWithDoc<Ts> & {
   error: null;
 };
 
+/**
+ * Shared part between variants of RunDetails
+ * @public
+ */
 interface RunDetailsWithDoc<Ts> {
   /**
    * Does the property failed during the execution of {@link check}?

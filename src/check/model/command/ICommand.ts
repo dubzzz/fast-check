@@ -3,6 +3,7 @@
 // Why a 'non-primitive type'?
 // run method is supposed to alter the model received as input: primitive instances cannot be updated in-place while object can.
 
+/** @public */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface ICommand<Model extends object, Real, RunResult, CheckAsync extends boolean = false> {
   /**

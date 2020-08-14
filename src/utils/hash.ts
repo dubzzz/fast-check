@@ -262,7 +262,10 @@ const crc32Table = [
  * CRC-32 based hash function
  *
  * Used internally by fast-check in {@link func}, {@link compareFunc} or even {@link compareBooleanFunc}.
- * @param repr String value to be hashed
+ *
+ * @param repr - String value to be hashed
+ *
+ * @public
  */
 export function hash(repr: string): number {
   // Based on https://github.com/SheetJS/js-crc32/blob/master/crc32.js

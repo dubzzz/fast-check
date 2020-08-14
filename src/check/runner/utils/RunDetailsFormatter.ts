@@ -115,6 +115,8 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
+ *
+ * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
 /**
@@ -122,6 +124,8 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): unde
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
+ *
+ * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
 /**
@@ -129,6 +133,8 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): strin
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
+ *
+ * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined;
 function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined {
@@ -154,10 +160,10 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
 }
 
 /**
- * @internal
  * In case this code has to be executed synchronously the caller
  * has to make sure that no asyncReporter has been defined
  * otherwise it might trigger an unchecked promise
+ * @internal
  */
 export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);

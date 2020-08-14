@@ -5,11 +5,11 @@ import { RunDetails } from './RunDetails';
 import { QualifiedParameters } from '../configuration/QualifiedParameters';
 
 /**
- * @internal
- *
  * Report the status of a run
  *
  * It receives notification from the runner in case of failures
+ *
+ * @internal
  */
 export class RunExecution<Ts> {
   readonly rootExecutionTrees: ExecutionTree<Ts>[];
