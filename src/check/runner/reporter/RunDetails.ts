@@ -103,7 +103,7 @@ interface RunDetailsWithDoc<Ts> {
   /**
    * Seed that have been used by the run
    *
-   * It can be forced in {@link fast-check#(assert:1)}, {@link fast-check#(check:1)}, {@link fast-check#sample} and {@link fast-check#statistics} using {@link fast-check#Parameters<void>}
+   * It can be forced in {@link fast-check#(assert:1)}, {@link fast-check#(check:1)}, {@link fast-check#sample} and {@link fast-check#statistics} using `Parameters`
    */
   seed: number;
   /**
@@ -117,13 +117,13 @@ interface RunDetailsWithDoc<Ts> {
   /**
    * In case of failure: path to the counterexample
    *
-   * For replay purposes, it can be forced in {@link fast-check#(assert:1)}, {@link fast-check#(check:1)}, {@link fast-check#sample} and {@link fast-check#statistics} using {@link fast-check#Parameters<void>}
+   * For replay purposes, it can be forced in {@link fast-check#(assert:1)}, {@link fast-check#(check:1)}, {@link fast-check#sample} and {@link fast-check#statistics} using `Parameters`
    */
   counterexamplePath: string | null;
   /**
    * List all failures that have occurred during the run
    *
-   * You must enable verbose with at least {@link fast-check#Verbosity.Verbose} in {@link fast-check#Parameters<void>}
+   * You must enable verbose with at least `Verbosity.Verbose` in `Parameters`
    * in order to have values in it
    */
   failures: Ts[];
@@ -133,7 +133,7 @@ interface RunDetailsWithDoc<Ts> {
    * Traces the origin of each value encountered during the test and its execution status.
    * Can help to diagnose shrinking issues.
    *
-   * You must enable verbose with at least {@link fast-check#Verbosity.Verbose} in {@link fast-check#Parameters<void>}
+   * You must enable verbose with at least `Verbosity.Verbose` in `Parameters`
    * in order to have values in it:
    * - Verbose: Only failures
    * - VeryVerbose: Failures, Successes and Skipped
