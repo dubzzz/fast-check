@@ -35,13 +35,13 @@ export interface Parameters<T = void> {
    * Skipped is considered globally, so this value is used to compute maxSkips = maxSkipsPerRun * numRuns.
    * Runner will consider a run to have failed if it skipped maxSkips+1 times before having generated numRuns valid entries.
    *
-   * See {@link pre} for more details on pre-conditions
+   * See {@link fast-check#pre} for more details on pre-conditions
    */
   maxSkipsPerRun?: number;
   /**
    * Maximum time in milliseconds for the predicate to answer: disabled by default
    *
-   * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
+   * WARNING: Only works for async code (see {@link fast-check#(asyncProperty:1)}), will not interrupt a synchronous code.
    */
   timeout?: number;
   /**
@@ -83,7 +83,7 @@ export interface Parameters<T = void> {
    */
   path?: string;
   /**
-   * Logger (see {@link statistics}): `console.log` by default
+   * Logger (see {@link fast-check#statistics}): `console.log` by default
    */
   logger?(v: string): void;
   /**
@@ -91,12 +91,12 @@ export interface Parameters<T = void> {
    */
   unbiased?: boolean;
   /**
-   * Enable verbose mode: {@link VerbosityLevel.None} by default
+   * Enable verbose mode: {@link fast-check#VerbosityLevel.None} by default
    *
    * Using `verbose: true` is equivalent to `verbose: VerbosityLevel.Verbose`
    *
    * It can prove very useful to troubleshoot issues.
-   * See {@link VerbosityLevel} for more details on each level.
+   * See {@link fast-check#VerbosityLevel} for more details on each level.
    */
   verbose?: boolean | VerbosityLevel;
   /**
