@@ -48,7 +48,7 @@ function streamSample<Ts>(
 }
 
 /**
- * Generate an array containing all the values that would have been generated during {@link assert} or {@link check}
+ * Generate an array containing all the values that would have been generated during {@link fast-check#(assert:1)} or {@link fast-check#(check:1)}
  *
  * @example
  * ```typescript
@@ -56,8 +56,8 @@ function streamSample<Ts>(
  * fc.sample(fc.nat(), {seed: 42}); // extract values from fc.nat() as if we were running fc.assert with seed=42
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
- * @param params - Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
+ * @param generator - {@link fast-check#IProperty} or {@link fast-check#Arbitrary} to extract the values from
+ * @param params - Integer representing the number of values to generate or `Parameters` as in {@link fast-check#(assert:1)}
  *
  * @public
  */
@@ -82,9 +82,9 @@ function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parame
  * // The output will be sent line by line to the logger
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
+ * @param generator - {@link fast-check#IProperty} or {@link fast-check#Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
- * @param params - Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
+ * @param params - Integer representing the number of values to generate or `Parameters` as in {@link fast-check#(assert:1)}
  *
  * @public
  */

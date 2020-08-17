@@ -40,7 +40,7 @@ class ContextImplem implements Context {
 }
 
 /**
- * Produce a {@link Context} instance
+ * Produce a {@link fast-check#Context} instance
  * @public
  */
 export const context = () => clonedConstant(new ContextImplem()) as Arbitrary<Context>;

@@ -8,13 +8,13 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
 type HookFunction = (() => Promise<unknown>) | (() => void);
 
 /**
- * Interface for asynchronous property, see {@link IRawProperty}
+ * Interface for asynchronous property, see {@link fast-check#IRawProperty}
  * @public
  */
 export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
 
 /**
- * Interface for asynchronous property defining hooks, see {@link IAsyncProperty}
+ * Interface for asynchronous property defining hooks, see {@link fast-check#IAsyncProperty}
  * @public
  */
 export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
@@ -32,9 +32,9 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
 }
 
 /**
- * Asynchronous property, see {@link IAsyncProperty}
+ * Asynchronous property, see {@link fast-check#IAsyncProperty}
  *
- * Prefer using {@link asyncProperty} instead
+ * Prefer using {@link fast-check#(asyncProperty:1)} instead
  *
  * @internal
  */

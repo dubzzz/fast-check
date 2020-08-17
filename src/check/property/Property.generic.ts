@@ -8,13 +8,13 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
 type HookFunction = () => void;
 
 /**
- * Interface for synchronous property, see {@link IRawProperty}
+ * Interface for synchronous property, see {@link fast-check#IRawProperty}
  * @public
  */
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
 /**
- * Interface for synchronous property defining hooks, see {@link IProperty}
+ * Interface for synchronous property defining hooks, see {@link fast-check#IProperty}
  * @public
  */
 export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
@@ -47,9 +47,9 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
 }
 
 /**
- * Property, see {@link IProperty}
+ * Property, see {@link fast-check#IProperty}
  *
- * Prefer using {@link property} instead
+ * Prefer using {@link fast-check#property} instead
  *
  * @internal
  */

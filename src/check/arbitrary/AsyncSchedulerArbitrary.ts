@@ -367,7 +367,7 @@ function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arb
 /**
  * For custom scheduler with predefined resolution order
  *
- * Ordering is defined by using a template string like the one generated in case of failure of a {@link scheduler}
+ * Ordering is defined by using a template string like the one generated in case of failure of a {@link fast-check#scheduler}
  *
  * It may be something like:
  * ```typescript
