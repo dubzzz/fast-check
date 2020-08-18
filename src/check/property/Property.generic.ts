@@ -56,10 +56,10 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
  */
 export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   static dummyHook: HookFunction = () => {};
-  private beforeEachHook: HookFunction;
-  private afterEachHook: HookFunction;
   private readonly globalBeforeEachHook: HookFunction;
   private readonly globalAfterEachHook: HookFunction;
+  private beforeEachHook: HookFunction;
+  private afterEachHook: HookFunction;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
     const { beforeEach = Property.dummyHook, afterEach = Property.dummyHook } = readConfigureGlobal() || {};
     this.globalBeforeEachHook = beforeEach;
