@@ -3,6 +3,7 @@ import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
+import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
 
 /** @public */
 type HookFunction = (() => Promise<unknown>) | (() => void);
@@ -40,9 +41,18 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   static dummyHook: HookFunction = () => {};
-  private beforeEachHook: HookFunction = AsyncProperty.dummyHook;
-  private afterEachHook: HookFunction = AsyncProperty.dummyHook;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {}
+  private readonly globalBeforeEachHook: HookFunction;
+  private readonly globalAfterEachHook: HookFunction;
+  private beforeEachHook: HookFunction;
+  private afterEachHook: HookFunction;
+  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
+    const { asyncBeforeEach = AsyncProperty.dummyHook, asyncAfterEach = AsyncProperty.dummyHook } =
+      readConfigureGlobal() || {};
+    this.globalBeforeEachHook = asyncBeforeEach;
+    this.globalAfterEachHook = asyncAfterEach;
+    this.beforeEachHook = asyncBeforeEach;
+    this.afterEachHook = asyncAfterEach;
+  }
   isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
@@ -68,7 +78,10 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   beforeEach(hookFunction: HookFunction): AsyncProperty<Ts> {
-    this.beforeEachHook = hookFunction;
+    this.beforeEachHook = async () => {
+      await this.globalBeforeEachHook();
+      await hookFunction();
+    };
     return this;
   }
   /**
@@ -76,7 +89,10 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   afterEach(hookFunction: HookFunction): AsyncProperty<Ts> {
-    this.afterEachHook = hookFunction;
+    this.afterEachHook = async () => {
+      await this.globalAfterEachHook();
+      await hookFunction();
+    };
     return this;
   }
 }

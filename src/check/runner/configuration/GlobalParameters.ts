@@ -5,10 +5,13 @@ import { Parameters } from './Parameters';
 const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
 type HookFunction = () => void;
+type AsyncHookFunction = (() => Promise<unknown>) | (() => void);
 
 type ExtraGlobalParameters = {
   beforeEach?: HookFunction;
   afterEach?: HookFunction;
+  asyncBeforeEach?: AsyncHookFunction;
+  asyncAfterEach?: AsyncHookFunction;
 };
 
 /** @public */
