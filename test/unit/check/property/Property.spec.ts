@@ -9,7 +9,7 @@ import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 
 describe('Property', () => {
-  beforeEach(() => resetConfigureGlobal())
+  beforeEach(() => resetConfigureGlobal());
 
   it('Should fail if predicate fails', () => {
     const p = property(stubArb.single(8), (_arg: number) => {
@@ -123,7 +123,6 @@ describe('Property', () => {
       return beforeEachCalled;
     }).beforeEach(() => (prob.beforeEachCalled = true));
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-
   });
   it('Should always execute the global beforeEach hook before the test', () => {
     const prob = { beforeEachCalled: false };
