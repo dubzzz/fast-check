@@ -3,12 +3,14 @@ import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkabl
 import { property } from '../../../../src/check/property/Property';
 import { pre } from '../../../../src/check/precondition/Pre';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
-import { configureGlobal } from '../../../../src/check/runner/configuration/GlobalParameters';
+import { configureGlobal, resetConfigureGlobal } from '../../../../src/check/runner/configuration/GlobalParameters';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 
 describe('Property', () => {
+  beforeEach(() => resetConfigureGlobal())
+
   it('Should fail if predicate fails', () => {
     const p = property(stubArb.single(8), (_arg: number) => {
       return false;
@@ -121,6 +123,7 @@ describe('Property', () => {
       return beforeEachCalled;
     }).beforeEach(() => (prob.beforeEachCalled = true));
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+
   });
   it('Should always execute the global beforeEach hook before the test', () => {
     const prob = { beforeEachCalled: false };
@@ -134,19 +137,18 @@ describe('Property', () => {
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
-  it('Should use the local beforeEach hook over the global one if available', () => {
-    const globalBeforeEach = jest.fn();
-    const prob = { beforeEachCalled: false };
+  it('Should always execute both beforeEach hooks before the test', () => {
+    const prob = { beforeEachCalled: false, globalBeforeEachCalled: false };
     configureGlobal({
-      beforeEach: globalBeforeEach,
+      beforeEach: () => (prob.globalBeforeEachCalled = true),
     });
     const p = property(stubArb.single(8), (_arg: number) => {
-      const beforeEachCalled = prob.beforeEachCalled;
+      const bothBeforeEachCalled = prob.beforeEachCalled && prob.globalBeforeEachCalled;
       prob.beforeEachCalled = false;
-      return beforeEachCalled;
+      prob.globalBeforeEachCalled = false;
+      return bothBeforeEachCalled;
     }).beforeEach(() => (prob.beforeEachCalled = true));
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    expect(globalBeforeEach).not.toBeCalled();
   });
   it('Should execute afterEach after the test on success', () => {
     const callOrder: string[] = [];
@@ -211,7 +213,31 @@ describe('Property', () => {
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
     expect(callOrder).toEqual(['test', 'globalAfterEach']);
   });
-  it('Should use the local afterEach hook over the global one if available', () => {
+  it('Should execute both afterEach hooks after the test on success', () => {
+    const callOrder: string[] = [];
+    configureGlobal({
+      afterEach: () => callOrder.push('globalAfterEach'),
+    });
+    const p = property(stubArb.single(8), (_arg: number) => {
+      callOrder.push('test');
+      return true;
+    }).afterEach(() => callOrder.push('afterEach'));
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    expect(callOrder).toEqual(['test', 'globalAfterEach', 'afterEach']);
+  });
+  it('Should execute both afterEach hooks after the test on failure', () => {
+    const callOrder: string[] = [];
+    configureGlobal({
+      afterEach: () => callOrder.push('globalAfterEach'),
+    });
+    const p = property(stubArb.single(8), (_arg: number) => {
+      callOrder.push('test');
+      return false;
+    }).afterEach(() => callOrder.push('afterEach'));
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
+    expect(callOrder).toEqual(['test', 'globalAfterEach', 'afterEach']);
+  });
+  it('Should execute both afterEach hooks after the test on uncaught exception', () => {
     const callOrder: string[] = [];
     configureGlobal({
       afterEach: () => callOrder.push('globalAfterEach'),
@@ -221,6 +247,6 @@ describe('Property', () => {
       throw new Error('uncaught');
     }).afterEach(() => callOrder.push('afterEach'));
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
-    expect(callOrder).toEqual(['test', 'afterEach']);
+    expect(callOrder).toEqual(['test', 'globalAfterEach', 'afterEach']);
   });
 });

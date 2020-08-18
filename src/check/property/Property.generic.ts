@@ -58,8 +58,12 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   static dummyHook: HookFunction = () => {};
   private beforeEachHook: HookFunction;
   private afterEachHook: HookFunction;
+  private readonly globalBeforeEachHook: HookFunction;
+  private readonly globalAfterEachHook: HookFunction;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
     const { beforeEach = Property.dummyHook, afterEach = Property.dummyHook } = readConfigureGlobal() || {};
+    this.globalBeforeEachHook = beforeEach;
+    this.globalAfterEachHook = afterEach;
     this.beforeEachHook = beforeEach;
     this.afterEachHook = afterEach;
   }
@@ -86,14 +90,20 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   beforeEach(invalidHookFunction: () => Promise<unknown>): never;
   beforeEach(validHookFunction: HookFunction): Property<Ts>;
   beforeEach(hookFunction: HookFunction): unknown {
-    this.beforeEachHook = hookFunction;
+    this.beforeEachHook = () => {
+      this.globalBeforeEachHook();
+      hookFunction();
+    };
     return this;
   }
 
   afterEach(invalidHookFunction: () => Promise<unknown>): never;
   afterEach(hookFunction: HookFunction): Property<Ts>;
   afterEach(hookFunction: HookFunction): unknown {
-    this.afterEachHook = hookFunction;
+    this.afterEachHook = () => {
+      this.globalAfterEachHook();
+      hookFunction();
+    };
     return this;
   }
 }
