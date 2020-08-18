@@ -4,8 +4,16 @@ import { Parameters } from './Parameters';
 /** @internal */
 const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
+type HookFunction = () => void;
+
+type ExtraGlobalParameters = {
+  beforeEach?: HookFunction;
+  afterEach?: HookFunction;
+};
+
 /** @public */
-export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>>;
+export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>> &
+  ExtraGlobalParameters;
 
 /**
  * Define global parameters that will be used by all the runners

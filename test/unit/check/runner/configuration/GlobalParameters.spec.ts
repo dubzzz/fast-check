@@ -10,7 +10,7 @@ describe('GlobalParameters', () => {
   });
 
   it('should be able to set, read and clear parameters globally', () => {
-    const myGlobalConfiguration = { numRuns: 123 };
+    const myGlobalConfiguration = { numRuns: 123, beforeEach: jest.fn(), afterEach: jest.fn() };
 
     expect(readConfigureGlobal()).not.toBe(myGlobalConfiguration);
 
