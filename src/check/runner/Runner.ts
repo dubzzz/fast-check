@@ -121,7 +121,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   });
   if (qParams.reporter !== null && qParams.asyncReporter !== null)
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
-  if (qParams.asyncReporter !== null && rawProperty.isAsync())
+  if (qParams.asyncReporter !== null && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
