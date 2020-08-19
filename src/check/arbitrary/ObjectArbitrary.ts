@@ -19,7 +19,7 @@ import { bigInt } from './BigIntArbitrary';
  * Constraints for `fc.anything` and `fc.object`
  * @public
  */
-export type ObjectConstraints = {
+export interface ObjectConstraints {
   /** Maximal depth allowed */
   maxDepth?: number;
   /** Maximal number of keys */
@@ -65,7 +65,7 @@ export type ObjectConstraints = {
   withNullPrototype?: boolean;
   /** Also generate BigInt */
   withBigInt?: boolean;
-};
+}
 
 /** @internal */
 class QualifiedObjectConstraints {

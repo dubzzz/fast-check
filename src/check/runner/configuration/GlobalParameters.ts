@@ -25,22 +25,22 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
  *
  * @public
  */
-export const configureGlobal = (parameters: GlobalParameters): void => {
+export function configureGlobal(parameters: GlobalParameters): void {
   getGlobal()[globalParametersSymbol] = parameters;
-};
+}
 
 /**
  * Read global parameters that will be used by runners
  * @public
  */
-export const readConfigureGlobal = (): GlobalParameters | undefined => {
+export function readConfigureGlobal(): GlobalParameters | undefined {
   return getGlobal()[globalParametersSymbol];
-};
+}
 
 /**
  * Reset global parameters
  * @public
  */
-export const resetConfigureGlobal = (): void => {
+export function resetConfigureGlobal(): void {
   delete getGlobal()[globalParametersSymbol];
-};
+}
