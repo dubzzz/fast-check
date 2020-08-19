@@ -120,7 +120,7 @@ export interface Parameters<T = void> {
    * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
    * But you may want to change this behaviour in yours.
    *
-   * Only used when calling `fc.assert`
+   * Only used when calling {@link fast-check#(assert:1)}
    * Cannot be defined in conjonction with `asyncReporter`
    */
   reporter?: (runDetails: RunDetails<T>) => void;
@@ -130,7 +130,7 @@ export interface Parameters<T = void> {
    * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
    * But you may want to change this behaviour in yours.
    *
-   * Only used when calling `fc.assert`
+   * Only used when calling {@link fast-check#(assert:1)}
    * Cannot be defined in conjonction with `reporter`
    * Not compatible with synchronous properties: runner will throw
    */

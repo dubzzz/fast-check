@@ -11,7 +11,10 @@ import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
-/** @public */
+/**
+ * Constraints to be applied on {@link fast-check#webAuthority}
+ * @public
+ */
 export interface WebAuthorityConstraints {
   /** Enable IPv4 in host */
   withIPv4?: boolean;
@@ -97,7 +100,10 @@ export function webFragments(): Arbitrary<string> {
   return uriQueryOrFragment();
 }
 
-/** @public */
+/**
+ * Constraints to be applied on {@link fast-check#webUrl}
+ * @public
+ */
 export interface WebUrlConstraints {
   /** Enforce specific schemes, eg.: http, https */
   validSchemes?: string[];

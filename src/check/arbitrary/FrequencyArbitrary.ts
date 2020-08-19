@@ -2,7 +2,12 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @public */
+/**
+ * Conjonction of a weight and an arbitrary used by {@link fast-check#frequency}
+ * in order to generate values
+ *
+ * @public
+ */
 export interface WeightedArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;

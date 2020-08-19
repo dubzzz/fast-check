@@ -155,8 +155,8 @@ export interface RunDetailsCommon<Ts> {
   /**
    * Configuration of the run
    *
-   * It includes both local parameters set on `fc.assert` or `fc.check`
-   * and global ones specified using `fc.configureGlobal`
+   * It includes both local parameters set on {@link fast-check#(check:1)} or {@link fast-check#(assert:1)}
+   * and global ones specified using {@link fast-check#configureGlobal}
    */
   runConfiguration: Parameters<Ts>;
 }

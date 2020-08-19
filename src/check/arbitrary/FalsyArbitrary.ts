@@ -2,7 +2,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { constantFrom } from './ConstantArbitrary';
 
 /**
- * Constraints to be applied on `fc.falsy()`
+ * Constraints to be applied on {@link fast-check#falsy}
  * @public
  */
 export interface FalsyContraints {
