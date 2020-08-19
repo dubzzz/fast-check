@@ -43,4 +43,6 @@ class ContextImplem implements ContextValue {
  * Produce a {@link fast-check#ContextValue} instance
  * @public
  */
-export const context = () => clonedConstant(new ContextImplem()) as Arbitrary<ContextValue>;
+export function context(): Arbitrary<ContextValue> {
+  return clonedConstant(new ContextImplem());
+}

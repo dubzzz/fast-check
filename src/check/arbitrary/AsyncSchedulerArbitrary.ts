@@ -21,7 +21,7 @@ export type SchedulerSequenceItem<TMetaData = unknown> =
  * Describe a task for the report produced by the scheduler
  * @public
  */
-export type SchedulerReportItem<TMetaData = unknown> = {
+export interface SchedulerReportItem<TMetaData = unknown> {
   /**
    * Execution status for this task
    * - resolved: task released by the scheduler and successful
@@ -44,7 +44,7 @@ export type SchedulerReportItem<TMetaData = unknown> = {
   metadata?: TMetaData;
   /** Stringified version of the output or error computed using fc.stringify */
   outputValue?: string;
-};
+}
 
 /** @public */
 export interface SchedulerConstraints {

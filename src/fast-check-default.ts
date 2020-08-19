@@ -173,6 +173,8 @@ export {
   IPropertyWithHooks,
   IAsyncProperty,
   IAsyncPropertyWithHooks,
+  AsyncPropertyHookFunction,
+  PropertyHookFunction,
   // pre-built arbitraries
   boolean,
   falsy,
@@ -299,8 +301,6 @@ export {
   configureGlobal,
   readConfigureGlobal,
   resetConfigureGlobal,
-  AsyncPropertyHookFunction,
-  PropertyHookFunction,
   // run output
   ExecutionStatus,
   ExecutionTree,

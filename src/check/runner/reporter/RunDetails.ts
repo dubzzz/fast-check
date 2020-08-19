@@ -19,61 +19,70 @@ export type RunDetails<Ts> =
  * Run reported as failed because
  * the property failed
  *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
  * @public
  */
-export type RunDetailsFailureProperty<Ts> = RunDetailsCommon<Ts> & {
+export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: boolean;
   counterexample: Ts;
   counterexamplePath: string;
   error: string;
-};
+}
 
 /**
  * Run reported as failed because
  * too many retries have been attempted to generate valid values
  *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
  * @public
  */
-export type RunDetailsFailureTooManySkips<Ts> = RunDetailsCommon<Ts> & {
+export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: false;
   counterexample: null;
   counterexamplePath: null;
   error: null;
-};
+}
 
 /**
  * Run reported as failed because
  * it took too long and thus has been interrupted
  *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
  * @public
  */
-export type RunDetailsFailureInterrupted<Ts> = RunDetailsCommon<Ts> & {
+export interface RunDetailsFailureInterrupted<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: true;
   counterexample: null;
   counterexamplePath: null;
   error: null;
-};
+}
 
 /**
  * Run reported as success
+ *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
  * @public
  */
-export type RunDetailsSuccess<Ts> = RunDetailsCommon<Ts> & {
+export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
   failed: false;
   interrupted: boolean;
   counterexample: null;
   counterexamplePath: null;
   error: null;
-};
+}
 
 /**
  * Shared part between variants of RunDetails
  * @public
  */
-export type RunDetailsCommon<Ts> = {
+export interface RunDetailsCommon<Ts> {
   /**
    * Does the property failed during the execution of {@link fast-check#(check:1)}?
    */
@@ -150,4 +159,4 @@ export type RunDetailsCommon<Ts> = {
    * and global ones specified using `fc.configureGlobal`
    */
   runConfiguration: Parameters<Ts>;
-};
+}

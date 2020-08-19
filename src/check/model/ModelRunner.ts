@@ -111,12 +111,12 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const modelRun = <Model extends object, Real, InitialModel extends Model>(
+export function modelRun<Model extends object, Real, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real>,
   cmds: Iterable<Command<Model, Real>>
-): void => {
+): void {
   internalModelRun(s, cmds);
-};
+}
 
 /**
  * Run asynchronous commands over a `Model` and the `Real` system
@@ -129,12 +129,12 @@ export const modelRun = <Model extends object, Real, InitialModel extends Model>
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const asyncModelRun = async <Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
+export async function asyncModelRun<Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real> | ModelRunAsyncSetup<InitialModel, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>
-): Promise<void> => {
+): Promise<void> {
   await internalAsyncModelRun(s, cmds);
-};
+}
 
 /**
  * Run asynchronous and scheduled commands over a `Model` and the `Real` system
@@ -147,7 +147,7 @@ export const asyncModelRun = async <Model extends object, Real, CheckAsync exten
  *
  * @public
  */
-export const scheduledModelRun = async <
+export async function scheduledModelRun<
   // eslint-disable-next-line @typescript-eslint/ban-types
   Model extends object,
   Real,
@@ -157,9 +157,9 @@ export const scheduledModelRun = async <
   scheduler: Scheduler,
   s: ModelRunSetup<InitialModel, Real> | ModelRunAsyncSetup<InitialModel, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>
-): Promise<void> => {
+): Promise<void> {
   const scheduledCommands = scheduleCommands(scheduler, cmds);
   const out = internalAsyncModelRun(s, scheduledCommands, scheduler.schedule(Promise.resolve(), 'startModel'));
   await scheduler.waitAll();
   await out;
-};
+}
