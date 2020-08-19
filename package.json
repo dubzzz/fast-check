@@ -33,7 +33,7 @@
     "e2e:watch": "jest --config jest.e2e.config.cjs --watch",
     "test:rollup-esm": "rollup --config test/rollup/esm/rollup.config.js && node test/rollup/esm/dist/main.js",
     "coverage": "cat ./coverage/lcov.info | coveralls",
-    "docs": "mkdirp docs/2-API && docsify-init --editDir documentation && cp -R documentation/* docs/ && api-extractor run --local && generate-ts-docs markdown -i docs/2-API -o docs/2-API && cat README.md | sed 's/https:\\/\\/github.com\\/dubzzz\\/fast-check\\/blob\\/master\\/documentation//g' > docs/README.md && markdownbars -i docs/_sidebar.md -o docs/_sidebar.md",
+    "docs": "mkdirp docs/2-API && docsify-init --editDir documentation && cp -R documentation/* docs/ && api-extractor run && generate-ts-docs markdown -i docs/2-API -o docs/2-API && cat README.md | sed 's/https:\\/\\/github.com\\/dubzzz\\/fast-check\\/blob\\/master\\/documentation//g' > docs/README.md && markdownbars -i docs/_sidebar.md -o docs/_sidebar.md",
     "docs:serve": "npx serve docs/",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "format:check": "prettier --list-different \"**/*.{js,ts}\"",
