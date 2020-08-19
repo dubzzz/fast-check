@@ -1,6 +1,11 @@
 import { filterHelper, flatMapHelper, joinHelper, mapHelper, nilHelper, takeWhileHelper } from './StreamHelpers';
 
-/** @public */
+/**
+ * Wrapper around `IterableIterator` interface
+ * offering a set of helpers to deal with iterations in a simple way
+ *
+ * @public
+ */
 export class Stream<T> implements IterableIterator<T> {
   /**
    * Create an empty stream of T

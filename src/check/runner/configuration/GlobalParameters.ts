@@ -4,7 +4,10 @@ import { Parameters } from './Parameters';
 /** @internal */
 const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
-/** @public */
+/**
+ * Type describing the global overrides
+ * @public
+ */
 export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>>;
 
 /**

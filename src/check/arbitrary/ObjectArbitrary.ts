@@ -16,7 +16,7 @@ import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
 
 /**
- * Constraints for `fc.anything` and `fc.object`
+ * Constraints for {@link fast-check#(anything:1)} and {@link fast-check#(object:1)}
  * @public
  */
 export interface ObjectConstraints {
@@ -27,17 +27,17 @@ export interface ObjectConstraints {
   /**
    * Arbitrary for keys
    *
-   * Default for `key` is: `fc.string()`
+   * Default for `key` is: {@link fast-check#(string:1)}
    */
   key?: Arbitrary<string>;
   /**
    * Arbitrary for values
    *
    * Default for `values` are:
-   * - `fc.boolean()`,
-   * - `fc.integer()`,
-   * - `fc.double()`,
-   * - `fc.string()`
+   * - {@link fast-check#boolean},
+   * - {@link fast-check#(integer:1)},
+   * - {@link fast-check#(double:1)},
+   * - {@link fast-check#(string:1)}
    * - constants among:
    *  - `null`,
    *  - `undefined`,

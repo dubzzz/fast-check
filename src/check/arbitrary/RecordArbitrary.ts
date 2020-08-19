@@ -3,7 +3,10 @@ import { Arbitrary } from './definition/Arbitrary';
 import { option } from './OptionArbitrary';
 import { genericTuple } from './TupleArbitrary';
 
-/** @public */
+/**
+ * Constraints to be applied on {@link fast-check#(record:1)}
+ * @public
+ */
 export interface RecordConstraints {
   /** Allow to remove keys from the generated record */
   withDeletedKeys?: boolean;

@@ -46,7 +46,10 @@ export interface SchedulerReportItem<TMetaData = unknown> {
   outputValue?: string;
 }
 
-/** @public */
+/**
+ * Constraints to be applied on {@link fast-check#scheduler}
+ * @public
+ */
 export interface SchedulerConstraints {
   /** Ensure that all scheduled tasks will be executed in the right context (for instance it can be the `act` of React) */
   act: (f: () => Promise<void>) => Promise<unknown>;
