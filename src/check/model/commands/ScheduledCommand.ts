@@ -1,7 +1,6 @@
 import { ICommand } from '../command/ICommand';
 import { AsyncCommand } from '../command/AsyncCommand';
 import { Scheduler } from '../../arbitrary/AsyncSchedulerArbitrary';
-import { CommandsIterable } from './CommandsIterable';
 
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -58,7 +57,7 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const scheduleCommands = function* <Model extends object, Real, CheckAsync extends boolean>(
   s: Scheduler,
-  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>> | CommandsIterable<Model, Real, Promise<void>, CheckAsync>
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>
 ): Iterable<AsyncCommand<Model, Real, true>> {
   for (const cmd of cmds) {
     yield new ScheduledCommand(s, cmd);

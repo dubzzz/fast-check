@@ -21,7 +21,7 @@ export type RunDetails<Ts> =
  *
  * @public
  */
-export type RunDetailsFailureProperty<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsFailureProperty<Ts> = RunDetailsCommon<Ts> & {
   failed: true;
   interrupted: boolean;
   counterexample: Ts;
@@ -35,7 +35,7 @@ export type RunDetailsFailureProperty<Ts> = RunDetailsWithDoc<Ts> & {
  *
  * @public
  */
-export type RunDetailsFailureTooManySkips<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsFailureTooManySkips<Ts> = RunDetailsCommon<Ts> & {
   failed: true;
   interrupted: false;
   counterexample: null;
@@ -49,7 +49,7 @@ export type RunDetailsFailureTooManySkips<Ts> = RunDetailsWithDoc<Ts> & {
  *
  * @public
  */
-export type RunDetailsFailureInterrupted<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsFailureInterrupted<Ts> = RunDetailsCommon<Ts> & {
   failed: true;
   interrupted: true;
   counterexample: null;
@@ -61,7 +61,7 @@ export type RunDetailsFailureInterrupted<Ts> = RunDetailsWithDoc<Ts> & {
  * Run reported as success
  * @public
  */
-export type RunDetailsSuccess<Ts> = RunDetailsWithDoc<Ts> & {
+export type RunDetailsSuccess<Ts> = RunDetailsCommon<Ts> & {
   failed: false;
   interrupted: boolean;
   counterexample: null;
@@ -73,7 +73,7 @@ export type RunDetailsSuccess<Ts> = RunDetailsWithDoc<Ts> & {
  * Shared part between variants of RunDetails
  * @public
  */
-interface RunDetailsWithDoc<Ts> {
+export type RunDetailsCommon<Ts> = {
   /**
    * Does the property failed during the execution of {@link fast-check#(check:1)}?
    */
@@ -150,4 +150,4 @@ interface RunDetailsWithDoc<Ts> {
    * and global ones specified using `fc.configureGlobal`
    */
   runConfiguration: Parameters<Ts>;
-}
+};
