@@ -10,6 +10,7 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
 /**
  * Define global parameters that will be used by all the runners
  *
+ * @example
  * ```typescript
  * fc.configureGlobal({ numRuns: 10 });
  * //...

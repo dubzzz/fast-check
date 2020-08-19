@@ -370,6 +370,8 @@ function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arb
  * Ordering is defined by using a template string like the one generated in case of failure of a {@link fast-check#scheduler}
  *
  * It may be something like:
+ *
+ * @example
  * ```typescript
  * fc.schedulerFor()`
  *   -> [task\${2}] promise pending
