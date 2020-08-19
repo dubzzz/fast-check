@@ -4,8 +4,13 @@ import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 
-/** @public */
-type HookFunction = (() => Promise<unknown>) | (() => void);
+/**
+ * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
+ * on a {@link fast-check#IAsyncPropertyWithHooks}
+ *
+ * @public
+ */
+export type AsyncPropertyHookFunction = (() => Promise<unknown>) | (() => void);
 
 /**
  * Interface for asynchronous property, see {@link fast-check#IRawProperty}
@@ -22,13 +27,13 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  beforeEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  afterEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
 /**
@@ -39,9 +44,9 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
-  static dummyHook: HookFunction = () => {};
-  private beforeEachHook: HookFunction = AsyncProperty.dummyHook;
-  private afterEachHook: HookFunction = AsyncProperty.dummyHook;
+  static dummyHook: AsyncPropertyHookFunction = () => {};
+  private beforeEachHook: AsyncPropertyHookFunction = AsyncProperty.dummyHook;
+  private afterEachHook: AsyncPropertyHookFunction = AsyncProperty.dummyHook;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {}
   isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
@@ -67,7 +72,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  beforeEach(hookFunction: HookFunction): AsyncProperty<Ts> {
+  beforeEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
     this.beforeEachHook = hookFunction;
     return this;
   }
@@ -75,7 +80,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  afterEach(hookFunction: HookFunction): AsyncProperty<Ts> {
+  afterEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
     this.afterEachHook = hookFunction;
     return this;
   }

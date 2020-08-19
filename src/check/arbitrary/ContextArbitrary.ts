@@ -6,7 +6,7 @@ import { Arbitrary } from './definition/Arbitrary';
  * Execution context attached to one predicate run
  * @public
  */
-export interface Context {
+export interface ContextValue {
   /**
    * Log execution details during a test.
    * Very helpful when troubleshooting failures
@@ -20,7 +20,7 @@ export interface Context {
 }
 
 /** @internal */
-class ContextImplem implements Context {
+class ContextImplem implements ContextValue {
   private readonly receivedLogs: string[];
   constructor() {
     this.receivedLogs = [];
@@ -40,7 +40,7 @@ class ContextImplem implements Context {
 }
 
 /**
- * Produce a {@link fast-check#Context} instance
+ * Produce a {@link fast-check#ContextValue} instance
  * @public
  */
-export const context = () => clonedConstant(new ContextImplem()) as Arbitrary<Context>;
+export const context = () => clonedConstant(new ContextImplem()) as Arbitrary<ContextValue>;

@@ -10,7 +10,7 @@ import { Command } from '../command/Command';
 import { ICommand } from '../command/ICommand';
 import { ReplayPath } from '../ReplayPath';
 import { CommandsIterable } from './CommandsIterable';
-import { CommandsSettings } from './CommandsSettings';
+import { CommandsContraints } from './CommandsContraints';
 import { CommandWrapper } from './CommandWrapper';
 import { makeLazy } from '../../../stream/LazyIterableIterator';
 
@@ -188,7 +188,7 @@ function commands<Model extends object, Real>(
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
   commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
-  settings?: CommandsSettings
+  constraints?: CommandsContraints
 ): Arbitrary<Iterable<AsyncCommand<Model, Real, CheckAsync>>>;
 /**
  * For arrays of {@link fast-check#Command} to be executed by {@link fast-check#modelRun}
@@ -204,14 +204,15 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(
   commandArbs: Arbitrary<Command<Model, Real>>[],
-  settings?: CommandsSettings
+  constraints?: CommandsContraints
 ): Arbitrary<Iterable<Command<Model, Real>>>;
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, RunResult, CheckAsync extends boolean>(
   commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
-  settings?: number | CommandsSettings
+  constraints?: number | CommandsContraints
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
-  const config = settings == null ? {} : typeof settings === 'number' ? { maxCommands: settings } : settings;
+  const config =
+    constraints == null ? {} : typeof constraints === 'number' ? { maxCommands: constraints } : constraints;
   return new CommandsArbitrary(
     commandArbs,
     config.maxCommands != null ? config.maxCommands : 10,

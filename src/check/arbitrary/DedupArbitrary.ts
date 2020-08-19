@@ -57,8 +57,11 @@ class DedupArbitrary<T> extends Arbitrary<T[]> {
   }
 }
 
-/** @public */
-type TupleOf<T, N extends number> = N extends 0
+/**
+ * Type of the value produced by {@link fast-check#dedup}
+ * @public
+ */
+export type DedupValue<T, N extends number> = N extends 0
   ? []
   : N extends 1
   ? [T]
@@ -79,7 +82,7 @@ type TupleOf<T, N extends number> = N extends 0
  *
  * @public
  */
-function dedup<T, N extends number>(arb: Arbitrary<T>, numValues: N): Arbitrary<TupleOf<T, N>>;
+function dedup<T, N extends number>(arb: Arbitrary<T>, numValues: N): Arbitrary<DedupValue<T, N>>;
 function dedup<T>(arb: Arbitrary<T>, numValues: number): Arbitrary<T[]> {
   return new DedupArbitrary(arb, numValues);
 }
