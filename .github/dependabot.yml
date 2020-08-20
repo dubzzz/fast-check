@@ -11,6 +11,7 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "⬆️"
+    versioning-strategy: increase-if-necessary
 
   - package-ecosystem: "npm"
     directory: "/example"
