@@ -11,7 +11,7 @@
     "@testing-library/react": "^10.4.8",
     "@testing-library/user-event": "^12.1.1",
     "fast-check": "*",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "pure-rand": "^3.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
