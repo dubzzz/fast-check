@@ -12,7 +12,7 @@ import { tuple } from './TupleArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
 /**
- * Constraints to be applied on {@link fast-check#webAuthority}
+ * Constraints to be applied on {@link webAuthority}
  * @public
  */
 export interface WebAuthorityConstraints {
@@ -101,7 +101,7 @@ export function webFragments(): Arbitrary<string> {
 }
 
 /**
- * Constraints to be applied on {@link fast-check#webUrl}
+ * Constraints to be applied on {@link webUrl}
  * @public
  */
 export interface WebUrlConstraints {

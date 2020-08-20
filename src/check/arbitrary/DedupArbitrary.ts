@@ -58,7 +58,7 @@ class DedupArbitrary<T> extends Arbitrary<T[]> {
 }
 
 /**
- * Type of the value produced by {@link fast-check#dedup}
+ * Type of the value produced by {@link dedup}
  * @public
  */
 export type DedupValue<T, N extends number> = N extends 0

@@ -6,20 +6,20 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
- * on a {@link fast-check#IPropertyWithHooks}
+ * on a {@link IPropertyWithHooks}
  *
  * @public
  */
 export type PropertyHookFunction = () => void;
 
 /**
- * Interface for synchronous property, see {@link fast-check#IRawProperty}
+ * Interface for synchronous property, see {@link IRawProperty}
  * @public
  */
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
 /**
- * Interface for synchronous property defining hooks, see {@link fast-check#IProperty}
+ * Interface for synchronous property defining hooks, see {@link IProperty}
  * @public
  */
 export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
@@ -52,9 +52,9 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
 }
 
 /**
- * Property, see {@link fast-check#IProperty}
+ * Property, see {@link IProperty}
  *
- * Prefer using {@link fast-check#property} instead
+ * Prefer using {@link property} instead
  *
  * @internal
  */

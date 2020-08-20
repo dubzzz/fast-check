@@ -74,7 +74,7 @@ function buildInitialValues<Ts>(
 }
 
 /**
- * Run the property, do not throw contrary to {@link fast-check#(assert:1)}
+ * Run the property, do not throw contrary to {@link (assert:1)}
  *
  * WARNING: Has to be awaited
  *
@@ -87,7 +87,7 @@ function buildInitialValues<Ts>(
  */
 function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 /**
- * Run the property, do not throw contrary to {@link fast-check#(assert:2)}
+ * Run the property, do not throw contrary to {@link (assert:2)}
  *
  * @param property - Synchronous property to be checked
  * @param params - Optional parameters to customize the execution
@@ -98,7 +98,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  */
 function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
 /**
- * Run the property, do not throw contrary to {@link fast-check#(assert:3)}
+ * Run the property, do not throw contrary to {@link (assert:3)}
  *
  * WARNING: Has to be awaited if the property is asynchronous
  *

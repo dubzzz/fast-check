@@ -16,7 +16,7 @@ import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
 
 /**
- * Constraints for {@link fast-check#(anything:1)} and {@link fast-check#(object:1)}
+ * Constraints for {@link (anything:1)} and {@link (object:1)}
  * @public
  */
 export interface ObjectConstraints {
@@ -27,17 +27,17 @@ export interface ObjectConstraints {
   /**
    * Arbitrary for keys
    *
-   * Default for `key` is: {@link fast-check#(string:1)}
+   * Default for `key` is: {@link (string:1)}
    */
   key?: Arbitrary<string>;
   /**
    * Arbitrary for values
    *
    * Default for `values` are:
-   * - {@link fast-check#boolean},
-   * - {@link fast-check#(integer:1)},
-   * - {@link fast-check#(double:1)},
-   * - {@link fast-check#(string:1)}
+   * - {@link boolean},
+   * - {@link (integer:1)},
+   * - {@link (double:1)},
+   * - {@link (string:1)}
    * - constants among:
    *  - `null`,
    *  - `undefined`,
@@ -219,7 +219,7 @@ const objectInternal = (constraints: QualifiedObjectConstraints): Arbitrary<Reco
 /**
  * For any type of values
  *
- * You may use {@link fast-check#sample} to preview the values that will be generated
+ * You may use {@link sample} to preview the values that will be generated
  *
  * @example
  * ```javascript
@@ -232,7 +232,7 @@ function anything(): Arbitrary<unknown>;
 /**
  * For any type of values following the constraints defined by `settings`
  *
- * You may use {@link fast-check#sample} to preview the values that will be generated
+ * You may use {@link sample} to preview the values that will be generated
  *
  * @example
  * ```javascript
@@ -266,7 +266,7 @@ function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
 /**
  * For any objects
  *
- * You may use {@link fast-check#sample} to preview the values that will be generated
+ * You may use {@link sample} to preview the values that will be generated
  *
  * @example
  * ```javascript
@@ -279,7 +279,7 @@ function object(): Arbitrary<Record<string, unknown>>;
 /**
  * For any objects following the constraints defined by `settings`
  *
- * You may use {@link fast-check#sample} to preview the values that will be generated
+ * You may use {@link sample} to preview the values that will be generated
  *
  * @example
  * ```javascript
@@ -305,7 +305,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
 /**
  * For any JSON compliant values
  *
- * Keys and string values rely on {@link fast-check#(string:1)}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @public
  */
@@ -313,7 +313,7 @@ function jsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with a maximal depth
  *
- * Keys and string values rely on {@link fast-check#(string:1)}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @param maxDepth - Maximal depth of the generated values
  *
@@ -327,7 +327,7 @@ function jsonObject(maxDepth?: number): Arbitrary<unknown> {
 /**
  * For any JSON compliant values with unicode support
  *
- * Keys and string values rely on {@link fast-check#unicode}
+ * Keys and string values rely on {@link unicode}
  *
  * @public
  */
@@ -335,7 +335,7 @@ function unicodeJsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with unicode support and a maximal depth
  *
- * Keys and string values rely on {@link fast-check#unicode}
+ * Keys and string values rely on {@link unicode}
  *
  * @param maxDepth - Maximal depth of the generated values
  *
@@ -349,7 +349,7 @@ function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
 /**
  * For any JSON strings
  *
- * Keys and string values rely on {@link fast-check#(string:1)}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @public
  */
@@ -357,7 +357,7 @@ function json(): Arbitrary<string>;
 /**
  * For any JSON strings with a maximal depth
  *
- * Keys and string values rely on {@link fast-check#(string:1)}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @param maxDepth - Maximal depth of the generated objects
  *
@@ -372,7 +372,7 @@ function json(maxDepth?: number): Arbitrary<string> {
 /**
  * For any JSON strings with unicode support
  *
- * Keys and string values rely on {@link fast-check#unicode}
+ * Keys and string values rely on {@link unicode}
  *
  * @public
  */
@@ -380,7 +380,7 @@ function unicodeJson(): Arbitrary<string>;
 /**
  * For any JSON strings with unicode support and a maximal depth
  *
- * Keys and string values rely on {@link fast-check#unicode}
+ * Keys and string values rely on {@link unicode}
  *
  * @param maxDepth - Maximal depth of the generated objects
  *

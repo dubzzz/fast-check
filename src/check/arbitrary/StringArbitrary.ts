@@ -55,12 +55,12 @@ function stringOf(charArb: Arbitrary<string>, aLength?: number, bLength?: number
 }
 
 /**
- * For strings of {@link fast-check#char}
+ * For strings of {@link char}
  * @public
  */
 function string(): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#char}
+ * For strings of {@link char}
  *
  * @param maxLength - Upper bound of the generated string length
  *
@@ -68,7 +68,7 @@ function string(): Arbitrary<string>;
  */
 function string(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#char}
+ * For strings of {@link char}
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
@@ -81,12 +81,12 @@ function string(aLength?: number, bLength?: number): Arbitrary<string> {
 }
 
 /**
- * For strings of {@link fast-check#ascii}
+ * For strings of {@link ascii}
  * @public
  */
 function asciiString(): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#ascii}
+ * For strings of {@link ascii}
  *
  * @param maxLength - Upper bound of the generated string length
  *
@@ -94,7 +94,7 @@ function asciiString(): Arbitrary<string>;
  */
 function asciiString(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#ascii}
+ * For strings of {@link ascii}
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
@@ -107,12 +107,12 @@ function asciiString(aLength?: number, bLength?: number): Arbitrary<string> {
 }
 
 /**
- * For strings of {@link fast-check#(string16bits:1)}
+ * For strings of {@link (string16bits:1)}
  * @public
  */
 function string16bits(): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#(string16bits:1)}
+ * For strings of {@link (string16bits:1)}
  *
  * @param maxLength - Upper bound of the generated string length
  *
@@ -120,7 +120,7 @@ function string16bits(): Arbitrary<string>;
  */
 function string16bits(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#(string16bits:1)}
+ * For strings of {@link (string16bits:1)}
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
@@ -133,12 +133,12 @@ function string16bits(aLength?: number, bLength?: number): Arbitrary<string> {
 }
 
 /**
- * For strings of {@link fast-check#unicode}
+ * For strings of {@link unicode}
  * @public
  */
 function unicodeString(): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#unicode}
+ * For strings of {@link unicode}
  *
  * @param maxLength - Upper bound of the generated string length
  *
@@ -146,7 +146,7 @@ function unicodeString(): Arbitrary<string>;
  */
 function unicodeString(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#unicode}
+ * For strings of {@link unicode}
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
@@ -159,12 +159,12 @@ function unicodeString(aLength?: number, bLength?: number): Arbitrary<string> {
 }
 
 /**
- * For strings of {@link fast-check#fullUnicode}
+ * For strings of {@link fullUnicode}
  * @public
  */
 function fullUnicodeString(): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#fullUnicode}
+ * For strings of {@link fullUnicode}
  *
  * @param maxLength - Upper bound of the generated string length
  *
@@ -172,7 +172,7 @@ function fullUnicodeString(): Arbitrary<string>;
  */
 function fullUnicodeString(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#fullUnicode}
+ * For strings of {@link fullUnicode}
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
@@ -185,12 +185,12 @@ function fullUnicodeString(aLength?: number, bLength?: number): Arbitrary<string
 }
 
 /**
- * For strings of {@link fast-check#hexa}
+ * For strings of {@link hexa}
  * @public
  */
 function hexaString(): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#hexa}
+ * For strings of {@link hexa}
  *
  * @param maxLength - Upper bound of the generated string length
  *
@@ -198,7 +198,7 @@ function hexaString(): Arbitrary<string>;
  */
 function hexaString(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link fast-check#hexa}
+ * For strings of {@link hexa}
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length

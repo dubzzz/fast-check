@@ -134,13 +134,13 @@ const __type = '__PACKAGE_TYPE__' as string;
 const __version = '__PACKAGE_VERSION__' as string;
 
 /**
- * @deprecated Switch to {@link fast-check#ContextValue} instead
+ * @deprecated Switch to {@link ContextValue} instead
  * @public
  */
 type Context = ContextValue;
 
 /**
- * @deprecated Switch to {@link fast-check#FalsyValue} instead
+ * @deprecated Switch to {@link FalsyValue} instead
  * @public
  */
 type FalsyType = FalsyValue;

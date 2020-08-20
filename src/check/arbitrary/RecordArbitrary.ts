@@ -4,7 +4,7 @@ import { option } from './OptionArbitrary';
 import { genericTuple } from './TupleArbitrary';
 
 /**
- * Constraints to be applied on {@link fast-check#(record:1)}
+ * Constraints to be applied on {@link (record:1)}
  * @public
  */
 export interface RecordConstraints {
