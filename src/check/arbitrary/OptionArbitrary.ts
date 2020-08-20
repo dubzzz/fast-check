@@ -4,7 +4,7 @@ import { Shrinkable } from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
 /**
- * Constraints to be applied on {@link fast-check#(option:1)}
+ * Constraints to be applied on {@link (option:1)}
  * @public
  */
 export interface OptionConstraints<TNil = null> {

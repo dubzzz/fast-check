@@ -47,7 +47,7 @@ export interface SchedulerReportItem<TMetaData = unknown> {
 }
 
 /**
- * Constraints to be applied on {@link fast-check#scheduler}
+ * Constraints to be applied on {@link scheduler}
  * @public
  */
 export interface SchedulerConstraints {
@@ -370,7 +370,7 @@ function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arb
 /**
  * For custom scheduler with predefined resolution order
  *
- * Ordering is defined by using a template string like the one generated in case of failure of a {@link fast-check#scheduler}
+ * Ordering is defined by using a template string like the one generated in case of failure of a {@link scheduler}
  *
  * It may be something like:
  *

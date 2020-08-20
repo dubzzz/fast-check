@@ -35,13 +35,13 @@ export interface Parameters<T = void> {
    * Skipped is considered globally, so this value is used to compute maxSkips = maxSkipsPerRun * numRuns.
    * Runner will consider a run to have failed if it skipped maxSkips+1 times before having generated numRuns valid entries.
    *
-   * See {@link fast-check#pre} for more details on pre-conditions
+   * See {@link pre} for more details on pre-conditions
    */
   maxSkipsPerRun?: number;
   /**
    * Maximum time in milliseconds for the predicate to answer: disabled by default
    *
-   * WARNING: Only works for async code (see {@link fast-check#(asyncProperty:1)}), will not interrupt a synchronous code.
+   * WARNING: Only works for async code (see {@link (asyncProperty:1)}), will not interrupt a synchronous code.
    */
   timeout?: number;
   /**
@@ -83,7 +83,7 @@ export interface Parameters<T = void> {
    */
   path?: string;
   /**
-   * Logger (see {@link fast-check#statistics}): `console.log` by default
+   * Logger (see {@link statistics}): `console.log` by default
    */
   logger?(v: string): void;
   /**
@@ -91,12 +91,12 @@ export interface Parameters<T = void> {
    */
   unbiased?: boolean;
   /**
-   * Enable verbose mode: {@link fast-check#VerbosityLevel.None} by default
+   * Enable verbose mode: {@link VerbosityLevel.None} by default
    *
    * Using `verbose: true` is equivalent to `verbose: VerbosityLevel.Verbose`
    *
    * It can prove very useful to troubleshoot issues.
-   * See {@link fast-check#VerbosityLevel} for more details on each level.
+   * See {@link VerbosityLevel} for more details on each level.
    */
   verbose?: boolean | VerbosityLevel;
   /**
@@ -120,7 +120,7 @@ export interface Parameters<T = void> {
    * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
    * But you may want to change this behaviour in yours.
    *
-   * Only used when calling {@link fast-check#(assert:1)}
+   * Only used when calling {@link (assert:1)}
    * Cannot be defined in conjonction with `asyncReporter`
    */
   reporter?: (runDetails: RunDetails<T>) => void;
@@ -130,7 +130,7 @@ export interface Parameters<T = void> {
    * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
    * But you may want to change this behaviour in yours.
    *
-   * Only used when calling {@link fast-check#(assert:1)}
+   * Only used when calling {@link (assert:1)}
    * Cannot be defined in conjonction with `reporter`
    * Not compatible with synchronous properties: runner will throw
    */

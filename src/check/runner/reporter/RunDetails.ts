@@ -3,7 +3,7 @@ import { ExecutionTree } from './ExecutionTree';
 import { Parameters } from '../configuration/Parameters';
 
 /**
- * Post-run details produced by {@link fast-check#(check:1)}
+ * Post-run details produced by {@link (check:1)}
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
  *
@@ -84,7 +84,7 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
  */
 export interface RunDetailsCommon<Ts> {
   /**
-   * Does the property failed during the execution of {@link fast-check#(check:1)}?
+   * Does the property failed during the execution of {@link (check:1)}?
    */
   failed: boolean;
   /**
@@ -102,7 +102,7 @@ export interface RunDetailsCommon<Ts> {
    * Number of skipped entries due to failed pre-condition
    *
    * As `numRuns` it only takes into account the skipped values that occured before the first failure.
-   * Refer to {@link fast-check#pre} to add such pre-conditions.
+   * Refer to {@link pre} to add such pre-conditions.
    */
   numSkips: number;
   /**
@@ -112,7 +112,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * Seed that have been used by the run
    *
-   * It can be forced in {@link fast-check#(assert:1)}, {@link fast-check#(check:1)}, {@link fast-check#sample} and {@link fast-check#statistics} using `Parameters`
+   * It can be forced in {@link (assert:1)}, {@link (check:1)}, {@link sample} and {@link statistics} using `Parameters`
    */
   seed: number;
   /**
@@ -126,7 +126,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * In case of failure: path to the counterexample
    *
-   * For replay purposes, it can be forced in {@link fast-check#(assert:1)}, {@link fast-check#(check:1)}, {@link fast-check#sample} and {@link fast-check#statistics} using `Parameters`
+   * For replay purposes, it can be forced in {@link (assert:1)}, {@link (check:1)}, {@link sample} and {@link statistics} using `Parameters`
    */
   counterexamplePath: string | null;
   /**
@@ -155,8 +155,8 @@ export interface RunDetailsCommon<Ts> {
   /**
    * Configuration of the run
    *
-   * It includes both local parameters set on {@link fast-check#(check:1)} or {@link fast-check#(assert:1)}
-   * and global ones specified using {@link fast-check#configureGlobal}
+   * It includes both local parameters set on {@link (check:1)} or {@link (assert:1)}
+   * and global ones specified using {@link configureGlobal}
    */
   runConfiguration: Parameters<Ts>;
 }

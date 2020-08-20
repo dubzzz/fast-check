@@ -143,10 +143,10 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
 }
 
 /**
- * For arrays of {@link fast-check#AsyncCommand} to be executed by {@link fast-check#asyncModelRun}
+ * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link fast-check#(array:1)} for {@link fast-check#AsyncCommand} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -159,10 +159,10 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
   maxCommands?: number
 ): Arbitrary<Iterable<AsyncCommand<Model, Real, CheckAsync>>>;
 /**
- * For arrays of {@link fast-check#Command} to be executed by {@link fast-check#modelRun}
+ * For arrays of {@link Command} to be executed by {@link modelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link fast-check#(array:1)} for {@link fast-check#Command} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -175,10 +175,10 @@ function commands<Model extends object, Real>(
   maxCommands?: number
 ): Arbitrary<Iterable<Command<Model, Real>>>;
 /**
- * For arrays of {@link fast-check#AsyncCommand} to be executed by {@link fast-check#asyncModelRun}
+ * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link fast-check#(array:1)} for {@link fast-check#AsyncCommand} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -191,10 +191,10 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
   constraints?: CommandsContraints
 ): Arbitrary<Iterable<AsyncCommand<Model, Real, CheckAsync>>>;
 /**
- * For arrays of {@link fast-check#Command} to be executed by {@link fast-check#modelRun}
+ * For arrays of {@link Command} to be executed by {@link modelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link fast-check#(array:1)} for {@link fast-check#Command} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build

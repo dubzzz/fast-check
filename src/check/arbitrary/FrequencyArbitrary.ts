@@ -3,7 +3,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
 /**
- * Conjonction of a weight and an arbitrary used by {@link fast-check#frequency}
+ * Conjonction of a weight and an arbitrary used by {@link frequency}
  * in order to generate values
  *
  * @public
@@ -40,7 +40,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * Infer the type of the Arbitrary produced by {@link fast-check#frequency}
+ * Infer the type of the Arbitrary produced by {@link frequency}
  * given the type of the source arbitraries
  *
  * @public

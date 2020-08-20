@@ -111,7 +111,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
 }
 
 /**
- * Format output of {@link fast-check#(check:1)} using the default error reporting of {@link fast-check#(assert:1)}
+ * Format output of {@link (check:1)} using the default error reporting of {@link (assert:1)}
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
@@ -120,7 +120,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
 /**
- * Format output of {@link fast-check#(check:1)} using the default error reporting of {@link fast-check#(assert:1)}
+ * Format output of {@link (check:1)} using the default error reporting of {@link (assert:1)}
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
@@ -129,7 +129,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): unde
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
 /**
- * Format output of {@link fast-check#(check:1)} using the default error reporting of {@link fast-check#(assert:1)}
+ * Format output of {@link (check:1)} using the default error reporting of {@link (assert:1)}
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.

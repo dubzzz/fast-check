@@ -22,7 +22,7 @@ export class MemoArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * Output type for {@link fast-check#memo}
+ * Output type for {@link memo}
  * @public
  */
 export type Memo<T> = (maxDepth?: number) => Arbitrary<T>;

@@ -1,5 +1,5 @@
 /**
- * Parameters for {@link fast-check#(commands:1)}
+ * Parameters for {@link (commands:1)}
  * @public
  */
 export interface CommandsContraints {
@@ -14,7 +14,7 @@ export interface CommandsContraints {
   /**
    * Hint for replay purposes only
    *
-   * Should be used in conjonction with `{ seed, path }` of {@link fast-check#(assert:1)}
+   * Should be used in conjonction with `{ seed, path }` of {@link (assert:1)}
    */
   replayPath?: string;
 }

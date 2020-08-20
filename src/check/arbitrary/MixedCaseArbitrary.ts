@@ -5,7 +5,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
 /**
- * Constraints to be applied on {@link fast-check#mixedCase}
+ * Constraints to be applied on {@link mixedCase}
  * @public
  */
 export interface MixedCaseConstraints {

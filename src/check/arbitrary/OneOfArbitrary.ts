@@ -17,7 +17,7 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * Infer the type of the Arbitrary produced by {@link fast-check#oneof}
+ * Infer the type of the Arbitrary produced by {@link oneof}
  * given the type of the source arbitraries
  * @public
  */

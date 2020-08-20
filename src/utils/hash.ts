@@ -261,7 +261,7 @@ const crc32Table = [
 /**
  * CRC-32 based hash function
  *
- * Used internally by fast-check in {@link fast-check#func}, {@link fast-check#compareFunc} or even {@link fast-check#compareBooleanFunc}.
+ * Used internally by fast-check in {@link func}, {@link compareFunc} or even {@link compareBooleanFunc}.
  *
  * @param repr - String value to be hashed
  *

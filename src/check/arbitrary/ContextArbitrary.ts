@@ -40,7 +40,7 @@ class ContextImplem implements ContextValue {
 }
 
 /**
- * Produce a {@link fast-check#ContextValue} instance
+ * Produce a {@link ContextValue} instance
  * @public
  */
 export function context(): Arbitrary<ContextValue> {
