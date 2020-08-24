@@ -1,7 +1,7 @@
 {
     "out": "docs",
     "mode": "file",    
-    "theme": "default",
+    "theme": "minimal",
     "name": "fast-check — Property based testing framework",
-    "readme": "none"  
+    "readme": "./README.md"
   }

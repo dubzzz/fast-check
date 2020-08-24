@@ -25,7 +25,7 @@ Property based testing framework for JavaScript/TypeScript
 
 ## Getting started
 
-Hands-on tutorial and definition of Property Based Testing: [:checkered_flag: see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?previewwindow=tests).
+Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?previewwindow=tests).
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
 
@@ -71,14 +71,14 @@ Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-che
 More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/master/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
-- [:checkered_flag: Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md)
-- [:hatching_chick: Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md)
-- [:wrench: Custom arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md)
-- [:running_man: Property based runners](https://github.com/dubzzz/fast-check/blob/master/documentation/Runners.md)
-- [:boom: Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md)
-- [:mag: Generated documentation](https://dubzzz.github.io/fast-check/)
-- [:star: Awesome fast-check](https://github.com/dubzzz/awesome-fast-check)
-- [:exploding_head: How fast-check works?](https://github.com/dubzzz/fast-check/blob/master/documentation/HowItWorks.md)
+- [🏁 Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md)
+- [🐣 Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md)
+- [🔧 Custom arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md)
+- [🏃‍♂️ Property based runners](https://github.com/dubzzz/fast-check/blob/master/documentation/Runners.md)
+- [💥 Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md)
+- [🔍 Generated documentation](https://dubzzz.github.io/fast-check/)
+- [⭐ Awesome fast-check](https://github.com/dubzzz/awesome-fast-check)
+- [🤯 How fast-check works?](https://github.com/dubzzz/fast-check/blob/master/documentation/HowItWorks.md)
 
 ## Why should I migrate to fast-check?
 
