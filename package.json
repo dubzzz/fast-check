@@ -33,7 +33,7 @@
     "e2e:watch": "jest --config jest.e2e.config.cjs --watch",
     "test:rollup-esm": "rollup --config test/rollup/esm/rollup.config.js && node test/rollup/esm/dist/main.js",
     "coverage": "cat ./coverage/lcov.info | coveralls",
-    "docs": "api-extractor run --local && typedoc --out docs src",
+    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src",
     "docs:serve": "npx serve docs/",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "format:check": "prettier --list-different \"**/*.{js,ts}\"",
