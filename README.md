@@ -10,7 +10,7 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://travis-ci.com/dubzzz/fast-check"><img src="https://travis-ci.com/dubzzz/fast-check.svg?branch=master" alt="Build Status" /></a>
   <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
-  <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/documentation-%23282ea9.svg" title="API Reference" /></a>
+  <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/-API Reference-%23282ea9.svg" title="API Reference" /></a>
 </p>
 <p align="center">
   <a href="https://coveralls.io/github/dubzzz/fast-check"><img src="https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg" alt="Coverage Status" /></a>
