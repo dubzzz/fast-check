@@ -37,7 +37,7 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
 ## Boolean
 
 <details>
-<summary><b>boolean</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#boolean">api</a>]</summary>
+<summary><b>boolean</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#boolean">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -59,7 +59,7 @@ fc.boolean()
 ### Integer
 
 <details>
-<summary><b>integer</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#integer">api</a>]</summary>
+<summary><b>integer</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#integer">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -81,7 +81,7 @@ fc.integer(-99, 99)
 </details>
 
 <details>
-<summary><b>nat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#nat">api</a>]</summary>
+<summary><b>nat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#nat">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -101,7 +101,7 @@ fc.nat(1000)
 </details>
 
 <details>
-<summary><b>maxSafeInteger</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafeinteger">api</a>]</summary>
+<summary><b>maxSafeInteger</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafeinteger">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -119,7 +119,7 @@ fc.maxSafeInteger()
 </details>
 
 <details>
-<summary><b>maxSafeNat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafenat">api</a>]</summary>
+<summary><b>maxSafeNat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafenat">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -139,7 +139,7 @@ fc.maxSafeNat()
 ### Floating point
 
 <details>
-<summary><b>float</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float">api</a>]</summary>
+<summary><b>float</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -161,7 +161,7 @@ fc.float(-100, 100)
 </details>
 
 <details>
-<summary><b>double</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#double">api</a>]</summary>
+<summary><b>double</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#double">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -186,7 +186,7 @@ fc.double(-100, 100)
 _if supported by your JavaScript interpreter_
 
 <details>
-<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary>
+<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -205,7 +205,7 @@ fc.bigIntN(128)
 </details>
 
 <details>
-<summary><b>bigInt</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigint">api</a>]</summary>
+<summary><b>bigInt</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigint">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -226,7 +226,7 @@ fc.bigInt(-3000n, 100n)
 </details>
 
 <details>
-<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary>
+<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -245,7 +245,7 @@ fc.bigUintN(128)
 </details>
 
 <details>
-<summary><b>bigUint</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#biguint">api</a>]</summary>
+<summary><b>bigUint</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#biguint">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -269,7 +269,7 @@ fc.bigUint(100n)
 ### Single character
 
 <details>
-<summary><b>hexa</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexa">api</a>]</summary>
+<summary><b>hexa</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexa">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -287,7 +287,7 @@ fc.hexa()
 </details>
 
 <details>
-<summary><b>base64</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64">api</a>]</summary>
+<summary><b>base64</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -305,7 +305,7 @@ fc.base64()
 </details>
 
 <details>
-<summary><b>char</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char">api</a>]</summary>
+<summary><b>char</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -323,7 +323,7 @@ fc.char()
 </details>
 
 <details>
-<summary><b>ascii</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ascii">api</a>]</summary>
+<summary><b>ascii</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ascii">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -341,7 +341,7 @@ fc.ascii()
 </details>
 
 <details>
-<summary><b>unicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicode">api</a>]</summary>
+<summary><b>unicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicode">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -359,7 +359,7 @@ fc.unicode()
 </details>
 
 <details>
-<summary><b>char16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char16bits">api</a>]</summary>
+<summary><b>char16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char16bits">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -377,7 +377,7 @@ fc.char16bits()
 </details>
 
 <details>
-<summary><b>fullUnicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicode">api</a>]</summary>
+<summary><b>fullUnicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicode">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -397,7 +397,7 @@ fc.fullUnicode()
 ### Multiple characters
 
 <details>
-<summary><b>hexaString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexastring">api</a>]</summary>
+<summary><b>hexaString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexastring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -419,7 +419,7 @@ fc.hexaString(4, 6)
 </details>
 
 <details>
-<summary><b>base64String</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64string">api</a>]</summary>
+<summary><b>base64String</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64string">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -445,7 +445,7 @@ fc.base64String(4, 12)
 </details>
 
 <details>
-<summary><b>string</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string">api</a>]</summary>
+<summary><b>string</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -467,7 +467,7 @@ fc.string(4, 6)
 </details>
 
 <details>
-<summary><b>asciiString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#asciistring">api</a>]</summary>
+<summary><b>asciiString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#asciistring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -489,7 +489,7 @@ fc.asciiString(4, 6)
 </details>
 
 <details>
-<summary><b>unicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodestring">api</a>]</summary>
+<summary><b>unicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodestring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -511,7 +511,7 @@ fc.unicodeString(4, 6)
 </details>
 
 <details>
-<summary><b>string16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string16bits">api</a>]</summary>
+<summary><b>string16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string16bits">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -535,7 +535,7 @@ fc.string16bits(4, 6)
 </details>
 
 <details>
-<summary><b>fullUnicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicodestring">api</a>]</summary>
+<summary><b>fullUnicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicodestring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -559,7 +559,7 @@ fc.fullUnicodeString(4, 6)
 </details>
 
 <details>
-<summary><b>stringOf</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#stringof">api</a>]</summary>
+<summary><b>stringOf</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#stringof">api</a>]</summary><br/>
 
 *&#8195;Description*
 
