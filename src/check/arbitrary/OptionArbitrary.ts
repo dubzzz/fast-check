@@ -3,7 +3,10 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 import { nat } from './IntegerArbitrary';
 
-/** @public */
+/**
+ * Constraints to be applied on {@link (option:1)}
+ * @public
+ */
 export interface OptionConstraints<TNil = null> {
   /** The probability to build a nil value is of `1 / freq` */
   freq?: number;

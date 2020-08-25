@@ -1,7 +1,42 @@
+# 2.2.0
+
+_Export missing typings and various cleaning around the tsdoc_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.1.0...v2.2.0)]
+
+## Features
+
+- ([PR#880](https://github.com/dubzzz/fast-check/pull/880)) Publish missing constraints types (option, scheduler)
+- ([PR#881](https://github.com/dubzzz/fast-check/pull/881)) Add an interface to better type (Async)Property
+- ([PR#902](https://github.com/dubzzz/fast-check/pull/902)) Standardize exported typings and add missing ones :warning:
+- ([PR#906](https://github.com/dubzzz/fast-check/pull/906)) Prefer interfaces and functions for exported entities
+
+## Fixes
+
+- ([PR#904](https://github.com/dubzzz/fast-check/pull/904)) Bug: Asynchrorous properties should be able to use `asyncReporter`
+- ([PR#850](https://github.com/dubzzz/fast-check/pull/850)) CI: Ignore fast-check bumps for some directories
+- ([PR#872](https://github.com/dubzzz/fast-check/pull/872)) CI: Slow down dependabot frequency
+- ([PR#879](https://github.com/dubzzz/fast-check/pull/879)) CI: Remove unneeded before_install step on .travis.yml
+- ([PR#882](https://github.com/dubzzz/fast-check/pull/882)) CI: Apply post-build script before generating the doc
+- ([PR#903](https://github.com/dubzzz/fast-check/pull/903)) CI: Break CI whenever documentation compiles with warnings
+- ([PR#905](https://github.com/dubzzz/fast-check/pull/905)) CI: Enable protobot-stale
+- ([PR#873](https://github.com/dubzzz/fast-check/pull/873)) Doc: Remove snyk badge
+- ([PR#878](https://github.com/dubzzz/fast-check/pull/878)) Doc: Fix some of the warnings raised by API Extractor
+- ([PR#883](https://github.com/dubzzz/fast-check/pull/883)) Doc: Update the template for new Pull Requests
+- ([PR#894](https://github.com/dubzzz/fast-check/pull/894)) Doc: Fix warnings related to invalid references raised by api-extractor
+- ([PR#907](https://github.com/dubzzz/fast-check/pull/907)) Doc: Fix examples leaking in to functions table
+- ([PR#908](https://github.com/dubzzz/fast-check/pull/908)) Doc: Document non-documented sections
+- ([PR#911](https://github.com/dubzzz/fast-check/pull/911)) Doc: Remove useless "fast-check#" prefix in @link
+- ([PR#848](https://github.com/dubzzz/fast-check/pull/848)) Test: Do not use `@testing-library/dom` directly in `examples/`
+- ([PR#851](https://github.com/dubzzz/fast-check/pull/851)) Test: Reduce coverage flakiness on `ReplayPath.ts`
+- ([PR#874](https://github.com/dubzzz/fast-check/pull/874)) Test: Reduce coverage flakiness on `hash.ts`
+- ([PR#893](https://github.com/dubzzz/fast-check/pull/893)) Tool: Add script to serve the generated documentation locally
+
+---
+
 # 2.1.0
 
 _Better reported errors for `func`, `compareFunc` and `compareBooleanFunc`_
-[[Code](https://github.com/dubzzz/fast-check/tree/v2.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.0.0...v2.1.0)]
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.0.0...v2.1.0)]
 
 ## Features
 

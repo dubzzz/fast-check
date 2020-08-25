@@ -10,19 +10,39 @@ import { tuple } from './TupleArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
 /** @internal */
+export function filterInvalidSubdomainLabel(subdomainLabel: string): boolean {
+  // Here our definition of a subdomain is <label> and "[l]abels must be 63 characters or less"
+  // According RFC 1123 a subdomain should be defined as follows:
+  //  - <subdomain> ::= <label> | <subdomain> "." <label>
+  //  - <label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
+  //  - <ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+  //  - <let-dig-hyp> ::= <let-dig> | "-"
+  //  - <let-dig> ::= <letter> | <digit>
+  //  - <letter> ::= any one of the 52 alphabetic characters A through Z in upper case and a through z in lower case
+  //  - <digit> ::= any one of the ten digits 0 through 9
+  if (subdomainLabel.length > 63) {
+    return false; // invalid
+  }
+  // We discard any subdomain starting by xn--
+  // as they would require lots of checks to confirm if they are valid internationalized domains.
+  // While they still are valid subdomains they might be problematic with some libs,
+  // so we prefer not to include them by default (eg.: new URL in Node does not accept invalid internationalized domains)
+  return (
+    subdomainLabel.length < 4 ||
+    subdomainLabel[0] !== 'x' ||
+    subdomainLabel[1] !== 'n' ||
+    subdomainLabel[2] !== '-' ||
+    subdomainLabel[3] !== '-'
+  );
+}
+
+/** @internal */
 function subdomain() {
   const alphaNumericArb = buildLowerAlphaNumericArb([]);
   const alphaNumericHyphenArb = buildLowerAlphaNumericArb(['-']);
   return tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb), alphaNumericArb)))
     .map(([f, d]) => (d === null ? f : `${f}${d[0]}${d[1]}`))
-    .filter((d) => d.length <= 63)
-    .filter((d) => {
-      // We discard any subdomain starting by xn--
-      // as they would require lots of checks to confirm if they are valid internationalized domains.
-      // While they still are valid subdomains they might be problematic with some libs,
-      // so we prefer not to include them by default (eg.: new URL in Node does not accept invalid internationalized domains)
-      return d.length < 4 || d[0] !== 'x' || d[1] !== 'n' || d[2] !== '-' || d[3] !== '-';
-    });
+    .filter(filterInvalidSubdomainLabel);
 }
 
 /**

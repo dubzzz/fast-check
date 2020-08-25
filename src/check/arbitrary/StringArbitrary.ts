@@ -107,12 +107,12 @@ function asciiString(aLength?: number, bLength?: number): Arbitrary<string> {
 }
 
 /**
- * For strings of {@link string16bits}
+ * For strings of {@link (string16bits:1)}
  * @public
  */
 function string16bits(): Arbitrary<string>;
 /**
- * For strings of {@link string16bits}
+ * For strings of {@link (string16bits:1)}
  *
  * @param maxLength - Upper bound of the generated string length
  *
@@ -120,7 +120,7 @@ function string16bits(): Arbitrary<string>;
  */
 function string16bits(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link string16bits}
+ * For strings of {@link (string16bits:1)}
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length

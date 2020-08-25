@@ -48,7 +48,7 @@ function streamSample<Ts>(
 }
 
 /**
- * Generate an array containing all the values that would have been generated during {@link assert} or {@link check}
+ * Generate an array containing all the values that would have been generated during {@link (assert:1)} or {@link (check:1)}
  *
  * @example
  * ```typescript
@@ -57,7 +57,7 @@ function streamSample<Ts>(
  * ```
  *
  * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
- * @param params - Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
+ * @param params - Integer representing the number of values to generate or `Parameters` as in {@link (assert:1)}
  *
  * @public
  */
@@ -84,7 +84,7 @@ function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parame
  *
  * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
- * @param params - Integer representing the number of values to generate or {@link Parameters} as in {@link assert}
+ * @param params - Integer representing the number of values to generate or `Parameters` as in {@link (assert:1)}
  *
  * @public
  */

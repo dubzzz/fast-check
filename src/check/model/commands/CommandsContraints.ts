@@ -1,7 +1,8 @@
 /**
- * Parameters for fc.commands
+ * Parameters for {@link (commands:1)}
+ * @public
  */
-export interface CommandsSettings {
+export interface CommandsContraints {
   /**
    * Maximal number of commands to generate per run
    */
@@ -13,7 +14,7 @@ export interface CommandsSettings {
   /**
    * Hint for replay purposes only
    *
-   * Should be used in conjonction with { seed, path } of fc.assert
+   * Should be used in conjonction with `{ seed, path }` of {@link (assert:1)}
    */
   replayPath?: string;
 }

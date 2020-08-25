@@ -4,7 +4,10 @@ import { bigUintN } from './BigIntArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @public */
+/**
+ * Constraints to be applied on {@link mixedCase}
+ * @public
+ */
 export interface MixedCaseConstraints {
   /** Transform a character to its upper and/or lower case version */
   toggleCase?: (rawChar: string) => string;

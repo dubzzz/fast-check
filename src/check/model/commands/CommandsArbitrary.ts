@@ -10,7 +10,7 @@ import { Command } from '../command/Command';
 import { ICommand } from '../command/ICommand';
 import { ReplayPath } from '../ReplayPath';
 import { CommandsIterable } from './CommandsIterable';
-import { CommandsSettings } from './CommandsSettings';
+import { CommandsContraints } from './CommandsContraints';
 import { CommandWrapper } from './CommandWrapper';
 import { makeLazy } from '../../../stream/LazyIterableIterator';
 
@@ -146,7 +146,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -162,7 +162,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * For arrays of {@link Command} to be executed by {@link modelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link array} for {@link Command} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -178,7 +178,7 @@ function commands<Model extends object, Real>(
  * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -188,13 +188,13 @@ function commands<Model extends object, Real>(
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
   commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
-  settings?: CommandsSettings
+  constraints?: CommandsContraints
 ): Arbitrary<Iterable<AsyncCommand<Model, Real, CheckAsync>>>;
 /**
  * For arrays of {@link Command} to be executed by {@link modelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link array} for {@link Command} arrays.
+ * It should shrink more efficiently than {@link (array:1)} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -204,14 +204,15 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(
   commandArbs: Arbitrary<Command<Model, Real>>[],
-  settings?: CommandsSettings
+  constraints?: CommandsContraints
 ): Arbitrary<Iterable<Command<Model, Real>>>;
 // eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, RunResult, CheckAsync extends boolean>(
   commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
-  settings?: number | CommandsSettings
+  constraints?: number | CommandsContraints
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
-  const config = settings == null ? {} : typeof settings === 'number' ? { maxCommands: settings } : settings;
+  const config =
+    constraints == null ? {} : typeof constraints === 'number' ? { maxCommands: constraints } : constraints;
   return new CommandsArbitrary(
     commandArbs,
     config.maxCommands != null ? config.maxCommands : 10,

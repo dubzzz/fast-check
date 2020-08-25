@@ -16,10 +16,10 @@ import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
 
 /**
- * Constraints for `fc.anything` and `fc.object`
+ * Constraints for {@link (anything:1)} and {@link (object:1)}
  * @public
  */
-export type ObjectConstraints = {
+export interface ObjectConstraints {
   /** Maximal depth allowed */
   maxDepth?: number;
   /** Maximal number of keys */
@@ -27,17 +27,17 @@ export type ObjectConstraints = {
   /**
    * Arbitrary for keys
    *
-   * Default for `key` is: `fc.string()`
+   * Default for `key` is: {@link (string:1)}
    */
   key?: Arbitrary<string>;
   /**
    * Arbitrary for values
    *
    * Default for `values` are:
-   * - `fc.boolean()`,
-   * - `fc.integer()`,
-   * - `fc.double()`,
-   * - `fc.string()`
+   * - {@link boolean},
+   * - {@link (integer:1)},
+   * - {@link (double:1)},
+   * - {@link (string:1)}
    * - constants among:
    *  - `null`,
    *  - `undefined`,
@@ -65,7 +65,7 @@ export type ObjectConstraints = {
   withNullPrototype?: boolean;
   /** Also generate BigInt */
   withBigInt?: boolean;
-};
+}
 
 /** @internal */
 class QualifiedObjectConstraints {
@@ -305,7 +305,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
 /**
  * For any JSON compliant values
  *
- * Keys and string values rely on {@link string}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @public
  */
@@ -313,7 +313,7 @@ function jsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with a maximal depth
  *
- * Keys and string values rely on {@link string}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @param maxDepth - Maximal depth of the generated values
  *
@@ -349,7 +349,7 @@ function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
 /**
  * For any JSON strings
  *
- * Keys and string values rely on {@link string}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @public
  */
@@ -357,7 +357,7 @@ function json(): Arbitrary<string>;
 /**
  * For any JSON strings with a maximal depth
  *
- * Keys and string values rely on {@link string}
+ * Keys and string values rely on {@link (string:1)}
  *
  * @param maxDepth - Maximal depth of the generated objects
  *

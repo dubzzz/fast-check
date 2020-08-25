@@ -48,7 +48,7 @@ let contextRemainingDepth = 10;
  *
  * @public
  */
-export const memo = <T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> => {
+export function memo<T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> {
   const previous: { [depth: number]: Arbitrary<T> } = {};
   return ((maxDepth?: number): Arbitrary<T> => {
     const n = maxDepth !== undefined ? maxDepth : contextRemainingDepth;
@@ -60,4 +60,4 @@ export const memo = <T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> =>
     }
     return previous[n];
   }) as Memo<T>;
-};
+}

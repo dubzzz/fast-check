@@ -1,6 +1,7 @@
-import { domain } from '../../../../src/check/arbitrary/HostArbitrary';
+import { domain, filterInvalidSubdomainLabel } from '../../../../src/check/arbitrary/HostArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
+import fc from '../../../../lib/fast-check';
 
 const isValidDomain = (t: string) => {
   // According to https://www.ietf.org/rfc/rfc1034.txt
@@ -26,5 +27,42 @@ describe('DomainArbitrary', () => {
     genericHelper.isValidArbitrary(() => domain(), {
       isValidValue: (g: string) => isValidDomainWithExtension(g),
     });
+  });
+
+  describe('filterInvalidSubdomainLabel', () => {
+    // Internal function:
+    // We are not checking all the requirements of subdomains but just the ones we need to ensure
+    // post construction as they cannot be easily enforced except by a filtering logic
+    const alphaChar = () => fc.mapToConstant({ num: 26, build: (v) => String.fromCharCode(v + 0x61) });
+    it('Should accept any subdomain composed of only alphabet characters and with at most 63 characters', () =>
+      fc.assert(
+        fc.property(fc.stringOf(alphaChar(), 1, 63), (subdomainLabel) => {
+          expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(true);
+        })
+      ));
+    it('Should reject any subdomain with strictly more than 63 characters', () =>
+      fc.assert(
+        fc.property(fc.stringOf(alphaChar(), 64, 100), (subdomainLabel) => {
+          expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(false);
+        })
+      ));
+    it('Should reject any subdomain starting by "xn--"', () =>
+      fc.assert(
+        fc.property(fc.stringOf(alphaChar(), 63 - 'xn--'.length), (subdomainLabelEnd) => {
+          const subdomainLabel = `xn--${subdomainLabelEnd}`;
+          expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(false);
+        })
+      ));
+    it('Should not reject subdomains if they start by a substring of "xn--"', () =>
+      fc.assert(
+        fc.property(
+          fc.stringOf(alphaChar(), 63 - 'xn--'.length),
+          fc.nat('xn--'.length - 1),
+          (subdomainLabelEnd, keep) => {
+            const subdomainLabel = `${'xn--'.substring(0, keep)}${subdomainLabelEnd}`;
+            expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(true);
+          }
+        )
+      ));
   });
 });

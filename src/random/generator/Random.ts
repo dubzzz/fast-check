@@ -1,6 +1,11 @@
 import * as prand from 'pure-rand';
 
-/** @public */
+/**
+ * Wrapper around an instance of a `pure-rand`'s random number generator
+ * offering a simpler interface to deal with random with impure patterns
+ *
+ * @public
+ */
 export class Random {
   private static MIN_INT: number = 0x80000000 | 0;
   private static MAX_INT: number = 0x7fffffff | 0;

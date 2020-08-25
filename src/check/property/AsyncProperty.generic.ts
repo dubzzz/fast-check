@@ -5,8 +5,13 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
 
-/** @public */
-type HookFunction = (() => Promise<unknown>) | (() => void);
+/**
+ * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
+ * on a {@link IAsyncPropertyWithHooks}
+ *
+ * @public
+ */
+export type AsyncPropertyHookFunction = (() => Promise<unknown>) | (() => void);
 
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
@@ -23,28 +28,28 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  beforeEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  afterEach(hookFunction: HookFunction): IAsyncPropertyWithHooks<Ts>;
+  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
- * Prefer using {@link asyncProperty} instead
+ * Prefer using {@link (asyncProperty:1)} instead
  *
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
-  static dummyHook: HookFunction = () => {};
-  private readonly globalBeforeEachHook: HookFunction;
-  private readonly globalAfterEachHook: HookFunction;
-  private beforeEachHook: HookFunction;
-  private afterEachHook: HookFunction;
+  static dummyHook: AsyncPropertyHookFunction = () => {};
+  private readonly globalBeforeEachHook: AsyncPropertyHookFunction;
+  private readonly globalAfterEachHook: AsyncPropertyHookFunction;
+  private beforeEachHook: AsyncPropertyHookFunction;
+  private afterEachHook: AsyncPropertyHookFunction;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
     const { asyncBeforeEach = AsyncProperty.dummyHook, asyncAfterEach = AsyncProperty.dummyHook } =
       readConfigureGlobal() || {};
@@ -77,7 +82,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  beforeEach(hookFunction: HookFunction): AsyncProperty<Ts> {
+  beforeEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
     this.beforeEachHook = async () => {
       await this.globalBeforeEachHook();
       await hookFunction();
@@ -88,7 +93,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  afterEach(hookFunction: HookFunction): AsyncProperty<Ts> {
+  afterEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
     this.afterEachHook = async () => {
       await this.globalAfterEachHook();
       await hookFunction();

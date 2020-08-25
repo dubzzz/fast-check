@@ -5,8 +5,13 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
 
-/** @public */
-type HookFunction = () => void;
+/**
+ * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
+ * on a {@link IPropertyWithHooks}
+ *
+ * @public
+ */
+export type PropertyHookFunction = () => void;
 
 /**
  * Interface for synchronous property, see {@link IRawProperty}
@@ -31,7 +36,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  beforeEach(hookFunction: HookFunction): IPropertyWithHooks<Ts>;
+  beforeEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
 
   /**
    * Define a function that should be called after all calls to the predicate
@@ -44,7 +49,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  afterEach(hookFunction: HookFunction): IPropertyWithHooks<Ts>;
+  afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
 }
 
 /**
@@ -55,11 +60,11 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
  * @internal
  */
 export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
-  static dummyHook: HookFunction = () => {};
-  private readonly globalBeforeEachHook: HookFunction;
-  private readonly globalAfterEachHook: HookFunction;
-  private beforeEachHook: HookFunction;
-  private afterEachHook: HookFunction;
+  static dummyHook: PropertyHookFunction = () => {};
+  private readonly globalBeforeEachHook: PropertyHookFunction;
+  private readonly globalAfterEachHook: PropertyHookFunction;
+  private beforeEachHook: PropertyHookFunction;
+  private afterEachHook: PropertyHookFunction;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
     const { beforeEach = Property.dummyHook, afterEach = Property.dummyHook } = readConfigureGlobal() || {};
     this.globalBeforeEachHook = beforeEach;
@@ -88,8 +93,8 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   }
 
   beforeEach(invalidHookFunction: () => Promise<unknown>): never;
-  beforeEach(validHookFunction: HookFunction): Property<Ts>;
-  beforeEach(hookFunction: HookFunction): unknown {
+  beforeEach(validHookFunction: PropertyHookFunction): Property<Ts>;
+  beforeEach(hookFunction: PropertyHookFunction): unknown {
     this.beforeEachHook = () => {
       this.globalBeforeEachHook();
       hookFunction();
@@ -98,8 +103,8 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   }
 
   afterEach(invalidHookFunction: () => Promise<unknown>): never;
-  afterEach(hookFunction: HookFunction): Property<Ts>;
-  afterEach(hookFunction: HookFunction): unknown {
+  afterEach(hookFunction: PropertyHookFunction): Property<Ts>;
+  afterEach(hookFunction: PropertyHookFunction): unknown {
     this.afterEachHook = () => {
       this.globalAfterEachHook();
       hookFunction();

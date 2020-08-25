@@ -21,7 +21,7 @@ export type SchedulerSequenceItem<TMetaData = unknown> =
  * Describe a task for the report produced by the scheduler
  * @public
  */
-export type SchedulerReportItem<TMetaData = unknown> = {
+export interface SchedulerReportItem<TMetaData = unknown> {
   /**
    * Execution status for this task
    * - resolved: task released by the scheduler and successful
@@ -44,9 +44,12 @@ export type SchedulerReportItem<TMetaData = unknown> = {
   metadata?: TMetaData;
   /** Stringified version of the output or error computed using fc.stringify */
   outputValue?: string;
-};
+}
 
-/** @public */
+/**
+ * Constraints to be applied on {@link scheduler}
+ * @public
+ */
 export interface SchedulerConstraints {
   /** Ensure that all scheduled tasks will be executed in the right context (for instance it can be the `act` of React) */
   act: (f: () => Promise<void>) => Promise<unknown>;
@@ -370,6 +373,8 @@ function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arb
  * Ordering is defined by using a template string like the one generated in case of failure of a {@link scheduler}
  *
  * It may be something like:
+ *
+ * @example
  * ```typescript
  * fc.schedulerFor()`
  *   -> [task\${2}] promise pending
