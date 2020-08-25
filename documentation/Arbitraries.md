@@ -4,7 +4,7 @@ Arbitraries are responsible for the random - *but deterministic* - generation an
 
 This documentation lists all the built-in arbitraries provided by fast-check.
 
-You can refer to the [generated API docs](https://dubzzz.github.io/fast-check/#/2-API/fast-check) for more details.
+You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for more details.
 
 ## Table of contents
 

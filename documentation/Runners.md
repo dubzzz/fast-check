@@ -4,7 +4,7 @@ Runners are the way to make your [arbitraries](./Arbitraries.md) live. They rece
 
 This documentation describes all the runners and properties you can use in fast-check.
 
-You can refer to the  [generated API docs](https://dubzzz.github.io/fast-check/#/2-API/fast-check) for more details.
+You can refer to the  [API Reference](https://dubzzz.github.io/fast-check/) for more details.
 
 ## Table of contents
 
