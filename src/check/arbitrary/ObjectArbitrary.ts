@@ -16,7 +16,7 @@ import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
 
 /**
- * Constraints for {@link (anything:1)} and {@link (object:1)}
+ * Constraints for {@link anything} and {@link object}
  * @public
  */
 export interface ObjectConstraints {
@@ -27,7 +27,7 @@ export interface ObjectConstraints {
   /**
    * Arbitrary for keys
    *
-   * Default for `key` is: {@link (string:1)}
+   * Default for `key` is: {@link string}
    */
   key?: Arbitrary<string>;
   /**
@@ -35,9 +35,9 @@ export interface ObjectConstraints {
    *
    * Default for `values` are:
    * - {@link boolean},
-   * - {@link (integer:1)},
-   * - {@link (double:1)},
-   * - {@link (string:1)}
+   * - {@link integer},
+   * - {@link double},
+   * - {@link string}
    * - constants among:
    *  - `null`,
    *  - `undefined`,
@@ -305,7 +305,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
 /**
  * For any JSON compliant values
  *
- * Keys and string values rely on {@link (string:1)}
+ * Keys and string values rely on {@link string}
  *
  * @public
  */
@@ -313,7 +313,7 @@ function jsonObject(): Arbitrary<unknown>;
 /**
  * For any JSON compliant values with a maximal depth
  *
- * Keys and string values rely on {@link (string:1)}
+ * Keys and string values rely on {@link string}
  *
  * @param maxDepth - Maximal depth of the generated values
  *
@@ -349,7 +349,7 @@ function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
 /**
  * For any JSON strings
  *
- * Keys and string values rely on {@link (string:1)}
+ * Keys and string values rely on {@link string}
  *
  * @public
  */
@@ -357,7 +357,7 @@ function json(): Arbitrary<string>;
 /**
  * For any JSON strings with a maximal depth
  *
- * Keys and string values rely on {@link (string:1)}
+ * Keys and string values rely on {@link string}
  *
  * @param maxDepth - Maximal depth of the generated objects
  *

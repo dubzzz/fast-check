@@ -3,7 +3,7 @@ import { ExecutionTree } from './ExecutionTree';
 import { Parameters } from '../configuration/Parameters';
 
 /**
- * Post-run details produced by {@link (check:1)}
+ * Post-run details produced by {@link check}
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
  *
@@ -84,7 +84,7 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
  */
 export interface RunDetailsCommon<Ts> {
   /**
-   * Does the property failed during the execution of {@link (check:1)}?
+   * Does the property failed during the execution of {@link check}?
    */
   failed: boolean;
   /**
@@ -112,7 +112,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * Seed that have been used by the run
    *
-   * It can be forced in {@link (assert:1)}, {@link (check:1)}, {@link sample} and {@link statistics} using `Parameters`
+   * It can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
    */
   seed: number;
   /**
@@ -126,7 +126,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * In case of failure: path to the counterexample
    *
-   * For replay purposes, it can be forced in {@link (assert:1)}, {@link (check:1)}, {@link sample} and {@link statistics} using `Parameters`
+   * For replay purposes, it can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
    */
   counterexamplePath: string | null;
   /**
@@ -155,7 +155,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * Configuration of the run
    *
-   * It includes both local parameters set on {@link (check:1)} or {@link (assert:1)}
+   * It includes both local parameters set on {@link check} or {@link assert}
    * and global ones specified using {@link configureGlobal}
    */
   runConfiguration: Parameters<Ts>;

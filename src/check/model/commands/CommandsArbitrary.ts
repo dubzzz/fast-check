@@ -146,7 +146,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link (array:1)} for {@link AsyncCommand} arrays.
+ * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -162,7 +162,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * For arrays of {@link Command} to be executed by {@link modelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link (array:1)} for {@link Command} arrays.
+ * It should shrink more efficiently than {@link array} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -178,7 +178,7 @@ function commands<Model extends object, Real>(
  * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link (array:1)} for {@link AsyncCommand} arrays.
+ * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
@@ -194,7 +194,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * For arrays of {@link Command} to be executed by {@link modelRun}
  *
  * This implementation comes with a shrinker adapted for commands.
- * It should shrink more efficiently than {@link (array:1)} for {@link Command} arrays.
+ * It should shrink more efficiently than {@link array} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
