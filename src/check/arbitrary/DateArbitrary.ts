@@ -13,7 +13,7 @@ export function date(constraints?: { min?: Date; max?: Date }): Arbitrary<Date> 
   const intMin = constraints && constraints.min ? constraints.min.getTime() : -8640000000000000;
   const intMax = constraints && constraints.max ? constraints.max.getTime() : 8640000000000000;
   if (Number.isNaN(intMin)) throw new Error('fc.date min must be valid instance of Date');
-  if (Number.isNaN(intMin)) throw new Error('fc.date max must be valid instance of Date');
+  if (Number.isNaN(intMax)) throw new Error('fc.date max must be valid instance of Date');
   if (intMin > intMax) throw new Error('fc.date max must be greater or equal to min');
   return integer(intMin, intMax).map((a) => new Date(a));
 }
