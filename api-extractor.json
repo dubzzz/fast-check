@@ -12,7 +12,7 @@
   },
   "docModel": {
     "enabled": true,
-    "apiJsonFilePath": "docs/2-API/fast-check.api.json"
+    "apiJsonFilePath": "docs/fast-check.api.json"
   },
   "apiReport": {
     "enabled": false
