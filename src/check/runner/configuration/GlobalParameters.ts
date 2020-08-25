@@ -1,17 +1,16 @@
 import { getGlobal } from '../../../utils/globalThis';
+import { PropertyHookFunction } from '../../property/Property';
+import { AsyncPropertyHookFunction } from '../../property/AsyncProperty';
 import { Parameters } from './Parameters';
 
 /** @internal */
 const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
-type HookFunction = () => void;
-type AsyncHookFunction = (() => Promise<unknown>) | (() => void);
-
 type ExtraGlobalParameters = {
-  beforeEach?: HookFunction;
-  afterEach?: HookFunction;
-  asyncBeforeEach?: AsyncHookFunction;
-  asyncAfterEach?: AsyncHookFunction;
+  beforeEach?: PropertyHookFunction;
+  afterEach?: PropertyHookFunction;
+  asyncBeforeEach?: AsyncPropertyHookFunction;
+  asyncAfterEach?: AsyncPropertyHookFunction;
 };
 
 /**
