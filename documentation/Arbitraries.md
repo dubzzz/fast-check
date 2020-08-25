@@ -8,8 +8,11 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
 
 ## Table of contents
 
-- [Boolean](#boolean-boolean)
-- [Numeric](#numeric-number)
+- [Boolean](#boolean)
+- [Numeric](#numeric)
+  - [Integer](#integer)
+  - [Floating point](#floating-point)
+  - [BigInt](#bigint)
 - [String](#string-string)
 - [Date](#date-date)
 - [Falsy](#falsy-any)
@@ -28,39 +31,235 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
   - [Wrapping calls automatically using act](#wrapping-calls-automatically-using-act)
   - [Model based testing and race conditions](#model-based-testing-and-race-conditions)
 
-## Boolean (:boolean)
+## Boolean
 
-- `fc.boolean()` either `true` or `false`
+<details>
+<summary><b>boolean</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#boolean">api</a>]</summary>
 
-## Numeric (:number)
+*Output*
 
-Integer values:
+Boolean values, either `true` or `false`
 
-- `fc.integer()` all possible integers ie. from -2147483648 (included) to 2147483647 (included)
-- `fc.integer(max: number)` all possible integers between -2147483648 (included) and max (included)
-- `fc.integer(min: number, max: number)` all possible integers between min (included) and max (included)
-- `fc.nat()` all possible positive integers ie. from 0 (included) to 2147483647 (included)
-- `fc.nat(max: number)` all possible positive integers between 0 (included) and max (included)
-- `fc.maxSafeInteger()` all possible positive integers between `Number.MIN_SAFE_INTEGER` (included) and `Number.MAX_SAFE_INTEGER` (included)
-- `fc.maxSafeNat()` all possible positive integers between 0 (included) and `Number.MAX_SAFE_INTEGER` (included)
+*Signatures*
 
-Floating point numbers:
+- `fc.boolean()` — _either `true` or `false`_
 
-- `fc.float()` uniformly distributed `float` value between 0.0 (included) and 1.0 (excluded)
-- `fc.float(max: number)` uniformly distributed `float` value between 0.0 (included) and max (excluded)
-- `fc.float(min: number, max: number)` uniformly distributed `float` value between min (included) and max (excluded)
-- `fc.double()`uniformly distributed `double` value between 0.0 (included) and 1.0 (excluded)
-- `fc.double(max: number)`uniformly distributed `double` value between 0.0 (included) and max (excluded)
-- `fc.double(min: number, max: number)`uniformly distributed `double` value between min (included) and max (excluded)
+*Usages*
 
-BigInt (if supported by your JavaScript interpreter):
+```js
+fc.boolean()
+```
+</details>
 
-- `fc.bigIntN(n: number)` all possible `bigint` between -2^(n-1) (included) and 2^(n-1)-1 (included)
-- `fc.bigInt()` uniformly distributed `bigint` values
-- `fc.bigInt(min: bigint, max: bigint)` all possible `bigint` between min (included) and max (included)
-- `fc.bigUintN(n: number)` all possible `bigint` between 0 (included) and 2^n -1 (included)
-- `fc.bigUint()` uniformly distributed `bigint` positive values
-- `fc.bigUint(max: bigint)` all possible `bigint` between 0 (included) and max (included)
+## Numeric
+
+### Integer
+
+<details>
+<summary><b>integer</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#integer">api</a>]</summary>
+
+*Output*
+
+Signed integer values
+
+*Signatures*
+
+- `fc.integer()` — _all possible 32-bit integers ie. from `-2147483648` (included) to `2147483647` (included)_
+- `fc.integer(maxValue)` — _all possible 32-bit integers ie. from `-2147483648` (included) to `maxValue` (included)_
+- `fc.integer(minValue, maxValue)` — _all possible 32-bit integers ie. from `minValue` (included) to `maxValue` (included)_
+
+*Usages*
+
+```js
+fc.integer()
+fc.integer(1000)
+fc.integer(-99, 99)
+```
+</details>
+
+<details>
+<summary><b>nat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#nat">api</a>]</summary>
+
+*Output*
+
+Positive integer values (including zero)
+
+*Signatures*
+
+- `fc.nat()` — _all possible 32-bit positive integers ie. from `0` (included) to `2147483647` (included)_
+- `fc.nat(maxValue)` — _all possible 32-bit positive integers ie. from `0` (included) to `maxValue` (included)_
+
+*Usages*
+
+```js
+fc.nat()
+fc.nat(1000)
+```
+</details>
+
+<details>
+<summary><b>maxSafeInteger</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafeinteger">api</a>]</summary>
+
+*Output*
+
+All the range of signed integer values
+
+*Signatures*
+
+- `fc.maxSafeInteger()` — _all possible integers ie. from `Number.MIN_SAFE_INTEGER` (included) to `Number.MAX_SAFE_INTEGER` (included)_
+
+*Usages*
+
+```js
+fc.maxSafeInteger()
+```
+</details>
+
+<details>
+<summary><b>maxSafeNat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafenat">api</a>]</summary>
+
+*Output*
+
+All the range of positive integer values (including zero)
+
+*Signatures*
+
+- `fc.maxSafeNat()` — _all possible positive integers ie. from `0` (included) to `Number.MAX_SAFE_INTEGER` (included)_
+
+*Usages*
+
+```js
+fc.maxSafeNat()
+```
+</details>
+
+### Floating point
+
+<details>
+<summary><b>float</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float">api</a>]</summary>
+
+*Output*
+
+Floating point values with 32-bit precision
+
+*Signatures*
+
+- `fc.float()` — _uniformly distributed floating point value between `0.0` (included) and `1.0` (excluded)_
+- `fc.float(maxValue)` — _uniformly distributed floating point value between `0.0` (included) and `maxValue` (excluded)_
+- `fc.float(minValue, maxValue)` — _uniformly distributed floating point value between `minValue` (included) and `maxValue` (excluded)_
+
+*Usages*
+
+```js
+fc.float()
+fc.float(100)
+fc.float(-100, 100)
+```
+</details>
+
+<details>
+<summary><b>double</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#double">api</a>]</summary>
+
+*Output*
+
+Floating point values with 64-bit precision
+
+*Signatures*
+
+- `fc.double()` — _uniformly distributed floating point value between `0.0` (included) and `1.0` (excluded)_
+- `fc.double(maxValue)` — _uniformly distributed floating point value between `0.0` (included) and `maxValue` (excluded)_
+- `fc.double(minValue, maxValue)` — _uniformly distributed floating point value between `minValue` (included) and `maxValue` (excluded)_
+
+*Usages*
+
+```js
+fc.double()
+fc.double(100)
+fc.double(-100, 100)
+```
+</details>
+
+### BigInt
+_if supported by your JavaScript interpreter_
+
+<details>
+<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary>
+
+*Output*
+
+N-bit signed `bigint` values
+
+*Signatures*
+
+- `fc.bigIntN(n)` — _all possible `bigint` between <code>-2<sup>n-1</sup></code> (included) and <code>2<sup>n-1</sup>-1</code> (included)_
+
+*Usages*
+
+```js
+fc.bigIntN(2)
+fc.bigIntN(128)
+```
+</details>
+
+<details>
+<summary><b>bigInt</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigint">api</a>]</summary>
+
+*Output*
+
+Signed `bigint` values
+
+*Signatures*
+
+- `fc.bigInt()` — _uniformly distributed `bigint` values_
+- `fc.bigInt(minValue, maxValue)` — _all possible `bigint` between `minValue` (included) and `maxValue` (excluded)_
+
+*Usages*
+
+```js
+fc.bigInt()
+fc.bigInt(0n, 100n)
+fc.bigInt(-3000n, 100n)
+```
+</details>
+
+<details>
+<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary>
+
+*Output*
+
+N-bit positive `bigint` values (including zero)
+
+*Signatures*
+
+- `fc.bigUintN(n)` — _all possible positive `bigint` between <code>0</code> (included) and <code>2<sup>n</sup>-1</code> (included)_
+
+*Usages*
+
+```js
+fc.bigUintN(2)
+fc.bigUintN(128)
+```
+</details>
+
+<details>
+<summary><b>bigUint</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#biguint">api</a>]</summary>
+
+*Output*
+
+Positive `bigint` values (including zero)
+
+*Signatures*
+
+- `fc.bigUint()` — _uniformly distributed positive `bigint` values_
+- `fc.bigUint(maxValue)` — _all possible positive `bigint` between `0` (included) and `maxValue` (excluded)_
+
+*Usages*
+
+```js
+fc.bigUint()
+fc.bigUint(100n)
+```
+</details>
 
 ## String (:string)
 
