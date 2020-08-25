@@ -26,6 +26,9 @@
     "extractorMessageReporting": {
       "default": {
         "logLevel": "error"
+      },
+      "ae-unresolved-link": {
+        "logLevel": "warning"
       }
     },
     "tsdocMessageReporting": {

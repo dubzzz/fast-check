@@ -41,7 +41,7 @@ export interface Parameters<T = void> {
   /**
    * Maximum time in milliseconds for the predicate to answer: disabled by default
    *
-   * WARNING: Only works for async code (see {@link (asyncProperty:1)}), will not interrupt a synchronous code.
+   * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
    */
   timeout?: number;
   /**
@@ -120,7 +120,7 @@ export interface Parameters<T = void> {
    * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
    * But you may want to change this behaviour in yours.
    *
-   * Only used when calling {@link (assert:1)}
+   * Only used when calling {@link assert}
    * Cannot be defined in conjonction with `asyncReporter`
    */
   reporter?: (runDetails: RunDetails<T>) => void;
@@ -130,7 +130,7 @@ export interface Parameters<T = void> {
    * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
    * But you may want to change this behaviour in yours.
    *
-   * Only used when calling {@link (assert:1)}
+   * Only used when calling {@link assert}
    * Cannot be defined in conjonction with `reporter`
    * Not compatible with synchronous properties: runner will throw
    */

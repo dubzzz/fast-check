@@ -39,7 +39,7 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
- * Prefer using {@link (asyncProperty:1)} instead
+ * Prefer using {@link asyncProperty} instead
  *
  * @internal
  */
