@@ -76,13 +76,13 @@ fc.boolean()
 
 ```js
 fc.integer()
-// Examples of generated values:
+// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
 
 fc.integer(1000)
-// Examples of generated values:
+// Examples of generated values: -5, -994490854, -1536816376, -3, -31…
 
 fc.integer(-99, 99)
-// Examples of generated values:
+// Examples of generated values: -2, 28, 52, 3, 4…
 ```
 </details>
 
@@ -102,10 +102,10 @@ fc.integer(-99, 99)
 
 ```js
 fc.nat()
-// Examples of generated values:
+// Examples of generated values: 16, 1152992794, 610667272, 7, 1…
 
 fc.nat(1000)
-// Examples of generated values:
+// Examples of generated values: 0, 954, 215, 8, 7…
 ```
 </details>
 
@@ -124,7 +124,7 @@ fc.nat(1000)
 
 ```js
 fc.maxSafeInteger()
-// Examples of generated values:
+// Examples of generated values: 15, 7113953471524865, 1700981751375361, -28, 8…
 ```
 </details>
 
@@ -143,7 +143,7 @@ fc.maxSafeInteger()
 
 ```js
 fc.maxSafeNat()
-// Examples of generated values:
+// Examples of generated values: 38, 7113953471524864, 1700981751375360, 42, 41…
 ```
 </details>
 
@@ -166,13 +166,13 @@ fc.maxSafeNat()
 
 ```js
 fc.float()
-// Examples of generated values:
+// Examples of generated values: 8.344650268554688e-7, 0.7237259149551392, 0.3986058235168457, 0.0000010728836059570312, 2.980232238769531e-7…
 
 fc.float(100)
-// Examples of generated values:
+// Examples of generated values: 0.00008344650268554688, 72.37259149551392, 39.86058235168457, 0.00010728836059570312, 0.000029802322387695312…
 
 fc.float(-100, 100)
-// Examples of generated values:
+// Examples of generated values: -99.99983310699463, 44.74518299102783, -20.27883529663086, -99.99978542327881, -99.99994039535522…
 ```
 </details>
 
@@ -193,13 +193,13 @@ fc.float(-100, 100)
 
 ```js
 fc.double()
-// Examples of generated values:
+// Examples of generated values: 5.960464688481437e-8, 0.18093147873878634, 0.09965145587921309, 3.278255482630499e-7, 3.4272670956791984e-7…
 
 fc.double(100)
-// Examples of generated values:
+// Examples of generated values: 0.000005960464688481437, 18.093147873878635, 9.96514558792131, 0.00003278255482630499, 0.000034272670956791984…
 
 fc.double(-100, 100)
-// Examples of generated values:
+// Examples of generated values: -99.99998807907062, -63.81370425224273, -80.06970882415737, -99.99993443489035, -99.99993145465808…
 ```
 </details>
 
@@ -221,10 +221,10 @@ _if supported by your JavaScript interpreter_
 
 ```js
 fc.bigIntN(2)
-// Examples of generated values:
+// Examples of generated values: 1n, 0n, -2n, -1n, 1n…
 
 fc.bigIntN(128)
-// Examples of generated values:
+// Examples of generated values: 2n, -78791682970687883872715694694804700727n, -121759137538751247807835793478555995587n, -35n, -22n…
 ```
 </details>
 
@@ -244,13 +244,13 @@ fc.bigIntN(128)
 
 ```js
 fc.bigInt()
-// Examples of generated values:
+// Examples of generated values: 63n, -26811420374949873220459578427973905722491267353767128852212759259818188893304n, -41432487515938364327065946798100351211572912006011611184534856508514021872561n, -39n, -45n…
 
 fc.bigInt(0n, 12345678901234567890n)
-// Examples of generated values:
+// Examples of generated values: 11n, 4952066344324329434n, 2622795964881003898n, 9n, 14n…
 
 fc.bigInt(-3000n, 100n)
-// Examples of generated values:
+// Examples of generated values: 2n, -2319n, -153n, -2n, 1n…
 ```
 </details>
 
@@ -269,10 +269,10 @@ fc.bigInt(-3000n, 100n)
 
 ```js
 fc.bigUintN(2)
-// Examples of generated values:
+// Examples of generated values: 0n, 2n, 0n, 0n, 1n…
 
 fc.bigUintN(128)
-// Examples of generated values:
+// Examples of generated values: 30n, 91349500489781347858971609021079405001n, 48382045921717983923851510237328110141n, 18n, 37n…
 ```
 </details>
 
@@ -292,10 +292,10 @@ fc.bigUintN(128)
 
 ```js
 fc.bigUint()
-// Examples of generated values:
+// Examples of generated values: 41n, 31084624243708224491325914076370048204143724979053153167516032744138375926664n, 16463557102719733384719545706243602715062080326808670835193935495442542947407n, 4n, 17n…
 
 fc.bigUint(12345678901234567890n)
-// Examples of generated values:
+// Examples of generated values: 11n, 4952066344324329434n, 2622795964881003898n, 9n, 14n…
 ```
 </details>
 
@@ -318,7 +318,7 @@ fc.bigUint(12345678901234567890n)
 
 ```js
 fc.hexa()
-// Examples of generated values:
+// Examples of generated values: "2", "a", "8", "2", "1"…
 ```
 </details>
 
@@ -337,7 +337,7 @@ fc.hexa()
 
 ```js
 fc.base64()
-// Examples of generated values:
+// Examples of generated values: "C", "a", "I", "A", "F"…
 ```
 </details>
 
@@ -356,7 +356,7 @@ fc.base64()
 
 ```js
 fc.char()
-// Examples of generated values:
+// Examples of generated values: "$", "8", "T", "\"", " "…
 ```
 </details>
 
@@ -375,7 +375,7 @@ fc.char()
 
 ```js
 fc.ascii()
-// Examples of generated values:
+// Examples of generated values: "$", ":", "(", "\"", " "…
 ```
 </details>
 
@@ -394,7 +394,7 @@ fc.ascii()
 
 ```js
 fc.unicode()
-// Examples of generated values:
+// Examples of generated values: ".", "옚", "鬈", "\"", "%"…
 ```
 </details>
 
@@ -413,7 +413,7 @@ fc.unicode()
 
 ```js
 fc.char16bits()
-// Examples of generated values:
+// Examples of generated values: ".", "䘚", "ଈ", "\"", "%"…
 ```
 </details>
 
@@ -432,7 +432,7 @@ fc.char16bits()
 
 ```js
 fc.fullUnicode()
-// Examples of generated values:
+// Examples of generated values: "+", "󚸚", "𣬈", ")", "."…
 ```
 </details>
 
@@ -455,13 +455,13 @@ fc.fullUnicode()
 
 ```js
 fc.hexaString()
-// Examples of generated values:
+// Examples of generated values: "", "a7984c84", "a6db51", "1b", ""…
 
 fc.hexaString(3)
-// Examples of generated values:
+// Examples of generated values: "", "a7", "", "", "b2"…
 
 fc.hexaString(4, 6)
-// Examples of generated values:
+// Examples of generated values: "2104", "a7984", "a6db5", "1b82", "b2b30"…
 ```
 </details>
 
@@ -486,13 +486,13 @@ _When using `minLength` and `maxLength` make sure that they are compatible toget
 
 ```js
 fc.base64String()
-// Examples of generated values:
+// Examples of generated values: "yBAk", "3JoU8IUF", "6W9r", "", "7A7DCABDBEBD8DcF"…
 
 fc.base64String(8)
-// Examples of generated values:
+// Examples of generated values: "", "a3Jo", "", "Bb==", ""…
 
 fc.base64String(4, 12)
-// Examples of generated values:
+// Examples of generated values: "yBAk", "a3JoU8IU", "W9rF", "BboAbI==", "A7DC"…
 ```
 </details>
 
@@ -513,13 +513,13 @@ fc.base64String(4, 12)
 
 ```js
 fc.string()
-// Examples of generated values:
+// Examples of generated values: "", "W|%=2Spc", "X1DZwS", "$d", ""…
 
 fc.string(3)
-// Examples of generated values:
+// Examples of generated values: "", "W|", "", "", "F\""…
 
 fc.string(4, 6)
-// Examples of generated values:
+// Examples of generated values: "(!$m", "W|%=2", "X1DZw", "$d0$", "F\" & "…
 ```
 </details>
 
@@ -540,13 +540,13 @@ fc.string(4, 6)
 
 ```js
 fc.asciiString()
-// Examples of generated values:
+// Examples of generated values: "", "zWiHt\u001d(t", "\u001bv]Ke\u0012", "$;", ""…
 
 fc.asciiString(3)
-// Examples of generated values:
+// Examples of generated values: "", "zW", "", "", "\u001c\""…
 
 fc.asciiString(4, 6)
-// Examples of generated values:
+// Examples of generated values: "\u0013!$\u0005", "zWiHt", "\u001bv]Ke", "$;H$", "\u001c\"\u001c& "…
 ```
 </details>
 
@@ -567,13 +567,13 @@ fc.asciiString(4, 6)
 
 ```js
 fc.unicodeString()
-// Examples of generated values:
+// Examples of generated values: "", "蟚ҷ釉봨ﵔ衼䮈齔", "蕺བ쨽悫蕅ᓱ", ")ﮛ", ""…
 
 fc.unicodeString(3)
-// Examples of generated values:
+// Examples of generated values: "", "蟚ҷ", "", "", "壻*"…
 
 fc.unicodeString(4, 6)
-// Examples of generated values:
+// Examples of generated values: "擲-,㥤", "蟚ҷ釉봨ﵔ", "蕺བ쨽悫蕅", ")ﮛ褨*", "壻*짻',"…
 ```
 </details>
 
@@ -596,13 +596,13 @@ fc.unicodeString(4, 6)
 
 ```js
 fc.string16bits()
-// Examples of generated values:
+// Examples of generated values: "", "濚㒷쇉괨啔ၼ鎈읔", "敺肫볱", ")㎛", ""…
 
 fc.string16bits(3)
-// Examples of generated values:
+// Examples of generated values: "", "濚㒷", "", "", "僻*"…
 
 fc.string16bits(4, 6)
-// Examples of generated values:
+// Examples of generated values: "鳲-,셤", "濚㒷쇉괨啔", "敺肫", ")㎛脨*", "僻*釻',"…
 ```
 </details>
 
@@ -625,13 +625,13 @@ _Be aware that the length is considered in terms of the number of glyphs in the 
 
 ```js
 fc.fullUnicodeString()
-// Examples of generated values:
+// Examples of generated values: "", "񩟚􀲷󞧉󎔨􎵔򲁼򀎈𸝔", "󯵺񵽖򙨽񨢫񙵅򃓱", "$􃮛", ""…
 
 fc.fullUnicodeString(3)
-// Examples of generated values:
+// Examples of generated values: "", "񩟚􀲷", "", "", "𑃻)"…
 
 fc.fullUnicodeString(4, 6)
-// Examples of generated values:
+// Examples of generated values: "󳳲!2𡅤", "񩟚􀲷󞧉󎔨􎵔", "󯵺񵽖򙨽񨢫񙵅", "$􃮛񕤨2", "𑃻)󒇻&."…
 ```
 </details>
 
@@ -652,19 +652,19 @@ fc.fullUnicodeString(4, 6)
 
 ```js
 fc.stringOf(fc.hexa())
-// Examples of generated values:
+// Examples of generated values: "", "a7984c84", "a6db51", "1b", ""…
 
 fc.stringOf(fc.char(), 3)
-// Examples of generated values:
+// Examples of generated values: "", "W|", "", "", "F\""…
 
 fc.stringOf(fc.char(), 4, 6)
-// Examples of generated values:
+// Examples of generated values: "(!$m", "W|%=2", "X1DZw", "$d0$", "F\" & "…
 
 fc.stringOf(fc.constantFrom('a', 'b'), 0, 5)
-// Examples of generated values:
+// Examples of generated values: "ba", "abba", "aabb", "a", "bbaa"…
 
 fc.stringOf(fc.constantFrom('Hello', 'World'), 1, 3)
-// Examples of generated values:
+// Examples of generated values: "World", "HelloWorld", "HelloHello", "Hello", "WorldWorld"…
 ```
 </details>
 
