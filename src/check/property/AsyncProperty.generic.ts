@@ -3,7 +3,7 @@ import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
-import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
+import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -11,7 +11,9 @@ import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
  *
  * @public
  */
-export type AsyncPropertyHookFunction = (() => Promise<unknown>) | (() => void);
+export type AsyncPropertyHookFunction =
+  | ((globalHookFunction: GlobalAsyncPropertyHookFunction) => Promise<unknown>)
+  | ((globalHookFunction: GlobalAsyncPropertyHookFunction) => void);
 
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
@@ -45,25 +47,28 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
-  static dummyHook: AsyncPropertyHookFunction = () => {};
-  private readonly globalBeforeEachHook: AsyncPropertyHookFunction;
-  private readonly globalAfterEachHook: AsyncPropertyHookFunction;
-  private beforeEachHook: AsyncPropertyHookFunction;
-  private afterEachHook: AsyncPropertyHookFunction;
+  static dummyGlobalHook: GlobalAsyncPropertyHookFunction = () => {};
+  static defaultHook: AsyncPropertyHookFunction = (globalHook) => globalHook();
+  private readonly globalBeforeEachHook: GlobalAsyncPropertyHookFunction;
+  private readonly globalAfterEachHook: GlobalAsyncPropertyHookFunction;
+  private beforeEachHook: AsyncPropertyHookFunction = AsyncProperty.defaultHook;
+  private afterEachHook: AsyncPropertyHookFunction = AsyncProperty.defaultHook;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
-    const { asyncBeforeEach = AsyncProperty.dummyHook, asyncAfterEach = AsyncProperty.dummyHook } =
-      readConfigureGlobal() || {};
-    this.globalBeforeEachHook = asyncBeforeEach;
-    this.globalAfterEachHook = asyncAfterEach;
-    this.beforeEachHook = asyncBeforeEach;
-    this.afterEachHook = asyncAfterEach;
+    const {
+      asyncBeforeEach,
+      asyncAfterEach,
+      beforeEach = AsyncProperty.dummyGlobalHook,
+      afterEach = AsyncProperty.dummyGlobalHook,
+    } = readConfigureGlobal() || {};
+    this.globalBeforeEachHook = asyncBeforeEach || beforeEach;
+    this.globalAfterEachHook = asyncAfterEach || afterEach;
   }
   isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
   async run(v: Ts): Promise<PreconditionFailure | string | null> {
-    await this.beforeEachHook();
+    await this.beforeEachHook(this.globalBeforeEachHook);
     try {
       const output = await this.predicate(v);
       return output == null || output === true ? null : 'Property failed by returning false';
@@ -74,7 +79,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       if (err instanceof Error && err.stack) return `${err}\n\nStack trace: ${err.stack}`;
       return `${err}`;
     } finally {
-      await this.afterEachHook();
+      await this.afterEachHook(this.globalAfterEachHook);
     }
   }
 
@@ -83,10 +88,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   beforeEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
-    this.beforeEachHook = async () => {
-      await this.globalBeforeEachHook();
-      await hookFunction();
-    };
+    this.beforeEachHook = hookFunction;
     return this;
   }
   /**
@@ -94,10 +96,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   afterEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
-    this.afterEachHook = async () => {
-      await this.globalAfterEachHook();
-      await hookFunction();
-    };
+    this.afterEachHook = hookFunction;
     return this;
   }
 }

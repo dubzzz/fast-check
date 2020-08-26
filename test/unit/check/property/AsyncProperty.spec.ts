@@ -120,15 +120,35 @@ describe('AsyncProperty', () => {
       const beforeEachCalled = prob.beforeEachCalled;
       prob.beforeEachCalled = false;
       return beforeEachCalled;
-    }).beforeEach(async () => {
+    }).beforeEach(async (globalBeforeEach) => {
       prob.beforeEachCalled = true;
+      await globalBeforeEach();
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
-  it('Should always execute the global beforeEach hook before the test', async () => {
+  it('Should execute both global and local beforeEach hooks before the test', async () => {
+    const globalAsyncBeforeEach = jest.fn();
     const prob = { beforeEachCalled: false };
     configureGlobal({
+      asyncBeforeEach: globalAsyncBeforeEach,
+    });
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+      const beforeEachCalled = prob.beforeEachCalled;
+      prob.beforeEachCalled = false;
+      return beforeEachCalled;
+    }).beforeEach(async (globalBeforeEach) => {
+      prob.beforeEachCalled = true;
+      await globalBeforeEach();
+    });
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    expect(globalAsyncBeforeEach).toBeCalledTimes(1);
+  });
+  it('Should use global asyncBeforeEach as default if specified', async () => {
+    const prob = { beforeEachCalled: false };
+    const globalBeforeEach = jest.fn();
+    configureGlobal({
       asyncBeforeEach: () => (prob.beforeEachCalled = true),
+      beforeEach: globalBeforeEach,
     });
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       const beforeEachCalled = prob.beforeEachCalled;
@@ -136,19 +156,17 @@ describe('AsyncProperty', () => {
       return beforeEachCalled;
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    expect(globalBeforeEach).not.toBeCalled();
   });
-  it('Should always execute both beforeEach hooks before the test', async () => {
-    const prob = { beforeEachCalled: false, globalBeforeEachCalled: false };
+  it('Should use global beforeEach as default if specified', async () => {
+    const prob = { beforeEachCalled: false };
     configureGlobal({
-      asyncBeforeEach: () => (prob.globalBeforeEachCalled = true),
+      beforeEach: () => (prob.beforeEachCalled = true),
     });
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
-      const beforeEachCalled = prob.beforeEachCalled && prob.globalBeforeEachCalled;
+      const beforeEachCalled = prob.beforeEachCalled;
       prob.beforeEachCalled = false;
-      prob.globalBeforeEachCalled = false;
       return beforeEachCalled;
-    }).beforeEach(async () => {
-      prob.beforeEachCalled = true;
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
@@ -185,26 +203,23 @@ describe('AsyncProperty', () => {
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
     expect(callOrder).toEqual(['test', 'afterEach']);
   });
-  it('Should execute the global afterEach hook after the test on success', async () => {
+  it('Should use global asyncAfterEach as default if specified', async () => {
     const callOrder: string[] = [];
     configureGlobal({
-      asyncAfterEach: async () => {
-        callOrder.push('globalAfterEach');
-      },
+      asyncAfterEach: async () => callOrder.push('globalAsyncAfterEach'),
+      afterEach: async () => callOrder.push('globalAfterEach'),
     });
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       callOrder.push('test');
-      return true;
+      return false;
     });
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    expect(callOrder).toEqual(['test', 'globalAfterEach']);
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
+    expect(callOrder).toEqual(['test', 'globalAsyncAfterEach']);
   });
-  it('Should execute the global afterEach hook after the test on failure', async () => {
+  it('Should use global afterEach as default if specified', async () => {
     const callOrder: string[] = [];
     configureGlobal({
-      asyncAfterEach: async () => {
-        callOrder.push('globalAfterEach');
-      },
+      afterEach: async () => callOrder.push('globalAfterEach'),
     });
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       callOrder.push('test');
@@ -213,66 +228,19 @@ describe('AsyncProperty', () => {
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
     expect(callOrder).toEqual(['test', 'globalAfterEach']);
   });
-  it('Should execute the global afterEach hook after the test on uncaught exception', async () => {
+  it('Should execute both global and local afterEach hooks', async () => {
     const callOrder: string[] = [];
     configureGlobal({
-      asyncAfterEach: async () => {
-        callOrder.push('globalAfterEach');
-      },
-    });
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
-      callOrder.push('test');
-      throw new Error('uncaught');
-    });
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
-    expect(callOrder).toEqual(['test', 'globalAfterEach']);
-  });
-  it('Should execute both afterEach hooks after the test on success', async () => {
-    const callOrder: string[] = [];
-    configureGlobal({
-      asyncAfterEach: async () => {
-        callOrder.push('globalAfterEach');
-      },
+      asyncAfterEach: async () => callOrder.push('globalAsyncAfterEach'),
     });
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       callOrder.push('test');
       return true;
-    }).afterEach(async () => {
+    }).afterEach(async (globalAfterEach) => {
       callOrder.push('afterEach');
+      await globalAfterEach();
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    expect(callOrder).toEqual(['test', 'globalAfterEach', 'afterEach']);
-  });
-  it('Should execute both afterEach hooks after the test on failure', async () => {
-    const callOrder: string[] = [];
-    configureGlobal({
-      asyncAfterEach: async () => {
-        callOrder.push('globalAfterEach');
-      },
-    });
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
-      callOrder.push('test');
-      return false;
-    }).afterEach(async () => {
-      callOrder.push('afterEach');
-    });
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
-    expect(callOrder).toEqual(['test', 'globalAfterEach', 'afterEach']);
-  });
-  it('Should execute both afterEach hooks after the test on uncaught exception', async () => {
-    const callOrder: string[] = [];
-    configureGlobal({
-      asyncAfterEach: async () => {
-        callOrder.push('globalAfterEach');
-      },
-    });
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
-      callOrder.push('test');
-      throw new Error('uncaught');
-    }).afterEach(async () => {
-      callOrder.push('afterEach');
-    });
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
-    expect(callOrder).toEqual(['test', 'globalAfterEach', 'afterEach']);
+    expect(callOrder).toEqual(['test', 'afterEach', 'globalAsyncAfterEach']);
   });
 });
