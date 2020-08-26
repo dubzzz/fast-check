@@ -668,7 +668,365 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), 1, 3)
 ```
 </details>
 
-More specific strings:
+### More specific strings
+
+<details>
+<summary><b>json</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#json">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> JSON compatible string representations of instances
+>
+> The generated values can be parsed by `JSON.parse`
+
+*&#8195;Signatures*
+
+- `fc.json()` — _json strings having keys generated using `fc.string()`_
+- `fc.json(maxDepth)` — _json strings having keys generated using `fc.string()`, the generated json representation has a maximal depth of `maxDepth`_
+
+_All the string values (from keys to values) are generated using `fc.string()`_
+
+*&#8195;Usages*
+
+```js
+fc.json()
+// Examples of generated values: "[]", "{\"2Spc0sZ\":false}", "[2103360753,-124859527,-10,-14,14]", "\"d\"", "[{\"gdb4ug\":0.660563301012142,\"j1]>zw\":0.21349769765518423},{},{\"w{\\\";MT\":-1727170679,\"\\\"dJ?X\":0.5942538986285973,\"\":false},[1780287332,\"!!:\\\"!\",\"S$%\",\"\",3.200502819433737e-7],[]]"…
+
+fc.json(0)
+// Examples of generated values: "false", "null", "1.3291357470190945e-7", "\"d\"", "2.6045108714178866e-7"…
+
+fc.json(1)
+// Examples of generated values: "[]", "{\"2Spc0sZ\":false}", "[2103360753,-124859527,-10,-14,14]", "\"d\"", "[null,false,9,true,7.450580741252821e-8]"…
+```
+</details>
+
+<details>
+<summary><b>unicodeJson</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejson">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> JSON compatible string representations of instances
+>
+> The generated values can be parsed by `JSON.parse`
+
+*&#8195;Signatures*
+
+- `fc.unicodeJson()` — _json strings having keys generated using `fc.unicodeString()`_
+- `fc.unicodeJson(maxDepth)` — _json strings having keys generated using `fc.unicodeString()`, the generated json representation has a maximal depth of `maxDepth`_
+
+_All the string values (from keys to values) are generated using `fc.unicodeString()`_
+
+*&#8195;Usages*
+
+```js
+fc.unicodeJson()
+// Examples of generated values: "[]", "{\"ﵔ衼䮈齔댅韛㹦\":false}", "[2103360753,-124859527,-10,-14,14]", "\"ﮛ\"", "[{\"Ⰺ쫜幞ꩀ๠햅\":0.660563301012142,\"羽⢠׮튋臸\":0.21349769765518423},{},{\"聏늅↨ꬌ易ᆷ\":-1727170679,\"翣흨ᒅ䝦⩷\":0.5942538986285973,\"\":false},[1780287332,\"(!㿙!/\",\"흇(-\",\"\",3.200502819433737e-7],[]]"…
+
+fc.unicodeJson(0)
+// Examples of generated values: "false", "null", "1.3291357470190945e-7", "\"ﮛ\"", "2.6045108714178866e-7"…
+
+fc.unicodeJson(1)
+// Examples of generated values: "[]", "{\"ﵔ衼䮈齔댅韛㹦\":false}", "[2103360753,-124859527,-10,-14,14]", "\"ﮛ\"", "[null,false,9,true,7.450580741252821e-8]"…
+```
+</details>
+
+<details>
+<summary><b>lorem</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#lorem">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Lorem ipsum values
+
+*&#8195;Signatures*
+
+- `fc.lorem()` — _lorem ipsum sentence containing a few words_
+- `fc.lorem(maxWordsCount)` — _lorem ipsum sentence containing at most `maxWordsCount` words_
+- `fc.lorem(maxCount, sentenceMode)` — _if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: same as above_
+
+*&#8195;Usages*
+
+```js
+fc.lorem()
+// Examples of generated values: "tristique ullamcorper morbi", "quam gravida nulla non blandit", "nulla egestas consectetuer", "fusce libero", "consequat erat ligula"…
+
+fc.lorem(3)
+// Examples of generated values: "tristique", "quam gravida", "nulla egestas", "fusce", "consequat erat"…
+
+fc.lorem(3, true)
+// Examples of generated values: "Morbi metus molestie, porttitor, lacus porttitor, consequat augue consectetuer.", "Gravida. Non blandit proin congue lobortis in.", "Egestas consectetuer non consequat ultrices adipiscing mauris. Sapien varius posuere.", "Aenean suscipit vel ante nunc suscipit.", "Ligula molestie, nisl integer. Lobortis a, in at velit enim curae."…
+```
+</details>
+
+<details>
+<summary><b>ipV4</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> IP v4 addresses
+
+*&#8195;Signatures*
+
+- `fc.ipV4()` — _ip v4 addresses_
+
+*&#8195;Usages*
+
+```js
+fc.ipV4()
+// Examples of generated values: "6.1.6.242", "26.7.40.4", "8.6.171.241", "2.4.101.41", "5.5.246.1"…
+```
+</details>
+
+<details>
+<summary><b>ipV4Extended</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4extended">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> IP v4 addresses including all the formats supported by WhatWG standard (for instance: 0x6f.9)
+
+*&#8195;Signatures*
+
+- `fc.ipV4Extended()` — _any valid ip v4 address_
+
+*&#8195;Usages*
+
+```js
+fc.ipV4Extended()
+// Examples of generated values: "0x1.13", "027", "06.69.0xcb79", "4.060231633", "0x5.0x2.40.4"…
+```
+</details>
+
+<details>
+<summary><b>ipV6</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv6">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> IP v6 addresses
+
+*&#8195;Signatures*
+
+- `fc.ipV6()` — _ip v6 addresses_
+
+*&#8195;Usages*
+
+```js
+fc.ipV6()
+// Examples of generated values: "04::b1", "4:b::1:2.48.136.81", "::1f:61:9ba:0", "b9:b:c:b:309:607:9:0", "::b6:1b8:ace0:5:7:0:5"…
+```
+</details>
+
+<details>
+<summary><b>uuid</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuid">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> UUID values including versions 1 to 5
+
+*&#8195;Signatures*
+
+- `fc.uuid()` — uuid strings having only digits in 0-9a-f (only versions in v1 to v5)_
+
+*&#8195;Usages*
+
+```js
+fc.uuid()
+// Examples of generated values: "0000000e-001d-1000-8000-001800ed23f2", "44b9461a-001d-1000-b35a-ad280000001c", "24660b08-0014-1000-975b-80abfd5ebcf1", "00000012-0009-1000-8abd-b965eaae5c29", "00000005-000d-1000-8bd4-1ff600000001"…
+```
+</details>
+
+<details>
+<summary><b>uuidV</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuidv">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> UUID values for a specific UUID version (only 1 to 5) only digits in 0-9a-f
+
+*&#8195;Signatures*
+
+- `fc.uuidV(version)` — uuid strings for a specific uuid version only digits in 0-9a-f_
+
+*&#8195;Usages*
+
+```js
+fc.uuidV(3)
+// Examples of generated values: "0000000e-0011-3000-8000-001800ed23f2", "44b9461a-0003-3000-b35a-ad280000001c", "24660b08-000e-3000-975b-80abfd5ebcf1", "00000012-0014-3000-8abd-b965eaae5c29", "00000005-000d-3000-8bd4-1ff600000001"…
+
+fc.uuidV(5)
+// Examples of generated values: "0000000e-0011-5000-8000-001800ed23f2", "44b9461a-0003-5000-b35a-ad280000001c", "24660b08-000e-5000-975b-80abfd5ebcf1", "00000012-0014-5000-8abd-b965eaae5c29", "00000005-000d-5000-8bd4-1ff600000001"…
+```
+</details>
+
+<details>
+<summary><b>domain</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#domain">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Domain name values with extension
+>
+> Following RFC 1034, RFC 1123 and WHATWG URL Standard
+
+*&#8195;Signatures*
+
+- `fc.domain()` — _domain name with extension_
+
+*&#8195;Usages*
+
+```js
+fc.domain()
+// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+```
+</details>
+
+<details>
+<summary><b>webAuthority</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webauthority">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Web authority values
+>
+> Following RFC 3986
+
+*&#8195;Signatures*
+
+- `fc.webAuthority()` — _web authority_
+
+*&#8195;Usages*
+
+```js
+fc.webAuthority()
+// Examples of generated values: -2, 28, 52, 3, 4…
+```
+</details>
+
+<details>
+<summary><b>webFragments</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webfragments">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Fragments to build an URI
+>
+> Fragment is the optional part right after the # in an URI
+
+*&#8195;Signatures*
+
+- `fc.webFragments()` — _fragments part of an url_
+
+*&#8195;Usages*
+
+```js
+fc.webFragments()
+// Examples of generated values: -2, 28, 52, 3, 4…
+```
+</details>
+
+<details>
+<summary><b>webQueryParameters</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webqueryparameters">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Query parameters to build an URI
+>
+> Query parameters part is the optional part right after the ? in an URI
+
+*&#8195;Signatures*
+
+- `fc.webQueryParameters()` — query parameters part of an url_
+
+*&#8195;Usages*
+
+```js
+fc.webQueryParameters()
+// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+```
+</details>
+
+<details>
+<summary><b>webSegment</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#websegment">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Web URL path segment
+
+*&#8195;Signatures*
+
+- `fc.webSegment()` — _web url path segment_
+
+*&#8195;Usages*
+
+```js
+fc.webSegment()
+// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+```
+</details>
+
+<details>
+<summary><b>webUrl</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#weburl">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Web URL values
+>
+> Following the specs specified by RFC 3986 and WHATWG URL Standard
+
+*&#8195;Signatures*
+
+- `fc.webUrl()` — _web url_
+
+*&#8195;Usages*
+
+```js
+fc.webUrl()
+// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+```
+</details>
+
+<details>
+<summary><b>emailAddress</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#emailaddress">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Email adresses
+>
+> Following RFC 1123 and RFC 5322
+
+*&#8195;Signatures*
+
+- `fc.emailAddress()` — _email address_
+
+*&#8195;Usages*
+
+```js
+fc.emailAddress()
+// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+```
+</details>
+
+<details>
+<summary><b>mixedCase</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#mixedcase">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Switch the case of characters generated by an underlying arbitrary
+
+*&#8195;Signatures*
+
+- `fc.mixedCase(stringArb)` — _randomly switch the case of characters generated by `stringArb`_
+- `fc.mixedCase(stringArb, {toggleCase?})` — _randomly switch the case of characters generated by `stringArb` based on passed [`constraints`](https://dubzzz.github.io/fast-check/interfaces/mixedcaseconstraints.html)_
+
+*&#8195;Usages*
+
+```js
+fc.mixedCase(fc.constantFrom('a', 'b'))
+// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+
+fc.mixedCase(
+  fc.constantFrom('a', 'b'),
+  {
+    toggleCase: (rawChar) => `UP(${rawChar})`,
+  }
+)
+// Examples of generated values: -5, -994490854, -1536816376, -3, -31…
+```
+</details>
 
 - `fc.json()` or `fc.json(maxDepth: number)` json strings having keys generated using `fc.string()`. String values are also produced by `fc.string()`
 - `fc.unicodeJson()` or `fc.unicodeJson(maxDepth: number)` json strings having keys generated using `fc.unicodeString()`. String values are also produced by `fc.unicodeString()`
