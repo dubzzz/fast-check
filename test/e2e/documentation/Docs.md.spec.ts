@@ -20,35 +20,53 @@ describe('Docs.md', () => {
     //if (fileContent !== originalFileContent) {
     //  fs.writeFileSync(`${__dirname}/../../../documentation/Arbitraries.md`, fileContent);
     //}
-    expect(fileContent).not.toEqual(originalFileContent);
+    expect(fileContent).toEqual(originalFileContent);
   });
 });
 
 // Helpers
 
-function flatMap<T, U>(original: T[], mapper: (value: T, index: number) => U[]): U[] {
-  const newItems: U[] = [];
-  for (let index = 0; index !== original.length; ++index) {
-    newItems.push(...mapper(original[index], index));
+function extractJsCodeBlocks(content: string): string[] {
+  const lines = content.split('\n');
+  const blocks: string[] = [];
+
+  let isJsBlock = false;
+  let currentBlock: string[] = [];
+  for (const line of lines) {
+    if (isJsBlock) {
+      currentBlock.push(line);
+      if (line === JsBlockEnd) {
+        blocks.push(currentBlock.join('\n'));
+        isJsBlock = false;
+        currentBlock = [];
+      }
+    } else if (line === JsBlockStart) {
+      blocks.push(currentBlock.join('\n'));
+      isJsBlock = true;
+      currentBlock = [line];
+    } else {
+      currentBlock.push(line);
+    }
   }
-  return newItems;
+
+  if (currentBlock.length !== 0) {
+    blocks.push(currentBlock.join('\n'));
+  }
+  return blocks;
 }
 
-function splitForBlocks(content: string, blockStart: string, blockEnd: string): string[] {
-  return flatMap(content.split(`${blockStart}\n`), (blockS, indexS) => {
-    if (indexS === 0) {
-      return [blockS];
-    }
-    const splits = `${blockStart}\n${blockS}`.split(`\n${blockEnd}`, 2);
-    if (splits.length !== 2) {
-      return splits;
-    }
-    return splits.map((blockE, indexE) => (indexE === 0 ? `${blockE}\n${blockEnd}` : blockE));
-  });
+function isJsCodeBlock(blockContent: string): boolean {
+  return blockContent.startsWith(`${JsBlockStart}\n`) && blockContent.endsWith(`${JsBlockEnd}\n`);
 }
 
-function isBlock(content: string, blockStart: string, blockEnd: string): boolean {
-  return content.startsWith(`${blockStart}\n`) && content.endsWith(`\n${blockEnd}`);
+function trimJsCodeBlock(blockContent: string): string {
+  const startLength = `${JsBlockStart}\n`.length;
+  const endLength = `${JsBlockEnd}\n`.length;
+  return blockContent.substr(startLength, blockContent.length - startLength - endLength);
+}
+
+function addJsCodeBlock(blockContent: string): string {
+  return `${JsBlockStart}\n${blockContent}${JsBlockEnd}\n`;
 }
 
 function refreshContent(originalContent: string): { content: string; numExecutedSnippets: number } {
@@ -58,16 +76,17 @@ function refreshContent(originalContent: string): { content: string; numExecuted
   let numExecutedSnippets = 0;
 
   // Extract code blocks
-  const extractedBlocks = splitForBlocks(originalContent, JsBlockStart, JsBlockEnd);
+  const extractedBlocks = extractJsCodeBlocks(originalContent);
 
   // Execute code blocks
   const refinedBlocks = extractedBlocks.map((block) => {
-    if (!isBlock(block, JsBlockStart, JsBlockEnd)) return block;
+    if (!isJsCodeBlock(block)) return block;
 
     // Remove list of examples
-    const cleanedBlock = block
-      .substr(JsBlockStart.length, block.length - JsBlockStart.length - JsBlockEnd.length)
-      .replace(new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'), CommentForGeneratedValues);
+    const cleanedBlock = trimJsCodeBlock(block).replace(
+      new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'),
+      CommentForGeneratedValues
+    );
 
     // Extract code snippets
     const snippets = cleanedBlock
@@ -93,7 +112,7 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       return `${snippet} ${generatedValues.join(', ')}`;
     });
 
-    return `${JsBlockStart}${updatedSnippets.join('')}${JsBlockEnd}`;
+    return addJsCodeBlock(updatedSnippets.join(''));
   });
 
   return { content: refinedBlocks.join(''), numExecutedSnippets };
