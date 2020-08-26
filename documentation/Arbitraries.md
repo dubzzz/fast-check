@@ -872,7 +872,7 @@ fc.uuidV(5)
 
 ```js
 fc.domain()
-// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+// Examples of generated values: "s.8.y40gd.uw", "81u3tvl23k4.6e.wema40ylrts.r3d695.u-eblf.djdcacez", "4.vt83duan.8r68rjx8w.csbbincko", "bok71i1a.agjzp4d.zdstdcbuk", "xdcabdbebdld.mh4ce.fidbfbn5lfwb.bibl"…
 ```
 </details>
 
@@ -893,7 +893,7 @@ fc.domain()
 
 ```js
 fc.webAuthority()
-// Examples of generated values: -2, 28, 52, 3, 4…
+// Examples of generated values: "abz0c.by.bd", "ad.e.fbd.ymj", "l3dualxl.bzdc", "fk71i1if.aecedeoac", "bb1m5zg6.s.mbvwfe.vadajfr"…
 ```
 </details>
 
@@ -914,7 +914,7 @@ fc.webAuthority()
 
 ```js
 fc.webFragments()
-// Examples of generated values: -2, 28, 52, 3, 4…
+// Examples of generated values: "", "PB'X5%F2%8C%AD%96:2", "QDPndn", "P%F1%95%A4%A8", "ve*A!%F1%82%A9%BC3w/B"…
 ```
 </details>
 
@@ -935,7 +935,7 @@ fc.webFragments()
 
 ```js
 fc.webQueryParameters()
-// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+// Examples of generated values: "", "PB'X5%F2%8C%AD%96:2", "QDPndn", "P%F1%95%A4%A8", "ve*A!%F1%82%A9%BC3w/B"…
 ```
 </details>
 
@@ -954,7 +954,7 @@ fc.webQueryParameters()
 
 ```js
 fc.webSegment()
-// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+// Examples of generated values: "", "9By0U%F2%8C%AD%96k,", "U4::0T", "0%F1%95%A4%A8", "bua$W%F1%82%A9%BC)L8w"…
 ```
 </details>
 
@@ -975,7 +975,7 @@ fc.webSegment()
 
 ```js
 fc.webUrl()
-// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+// Examples of generated values: "http://bn4cd9ade7al.wedd.d.fwe1dl.xxkeuxz/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&", "https://c.ged/n,Hlvw/c'g/0-", "https://ndy.hzcnmubzz/bcj/gb/F4MdU/f/%F1%8B%BA%B7i%F0%9D%A9%AEG)7QJ/Tr/&/=l;", "http://1iif.dq.rwbyrzouz/dd", "http://azgoa.bwfdxw3n.cavph4caa.h.vx/dcQ)O/%F2%BC%9F%B3al5s+3'!/s=%F4%83%BD%87)%F2%BF%A0%8DpzY%F3%A6%B8%9C/%F1%93%9D%8EU/.bS;%31cfof/DSL2cbK/a%F1%A8%BF%99'hngd.d"…
 ```
 </details>
 
@@ -996,7 +996,7 @@ fc.webUrl()
 
 ```js
 fc.emailAddress()
-// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+// Examples of generated values: "8i_p#6u^o.|6vsvv`~8.cb@wsi4uukteg.v.hjaiwwb", "?.370fmb.+k8k.-d%a.amo@2.j.s534.ud4d.wl1dmsfraxq.acezc", "6g^rb`b.4n*.5@pjl.9fmb9iepew.cpx2euuwr.2c6ct6.afhriqh", "gcbpat.q9-ts*nt@50caeehfdi.ve", "ryhk.aa02|cm.bf@mph4canndxlj.jcajz9efnfs.79.4w9fq3qbtba.2ui0ju.jclbr"…
 ```
 </details>
 
@@ -1015,16 +1015,19 @@ fc.emailAddress()
 *&#8195;Usages*
 
 ```js
-fc.mixedCase(fc.constantFrom('a', 'b'))
-// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+fc.mixedCase(fc.hexaString())
+// Examples of generated values: "e892Ed", "Aa7", "8A6db51F", "22", "565b6a1b"…
+
+fc.mixedCase(fc.constant('hello world'))
+// Examples of generated values: "hElLo WorLD", "HELlO wOrLd", "HeLlo woRLd", "hElLO WOrld", "helLo worLD"…
 
 fc.mixedCase(
-  fc.constantFrom('a', 'b'),
+  fc.constant('hello world'),
   {
     toggleCase: (rawChar) => `UP(${rawChar})`,
   }
 )
-// Examples of generated values: -5, -994490854, -1536816376, -3, -31…
+// Examples of generated values: "hUP(e)lUP(l)oUP( )woUP(r)UP(l)d", "UP(h)UP(e)UP(l)lUP(o) UP(w)oUP(r)lUP(d)", "UP(h)eUP(l)lo wUP(o)UP(r)lUP(d)", "hUP(e)lUP(l)UP(o)UP( )UP(w)orlUP(d)", "helUP(l)o woUP(r)UP(l)UP(d)"…
 ```
 </details>
 
