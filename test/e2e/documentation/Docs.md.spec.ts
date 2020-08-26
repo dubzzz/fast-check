@@ -36,12 +36,12 @@ function extractJsCodeBlocks(content: string): string[] {
     if (isJsBlock) {
       currentBlock.push(line);
       if (line === JsBlockEnd) {
-        blocks.push(currentBlock.join('\n'));
+        blocks.push(currentBlock.join('\n') + '\n');
         isJsBlock = false;
         currentBlock = [];
       }
     } else if (line === JsBlockStart) {
-      blocks.push(currentBlock.join('\n'));
+      blocks.push(currentBlock.join('\n') + '\n');
       isJsBlock = true;
       currentBlock = [line];
     } else {
@@ -109,7 +109,7 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         }
       })(fc);
 
-      return `${snippet} ${generatedValues.join(', ')}`;
+      return `${snippet} ${generatedValues.join(', ')}…`;
     });
 
     return addJsCodeBlock(updatedSnippets.join(''));

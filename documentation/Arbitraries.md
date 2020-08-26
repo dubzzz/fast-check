@@ -51,7 +51,7 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
 
 ```js
 fc.boolean()
-// Examples of generated values:
+// Examples of generated values: false, true, true, false, false…
 ```
 </details>
 
@@ -76,8 +76,13 @@ fc.boolean()
 
 ```js
 fc.integer()
+// Examples of generated values:
+
 fc.integer(1000)
+// Examples of generated values:
+
 fc.integer(-99, 99)
+// Examples of generated values:
 ```
 </details>
 
@@ -97,7 +102,10 @@ fc.integer(-99, 99)
 
 ```js
 fc.nat()
+// Examples of generated values:
+
 fc.nat(1000)
+// Examples of generated values:
 ```
 </details>
 
@@ -116,6 +124,7 @@ fc.nat(1000)
 
 ```js
 fc.maxSafeInteger()
+// Examples of generated values:
 ```
 </details>
 
@@ -134,6 +143,7 @@ fc.maxSafeInteger()
 
 ```js
 fc.maxSafeNat()
+// Examples of generated values:
 ```
 </details>
 
@@ -156,8 +166,13 @@ fc.maxSafeNat()
 
 ```js
 fc.float()
+// Examples of generated values:
+
 fc.float(100)
+// Examples of generated values:
+
 fc.float(-100, 100)
+// Examples of generated values:
 ```
 </details>
 
@@ -178,8 +193,13 @@ fc.float(-100, 100)
 
 ```js
 fc.double()
+// Examples of generated values:
+
 fc.double(100)
+// Examples of generated values:
+
 fc.double(-100, 100)
+// Examples of generated values:
 ```
 </details>
 
@@ -201,7 +221,10 @@ _if supported by your JavaScript interpreter_
 
 ```js
 fc.bigIntN(2)
+// Examples of generated values:
+
 fc.bigIntN(128)
+// Examples of generated values:
 ```
 </details>
 
@@ -221,8 +244,13 @@ fc.bigIntN(128)
 
 ```js
 fc.bigInt()
-fc.bigInt(0n, 100n)
+// Examples of generated values:
+
+fc.bigInt(0n, 12345678901234567890n)
+// Examples of generated values:
+
 fc.bigInt(-3000n, 100n)
+// Examples of generated values:
 ```
 </details>
 
@@ -241,7 +269,10 @@ fc.bigInt(-3000n, 100n)
 
 ```js
 fc.bigUintN(2)
+// Examples of generated values:
+
 fc.bigUintN(128)
+// Examples of generated values:
 ```
 </details>
 
@@ -261,7 +292,10 @@ fc.bigUintN(128)
 
 ```js
 fc.bigUint()
-fc.bigUint(100n)
+// Examples of generated values:
+
+fc.bigUint(12345678901234567890n)
+// Examples of generated values:
 ```
 </details>
 
@@ -284,6 +318,7 @@ fc.bigUint(100n)
 
 ```js
 fc.hexa()
+// Examples of generated values:
 ```
 </details>
 
@@ -302,6 +337,7 @@ fc.hexa()
 
 ```js
 fc.base64()
+// Examples of generated values:
 ```
 </details>
 
@@ -320,6 +356,7 @@ fc.base64()
 
 ```js
 fc.char()
+// Examples of generated values:
 ```
 </details>
 
@@ -338,6 +375,7 @@ fc.char()
 
 ```js
 fc.ascii()
+// Examples of generated values:
 ```
 </details>
 
@@ -356,6 +394,7 @@ fc.ascii()
 
 ```js
 fc.unicode()
+// Examples of generated values:
 ```
 </details>
 
@@ -374,6 +413,7 @@ fc.unicode()
 
 ```js
 fc.char16bits()
+// Examples of generated values:
 ```
 </details>
 
@@ -392,6 +432,7 @@ fc.char16bits()
 
 ```js
 fc.fullUnicode()
+// Examples of generated values:
 ```
 </details>
 
@@ -414,8 +455,13 @@ fc.fullUnicode()
 
 ```js
 fc.hexaString()
+// Examples of generated values:
+
 fc.hexaString(3)
+// Examples of generated values:
+
 fc.hexaString(4, 6)
+// Examples of generated values:
 ```
 </details>
 
@@ -440,8 +486,13 @@ _When using `minLength` and `maxLength` make sure that they are compatible toget
 
 ```js
 fc.base64String()
+// Examples of generated values:
+
 fc.base64String(8)
+// Examples of generated values:
+
 fc.base64String(4, 12)
+// Examples of generated values:
 ```
 </details>
 
@@ -462,8 +513,13 @@ fc.base64String(4, 12)
 
 ```js
 fc.string()
+// Examples of generated values:
+
 fc.string(3)
+// Examples of generated values:
+
 fc.string(4, 6)
+// Examples of generated values:
 ```
 </details>
 
@@ -484,8 +540,13 @@ fc.string(4, 6)
 
 ```js
 fc.asciiString()
+// Examples of generated values:
+
 fc.asciiString(3)
+// Examples of generated values:
+
 fc.asciiString(4, 6)
+// Examples of generated values:
 ```
 </details>
 
@@ -506,8 +567,13 @@ fc.asciiString(4, 6)
 
 ```js
 fc.unicodeString()
+// Examples of generated values:
+
 fc.unicodeString(3)
+// Examples of generated values:
+
 fc.unicodeString(4, 6)
+// Examples of generated values:
 ```
 </details>
 
@@ -530,8 +596,13 @@ fc.unicodeString(4, 6)
 
 ```js
 fc.string16bits()
+// Examples of generated values:
+
 fc.string16bits(3)
+// Examples of generated values:
+
 fc.string16bits(4, 6)
+// Examples of generated values:
 ```
 </details>
 
@@ -554,8 +625,13 @@ _Be aware that the length is considered in terms of the number of glyphs in the 
 
 ```js
 fc.fullUnicodeString()
+// Examples of generated values:
+
 fc.fullUnicodeString(3)
+// Examples of generated values:
+
 fc.fullUnicodeString(4, 6)
+// Examples of generated values:
 ```
 </details>
 
@@ -576,10 +652,19 @@ fc.fullUnicodeString(4, 6)
 
 ```js
 fc.stringOf(fc.hexa())
+// Examples of generated values:
+
 fc.stringOf(fc.char(), 3)
+// Examples of generated values:
+
 fc.stringOf(fc.char(), 4, 6)
+// Examples of generated values:
+
 fc.stringOf(fc.constantFrom('a', 'b'), 0, 5)
+// Examples of generated values:
+
 fc.stringOf(fc.constantFrom('Hello', 'World'), 1, 3)
+// Examples of generated values:
 ```
 </details>
 
