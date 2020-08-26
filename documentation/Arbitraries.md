@@ -51,6 +51,7 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
 
 ```js
 fc.boolean()
+// Examples of generated values:
 ```
 </details>
 
