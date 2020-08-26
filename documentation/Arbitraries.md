@@ -51,7 +51,7 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
 
 ```js
 fc.boolean()
-// Examples of generated values: false, true, true, false, false…
+// Examples of generated values: false, true…
 ```
 </details>
 
@@ -221,7 +221,7 @@ _if supported by your JavaScript interpreter_
 
 ```js
 fc.bigIntN(2)
-// Examples of generated values: 1n, 0n, -2n, -1n, 1n…
+// Examples of generated values: 1n, 0n, -2n, -1n…
 
 fc.bigIntN(128)
 // Examples of generated values: 2n, -78791682970687883872715694694804700727n, -121759137538751247807835793478555995587n, -35n, -22n…
@@ -269,7 +269,7 @@ fc.bigInt(-3000n, 100n)
 
 ```js
 fc.bigUintN(2)
-// Examples of generated values: 0n, 2n, 0n, 0n, 1n…
+// Examples of generated values: 0n, 2n, 1n…
 
 fc.bigUintN(128)
 // Examples of generated values: 30n, 91349500489781347858971609021079405001n, 48382045921717983923851510237328110141n, 18n, 37n…
@@ -318,7 +318,7 @@ fc.bigUint(12345678901234567890n)
 
 ```js
 fc.hexa()
-// Examples of generated values: "2", "a", "8", "2", "1"…
+// Examples of generated values: "2", "a", "8", "1", "e"…
 ```
 </details>
 
@@ -455,10 +455,10 @@ fc.fullUnicode()
 
 ```js
 fc.hexaString()
-// Examples of generated values: "", "a7984c84", "a6db51", "1b", ""…
+// Examples of generated values: "", "a7984c84", "a6db51", "1b", "213bcfddc6"…
 
 fc.hexaString(3)
-// Examples of generated values: "", "a7", "", "", "b2"…
+// Examples of generated values: "", "a7", "b2", "ac", "7"…
 
 fc.hexaString(4, 6)
 // Examples of generated values: "2104", "a7984", "a6db5", "1b82", "b2b30"…
@@ -489,7 +489,7 @@ fc.base64String()
 // Examples of generated values: "yBAk", "3JoU8IUF", "6W9r", "", "7A7DCABDBEBD8DcF"…
 
 fc.base64String(8)
-// Examples of generated values: "", "a3Jo", "", "Bb==", ""…
+// Examples of generated values: "", "a3Jo", "Bb==", "hjbc", "as9ETt=="…
 
 fc.base64String(4, 12)
 // Examples of generated values: "yBAk", "a3JoU8IU", "W9rF", "BboAbI==", "A7DC"…
@@ -513,10 +513,10 @@ fc.base64String(4, 12)
 
 ```js
 fc.string()
-// Examples of generated values: "", "W|%=2Spc", "X1DZwS", "$d", ""…
+// Examples of generated values: "", "W|%=2Spc", "X1DZwS", "$d", "lbV7X&=<dH"…
 
 fc.string(3)
-// Examples of generated values: "", "W|", "", "", "F\""…
+// Examples of generated values: "", "W|", "F\"", "x#", "6"…
 
 fc.string(4, 6)
 // Examples of generated values: "(!$m", "W|%=2", "X1DZw", "$d0$", "F\" & "…
@@ -540,10 +540,10 @@ fc.string(4, 6)
 
 ```js
 fc.asciiString()
-// Examples of generated values: "", "zWiHt\u001d(t", "\u001bv]Ke\u0012", "$;", ""…
+// Examples of generated values: "", "zWiHt\u001d(t", "\u001bv]Ke\u0012", "$;", "b\u0002C{|_=\u001e\r\u0017"…
 
 fc.asciiString(3)
-// Examples of generated values: "", "zW", "", "", "\u001c\""…
+// Examples of generated values: "", "zW", "\u001c\"", ":\r", "7"…
 
 fc.asciiString(4, 6)
 // Examples of generated values: "\u0013!$\u0005", "zWiHt", "\u001bv]Ke", "$;H$", "\u001c\"\u001c& "…
@@ -567,10 +567,10 @@ fc.asciiString(4, 6)
 
 ```js
 fc.unicodeString()
-// Examples of generated values: "", "蟚ҷ釉봨ﵔ衼䮈齔", "蕺བ쨽悫蕅ᓱ", ")ﮛ", ""…
+// Examples of generated values: "", "蟚ҷ釉봨ﵔ衼䮈齔", "蕺བ쨽悫蕅ᓱ", ")ﮛ", "驂秡連ꤿᢝ杽ͬ乶"…
 
 fc.unicodeString(3)
-// Examples of generated values: "", "蟚ҷ", "", "", "壻*"…
+// Examples of generated values: "", "蟚ҷ", "壻*", "葬", "긗"…
 
 fc.unicodeString(4, 6)
 // Examples of generated values: "擲-,㥤", "蟚ҷ釉봨ﵔ", "蕺བ쨽悫蕅", ")ﮛ褨*", "壻*짻',"…
@@ -596,10 +596,10 @@ fc.unicodeString(4, 6)
 
 ```js
 fc.string16bits()
-// Examples of generated values: "", "濚㒷쇉괨啔ၼ鎈읔", "敺肫볱", ")㎛", ""…
+// Examples of generated values: "", "濚㒷쇉괨啔ၼ鎈읔", "敺肫볱", ")㎛", "凡C㷛譜ᄿ꽽ꍬ鹶"…
 
 fc.string16bits(3)
-// Examples of generated values: "", "濚㒷", "", "", "僻*"…
+// Examples of generated values: "", "濚㒷", "僻*", "ꖚꑬ", "옗"…
 
 fc.string16bits(4, 6)
 // Examples of generated values: "鳲-,셤", "濚㒷쇉괨啔", "敺肫", ")㎛脨*", "僻*釻',"…
@@ -625,10 +625,10 @@ _Be aware that the length is considered in terms of the number of glyphs in the 
 
 ```js
 fc.fullUnicodeString()
-// Examples of generated values: "", "񩟚􀲷󞧉󎔨􎵔򲁼򀎈𸝔", "󯵺񵽖򙨽񨢫񙵅򃓱", "$􃮛", ""…
+// Examples of generated values: "", "񩟚􀲷󞧉󎔨􎵔򲁼򀎈𸝔", "󯵺񵽖򙨽񨢫񙵅򃓱", "$􃮛", "񅉂򭧡񓀣򠗛󒍜򀤿𛢝񄽽򔍬𮙶"…
 
 fc.fullUnicodeString(3)
-// Examples of generated values: "", "񩟚􀲷", "", "", "𑃻)"…
+// Examples of generated values: "", "񩟚􀲷", "𑃻)", "񺖚󼑬", "昗"…
 
 fc.fullUnicodeString(4, 6)
 // Examples of generated values: "󳳲!2𡅤", "񩟚􀲷󞧉󎔨􎵔", "󯵺񵽖򙨽񨢫񙵅", "$􃮛񕤨2", "𑃻)󒇻&."…
@@ -652,10 +652,10 @@ fc.fullUnicodeString(4, 6)
 
 ```js
 fc.stringOf(fc.hexa())
-// Examples of generated values: "", "a7984c84", "a6db51", "1b", ""…
+// Examples of generated values: "", "a7984c84", "a6db51", "1b", "213bcfddc6"…
 
 fc.stringOf(fc.char(), 3)
-// Examples of generated values: "", "W|", "", "", "F\""…
+// Examples of generated values: "", "W|", "F\"", "x#", "6"…
 
 fc.stringOf(fc.char(), 4, 6)
 // Examples of generated values: "(!$m", "W|%=2", "X1DZw", "$d0$", "F\" & "…

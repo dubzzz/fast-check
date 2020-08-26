@@ -7,6 +7,7 @@ import fc from '../../../src/fast-check';
 //const __filename = fileURLToPath(import.meta.url);
 //const __dirname = dirname(__filename);
 
+const TargetNumExamples = 5;
 const JsBlockStart = '```js';
 const JsBlockEnd = '```';
 const CommentForGeneratedValues = '// Examples of generated values:';
@@ -101,7 +102,9 @@ function refreshContent(originalContent: string): { content: string; numExecuted
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const generatedValues = (function (fc) {
-        const evalCode = `fc.sample(${snippet}\n, { numRuns: 5, seed: 42 }).map(v => fc.stringify(v))`;
+        const evalCode = `fc.sample(${snippet}\n, { numRuns: ${
+          2 * TargetNumExamples
+        }, seed: 42 }).map(v => fc.stringify(v))`;
         try {
           return eval(evalCode);
         } catch (err) {
@@ -109,7 +112,8 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         }
       })(fc);
 
-      return `${snippet} ${generatedValues.join(', ')}…`;
+      const uniqueGeneratedValues = Array.from(new Set(generatedValues)).slice(0, TargetNumExamples);
+      return `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
     });
 
     return addJsCodeBlock(updatedSnippets.join(''));
