@@ -17,10 +17,10 @@ describe('Docs.md', () => {
     const originalFileContent = fs.readFileSync(`${__dirname}/../../../documentation/Arbitraries.md`).toString();
     const { content: fileContent } = refreshContent(originalFileContent);
 
-    //UNCOMMENT to re-generate the documentation
-    //if (fileContent !== originalFileContent) {
-    //  fs.writeFileSync(`${__dirname}/../../../documentation/Arbitraries.md`, fileContent);
-    //}
+    if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
+      console.warn(`Updating code snippets defined in the documentation...`);
+      fs.writeFileSync(`${__dirname}/../../../documentation/Arbitraries.md`, fileContent);
+    }
     expect(fileContent).toEqual(originalFileContent);
   });
 });
