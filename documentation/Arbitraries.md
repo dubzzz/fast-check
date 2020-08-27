@@ -1283,6 +1283,9 @@ fc.option(fc.nat(), 2)
 
 fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 // Examples of generated values: 5, Number.NaN, 259062763, 21, 11…
+
+fc.option(fc.string(), { nil: undefined })
+// Examples of generated values: "^_|\"T.5rB", "%!", "OqA3D!", undefined, "\""…
 ```
 </details>
 
