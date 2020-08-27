@@ -1234,15 +1234,19 @@ fc.clonedConstant(
 
 *&#8195;Description*
 
-> Value produced by the underlying arbitrary or nil (default `null`)
+> Randomly chooses between producing a value using the underlying arbitrary or returning nil
 
 *&#8195;Signatures*
 
-- `fc.option(arb)` — _randomly chooses between producing a value using `arb` or returning `null`_
-- `fc.option(arb, freq)` — _randomly chooses between producing a value using `arb` or returning `null`, but with an ajusted frequency `freq=5` means that 20% of generated values will be `null` and 80% would be produced through `arb`_
-- `fc.option(arb, constraints)` — _randomly chooses between producing a value using `arb` or returning `null` with respect to [`constraints`](https://dubzzz.github.io/fast-check/interfaces/optionconstraints.html)_
-  - `freq?` — _adapt the probability to produce nil values_
-  - `nil?` — _custom nil value_
+- `fc.option(arb)`
+- `fc.option(arb, freq)`
+- `fc.option(arb, constraints)`
+
+*&#8195;with [constraints](https://dubzzz.github.io/fast-check/interfaces/optionconstraints.html):*
+
+  - `arb` — _arbitrary that will be called to generate normal values_
+  - `freq?` — _probability to build the nil value is of 1 / freq_
+  - `nil?` — _nil value_
 
 *&#8195;Usages*
 
