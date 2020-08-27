@@ -51,7 +51,7 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
 
 ```js
 fc.boolean()
-// Examples of generated values: false, true…
+// Examples of generated values: true, false…
 ```
 </details>
 
@@ -76,13 +76,13 @@ fc.boolean()
 
 ```js
 fc.integer()
-// Examples of generated values: -15, -994490854, -1536816376, 7, -30…
+// Examples of generated values: 1502944448, 888414599, 1123740386, -440217435, -2…
 
 fc.integer(1000)
-// Examples of generated values: -5, -994490854, -1536816376, -3, -31…
+// Examples of generated values: -1057705109, -9, -1089721660, -1878447823, -741474720…
 
 fc.integer(-99, 99)
-// Examples of generated values: -2, 28, 52, 3, 4…
+// Examples of generated values: 2, -1, 91, -2, 3…
 ```
 </details>
 
@@ -102,10 +102,10 @@ fc.integer(-99, 99)
 
 ```js
 fc.nat()
-// Examples of generated values: 16, 1152992794, 610667272, 7, 1…
+// Examples of generated values: 16, 1747563639, 0, 2075457316, 2146229148…
 
 fc.nat(1000)
-// Examples of generated values: 0, 954, 215, 8, 7…
+// Examples of generated values: 299, 1, 225, 750, 4…
 ```
 </details>
 
@@ -124,7 +124,7 @@ fc.nat(1000)
 
 ```js
 fc.maxSafeInteger()
-// Examples of generated values: 15, 7113953471524865, 1700981751375361, -28, 8…
+// Examples of generated values: 36, 7332126275469313, 48, -8631085038818303, 417563055003649…
 ```
 </details>
 
@@ -143,7 +143,7 @@ fc.maxSafeInteger()
 
 ```js
 fc.maxSafeNat()
-// Examples of generated values: 38, 7113953471524864, 1700981751375360, 42, 41…
+// Examples of generated values: 44, 5865870157242368, 16, 5036966494443520, 53…
 ```
 </details>
 
@@ -166,13 +166,13 @@ fc.maxSafeNat()
 
 ```js
 fc.float()
-// Examples of generated values: 8.344650268554688e-7, 0.7237259149551392, 0.3986058235168457, 0.0000010728836059570312, 2.980232238769531e-7…
+// Examples of generated values: 0.731347382068634, 1.1920928955078125e-7, 0.6597227454185486, 0.5946863293647766, 0.6302104592323303…
 
 fc.float(100)
-// Examples of generated values: 0.00008344650268554688, 72.37259149551392, 39.86058235168457, 0.00010728836059570312, 0.000029802322387695312…
+// Examples of generated values: 0.00007748603820800781, 0.00007152557373046875, 0.00013113021850585938, 52.37404108047485, 0.000035762786865234375…
 
 fc.float(-100, 100)
-// Examples of generated values: -99.99983310699463, 44.74518299102783, -20.27883529663086, -99.99978542327881, -99.99994039535522…
+// Examples of generated values: -99.99992847442627, 55.83081245422363, -99.99979734420776, -20.923829078674316, -99.99991655349731…
 ```
 </details>
 
@@ -193,13 +193,13 @@ fc.float(-100, 100)
 
 ```js
 fc.double()
-// Examples of generated values: 5.960464688481437e-8, 0.18093147873878634, 0.09965145587921309, 3.278255482630499e-7, 3.4272670956791984e-7…
+// Examples of generated values: 0.4530413804731288, 0.8226463198661805, 0.3829372459587349, 0.7186836451292051, 0.8065718412399292…
 
 fc.double(100)
-// Examples of generated values: 0.000005960464688481437, 18.093147873878635, 9.96514558792131, 0.00003278255482630499, 0.000034272670956791984…
+// Examples of generated values: 0.000019014520535876045, 98.91013210040657, 0.00003648309874204614, 20.497548580169944, 0.00001937150981845548…
 
 fc.double(-100, 100)
-// Examples of generated values: -99.99998807907062, -63.81370425224273, -80.06970882415737, -99.99993443489035, -99.99993145465808…
+// Examples of generated values: -99.999970715887, -99.99996384938794, -99.99996463982544, -69.75060565839972, -99.99994324436676…
 ```
 </details>
 
@@ -221,10 +221,10 @@ _if supported by your JavaScript interpreter_
 
 ```js
 fc.bigIntN(2)
-// Examples of generated values: 1n, 0n, -2n, -1n…
+// Examples of generated values: -1n, 1n, 0n, -2n…
 
 fc.bigIntN(128)
-// Examples of generated values: 2n, -78791682970687883872715694694804700727n, -121759137538751247807835793478555995587n, -35n, -22n…
+// Examples of generated values: 118965438702305362498464591014723682065n, -55529428019749399595111693273573678376n, -45882741802961890031345972148576150745n, 88162568694395329699188080847279292274n, -18663446021429702481819240863645317485n…
 ```
 </details>
 
@@ -244,13 +244,13 @@ fc.bigIntN(128)
 
 ```js
 fc.bigInt()
-// Examples of generated values: 63n, -26811420374949873220459578427973905722491267353767128852212759259818188893304n, -41432487515938364327065946798100351211572912006011611184534856508514021872561n, -39n, -45n…
+// Examples of generated values: -55267127471484960134228883170671517601140668833043648279881539595328866477336n, -320877373404846693351482506498287829328651053618510591877443861350691412062n, 22403846480109971796256164379798253424379083455297331933513006716677124261164n, 46531564263119251593570768169779548000260571947054149902092502970846442652567n, -27488731055093319143645334041335559432506843454739800192508819981052054802083n…
 
 fc.bigInt(0n, 12345678901234567890n)
-// Examples of generated values: 11n, 4952066344324329434n, 2622795964881003898n, 9n, 14n…
+// Examples of generated values: 6465640285538993635n, 8922695748501260749n, 16n, 19n, 10723446437785154890n…
 
 fc.bigInt(-3000n, 100n)
-// Examples of generated values: 2n, -2319n, -153n, -2n, 1n…
+// Examples of generated values: 1n, -2031n, -351n, -1605n, -2n…
 ```
 </details>
 
@@ -269,10 +269,10 @@ fc.bigInt(-3000n, 100n)
 
 ```js
 fc.bigUintN(2)
-// Examples of generated values: 0n, 2n, 1n…
+// Examples of generated values: 1n, 0n, 2n, 3n…
 
 fc.bigUintN(128)
-// Examples of generated values: 30n, 91349500489781347858971609021079405001n, 48382045921717983923851510237328110141n, 18n, 37n…
+// Examples of generated values: 86341151263089925165504430453367665188n, 28n, 328981524291263435470719008913591905663n, 279866238908824165638381771934770854596n, 111395503858026070299201611333616927272n…
 ```
 </details>
 
@@ -292,10 +292,10 @@ fc.bigUintN(128)
 
 ```js
 fc.bigUint()
-// Examples of generated values: 41n, 31084624243708224491325914076370048204143724979053153167516032744138375926664n, 16463557102719733384719545706243602715062080326808670835193935495442542947407n, 4n, 17n…
+// Examples of generated values: 98415346800826680180868623901081769911550846942931679526483139707297824018492n, 81847654831253862250960947754551199482417759415227376695916153744999991292122n, 88192025501918677973672101265075531420107830828023254720275072280209923428999n, 46027806054858042993090394331470161808813263449611553513658034830595160464971n, 18n…
 
 fc.bigUint(12345678901234567890n)
-// Examples of generated values: 11n, 4952066344324329434n, 2622795964881003898n, 9n, 14n…
+// Examples of generated values: 5776499037807709071n, 4876199541303708566n, 19n, 18n, 5n…
 ```
 </details>
 
@@ -318,7 +318,7 @@ fc.bigUint(12345678901234567890n)
 
 ```js
 fc.hexa()
-// Examples of generated values: "2", "a", "8", "1", "e"…
+// Examples of generated values: "1", "3", "2", "d", "e"…
 ```
 </details>
 
@@ -337,7 +337,7 @@ fc.hexa()
 
 ```js
 fc.base64()
-// Examples of generated values: "C", "a", "I", "A", "F"…
+// Examples of generated values: "U", "M", "z", "b", "4"…
 ```
 </details>
 
@@ -356,7 +356,7 @@ fc.base64()
 
 ```js
 fc.char()
-// Examples of generated values: "$", "8", "T", "\"", " "…
+// Examples of generated values: "&", "#", "A", "J", "%"…
 ```
 </details>
 
@@ -375,7 +375,7 @@ fc.char()
 
 ```js
 fc.ascii()
-// Examples of generated values: "$", ":", "(", "\"", " "…
+// Examples of generated values: "5", "#", "7", "}", "\u001a"…
 ```
 </details>
 
@@ -394,7 +394,7 @@ fc.ascii()
 
 ```js
 fc.unicode()
-// Examples of generated values: ".", "옚", "鬈", "\"", "%"…
+// Examples of generated values: "", "熇", "ዢ", "⢥", ")"…
 ```
 </details>
 
@@ -413,7 +413,7 @@ fc.unicode()
 
 ```js
 fc.char16bits()
-// Examples of generated values: ".", "䘚", "ଈ", "\"", "%"…
+// Examples of generated values: ",", "훺", "*", "", "-"…
 ```
 </details>
 
@@ -432,7 +432,7 @@ fc.char16bits()
 
 ```js
 fc.fullUnicode()
-// Examples of generated values: "+", "󚸚", "𣬈", ")", "."…
+// Examples of generated values: "񗣺", "󡏒", "񖘬", "󁸻", "񄴑"…
 ```
 </details>
 
@@ -455,13 +455,13 @@ fc.fullUnicode()
 
 ```js
 fc.hexaString()
-// Examples of generated values: "", "a7984c84", "a6db51", "1b", "213bcfddc6"…
+// Examples of generated values: "0e0", "bf2", "3", "a9cb", "302122"…
 
 fc.hexaString(3)
-// Examples of generated values: "", "a7", "b2", "ac", "7"…
+// Examples of generated values: "b04", "", "1", "22e", "0"…
 
 fc.hexaString(4, 6)
-// Examples of generated values: "2104", "a7984", "a6db5", "1b82", "b2b30"…
+// Examples of generated values: "61c9", "ae60ac", "1301c", "1195", "e0200"…
 ```
 </details>
 
@@ -486,13 +486,13 @@ _When using `minLength` and `maxLength` make sure that they are compatible toget
 
 ```js
 fc.base64String()
-// Examples of generated values: "yBAk", "3JoU8IUF", "6W9r", "", "7A7DCABDBEBD8DcF"…
+// Examples of generated values: "rgkUfyt0yzjfC+og", "BdEh", "RD/EvefgXKA=", "xBEjzZ+=", "FoRDCZeC"…
 
 fc.base64String(8)
-// Examples of generated values: "", "a3Jo", "Bb==", "hjbc", "as9ETt=="…
+// Examples of generated values: "", "HNgun7I=", "Zjy=", "2YaX", "FTD="…
 
 fc.base64String(4, 12)
-// Examples of generated values: "yBAk", "a3JoU8IU", "W9rF", "BboAbI==", "A7DC"…
+// Examples of generated values: "vDxCCAk2/IS0", "6ryIGlQJJX8=", "ehK1YMsk", "+TC9UScX", "AxZf"…
 ```
 </details>
 
@@ -513,13 +513,13 @@ fc.base64String(4, 12)
 
 ```js
 fc.string()
-// Examples of generated values: "", "W|%=2Spc", "X1DZwS", "$d", "lbV7X&=<dH"…
+// Examples of generated values: ".A%", "aM{]xTH&)", "^NLpz5/y", "", "eqr"…
 
 fc.string(3)
-// Examples of generated values: "", "W|", "F\"", "x#", "6"…
+// Examples of generated values: "0", "!B", "OY", "TI'", ""…
 
 fc.string(4, 6)
-// Examples of generated values: "(!$m", "W|%=2", "X1DZw", "$d0$", "F\" & "…
+// Examples of generated values: "Y&.E{", "f&X6A", " \"d<ap", "bD7;", "UT'@"…
 ```
 </details>
 
@@ -540,13 +540,13 @@ fc.string(4, 6)
 
 ```js
 fc.asciiString()
-// Examples of generated values: "", "zWiHt\u001d(t", "\u001bv]Ke\u0012", "$;", "b\u0002C{|_=\u001e\r\u0017"…
+// Examples of generated values: "2u1\u001aWQ", "", "*y", "\bT\u0013.\u0017|h&>", "si3\u0016`kA\u0017\u0004"…
 
 fc.asciiString(3)
-// Examples of generated values: "", "zW", "\u001c\"", ":\r", "7"…
+// Examples of generated values: "", "w7", "7", "f", "_u"…
 
 fc.asciiString(4, 6)
-// Examples of generated values: "\u0013!$\u0005", "zWiHt", "\u001bv]Ke", "$;H$", "\u001c\"\u001c& "…
+// Examples of generated values: "%A&= ", "#\u0013!&", "%!n!W", "\u0014~\u001e,\u001f", "3\"|#D%"…
 ```
 </details>
 
@@ -567,13 +567,13 @@ fc.asciiString(4, 6)
 
 ```js
 fc.unicodeString()
-// Examples of generated values: "", "蟚ҷ釉봨ﵔ衼䮈齔", "蕺བ쨽悫蕅ᓱ", ")ﮛ", "驂秡連ꤿᢝ杽ͬ乶"…
+// Examples of generated values: "", "ॗﰗ騈!+().俅", "㚗", "娇\u001eᨫ㽹矌", "┛䅯퉳"…
 
 fc.unicodeString(3)
-// Examples of generated values: "", "蟚ҷ", "壻*", "葬", "긗"…
+// Examples of generated values: "", "ꟑ", "쾮", "$", "⯄밈"…
 
 fc.unicodeString(4, 6)
-// Examples of generated values: "擲-,㥤", "蟚ҷ釉봨ﵔ", "蕺བ쨽悫蕅", ")ﮛ褨*", "壻*짻',"…
+// Examples of generated values: "⥯ⳃケ썂은", "ൺ趫ᤲ䗆", "ꅶ൞ݡ纊㽵桘", "夵ᢾ剓╂ಽ㕔", "ݹ\"༱䴙џ"…
 ```
 </details>
 
@@ -596,13 +596,13 @@ fc.unicodeString(4, 6)
 
 ```js
 fc.string16bits()
-// Examples of generated values: "", "濚㒷쇉괨啔ၼ鎈읔", "敺肫볱", ")㎛", "凡C㷛譜ᄿ꽽ꍬ鹶"…
+// Examples of generated values: "埫쒠爤", "-ꎝ", "૑ᚃ⵿⫄㖯孞℠", "⤱黁醙", "⦕끅Ȩ鋑\uda43"…
 
 fc.string16bits(3)
-// Examples of generated values: "", "濚㒷", "僻*", "ꖚꑬ", "옗"…
+// Examples of generated values: "", "Ǉ闍⏠", "", "⩿\udea5", "驙"…
 
 fc.string16bits(4, 6)
-// Examples of generated values: "鳲-,셤", "濚㒷쇉괨啔", "敺肫", ")㎛脨*", "僻*釻',"…
+// Examples of generated values: "媖봼Ђ刋⥞䪽", "誥갌/'(", "᥽ᚂ뀵鄓\udff5鐉", "찫灭溛椋ڀ", "㜴))%/"…
 ```
 </details>
 
@@ -625,13 +625,13 @@ _Be aware that the length is considered in terms of the number of glyphs in the 
 
 ```js
 fc.fullUnicodeString()
-// Examples of generated values: "", "񩟚􀲷󞧉󎔨􎵔򲁼򀎈𸝔", "󯵺񵽖򙨽񨢫񙵅򃓱", "$􃮛", "񅉂򭧡񓀣򠗛󒍜򀤿𛢝񄽽򔍬𮙶"…
+// Examples of generated values: "𾪖򘔼򭐂񿈋𰥞", "񫪥񫹚򻰌4", "󘅽󘺂򦀵򈄓񧟵", "󥐫򱡭􌺛愋Ꚁ𻧗ᨘ񀄮􍹣", "򈼴$3򴿦0#񵰀($'"…
 
 fc.fullUnicodeString(3)
-// Examples of generated values: "", "񩟚􀲷", "𑃻)", "񺖚󼑬", "昗"…
+// Examples of generated values: "", "򛊋", "򤠕", "򙄭", "𠻚"…
 
 fc.fullUnicodeString(4, 6)
-// Examples of generated values: "󳳲!2𡅤", "񩟚􀲷󞧉󎔨􎵔", "󯵺񵽖򙨽񨢫񙵅", "$􃮛񕤨2", "𑃻)󒇻&."…
+// Examples of generated values: "􅄃񥋨񇕛󈯸򛂰󤟤", "򁵫􃵥󭺥𶃸𨙩򦕃", "񧒎򼎿򉽹𽆿𤍯򞅘", "򥙑󳥜򶕃􉏿", "𮜣񘡘򯚣򈏣󻦻󡹛"…
 ```
 </details>
 
@@ -652,19 +652,19 @@ fc.fullUnicodeString(4, 6)
 
 ```js
 fc.stringOf(fc.hexa())
-// Examples of generated values: "", "a7984c84", "a6db51", "1b", "213bcfddc6"…
+// Examples of generated values: "6c2be", "5ac3", "d2535", "bdbb078e3", "4116130013"…
 
 fc.stringOf(fc.char(), 3)
-// Examples of generated values: "", "W|", "F\"", "x#", "6"…
+// Examples of generated values: "", "~*2", "{Z", "[\"", "jlZ"…
 
 fc.stringOf(fc.char(), 4, 6)
-// Examples of generated values: "(!$m", "W|%=2", "X1DZw", "$d0$", "F\" & "…
+// Examples of generated values: "Pv-^", " X#\"U&", "?DM}7", "iEjK.b", "#\"&& "…
 
 fc.stringOf(fc.constantFrom('a', 'b'), 0, 5)
-// Examples of generated values: "ba", "abba", "aabb", "a", "bbaa"…
+// Examples of generated values: "", "babab", "abbab", "ab", "bbabb"…
 
 fc.stringOf(fc.constantFrom('Hello', 'World'), 1, 3)
-// Examples of generated values: "World", "HelloWorld", "HelloHello", "Hello", "WorldWorld"…
+// Examples of generated values: "WorldHello", "HelloHello", "WorldWorld", "World", "HelloWorld"…
 ```
 </details>
 
@@ -690,13 +690,13 @@ _All the string values (from keys to values) are generated using `fc.string()`_
 
 ```js
 fc.json()
-// Examples of generated values: "[]", "{\"2Spc0sZ\":false}", "[2103360753,-124859527,-10,-14,14]", "\"d\"", "[{\"gdb4ug\":0.660563301012142,\"j1]>zw\":0.21349769765518423},{},{\"w{\\\";MT\":-1727170679,\"\\\"dJ?X\":0.5942538986285973,\"\":false},[1780287332,\"!!:\\\"!\",\"S$%\",\"\",3.200502819433737e-7],[]]"…
+// Examples of generated values: "{\"gDS6ixj)R+\":{\"&>4q\":0.6855670565390797,\".4$\":0.32668776759973894,\"[,Dk$XNln-\":0.6499382656006383},\"W<m$%th\":{\"Dcedl|\":true},\"Qk\":-1159147041}", "true", "{\"0J4\":{\"6nY3)\\\"\":\";8Y8nAf'@\",\"D';_'3Lc\":true}}", "[null,null]", "{}"…
 
 fc.json(0)
-// Examples of generated values: "false", "null", "1.3291357470190945e-7", "\"d\"", "2.6045108714178866e-7"…
+// Examples of generated values: "-618939220", "null", "-21", "\"'M\"", "-1336128433"…
 
 fc.json(1)
-// Examples of generated values: "[]", "{\"2Spc0sZ\":false}", "[2103360753,-124859527,-10,-14,14]", "\"d\"", "[null,false,9,true,7.450580741252821e-8]"…
+// Examples of generated values: "[null,null]", "null", "[false]", "[]", "\"'M\""…
 ```
 </details>
 
@@ -720,13 +720,13 @@ _All the string values (from keys to values) are generated using `fc.unicodeStri
 
 ```js
 fc.unicodeJson()
-// Examples of generated values: "[]", "{\"ﵔ衼䮈齔댅韛㹦\":false}", "[2103360753,-124859527,-10,-14,14]", "\"ﮛ\"", "[{\"Ⰺ쫜幞ꩀ๠햅\":0.660563301012142,\"羽⢠׮튋臸\":0.21349769765518423},{},{\"聏늅↨ꬌ易ᆷ\":-1727170679,\"翣흨ᒅ䝦⩷\":0.5942538986285973,\"\":false},[1780287332,\"(!㿙!/\",\"흇(-\",\"\",3.200502819433737e-7],[]]"…
+// Examples of generated values: "[0.09723462893806001]", "{\"荌鏊턳ᦖ\":false,\"냚鶖뜥\":false}", "{\"\":true,\"䷷ꔼꊐ㍂Ꮋ⧭얘\":false,\"镐菋⹥埒䘺懘ྎᶃ硾넍\":false,\"䶩လ뎙丯㷲ퟬ\":true,\"勯吓ᯇป蹥ꕪ渘Ǭ傟\":false}", "{\"\":[],\"ᐞ淙\":[]}", "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":null},\"ቈ保婠꠨旞荫㹢ފ\":{\"콆쳑Ｈ᜞紽ѳ㑓\":false},\"\":{\"ꉶ瀞뿱끮筡팹᧊\":0.9470328025826398},\"끨\":1001562014}"…
 
 fc.unicodeJson(0)
-// Examples of generated values: "false", "null", "1.3291357470190945e-7", "\"ﮛ\"", "2.6045108714178866e-7"…
+// Examples of generated values: "3.126712444512236e-8", "null", "\"㚗᭏µƖ簛或㝠ꗳ欛\"", "\"썤\"", "true"…
 
 fc.unicodeJson(1)
-// Examples of generated values: "[]", "{\"ﵔ衼䮈齔댅韛㹦\":false}", "[2103360753,-124859527,-10,-14,14]", "\"ﮛ\"", "[null,false,9,true,7.450580741252821e-8]"…
+// Examples of generated values: "[true]", "{\"ٻ騈ᄸ\":-19}", "\"㚗᭏µƖ簛或㝠ꗳ欛\"", "\"썤\"", "{\"ᨫ㽹\":\"⢓Ｊ紛锆\",\"跺袁嚆⶯잨ꋿǵ蔵\":\"\",\"샘嬩\":\"烻ࡎ⑸嬗䠻\",\"\":\"값֏젴恝츏\",\"遊緃៚\":\"縧뜻箝雁債㠠\"}"…
 ```
 </details>
 
@@ -747,13 +747,13 @@ fc.unicodeJson(1)
 
 ```js
 fc.lorem()
-// Examples of generated values: "tristique ullamcorper morbi", "quam gravida nulla non blandit", "nulla egestas consectetuer", "fusce libero", "consequat erat ligula"…
+// Examples of generated values: "arcu fusce", "dolor mi dignissim", "felis lacus", "ligula nec curae sed enim", "tincidunt vivamus massa"…
 
 fc.lorem(3)
-// Examples of generated values: "tristique", "quam gravida", "nulla egestas", "fusce", "consequat erat"…
+// Examples of generated values: "a sollicitudin", "consequat ligula", "faucibus sapien", "elit vestibulum ut", "enim"…
 
 fc.lorem(3, true)
-// Examples of generated values: "Morbi metus molestie, porttitor, lacus porttitor, consequat augue consectetuer.", "Gravida. Non blandit proin congue lobortis in.", "Egestas consectetuer non consequat ultrices adipiscing mauris. Sapien varius posuere.", "Aenean suscipit vel ante nunc suscipit.", "Ligula molestie, nisl integer. Lobortis a, in at velit enim curae."…
+// Examples of generated values: "Sed, vel placerat et nibh.", "Nisl quis congue pellentesque sapien non.", "Curae, ligula eros erat et ut euismod sit suscipit consequat. Molestie, ac cras vel posuere et.", "Risus vitae, integer quis nulla pellentesque quis sed. Pellentesque sed ante mi, iaculis, aliquam ultrices adipiscing nulla aliquam. Cursus ac molestie, erat augue ullamcorper.", "Aliquam augue at nulla. Non faucibus, cursus molestie, posuere justo. Sapien."…
 ```
 </details>
 
@@ -772,7 +772,7 @@ fc.lorem(3, true)
 
 ```js
 fc.ipV4()
-// Examples of generated values: "6.1.6.242", "26.7.40.4", "8.6.171.241", "2.4.101.41", "5.5.246.1"…
+// Examples of generated values: "1.139.105.40", "7.44.183.1", "1.1.233.2", "98.4.248.163", "221.4.1.128"…
 ```
 </details>
 
@@ -791,7 +791,7 @@ fc.ipV4()
 
 ```js
 fc.ipV4Extended()
-// Examples of generated values: "0x1.13", "027", "06.69.0xcb79", "4.060231633", "0x5.0x2.40.4"…
+// Examples of generated values: "160.07.64820", "4.075321635", "0x92df1683", "0x85b09ec1", "0x45.0103.03236"…
 ```
 </details>
 
@@ -810,7 +810,7 @@ fc.ipV4Extended()
 
 ```js
 fc.ipV6()
-// Examples of generated values: "04::b1", "4:b::1:2.48.136.81", "::1f:61:9ba:0", "b9:b:c:b:309:607:9:0", "::b6:1b8:ace0:5:7:0:5"…
+// Examples of generated values: "5998:7144:3dc:ff:b:5ae5:3::", "::13a:2:0ad0:26.160.6.6", "59::9:150.144.165.3", "d::fa8f", "::0:afb:072:2e:6.4.7.3"…
 ```
 </details>
 
@@ -829,7 +829,7 @@ fc.ipV6()
 
 ```js
 fc.uuid()
-// Examples of generated values: "0000000e-001d-1000-8000-001800ed23f2", "44b9461a-001d-1000-b35a-ad280000001c", "24660b08-0014-1000-975b-80abfd5ebcf1", "00000012-0009-1000-8abd-b965eaae5c29", "00000005-000d-1000-8bd4-1ff600000001"…
+// Examples of generated values: "00000011-4f8b-453e-9cff-3169385e0b28", "0000000f-71a5-4c31-9641-b23cddac94de", "00000009-0010-1000-9066-e2e900000012", "8d6aee62-001d-1000-9e74-70f85c4a78a3", "c2156fdd-0005-1000-8000-000f885e6180"…
 ```
 </details>
 
@@ -848,10 +848,10 @@ fc.uuid()
 
 ```js
 fc.uuidV(3)
-// Examples of generated values: "0000000e-0011-3000-8000-001800ed23f2", "44b9461a-0003-3000-b35a-ad280000001c", "24660b08-000e-3000-975b-80abfd5ebcf1", "00000012-0014-3000-8abd-b965eaae5c29", "00000005-000d-3000-8bd4-1ff600000001"…
+// Examples of generated values: "05cfea14-bcac-3b1b-8d87-f0d200000012", "7f4a63cc-0015-3000-8000-001a00000016", "b18820b3-04b5-347a-a800-88270000001d", "e6dfee9b-0008-3000-acfc-19f200000010", "4339edf8-0002-3000-8000-001b00000008"…
 
 fc.uuidV(5)
-// Examples of generated values: "0000000e-0011-5000-8000-001800ed23f2", "44b9461a-0003-5000-b35a-ad280000001c", "24660b08-000e-5000-975b-80abfd5ebcf1", "00000012-0014-5000-8abd-b965eaae5c29", "00000005-000d-5000-8bd4-1ff600000001"…
+// Examples of generated values: "d9951cc0-0008-5000-bf71-d40b793c6139", "b4f42187-7bd2-5385-8000-0006a6b393bf", "c2faeae2-2bd2-51a4-81e8-3f5800000018", "65c2d0a5-0016-5000-8000-001828816d24", "00000019-000c-5000-8000-000a0000000e"…
 ```
 </details>
 
@@ -872,7 +872,7 @@ fc.uuidV(5)
 
 ```js
 fc.domain()
-// Examples of generated values: "s.8.y40gd.uw", "81u3tvl23k4.6e.wema40ylrts.r3d695.u-eblf.djdcacez", "4.vt83duan.8r68rjx8w.csbbincko", "bok71i1a.agjzp4d.zdstdcbuk", "xdcabdbebdld.mh4ce.fidbfbn5lfwb.bibl"…
+// Examples of generated values: "j6ib52zarmf.gkuvhqma.cibz", "00.6.4xla.x.bdl2y5gq52n1.bsgbwec", "35b10n-w.7xe2.tuwxcou2vgh.9o0ba-3.8s-s2r9dzo.dkci", "0.h6a4sfyde.ju", "c.mrjkuy.2blh-hr4bk6.fb8x8d26e.610--87.dvbcaea"…
 ```
 </details>
 
@@ -899,17 +899,17 @@ fc.domain()
 
 ```js
 fc.webAuthority()
-// Examples of generated values: "abz0c.by.bd", "ad.e.fbd.ymj", "l3dualxl.bzdc", "fk71i1if.aecedeoac", "bb1m5zg6.s.mbvwfe.vadajfr"…
+// Examples of generated values: "qj5h7-5.d6je1ud1x.g2c82ru5.qlz95.u.piitavbikc", "5w6.mndtkwo", "qtbebs9.csil1.lrzgr91b2xyc.aewt", "vyd-xdhj.sndnyy", "fbcaacieagc1.adteb"…
 
 fc.webAuthority({
   withIPv4: true,
 })
-// Examples of generated values: "abz0c.by.bd", "2.201.4.0", "2.5.69.79", "fk71i1if.aecedeoac", "bb1m5zg6.s.mbvwfe.vadajfr"…
+// Examples of generated values: "227.3.0.132", "5.4.1.143", "nlefeaoklaqf.rndn.ugst", "168w.f7f305rk1gf.rbgpdpka.bceedtva", "2.4.203.2"…
 
 fc.webAuthority({
   withIPv4Extended: true,
 })
-// Examples of generated values: "abz0c.by.bd", "0311.12", "5.0xf1.0366.1", "fk71i1if.aecedeoac", "bb1m5zg6.s.mbvwfe.vadajfr"…
+// Examples of generated values: "f.msle.rb.ib.qef.rjvoe", "0x11", "0xefebe5f3", "f44.avqz0ws13jl.jqe", "0345.013"…
 
 fc.webAuthority({
   withIPv4: true,
@@ -917,7 +917,7 @@ fc.webAuthority({
   withIPv6: true,
   withPort: true,
 })
-// Examples of generated values: "[::1:4a:60:e:2.7.19.5]:2", "0311.12:5", "2.5.69.79:1", "[98aa::131.4.0.31]", "bb1m5zg6.s.mbvwfe.vadajfr:3"…
+// Examples of generated values: "0352.0x89bbdd:10", "154.0372.0xbd3d", "[4522:29:b:fc75:83e:964c:108::]:12037", "4.1.7.113:2", "022:43923"…
 ```
 </details>
 
@@ -938,7 +938,7 @@ fc.webAuthority({
 
 ```js
 fc.webFragments()
-// Examples of generated values: "", "PB'X5%F2%8C%AD%96:2", "QDPndn", "P%F1%95%A4%A8", "ve*A!%F1%82%A9%BC3w/B"…
+// Examples of generated values: "hip", "we", "K/z=)RtC", "E7y", "%F0%B5%81%85:w,+"…
 ```
 </details>
 
@@ -959,7 +959,7 @@ fc.webFragments()
 
 ```js
 fc.webQueryParameters()
-// Examples of generated values: "", "PB'X5%F2%8C%AD%96:2", "QDPndn", "P%F1%95%A4%A8", "ve*A!%F1%82%A9%BC3w/B"…
+// Examples of generated values: "52mi", "L3ns-", "X%F3%AB%BA%8AksM", "bSO", "@"…
 ```
 </details>
 
@@ -978,7 +978,7 @@ fc.webQueryParameters()
 
 ```js
 fc.webSegment()
-// Examples of generated values: "", "9By0U%F2%8C%AD%96k,", "U4::0T", "0%F1%95%A4%A8", "bua$W%F1%82%A9%BC)L8w"…
+// Examples of generated values: "bde", "097", "6", "BgyH", "vn0qof"…
 ```
 </details>
 
@@ -1004,18 +1004,18 @@ fc.webSegment()
 
 ```js
 fc.webUrl()
-// Examples of generated values: "http://bn4cd9ade7al.wedd.d.fwe1dl.xxkeuxz/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&", "https://c.ged/n,Hlvw/c'g/0-", "https://ndy.hzcnmubzz/bcj/gb/F4MdU/f/%F1%8B%BA%B7i%F0%9D%A9%AEG)7QJ/Tr/&/=l;", "http://1iif.dq.rwbyrzouz/dd", "http://azgoa.bwfdxw3n.cavph4caa.h.vx/dcQ)O/%F2%BC%9F%B3al5s+3'!/s=%F4%83%BD%87)%F2%BF%A0%8DpzY%F3%A6%B8%9C/%F1%93%9D%8EU/.bS;%31cfof/DSL2cbK/a%F1%A8%BF%99'hngd.d"…
+// Examples of generated values: "https://lo.6armf.gkuvhqma.gscq9ta1kv.bvyajotc/C*./c&P-Q/zS/M;39$M/@'%F4%8C%96%B9/g%F0%BC%AF%9A/:a/f/b/zi", "https://c.cmcydtgdb.zrcdbsgbwe/x:ta/l5/5%F1%91%B4%8D9:69/AP93z/FphDuS", "https://710n-lu1.s.zlx/W5-%F1%A6%97%93$J&Tq/Kf/", "https://a.cd67h8o-fyeb.ouwkdxcj/Y", "https://6uzbj4.apov/fI"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
 })
-// Examples of generated values: "ftp://bn4cd9ade7al.wedd.d.fwe1dl.xxkeuxz/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&", "ftps://c.ged/n,Hlvw/c'g/0-", "ftps://ndy.hzcnmubzz/bcj/gb/F4MdU/f/%F1%8B%BA%B7i%F0%9D%A9%AEG)7QJ/Tr/&/=l;", "ftp://1iif.dq.rwbyrzouz/dd", "ftp://azgoa.bwfdxw3n.cavph4caa.h.vx/dcQ)O/%F2%BC%9F%B3al5s+3'!/s=%F4%83%BD%87)%F2%BF%A0%8DpzY%F3%A6%B8%9C/%F1%93%9D%8EU/.bS;%31cfof/DSL2cbK/a%F1%A8%BF%99'hngd.d"…
+// Examples of generated values: "ftps://lamsf.hn//5Hi_/3e%F2%B0%9E%A7ot/C9by:U)xN1/z/CHeC(/7p;l3A*91", "ftps://5ana.lwregue/BKax$K//Cl!G", "ftp://f.behru/c/xj3!B/g~@!/YT/cfaf8)MbS/5,XZ:/y!yCu%F3%B0%89%9E=2fi/dP", "ftp://affdcn.ny/u;", "ftps://4.c.afml28i37v2d.eae.fy/%F2%89%A9%BBaPV"…
 
 fc.webUrl({
   withFragments: true,
   withQueryParameters: true,
 })
-// Examples of generated values: "http://bn4cd9ade7al.wedd.d.fwe1dl.xxkeuxz/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&?%F4%8E%BC%9Bhhb#'9:", "https://c.ged/n,Hlvw/c'g/0-?'f%23pfd#,N", "https://ndy.hzcnmubzz/bcj/gb/F4MdU/f/%F1%8B%BA%B7i%F0%9D%A9%AEG)7QJ/Tr/&/=l;?aUhaeXOPda#%F3%9B%80%9BbabX9f", "http://1iif.dq.rwbyrzouz/dd", "http://azgoa.bwfdxw3n.cavph4caa.h.vx/dcQ)O/%F2%BC%9F%B3al5s+3'!/s=%F4%83%BD%87)%F2%BF%A0%8DpzY%F3%A6%B8%9C/%F1%93%9D%8EU/.bS;%31cfof/DSL2cbK/a%F1%A8%BF%99'hngd.d?#bff)*2eCt"…
+// Examples of generated values: "https://6teotdbx.6lcdvqgg.d.edanbedda/.%F0%95%9B%89/41AT%F2%80%91%ABOkWP/F/%F0%9D%BF%9CD/Ce/@kzV*Ia,m/*AV/,#fgd", "http://ntgafkj31t.8x7x09flrvhg.yd/??$$x#V", "http://efd2.mz3bzcn6p.daixrpqcar/A:P/7YBMHk!//@%F1%BF%A9%A1/A5w&ZuAW/:*qGARQfS'/?lio#bWge", "http://8.jm2rvkobzaj.oip8f7-csuv.101ehoo.p.kezdnesoa/PLo:v3F/o1/Y4/s/w4Fl/zO%F0%A8%98%88G:E//.,Ogqf-#", "https://qc.ieele4.fcgpswt/JR652%F3%97%8C%85XKm/?%E4%9E%B7.6'#c+%F0%A9%B2%86Ncecda"…
 ```
 </details>
 
@@ -1036,7 +1036,7 @@ fc.webUrl({
 
 ```js
 fc.emailAddress()
-// Examples of generated values: "8i_p#6u^o.|6vsvv`~8.cb@wsi4uukteg.v.hjaiwwb", "?.370fmb.+k8k.-d%a.amo@2.j.s534.ud4d.wl1dmsfraxq.acezc", "6g^rb`b.4n*.5@pjl.9fmb9iepew.cpx2euuwr.2c6ct6.afhriqh", "gcbpat.q9-ts*nt@50caeehfdi.ve", "ryhk.aa02|cm.bf@mph4canndxlj.jcajz9efnfs.79.4w9fq3qbtba.2ui0ju.jclbr"…
+// Examples of generated values: "e0f7||'5tq.h61k.opz+r*%^'k.w.cdddsv{'*@ynw1ie.a3umtugkf3m.xdpc", "8bf|!d@isws.dy83e6ipnqg.gui5s89wncuc.hbilc193lx8.stpjif", "|bi9r}1|.l.^biw8i39.~doz=|dlr@6rzgr91b2xyu.o.4fxspqtml.i5s1.re", "/22{9=.p&2.e#w-b%-'.%itdenn@fd-v5if.cw-3ib.83ea.ba", "z*3y`3kt.b}4~6|&&xe.g.dfz=pp/@8bescqosn.hb.ddbve"…
 ```
 </details>
 
@@ -1056,10 +1056,10 @@ fc.emailAddress()
 
 ```js
 fc.mixedCase(fc.hexaString())
-// Examples of generated values: "e892Ed", "Aa7", "8A6db51F", "22", "565b6a1b"…
+// Examples of generated values: "c7BC", "D7e0", "e7", "", "5bE4CC29"…
 
 fc.mixedCase(fc.constant('hello world'))
-// Examples of generated values: "hElLo WorLD", "HELlO wOrLd", "HeLlo woRLd", "hElLO WOrld", "helLo worLD"…
+// Examples of generated values: "HeLlO woRLD", "HElLO wORlD", "hELlO woRld", "hELLo worLd", "hELlo WORLd"…
 
 fc.mixedCase(
   fc.constant('hello world'),
@@ -1067,7 +1067,7 @@ fc.mixedCase(
     toggleCase: (rawChar) => `UP(${rawChar})`,
   }
 )
-// Examples of generated values: "hUP(e)lUP(l)oUP( )woUP(r)UP(l)d", "UP(h)UP(e)UP(l)lUP(o) UP(w)oUP(r)lUP(d)", "UP(h)eUP(l)lo wUP(o)UP(r)lUP(d)", "hUP(e)lUP(l)UP(o)UP( )UP(w)orlUP(d)", "helUP(l)o woUP(r)UP(l)UP(d)"…
+// Examples of generated values: "UP(h)ellUP(o)UP( )UP(w)oUP(r)ld", "hUP(e)lloUP( )UP(w)orld", "helUP(l)UP(o)UP( )UP(w)orlUP(d)", "UP(h)UP(e)UP(l)lUP(o)UP( )wUP(o)rld", "heUP(l)UP(l)o wUP(o)rUP(l)d"…
 ```
 </details>
 

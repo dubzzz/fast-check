@@ -102,9 +102,9 @@ function refreshContent(originalContent: string): { content: string; numExecuted
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const generatedValues = (function (fc) {
-        const evalCode = `fc.sample(${snippet}\n, { numRuns: ${
-          2 * TargetNumExamples
-        }, seed: 42 }).map(v => fc.stringify(v))`;
+        const numRuns = 5 * TargetNumExamples;
+        const seed = snippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
+        const evalCode = `fc.sample(${snippet}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
         try {
           return eval(evalCode);
         } catch (err) {
