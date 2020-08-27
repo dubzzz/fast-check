@@ -19,7 +19,13 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
   - [More specific strings](#more-specific-strings)
 - [Date](#date-date)
 - [Falsy](#falsy-any)
-- [Combinators](#combinators-t)
+- [Combinators](#combinators)
+  - [Simple](#simple)
+  - [Array](#array)
+  - [Object](#object)
+  - [Function](#function)
+  - [More](#more)
+- [Others](#others)
 - [Objects](#objects-any)
 - [Recursive structures](#recursive-structures)
 - [Functions](#functions)
@@ -1136,15 +1142,218 @@ fc.falsy({ withBigInt: true })
 ```
 </details>
 
-## Combinators (:T)
+## Combinators
 
-- `fc.constant<T>(value: T): Arbitrary<T>` constant arbitrary only able to produce `value: T`
-- `fc.constantFrom<T>(...values: T[]): Arbitrary<T>` randomly chooses among the values provided. It considers the first value as the default value so that in case of failure it will shrink to it. It expects a minimum of one value and throws whether it receives no value as parameters. It can easily be used on arrays with `fc.constantFrom(...myArray)` (or `fc.constantFrom.apply(null, myArray)` for older versions of TypeScript/JavaScript)
-- `fc.clonedConstant<T>(value: T): Arbitrary<T>` constant arbitrary only able to produce `value: T`. If it exists, it called its `[fc.cloneMethod]` at each call to generate
-- `fc.mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T>` generates non-contiguous ranges of values by mapping integer values to constant
-- `fc.oneof<T>(...arbs: Arbitrary<T>[]): Arbitrary<T>` randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not accross arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries)
-- `fc.frequency<T>(...warbs: WeightedArbitrary<T>[]): Arbitrary<T>` randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight, the higher it is the more it will be probable. It preserves the shrinking capabilities of the underlying arbitrary
-- `fc.option<T>(arb: Arbitrary<T>): Arbitrary<T | null>` or `fc.option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>` arbitrary able to nullify its generated value. When provided a custom `freq` value it changes the frequency of `null` values so that they occur one time over `freq` tries (eg.: `freq=5` means that 20% of generated values will be `null` and 80% would be produced through `arb`). By default: `freq=5`
+### Simple
+
+<details>
+<summary><b>constant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#constant">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Always produce the same value
+>
+> ⚠️ The value will not be cloned by the arbitrary
+
+*&#8195;Signatures*
+
+- `fc.constant(value)` — _only `value`_
+
+*&#8195;Usages*
+
+```js
+fc.constant(1)
+// Examples of generated values: 1…
+
+fc.constant({})
+// Examples of generated values: {}…
+```
+</details>
+
+<details>
+<summary><b>constantFrom</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#constantfrom">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> One of the values specified as argument
+>
+> ⚠️ The values will not be cloned by the arbitrary
+
+*&#8195;Signatures*
+
+- `fc.constantFrom(...values)` — _randomly chooses among the provided values. It considers the first value as the default value so that in case of failure it will shrink to it. It expects a minimum of one value and throws whether it receives no value as parameters. It can easily be used on arrays with `fc.constantFrom(...myArray)`_
+
+*&#8195;Usages*
+
+```js
+fc.constantFrom(1, 2, 3)
+// Examples of generated values: 1, 3, 2…
+
+fc.constantFrom(1, 'string', {})
+// Examples of generated values: "string", {}, 1…
+```
+</details>
+
+<details>
+<summary><b>clonedConstant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#clonedconstant">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Always produce the same value (as `fc.constant`)
+>
+> If it exists, the method `[fc.cloneMethod]` will be cloned to clone the instance so that it will be unique for each run
+
+*&#8195;Signatures*
+
+- `fc.clonedConstant(value)` — _only `value`_
+
+*&#8195;Usages*
+
+```js
+fc.clonedConstant(1)
+// Examples of generated values: 1…
+
+fc.clonedConstant(
+  ((objectInstance) => {
+    // Rq: We do not handle deep objects in this snippet
+    // But we will get another instance of objectInstance for each run
+    // ie. objectInstanceRunA !== objectInstanceRunB while having isEqual(objectInstanceRunA, objectInstanceRunB)
+    const withCloneMethod = () => ({
+      ...objectInstance,
+      [fc.cloneMethod]: withCloneMethod,
+    });
+    return withCloneMethod();
+  })({ keyA: 1, keyB: 2 })
+)
+// Examples of generated values: {"keyA":1,"keyB":2}…
+```
+</details>
+
+<details>
+<summary><b>option</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#option">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Value produced by the underlying arbitrary or nil (default `null`)
+
+*&#8195;Signatures*
+
+- `fc.option(arb)` — _randomly chooses between producing a value using `arb` or returning `null`_
+- `fc.option(arb, freq)` — _randomly chooses between producing a value using `arb` or returning `null`, but with an ajusted frequency `freq=5` means that 20% of generated values will be `null` and 80% would be produced through `arb`_
+- `fc.option(arb, constraints)` — _randomly chooses between producing a value using `arb` or returning `null` with respect to [`constraints`](https://dubzzz.github.io/fast-check/interfaces/optionconstraints.html)_
+  - `freq?` — _adapt the probability to produce nil values_
+  - `nil?` — _custom nil value_
+
+*&#8195;Usages*
+
+```js
+fc.option(fc.nat())
+// Examples of generated values: null, 773390791, 25, 18, 2039519833…
+
+fc.option(fc.nat(), 2)
+// Examples of generated values: 5, 1857850746, 178760054, 1682452789, 461887690…
+
+fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
+// Examples of generated values: 5, Number.NaN, 259062763, 21, 11…
+```
+</details>
+
+<details>
+<summary><b>oneof</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#oneof">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate one value based on one of the passed arbitraries
+
+*&#8195;Signatures*
+
+- `fc.oneof(...arbitraries)` — _randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not accross arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries)_
+
+*&#8195;Usages*
+
+```js
+fc.oneof(fc.char(), fc.boolean())
+// Examples of generated values: "&", false, true, "@", "2"…
+
+fc.oneof(fc.char(), fc.boolean(), fc.nat())
+// Examples of generated values: true, 234471686, 485911805, false, "\\"…
+```
+</details>
+
+<details>
+<summary><b>frequency</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#frequency">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate one value based on one of the passed arbitraries
+
+*&#8195;Signatures*
+
+- `fc.frequency(...{ arbitrary, weight })` — _randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight, the higher it is the more it will be probable. It preserves the shrinking capabilities of the underlying arbitrary_
+
+*&#8195;Usages*
+
+```js
+fc.frequency(
+  { arbitrary: fc.char(), weight: 2 },
+  { arbitrary: fc.boolean(), weight: 1 }
+)
+// Examples of generated values: true, "&", "8", false, "["…
+```
+</details>
+
+<details>
+<summary><b>mapToConstant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maptoconstant">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Map indexes to values
+
+*&#8195;Signatures*
+
+- `fc.mapToConstant(...{ num, build })` — _generates non-contiguous ranges of values by mapping integer values to constant_
+
+*&#8195;Usages*
+
+```js
+fc.mapToConstant(
+  { num: 26, build: v => String.fromCharCode(v + 0x61) },
+  { num: 10, build: v => String.fromCharCode(v + 0x30) },
+)
+// Examples of generated values: "f", "c", "a", "b", "7"…
+```
+</details>
+
+<details>
+<summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dedup">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Multiple identical values but not equal in terms of `===`
+
+*&#8195;Signatures*
+
+- `fc.dedup(arb, numValues)` — _tuple containing numValues instances of the same value produced by `arb` - values are independent from each others_
+
+*&#8195;Usages*
+
+```js
+fc.dedup(fc.nat(), 2)
+// Examples of generated values: [1458194344,1458194344], [1974332592,1974332592], [605246308,605246308], [187149619,187149619], [1325928130,1325928130]…
+
+fc.dedup(fc.nat(), 3)
+// Examples of generated values: [1075303821,1075303821,1075303821], [1289535362,1289535362,1289535362], [479824585,479824585,479824585], [61543881,61543881,61543881], [1082205096,1082205096,1082205096]…
+```
+</details>
+
+### Array
+
+### Object
+
+### Function
+
+### More
+
 - `fc.subarray<T>(originalArray: T[]): Arbitrary<T[]>`, or `fc.subarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>` subarray of `originalArray`. Values inside the subarray are ordered the same way they are in `originalArray`. By setting the parameters `minLength` and/or `maxLength`, the user can change the minimal (resp. maximal) size allowed for the generated subarray. By default: `minLength=0` and `maxLength=originalArray.length`
 - `fc.shuffledSubarray<T>(originalArray: T[]): Arbitrary<T[]>`, or `fc.shuffledSubarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>` subarray of `originalArray`. Values within the subarray are ordered randomly. By setting the parameters `minLength` and `maxLength`, the user can change the minimal and maximal size allowed for the generated subarray. By default: `minLength=0` and `maxLength=originalArray.length`
 - `fc.array<T>(arb: Arbitrary<T>): Arbitrary<T[]>`, `fc.array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>` or `fc.array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>` array of random length containing values generated by `arb`. By setting the parameters `minLength` and `maxLength`, the user can change the minimal and maximal size allowed for the generated array. By default: `minLength=0` and `maxLength=10`
@@ -1153,7 +1362,6 @@ fc.falsy({ withBigInt: true })
 - `fc.dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<{[Key:string]:T}>` dictionary containing keys generated using `keyArb` and values generated by `valueArb`
 - `fc.record<T>(recordModel: {[Key:string]: Arbitrary<T>}): Arbitrary<{[Key:string]: T}>` or `fc.record<T>(recordModel: {[Key:string]: Arbitrary<T>}, constraints: RecordConstraints): Arbitrary<{[Key:string]: T}>` record using the incoming arbitraries to generate its values. It comes very useful when dealing with settings. It takes an optional parameter of type `RecordConstraints` to configure some of its properties. The setting `withDeletedKeys=true` instructs the record generator that it can omit some keys
 - `fc.infiniteStream<T>(arb: Arbitrary<T>): Arbitrary<Stream<T>>` infinite `Stream` of values generated by `arb`. The `Stream` structure provided by fast-check implements `IterableIterator<T>` and comes with useful helpers to manipulate it
-- `fc.dedup<T>(arb: Arbitrary<T>, numValues: number)` tuple containing `numValues` instances of the same value produced by `arb` - values are independent from each others
 
 ## Objects (:any)
 
