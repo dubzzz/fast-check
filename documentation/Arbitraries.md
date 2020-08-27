@@ -1080,14 +1080,61 @@ fc.mixedCase(
 ```
 </details>
 
-## Date (:Date)
+## Date
 
-- `fc.date()` or `fc.date({min?: Date, max?: Date})` any date between new Date(-8640000000000000) or min (included) to new Date(8640000000000000) or max (included)
+<details>
+<summary><b>date</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#date">api</a>]</summary><br/>
 
-## Falsy (:any)
+*&#8195;Description*
 
-- `fc.falsy()` one of `false`, `null`, `undefined`, `0`, `''`, or `Number.NaN`
-- `fc.falsy({ withBigInt: true })` one of `false`, `null`, `undefined`, `0`, `''`, `Number.NaN` or `0n`
+> Date values
+
+*&#8195;Signatures*
+
+- `fc.date()` — _any date between `new Date(-8640000000000000)` (included) to `new Date(8640000000000000)` (included)_
+- `fc.date({ min?, max? })` — _any date between `min` (included) to `max` (included)_
+
+*&#8195;Usages*
+
+```js
+fc.date()
+// Examples of generated values: new Date("1970-01-01T00:00:00.045Z"), new Date("1969-12-31T23:59:59.993Z"), new Date("1970-01-01T00:00:00.049Z"), new Date("+117925-10-22T07:46:48.448Z"), new Date("-091601-12-20T20:39:50.528Z")…
+
+fc.date({ min: new Date("2000-01-01T00:00:00.000Z") })
+// Examples of generated values: new Date("2000-01-01T00:00:00.008Z"), new Date("2000-01-01T00:00:00.012Z"), new Date("+251903-01-29T20:31:55.392Z"), new Date("2000-01-01T00:00:00.034Z"), new Date("+258960-08-17T11:48:52.864Z")…
+
+fc.date({ max: new Date("2000-01-01T00:00:00.000Z") })
+// Examples of generated values: new Date("1969-12-31T23:59:59.965Z"), new Date("1969-12-31T23:59:59.987Z"), new Date("-061397-05-15T20:31:55.392Z"), new Date("1969-12-31T23:59:59.962Z"), new Date("-135518-12-15T11:48:52.864Z")…
+
+fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T23:59:59.999Z") })
+// Examples of generated values: new Date("2000-01-12T09:27:02.400Z"), new Date("2000-01-01T00:00:00.001Z"), new Date("2000-08-24T06:59:48.352Z"), new Date("2000-01-01T00:00:00.019Z"), new Date("2000-05-27T01:31:48.096Z")…
+```
+</details>
+
+## Falsy
+
+<details>
+<summary><b>date</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#date">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Falsy values
+
+*&#8195;Signatures*
+
+- `fc.falsy()` — _one of `false`, `null`, `undefined`, `0`, `''`, or `Number.NaN`_
+- `fc.date({ withBigInt? })` — _one of `false`, `null`, `undefined`, `0`, `''`, or `Number.NaN` and `0n` if `withBitInt` has been set to `true`_
+
+*&#8195;Usages*
+
+```js
+fc.falsy()
+// Examples of generated values: null, false, 0, Number.NaN, ""…
+
+fc.falsy({ withBigInt: true })
+// Examples of generated values: 0, false, Number.NaN, undefined, ""…
+```
+</details>
 
 ## Combinators (:T)
 
