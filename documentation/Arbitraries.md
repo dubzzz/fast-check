@@ -888,12 +888,36 @@ fc.domain()
 *&#8195;Signatures*
 
 - `fc.webAuthority()` — _web authority_
+- `fc.webAuthority(constraints)` — _web authority with respect to [constraints](https://dubzzz.github.io/fast-check/interfaces/webauthorityconstraints.html)_
+  - `withIPv4?` — _enable ip v4
+  - `withIPv4Extended?` — _enable ip v4 extended_
+  - `withIPv6?` — _enable ip v6_
+  - `withPort?` — _enable port_
+
 
 *&#8195;Usages*
 
 ```js
 fc.webAuthority()
 // Examples of generated values: "abz0c.by.bd", "ad.e.fbd.ymj", "l3dualxl.bzdc", "fk71i1if.aecedeoac", "bb1m5zg6.s.mbvwfe.vadajfr"…
+
+fc.webAuthority({
+  withIPv4: true,
+})
+// Examples of generated values: "abz0c.by.bd", "2.201.4.0", "2.5.69.79", "fk71i1if.aecedeoac", "bb1m5zg6.s.mbvwfe.vadajfr"…
+
+fc.webAuthority({
+  withIPv4Extended: true,
+})
+// Examples of generated values: "abz0c.by.bd", "0311.12", "5.0xf1.0366.1", "fk71i1if.aecedeoac", "bb1m5zg6.s.mbvwfe.vadajfr"…
+
+fc.webAuthority({
+  withIPv4: true,
+  withIPv4Extended: true,
+  withIPv6: true,
+  withPort: true,
+})
+// Examples of generated values: "[::1:4a:60:e:2.7.19.5]:2", "0311.12:5", "2.5.69.79:1", "[98aa::131.4.0.31]", "bb1m5zg6.s.mbvwfe.vadajfr:3"…
 ```
 </details>
 
@@ -970,12 +994,28 @@ fc.webSegment()
 *&#8195;Signatures*
 
 - `fc.webUrl()` — _web url_
+- `fc.webUrl(constraints)` — _web url with respect to constraints_
+  - `authoritySettings?` — _[constraints](https://dubzzz.github.io/fast-check/interfaces/webauthorityconstraints.html) on the web authority_
+  - `validSchemes?` — _list all the valid schemes_
+  - `withFragments?` — _enable fragments_
+  - `withQueryParameters?` — _enable query parameters_
 
 *&#8195;Usages*
 
 ```js
 fc.webUrl()
 // Examples of generated values: "http://bn4cd9ade7al.wedd.d.fwe1dl.xxkeuxz/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&", "https://c.ged/n,Hlvw/c'g/0-", "https://ndy.hzcnmubzz/bcj/gb/F4MdU/f/%F1%8B%BA%B7i%F0%9D%A9%AEG)7QJ/Tr/&/=l;", "http://1iif.dq.rwbyrzouz/dd", "http://azgoa.bwfdxw3n.cavph4caa.h.vx/dcQ)O/%F2%BC%9F%B3al5s+3'!/s=%F4%83%BD%87)%F2%BF%A0%8DpzY%F3%A6%B8%9C/%F1%93%9D%8EU/.bS;%31cfof/DSL2cbK/a%F1%A8%BF%99'hngd.d"…
+
+fc.webUrl({
+  validSchemes: ['ftp', 'ftps'],
+})
+// Examples of generated values: "ftp://bn4cd9ade7al.wedd.d.fwe1dl.xxkeuxz/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&", "ftps://c.ged/n,Hlvw/c'g/0-", "ftps://ndy.hzcnmubzz/bcj/gb/F4MdU/f/%F1%8B%BA%B7i%F0%9D%A9%AEG)7QJ/Tr/&/=l;", "ftp://1iif.dq.rwbyrzouz/dd", "ftp://azgoa.bwfdxw3n.cavph4caa.h.vx/dcQ)O/%F2%BC%9F%B3al5s+3'!/s=%F4%83%BD%87)%F2%BF%A0%8DpzY%F3%A6%B8%9C/%F1%93%9D%8EU/.bS;%31cfof/DSL2cbK/a%F1%A8%BF%99'hngd.d"…
+
+fc.webUrl({
+  withFragments: true,
+  withQueryParameters: true,
+})
+// Examples of generated values: "http://bn4cd9ade7al.wedd.d.fwe1dl.xxkeuxz/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&?%F4%8E%BC%9Bhhb#'9:", "https://c.ged/n,Hlvw/c'g/0-?'f%23pfd#,N", "https://ndy.hzcnmubzz/bcj/gb/F4MdU/f/%F1%8B%BA%B7i%F0%9D%A9%AEG)7QJ/Tr/&/=l;?aUhaeXOPda#%F3%9B%80%9BbabX9f", "http://1iif.dq.rwbyrzouz/dd", "http://azgoa.bwfdxw3n.cavph4caa.h.vx/dcQ)O/%F2%BC%9F%B3al5s+3'!/s=%F4%83%BD%87)%F2%BF%A0%8DpzY%F3%A6%B8%9C/%F1%93%9D%8EU/.bS;%31cfof/DSL2cbK/a%F1%A8%BF%99'hngd.d?#bff)*2eCt"…
 ```
 </details>
 
