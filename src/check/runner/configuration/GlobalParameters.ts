@@ -6,20 +6,17 @@ const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
 export type GlobalPropertyHookFunction = () => void;
 export type GlobalAsyncPropertyHookFunction = (() => Promise<unknown>) | (() => void);
-type ExtraGlobalParameters = {
-  beforeEach?: GlobalPropertyHookFunction;
-  afterEach?: GlobalPropertyHookFunction;
-  asyncBeforeEach?: GlobalAsyncPropertyHookFunction;
-  asyncAfterEach?: GlobalAsyncPropertyHookFunction;
-};
 
 /**
  * Type describing the global overrides
  * @public
  */
-export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>> &
-  ExtraGlobalParameters;
-
+export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>> & {
+  beforeEach?: GlobalPropertyHookFunction;
+  afterEach?: GlobalPropertyHookFunction;
+  asyncBeforeEach?: GlobalAsyncPropertyHookFunction;
+  asyncAfterEach?: GlobalAsyncPropertyHookFunction;
+};
 /**
  * Define global parameters that will be used by all the runners
  *
