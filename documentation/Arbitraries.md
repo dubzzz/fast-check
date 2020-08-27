@@ -51,7 +51,7 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
 
 *&#8195;Signatures*
 
-- `fc.boolean()` — _either `true` or `false`_
+- `fc.boolean()`
 
 *&#8195;Usages*
 
@@ -71,23 +71,34 @@ fc.boolean()
 *&#8195;Description*
 
 > Signed integer values
+>
+> Generate all possible integers in the specified range.
+> Both the lower bound and upper bound of the range are included in the set of possible values.
 
 *&#8195;Signatures*
 
-- `fc.integer()` — _all possible 32-bit integers ie. from `-2147483648` (included) to `2147483647` (included)_
-- `fc.integer(maxValue)` — _all possible 32-bit integers ie. from `-2147483648` (included) to `maxValue` (included)_
-- `fc.integer(minValue, maxValue)` — _all possible 32-bit integers ie. from `minValue` (included) to `maxValue` (included)_
+- `fc.integer()`
+- `fc.integer(maxValue)`
+- `fc.integer(minValue, maxValue)`
+
+*&#8195;with:*
+
+- `minValue?` — default: `-2147483648` — _lower bound of the range_
+- `maxValue?` — default: `2147483647` — _upper bound of the range_
 
 *&#8195;Usages*
 
 ```js
 fc.integer()
+// Note: All possible integers between `-2147483648` (included) and `2147483647` (included)
 // Examples of generated values: 1502944448, 888414599, 1123740386, -440217435, -2…
 
 fc.integer(1000)
+// Note: All possible integers between `-2147483648` (included) and `1000` (included)
 // Examples of generated values: -1057705109, -9, -1089721660, -1878447823, -741474720…
 
 fc.integer(-99, 99)
+// Note: All possible integers between `-99` (included) and `99` (included)
 // Examples of generated values: 2, -1, 91, -2, 3…
 ```
 </details>
@@ -98,19 +109,28 @@ fc.integer(-99, 99)
 *&#8195;Description*
 
 > Positive integer values (including zero)
+>
+> Generate all possible positive integers between zero and the upper bound.
+> Both zero and the upper bound are included in the set of possible values.
 
 *&#8195;Signatures*
 
-- `fc.nat()` — _all possible 32-bit positive integers ie. from `0` (included) to `2147483647` (included)_
-- `fc.nat(maxValue)` — _all possible 32-bit positive integers ie. from `0` (included) to `maxValue` (included)_
+- `fc.nat()`
+- `fc.nat(maxValue)`
+
+*&#8195;with:*
+
+- `maxValue?` — default: `2147483647` — _upper bound of the range_
 
 *&#8195;Usages*
 
 ```js
 fc.nat()
+// Note: All possible integers between `0` (included) and `2147483647` (included)
 // Examples of generated values: 16, 1747563639, 0, 2075457316, 2146229148…
 
 fc.nat(1000)
+// Note: All possible integers between `0` (included) and `1000` (included)
 // Examples of generated values: 299, 1, 225, 750, 4…
 ```
 </details>
@@ -121,10 +141,12 @@ fc.nat(1000)
 *&#8195;Description*
 
 > All the range of signed integer values
+>
+> Generate all possible integers ie. from `Number.MIN_SAFE_INTEGER` (included) to `Number.MAX_SAFE_INTEGER` (included).
 
 *&#8195;Signatures*
 
-- `fc.maxSafeInteger()` — _all possible integers ie. from `Number.MIN_SAFE_INTEGER` (included) to `Number.MAX_SAFE_INTEGER` (included)_
+- `fc.maxSafeInteger()`
 
 *&#8195;Usages*
 
@@ -140,10 +162,12 @@ fc.maxSafeInteger()
 *&#8195;Description*
 
 > All the range of positive integer values (including zero)
+>
+> Generate all possible positive integers ie. from `0` (included) to `Number.MAX_SAFE_INTEGER` (included).
 
 *&#8195;Signatures*
 
-- `fc.maxSafeNat()` — _all possible positive integers ie. from `0` (included) to `Number.MAX_SAFE_INTEGER` (included)_
+- `fc.maxSafeNat()`
 
 *&#8195;Usages*
 
@@ -1240,13 +1264,13 @@ fc.clonedConstant(
 
 - `fc.option(arb)`
 - `fc.option(arb, freq)`
-- `fc.option(arb, constraints)`
+- `fc.option(arb, {freq?, nil?})`
 
-*&#8195;with [constraints](https://dubzzz.github.io/fast-check/interfaces/optionconstraints.html):*
+*&#8195;with:*
 
-  - `arb` — _arbitrary that will be called to generate normal values_
-  - `freq?` — _probability to build the nil value is of 1 / freq_
-  - `nil?` — _nil value_
+- `arb` — _arbitrary that will be called to generate normal values_
+- `freq?` — default: `5` — _probability to build the nil value is of 1 / freq_
+- `nil?` — default: `null` — _nil value_
 
 *&#8195;Usages*
 
