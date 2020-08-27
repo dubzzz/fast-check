@@ -121,10 +121,15 @@ describe('Property', () => {
       const beforeEachCalled = prob.beforeEachCalled;
       prob.beforeEachCalled = false;
       return beforeEachCalled;
-    }).beforeEach((globalBeforeEach) => {
-      prob.beforeEachCalled = true;
-      globalBeforeEach();
-    });
+    })
+      .beforeEach((globalBeforeEach) => {
+        prob.beforeEachCalled = false;
+        globalBeforeEach();
+      })
+      .beforeEach((previousBeforeEach) => {
+        previousBeforeEach();
+        prob.beforeEachCalled = true;
+      });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should execute both global and local beforeEach hooks before the test', () => {
