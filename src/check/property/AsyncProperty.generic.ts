@@ -12,8 +12,8 @@ import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/
  * @public
  */
 export type AsyncPropertyHookFunction =
-  | ((globalHookFunction: GlobalAsyncPropertyHookFunction) => Promise<unknown>)
-  | ((globalHookFunction: GlobalAsyncPropertyHookFunction) => void);
+  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => Promise<unknown>)
+  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => void);
 
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
@@ -47,28 +47,33 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
-  static dummyGlobalHook: GlobalAsyncPropertyHookFunction = () => {};
-  static defaultHook: AsyncPropertyHookFunction = (globalHook) => globalHook();
-  private readonly globalBeforeEachHook: GlobalAsyncPropertyHookFunction;
-  private readonly globalAfterEachHook: GlobalAsyncPropertyHookFunction;
-  private beforeEachHook: AsyncPropertyHookFunction = AsyncProperty.defaultHook;
-  private afterEachHook: AsyncPropertyHookFunction = AsyncProperty.defaultHook;
+  static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
+  private beforeEachHook: GlobalAsyncPropertyHookFunction;
+  private afterEachHook: GlobalAsyncPropertyHookFunction;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
-    const {
-      asyncBeforeEach,
-      asyncAfterEach,
-      beforeEach = AsyncProperty.dummyGlobalHook,
-      afterEach = AsyncProperty.dummyGlobalHook,
-    } = readConfigureGlobal() || {};
-    this.globalBeforeEachHook = asyncBeforeEach || beforeEach;
-    this.globalAfterEachHook = asyncAfterEach || afterEach;
+    const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
+
+    if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
+      throw Error(
+        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties'
+      );
+    }
+
+    if (asyncAfterEach !== undefined && afterEach !== undefined) {
+      throw Error(
+        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties'
+      );
+    }
+
+    this.beforeEachHook = asyncBeforeEach || beforeEach || AsyncProperty.dummyHook;
+    this.afterEachHook = asyncAfterEach || afterEach || AsyncProperty.dummyHook;
   }
   isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
   async run(v: Ts): Promise<PreconditionFailure | string | null> {
-    await this.beforeEachHook(this.globalBeforeEachHook);
+    await this.beforeEachHook();
     try {
       const output = await this.predicate(v);
       return output == null || output === true ? null : 'Property failed by returning false';
@@ -79,7 +84,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       if (err instanceof Error && err.stack) return `${err}\n\nStack trace: ${err.stack}`;
       return `${err}`;
     } finally {
-      await this.afterEachHook(this.globalAfterEachHook);
+      await this.afterEachHook();
     }
   }
 
@@ -88,7 +93,8 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   beforeEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
-    this.beforeEachHook = hookFunction;
+    const previousBeforeEachHook = this.beforeEachHook;
+    this.beforeEachHook = () => hookFunction(previousBeforeEachHook);
     return this;
   }
   /**
@@ -96,7 +102,8 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   afterEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
-    this.afterEachHook = hookFunction;
+    const previousAfterEachHook = this.afterEachHook;
+    this.afterEachHook = () => hookFunction(previousAfterEachHook);
     return this;
   }
 }
