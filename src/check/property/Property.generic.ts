@@ -60,23 +60,30 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
  * @internal
  */
 export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
-  static dummyGlobalHook: GlobalPropertyHookFunction = () => {};
-  static defaultHook: PropertyHookFunction = (globalHook) => globalHook();
-  private readonly globalBeforeEachHook: GlobalPropertyHookFunction;
-  private readonly globalAfterEachHook: GlobalPropertyHookFunction;
-  private beforeEachHook: PropertyHookFunction = Property.defaultHook;
-  private afterEachHook: PropertyHookFunction = Property.defaultHook;
+  static dummyHook: GlobalPropertyHookFunction = () => {};
+  private beforeEachHook: GlobalPropertyHookFunction;
+  private afterEachHook: GlobalPropertyHookFunction;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
-    const { beforeEach = Property.dummyGlobalHook, afterEach = Property.dummyGlobalHook } = readConfigureGlobal() || {};
-    this.globalBeforeEachHook = beforeEach;
-    this.globalAfterEachHook = afterEach;
+    const { beforeEach = Property.dummyHook, afterEach = Property.dummyHook, asyncBeforeEach, asyncAfterEach } =
+      readConfigureGlobal() || {};
+
+    if (asyncBeforeEach !== undefined) {
+      throw Error('"asyncBeforeEach" can\'t be set when running synchronous properties');
+    }
+
+    if (asyncAfterEach !== undefined) {
+      throw Error('"asyncAfterEach" can\'t be set when running synchronous properties');
+    }
+
+    this.beforeEachHook = beforeEach;
+    this.afterEachHook = afterEach;
   }
   isAsync = () => false as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
   run(v: Ts): PreconditionFailure | string | null {
-    this.beforeEachHook(this.globalBeforeEachHook);
+    this.beforeEachHook();
     try {
       const output = this.predicate(v);
       return output == null || output === true ? null : 'Property failed by returning false';
@@ -87,21 +94,23 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
       if (err instanceof Error && err.stack) return `${err}\n\nStack trace: ${err.stack}`;
       return `${err}`;
     } finally {
-      this.afterEachHook(this.globalAfterEachHook);
+      this.afterEachHook();
     }
   }
 
   beforeEach(invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>): never;
   beforeEach(validHookFunction: PropertyHookFunction): Property<Ts>;
   beforeEach(hookFunction: PropertyHookFunction): unknown {
-    this.beforeEachHook = hookFunction;
+    const previousBeforeEachHook = this.beforeEachHook;
+    this.beforeEachHook = () => hookFunction(previousBeforeEachHook);
     return this;
   }
 
   afterEach(invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>): never;
   afterEach(hookFunction: PropertyHookFunction): Property<Ts>;
   afterEach(hookFunction: PropertyHookFunction): unknown {
-    this.afterEachHook = hookFunction;
+    const previousAfterEachHook = this.afterEachHook;
+    this.afterEachHook = () => hookFunction(previousAfterEachHook);
     return this;
   }
 }

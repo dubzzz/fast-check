@@ -127,7 +127,7 @@ describe('Property', () => {
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
-  it('Should execute both global and local beforEach hooks before the test', () => {
+  it('Should execute both global and local beforeEach hooks before the test', () => {
     const globalBeforeEach = jest.fn();
     const prob = { beforeEachCalled: false };
     configureGlobal({
@@ -156,17 +156,30 @@ describe('Property', () => {
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
+  it('should fail if global asyncBeforeEach has been set', () => {
+    configureGlobal({
+      asyncBeforeEach: () => {},
+    });
+    expect(() => property(stubArb.single(8), (_arg: number) => {})).toThrowError(
+      '"asyncBeforeEach" can\'t be set when running synchronous properties'
+    );
+  });
   it('Should execute afterEach after the test on success', () => {
     const callOrder: string[] = [];
     const p = property(stubArb.single(8), (_arg: number) => {
       callOrder.push('test');
       return true;
-    }).afterEach((globalAfterEach) => {
-      callOrder.push('afterEach');
-      globalAfterEach();
-    });
+    })
+      .afterEach((globalAfterEach) => {
+        callOrder.push('afterEach');
+        globalAfterEach();
+      })
+      .afterEach((previousAfterEach) => {
+        previousAfterEach();
+        callOrder.push('after afterEach');
+      });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    expect(callOrder).toEqual(['test', 'afterEach']);
+    expect(callOrder).toEqual(['test', 'afterEach', 'after afterEach']);
   });
   it('Should execute afterEach after the test on failure', () => {
     const callOrder: string[] = [];
@@ -212,5 +225,13 @@ describe('Property', () => {
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
     expect(callOrder).toEqual(['test', 'afterEach', 'globalAfterEach']);
+  });
+  it('should fail if global asyncAfterEach has been set', () => {
+    configureGlobal({
+      asyncAfterEach: () => {},
+    });
+    expect(() => property(stubArb.single(8), (_arg: number) => {})).toThrowError(
+      '"asyncAfterEach" can\'t be set when running synchronous properties'
+    );
   });
 });
