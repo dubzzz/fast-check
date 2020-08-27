@@ -4,7 +4,17 @@ import { Parameters } from './Parameters';
 /** @internal */
 const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
 
+/**
+ * Type of legal hook function that can be used in the global parameter `beforeEach` and/or `afterEach`
+ *
+ * @public
+ */
 export type GlobalPropertyHookFunction = () => void;
+/**
+ * Type of legal hook function that can be used in the global parameter `asyncBeforeEach` and/or `asyncAfterEach`
+ *
+ * @public
+ */
 export type GlobalAsyncPropertyHookFunction = (() => Promise<unknown>) | (() => void);
 
 /**
