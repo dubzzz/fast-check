@@ -825,16 +825,19 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), 1, 3)
 
 *&#8195;Description*
 
-> JSON compatible string representations of instances
+> JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
 >
-> The generated values can be parsed by `JSON.parse`
+> The generated values can be parsed by `JSON.parse`.
+> All the string values (from keys to values) are generated using `fc.string()`.
 
 *&#8195;Signatures*
 
-- `fc.json()` — _json strings having keys generated using `fc.string()`_
-- `fc.json(maxDepth)` — _json strings having keys generated using `fc.string()`, the generated json representation has a maximal depth of `maxDepth`_
+- `fc.json()`
+- `fc.json(maxDepth)`
 
-_All the string values (from keys to values) are generated using `fc.string()`_
+*&#8195;with:*
+
+- `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
 
@@ -855,16 +858,19 @@ fc.json(1)
 
 *&#8195;Description*
 
-> JSON compatible string representations of instances
+> JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
 >
-> The generated values can be parsed by `JSON.parse`
+> The generated values can be parsed by `JSON.parse`.
+> All the string values (from keys to values) are generated using `fc.unicodeString()`.
 
 *&#8195;Signatures*
 
-- `fc.unicodeJson()` — _json strings having keys generated using `fc.unicodeString()`_
-- `fc.unicodeJson(maxDepth)` — _json strings having keys generated using `fc.unicodeString()`, the generated json representation has a maximal depth of `maxDepth`_
+- `fc.unicodeJson()`
+- `fc.unicodeJson(maxDepth)`
 
-_All the string values (from keys to values) are generated using `fc.unicodeString()`_
+*&#8195;with:*
+
+- `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
 
@@ -893,6 +899,14 @@ fc.unicodeJson(1)
 - `fc.lorem(maxWordsCount)` — _lorem ipsum sentence containing at most `maxWordsCount` words_
 - `fc.lorem(maxCount, sentenceMode)` — _if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: same as above_
 
+*&#8195;with:*
+
+- `maxWordsCount?` — _maximal number of words to produce_
+- `maxCount?` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
+- `sentenceMode?` — default: `false` — _enable sentence mode_
+
+_Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
+
 *&#8195;Usages*
 
 ```js
@@ -916,7 +930,7 @@ fc.lorem(3, true)
 
 *&#8195;Signatures*
 
-- `fc.ipV4()` — _ip v4 addresses_
+- `fc.ipV4()`
 
 *&#8195;Usages*
 
@@ -935,7 +949,7 @@ fc.ipV4()
 
 *&#8195;Signatures*
 
-- `fc.ipV4Extended()` — _any valid ip v4 address_
+- `fc.ipV4Extended()`
 
 *&#8195;Usages*
 
@@ -954,7 +968,7 @@ fc.ipV4Extended()
 
 *&#8195;Signatures*
 
-- `fc.ipV6()` — _ip v6 addresses_
+- `fc.ipV6()`
 
 *&#8195;Usages*
 
@@ -973,7 +987,7 @@ fc.ipV6()
 
 *&#8195;Signatures*
 
-- `fc.uuid()` — uuid strings having only digits in 0-9a-f (only versions in v1 to v5)_
+- `fc.uuid()`
 
 *&#8195;Usages*
 
@@ -992,7 +1006,11 @@ fc.uuid()
 
 *&#8195;Signatures*
 
-- `fc.uuidV(version)` — uuid strings for a specific uuid version only digits in 0-9a-f_
+- `fc.uuidV(version)`
+
+*&#8195;with:*
+
+- `version` — _version of the uuid to produce: 1, 2, 3, 4 or 5_
 
 *&#8195;Usages*
 
@@ -1016,7 +1034,7 @@ fc.uuidV(5)
 
 *&#8195;Signatures*
 
-- `fc.domain()` — _domain name with extension_
+- `fc.domain()`
 
 *&#8195;Usages*
 
@@ -1037,12 +1055,15 @@ fc.domain()
 
 *&#8195;Signatures*
 
-- `fc.webAuthority()` — _web authority_
-- `fc.webAuthority(constraints)` — _web authority with respect to [constraints](https://dubzzz.github.io/fast-check/interfaces/webauthorityconstraints.html)_
-  - `withIPv4?` — _enable ip v4
-  - `withIPv4Extended?` — _enable ip v4 extended_
-  - `withIPv6?` — _enable ip v6_
-  - `withPort?` — _enable port_
+- `fc.webAuthority()`
+- `fc.webAuthority({withIPv4?, withIPv4Extended?, withIPv6?, withPort?})`
+
+*&#8195;with:*
+
+- `withIPv4?` — default: `false` — _enable ip v4
+- `withIPv4Extended?` — default: `false` — _enable ip v4 extended_
+- `withIPv6?` — default: `false` — _enable ip v6_
+- `withPort?` — default: `false` — _enable port_
 
 
 *&#8195;Usages*
@@ -1082,7 +1103,7 @@ fc.webAuthority({
 
 *&#8195;Signatures*
 
-- `fc.webFragments()` — _fragments part of an url_
+- `fc.webFragments()`
 
 *&#8195;Usages*
 
@@ -1103,7 +1124,7 @@ fc.webFragments()
 
 *&#8195;Signatures*
 
-- `fc.webQueryParameters()` — query parameters part of an url_
+- `fc.webQueryParameters()`
 
 *&#8195;Usages*
 
@@ -1122,7 +1143,7 @@ fc.webQueryParameters()
 
 *&#8195;Signatures*
 
-- `fc.webSegment()` — _web url path segment_
+- `fc.webSegment()`
 
 *&#8195;Usages*
 
@@ -1143,12 +1164,15 @@ fc.webSegment()
 
 *&#8195;Signatures*
 
-- `fc.webUrl()` — _web url_
-- `fc.webUrl(constraints)` — _web url with respect to constraints_
-  - `authoritySettings?` — _[constraints](https://dubzzz.github.io/fast-check/interfaces/webauthorityconstraints.html) on the web authority_
-  - `validSchemes?` — _list all the valid schemes_
-  - `withFragments?` — _enable fragments_
-  - `withQueryParameters?` — _enable query parameters_
+- `fc.webUrl()`
+- `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?})`
+
+*&#8195;with:*
+
+- `authoritySettings?` — default: `{}` — _[constraints](https://dubzzz.github.io/fast-check/interfaces/webauthorityconstraints.html) on the web authority_
+- `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
+- `withFragments?` — default: `false` — _enable fragments_
+- `withQueryParameters?` — default: `false` — _enable query parameters_
 
 *&#8195;Usages*
 
@@ -1180,7 +1204,7 @@ fc.webUrl({
 
 *&#8195;Signatures*
 
-- `fc.emailAddress()` — _email address_
+- `fc.emailAddress()`
 
 *&#8195;Usages*
 
@@ -1199,9 +1223,13 @@ fc.emailAddress()
 
 *&#8195;Signatures*
 
-- `fc.mixedCase(stringArb)` — _randomly switch the case of characters generated by `stringArb`_
-- `fc.mixedCase(stringArb, constraints)` — _randomly switch the case of characters generated by `stringArb` with respect to [`constraints`](https://dubzzz.github.io/fast-check/interfaces/mixedcaseconstraints.html)_
-  - `toggleCase?` — _custom to upper case function_
+- `fc.mixedCase(stringArb)`
+- `fc.mixedCase(stringArb, {toggleCase?})`
+
+*&#8195;with:*
+
+- `stringArb` — _arbitrary producing random strings_
+- `toggleCase?` — default: _try `toUpperCase` on the received code-point, if no effect try `toLowerCase`_ — _custom toggle case function that will be called on some of the code-points to toggle the character_
 
 *&#8195;Usages*
 
