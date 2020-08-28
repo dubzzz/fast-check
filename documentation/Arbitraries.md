@@ -393,11 +393,11 @@ fc.bigUint(12345678901234567890n)
 
 *&#8195;Description*
 
-> One lowercase hexadecimal character
+> One lowercase hexadecimal character — ie.: _one character in `0123456789abcdef`_
 
 *&#8195;Signatures*
 
-- `fc.hexa()` — _one character in `0123456789abcdef` (lower case)_
+- `fc.hexa()`
 
 *&#8195;Usages*
 
@@ -412,11 +412,11 @@ fc.hexa()
 
 *&#8195;Description*
 
-> One base64 character
+> One base64 character — _ie.: one character in `A-Z`, `a-z`, `0-9`, `+` or `/`_
 
 *&#8195;Signatures*
 
-- `fc.base64()` — _one character in `A-Z`, `a-z`, `0-9`, `+` or `/`_
+- `fc.base64()`
 
 *&#8195;Usages*
 
@@ -431,11 +431,11 @@ fc.base64()
 
 *&#8195;Description*
 
-> One printable character
+> One printable character — _ie.: one character between `0x20` (included) and `0x7e` (included), corresponding to printable characters (see https://www.ascii-code.com/)_
 
 *&#8195;Signatures*
 
-- `fc.char()` — _one character between `0x20` (included) and `0x7e` (included), corresponding to printable characters (see https://www.ascii-code.com/)_
+- `fc.char()`
 
 *&#8195;Usages*
 
@@ -450,11 +450,11 @@ fc.char()
 
 *&#8195;Description*
 
-> One ascii character
+> One ascii character — _ie.: one character between `0x00` (included) and `0x7f` (included)_
 
 *&#8195;Signatures*
 
-- `fc.ascii()` — _one character between `0x00` (included) and `0x7f` (included)_
+- `fc.ascii()`
 
 *&#8195;Usages*
 
@@ -469,11 +469,13 @@ fc.ascii()
 
 *&#8195;Description*
 
-> One unicode character from BMP-plan
+> One unicode character from BMP-plan — _ie.: one character between `0x0000` (included) and `0xffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`)_
+>
+> Generate any character of UCS-2 which is a subset of UTF-16 (restricted to BMP plan).
 
 *&#8195;Signatures*
 
-- `fc.unicode()` — _one character between `0x0000` (included) and `0xffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`). Generate any character of UCS-2 which is a subset of UTF-16 (restricted to BMP plan)_
+- `fc.unicode()`
 
 *&#8195;Usages*
 
@@ -488,12 +490,14 @@ fc.unicode()
 
 *&#8195;Description*
 
-> One unicode character from BMP-plan (including part of surrogate pair)
+> One unicode character from BMP-plan (including part of surrogate pair) — _ie.: one character between `0x0000` (included) and `0xffff` (included)_
+>
+> Generate any 16 bits character. Be aware the values within `0xd800` and `0xdfff` which constitutes the surrogate pair characters are also generated meaning that some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding._
+
 
 *&#8195;Signatures*
 
-- `fc.char16bits()` — _one character between `0x0000` (included) and `0xffff` (included). Generate any 16 bits character. Be aware the values within `0xd800` and `0xdfff` which constitutes the surrogate pair characters are also generated meaning that some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding_
-
+- `fc.char16bits()`
 *&#8195;Usages*
 
 ```js
@@ -507,11 +511,13 @@ fc.char16bits()
 
 *&#8195;Description*
 
-> One unicode character
+> One unicode character — _ie.: one character between `0x0000` (included) and `0x10ffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`)_
+>
+> Its length can be greater than one as it potentially contains multiple UTF-16 characters for a single glyph (eg.: `"\u{1f434}".length === 2`).
 
 *&#8195;Signatures*
 
-- `fc.fullUnicode()` — _one character between `0x0000` (included) and `0x10ffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`). Its length can be greater than one as it potentially contains multiple UTF-16 characters for a single glyph_
+- `fc.fullUnicode()`
 
 *&#8195;Usages*
 
