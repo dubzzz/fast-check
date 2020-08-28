@@ -17,8 +17,8 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
   - [Single character](#single-character)
   - [Multiple characters](#multiple-characters)
   - [More specific strings](#more-specific-strings)
-- [Date](#date-date)
-- [Falsy](#falsy-any)
+- [Date](#date)
+- [Falsy](#falsy)
 - [Combinators](#combinators)
   - [Simple](#simple)
   - [Array](#array)
@@ -72,7 +72,7 @@ fc.boolean()
 
 > Signed integer values
 >
-> Generate all possible integers in the specified range.
+> Generate any possible integer in the specified range.
 > Both the lower bound and upper bound of the range are included in the set of possible values.
 
 *&#8195;Signatures*
@@ -83,8 +83,8 @@ fc.boolean()
 
 *&#8195;with:*
 
-- `minValue?` — default: `-2147483648` — _lower bound of the range_
-- `maxValue?` — default: `2147483647` — _upper bound of the range_
+- `minValue?` — default: `-2147483648` — _lower bound of the range (included)_
+- `maxValue?` — default: `2147483647` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -110,7 +110,7 @@ fc.integer(-99, 99)
 
 > Positive integer values (including zero)
 >
-> Generate all possible positive integers between zero and the upper bound.
+> Generate any possible positive integer between zero and the upper bound.
 > Both zero and the upper bound are included in the set of possible values.
 
 *&#8195;Signatures*
@@ -120,7 +120,7 @@ fc.integer(-99, 99)
 
 *&#8195;with:*
 
-- `maxValue?` — default: `2147483647` — _upper bound of the range_
+- `maxValue?` — default: `2147483647` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -142,7 +142,7 @@ fc.nat(1000)
 
 > All the range of signed integer values
 >
-> Generate all possible integers ie. from `Number.MIN_SAFE_INTEGER` (included) to `Number.MAX_SAFE_INTEGER` (included).
+> Generate any possible integer ie. from `Number.MIN_SAFE_INTEGER` (included) to `Number.MAX_SAFE_INTEGER` (included).
 
 *&#8195;Signatures*
 
@@ -163,7 +163,7 @@ fc.maxSafeInteger()
 
 > All the range of positive integer values (including zero)
 >
-> Generate all possible positive integers ie. from `0` (included) to `Number.MAX_SAFE_INTEGER` (included).
+> Generate any possible positive integer ie. from `0` (included) to `Number.MAX_SAFE_INTEGER` (included).
 
 *&#8195;Signatures*
 
@@ -185,23 +185,34 @@ fc.maxSafeNat()
 *&#8195;Description*
 
 > Floating point values with 32-bit precision
+>
+> Generate any floating point value taken into the specified range.
+> The lower bound is included into the range of possible values while the upper one is not.
 
 *&#8195;Signatures*
 
-- `fc.float()` — _uniformly distributed floating point value between `0.0` (included) and `1.0` (excluded)_
-- `fc.float(maxValue)` — _uniformly distributed floating point value between `0.0` (included) and `maxValue` (excluded)_
-- `fc.float(minValue, maxValue)` — _uniformly distributed floating point value between `minValue` (included) and `maxValue` (excluded)_
+- `fc.float()`
+- `fc.float(maxValue)`
+- `fc.float(minValue, maxValue)`
+
+*&#8195;with:*
+
+- `minValue?` — default: `0.0` — _lower bound of the range (included)_
+- `maxValue?` — default: `1.0` — _upper bound of the range (excluded)_
 
 *&#8195;Usages*
 
 ```js
 fc.float()
+// Note: All possible 32-bit floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.731347382068634, 1.1920928955078125e-7, 0.6597227454185486, 0.5946863293647766, 0.6302104592323303…
 
 fc.float(100)
+// Note: All possible 32-bit floating point values between `0.0` (included) and `100.0` (excluded)
 // Examples of generated values: 0.00007748603820800781, 0.00007152557373046875, 0.00013113021850585938, 52.37404108047485, 0.000035762786865234375…
 
 fc.float(-100, 100)
+// Note: All possible 32-bit floating point values between `-100.0` (included) and `100.0` (excluded)
 // Examples of generated values: -99.99992847442627, 55.83081245422363, -99.99979734420776, -20.923829078674316, -99.99991655349731…
 ```
 </details>
@@ -211,24 +222,35 @@ fc.float(-100, 100)
 
 *&#8195;Description*
 
-> Floating point values with 64-bit precision
+> Floating point values
+>
+> Generate any floating point value taken into the specified range.
+> The lower bound is included into the range of possible values while the upper one is not.
 
 *&#8195;Signatures*
 
-- `fc.double()` — _uniformly distributed floating point value between `0.0` (included) and `1.0` (excluded)_
-- `fc.double(maxValue)` — _uniformly distributed floating point value between `0.0` (included) and `maxValue` (excluded)_
-- `fc.double(minValue, maxValue)` — _uniformly distributed floating point value between `minValue` (included) and `maxValue` (excluded)_
+- `fc.double()`
+- `fc.double(maxValue)`
+- `fc.double(minValue, maxValue)`
+
+*&#8195;with:*
+
+- `minValue?` — default: `0.0` — _lower bound of the range (included)_
+- `maxValue?` — default: `1.0` — _upper bound of the range (excluded)_
 
 *&#8195;Usages*
 
 ```js
 fc.double()
+// Note: All possible floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.4530413804731288, 0.8226463198661805, 0.3829372459587349, 0.7186836451292051, 0.8065718412399292…
 
 fc.double(100)
+// Note: All possible floating point values between `0.0` (included) and `100.0` (excluded)
 // Examples of generated values: 0.000019014520535876045, 98.91013210040657, 0.00003648309874204614, 20.497548580169944, 0.00001937150981845548…
 
 fc.double(-100, 100)
+// Note: All possible floating point values between `-100.0` (included) and `100.0` (excluded)
 // Examples of generated values: -99.999970715887, -99.99996384938794, -99.99996463982544, -69.75060565839972, -99.99994324436676…
 ```
 </details>
@@ -242,18 +264,26 @@ _if supported by your JavaScript interpreter_
 *&#8195;Description*
 
 > N-bit signed `bigint` values
+>
+> Generate any possible `bigint` between <code>-2<sup>n-1</sup></code> (included) and <code>2<sup>n-1</sup>-1</code> (included).
 
 *&#8195;Signatures*
 
-- `fc.bigIntN(n)` — _all possible `bigint` between <code>-2<sup>n-1</sup></code> (included) and <code>2<sup>n-1</sup>-1</code> (included)_
+- `fc.bigIntN(n)`
+
+*&#8195;with:*
+
+- `n` — _maximal number of bits of the generated `bigint`_
 
 *&#8195;Usages*
 
 ```js
 fc.bigIntN(2)
+// Note: All possible bigint values between `-2n` (included) and `1n` (included)
 // Examples of generated values: -1n, 1n, 0n, -2n…
 
 fc.bigIntN(128)
+// Note: All possible bigint values between `-(2n**127n)` (included) and `(2n**127n)-1n` (included)
 // Examples of generated values: 118965438702305362498464591014723682065n, -55529428019749399595111693273573678376n, -45882741802961890031345972148576150745n, 88162568694395329699188080847279292274n, -18663446021429702481819240863645317485n…
 ```
 </details>
@@ -264,11 +294,19 @@ fc.bigIntN(128)
 *&#8195;Description*
 
 > Signed `bigint` values
+>
+> Generate any bigint value taken into the specified range.
+> Both lower bound and upper bound are included into the range of possible values.
 
 *&#8195;Signatures*
 
-- `fc.bigInt()` — _uniformly distributed `bigint` values_
-- `fc.bigInt(minValue, maxValue)` — _all possible `bigint` between `minValue` (included) and `maxValue` (excluded)_
+- `fc.bigInt()`
+- `fc.bigInt(minValue, maxValue)`
+
+*&#8195;with:*
+
+- `minValue?` — _lower bound of the range (included)_
+- `maxValue?` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -277,9 +315,11 @@ fc.bigInt()
 // Examples of generated values: -55267127471484960134228883170671517601140668833043648279881539595328866477336n, -320877373404846693351482506498287829328651053618510591877443861350691412062n, 22403846480109971796256164379798253424379083455297331933513006716677124261164n, 46531564263119251593570768169779548000260571947054149902092502970846442652567n, -27488731055093319143645334041335559432506843454739800192508819981052054802083n…
 
 fc.bigInt(0n, 12345678901234567890n)
+// Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
 // Examples of generated values: 6465640285538993635n, 8922695748501260749n, 16n, 19n, 10723446437785154890n…
 
 fc.bigInt(-3000n, 100n)
+// Note: All possible bigint values between `-3000n` (included) and `100n` (included)
 // Examples of generated values: 1n, -2031n, -351n, -1605n, -2n…
 ```
 </details>
@@ -290,18 +330,26 @@ fc.bigInt(-3000n, 100n)
 *&#8195;Description*
 
 > N-bit positive `bigint` values (including zero)
+>
+> Generate any possible positive `bigint` between <code>0</code> (included) and <code>2<sup>n</sup>-1</code> (included).
 
 *&#8195;Signatures*
 
-- `fc.bigUintN(n)` — _all possible positive `bigint` between <code>0</code> (included) and <code>2<sup>n</sup>-1</code> (included)_
+- `fc.bigUintN(n)`
+
+*&#8195;with:*
+
+- `n` — _maximal number of bits of the generated `bigint`_
 
 *&#8195;Usages*
 
 ```js
 fc.bigUintN(2)
+// Note: All possible bigint values between `0n` (included) and `3n` (included)
 // Examples of generated values: 1n, 0n, 2n, 3n…
 
 fc.bigUintN(128)
+// Note: All possible bigint values between `0n` (included) and `(2n**128n)-1n` (included)
 // Examples of generated values: 86341151263089925165504430453367665188n, 28n, 328981524291263435470719008913591905663n, 279866238908824165638381771934770854596n, 111395503858026070299201611333616927272n…
 ```
 </details>
@@ -312,11 +360,17 @@ fc.bigUintN(128)
 *&#8195;Description*
 
 > Positive `bigint` values (including zero)
+>
+> Generate any positive bigint value taken up to upper bound included.
 
 *&#8195;Signatures*
 
-- `fc.bigUint()` — _uniformly distributed positive `bigint` values_
-- `fc.bigUint(maxValue)` — _all possible positive `bigint` between `0` (included) and `maxValue` (excluded)_
+- `fc.bigUint()`
+- `fc.bigUint(maxValue)`
+
+*&#8195;with:*
+
+- `maxValue?` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -325,6 +379,7 @@ fc.bigUint()
 // Examples of generated values: 98415346800826680180868623901081769911550846942931679526483139707297824018492n, 81847654831253862250960947754551199482417759415227376695916153744999991292122n, 88192025501918677973672101265075531420107830828023254720275072280209923428999n, 46027806054858042993090394331470161808813263449611553513658034830595160464971n, 18n…
 
 fc.bigUint(12345678901234567890n)
+// Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
 // Examples of generated values: 5776499037807709071n, 4876199541303708566n, 19n, 18n, 5n…
 ```
 </details>
