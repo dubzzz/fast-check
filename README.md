@@ -103,10 +103,10 @@ For more details, refer to the documentation in the links above.
 
 Here are the minimal requirements to use fast-check properly without any polyfills:
 
-| fast-check | node                | ECMAScript version | TypeScript |
-|------------|---------------------|--------------------|------------|
-| **2.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥3.2       |
-| **1.x**    | ≥0.12<sup>(1)</sup> | ES3                | ≥3.0       |
+| fast-check | node                | ECMAScript version | _TypeScript (optional)_ |
+|------------|---------------------|--------------------|-------------------------|
+| **2.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥3.2                    |
+| **1.x**    | ≥0.12<sup>(1)</sup> | ES3                | ≥3.0                    |
 
 (1) Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
 
