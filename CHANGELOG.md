@@ -1,3 +1,16 @@
+# 2.2.1
+
+_Fix infinite loop in `fc.date` when passing a NaN date_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.2.0...v2.2.1)]
+
+## Fixes
+
+- ([PR#938](https://github.com/dubzzz/fast-check/pull/938)) Bug: Fix NaN passed to max in `fc.date()`
+- ([PR#936](https://github.com/dubzzz/fast-check/pull/936)) Doc: Switch to typedoc for the API Reference
+- ([PR#939](https://github.com/dubzzz/fast-check/pull/939)) Doc: Rename 'Documentation' badge into 'API Reference'
+- ([PR#948](https://github.com/dubzzz/fast-check/pull/948)) Doc: Mark TypeScript as an optional requirement in the README
+- ([PR#919](https://github.com/dubzzz/fast-check/pull/919)) Test: Reduce coverage flakiness on `HostArbitrary.ts`
+
 # 2.2.0
 
 _Export missing typings and various cleaning around the tsdoc_
