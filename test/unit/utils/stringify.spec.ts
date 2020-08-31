@@ -228,7 +228,7 @@ describe('stringify', () => {
 
 function assertStringifyTypedArraysProperly<TNumber>(
   arb: fc.Arbitrary<TNumber>,
-  typedArrayProducer: (data: TNumber[]) => { values: () => IterableIterator<TNumber> }
+  typedArrayProducer: (data: TNumber[]) => { values: () => IterableIterator<TNumber>; [Symbol.toStringTag]: string }
 ): void {
   fc.assert(
     fc.property(fc.array(arb), (data) => {
