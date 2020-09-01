@@ -1884,39 +1884,189 @@ fc.tuple(
 ```
 </details>
 
+<details>
+<summary><b>object</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#object">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate objects (key/values)
+
+*&#8195;Signatures*
+
+- `fc.object()`
+- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+
+*&#8195;with:*
+
+- `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
+- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
+- `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
+- `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
+- `withMap?` — default: `false` — _enable `Map` - eg.: `new Map([['key', 'value']])`_
+- `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
+- `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
+- `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
+- `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
+
+*&#8195;Usages*
+
+```js
+fc.object()
+// Examples of generated values: {"A%":{"KFfpp":0.15601632430569612,"R;AFyG":0.5147879172882253},"":[0.031204981839495605,{"-;wLYr]a1":9007199254740991,"?HA8T":true,"V:Cmm":1026063650},true,[""]],"WFt=u'":{}}, {"M{]xTH":{"#n;+\"uJ":-531067140,"#IBJPt8":[],"Bng_VbB&":[-938438981,true,1961200770,null,true]},"h(+;Pq":{"":[0,2.220446049250313e-16,2.220446049250313e-16,Number.NEGATIVE_INFINITY],"ck,":-0,"$p$ELwa4":0.665904321745444,"8Ei;%":"8vmt?65Y3j"},"-Gr":{},"(j&13ir":"sN~\\)Xb=L","":[{"Ld\"":0.5204080239001759,"zV":0.7037399006564362,"b]yOC":0.010565763906139058,"oW":0.13754518554962492,"LM[Ufcn":0.12116280558765191},true,[-9007199254740991,"bUe?2",undefined,1255384764]],"Rzdzb#:cJC":Number.POSITIVE_INFINITY,"ycMNhu2f^":{}}, {"NLpz":0.3819334142270202,"`guwWVp\\q":{"OjJ U%NIw":-1412821501},"=SL35Vyp":false,"w{Q_]ZyZ":[0.5792432605379005,0.37573694944373115,0.16947480325839004],"7o5i":{"":{},"i3NvX+":{},"qH ":null,"iFv`}D)":null},"W$d#":{"e6jj":[],"j":{},"\\N52":[undefined,-407306451]},"":"a#dR85|iH","s":{"\"E;/x9w+KF":false}}, {}, {"qrhd)uEl(b":{},"]fr _{^D":{"1/H-'WwF":{},"(K|5r6O":"tDi'?MuF"},"H":null}…
+
+fc.object({
+  key: fc.constantFrom('a', 'b', 'c'),
+})
+// Note: Keys in ['a', 'b', 'c']
+// Examples of generated values: {"c":{"c":"DIxqj35h9:","a":"#P'DE&gY","b":"F"}}, {"b":-25}, {"b":false,"c":undefined}, {"a":4.872535319666582e-8,"b":{"c":"$Cf%"}}, {}…
+
+fc.object({
+  maxDepth: 0,
+})
+// Examples of generated values: {"^lx)`P":0,"</}}e{{":0.3250894455517638,"g21/@#y1B":-0,"8ULm U|p<":Number.NEGATIVE_INFINITY,"mrI#":Number.POSITIVE_INFINITY,"{sS8U7 %E!":2089101388,"=(":0.10812626313097728}, {"s!?U&|m":" !","m}7P4>bQM?":null}, {":WEs/srS+":-1416520206,"lb(<%.BW9":1.7976931348623157e+308,"":true,"pRw":null,"PfnX>":0.08774441941808431}, {"WW!oe%r(1":"FiY","l":0.03574426867100822,"R@~l-":false,"":1980690840,"E:' snhE\"}":" <4QOmI","=k]:kN3b~6":1139673390}, {"y.&&$":-9007199254740991}…
+
+fc.object({
+  maxDepth: 1,
+})
+// Examples of generated values: {"^lx)`P":[0.39657042602052384,-422075697,false,"g21/@#y1B",-0],"8ULm U|p<":["I#!.^",false,0,-893577503],"!7U{*=(D":{"":"Bv'W{LK"},"#zWizXp":[],"Q":[1.7976931348623157e+308],"l,yb3jK.Tr":{"BQ0r":-880138661,";G":-1868350386,"S\\":-907998987,"l@l]WFW":-1078718740},"YaIV[oS<":[0.5346349203332164,-1446721885,0.44013632045723694,-0]}, {"s!?U&|m":" !","m}7P4>bQM?":{"k>Eu":"`"}}, {":WEs/srS+":{"lb(<%.BW9":1.7976931348623157e+308,"":true},"":[5e-324],"X>QxWvd=":{"PYo};9PoD":0.7651338760998909,"tI[r7":0.8419325392498929,"k'*HxK?ok":0.5930196131336798,"= \\BMAD":0.31146228911196416,"$":0.5022020727144553},"n/>|":{},"%|>H4JG)JX":{"":false},"3@Vl}e":undefined}, {"WW!oe%r(1":[true,false,false,false,false],"8a$aR@~l":[],"*qB<GE":[undefined,"/er "],"4QOmI<=k]":{"~6T:#H":Number.NEGATIVE_INFINITY},"2V7Sy8YR%C":{"3":"<B3\"Hr","o8`}}V5g":Number.NEGATIVE_INFINITY,"VpV/JOM2s":0.9235439685155197,"`":"x0Og?1UC","":1.7976931348623157e+308},"zR9_1QI|":0.32516117831510116}, {"y.&&$":[3.677543293223451e-7,0.35124656565223245,1.6391277313232422e-7,0.5027824205092728]}…
+
+
+fc.object({
+  withBigInt: true,
+  withBoxedValues: true,
+  withMap: true,
+  withNullPrototype: true,
+  withObjectString: true,
+  withSet: true,
+})
+// Examples of generated values: {"Hvy-":"[\"k\",new Boolean(false),true,1359741049]","5)":"\"new Number(Number.POSITIVE_INFINITY)\"","{LlH~g#1>c":new Map([["23756116752476880116163693219734392094931639983447296292265812147018126118235n",Number.NaN],["B(XW",-0],["",9007199254740991],[":z]$?4aTPi",0.7417844033838654]]),"G":{";gH3":new Number(1.7976931348623157e+308),"KAQ&Y":new Number(1.7976931348623157e+308),"":new Number(5e-324)},"Dt(Vq\"3":[Object.create(null),Object.assign(Object.create(null),{"":0.9435497709653101,"\\:$<d":-9007199254740991,".!}t^T*V!P":Number.NEGATIVE_INFINITY,"PqC=":-0,"D^cAS80":1.7976931348623157e+308}),Object.create(null),"@BWg2KJ\"P5"],"= qolO":new Set([])}, {"Q":"-28790338063691844723780175859525494041307324994211628063416646154252928018460n"}, {"9!S":49681823727990783426060880711418079640455644944657749366149940132883537836087n,"]N":[[new Number(0.2792851008705145)],"new String(\"m&\")"],"*C NUvY8\\":{"UN:N":new Number(-16067325),"2\\":new Number(1566525156),"#`8r<":new Number(-1260686741),"jDI}c":new Number(-1762591876)},"":new Set([Object.create(null),new Boolean(true),new Number(0.4362835630255498),"new Number(0.9143583465429503)"]),".\")v%w])9<":"{}","\\R\"T":[],"b|e":-37729768302050702694612822632199890630808792163675665166764551511862128392607n,"R%GKy":new Map([["OmgX*",0.08948643876185991],["]m!`jME(",0.3684476361609833],[",RZPydNtC",0.2099650505944498]])}, {"C\"rD ":new Set([-1,15,364098084,-94957164,11]),"%V":new Map([]),"_< <F}mmg":{"T!t":new Map([["",false],["6",true],["a3k-9",true],["new Number(753331202)",false]]),"aku":[undefined,new Number(0.36824708755092816)],"#<)x0W$dD":new Set([null,new Number(-1066071536)]),"r:y%t3)'5Z":new Set([new Boolean(true),0.6787894399693484]),"":"1989493169"}}, {}…
+```
+</details>
+
+<details>
+<summary><b>jsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#jsonobject">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate any object eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_
+
+*&#8195;Signatures*
+
+- `fc.jsonObject()`
+- `fc.jsonObject(maxDepth)`
+
+*&#8195;with:*
+
+- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
+
+*&#8195;Usages*
+
+```js
+fc.jsonObject()
+// Examples of generated values: 0.5208574533462533, {"8-b;+Ua":0.6025187808808565,"jgMZ$w|b.":0.058392661106537846}, [false,false,true,true,false], false, [[-31,-1747504894]]…
+
+fc.jsonObject(0)
+// Examples of generated values: null, ".", "Sd41(w1z", "n", "'=Q"…
+
+fc.jsonObject(1)
+// Examples of generated values: {"/iET":-482578189,"POwJz":null,"*K1J":"R*;x,(-}","+IIwgC?":null}, [null], [0.7618818962743513], {"Kq/]OM":"81@","":null}, "'=Q"…
+```
+</details>
+
+<details>
+<summary><b>unicodeJsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonobject">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate any object eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_
+
+*&#8195;Signatures*
+
+- `fc.unicodeJsonObject()`
+- `fc.unicodeJsonObject(maxDepth)`
+
+*&#8195;with:*
+
+- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
+
+*&#8195;Usages*
+
+```js
+fc.unicodeJsonObject()
+// Examples of generated values: false, [[-1517505516,-480082521]], "⠵䟵谉ꏊ㓰捛멮켜", null, [null,null,null,null]…
+
+fc.unicodeJsonObject(0)
+// Examples of generated values: "-㫴", "꺫蒬娃Ė븥", null, 0.6968476056387718, 0.7140081822872186…
+
+fc.unicodeJsonObject(1)
+// Examples of generated values: "-㫴", {"蒬娃Ė븥㏣퐷㮯౅":null,"枕ꞡ繍ᚶᩏ蜸Ꮪ":0.17484163030123312,"⋽߬㦕㌮ᮌ䤳䙒":false,"憊翀䔽薦䯛睂䷡醥긴":"얒쒏"}, null, 0.6968476056387718, [0.35169129693363876,0.22590550057532044]…
+```
+</details>
+
+<details>
+<summary><b>anything</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#anything">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate any kind of entities
+
+*&#8195;Signatures*
+
+- `fc.anything()`
+- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+
+*&#8195;with:*
+
+- `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
+- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
+- `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
+- `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
+- `withMap?` — default: `false` — _enable `Map` - eg.: `new Map([['key', 'value']])`_
+- `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
+- `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
+- `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
+- `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
+
+*&#8195;Usages*
+
+```js
+fc.anything()
+// Examples of generated values: {"s":["","hTd@sWtR%)"],"-S9":0.3242989104896441,"GhNB:":0}, 0, "!u%%!", {}, {"r1AA`>yA":0.25420680837157195,"hn:9":0.15814638137817438}…
+
+fc.anything({
+  key: fc.constantFrom('a', 'b', 'c'),
+})
+// Note: Generated objects will come with keys in ['a', 'b', 'c']
+// Examples of generated values: {"b":7.12556398330122e-8}, [["(y","\"a>%","5AM2+"],"$%",{"c":Number.NaN,"b":1.708876607997567e-7}], {"b":1104845694,"c":1617404783}, {"c":-694807229,"b":-1525211291}, 5e-324…
+
+fc.anything({
+  maxDepth: 0,
+})
+// Note: Only root values
+// Examples of generated values: 1.4608754717038153e-7, true, "<EO", 9007199254740991, 0…
+
+fc.anything({
+  maxDepth: 1,
+})
+// Examples of generated values: 1.4608754717038153e-7, true, "<EO", [], 0…
+
+fc.anything({
+  withBigInt: true,
+  withBoxedValues: true,
+  withMap: true,
+  withNullPrototype: true,
+  withObjectString: true,
+  withSet: true,
+})
+// Examples of generated values: 2.220446049250313e-16, ["z3#bX","nU","*Trp","C3z/T8j"], Object.assign(Object.create(null),{"Z":new Map([["&BRun*T",new Number(2.220446049250313e-16)]])}), Object.assign(Object.create(null),{"%":new Number(0),"2x":new Number(Number.POSITIVE_INFINITY),"O":new Number(-9007199254740991),"f-#Snk":new Number(1.7976931348623157e+308)}), new Map([["g`",new Number(0.6098877327434217)],["Rbn {Hk>",new Number(0.694724263679241)],["",new Number(0.2290206742270351)],["new Map([[\"VcD/2D6m+\",new Boolean(true)],[\"\\\\nt\",new Boolean(true)],[\"\",new Boolean(true)]])",new Number(0.75753818431766)]])…
+```
+</details>
+
 ### Function
 
 ### More
-
-## Objects (:any)
-
-The framework is able to generate totally random objects in order to adapt to programs that do not requires any specific data structure. All those custom types can be parametrized using `ObjectConstraints.Settings`.
-
-```typescript
-export module ObjectConstraints {
-    export interface Settings {
-        maxDepth?: number;          // maximal depth allowed for this object
-        maxKeys?: number;           // maximal number of keys (and values)
-        key?: Arbitrary<string>;    // arbitrary for key
-        values?: Arbitrary<any>[];  // arbitrary responsible for base value
-        withBoxedValues?: boolean;  // adapt all entries within `values` to generate boxed version of the value too
-        withMap?: boolean;          // also generate Map
-        withSet?: boolean;          // also generate Set
-        withObjectString?: boolean; // also generate string representations of object instances
-        withNullPrototype?: boolean;// also generate string representations of object instances
-        withBigInt?: boolean;       // also generate BigInt
-    };
-};
-```
-
-Default for `key` is: `fc.string()`.
-
-Default for `values` are: `fc.boolean()`, `fc.integer()`, `fc.double()`, `fc.string()` and constants among `null`, `undefined`, `Number.NaN`, `+0`, `-0`, `Number.EPSILON`, `Number.MIN_VALUE`, `Number.MAX_VALUE` , `Number.MIN_SAFE_INTEGER`, `Number.MAX_SAFE_INTEGER`, `Number.POSITIVE_INFINITY` or `Number.NEGATIVE_INFINITY`.
-
-- `fc.anything()` or `fc.anything(settings: ObjectConstraints.Settings)` generate a possible values coming from Settings and all objects or arrays derived from those same settings
-- `fc.object()` or `fc.object(settings: ObjectConstraints.Settings)` generate an object
-- `fc.jsonObject()` or `fc.jsonObject(maxDepth: number)` generate an object that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
-- `fc.unicodeJsonObject()` or `fc.unicodeJsonObject(maxDepth: number)` generate an object with potentially unicode characters that is eligible to be stringified and parsed back to itself (object compatible with json stringify)
 
 ## Recursive structures
 
