@@ -2342,6 +2342,184 @@ fc.anything({
 
 ### Function
 
+<details>
+<summary><b>compareBooleanFunc</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#comparebooleanfunc">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate a comparison function taking two parameters `a` and `b` and producing a boolean value.
+>
+> `true` means that `a < b`, `false` that `a = b` or `a > b`
+
+*&#8195;Signatures*
+
+- `fc.compareBooleanFunc()`
+
+*&#8195;Usages*
+
+```js
+fc.compareBooleanFunc()
+// Examples of generated values:
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA < hB;
+//     const hA = hash('-1984194606' + stringify(a)) % 1019120836;
+//     const hB = hash('-1984194606' + stringify(b)) % 1019120836;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA < hB;
+//     const hA = hash('-1859641033' + stringify(a)) % 12;
+//     const hB = hash('-1859641033' + stringify(b)) % 12;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA < hB;
+//     const hA = hash('1845341787' + stringify(a)) % 31;
+//     const hB = hash('1845341787' + stringify(b)) % 31;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA < hB;
+//     const hA = hash('1127181441' + stringify(a)) % 3255607487;
+//     const hB = hash('1127181441' + stringify(b)) % 3255607487;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA < hB;
+//     const hA = hash('-31' + stringify(a)) % 1934705594;
+//     const hB = hash('-31' + stringify(b)) % 1934705594;
+//     return cmp(hA, hB);
+//   }
+// • …
+```
+</details>
+
+<details>
+<summary><b>compareFunc</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#comparefunc">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate a comparison function taking two parameters `a` and `b` and producing an integer value.
+>
+> Output is zero when `a` and `b` are considered to be equivalent. Output is strictly inferior to zero means that `a` should be considered strictly inferior to `b` (similar for strictly superior to zero)
+
+*&#8195;Signatures*
+
+- `fc.compareFunc()`
+
+*&#8195;Usages*
+
+```js
+fc.compareFunc()
+// Examples of generated values:
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA - hB;
+//     const hA = hash('1501554938' + stringify(a)) % 22;
+//     const hB = hash('1501554938' + stringify(b)) % 22;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA - hB;
+//     const hA = hash('-700879918' + stringify(a)) % 386108697;
+//     const hB = hash('-700879918' + stringify(b)) % 386108697;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA - hB;
+//     const hA = hash('-579121620' + stringify(a)) % 26;
+//     const hB = hash('-579121620' + stringify(b)) % 26;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA - hB;
+//     const hA = hash('1112768059' + stringify(a)) % 242967477;
+//     const hB = hash('1112768059' + stringify(b)) % 242967477;
+//     return cmp(hA, hB);
+//   }
+// • function(a, b) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const cmp = (hA, hB) => hA - hB;
+//     const hA = hash('-235565807' + stringify(a)) % 1424836938;
+//     const hB = hash('-235565807' + stringify(b)) % 1424836938;
+//     return cmp(hA, hB);
+//   }
+// • …
+```
+</details>
+
+<details>
+<summary><b>func</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#func">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate a function producing values using an underlying arbitrary
+
+*&#8195;Signatures*
+
+- `fc.func(arb)`
+
+*&#8195;with:*
+
+- `arb` — _arbitrary responsible to produce the values_
+
+*&#8195;Usages*
+
+```js
+fc.func(fc.nat())
+// Examples of generated values:
+// • function(...args) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const outs = [1681938411,278250656,2138206756,937216340,1834485983,1975998514,995463917,1800207668,220176306,1664905459];
+//     return outs[hash('-519242785' + stringify(args)) % outs.length];
+//   }
+// • function(...args) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const outs = [17,955622301,10];
+//     return outs[hash('-1016968799' + stringify(args)) % outs.length];
+//   }
+// • function(...args) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const outs = [1521748689,316610179,1601449343,1057761988,2088580527,1974557534,1618733983,882909472,1739615127];
+//     return outs[hash('-31' + stringify(args)) % outs.length];
+//   }
+// • function(...args) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const outs = [269035825,95461057,227736260,947243235];
+//     return outs[hash('-1067688743' + stringify(args)) % outs.length];
+//   }
+// • function(...args) {
+//     // With hash and stringify coming from fast-check
+//     
+//     const outs = [755444117,555135045,511312424,1358336721,939579971,1343197442,421884569,2022508190,140388674];
+//     return outs[hash('-708292322' + stringify(args)) % outs.length];
+//   }
+// • …
+```
+</details>
+
 ### More
 
 ## Recursive structures
@@ -2375,12 +2553,6 @@ const leaf = fc.nat;
 tree() // Is a tree arbitrary (as fc.nat() is an integer arbitrary)
        // with maximal depth of 10 (equivalent to tree(10))
 ```
-
-## Functions
-
-- `compareBooleanFunc()` generate a comparison function taking two parameters `a` and `b` and producing a boolean value. `true` means that `a < b`, `false` that `a = b` or `a > b`
-- `compareFunc()` generate a comparison function taking two parameters `a` and `b` and producing an integer value. Output is zero when `a` and `b` are considered to be equivalent. Output is strictly inferior to zero means that `a` should be considered strictly inferior to `b` (similar for strictly superior to zero)
-- `func(arb: Arbitrary<TOut>)` generate a function of type `(...args: TArgs) => TOut` outputing values generated using `arb`
 
 ## Extended tools
 

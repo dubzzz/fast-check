@@ -114,8 +114,13 @@ function refreshContent(originalContent: string): { content: string; numExecuted
 
       const uniqueGeneratedValues = Array.from(new Set(generatedValues)).slice(0, TargetNumExamples);
       // If the display for generated values is too long, we split it into a list of items
-      if (uniqueGeneratedValues.reduce((totalLength, value) => totalLength + value.length, 0) > 120) {
-        return `${snippet}${[...uniqueGeneratedValues, '…'].map((v) => `\n// • ${v}`).join('')}`;
+      if (
+        uniqueGeneratedValues.some((value) => value.includes('\n')) ||
+        uniqueGeneratedValues.reduce((totalLength, value) => totalLength + value.length, 0) > 120
+      ) {
+        return `${snippet}${[...uniqueGeneratedValues, '…']
+          .map((v) => `\n// • ${v.replace(/\n/gm, '\n//   ')}`)
+          .join('')}`;
       } else {
         return `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
       }
