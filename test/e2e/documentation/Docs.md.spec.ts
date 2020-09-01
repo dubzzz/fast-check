@@ -101,7 +101,7 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       ++numExecutedSnippets;
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const generatedValues = (function (fc) {
+      const generatedValues = (function (fc): string[] {
         const numRuns = 5 * TargetNumExamples;
         const seed = snippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
         const evalCode = `fc.sample(${snippet}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
@@ -113,7 +113,12 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       })(fc);
 
       const uniqueGeneratedValues = Array.from(new Set(generatedValues)).slice(0, TargetNumExamples);
-      return `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
+      // If the display for generated values is too long, we split it into a list of items
+      if (uniqueGeneratedValues.reduce((totalLength, value) => totalLength + value.length, 0) > 120) {
+        return `${snippet}${[...uniqueGeneratedValues, '…'].map((v) => `\n// • ${v}`).join('')}`;
+      } else {
+        return `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
+      }
     });
 
     return addJsCodeBlock(updatedSnippets.join(''));
