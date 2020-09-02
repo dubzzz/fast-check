@@ -11,6 +11,7 @@ const TargetNumExamples = 5;
 const JsBlockStart = '```js';
 const JsBlockEnd = '```';
 const CommentForGeneratedValues = '// Examples of generated values:';
+const CommentForArbitraryIndicator = '// Use the arbitrary:';
 
 describe('Docs.md', () => {
   it('Should check code snippets validity and fix generated values', () => {
@@ -104,7 +105,11 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       const generatedValues = (function (fc): string[] {
         const numRuns = 5 * TargetNumExamples;
         const seed = snippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-        const evalCode = `fc.sample(${snippet}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
+        const indexArbitraryPart = snippet.indexOf(CommentForArbitraryIndicator);
+
+        const preparationPart = indexArbitraryPart !== -1 ? snippet.substring(0, indexArbitraryPart) : '';
+        const arbitraryPart = indexArbitraryPart !== -1 ? snippet.substring(indexArbitraryPart) : snippet;
+        const evalCode = `${preparationPart}\nfc.sample(${arbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
         try {
           return eval(evalCode);
         } catch (err) {

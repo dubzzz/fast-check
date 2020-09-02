@@ -18,16 +18,15 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
   - [Multiple characters](#multiple-characters)
   - [More specific strings](#more-specific-strings)
 - [Date](#date)
-- [Falsy](#falsy)
 - [Combinators](#combinators)
   - [Simple](#simple)
   - [Array](#array)
   - [Object](#object)
   - [Function](#function)
+  - [Recursive structures](#recursive-structures)
   - [More](#more)
 - [Others](#others)
 - [Objects](#objects-any)
-- [Recursive structures](#recursive-structures)
 - [Functions](#functions)
 - [Extended tools](#extended-tools)
 - [Model based testing](#model-based-testing)
@@ -1428,37 +1427,6 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 ```
 </details>
 
-## Falsy
-
-<details>
-<summary><b>falsy</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#falsy">api</a>]</summary><br/>
-
-*&#8195;Description*
-
-> Falsy values
->
-> Generate falsy values ie. one of: `false`, `null`, `undefined`, `0`, `''`, `Number.NaN` or `0n`.
-
-*&#8195;Signatures*
-
-- `fc.falsy()`
-- `fc.date({ withBigInt? })`
-
-*&#8195;with:*
-
-- `withBigInt?` — default: `false` — _enable `0n`_
-
-*&#8195;Usages*
-
-```js
-fc.falsy()
-// Examples of generated values: null, false, 0, Number.NaN, ""…
-
-fc.falsy({ withBigInt: true })
-// Examples of generated values: 0, false, Number.NaN, undefined, ""…
-```
-</details>
-
 ## Combinators
 
 ### Simple
@@ -1544,18 +1512,19 @@ fc.constantFrom(1, 'string', {})
 fc.clonedConstant(1)
 // Examples of generated values: 1…
 
-fc.clonedConstant(
-  ((objectInstance) => {
-    // Rq: We do not handle deep objects in this snippet
-    // But we will get another instance of objectInstance for each run
-    // ie. objectInstanceRunA !== objectInstanceRunB while having isEqual(objectInstanceRunA, objectInstanceRunB)
-    const withCloneMethod = () => ({
-      ...objectInstance,
-      [fc.cloneMethod]: withCloneMethod,
-    });
-    return withCloneMethod();
-  })({ keyA: 1, keyB: 2 })
-)
+// Setup helpers:
+function buildCloneable(objectInstance) {
+  // Rq: We do not handle deep objects in this snippet
+  // But we will get another instance of objectInstance for each run
+  // ie. objectInstanceRunA !== objectInstanceRunB while having isEqual(objectInstanceRunA, objectInstanceRunB)
+  const withCloneMethod = () => ({
+    ...objectInstance,
+    [fc.cloneMethod]: withCloneMethod,
+  });
+  return withCloneMethod();
+}
+// Use the arbitrary:
+fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 // Examples of generated values: {"keyA":1,"keyB":2}…
 ```
 </details>
@@ -2520,13 +2489,29 @@ fc.func(fc.nat())
 ```
 </details>
 
-### More
+### Recursive structures
 
-## Recursive structures
+<details>
+<summary><b>letrec</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#letrec">api</a>]</summary><br/>
 
-- `fc.letrec(builder: (tie) => { [arbitraryName: string]: Arbitrary<T> })` produce arbitraries as specified by builder function. The `tie` function given to builder should be used as a placeholder to handle the recursion. It takes as input the name of the arbitrary to use in the recursion
+*&#8195;Description*
 
-```typescript
+> Generate recursive structures
+>
+> Contrary to `fc.memo` there is no easy way to stop the resursion. Structure may grow infinitely if growing scenarii are too frequent compared to terminal ones.
+
+*&#8195;Signatures*
+
+- `fc.letrec(builder)`
+
+*&#8195;with:*
+
+- `builder` — _builder function defining how to build the recursive structure, it answers to the signature `(tie) => `object with key corresponding to the name of the arbitrary and with vaue the arbitrary itself. The `tie` function given to builder should be used as a placeholder to handle the recursion. It takes as input the name of the arbitrary to use in the recursion._
+
+*&#8195;Usages*
+
+```js
+// Setup the tree structure:
 const { tree } = fc.letrec(tie => ({
   // tree is 1 / 3 of node, 2 / 3 of leaf
   // Warning: as there is no control over the depth of the data-structures generated
@@ -2535,24 +2520,185 @@ const { tree } = fc.letrec(tie => ({
   // with p = 0.50 the probability to have a tree of depth above 10 is 13.9 %
   // with p = 0.33 the probability to have a tree of depth above 10 is  0.6 %
   tree: fc.oneof(tie('node'), tie('leaf'), tie('leaf')),
-  node: fc.tuple(tie('tree'), tie('tree')),
+  node: fc.record({
+    left: tie('tree'),
+    right: tie('tree'),
+  }),
   leaf: fc.nat()
 }));
-tree() // Is a tree arbitrary (as fc.nat() is an integer arbitrary)
+// Use the arbitrary:
+tree
+// Examples of generated values:
+// • {"left":8,"right":2}
+// • 25
+// • {"left":{"left":6,"right":502891881},"right":{"left":{"left":18,"right":10},"right":{"left":26,"right":3}}}
+// • 1743617912
+// • 260700055
+// • …
 ```
+</details>
 
-- `fc.memo<T>(builder: (n: number) => Arbitrary<T>): ((n?: number) => Arbitrary<T>)` produce arbitraries as specified by builder function. Contrary to `fc.letrec`, `fc.memo` can control the maximal depth of your recursive structure by relying on the `n` parameter given as input of the `builder` function
+<details>
+<summary><b>memo</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#memo">api</a>]</summary><br/>
 
-```typescript
-const tree: fc.Memo<Tree> = fc.memo(n => fc.oneof(node(n), leaf()));
-const node: fc.Memo<Tree> = fc.memo(n => {
+*&#8195;Description*
+
+> Generate recursive structures
+>
+> Contrary to `fc.letrec` you can have a higher control over the depth of the resursion in your `builder` function.
+
+*&#8195;Signatures*
+
+- `fc.memo(builder)`
+
+*&#8195;with:*
+
+- `builder` — _builder function defining how to build the recursive structure. It receives as input the remaining depth and has to return an arbitrary (potentially another `memo` or itself)_
+
+*&#8195;Usages*
+
+```js
+// Setup the tree structure:
+const tree = fc.memo(n => fc.oneof(node(n), node(n), leaf())); // double the probability of nodes compared to leaves
+const node = fc.memo(n => {
   if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
   return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
 });
 const leaf = fc.nat;
-tree() // Is a tree arbitrary (as fc.nat() is an integer arbitrary)
-       // with maximal depth of 10 (equivalent to tree(10))
+// Use the arbitrary:
+tree(2)
+// Note: Only produce trees having a maximal depth of 2
+// Examples of generated values:
+// • {"left":{"left":28,"right":17},"right":{"left":13,"right":210148030}}
+// • 1883170510
+// • 4879206
+// • {"left":{"left":5,"right":1000891966},"right":2077419944}
+// • {"left":{"left":9,"right":16},"right":1628923279}
+// • …
 ```
+</details>
+
+### More
+
+<details>
+<summary><b>.filter</b> - [<a href="https://dubzzz.github.io/fast-check/classes/arbitrary.html#filter">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Filter an existing arbitrary
+
+*&#8195;Signatures*
+
+- `.filter(predicate)`
+
+*&#8195;with:*
+
+- `predicate` — _only keeps values such as `predicate(value) === true`_
+
+*&#8195;Usages*
+
+```js
+fc.integer().filter(n => n % 2 === 0)
+// Note: Only produce even integer values
+// Examples of generated values: -757498916, -70006654, -8, 10, 1991604420…
+
+fc.integer().filter(n => n % 2 !== 0)
+// Note: Only produce odd integer values
+// Examples of generated values: -3, 220007129, 2035004479, -19, 13…
+
+fc.string().filter(s => s[0] < s[1])
+// Note: Only produce strings with `s[0] < s[1]`
+// Examples of generated values: "dp]dA+GK", "Sa{6S(", ",hsLWj#=y", "]b", "cd+M."…
+```
+</details>
+
+<details>
+<summary><b>.map</b> - [<a href="https://dubzzz.github.io/fast-check/classes/arbitrary.html#map">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Map an existing arbitrary
+
+*&#8195;Signatures*
+
+- `.map(mapper)`
+
+*&#8195;with:*
+
+- `mapper` — _transform the produced value into another one_
+
+*&#8195;Usages*
+
+```js
+fc.nat(1024).map(n => n * n)
+// Note: Produce only square values
+// Examples of generated values: 680625, 441, 422500, 88209, 25…
+
+fc.nat().map(n => String(n))
+// Note: Change the type of the produced value from number to string
+// Examples of generated values: "2076933868", "22", "1971335630", "260497460", "0"…
+
+fc.tuple(fc.integer(), fc.integer())
+  .map(t => t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]])
+// Note: Generate a range [min, max]
+// Examples of generated values: [30,1211945858], [-1079425464,-233690526], [-303189586,-12], [15,1592081894], [-1339524192,-9]…
+
+fc.string().map(s => `[${s.length}] -> ${s}`)
+// Examples of generated values: "[8] -> 40M;<f/D", "[2] -> 7a", "[2] -> %:", "[2] -> \\!", "[9] -> 0LFg6!aMF"…
+```
+</details>
+
+<details>
+<summary><b>.chain</b> - [<a href="https://dubzzz.github.io/fast-check/classes/arbitrary.html#chain">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> _Flat-_Map an existing arbitrary
+>
+> ⚠️ Be aware that the shrinker of such construct might not be able to shrink as much as possible (more details [here](https://github.com/dubzzz/fast-check/issues/650#issuecomment-648397230))
+
+*&#8195;Signatures*
+
+- `.chain(fmapper)`
+
+*&#8195;with:*
+
+- `fmapper` — _produce an arbitrary based on a generated value_
+
+*&#8195;Usages*
+
+```js
+fc.nat().chain(min => fc.tuple(fc.constant(min), fc.integer(min, 0xffffffff)))
+// Note: Produce a valid range
+// Examples of generated values: [30,39], [722484778,1844243122], [52754604,52754611], [231714704,420820067], [3983528,3983554]…
+```
+</details>
+
+## Others
+
+<details>
+<summary><b>falsy</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#falsy">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Falsy values
+>
+> Generate falsy values ie. one of: `false`, `null`, `undefined`, `0`, `''`, `Number.NaN` or `0n`.
+
+*&#8195;Signatures*
+
+- `fc.falsy()`
+
+*&#8195;Usages*
+
+```js
+fc.falsy()
+// Examples of generated values: null, false, 0, Number.NaN, ""…
+
+fc.falsy({ withBigInt: true })
+// Examples of generated values: 0, false, Number.NaN, undefined, ""…
+```
+</details>
 
 ## Extended tools
 
