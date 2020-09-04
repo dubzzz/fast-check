@@ -1,4 +1,4 @@
-# [:house:](../README.md) Hands on property based
+# [:house:](../README.md) Hands on property based (JavaScript version)
 
 Or go to the [TypeScript version](./HandsOnPropertyBased.md) of the Hands on.
 
