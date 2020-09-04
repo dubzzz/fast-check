@@ -2728,8 +2728,7 @@ fc.falsy({ withBigInt: true })
 
 ```js
 fc.context()
-// The produced value - let's call it ctx - can be used as a logger
-// that will be specifc to this run (and only this run).
+// The produced value - let's call it ctx - can be used as a logger that will be specific to this run (and only this run).
 // It can be called as follow: ctx.log('My log')
 ```
 </details>
