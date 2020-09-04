@@ -1,10 +1,32 @@
 # [:house:](../README.md) Arbitraries
 
-Arbitraries are responsible for the random - *but deterministic* - generation and shrink of datatypes. [They can be combined together](./AdvancedArbitraries.md) to build more complex datatypes.
+Property based testing frameworks rely on two main building blocks:
+- [Runners](./Runners.md) — _they are responsible to run, execute and check that properties stay true whatever the generated value_
+- Arbitraries — _they are responsible for the random *but deterministic* generation of values, they may also offer shrinking capabilities_
 
-This documentation lists all the built-in arbitraries provided by fast-check.
+This documentation lists all the built-in arbitraries provided by `fast-check`. Please note that you can still create your own ones by either [combining them together](#combinators) or by [building it from scratch](./AdvancedArbitraries.md#build-your-own). You can refer also to the [API Reference](https://dubzzz.github.io/fast-check/) for more details.
 
-You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for more details.
+In a nutshell, when defining your tests and properties you will have to combine both the [Runners](./Runners.md) and Arbitraries as follow:
+
+```js
+fc.assert( // run the property several times (in other words execute the test)
+  fc.property( // define the property: arbitrary and what should be observed (predicate)
+    arb1, arb2, ..., // 1 to +infinity arbitraries
+    (valueGeneratedByArb1, alueGeneratedByArb2, ...) => { // predicate receives generated values
+      // In case of success: No return, 'return undefined' or 'return true'
+      // In case of failure: Throw or 'return false'
+    }
+  )
+)
+
+// Example:
+fc.assert(
+  fc.property(
+    fc.string(), fc.string(), fc.string(),
+    (a, b, c) => isSubstring(b, a + b + c),
+  )
+)
+```
 
 ## Table of contents
 
@@ -26,6 +48,7 @@ You can refer to the [API Reference](https://dubzzz.github.io/fast-check/) for m
   - [Recursive structures](#recursive-structures)
   - [More](#more)
 - [Others](#others)
+- [Going further?](#going-further)
 
 ## Boolean
 
@@ -2788,3 +2811,11 @@ Refer to [Model based testing or UI test](./Tips.md#model-based-testing-or-ui-te
 
 Refer to [Race conditions detection](./RaceConditions.md) or [Detect race conditions (quick overview)](./Tips.md#detect-race-conditions) for more details.
 </details>
+
+## Going further?
+
+- [API Reference](https://dubzzz.github.io/fast-check/)
+- [Advanced arbitraries (guide)](./AdvancedArbitraries.md)
+- [Model based testing or UI test](./Tips.md#model-based-testing-or-ui-test)
+- [Race conditions detection](./RaceConditions.md)
+- [Detect race conditions (quick overview)](./Tips.md#detect-race-conditions)
