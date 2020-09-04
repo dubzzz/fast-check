@@ -2742,7 +2742,7 @@ fc.context()
 > Iterables of commands
 >
 > Model based testing approach extends the power of property based testing to state machines.
-> It relies on commands or operations thta a user can run on the system. Those commands define:
+> It relies on commands or operations that a user can run on the system. Those commands define:
 > - pre-condition — confirm whether or not the command can be executed given the current context
 > - execution — update a simplified context or _model_ while updating and checking the _real_ system
 
