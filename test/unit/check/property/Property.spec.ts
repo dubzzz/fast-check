@@ -9,7 +9,7 @@ import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 
 describe('Property', () => {
-  beforeEach(() => resetConfigureGlobal());
+  afterEach(() => resetConfigureGlobal());
 
   it('Should fail if predicate fails', () => {
     const p = property(stubArb.single(8), (_arg: number) => {

@@ -9,7 +9,7 @@ import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 
 describe('AsyncProperty', () => {
-  beforeEach(() => resetConfigureGlobal());
+  afterEach(() => resetConfigureGlobal());
 
   it('Should fail if predicate fails', async () => {
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
