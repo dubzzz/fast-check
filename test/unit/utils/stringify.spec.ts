@@ -1,5 +1,8 @@
 import * as fc from '../../../lib/fast-check';
 
+// The package is an alias for 'buffer', the most used polyfill for Buffer in the browser
+import { Buffer as NotNodeBuffer } from '@buffer';
+
 import { stringify } from '../../../src/utils/stringify';
 
 declare function BigInt(n: number | bigint | string): bigint;
@@ -160,7 +163,13 @@ describe('stringify', () => {
         return Buffer.isBuffer(bufferFromStringified) && buffer.equals(bufferFromStringified);
       })
     );
-    // NOTE: Buffer is node-specific
+  });
+  it('Should be able to stringify a polyfill-ed Buffer', () => {
+    const buffer = NotNodeBuffer.from([1, 2, 3, 4]);
+    expect(NotNodeBuffer).not.toBe(Buffer);
+    expect(buffer instanceof NotNodeBuffer).toBe(true);
+    expect(buffer instanceof Buffer).toBe(false);
+    expect(stringify(buffer)).toEqual('Buffer.from([1,2,3,4])');
   });
   it('Should be able to stringify Int8Array', () => {
     expect(stringify(Int8Array.from([-128, 5, 127]))).toEqual('Int8Array.from([-128,5,127])');
