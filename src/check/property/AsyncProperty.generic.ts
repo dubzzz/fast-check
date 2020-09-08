@@ -3,6 +3,7 @@ import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
+import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -10,7 +11,9 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
  *
  * @public
  */
-export type AsyncPropertyHookFunction = (() => Promise<unknown>) | (() => void);
+export type AsyncPropertyHookFunction =
+  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => Promise<unknown>)
+  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => void);
 
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
@@ -44,10 +47,27 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
-  static dummyHook: AsyncPropertyHookFunction = () => {};
-  private beforeEachHook: AsyncPropertyHookFunction = AsyncProperty.dummyHook;
-  private afterEachHook: AsyncPropertyHookFunction = AsyncProperty.dummyHook;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {}
+  static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
+  private beforeEachHook: GlobalAsyncPropertyHookFunction;
+  private afterEachHook: GlobalAsyncPropertyHookFunction;
+  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
+    const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
+
+    if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
+      throw Error(
+        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties'
+      );
+    }
+
+    if (asyncAfterEach !== undefined && afterEach !== undefined) {
+      throw Error(
+        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties'
+      );
+    }
+
+    this.beforeEachHook = asyncBeforeEach || beforeEach || AsyncProperty.dummyHook;
+    this.afterEachHook = asyncAfterEach || afterEach || AsyncProperty.dummyHook;
+  }
   isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
@@ -73,7 +93,8 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   beforeEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
-    this.beforeEachHook = hookFunction;
+    const previousBeforeEachHook = this.beforeEachHook;
+    this.beforeEachHook = () => hookFunction(previousBeforeEachHook);
     return this;
   }
   /**
@@ -81,7 +102,8 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * @param hookFunction - Function to be called
    */
   afterEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
-    this.afterEachHook = hookFunction;
+    const previousAfterEachHook = this.afterEachHook;
+    this.afterEachHook = () => hookFunction(previousAfterEachHook);
     return this;
   }
 }

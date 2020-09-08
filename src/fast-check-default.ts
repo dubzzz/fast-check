@@ -97,6 +97,8 @@ import { Random } from './random/generator/Random';
 import {
   configureGlobal,
   GlobalParameters,
+  GlobalAsyncPropertyHookFunction,
+  GlobalPropertyHookFunction,
   readConfigureGlobal,
   resetConfigureGlobal,
 } from './check/runner/configuration/GlobalParameters';
@@ -295,6 +297,8 @@ export {
   Memo,
   // run configuration
   GlobalParameters,
+  GlobalAsyncPropertyHookFunction,
+  GlobalPropertyHookFunction,
   Parameters,
   RandomType,
   VerbosityLevel,

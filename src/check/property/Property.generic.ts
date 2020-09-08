@@ -3,6 +3,7 @@ import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
+import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -10,7 +11,7 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
  *
  * @public
  */
-export type PropertyHookFunction = () => void;
+export type PropertyHookFunction = (globalHookFunction: GlobalPropertyHookFunction) => void;
 
 /**
  * Interface for synchronous property, see {@link IRawProperty}
@@ -28,7 +29,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
    * @param invalidHookFunction - Function to be called, please provide a valid hook function
    */
   beforeEach(
-    invalidHookFunction: () => Promise<unknown>
+    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
   ): 'beforeEach expects a synchronous function but was given a function returning a Promise';
 
   /**
@@ -42,7 +43,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
    * @param invalidHookFunction - Function to be called, please provide a valid hook function
    */
   afterEach(
-    invalidHookFunction: () => Promise<unknown>
+    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
   ): 'afterEach expects a synchronous function but was given a function returning a Promise';
   /**
    * Define a function that should be called after all calls to the predicate
@@ -59,10 +60,24 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
  * @internal
  */
 export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
-  static dummyHook: PropertyHookFunction = () => {};
-  private beforeEachHook: PropertyHookFunction = Property.dummyHook;
-  private afterEachHook: PropertyHookFunction = Property.dummyHook;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {}
+  static dummyHook: GlobalPropertyHookFunction = () => {};
+  private beforeEachHook: GlobalPropertyHookFunction;
+  private afterEachHook: GlobalPropertyHookFunction;
+  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
+    const { beforeEach = Property.dummyHook, afterEach = Property.dummyHook, asyncBeforeEach, asyncAfterEach } =
+      readConfigureGlobal() || {};
+
+    if (asyncBeforeEach !== undefined) {
+      throw Error('"asyncBeforeEach" can\'t be set when running synchronous properties');
+    }
+
+    if (asyncAfterEach !== undefined) {
+      throw Error('"asyncAfterEach" can\'t be set when running synchronous properties');
+    }
+
+    this.beforeEachHook = beforeEach;
+    this.afterEachHook = afterEach;
+  }
   isAsync = () => false as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
@@ -83,17 +98,19 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     }
   }
 
-  beforeEach(invalidHookFunction: () => Promise<unknown>): never;
+  beforeEach(invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>): never;
   beforeEach(validHookFunction: PropertyHookFunction): Property<Ts>;
   beforeEach(hookFunction: PropertyHookFunction): unknown {
-    this.beforeEachHook = hookFunction;
+    const previousBeforeEachHook = this.beforeEachHook;
+    this.beforeEachHook = () => hookFunction(previousBeforeEachHook);
     return this;
   }
 
-  afterEach(invalidHookFunction: () => Promise<unknown>): never;
+  afterEach(invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>): never;
   afterEach(hookFunction: PropertyHookFunction): Property<Ts>;
   afterEach(hookFunction: PropertyHookFunction): unknown {
-    this.afterEachHook = hookFunction;
+    const previousAfterEachHook = this.afterEachHook;
+    this.afterEachHook = () => hookFunction(previousAfterEachHook);
     return this;
   }
 }
