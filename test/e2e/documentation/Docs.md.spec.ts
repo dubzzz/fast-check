@@ -18,6 +18,26 @@ describe('Docs.md', () => {
     const originalFileContent = fs.readFileSync(`${__dirname}/../../../documentation/Arbitraries.md`).toString();
     const { content: fileContent } = refreshContent(originalFileContent);
 
+    if (Number(process.versions.node.split('.')[0]) < 12) {
+      // There were some updates regarding how to stringify invalid surrogate pairs
+      // between node 10 and node 12 with JSON.stringify.
+      // It directly impacts fc.stringify.
+      //
+      // In node 10: JSON.stringify("\udff5") === '"\udff5"'
+      // In node 12: JSON.stringify("\udff5") === '"\\udff5"'
+      // You may try with: JSON.stringify("\udff5").split('').map(c => c.charCodeAt(0).toString(16))
+
+      console.warn(`Unable to properly check code snippets defined in the documentation...`);
+
+      const sanitize = (s: string) => s.replace(/(\\)(u[0-9a-f]{4})/g, (c) => JSON.parse('"' + c + '"'));
+      expect(sanitize(fileContent)).toEqual(sanitize(originalFileContent));
+
+      if (process.env.UPDATE_CODE_SNIPPETS) {
+        throw new Error('You must use a more recent release of node to update code snippets (>=12)');
+      }
+      return;
+    }
+
     if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
       console.warn(`Updating code snippets defined in the documentation...`);
       fs.writeFileSync(`${__dirname}/../../../documentation/Arbitraries.md`, fileContent);
