@@ -3,7 +3,7 @@ import * as fc from '../../../lib/fast-check';
 // The package is an alias for 'buffer', the most used polyfill for Buffer in the browser
 import { Buffer as NotNodeBuffer } from '@buffer';
 
-import { stringify } from '../../../src/utils/stringify';
+import { asyncStringify, stringify } from '../../../src/utils/stringify';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
@@ -151,6 +151,12 @@ describe('stringify', () => {
     expect(stringify({ ['__proto__']: 1 })).toEqual('{["__proto__"]:1}');
     // NOTE: {__proto__: 1} and {'__proto__': 1} are not the same as {['__proto__']: 1}
   });
+  it('Should be able to stringify Promise but not show its value or status in sync mode', () => {
+    expect(stringify(Promise.resolve(1))).toEqual('new Promise(() => {/*unknown status*/})');
+    expect(stringify(Promise.reject(1))).toEqual('new Promise(() => {/*unknown status*/})');
+    expect(stringify(new Promise(() => {}))).toEqual('new Promise(() => {/*unknown status*/})');
+    expect(stringify({ a: Promise.resolve(1) })).toEqual('{"a":new Promise(() => {/*unknown status*/})}');
+  });
   it('Should be able to stringify Buffer', () => {
     expect(stringify(Buffer.from([1, 2, 3, 4]))).toEqual('Buffer.from([1,2,3,4])');
     expect(stringify(Buffer.alloc(3))).toEqual('Buffer.from([0,0,0])');
@@ -232,6 +238,36 @@ describe('stringify', () => {
       },
     });
     expect(stringify(instance)).toEqual('[object Object]');
+  });
+});
+
+describe('asyncStringify', () => {
+  it('Should be able to stringify resolved Promise', async () => {
+    expect(await asyncStringify(Promise.resolve(1))).toEqual('Promise.resolve(1)');
+  });
+  it('Should be able to stringify rejected Promise', async () => {
+    expect(await asyncStringify(Promise.reject(1))).toEqual('Promise.reject(1)');
+  });
+  it('Should be able to stringify rejected Promise with Error', async () => {
+    expect(await asyncStringify(Promise.reject(new Error('message')))).toEqual('Promise.reject(new Error("message"))');
+  });
+  it('Should be able to stringify pending Promise', async () => {
+    expect(await asyncStringify(new Promise(() => {}))).toEqual('new Promise(() => {/*pending*/})');
+  });
+  it('Should be able to stringify Promise in other instances', async () => {
+    expect(await asyncStringify([Promise.resolve(1)])).toEqual('[Promise.resolve(1)]');
+    expect(await asyncStringify(new Set([Promise.resolve(1)]))).toEqual('new Set([Promise.resolve(1)])');
+    expect(await asyncStringify({ a: Promise.resolve(1) })).toEqual('{"a":Promise.resolve(1)}');
+  });
+  it('Should be able to stringify nested Promise', async () => {
+    const nestedPromises = Promise.resolve({
+      lvl1: Promise.resolve({
+        lvl2: Promise.resolve(2),
+      }),
+    });
+    expect(await asyncStringify(nestedPromises)).toEqual(
+      'Promise.resolve({"lvl1":Promise.resolve({"lvl2":Promise.resolve(2)})})'
+    );
   });
 });
 

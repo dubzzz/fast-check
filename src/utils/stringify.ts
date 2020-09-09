@@ -1,6 +1,9 @@
 /** @internal */
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
 
+/** @internal */
+type AsyncContent = { state: 'fulfilled' | 'rejected' | 'pending' | 'unknown'; value: unknown };
+
 /**
  * Only called with symbol produced by Symbol(string | undefined)
  * Not Symbol.for(string)
@@ -31,7 +34,11 @@ function stringifyNumber(numValue: number) {
 }
 
 /** @internal */
-export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string {
+export function stringifyInternal<Ts>(
+  value: Ts,
+  previousValues: any[],
+  getAsyncContent: (p: unknown) => AsyncContent
+): string {
   const currentValues = previousValues.concat([value]);
   if (typeof value === 'object') {
     // early cycle detection for objects
@@ -39,7 +46,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
   }
   switch (Object.prototype.toString.call(value)) {
     case '[object Array]':
-      return `[${(value as any).map((v: any) => stringifyInternal(v, currentValues)).join(',')}]`;
+      return `[${(value as any).map((v: any) => stringifyInternal(v, currentValues, getAsyncContent)).join(',')}]`;
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]':
@@ -49,7 +56,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
     }
     case '[object Map]':
-      return `new Map(${stringifyInternal(Array.from(value as any), currentValues)})`;
+      return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
     case '[object Null]':
       return `null`;
     case '[object Number]':
@@ -72,7 +79,8 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
             (k) =>
               `${k === '__proto__' ? '["__proto__"]' : JSON.stringify(k)}:${stringifyInternal(
                 (value as any)[k],
-                currentValues
+                currentValues,
+                getAsyncContent
               )}`
           )
           .join(',') +
@@ -83,7 +91,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       return rawRepr;
     }
     case '[object Set]':
-      return `new Set(${stringifyInternal(Array.from(value as any), currentValues)})`;
+      return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
     case '[object String]':
       return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
     case '[object Symbol]': {
@@ -94,6 +102,25 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       const desc = getSymbolDescription(s);
       return desc !== null ? `Symbol(${JSON.stringify(desc)})` : `Symbol()`;
     }
+    case '[object Promise]': {
+      const promiseContent = getAsyncContent(value);
+      switch (promiseContent.state) {
+        case 'fulfilled':
+          return `Promise.resolve(${stringifyInternal(promiseContent.value, currentValues, getAsyncContent)})`;
+        case 'rejected':
+          return `Promise.reject(${stringifyInternal(promiseContent.value, currentValues, getAsyncContent)})`;
+        case 'pending':
+          return `new Promise(() => {/*pending*/})`;
+        case 'unknown':
+        default:
+          return `new Promise(() => {/*unknown status*/})`;
+      }
+    }
+    case '[object Error]':
+      if (value instanceof Error) {
+        return `new Error(${stringifyInternal(value.message, currentValues, getAsyncContent)})`;
+      }
+      break;
     case '[object Undefined]':
       return `undefined`;
     case '[object Int8Array]':
@@ -108,7 +135,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
     case '[object BigInt64Array]':
     case '[object BigUint64Array]': {
       if (typeof Buffer !== 'undefined' && typeof Buffer.isBuffer === 'function' && Buffer.isBuffer(value)) {
-        return `Buffer.from(${stringifyInternal(Array.from(value.values()), currentValues)})`;
+        return `Buffer.from(${stringifyInternal(Array.from(value.values()), currentValues, getAsyncContent)})`;
       }
       const valuePrototype = Object.getPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
@@ -126,7 +153,11 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
           | BigInt64Array
           | BigUint64Array;
         const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
-        return `${className}.from(${stringifyInternal(Array.from(valuesFromTypedArr), currentValues)})`;
+        return `${className}.from(${stringifyInternal(
+          Array.from(valuesFromTypedArr),
+          currentValues,
+          getAsyncContent
+        )})`;
       }
       break;
     }
@@ -148,5 +179,58 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
  * @public
  */
 export function stringify<Ts>(value: Ts): string {
-  return stringifyInternal(value, []);
+  return stringifyInternal(value, [], () => ({ state: 'unknown', value: undefined }));
+}
+
+/**
+ * Convert any value to its fast-check string representation
+ *
+ * This asynchronous version is also able to dig into the status of Promise
+ *
+ * @param value - Value to be converted into a string
+ *
+ * @public
+ */
+export async function asyncStringify<Ts>(value: Ts): Promise<string> {
+  let pendingPromiseTrigger = () => {
+    /* no-op */
+  };
+  const pendingPromiseValue = Symbol();
+  const pendingPromise = new Promise((resolve) => {
+    pendingPromiseTrigger = () => resolve(pendingPromiseValue);
+  });
+  const pendingPromisesForCache: Promise<void>[] = [];
+  const cache = new Map<unknown, AsyncContent>();
+
+  const unknownState = { state: 'unknown', value: undefined } as const;
+  const getAsyncContentFirstPass = (p: unknown): AsyncContent => {
+    if (!cache.has(p)) {
+      cache.set(p, unknownState);
+      pendingPromisesForCache.push(
+        Promise.race([p, pendingPromise]).then(
+          (successValue) => {
+            if (successValue === pendingPromiseValue) cache.set(p, { state: 'pending', value: undefined });
+            else cache.set(p, { state: 'fulfilled', value: successValue });
+          },
+          (errorValue) => {
+            cache.set(p, { state: 'rejected', value: errorValue });
+          }
+        )
+      );
+    }
+    return unknownState;
+  };
+  const firstPass = stringifyInternal(value, [], getAsyncContentFirstPass);
+  if (pendingPromisesForCache.length === 0) {
+    return firstPass;
+  }
+
+  pendingPromiseTrigger();
+  await Promise.all(pendingPromisesForCache);
+
+  const getAsyncContentSecondPass = (p: unknown): AsyncContent => {
+    if (!cache.has(p)) return unknownState;
+    else return cache.get(p)!;
+  };
+  return stringifyInternal(value, [], getAsyncContentSecondPass);
 }
