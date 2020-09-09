@@ -1,3 +1,18 @@
+# 2.3.0
+
+_Add global beforeEach and afterEach hooks_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.2.1...v2.3.0)]
+
+## Features
+
+- ([PR#900](https://github.com/dubzzz/fast-check/pull/900)) Add global beforeEach/afterEach hooks
+
+## Fixes
+
+- ([PR#970](https://github.com/dubzzz/fast-check/pull/970)) Doc: Rewrite the documentation to better target JavaScript users
+
+---
+
 # 2.2.1
 
 _Fix infinite loop in `fc.date` when passing a NaN date_
