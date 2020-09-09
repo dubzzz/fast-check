@@ -1,5 +1,8 @@
 import * as fc from '../../../lib/fast-check';
 
+// The package is an alias for 'buffer', the most used polyfill for Buffer in the browser
+import { Buffer as NotNodeBuffer } from '@buffer';
+
 import { stringify } from '../../../src/utils/stringify';
 
 declare function BigInt(n: number | bigint | string): bigint;
@@ -145,11 +148,79 @@ describe('stringify', () => {
     );
   });
   it('Should be able to stringify Object with custom __proto__ value', () => {
-    // TODO Remove eval(...) - ts-jest seems not to properly transpile { ['__proto__']: 1 } when targeting es3
-    // expect(stringify({ ['__proto__']: 1 })).toEqual('{["__proto__"]:1}');
-    expect(stringify(eval("({ ['__proto__']: 1 })"))).toEqual('{["__proto__"]:1}');
+    expect(stringify({ ['__proto__']: 1 })).toEqual('{["__proto__"]:1}');
     // NOTE: {__proto__: 1} and {'__proto__': 1} are not the same as {['__proto__']: 1}
   });
+  it('Should be able to stringify Buffer', () => {
+    expect(stringify(Buffer.from([1, 2, 3, 4]))).toEqual('Buffer.from([1,2,3,4])');
+    expect(stringify(Buffer.alloc(3))).toEqual('Buffer.from([0,0,0])');
+    expect(stringify(Buffer.alloc(4, 'a'))).toEqual('Buffer.from([97,97,97,97])');
+    fc.assert(
+      fc.property(fc.array(fc.nat(255)), (data) => {
+        const buffer = Buffer.from(data);
+        const stringifiedBuffer = stringify(buffer);
+        const bufferFromStringified = eval(stringifiedBuffer);
+        return Buffer.isBuffer(bufferFromStringified) && buffer.equals(bufferFromStringified);
+      })
+    );
+  });
+  it('Should be able to stringify a polyfill-ed Buffer', () => {
+    const buffer = NotNodeBuffer.from([1, 2, 3, 4]);
+    expect(NotNodeBuffer).not.toBe(Buffer);
+    expect(buffer instanceof NotNodeBuffer).toBe(true);
+    expect(buffer instanceof Buffer).toBe(false);
+    expect(stringify(buffer)).toEqual('Buffer.from([1,2,3,4])');
+  });
+  it('Should be able to stringify Int8Array', () => {
+    expect(stringify(Int8Array.from([-128, 5, 127]))).toEqual('Int8Array.from([-128,5,127])');
+    assertStringifyTypedArraysProperly(fc.integer(-128, 127), Int8Array.from.bind(Int8Array));
+  });
+  it('Should be able to stringify Uint8Array', () => {
+    expect(stringify(Uint8Array.from([255, 0, 5, 127]))).toEqual('Uint8Array.from([255,0,5,127])');
+    assertStringifyTypedArraysProperly(fc.integer(0, 255), Uint8Array.from.bind(Uint8Array));
+  });
+  it('Should be able to stringify Int16Array', () => {
+    expect(stringify(Int16Array.from([-32768, 5, 32767]))).toEqual('Int16Array.from([-32768,5,32767])');
+    assertStringifyTypedArraysProperly(fc.integer(-32768, 32767), Int16Array.from.bind(Int16Array));
+  });
+  it('Should be able to stringify Uint16Array', () => {
+    expect(stringify(Uint16Array.from([65535, 0, 5, 32767]))).toEqual('Uint16Array.from([65535,0,5,32767])');
+    assertStringifyTypedArraysProperly(fc.integer(0, 65535), Uint16Array.from.bind(Uint16Array));
+  });
+  it('Should be able to stringify Int32Array', () => {
+    expect(stringify(Int32Array.from([-2147483648, 5, 2147483647]))).toEqual(
+      'Int32Array.from([-2147483648,5,2147483647])'
+    );
+    assertStringifyTypedArraysProperly(fc.integer(-2147483648, 2147483647), Int32Array.from.bind(Int32Array));
+  });
+  it('Should be able to stringify Uint32Array', () => {
+    expect(stringify(Uint32Array.from([4294967295, 0, 5, 2147483647]))).toEqual(
+      'Uint32Array.from([4294967295,0,5,2147483647])'
+    );
+    assertStringifyTypedArraysProperly(fc.integer(0, 4294967295), Uint32Array.from.bind(Uint32Array));
+  });
+  it('Should be able to stringify Float32Array', () => {
+    expect(stringify(Float32Array.from([0, 0.5, 30, -1]))).toEqual('Float32Array.from([0,0.5,30,-1])');
+    assertStringifyTypedArraysProperly(fc.float(), Float32Array.from.bind(Float32Array));
+  });
+  it('Should be able to stringify Float64Array', () => {
+    expect(stringify(Float64Array.from([0, 0.5, 30, -1]))).toEqual('Float64Array.from([0,0.5,30,-1])');
+    assertStringifyTypedArraysProperly(fc.double(), Float64Array.from.bind(Float64Array));
+  });
+  if (typeof BigInt !== 'undefined') {
+    it('Should be able to stringify BigInt64Array', () => {
+      expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
+        'BigInt64Array.from([-2147483648n,5n,2147483647n])'
+      );
+      assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
+    });
+    it('Should be able to stringify BigUint64Array', () => {
+      expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
+        'BigUint64Array.from([0n,5n,2147483647n])'
+      );
+      assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
+    });
+  }
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');
     expect(stringify(new CustomTagThrowingToString())).toEqual('[object CustomTagThrowingToString]');
@@ -163,3 +234,20 @@ describe('stringify', () => {
     expect(stringify(instance)).toEqual('[object Object]');
   });
 });
+
+// Helpers
+
+function assertStringifyTypedArraysProperly<TNumber>(
+  arb: fc.Arbitrary<TNumber>,
+  typedArrayProducer: (data: TNumber[]) => { values: () => IterableIterator<TNumber>; [Symbol.toStringTag]: string }
+): void {
+  fc.assert(
+    fc.property(fc.array(arb), (data) => {
+      const typedArray = typedArrayProducer(data);
+      const stringifiedTypedArray = stringify(typedArray);
+      const typedArrayFromStringified: typeof typedArray = eval(stringifiedTypedArray);
+      expect(typedArrayFromStringified[Symbol.toStringTag]).toEqual(typedArray[Symbol.toStringTag]);
+      expect([...typedArrayFromStringified.values()]).toEqual([...typedArray.values()]);
+    })
+  );
+}
