@@ -2342,7 +2342,6 @@ fc.compareBooleanFunc()
 // Examples of generated values:
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA < hB;
 //     const hA = hash('-1984194606' + stringify(a)) % 1019120836;
 //     const hB = hash('-1984194606' + stringify(b)) % 1019120836;
@@ -2350,7 +2349,6 @@ fc.compareBooleanFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA < hB;
 //     const hA = hash('-1859641033' + stringify(a)) % 12;
 //     const hB = hash('-1859641033' + stringify(b)) % 12;
@@ -2358,7 +2356,6 @@ fc.compareBooleanFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA < hB;
 //     const hA = hash('1845341787' + stringify(a)) % 31;
 //     const hB = hash('1845341787' + stringify(b)) % 31;
@@ -2366,7 +2363,6 @@ fc.compareBooleanFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA < hB;
 //     const hA = hash('1127181441' + stringify(a)) % 3255607487;
 //     const hB = hash('1127181441' + stringify(b)) % 3255607487;
@@ -2374,7 +2370,6 @@ fc.compareBooleanFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA < hB;
 //     const hA = hash('-31' + stringify(a)) % 1934705594;
 //     const hB = hash('-31' + stringify(b)) % 1934705594;
@@ -2404,7 +2399,6 @@ fc.compareFunc()
 // Examples of generated values:
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA - hB;
 //     const hA = hash('1501554938' + stringify(a)) % 22;
 //     const hB = hash('1501554938' + stringify(b)) % 22;
@@ -2412,7 +2406,6 @@ fc.compareFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA - hB;
 //     const hA = hash('-700879918' + stringify(a)) % 386108697;
 //     const hB = hash('-700879918' + stringify(b)) % 386108697;
@@ -2420,7 +2413,6 @@ fc.compareFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA - hB;
 //     const hA = hash('-579121620' + stringify(a)) % 26;
 //     const hB = hash('-579121620' + stringify(b)) % 26;
@@ -2428,7 +2420,6 @@ fc.compareFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA - hB;
 //     const hA = hash('1112768059' + stringify(a)) % 242967477;
 //     const hB = hash('1112768059' + stringify(b)) % 242967477;
@@ -2436,7 +2427,6 @@ fc.compareFunc()
 //   }
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const cmp = (hA, hB) => hA - hB;
 //     const hA = hash('-235565807' + stringify(a)) % 1424836938;
 //     const hB = hash('-235565807' + stringify(b)) % 1424836938;
@@ -2468,31 +2458,26 @@ fc.func(fc.nat())
 // Examples of generated values:
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const outs = [1681938411,278250656,2138206756,937216340,1834485983,1975998514,995463917,1800207668,220176306,1664905459];
 //     return outs[hash('-519242785' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const outs = [17,955622301,10];
 //     return outs[hash('-1016968799' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const outs = [1521748689,316610179,1601449343,1057761988,2088580527,1974557534,1618733983,882909472,1739615127];
 //     return outs[hash('-31' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const outs = [269035825,95461057,227736260,947243235];
 //     return outs[hash('-1067688743' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
-//     
 //     const outs = [755444117,555135045,511312424,1358336721,939579971,1343197442,421884569,2022508190,140388674];
 //     return outs[hash('-708292322' + stringify(args)) % outs.length];
 //   }

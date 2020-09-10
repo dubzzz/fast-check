@@ -25,16 +25,17 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
         return hasCloneMethod(val) ? val[cloneMethod]() : val;
       };
       return Object.assign(f, {
-        toString: () => `function(...args) {
-  // With hash and stringify coming from fast-check
-  ${Object.keys(recorded)
-    .sort()
-    .map((k) => `${k} => ${stringify(recorded[k])}`)
-    .map((line) => `/* ${escapeForMultilineComments(line)} */`)
-    .join('\n  ')}
+        toString: () => {
+          const seenValues = Object.keys(recorded)
+            .sort()
+            .map((k) => `${k} => ${stringify(recorded[k])}`)
+            .map((line) => `/* ${escapeForMultilineComments(line)} */`);
+          return `function(...args) {
+  // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
   const outs = ${stringify(outs)};
   return outs[hash('${seed}' + stringify(args)) % outs.length];
-}`,
+}`;
+        },
         [cloneMethod]: producer,
       });
     };
@@ -57,18 +58,19 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
         return val;
       };
       return Object.assign(f, {
-        toString: () => `function(a, b) {
-  // With hash and stringify coming from fast-check
-  ${Object.keys(recorded)
-    .sort()
-    .map((k) => `${k} => ${stringify(recorded[k])}`)
-    .map((line) => `/* ${escapeForMultilineComments(line)} */`)
-    .join('\n  ')}
+        toString: () => {
+          const seenValues = Object.keys(recorded)
+            .sort()
+            .map((k) => `${k} => ${stringify(recorded[k])}`)
+            .map((line) => `/* ${escapeForMultilineComments(line)} */`);
+          return `function(a, b) {
+  // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
   const cmp = ${cmp};
   const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
   const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};
   return cmp(hA, hB);
-}`,
+}`;
+        },
         [cloneMethod]: producer,
       });
     };
