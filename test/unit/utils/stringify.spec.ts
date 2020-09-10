@@ -152,10 +152,16 @@ describe('stringify', () => {
     // NOTE: {__proto__: 1} and {'__proto__': 1} are not the same as {['__proto__']: 1}
   });
   it('Should be able to stringify Promise but not show its value or status in sync mode', () => {
-    expect(stringify(Promise.resolve(1))).toEqual('new Promise(() => {/*unknown status*/})');
-    expect(stringify(Promise.reject(1))).toEqual('new Promise(() => {/*unknown status*/})');
-    expect(stringify(new Promise(() => {}))).toEqual('new Promise(() => {/*unknown status*/})');
-    expect(stringify({ a: Promise.resolve(1) })).toEqual('{"a":new Promise(() => {/*unknown status*/})}');
+    const p1 = Promise.resolve(1); // resolved
+    const p2 = Promise.reject(1); // rejected
+    const p3 = new Promise(() => {}); // unresolved (ie pending)
+
+    expect(stringify(p1)).toEqual('new Promise(() => {/*unknown*/})');
+    expect(stringify(p2)).toEqual('new Promise(() => {/*unknown*/})');
+    expect(stringify(p3)).toEqual('new Promise(() => {/*unknown*/})');
+    expect(stringify({ p1 })).toEqual('{"p1":new Promise(() => {/*unknown*/})}');
+
+    [p1, p2, p3].map((p) => p.catch(() => {})); // no unhandled rejections
   });
   it('Should be able to stringify Buffer', () => {
     expect(stringify(Buffer.from([1, 2, 3, 4]))).toEqual('Buffer.from([1,2,3,4])');
@@ -243,21 +249,28 @@ describe('stringify', () => {
 
 describe('asyncStringify', () => {
   it('Should be able to stringify resolved Promise', async () => {
-    expect(await asyncStringify(Promise.resolve(1))).toEqual('Promise.resolve(1)');
+    const p = Promise.resolve(1);
+    expect(await asyncStringify(p)).toEqual('Promise.resolve(1)');
   });
   it('Should be able to stringify rejected Promise', async () => {
-    expect(await asyncStringify(Promise.reject(1))).toEqual('Promise.reject(1)');
+    const p = Promise.reject(1);
+    expect(await asyncStringify(p)).toEqual('Promise.reject(1)');
+    p.catch(() => {}); // no unhandled rejections
   });
   it('Should be able to stringify rejected Promise with Error', async () => {
-    expect(await asyncStringify(Promise.reject(new Error('message')))).toEqual('Promise.reject(new Error("message"))');
+    const p = Promise.reject(new Error('message'));
+    expect(await asyncStringify(p)).toEqual('Promise.reject(new Error("message"))');
+    p.catch(() => {}); // no unhandled rejections
   });
   it('Should be able to stringify pending Promise', async () => {
-    expect(await asyncStringify(new Promise(() => {}))).toEqual('new Promise(() => {/*pending*/})');
+    const p = new Promise(() => {});
+    expect(await asyncStringify(p)).toEqual('new Promise(() => {/*pending*/})');
   });
   it('Should be able to stringify Promise in other instances', async () => {
-    expect(await asyncStringify([Promise.resolve(1)])).toEqual('[Promise.resolve(1)]');
-    expect(await asyncStringify(new Set([Promise.resolve(1)]))).toEqual('new Set([Promise.resolve(1)])');
-    expect(await asyncStringify({ a: Promise.resolve(1) })).toEqual('{"a":Promise.resolve(1)}');
+    const p1 = Promise.resolve(1);
+    expect(await asyncStringify([p1])).toEqual('[Promise.resolve(1)]');
+    expect(await asyncStringify(new Set([p1]))).toEqual('new Set([Promise.resolve(1)])');
+    expect(await asyncStringify({ p1 })).toEqual('{"p1":Promise.resolve(1)}');
   });
   it('Should be able to stringify nested Promise', async () => {
     const nestedPromises = Promise.resolve({

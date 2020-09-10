@@ -108,7 +108,7 @@ import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { hash } from './utils/hash';
-import { stringify } from './utils/stringify';
+import { stringify, asyncStringify } from './utils/stringify';
 import {
   scheduler,
   schedulerFor,
@@ -273,6 +273,7 @@ export {
   cloneMethod,
   // print values
   stringify,
+  asyncStringify,
   defaultReportMessage,
   hash,
   // constraints

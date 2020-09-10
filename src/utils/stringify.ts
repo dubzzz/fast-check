@@ -113,7 +113,7 @@ export function stringifyInternal<Ts>(
           return `new Promise(() => {/*pending*/})`;
         case 'unknown':
         default:
-          return `new Promise(() => {/*unknown status*/})`;
+          return `new Promise(() => {/*unknown*/})`;
       }
     }
     case '[object Error]':
@@ -192,45 +192,45 @@ export function stringify<Ts>(value: Ts): string {
  * @public
  */
 export async function asyncStringify<Ts>(value: Ts): Promise<string> {
-  let pendingPromiseTrigger = () => {
-    /* no-op */
-  };
-  const pendingPromiseValue = Symbol();
-  const pendingPromise = new Promise((resolve) => {
-    pendingPromiseTrigger = () => resolve(pendingPromiseValue);
-  });
+  const stillPendingMarker = Symbol();
   const pendingPromisesForCache: Promise<void>[] = [];
   const cache = new Map<unknown, AsyncContent>();
 
   const unknownState = { state: 'unknown', value: undefined } as const;
-  const getAsyncContentFirstPass = (p: unknown): AsyncContent => {
-    if (!cache.has(p)) {
-      cache.set(p, unknownState);
-      pendingPromisesForCache.push(
-        Promise.race([p, pendingPromise]).then(
-          (successValue) => {
-            if (successValue === pendingPromiseValue) cache.set(p, { state: 'pending', value: undefined });
-            else cache.set(p, { state: 'fulfilled', value: successValue });
-          },
-          (errorValue) => {
-            cache.set(p, { state: 'rejected', value: errorValue });
-          }
-        )
-      );
+  const getAsyncContent = (p: unknown): AsyncContent => {
+    if (cache.has(p)) {
+      return cache.get(p)!;
     }
+
+    pendingPromisesForCache.push(
+      // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
+      // > If the iterable contains one or more non-promise value and/or an already settled promise,
+      // > then Promise.race will resolve to the first of these values found in the iterable.
+      Promise.race([p, stillPendingMarker]).then(
+        (successValue) => {
+          if (successValue === stillPendingMarker) cache.set(p, { state: 'pending', value: undefined });
+          else cache.set(p, { state: 'fulfilled', value: successValue });
+        },
+        (errorValue) => {
+          cache.set(p, { state: 'rejected', value: errorValue });
+        }
+      )
+    );
+
+    cache.set(p, unknownState);
     return unknownState;
   };
-  const firstPass = stringifyInternal(value, [], getAsyncContentFirstPass);
-  if (pendingPromisesForCache.length === 0) {
-    return firstPass;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    // Rq.: While this implementation is not optimal in case we have deeply nested Promise
+    //      a single loop (or two) will must of the time be enough for most of the values.
+    //      Nested Promise will be a sub-optimal case, but given the fact that it barely never
+    //      happens in real world, we may pay the cost for it for time to time.
+    const stringifiedValue = stringifyInternal(value, [], getAsyncContent);
+    if (pendingPromisesForCache.length === 0) {
+      return stringifiedValue;
+    }
+    await Promise.all(pendingPromisesForCache.splice(0));
   }
-
-  pendingPromiseTrigger();
-  await Promise.all(pendingPromisesForCache);
-
-  const getAsyncContentSecondPass = (p: unknown): AsyncContent => {
-    if (!cache.has(p)) return unknownState;
-    else return cache.get(p)!;
-  };
-  return stringifyInternal(value, [], getAsyncContentSecondPass);
 }
