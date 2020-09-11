@@ -125,12 +125,7 @@ export interface WebUrlConstraints {
  *
  * @public
  */
-export function webUrl(constraints?: {
-  validSchemes?: string[];
-  authoritySettings?: WebAuthorityConstraints;
-  withQueryParameters?: boolean;
-  withFragments?: boolean;
-}): Arbitrary<string> {
+export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
   const c = constraints || {};
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
