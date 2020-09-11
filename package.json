@@ -13,9 +13,11 @@
   "module": "lib/esm/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "runkit.cjs"
   ],
   "sideEffects": false,
+  "runkitExampleFilename": "runkit.cjs",
   "scripts": {
     "perf": "node perf/benchmark.js",
     "profile": "node --prof --no-logfile-per-isolate --trace-deopt --trace-opt-verbose perf/profiler.js > deopt.out && node --prof-process v8.log > v8.out",
