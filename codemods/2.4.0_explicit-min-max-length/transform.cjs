@@ -1,7 +1,7 @@
 // You can try this codemod as follow:
 //    npx jscodeshift --dry --print -t transform.cjs snippet-* --debug=true
 // Or against the codebase of fast-check itself:
-//    npx jscodeshift --dry --print -t transform.cjs snippet-* --debug=true --local=true
+//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../test/unit/check/arbitrary/ArrayArbitrary.spec.ts --local=true --debug=true
 
 /**
  * Find any imports related to fast-check
@@ -22,20 +22,30 @@ function extractFastCheckImports(j, root, includeLocalImports) {
   const moduleNames = [];
   const namedImportsMap = new Map();
 
+  const isValidSource = (source) => {
+    if (source.type !== 'Literal' && source.type !== 'StringLiteral') {
+      return false;
+    }
+    if (includeLocalImports) {
+      if (source.value[0] !== '.' && source.value !== 'fast-check') {
+        return false;
+      }
+    } else {
+      if (source.value !== 'fast-check') {
+        return false;
+      }
+    }
+    return true;
+  };
+
   // import <name> from 'fast-check'
   // import * as <name> from 'fast-check'
   // import {array} from 'fast-check'
   // import {array as fcArray} from 'fast-check'
   root
-    .find(j.ImportDeclaration, {
-      source: {
-        type: 'Literal',
-        ...(includeLocalImports ? {} : { value: 'fast-check' }),
-      },
-    })
+    .find(j.ImportDeclaration)
     .forEach((p) => {
-      console.log(p.value.source.value);
-      if (p.value.source.value[0] !== '.' && p.value.source.value !== 'fast-check') {
+      if (!isValidSource(p.value.source)) {
         return;
       }
       for (const specifier of p.value.specifiers) {
@@ -74,7 +84,7 @@ function extractFastCheckImports(j, root, includeLocalImports) {
       },
     })
     .forEach((p) => {
-      if (p.value.init.arguments[0].value !== '.' && p.value.init.arguments[0].value !== 'fast-check') {
+      if (!isValidSource(p.value.init.arguments[0])) {
         return;
       }
       if (p.value.id.type === 'Identifier') {
