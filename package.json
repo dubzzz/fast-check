@@ -13,9 +13,11 @@
   "module": "lib/esm/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "runkit.cjs"
   ],
   "sideEffects": false,
+  "runkitExampleFilename": "runkit.cjs",
   "scripts": {
     "perf": "node perf/benchmark.js",
     "profile": "node --prof --no-logfile-per-isolate --trace-deopt --trace-opt-verbose perf/profiler.js > deopt.out && node --prof-process v8.log > v8.out",
@@ -71,7 +73,7 @@
     "eslint-config-prettier": "^6.11.0",
     "jest": "^26.1.0",
     "mkdirp": "^1.0.4",
-    "prettier": "2.1.1",
+    "prettier": "2.1.2",
     "replace-in-file": "^6.0.0",
     "rollup": "^2.13.1",
     "rollup-plugin-commonjs": "^10.1.0",
