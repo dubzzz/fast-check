@@ -1,5 +1,7 @@
 // You can try this codemod as follow:
 //    npx jscodeshift --dry --print -t transform.cjs snippet-* --debug=true
+// Or against the codebase of fast-check itself:
+//    npx jscodeshift --dry --print -t transform.cjs snippet-* --debug=true --local=true
 
 /**
  * Find any imports related to fast-check
@@ -16,7 +18,7 @@
  * const {array} = require('fast-check')           // --> new Map([['array', 'array']])
  * const {array : fcArray} = require('fast-check') // --> new Map([['fcArray', 'array']])
  */
-function extractFastCheckImports(j, root) {
+function extractFastCheckImports(j, root, includeLocalImports) {
   const moduleNames = [];
   const namedImportsMap = new Map();
 
@@ -28,10 +30,14 @@ function extractFastCheckImports(j, root) {
     .find(j.ImportDeclaration, {
       source: {
         type: 'Literal',
-        value: 'fast-check',
+        ...(includeLocalImports ? {} : { value: 'fast-check' }),
       },
     })
     .forEach((p) => {
+      console.log(p.value.source.value);
+      if (p.value.source.value[0] !== '.' && p.value.source.value !== 'fast-check') {
+        return;
+      }
       for (const specifier of p.value.specifiers) {
         if (specifier.type === 'ImportDefaultSpecifier') {
           // import <name> from 'fast-check'
@@ -62,12 +68,15 @@ function extractFastCheckImports(j, root) {
         arguments: [
           {
             type: 'Literal',
-            value: 'fast-check',
+            ...(includeLocalImports ? {} : { value: 'fast-check' }),
           },
         ],
       },
     })
     .forEach((p) => {
+      if (p.value.init.arguments[0].value !== '.' && p.value.init.arguments[0].value !== 'fast-check') {
+        return;
+      }
       if (p.value.id.type === 'Identifier') {
         // <name> = require('fast-check')
         moduleNames.push(p.value.id.name);
@@ -97,7 +106,7 @@ module.exports = function (file, api, options) {
   const j = api.jscodeshift;
   const root = j(file.source);
 
-  const { moduleNames, namedImportsMap } = extractFastCheckImports(j, root);
+  const { moduleNames, namedImportsMap } = extractFastCheckImports(j, root, options.local);
 
   infoLog('Aliases for the module', moduleNames.join(', '), file, options);
   infoLog(

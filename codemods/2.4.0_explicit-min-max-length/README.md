@@ -19,4 +19,15 @@ This codemod converts implicit `minLength` and `maxLength` to the newly added ob
 
 ---
 
+Running the codemod on your code:
+
+```sh
+// JavaScript code
+npx jscodeshift -t https://raw.githubusercontent.com/dubzzz/fast-check/master/codemods/2.4.0_explicit-min-max-length/transform.cjs <path_to_code>
+// TypeScript code
+npx jscodeshift --parser=ts --extensions=ts -t https://raw.githubusercontent.com/dubzzz/fast-check/master/codemods/2.4.0_explicit-min-max-length/transform.cjs <path_to_code>
+```
+
+---
+
 **Minimal version:** `>=2.4.0`
