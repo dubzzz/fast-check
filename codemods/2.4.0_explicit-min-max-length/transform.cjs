@@ -1,85 +1,137 @@
-// Before version 2.4.0, defining constraints on the size of an array required
-// to use one of the following signatures:
-// - fc.array(arb, maxLength)
-// - fc.array(arb, minLength, maxLength)
-//
-// Version 2.4.0 depreciated those signatures for another one:
-// - fc.array(arb, {minLength, maxLength})
-//
-// The reasons behind this change are:
-//   1. when seeing a call like 'fc.array(arb, 10)' it was difficult to understand
-//      the meaning of the second argument: is is for the max? for the min?
-//   2. no signature to only specify a min length, specifying a min required the
-//      user to also specify a max
-//   3. difficult to use this kind of signature with fc.set, fc.uint32array... or even
-//      worst fc.object
-//
-// This codemod converts implicit minLength and maxLength to the object expression syntax
-// introduced by version 2.4.0 whenever possible.
-//
-// WARNING: It only works if you imported or required fast-check as a whole and not function by function
-//          [NO]  import {array} from 'fast-check'
-//          [YES] import fc from 'fast-check'
-//          [YES] const fc = require('fast-check')
-//
-// You can execute this codemods as follow:
-//    npx jscodeshift --dry --print -t transform.cjs snippet-x.js
+// You can try this codemod as follow:
+//    npx jscodeshift --dry --print -t transform.cjs snippet-* --debug=true
 
-function extractFastCheckLocalName(j, root) {
-  const importDeclaration = root.find(j.ImportDeclaration, {
-    source: {
-      type: 'Literal',
-      value: 'fast-check',
-    },
-  });
-  if (importDeclaration.length === 1) {
-    // get the local name for the imported module
-    return importDeclaration.find(j.Identifier).get(0).node.name;
-  }
+/**
+ * Find any imports related to fast-check
+ * either module as a whole or named imports
+ *
+ * // Module ones
+ * import fc from 'fast-check'      // --> 'fc'
+ * import * as fc from 'fast-check' // --> 'fc'
+ * const fc = require('fast-check') // --> 'fc'
+ *
+ * // Named imports ones
+ * import {array} from 'fast-check'                // --> new Map([['array', 'array']])
+ * import {array as fcArray} from 'fast-check'     // --> new Map([['fcArray', 'array']])
+ * const {array} = require('fast-check')           // --> new Map([['array', 'array']])
+ * const {array : fcArray} = require('fast-check') // --> new Map([['fcArray', 'array']])
+ */
+function extractFastCheckImports(j, root) {
+  const moduleNames = [];
+  const namedImportsMap = new Map();
 
-  const requireDeclaration = root.find(j.VariableDeclarator, {
-    init: {
-      type: 'CallExpression',
-      callee: {
-        type: 'Identifier',
-        name: 'require',
+  // import <name> from 'fast-check'
+  // import * as <name> from 'fast-check'
+  // import {array} from 'fast-check'
+  // import {array as fcArray} from 'fast-check'
+  root
+    .find(j.ImportDeclaration, {
+      source: {
+        type: 'Literal',
+        value: 'fast-check',
       },
-      arguments: [
-        {
-          type: 'Literal',
-          value: 'fast-check',
+    })
+    .forEach((p) => {
+      for (const specifier of p.value.specifiers) {
+        if (specifier.type === 'ImportDefaultSpecifier') {
+          // import <name> from 'fast-check'
+          moduleNames.push(specifier.local.name);
+        } else if (specifier.type === 'ImportNamespaceSpecifier') {
+          // import * as <name> from 'fast-check'
+          moduleNames.push(specifier.local.name);
+        } else if (specifier.type === 'ImportSpecifier') {
+          // import {array} from 'fast-check'
+          // import {array as fcArray} from 'fast-check'
+          namedImportsMap.set(specifier.local.name, specifier.imported.name);
+        }
+      }
+    })
+    .find(j.Identifier);
+
+  // <name> = require('fast-check')
+  // {<name>} = require('fast-check')
+  // {<name>: <dest>} = require('fast-check')
+  root
+    .find(j.VariableDeclarator, {
+      init: {
+        type: 'CallExpression',
+        callee: {
+          type: 'Identifier',
+          name: 'require',
         },
-      ],
-    },
-  });
-  if (requireDeclaration.length === 1) {
-    // get the local name for the imported module
-    return requireDeclaration.get(0).node.id.name;
+        arguments: [
+          {
+            type: 'Literal',
+            value: 'fast-check',
+          },
+        ],
+      },
+    })
+    .forEach((p) => {
+      if (p.value.id.type === 'Identifier') {
+        // <name> = require('fast-check')
+        moduleNames.push(p.value.id.name);
+      } else if (p.value.id.type === 'ObjectPattern') {
+        // {<name>} = require('fast-check')
+        // {<name>: <dest>} = require('fast-check')
+        for (const property of p.value.id.properties) {
+          namedImportsMap.set(property.value.name, property.key.name);
+        }
+      }
+    });
+
+  return { moduleNames, namedImportsMap };
+}
+
+/**
+ * Colored log in debug mode only
+ */
+function infoLog(label, log, file, options) {
+  if (options.debug) {
+    const fileName = file.path;
+    console.log(`(${fileName}) \x1b[96m${label}\x1b[0m\n(${fileName}) \x1b[96m>\x1b[0m ${log}`);
   }
 }
 
-module.exports = function (file, api) {
+module.exports = function (file, api, options) {
   const j = api.jscodeshift;
   const root = j(file.source);
 
-  const localName = extractFastCheckLocalName(j, root);
-  if (!localName) {
-    // fast-check not imported by this file
-    return;
-  }
+  const { moduleNames, namedImportsMap } = extractFastCheckImports(j, root);
+
+  infoLog('Aliases for the module', moduleNames.join(', '), file, options);
+  infoLog(
+    'Other aliases',
+    [...namedImportsMap.entries()]
+      .map(([newName, officialName]) => (newName !== officialName ? `${newName} <- ${officialName}` : newName))
+      .join(', '),
+    file,
+    options
+  );
 
   return root
     .find(j.CallExpression)
-    .filter(
-      // Only keep fc.xxx()
-      (p) =>
-        p.value.callee.type === 'MemberExpression' &&
-        p.value.callee.object.type === 'Identifier' &&
-        p.value.callee.object.name === localName &&
-        p.value.callee.property.type === 'Identifier'
-    )
+    .filter((p) => {
+      if (p.value.callee.type === 'MemberExpression') {
+        // Might be something like: fc.xxx()
+        return moduleNames.some(
+          (g) =>
+            p.value.callee.object.type === 'Identifier' &&
+            p.value.callee.object.name === g &&
+            p.value.callee.property.type === 'Identifier'
+        );
+      } else if (p.value.callee.type === 'Identifier') {
+        // Might be xxx() with xxx something from fast-check
+        return namedImportsMap.has(p.value.callee.name);
+      }
+    })
     .forEach((p) => {
-      switch (p.value.callee.property.name) {
+      const nameForFastCheck =
+        p.value.callee.type === 'MemberExpression'
+          ? p.value.callee.property.name
+          : namedImportsMap.get(p.value.callee.name);
+
+      switch (nameForFastCheck) {
         case 'array':
           if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
             // fc.array(arb, maxLength) -> fc.array(arb, {maxLength})
