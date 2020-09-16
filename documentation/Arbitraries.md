@@ -970,11 +970,11 @@ fc.lorem(3)
 
 fc.lorem(3, true)
 // Examples of generated values:
-// • "Sed, vel placerat et nibh."
-// • "Nisl quis congue pellentesque sapien non."
-// • "Curae, ligula eros erat et ut euismod sit suscipit consequat. Molestie, ac cras vel posuere et."
-// • "Risus vitae, integer quis nulla pellentesque quis sed. Pellentesque sed ante mi, iaculis, aliquam ultrices adipiscing nulla aliquam. Cursus ac molestie, erat augue ullamcorper."
-// • "Aliquam augue at nulla. Non faucibus, cursus molestie, posuere justo. Sapien."
+// • "Sed."
+// • "Nisl quis congue pellentesque sapien non elit quam."
+// • "Curae, ligula eros erat et ut euismod sit. Nibh suscipit molestie, ac cras vel posuere et purus eleifend nec."
+// • "Risus vitae. Quis nulla pellentesque quis sed, magna pellentesque sed ante. Iaculis, aliquam ultrices adipiscing."
+// • "Aliquam augue at nulla maecenas non faucibus, cursus molestie, posuere justo justo. Feugiat, aliquam, ultrices convallis aliquam, tortor sodales lacus ut libero pharetra. Nonummy nec, in ut lectus."
 // • …
 ```
 </details>
@@ -2473,8 +2473,8 @@ fc.func(fc.nat())
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
 //     
-//     const outs = [1681938411,278250656,2138206756,937216340,1834485983,1975998514,995463917,1800207668,220176306,1664905459];
-//     return outs[hash('-519242785' + stringify(args)) % outs.length];
+//     const outs = [1681938411,278250656,2138206756,937216340];
+//     return outs[hash('1975998514' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
@@ -2491,8 +2491,8 @@ fc.func(fc.nat())
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
 //     
-//     const outs = [269035825,95461057,227736260,947243235];
-//     return outs[hash('-1067688743' + stringify(args)) % outs.length];
+//     const outs = [269035825,95461057,227736260,947243235,2103296563,1079794905];
+//     return outs[hash('27' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
