@@ -1,5 +1,6 @@
 // You can try this codemod as follow:
-//    npx jscodeshift --dry --print -t transform.cjs snippet-* --debug=true
+//    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true
+//    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true
 // Or against the codebase of fast-check itself:
 //    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../test/unit/check/arbitrary/ArrayArbitrary.spec.ts --local=true --debug=true
 
@@ -75,16 +76,10 @@ function extractFastCheckImports(j, root, includeLocalImports) {
           type: 'Identifier',
           name: 'require',
         },
-        arguments: [
-          {
-            type: 'Literal',
-            ...(includeLocalImports ? {} : { value: 'fast-check' }),
-          },
-        ],
       },
     })
     .forEach((p) => {
-      if (!isValidSource(p.value.init.arguments[0])) {
+      if (p.value.init.arguments.length !== 1 || !isValidSource(p.value.init.arguments[0])) {
         return;
       }
       if (p.value.id.type === 'Identifier') {
