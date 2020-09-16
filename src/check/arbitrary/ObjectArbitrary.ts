@@ -173,13 +173,13 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
   const dictOf = <U>(ka: Arbitrary<string>, va: Arbitrary<U>) => entriesOf(ka, va).map((v) => toObject(v));
 
   const baseArb = oneof(...arbitrariesForBase);
-  const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, 0, maxKeys)));
+  const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys })));
   const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => dictOf(arbKeys(n), arb)));
   const setBaseArb = () => oneof(...arbitrariesForBase.map((arb) => set(arb, 0, maxKeys).map((v) => new Set(v))));
   const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
-  const arrayArb = memo((n) => oneof(arrayBaseArb, array(anythingArb(n), 0, maxKeys)));
+  const arrayArb = memo((n) => oneof(arrayBaseArb, array(anythingArb(n), { maxLength: maxKeys })));
   // Set<base> | Set<anything>
   const setArb = memo((n) =>
     oneof(

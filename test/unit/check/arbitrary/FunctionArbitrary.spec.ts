@@ -110,7 +110,7 @@ describe('FunctionArbitrary', () => {
         ));
       it('Should not share history (toString)', () =>
         fc.assert(
-          fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, inputs) => {
+          fc.property(fc.integer(), fc.array(fc.integer(), { minLength: 1 }), (seed, inputs) => {
             const mrng = stubRng.mutable.counter(seed);
             const f1 = func(integer()).generate(mrng).value_;
             const f2 = forceClone(f1);
@@ -208,7 +208,7 @@ describe('FunctionArbitrary', () => {
         ));
       it('Should not share history (toString)', () =>
         fc.assert(
-          fc.property(fc.integer(), fc.array(fc.tuple(fc.nat(), fc.nat()), 1, 10), (seed, inputs) => {
+          fc.property(fc.integer(), fc.array(fc.tuple(fc.nat(), fc.nat()), { minLength: 1 }), (seed, inputs) => {
             const mrng = stubRng.mutable.counter(seed);
             const f1 = compareFunc<number>().generate(mrng).value_;
             const f2 = forceClone(f1);
@@ -303,7 +303,7 @@ describe('FunctionArbitrary', () => {
         ));
       it('Should not share history (toString)', () =>
         fc.assert(
-          fc.property(fc.integer(), fc.array(fc.tuple(fc.nat(), fc.nat()), 1, 10), (seed, inputs) => {
+          fc.property(fc.integer(), fc.array(fc.tuple(fc.nat(), fc.nat()), { minLength: 1 }), (seed, inputs) => {
             const mrng = stubRng.mutable.counter(seed);
             const f1 = compareBooleanFunc<number>().generate(mrng).value_;
             const f2 = forceClone(f1);

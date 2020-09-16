@@ -211,13 +211,13 @@ function lorem(maxWordsCount?: number, sentencesMode?: boolean): Arbitrary<strin
   const maxCount = maxWordsCount || 5;
   if (maxCount < 1) throw new Error(`lorem has to produce at least one word/sentence`);
   if (sentencesMode) {
-    const sentence = array(loremWord(), 1, 10)
+    const sentence = array(loremWord(), { minLength: 1 })
       .map((words) => words.join(' '))
       .map((s) => (s[s.length - 1] === ',' ? s.substr(0, s.length - 1) : s))
       .map((s) => s[0].toUpperCase() + s.substring(1) + '.');
-    return array(sentence, 1, maxCount).map((sentences) => sentences.join(' '));
+    return array(sentence, { minLength: 1, maxLength: maxCount }).map((sentences) => sentences.join(' '));
   } else {
-    return array(loremWord(), 1, maxCount).map((words) =>
+    return array(loremWord(), { minLength: 1, maxLength: maxCount }).map((words) =>
       words.map((w) => (w[w.length - 1] === ',' ? w.substr(0, w.length - 1) : w)).join(' ')
     );
   }

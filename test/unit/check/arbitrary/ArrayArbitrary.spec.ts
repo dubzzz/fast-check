@@ -56,12 +56,12 @@ describe('ArrayArbitrary', () => {
       ));
     it('Should produce cloneable array if one cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
-      const g = array(context(), 1, 10).generate(mrng).value;
+      const g = array(context(), { minLength: 1 }).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(true);
     });
     it('Should not produce cloneable tuple if no cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
-      const g = array(nat(), 1, 10).generate(mrng).value;
+      const g = array(nat(), { minLength: 1 }).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(false);
     });
     it('Should not clone on generate', () => {
@@ -88,7 +88,7 @@ describe('ArrayArbitrary', () => {
       });
     });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), maxLength), {
+      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), { maxLength: maxLength }), {
         seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerArray,
         isValidValue: (g: number[], maxLength: number) =>
@@ -97,7 +97,8 @@ describe('ArrayArbitrary', () => {
     });
     describe('Given minimal and maximal lengths', () => {
       genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => array(nat(), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }) =>
+          array(nat(), { minLength: constraints.min, maxLength: constraints.max }),
         {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
           isStrictlySmallerValue: isStrictlySmallerArray,

@@ -58,7 +58,7 @@ expectType(
 expectError(fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {}));
 
 // base arbitrary
-expectType<fc.Arbitrary<string[]>>(fc.nat().chain((n) => fc.array(fc.char(), 0, n)));
+expectType<fc.Arbitrary<string[]>>(fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })));
 expectType<fc.Arbitrary<number>>(fc.option(fc.nat()).filter((n): n is number => n !== null));
 expectType<fc.Arbitrary<string>>(fc.nat().map((n) => String(n)));
 

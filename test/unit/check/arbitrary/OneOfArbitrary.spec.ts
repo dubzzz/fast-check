@@ -28,7 +28,7 @@ describe('OneOfArbitrary', () => {
   describe('oneof', () => {
     it('Should generate based on one of the given arbitraries', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, choices) => {
+        fc.property(fc.integer(), fc.array(fc.integer(), { minLength: 1 }), (seed, choices) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const g = oneof(...choices.map(constant)).generate(mrng).value;
           return choices.indexOf(g) !== -1;
@@ -36,7 +36,7 @@ describe('OneOfArbitrary', () => {
       ));
     it('Should call the right shrink on shrink', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, choices) => {
+        fc.property(fc.integer(), fc.array(fc.integer(), { minLength: 1 }), (seed, choices) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = oneof(...choices.map((c) => new CustomArbitrary(c))).generate(mrng);
           const shrinks = [...shrinkable.shrink()];
@@ -50,7 +50,9 @@ describe('OneOfArbitrary', () => {
         return oneof(...arbs);
       },
       {
-        seedGenerator: fc.array(fc.record({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), 1, 10),
+        seedGenerator: fc.array(fc.record({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), {
+          minLength: 1,
+        }),
         isValidValue: (v: number, metas: { type: string; value: number }[]) =>
           metas.findIndex((m) => (m.type === 'unique' ? m.value === v : m.value - 10 <= v && v <= m.value)) !== -1,
         isStrictlySmallerValue: (a: number, b: number) => (Math.abs(b - a) <= 10 && b > 0 ? b - a > 0 : b - a < 0),

@@ -68,8 +68,8 @@ describe('ObjectArbitrary', () => {
       fc.assert(
         fc.property(
           fc.integer(),
-          fc.array(fc.string(), 1, 10),
-          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), { minLength: 1 }),
+          fc.array(fc.string(), { minLength: 1 }),
           (seed, allowedKeys, allowedValues) => {
             const mrng = new Random(prand.xorshift128plus(seed));
 
@@ -86,8 +86,8 @@ describe('ObjectArbitrary', () => {
         fc.property(
           fc.integer(),
           fc.integer(0, 5),
-          fc.array(fc.string(), 1, 10),
-          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), { minLength: 1 }),
+          fc.array(fc.string(), { minLength: 1 }),
           (seed, depth, keys, values) => {
             const mrng = new Random(prand.xorshift128plus(seed));
             const keyArb = oneof(...keys.map(constant));
@@ -102,8 +102,8 @@ describe('ObjectArbitrary', () => {
         fc.property(
           fc.integer(),
           fc.integer(0, 5),
-          fc.array(fc.string(), 1, 10),
-          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), { minLength: 1 }),
+          fc.array(fc.string(), { minLength: 1 }),
           (seed, maxKeys, keys, values) => {
             const mrng = new Random(prand.xorshift128plus(seed));
             const keyArb = oneof(...keys.map(constant));
@@ -373,25 +373,30 @@ describe('ObjectArbitrary', () => {
       ));
     it('Should only use provided keys and values', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.string(), 1, 10), fc.array(fc.string(), 1, 10), (seed, keys, values) => {
-          const allowedKeys = [...keys];
-          const allowedValues = [...values];
-          const mrng = new Random(prand.xorshift128plus(seed));
+        fc.property(
+          fc.integer(),
+          fc.array(fc.string(), { minLength: 1 }),
+          fc.array(fc.string(), { minLength: 1 }),
+          (seed, keys, values) => {
+            const allowedKeys = [...keys];
+            const allowedValues = [...values];
+            const mrng = new Random(prand.xorshift128plus(seed));
 
-          const keyArb = oneof(...keys.map(constant));
-          const baseArbs = [...allowedValues.map(constant)];
-          const g = object({ key: keyArb, values: baseArbs }).generate(mrng).value;
+            const keyArb = oneof(...keys.map(constant));
+            const baseArbs = [...allowedValues.map(constant)];
+            const g = object({ key: keyArb, values: baseArbs }).generate(mrng).value;
 
-          return checkCorrect(allowedKeys, allowedValues)(g);
-        })
+            return checkCorrect(allowedKeys, allowedValues)(g);
+          }
+        )
       ));
     it('Should respect the maximal depth parameter', () =>
       fc.assert(
         fc.property(
           fc.integer(),
           fc.integer(0, 5),
-          fc.array(fc.string(), 1, 10),
-          fc.array(fc.string(), 1, 10),
+          fc.array(fc.string(), { minLength: 1 }),
+          fc.array(fc.string(), { minLength: 1 }),
           (seed, depth, keys, values) => {
             const mrng = new Random(prand.xorshift128plus(seed));
             const keyArb = oneof(...keys.map(constant));

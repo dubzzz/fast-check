@@ -154,7 +154,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
     it('fc.array', () => {
       let nonClonedDetected = false;
       const status = fc.check(
-        fc.property(fc.integer(), fc.array(fc.context(), 1, 10), fc.integer(), (a, ctxs, b) => {
+        fc.property(fc.integer(), fc.array(fc.context(), { minLength: 1 }), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');

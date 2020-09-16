@@ -131,7 +131,7 @@ describe('Runner', () => {
       expect(out.failed).toBe(false);
     });
     it('Should ignore precondition failure runs and generate another value', async () => {
-      const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
+      const gapsBetweenSuccessesArb = fc.array(fc.nat(10), { minLength: 100, maxLength: 100 });
       const successfulRunIdsArb = gapsBetweenSuccessesArb.map((gaps) =>
         gaps.reduce((prev: number[], cur: number) => {
           prev.push(prev.length === 0 ? cur : prev[prev.length - 1] + cur + 1);
@@ -358,7 +358,7 @@ describe('Runner', () => {
     });
     it('Should build the right counterexamplePath', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.nat(99), 1, 100), (seed, failurePoints) => {
+        fc.property(fc.integer(), fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }), (seed, failurePoints) => {
           // Each entry (at index idx) in failurePoints represents the number of runs
           // required before failing for the level <idx>
           // Basically it must fail before the end of the execution (100 runs by default)

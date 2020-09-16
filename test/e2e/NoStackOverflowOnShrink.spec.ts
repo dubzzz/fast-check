@@ -71,7 +71,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
-    const arb = fc.array(fc.boolean(), maxDepthForArrays);
+    const arb = fc.array(fc.boolean(), { maxLength: maxDepthForArrays });
     let s: fc.Shrinkable<boolean[]> | null = null;
     while (s === null) {
       const tempShrinkable = arb.generate(mrng);

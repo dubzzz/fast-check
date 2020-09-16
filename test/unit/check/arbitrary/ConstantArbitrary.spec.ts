@@ -32,7 +32,7 @@ describe('ConstantArbitrary', () => {
     });
     it('Should always return one of the constants', () =>
       fc.assert(
-        fc.property(fc.array(fc.string(), 1, 10), fc.integer(), (data, seed) => {
+        fc.property(fc.array(fc.string(), { minLength: 1 }), fc.integer(), (data, seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const g = constantFrom(...data).generate(mrng).value;
           return data.indexOf(g) !== -1;
@@ -40,7 +40,7 @@ describe('ConstantArbitrary', () => {
       ));
     it('Should be able to produce all the constants', () =>
       fc.assert(
-        fc.property(fc.array(fc.string(), 1, 10), fc.integer(), fc.nat(), (data, seed, idx) => {
+        fc.property(fc.array(fc.string(), { minLength: 1 }), fc.integer(), fc.nat(), (data, seed, idx) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = constantFrom(...data);
           for (let id = 0; id !== 10000; ++id) {
