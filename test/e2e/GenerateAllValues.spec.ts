@@ -49,7 +49,9 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>
       fc.assert(
-        fc.property(fc.set(fc.string(), 1, 40), (csts) => lookForMissing(fc.constantFrom(...csts), csts.length))
+        fc.property(fc.set(fc.string(), { minLength: 1, maxLength: 40 }), (csts) =>
+          lookForMissing(fc.constantFrom(...csts), csts.length)
+        )
       ));
   });
   describe('fc.anything()', () => {

@@ -21,7 +21,7 @@ export function toObject<T>(items: [string, T][]): { [key: string]: T } {
  * @public
  */
 function dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<Record<string, T>> {
-  return set(tuple(keyArb, valueArb), (t1, t2) => t1[0] === t2[0]).map(toObject);
+  return set(tuple(keyArb, valueArb), { compare: (t1, t2) => t1[0] === t2[0] }).map(toObject);
 }
 
 export { dictionary };

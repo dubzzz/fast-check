@@ -51,13 +51,13 @@ describe('SetArbitrary', () => {
       });
     });
     describe('Given no length constraints but comparator [unique items for the specified comparator]', () => {
-      genericHelper.isValidArbitrary(() => set(nat().map(customMapper), customCompare), {
+      genericHelper.isValidArbitrary(() => set(nat().map(customMapper), { compare: customCompare }), {
         isStrictlySmallerValue: isStrictlySmallerCustomSet,
         isValidValue: (g: { key: number }[]) => validCustomSet(g),
       });
     });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => set(nat(), maxLength), {
+      genericHelper.isValidArbitrary((maxLength: number) => set(nat(), { maxLength }), {
         seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerSet,
         isValidValue: (g: number[], maxLength: number) => validSet(g) && g.length <= maxLength,
@@ -65,7 +65,8 @@ describe('SetArbitrary', () => {
     });
     describe('Given minimal and maximal lengths', () => {
       genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => set(nat(), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }) =>
+          set(nat(), { minLength: constraints.min, maxLength: constraints.max }),
         {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
           isStrictlySmallerValue: isStrictlySmallerSet,

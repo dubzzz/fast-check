@@ -14,7 +14,7 @@ describe('RecordArbitrary', () => {
   describe('record', () => {
     it('Should produce a record with missing keys', () =>
       fc.assert(
-        fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
+        fc.property(fc.set(fc.string(), { minLength: 1 }), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const recordModel: { [key: string]: Arbitrary<string> } = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
@@ -29,7 +29,7 @@ describe('RecordArbitrary', () => {
       ));
     it('Should produce a record with present keys', () =>
       fc.assert(
-        fc.property(fc.set(fc.string(), 1, 10), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
+        fc.property(fc.set(fc.string(), { minLength: 1 }), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const recordModel: { [key: string]: Arbitrary<string> } = {};
           for (const k of keys) recordModel[k] = constant(`_${k}_`);
@@ -45,8 +45,11 @@ describe('RecordArbitrary', () => {
 
     type Meta = { key: string; valueStart: number };
     const metaArbitrary = fc.set(
-      fc.record({ key: fc.string(), valueStart: fc.nat(1000) }),
-      (v1, v2) => v1.key === v2.key
+      fc.record({
+        key: fc.string(),
+        valueStart: fc.nat(1000),
+      }),
+      { compare: (v1, v2) => v1.key === v2.key }
     );
     const constraintsArbitrary = fc.record({ withDeletedKeys: fc.boolean() }, { withDeletedKeys: true });
 
