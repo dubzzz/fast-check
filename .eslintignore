@@ -1,3 +1,4 @@
+codemods/**/snippet-*
 docs/
 example/
 node_modules/
