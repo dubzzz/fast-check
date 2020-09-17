@@ -28,6 +28,10 @@ npx jscodeshift -t https://raw.githubusercontent.com/dubzzz/fast-check/master/co
 npx jscodeshift --parser=ts --extensions=ts -t https://raw.githubusercontent.com/dubzzz/fast-check/master/codemods/2.4.0_explicit-min-max-length/transform.cjs <path_to_code>
 ```
 
+You may need one of the following additional options:
+- `--simplifyMin=true` - _do not use `minLength` if it corresponds to the default_
+- `--simplifyMax=true` - _do not use `maxLength` if it corresponds to the default_
+
 ---
 
 **Minimal version:** `>=2.4.0`

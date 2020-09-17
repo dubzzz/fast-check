@@ -1,6 +1,6 @@
 // You can try this codemod as follow:
-//    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true
-//    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true
+//    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true --simplifyMin=true --simplifyMax=true
+//    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true--simplifyMin=true --simplifyMax=true
 // Or against the codebase of fast-check itself:
 //    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../test/unit/check/arbitrary/ArrayArbitrary.spec.ts --local=true --debug=true
 
@@ -123,6 +123,18 @@ module.exports = function (file, api, options) {
     options
   );
 
+  function computeNewArguments(compulsaryArguments, properties) {
+    const filteredProperties = properties.filter((p) => p !== false);
+    if (filteredProperties.length === 0) {
+      return compulsaryArguments;
+    }
+    return [...compulsaryArguments, j.objectExpression(filteredProperties)];
+  }
+
+  function isNumericValue(argument, value) {
+    return (argument.type === 'Literal' || argument.type === 'NumericLiteral') && argument.value === value;
+  }
+
   return root
     .find(j.CallExpression)
     .filter((p) => {
@@ -149,19 +161,22 @@ module.exports = function (file, api, options) {
         case 'array':
           if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
             // fc.array(arb, maxLength) -> fc.array(arb, {maxLength})
-            p.value.arguments = [
-              p.value.arguments[0],
-              j.objectExpression([j.property('init', j.identifier('maxLength'), p.value.arguments[1])]),
-            ];
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 10);
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [!simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[1])]
+            );
           } else if (p.value.arguments.length === 3) {
             // fc.array(arb, minLength, maxLength) -> fc.array(arb, {minLength, maxLength})
-            p.value.arguments = [
-              p.value.arguments[0],
-              j.objectExpression([
-                j.property('init', j.identifier('minLength'), p.value.arguments[1]),
-                j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
-              ]),
-            ];
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[2], 10);
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [
+                !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
+                !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
+              ]
+            );
           }
       }
       return p;
