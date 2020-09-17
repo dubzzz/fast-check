@@ -1760,10 +1760,10 @@ fc.genericTuple([fc.nat(), fc.string()])
 
 *&#8195;Signatures*
 
-- `fc.array(arb)`
-- `fc.array(arb, {minLength?, maxLength?})`
-- ~~`fc.array(arb, maxLength)`~~ — _deprecated since 2.4.0_
-- ~~`fc.array(arb, minLength, maxLength)`~~ — _deprecated since 2.4.0_
+- `fc.array(arb)` — _since 0.0.1_
+- `fc.array(arb, {minLength?, maxLength?})` — _since 2.4.0_
+- ~~`fc.array(arb, maxLength)`~~ — _since 0.0.1, deprecated since 2.4.0_
+- ~~`fc.array(arb, minLength, maxLength)`~~ — _since 0.0.7, deprecated since 2.4.0_
 
 *&#8195;with:*
 
