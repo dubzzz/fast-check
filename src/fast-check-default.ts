@@ -55,7 +55,7 @@ import {
 import { oneof, OneOfValue } from './check/arbitrary/OneOfArbitrary';
 import { option, OptionConstraints } from './check/arbitrary/OptionArbitrary';
 import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
-import { set } from './check/arbitrary/SetArbitrary';
+import { set, SetConstraints } from './check/arbitrary/SetArbitrary';
 import { infiniteStream } from './check/arbitrary/StreamArbitrary';
 import {
   asciiString,
@@ -284,6 +284,7 @@ export {
   OptionConstraints,
   RecordConstraints,
   SchedulerConstraints,
+  SetConstraints,
   WebAuthorityConstraints,
   WebUrlConstraints,
   WeightedArbitrary,
