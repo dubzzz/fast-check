@@ -1,3 +1,4 @@
+codemods/**/snippet-*
 docs/
 example/
 node_modules/
@@ -8,5 +9,4 @@ test/esm/
 test/legacy/
 test/type/
 test/rollup/
-buildTypes.js
 jest*.js

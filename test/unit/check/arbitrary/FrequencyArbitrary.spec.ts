@@ -13,7 +13,7 @@ describe('FrequencyArbitrary', () => {
     const rng = (seed: number) => stubRng.mutable.fastincrease(seed);
     it('Should produce the same as oneof when called on weights of 1', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.integer(), 1, 10), (seed, choices) => {
+        fc.property(fc.integer(), fc.array(fc.integer(), { minLength: 1 }), (seed, choices) => {
           const gFreq = frequency(...choices.map((c) => Object({ weight: 1, arbitrary: stubArb.counter(c) }))).generate(
             rng(seed)
           ).value;
@@ -23,7 +23,7 @@ describe('FrequencyArbitrary', () => {
       ));
     it('Should produce the same as oneof with sum of weights elements', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(weightArb(), 1, 10), (seed, choices) => {
+        fc.property(fc.integer(), fc.array(weightArb(), { minLength: 1 }), (seed, choices) => {
           const expand = (value: number, num: number): number[] => [...Array(num)].map(() => value);
 
           const choicesOneOf = [...choices].reduce((p: number[], c) => p.concat(...expand(c[0], c[1])), []);

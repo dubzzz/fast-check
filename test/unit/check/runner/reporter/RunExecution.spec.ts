@@ -17,8 +17,7 @@ describe('RunExecution', () => {
             failureId: fc.nat(1000),
             message: fc.fullUnicodeString(),
           }),
-          1,
-          10
+          { minLength: 1 }
         ),
         (seed, verbosityLevel, failuresDesc) => {
           // Simulate the run
@@ -55,7 +54,7 @@ describe('RunExecution', () => {
     ));
   it('Should generate correct counterexamplePath with no initial offset', () =>
     fc.assert(
-      fc.property(fc.integer(), fc.array(fc.nat(1000), 1, 10), (seed, path) => {
+      fc.property(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
         // Simulate the run
         const run = new RunExecution<number>(VerbosityLevel.None, false);
         for (let idx = 0; idx !== path[0]; ++idx) {
@@ -74,8 +73,8 @@ describe('RunExecution', () => {
     fc.assert(
       fc.property(
         fc.integer(),
-        fc.array(fc.nat(1000), 1, 10),
-        fc.array(fc.nat(1000), 1, 10),
+        fc.array(fc.nat(1000), { minLength: 1 }),
+        fc.array(fc.nat(1000), { minLength: 1 }),
         (seed, offsetPath, addedPath) => {
           // Simulate the run
           const run = new RunExecution<number>(VerbosityLevel.None, false);
@@ -103,8 +102,10 @@ describe('RunExecution', () => {
             status: fc.constantFrom(ExecutionStatus.Success, ExecutionStatus.Failure, ExecutionStatus.Skipped),
             value: fc.nat(),
           }),
-          1,
-          100
+          {
+            minLength: 1,
+            maxLength: 100,
+          }
         ),
         (executionStatuses) => {
           // Simulate the run

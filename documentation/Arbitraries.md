@@ -970,11 +970,11 @@ fc.lorem(3)
 
 fc.lorem(3, true)
 // Examples of generated values:
-// • "Sed, vel placerat et nibh."
-// • "Nisl quis congue pellentesque sapien non."
-// • "Curae, ligula eros erat et ut euismod sit suscipit consequat. Molestie, ac cras vel posuere et."
-// • "Risus vitae, integer quis nulla pellentesque quis sed. Pellentesque sed ante mi, iaculis, aliquam ultrices adipiscing nulla aliquam. Cursus ac molestie, erat augue ullamcorper."
-// • "Aliquam augue at nulla. Non faucibus, cursus molestie, posuere justo. Sapien."
+// • "Sed."
+// • "Nisl quis congue pellentesque sapien non elit quam."
+// • "Curae, ligula eros erat et ut euismod sit. Nibh suscipit molestie, ac cras vel posuere et purus eleifend nec."
+// • "Risus vitae. Quis nulla pellentesque quis sed, magna pellentesque sed ante. Iaculis, aliquam ultrices adipiscing."
+// • "Aliquam augue at nulla maecenas non faucibus, cursus molestie, posuere justo justo. Feugiat, aliquam, ultrices convallis aliquam, tortor sodales lacus ut libero pharetra. Nonummy nec, in ut lectus."
 // • …
 ```
 </details>
@@ -1761,14 +1761,15 @@ fc.genericTuple([fc.nat(), fc.string()])
 *&#8195;Signatures*
 
 - `fc.array(arb)`
-- `fc.array(arb, maxLength)`
-- `fc.array(arb, minLength, maxLength)`
+- `fc.array(arb, {minLength?, maxLength?})`
+- ~~`fc.array(arb, maxLength)`~~ — _deprecated_
+- ~~`fc.array(arb, minLength, maxLength)`~~ — _deprecated_
 
 *&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `10` — _maximal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1782,22 +1783,25 @@ fc.array(fc.nat())
 // • [505677510,559592731,1931700591,729662778,1771367027]
 // • …
 
-fc.array(fc.nat(), 3)
+fc.array(fc.nat(), {minLength: 3})
 // Examples of generated values:
-// • [1584945814,2091302204,656737282]
-// • [539789989,1511646810,1532079116]
-// • [179837309,1996953218,1506324533]
-// • [18730027,1481994349,783904411]
-// • [1043674932,26,30]
+// • [758331231,398217079,312666176,53143294,521680871,1862921771,1710362589,983796605,1814936084]
+// • [1097867707,1901779976,15,20,1568142240,1311161179,973337534,1612556434]
+// • [27,592551667,423050204,1343082443,19,22,219368377,6]
+// • [16,3,171247186]
+// • [23,10,952821768]
 // • …
 
-fc.array(fc.nat(), 5, 7)
+fc.array(fc.nat(), {maxLength: 3})
+// Examples of generated values: [], [1097867707], [27,592551667,423050204], [1360904164,1953451342,1651990695], [1771169783]…
+
+fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 // Examples of generated values:
-// • [105849857,2104277073,28,10,7,1574519785]
-// • [17,73613851,16,16,28,26]
-// • [199059205,1071842921,1458458266,23,1614164730,22]
-// • [1363793259,1700974328,2073190901,1016859405,77531415,187425710,648537886]
-// • [1931838903,661680466,1043274553,227120261,334867404,1637939285,970242422]
+// • [17,1889589762,1147911052,725992281,12,4]
+// • [1503239805,742382696,478977019,1206184056,992934701,1081616342]
+// • [1396368269,227325306,1918884399,1141338513,1861390920,1771550203,750875810]
+// • [1,1984953187,60011223,10,7,27]
+// • [20,13,3,22,2,360110028]
 // • …
 ```
 </details>
@@ -2458,8 +2462,8 @@ fc.func(fc.nat())
 // Examples of generated values:
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
-//     const outs = [1681938411,278250656,2138206756,937216340,1834485983,1975998514,995463917,1800207668,220176306,1664905459];
-//     return outs[hash('-519242785' + stringify(args)) % outs.length];
+//     const outs = [1681938411,278250656,2138206756,937216340];
+//     return outs[hash('1975998514' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
@@ -2473,8 +2477,8 @@ fc.func(fc.nat())
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
-//     const outs = [269035825,95461057,227736260,947243235];
-//     return outs[hash('-1067688743' + stringify(args)) % outs.length];
+//     const outs = [269035825,95461057,227736260,947243235,2103296563,1079794905];
+//     return outs[hash('27' + stringify(args)) % outs.length];
 //   }
 // • function(...args) {
 //     // With hash and stringify coming from fast-check

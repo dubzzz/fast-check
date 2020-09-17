@@ -5,7 +5,11 @@ import { Arbitrary } from './definition/Arbitrary';
 /** @internal */
 function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
   const arrayArb =
-    aLength != null ? (bLength != null ? array(charArb, aLength, bLength) : array(charArb, aLength)) : array(charArb);
+    aLength != null
+      ? bLength != null
+        ? array(charArb, { minLength: aLength, maxLength: bLength })
+        : array(charArb, { maxLength: aLength })
+      : array(charArb);
   return arrayArb.map((tab) => tab.join(''));
 }
 

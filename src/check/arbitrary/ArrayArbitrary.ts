@@ -102,6 +102,25 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
 }
 
 /**
+ * Compute `maxLength` based on `minLength`
+ * @internal
+ */
+function maxLengthFromMinLength(minLength: number): number {
+  return 2 * minLength + 10;
+}
+
+/**
+ * Constraints to be applied on {@link array}
+ * @public
+ */
+export interface ArrayConstraints {
+  /** Lower bound of the generated array size */
+  minLength?: number;
+  /** Upper bound of the generated array size */
+  maxLength?: number;
+}
+
+/**
  * For arrays of values coming from `arb`
  * @param arb - Arbitrary used to generate the values inside the array
  * @public
@@ -111,6 +130,7 @@ function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  * For arrays of values coming from `arb` having an upper bound size
  * @param arb - Arbitrary used to generate the values inside the array
  * @param maxLength - Upper bound of the generated array size
+ * @deprecated Superceded by `fc.array(arb, {maxLength})`. Ease the migration with {@link https://raw.githubusercontent.com/dubzzz/fast-check/master/codemods/2.4.0_explicit-min-max-length/transform.cjs | our codemod script}
  * @public
  */
 function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
@@ -119,12 +139,31 @@ function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  * @param arb - Arbitrary used to generate the values inside the array
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
+ * @deprecated Superceded by `fc.array(arb, {minLength, maxLength})`. Ease the migration with {@link https://raw.githubusercontent.com/dubzzz/fast-check/master/codemods/2.4.0_explicit-min-max-length/transform.cjs | our codemod script}
  * @public
  */
 function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
-function array<T>(arb: Arbitrary<T>, aLength?: number, bLength?: number): Arbitrary<T[]> {
-  if (bLength == null) return new ArrayArbitrary<T>(arb, 0, aLength == null ? 10 : aLength);
-  return new ArrayArbitrary<T>(arb, aLength || 0, bLength);
+/**
+ * For arrays of values coming from `arb` having lower and upper bound size
+ * @param arb - Arbitrary used to generate the values inside the array
+ * @param constraints - Constraints to apply when building instances
+ * @public
+ */
+function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints): Arbitrary<T[]>;
+function array<T>(arb: Arbitrary<T>, ...args: [] | [number] | [number, number] | [ArrayConstraints]): Arbitrary<T[]> {
+  // fc.array(arb)
+  if (args.length === 0) return new ArrayArbitrary<T>(arb, 0, maxLengthFromMinLength(0));
+  // fc.array(arb, constraints)
+  if (typeof args[0] === 'object') {
+    const minLength = args[0].minLength || 0;
+    const specifiedMaxLength = args[0].maxLength;
+    const maxLength = specifiedMaxLength !== undefined ? specifiedMaxLength : maxLengthFromMinLength(minLength);
+    return new ArrayArbitrary<T>(arb, minLength, maxLength);
+  }
+  // fc.array(arb, minLength, maxLength)
+  if (args[1] !== undefined) return new ArrayArbitrary<T>(arb, args[0], args[1]);
+  // fc.array(arb, maxLength)
+  return new ArrayArbitrary<T>(arb, 0, args[0]);
 }
 
 export { array };

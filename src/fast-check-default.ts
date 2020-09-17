@@ -19,7 +19,7 @@ import {
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
-import { array } from './check/arbitrary/ArrayArbitrary';
+import { array, ArrayConstraints } from './check/arbitrary/ArrayArbitrary';
 import { bigInt, bigIntN, bigUint, bigUintN } from './check/arbitrary/BigIntArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
 import { falsy, FalsyContraints, FalsyValue } from './check/arbitrary/FalsyArbitrary';
@@ -276,6 +276,7 @@ export {
   defaultReportMessage,
   hash,
   // constraints
+  ArrayConstraints,
   CommandsContraints,
   FalsyContraints,
   MixedCaseConstraints,

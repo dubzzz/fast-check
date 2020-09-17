@@ -73,21 +73,23 @@ function ipV6(): Arbitrary<string> {
     ipV4()
   );
   return oneof(
-    tuple(array(h16Arb, 6, 6), ls32Arb).map(([eh, l]) => `${eh.join(':')}:${l}`),
-    tuple(array(h16Arb, 5, 5), ls32Arb).map(([eh, l]) => `::${eh.join(':')}:${l}`),
-    tuple(array(h16Arb, 0, 1), array(h16Arb, 4, 4), ls32Arb).map(
+    tuple(array(h16Arb, { minLength: 6, maxLength: 6 }), ls32Arb).map(([eh, l]) => `${eh.join(':')}:${l}`),
+    tuple(array(h16Arb, { minLength: 5, maxLength: 5 }), ls32Arb).map(([eh, l]) => `::${eh.join(':')}:${l}`),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 1 }), array(h16Arb, { minLength: 4, maxLength: 4 }), ls32Arb).map(
       ([bh, eh, l]) => `${bh.join(':')}::${eh.join(':')}:${l}`
     ),
-    tuple(array(h16Arb, 0, 2), array(h16Arb, 3, 3), ls32Arb).map(
+    tuple(array(h16Arb, { minLength: 0, maxLength: 2 }), array(h16Arb, { minLength: 3, maxLength: 3 }), ls32Arb).map(
       ([bh, eh, l]) => `${bh.join(':')}::${eh.join(':')}:${l}`
     ),
-    tuple(array(h16Arb, 0, 3), array(h16Arb, 2, 2), ls32Arb).map(
+    tuple(array(h16Arb, { minLength: 0, maxLength: 3 }), array(h16Arb, { minLength: 2, maxLength: 2 }), ls32Arb).map(
       ([bh, eh, l]) => `${bh.join(':')}::${eh.join(':')}:${l}`
     ),
-    tuple(array(h16Arb, 0, 4), h16Arb, ls32Arb).map(([bh, eh, l]) => `${bh.join(':')}::${eh}:${l}`),
-    tuple(array(h16Arb, 0, 5), ls32Arb).map(([bh, l]) => `${bh.join(':')}::${l}`),
-    tuple(array(h16Arb, 0, 6), h16Arb).map(([bh, eh]) => `${bh.join(':')}::${eh}`),
-    tuple(array(h16Arb, 0, 7)).map(([bh]) => `${bh.join(':')}::`)
+    tuple(array(h16Arb, { minLength: 0, maxLength: 4 }), h16Arb, ls32Arb).map(
+      ([bh, eh, l]) => `${bh.join(':')}::${eh}:${l}`
+    ),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 5 }), ls32Arb).map(([bh, l]) => `${bh.join(':')}::${l}`),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 6 }), h16Arb).map(([bh, eh]) => `${bh.join(':')}::${eh}`),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 7 })).map(([bh]) => `${bh.join(':')}::`)
   );
 }
 

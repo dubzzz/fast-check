@@ -15,7 +15,7 @@ import { escapeForMultilineComments } from './helpers/TextEscaper';
  * @public
  */
 export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary<(...args: TArgs) => TOut> {
-  return tuple(array(arb, 1, 10), integer().noShrink()).map(([outs, seed]) => {
+  return tuple(array(arb, { minLength: 1 }), integer().noShrink()).map(([outs, seed]) => {
     const producer = () => {
       const recorded: { [key: string]: TOut } = {};
       const f = (...args: TArgs) => {
