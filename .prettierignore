@@ -1,7 +1,8 @@
-./lib/
-./lib-*/
-./coverage/
-./dist/
-./docs/
+bundle/
+coverage/
+dist/
+docs/
+lib/
+lib-*/
 *.generated.ts
 *.generated.spec.ts
