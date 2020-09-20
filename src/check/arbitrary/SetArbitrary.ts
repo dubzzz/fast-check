@@ -98,7 +98,10 @@ function set<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  * @param arb - Arbitrary used to generate the values inside the array
  * @param maxLength - Upper bound of the generated array size
  *
- * @deprecated Superceded by `fc.set(arb, {maxLength})`. Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}
+ * @remarks
+ * Superceded by `fc.set(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
@@ -109,7 +112,10 @@ function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
  *
- * @deprecated Superceded by `fc.set(arb, {minLength, maxLength})`. Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}
+ * @remarks
+ * Superceded by `fc.set(arb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
@@ -119,7 +125,10 @@ function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitr
  * @param arb - Arbitrary used to generate the values inside the array
  * @param compare - Return true when the two values are equals
  *
- * @deprecated Superceded by `fc.set(arb, {compare})`. Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}
+ * @remarks
+ * Superceded by `fc.set(arb, {compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
@@ -130,7 +139,10 @@ function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<
  * @param maxLength - Upper bound of the generated array size
  * @param compare - Return true when the two values are equals
  *
- * @deprecated Superceded by `fc.array(arb, {maxLength, compare})`. Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}
+ * @remarks
+ * Superceded by `fc.array(arb, {maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
@@ -142,7 +154,10 @@ function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => b
  * @param maxLength - Upper bound of the generated array size
  * @param compare - Return true when the two values are equals
  *
- * @deprecated Superceded by `fc.array(arb, {minLength, maxLength, compare})`. Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}
+ * @remarks
+ * Superceded by `fc.array(arb, {minLength, maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function set<T>(

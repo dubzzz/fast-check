@@ -1762,8 +1762,8 @@ fc.genericTuple([fc.nat(), fc.string()])
 
 - `fc.array(arb)`
 - `fc.array(arb, {minLength?, maxLength?})`
-- ~~`fc.array(arb, maxLength)`~~ — _deprecated_
-- ~~`fc.array(arb, minLength, maxLength)`~~ — _deprecated_
+- _`fc.array(arb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.array(arb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1819,11 +1819,11 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 
 - `fc.set(arb)`
 - `fc.set(arb, {minLength?, maxLength?, compare?})`
-- ~~`fc.set(arb, maxLength)`~~ — _deprecated_
-- ~~`fc.set(arb, minLength, maxLength)`~~ — _deprecated_
-- ~~`fc.set(arb, compare)`~~ — _deprecated_
-- ~~`fc.set(arb, maxLength, compare)`~~ — _deprecated_
-- ~~`fc.set(arb, minLength, maxLength, compare)`~~ — _deprecated_
+- _`fc.set(arb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, maxLength, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, minLength, maxLength, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
