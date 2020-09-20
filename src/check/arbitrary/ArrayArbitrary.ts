@@ -128,18 +128,28 @@ export interface ArrayConstraints {
 function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
 /**
  * For arrays of values coming from `arb` having an upper bound size
+ *
  * @param arb - Arbitrary used to generate the values inside the array
  * @param maxLength - Upper bound of the generated array size
- * @deprecated Superceded by `fc.array(arb, {maxLength})`. Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}
+ *
+ * @remarks
+ * Superceded by `fc.array(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
 /**
  * For arrays of values coming from `arb` having lower and upper bound size
+ *
  * @param arb - Arbitrary used to generate the values inside the array
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
- * @deprecated Superceded by `fc.array(arb, {minLength, maxLength})`. Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}
+ *
+ * @remarks
+ * Superceded by `fc.array(arb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
