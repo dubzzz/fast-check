@@ -55,7 +55,7 @@ describe('ConstantArbitrary', () => {
     });
     it('Should shrink any of the constants towards the first one', () =>
       fc.assert(
-        fc.property(fc.set(fc.string(), 1, 10), fc.integer(), (data, seed) => {
+        fc.property(fc.set(fc.string(), { minLength: 1 }), fc.integer(), (data, seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const shrinkable = constantFrom(...data).generate(mrng);
           if (data.indexOf(shrinkable.value) === 0) expect([...shrinkable.shrink()]).toEqual([]);

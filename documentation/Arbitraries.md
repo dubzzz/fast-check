@@ -1818,61 +1818,44 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 *&#8195;Signatures*
 
 - `fc.set(arb)`
-- `fc.set(arb, maxLength)`
-- `fc.set(arb, minLength, maxLength)`
-- `fc.set(arb, compare)`
-- `fc.set(arb, maxLength, compare)`
-- `fc.set(arb, minLength, maxLength, compare)`
+- `fc.set(arb, {minLength?, maxLength?, compare?})`
+- ~~`fc.set(arb, maxLength)`~~ — _deprecated_
+- ~~`fc.set(arb, minLength, maxLength)`~~ — _deprecated_
+- ~~`fc.set(arb, compare)`~~ — _deprecated_
+- ~~`fc.set(arb, maxLength, compare)`~~ — _deprecated_
+- ~~`fc.set(arb, minLength, maxLength, compare)`~~ — _deprecated_
 
 *&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `10` — _maximal length (included)_
-- `compare` — default: `(a, b) => a === b` — _custom compare function used to distinguish duplicates in order to remove them from the resulting array_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `compare?` — default: `(a, b) => a === b` — _custom compare function used to distinguish duplicates in order to remove them from the resulting array_
 
 *&#8195;Usages*
 
 ```js
-fc.set(fc.nat())
-// Examples of generated values:
-// • [581737874,363728213,1849261841,2086900089,1407876151,483945393]
-// • []
-// • [1188401930,1080708697]
-// • [1932414823,242967476,1070530418,327779854,20278390,848810076,503994952,509283078,418212126]
-// • [995846483,1424836937,374064787,802080757,161175616,165366219,68362401,310244342,1942755427]
-// • …
+fc.set(fc.nat(99))
+// Examples of generated values: [], [15,91,64,6,44,3,85,4,0], [79], [23,39,93,87,4,85], [58,31,39,26,75]…
 
-fc.set(fc.nat(), 3)
-// Examples of generated values: [], [1966917665,1611683793], [902979502], [5], [683713476,1887226888]…
+fc.set(fc.nat(99), {maxLength: 3})
+// Examples of generated values: [], [55], [1,67,4], [12,90,43], [31]…
 
-fc.set(fc.nat(), 5, 7)
-// Examples of generated values:
-// • [2071243119,1019120835,178921649,1991158594,254132674,244350784,2084809828]
-// • [1857850746,1136469419,134027570,981584072,691463622,713863397]
-// • [178760054,1502635358,1135167329,323374730,1826246517,831719512,132041292]
-// • [1682452789,1108123838,1088395859,305257794,388930749,1160955220,998765778]
-// • [1187479417,11,577552177,1191118105,2094470239,29]
-// • …
+fc.set(fc.nat(99), {minLength: 5, maxLength: 7})
+// Examples of generated values: [5,10,0,29,4,3], [53,44,67,56,49,42], [69,6,47,13,20,3,58], [3,87,23,4,0,1], [38,88,9,93,20,77,91]…
 
-fc.set(fc.hexaString(), (s1, s2) => s1.length === s2.length)
+fc.set(fc.hexaString(), {compare: (s1, s2) => s1.length === s2.length})
 // Note: Resulting arrays will never contain two strings with the same number of characters
-// Examples of generated values:
-// • ["f8b0a22","620a459a5c","","5"]
-// • ["e8820df36f","a50ec","a8","d2dd",""]
-// • ["33","","9a8af99a","8055950"]
-// • ["2b",""]
-// • ["32","1e3e37c","31f59","b2621fd8"]
-// • …
+// Examples of generated values: ["20","016"], [], ["447","","893c89edb1","b31a5"], ["79429d9",""], ["0","c20ea408b9","1f1574"]…
 
-fc.set(fc.hexaString(), 5, 10, (s1, s2) => s1.length === s2.length)
+fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.length === s2.length})
 // Note: Resulting arrays will never contain two strings with the same number of characters and it will contain between 5 and 10 strings
 // Examples of generated values:
-// • ["bb4f65e","c11","07692946","4343","6f2735c0f9","2b"]
-// • ["92","f783bab","3a736","a3121633","996b36b49c"]
-// • ["061978","44c0","25591f566f","a","e8d","612ac","b04208a4b"]
-// • ["ac02a4e","49a","642a406069","9328","2e3ded","ade301ed"]
-// • ["dd90a","f64f2f0358","7b5ae028","f5","9","226b40"]
+// • ["","18028609c9","8b9e4d","bd945ddc","7262"]
+// • ["283f273101","10f","b","ee302eda","","f3","41c2a"]
+// • ["65655ac0b","c20","02f6","42ff080184","80","f04e066",""]
+// • ["322","","23","2","60af6ca3"]
+// • ["","b","21a03b1","052844fe0a","7ddf1bdd","e3"]
 // • …
 ```
 </details>

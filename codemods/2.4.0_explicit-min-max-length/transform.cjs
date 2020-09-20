@@ -131,8 +131,15 @@ module.exports = function (file, api, options) {
     return [...compulsaryArguments, j.objectExpression(filteredProperties)];
   }
 
+  function isFunction(argument) {
+    return argument.type === 'ArrowFunctionExpression' || argument.type === 'FunctionExpression';
+  }
+  function isNumeric(argument) {
+    return argument.type === 'Literal' || argument.type === 'NumericLiteral';
+  }
+
   function isNumericValue(argument, value) {
-    return (argument.type === 'Literal' || argument.type === 'NumericLiteral') && argument.value === value;
+    return isNumeric(argument) && argument.value === value;
   }
 
   return root
@@ -178,6 +185,60 @@ module.exports = function (file, api, options) {
               ]
             );
           }
+          break;
+        case 'set':
+          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+            if (isNumeric(p.value.arguments[1])) {
+              // fc.set(arb, maxLength) -> fc.set(arb, {maxLength})
+              const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 10);
+              p.value.arguments = computeNewArguments(
+                [p.value.arguments[0]],
+                [!simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[1])]
+              );
+            } else if (isFunction(p.value.arguments[1])) {
+              // fc.set(arb, compare) -> fc.set(arb, {compare})
+              p.value.arguments = computeNewArguments(
+                [p.value.arguments[0]],
+                [j.property('init', j.identifier('compare'), p.value.arguments[1])]
+              );
+            }
+          } else if (p.value.arguments.length === 3) {
+            if (isNumeric(p.value.arguments[2])) {
+              // fc.set(arb, minLength, maxLength) -> fc.set(arb, {minLength, maxLength})
+              const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
+              const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[2], 10);
+              p.value.arguments = computeNewArguments(
+                [p.value.arguments[0]],
+                [
+                  !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
+                  !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
+                ]
+              );
+            } else if (isFunction(p.value.arguments[2])) {
+              // fc.set(arb, maxLength, compare) -> fc.set(arb, {maxLength, compare})
+              const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 10);
+              p.value.arguments = computeNewArguments(
+                [p.value.arguments[0]],
+                [
+                  !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[1]),
+                  j.property('init', j.identifier('compare'), p.value.arguments[2]),
+                ]
+              );
+            }
+          } else if (p.value.arguments.length === 4) {
+            // fc.set(arb, minLength, maxLength, compare) -> fc.set(arb, {minLength, maxLength, compare})
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[2], 10);
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [
+                !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
+                !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
+                j.property('init', j.identifier('compare'), p.value.arguments[3]),
+              ]
+            );
+          }
+          break;
       }
       return p;
     })
