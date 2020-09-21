@@ -10,7 +10,7 @@
     "fast-check": "*"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "rollup": "^2.26.11"
   },
