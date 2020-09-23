@@ -165,28 +165,39 @@ module.exports = function (file, api, options) {
           : namedImportsMap.get(p.value.callee.name);
 
       switch (nameForFastCheck) {
-        case 'array':
-          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+        case 'hexaString':
+        case 'base64String':
+        case 'string':
+        case 'asciiString':
+        case 'unicodeString':
+        case 'string16bits':
+        case 'fullUnicodeString':
+        case 'stringOf':
+        case 'array': {
+          const numCompulsaryArgs = ['array', 'stringOf'].includes(nameForFastCheck) ? 1 : 0;
+          if (
+            p.value.arguments.length === numCompulsaryArgs + 1 &&
+            p.value.arguments[numCompulsaryArgs].type !== 'ObjectExpression'
+          ) {
+            // fc.string(maxLength) -> fc.string({maxLength})
             // fc.array(arb, maxLength) -> fc.array(arb, {maxLength})
-            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 10);
-            p.value.arguments = computeNewArguments(
-              [p.value.arguments[0]],
-              [!simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[1])]
-            );
-          } else if (p.value.arguments.length === 3) {
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[numCompulsaryArgs], 10);
+            p.value.arguments = computeNewArguments(p.value.arguments.slice(0, numCompulsaryArgs), [
+              !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[numCompulsaryArgs]),
+            ]);
+          } else if (p.value.arguments.length === numCompulsaryArgs + 2) {
+            // fc.string(minLength, maxLength) -> fc.string({minLength, maxLength})
             // fc.array(arb, minLength, maxLength) -> fc.array(arb, {minLength, maxLength})
-            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
-            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[2], 10);
-            p.value.arguments = computeNewArguments(
-              [p.value.arguments[0]],
-              [
-                !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
-                !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
-              ]
-            );
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[numCompulsaryArgs], 0);
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[numCompulsaryArgs + 1], 10);
+            p.value.arguments = computeNewArguments(p.value.arguments.slice(0, numCompulsaryArgs), [
+              !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[numCompulsaryArgs]),
+              !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[numCompulsaryArgs + 1]),
+            ]);
           }
           break;
-        case 'set':
+        }
+        case 'set': {
           if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
             if (isNumeric(p.value.arguments[1])) {
               // fc.set(arb, maxLength) -> fc.set(arb, {maxLength})
@@ -239,6 +250,7 @@ module.exports = function (file, api, options) {
             );
           }
           break;
+        }
       }
       return p;
     })
