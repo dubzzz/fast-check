@@ -6,7 +6,7 @@ import { Arbitrary } from './definition/Arbitrary';
  * Constraints to be applied on arbitraries for strings
  * @public
  */
-export interface StringConstraints {
+export interface StringSharedConstraints {
   /** Lower bound of the generated string length (included) */
   minLength?: number;
   /** Upper bound of the generated string length (included) */
@@ -14,7 +14,7 @@ export interface StringConstraints {
 }
 
 /** @internal */
-type StringFullConstraintsDefinition = [] | [number] | [number, number] | [StringConstraints];
+type StringFullConstraintsDefinition = [] | [number] | [number, number] | [StringSharedConstraints];
 
 /** @internal */
 function StringArbitrary(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefinition) {
@@ -95,7 +95,7 @@ function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: numb
  *
  * @public
  */
-function stringOf(charArb: Arbitrary<string>, constraints: StringConstraints): Arbitrary<string>;
+function stringOf(charArb: Arbitrary<string>, constraints: StringSharedConstraints): Arbitrary<string>;
 function stringOf(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefinition): Arbitrary<string> {
   return StringArbitrary(charArb, ...args);
 }
@@ -137,7 +137,7 @@ function string(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @public
  */
-function string(constraints: StringConstraints): Arbitrary<string>;
+function string(constraints: StringSharedConstraints): Arbitrary<string>;
 function string(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   return StringArbitrary(char(), ...args);
 }
@@ -179,7 +179,7 @@ function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @public
  */
-function asciiString(constraints: StringConstraints): Arbitrary<string>;
+function asciiString(constraints: StringSharedConstraints): Arbitrary<string>;
 function asciiString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   return StringArbitrary(ascii(), ...args);
 }
@@ -221,7 +221,7 @@ function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @public
  */
-function string16bits(constraints: StringConstraints): Arbitrary<string>;
+function string16bits(constraints: StringSharedConstraints): Arbitrary<string>;
 function string16bits(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   return StringArbitrary(char16bits(), ...args);
 }
@@ -263,7 +263,7 @@ function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @public
  */
-function unicodeString(constraints: StringConstraints): Arbitrary<string>;
+function unicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
 function unicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   return StringArbitrary(unicode(), ...args);
 }
@@ -305,7 +305,7 @@ function fullUnicodeString(minLength: number, maxLength: number): Arbitrary<stri
  *
  * @public
  */
-function fullUnicodeString(constraints: StringConstraints): Arbitrary<string>;
+function fullUnicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
 function fullUnicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   return StringArbitrary(fullUnicode(), ...args);
 }
@@ -347,7 +347,7 @@ function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @public
  */
-function hexaString(constraints: StringConstraints): Arbitrary<string>;
+function hexaString(constraints: StringSharedConstraints): Arbitrary<string>;
 function hexaString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   return StringArbitrary(hexa(), ...args);
 }
@@ -398,7 +398,7 @@ function base64String(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @public
  */
-function base64String(constraints: StringConstraints): Arbitrary<string>;
+function base64String(constraints: StringSharedConstraints): Arbitrary<string>;
 function base64String(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   if (args[0] !== undefined) {
     if (typeof args[0] === 'number') {
