@@ -573,8 +573,9 @@ fc.fullUnicode()
 *&#8195;Signatures*
 
 - `fc.hexaString()`
-- `fc.hexaString(maxLength)`
-- `fc.hexaString(minLength, maxLength)`
+- `fc.hexaString({minLength?, maxLength?})`
+- _`fc.hexaString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.hexaString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -587,13 +588,17 @@ fc.fullUnicode()
 fc.hexaString()
 // Examples of generated values: "0e0", "bf2", "3", "a9cb", "302122"…
 
-fc.hexaString(3)
+fc.hexaString({maxLength: 3})
 // Note: Any hexadecimal string containing up to 3 (included) characters
-// Examples of generated values: "b04", "", "1", "22e", "0"…
+// Examples of generated values: "", "c", "3", "1", "c0"…
 
-fc.hexaString(4, 6)
+fc.hexaString({minLength: 3})
+// Note: Any hexadecimal string containing at least 3 (included) characters
+// Examples of generated values: "12f", "c63ba2", "331163", "1e412e", "32e47900"…
+
+fc.hexaString({minLength: 4, maxLength: 6})
 // Note: Any hexadecimal string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "61c9", "ae60ac", "1301c", "1195", "e0200"…
+// Examples of generated values: "30310", "2f411", "db35", "0103", "09a7ba"…
 ```
 </details>
 
@@ -609,8 +614,9 @@ fc.hexaString(4, 6)
 *&#8195;Signatures*
 
 - `fc.base64String()`
-- `fc.base64String(maxLength)`
-- `fc.base64String(minLength, maxLength)`
+- `fc.base64String({minLength?, maxLength?})`
+- _`fc.base64String(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.base64String(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -623,15 +629,19 @@ _When using `minLength` and `maxLength` make sure that they are compatible toget
 
 ```js
 fc.base64String()
-// Examples of generated values: "rgkUfyt0yzjfC+og", "BdEh", "RD/EvefgXKA=", "xBEjzZ+=", "FoRDCZeC"…
+// Examples of generated values: "rgk=", "Bd==", "D/Ev", "xB==", "VF=="…
 
-fc.base64String(8)
+fc.base64String({maxLength: 8})
 // Note: Any base64 string containing up to 8 (included) characters
-// Examples of generated values: "", "HNgun7I=", "Zjy=", "2YaX", "FTD="…
+// Examples of generated values: "", "YycWxD==", "AE==", "udGB73==", "xBk="…
 
-fc.base64String(4, 12)
+fc.base64String({minLength: 8})
+// Note: Any base64 string containing at least 8 (included) characters
+// Examples of generated values: "AFCCAEDc", "FwBPvpeEFN5C", "7WXEBForaL==", "YycWxDDCEKMsIDFFFC9FDFA=", "AEFx/rDpOlF="…
+
+fc.base64String({minLength: 4, maxLength: 12})
 // Note: Any base64 string containing between 4 (included) and 12 (included) characters
-// Examples of generated values: "vDxCCAk2/IS0", "6ryIGlQJJX8=", "ehK1YMsk", "+TC9UScX", "AxZf"…
+// Examples of generated values: "rUs8bJfAngr=", "uFAtWI==", "rB42AD==", "ETCP", "C379"…
 ```
 </details>
 
@@ -645,8 +655,9 @@ fc.base64String(4, 12)
 *&#8195;Signatures*
 
 - `fc.string()`
-- `fc.sString(maxLength)`
-- `fc.string(minLength, maxLength)`
+- `fc.string({minLength?, maxLength?})`
+- _`fc.string(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -659,13 +670,17 @@ fc.base64String(4, 12)
 fc.string()
 // Examples of generated values: ".A%", "aM{]xTH&)", "^NLpz5/y", "", "eqr"…
 
-fc.string(3)
+fc.string({maxLength: 3})
 // Note: Any string containing up to 3 (included) characters
-// Examples of generated values: "0", "!B", "OY", "TI'", ""…
+// Examples of generated values: "", "~*2", "{Z", "[\"", "jlZ"…
 
-fc.string(4, 6)
+fc.string({minLength: 3})
+// Note: Any string containing at least 3 (included) characters
+// Examples of generated values: "W=*$Fm V4Yf4<qC", "JeT[#", "~*2[s\\,qgwio", "nDL?K[,", "{Z:gG\")"…
+
+fc.string({minLength: 4, maxLength: 6})
 // Note: Any string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "Y&.E{", "f&X6A", " \"d<ap", "bD7;", "UT'@"…
+// Examples of generated values: "x<H+`", "&}\"\"", " \"\"x ", "#P%[&", "z YR"…
 ```
 </details>
 
@@ -679,8 +694,9 @@ fc.string(4, 6)
 *&#8195;Signatures*
 
 - `fc.asciiString()`
-- `fc.asciiString(maxLength)`
-- `fc.asciiString(minLength, maxLength)`
+- `fc.asciiString({minLength?, maxLength?})`
+- _`fc.asciiString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.asciiString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -693,13 +709,17 @@ fc.string(4, 6)
 fc.asciiString()
 // Examples of generated values: "2u1\u001aWQ", "", "*y", "\bT\u0013.\u0017|h&>", "si3\u0016`kA\u0017\u0004"…
 
-fc.asciiString(3)
+fc.asciiString({maxLength: 3})
 // Note: Any ascii string containing up to 3 (included) characters
-// Examples of generated values: "", "w7", "7", "f", "_u"…
+// Examples of generated values: "\"", "vC", "", "'\u0010*", "%"…
 
-fc.asciiString(4, 6)
+fc.asciiString({minLength: 3})
+// Note: Any ascii string containing at least 3 (included) characters
+// Examples of generated values: "\"N $W%pE)&\u0001o", "vCkn&}{", "\"O\u0006", "'\u0010*6ua\u0017JEpG\u000bg<#\u0007", "%%&\u0018#K"…
+
+fc.asciiString({minLength: 4, maxLength: 6})
 // Note: Any ascii string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "%A&= ", "#\u0013!&", "%!n!W", "\u0014~\u001e,\u001f", "3\"|#D%"…
+// Examples of generated values: "0(0E&", "!.Qj?-", "V\u0002\u0014z\fT", "%8Z&", "\u0007U\u0006t#"…
 ```
 </details>
 
@@ -713,8 +733,9 @@ fc.asciiString(4, 6)
 *&#8195;Signatures*
 
 - `fc.unicodeString()`
-- `fc.unicodeString(maxLength)`
-- `fc.unicodeString(minLength, maxLength)`
+- `fc.unicodeString({minLength?, maxLength?})`
+- _`fc.unicodeString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -727,13 +748,17 @@ fc.asciiString(4, 6)
 fc.unicodeString()
 // Examples of generated values: "", "ॗﰗ騈!+().俅", "㚗", "娇\u001eᨫ㽹矌", "┛䅯퉳"…
 
-fc.unicodeString(3)
+fc.unicodeString({maxLength: 3})
 // Note: Any unicode (from BMP-plan) string containing up to 3 (included) characters
-// Examples of generated values: "", "ꟑ", "쾮", "$", "⯄밈"…
+// Examples of generated values: "(", "", "⇾燏", ".!", "ሖꧾㆳ"…
 
-fc.unicodeString(4, 6)
+fc.unicodeString({minLength: 3})
+// Note: Any unicode (from BMP-plan) string containing at least 3 (included) characters
+// Examples of generated values: "(傚䀘$' .ḙ葢!'#봔", "杮಴⿆뎶蝐母쪀㩑ᶔ䰚搞慢䲉欐", "⇾燏ᅙ秱뵴ꇺ꿵玽鄧돟鐎䕝ᑿ", ".!\"䠢!", "+)꺇䪎-"…
+
+fc.unicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode (from BMP-plan) string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "⥯ⳃケ썂은", "ൺ趫ᤲ䗆", "ꅶ൞ݡ纊㽵桘", "夵ᢾ剓╂ಽ㕔", "ݹ\"༱䴙џ"…
+// Examples of generated values: "紫ᡔ楬莼媛", "ኮ࿅$蘭", "ū-호ٶ(#", ",䙓*ꅏ", "랂巻ᗽ"…
 ```
 </details>
 
@@ -749,8 +774,9 @@ fc.unicodeString(4, 6)
 *&#8195;Signatures*
 
 - `fc.string16bits()`
-- `fc.string16bits(maxLength)`
-- `fc.string16bits(minLength, maxLength)`
+- `fc.string16bits({minLength?, maxLength?})`
+- _`fc.string16bits(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string16bits(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -763,13 +789,17 @@ fc.unicodeString(4, 6)
 fc.string16bits()
 // Examples of generated values: "埫쒠爤", "-ꎝ", "૑ᚃ⵿⫄㖯孞℠", "⤱黁醙", "⦕끅Ȩ鋑\uda43"…
 
-fc.string16bits(3)
+fc.string16bits({maxLength: 3})
 // Note: Any string (not really legal ones sometimes) containing up to 3 (included) characters
-// Examples of generated values: "", "Ǉ闍⏠", "", "⩿\udea5", "驙"…
+// Examples of generated values: "", "!", "ऻ㨖ẗ", "ﾮ뾝꜆", "㓱"…
 
-fc.string16bits(4, 6)
+fc.string16bits({minLength: 3})
+// Note: Any string (not really legal ones sometimes) containing at least 3 (included) characters
+// Examples of generated values: "徵\"!", "!環ﮁ婏", "ऻ㨖ẗ倄쾁伅周쀫", "䯘趲䴜", "\"$/꫿"…
+
+fc.string16bits({minLength: 4, maxLength: 6})
 // Note: Any string (not really legal ones sometimes) containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "媖봼Ђ刋⥞䪽", "誥갌/'(", "᥽ᚂ뀵鄓\udff5鐉", "찫灭溛椋ڀ", "㜴))%/"…
+// Examples of generated values: "孢\udbcd퉭⻵", "↩㄁\ude77䟾鏹撜", "軫쒍.⦯)", "旲\"廤⾛/", "䵬ଛ쩀蛩‮৶"…
 ```
 </details>
 
@@ -783,8 +813,9 @@ fc.string16bits(4, 6)
 *&#8195;Signatures*
 
 - `fc.fullUnicodeString()`
-- `fc.fullUnicodeString(maxLength)`
-- `fc.fullUnicodeString(minLength, maxLength)`
+- `fc.fullUnicodeString({minLength?, maxLength?})`
+- _`fc.fullUnicodeString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.fullUnicodeString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -799,13 +830,17 @@ _Be aware that the length is considered in terms of the number of glyphs in the 
 fc.fullUnicodeString()
 // Examples of generated values: "𾪖򘔼򭐂񿈋𰥞", "񫪥񫹚򻰌4", "󘅽󘺂򦀵򈄓񧟵", "󥐫򱡭􌺛愋Ꚁ𻧗ᨘ񀄮􍹣", "򈼴$3򴿦0#񵰀($'"…
 
-fc.fullUnicodeString(3)
+fc.fullUnicodeString({maxLength: 3})
 // Note: Any unicode string containing up to 3 (included) code-points
-// Examples of generated values: "", "򛊋", "򤠕", "򙄭", "𠻚"…
+// Examples of generated values: "🷣", "𪇍򱲆", "", "󟙀", "򒎧"…
 
-fc.fullUnicodeString(4, 6)
+fc.fullUnicodeString({minLength: 3})
+// Note: Any unicode string containing at least 3 (included) code-points
+// Examples of generated values: "🷣󸯜򎪳񖶌󪊀򳘟𙂄󟠷󄏧𰷡", "𪇍򱲆𖰌󣉄𵨡𻥕𰆏򦇘󜁳򁿳򎗯􈤘񖇅󑃙񡳏", "򞭽𜔱򠹉", "󔌧򞡺.+񠜡", "𞄊􊪆󧁴𦳫󇗋𨖸񉵊򫧏𞩻󓖞򼦃𘅏񀔾"…
+
+fc.fullUnicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode string containing between 4 (included) and 6 (included) code-points
-// Examples of generated values: "􅄃񥋨񇕛󈯸򛂰󤟤", "򁵫􃵥󭺥𶃸𨙩򦕃", "񧒎򼎿򉽹𽆿𤍯򞅘", "򥙑󳥜򶕃􉏿", "𮜣񘡘򯚣򈏣󻦻󡹛"…
+// Examples of generated values: "񅈡򅰻񱅜򾐬񲆗񃯹", "𕩴𦿗񙷦2󥮁", "!񭕞+,&!", "/𽍖,񟟺", "%,)󫨚"…
 ```
 </details>
 
@@ -819,8 +854,9 @@ fc.fullUnicodeString(4, 6)
 *&#8195;Signatures*
 
 - `fc.stringOf(charArb)`
-- `fc.stringOf(charArb, maxLength)`
-- `fc.stringOf(charArb, minLength, maxLength)`
+- `fc.stringOf(charArb, {minLength?, maxLength?})`
+- _`fc.stringOf(charArb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.stringOf(charArb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -834,21 +870,21 @@ fc.fullUnicodeString(4, 6)
 fc.stringOf(fc.hexa())
 // Examples of generated values: "6c2be", "5ac3", "d2535", "bdbb078e3", "4116130013"…
 
-fc.stringOf(fc.char(), 3)
+fc.stringOf(fc.char(), {maxLength: 3})
 // Note: Any string containing up to 3 (included) characters extracted from `fc.char()`
-// Examples of generated values: "", "~*2", "{Z", "[\"", "jlZ"…
+// Examples of generated values: "$", "KU", ")H", "", "Z"…
 
-fc.stringOf(fc.char(), 4, 6)
+fc.stringOf(fc.char(), {minLength: 4, maxLength: 6})
 // Note: Any string containing between 4 (included) and 6 (included) characters extracted from `fc.char()`
-// Examples of generated values: "Pv-^", " X#\"U&", "?DM}7", "iEjK.b", "#\"&& "…
+// Examples of generated values: "*jlRI", "}<6Fm", "4P $ ", "Q#b&", "ZgIk"…
 
-fc.stringOf(fc.constantFrom('a', 'b'), 0, 5)
+fc.stringOf(fc.constantFrom('a', 'b'), {maxLength: 5})
 // Note: Any string containing between 0 (included) and 5 (included) characters extracted from `fc.constantFrom('a', 'b')`
-// Examples of generated values: "", "babab", "abbab", "ab", "bbabb"…
+// Examples of generated values: "bbb", "b", "", "ab", "baa"…
 
-fc.stringOf(fc.constantFrom('Hello', 'World'), 1, 3)
+fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 // Note: It might produce strings like "WorldWorldWorld" or "WorldHelloWorld"…
-// Examples of generated values: "WorldHello", "HelloHello", "WorldWorld", "World", "HelloWorld"…
+// Examples of generated values: "WorldWorldHello", "World", "HelloHello", "Hello", "WorldHello"…
 ```
 </details>
 
