@@ -2,7 +2,7 @@
 //    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true --simplifyMin=true --simplifyMax=true
 //    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true--simplifyMin=true --simplifyMax=true
 // Or against the codebase of fast-check itself:
-//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../test/unit/check/arbitrary/ArrayArbitrary.spec.ts --local=true --debug=true
+//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true
 
 /**
  * Find any imports related to fast-check

@@ -36,19 +36,19 @@ describe('DomainArbitrary', () => {
     const alphaChar = () => fc.mapToConstant({ num: 26, build: (v) => String.fromCharCode(v + 0x61) });
     it('Should accept any subdomain composed of only alphabet characters and with at most 63 characters', () =>
       fc.assert(
-        fc.property(fc.stringOf(alphaChar(), 1, 63), (subdomainLabel) => {
+        fc.property(fc.stringOf(alphaChar(), { minLength: 1, maxLength: 63 }), (subdomainLabel) => {
           expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(true);
         })
       ));
     it('Should reject any subdomain with strictly more than 63 characters', () =>
       fc.assert(
-        fc.property(fc.stringOf(alphaChar(), 64, 100), (subdomainLabel) => {
+        fc.property(fc.stringOf(alphaChar(), { minLength: 64 }), (subdomainLabel) => {
           expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(false);
         })
       ));
     it('Should reject any subdomain starting by "xn--"', () =>
       fc.assert(
-        fc.property(fc.stringOf(alphaChar(), 63 - 'xn--'.length), (subdomainLabelEnd) => {
+        fc.property(fc.stringOf(alphaChar(), { maxLength: 63 - 'xn--'.length }), (subdomainLabelEnd) => {
           const subdomainLabel = `xn--${subdomainLabelEnd}`;
           expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(false);
         })
@@ -56,7 +56,7 @@ describe('DomainArbitrary', () => {
     it('Should not reject subdomains if they start by a substring of "xn--"', () =>
       fc.assert(
         fc.property(
-          fc.stringOf(alphaChar(), 63 - 'xn--'.length),
+          fc.stringOf(alphaChar(), { maxLength: 63 - 'xn--'.length }),
           fc.nat('xn--'.length - 1),
           (subdomainLabelEnd, keep) => {
             const subdomainLabel = `${'xn--'.substring(0, keep)}${subdomainLabelEnd}`;
