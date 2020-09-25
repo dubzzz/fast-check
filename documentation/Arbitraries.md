@@ -621,7 +621,7 @@ fc.hexaString({minLength: 4, maxLength: 6})
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included if multiple of 4)_
 
 _When using `minLength` and `maxLength` make sure that they are compatible together. For instance: asking for `minLength=2` and `maxLength=3` is impossible for base64 strings as produced by the framework_
 
