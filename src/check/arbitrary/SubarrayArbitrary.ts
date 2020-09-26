@@ -83,6 +83,23 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
 }
 
 /**
+ * Constraints to be applied on {@link subarray} and {@link shuffledSubarray}
+ * @public
+ */
+export interface SubarrayConstraints {
+  /**
+   * Lower bound of the generated subarray size (included)
+   * @defaultValue 0
+   */
+  minLength?: number;
+  /**
+   * Upper bound of the generated subarray size (included)
+   * @defaultValue The length of the original array itself
+   */
+  maxLength?: number;
+}
+
+/**
  * For subarrays of `originalArray` (keeps ordering)
  *
  * @param originalArray - Original array
@@ -97,12 +114,30 @@ function subarray<T>(originalArray: T[]): Arbitrary<T[]>;
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
  *
+ * @remarks
+ * Superceded by `fc.subarray(originalArray, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function subarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>;
-function subarray<T>(originalArray: T[], minLength?: number, maxLength?: number): Arbitrary<T[]> {
-  if (minLength != null && maxLength != null) return new SubarrayArbitrary(originalArray, true, minLength, maxLength);
-  return new SubarrayArbitrary(originalArray, true, 0, originalArray.length);
+/**
+ * For subarrays of `originalArray` (keeps ordering)
+ *
+ * @param originalArray - Original array
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function subarray<T>(originalArray: T[], constraints: SubarrayConstraints): Arbitrary<T[]>;
+function subarray<T>(originalArray: T[], ...args: [] | [number, number] | [SubarrayConstraints]): Arbitrary<T[]> {
+  if (typeof args[0] === 'number' && typeof args[1] === 'number') {
+    return new SubarrayArbitrary(originalArray, true, args[0], args[1]);
+  }
+  const ct = args[0] as SubarrayConstraints | undefined;
+  const minLength = ct !== undefined && ct.minLength !== undefined ? ct.minLength : 0;
+  const maxLength = ct !== undefined && ct.maxLength !== undefined ? ct.maxLength : originalArray.length;
+  return new SubarrayArbitrary(originalArray, true, minLength, maxLength);
 }
 
 /**
@@ -120,12 +155,33 @@ function shuffledSubarray<T>(originalArray: T[]): Arbitrary<T[]>;
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
  *
+ * @remarks
+ * Superceded by `fc.shuffledSubarray(originalArray, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ *
  * @public
  */
 function shuffledSubarray<T>(originalArray: T[], minLength: number, maxLength: number): Arbitrary<T[]>;
-function shuffledSubarray<T>(originalArray: T[], minLength?: number, maxLength?: number): Arbitrary<T[]> {
-  if (minLength != null && maxLength != null) return new SubarrayArbitrary(originalArray, false, minLength, maxLength);
-  return new SubarrayArbitrary(originalArray, false, 0, originalArray.length);
+/**
+ * For subarrays of `originalArray`
+ *
+ * @param originalArray - Original array
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function shuffledSubarray<T>(originalArray: T[], constraints: SubarrayConstraints): Arbitrary<T[]>;
+function shuffledSubarray<T>(
+  originalArray: T[],
+  ...args: [] | [number, number] | [SubarrayConstraints]
+): Arbitrary<T[]> {
+  if (typeof args[0] === 'number' && typeof args[1] === 'number') {
+    return new SubarrayArbitrary(originalArray, false, args[0], args[1]);
+  }
+  const ct = args[0] as SubarrayConstraints | undefined;
+  const minLength = ct !== undefined && ct.minLength !== undefined ? ct.minLength : 0;
+  const maxLength = ct !== undefined && ct.maxLength !== undefined ? ct.maxLength : originalArray.length;
+  return new SubarrayArbitrary(originalArray, false, minLength, maxLength);
 }
 
 export { subarray, shuffledSubarray };

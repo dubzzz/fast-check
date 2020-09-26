@@ -25,3 +25,15 @@ fc.stringOf(fc.char());
 fc.stringOf(fc.char(), 5);
 fc.stringOf(fc.char(), 1, 5);
 fc.stringOf(fc.char(), {});
+
+// subarray
+
+fc.subarray([1, 2, 3]);
+fc.subarray([1, 2, 3], 1, 2);
+
+// shuffledSubarray
+
+fc.shuffledSubarray([1, 2, 3]);
+fc.shuffledSubarray([1, 2, 3], 1, 2);
+fc.shuffledSubarray(myArray, 1, 2);
+fc.shuffledSubarray(computeArray(), 1, 2);
