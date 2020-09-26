@@ -134,7 +134,7 @@ function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  *
  * @remarks
  * Superceded by `fc.array(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
  * @public
  */
@@ -148,7 +148,7 @@ function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  *
  * @remarks
  * Superceded by `fc.array(arb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/2.4.0_explicit-min-max-length | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
  * @public
  */
