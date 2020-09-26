@@ -56,19 +56,26 @@ function extractSetConstraints<T>(
     | [number, number, (a: T, b: T) => boolean]
     | [SetConstraints<T>]
 ): SetConstraints<T> {
-  switch (args.length) {
-    case 0:
-      return {}; // set(arb)
-    case 1:
-      if (typeof args[0] === 'number') return { maxLength: args[0] }; // set(arb, maxLength)
-      if (typeof args[0] === 'function') return { compare: args[0] }; // set(arb, compare)
-      return args[0]; // set(arb, constraints)
-    case 2:
-      if (typeof args[1] === 'number') return { minLength: args[0], maxLength: args[1] }; // set(arb, minLength, maxLength)
-      return { maxLength: args[0], compare: args[1] }; // set(arb, maxLength, compare)
-    case 3:
-      return { minLength: args[0], maxLength: args[1], compare: args[2] }; // set(arb, minLength, maxLength, compare)
-  }
+  if (args[0] === undefined) {
+    // set(arb)
+    return {};
+  } // args.length > 0
+
+  if (args[1] === undefined) {
+    const sargs = args as typeof args & [unknown]; // exactly 1 arg specified
+    if (typeof sargs[0] === 'number') return { maxLength: sargs[0] }; // set(arb, maxLength)
+    if (typeof sargs[0] === 'function') return { compare: sargs[0] }; // set(arb, compare)
+    return sargs[0]; // set(arb, constraints)
+  } // args.length > 1
+
+  if (args[2] === undefined) {
+    const sargs = args as typeof args & [unknown, unknown]; // exactly 2 args specified
+    if (typeof sargs[1] === 'number') return { minLength: sargs[0], maxLength: sargs[1] }; // set(arb, minLength, maxLength)
+    return { maxLength: sargs[0], compare: sargs[1] }; // set(arb, maxLength, compare)
+  } // args.length > 2
+
+  const sargs = args as typeof args & [unknown, unknown, unknown];
+  return { minLength: sargs[0], maxLength: sargs[1], compare: sargs[2] }; // set(arb, minLength, maxLength, compare)
 }
 
 /**
