@@ -1908,13 +1908,14 @@ fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.le
 *&#8195;Signatures*
 
 - `fc.subarray(originalArray)`
-- `fc.subarray(originalArray, minLength, maxLength)`
+- `fc.subarray(originalArray, {minLength?, maxLength?})`
+- _`fc.subarray(originalArray, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `originalArray` — _the array from which we want to extract sub-arrays_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `maxLength=originalArray.length` — _maximal length (included)_
+- `maxLength?` — default: `originalArray.length` — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1922,11 +1923,14 @@ fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.le
 fc.subarray([1, 42, 48, 69, 75, 92])
 // Examples of generated values: [48,69,75,92], [75,92], [], [48,75], [1,42,48,75,92]…
 
-fc.subarray([1, 42, 48, 69, 75, 92], 5, 6)
-// Examples of generated values: [1,48,69,75,92], [1,42,48,69,75], [1,42,48,69,92], [42,48,69,75,92], [1,42,48,69,75,92]…
+fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 5})
+// Examples of generated values: [1,42,69,75,92], [1,42,48,69,75], [1,42,48,69,92], [1,42,48,69,75,92], [42,48,69,75,92]…
 
-fc.subarray([1, 42, 48, 69, 75, 92], 2, 3)
-// Examples of generated values: [48,92], [42,69], [48,69], [1,48], [48,75]…
+fc.subarray([1, 42, 48, 69, 75, 92], {maxLength: 5})
+// Examples of generated values: [1,69,75,92], [42,48,69,75], [42], [69], [42,48,92]…
+
+fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
+// Examples of generated values: [42,75], [42,69], [1,75,92], [48,92], [42,48,92]…
 ```
 </details>
 
@@ -1942,13 +1946,14 @@ fc.subarray([1, 42, 48, 69, 75, 92], 2, 3)
 *&#8195;Signatures*
 
 - `fc.shuffledSubarray(originalArray)`
-- `fc.shuffledSubarray(originalArray, minLength, maxLength)`
+- `fc.shuffledSubarray(originalArray, {minLength?, maxLength?})`
+- _`fc.shuffledSubarray(originalArray, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `originalArray` — _the array from which we want to extract sub-arrays_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `maxLength=originalArray.length` — _maximal length (included)_
+- `maxLength?` — default: `originalArray.length` — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1956,11 +1961,14 @@ fc.subarray([1, 42, 48, 69, 75, 92], 2, 3)
 fc.shuffledSubarray([1, 42, 48, 69, 75, 92])
 // Examples of generated values: [75], [75,48], [92], [75,92], [1,75]…
 
-fc.shuffledSubarray([1, 42, 48, 69, 75, 92], 5, 6)
-// Examples of generated values: [69,48,1,92,75,42], [75,69,1,48,92], [48,1,92,42,69], [69,92,48,42,1], [69,42,1,92,75]…
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 5})
+// Examples of generated values: [42,92,1,69,48], [48,1,42,75,69,92], [92,1,75,42,48,69], [92,1,42,48,69], [92,1,69,42,75,48]…
 
-fc.shuffledSubarray([1, 42, 48, 69, 75, 92], 2, 3)
-// Examples of generated values: [69,48,1], [75,69], [48,1], [69,92], [69,42]…
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {maxLength: 5})
+// Examples of generated values: [], [48,1,42], [92,1,75], [92], [92,1,69,42,75]…
+
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
+// Examples of generated values: [69,1], [92,1], [69,92], [69,42,1], [75,1]…
 ```
 </details>
 

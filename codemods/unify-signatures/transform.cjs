@@ -1,8 +1,8 @@
 // You can try this codemod as follow:
 //    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true --simplifyMin=true --simplifyMax=true
-//    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true--simplifyMin=true --simplifyMax=true
+//    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true --simplifyMin=true --simplifyMax=true
 // Or against the codebase of fast-check itself:
-//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true
+//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true --simplifyMin=true --simplifyMax=true
 
 /**
  * Find any imports related to fast-check
@@ -132,14 +132,24 @@ module.exports = function (file, api, options) {
   }
 
   function isFunction(argument) {
+    // () => 0        -- Default & TS parser: ArrowFunctionExpression
+    // function() {}  -- Default & TS parser: FunctionExpression
     return argument.type === 'ArrowFunctionExpression' || argument.type === 'FunctionExpression';
   }
   function isNumeric(argument) {
+    // 0              -- Default parser: Literal / TS parser: NumericLiteral
     return argument.type === 'Literal' || argument.type === 'NumericLiteral';
+  }
+  function isArray(argument) {
+    // [1, 2, 3]      -- Default & TS parser: ArrayExpression
+    return argument.type === 'ArrayExpression';
   }
 
   function isNumericValue(argument, value) {
     return isNumeric(argument) && argument.value === value;
+  }
+  function getArrayLength(argument) {
+    return isArray(argument) ? argument.elements.length : Number.NaN;
   }
 
   return root
@@ -246,6 +256,25 @@ module.exports = function (file, api, options) {
                 !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
                 !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
                 j.property('init', j.identifier('compare'), p.value.arguments[3]),
+              ]
+            );
+          }
+          break;
+        }
+        case 'subarray':
+        case 'shuffledSubarray': {
+          if (p.value.arguments.length === 3) {
+            // fc.subarray(originalArray, minLength, maxLength) -> fc.subarray(originalArray, {minLength, maxLength})
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
+            const simplifyMax =
+              options.simplifyMax &&
+              isArray(p.value.arguments[0]) &&
+              isNumericValue(p.value.arguments[2], getArrayLength(p.value.arguments[0]));
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [
+                !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
+                !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
               ]
             );
           }

@@ -68,7 +68,7 @@ import {
   StringSharedConstraints,
   unicodeString,
 } from './check/arbitrary/StringArbitrary';
-import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
+import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
 import { uuid, uuidV } from './check/arbitrary/UuidArbitrary';
 import {
@@ -287,6 +287,7 @@ export {
   SchedulerConstraints,
   SetConstraints,
   StringSharedConstraints,
+  SubarrayConstraints,
   WebAuthorityConstraints,
   WebUrlConstraints,
   WeightedArbitrary,
