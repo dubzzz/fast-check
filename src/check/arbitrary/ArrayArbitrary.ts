@@ -7,7 +7,6 @@ import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 import { makeLazy } from '../../stream/LazyIterableIterator';
-import { sanitizeArgs } from './helpers/ArgsSanitizer';
 
 /** @internal */
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
