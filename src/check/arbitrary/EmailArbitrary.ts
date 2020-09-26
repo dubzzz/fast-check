@@ -15,6 +15,9 @@ import { Arbitrary } from './definition/Arbitrary';
 export function emailAddress(): Arbitrary<string> {
   const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];
   const atextArb = buildLowerAlphaNumericArb(others);
-  const dotAtomArb = array(stringOf(atextArb, 1, 10), { minLength: 1, maxLength: 5 }).map((a) => a.join('.'));
+  const dotAtomArb = array(stringOf(atextArb, { minLength: 1, maxLength: 10 }), {
+    minLength: 1,
+    maxLength: 5,
+  }).map((a) => a.join('.'));
   return tuple(dotAtomArb, domain()).map(([lp, d]) => `${lp}@${d}`);
 }

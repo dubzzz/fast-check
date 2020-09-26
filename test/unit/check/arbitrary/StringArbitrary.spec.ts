@@ -30,7 +30,7 @@ describe('StringArbitrary', () => {
     });
     describe('Given maximal length only', () => {
       genericHelper.isValidArbitrary(
-        (maxLength: number) => stringOf(constantFrom('\u{1f431}', 'D', '1').noShrink(), maxLength),
+        (maxLength: number) => stringOf(constantFrom('\u{1f431}', 'D', '1').noShrink(), { maxLength: maxLength }),
         {
           seedGenerator: fc.nat(100),
           isStrictlySmallerValue: (g1, g2) => [...g1].length < [...g2].length,
@@ -44,7 +44,10 @@ describe('StringArbitrary', () => {
     describe('Given minimal and maximal lengths', () => {
       genericHelper.isValidArbitrary(
         (constraints: { min: number; max: number }) =>
-          stringOf(constantFrom('\u{1f431}', 'D', '1').noShrink(), constraints.min, constraints.max),
+          stringOf(constantFrom('\u{1f431}', 'D', '1').noShrink(), {
+            minLength: constraints.min,
+            maxLength: constraints.max,
+          }),
         {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
           isStrictlySmallerValue: (g1, g2) => [...g1].length < [...g2].length,
@@ -70,7 +73,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = string(maxLength).generate(mrng).value;
+          const g = string({ maxLength: maxLength }).generate(mrng).value;
           return g.length <= maxLength;
         })
       ));
@@ -78,7 +81,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), minMax, (seed, lengths) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = string(lengths.min, lengths.max).generate(mrng).value;
+          const g = string({ minLength: lengths.min, maxLength: lengths.max }).generate(mrng).value;
           return lengths.min <= g.length && g.length <= lengths.max;
         })
       ));
@@ -96,7 +99,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = asciiString(maxLength).generate(mrng).value;
+          const g = asciiString({ maxLength: maxLength }).generate(mrng).value;
           return g.length <= maxLength;
         })
       ));
@@ -104,7 +107,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), minMax, (seed, lengths) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = asciiString(lengths.min, lengths.max).generate(mrng).value;
+          const g = asciiString({ minLength: lengths.min, maxLength: lengths.max }).generate(mrng).value;
           return lengths.min <= g.length && g.length <= lengths.max;
         })
       ));
@@ -122,7 +125,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = string16bits(maxLength).generate(mrng).value;
+          const g = string16bits({ maxLength: maxLength }).generate(mrng).value;
           return g.length <= maxLength;
         })
       ));
@@ -130,7 +133,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), minMax, (seed, lengths) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = string16bits(lengths.min, lengths.max).generate(mrng).value;
+          const g = string16bits({ minLength: lengths.min, maxLength: lengths.max }).generate(mrng).value;
           return lengths.min <= g.length && g.length <= lengths.max;
         })
       ));
@@ -155,7 +158,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = unicodeString(maxLength).generate(mrng).value;
+          const g = unicodeString({ maxLength: maxLength }).generate(mrng).value;
           return g.length <= maxLength;
         })
       ));
@@ -163,7 +166,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), minMax, (seed, lengths) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = unicodeString(lengths.min, lengths.max).generate(mrng).value;
+          const g = unicodeString({ minLength: lengths.min, maxLength: lengths.max }).generate(mrng).value;
           return lengths.min <= g.length && g.length <= lengths.max;
         })
       ));
@@ -181,7 +184,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = hexaString(maxLength).generate(mrng).value;
+          const g = hexaString({ maxLength: maxLength }).generate(mrng).value;
           return g.length <= maxLength;
         })
       ));
@@ -189,7 +192,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), minMax, (seed, lengths) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = hexaString(lengths.min, lengths.max).generate(mrng).value;
+          const g = hexaString({ minLength: lengths.min, maxLength: lengths.max }).generate(mrng).value;
           return lengths.min <= g.length && g.length <= lengths.max;
         })
       ));
@@ -239,7 +242,7 @@ describe('StringArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), fc.integer(0, 10000), (seed, maxLength) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          const g = base64String(maxLength).generate(mrng).value;
+          const g = base64String({ maxLength: maxLength }).generate(mrng).value;
           return g.length <= maxLength;
         })
       ));
@@ -250,7 +253,7 @@ describe('StringArbitrary', () => {
           minMax.filter((l) => l.max >= l.min + 4),
           (seed, lengths) => {
             const mrng = stubRng.mutable.fastincrease(seed);
-            const g = base64String(lengths.min, lengths.max).generate(mrng).value;
+            const g = base64String({ minLength: lengths.min, maxLength: lengths.max }).generate(mrng).value;
             return lengths.min <= g.length && g.length <= lengths.max;
           }
         )

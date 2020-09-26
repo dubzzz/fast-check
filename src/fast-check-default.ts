@@ -65,6 +65,7 @@ import {
   string,
   string16bits,
   stringOf,
+  StringSharedConstraints,
   unicodeString,
 } from './check/arbitrary/StringArbitrary';
 import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
@@ -285,6 +286,7 @@ export {
   RecordConstraints,
   SchedulerConstraints,
   SetConstraints,
+  StringSharedConstraints,
   WebAuthorityConstraints,
   WebUrlConstraints,
   WeightedArbitrary,

@@ -57,7 +57,7 @@ function subdomain() {
  */
 export function domain(): Arbitrary<string> {
   const alphaNumericArb = buildLowerAlphaArb([]);
-  const extensionArb = stringOf(alphaNumericArb, 2, 10);
+  const extensionArb = stringOf(alphaNumericArb, { minLength: 2, maxLength: 10 });
   return tuple(array(subdomain(), { minLength: 1, maxLength: 5 }), extensionArb)
     .map(([mid, ext]) => `${mid.join('.')}.${ext}`)
     .filter((d) => d.length <= 255);
