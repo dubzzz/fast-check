@@ -7,6 +7,7 @@ import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 import { makeLazy } from '../../stream/LazyIterableIterator';
+import { sanitizeArgs } from './helpers/ArgsSanitizer';
 
 /** @internal */
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
@@ -162,7 +163,7 @@ function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbi
 function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, ...args: [] | [number] | [number, number] | [ArrayConstraints]): Arbitrary<T[]> {
   // fc.array(arb)
-  if (args.length === 0) return new ArrayArbitrary<T>(arb, 0, maxLengthFromMinLength(0));
+  if (args[0] === undefined) return new ArrayArbitrary<T>(arb, 0, maxLengthFromMinLength(0));
   // fc.array(arb, constraints)
   if (typeof args[0] === 'object') {
     const minLength = args[0].minLength || 0;

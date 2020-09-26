@@ -1,6 +1,7 @@
 import { ArrayArbitrary, maxLengthFromMinLength } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
+import { sanitizeArgs } from './helpers/ArgsSanitizer';
 
 /** @internal */
 function subArrayContains<T>(tab: T[], upperBound: number, includeValue: (v: T) => boolean): boolean {
@@ -186,7 +187,8 @@ function set<T>(
     | [number, number, (a: T, b: T) => boolean]
     | [SetConstraints<T>]
 ): Arbitrary<T[]> {
-  const constraints = buildCompleteSetConstraints(extractSetConstraints(args));
+  const filteredArgs = sanitizeArgs(args);
+  const constraints = buildCompleteSetConstraints(extractSetConstraints(filteredArgs));
 
   const minLength = constraints.minLength;
   const maxLength = constraints.maxLength;
