@@ -33,6 +33,11 @@ export const isStrictlySmallerArray = (arr1: number[], arr2: number[]) => {
   return true;
 };
 
+export const generateOneValue = <T>(seed: number, arb: Arbitrary<T>) => {
+  const mrng = stubRng.mutable.fastincrease(seed);
+  return arb.generate(mrng).value;
+};
+
 describe('ArrayArbitrary', () => {
   describe('array', () => {
     it('Should generate an array using specified arbitrary', () =>
@@ -87,8 +92,16 @@ describe('ArrayArbitrary', () => {
         isValidValue: (g: number[]) => Array.isArray(g) && g.every((v) => typeof v === 'number'),
       });
     });
+    describe('Given minimal length only', () => {
+      genericHelper.isValidArbitrary((minLength: number) => array(nat(), { minLength }), {
+        seedGenerator: fc.nat(100),
+        isStrictlySmallerValue: isStrictlySmallerArray,
+        isValidValue: (g: number[], minLength: number) =>
+          Array.isArray(g) && g.length >= minLength && g.every((v) => typeof v === 'number'),
+      });
+    });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), { maxLength: maxLength }), {
+      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), { maxLength }), {
         seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerArray,
         isValidValue: (g: number[], maxLength: number) =>
@@ -109,6 +122,26 @@ describe('ArrayArbitrary', () => {
             g.every((v) => typeof v === 'number'),
         }
       );
+    });
+    describe('Still support non recommended signatures', () => {
+      it('Should support fc.array(arb, maxLength)', () => {
+        fc.assert(
+          fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
+            const refArbitrary = array(nat(), { maxLength });
+            const nonRecommendedArbitrary = array(nat(), maxLength);
+            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
+      it('Should support fc.array(arb, minLength, maxLength)', () => {
+        fc.assert(
+          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
+            const refArbitrary = array(nat(), { minLength: minMaxLength.min, maxLength: minMaxLength.max });
+            const nonRecommendedArbitrary = array(nat(), minMaxLength.min, minMaxLength.max);
+            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
     });
   });
 });
