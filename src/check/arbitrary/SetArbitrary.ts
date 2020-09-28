@@ -1,35 +1,5 @@
 import { ArrayArbitrary, maxLengthFromMinLength } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
-import { Shrinkable } from './definition/Shrinkable';
-
-/** @internal */
-function subArrayContains<T>(tab: T[], upperBound: number, includeValue: (v: T) => boolean): boolean {
-  for (let idx = 0; idx < upperBound; ++idx) {
-    if (includeValue(tab[idx])) return true;
-  }
-  return false;
-}
-
-/** @internal */
-function swap<T>(tab: T[], idx1: number, idx2: number): void {
-  const temp = tab[idx1];
-  tab[idx1] = tab[idx2];
-  tab[idx2] = temp;
-}
-
-/** @internal */
-export function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): (tab: Shrinkable<T>[]) => Shrinkable<T>[] {
-  return (tab: Shrinkable<T>[]): Shrinkable<T>[] => {
-    let finalLength = tab.length;
-    for (let idx = tab.length - 1; idx !== -1; --idx) {
-      if (subArrayContains(tab, idx, (t) => compare(t.value_, tab[idx].value_))) {
-        --finalLength;
-        swap(tab, idx, finalLength);
-      }
-    }
-    return tab.slice(0, finalLength);
-  };
-}
 
 /**
  * Build fully set SetConstraints from a partial data
@@ -199,7 +169,7 @@ function set<T>(
   const maxLength = constraints.maxLength;
   const compare = constraints.compare;
 
-  const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, buildCompareFilter(compare));
+  const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, compare);
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }

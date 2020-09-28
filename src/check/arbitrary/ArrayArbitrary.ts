@@ -7,18 +7,22 @@ import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
 import { makeLazy } from '../../stream/LazyIterableIterator';
+import { buildCompareFilter } from './helpers/BuildCompareFilter';
 
 /** @internal */
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: ArbitraryWithShrink<number>;
+  readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[];
+
   constructor(
     readonly arb: Arbitrary<T>,
     readonly minLength: number,
     readonly maxLength: number,
-    readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[] = (tab) => tab
+    readonly isEqual?: (valueA: T, valueB: T) => boolean
   ) {
     super();
     this.lengthArb = integer(minLength, maxLength);
+    this.preFilter = this.isEqual !== undefined ? buildCompareFilter(this.isEqual) : (tab: Shrinkable<T>[]) => tab;
   }
   private static makeItCloneable<T>(vs: T[], shrinkables: Shrinkable<T>[]) {
     (vs as any)[cloneMethod] = () => {
@@ -30,6 +34,17 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
       return cloned;
     };
     return vs;
+  }
+  private canAppendItem(items: Shrinkable<T>[], newItem: Shrinkable<T>): boolean {
+    if (this.isEqual === undefined) {
+      return true;
+    }
+    for (let idx = 0; idx !== items.length; ++idx) {
+      if (this.isEqual(items[idx].value_, newItem.value_)) {
+        return false;
+      }
+    }
+    return true;
   }
   private wrapper(itemsRaw: Shrinkable<T>[], shrunkOnce: boolean): Shrinkable<T[]> {
     const items = this.preFilter(itemsRaw);
@@ -48,8 +63,23 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   generate(mrng: Random): Shrinkable<T[]> {
     const size = this.lengthArb.generate(mrng);
     const items: Shrinkable<T>[] = [];
+    // Try to append <size> items
+    // In the case of a set we may reject some items as they are already part of the set...
     for (let idx = 0; idx !== size.value; ++idx) {
-      items.push(this.arb.generate(mrng));
+      const current = this.arb.generate(mrng);
+      if (this.canAppendItem(items, current)) {
+        items.push(current);
+      }
+    }
+    // ...in such case we may have produced an array whose size is below the minimal one
+    // So we iterate to add items until we reach the minimal length asked by the user.
+    // Rq: We can have an infinite loop here in case there is no way to have enough distinct values,
+    // --- but issue is not new and it was already the case for legacy non-optimized set
+    while (items.length < this.minLength) {
+      const current = this.arb.generate(mrng);
+      if (this.canAppendItem(items, current)) {
+        items.push(current);
+      }
     }
     return this.wrapper(items, false);
   }
@@ -78,7 +108,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         originalArbitrary.arb.withBias(freq),
         originalArbitrary.minLength,
         originalArbitrary.maxLength,
-        originalArbitrary.preFilter
+        originalArbitrary.isEqual
       );
       const highBiasedArbBuilder = () => {
         return originalArbitrary.minLength !== originalArbitrary.maxLength
@@ -87,13 +117,13 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
               originalArbitrary.minLength,
               originalArbitrary.minLength +
                 Math.floor(Math.log(originalArbitrary.maxLength - originalArbitrary.minLength) / Math.log(2)),
-              originalArbitrary.preFilter
+              originalArbitrary.isEqual
             )
           : new ArrayArbitrary(
               originalArbitrary.arb.withBias(freq),
               originalArbitrary.minLength,
               originalArbitrary.maxLength,
-              originalArbitrary.preFilter
+              originalArbitrary.isEqual
             );
       };
       return biasWrapper(freq, lowBiased, highBiasedArbBuilder);
