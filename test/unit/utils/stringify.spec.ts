@@ -1,7 +1,8 @@
 import * as fc from '../../../lib/fast-check';
 
-// The package is an alias for 'buffer', the most used polyfill for Buffer in the browser
-import { Buffer as NotNodeBuffer } from '@buffer';
+// Importing 'buffer' imports the real implementation from node
+// Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side
+import { Buffer as NotNodeBuffer } from '../../../node_modules/buffer';
 
 import { stringify } from '../../../src/utils/stringify';
 
