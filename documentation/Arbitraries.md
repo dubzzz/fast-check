@@ -1872,13 +1872,13 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 
 ```js
 fc.set(fc.nat(99))
-// Examples of generated values: [], [15,91,64,6,44,3,85,4,0], [79], [23,39,93,87,4,85], [58,31,39,26,75]…
+// Examples of generated values: [], [15,91,64,6,44,3,4,0,85], [79], [23,39,93,87,85,4], [58,31,39,26,75]…
 
 fc.set(fc.nat(99), {maxLength: 3})
 // Examples of generated values: [], [55], [1,67,4], [12,90,43], [31]…
 
 fc.set(fc.nat(99), {minLength: 5, maxLength: 7})
-// Examples of generated values: [5,10,0,29,4,3], [53,44,67,56,49,42], [69,6,47,13,20,3,58], [3,87,23,4,0,1], [38,88,9,93,20,77,91]…
+// Examples of generated values: [5,10,0,29,4,3], [53,44,67,56,49,42], [69,6,47,13,20,3,58], [3,87,23,4,0,1], [6,1,5,28,70]…
 
 fc.set(fc.hexaString(), {compare: (s1, s2) => s1.length === s2.length})
 // Note: Resulting arrays will never contain two strings with the same number of characters
@@ -1888,10 +1888,10 @@ fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.le
 // Note: Resulting arrays will never contain two strings with the same number of characters and it will contain between 5 and 10 strings
 // Examples of generated values:
 // • ["","18028609c9","8b9e4d","bd945ddc","7262"]
-// • ["283f273101","10f","b","ee302eda","","f3","41c2a"]
+// • ["7e","59ae73fd9","2d50442","182a0c3b","1e7b59"]
 // • ["65655ac0b","c20","02f6","42ff080184","80","f04e066",""]
 // • ["322","","23","2","60af6ca3"]
-// • ["","b","21a03b1","052844fe0a","7ddf1bdd","e3"]
+// • ["","b","21a03b1","7ddf1bdd","e3","052844fe0a"]
 // • …
 ```
 </details>
@@ -2166,7 +2166,7 @@ fc.object({
 // Examples of generated values:
 // • {"^lx)`P":0,"</}}e{{":0.3250894455517638,"g21/@#y1B":-0,"8ULm U|p<":Number.NEGATIVE_INFINITY,"mrI#":Number.POSITIVE_INFINITY,"{sS8U7 %E!":2089101388,"=(":0.10812626313097728}
 // • {"s!?U&|m":" !","m}7P4>bQM?":null}
-// • {":WEs/srS+":-1416520206,"lb(<%.BW9":1.7976931348623157e+308,"":true,"pRw":null,"PfnX>":0.08774441941808431}
+// • {":WEs/srS+":-1416520206,"lb(<%.BW9":1.7976931348623157e+308,"":true,"PfnX>":0.08774441941808431,"pRw":null}
 // • {"WW!oe%r(1":"FiY","l":0.03574426867100822,"R@~l-":false,"":1980690840,"E:' snhE\"}":" <4QOmI","=k]:kN3b~6":1139673390}
 // • {"y.&&$":-9007199254740991}
 // • …
