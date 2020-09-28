@@ -1,12 +1,12 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { set, buildCompareFilter } from '../../../../src/check/arbitrary/SetArbitrary';
+import { buildCompareFilter, set } from '../../../../src/check/arbitrary/SetArbitrary';
 import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { string } from '../../../../src/check/arbitrary/StringArbitrary';
 
+import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
-import { generateOneValue } from './ArrayArbitrary.spec';
 
 const customMapper = (v: number) => {
   return { key: v };
@@ -60,7 +60,7 @@ describe('SetArbitrary', () => {
     });
     describe('Given minimal length only', () => {
       genericHelper.isValidArbitrary((minLength: number) => set(nat(), { minLength }), {
-        seedGenerator: fc.nat(20),
+        seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerSet,
         isValidValue: (g: number[], minLength: number) => validSet(g) && g.length >= minLength,
       });
@@ -97,15 +97,6 @@ describe('SetArbitrary', () => {
           })
         );
       });
-      it('Should support fc.set(arb, minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
-            const refArbitrary = set(nat(), { minLength: minMaxLength.min, maxLength: minMaxLength.max });
-            const nonRecommendedArbitrary = set(nat(), minMaxLength.min, minMaxLength.max);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
       it('Should support fc.set(arb, compare)', () => {
         fc.assert(
           fc.property(fc.integer(), (seed) => {
@@ -120,6 +111,15 @@ describe('SetArbitrary', () => {
           fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
             const refArbitrary = set(string(), { maxLength, compare });
             const nonRecommendedArbitrary = set(string(), maxLength, compare);
+            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
+      it('Should support fc.set(arb, minLength, maxLength)', () => {
+        fc.assert(
+          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
+            const refArbitrary = set(nat(), { minLength: minMaxLength.min, maxLength: minMaxLength.max });
+            const nonRecommendedArbitrary = set(nat(), minMaxLength.min, minMaxLength.max);
             expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
           })
         );

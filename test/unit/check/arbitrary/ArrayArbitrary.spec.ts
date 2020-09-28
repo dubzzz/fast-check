@@ -7,6 +7,8 @@ import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
+import { isStrictlySmallerArray } from './generic/ArrayHelpers';
+import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
@@ -20,23 +22,6 @@ class DummyArbitrary extends Arbitrary<{ key: number }> {
     return new Shrinkable({ key: this.value() });
   }
 }
-
-export const isStrictlySmallerArray = (arr1: number[], arr2: number[]) => {
-  if (arr1.length > arr2.length) return false;
-  if (arr1.length === arr2.length) {
-    return arr1.every((v, idx) => arr1[idx] <= arr2[idx]) && arr1.find((v, idx) => arr1[idx] < arr2[idx]) != null;
-  }
-  for (let idx1 = 0, idx2 = 0; idx1 < arr1.length && idx2 < arr2.length; ++idx1, ++idx2) {
-    while (idx2 < arr2.length && arr1[idx1] > arr2[idx2]) ++idx2;
-    if (idx2 === arr2.length) return false;
-  }
-  return true;
-};
-
-export const generateOneValue = <T>(seed: number, arb: Arbitrary<T>) => {
-  const mrng = stubRng.mutable.fastincrease(seed);
-  return arb.generate(mrng).value;
-};
 
 describe('ArrayArbitrary', () => {
   describe('array', () => {

@@ -11,10 +11,10 @@ import {
   unicodeString,
 } from '../../../../src/check/arbitrary/StringArbitrary';
 
+import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
-import { generateOneValue } from './ArrayArbitrary.spec';
 
 const minMax = fc
   .tuple(fc.integer(0, 10000), fc.integer(0, 10000))
