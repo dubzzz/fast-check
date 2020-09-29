@@ -37,3 +37,10 @@ fc.shuffledSubarray([1, 2, 3]);
 fc.shuffledSubarray([1, 2, 3], 1, 2);
 fc.shuffledSubarray(myArray, 1, 2);
 fc.shuffledSubarray(computeArray(), 1, 2);
+
+// json
+
+fc.json();
+fc.json(2);
+fc.json(10);
+fc.json({ maxDepth: 10 });

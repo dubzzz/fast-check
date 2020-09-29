@@ -46,6 +46,7 @@ import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbi
 import {
   anything,
   json,
+  JsonSharedConstraints,
   jsonObject,
   object,
   ObjectConstraints,
@@ -280,6 +281,7 @@ export {
   ArrayConstraints,
   CommandsContraints,
   FalsyContraints,
+  JsonSharedConstraints,
   MixedCaseConstraints,
   ObjectConstraints,
   OptionConstraints,
