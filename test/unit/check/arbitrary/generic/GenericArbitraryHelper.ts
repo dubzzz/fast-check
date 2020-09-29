@@ -143,7 +143,7 @@ export const isValidArbitrary = function <U, T>(
 ) {
   const seedGenerator = settings.seedGenerator || fc.constant(undefined);
 
-  const biasedSeedGenerator = fc.tuple(fc.option(fc.integer(2, 100), 2), seedGenerator);
+  const biasedSeedGenerator = fc.tuple(fc.option(fc.integer(2, 100), { freq: 2 }), seedGenerator);
   const biasedArbitraryBuilder = ([biasedFactor, u]: [number | null, U]) => {
     return biasedFactor != null ? arbitraryBuilder(u).withBias(biasedFactor) : arbitraryBuilder(u);
   };

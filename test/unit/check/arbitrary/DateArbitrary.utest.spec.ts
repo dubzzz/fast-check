@@ -126,12 +126,12 @@ const invalidRangeConstraintsArb = () =>
 
 const invalidMinConstraintsArb = () =>
   fc
-    .option(fc.date(), 100)
+    .option(fc.date(), { freq: 100 })
     .map((optMax) => optMax || undefined)
     .map((max) => ({ min: new Date(Number.NaN), max }));
 
 const invalidMaxConstraintsArb = () =>
   fc
-    .option(fc.date(), 100)
+    .option(fc.date(), { freq: 100 })
     .map((optMin) => optMin || undefined)
     .map((min) => ({ min, max: new Date(Number.NaN) }));
