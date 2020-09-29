@@ -79,7 +79,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         numSkippedInRow = 0;
         items.push(current);
       } else {
-        numSkippedInRow += 1
+        numSkippedInRow += 1;
       }
     }
     return this.wrapper(items, false);
