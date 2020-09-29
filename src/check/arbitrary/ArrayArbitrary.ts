@@ -18,6 +18,8 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     readonly arb: Arbitrary<T>,
     readonly minLength: number,
     readonly maxLength: number,
+    // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
+    // it's output just in case produced values are too small (below minLength)
     readonly isEqual?: (valueA: T, valueB: T) => boolean
   ) {
     super();
@@ -61,24 +63,23 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     return new Shrinkable(vs, () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<T[]> {
-    const size = this.lengthArb.generate(mrng);
+    const targetSizeShrinkable = this.lengthArb.generate(mrng);
+    const targetSize = targetSizeShrinkable.value;
+
+    let numSkippedInRow = 0;
     const items: Shrinkable<T>[] = [];
-    // Try to append <size> items
-    // In the case of a set we may reject some items as they are already part of the set...
-    for (let idx = 0; idx !== size.value; ++idx) {
+    // Try to append into items up to the target size
+    // In the case of a set we may reject some items as they are already part of the set
+    // so we need to retry and generate other ones. In order to prevent infinite loop,
+    // we accept a max of maxLength consecutive failures. This circuit breaker may cause
+    // generated to be smaller than the minimal accepted one.
+    while (items.length < targetSize && numSkippedInRow < this.maxLength) {
       const current = this.arb.generate(mrng);
       if (this.canAppendItem(items, current)) {
+        numSkippedInRow = 0;
         items.push(current);
-      }
-    }
-    // ...in such case we may have produced an array whose size is below the minimal one
-    // So we iterate to add items until we reach the minimal length asked by the user.
-    // Rq: We can have an infinite loop here in case there is no way to have enough distinct values,
-    // --- but issue is not new and it was already the case for legacy non-optimized set
-    while (items.length < this.minLength) {
-      const current = this.arb.generate(mrng);
-      if (this.canAppendItem(items, current)) {
-        items.push(current);
+      } else {
+        numSkippedInRow += 1
       }
     }
     return this.wrapper(items, false);
