@@ -294,6 +294,16 @@ module.exports = function (file, api, options) {
           }
           break;
         }
+        case 'option': {
+          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+            // fc.option(arb, 10) -> fc.option(arb, {freq})
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [j.property('init', j.identifier('freq'), p.value.arguments[1])]
+            );
+          }
+          break;
+        }
       }
       return p;
     })

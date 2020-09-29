@@ -1588,8 +1588,8 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 *&#8195;Signatures*
 
 - `fc.option(arb)`
-- `fc.option(arb, freq)`
 - `fc.option(arb, {freq?, nil?})`
+- _`fc.option(arb, freq)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1603,8 +1603,8 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 fc.option(fc.nat())
 // Examples of generated values: null, 773390791, 25, 18, 2039519833…
 
-fc.option(fc.nat(), 2)
-// Examples of generated values: 5, 1857850746, 178760054, 1682452789, 461887690…
+fc.option(fc.nat(), { freq: 2 })
+// Examples of generated values: 214938453, 4, 2130844098, 748471782, null…
 
 fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 // Examples of generated values: 5, Number.NaN, 259062763, 21, 11…
