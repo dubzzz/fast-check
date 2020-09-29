@@ -42,7 +42,9 @@ describe('Docs.md', () => {
       console.warn(`Updating code snippets defined in the documentation...`);
       fs.writeFileSync(`${__dirname}/../../../documentation/Arbitraries.md`, fileContent);
     }
-    expect(fileContent).toEqual(originalFileContent);
+    if (!process.env.UPDATE_CODE_SNIPPETS) {
+      expect(fileContent).toEqual(originalFileContent);
+    }
   });
 });
 
