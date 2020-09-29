@@ -2768,14 +2768,15 @@ fc.context()
 *&#8195;Signatures*
 
 - `fc.commands(commandArbs)`
-- `fc.commands(commandArbs, maxCommands)`
 - `fc.commands(commandArbs, { disableReplayLog?, maxCommands?, replayPath? })`
+- _`fc.commands(commandArbs, maxCommands)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `disableReplayLog` — _disable the display of details regarding the replay for commands_
-- `maxCommands` — _maximal number of commands to generate (included)_
 - `commandArbs` — _array of arbitraries responsible to generate commands_
+- `disableReplayLog?` — _disable the display of details regarding the replay for commands_
+- `maxCommands?` — _maximal number of commands to generate (included)_
+- `replayPath?` — _only used when replaying commands_
 
 *&#8195;Usages*
 

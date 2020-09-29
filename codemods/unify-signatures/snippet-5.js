@@ -50,3 +50,10 @@ fc.json({ maxDepth: 10 });
 fc.option(fc.nat());
 fc.option(fc.nat(), 10);
 fc.option(fc.nat(), { freq: 10, nil: null });
+
+// option
+
+fc.commands([]);
+fc.commands([], 10);
+fc.commands([], 50);
+fc.commands([], { maxCommands: 50 });

@@ -304,6 +304,17 @@ module.exports = function (file, api, options) {
           }
           break;
         }
+        case 'commands': {
+          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+            // fc.commands(commandArbs, maxCommands) -> fc.commands(commandArbs, {maxCommands})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 10);
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [!simplifyMax && j.property('init', j.identifier('maxCommands'), p.value.arguments[1])]
+            );
+          }
+          break;
+        }
       }
       return p;
     })
