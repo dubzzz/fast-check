@@ -41,6 +41,6 @@ fc.shuffledSubarray(computeArray(), 1, 2);
 // json
 
 fc.json();
-fc.json(5);
+fc.json(2);
 fc.json(10);
 fc.json({ maxDepth: 10 });
