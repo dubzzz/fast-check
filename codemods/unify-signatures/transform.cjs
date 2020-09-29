@@ -280,6 +280,20 @@ module.exports = function (file, api, options) {
           }
           break;
         }
+        case 'json':
+        case 'unicodeJson':
+        case 'jsonObject':
+        case 'unicodeJsonObject': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.json(10) -> fc.json({maxDepth})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 5);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('maxDepth'), p.value.arguments[0])]
+            );
+          }
+          break;
+        }
       }
       return p;
     })
