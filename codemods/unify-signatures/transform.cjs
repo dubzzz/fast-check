@@ -4,6 +4,10 @@
 // Or against the codebase of fast-check itself:
 //    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true --simplifyMin=true --simplifyMax=true
 
+// Useful ressources:
+// - https://astexplorer.net/
+// - https://npmdoc.github.io/node-npmdoc-jscodeshift/build/apidoc.html
+
 /**
  * Find any imports related to fast-check
  * either module as a whole or named imports
@@ -138,7 +142,11 @@ module.exports = function (file, api, options) {
   }
   function isNumeric(argument) {
     // 0              -- Default parser: Literal / TS parser: NumericLiteral
-    return argument.type === 'Literal' || argument.type === 'NumericLiteral';
+    return (argument.type === 'Literal' || argument.type === 'NumericLiteral') && typeof argument.value === 'number';
+  }
+  function isBoolean(argument) {
+    // true           -- Default parser: Literal / TS parser: BooleanLiteral
+    return (argument.type === 'Literal' || argument.type === 'BooleanLiteral') && typeof argument.value === 'boolean';
   }
   function isArray(argument) {
     // [1, 2, 3]      -- Default & TS parser: ArrayExpression
@@ -275,6 +283,67 @@ module.exports = function (file, api, options) {
               [
                 !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
                 !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
+              ]
+            );
+          }
+          break;
+        }
+        case 'json':
+        case 'unicodeJson':
+        case 'jsonObject':
+        case 'unicodeJsonObject': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.json(10) -> fc.json({maxDepth})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 2);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('maxDepth'), p.value.arguments[0])]
+            );
+          }
+          break;
+        }
+        case 'option': {
+          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+            // fc.option(arb, 10) -> fc.option(arb, {freq})
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [j.property('init', j.identifier('freq'), p.value.arguments[1])]
+            );
+          }
+          break;
+        }
+        case 'commands': {
+          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+            // fc.commands(commandArbs, maxCommands) -> fc.commands(commandArbs, {maxCommands})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 10);
+            p.value.arguments = computeNewArguments(
+              [p.value.arguments[0]],
+              [!simplifyMax && j.property('init', j.identifier('maxCommands'), p.value.arguments[1])]
+            );
+          }
+          break;
+        }
+        case 'lorem': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.lorem(maxWordsCount) -> fc.lorem({maxCount})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 5);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('maxCount'), p.value.arguments[0])]
+            );
+          } else if (p.value.arguments.length === 2) {
+            // fc.lorem(maxWordsCount, sentencesMode) -> fc.lorem({maxCount, mode})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 5);
+            const mode = isBoolean(p.value.arguments[1])
+              ? p.value.arguments[1].value === true
+                ? j.literal('sentences')
+                : j.literal('words')
+              : j.conditionalExpression(p.value.arguments[1], j.literal('sentences'), j.literal('words'));
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                !simplifyMax && j.property('init', j.identifier('maxCount'), p.value.arguments[0]),
+                j.property('init', j.identifier('mode'), mode),
               ]
             );
           }

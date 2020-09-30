@@ -37,3 +37,36 @@ fc.shuffledSubarray([1, 2, 3]);
 fc.shuffledSubarray([1, 2, 3], 1, 2);
 fc.shuffledSubarray(myArray, 1, 2);
 fc.shuffledSubarray(computeArray(), 1, 2);
+
+// json
+
+fc.json();
+fc.json(2);
+fc.json(10);
+fc.json({ maxDepth: 10 });
+
+// option
+
+fc.option(fc.nat());
+fc.option(fc.nat(), 10);
+fc.option(fc.nat(), { freq: 10, nil: null });
+
+// option
+
+fc.commands([]);
+fc.commands([], 10);
+fc.commands([], 50);
+fc.commands([], { maxCommands: 50 });
+
+// lorem
+
+fc.lorem();
+fc.lorem(5);
+fc.lorem(10);
+fc.lorem(num);
+fc.lorem(5, true);
+fc.lorem(10, true);
+fc.lorem(10, false);
+fc.lorem(10, something);
+fc.lorem(num, something);
+fc.lorem({ maxCount: 10 });

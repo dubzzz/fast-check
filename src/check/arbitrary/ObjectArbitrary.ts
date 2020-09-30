@@ -67,6 +67,19 @@ export interface ObjectConstraints {
   withBigInt?: boolean;
 }
 
+/**
+ * Shared constraints for:
+ * - {@link json},
+ * - {@link unicodeJson},
+ * - {@link jsonObject},
+ * - {@link unicodeJsonObject}
+ * @public
+ */
+export interface JsonSharedConstraints {
+  /** Maximal depth allowed */
+  maxDepth?: number;
+}
+
 /** @internal */
 class QualifiedObjectConstraints {
   constructor(
@@ -296,10 +309,14 @@ function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unkno
 }
 
 /** @internal */
-function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
+function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number | JsonSharedConstraints) {
   const key = stringArbitrary;
   const values = [boolean(), integer(), double(), stringArbitrary, constant(null)];
-  return maxDepth != null ? { key, values, maxDepth } : { key, values };
+  return constraints != null
+    ? typeof constraints === 'number'
+      ? { key, values, maxDepth: constraints }
+      : { key, values, maxDepth: constraints.maxDepth }
+    : { key, values };
 }
 
 /**
@@ -317,11 +334,25 @@ function jsonObject(): Arbitrary<unknown>;
  *
  * @param maxDepth - Maximal depth of the generated values
  *
+ * @remarks
+ * Superceded by `fc.jsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function jsonObject(maxDepth: number): Arbitrary<unknown>;
-function jsonObject(maxDepth?: number): Arbitrary<unknown> {
-  return anything(jsonSettings(string(), maxDepth));
+/**
+ * For any JSON compliant values
+ *
+ * Keys and string values rely on {@link string}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function jsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
+  return anything(jsonSettings(string(), constraints));
 }
 
 /**
@@ -339,11 +370,25 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  *
  * @param maxDepth - Maximal depth of the generated values
  *
+ * @remarks
+ * Superceded by `fc.unicodeJsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
-function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
-  return anything(jsonSettings(unicodeString(), maxDepth));
+/**
+ * For any JSON compliant values with unicode support
+ *
+ * Keys and string values rely on {@link unicode}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
+  return anything(jsonSettings(unicodeString(), constraints));
 }
 
 /**
@@ -361,11 +406,27 @@ function json(): Arbitrary<string>;
  *
  * @param maxDepth - Maximal depth of the generated objects
  *
+ * @remarks
+ * Superceded by `fc.json({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function json(maxDepth: number): Arbitrary<string>;
-function json(maxDepth?: number): Arbitrary<string> {
-  const arb = maxDepth != null ? jsonObject(maxDepth) : jsonObject();
+/**
+ * For any JSON strings
+ *
+ * Keys and string values rely on {@link string}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function json(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
+  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
+  //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
+  const arb = constraints != null ? jsonObject(constraints as any) : jsonObject();
   return arb.map(JSON.stringify);
 }
 
@@ -384,11 +445,27 @@ function unicodeJson(): Arbitrary<string>;
  *
  * @param maxDepth - Maximal depth of the generated objects
  *
+ * @remarks
+ * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function unicodeJson(maxDepth: number): Arbitrary<string>;
-function unicodeJson(maxDepth?: number): Arbitrary<string> {
-  const arb = maxDepth != null ? unicodeJsonObject(maxDepth) : unicodeJsonObject();
+/**
+ * For any JSON strings with unicode support
+ *
+ * Keys and string values rely on {@link unicode}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function unicodeJson(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function unicodeJson(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
+  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
+  //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
+  const arb = constraints != null ? unicodeJsonObject(constraints as any) : unicodeJsonObject();
   return arb.map(JSON.stringify);
 }
 

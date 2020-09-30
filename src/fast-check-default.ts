@@ -39,13 +39,14 @@ import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './check/arbitrary/LetRecArbitrary';
-import { lorem } from './check/arbitrary/LoremArbitrary';
+import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import { memo, Memo } from './check/arbitrary/MemoArbitrary';
 import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
 import {
   anything,
   json,
+  JsonSharedConstraints,
   jsonObject,
   object,
   ObjectConstraints,
@@ -280,6 +281,8 @@ export {
   ArrayConstraints,
   CommandsContraints,
   FalsyContraints,
+  JsonSharedConstraints,
+  LoremConstraints,
   MixedCaseConstraints,
   ObjectConstraints,
   OptionConstraints,

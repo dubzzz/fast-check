@@ -903,7 +903,8 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 *&#8195;Signatures*
 
 - `fc.json()`
-- `fc.json(maxDepth)`
+- `fc.json({maxDepth?})`
+- _`fc.json(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -921,11 +922,17 @@ fc.json()
 // • "{}"
 // • …
 
-fc.json(0)
-// Examples of generated values: "-618939220", "null", "-21", "\"'M\"", "-1336128433"…
+fc.json({maxDepth: 0})
+// Examples of generated values: "0.18608385079037526", "false", "null", "0.25584162771702035", "true"…
 
-fc.json(1)
-// Examples of generated values: "[null,null]", "null", "[false]", "[]", "\"'M\""…
+fc.json({maxDepth: 1})
+// Examples of generated values:
+// • "{\"mTZw9f!~2\":null,\"W\":null,\"N'!U6\":null,\"x\":null,\"=l]l\":null}"
+// • "{\"#\":3.494583413754526e-7,\"CyPnYYJ\\\\N\":0.9551698971333347,\"&%J\":null,\"HSz2u=t6J\":null}"
+// • "{\" !t! #.V\":null,\"%#!kPE&?6\":6.253999207395111e-8}"
+// • "{\"|\":false,\"*I\":0.8821854617928871,\"r(>uO\":\"I$2`I_6@\",\"N'q\":null}"
+// • "[0.7470952319262365,0.7422909334763742,0.0069430153745627665]"
+// • …
 ```
 </details>
 
@@ -942,7 +949,8 @@ fc.json(1)
 *&#8195;Signatures*
 
 - `fc.unicodeJson()`
-- `fc.unicodeJson(maxDepth)`
+- `fc.unicodeJson({maxDepth?})`
+- _`fc.unicodeJson(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -960,17 +968,11 @@ fc.unicodeJson()
 // • "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":null},\"ቈ保婠꠨旞荫㹢ފ\":{\"콆쳑Ｈ᜞紽ѳ㑓\":false},\"\":{\"ꉶ瀞뿱끮筡팹᧊\":0.9470328025826398},\"끨\":1001562014,\"薀ɿ⫝̸挖\":{\"顅蓦⋨뢫\":0.8487552623602803,\"ঞ\":0.7280241452947824}}"
 // • …
 
-fc.unicodeJson(0)
-// Examples of generated values: "3.126712444512236e-8", "null", "\"㚗᭏µƖ簛或㝠ꗳ欛\"", "\"썤\"", "true"…
+fc.unicodeJson({maxDepth: 0})
+// Examples of generated values: "10", "1898171291", "null", "0.22572752833366638", "0.026702941895505816"…
 
-fc.unicodeJson(1)
-// Examples of generated values:
-// • "[true]"
-// • "{\"ٻ騈ᄸ\":-19}"
-// • "\"㚗᭏µƖ簛或㝠ꗳ欛\""
-// • "\"썤\""
-// • "{\"ᨫ㽹\":\"⢓Ｊ紛锆\",\"跺袁嚆⶯잨ꋿǵ蔵\":\"\",\"샘嬩\":\"烻ࡎ⑸嬗䠻\",\"\":\"값֏젴恝츏\",\"遊緃៚\":\"縧뜻箝雁債㠠\"}"
-// • …
+fc.unicodeJson({maxDepth: 1})
+// Examples of generated values: "10", "1898171291", "null", "[]", "0.026702941895505816"…
 ```
 </details>
 
@@ -983,14 +985,16 @@ fc.unicodeJson(1)
 
 *&#8195;Signatures*
 
-- `fc.lorem()` — _lorem ipsum sentence containing a few words_
-- `fc.lorem(maxWordsCount)` — _lorem ipsum sentence containing at most `maxWordsCount` words_
-- `fc.lorem(maxCount, sentenceMode)` — _if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: same as above_
+- `fc.lorem()`
+- `fc.lorem({maxCount?, mode?})`
+- _`fc.lorem(maxWordsCount)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.lorem(maxCount, sentenceMode)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
+- `maxCount?` — default: `5` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
+- `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
 - `maxWordsCount?` — _maximal number of words to produce_
-- `maxCount?` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
 - `sentenceMode?` — default: `false` — _enable sentence mode_
 
 _Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
@@ -1001,16 +1005,16 @@ _Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
 fc.lorem()
 // Examples of generated values: "arcu fusce", "dolor mi dignissim", "felis lacus", "ligula nec curae sed enim", "tincidunt vivamus massa"…
 
-fc.lorem(3)
-// Examples of generated values: "a sollicitudin", "consequat ligula", "faucibus sapien", "elit vestibulum ut", "enim"…
+fc.lorem({maxCount: 3})
+// Examples of generated values: "praesent libero sodales", "mi adipiscing", "ut duis vitae", "mi elementum gravida", "non"…
 
-fc.lorem(3, true)
+fc.lorem({maxCount: 3, mode: "sentences"})
 // Examples of generated values:
-// • "Sed."
-// • "Nisl quis congue pellentesque sapien non elit quam."
-// • "Curae, ligula eros erat et ut euismod sit. Nibh suscipit molestie, ac cras vel posuere et purus eleifend nec."
-// • "Risus vitae. Quis nulla pellentesque quis sed, magna pellentesque sed ante. Iaculis, aliquam ultrices adipiscing."
-// • "Aliquam augue at nulla maecenas non faucibus, cursus molestie, posuere justo justo. Feugiat, aliquam, ultrices convallis aliquam, tortor sodales lacus ut libero pharetra. Nonummy nec, in ut lectus."
+// • "Sed faucibus, sit praesent. Justo id, nisl fusce tempor sit convallis. Non consectetur in scelerisque mauris morbi sollicitudin augue, nulla mauris leo."
+// • "Tempus. Tristique."
+// • "Diam faucibus lorem fermentum mauris lorem dignissim consequat semper nunc."
+// • "Id, cubilia in mi enim in proin adipiscing ut, risus."
+// • "Rhoncus in hendrerit faucibus sed sapien et."
 // • …
 ```
 </details>
@@ -1586,8 +1590,8 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 *&#8195;Signatures*
 
 - `fc.option(arb)`
-- `fc.option(arb, freq)`
 - `fc.option(arb, {freq?, nil?})`
+- _`fc.option(arb, freq)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1601,8 +1605,8 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 fc.option(fc.nat())
 // Examples of generated values: null, 773390791, 25, 18, 2039519833…
 
-fc.option(fc.nat(), 2)
-// Examples of generated values: 5, 1857850746, 178760054, 1682452789, 461887690…
+fc.option(fc.nat(), { freq: 2 })
+// Examples of generated values: 214938453, 4, 2130844098, 748471782, null…
 
 fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 // Examples of generated values: 5, Number.NaN, 259062763, 21, 11…
@@ -2211,7 +2215,8 @@ fc.object({
 *&#8195;Signatures*
 
 - `fc.jsonObject()`
-- `fc.jsonObject(maxDepth)`
+- `fc.jsonObject({maxDepth?})`
+- _`fc.jsonObject(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2229,17 +2234,11 @@ fc.jsonObject()
 // • [[-31,-1747504894]]
 // • …
 
-fc.jsonObject(0)
-// Examples of generated values: null, ".", "Sd41(w1z", "n", "'=Q"…
+fc.jsonObject({maxDepth: 0})
+// Examples of generated values: -312267957, "C{X%3]Q$U", "M}7xc\" _", true, null…
 
-fc.jsonObject(1)
-// Examples of generated values:
-// • {"/iET":-482578189,"POwJz":null,"*K1J":"R*;x,(-}","+IIwgC?":null}
-// • [null]
-// • [0.7618818962743513]
-// • {"Kq/]OM":"81@","":null,"=FeKAOe'":0.9062852829643616}
-// • "'=Q"
-// • …
+fc.jsonObject({maxDepth: 1})
+// Examples of generated values: -312267957, {"{":true,"Q$":null}, "M}7xc\" _", {".b?^O.":"","D1$L":"zDJWs","j*s 9%":"",".":"0N|^?8"}, {}…
 ```
 </details>
 
@@ -2253,7 +2252,8 @@ fc.jsonObject(1)
 *&#8195;Signatures*
 
 - `fc.unicodeJsonObject()`
-- `fc.unicodeJsonObject(maxDepth)`
+- `fc.unicodeJsonObject({maxDepth?})`
+- _`fc.unicodeJsonObject(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2265,16 +2265,16 @@ fc.jsonObject(1)
 fc.unicodeJsonObject()
 // Examples of generated values: false, [[-1517505516,-480082521]], "⠵䟵谉ꏊ㓰捛멮켜", null, [null,null,null,null]…
 
-fc.unicodeJsonObject(0)
-// Examples of generated values: "-㫴", "꺫蒬娃Ė븥", null, 0.6968476056387718, 0.7140081822872186…
+fc.unicodeJsonObject({maxDepth: 0})
+// Examples of generated values: 4.4703486135055925e-8, 1.7994014667177538e-7, true, -13, 2.451586696983199e-7…
 
-fc.unicodeJsonObject(1)
+fc.unicodeJsonObject({maxDepth: 1})
 // Examples of generated values:
-// • "-㫴"
-// • {"蒬娃Ė븥㏣퐷㮯౅":null,"枕ꞡ繍ᚶᩏ蜸Ꮪ":0.17484163030123312,"⋽߬㦕㌮ᮌ䤳䙒":false,"憊翀䔽薦䯛睂䷡醥긴":"얒쒏"}
-// • null
-// • 0.6968476056387718
-// • [0.35169129693363876,0.22590550057532044]
+// • 4.4703486135055925e-8
+// • {"减":null,"鲊ਉ뉄":null,"罧癤鷢൜牶":null,"횆쐌淪燀쯠蝒熹཯":null,"":null}
+// • {"ꁺ척蜱젿됻⫄":true,"㠰䵤᧳ꊺ蹀":true,"劸웤鯁냠漼ⳍ㧞ﰗἭ∎":false}
+// • []
+// • ["疘쥱"]
 // • …
 ```
 </details>
@@ -2770,14 +2770,15 @@ fc.context()
 *&#8195;Signatures*
 
 - `fc.commands(commandArbs)`
-- `fc.commands(commandArbs, maxCommands)`
 - `fc.commands(commandArbs, { disableReplayLog?, maxCommands?, replayPath? })`
+- _`fc.commands(commandArbs, maxCommands)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `disableReplayLog` — _disable the display of details regarding the replay for commands_
-- `maxCommands` — _maximal number of commands to generate (included)_
 - `commandArbs` — _array of arbitraries responsible to generate commands_
+- `disableReplayLog?` — _disable the display of details regarding the replay for commands_
+- `maxCommands?` — _maximal number of commands to generate (included)_
+- `replayPath?` — _only used when replaying commands_
 
 *&#8195;Usages*
 

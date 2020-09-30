@@ -4,6 +4,29 @@ import { Arbitrary } from './definition/Arbitrary';
 import { frequency } from './FrequencyArbitrary';
 
 /**
+ * Constraints to be applied on {@link lorem}
+ * @public
+ */
+export interface LoremConstraints {
+  /**
+   * Maximal number of entities:
+   * - maximal number of words in case mode is 'words'
+   * - maximal number of sentences in case mode is 'sentences'
+   *
+   * @defaultValue 5
+   */
+  maxCount?: number;
+  /**
+   * Type of strings that should be produced by {@link lorem}:
+   * - words: multiple words
+   * - sentences: multiple sentences
+   *
+   * @defaultValue 'words'
+   */
+  mode?: 'words' | 'sentences';
+}
+
+/**
  * Helper function responsible to build the entries for frequency
  * @internal
  */
@@ -195,6 +218,10 @@ function lorem(): Arbitrary<string>;
  *
  * @param maxWordsCount - Upper bound of the number of words allowed
  *
+ * @remarks
+ * Superceded by `fc.lorem({maxCount})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function lorem(maxWordsCount: number): Arbitrary<string>;
@@ -204,10 +231,24 @@ function lorem(maxWordsCount: number): Arbitrary<string>;
  * @param maxWordsCount - Upper bound of the number of words/sentences allowed
  * @param sentencesMode - If enabled, multiple sentences might be generated
  *
+ * @remarks
+ * Superceded by `fc.lorem({maxCount, mode})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;
-function lorem(maxWordsCount?: number, sentencesMode?: boolean): Arbitrary<string> {
+/**
+ * For lorem ipsum string of words or sentences with maximal number of words or sentences
+ *
+ * @param constraints - Constraints to be applied onto the generated value
+ *
+ * @public
+ */
+function lorem(constraints: LoremConstraints): Arbitrary<string>;
+function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]): Arbitrary<string> {
+  const maxWordsCount = typeof args[0] === 'object' ? args[0].maxCount : args[0];
+  const sentencesMode = typeof args[0] === 'object' ? args[0].mode === 'sentences' : args[1];
   const maxCount = maxWordsCount || 5;
   if (maxCount < 1) throw new Error(`lorem has to produce at least one word/sentence`);
   if (sentencesMode) {
