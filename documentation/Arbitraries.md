@@ -985,14 +985,16 @@ fc.unicodeJson({maxDepth: 1})
 
 *&#8195;Signatures*
 
-- `fc.lorem()` — _lorem ipsum sentence containing a few words_
-- `fc.lorem(maxWordsCount)` — _lorem ipsum sentence containing at most `maxWordsCount` words_
-- `fc.lorem(maxCount, sentenceMode)` — _if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: same as above_
+- `fc.lorem()`
+- `fc.lorem({maxCount?, mode?})`
+- _`fc.lorem(maxWordsCount)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.lorem(maxCount, sentenceMode)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
+- `maxCount?` — default: `5` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
+- `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
 - `maxWordsCount?` — _maximal number of words to produce_
-- `maxCount?` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
 - `sentenceMode?` — default: `false` — _enable sentence mode_
 
 _Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
@@ -1003,16 +1005,16 @@ _Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
 fc.lorem()
 // Examples of generated values: "arcu fusce", "dolor mi dignissim", "felis lacus", "ligula nec curae sed enim", "tincidunt vivamus massa"…
 
-fc.lorem(3)
-// Examples of generated values: "a sollicitudin", "consequat ligula", "faucibus sapien", "elit vestibulum ut", "enim"…
+fc.lorem({maxCount: 3})
+// Examples of generated values: "praesent libero sodales", "mi adipiscing", "ut duis vitae", "mi elementum gravida", "non"…
 
-fc.lorem(3, true)
+fc.lorem({maxCount: 3, mode: "sentences"})
 // Examples of generated values:
-// • "Sed."
-// • "Nisl quis congue pellentesque sapien non elit quam."
-// • "Curae, ligula eros erat et ut euismod sit. Nibh suscipit molestie, ac cras vel posuere et purus eleifend nec."
-// • "Risus vitae. Quis nulla pellentesque quis sed, magna pellentesque sed ante. Iaculis, aliquam ultrices adipiscing."
-// • "Aliquam augue at nulla maecenas non faucibus, cursus molestie, posuere justo justo. Feugiat, aliquam, ultrices convallis aliquam, tortor sodales lacus ut libero pharetra. Nonummy nec, in ut lectus."
+// • "Sed faucibus, sit praesent. Justo id, nisl fusce tempor sit convallis. Non consectetur in scelerisque mauris morbi sollicitudin augue, nulla mauris leo."
+// • "Tempus. Tristique."
+// • "Diam faucibus lorem fermentum mauris lorem dignissim consequat semper nunc."
+// • "Id, cubilia in mi enim in proin adipiscing ut, risus."
+// • "Rhoncus in hendrerit faucibus sed sapien et."
 // • …
 ```
 </details>

@@ -57,3 +57,16 @@ fc.commands([]);
 fc.commands([], 10);
 fc.commands([], 50);
 fc.commands([], { maxCommands: 50 });
+
+// lorem
+
+fc.lorem();
+fc.lorem(5);
+fc.lorem(10);
+fc.lorem(num);
+fc.lorem(5, true);
+fc.lorem(10, true);
+fc.lorem(10, false);
+fc.lorem(10, something);
+fc.lorem(num, something);
+fc.lorem({ maxCount: 10 });
