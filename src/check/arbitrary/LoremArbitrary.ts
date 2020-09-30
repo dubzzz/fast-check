@@ -10,7 +10,7 @@ import { frequency } from './FrequencyArbitrary';
 export interface LoremConstraints {
   /**
    * Maximal number of entities:
-   * - maximal number of words in the case mode is 'words'
+   * - maximal number of words in case mode is 'words'
    * - maximal number of sentences in case mode is 'sentences'
    *
    * @defaultValue 5
@@ -241,7 +241,7 @@ function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>
 /**
  * For lorem ipsum string of words or sentences with maximal number of words or sentences
  *
- * @param constraints - Constrants to be applied onto the geenrated value
+ * @param constraints - Constraints to be applied onto the generated value
  *
  * @public
  */
