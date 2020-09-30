@@ -48,8 +48,10 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     }
     return true;
   }
-  private wrapper(itemsRaw: Shrinkable<T>[], freshGeneratedValue: boolean): Shrinkable<T[]> {
-    const items = freshGeneratedValue ? itemsRaw : this.preFilter(itemsRaw);
+  private wrapper(itemsRaw: Shrinkable<T>[], shrunkOnce: boolean): Shrinkable<T[]> {
+    // We need to explicitly apply filtering on shrink items
+    // has they might have duplicates (on non shrunk it is not the case by construct)
+    const items = shrunkOnce ? this.preFilter(itemsRaw) : itemsRaw;
     let cloneable = false;
     const vs = [];
     for (let idx = 0; idx !== items.length; ++idx) {
@@ -60,7 +62,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     if (cloneable) {
       ArrayArbitrary.makeItCloneable(vs, items);
     }
-    return new Shrinkable(vs, () => this.shrinkImpl(items, !freshGeneratedValue).map((v) => this.wrapper(v, false)));
+    return new Shrinkable(vs, () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const targetSizeShrinkable = this.lengthArb.generate(mrng);
@@ -82,7 +84,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         numSkippedInRow += 1;
       }
     }
-    return this.wrapper(items, true);
+    return this.wrapper(items, false);
   }
   private shrinkImpl(items: Shrinkable<T>[], shrunkOnce: boolean): Stream<Shrinkable<T>[]> {
     if (items.length === 0) {
