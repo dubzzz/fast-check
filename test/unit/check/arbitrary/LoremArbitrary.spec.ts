@@ -67,15 +67,15 @@ describe('LoremArbitrary', () => {
             expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
           })
         );
-        it('Should support fc.lorem(maxWordsCount, sentencesMode)', () => {
-          fc.assert(
-            fc.property(fc.integer(), fc.nat(100), fc.boolean(), (seed, maxWordsCount, sentencesMode) => {
-              const refArbitrary = lorem({ maxCount: maxWordsCount, mode: sentencesMode ? 'sentences' : 'words' });
-              const nonRecommendedArbitrary = lorem(maxWordsCount, sentencesMode);
-              expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-            })
-          );
-        });
+      });
+      it('Should support fc.lorem(maxWordsCount, sentencesMode)', () => {
+        fc.assert(
+          fc.property(fc.integer(), fc.nat(100), fc.boolean(), (seed, maxWordsCount, sentencesMode) => {
+            const refArbitrary = lorem({ maxCount: maxWordsCount, mode: sentencesMode ? 'sentences' : 'words' });
+            const nonRecommendedArbitrary = lorem(maxWordsCount, sentencesMode);
+            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
       });
     });
   });
