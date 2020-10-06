@@ -1,10 +1,13 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { decomposeFloat, floatToIndex, indexToFloat } from '../../../../src/check/arbitrary/FloatNextArbitrary';
-
-const MIN_VALUE_32 = 2 ** -126 * 2 ** -23;
-const MAX_VALUE_32 = 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23);
-const EPSILON_32 = 2 ** -23;
+import {
+  decomposeFloat,
+  floatToIndex,
+  indexToFloat,
+  EPSILON_32,
+  MAX_VALUE_32,
+  MIN_VALUE_32,
+} from '../../../../src/check/arbitrary/FloatNextArbitrary';
 
 describe('FloatNextArbitrary', () => {
   describe('decomposeFloat (@internal)', () => {

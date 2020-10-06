@@ -1,3 +1,13 @@
+import { Arbitrary } from './definition/Arbitrary';
+import { integer } from './IntegerArbitrary';
+
+/** @internal */
+export const MIN_VALUE_32 = 2 ** -126 * 2 ** -23;
+/** @internal */
+export const MAX_VALUE_32 = 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23);
+/** @internal */
+export const EPSILON_32 = 2 ** -23;
+
 /**
  * Decompose a 32-bit floating point number into a mantissa and exponent
  * such as:
@@ -93,4 +103,53 @@ export function indexToFloat(index: number): number {
   // (postIndex % 0x800000) / 0x800000 = (postIndex & 0x7fffff) / 0x800000
   const mantissa = 1 + (postIndex & 0x7fffff) / 0x800000;
   return mantissa * 2 ** exponent;
+}
+
+/**
+ * Constraints to be applied on {@link floatNext}
+ * @public
+ */
+export interface FloatNextConstraints {
+  /**
+   * Lower bound for the generated 32-bit floats (included)
+   * @defaultValue -3.4028234663852886e+38
+   */
+  min?: number;
+  /**
+   * Upper bound for the generated 32-bit floats (included)
+   * @defaultValue 3.4028234663852886e+38
+   */
+  max?: number;
+}
+
+/** @internal */
+const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
+
+/**
+ * For 32-bit floating point numbers:
+ * - sign: 1 bit
+ * - mantissa: 23 bits
+ * - exponent: 8 bits
+ *
+ * The smallest non-zero value (in absolute value) that can be represented by such float is: 2 ** -126 * 2 ** -23.
+ * And the largest one is: 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23).
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<number> {
+  const { min = -MAX_VALUE_32, max = MAX_VALUE_32 } = constraints;
+  const minIndex = floatToIndex(min);
+  const maxIndex = floatToIndex(max);
+  if (Number.isNaN(minIndex) || !Number.isInteger(minIndex)) {
+    throw new Error('fc.floatNext constraints.min must be a 32-bit float - ' + conversionTrick);
+  }
+  if (Number.isNaN(maxIndex) || !Number.isInteger(maxIndex)) {
+    throw new Error('fc.floatNext constraints.max must be a 32-bit float - ' + conversionTrick);
+  }
+  if (minIndex > maxIndex) {
+    throw new Error('fc.floatNext constraints.min must be smaller or equal to constraints.max');
+  }
+  return integer(minIndex, maxIndex).map(indexToFloat);
 }
