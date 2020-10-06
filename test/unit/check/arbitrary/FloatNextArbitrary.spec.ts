@@ -12,29 +12,29 @@ import {
 describe('FloatNextArbitrary', () => {
   describe('decomposeFloat (@internal)', () => {
     it('Should properly decompose basic values', () => {
-      expect(decomposeFloat(0)).toEqual({ exponent: -126, mantissa: 0 });
-      expect(decomposeFloat(1)).toEqual({ exponent: 0, mantissa: 1 });
-      expect(decomposeFloat(128)).toEqual({ exponent: 7, mantissa: 1 });
-      expect(decomposeFloat(201)).toEqual({ exponent: 7, mantissa: 1.5703125 });
+      expect(decomposeFloat(0)).toEqual({ exponent: -126, significand: 0 });
+      expect(decomposeFloat(1)).toEqual({ exponent: 0, significand: 1 });
+      expect(decomposeFloat(128)).toEqual({ exponent: 7, significand: 1 });
+      expect(decomposeFloat(201)).toEqual({ exponent: 7, significand: 1.5703125 });
     });
     it('Should properly decompose negative values', () => {
-      expect(decomposeFloat(-0)).toEqual({ exponent: -126, mantissa: -0 });
-      expect(decomposeFloat(-1)).toEqual({ exponent: 0, mantissa: -1 });
+      expect(decomposeFloat(-0)).toEqual({ exponent: -126, significand: -0 });
+      expect(decomposeFloat(-1)).toEqual({ exponent: 0, significand: -1 });
     });
     it('Should properly decompose extreme values', () => {
-      expect(decomposeFloat(MAX_VALUE_32)).toEqual({ exponent: 127, mantissa: 1 + (2 ** 23 - 1) / 2 ** 23 });
-      expect(decomposeFloat(MIN_VALUE_32)).toEqual({ exponent: -126, mantissa: 2 ** -23 });
-      expect(decomposeFloat(EPSILON_32)).toEqual({ exponent: -23, mantissa: 1 });
-      expect(decomposeFloat(1 + EPSILON_32)).toEqual({ exponent: 0, mantissa: 1 + 2 ** -23 });
+      expect(decomposeFloat(MAX_VALUE_32)).toEqual({ exponent: 127, significand: 1 + (2 ** 23 - 1) / 2 ** 23 });
+      expect(decomposeFloat(MIN_VALUE_32)).toEqual({ exponent: -126, significand: 2 ** -23 });
+      expect(decomposeFloat(EPSILON_32)).toEqual({ exponent: -23, significand: 1 });
+      expect(decomposeFloat(1 + EPSILON_32)).toEqual({ exponent: 0, significand: 1 + 2 ** -23 });
     });
-    it('Should decompose a 32-bit float into its equivalent (mantissa, exponent)', () =>
+    it('Should decompose a 32-bit float into its equivalent (significand, exponent)', () =>
       fc.assert(
         fc.property(
           fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]),
           (f32) => {
             fc.pre(!Number.isNaN(f32) && Number.isFinite(f32));
-            const { exponent, mantissa } = decomposeFloat(f32);
-            expect(mantissa * 2 ** exponent).toBe(f32);
+            const { exponent, significand } = decomposeFloat(f32);
+            expect(significand * 2 ** exponent).toBe(f32);
           }
         )
       ));
