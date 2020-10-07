@@ -58,11 +58,20 @@ describe('FloatNextArbitrary', () => {
       ));
     it('Should reject non-32-bit, NaN or Infinity floating point numbers if specified for max', () =>
       fc.assert(
-        fc.property(float64raw(), fc.context(), (f64, ctx) => {
+        fc.property(float64raw(), (f64) => {
           fc.pre(!isFiniteNotNaN32bits(f64));
-          ctx.log(fc.stringify(decomposeFloat(f64)));
-          ctx.log(fc.stringify(floatToIndex(f64)));
           expect(() => floatNext({ max: f64 })).toThrowError();
+        })
+      ));
+    it('Should reject if specified min is strictly greater than max', () =>
+      fc.assert(
+        fc.property(float32raw(), float32raw(), (fa32, fb32) => {
+          fc.pre(isFiniteNotNaN32bits(fa32));
+          fc.pre(isFiniteNotNaN32bits(fb32));
+          fc.pre(fa32 !== fb32);
+          const min = fa32 < fb32 ? fb32 : fa32;
+          const max = fa32 < fb32 ? fa32 : fb32;
+          expect(() => floatNext({ min, max })).toThrowError();
         })
       ));
     describe('Is valid arbitrary?', () => {
