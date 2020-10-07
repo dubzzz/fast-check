@@ -76,7 +76,7 @@ describe('FloatNextArbitrary', () => {
       ));
     describe('Is valid arbitrary?', () => {
       genericHelper.isValidArbitrary((ct?: FloatNextConstraints) => floatNext(ct), {
-        isStrictlySmallerValue: (fa, fb) => Math.abs(fa) < Math.abs(fb),
+        isStrictlySmallerValue: (fa, fb) => Math.abs(fa) < Math.abs(fb) || (Object.is(fa, +0) && Object.is(fb, -0)),
         isValidValue: (g: number, ct?: FloatNextConstraints) => {
           if (typeof g !== 'number') return false;
           if (!isFiniteNotNaN32bits(g)) return false;
