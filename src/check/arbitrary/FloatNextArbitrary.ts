@@ -71,7 +71,7 @@ export function floatToIndex(f: number): number {
   const decomp = decomposeFloat(f);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
-  if (Number.isNaN(exponent) || Number.isNaN(significand)) {
+  if (Number.isNaN(exponent) || Number.isNaN(significand) || !Number.isInteger(significand * 0x800000)) {
     return Number.NaN;
   }
   if (f > 0 || (f === 0 && 1 / f === Number.POSITIVE_INFINITY)) {
@@ -142,10 +142,10 @@ export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<num
   const { min = -MAX_VALUE_32, max = MAX_VALUE_32 } = constraints;
   const minIndex = floatToIndex(min);
   const maxIndex = floatToIndex(max);
-  if (Number.isNaN(minIndex) || !Number.isInteger(minIndex)) {
+  if (Number.isNaN(minIndex) || !Number.isInteger(minIndex) || min < -MAX_VALUE_32 || min > MAX_VALUE_32) {
     throw new Error('fc.floatNext constraints.min must be a 32-bit float - ' + conversionTrick);
   }
-  if (Number.isNaN(maxIndex) || !Number.isInteger(maxIndex)) {
+  if (Number.isNaN(maxIndex) || !Number.isInteger(maxIndex) || max < -MAX_VALUE_32 || max > MAX_VALUE_32) {
     throw new Error('fc.floatNext constraints.max must be a 32-bit float - ' + conversionTrick);
   }
   if (minIndex > maxIndex) {

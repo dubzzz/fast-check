@@ -7,9 +7,57 @@ import {
   EPSILON_32,
   MAX_VALUE_32,
   MIN_VALUE_32,
+  floatNext,
 } from '../../../../src/check/arbitrary/FloatNextArbitrary';
 
+const float32raw = () => {
+  return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
+};
+const float64raw = () => {
+  return fc
+    .tuple(fc.integer(), fc.integer())
+    .map(([na32, nb32]) => new Float64Array(new Int32Array([na32, nb32]).buffer)[0]);
+};
+
+const is32bits = (f64: number) => new Float32Array([f64])[0] === f64;
+
 describe('FloatNextArbitrary', () => {
+  describe('floatNext', () => {
+    it('Should accept any valid range of 32-bit floating point numbers', () =>
+      fc.assert(
+        fc.property(
+          fc.record({ min: float32raw(), max: float32raw() }, { withDeletedKeys: true }).map((ct) => {
+            if (ct.min === undefined || ct.max === undefined) return ct;
+            const { min, max } = ct;
+            if (min < max) return ct;
+            if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
+            return { min: max, max: min };
+          }),
+          (ct) => {
+            fc.pre(ct.min === undefined || (Number.isFinite(ct.min) && !Number.isNaN(ct.min)));
+            fc.pre(ct.max === undefined || (Number.isFinite(ct.max) && !Number.isNaN(ct.max)));
+            expect(floatNext(ct)).toBeDefined();
+          }
+        )
+      ));
+    it('Should reject non-32-bit, NaN or Infinity floating point numbers if specified for min', () =>
+      fc.assert(
+        fc.property(float64raw(), (f64) => {
+          fc.pre(!Number.isFinite(f64) || Number.isNaN(f64) || !is32bits(f64));
+          expect(() => floatNext({ min: f64 })).toThrowError();
+        })
+      ));
+    it('Should reject non-32-bit, NaN or Infinity floating point numbers if specified for max', () =>
+      fc.assert(
+        fc.property(float64raw(), fc.context(), (f64, ctx) => {
+          fc.pre(!Number.isFinite(f64) || Number.isNaN(f64) || !is32bits(f64));
+          ctx.log(fc.stringify(decomposeFloat(f64)));
+          ctx.log(fc.stringify(floatToIndex(f64)));
+          expect(() => floatNext({ max: f64 })).toThrowError();
+        })
+      ));
+  });
+
   describe('decomposeFloat (@internal)', () => {
     it('Should properly decompose basic values', () => {
       expect(decomposeFloat(0)).toEqual({ exponent: -126, significand: 0 });
@@ -29,14 +77,11 @@ describe('FloatNextArbitrary', () => {
     });
     it('Should decompose a 32-bit float into its equivalent (significand, exponent)', () =>
       fc.assert(
-        fc.property(
-          fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]),
-          (f32) => {
-            fc.pre(!Number.isNaN(f32) && Number.isFinite(f32));
-            const { exponent, significand } = decomposeFloat(f32);
-            expect(significand * 2 ** exponent).toBe(f32);
-          }
-        )
+        fc.property(float32raw(), (f32) => {
+          fc.pre(!Number.isNaN(f32) && Number.isFinite(f32));
+          const { exponent, significand } = decomposeFloat(f32);
+          expect(significand * 2 ** exponent).toBe(f32);
+        })
       ));
   });
 });
@@ -71,15 +116,11 @@ describe('floatToIndex (@internal)', () => {
   });
   it('Should preserve ordering between two floats', () =>
     fc.assert(
-      fc.property(
-        fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]),
-        fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]),
-        (fa32, fb32) => {
-          fc.pre(!Number.isNaN(fa32) && Number.isFinite(fa32) && !Number.isNaN(fb32) && Number.isFinite(fb32));
-          if (fa32 <= fb32) expect(floatToIndex(fa32)).toBeLessThanOrEqual(floatToIndex(fb32));
-          else expect(floatToIndex(fa32)).toBeGreaterThan(floatToIndex(fb32));
-        }
-      )
+      fc.property(float32raw(), float32raw(), (fa32, fb32) => {
+        fc.pre(!Number.isNaN(fa32) && Number.isFinite(fa32) && !Number.isNaN(fb32) && Number.isFinite(fb32));
+        if (fa32 <= fb32) expect(floatToIndex(fa32)).toBeLessThanOrEqual(floatToIndex(fb32));
+        else expect(floatToIndex(fa32)).toBeGreaterThan(floatToIndex(fb32));
+      })
     ));
 });
 
@@ -93,12 +134,17 @@ describe('indexToFloat (@internal)', () => {
     ));
   it('Should reverse floatToIndex', () =>
     fc.assert(
-      fc.property(
-        fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]),
-        (f32) => {
-          fc.pre(!Number.isNaN(f32) && Number.isFinite(f32));
-          expect(indexToFloat(floatToIndex(f32))).toBe(f32);
-        }
-      )
+      fc.property(float32raw(), (f32) => {
+        fc.pre(!Number.isNaN(f32) && Number.isFinite(f32));
+        expect(indexToFloat(floatToIndex(f32))).toBe(f32);
+      })
+    ));
+  it('Should be reversed by floatToIndex', () =>
+    fc.assert(
+      fc.property(fc.integer(-2139095040, 2139095039), (index) => {
+        // The test below checks that indexToFloat(floatToIndex) is identity
+        // It does not confirm that floatToIndex(indexToFloat)) is identity
+        expect(floatToIndex(indexToFloat(index))).toBe(index);
+      })
     ));
 });
