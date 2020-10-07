@@ -115,67 +115,67 @@ describe('FloatNextArbitrary', () => {
         })
       ));
   });
-});
 
-describe('floatToIndex (@internal)', () => {
-  it('Should properly compute indexes', () => {
-    expect(floatToIndex(0)).toBe(0);
-    expect(floatToIndex(MIN_VALUE_32)).toBe(1);
-    expect(floatToIndex(2 * MIN_VALUE_32)).toBe(2);
-    expect(floatToIndex(3 * MIN_VALUE_32)).toBe(3);
-    // EPSILON_32 === 1. * 2**-23 --> m = 1, e = -23
-    // index(EPSILON_32) = 2**24 + (-23 - (-126) -1) * 2**23
-    expect(floatToIndex(EPSILON_32)).toBe(872415232);
-    // index(1 - EPSILON_32 / 2) = index(1) - 1
-    expect(floatToIndex(1 - EPSILON_32 / 2)).toEqual(1065353215);
-    // 1 === 1. * 2**0 --> m = 1, e = 0
-    // index(1) = 2**24 + (0 - (-126) -1) * 2**23
-    expect(floatToIndex(1)).toEqual(1065353216);
-    // index(1 + EPSILON_32) = index(1) + 1
-    expect(floatToIndex(1 + EPSILON_32)).toEqual(1065353217);
-    // index(2 - EPSILON_32) = index(2) - 1 = index(1 + (2 ** 23 - 1) * EPSILON_32)
-    expect(floatToIndex(2 - EPSILON_32)).toEqual(1073741823);
-    // 1 === 1. * 2**1 --> m = 1, e = 1
-    // index(2) = index(1) * 2**23
-    expect(floatToIndex(2)).toEqual(1073741824);
-    expect(floatToIndex(MAX_VALUE_32)).toBe(2139095039);
+  describe('floatToIndex (@internal)', () => {
+    it('Should properly compute indexes', () => {
+      expect(floatToIndex(0)).toBe(0);
+      expect(floatToIndex(MIN_VALUE_32)).toBe(1);
+      expect(floatToIndex(2 * MIN_VALUE_32)).toBe(2);
+      expect(floatToIndex(3 * MIN_VALUE_32)).toBe(3);
+      // EPSILON_32 === 1. * 2**-23 --> m = 1, e = -23
+      // index(EPSILON_32) = 2**24 + (-23 - (-126) -1) * 2**23
+      expect(floatToIndex(EPSILON_32)).toBe(872415232);
+      // index(1 - EPSILON_32 / 2) = index(1) - 1
+      expect(floatToIndex(1 - EPSILON_32 / 2)).toEqual(1065353215);
+      // 1 === 1. * 2**0 --> m = 1, e = 0
+      // index(1) = 2**24 + (0 - (-126) -1) * 2**23
+      expect(floatToIndex(1)).toEqual(1065353216);
+      // index(1 + EPSILON_32) = index(1) + 1
+      expect(floatToIndex(1 + EPSILON_32)).toEqual(1065353217);
+      // index(2 - EPSILON_32) = index(2) - 1 = index(1 + (2 ** 23 - 1) * EPSILON_32)
+      expect(floatToIndex(2 - EPSILON_32)).toEqual(1073741823);
+      // 1 === 1. * 2**1 --> m = 1, e = 1
+      // index(2) = index(1) * 2**23
+      expect(floatToIndex(2)).toEqual(1073741824);
+      expect(floatToIndex(MAX_VALUE_32)).toBe(2139095039);
+    });
+    it('Should properly compute negative indexes', () => {
+      expect(floatToIndex(-0)).toEqual(-1);
+      expect(floatToIndex(-MIN_VALUE_32)).toBe(-2);
+      expect(floatToIndex(-MAX_VALUE_32)).toBe(-2139095040);
+    });
+    it('Should preserve ordering between two floats', () =>
+      fc.assert(
+        fc.property(float32raw(), float32raw(), (fa32, fb32) => {
+          fc.pre(isFiniteNotNaN32bits(fa32) && isFiniteNotNaN32bits(fb32));
+          if (fa32 <= fb32) expect(floatToIndex(fa32)).toBeLessThanOrEqual(floatToIndex(fb32));
+          else expect(floatToIndex(fa32)).toBeGreaterThan(floatToIndex(fb32));
+        })
+      ));
   });
-  it('Should properly compute negative indexes', () => {
-    expect(floatToIndex(-0)).toEqual(-1);
-    expect(floatToIndex(-MIN_VALUE_32)).toBe(-2);
-    expect(floatToIndex(-MAX_VALUE_32)).toBe(-2139095040);
-  });
-  it('Should preserve ordering between two floats', () =>
-    fc.assert(
-      fc.property(float32raw(), float32raw(), (fa32, fb32) => {
-        fc.pre(isFiniteNotNaN32bits(fa32) && isFiniteNotNaN32bits(fb32));
-        if (fa32 <= fb32) expect(floatToIndex(fa32)).toBeLessThanOrEqual(floatToIndex(fb32));
-        else expect(floatToIndex(fa32)).toBeGreaterThan(floatToIndex(fb32));
-      })
-    ));
-});
 
-describe('indexToFloat (@internal)', () => {
-  it('Should only produce 32-bit floating point numbers', () =>
-    fc.assert(
-      fc.property(fc.integer(-2139095040, 2139095039), (index) => {
-        const f = indexToFloat(index);
-        expect(f).toBe(new Float32Array([f])[0]);
-      })
-    ));
-  it('Should reverse floatToIndex', () =>
-    fc.assert(
-      fc.property(float32raw(), (f32) => {
-        fc.pre(isFiniteNotNaN32bits(f32));
-        expect(indexToFloat(floatToIndex(f32))).toBe(f32);
-      })
-    ));
-  it('Should be reversed by floatToIndex', () =>
-    fc.assert(
-      fc.property(fc.integer(-2139095040, 2139095039), (index) => {
-        // The test below checks that indexToFloat(floatToIndex) is identity
-        // It does not confirm that floatToIndex(indexToFloat)) is identity
-        expect(floatToIndex(indexToFloat(index))).toBe(index);
-      })
-    ));
+  describe('indexToFloat (@internal)', () => {
+    it('Should only produce 32-bit floating point numbers', () =>
+      fc.assert(
+        fc.property(fc.integer(-2139095040, 2139095039), (index) => {
+          const f = indexToFloat(index);
+          expect(f).toBe(new Float32Array([f])[0]);
+        })
+      ));
+    it('Should reverse floatToIndex', () =>
+      fc.assert(
+        fc.property(float32raw(), (f32) => {
+          fc.pre(isFiniteNotNaN32bits(f32));
+          expect(indexToFloat(floatToIndex(f32))).toBe(f32);
+        })
+      ));
+    it('Should be reversed by floatToIndex', () =>
+      fc.assert(
+        fc.property(fc.integer(-2139095040, 2139095039), (index) => {
+          // The test below checks that indexToFloat(floatToIndex) is identity
+          // It does not confirm that floatToIndex(indexToFloat)) is identity
+          expect(floatToIndex(indexToFloat(index))).toBe(index);
+        })
+      ));
+  });
 });
