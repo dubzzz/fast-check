@@ -122,8 +122,19 @@ export interface FloatNextConstraints {
   max?: number;
 }
 
-/** @internal */
-const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
+/**
+ * Same as {@link floatToIndex} except it throws in case of invalid float 32
+ *
+ * @internal
+ */
+function safeFloatToIndex(f: number, constraintsLabel: keyof FloatNextConstraints) {
+  const index = floatToIndex(f);
+  if (Number.isNaN(index) || !Number.isInteger(index) || f < -MAX_VALUE_32 || f > MAX_VALUE_32) {
+    const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
+    throw new Error('fc.floatNext constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick);
+  }
+  return index;
+}
 
 /**
  * For 32-bit floating point numbers:
@@ -140,14 +151,8 @@ const conversionTrick = 'you can convert any double to a 32-bit float by using `
  */
 export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<number> {
   const { min = -MAX_VALUE_32, max = MAX_VALUE_32 } = constraints;
-  const minIndex = floatToIndex(min);
-  const maxIndex = floatToIndex(max);
-  if (Number.isNaN(minIndex) || !Number.isInteger(minIndex) || min < -MAX_VALUE_32 || min > MAX_VALUE_32) {
-    throw new Error('fc.floatNext constraints.min must be a 32-bit float - ' + conversionTrick);
-  }
-  if (Number.isNaN(maxIndex) || !Number.isInteger(maxIndex) || max < -MAX_VALUE_32 || max > MAX_VALUE_32) {
-    throw new Error('fc.floatNext constraints.max must be a 32-bit float - ' + conversionTrick);
-  }
+  const minIndex = safeFloatToIndex(min, 'min');
+  const maxIndex = safeFloatToIndex(max, 'max');
   if (minIndex > maxIndex) {
     throw new Error('fc.floatNext constraints.min must be smaller or equal to constraints.max');
   }
