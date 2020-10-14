@@ -14,6 +14,7 @@ import { set } from './SetArbitrary';
 import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
+import { date } from './DateArbitrary';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -65,6 +66,8 @@ export interface ObjectConstraints {
   withNullPrototype?: boolean;
   /** Also generate BigInt */
   withBigInt?: boolean;
+  /** Also generate Date */
+  withDate?: boolean;
 }
 
 /**
@@ -91,7 +94,8 @@ class QualifiedObjectConstraints {
     readonly withMap: boolean,
     readonly withObjectString: boolean,
     readonly withNullPrototype: boolean,
-    readonly withBigInt: boolean
+    readonly withBigInt: boolean,
+    readonly withDate: boolean
   ) {}
 
   /**
@@ -160,7 +164,8 @@ class QualifiedObjectConstraints {
       orDefault(settings.withMap, false),
       orDefault(settings.withObjectString, false),
       orDefault(settings.withNullPrototype, false),
-      orDefault(settings.withBigInt, false)
+      orDefault(settings.withBigInt, false),
+      orDefault(settings.withDate, false)
     );
   }
 }
@@ -217,7 +222,8 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       ...(constraints.withSet ? [setArb()] : []),
       ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
       ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : []),
-      ...(constraints.withBigInt ? [bigInt()] : [])
+      ...(constraints.withBigInt ? [bigInt()] : []),
+      ...(constraints.withDate ? [date()] : [])
     );
   });
 
