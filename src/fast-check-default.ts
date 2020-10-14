@@ -27,6 +27,7 @@ import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './c
 import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
 import { context, ContextValue } from './check/arbitrary/ContextArbitrary';
 import { date } from './check/arbitrary/DateArbitrary';
+import { clone, CloneValue } from './check/arbitrary/CloneArbitrary';
 import { dedup, DedupValue } from './check/arbitrary/DedupArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
@@ -216,6 +217,7 @@ export {
   option,
   oneof,
   frequency,
+  clone,
   dedup,
   shuffledSubarray,
   subarray,
@@ -295,6 +297,7 @@ export {
   WebUrlConstraints,
   WeightedArbitrary,
   // produced values
+  CloneValue,
   ContextValue,
   DedupValue,
   FalsyValue,
