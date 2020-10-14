@@ -2123,7 +2123,7 @@ fc.tuple(
 *&#8195;Signatures*
 
 - `fc.object()`
-- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
 
 *&#8195;with:*
 
@@ -2132,6 +2132,7 @@ fc.tuple(
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
+- `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
 - `withMap?` — default: `false` — _enable `Map` - eg.: `new Map([['key', 'value']])`_
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
@@ -2188,17 +2189,18 @@ fc.object({
 fc.object({
   withBigInt: true,
   withBoxedValues: true,
+  withDate: true,
   withMap: true,
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
 })
 // Examples of generated values:
-// • {"Hvy-":"[\"k\",new Boolean(false),true,1359741049]","5)":"\"new Number(Number.POSITIVE_INFINITY)\"","{LlH~g#1>c":new Map([["23756116752476880116163693219734392094931639983447296292265812147018126118235n",Number.NaN],["B(XW",-0],["",9007199254740991],[":z]$?4aTPi",0.7417844033838654]]),"G":{";gH3":new Number(1.7976931348623157e+308),"KAQ&Y":new Number(1.7976931348623157e+308),"":new Number(5e-324)},"Dt(Vq\"3":[Object.create(null),Object.assign(Object.create(null),{"":0.9435497709653101,"\\:$<d":-9007199254740991,".!}t^T*V!P":Number.NEGATIVE_INFINITY,"PqC=":-0,"D^cAS80":1.7976931348623157e+308}),Object.create(null),"@BWg2KJ\"P5"],"= qolO":new Set([])}
-// • {"Q":"-28790338063691844723780175859525494041307324994211628063416646154252928018460n"}
-// • {"9!S":49681823727990783426060880711418079640455644944657749366149940132883537836087n,"]N":[[new Number(0.2792851008705145)],"new String(\"m&\")"],"*C NUvY8\\":{"UN:N":new Number(-16067325),"2\\":new Number(1566525156),"#`8r<":new Number(-1260686741),"jDI}c":new Number(-1762591876)},"":new Set([Object.create(null),new Boolean(true),new Number(0.4362835630255498),"new Number(0.9143583465429503)"]),".\")v%w])9<":"{}","\\R\"T":[],"b|e":-37729768302050702694612822632199890630808792163675665166764551511862128392607n,"R%GKy":new Map([["OmgX*",0.08948643876185991],["]m!`jME(",0.3684476361609833],[",RZPydNtC",0.2099650505944498]])}
-// • {"C\"rD ":new Set([-1,15,364098084,-94957164,11]),"%V":new Map([]),"_< <F}mmg":{"T!t":new Map([["",false],["6",true],["a3k-9",true],["new Number(753331202)",false]]),"aku":[undefined,new Number(0.36824708755092816)],"#<)x0W$dD":new Set([null,new Number(-1066071536)]),"r:y%t3)'5Z":new Set([new Boolean(true),0.6787894399693484]),"":"1989493169"}}
+// • {"F,r0fx}OWg":[new Date("+160385-06-21T16:52:36.736Z"),22583622805204069477977266286996933943873259784384626171039405815620425326468n,{"{Y":"N",",;04yN":-107026440}],"6x*pJp&3^":"new Number(0.42255506544021615)"}
 // • {}
+// • {"hyu)K.|R-5":"new Set([new String(\"f0q}b8/2*\"),new String(\" scrLAI'KD\"),new String(\"P_krOW\"),new String(\"hZ\"),new String(\"VwvEE}s(;V\")])","85c":1955536278377593253161285446750593118355413969436917489136958056479360825003n,"Y*":new Number(0.4145363362551938),"[n7%b":"new Number(0.861563135058088)","L":-36290478173422814553429011041239932856189046009049526980429727311354359757843n,"qe80E%":new Set([undefined,null,new String("-:"),new String("@}gz6")]),"6f*":new Set([]),"8t":{"%*b;)f":Object.assign(Object.create(null),{"vr":false,"e67K#h_N>":null})," 5yAgx":"<-"},"K":new Date("+121904-08-26T01:40:50.304Z")}
+// • {"r5B":Object.assign(Object.create(null),{"":false,"new Set([new Boolean(false),new Boolean(true)])":true,"G $D&  %#x":true}),"":{"-47n":1387385502,"POG^":15},"lf*":49n,"UN":new Date("1969-12-31T23:59:59.948Z")}
+// • {")h%{":new Set([])}
 // • …
 ```
 </details>
@@ -2287,7 +2289,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 *&#8195;Signatures*
 
 - `fc.anything()`
-- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
 
 *&#8195;with:*
 
@@ -2296,6 +2298,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
+- `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
 - `withMap?` — default: `false` — _enable `Map` - eg.: `new Map([['key', 'value']])`_
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
@@ -2340,17 +2343,18 @@ fc.anything({
 fc.anything({
   withBigInt: true,
   withBoxedValues: true,
+  withDate: true,
   withMap: true,
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
 })
 // Examples of generated values:
-// • 2.220446049250313e-16
-// • ["z3#bX","nU","*Trp","C3z/T8j"]
-// • Object.assign(Object.create(null),{"Z":new Map([["&BRun*T",new Number(2.220446049250313e-16)]])})
-// • Object.assign(Object.create(null),{"%":new Number(0),"2x":new Number(Number.POSITIVE_INFINITY),"O":new Number(-9007199254740991),"f-#Snk":new Number(1.7976931348623157e+308)})
-// • new Map([["g`",new Number(0.6098877327434217)],["Rbn {Hk>",new Number(0.694724263679241)],["",new Number(0.2290206742270351)],["new Map([[\"VcD/2D6m+\",new Boolean(true)],[\"\\\\nt\",new Boolean(true)],[\"\",new Boolean(true)]])",new Number(0.75753818431766)]])
+// • 29n
+// • {"new Set([new Number(658282252),\"F$\",new Number(0.3487903700973978)])":0.597600347119469}
+// • 49923639470792901331007151703295270516608099603300111897468945883726467315714n
+// • [{"lloo":new String("8k"),":6O":true,"1 J%S-":0.9811743941698315,"J~+`Qo1<o":new Number(0),"KV`MZ[":new Boolean(true)},{"new String(\"#Oi&%P\\\":\")":new Number(2),"lsA":0.16318916814007212}]
+// • Object.assign(Object.create(null),{"K\\~c!jADJ5":new Date("-041984-06-01T14:47:46.432Z"),"rBi6zzh":2371026000844887995115928520799279159182492319348459568753669098566854816929n,":<Rzk3":Object.create(null),"&$IJ+Z71e":new Date("+104821-04-30T22:28:13.952Z"),"n&9A.;gcG_":Object.assign(Object.create(null),{"gY`+mW":new String("Ci(w+qXQ"),"A-leb&":new String("DIj`F@;")})})
 // • …
 ```
 </details>

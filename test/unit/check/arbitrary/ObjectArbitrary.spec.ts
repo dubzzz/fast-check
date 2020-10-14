@@ -209,6 +209,7 @@ describe('ObjectArbitrary', () => {
               withSet: fc.boolean(),
               withObjectString: fc.boolean(),
               withNullPrototype: fc.boolean(),
+              withDate: fc.boolean(),
               ...(typeof BigInt !== 'undefined' ? { withBigInt: fc.boolean() } : {}),
             },
             { withDeletedKeys: true }
