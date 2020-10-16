@@ -349,6 +349,29 @@ module.exports = function (file, api, options) {
           }
           break;
         }
+        case 'bigInt': {
+          if (p.value.arguments.length === 2) {
+            // fc.bigInt(min, max) -> fc.bigInt({min, max})
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                j.property('init', j.identifier('min'), p.value.arguments[0]),
+                j.property('init', j.identifier('max'), p.value.arguments[1]),
+              ]
+            );
+          }
+          break;
+        }
+        case 'bigUint': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.bigUint(max) -> fc.bigUint({max})
+            p.value.arguments = computeNewArguments(
+              [],
+              [j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          }
+          break;
+        }
       }
       return p;
     })
