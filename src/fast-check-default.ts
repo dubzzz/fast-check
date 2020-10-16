@@ -40,7 +40,7 @@ import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
-import { double, float } from './check/arbitrary/FloatingPointArbitrary';
+import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency, WeightedArbitrary, FrequencyValue } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
@@ -291,7 +291,9 @@ export {
   BigIntConstraints,
   BigUintConstraints,
   CommandsContraints,
+  DoubleConstraints,
   FalsyContraints,
+  FloatConstraints,
   JsonSharedConstraints,
   LoremConstraints,
   MixedCaseConstraints,
