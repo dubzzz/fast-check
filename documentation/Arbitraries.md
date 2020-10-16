@@ -317,12 +317,13 @@ fc.bigIntN(128)
 *&#8195;Signatures*
 
 - `fc.bigInt()`
-- `fc.bigInt(minValue, maxValue)`
+- `fc.bigInt({min?, max?})`
+- `fc.bigInt(min, max)`
 
 *&#8195;with:*
 
-- `minValue?` — _lower bound of the range (included)_
-- `maxValue?` — _upper bound of the range (included)_
+- `min?` — _lower bound of the range (included)_
+- `max?` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -336,13 +337,23 @@ fc.bigInt()
 // • -27488731055093319143645334041335559432506843454739800192508819981052054802083n
 // • …
 
-fc.bigInt(0n, 12345678901234567890n)
+fc.bigInt({min: 0n, max: 12345678901234567890n})
 // Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
-// Examples of generated values: 6465640285538993635n, 8922695748501260749n, 16n, 19n, 10723446437785154890n…
+// Examples of generated values: 19n, 11376877730870697597n, 1349784798053983117n, 11n, 3n…
 
-fc.bigInt(-3000n, 100n)
+fc.bigInt({min: -3000n, max: 100n})
 // Note: All possible bigint values between `-3000n` (included) and `100n` (included)
-// Examples of generated values: 1n, -2031n, -351n, -1605n, -2n…
+// Examples of generated values: -1169n, 0n, 2n, -4n, -2680n…
+
+fc.bigInt({min: 1n << 64n})
+// Note: Any possible bigint value greater or equal to `1n << 64n`
+// Examples of generated values:
+// • 32214219993684643449722944918025059692370181015953432795318507902966520589940n
+// • 39382683564378805230116691834855902707168271164394481253375072148371261997983n
+// • 57219012822578120981130257612614965800502300168860147954523587474583795051388n
+// • 25423414325897465771981521346031075469986997563517783083160644823268642168363n
+// • 18446744073709551676n
+// • …
 ```
 </details>
 
@@ -394,11 +405,12 @@ fc.bigUintN(128)
 *&#8195;Signatures*
 
 - `fc.bigUint()`
-- `fc.bigUint(maxValue)`
+- `fc.bigUint({max?})`
+- `fc.bigUint(max)`
 
 *&#8195;with:*
 
-- `maxValue?` — _upper bound of the range (included)_
+- `max?` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -412,9 +424,9 @@ fc.bigUint()
 // • 18n
 // • …
 
-fc.bigUint(12345678901234567890n)
+fc.bigUint({max: 12345678901234567890n})
 // Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
-// Examples of generated values: 5776499037807709071n, 4876199541303708566n, 19n, 18n, 5n…
+// Examples of generated values: 2140173898915155879n, 4446193883774321594n, 11n, 5n, 16n…
 ```
 </details>
 
