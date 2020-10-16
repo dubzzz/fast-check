@@ -47,10 +47,26 @@ describe(`NoRegression BigInt`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('bigInt(min, max)', () => {
+  it('bigInt({min})', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.bigInt(BigInt(2) << BigInt(16), BigInt(2) << BigInt(64)), (v) => testFunc(v)),
+        fc.property(fc.bigInt({ min: BigInt(2) << BigInt(16) }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({max})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt({ max: BigInt(2) << BigInt(64) }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({min, max})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: BigInt(2) << BigInt(16), max: BigInt(2) << BigInt(64) }), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
@@ -63,10 +79,10 @@ describe(`NoRegression BigInt`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('bigUint(max)', () => {
+  it('bigUint({max})', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.bigUint(BigInt(2) << BigInt(96)), (v) => testFunc(v)),
+        fc.property(fc.bigUint({ max: BigInt(2) << BigInt(96) }), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
