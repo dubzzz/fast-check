@@ -70,3 +70,17 @@ fc.lorem(10, false);
 fc.lorem(10, something);
 fc.lorem(num, something);
 fc.lorem({ maxCount: 10 });
+
+// bigInt
+
+fc.bigInt();
+fc.bigInt(1n, 3n);
+fc.bigInt(BigInt(1), BigInt(3));
+fc.bigInt({ min: 1n, max: 3n });
+
+// bigUint
+
+fc.bigUint();
+fc.bigUint(3n);
+fc.bigUint(BigInt(3));
+fc.bigUint({ max: 3n });
