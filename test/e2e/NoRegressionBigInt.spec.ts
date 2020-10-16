@@ -47,10 +47,26 @@ describe(`NoRegression BigInt`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('bigInt(min, max)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt(BigInt(2) << BigInt(16), BigInt(2) << BigInt(64)), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('bigUint', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.bigUint(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigUint(max)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigUint(BigInt(2) << BigInt(96)), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
