@@ -34,6 +34,10 @@ function float(): Arbitrary<number>;
  *
  * @param max - Upper bound of the generated floating point
  *
+ * @remarks
+ * Superceded by `fc.float({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function float(max: number): Arbitrary<number>;
@@ -42,6 +46,9 @@ function float(max: number): Arbitrary<number>;
  *
  * @param min - Lower bound of the generated floating point
  * @param max - Upper bound of the generated floating point
+ *
+ * @remarks
+ * You may prefer to use `fc.float({min, max})` instead.
  *
  * @public
  */
@@ -98,6 +105,10 @@ function double(): Arbitrary<number>;
  *
  * @param max - Upper bound of the generated floating point
  *
+ * @remarks
+ * Superceded by `fc.double({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 function double(max: number): Arbitrary<number>;
@@ -106,6 +117,9 @@ function double(max: number): Arbitrary<number>;
  *
  * @param min - Lower bound of the generated floating point
  * @param max - Upper bound of the generated floating point
+ *
+ * @remarks
+ * You may prefer to use `fc.double({min, max})` instead.
  *
  * @public
  */
