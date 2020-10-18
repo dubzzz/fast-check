@@ -84,3 +84,14 @@ fc.bigUint();
 fc.bigUint(3n);
 fc.bigUint(BigInt(3));
 fc.bigUint({ max: 3n });
+
+// float
+
+fc.float();
+fc.float(1.0);
+fc.float(2.0);
+fc.float(0.0, 1.0);
+fc.float(0.0, 2.0);
+fc.float(-1.0, 1.0);
+fc.float(-1.0, 2.0);
+fc.float({ min: -1.0, max: 2.0 });

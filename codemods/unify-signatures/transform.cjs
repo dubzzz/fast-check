@@ -372,6 +372,29 @@ module.exports = function (file, api, options) {
           }
           break;
         }
+        case 'double':
+        case 'float': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.float(max) -> fc.float({max})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 1.0);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          } else if (p.value.arguments.length === 2) {
+            // fc.float(min, max) -> fc.float({min, max})
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[0], 0.0);
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 1.0);
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                !simplifyMin && j.property('init', j.identifier('min'), p.value.arguments[0]),
+                !simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[1]),
+              ]
+            );
+          }
+          break;
+        }
       }
       return p;
     })

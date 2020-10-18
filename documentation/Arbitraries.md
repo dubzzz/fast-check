@@ -202,13 +202,14 @@ fc.maxSafeNat()
 *&#8195;Signatures*
 
 - `fc.float()`
-- `fc.float(maxValue)`
-- `fc.float(minValue, maxValue)`
+- `fc.float({min?, max?})`
+- `fc.float(min, max)`
+- _`fc.float(max)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `minValue?` — default: `0.0` — _lower bound of the range (included)_
-- `maxValue?` — default: `1.0` — _upper bound of the range (excluded)_
+- `min?` — default: `0.0` — _lower bound of the range (included)_
+- `max?` — default: `1.0` — _upper bound of the range (excluded)_
 
 *&#8195;Usages*
 
@@ -217,13 +218,13 @@ fc.float()
 // Note: All possible 32-bit floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.731347382068634, 1.1920928955078125e-7, 0.6597227454185486, 0.5946863293647766, 0.6302104592323303…
 
-fc.float(100)
+fc.float({max: 100})
 // Note: All possible 32-bit floating point values between `0.0` (included) and `100.0` (excluded)
-// Examples of generated values: 0.00007748603820800781, 0.00007152557373046875, 0.00013113021850585938, 52.37404108047485, 0.000035762786865234375…
+// Examples of generated values: 0.00004172325134277344, 0.000011920928955078125, 0.0001251697540283203, 60.498785972595215, 0.000029802322387695312…
 
-fc.float(-100, 100)
+fc.float({min: -100, max: 100})
 // Note: All possible 32-bit floating point values between `-100.0` (included) and `100.0` (excluded)
-// Examples of generated values: -99.99992847442627, 55.83081245422363, -99.99979734420776, -20.923829078674316, -99.99991655349731…
+// Examples of generated values: -99.9997615814209, -99.99988079071045, 81.314218044281, -99.99974966049194, -99.99978542327881…
 ```
 </details>
 
@@ -240,13 +241,14 @@ fc.float(-100, 100)
 *&#8195;Signatures*
 
 - `fc.double()`
-- `fc.double(maxValue)`
-- `fc.double(minValue, maxValue)`
+- `fc.double({min?, max?})`
+- `fc.double(min, max)`
+- _`fc.double(max)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `minValue?` — default: `0.0` — _lower bound of the range (included)_
-- `maxValue?` — default: `1.0` — _upper bound of the range (excluded)_
+- `min?` — default: `0.0` — _lower bound of the range (included)_
+- `max?` — default: `1.0` — _upper bound of the range (excluded)_
 
 *&#8195;Usages*
 
@@ -255,13 +257,13 @@ fc.double()
 // Note: All possible floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.4530413804731288, 0.8226463198661805, 0.3829372459587349, 0.7186836451292051, 0.8065718412399292…
 
-fc.double(100)
+fc.double({max: 100})
 // Note: All possible floating point values between `0.0` (included) and `100.0` (excluded)
-// Examples of generated values: 0.000019014520535876045, 98.91013210040657, 0.00003648309874204614, 20.497548580169944, 0.00001937150981845548…
+// Examples of generated values: 78.93341034650808, 0.000034884977251348204, 98.5225079632713, 10.198144676861675, 0.000008702743647948097…
 
-fc.double(-100, 100)
+fc.double({min: -100, max: 100})
 // Note: All possible floating point values between `-100.0` (included) and `100.0` (excluded)
-// Examples of generated values: -99.999970715887, -99.99996384938794, -99.99996463982544, -69.75060565839972, -99.99994324436676…
+// Examples of generated values: -99.99994117592425, 37.9800438880923, 1.4435261487962805, -99.9999970197672, -99.99993741512299…
 ```
 </details>
 
