@@ -42,24 +42,21 @@ describe('FloatingPointArbitrary', () => {
       });
     });
     describe('Given maximal value only [between 0 (included) and max (excluded)]', () => {
-      genericHelper.isValidArbitrary((max: number) => float(max), {
+      genericHelper.isValidArbitrary((max: number) => float({ max }), {
         seedGenerator: fc.nat().map((v) => (v + 1) / 100.0), // must be >0
         isStrictlySmallerValue: (a, b) => a < b,
         isValidValue: (g: number, max: number) => typeof g === 'number' && 0.0 <= g && g < max,
       });
     });
     describe('Given minimal and maximal values [between min (included) and max (excluded)]', () => {
-      genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => float(constraints.min, constraints.max),
-        {
-          seedGenerator: genericHelper
-            .minMax(fc.integer())
-            .filter(({ min, max }: { min: number; max: number }) => min !== max)
-            .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
-          isValidValue: (g: number, constraints: { min: number; max: number }) =>
-            typeof g === 'number' && constraints.min <= g && g < constraints.max,
-        }
-      );
+      genericHelper.isValidArbitrary((constraints: { min: number; max: number }) => float(constraints), {
+        seedGenerator: genericHelper
+          .minMax(fc.integer())
+          .filter(({ min, max }: { min: number; max: number }) => min !== max)
+          .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
+        isValidValue: (g: number, constraints: { min: number; max: number }) =>
+          typeof g === 'number' && constraints.min <= g && g < constraints.max,
+      });
     });
     describe('Still support older signatures', () => {
       it('Should support fc.float(max)', () => {
@@ -114,24 +111,21 @@ describe('FloatingPointArbitrary', () => {
       });
     });
     describe('Given maximal value only [between 0 (included) and max (excluded)]', () => {
-      genericHelper.isValidArbitrary((max: number) => double(max), {
+      genericHelper.isValidArbitrary((max: number) => double({ max }), {
         seedGenerator: fc.nat().map((v) => (v + 1) / 100.0), // must be >0
         isStrictlySmallerValue: (a, b) => a < b,
         isValidValue: (g: number, max: number) => typeof g === 'number' && 0.0 <= g && g < max,
       });
     });
     describe('Given minimal and maximal values [between min (included) and max (excluded)]', () => {
-      genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => double(constraints.min, constraints.max),
-        {
-          seedGenerator: genericHelper
-            .minMax(fc.integer())
-            .filter(({ min, max }: { min: number; max: number }) => min !== max)
-            .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
-          isValidValue: (g: number, constraints: { min: number; max: number }) =>
-            typeof g === 'number' && constraints.min <= g && g < constraints.max,
-        }
-      );
+      genericHelper.isValidArbitrary((constraints: { min: number; max: number }) => double(constraints), {
+        seedGenerator: genericHelper
+          .minMax(fc.integer())
+          .filter(({ min, max }: { min: number; max: number }) => min !== max)
+          .map(({ min, max }: { min: number; max: number }) => ({ min: min / 100.0, max: max / 100.0 })),
+        isValidValue: (g: number, constraints: { min: number; max: number }) =>
+          typeof g === 'number' && constraints.min <= g && g < constraints.max,
+      });
     });
     describe('Still support older signatures', () => {
       it('Should support fc.double(max)', () => {
