@@ -9,7 +9,7 @@ import * as _IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerA
 import { arbitraryFor } from './generic/ArbitraryBuilder';
 
 const IntegerArbitraryMock: {
-  integer: (constraints: _IntegerArbitraryMock.IntegerConstraints) => ArbitraryWithShrink<number>;
+  integer: (min: number, max: number) => ArbitraryWithShrink<number>;
 } = _IntegerArbitraryMock;
 
 const mrng = () => stubRng.mutable.nocall();
@@ -22,7 +22,7 @@ describe('DateArbitrary', () => {
     it('Should be able to build the minimal valid date', () => {
       // Arrange
       const { integer } = mocked(IntegerArbitraryMock);
-      integer.mockImplementationOnce(({ min }) => arbitraryFor([{ value: min! }]));
+      integer.mockImplementationOnce((a, _b) => arbitraryFor([{ value: a }]));
 
       // Act
       const arb = date();
@@ -36,7 +36,7 @@ describe('DateArbitrary', () => {
     it('Should be able to build the maximal valid date', () => {
       // Arrange
       const { integer } = mocked(IntegerArbitraryMock);
-      integer.mockImplementationOnce(({ max }) => arbitraryFor([{ value: max! }]));
+      integer.mockImplementationOnce((a, b) => arbitraryFor([{ value: b }]));
 
       // Act
       const arb = date();
@@ -53,9 +53,9 @@ describe('DateArbitrary', () => {
           .property(constraintsArb(), fc.nat(), (constraints, seed) => {
             // Arrange
             const { integer } = mocked(IntegerArbitraryMock);
-            integer.mockImplementationOnce(({ min, max }) => {
-              const d = max! - min! + 1;
-              const r = (seed % d) + min!; // random between a and b
+            integer.mockImplementationOnce((a, b) => {
+              const d = b - a + 1;
+              const r = (seed % d) + a; // random between a and b
               return arbitraryFor([{ value: r }]);
             });
 
