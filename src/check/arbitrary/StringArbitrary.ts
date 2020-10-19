@@ -66,7 +66,7 @@ function stringOf(charArb: Arbitrary<string>): Arbitrary<string>;
  * @param charArb - Arbitrary able to generate random strings (possibly multiple characters)
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.stringOf(charArb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -80,7 +80,7 @@ function stringOf(charArb: Arbitrary<string>, maxLength: number): Arbitrary<stri
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.stringOf(charArb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -110,7 +110,7 @@ function string(): Arbitrary<string>;
  *
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.string({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -123,7 +123,7 @@ function string(maxLength: number): Arbitrary<string>;
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.string({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -152,7 +152,7 @@ function asciiString(): Arbitrary<string>;
  *
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.asciiString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -165,7 +165,7 @@ function asciiString(maxLength: number): Arbitrary<string>;
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.asciiString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -194,7 +194,7 @@ function string16bits(): Arbitrary<string>;
  *
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.string16bits({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -207,7 +207,7 @@ function string16bits(maxLength: number): Arbitrary<string>;
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.string16bits({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -236,7 +236,7 @@ function unicodeString(): Arbitrary<string>;
  *
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.unicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -249,7 +249,7 @@ function unicodeString(maxLength: number): Arbitrary<string>;
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.unicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -278,7 +278,7 @@ function fullUnicodeString(): Arbitrary<string>;
  *
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.fullUnicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -291,7 +291,7 @@ function fullUnicodeString(maxLength: number): Arbitrary<string>;
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.fullUnicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -320,7 +320,7 @@ function hexaString(): Arbitrary<string>;
  *
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.hexaString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -333,7 +333,7 @@ function hexaString(maxLength: number): Arbitrary<string>;
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.hexaString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -367,7 +367,7 @@ function base64String(): Arbitrary<string>;
  *
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.base64String({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -382,7 +382,7 @@ function base64String(maxLength: number): Arbitrary<string>;
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.base64String({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *

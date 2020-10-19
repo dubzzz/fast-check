@@ -340,7 +340,7 @@ function jsonObject(): Arbitrary<unknown>;
  *
  * @param maxDepth - Maximal depth of the generated values
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.jsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -376,7 +376,7 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  *
  * @param maxDepth - Maximal depth of the generated values
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.unicodeJsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -412,7 +412,7 @@ function json(): Arbitrary<string>;
  *
  * @param maxDepth - Maximal depth of the generated objects
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.json({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -451,7 +451,7 @@ function unicodeJson(): Arbitrary<string>;
  *
  * @param maxDepth - Maximal depth of the generated objects
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *

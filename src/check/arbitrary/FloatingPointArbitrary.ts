@@ -34,7 +34,7 @@ function float(): Arbitrary<number>;
  *
  * @param max - Upper bound of the generated floating point
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.float({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -105,7 +105,7 @@ function double(): Arbitrary<number>;
  *
  * @param max - Upper bound of the generated floating point
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.double({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
