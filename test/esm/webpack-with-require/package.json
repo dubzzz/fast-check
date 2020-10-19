@@ -10,7 +10,7 @@
     "fast-check": "*"
   },
   "devDependencies": {
-    "webpack": "^4.44.2",
+    "webpack": "^5.1.3",
     "webpack-cli": "^4.0.0"
   },
   "license": "MIT",
