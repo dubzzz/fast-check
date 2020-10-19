@@ -2,10 +2,15 @@ import { date } from '../../../../src/check/arbitrary/DateArbitrary';
 import * as stubRng from '../../stubs/generators';
 import { mocked } from 'ts-jest/utils';
 import * as fc from '../../../../lib/fast-check';
+import { ArbitraryWithShrink } from '../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 
 jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
-import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
+import * as _IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
+
+const IntegerArbitraryMock: {
+  integer: (constraints: _IntegerArbitraryMock.IntegerConstraints) => ArbitraryWithShrink<number>;
+} = _IntegerArbitraryMock;
 
 const mrng = () => stubRng.mutable.nocall();
 
@@ -17,7 +22,7 @@ describe('DateArbitrary', () => {
     it('Should be able to build the minimal valid date', () => {
       // Arrange
       const { integer } = mocked(IntegerArbitraryMock);
-      integer.mockImplementationOnce((a, _b) => arbitraryFor([{ value: a }]));
+      integer.mockImplementationOnce(({ min }) => arbitraryFor([{ value: min! }]));
 
       // Act
       const arb = date();
@@ -31,7 +36,7 @@ describe('DateArbitrary', () => {
     it('Should be able to build the maximal valid date', () => {
       // Arrange
       const { integer } = mocked(IntegerArbitraryMock);
-      integer.mockImplementationOnce((a, b) => arbitraryFor([{ value: b }]));
+      integer.mockImplementationOnce(({ max }) => arbitraryFor([{ value: max! }]));
 
       // Act
       const arb = date();
@@ -48,9 +53,9 @@ describe('DateArbitrary', () => {
           .property(constraintsArb(), fc.nat(), (constraints, seed) => {
             // Arrange
             const { integer } = mocked(IntegerArbitraryMock);
-            integer.mockImplementationOnce((a, b) => {
-              const d = b - a + 1;
-              const r = (seed % d) + a; // random between a and b
+            integer.mockImplementationOnce(({ min, max }) => {
+              const d = max! - min! + 1;
+              const r = (seed % d) + min!; // random between a and b
               return arbitraryFor([{ value: r }]);
             });
 

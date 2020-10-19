@@ -19,9 +19,9 @@ export function uuid() {
   // ie.: ????????-????-X???-Y???-????????????
   //      with X in 1, 2, 3, 4, 5
   //      with Y in 8, 9, A, B
-  const padded = padEight(nat(0xffffffff));
-  const secondPadded = padEight(integer(0x10000000, 0x5fffffff));
-  const thirdPadded = padEight(integer(0x80000000, 0xbfffffff));
+  const padded = padEight(nat({ max: 0xffffffff }));
+  const secondPadded = padEight(integer({ min: 0x10000000, max: 0x5fffffff }));
+  const thirdPadded = padEight(integer({ min: 0x80000000, max: 0xbfffffff }));
   return tuple(padded, secondPadded, thirdPadded, padded).map((t) => {
     return `${t[0]}-${t[1].substring(4)}-${t[1].substring(0, 4)}-${t[2].substring(0, 4)}-${t[2].substring(4)}${t[3]}`;
   });
@@ -37,9 +37,9 @@ export function uuid() {
  * @public
  */
 export function uuidV(versionNumber: 1 | 2 | 3 | 4 | 5) {
-  const padded = padEight(nat(0xffffffff));
-  const secondPadded = padEight(nat(0x0fffffff));
-  const thirdPadded = padEight(integer(0x80000000, 0xbfffffff));
+  const padded = padEight(nat({ max: 0xffffffff }));
+  const secondPadded = padEight(nat({ max: 0x0fffffff }));
+  const thirdPadded = padEight(integer({ min: 0x80000000, max: 0xbfffffff }));
   return tuple(padded, secondPadded, thirdPadded, padded).map((t) => {
     return `${t[0]}-${t[1].substring(4)}-${versionNumber}${t[1].substring(1, 4)}-${t[2].substring(
       0,
