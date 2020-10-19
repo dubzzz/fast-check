@@ -95,3 +95,21 @@ fc.float(0.0, 2.0);
 fc.float(-1.0, 1.0);
 fc.float(-1.0, 2.0);
 fc.float({ min: -1.0, max: 2.0 });
+
+// nat
+
+fc.nat();
+fc.nat(10);
+fc.nat(0x7fffffff);
+fc.nat(2147483647);
+
+// integer
+
+fc.integer();
+fc.integer(10);
+fc.integer(0x7fffffff);
+fc.integer(2147483647);
+fc.integer(-1, 10);
+fc.integer(-0x80000000, 0x7fffffff);
+fc.integer(-2147483648, 2147483647);
+fc.integer({ min: -1, max: 1 });

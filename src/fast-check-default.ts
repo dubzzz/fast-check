@@ -44,7 +44,14 @@ import { double, float, DoubleConstraints, FloatConstraints } from './check/arbi
 import { frequency, WeightedArbitrary, FrequencyValue } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
-import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
+import {
+  integer,
+  maxSafeInteger,
+  maxSafeNat,
+  nat,
+  IntegerConstraints,
+  NatConstraints,
+} from './check/arbitrary/IntegerArbitrary';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './check/arbitrary/LetRecArbitrary';
 import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
@@ -294,9 +301,11 @@ export {
   DoubleConstraints,
   FalsyContraints,
   FloatConstraints,
+  IntegerConstraints,
   JsonSharedConstraints,
   LoremConstraints,
   MixedCaseConstraints,
+  NatConstraints,
   ObjectConstraints,
   OptionConstraints,
   RecordConstraints,

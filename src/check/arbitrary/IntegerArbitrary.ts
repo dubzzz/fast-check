@@ -13,12 +13,8 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
   static MAX_INT: number = 0x7fffffff | 0;
 
   private biasedIntegerArbitrary: Arbitrary<number> | null = null;
-  readonly min: number;
-  readonly max: number;
-  constructor(min?: number, max?: number) {
+  constructor(readonly min: number, readonly max: number) {
     super();
-    this.min = min === undefined ? IntegerArbitrary.MIN_INT : min;
-    this.max = max === undefined ? IntegerArbitrary.MAX_INT : max;
   }
   private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
     return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
@@ -43,6 +39,53 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
 }
 
 /**
+ * Constraints to be applied on {@link integer}
+ * @public
+ */
+export interface IntegerConstraints {
+  /**
+   * Lower bound for the generated integers (included)
+   * @defaultValue -0x80000000
+   */
+  min?: number;
+  /**
+   * Upper bound for the generated integers (included)
+   * @defaultValue 0x7fffffff
+   */
+  max?: number;
+}
+
+/**
+ * Build fully set IntegerConstraints from a partial data
+ * @internal
+ */
+function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Required<IntegerConstraints> {
+  const min = constraints.min !== undefined ? constraints.min : IntegerArbitrary.MIN_INT;
+  const max = constraints.max !== undefined ? constraints.max : IntegerArbitrary.MAX_INT;
+  return { min, max };
+}
+
+/**
+ * Extract constraints from args received by integer
+ * @internal
+ */
+function extractIntegerConstraints(args: [] | [number] | [number, number] | [IntegerConstraints]): IntegerConstraints {
+  if (args[0] === undefined) {
+    // integer()
+    return {};
+  } // args.length > 0
+
+  if (args[1] === undefined) {
+    const sargs = args as typeof args & [unknown]; // exactly 1 arg specified
+    if (typeof sargs[0] === 'number') return { max: sargs[0] }; // integer(max)
+    return sargs[0]; // integer(constraints)
+  } // args.length > 1
+
+  const sargs = args as typeof args & [unknown, unknown];
+  return { min: sargs[0], max: sargs[1] }; // integer(min, max)
+}
+
+/**
  * For integers between -2147483648 (included) and 2147483647 (included)
  * @public
  */
@@ -51,6 +94,10 @@ function integer(): ArbitraryWithShrink<number>;
  * For integers between -2147483648 (included) and max (included)
  *
  * @param max - Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
+ *
+ * @remarks
+ * Superceded by `fc.integer({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
  * @public
  */
@@ -61,13 +108,26 @@ function integer(max: number): ArbitraryWithShrink<number>;
  * @param min - Lower bound for the generated integers (eg.: 0, Number.MIN_SAFE_INTEGER)
  * @param max - Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
  *
+ * @remarks
+ * You may prefer to use `fc.integer({min, max})` instead.
+ *
  * @public
  */
 function integer(min: number, max: number): ArbitraryWithShrink<number>;
-function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
-  if (a !== undefined && b !== undefined && a > b)
+/**
+ * For integers between min (included) and max (included)
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function integer(constraints: IntegerConstraints): ArbitraryWithShrink<number>;
+function integer(...args: [] | [number] | [number, number] | [IntegerConstraints]): ArbitraryWithShrink<number> {
+  const constraints = buildCompleteIntegerConstraints(extractIntegerConstraints(args));
+  if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
-  return b === undefined ? new IntegerArbitrary(undefined, a) : new IntegerArbitrary(a, b);
+  }
+  return new IntegerArbitrary(constraints.min, constraints.max);
 }
 
 /**
@@ -76,6 +136,18 @@ function integer(a?: number, b?: number): ArbitraryWithShrink<number> {
  */
 function maxSafeInteger(): ArbitraryWithShrink<number> {
   return integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+}
+
+/**
+ * Constraints to be applied on {@link nat}
+ * @public
+ */
+export interface NatConstraints {
+  /**
+   * Upper bound for the generated postive integers (included)
+   * @defaultValue 0x7fffffff
+   */
+  max?: number;
 }
 
 /**
@@ -88,12 +160,26 @@ function nat(): ArbitraryWithShrink<number>;
  *
  * @param max - Upper bound for the generated integers
  *
+ * @remarks
+ * You may prefer to use `fc.nat({max})` instead.
+ *
  * @public
  */
 function nat(max: number): ArbitraryWithShrink<number>;
-function nat(a?: number): ArbitraryWithShrink<number> {
-  if (a !== undefined && a < 0) throw new Error('fc.nat value should be greater than or equal to 0');
-  return new IntegerArbitrary(0, a);
+/**
+ * For positive integers between 0 (included) and max (included)
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function nat(constraints: NatConstraints): ArbitraryWithShrink<number>;
+function nat(arg?: number | NatConstraints): ArbitraryWithShrink<number> {
+  const max = typeof arg === 'number' ? arg : arg && arg.max !== undefined ? arg.max : IntegerArbitrary.MAX_INT;
+  if (max < 0) {
+    throw new Error('fc.nat value should be greater than or equal to 0');
+  }
+  return new IntegerArbitrary(0, max);
 }
 
 /**
