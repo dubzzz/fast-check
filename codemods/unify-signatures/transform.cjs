@@ -154,6 +154,11 @@ module.exports = function (file, api, options) {
   }
 
   function isNumericValue(argument, value) {
+    if (value < 0) {
+      return (
+        argument.type === 'UnaryExpression' && argument.operator === '-' && isNumericValue(argument.argument, -value)
+      );
+    }
     return isNumeric(argument) && argument.value === value;
   }
   function getArrayLength(argument) {
