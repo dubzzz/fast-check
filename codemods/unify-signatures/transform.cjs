@@ -395,6 +395,39 @@ module.exports = function (file, api, options) {
           }
           break;
         }
+        case 'nat': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.nat(max) -> fc.nat({max})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 0x7fffffff);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          }
+          break;
+        }
+        case 'integer': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.integer(max) -> fc.integer({max})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 0x7fffffff);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          } else if (p.value.arguments.length === 2) {
+            // fc.integer(min, max) -> fc.integer({min, max})
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[0], -0x80000000);
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 0x7fffffff);
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                !simplifyMin && j.property('init', j.identifier('min'), p.value.arguments[0]),
+                !simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[1]),
+              ]
+            );
+          }
+          break;
+        }
       }
       return p;
     })
