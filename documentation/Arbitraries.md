@@ -88,13 +88,14 @@ fc.boolean()
 *&#8195;Signatures*
 
 - `fc.integer()`
-- `fc.integer(maxValue)`
-- `fc.integer(minValue, maxValue)`
+- `fc.integer({min?, max?})`
+- `fc.integer(min, max)`
+- _`fc.integer(max)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `minValue?` — default: `-2147483648` — _lower bound of the range (included)_
-- `maxValue?` — default: `2147483647` — _upper bound of the range (included)_
+- `min?` — default: `-2147483648` — _lower bound of the range (included)_
+- `max?` — default: `2147483647` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -110,6 +111,14 @@ fc.integer(1000)
 fc.integer(-99, 99)
 // Note: All possible integers between `-99` (included) and `99` (included)
 // Examples of generated values: 2, -1, 91, -2, 3…
+
+fc.integer({min: -99, max: 99})
+// Note: All possible integers between `-99` (included) and `99` (included)
+// Examples of generated values: -4, 4, 8, 2, 1…
+
+fc.integer({min: 65536})
+// Note: All possible integers between `65536` (included) and `2147483647` (included)
+// Examples of generated values: 65557, 65547, 65562, 1836480947, 1490866554…
 ```
 </details>
 
@@ -126,11 +135,12 @@ fc.integer(-99, 99)
 *&#8195;Signatures*
 
 - `fc.nat()`
-- `fc.nat(maxValue)`
+- `fc.nat({max?})`
+- `fc.nat(max)`
 
 *&#8195;with:*
 
-- `maxValue?` — default: `2147483647` — _upper bound of the range (included)_
+- `max?` — default: `2147483647` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -142,6 +152,10 @@ fc.nat()
 fc.nat(1000)
 // Note: All possible integers between `0` (included) and `1000` (included)
 // Examples of generated values: 299, 1, 225, 750, 4…
+
+fc.nat({max: 1000})
+// Note: All possible integers between `0` (included) and `1000` (included)
+// Examples of generated values: 0, 833, 7, 496, 4…
 ```
 </details>
 
