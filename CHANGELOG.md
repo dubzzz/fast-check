@@ -1,3 +1,17 @@
+# 2.6.0
+
+_Towards a uniform way to constrain arbitraries - step 3: number arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.5.0...v2.6.0)]
+
+## Features
+
+- ([PR#1067](https://github.com/dubzzz/fast-check/pull/1067)) Unify signatures on arbitraries: fc.bigInt and fc.bigUint (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1068](https://github.com/dubzzz/fast-check/pull/1068)) Unify signatures on arbitraries: fc.float and fc.double (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1076](https://github.com/dubzzz/fast-check/pull/1076)) Unify signatures on arbitraries: fc.integer and fc.nat (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1080](https://github.com/dubzzz/fast-check/pull/1080)) Mark old signatures as deprecated (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+
+---
+
 # 2.5.0
 
 _Towards a uniform way to constrain arbitraries - step 2: remaining arbitraries except number related ones_
