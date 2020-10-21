@@ -1155,11 +1155,11 @@ fc.uuidV(5)
 ```js
 fc.domain()
 // Examples of generated values:
-// • "j6ib52zarmf.gkuvhqma.cibz"
-// • "00.6.4xla.x.bdl2y5gq52n1.bsgbwec"
-// • "35b10n-w.7xe2.tuwxcou2vgh.9o0ba-3.8s-s2r9dzo.dkci"
-// • "0.h6a4sfyde.ju"
-// • "c.mrjkuy.2blh-hr4bk6.fb8x8d26e.610--87.dvbcaea"
+// • "j6ib52zarm-s0pkuvhqm1mv0scq9ta1k7is18a6npwo09.8oylufs6xjggc-g5wx6pp7-n.depaeed"
+// • "00cwuvaxlmcydtgdl2y5gq52nb-gochrfw7luhm3eak87xjmn34l4h-a.lynftw-jcilddpshg-fjbdvglnrklnjfv.1p9hkvkxac9odexa6220t2i2f5gtplj91iv3hcdf55tnysx2.syxfs0gon3vrv7r-n09qd-tvzkfj4vx-90is8a7857j77s04kkfuixb9fnuf.sm4qu34yox0j0l3g8rvkbi56h4.aebabjdnl"
+// • "35b10n-lu6vxe25muuwxcou2vg-ooho0ba-7fr9s-s2r9dzi-oph9tnb6ucc70l.l.amrqhh-q3yiac3zh83ktm-qz72oob.0x1dq7qgla1xttwxa4skn5o4ms6l6neuxm2wsoo4vsa14dixmyb290pvm3wek.hfju.fjxjzd"
+// • "0.h6a4sfyd67h8o-fyelfolcucqbzhhi.dand"
+// • "c.mrjkuzbj8blh-hr4bkyh4tb8x8d26fv5p10--k.7.z4.vl1mr8sc1z4sxu01uabesv6n217ct7a-lqpc3kd65ktx7yc9pl4t.axunkpjjhm"
 // • …
 ```
 </details>
@@ -1191,22 +1191,34 @@ fc.domain()
 ```js
 fc.webAuthority()
 // Examples of generated values:
-// • "qj5h7-5.d6je1ud1x.g2c82ru5.qlz95.u.piitavbikc"
+// • "qj5h7-5r4y6je1ud1a1fn2c82rugm5wlz9i191.0yuxnw1is1bgv5fk.lugkf3a-tqfd5qsghdv1e4f60126hb1hidj-d2nfa7.9z61dxxd7nf24.uz1h0fenwlozjjf0xfjhnoe4y6i1zxtszhay3h42bs1dl-ey6pgqayubhpzq.laacahebeu"
 // • "5w6.mndtkwo"
-// • "qtbebs9.csil1.lrzgr91b2xyc.aewt"
-// • "vyd-xdhj.sndnyy"
-// • "fbcaacieagc1.adteb"
+// • "qtbebs8cnda2qdre9df0aefd.ycjd5s8ox5oh-sn6e.czccajd.vay"
+// • "vyd-xdhck5bu94xerf71iq4q6v13j1osnd-v5izrmp3-rw1.izhob"
+// • "fbcaacieagcwa2efzafaboffzpcexdcab7ebcacfemvnf3ld6fi4mm.bad"
 // • …
 
 fc.webAuthority({
   withIPv4: true,
 })
-// Examples of generated values: "227.3.0.132", "5.4.1.143", "nlefeaoklaqf.rndn.ugst", "168w.f7f305rk1gf.rbgpdpka.bceedtva", "2.4.203.2"…
+// Examples of generated values:
+// • "227.3.0.132"
+// • "5.4.1.143"
+// • "nlefeaoklaqquxvi7-epnuaz516se0f39.ebmnlc.kd"
+// • "1n.qec35dv.fldbgpdpkz536c3gin7evv4i7d885ps3h9nsfimvyoqhq.zze"
+// • "2.4.203.2"
+// • …
 
 fc.webAuthority({
   withIPv4Extended: true,
 })
-// Examples of generated values: "f.msle.rb.ib.qef.rjvoe", "0x11", "0xefebe5f3", "f44.avqz0ws13jl.jqe", "0345.013"…
+// Examples of generated values:
+// • "f.msl8iocicbkbdxfmei-flkp0rev9aebwtpqb.fqfb.7ktri2uz9654k13o-o306k6m7o3ene73fawx3yynio6ksqwb98y1.bzd2cpl-xv0v7b5h2v4ra791jq5ewdh31uazxv9d7bfa.snnkngbh"
+// • "0x11"
+// • "0xefebe5f3"
+// • "f4fjccf-1vqz0ws13jy8itf7h7rya9ef.fchranvkefce2eba1oec.qicpdee"
+// • "0345.013"
+// • …
 
 fc.webAuthority({
   withIPv4: true,
@@ -1305,11 +1317,11 @@ fc.webSegment()
 ```js
 fc.webUrl()
 // Examples of generated values:
-// • "https://lo.6armf.gkuvhqma.gscq9ta1kv.bvyajotc/C*./c&P-Q/zS/M;39$M/@'%F4%8C%96%B9/g%F0%BC%AF%9A/:a/f/b/zi"
-// • "https://c.cmcydtgdb.zrcdbsgbwe/x:ta/l5/5%F1%91%B4%8D9:69/AP93z/FphDuS"
-// • "https://710n-lu1.s.zlx/W5-%F1%A6%97%93$J&Tq/Kf/"
-// • "https://a.cd67h8o-fyeb.ouwkdxcj/Y"
-// • "https://6uzbj4.apov/fI"
+// • "https://lb52zarm-s0pkuvg.qmv0scq9ta1k7b.ga6npwo0mhe1q.1fs6xjggc-g5wx6pp7-j7hz3te8r-br-54np53ybfy.bz"
+// • "https://c.cmcydtgdl2y5gq52nb-gochrfw7luhm3eak87xjmn34l4ha.vzqzyjm//XAP93z)/phDuS=,8/"
+// • "https://710n-lu6vxe25muuwxcou2vg-ooho0by.ar9s-s2r9dzi-oph9tnb6ucl.rzy/8cb_e/wag/L$PWN=KC="
+// • "https://a.cd67h8o-fyelfolcuc.cjcmdv/R8/'ddz/%32$b/)N-z2/%F0%AD%AC%83(f%F0%A9%8E%90"
+// • "https://6uzbj8blh-hr4bkyh4tb8x8d26fv5p10--8dtgi0kt.bteoc/bc/m////gc/a/E"
 // • …
 
 fc.webUrl({
@@ -1317,10 +1329,10 @@ fc.webUrl({
 })
 // Examples of generated values:
 // • "ftps://lamsf.hn//5Hi_/3e%F2%B0%9E%A7ot/C9by:U)xN1/z/CHeC(/7p;l3A*91"
-// • "ftps://5ana.lwregue/BKax$K//Cl!G"
+// • "ftps://5an-v0m02mtwarjrov9wqg9.ymiexrru/G.K://2%F3%AA%83%B2zxOxe/4Z&%F4%8F%96%B6Cm%F1%A4%A6%8E%F3%9B%99%A2q/g/:&H+rH2)',"
 // • "ftp://f.behru/c/xj3!B/g~@!/YT/cfaf8)MbS/5,XZ:/y!yCu%F3%B0%89%9E=2fi/dP"
-// • "ftp://affdcn.ny/u;"
-// • "ftps://4.c.afml28i37v2d.eae.fy/%F2%89%A9%BBaPV"
+// • "ftp://affdcdt3e7cggjmbfaz.ebaf"
+// • "ftps://4.c.afml28i37v21yod.af.ldnrdd//-+N,(/;e1hL7Ii/SI%F3%B9%8B%A34V;c&e"
 // • …
 
 fc.webUrl({
@@ -1328,11 +1340,11 @@ fc.webUrl({
   withQueryParameters: true,
 })
 // Examples of generated values:
-// • "https://6teotdbx.6lcdvqgg.d.edanbedda/.%F0%95%9B%89/41AT%F2%80%91%ABOkWP/F/%F0%9D%BF%9CD/Ce/@kzV*Ia,m/*AV/,#fgd"
-// • "http://ntgafkj31t.8x7x09flrvhg.yd/??$$x#V"
-// • "http://efd2.mz3bzcn6p.daixrpqcar/A:P/7YBMHk!//@%F1%BF%A9%A1/A5w&ZuAW/:*qGARQfS'/?lio#bWge"
-// • "http://8.jm2rvkobzaj.oip8f7-csuv.101ehoo.p.kezdnesoa/PLo:v3F/o1/Y4/s/w4Fl/zO%F0%A8%98%88G:E//.,Ogqf-#"
-// • "https://qc.ieele4.fcgpswt/JR652%F3%97%8C%85XKm/?%E4%9E%B7.6'#c+%F0%A9%B2%86Ncecda"
+// • "https://6teotdbg91olcdvqg4ag52gkm8sr4as1spvz-nhbmr4a26sf52bzkkk8u.6kwwftr726ju3bhgq1avtwyk6r5bdin2z48r5zq6.9pju0ee3g6x9nhyie7d3ltygys064g6exna7.cuna/qmdb6uC/JYCbNI_rs/hv/f7tV$%F1%B6%8A%BD1Sg/(bFrI/%F2%A8%A0%A2HQQ))./kc,6+%F2%90%B9%B1gL6/&_TSNfv?UypuihY#"
+// • "http://ntgafkj317vprx7x09flrvhkp1ejaxfg0fdrfc95.3pedp8hpyt-gq27kxjcluf9.tzlycwp/@Iq*1%F2%95%95%9Ece1?_*.G!5DY#pb"
+// • "http://ef.dvbac6fwifradf2fyaddodccfyeafcbwcydzswbcqbr9daaa4r.wgeddted/9ge/Re/5%28v/Mwrc)R?1#L9jE4X%F2%9C%94%A1"
+// • "http://8.jmt.7obzakjfdip8f7-csuqjgp01eho0t8s6xuj3hqvekb7qf6q3i-d62.tjly5zq6lpbfnfddj7v50w04y07.8ir9322gginyti1omijbhrm0w2f.pb/!vIyqt$-/$g~xp=/jmY9m1fi/j//yr%F0%9C%BD%AA40Q;0,F/d/?q;F#k9W*cX&"
+// • "https://q7q52eele4de4whhd65j1o.tsqntvwx33f0g2a8a6oxjrbxfrpir63nqqah1ajor4p7.xbq/,%F2%A9%BD%93~l%F2%BA%B0%80,!EQ/M/fGA%F1%8B%9A%8Aw,/52V:7_o~J)#+X.pt:%F1%AB%B0%B0w%F2%91%93%8A"
 // • …
 ```
 </details>
@@ -1355,11 +1367,11 @@ fc.webUrl({
 ```js
 fc.emailAddress()
 // Examples of generated values:
-// • "e0f7||'5tq.h61k.opz+r*%^'k.w.cdddsv{'*@ynw1ie.a3umtugkf3m.xdpc"
-// • "8bf|!d@isws.dy83e6ipnqg.gui5s89wncuc.hbilc193lx8.stpjif"
-// • "|bi9r}1|.l.^biw8i39.~doz=|dlr@6rzgr91b2xyu.o.4fxspqtml.i5s1.re"
-// • "/22{9=.p&2.e#w-b%-'.%itdenn@fd-v5if.cw-3ib.83ea.ba"
-// • "z*3y`3kt.b}4~6|&&xe.g.dfz=pp/@8bescqosn.hb.ddbve"
+// • "e0f7||'5tq.h61k.opz+r*%^'k.w.cdddsv{'*@ynw1is1bgv5f3ume.aadqgd1f616bcc-2fdozcxdn2ca1aeaajcafbeycbtda34b1leds.dv"
+// • "8bf|!d@iswstk-y83e6ipnqwir1uo.z9wncuzgxxbilc193lxke5z7x.bubfufqawv-2s54u8tg4wr5gczt4wje48tgy58e640jclk5.xg4mplvd77xkdv0.jnvczovpf"
+// • "|bi9r}1|.l.^biw8i39.~doz=|dlr@6rzgr91b2xy0wzhozfxspqtmlcjd5s8ox5oh-sn6xlh9b7v25zd9y2i.m0bwcr4bzzziyys8zngvysdhljtl-vp71we0.z66v.wqyli81h78ina879qnk.rebn"
+// • "/22{9=.p&2.e#w-b%-'.%itdenn@fd-v5izrmp3-rw-3iasqwymy3l33bl34s7o558ir4w8jbuv22u.dj7s6sfqtzckzvtq2d-1xgfww86.8ka8a0hvtny7atgslc03mlv4fvmeo09ze1mitxkb5hz47-hpwr6trc41v9vc.za"
+// • "z*3y`3kt.b}4~6|&&xe.g.dfz=pp/@8bescqosaswebahce1kbdcaa7z7dey6auahgdha2bea5ak1.c7kctqqewt-1wogs6-nrmarr-my9afq5tbq41djjcax5382e-z4w9o59-1et28.qet"
 // • …
 ```
 </details>
