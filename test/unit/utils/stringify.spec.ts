@@ -36,6 +36,7 @@ const anythingEnableAll = {
   withSet: true,
   withObjectString: true,
   withNullPrototype: true,
+  withDate: true,
   ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
 };
 

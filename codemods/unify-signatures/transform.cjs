@@ -4,6 +4,10 @@
 // Or against the codebase of fast-check itself:
 //    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true --simplifyMin=true --simplifyMax=true
 
+// Useful ressources:
+// - https://astexplorer.net/
+// - https://npmdoc.github.io/node-npmdoc-jscodeshift/build/apidoc.html
+
 /**
  * Find any imports related to fast-check
  * either module as a whole or named imports
@@ -138,7 +142,11 @@ module.exports = function (file, api, options) {
   }
   function isNumeric(argument) {
     // 0              -- Default parser: Literal / TS parser: NumericLiteral
-    return argument.type === 'Literal' || argument.type === 'NumericLiteral';
+    return (argument.type === 'Literal' || argument.type === 'NumericLiteral') && typeof argument.value === 'number';
+  }
+  function isBoolean(argument) {
+    // true           -- Default parser: Literal / TS parser: BooleanLiteral
+    return (argument.type === 'Literal' || argument.type === 'BooleanLiteral') && typeof argument.value === 'boolean';
   }
   function isArray(argument) {
     // [1, 2, 3]      -- Default & TS parser: ArrayExpression
@@ -146,6 +154,11 @@ module.exports = function (file, api, options) {
   }
 
   function isNumericValue(argument, value) {
+    if (value < 0) {
+      return (
+        argument.type === 'UnaryExpression' && argument.operator === '-' && isNumericValue(argument.argument, -value)
+      );
+    }
     return isNumeric(argument) && argument.value === value;
   }
   function getArrayLength(argument) {
@@ -311,6 +324,111 @@ module.exports = function (file, api, options) {
             p.value.arguments = computeNewArguments(
               [p.value.arguments[0]],
               [!simplifyMax && j.property('init', j.identifier('maxCommands'), p.value.arguments[1])]
+            );
+          }
+          break;
+        }
+        case 'lorem': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.lorem(maxWordsCount) -> fc.lorem({maxCount})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 5);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('maxCount'), p.value.arguments[0])]
+            );
+          } else if (p.value.arguments.length === 2) {
+            // fc.lorem(maxWordsCount, sentencesMode) -> fc.lorem({maxCount, mode})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 5);
+            const mode = isBoolean(p.value.arguments[1])
+              ? p.value.arguments[1].value === true
+                ? j.literal('sentences')
+                : j.literal('words')
+              : j.conditionalExpression(p.value.arguments[1], j.literal('sentences'), j.literal('words'));
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                !simplifyMax && j.property('init', j.identifier('maxCount'), p.value.arguments[0]),
+                j.property('init', j.identifier('mode'), mode),
+              ]
+            );
+          }
+          break;
+        }
+        case 'bigInt': {
+          if (p.value.arguments.length === 2) {
+            // fc.bigInt(min, max) -> fc.bigInt({min, max})
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                j.property('init', j.identifier('min'), p.value.arguments[0]),
+                j.property('init', j.identifier('max'), p.value.arguments[1]),
+              ]
+            );
+          }
+          break;
+        }
+        case 'bigUint': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.bigUint(max) -> fc.bigUint({max})
+            p.value.arguments = computeNewArguments(
+              [],
+              [j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          }
+          break;
+        }
+        case 'double':
+        case 'float': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.float(max) -> fc.float({max})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 1.0);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          } else if (p.value.arguments.length === 2) {
+            // fc.float(min, max) -> fc.float({min, max})
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[0], 0.0);
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 1.0);
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                !simplifyMin && j.property('init', j.identifier('min'), p.value.arguments[0]),
+                !simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[1]),
+              ]
+            );
+          }
+          break;
+        }
+        case 'nat': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.nat(max) -> fc.nat({max})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 0x7fffffff);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          }
+          break;
+        }
+        case 'integer': {
+          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+            // fc.integer(max) -> fc.integer({max})
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 0x7fffffff);
+            p.value.arguments = computeNewArguments(
+              [],
+              [!simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[0])]
+            );
+          } else if (p.value.arguments.length === 2) {
+            // fc.integer(min, max) -> fc.integer({min, max})
+            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[0], -0x80000000);
+            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 0x7fffffff);
+            p.value.arguments = computeNewArguments(
+              [],
+              [
+                !simplifyMin && j.property('init', j.identifier('min'), p.value.arguments[0]),
+                !simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[1]),
+              ]
             );
           }
           break;

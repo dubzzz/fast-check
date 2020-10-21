@@ -20,26 +20,41 @@ import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
 import { array, ArrayConstraints } from './check/arbitrary/ArrayArbitrary';
-import { bigInt, bigIntN, bigUint, bigUintN } from './check/arbitrary/BigIntArbitrary';
+import {
+  bigInt,
+  bigIntN,
+  bigUint,
+  bigUintN,
+  BigIntConstraints,
+  BigUintConstraints,
+} from './check/arbitrary/BigIntArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
 import { falsy, FalsyContraints, FalsyValue } from './check/arbitrary/FalsyArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
 import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
 import { context, ContextValue } from './check/arbitrary/ContextArbitrary';
 import { date } from './check/arbitrary/DateArbitrary';
+import { clone, CloneValue } from './check/arbitrary/CloneArbitrary';
 import { dedup, DedupValue } from './check/arbitrary/DedupArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
-import { double, float } from './check/arbitrary/FloatingPointArbitrary';
+import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency, WeightedArbitrary, FrequencyValue } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
-import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
+import {
+  integer,
+  maxSafeInteger,
+  maxSafeNat,
+  nat,
+  IntegerConstraints,
+  NatConstraints,
+} from './check/arbitrary/IntegerArbitrary';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './check/arbitrary/LetRecArbitrary';
-import { lorem } from './check/arbitrary/LoremArbitrary';
+import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import { memo, Memo } from './check/arbitrary/MemoArbitrary';
 import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
@@ -216,6 +231,7 @@ export {
   option,
   oneof,
   frequency,
+  clone,
   dedup,
   shuffledSubarray,
   subarray,
@@ -279,10 +295,17 @@ export {
   hash,
   // constraints
   ArrayConstraints,
+  BigIntConstraints,
+  BigUintConstraints,
   CommandsContraints,
+  DoubleConstraints,
   FalsyContraints,
+  FloatConstraints,
+  IntegerConstraints,
   JsonSharedConstraints,
+  LoremConstraints,
   MixedCaseConstraints,
+  NatConstraints,
   ObjectConstraints,
   OptionConstraints,
   RecordConstraints,
@@ -294,6 +317,7 @@ export {
   WebUrlConstraints,
   WeightedArbitrary,
   // produced values
+  CloneValue,
   ContextValue,
   DedupValue,
   FalsyValue,

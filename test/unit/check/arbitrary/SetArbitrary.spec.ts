@@ -1,7 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { buildCompareFilter, set } from '../../../../src/check/arbitrary/SetArbitrary';
+import { set } from '../../../../src/check/arbitrary/SetArbitrary';
 import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { string } from '../../../../src/check/arbitrary/StringArbitrary';
 
@@ -34,17 +33,6 @@ const isStrictlySmallerCustomSet = (arr1: { key: number }[], arr2: { key: number
   );
 
 describe('SetArbitrary', () => {
-  describe('buildCompareFilter', () => {
-    it('Should filter array from duplicated values', () =>
-      fc.assert(
-        fc.property(fc.array(fc.nat()), (tab) => {
-          const filter = buildCompareFilter<number>((a, b) => a === b);
-          const adaptedTab = tab.map((v) => new Shrinkable(v));
-          const filteredTab = filter(adaptedTab);
-          expect(validSet(filteredTab.map((s) => s.value))).toBe(true);
-        })
-      ));
-  });
   describe('set', () => {
     describe('Given no length constraints [unique items only]', () => {
       genericHelper.isValidArbitrary(() => set(nat()), {

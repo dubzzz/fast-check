@@ -151,6 +151,10 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
  *
+ * @deprecated
+ * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -166,6 +170,10 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  *
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
+ *
+ * @deprecated
+ * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
  * @public
  */
@@ -181,7 +189,7 @@ function commands<Model extends object, Real>(
  * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
- * @param maxCommands - Maximal number of commands to build
+ * @param constraints - Contraints to be applied when generating the commands
  *
  * @public
  */
@@ -197,7 +205,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * It should shrink more efficiently than {@link array} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
- * @param maxCommands - Maximal number of commands to build
+ * @param constraints - Constraints to be applied when generating the commands
  *
  * @public
  */

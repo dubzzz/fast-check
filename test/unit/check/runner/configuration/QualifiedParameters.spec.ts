@@ -77,7 +77,7 @@ describe('QualifiedParameters', () => {
     describe('Seeds outside of 32 bits range', () => {
       const seedsOutsideRangeArb = fc.oneof(
         fc.double(),
-        fc.double(Number.MIN_VALUE, Number.MAX_VALUE),
+        fc.double({ min: Number.MIN_VALUE, max: Number.MAX_VALUE }),
         fc.integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER),
         fc.constantFrom(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN)
       );
