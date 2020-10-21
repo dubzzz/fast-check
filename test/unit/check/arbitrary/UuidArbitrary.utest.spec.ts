@@ -1,12 +1,18 @@
 import { uuid, uuidV } from '../../../../src/check/arbitrary/UuidArbitrary';
 import * as stubRng from '../../stubs/generators';
 import { mocked } from 'ts-jest/utils';
+import { ArbitraryWithShrink } from '../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 
 jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
 jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
-import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
+import * as _IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
 import * as TupleArbitraryMock from '../../../../src/check/arbitrary/TupleArbitrary';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
+
+const IntegerArbitraryMock: {
+  integer: (min: number, max: number) => ArbitraryWithShrink<number>;
+  nat: (max: number) => ArbitraryWithShrink<number>;
+} = _IntegerArbitraryMock;
 
 const mrng = () => stubRng.mutable.nocall();
 

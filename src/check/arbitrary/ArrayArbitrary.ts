@@ -165,7 +165,7 @@ function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  * @param arb - Arbitrary used to generate the values inside the array
  * @param maxLength - Upper bound of the generated array size
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.array(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -179,7 +179,7 @@ function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.array(arb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *

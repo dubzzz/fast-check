@@ -1,6 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { bigIntN, bigUintN, bigInt, bigUint } from '../../../../src/check/arbitrary/BigIntArbitrary';
+import { generateOneValue } from './generic/GenerateOneValue';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
@@ -46,16 +47,38 @@ describe('BigIntArbitrary', () => {
         isValidValue: (g: bigint) => typeof g === 'bigint',
       });
     });
+    describe('Given minimal value only [greater or equal to min]', () => {
+      genericHelper.isValidArbitrary((min: bigint) => bigInt({ min }), {
+        seedGenerator: fc.bigInt(),
+        isStrictlySmallerValue: isStrictlySmallerBigInt,
+        isValidValue: (g: bigint, min: bigint) => typeof g === 'bigint' && min <= g,
+      });
+    });
+    describe('Given maximal value only [less or equal to max]', () => {
+      genericHelper.isValidArbitrary((max: bigint) => bigInt({ max }), {
+        seedGenerator: fc.bigInt(),
+        isStrictlySmallerValue: isStrictlySmallerBigInt,
+        isValidValue: (g: bigint, max: bigint) => typeof g === 'bigint' && g <= max,
+      });
+    });
     describe('Given minimal and maximal values [between min and max]', () => {
-      genericHelper.isValidArbitrary(
-        (constraints: { min: bigint; max: bigint }) => bigInt(constraints.min, constraints.max),
-        {
-          seedGenerator: genericHelper.minMax(fc.bigInt()),
-          isStrictlySmallerValue: isStrictlySmallerBigInt,
-          isValidValue: (g: bigint, constraints: { min: bigint; max: bigint }) =>
-            typeof g === 'bigint' && constraints.min <= g && g <= constraints.max,
-        }
-      );
+      genericHelper.isValidArbitrary((constraints: { min: bigint; max: bigint }) => bigInt(constraints), {
+        seedGenerator: genericHelper.minMax(fc.bigInt()),
+        isStrictlySmallerValue: isStrictlySmallerBigInt,
+        isValidValue: (g: bigint, constraints: { min: bigint; max: bigint }) =>
+          typeof g === 'bigint' && constraints.min <= g && g <= constraints.max,
+      });
+    });
+    describe('Still support older signatures', () => {
+      it('Should support fc.bigInt(min, max)', () => {
+        fc.assert(
+          fc.property(fc.integer(), genericHelper.minMax(fc.bigInt()), (seed, constraints) => {
+            const refArbitrary = bigInt(constraints);
+            const otherArbitrary = bigInt(constraints.min, constraints.max);
+            expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
     });
   });
   describe('bigUint', () => {
@@ -66,10 +89,21 @@ describe('BigIntArbitrary', () => {
       });
     });
     describe('Given maximal value [between 0 and max]', () => {
-      genericHelper.isValidArbitrary((max: bigint) => bigUint(max), {
+      genericHelper.isValidArbitrary((max: bigint) => bigUint({ max }), {
         seedGenerator: fc.bigUint(),
         isStrictlySmallerValue: isStrictlySmallerBigInt,
         isValidValue: (g: bigint, max: bigint) => typeof g === 'bigint' && g >= BigInt(0) && g <= max,
+      });
+    });
+    describe('Still support older signatures', () => {
+      it('Should support fc.bigUint( max)', () => {
+        fc.assert(
+          fc.property(fc.integer(), fc.bigUint(), (seed, max) => {
+            const refArbitrary = bigUint({ max });
+            const otherArbitrary = bigUint(max);
+            expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
       });
     });
   });

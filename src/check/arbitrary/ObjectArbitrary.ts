@@ -14,6 +14,7 @@ import { set } from './SetArbitrary';
 import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
+import { date } from './DateArbitrary';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -65,6 +66,8 @@ export interface ObjectConstraints {
   withNullPrototype?: boolean;
   /** Also generate BigInt */
   withBigInt?: boolean;
+  /** Also generate Date */
+  withDate?: boolean;
 }
 
 /**
@@ -91,7 +94,8 @@ class QualifiedObjectConstraints {
     readonly withMap: boolean,
     readonly withObjectString: boolean,
     readonly withNullPrototype: boolean,
-    readonly withBigInt: boolean
+    readonly withBigInt: boolean,
+    readonly withDate: boolean
   ) {}
 
   /**
@@ -160,7 +164,8 @@ class QualifiedObjectConstraints {
       orDefault(settings.withMap, false),
       orDefault(settings.withObjectString, false),
       orDefault(settings.withNullPrototype, false),
-      orDefault(settings.withBigInt, false)
+      orDefault(settings.withBigInt, false),
+      orDefault(settings.withDate, false)
     );
   }
 }
@@ -217,7 +222,8 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       ...(constraints.withSet ? [setArb()] : []),
       ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
       ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : []),
-      ...(constraints.withBigInt ? [bigInt()] : [])
+      ...(constraints.withBigInt ? [bigInt()] : []),
+      ...(constraints.withDate ? [date()] : [])
     );
   });
 
@@ -334,7 +340,7 @@ function jsonObject(): Arbitrary<unknown>;
  *
  * @param maxDepth - Maximal depth of the generated values
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.jsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -370,7 +376,7 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  *
  * @param maxDepth - Maximal depth of the generated values
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.unicodeJsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -406,7 +412,7 @@ function json(): Arbitrary<string>;
  *
  * @param maxDepth - Maximal depth of the generated objects
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.json({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -445,7 +451,7 @@ function unicodeJson(): Arbitrary<string>;
  *
  * @param maxDepth - Maximal depth of the generated objects
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *

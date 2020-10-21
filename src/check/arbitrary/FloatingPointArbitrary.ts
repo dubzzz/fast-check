@@ -14,6 +14,17 @@ const floatInternal = (): Arbitrary<number> => {
 };
 
 /**
+ * Constraints to be applied on {@link float}
+ * @public
+ */
+export interface FloatConstraints {
+  /** Lower bound for the generated floats (included) */
+  min?: number;
+  /** Upper bound for the generated floats (excluded) */
+  max?: number;
+}
+
+/**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**24`
  * @public
  */
@@ -22,6 +33,10 @@ function float(): Arbitrary<number>;
  * For floating point numbers between 0.0 (included) and max (excluded) - accuracy of `max / 2**24`
  *
  * @param max - Upper bound of the generated floating point
+ *
+ * @deprecated
+ * Superceded by `fc.float({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
  * @public
  */
@@ -32,13 +47,32 @@ function float(max: number): Arbitrary<number>;
  * @param min - Lower bound of the generated floating point
  * @param max - Upper bound of the generated floating point
  *
+ * @remarks
+ * You may prefer to use `fc.float({min, max})` instead.
+ *
  * @public
  */
 function float(min: number, max: number): Arbitrary<number>;
-function float(a?: number, b?: number): Arbitrary<number> {
-  if (a === undefined) return floatInternal();
-  if (b === undefined) return floatInternal().map((v) => v * a);
-  return floatInternal().map((v) => a + v * (b - a));
+/**
+ * For floating point numbers in range defined by constraints - accuracy of `(max - min) / 2**24`
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function float(constraints: FloatConstraints): Arbitrary<number>;
+function float(...args: [] | [number] | [number, number] | [FloatConstraints]): Arbitrary<number> {
+  if (typeof args[0] === 'object') {
+    const min = args[0].min !== undefined ? args[0].min : 0;
+    const max = args[0].max !== undefined ? args[0].max : 1;
+    return floatInternal().map((v) => min + v * (max - min));
+  } else {
+    const a = args[0];
+    const b = args[1];
+    if (a === undefined) return floatInternal();
+    if (b === undefined) return floatInternal().map((v) => v * a);
+    return floatInternal().map((v) => a + v * (b - a));
+  }
 }
 
 /** @internal */ const doubleFactor = Math.pow(2, 27);
@@ -51,6 +85,17 @@ const doubleInternal = (): Arbitrary<number> => {
 };
 
 /**
+ * Constraints to be applied on {@link double}
+ * @public
+ */
+export interface DoubleConstraints {
+  /** Lower bound for the generated doubles (included) */
+  min?: number;
+  /** Upper bound for the generated doubles (excluded) */
+  max?: number;
+}
+
+/**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**53`
  * @public
  */
@@ -59,6 +104,10 @@ function double(): Arbitrary<number>;
  * For floating point numbers between 0.0 (included) and max (excluded) - accuracy of `max / 2**53`
  *
  * @param max - Upper bound of the generated floating point
+ *
+ * @deprecated
+ * Superceded by `fc.double({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
  * @public
  */
@@ -69,13 +118,32 @@ function double(max: number): Arbitrary<number>;
  * @param min - Lower bound of the generated floating point
  * @param max - Upper bound of the generated floating point
  *
+ * @remarks
+ * You may prefer to use `fc.double({min, max})` instead.
+ *
  * @public
  */
 function double(min: number, max: number): Arbitrary<number>;
-function double(a?: number, b?: number): Arbitrary<number> {
-  if (a === undefined) return doubleInternal();
-  if (b === undefined) return doubleInternal().map((v) => v * a);
-  return doubleInternal().map((v) => a + v * (b - a));
+/**
+ * For floating point numbers in range defined by constraints - accuracy of `(max - min) / 2**53`
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function double(constraints: DoubleConstraints): Arbitrary<number>;
+function double(...args: [] | [number] | [number, number] | [DoubleConstraints]): Arbitrary<number> {
+  if (typeof args[0] === 'object') {
+    const min = args[0].min !== undefined ? args[0].min : 0;
+    const max = args[0].max !== undefined ? args[0].max : 1;
+    return doubleInternal().map((v) => min + v * (max - min));
+  } else {
+    const a = args[0];
+    const b = args[1];
+    if (a === undefined) return doubleInternal();
+    if (b === undefined) return doubleInternal().map((v) => v * a);
+    return doubleInternal().map((v) => a + v * (b - a));
+  }
 }
 
 export { float, double };

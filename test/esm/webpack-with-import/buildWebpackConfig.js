@@ -14,5 +14,8 @@ module.exports = function buildWebpackConfig(fileName) {
       // eslint-disable-next-line
       path: path.resolve(__dirname, 'dist'),
     },
+    resolve: {
+      fallback: { querystring: require.resolve('querystring-es3') },
+    },
   };
 };

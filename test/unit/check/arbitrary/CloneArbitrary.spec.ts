@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { dedup } from '../../../../src/check/arbitrary/DedupArbitrary';
+import { clone } from '../../../../src/check/arbitrary/CloneArbitrary';
 import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
@@ -20,16 +20,16 @@ export const isStrictlySmaller = (arr1: number[], arr2: number[]) => {
   return true;
 };
 
-describe('DedupArbitrary', () => {
-  describe('dedup', () => {
+describe('CloneArbitrary', () => {
+  describe('clone', () => {
     it('Should produce cloneable tuple if cloneable', () => {
       const mrng = stubRng.mutable.counter(0);
-      const g = dedup(context(), 2).generate(mrng).value;
+      const g = clone(context(), 2).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(true);
     });
     it('Should not produce cloneable tuple if not cloneable', () => {
       const mrng = stubRng.mutable.counter(0);
-      const g = dedup(nat(), 2).generate(mrng).value;
+      const g = clone(nat(), 2).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(false);
     });
     it('Should not clone on generate', () => {
@@ -46,14 +46,14 @@ describe('DedupArbitrary', () => {
         }
       })();
       const mrng = stubRng.mutable.counter(0);
-      dedup(withClonedAndCounter, 2).generate(mrng);
+      clone(withClonedAndCounter, 2).generate(mrng);
       expect(numCallsToClone).toEqual(0);
     });
     it('Should offset the random exactly as many times as one source arbitrary', () =>
       fc.assert(
         fc.property(fc.integer(), fc.integer(1, 20), (seed, numValues) => {
           const mrngSource = stubRng.mutable.fastincrease(seed);
-          dedup(nat(), numValues).generate(mrngSource).value;
+          clone(nat(), numValues).generate(mrngSource).value;
 
           const mrng = stubRng.mutable.fastincrease(seed);
           nat().generate(mrng).value;
@@ -62,7 +62,7 @@ describe('DedupArbitrary', () => {
         })
       ));
     describe('Given number of duplicates', () => {
-      genericHelper.isValidArbitrary((numValues: number) => dedup(nat(), numValues), {
+      genericHelper.isValidArbitrary((numValues: number) => clone(nat(), numValues), {
         seedGenerator: fc.nat(20),
         isStrictlySmallerValue: isStrictlySmaller,
         isValidValue: (g: number[], numValues: number) =>

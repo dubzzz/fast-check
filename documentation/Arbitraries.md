@@ -88,13 +88,14 @@ fc.boolean()
 *&#8195;Signatures*
 
 - `fc.integer()`
-- `fc.integer(maxValue)`
-- `fc.integer(minValue, maxValue)`
+- `fc.integer({min?, max?})`
+- `fc.integer(min, max)`
+- _`fc.integer(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `minValue?` — default: `-2147483648` — _lower bound of the range (included)_
-- `maxValue?` — default: `2147483647` — _upper bound of the range (included)_
+- `min?` — default: `-2147483648` — _lower bound of the range (included)_
+- `max?` — default: `2147483647` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -110,6 +111,14 @@ fc.integer(1000)
 fc.integer(-99, 99)
 // Note: All possible integers between `-99` (included) and `99` (included)
 // Examples of generated values: 2, -1, 91, -2, 3…
+
+fc.integer({min: -99, max: 99})
+// Note: All possible integers between `-99` (included) and `99` (included)
+// Examples of generated values: -4, 4, 8, 2, 1…
+
+fc.integer({min: 65536})
+// Note: All possible integers between `65536` (included) and `2147483647` (included)
+// Examples of generated values: 65557, 65547, 65562, 1836480947, 1490866554…
 ```
 </details>
 
@@ -126,11 +135,12 @@ fc.integer(-99, 99)
 *&#8195;Signatures*
 
 - `fc.nat()`
-- `fc.nat(maxValue)`
+- `fc.nat({max?})`
+- `fc.nat(max)`
 
 *&#8195;with:*
 
-- `maxValue?` — default: `2147483647` — _upper bound of the range (included)_
+- `max?` — default: `2147483647` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -142,6 +152,10 @@ fc.nat()
 fc.nat(1000)
 // Note: All possible integers between `0` (included) and `1000` (included)
 // Examples of generated values: 299, 1, 225, 750, 4…
+
+fc.nat({max: 1000})
+// Note: All possible integers between `0` (included) and `1000` (included)
+// Examples of generated values: 0, 833, 7, 496, 4…
 ```
 </details>
 
@@ -202,13 +216,14 @@ fc.maxSafeNat()
 *&#8195;Signatures*
 
 - `fc.float()`
-- `fc.float(maxValue)`
-- `fc.float(minValue, maxValue)`
+- `fc.float({min?, max?})`
+- `fc.float(min, max)`
+- _`fc.float(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `minValue?` — default: `0.0` — _lower bound of the range (included)_
-- `maxValue?` — default: `1.0` — _upper bound of the range (excluded)_
+- `min?` — default: `0.0` — _lower bound of the range (included)_
+- `max?` — default: `1.0` — _upper bound of the range (excluded)_
 
 *&#8195;Usages*
 
@@ -217,13 +232,13 @@ fc.float()
 // Note: All possible 32-bit floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.731347382068634, 1.1920928955078125e-7, 0.6597227454185486, 0.5946863293647766, 0.6302104592323303…
 
-fc.float(100)
+fc.float({max: 100})
 // Note: All possible 32-bit floating point values between `0.0` (included) and `100.0` (excluded)
-// Examples of generated values: 0.00007748603820800781, 0.00007152557373046875, 0.00013113021850585938, 52.37404108047485, 0.000035762786865234375…
+// Examples of generated values: 0.00004172325134277344, 0.000011920928955078125, 0.0001251697540283203, 60.498785972595215, 0.000029802322387695312…
 
-fc.float(-100, 100)
+fc.float({min: -100, max: 100})
 // Note: All possible 32-bit floating point values between `-100.0` (included) and `100.0` (excluded)
-// Examples of generated values: -99.99992847442627, 55.83081245422363, -99.99979734420776, -20.923829078674316, -99.99991655349731…
+// Examples of generated values: -99.9997615814209, -99.99988079071045, 81.314218044281, -99.99974966049194, -99.99978542327881…
 ```
 </details>
 
@@ -240,13 +255,14 @@ fc.float(-100, 100)
 *&#8195;Signatures*
 
 - `fc.double()`
-- `fc.double(maxValue)`
-- `fc.double(minValue, maxValue)`
+- `fc.double({min?, max?})`
+- `fc.double(min, max)`
+- _`fc.double(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
-- `minValue?` — default: `0.0` — _lower bound of the range (included)_
-- `maxValue?` — default: `1.0` — _upper bound of the range (excluded)_
+- `min?` — default: `0.0` — _lower bound of the range (included)_
+- `max?` — default: `1.0` — _upper bound of the range (excluded)_
 
 *&#8195;Usages*
 
@@ -255,13 +271,13 @@ fc.double()
 // Note: All possible floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.4530413804731288, 0.8226463198661805, 0.3829372459587349, 0.7186836451292051, 0.8065718412399292…
 
-fc.double(100)
+fc.double({max: 100})
 // Note: All possible floating point values between `0.0` (included) and `100.0` (excluded)
-// Examples of generated values: 0.000019014520535876045, 98.91013210040657, 0.00003648309874204614, 20.497548580169944, 0.00001937150981845548…
+// Examples of generated values: 78.93341034650808, 0.000034884977251348204, 98.5225079632713, 10.198144676861675, 0.000008702743647948097…
 
-fc.double(-100, 100)
+fc.double({min: -100, max: 100})
 // Note: All possible floating point values between `-100.0` (included) and `100.0` (excluded)
-// Examples of generated values: -99.999970715887, -99.99996384938794, -99.99996463982544, -69.75060565839972, -99.99994324436676…
+// Examples of generated values: -99.99994117592425, 37.9800438880923, 1.4435261487962805, -99.9999970197672, -99.99993741512299…
 ```
 </details>
 
@@ -317,12 +333,13 @@ fc.bigIntN(128)
 *&#8195;Signatures*
 
 - `fc.bigInt()`
-- `fc.bigInt(minValue, maxValue)`
+- `fc.bigInt({min?, max?})`
+- `fc.bigInt(min, max)`
 
 *&#8195;with:*
 
-- `minValue?` — _lower bound of the range (included)_
-- `maxValue?` — _upper bound of the range (included)_
+- `min?` — _lower bound of the range (included)_
+- `max?` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -336,13 +353,23 @@ fc.bigInt()
 // • -27488731055093319143645334041335559432506843454739800192508819981052054802083n
 // • …
 
-fc.bigInt(0n, 12345678901234567890n)
+fc.bigInt({min: 0n, max: 12345678901234567890n})
 // Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
-// Examples of generated values: 6465640285538993635n, 8922695748501260749n, 16n, 19n, 10723446437785154890n…
+// Examples of generated values: 19n, 11376877730870697597n, 1349784798053983117n, 11n, 3n…
 
-fc.bigInt(-3000n, 100n)
+fc.bigInt({min: -3000n, max: 100n})
 // Note: All possible bigint values between `-3000n` (included) and `100n` (included)
-// Examples of generated values: 1n, -2031n, -351n, -1605n, -2n…
+// Examples of generated values: -1169n, 0n, 2n, -4n, -2680n…
+
+fc.bigInt({min: 1n << 64n})
+// Note: Any possible bigint value greater or equal to `1n << 64n`
+// Examples of generated values:
+// • 32214219993684643449722944918025059692370181015953432795318507902966520589940n
+// • 39382683564378805230116691834855902707168271164394481253375072148371261997983n
+// • 57219012822578120981130257612614965800502300168860147954523587474583795051388n
+// • 25423414325897465771981521346031075469986997563517783083160644823268642168363n
+// • 18446744073709551676n
+// • …
 ```
 </details>
 
@@ -394,11 +421,12 @@ fc.bigUintN(128)
 *&#8195;Signatures*
 
 - `fc.bigUint()`
-- `fc.bigUint(maxValue)`
+- `fc.bigUint({max?})`
+- `fc.bigUint(max)`
 
 *&#8195;with:*
 
-- `maxValue?` — _upper bound of the range (included)_
+- `max?` — _upper bound of the range (included)_
 
 *&#8195;Usages*
 
@@ -412,9 +440,9 @@ fc.bigUint()
 // • 18n
 // • …
 
-fc.bigUint(12345678901234567890n)
+fc.bigUint({max: 12345678901234567890n})
 // Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
-// Examples of generated values: 5776499037807709071n, 4876199541303708566n, 19n, 18n, 5n…
+// Examples of generated values: 2140173898915155879n, 4446193883774321594n, 11n, 5n, 16n…
 ```
 </details>
 
@@ -574,8 +602,8 @@ fc.fullUnicode()
 
 - `fc.hexaString()`
 - `fc.hexaString({minLength?, maxLength?})`
-- _`fc.hexaString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.hexaString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.hexaString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.hexaString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -615,8 +643,8 @@ fc.hexaString({minLength: 4, maxLength: 6})
 
 - `fc.base64String()`
 - `fc.base64String({minLength?, maxLength?})`
-- _`fc.base64String(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.base64String(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.base64String(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.base64String(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -656,8 +684,8 @@ fc.base64String({minLength: 4, maxLength: 12})
 
 - `fc.string()`
 - `fc.string({minLength?, maxLength?})`
-- _`fc.string(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.string(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -695,8 +723,8 @@ fc.string({minLength: 4, maxLength: 6})
 
 - `fc.asciiString()`
 - `fc.asciiString({minLength?, maxLength?})`
-- _`fc.asciiString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.asciiString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.asciiString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.asciiString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -734,8 +762,8 @@ fc.asciiString({minLength: 4, maxLength: 6})
 
 - `fc.unicodeString()`
 - `fc.unicodeString({minLength?, maxLength?})`
-- _`fc.unicodeString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.unicodeString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -775,8 +803,8 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 
 - `fc.string16bits()`
 - `fc.string16bits({minLength?, maxLength?})`
-- _`fc.string16bits(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.string16bits(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string16bits(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string16bits(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -814,8 +842,8 @@ fc.string16bits({minLength: 4, maxLength: 6})
 
 - `fc.fullUnicodeString()`
 - `fc.fullUnicodeString({minLength?, maxLength?})`
-- _`fc.fullUnicodeString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.fullUnicodeString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.fullUnicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.fullUnicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -855,8 +883,8 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 
 - `fc.stringOf(charArb)`
 - `fc.stringOf(charArb, {minLength?, maxLength?})`
-- _`fc.stringOf(charArb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.stringOf(charArb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.stringOf(charArb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.stringOf(charArb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -904,7 +932,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 
 - `fc.json()`
 - `fc.json({maxDepth?})`
-- _`fc.json(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.json(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -950,7 +978,7 @@ fc.json({maxDepth: 1})
 
 - `fc.unicodeJson()`
 - `fc.unicodeJson({maxDepth?})`
-- _`fc.unicodeJson(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeJson(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -987,8 +1015,8 @@ fc.unicodeJson({maxDepth: 1})
 
 - `fc.lorem()`
 - `fc.lorem({maxCount?, mode?})`
-- _`fc.lorem(maxWordsCount)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.lorem(maxCount, sentenceMode)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.lorem(maxWordsCount)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.lorem(maxCount, sentenceMode)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1591,7 +1619,7 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 
 - `fc.option(arb)`
 - `fc.option(arb, {freq?, nil?})`
-- _`fc.option(arb, freq)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.option(arb, freq)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1701,17 +1729,52 @@ fc.mapToConstant(
 </details>
 
 <details>
-<summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dedup">api</a>]</summary><br/>
+<summary><b>clone</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#clone">api</a>]</summary><br/>
 
 *&#8195;Description*
 
-> Multiple identical values but not equal in terms of `===`
+> Multiple identical values (they might not equal in terms of `===` or `==`)
 >
 > Generate tuple containing multiple instances of the same value - values are independent from each others.
 
 *&#8195;Signatures*
 
-- `fc.dedup(arb, numValues)`
+- `fc.clone(arb, numValues)`
+
+*&#8195;with:*
+
+- `arb` — _arbitrary instance responsible to generate values_
+- `numValues` — _number of clones (including itself)_
+
+*&#8195;Usages*
+
+```js
+fc.clone(fc.nat(), 2)
+// Examples of generated values: [1458194344,1458194344], [1974332592,1974332592], [605246308,605246308], [187149619,187149619], [1325928130,1325928130]…
+
+fc.clone(fc.nat(), 3)
+// Examples of generated values:
+// • [1075303821,1075303821,1075303821]
+// • [1289535362,1289535362,1289535362]
+// • [479824585,479824585,479824585]
+// • [61543881,61543881,61543881]
+// • [1082205096,1082205096,1082205096]
+// • …
+```
+</details>
+
+<details>
+<summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dedup">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Multiple identical values (they might not equal in terms of `===` or `==`)
+>
+> Generate tuple containing multiple instances of the same value - values are independent from each others.
+
+*&#8195;Signatures*
+
+- _`fc.dedup(arb, numValues)`_ — _deprecated, prefer `fc.clone` instead_
 
 *&#8195;with:*
 
@@ -1802,8 +1865,8 @@ fc.genericTuple([fc.nat(), fc.string()])
 
 - `fc.array(arb)`
 - `fc.array(arb, {minLength?, maxLength?})`
-- _`fc.array(arb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.array(arb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1859,11 +1922,11 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 
 - `fc.set(arb)`
 - `fc.set(arb, {minLength?, maxLength?, compare?})`
-- _`fc.set(arb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, maxLength, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, minLength, maxLength, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, maxLength, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, minLength, maxLength, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1913,7 +1976,7 @@ fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.le
 
 - `fc.subarray(originalArray)`
 - `fc.subarray(originalArray, {minLength?, maxLength?})`
-- _`fc.subarray(originalArray, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.subarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1951,7 +2014,7 @@ fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 
 - `fc.shuffledSubarray(originalArray)`
 - `fc.shuffledSubarray(originalArray, {minLength?, maxLength?})`
-- _`fc.shuffledSubarray(originalArray, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.shuffledSubarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2125,7 +2188,7 @@ fc.tuple(
 *&#8195;Signatures*
 
 - `fc.object()`
-- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
 
 *&#8195;with:*
 
@@ -2134,6 +2197,7 @@ fc.tuple(
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
+- `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
 - `withMap?` — default: `false` — _enable `Map` - eg.: `new Map([['key', 'value']])`_
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
@@ -2190,17 +2254,18 @@ fc.object({
 fc.object({
   withBigInt: true,
   withBoxedValues: true,
+  withDate: true,
   withMap: true,
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
 })
 // Examples of generated values:
-// • {"Hvy-":"[\"k\",new Boolean(false),true,1359741049]","5)":"\"new Number(Number.POSITIVE_INFINITY)\"","{LlH~g#1>c":new Map([["23756116752476880116163693219734392094931639983447296292265812147018126118235n",Number.NaN],["B(XW",-0],["",9007199254740991],[":z]$?4aTPi",0.7417844033838654]]),"G":{";gH3":new Number(1.7976931348623157e+308),"KAQ&Y":new Number(1.7976931348623157e+308),"":new Number(5e-324)},"Dt(Vq\"3":[Object.create(null),Object.assign(Object.create(null),{"":0.9435497709653101,"\\:$<d":-9007199254740991,".!}t^T*V!P":Number.NEGATIVE_INFINITY,"PqC=":-0,"D^cAS80":1.7976931348623157e+308}),Object.create(null),"@BWg2KJ\"P5"],"= qolO":new Set([])}
-// • {"Q":"-28790338063691844723780175859525494041307324994211628063416646154252928018460n"}
-// • {"9!S":49681823727990783426060880711418079640455644944657749366149940132883537836087n,"]N":[[new Number(0.2792851008705145)],"new String(\"m&\")"],"*C NUvY8\\":{"UN:N":new Number(-16067325),"2\\":new Number(1566525156),"#`8r<":new Number(-1260686741),"jDI}c":new Number(-1762591876)},"":new Set([Object.create(null),new Boolean(true),new Number(0.4362835630255498),"new Number(0.9143583465429503)"]),".\")v%w])9<":"{}","\\R\"T":[],"b|e":-37729768302050702694612822632199890630808792163675665166764551511862128392607n,"R%GKy":new Map([["OmgX*",0.08948643876185991],["]m!`jME(",0.3684476361609833],[",RZPydNtC",0.2099650505944498]])}
-// • {"C\"rD ":new Set([-1,15,364098084,-94957164,11]),"%V":new Map([]),"_< <F}mmg":{"T!t":new Map([["",false],["6",true],["a3k-9",true],["new Number(753331202)",false],["aku",true]]),"":Object.assign(Object.create(null),{"Bl$#<)x0W":0.3296393944777003,"te:&":0.8623306920799884,"":0.30577620028521935,"undefined":0.14814113591604705,"xq]e":0.05484152161076272}),"A9$-F":[],"H&z":[new Number(0.29962318465398197),new Number(1575338083),new String("2")]," ":-13857256463846888989877384074052482153320035460733610693959978580929451823768n}}
+// • {"F,r0fx}OWg":[new Date("+160385-06-21T16:52:36.736Z"),22583622805204069477977266286996933943873259784384626171039405815620425326468n,{"{Y":"N",",;04yN":-107026440}],"6x*pJp&3^":"new Number(0.42255506544021615)"}
 // • {}
+// • {"hyu)K.|R-5":"new Set([new String(\"f0q}b8/2*\"),new String(\" scrLAI'KD\"),new String(\"P_krOW\"),new String(\"hZ\"),new String(\"VwvEE}s(;V\")])","85c":1955536278377593253161285446750593118355413969436917489136958056479360825003n,"Y*":new Number(0.4145363362551938),"[n7%b":"new Number(0.861563135058088)","L":-36290478173422814553429011041239932856189046009049526980429727311354359757843n,"qe80E%":new Set([undefined,new String("-:"),new String("@}gz6"),null,new String("f*;+=I8t")]),"":new Set([new Number(0.8938732846739627),new Number(0.5945807356752961)]),"fvH0g*vr":Object.create(null),"e67K#h_N>":Object.assign(Object.create(null),{"5yAgxxIc":null})}
+// • {"r5B":Object.assign(Object.create(null),{"":false,"new Set([new Boolean(false),new Boolean(true)])":true,"G $D&  %#x":true}),"":{"-47n":1387385502,"POG^":15},"lf*":49n,"UN":new Date("1969-12-31T23:59:59.948Z")}
+// • {")h%{":new Set([])}
 // • …
 ```
 </details>
@@ -2216,7 +2281,7 @@ fc.object({
 
 - `fc.jsonObject()`
 - `fc.jsonObject({maxDepth?})`
-- _`fc.jsonObject(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.jsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2253,7 +2318,7 @@ fc.jsonObject({maxDepth: 1})
 
 - `fc.unicodeJsonObject()`
 - `fc.unicodeJsonObject({maxDepth?})`
-- _`fc.unicodeJsonObject(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeJsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2289,7 +2354,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 *&#8195;Signatures*
 
 - `fc.anything()`
-- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
 
 *&#8195;with:*
 
@@ -2298,6 +2363,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
+- `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
 - `withMap?` — default: `false` — _enable `Map` - eg.: `new Map([['key', 'value']])`_
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
@@ -2342,17 +2408,18 @@ fc.anything({
 fc.anything({
   withBigInt: true,
   withBoxedValues: true,
+  withDate: true,
   withMap: true,
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
 })
 // Examples of generated values:
-// • 2.220446049250313e-16
-// • ["z3#bX","nU","*Trp","C3z/T8j"]
-// • Object.assign(Object.create(null),{"Z":new Map([["&BRun*T",new Number(2.220446049250313e-16)]])})
-// • Object.assign(Object.create(null),{"%":new Number(0),"2x":new Number(Number.POSITIVE_INFINITY),"O":new Number(-9007199254740991),"f-#Snk":new Number(1.7976931348623157e+308)})
-// • new Map([["g`",new Number(0.6098877327434217)],["Rbn {Hk>",new Number(0.694724263679241)],["",new Number(0.2290206742270351)],["new Map([[\"VcD/2D6m+\",new Boolean(true)],[\"\\\\nt\",new Boolean(true)],[\"\",new Boolean(true)]])",new Number(0.75753818431766)]])
+// • 29n
+// • {"new Set([new Number(658282252),\"F$\",new Number(0.3487903700973978)])":0.597600347119469}
+// • 49923639470792901331007151703295270516608099603300111897468945883726467315714n
+// • [{"lloo":new String("8k"),":6O":true,"1 J%S-":0.9811743941698315,"J~+`Qo1<o":new Number(0),"KV`MZ[":new Boolean(true)},{"new String(\"#Oi&%P\\\":\")":new Number(2),"lsA":0.16318916814007212}]
+// • Object.assign(Object.create(null),{"K\\~c!jADJ5":new Date("-041984-06-01T14:47:46.432Z"),"rBi6zzh":2371026000844887995115928520799279159182492319348459568753669098566854816929n,":<Rzk3":Object.create(null),"&$IJ+Z71e":new Date("+104821-04-30T22:28:13.952Z"),"n&9A.;gcG_":Object.assign(Object.create(null),{"gY`+mW":new String("Ci(w+qXQ"),"A-leb&":new String("DIj`F@;")})})
 // • …
 ```
 </details>
@@ -2771,7 +2838,7 @@ fc.context()
 
 - `fc.commands(commandArbs)`
 - `fc.commands(commandArbs, { disableReplayLog?, maxCommands?, replayPath? })`
-- _`fc.commands(commandArbs, maxCommands)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.commands(commandArbs, maxCommands)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
