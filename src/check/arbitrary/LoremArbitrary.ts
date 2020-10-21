@@ -218,7 +218,7 @@ function lorem(): Arbitrary<string>;
  *
  * @param maxWordsCount - Upper bound of the number of words allowed
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.lorem({maxCount})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -231,7 +231,7 @@ function lorem(maxWordsCount: number): Arbitrary<string>;
  * @param maxWordsCount - Upper bound of the number of words/sentences allowed
  * @param sentencesMode - If enabled, multiple sentences might be generated
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.lorem({maxCount, mode})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *

@@ -90,7 +90,7 @@ fc.boolean()
 - `fc.integer()`
 - `fc.integer({min?, max?})`
 - `fc.integer(min, max)`
-- _`fc.integer(max)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.integer(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -218,7 +218,7 @@ fc.maxSafeNat()
 - `fc.float()`
 - `fc.float({min?, max?})`
 - `fc.float(min, max)`
-- _`fc.float(max)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.float(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -257,7 +257,7 @@ fc.float({min: -100, max: 100})
 - `fc.double()`
 - `fc.double({min?, max?})`
 - `fc.double(min, max)`
-- _`fc.double(max)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.double(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -602,8 +602,8 @@ fc.fullUnicode()
 
 - `fc.hexaString()`
 - `fc.hexaString({minLength?, maxLength?})`
-- _`fc.hexaString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.hexaString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.hexaString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.hexaString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -643,8 +643,8 @@ fc.hexaString({minLength: 4, maxLength: 6})
 
 - `fc.base64String()`
 - `fc.base64String({minLength?, maxLength?})`
-- _`fc.base64String(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.base64String(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.base64String(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.base64String(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -684,8 +684,8 @@ fc.base64String({minLength: 4, maxLength: 12})
 
 - `fc.string()`
 - `fc.string({minLength?, maxLength?})`
-- _`fc.string(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.string(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -723,8 +723,8 @@ fc.string({minLength: 4, maxLength: 6})
 
 - `fc.asciiString()`
 - `fc.asciiString({minLength?, maxLength?})`
-- _`fc.asciiString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.asciiString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.asciiString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.asciiString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -762,8 +762,8 @@ fc.asciiString({minLength: 4, maxLength: 6})
 
 - `fc.unicodeString()`
 - `fc.unicodeString({minLength?, maxLength?})`
-- _`fc.unicodeString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.unicodeString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -803,8 +803,8 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 
 - `fc.string16bits()`
 - `fc.string16bits({minLength?, maxLength?})`
-- _`fc.string16bits(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.string16bits(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string16bits(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.string16bits(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -842,8 +842,8 @@ fc.string16bits({minLength: 4, maxLength: 6})
 
 - `fc.fullUnicodeString()`
 - `fc.fullUnicodeString({minLength?, maxLength?})`
-- _`fc.fullUnicodeString(maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.fullUnicodeString(minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.fullUnicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.fullUnicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -883,8 +883,8 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 
 - `fc.stringOf(charArb)`
 - `fc.stringOf(charArb, {minLength?, maxLength?})`
-- _`fc.stringOf(charArb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.stringOf(charArb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.stringOf(charArb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.stringOf(charArb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -932,7 +932,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 
 - `fc.json()`
 - `fc.json({maxDepth?})`
-- _`fc.json(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.json(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -978,7 +978,7 @@ fc.json({maxDepth: 1})
 
 - `fc.unicodeJson()`
 - `fc.unicodeJson({maxDepth?})`
-- _`fc.unicodeJson(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeJson(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1015,8 +1015,8 @@ fc.unicodeJson({maxDepth: 1})
 
 - `fc.lorem()`
 - `fc.lorem({maxCount?, mode?})`
-- _`fc.lorem(maxWordsCount)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.lorem(maxCount, sentenceMode)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.lorem(maxWordsCount)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.lorem(maxCount, sentenceMode)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1619,7 +1619,7 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 
 - `fc.option(arb)`
 - `fc.option(arb, {freq?, nil?})`
-- _`fc.option(arb, freq)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.option(arb, freq)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1865,8 +1865,8 @@ fc.genericTuple([fc.nat(), fc.string()])
 
 - `fc.array(arb)`
 - `fc.array(arb, {minLength?, maxLength?})`
-- _`fc.array(arb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.array(arb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1922,11 +1922,11 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 
 - `fc.set(arb)`
 - `fc.set(arb, {minLength?, maxLength?, compare?})`
-- _`fc.set(arb, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, maxLength, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.set(arb, minLength, maxLength, compare)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, maxLength, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.set(arb, minLength, maxLength, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1976,7 +1976,7 @@ fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.le
 
 - `fc.subarray(originalArray)`
 - `fc.subarray(originalArray, {minLength?, maxLength?})`
-- _`fc.subarray(originalArray, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.subarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2014,7 +2014,7 @@ fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 
 - `fc.shuffledSubarray(originalArray)`
 - `fc.shuffledSubarray(originalArray, {minLength?, maxLength?})`
-- _`fc.shuffledSubarray(originalArray, minLength, maxLength)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.shuffledSubarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2281,7 +2281,7 @@ fc.object({
 
 - `fc.jsonObject()`
 - `fc.jsonObject({maxDepth?})`
-- _`fc.jsonObject(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.jsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2318,7 +2318,7 @@ fc.jsonObject({maxDepth: 1})
 
 - `fc.unicodeJsonObject()`
 - `fc.unicodeJsonObject({maxDepth?})`
-- _`fc.unicodeJsonObject(maxDepth)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.unicodeJsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2838,7 +2838,7 @@ fc.context()
 
 - `fc.commands(commandArbs)`
 - `fc.commands(commandArbs, { disableReplayLog?, maxCommands?, replayPath? })`
-- _`fc.commands(commandArbs, maxCommands)`_ — _not recommended ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- _`fc.commands(commandArbs, maxCommands)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
