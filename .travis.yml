@@ -64,6 +64,10 @@ jobs:
         # Our default version of node is above 13.2.0
         - node --version
         - sh run.sh
+        # Node latest version supports ES modules by default
+        - nvm install node
+        - node --version
+        - sh run.sh
         # Node 12.x and >=12.18 enables support for ES modules by default
         - nvm install 12.18
         - node --version
