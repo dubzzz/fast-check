@@ -57,6 +57,7 @@ jobs:
     - stage: test
       env: STEP=COMMONJS_ESM
       script:
+        - PROJECT_ROOT_PATH="$(pwd)"
         - yarn build:prod
         - yarn link
         - cd test/esm
@@ -80,6 +81,9 @@ jobs:
         - nvm install 10
         - node --version
         - sh run.sh
+        # Check package score against skypack
+        - cd "$PROJECT_ROOT_PATH"
+        - npx @skypack/package-check
     - stage: publish documentation
       if: branch = master AND type = push
       script:
