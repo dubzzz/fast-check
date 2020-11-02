@@ -110,6 +110,12 @@ Here are the minimal requirements to use fast-check properly without any polyfil
 
 (1) Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
 
+## ReScript bindings
+
+Bindings to use fast-check in the [ReScript](https://rescript-lang.org) langauge are available. These are maintained by [@TheSpyder](https://github.com/TheSpyder) external to the main project; please do not log binding-specific issues here.
+
+https://www.npmjs.com/rescript-fast-check
+
 ## Issues found by fast-check in famous packages
 
 fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
