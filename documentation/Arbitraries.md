@@ -176,7 +176,7 @@ fc.nat({max: 1000})
 
 ```js
 fc.maxSafeInteger()
-// Examples of generated values: 36, 7332126275469313, 48, -8631085038818303, 417563055003649…
+// Examples of generated values: 36, 7332126275469769, 48, -8631085038818688, 417563055004249…
 ```
 </details>
 
@@ -197,7 +197,7 @@ fc.maxSafeInteger()
 
 ```js
 fc.maxSafeNat()
-// Examples of generated values: 44, 5865870157242368, 16, 5036966494443520, 53…
+// Examples of generated values: 44, 5859827138257099, 16, 5028419509524314, 53…
 ```
 </details>
 
@@ -1485,35 +1485,35 @@ fc.date()
 // • new Date("1970-01-01T00:00:00.045Z")
 // • new Date("1969-12-31T23:59:59.993Z")
 // • new Date("1970-01-01T00:00:00.049Z")
-// • new Date("+117925-10-22T07:46:48.448Z")
-// • new Date("-091601-12-20T20:39:50.528Z")
+// • new Date("+117887-07-07T17:12:49.936Z")
+// • new Date("-091653-05-18T10:16:24.518Z")
 // • …
 
 fc.date({ min: new Date("2000-01-01T00:00:00.000Z") })
 // Examples of generated values:
 // • new Date("2000-01-01T00:00:00.008Z")
 // • new Date("2000-01-01T00:00:00.012Z")
-// • new Date("+251903-01-29T20:31:55.392Z")
+// • new Date("+251844-04-28T11:49:32.856Z")
 // • new Date("2000-01-01T00:00:00.034Z")
-// • new Date("+258960-08-17T11:48:52.864Z")
+// • new Date("+258781-01-23T17:20:22.591Z")
 // • …
 
 fc.date({ max: new Date("2000-01-01T00:00:00.000Z") })
 // Examples of generated values:
 // • new Date("1969-12-31T23:59:59.965Z")
 // • new Date("1969-12-31T23:59:59.987Z")
-// • new Date("-061397-05-15T20:31:55.392Z")
+// • new Date("-061471-10-15T20:55:54.168Z")
 // • new Date("1969-12-31T23:59:59.962Z")
-// • new Date("-135518-12-15T11:48:52.864Z")
+// • new Date("-135742-01-31T09:23:17.695Z")
 // • …
 
 fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T23:59:59.999Z") })
 // Examples of generated values:
-// • new Date("2000-01-12T09:27:02.400Z")
+// • new Date("2000-06-25T11:59:12.750Z")
 // • new Date("2000-01-01T00:00:00.001Z")
-// • new Date("2000-08-24T06:59:48.352Z")
+// • new Date("2000-09-24T05:26:49.182Z")
 // • new Date("2000-01-01T00:00:00.019Z")
-// • new Date("2000-05-27T01:31:48.096Z")
+// • new Date("2000-07-08T09:22:33.042Z")
 // • …
 ```
 </details>
@@ -2181,10 +2181,10 @@ fc.tuple(
 ).map(([compulsary, opt]) => ({...compulsary, ...opt}))
 // Note: id will always be defined, age and birthday will be optional
 // Examples of generated values:
-// • {"id":"7a85b7cf-bf0c-4437-8268-b669d0aed75a","age":0,"birthday":new Date("-271175-12-30T10:06:19.648Z")}
+// • {"id":"7a85b7cf-bf0c-4437-8268-b669d0aed75a","age":0,"birthday":new Date("-271214-12-28T14:56:53.916Z")}
 // • {"id":"a2302ffc-0006-4000-84a9-689434bc55da"}
 // • {"id":"0000000b-000c-4000-9209-d91456cba116","age":6,"birthday":new Date("1970-01-01T00:00:00.011Z")}
-// • {"id":"d5157d1d-001a-4000-8000-00050000001f","age":40,"birthday":new Date("+261993-05-18T02:47:17.248Z")}
+// • {"id":"d5157d1d-001a-4000-8000-00050000001f","age":40,"birthday":new Date("+261944-10-24T20:27:26.782Z")}
 // • {"id":"00000002-c04d-40cd-8000-001000000012","age":4}
 // • …
 ```
@@ -2273,7 +2273,7 @@ fc.object({
   withSet: true,
 })
 // Examples of generated values:
-// • {"F,r0fx}OWg":[new Date("+160385-06-21T16:52:36.736Z"),22583622805204069477977266286996933943873259784384626171039405815620425326468n,{"{Y":"N",",;04yN":-107026440}],"6x*pJp&3^":"new Number(0.42255506544021615)"}
+// • {"F,r0fx}OWg":[new Date("+160385-01-30T05:38:43.072Z"),22583622805204069477977266286996933943873259784384626171039405815620425326468n,{"{Y":"N",",;04yN":-107026440}],"6x*pJp&3^":"new Number(0.42255506544021615)"}
 // • {}
 // • {"hyu)K.|R-5":"new Set([new String(\"f0q}b8/2*\"),new String(\" scrLAI'KD\"),new String(\"P_krOW\"),new String(\"hZ\"),new String(\"VwvEE}s(;V\")])","85c":1955536278377593253161285446750593118355413969436917489136958056479360825003n,"Y*":new Number(0.4145363362551938),"[n7%b":"new Number(0.861563135058088)","L":-36290478173422814553429011041239932856189046009049526980429727311354359757843n,"qe80E%":new Set([undefined,new String("-:"),new String("@}gz6"),null,new String("f*;+=I8t")]),"":new Set([new Number(0.8938732846739627),new Number(0.5945807356752961)]),"fvH0g*vr":Object.create(null),"e67K#h_N>":Object.assign(Object.create(null),{"5yAgxxIc":null})}
 // • {"r5B":Object.assign(Object.create(null),{"":false,"new Set([new Boolean(false),new Boolean(true)])":true,"G $D&  %#x":true}),"":{"-47n":1387385502,"POG^":15},"lf*":49n,"UN":new Date("1969-12-31T23:59:59.948Z")}
@@ -2431,7 +2431,7 @@ fc.anything({
 // • {"new Set([new Number(658282252),\"F$\",new Number(0.3487903700973978)])":0.597600347119469}
 // • 49923639470792901331007151703295270516608099603300111897468945883726467315714n
 // • [{"lloo":new String("8k"),":6O":true,"1 J%S-":0.9811743941698315,"J~+`Qo1<o":new Number(0),"KV`MZ[":new Boolean(true)},{"new String(\"#Oi&%P\\\":\")":new Number(2),"lsA":0.16318916814007212}]
-// • Object.assign(Object.create(null),{"K\\~c!jADJ5":new Date("-041984-06-01T14:47:46.432Z"),"rBi6zzh":2371026000844887995115928520799279159182492319348459568753669098566854816929n,":<Rzk3":Object.create(null),"&$IJ+Z71e":new Date("+104821-04-30T22:28:13.952Z"),"n&9A.;gcG_":Object.assign(Object.create(null),{"gY`+mW":new String("Ci(w+qXQ"),"A-leb&":new String("DIj`F@;")})})
+// • Object.assign(Object.create(null),{"K\\~c!jADJ5":new Date("-042008-05-13T02:10:57.427Z"),"rBi6zzh":2371026000844887995115928520799279159182492319348459568753669098566854816929n,":<Rzk3":Object.create(null),"&$IJ+Z71e":new Date("+104798-01-21T08:19:12.364Z"),"n&9A.;gcG_":Object.assign(Object.create(null),{"gY`+mW":new String("Ci(w+qXQ"),"A-leb&":new String("DIj`F@;")})})
 // • …
 ```
 </details>
