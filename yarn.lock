@@ -671,24 +671,24 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@microsoft/api-extractor-model@7.10.7":
-  version "7.10.7"
-  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.10.7.tgz#441b6b401c727ae558c731ba9985a6f8d3b07e40"
-  integrity sha512-LEq4hfJgBcSYhoTctLoNmbALKod9c4azIYoe8q+f9IQLMxchPQW52NzsC5z1FJC2eZCUxMp/HykwjViPO1IDtQ==
+"@microsoft/api-extractor-model@7.10.8":
+  version "7.10.8"
+  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.10.8.tgz#12fa3c25f26b5eb1f4799270bf0df12d4113f16e"
+  integrity sha512-9TfiCTPnkUeLaYywZeg9rYbVPX9Tj6AAkO6ThnjSE0tTPLjMcL3RiHkqn0BJ4+aGcl56APwo32zj5+kG+NqxYA==
   dependencies:
     "@microsoft/tsdoc" "0.12.19"
-    "@rushstack/node-core-library" "3.34.6"
+    "@rushstack/node-core-library" "3.34.7"
 
 "@microsoft/api-extractor@^7.9.10":
-  version "7.11.1"
-  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor/-/api-extractor-7.11.1.tgz#90b66280cf44027c318202ac0d8c4a4ccaf416e7"
-  integrity sha512-a5xjBO0nv5YBxGk0jsmaP2ECKzKWSbBL0Sj/2k7X2GtrDugN/MRpxvpo1jA/6W3QrSvezOSIxjQZCKo2jS2XyQ==
+  version "7.11.2"
+  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor/-/api-extractor-7.11.2.tgz#7f90e39294d16a18bb00883e9462242dc1646efe"
+  integrity sha512-iZPv22j9K02cbwIDblOgF1MxZG+KWovp3CQpWCD6UC/+YYO4DfLxX5uZYVNzfgT4vU8fN0rugJmGm85rHX6Ouw==
   dependencies:
-    "@microsoft/api-extractor-model" "7.10.7"
+    "@microsoft/api-extractor-model" "7.10.8"
     "@microsoft/tsdoc" "0.12.19"
-    "@rushstack/node-core-library" "3.34.6"
-    "@rushstack/rig-package" "0.2.6"
-    "@rushstack/ts-command-line" "4.7.5"
+    "@rushstack/node-core-library" "3.34.7"
+    "@rushstack/rig-package" "0.2.7"
+    "@rushstack/ts-command-line" "4.7.6"
     colors "~1.2.1"
     lodash "~4.17.15"
     resolve "~1.17.0"
@@ -722,10 +722,10 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@rushstack/node-core-library@3.34.6":
-  version "3.34.6"
-  resolved "https://registry.yarnpkg.com/@rushstack/node-core-library/-/node-core-library-3.34.6.tgz#d05b286125c7b7754bf5f020a8c5219fbc90279c"
-  integrity sha512-f9U1qkVPgc1zUgQI0+OX62G9kqN8kyVCnGIsPd1w77TLmb2fIwZo+mujWwrCg0YeaW0REWkjOVbKlFgbnaX0/Q==
+"@rushstack/node-core-library@3.34.7":
+  version "3.34.7"
+  resolved "https://registry.yarnpkg.com/@rushstack/node-core-library/-/node-core-library-3.34.7.tgz#864c773212ec0fc158576fec0b5ae0535a246886"
+  integrity sha512-7FwJ0jmZsh7bDIZ1IqDNphY9Kc6aAi1D2K8jiq+da4flMyL84HNeq2KxvwFLzjLwu3eMr88X+oBpgxCTD5Y57Q==
   dependencies:
     "@types/node" "10.17.13"
     colors "~1.2.1"
@@ -737,19 +737,19 @@
     timsort "~0.3.0"
     z-schema "~3.18.3"
 
-"@rushstack/rig-package@0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@rushstack/rig-package/-/rig-package-0.2.6.tgz#907f250f53a114d2e46a4943ffb783d726f1d41e"
-  integrity sha512-fDk6QKZnsvx0JatKa/6CONgUn+TOt1DbwkO7p5XiU+XVUm9GiEcS9PPhnepvYZlr8Dn0MUZ2CKUKkQ+KQHl54A==
+"@rushstack/rig-package@0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@rushstack/rig-package/-/rig-package-0.2.7.tgz#42b1ed2cfd73d4fc50a119e74a236aacb70d2125"
+  integrity sha512-hI1L0IIzCHqH/uW64mKqEQ0/MANA/IklVId3jGpj1kt9RJcBdeNUIlzDtHl437LZRAuEA8CyotRHzG6YDgWlTw==
   dependencies:
     "@types/node" "10.17.13"
     resolve "~1.17.0"
     strip-json-comments "~3.1.1"
 
-"@rushstack/ts-command-line@4.7.5":
-  version "4.7.5"
-  resolved "https://registry.yarnpkg.com/@rushstack/ts-command-line/-/ts-command-line-4.7.5.tgz#d07f90d8338fa23042d71fdae986c0afa552b9f4"
-  integrity sha512-6i8EZ/1DWAfSLo2T4AwjwYH7qci958IQ36Yh65GbHyZn8H/IxooWFZNhL0mCa92kZVW5eDugdpUr3CPqG/py6A==
+"@rushstack/ts-command-line@4.7.6":
+  version "4.7.6"
+  resolved "https://registry.yarnpkg.com/@rushstack/ts-command-line/-/ts-command-line-4.7.6.tgz#ce509855b507863ed5e2a9ced8451774b6bfd359"
+  integrity sha512-falJVNfpJtsL3gJaY77JXXycfzhzB9VkKhqEfjRWD69/f6ezMUorPR6Nc90MnIaWgePTcdTJPZibxOQrNpu1Uw==
   dependencies:
     "@types/argparse" "1.0.38"
     argparse "~1.0.9"
