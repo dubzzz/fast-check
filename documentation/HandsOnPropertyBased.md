@@ -87,7 +87,7 @@ Edit `package.json` to configure the test framework:
 // --
 "jest": {
   "moduleFileExtensions": ["ts", "tsx", "js"],
-  "globals": {"ts-jest": {"tsConfig": "tsconfig.json"}},
+  "globals": {"ts-jest": {"tsconfig": "tsconfig.json"}},
   "transform": {"^.+\\.(ts|tsx)$": "ts-jest"},
   "testMatch": ["**/specs/*.+(ts|tsx|js)"]
 },
