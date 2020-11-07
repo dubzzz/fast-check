@@ -100,6 +100,7 @@ jobs:
         edge: true
         cleanup: false
         email: npm@dubien.org
+        tag: legacy
         api_token:
           secure: SAy02qXQyzzQmpiT05unuCX73sR1RP+dkrWLfGEwOYNGO4cBRK0HgDlPDFt8bfvmN8qK3hlieUqf9tanLkdc3novRB7MhbLuBZoiTybPUj6aRlNUDuee0VemSRLSuaR1pB6hAgOMxR0FVRzy6xxo+s0jRaSq36aYKK4r/7fC83wY0r5/n9nE07ZuXMUlHauFhA5MHNkq8SQbax3x57DRHoK6rnxdyoCpCsPf70h4cRJj8QAa53XYrbEclec4ygmWfMiOZuQQDLW3WL4t6lsow/yCmh1H82qAsf3Tnwh7SMu77pxuBUg3h9zpNPYTPt785NtwpF0FEB7dckzqtXXn5zwhrv4XB5N7OcuIxVoNJ98RaNd9lUMBlUaHv25jXH1is4OHjj1wK6r6ovLiGQWWsPKJzo46iRCQ7VbDq91ZLzUUiPyUZf23ex88I1ysRvDbJDM0qJNw/+it2t9HuFW/MPL0syUnCxmVrYRyvoNFRzmV/qzrrsumgUkR1csuFed7lHEwpKAO79pkRil0ir6fS5DmUJODZwr4X8oILTCmWLFlg97Mc9ZjOPnLodUMw7K4nT8X2F8VahmEFAPKcJ9ALRPTS1Cg7nWNm5GoMMRqUNbjkA9/GPnNxyR5L9y8FaPfLiZYjiFscv1JLyRazcPmk1kRKcQFRUUqPQx23V4Sg1Q=
         on:
