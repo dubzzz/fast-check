@@ -70,6 +70,10 @@ expectType<fc.Arbitrary<1 | 2 | 'hello'>>(fc.constantFrom(...([1, 2, 'hello'] as
 
 // record arbitrary
 expectType<fc.Arbitrary<{ a: number; b: string }>>(fc.record({ a: fc.nat(), b: fc.string() }));
+expectType<fc.Arbitrary<{ a: number; b: string }>>(fc.record({ a: fc.nat(), b: fc.string() }, {}));
+expectType<fc.Arbitrary<{ a: number; b: string }>>(
+  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: false })
+);
 expectType<fc.Arbitrary<{ a?: number; b?: string }>>(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true })
 );
