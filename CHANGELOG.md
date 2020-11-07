@@ -1,3 +1,12 @@
+# 2.6.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.6.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.6.0...v2.6.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
+
 # 2.6.0
 
 _Towards a uniform way to constrain arbitraries - step 3: number arbitraries_
@@ -11,6 +20,15 @@ _Towards a uniform way to constrain arbitraries - step 3: number arbitraries_
 - ([PR#1080](https://github.com/dubzzz/fast-check/pull/1080)) Mark old signatures as deprecated (see [#992](https://github.com/dubzzz/fast-check/issues/992))
 
 ---
+
+# 2.5.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.5.0...v2.5.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
 
 # 2.5.0
 
@@ -31,6 +49,15 @@ _Towards a uniform way to constrain arbitraries - step 2: remaining arbitraries 
 - ([PR#1025](https://github.com/dubzzz/fast-check/pull/1025)) Doc: Support fc.commands in codemod for [#992](https://github.com/dubzzz/fast-check/issues/992)
 
 ---
+
+# 2.4.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.4.0...v2.4.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
 
 # 2.4.0
 
@@ -58,6 +85,15 @@ _Towards a uniform way to constrain arbitraries - step 1: array-like arbitraries
 
 ---
 
+# 2.3.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.3.0...v2.3.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
+
 # 2.3.0
 
 _Add global beforeEach and afterEach hooks_
@@ -72,6 +108,15 @@ _Add global beforeEach and afterEach hooks_
 - ([PR#970](https://github.com/dubzzz/fast-check/pull/970)) Doc: Rewrite the documentation to better target JavaScript users
 
 ---
+
+# 2.2.2
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.2.1...v2.2.2)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
 
 # 2.2.1
 
