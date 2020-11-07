@@ -17,7 +17,8 @@ export interface RecordConstraints {
  * given the type of the source arbitrary and constraints to be applied
  * @public
  */
-export type RecordValue<T, Constraints = undefined> = Constraints extends {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type RecordValue<T, Constraints = {}> = Constraints extends {
   withDeletedKeys: true;
 }
   ? Partial<T>
