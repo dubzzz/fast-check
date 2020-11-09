@@ -1,4 +1,6 @@
+import { Random } from '../../../random/generator/Random';
 import { Arbitrary } from '../definition/Arbitrary';
+import { Shrinkable } from '../definition/Shrinkable';
 
 /** @internal */
 type Numeric = number | bigint;
@@ -7,20 +9,44 @@ type Numeric = number | bigint;
 type NumericArbitrary<NType> = new (min: NType, max: NType, genMin: NType, genMax: NType) => Arbitrary<NType>;
 
 /** @internal */
+class BiasedNumericArbitrary<NType extends Numeric> extends Arbitrary<NType> {
+  private readonly arbs: Arbitrary<NType>[];
+  constructor(readonly arbCloseToZero: Arbitrary<NType>, ...arbs: Arbitrary<NType>[]) {
+    super();
+    this.arbs = arbs;
+  }
+  generate(mrng: Random): Shrinkable<NType> {
+    const id = mrng.nextInt(-2 * this.arbs.length, this.arbs.length - 1); // 2 close to zero for 1 in others
+    return id < 0 ? this.arbCloseToZero.generate(mrng) : this.arbs[id].generate(mrng);
+  }
+}
+
+/** @internal */
 export function biasNumeric<NType extends Numeric>(
   min: NType,
   max: NType,
   Ctor: NumericArbitrary<NType>,
   logLike: (n: NType) => NType
-) {
+): Arbitrary<NType> {
   if (min === max) {
     return new Ctor(min, max, min, max);
   }
-  if (min < 0) {
-    return max > 0
-      ? new Ctor(min, max, -logLike(-min as any) as any, logLike(max)) // min and max != 0
-      : new Ctor(min, max, (max - logLike((max - min) as any)) as any, max); // max-min != 0
+  if (min < 0 && max > 0) {
+    // min < 0 && max > 0
+    const logMin = logLike(-min as any); // min !== 0
+    const logMax = logLike(max); // max !== 0
+    return new BiasedNumericArbitrary(
+      new Ctor(min, max, -logMin as any, logMax), // close to zero,
+      new Ctor(min, max, (max - logMax) as any, max), // close to max
+      new Ctor(min, max, min, (min as any) + logMin) // close to min
+    );
   }
-  // min >= 0, so max >= 0
-  return new Ctor(min, max, min, (min as any) + logLike((max - min) as any)); // max-min != 0
+  // Either min < 0 && max <= 0
+  // Or min >= 0, so max >= 0
+  const logGap = logLike((max - min) as any); // max-min !== 0
+  const arbCloseToMin = new Ctor(min, max, min, (min as any) + logGap); // close to min
+  const arbCloseToMax = new Ctor(min, max, (max - logGap) as any, max); // close to max
+  return min < 0
+    ? new BiasedNumericArbitrary(arbCloseToMax, arbCloseToMin) // max is closer to zero
+    : new BiasedNumericArbitrary(arbCloseToMin, arbCloseToMax); // min is closer to zero
 }
