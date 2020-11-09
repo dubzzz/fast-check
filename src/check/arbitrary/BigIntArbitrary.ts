@@ -8,16 +8,22 @@ import { biasNumeric } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkNumeric';
 
 /** @internal */
+function bigIntLogLike(v: bigint) {
+  if (v === BigInt(0)) return BigInt(0);
+  return BigInt(v.toString().length);
+}
+
+/** @internal */
 class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
   private biasedBigIntArbitrary: Arbitrary<bigint> | null = null;
-  constructor(readonly min: bigint, readonly max: bigint) {
+  constructor(readonly min: bigint, readonly max: bigint, readonly genMin: bigint, readonly genMax: bigint) {
     super();
   }
   private wrapper(value: bigint, shrunkOnce: boolean): Shrinkable<bigint> {
     return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<bigint> {
-    return this.wrapper(mrng.nextBigInt(this.min, this.max), false);
+    return this.wrapper(mrng.nextBigInt(this.genMin, this.genMax), false);
   }
   shrink(value: bigint, shrunkOnce?: boolean): Stream<bigint> {
     return shrinkBigInt(this.min, this.max, value, shrunkOnce === true);
@@ -26,11 +32,11 @@ class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
     if (this.biasedBigIntArbitrary != null) {
       return this.biasedBigIntArbitrary;
     }
-    const logLike = (v: bigint) => {
-      if (v === BigInt(0)) return BigInt(0);
-      return BigInt(v.toString().length);
-    };
-    this.biasedBigIntArbitrary = biasNumeric(this.min, this.max, BigIntArbitrary, logLike);
+    if (this.min === this.max || this.min !== this.genMin || this.max !== this.genMax) {
+      this.biasedBigIntArbitrary = this;
+      return this.biasedBigIntArbitrary;
+    }
+    this.biasedBigIntArbitrary = biasNumeric(this.min, this.max, BigIntArbitrary, bigIntLogLike);
     return this.biasedBigIntArbitrary;
   }
   withBias(freq: number): Arbitrary<bigint> {
@@ -48,7 +54,9 @@ class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
  * @public
  */
 function bigIntN(n: number): ArbitraryWithShrink<bigint> {
-  return new BigIntArbitrary(BigInt(-1) << BigInt(n - 1), (BigInt(1) << BigInt(n - 1)) - BigInt(1));
+  const min = BigInt(-1) << BigInt(n - 1);
+  const max = (BigInt(1) << BigInt(n - 1)) - BigInt(1);
+  return new BigIntArbitrary(min, max, min, max);
 }
 
 /**
@@ -61,7 +69,9 @@ function bigIntN(n: number): ArbitraryWithShrink<bigint> {
  * @public
  */
 function bigUintN(n: number): ArbitraryWithShrink<bigint> {
-  return new BigIntArbitrary(BigInt(0), (BigInt(1) << BigInt(n)) - BigInt(1));
+  const min = BigInt(0);
+  const max = (BigInt(1) << BigInt(n)) - BigInt(1);
+  return new BigIntArbitrary(min, max, min, max);
 }
 
 /**
@@ -135,7 +145,7 @@ function bigInt(min: bigint, max: bigint): ArbitraryWithShrink<bigint>;
 function bigInt(constraints: BigIntConstraints): ArbitraryWithShrink<bigint>;
 function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): ArbitraryWithShrink<bigint> {
   const constraints = buildCompleteBigIntConstraints(extractBigIntConstraints(args));
-  return new BigIntArbitrary(constraints.min, constraints.max);
+  return new BigIntArbitrary(constraints.min, constraints.max, constraints.min, constraints.max);
 }
 
 /**
@@ -170,7 +180,7 @@ function bigUint(max: bigint): ArbitraryWithShrink<bigint>;
 function bigUint(constraints: BigUintConstraints): ArbitraryWithShrink<bigint>;
 function bigUint(constraints?: bigint | BigUintConstraints): ArbitraryWithShrink<bigint> {
   const max = constraints === undefined ? undefined : typeof constraints === 'object' ? constraints.max : constraints;
-  return max === undefined ? bigUintN(256) : new BigIntArbitrary(BigInt(0), max);
+  return max === undefined ? bigUintN(256) : new BigIntArbitrary(BigInt(0), max, BigInt(0), max);
 }
 
 export { bigIntN, bigUintN, bigInt, bigUint };
