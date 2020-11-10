@@ -53,17 +53,16 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
 });
 
 function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
-  it(`Should be biased by default and suggest small entries [${label}]`, () => {
+  it(`Should be biased by default and suggest extreme entries more often [${label}]`, () => {
+    // When bias is toggled (default), there is a higher chance to geenrate values close to zero
+    // but also close to min or max (for numeric types). Here arb is a numeric arbitrary.
     // Falsy implementation of removeDuplicates
     const removeDuplicates = (arr: T[]) => [...arr];
     // Expect a failure
     const out = fc.check(
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
-        for (const v of filtered) {
-          if (filtered.filter((i) => i === v).length > 1) return false; // duplicates detected
-        }
-        return true;
+        expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates (but will find some)
       }),
       { seed, numRuns: 5000 } // increased numRuns to remove flakiness
     );
@@ -78,10 +77,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
     const out = fc.check(
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
-        for (const v of filtered) {
-          if (filtered.filter((i) => i === v).length > 1) return false; // duplicates detected
-        }
-        return true;
+        expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates
       }),
       { seed, unbiased: true }
     );
