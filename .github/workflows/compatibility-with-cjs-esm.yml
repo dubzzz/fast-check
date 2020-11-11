@@ -15,14 +15,14 @@ jobs:
       uses: actions/setup-node@v2-beta
       with:
         node-version: 14.x
+    - name: Setting up NVM
+      run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
     - name: Build production package
       run: |
         yarn
         yarn build:prod
     - name: Link package to serve it as-if it was a real package
       run: yarn link
-    - name: Setting up NVM
-      run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
     # Node >=13.2.0 enables support for ES modules by default
     # Our default version of node is above 13.2.0
     - name: Check compatibility against Node
