@@ -15,39 +15,53 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
-    # Build production package and serve it as-if it was a real package
-    - run: yarn
-    - run: yarn build:prod
-    - run: yarn link
-    # Node >=13.2.0 enables support for ES modules by default
-    # Our default version of node is above 13.2.0
-    - run: |
+    - name: Build production package
+      run: |
+        yarn
+        yarn build:prod
+    - name: Link package to serve it as-if it was a real package
+      run: yarn link
+    - name: CJS/ESM support - Node >=13.2.0 enables support for ES modules by default
+      run: |
         cd test/esm
         node --version
         sh run.sh
-    # Node latest version supports ES modules by default
-    - run: |
+    - name: Using Node latest
+      uses: actions/setup-node@v1
+      with:
+        node-version: '>=13.2.0'
+        check-latest: true
+    - name: CJS/ESM support - Node latest version supports ES modules by default
+      run: |
         cd test/esm
-        nvm install node
         node --version
         sh run.sh
-    # Node 12.x and >=12.18 enables support for ES modules by default
-    - run: |
+    - name: Using Node v12.18
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.18'
+    - name: CJS/ESM support - Node 12.x and >=12.18 enables support for ES modules by default
+      run: |
         cd test/esm
-        nvm install 12.18
         node --version
         sh run.sh
-    # Node <12.18 requires a flag to support ES modules but can understand them
-    - run: |
+    - name: Using Node v12.17
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.17'
+    - name: CJS/ESM support - Node <12.18 requires a flag to support ES modules but can understand them
+      run: |
         cd test/esm
-        nvm install 12.17
         node --version
         sh run.sh
-    # Node 10 does not understand ES modules
-    - run:  |
+    - name: Using Node v10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: CJS/ESM support - Node 10 does not understand ES modules
+      run: |
         cd test/esm
-        nvm install 10
         node --version
         sh run.sh
-    # Check package score against skypack
-    - run: npx @skypack/package-check
+    - name: Check package score using skypack
+      run: npx @skypack/package-check
