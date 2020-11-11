@@ -28,8 +28,6 @@ jobs:
       run: yarn test
     - name: End-to-end tests
       run: yarn e2e
-    - name: Extract coverage
-      run: yarn coverage
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
