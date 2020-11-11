@@ -11,11 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Using Node v${{matrix.node-version}}
+    - name: Using Node v14.x
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
     - run: PROJECT_ROOT_PATH="$(pwd)"
+    - run: yarn
     - run: yarn build:prod
     - run: yarn link
     - run: cd test/esm
