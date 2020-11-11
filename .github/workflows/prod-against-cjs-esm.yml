@@ -15,31 +15,39 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
-    - run: PROJECT_ROOT_PATH="$(pwd)"
+    # Build production package and serve it as-if it was a real package
     - run: yarn
     - run: yarn build:prod
     - run: yarn link
-    - run: cd test/esm
     # Node >=13.2.0 enables support for ES modules by default
     # Our default version of node is above 13.2.0
-    - run: node --version
-    - run: sh run.sh
+    - run: |
+        cd test/esm
+        node --version
+        sh run.sh
     # Node latest version supports ES modules by default
-    - run: nvm install node
-    - run: node --version
-    - run: sh run.sh
+    - run: |
+        cd test/esm
+        nvm install node
+        node --version
+        sh run.sh
     # Node 12.x and >=12.18 enables support for ES modules by default
-    - run: nvm install 12.18
-    - run: node --version
-    - run: sh run.sh
+    - run: |
+        cd test/esm
+        nvm install 12.18
+        node --version
+        sh run.sh
     # Node <12.18 requires a flag to support ES modules but can understand them
-    - run: nvm install 12.17
-    - run: node --version
-    - run: sh run.sh
+    - run: |
+        cd test/esm
+        nvm install 12.17
+        node --version
+        sh run.sh
     # Node 10 does not understand ES modules
-    - run: nvm install 10
-    - run: node --version
-    - run: sh run.sh
+    - run:  |
+        cd test/esm
+        nvm install 10
+        node --version
+        sh run.sh
     # Check package score against skypack
-    - run: cd "$PROJECT_ROOT_PATH"
     - run: npx @skypack/package-check
