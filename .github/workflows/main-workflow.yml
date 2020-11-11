@@ -1,4 +1,4 @@
-name: Compatibility with CJS/ESM
+name: Main Workflow
 
 on:
   push:
@@ -7,7 +7,43 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v${{matrix.node-version}}
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: ${{matrix.node-version}}
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+    - name: Build the library (dev version)
+      run: |
+          yarn prebuild
+          yarn build
+    - name: Unit tests
+      run: yarn test
+    - name: End-to-end tests
+      run: yarn e2e
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        flag-name: node-${{matrix.node-version}}
+        parallel: true
+  publish_coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          parallel-finished: true
+  compatibility_cjs_esm:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
