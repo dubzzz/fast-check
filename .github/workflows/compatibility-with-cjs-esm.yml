@@ -29,6 +29,7 @@ jobs:
         sh run.sh
     # Node latest version supports ES modules by default
     - name: Check compatibility against latest version of Node
+      shell: bash -l {0}
       run: |
         cd test/esm
         nvm install node
@@ -36,6 +37,7 @@ jobs:
         sh run.sh
     # Node 12.x and >=12.18 enables support for ES modules by default
     - name: Check compatibility against Node 12.18
+      shell: bash -l {0}
       run: |
         cd test/esm
         nvm install 12.18
@@ -43,6 +45,7 @@ jobs:
         sh run.sh
     # Node <12.18 requires a flag to support ES modules but can understand them
     - name: Check compatibility against Node 12.17
+      shell: bash -l {0}
       run: |
         cd test/esm
         nvm install 12.17
@@ -50,6 +53,7 @@ jobs:
         sh run.sh
     # Node 10 does not understand ES modules
     - name: Check compatibility against Node 10
+      shell: bash -l {0}
       run: |
         cd test/esm
         nvm install 10
