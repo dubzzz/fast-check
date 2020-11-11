@@ -18,8 +18,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{matrix.node-version}}
-    - run: yarn
-    - run: yarn prebuild
-    - run: yarn build
-    - run: yarn test
-    - run: yarn e2e
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+    - name: Build the library (dev version)
+      run: |
+          yarn prebuild
+          yarn build
+    - name: Unit tests
+      run: yarn test
+    - name: End-to-end tests
+      run: yarn e2e
