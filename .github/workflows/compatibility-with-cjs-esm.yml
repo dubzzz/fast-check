@@ -11,17 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install nvm
-      shell: bash -l {0}
-      run: |
-        cd ..
-        echo $HOME
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-        export NVM_DIR="$HOME/.nvm"
-        echo "source $NVM_DIR/nvm.sh --install" >> "$HOME/.bash_profile"
-        cd -
-        source $HOME/.bash_profile
     - name: Using Node v14.x
+      shell: bash -l {0}
       run: nvm install 14
     - name: Build production package
       run: |
