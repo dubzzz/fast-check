@@ -21,46 +21,41 @@ jobs:
         yarn build:prod
     - name: Link package to serve it as-if it was a real package
       run: yarn link
-    - name: Check compatibility with CJS/ESM — Node >=13.2.0 enables support for ES modules by default
+    - name: Setting up NVM
+      run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
+    # Node >=13.2.0 enables support for ES modules by default
+    # Our default version of node is above 13.2.0
+    - name: Check compatibility against Node
       run: |
         cd test/esm
         node --version
         sh run.sh
-    - name: Using Node latest
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '>=13.2.0'
-        check-latest: true
-    - name: Check compatibility with CJS/ESM — Node latest version supports ES modules by default
+    # Node latest version supports ES modules by default
+    - name: Check compatibility against latest version of Node
       run: |
         cd test/esm
+        nvm install node
         node --version
         sh run.sh
-    - name: Using Node v12.18
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '12.18'
-    - name: Check compatibility with CJS/ESM — Node 12.x and >=12.18 enables support for ES modules by default
+    # Node 12.x and >=12.18 enables support for ES modules by default
+    - name: Check compatibility against Node >=12.18
       run: |
         cd test/esm
+        nvm install 12.18
         node --version
         sh run.sh
-    - name: Using Node v12.17
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '12.17'
-    - name: Check compatibility with CJS/ESM — Node <12.18 requires a flag to support ES modules but can understand them
+    # Node <12.18 requires a flag to support ES modules but can understand them
+    - name: Check compatibility against Node <12.18
       run: |
         cd test/esm
+        nvm install 12.18
         node --version
         sh run.sh
-    - name: Using Node v10.x
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '10.x'
-    - name: Check compatibility with CJS/ESM — Node 10 does not understand ES modules
+    # Node 10 does not understand ES modules
+    - name: Check compatibility against Node 10
       run: |
         cd test/esm
+        nvm install 10
         node --version
         sh run.sh
     - name: Check package score using skypack
