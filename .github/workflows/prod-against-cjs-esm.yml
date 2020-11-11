@@ -21,7 +21,7 @@ jobs:
         yarn build:prod
     - name: Link package to serve it as-if it was a real package
       run: yarn link
-    - name: CJS/ESM support - Node >=13.2.0 enables support for ES modules by default
+    - name: Check compatibility with CJS/ESM — Node >=13.2.0 enables support for ES modules by default
       run: |
         cd test/esm
         node --version
@@ -31,7 +31,7 @@ jobs:
       with:
         node-version: '>=13.2.0'
         check-latest: true
-    - name: CJS/ESM support - Node latest version supports ES modules by default
+    - name: Check compatibility with CJS/ESM — Node latest version supports ES modules by default
       run: |
         cd test/esm
         node --version
@@ -40,7 +40,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '12.18'
-    - name: CJS/ESM support - Node 12.x and >=12.18 enables support for ES modules by default
+    - name: Check compatibility with CJS/ESM — Node 12.x and >=12.18 enables support for ES modules by default
       run: |
         cd test/esm
         node --version
@@ -49,7 +49,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '12.17'
-    - name: CJS/ESM support - Node <12.18 requires a flag to support ES modules but can understand them
+    - name: Check compatibility with CJS/ESM — Node <12.18 requires a flag to support ES modules but can understand them
       run: |
         cd test/esm
         node --version
@@ -58,7 +58,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '10.x'
-    - name: CJS/ESM support - Node 10 does not understand ES modules
+    - name: Check compatibility with CJS/ESM — Node 10 does not understand ES modules
       run: |
         cd test/esm
         node --version
