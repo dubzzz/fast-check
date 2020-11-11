@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Using Node v14.x
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v2-beta
       with:
         node-version: 14.x
     - name: Build production package
@@ -27,7 +27,7 @@ jobs:
         node --version
         sh run.sh
     - name: Using Node latest
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v2-beta
       with:
         node-version: '>=13.2.0'
         check-latest: true
@@ -37,7 +37,7 @@ jobs:
         node --version
         sh run.sh
     - name: Using Node v12.18
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v2-beta
       with:
         node-version: '12.18'
     - name: Check compatibility with CJS/ESM — Node 12.x and >=12.18 enables support for ES modules by default
@@ -46,7 +46,7 @@ jobs:
         node --version
         sh run.sh
     - name: Using Node v12.17
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v2-beta
       with:
         node-version: '12.17'
     - name: Check compatibility with CJS/ESM — Node <12.18 requires a flag to support ES modules but can understand them
@@ -55,7 +55,7 @@ jobs:
         node --version
         sh run.sh
     - name: Using Node v10.x
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v2-beta
       with:
         node-version: '10.x'
     - name: Check compatibility with CJS/ESM — Node 10 does not understand ES modules

@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Using Node v${{matrix.node-version}}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v2-beta
       with:
         node-version: ${{matrix.node-version}}
     - name: Install dependencies
