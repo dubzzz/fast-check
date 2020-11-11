@@ -1,4 +1,4 @@
-name: Production build against CJS/ESM
+name: Compatibility with CJS/ESM
 
 on:
   push:
