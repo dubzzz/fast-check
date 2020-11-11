@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,3 +28,20 @@ jobs:
       run: yarn test
     - name: End-to-end tests
       run: yarn e2e
+    - name: Extract coverage
+      run: yarn coverage
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        flag-name: node-${{matrix.node-version}}
+        parallel: true
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          parallel-finished: true
