@@ -1,0 +1,25 @@
+name: Main Test Suite
+
+on:
+  push:
+    branches: [$default-branch]
+  pull_request:
+    branches: [$default-branch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v${{matrix.node-version}}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{matrix.node-version}}
+    - run: yarn
+    - run: yarn prebuild
+    - run: yarn build
+    - run: yarn test
+    - run: yarn e2e
