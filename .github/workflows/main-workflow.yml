@@ -115,7 +115,7 @@ jobs:
       run: |
         yarn pack
         mv fast-check-*.tgz fast-check.tgz
-    - name: Upload math result for job 1
+    - name: Upload production package
       uses: actions/upload-artifact@v2
       with:
         name: bundle
@@ -127,11 +127,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Download bundle result
+      - name: Download production package
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link bundle
+      - name: Extract and link to production package
         run: |
           mkdir bundle
           tar -C bundle -zxvf fast-check.tgz
