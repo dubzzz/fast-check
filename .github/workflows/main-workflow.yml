@@ -134,6 +134,7 @@ jobs:
       - run: pwd
       - name: Extract and link bundle
         run: |
+          mkdir bundle
           tar -C bundle -zxvf fast-check.tgz
           cd bundle/package
           yarn install --production
