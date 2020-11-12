@@ -97,6 +97,45 @@ jobs:
         sh run.sh
     - name: Check package score using skypack
       run: npx @skypack/package-check
+  build_prod_archive:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v${{matrix.node-version}}
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: ${{matrix.node-version}}
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+    - name: Build production package
+      run: |
+        yarn
+        yarn build:prod
+    - name: Create bundle
+      run: |
+        yarn pack
+        mv fast-check-*.tgz fast-check.tgz
+    - name: Upload math result for job 1
+      uses: actions/upload-artifact@v2
+      with:
+        name: bundle
+        path: fast-check.tgz
+  validate_examples:
+    needs: build_prod_archive
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download bundle result
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link bundle
+        run: |
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --production
+          ls -l node_modules
+          yarn link
   format_lint:
     runs-on: ubuntu-latest
     steps:
