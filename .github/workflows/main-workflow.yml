@@ -97,14 +97,37 @@ jobs:
         sh run.sh
     - name: Check package score using skypack
       run: npx @skypack/package-check
-  build_prod_archive:
+  documentation:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Using Node v${{matrix.node-version}}
+    - name: Using Node v14.x
       uses: actions/setup-node@v2-beta
       with:
-        node-version: ${{matrix.node-version}}
+        node-version: '14.x'
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+    - name: Build production package
+      run: |
+        yarn
+        yarn build:prod
+    - name: Generate documentation
+      run: yarn docs
+    - name: Upload documentation
+      uses: actions/upload-artifact@v2
+      with:
+        name: documentation
+        path: docs/
+        if-no-files-found: error
+        retention-days: 1
+  production_package:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v14.x
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: '14.x'
     - name: Install dependencies
       run: yarn --frozen-lockfile
     - name: Build production package
@@ -121,12 +144,16 @@ jobs:
         name: bundle
         path: fast-check.tgz
         if-no-files-found: error
-        retention-days: 0
-  validate_examples:
-    needs: build_prod_archive
+        retention-days: 1
+  test_examples:
+    needs: production_package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
       - name: Download production package
         uses: actions/download-artifact@v2
         with:
@@ -139,14 +166,97 @@ jobs:
           yarn install --production
           ls -l node_modules
           yarn link
+      - name: Test examples/
+        run: |
+          cd example
+          yarn --frozen-lockfile
+          yarn link "fast-check"
+          yarn test
+  test_types:
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link to production package
+        run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --production
+          ls -l node_modules
+          yarn link
+      - name: Test test/type/
+        run: |
+          cd test/type/
+          yarn --frozen-lockfile
+          yarn link "fast-check"
+          yarn test
+  test_typescript_3_2:
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link to production package
+        run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --production
+          ls -l node_modules
+          yarn link
+      - name: Test test/legacy/typescript-3.2/
+        run: |
+          cd test/legacy/typescript-3.2/
+          yarn --frozen-lockfile
+          yarn link "fast-check"
+          yarn test
+  test_node_8:
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Using Node v8.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '8.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link to production package
+        run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --production
+          ls -l node_modules
+          yarn link
+      - name: Test test/legacy/main.js
+        run: node test/legacy/main.js
   format_lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Using Node v${{matrix.node-version}}
+    - name: Using Node v14.x
       uses: actions/setup-node@v2-beta
       with:
-        node-version: ${{matrix.node-version}}
+        node-version: '14.x'
     - name: Install dependencies
       run: yarn --frozen-lockfile
     - name: Check format
