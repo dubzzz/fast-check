@@ -119,7 +119,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: bundle
-        path: fast-check-*.tgz
+        path: fast-check.tgz
   validate_examples:
     needs: build_prod_archive
     runs-on: ubuntu-latest
