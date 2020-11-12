@@ -7,6 +7,20 @@ on:
     branches: [master]
 
 jobs:
+  format_lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v14.x
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: '14.x'
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+    - name: Check format
+      run: yarn format:check
+    - name: Check lint
+      run: yarn lint:check
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -43,60 +57,6 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           parallel-finished: true
-  compatibility_cjs_esm:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Using Node v14.x
-      shell: bash -l {0}
-      run: nvm install 14
-    - name: Build production package
-      run: |
-        yarn
-        yarn build:prod
-    - name: Link package to serve it as-if it was a real package
-      run: yarn link
-    # Node >=13.2.0 enables support for ES modules by default
-    # Our default version of node is above 13.2.0
-    - name: Check compatibility against current version of Node
-      run: |
-        cd test/esm
-        node --version
-        sh run.sh
-    # Node latest version supports ES modules by default
-    - name: Check compatibility against latest version of Node
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install node
-        node --version
-        sh run.sh
-    # Node 12.x and >=12.18 enables support for ES modules by default
-    - name: Check compatibility against Node 12.18
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install 12.18
-        node --version
-        sh run.sh
-    # Node <12.18 requires a flag to support ES modules but can understand them
-    - name: Check compatibility against Node 12.17
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install 12.17
-        node --version
-        sh run.sh
-    # Node 10 does not understand ES modules
-    - name: Check compatibility against Node 10
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install 10
-        node --version
-        sh run.sh
-    - name: Check package score using skypack
-      run: npx @skypack/package-check
   documentation:
     runs-on: ubuntu-latest
     steps:
@@ -251,17 +211,64 @@ jobs:
           yarn link
       - name: Test test/legacy/main.js
         run: node test/legacy/main.js
-  format_lint:
+  compatibility_cjs_esm:
+    needs: production_package
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Using Node v14.x
-      uses: actions/setup-node@v2-beta
+      shell: bash -l {0}
+      run: nvm install 14
+    - name: Download production package
+      uses: actions/download-artifact@v2
       with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: yarn --frozen-lockfile
-    - name: Check format
-      run: yarn format:check
-    - name: Check lint
-      run: yarn lint:check
+        name: bundle
+    - name: Extract and link to production package
+      run: |
+        mkdir bundle
+        tar -C bundle -zxvf fast-check.tgz
+        cd bundle/package
+        yarn install --production
+        ls -l node_modules
+        yarn link
+    # Node >=13.2.0 enables support for ES modules by default
+    # Our default version of node is above 13.2.0
+    - name: Check compatibility against current version of Node
+      run: |
+        cd test/esm
+        node --version
+        sh run.sh
+    # Node latest version supports ES modules by default
+    - name: Check compatibility against latest version of Node
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install node
+        node --version
+        sh run.sh
+    # Node 12.x and >=12.18 enables support for ES modules by default
+    - name: Check compatibility against Node 12.18
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install 12.18
+        node --version
+        sh run.sh
+    # Node <12.18 requires a flag to support ES modules but can understand them
+    - name: Check compatibility against Node 12.17
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install 12.17
+        node --version
+        sh run.sh
+    # Node 10 does not understand ES modules
+    - name: Check compatibility against Node 10
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install 10
+        node --version
+        sh run.sh
+    - name: Check package score using skypack
+      run: npx @skypack/package-check
