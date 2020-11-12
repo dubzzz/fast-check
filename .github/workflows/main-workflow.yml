@@ -127,6 +127,7 @@ jobs:
         name: bundle
         path: bundle
         if-no-files-found: error
+        retention-days: 0
   validate_examples:
     needs: build_prod_archive
     runs-on: ubuntu-latest
