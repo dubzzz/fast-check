@@ -112,20 +112,14 @@ jobs:
         yarn
         yarn build:prod
     - name: Create bundle
-      run: yarn pack
-    - name: Extract bundle
       run: |
-        mkdir bundle
-        tar -C bundle -zxvf fast-check-*.tgz
-    - name: Setup bundle
-      run: |
-        cd bundle/package
-        yarn install --production
-    - name: Upload bundle
+        yarn pack
+        mv fast-check-*.tgz fast-check.tgz
+    - name: Upload math result for job 1
       uses: actions/upload-artifact@v2
       with:
         name: bundle
-        path: bundle
+        path: fast-check.tgz
         if-no-files-found: error
         retention-days: 0
   validate_examples:
@@ -137,9 +131,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Link bundle
+      - name: Extract and link bundle
         run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
           cd bundle/package
+          yarn install --production
+          ls -l node_modules
           yarn link
   format_lint:
     runs-on: ubuntu-latest
