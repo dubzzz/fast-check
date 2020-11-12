@@ -120,6 +120,7 @@ jobs:
       with:
         name: bundle
         path: fast-check.tgz
+        if-no-files-found: error
   validate_examples:
     needs: build_prod_archive
     runs-on: ubuntu-latest
