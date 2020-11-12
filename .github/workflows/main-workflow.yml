@@ -8,6 +8,7 @@ on:
 
 jobs:
   format_lint:
+    name: 'Format & Lint'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -22,6 +23,7 @@ jobs:
     - name: Check lint
       run: yarn lint:check
   test:
+    name: 'Test'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -49,6 +51,7 @@ jobs:
         flag-name: node-${{matrix.node-version}}
         parallel: true
   publish_coverage:
+    name: 'Publish coverage'
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -57,7 +60,19 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           parallel-finished: true
+  test_package_quality:
+    name: 'Test package quality'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v14.x
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: '14.x'
+    - name: Check package score using skypack
+      run: npx @skypack/package-check
   documentation:
+    name: 'Build documentation'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -83,6 +98,7 @@ jobs:
         if-no-files-found: error
         retention-days: 1
   production_package:
+    name: 'Build production package'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -108,6 +124,7 @@ jobs:
         if-no-files-found: error
         retention-days: 1
   test_examples:
+    name: 'Test examples'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -135,6 +152,7 @@ jobs:
           yarn link "fast-check"
           yarn test
   test_types:
+    name: 'Test types'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -162,6 +180,7 @@ jobs:
           yarn link "fast-check"
           yarn test
   test_typescript_3_2:
+    name: 'Test legacy TypeScript'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -189,6 +208,7 @@ jobs:
           yarn link "fast-check"
           yarn test
   test_node_8:
+    name: 'Test legacy Node'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -212,6 +232,7 @@ jobs:
       - name: Test test/legacy/main.js
         run: node test/legacy/main.js
   compatibility_cjs_esm:
+    name: 'Test commonjs/esm compatibility'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -270,5 +291,3 @@ jobs:
         nvm install 10
         node --version
         sh run.sh
-    - name: Check package score using skypack
-      run: npx @skypack/package-check
