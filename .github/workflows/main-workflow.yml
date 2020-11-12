@@ -130,8 +130,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - run: ls -alh
-      - run: pwd
       - name: Extract and link bundle
         run: |
           mkdir bundle
