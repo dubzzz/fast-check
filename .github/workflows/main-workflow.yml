@@ -97,3 +97,17 @@ jobs:
         sh run.sh
     - name: Check package score using skypack
       run: npx @skypack/package-check
+  format_lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v${{matrix.node-version}}
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: ${{matrix.node-version}}
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+    - name: Check format
+      run: yarn format:check
+    - name: Check lint
+      run: yarn lint:check
