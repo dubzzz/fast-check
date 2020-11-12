@@ -231,7 +231,7 @@ jobs:
           cd test/legacy/typescript-3.2/
           yarn --frozen-lockfile
           yarn link "fast-check"
-          yarn test
+          yarn build
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
@@ -251,7 +251,7 @@ jobs:
           mkdir bundle
           tar -C bundle -zxvf fast-check.tgz
           cd bundle/package
-          yarn install --production
+          yarn install --ignore-engines --production
           ls -l node_modules
           yarn link
       - name: Test test/legacy/main.js
