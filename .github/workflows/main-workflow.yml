@@ -11,17 +11,21 @@ jobs:
     name: 'Format & Lint'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Using Node v14.x
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: yarn --frozen-lockfile
-    - name: Check format
-      run: yarn format:check
-    - name: Check lint
-      run: yarn lint:check
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Check format
+        run: yarn format:check
+      - name: Check lint
+        run: yarn lint:check
   test:
     name: 'Test'
     runs-on: ubuntu-latest
@@ -29,27 +33,31 @@ jobs:
       matrix:
         node-version: [10.x, 12.x, 14.x]
     steps:
-    - uses: actions/checkout@v2
-    - name: Using Node v${{matrix.node-version}}
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: ${{matrix.node-version}}
-    - name: Install dependencies
-      run: yarn --frozen-lockfile
-    - name: Build the library (dev version)
-      run: |
-          yarn prebuild
-          yarn build
-    - name: Unit tests
-      run: yarn test
-    - name: End-to-end tests
-      run: yarn e2e
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        flag-name: node-${{matrix.node-version}}
-        parallel: true
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build the library (dev version)
+        run: |
+            yarn prebuild
+            yarn build
+      - name: Unit tests
+        run: yarn test
+      - name: End-to-end tests
+        run: yarn e2e
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          flag-name: node-${{matrix.node-version}}
+          parallel: true
   publish_coverage:
     name: 'Publish coverage'
     needs: test
@@ -64,71 +72,80 @@ jobs:
     name: 'Test package quality'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Using Node v14.x
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '14.x'
-    - name: Check package score using skypack
-      run: npx @skypack/package-check
+      - uses: actions/checkout@v2
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Check package score using skypack
+        run: npx @skypack/package-check
   documentation:
     name: 'Build documentation'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Using Node v14.x
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: yarn --frozen-lockfile
-    - name: Build minimal package
-      run: |
-        yarn
-        yarn prebuild
-        yarn build:publish-types
-        node postbuild/main.cjs
-    - name: Generate documentation
-      run: yarn docs
-    - name: Upload documentation
-      uses: actions/upload-artifact@v2
-      with:
-        name: documentation
-        path: docs/
-        if-no-files-found: error
-        retention-days: 1
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build minimal package
+        run: |
+          yarn prebuild
+          yarn build:publish-types
+          node postbuild/main.cjs
+      - name: Generate documentation
+        run: yarn docs
+      - name: Upload documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: docs/
+          if-no-files-found: error
+          retention-days: 1
   production_package:
     name: 'Build production package'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Using Node v14.x
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: yarn --frozen-lockfile
-    - name: Build production package
-      run: |
-        yarn
-        yarn build:prod
-    - name: Create bundle
-      run: |
-        yarn pack
-        mv fast-check-*.tgz fast-check.tgz
-    - name: Upload production package
-      uses: actions/upload-artifact@v2
-      with:
-        name: bundle
-        path: fast-check.tgz
-        if-no-files-found: error
-        retention-days: 1
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build production package
+        run: yarn build:prod
+      - name: Create bundle
+        run: |
+          yarn pack
+          mv fast-check-*.tgz fast-check.tgz
+      - name: Upload production package
+        uses: actions/upload-artifact@v2
+        with:
+          name: bundle
+          path: fast-check.tgz
+          if-no-files-found: error
+          retention-days: 1
   test_examples:
     name: 'Test examples'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/example/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/example/yarn.lock')}}-v14.x
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -157,6 +174,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/test/type/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/test/type/yarn.lock')}}-v14.x
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -185,6 +206,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/test/legacy/typescript-3.2/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/test/legacy/typescript-3.2/yarn.lock')}}-v14.x
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
