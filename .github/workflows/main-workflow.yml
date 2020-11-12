@@ -107,10 +107,12 @@ jobs:
         node-version: '14.x'
     - name: Install dependencies
       run: yarn --frozen-lockfile
-    - name: Build production package
+    - name: Build minimal package
       run: |
         yarn
-        yarn build:prod
+        yarn prebuild
+        yarn build:publish-types
+        node postbuild/main.cjs
     - name: Generate documentation
       run: yarn docs
     - name: Upload documentation
