@@ -2,9 +2,17 @@ name: Build Status
 
 on:
   push:
-    branches: [master]
+    branches: 
+      - master
+      - next-*
+      - fix-v*
+    tags:
+      - v**
   pull_request:
-    branches: [master]
+    branches:
+      - master
+      - next-*
+      - fix-v*
 
 jobs:
   format_lint:
