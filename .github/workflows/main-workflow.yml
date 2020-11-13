@@ -316,3 +316,15 @@ jobs:
         nvm install 10
         node --version
         sh run.sh
+  publish_documentation:
+    name: 'Publish documentation'
+    needs: documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: documentation
+      - name: List files
+        run: ls -alh
