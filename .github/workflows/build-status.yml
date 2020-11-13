@@ -335,7 +335,6 @@ jobs:
         with:
           name: docs
       - name: Publish to gh-pages
-        if: github.event_name == 'push' && github.ref == 'master'
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
