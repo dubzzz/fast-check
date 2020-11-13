@@ -1,4 +1,4 @@
-name: Main Workflow
+name: Build Status
 
 on:
   push:
@@ -104,7 +104,7 @@ jobs:
       - name: Upload documentation
         uses: actions/upload-artifact@v2
         with:
-          name: documentation
+          name: docs
           path: docs/
           if-no-files-found: error
           retention-days: 1
@@ -325,6 +325,6 @@ jobs:
       - name: Download production package
         uses: actions/download-artifact@v2
         with:
-          name: documentation
+          name: docs
       - name: List files
         run: ls -alh
