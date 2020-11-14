@@ -19,6 +19,13 @@ runs:
         git checkout -- yarn.lock
       shell: bash
     - run: |
+        echo "ℹ️ Print fast-check (tgz)..."
+        mkdir bundle
+        tar -C bundle -zxvf fast-check.tgz
+        cd bundle/package
+        cat "lib/fast-check-default.js"
+      shell: bash
+    - run: |
         echo "ℹ️ Print git context..."
         git --no-pager log --decorate=short --pretty=oneline -n10
         echo "ℹ️ Print env context..."
