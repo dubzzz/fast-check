@@ -150,10 +150,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-path
+        run: echo "::set-output name=value::$(yarn cache dir)"
+      - name: Caching yarn cache
+        uses: actions/cache@v2
         with:
-          path: '**/example/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/example/yarn.lock')}}-v14.x
+          path: ${{steps.yarn-cache-path.outputs.value}}
+          key: ${{runner.os}}-yarn-${{hashFiles('**/example/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:

@@ -9,22 +9,10 @@ runs:
   steps:
     - run: |
         PROJECT_ROOT_PATH="$(pwd)"
-        cd ${{inputs.path}}
-        if test -f "./node_modules/package.json"; then
-          echo "ℹ️ Restore previous package.json...";
-          cp "./node_modules/package.json" "./package.json";
-        fi
-        if test -f "./node_modules/yarn.lock"; then
-          echo "ℹ️ Restore previous yarn.lock...";
-          cp "./node_modules/yarn.lock" "./yarn.lock";
-        fi
         echo "ℹ️ Install dependencies..."
         yarn --frozen-lockfile
         echo "ℹ️ Install current build for fast-check..."
         yarn add "$PROJECT_ROOT_PATH/fast-check.tgz"
-        echo "ℹ️ Store local changes..."
-        cp package.json node_modules/
-        cp yarn.lock node_modules/
         echo "ℹ️ Revert local changes..."
         git checkout -- package.json
         git checkout -- yarn.lock
@@ -32,4 +20,6 @@ runs:
     - run: |
         echo "ℹ️ Check version of fast-check..."
         node .github/actions/install-deps-with-current-fc/check-hash.js "${{inputs.path}}/node_modules/fast-check"
+        echo "ℹ️ Print git context..."
+        git --no-pager log --decorate=short --pretty=oneline -n10
       shell: bash
