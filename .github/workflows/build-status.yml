@@ -90,6 +90,8 @@ jobs:
   documentation:
     name: 'Build documentation'
     runs-on: ubuntu-latest
+    env:
+      COMMIT_HASH: ${{github.sha}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
