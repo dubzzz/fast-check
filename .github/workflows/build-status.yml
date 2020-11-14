@@ -1,0 +1,371 @@
+name: Build Status
+
+on:
+  push:
+    branches: 
+      - master
+      - next-*
+      - fix-v*
+    tags:
+      - v**
+  pull_request:
+    branches:
+      - master
+      - next-*
+      - fix-v*
+
+jobs:
+  format_lint:
+    name: 'Format & Lint'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Check format
+        run: yarn format:check
+      - name: Check lint
+        run: yarn lint:check
+  test:
+    name: 'Test'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build the library (dev version)
+        run: |
+            yarn prebuild
+            yarn build
+      - name: Unit tests
+        run: yarn test
+      - name: End-to-end tests
+        run: yarn e2e
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          flag-name: node-${{matrix.node-version}}
+          parallel: true
+  publish_coverage:
+    name: 'Publish coverage'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          parallel-finished: true
+  test_package_quality:
+    name: 'Test package quality'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Check package score using skypack
+        run: npx @skypack/package-check
+  documentation:
+    name: 'Build documentation'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build minimal package
+        run: |
+          yarn prebuild
+          yarn build:publish-types
+          node postbuild/main.cjs
+      - name: Generate documentation
+        run: yarn docs
+      - name: Upload documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: docs
+          path: docs/
+          if-no-files-found: error
+          retention-days: 1
+  production_package:
+    name: 'Build production package'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build production package
+        run: yarn build:prod
+      - name: Create bundle
+        run: |
+          yarn pack
+          mv fast-check-*.tgz fast-check.tgz
+      - name: Upload production package
+        uses: actions/upload-artifact@v2
+        with:
+          name: bundle
+          path: fast-check.tgz
+          if-no-files-found: error
+          retention-days: 1
+  test_examples:
+    name: 'Test examples'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/example/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/example/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link to production package
+        run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --production
+          ls -l node_modules
+          yarn link
+      - name: Test examples/
+        run: |
+          cd example
+          yarn --frozen-lockfile
+          yarn link "fast-check"
+          yarn test
+  test_types:
+    name: 'Test types'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/test/type/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/test/type/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link to production package
+        run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --production
+          ls -l node_modules
+          yarn link
+      - name: Test test/type/
+        run: |
+          cd test/type/
+          yarn --frozen-lockfile
+          yarn link "fast-check"
+          yarn test
+  test_typescript_3_2:
+    name: 'Test legacy TypeScript'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/test/legacy/typescript-3.2/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/test/legacy/typescript-3.2/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link to production package
+        run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --production
+          ls -l node_modules
+          yarn link
+      - name: Test test/legacy/typescript-3.2/
+        run: |
+          cd test/legacy/typescript-3.2/
+          yarn --frozen-lockfile
+          yarn link "fast-check"
+          yarn build
+  test_node_8:
+    name: 'Test legacy Node'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Using Node v8.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '8.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Extract and link to production package
+        run: |
+          mkdir bundle
+          tar -C bundle -zxvf fast-check.tgz
+          cd bundle/package
+          yarn install --ignore-engines --production
+          ls -l node_modules
+          yarn link
+      - name: Test test/legacy/main.js
+        run: node test/legacy/main.js
+  test_compatibility_cjs_esm:
+    name: 'Test commonjs/esm compatibility'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Using Node v14.x
+      shell: bash -l {0}
+      run: nvm install 14
+    - name: Download production package
+      uses: actions/download-artifact@v2
+      with:
+        name: bundle
+    - name: Extract and link to production package
+      run: |
+        mkdir bundle
+        tar -C bundle -zxvf fast-check.tgz
+        cd bundle/package
+        yarn install --production
+        ls -l node_modules
+        yarn link
+    # Node >=13.2.0 enables support for ES modules by default
+    # Our default version of node is above 13.2.0
+    - name: Check compatibility against current version of Node
+      run: |
+        cd test/esm
+        node --version
+        sh run.sh
+    # Node latest version supports ES modules by default
+    - name: Check compatibility against latest version of Node
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install node
+        node --version
+        sh run.sh
+    # Node 12.x and >=12.18 enables support for ES modules by default
+    - name: Check compatibility against Node 12.18
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install 12.18
+        node --version
+        sh run.sh
+    # Node <12.18 requires a flag to support ES modules but can understand them
+    - name: Check compatibility against Node 12.17
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install 12.17
+        node --version
+        sh run.sh
+    # Node 10 does not understand ES modules
+    - name: Check compatibility against Node 10
+      shell: bash -l {0}
+      run: |
+        cd test/esm
+        nvm install 10
+        node --version
+        sh run.sh
+  publish_documentation:
+    name: 'Publish documentation'
+    needs: documentation
+    if: github.event_name == 'push' && github.ref == 'master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download documentation
+        uses: actions/download-artifact@v2
+        with:
+          name: docs
+      - name: Publish to gh-pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          BRANCH: gh-pages
+          FOLDER: .
+  publish_package:
+    name: 'Publish package'
+    needs: 
+      - production_package
+      - documentation
+      - format_lint
+      - test
+      - test_compatibility_cjs_esm
+      - test_examples
+      - test_node_8
+      - test_package_quality
+      - test_types
+      - test_typescript_3_2
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Publish package
+        run: npm publish fast-check.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
