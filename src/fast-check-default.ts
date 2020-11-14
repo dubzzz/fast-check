@@ -155,7 +155,7 @@ const __version = '__PACKAGE_VERSION__' as string;
  * Commit hash of the current code (eg.: __COMMIT_HASH__)
  * @public
  */
-const __commit_hash = '__COMMIT_HASH__' as string;
+const __commitHash = '__COMMIT_HASH__' as string;
 
 /**
  * @deprecated Switch to {@link ContextValue} instead
@@ -180,7 +180,7 @@ export {
   // meta
   __type,
   __version,
-  __commit_hash,
+  __commitHash,
   // assess the property
   sample,
   statistics,
