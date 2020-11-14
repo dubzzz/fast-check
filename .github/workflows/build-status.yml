@@ -327,7 +327,7 @@ jobs:
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
-    if: github.event_name == 'push' && github.ref == ' refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Download documentation
