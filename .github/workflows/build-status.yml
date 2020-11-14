@@ -119,6 +119,8 @@ jobs:
   production_package:
     name: 'Build production package'
     runs-on: ubuntu-latest
+    env:
+      COMMIT_HASH: ${{github.sha}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -148,6 +150,8 @@ jobs:
     name: 'Test examples'
     needs: production_package
     runs-on: ubuntu-latest
+    env:
+      COMMIT_HASH: ${{github.sha}}
     steps:
       - uses: actions/checkout@v2
       - name: Get yarn cache directory path
@@ -157,7 +161,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{steps.yarn-cache-path.outputs.value}}
-          key: ${{runner.os}}-yarn-${{hashFiles('**/example/yarn.lock')}}
+          key: ${{runner.os}}-yarn-cache-${{hashFiles('**/example/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
