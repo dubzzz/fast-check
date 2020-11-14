@@ -20,5 +20,5 @@ runs:
       shell: bash
     - name: Check setup
       run: |
-        true
+        node check-hash.js "${{inputs.path}}/node_modules/fast-check"
       shell: bash
