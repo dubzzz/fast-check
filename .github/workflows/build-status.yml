@@ -263,7 +263,7 @@ jobs:
       - name: Test test/legacy/main.js
         run: node test/legacy/main.js
   test_cjs_esm:
-    name: 'Test CJS/ESM'
+    name: 'Test CommonJS & ES Modules'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
