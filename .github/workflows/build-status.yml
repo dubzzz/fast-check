@@ -132,7 +132,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build production package
-        run: yarn build:prod
+        run: yarn build:prod-ci
       - name: Create bundle
         run: |
           yarn pack

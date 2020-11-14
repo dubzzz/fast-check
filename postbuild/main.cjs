@@ -1,4 +1,6 @@
 // eslint-disable-next-line
+const { execSync } = require('child_process');
+// eslint-disable-next-line
 const fs = require('fs');
 // eslint-disable-next-line
 const path = require('path');
@@ -25,12 +27,8 @@ for (const { file, hasChanged } of results) {
 
 // Fill metas related to the package
 
-const commitHash = process.env.GITHUB_SHA && process.env.GITHUB_SHA.split('\n')[0];
-if (!commitHash) {
-  // eslint-disable-next-line
-  console.error('No GITHUB_SHA specified (env), please use: `GITHUB_SHA=$(git rev-parse HEAD)` to set it');
-  process.exit(1);
-}
+// eslint-disable-next-line
+const commitHash = getCommitHash();
 
 // eslint-disable-next-line
 fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
@@ -72,3 +70,22 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     console.info(`Package details added onto d.ts version`);
   }
 });
+
+// Helpers
+function getCommitHash() {
+  const gitHubCommitHash = process.env.GITHUB_SHA && process.env.GITHUB_SHA.split('\n')[0];
+  if (gitHubCommitHash) {
+    // eslint-disable-next-line
+    console.info(`Using env variable GITHUB_SHA for the commit hash`);
+    return gitHubCommitHash;
+  }
+  if (process.env.EXPECT_GITHUB_SHA) {
+    if (!gitHubCommitHash) {
+      // eslint-disable-next-line
+      console.error('No GITHUB_SHA specified');
+      process.exit(1);
+    }
+  }
+  const out = execSync('git rev-parse HEAD');
+  return out.toString().split('\n')[0];
+}
