@@ -13,12 +13,13 @@ runs:
       shell: bash
     - name: Replace fast-check by production package
       run: |
+        PROJECT_ROOT_PATH="$(pwd)"
         cd ${{inputs.path}}
-        yarn add ../fast-check.tgz
+        yarn add "$PROJECT_ROOT_PATH/fast-check.tgz"
         git checkout -- package.json
         git checkout -- yarn.lock
       shell: bash
     - name: Check setup
       run: |
-        node check-hash.js "${{inputs.path}}/node_modules/fast-check"
+        node .github/actions/install-with-bundle/check-hash.js "${{inputs.path}}/node_modules/fast-check"
       shell: bash
