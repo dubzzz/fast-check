@@ -264,7 +264,7 @@ jobs:
           yarn link
       - name: Test test/legacy/main.js
         run: node test/legacy/main.js
-  compatibility_cjs_esm:
+  test_compatibility_cjs_esm:
     name: 'Test commonjs/esm compatibility'
     needs: production_package
     runs-on: ubuntu-latest
@@ -330,7 +330,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'master'
     runs-on: ubuntu-latest
     steps:
-      - name: Download production package
+      - name: Download documentation
         uses: actions/download-artifact@v2
         with:
           name: docs
@@ -340,3 +340,32 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           BRANCH: gh-pages
           FOLDER: .
+  publish_package:
+    name: 'Publish package'
+    needs: 
+      - production_package
+      - documentation
+      - format_lint
+      - test
+      - test_compatibility_cjs_esm
+      - test_examples
+      - test_node_8
+      - test_package_quality
+      - test_types
+      - test_typescript_3_2
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Publish package
+        run: npm publish fast-check.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
