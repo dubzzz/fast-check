@@ -9,6 +9,7 @@ runs:
   steps:
     - run: |
         PROJECT_ROOT_PATH="$(pwd)"
+        cd "${{inputs.path}}"
         echo "ℹ️ Install dependencies..."
         yarn --frozen-lockfile
         echo "ℹ️ Install current build for fast-check..."
