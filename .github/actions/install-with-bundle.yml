@@ -1,0 +1,44 @@
+name: 'Install with published bundle'
+description: 'Install dependencies with published bundle'
+inputs:
+  path:
+    description: 'Path to the directory to be installed'
+  node-version:
+    description: 'Node version'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/cache@v2
+      with:
+        path: '**/${{inputs.path}}/node_modules'
+        key: ${{runner.os}}-modules-${{hashFiles('**/${{inputs.path}}/yarn.lock')}}-${{inputs.node-version}}
+    - name: Using Node ${{inputs.node-version}}
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: ${{inputs.node-version}}
+    - name: Download production package
+      uses: actions/download-artifact@v2
+      with:
+        name: bundle
+    - name: Install default dependencies
+      run: |
+        cd ${{inputs.path}}
+        yarn --frozen-lockfile
+    - name: Replace fast-check by production package
+      run: |
+        cd ${{inputs.path}}
+        yarn add ../fast-check.tgz
+        git checkout -- package.json
+        git checkout -- yarn.lock
+    - name: Check setup
+      run: true
+    - run: $GITHUB_ACTION_PATH/install.sh
+      shell: bash
+      env:
+        REVIEWDOG_VERSION: ${{ inputs.reviewdog_version }}
+        REVIEWDOG_TEMPDIR: ${{ runner.temp }}
+    - run: |
+        echo "::group::📖 reviewdog -h"
+        reviewdog -h 2>&1 || true
+        echo "::endgroup::"
+      shell: bash
