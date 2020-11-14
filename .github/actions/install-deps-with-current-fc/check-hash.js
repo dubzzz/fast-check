@@ -1,6 +1,5 @@
 const process = require('process');
-const path = require('path');
-const { __commit_hash } = require(path.join(__dirname, '..', '..', '..', process.argv[2]));
+const { __commit_hash } = require('fast-check');
 
 const expectedCommitHash = process.env.GITHUB_SHA;
 if (!expectedCommitHash) {

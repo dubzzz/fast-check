@@ -19,21 +19,11 @@ runs:
         git checkout -- yarn.lock
       shell: bash
     - run: |
-        echo "ℹ️ Print fast-check (tgz)..."
-        mkdir bundle
-        tar -C bundle -zxvf fast-check.tgz
-        cd bundle/package
-        cat "lib/fast-check-default.js"
-      shell: bash
-    - run: |
-        echo "ℹ️ Print git context..."
-        git --no-pager log --decorate=short --pretty=oneline -n10
-        echo "ℹ️ Print env context..."
-        echo $GITHUB_SHA
-        echo "ℹ️ Print..."
-        ls -alh "${{inputs.path}}/node_modules/"
-        echo "ℹ️ Print fast-check..."
-        cat "${{inputs.path}}/node_modules/fast-check/lib/fast-check-default.js"
+        echo "ℹ️ Copy script..."
+        cp .github/actions/install-deps-with-current-fc/check-hash.js "${{inputs.path}}/check-hash-$GITHUB_SHA.js"
         echo "ℹ️ Check version of fast-check..."
-        node .github/actions/install-deps-with-current-fc/check-hash.js "${{inputs.path}}/node_modules/fast-check"
+        cd "${{inputs.path}}"
+        node check-hash-*.js
+        echo "ℹ️ Remove script..."
+        rm "check-hash-$GITHUB_SHA.js"
       shell: bash
