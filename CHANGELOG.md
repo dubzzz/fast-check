@@ -1,7 +1,175 @@
+# 2.6.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.6.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.6.0...v2.6.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
+
+# 2.6.0
+
+_Towards a uniform way to constrain arbitraries - step 3: number arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.5.0...v2.6.0)]
+
+## Features
+
+- ([PR#1067](https://github.com/dubzzz/fast-check/pull/1067)) Unify signatures on arbitraries: fc.bigInt and fc.bigUint (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1068](https://github.com/dubzzz/fast-check/pull/1068)) Unify signatures on arbitraries: fc.float and fc.double (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1076](https://github.com/dubzzz/fast-check/pull/1076)) Unify signatures on arbitraries: fc.integer and fc.nat (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1080](https://github.com/dubzzz/fast-check/pull/1080)) Mark old signatures as deprecated (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+
+---
+
+# 2.5.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.5.0...v2.5.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
+
+# 2.5.0
+
+_Towards a uniform way to constrain arbitraries - step 2: remaining arbitraries except number related ones_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.4.0...v2.5.0)]
+
+## Features
+
+- ([PR#1023](https://github.com/dubzzz/fast-check/pull/1023)) Unify signatures on arbitraries: fc.\*\[jJ\]son\* (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1026](https://github.com/dubzzz/fast-check/pull/1026)) Unify signatures on arbitraries: fc.lorem (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1063](https://github.com/dubzzz/fast-check/pull/1063)) Rename fc.dedup into fc.clone (older name has been deprecated for the moment)
+- ([PR#1065](https://github.com/dubzzz/fast-check/pull/1065)) Add withDate option on fc.object
+
+## Fixes
+
+- ([PR#1022](https://github.com/dubzzz/fast-check/pull/1022)) Tool: Script udate:examples should not fail on updates
+- ([PR#1024](https://github.com/dubzzz/fast-check/pull/1024)) Doc: Support fc.option in codemod for [#992](https://github.com/dubzzz/fast-check/issues/992)
+- ([PR#1025](https://github.com/dubzzz/fast-check/pull/1025)) Doc: Support fc.commands in codemod for [#992](https://github.com/dubzzz/fast-check/issues/992)
+
+---
+
+# 2.4.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.4.0...v2.4.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
+
+# 2.4.0
+
+_Towards a uniform way to constrain arbitraries - step 1: array-like arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.3.0...v2.4.0)]
+
+## Features
+
+- ([PR#954](https://github.com/dubzzz/fast-check/pull/954)) Stringify supports typed arrays and buffers
+- ([PR#973](https://github.com/dubzzz/fast-check/pull/973)) Clean unneeded lines on toString for function arbitraries
+- ([PR#986](https://github.com/dubzzz/fast-check/pull/986)) Unify signatures on arbitraries: fc.array (see [#992](https://github.com/dubzzz/fast-check/issues/992)) :warning:
+- ([PR#988](https://github.com/dubzzz/fast-check/pull/988)) Unify signatures on arbitraries: fc.set (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+- ([PR#1010](https://github.com/dubzzz/fast-check/pull/1010)) Unify signatures on arbitraries: fc.\*string (see [#992](https://github.com/dubzzz/fast-check/issues/992)) :warning:
+- ([PR#1011](https://github.com/dubzzz/fast-check/pull/1011)) Unify signatures on arbitraries: fc.\*subarray (see [#992](https://github.com/dubzzz/fast-check/issues/992))
+
+## Fixes
+
+- ([PR#975](https://github.com/dubzzz/fast-check/pull/975)) Doc: Add runkit code example
+- ([PR#992](https://github.com/dubzzz/fast-check/pull/992)) Doc: Add automatic simplification of min and max in codemod for [#992](https://github.com/dubzzz/fast-check/issues/992)
+- ([PR#993](https://github.com/dubzzz/fast-check/pull/993)) Fix: Do not depreciate overloads for array-like (yet)
+- ([PR#1012](https://github.com/dubzzz/fast-check/pull/1012)) Fix: Adopt a safer signature recognition on array and set 
+- ([PR#1014](https://github.com/dubzzz/fast-check/pull/1014)) Test: Ensure old non-unified syntaxes still work
+- ([PR#991](https://github.com/dubzzz/fast-check/pull/991)) Tool: Fix .prettierignore
+- ([PR#976](https://github.com/dubzzz/fast-check/pull/976)) Typo: Use WebUrlConstraints instead of an inlined typing for webUrl
+
+---
+
+# 2.3.1
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.3.0...v2.3.1)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
+
+# 2.3.0
+
+_Add global beforeEach and afterEach hooks_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.2.1...v2.3.0)]
+
+## Features
+
+- ([PR#900](https://github.com/dubzzz/fast-check/pull/900)) Add global beforeEach/afterEach hooks
+
+## Fixes
+
+- ([PR#970](https://github.com/dubzzz/fast-check/pull/970)) Doc: Rewrite the documentation to better target JavaScript users
+
+---
+
+# 2.2.2
+
+_Wrongly typed `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.2.1...v2.2.2)]
+
+## Fixes
+
+- ([PR#1142](https://github.com/dubzzz/fast-check/pull/1142)) Typings: Wrongly typed `fc.record`
+
+# 2.2.1
+
+_Fix infinite loop in `fc.date` when passing a NaN date_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.2.0...v2.2.1)]
+
+## Fixes
+
+- ([PR#938](https://github.com/dubzzz/fast-check/pull/938)) Bug: Fix NaN passed to max in `fc.date()`
+- ([PR#936](https://github.com/dubzzz/fast-check/pull/936)) Doc: Switch to typedoc for the API Reference
+- ([PR#939](https://github.com/dubzzz/fast-check/pull/939)) Doc: Rename 'Documentation' badge into 'API Reference'
+- ([PR#948](https://github.com/dubzzz/fast-check/pull/948)) Doc: Mark TypeScript as an optional requirement in the README
+- ([PR#919](https://github.com/dubzzz/fast-check/pull/919)) Test: Reduce coverage flakiness on `HostArbitrary.ts`
+
+# 2.2.0
+
+_Export missing typings and various cleaning around the tsdoc_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.1.0...v2.2.0)]
+
+## Features
+
+- ([PR#880](https://github.com/dubzzz/fast-check/pull/880)) Publish missing constraints types (option, scheduler)
+- ([PR#881](https://github.com/dubzzz/fast-check/pull/881)) Add an interface to better type (Async)Property
+- ([PR#902](https://github.com/dubzzz/fast-check/pull/902)) Standardize exported typings and add missing ones :warning:
+- ([PR#906](https://github.com/dubzzz/fast-check/pull/906)) Prefer interfaces and functions for exported entities
+
+## Fixes
+
+- ([PR#904](https://github.com/dubzzz/fast-check/pull/904)) Bug: Asynchrorous properties should be able to use `asyncReporter`
+- ([PR#850](https://github.com/dubzzz/fast-check/pull/850)) CI: Ignore fast-check bumps for some directories
+- ([PR#872](https://github.com/dubzzz/fast-check/pull/872)) CI: Slow down dependabot frequency
+- ([PR#879](https://github.com/dubzzz/fast-check/pull/879)) CI: Remove unneeded before_install step on .travis.yml
+- ([PR#882](https://github.com/dubzzz/fast-check/pull/882)) CI: Apply post-build script before generating the doc
+- ([PR#903](https://github.com/dubzzz/fast-check/pull/903)) CI: Break CI whenever documentation compiles with warnings
+- ([PR#905](https://github.com/dubzzz/fast-check/pull/905)) CI: Enable protobot-stale
+- ([PR#873](https://github.com/dubzzz/fast-check/pull/873)) Doc: Remove snyk badge
+- ([PR#878](https://github.com/dubzzz/fast-check/pull/878)) Doc: Fix some of the warnings raised by API Extractor
+- ([PR#883](https://github.com/dubzzz/fast-check/pull/883)) Doc: Update the template for new Pull Requests
+- ([PR#894](https://github.com/dubzzz/fast-check/pull/894)) Doc: Fix warnings related to invalid references raised by api-extractor
+- ([PR#907](https://github.com/dubzzz/fast-check/pull/907)) Doc: Fix examples leaking in to functions table
+- ([PR#908](https://github.com/dubzzz/fast-check/pull/908)) Doc: Document non-documented sections
+- ([PR#911](https://github.com/dubzzz/fast-check/pull/911)) Doc: Remove useless "fast-check#" prefix in @link
+- ([PR#848](https://github.com/dubzzz/fast-check/pull/848)) Test: Do not use `@testing-library/dom` directly in `examples/`
+- ([PR#851](https://github.com/dubzzz/fast-check/pull/851)) Test: Reduce coverage flakiness on `ReplayPath.ts`
+- ([PR#874](https://github.com/dubzzz/fast-check/pull/874)) Test: Reduce coverage flakiness on `hash.ts`
+- ([PR#893](https://github.com/dubzzz/fast-check/pull/893)) Tool: Add script to serve the generated documentation locally
+
+---
+
 # 2.1.0
 
 _Better reported errors for `func`, `compareFunc` and `compareBooleanFunc`_
-[[Code](https://github.com/dubzzz/fast-check/tree/v2.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.0.0...v2.1.0)]
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.0.0...v2.1.0)]
 
 ## Features
 

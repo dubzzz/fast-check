@@ -1,6 +1,11 @@
 import { pre } from './check/precondition/Pre';
-import { asyncProperty, IAsyncProperty } from './check/property/AsyncProperty';
-import { property, IProperty } from './check/property/Property';
+import {
+  asyncProperty,
+  IAsyncProperty,
+  IAsyncPropertyWithHooks,
+  AsyncPropertyHookFunction,
+} from './check/property/AsyncProperty';
+import { property, IProperty, IPropertyWithHooks, PropertyHookFunction } from './check/property/Property';
 import { IRawProperty } from './check/property/IRawProperty';
 import { Parameters } from './check/runner/configuration/Parameters';
 import {
@@ -9,47 +14,64 @@ import {
   RunDetailsFailureTooManySkips,
   RunDetailsFailureInterrupted,
   RunDetailsSuccess,
+  RunDetailsCommon,
 } from './check/runner/reporter/RunDetails';
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
-import { array } from './check/arbitrary/ArrayArbitrary';
-import { bigInt, bigIntN, bigUint, bigUintN } from './check/arbitrary/BigIntArbitrary';
+import { array, ArrayConstraints } from './check/arbitrary/ArrayArbitrary';
+import {
+  bigInt,
+  bigIntN,
+  bigUint,
+  bigUintN,
+  BigIntConstraints,
+  BigUintConstraints,
+} from './check/arbitrary/BigIntArbitrary';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
-import { falsy, FalsyContraints, FalsyType } from './check/arbitrary/FalsyArbitrary';
+import { falsy, FalsyContraints, FalsyValue } from './check/arbitrary/FalsyArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
 import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
-import { context, Context } from './check/arbitrary/ContextArbitrary';
+import { context, ContextValue } from './check/arbitrary/ContextArbitrary';
 import { date } from './check/arbitrary/DateArbitrary';
-import { dedup } from './check/arbitrary/DedupArbitrary';
+import { clone, CloneValue } from './check/arbitrary/CloneArbitrary';
+import { dedup, DedupValue } from './check/arbitrary/DedupArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
-import { double, float } from './check/arbitrary/FloatingPointArbitrary';
-import { frequency, WeightedArbitrary } from './check/arbitrary/FrequencyArbitrary';
+import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
+import { frequency, WeightedArbitrary, FrequencyValue } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
-import { integer, maxSafeInteger, maxSafeNat, nat } from './check/arbitrary/IntegerArbitrary';
+import {
+  integer,
+  maxSafeInteger,
+  maxSafeNat,
+  nat,
+  IntegerConstraints,
+  NatConstraints,
+} from './check/arbitrary/IntegerArbitrary';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './check/arbitrary/LetRecArbitrary';
-import { lorem } from './check/arbitrary/LoremArbitrary';
+import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import { memo, Memo } from './check/arbitrary/MemoArbitrary';
 import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
 import {
   anything,
   json,
+  JsonSharedConstraints,
   jsonObject,
   object,
   ObjectConstraints,
   unicodeJson,
   unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
-import { oneof } from './check/arbitrary/OneOfArbitrary';
-import { option } from './check/arbitrary/OptionArbitrary';
-import { record, RecordConstraints } from './check/arbitrary/RecordArbitrary';
-import { set } from './check/arbitrary/SetArbitrary';
+import { oneof, OneOfValue } from './check/arbitrary/OneOfArbitrary';
+import { option, OptionConstraints } from './check/arbitrary/OptionArbitrary';
+import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
+import { set, SetConstraints } from './check/arbitrary/SetArbitrary';
 import { infiniteStream } from './check/arbitrary/StreamArbitrary';
 import {
   asciiString,
@@ -59,9 +81,10 @@ import {
   string,
   string16bits,
   stringOf,
+  StringSharedConstraints,
   unicodeString,
 } from './check/arbitrary/StringArbitrary';
-import { shuffledSubarray, subarray } from './check/arbitrary/SubarrayArbitrary';
+import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
 import { uuid, uuidV } from './check/arbitrary/UuidArbitrary';
 import {
@@ -78,13 +101,21 @@ import { AsyncCommand } from './check/model/command/AsyncCommand';
 import { Command } from './check/model/command/Command';
 import { ICommand } from './check/model/command/ICommand';
 import { commands } from './check/model/commands/CommandsArbitrary';
-import { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelRunner';
+import {
+  asyncModelRun,
+  modelRun,
+  scheduledModelRun,
+  ModelRunSetup,
+  ModelRunAsyncSetup,
+} from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
 import {
   configureGlobal,
   GlobalParameters,
+  GlobalAsyncPropertyHookFunction,
+  GlobalPropertyHookFunction,
   readConfigureGlobal,
   resetConfigureGlobal,
 } from './check/runner/configuration/GlobalParameters';
@@ -101,12 +132,37 @@ import {
   Scheduler,
   SchedulerSequenceItem,
   SchedulerReportItem,
+  SchedulerConstraints,
 } from './check/arbitrary/AsyncSchedulerArbitrary';
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
+import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
+import { CommandsContraints } from './check/model/commands/CommandsContraints';
+import { PreconditionFailure } from './check/precondition/PreconditionFailure';
+import { RandomType } from './check/runner/configuration/RandomType';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
+/**
+ * Type of module (commonjs or module)
+ * @public
+ */
 const __type = '__PACKAGE_TYPE__' as string;
+/**
+ * Version of fast-check used by your project (eg.: __PACKAGE_VERSION__)
+ * @public
+ */
 const __version = '__PACKAGE_VERSION__' as string;
+
+/**
+ * @deprecated Switch to {@link ContextValue} instead
+ * @public
+ */
+type Context = ContextValue;
+
+/**
+ * @deprecated Switch to {@link FalsyValue} instead
+ * @public
+ */
+type FalsyType = FalsyValue;
 
 // boolean
 // floating point types
@@ -127,12 +183,17 @@ export {
   assert,
   // pre conditions
   pre,
+  PreconditionFailure,
   // property definition
   property,
   asyncProperty,
   IRawProperty,
   IProperty,
+  IPropertyWithHooks,
   IAsyncProperty,
+  IAsyncPropertyWithHooks,
+  AsyncPropertyHookFunction,
+  PropertyHookFunction,
   // pre-built arbitraries
   boolean,
   falsy,
@@ -170,6 +231,7 @@ export {
   option,
   oneof,
   frequency,
+  clone,
   dedup,
   shuffledSubarray,
   subarray,
@@ -214,6 +276,8 @@ export {
   modelRun,
   scheduledModelRun,
   commands,
+  ModelRunSetup,
+  ModelRunAsyncSetup,
   // scheduler
   scheduler,
   schedulerFor,
@@ -222,38 +286,70 @@ export {
   SchedulerReportItem,
   // extend the framework
   Arbitrary,
+  ArbitraryWithShrink,
   Shrinkable,
   cloneMethod,
   // print values
   stringify,
   defaultReportMessage,
   hash,
-  // interfaces
-  Context,
-  ExecutionStatus,
-  ExecutionTree,
-  GlobalParameters,
-  Memo,
+  // constraints
+  ArrayConstraints,
+  BigIntConstraints,
+  BigUintConstraints,
+  CommandsContraints,
+  DoubleConstraints,
   FalsyContraints,
-  FalsyType,
+  FloatConstraints,
+  IntegerConstraints,
+  JsonSharedConstraints,
+  LoremConstraints,
   MixedCaseConstraints,
+  NatConstraints,
   ObjectConstraints,
-  Parameters,
+  OptionConstraints,
   RecordConstraints,
+  SchedulerConstraints,
+  SetConstraints,
+  StringSharedConstraints,
+  SubarrayConstraints,
   WebAuthorityConstraints,
   WebUrlConstraints,
+  WeightedArbitrary,
+  // produced values
+  CloneValue,
+  ContextValue,
+  DedupValue,
+  FalsyValue,
+  FrequencyValue,
+  OneOfValue,
+  RecordValue,
+  // arbitrary types (mostly when produced values are difficult to formalize)
+  Memo,
+  // run configuration
+  GlobalParameters,
+  GlobalAsyncPropertyHookFunction,
+  GlobalPropertyHookFunction,
+  Parameters,
+  RandomType,
+  VerbosityLevel,
+  configureGlobal,
+  readConfigureGlobal,
+  resetConfigureGlobal,
+  // run output
+  ExecutionStatus,
+  ExecutionTree,
   RunDetails,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
   RunDetailsFailureInterrupted,
   RunDetailsSuccess,
+  RunDetailsCommon,
+  // various utils
   Random,
   Stream,
   stream,
-  VerbosityLevel,
-  WeightedArbitrary,
-  // global configuration
-  configureGlobal,
-  readConfigureGlobal,
-  resetConfigureGlobal,
+  // depreciated
+  Context,
+  FalsyType,
 };

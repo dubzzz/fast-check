@@ -1,8 +1,8 @@
 /**
- * @internal
  * Try to extract maxInitialIterations non-skipped values
  * with a maximal number of remainingSkips skipped values
  * from initialValues source
+ * @internal
  */
 export class SourceValuesIterator<Ts> implements IterableIterator<Ts> {
   constructor(

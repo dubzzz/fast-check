@@ -3,16 +3,26 @@ import { Arbitrary } from './definition/Arbitrary';
 import { option } from './OptionArbitrary';
 import { genericTuple } from './TupleArbitrary';
 
+/**
+ * Constraints to be applied on {@link record}
+ * @public
+ */
 export interface RecordConstraints {
   /** Allow to remove keys from the generated record */
   withDeletedKeys?: boolean;
 }
 
-interface DeletedKeys {
+/**
+ * Infer the type of the Arbitrary produced by record
+ * given the type of the source arbitrary and constraints to be applied
+ * @public
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type RecordValue<T, Constraints = {}> = Constraints extends {
   withDeletedKeys: true;
 }
-
-type ConstrainedArbitrary<T, Constraints> = Constraints extends DeletedKeys ? Arbitrary<Partial<T>> : Arbitrary<T>;
+  ? Partial<T>
+  : T;
 
 /** @internal */
 function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
@@ -35,8 +45,10 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
  * ```
  *
  * @param recordModel - Schema of the record
+ *
+ * @public
  */
-function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }>;
+function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }>>;
 /**
  * For records following the `recordModel` schema
  *
@@ -48,11 +60,13 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  *
  * @param recordModel - Schema of the record
  * @param constraints - Contraints on the generated record
+ *
+ * @public
  */
 function record<T, Constraints extends RecordConstraints>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints: Constraints
-): ConstrainedArbitrary<{ [K in keyof T]: T[K] }, Constraints>;
+): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, Constraints>>;
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints) {
   if (constraints == null || constraints.withDeletedKeys !== true) {
     return rawRecord(recordModel);

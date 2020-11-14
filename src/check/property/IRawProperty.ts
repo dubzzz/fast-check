@@ -8,6 +8,8 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
  * A property is the combination of:
  * - Arbitraries: how to generate the inputs for the algorithm
  * - Predicate: how to confirm the algorithm succeeded?
+ *
+ * @public
  */
 export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   /**
@@ -35,10 +37,11 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
 }
 
 /**
- * @internal
  * Convert runId (IProperty) into a frequency (Arbitrary)
  *
  * @param runId - Id of the run starting at 0
  * @returns Frequency of bias starting at 2
+ *
+ * @internal
  */
 export const runIdToFrequency = (runId: number): number => 2 + Math.floor(Math.log(runId + 1) / Math.log(10));

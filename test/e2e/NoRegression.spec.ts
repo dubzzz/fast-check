@@ -182,10 +182,10 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('dedup', () => {
+  it('clone', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.dedup(fc.nat(), 2), (v) => testFunc(v)),
+        fc.property(fc.clone(fc.nat(), 2), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();

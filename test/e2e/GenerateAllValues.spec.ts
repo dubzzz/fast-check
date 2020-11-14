@@ -49,7 +49,9 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>
       fc.assert(
-        fc.property(fc.set(fc.string(), 1, 40), (csts) => lookForMissing(fc.constantFrom(...csts), csts.length))
+        fc.property(fc.set(fc.string(), { minLength: 1, maxLength: 40 }), (csts) =>
+          lookForMissing(fc.constantFrom(...csts), csts.length)
+        )
       ));
   });
   describe('fc.anything()', () => {
@@ -68,6 +70,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
           withSet: true,
           withObjectString: true,
           withNullPrototype: true,
+          withDate: true,
           ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
         });
         while (++numTries <= 10000) {
@@ -93,6 +96,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
     checkCanProduce('Array', 'object', '[object Array]');
     checkCanProduce('Set', 'object', '[object Set]');
     checkCanProduce('Map', 'object', '[object Map]');
+    checkCanProduce('Date', 'object', '[object Date]');
     checkCanProduce('null prototype object', 'object', '[object Object]', (instance: unknown) => {
       return Object.getPrototypeOf(instance) === null;
     });

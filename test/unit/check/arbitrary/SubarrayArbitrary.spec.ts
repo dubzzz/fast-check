@@ -2,6 +2,7 @@ import * as fc from '../../../../lib/fast-check';
 
 import { subarray, shuffledSubarray } from '../../../../src/check/arbitrary/SubarrayArbitrary';
 
+import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 const isOrderedSubarray = (originalArray: number[], subarray: number[]): boolean => {
@@ -44,10 +45,13 @@ describe('SubarrayArbitrary', () => {
         fc.property(
           fc.array(fc.integer()),
           fc.nat(),
-          fc.nat(),
-          (originalArray: number[], length: number, otherLength: number) => {
+          fc.option(fc.nat(), { nil: undefined }),
+          (originalArray: number[], length: number, otherLength: number | undefined) => {
             expect(() => {
-              subarray(originalArray, -length - 1, otherLength % (originalArray.length + 1));
+              subarray(originalArray, {
+                minLength: -length - 1,
+                maxLength: otherLength !== undefined ? otherLength % (originalArray.length + 1) : undefined,
+              });
             }).toThrowError(/minimal length to be between 0/);
           }
         )
@@ -57,10 +61,13 @@ describe('SubarrayArbitrary', () => {
         fc.property(
           fc.array(fc.integer()),
           fc.nat(),
-          fc.nat(),
-          (originalArray: number[], offset: number, otherLength: number) => {
+          fc.option(fc.nat(), { nil: undefined }),
+          (originalArray: number[], offset: number, otherLength: number | undefined) => {
             expect(() => {
-              subarray(originalArray, originalArray.length + offset + 1, otherLength % (originalArray.length + 1));
+              subarray(originalArray, {
+                minLength: originalArray.length + offset + 1,
+                maxLength: otherLength !== undefined ? otherLength % (originalArray.length + 1) : undefined,
+              });
             }).toThrowError(/minimal length to be between 0/);
           }
         )
@@ -70,10 +77,13 @@ describe('SubarrayArbitrary', () => {
         fc.property(
           fc.array(fc.integer()),
           fc.nat(),
-          fc.nat(),
-          (originalArray: number[], length: number, otherLength: number) => {
+          fc.option(fc.nat(), { nil: undefined }),
+          (originalArray: number[], length: number, otherLength: number | undefined) => {
             expect(() => {
-              subarray(originalArray, otherLength % (originalArray.length + 1), -length - 1);
+              subarray(originalArray, {
+                minLength: otherLength !== undefined ? otherLength % (originalArray.length + 1) : undefined,
+                maxLength: -length - 1,
+              });
             }).toThrowError(/maximal length to be between 0/);
           }
         )
@@ -83,10 +93,13 @@ describe('SubarrayArbitrary', () => {
         fc.property(
           fc.array(fc.integer()),
           fc.nat(),
-          fc.nat(),
-          (originalArray: number[], offset: number, otherLength: number) => {
+          fc.option(fc.nat(), { nil: undefined }),
+          (originalArray: number[], offset: number, otherLength: number | undefined) => {
             expect(() => {
-              subarray(originalArray, otherLength % (originalArray.length + 1), originalArray.length + offset + 1);
+              subarray(originalArray, {
+                minLength: otherLength !== undefined ? otherLength % (originalArray.length + 1) : undefined,
+                maxLength: originalArray.length + offset + 1,
+              });
             }).toThrowError(/maximal length to be between 0/);
           }
         )
@@ -100,8 +113,10 @@ describe('SubarrayArbitrary', () => {
             expect(() => {
               subarray(
                 [...Array(minMax.max + offset)].map((_) => 0),
-                minMax.max,
-                minMax.min
+                {
+                  minLength: minMax.max,
+                  maxLength: minMax.min,
+                }
               );
             }).toThrowError(/minimal length to be inferior or equal to the maximal length/);
           }
@@ -119,7 +134,10 @@ describe('SubarrayArbitrary', () => {
       genericHelper.isValidArbitrary(
         (constraints: SubarrayMinMaxConstraits) => {
           const dims = computeMinMaxFor(constraints);
-          return subarray(constraints.src, dims.min, dims.max);
+          return subarray(constraints.src, {
+            minLength: dims.min,
+            maxLength: dims.max,
+          });
         },
         {
           seedGenerator: fc.record({ src: fc.array(fc.integer()), a: fc.nat(), b: fc.nat() }),
@@ -132,6 +150,27 @@ describe('SubarrayArbitrary', () => {
           },
         }
       );
+    });
+    describe('Still support non recommended signatures', () => {
+      it('Should support fc.subarray(originalArray, minLength, maxLength)', () => {
+        fc.assert(
+          fc.property(
+            fc.integer(),
+            fc.array(fc.nat(), { minLength: 1 }),
+            fc.nat(),
+            fc.nat(),
+            (seed, originalArray, aLength, bLength) => {
+              const aLengthMod = aLength % originalArray.length;
+              const bLengthMod = bLength % originalArray.length;
+              const minLength = Math.min(aLengthMod, bLengthMod);
+              const maxLength = Math.max(aLengthMod, bLengthMod);
+              const refArbitrary = subarray(originalArray, { minLength, maxLength });
+              const nonRecommendedArbitrary = subarray(originalArray, minLength, maxLength);
+              expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+            }
+          )
+        );
+      });
     });
   });
   describe('shuffledSubarray', () => {
@@ -147,7 +186,10 @@ describe('SubarrayArbitrary', () => {
       genericHelper.isValidArbitrary(
         (constraints: SubarrayMinMaxConstraits) => {
           const dims = computeMinMaxFor(constraints);
-          return shuffledSubarray(constraints.src, dims.min, dims.max);
+          return shuffledSubarray(constraints.src, {
+            minLength: dims.min,
+            maxLength: dims.max,
+          });
         },
         {
           seedGenerator: fc.record({ src: fc.array(fc.integer()), a: fc.nat(), b: fc.nat() }),
@@ -158,6 +200,28 @@ describe('SubarrayArbitrary', () => {
           },
         }
       );
+    });
+
+    describe('Still support non recommended signatures', () => {
+      it('Should support fc.shuffledSubarray(originalArray, minLength, maxLength)', () => {
+        fc.assert(
+          fc.property(
+            fc.integer(),
+            fc.array(fc.nat(), { minLength: 1 }),
+            fc.nat(),
+            fc.nat(),
+            (seed, originalArray, aLength, bLength) => {
+              const aLengthMod = aLength % originalArray.length;
+              const bLengthMod = bLength % originalArray.length;
+              const minLength = Math.min(aLengthMod, bLengthMod);
+              const maxLength = Math.max(aLengthMod, bLengthMod);
+              const refArbitrary = shuffledSubarray(originalArray, { minLength, maxLength });
+              const nonRecommendedArbitrary = shuffledSubarray(originalArray, minLength, maxLength);
+              expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+            }
+          )
+        );
+      });
     });
   });
 });

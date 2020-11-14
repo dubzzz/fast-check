@@ -1,20 +1,44 @@
-import { array } from './ArrayArbitrary';
+import { array, maxLengthFromMinLength } from './ArrayArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './CharacterArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
+/**
+ * Constraints to be applied on arbitraries for strings
+ * @public
+ */
+export interface StringSharedConstraints {
+  /** Lower bound of the generated string length (included) */
+  minLength?: number;
+  /** Upper bound of the generated string length (included) */
+  maxLength?: number;
+}
+
 /** @internal */
-function StringArbitrary(charArb: Arbitrary<string>, aLength?: number, bLength?: number) {
+type StringFullConstraintsDefinition = [] | [number] | [number, number] | [StringSharedConstraints];
+
+/** @internal */
+function StringArbitrary(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefinition) {
   const arrayArb =
-    aLength != null ? (bLength != null ? array(charArb, aLength, bLength) : array(charArb, aLength)) : array(charArb);
+    args[0] !== undefined
+      ? typeof args[0] === 'number'
+        ? typeof args[1] === 'number'
+          ? array(charArb, { minLength: args[0], maxLength: args[1] })
+          : array(charArb, { maxLength: args[0] })
+        : array(charArb, args[0])
+      : array(charArb);
   return arrayArb.map((tab) => tab.join(''));
 }
 
 /** @internal */
-function Base64StringArbitrary(minLength: number, maxLength: number) {
+function Base64StringArbitrary(unscaledMinLength: number, unscaledMaxLength: number) {
+  // base64 length is always a multiple of 4
+  const minLength = unscaledMinLength + 3 - ((unscaledMinLength + 3) % 4);
+  const maxLength = unscaledMaxLength - (unscaledMaxLength % 4);
+
   if (minLength > maxLength) throw new Error('Minimal length should be inferior or equal to maximal length');
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');
   if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
-  return StringArbitrary(base64(), minLength, maxLength).map((s) => {
+  return StringArbitrary(base64(), { minLength, maxLength }).map((s) => {
     switch (s.length % 4) {
       case 0:
         return s;
@@ -30,141 +54,310 @@ function Base64StringArbitrary(minLength: number, maxLength: number) {
 
 /**
  * For strings using the characters produced by `charArb`
+ *
+ * @param charArb - Arbitrary able to generate random strings (possibly multiple characters)
+ *
+ * @public
  */
 function stringOf(charArb: Arbitrary<string>): Arbitrary<string>;
 /**
  * For strings using the characters produced by `charArb`
+ *
+ * @param charArb - Arbitrary able to generate random strings (possibly multiple characters)
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.stringOf(charArb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function stringOf(charArb: Arbitrary<string>, maxLength: number): Arbitrary<string>;
 /**
  * For strings using the characters produced by `charArb`
+ *
+ * @param charArb - Arbitrary able to generate random strings (possibly multiple characters)
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.stringOf(charArb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: number): Arbitrary<string>;
-function stringOf(charArb: Arbitrary<string>, aLength?: number, bLength?: number): Arbitrary<string> {
-  return StringArbitrary(charArb, aLength, bLength);
+/**
+ * For strings using the characters produced by `charArb`
+ *
+ * @param charArb - Arbitrary able to generate random strings (possibly multiple characters)
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function stringOf(charArb: Arbitrary<string>, constraints: StringSharedConstraints): Arbitrary<string>;
+function stringOf(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  return StringArbitrary(charArb, ...args);
 }
 
 /**
  * For strings of {@link char}
+ * @public
  */
 function string(): Arbitrary<string>;
 /**
  * For strings of {@link char}
+ *
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.string({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function string(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link char}
+ *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.string({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function string(minLength: number, maxLength: number): Arbitrary<string>;
-function string(aLength?: number, bLength?: number): Arbitrary<string> {
-  return StringArbitrary(char(), aLength, bLength);
+/**
+ * For strings of {@link char}
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function string(constraints: StringSharedConstraints): Arbitrary<string>;
+function string(...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  return StringArbitrary(char(), ...args);
 }
 
 /**
  * For strings of {@link ascii}
+ * @public
  */
 function asciiString(): Arbitrary<string>;
 /**
  * For strings of {@link ascii}
+ *
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.asciiString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function asciiString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link ascii}
+ *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.asciiString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
-function asciiString(aLength?: number, bLength?: number): Arbitrary<string> {
-  return StringArbitrary(ascii(), aLength, bLength);
+/**
+ * For strings of {@link ascii}
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function asciiString(constraints: StringSharedConstraints): Arbitrary<string>;
+function asciiString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  return StringArbitrary(ascii(), ...args);
 }
 
 /**
- * For strings of {@link string16bits}
+ * For strings of {@link char16bits}
+ * @public
  */
 function string16bits(): Arbitrary<string>;
 /**
- * For strings of {@link string16bits}
+ * For strings of {@link char16bits}
+ *
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.string16bits({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function string16bits(maxLength: number): Arbitrary<string>;
 /**
- * For strings of {@link string16bits}
+ * For strings of {@link char16bits}
+ *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.string16bits({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
-function string16bits(aLength?: number, bLength?: number): Arbitrary<string> {
-  return StringArbitrary(char16bits(), aLength, bLength);
+/**
+ * For strings of {@link char16bits}
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function string16bits(constraints: StringSharedConstraints): Arbitrary<string>;
+function string16bits(...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  return StringArbitrary(char16bits(), ...args);
 }
 
 /**
  * For strings of {@link unicode}
+ * @public
  */
 function unicodeString(): Arbitrary<string>;
 /**
  * For strings of {@link unicode}
+ *
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.unicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function unicodeString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link unicode}
+ *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.unicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
-function unicodeString(aLength?: number, bLength?: number): Arbitrary<string> {
-  return StringArbitrary(unicode(), aLength, bLength);
+/**
+ * For strings of {@link unicode}
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function unicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
+function unicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  return StringArbitrary(unicode(), ...args);
 }
 
 /**
  * For strings of {@link fullUnicode}
+ * @public
  */
 function fullUnicodeString(): Arbitrary<string>;
 /**
  * For strings of {@link fullUnicode}
+ *
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.fullUnicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function fullUnicodeString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link fullUnicode}
+ *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.fullUnicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function fullUnicodeString(minLength: number, maxLength: number): Arbitrary<string>;
-function fullUnicodeString(aLength?: number, bLength?: number): Arbitrary<string> {
-  return StringArbitrary(fullUnicode(), aLength, bLength);
+/**
+ * For strings of {@link fullUnicode}
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function fullUnicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
+function fullUnicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  return StringArbitrary(fullUnicode(), ...args);
 }
 
 /**
  * For strings of {@link hexa}
+ * @public
  */
 function hexaString(): Arbitrary<string>;
 /**
  * For strings of {@link hexa}
+ *
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.hexaString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function hexaString(maxLength: number): Arbitrary<string>;
 /**
  * For strings of {@link hexa}
+ *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.hexaString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
-function hexaString(aLength?: number, bLength?: number): Arbitrary<string> {
-  return StringArbitrary(hexa(), aLength, bLength);
+/**
+ * For strings of {@link hexa}
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function hexaString(constraints: StringSharedConstraints): Arbitrary<string>;
+function hexaString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  return StringArbitrary(hexa(), ...args);
 }
 
 /**
  * For base64 strings
  *
  * A base64 string will always have a length multiple of 4 (padded with =)
+ *
+ * @public
  */
 function base64String(): Arbitrary<string>;
 /**
@@ -173,6 +366,12 @@ function base64String(): Arbitrary<string>;
  * A base64 string will always have a length multiple of 4 (padded with =)
  *
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.base64String({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function base64String(maxLength: number): Arbitrary<string>;
 /**
@@ -182,12 +381,43 @@ function base64String(maxLength: number): Arbitrary<string>;
  *
  * @param minLength - Lower bound of the generated string length
  * @param maxLength - Upper bound of the generated string length
+ *
+ * @deprecated
+ * Superceded by `fc.base64String({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function base64String(minLength: number, maxLength: number): Arbitrary<string>;
-function base64String(aLength?: number, bLength?: number): Arbitrary<string> {
-  const minLength = aLength != null && bLength != null ? aLength : 0;
-  const maxLength = bLength == null ? (aLength == null ? 16 : aLength) : bLength;
-  return Base64StringArbitrary(minLength + 3 - ((minLength + 3) % 4), maxLength - (maxLength % 4)); // base64 length is always a multiple of 4
+/**
+ * For base64 strings
+ *
+ * A base64 string will always have a length multiple of 4 (padded with =)
+ *
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
+ */
+function base64String(constraints: StringSharedConstraints): Arbitrary<string>;
+function base64String(...args: StringFullConstraintsDefinition): Arbitrary<string> {
+  if (args[0] !== undefined) {
+    if (typeof args[0] === 'number') {
+      if (typeof args[1] === 'number') {
+        // base64String(arb, minLength, maxLength)
+        return Base64StringArbitrary(args[0], args[1]);
+      } else {
+        // base64String(arb, maxLength)
+        return Base64StringArbitrary(0, args[0]);
+      }
+    } else {
+      // base64String(arb, constraints)
+      const minLength = args[0].minLength !== undefined ? args[0].minLength : 0;
+      const maxLength = args[0].maxLength !== undefined ? args[0].maxLength : maxLengthFromMinLength(minLength);
+      return Base64StringArbitrary(minLength, maxLength);
+    }
+  }
+  // base64String(arb)
+  return Base64StringArbitrary(0, maxLengthFromMinLength(0));
 }
 
 export { stringOf, string, asciiString, string16bits, unicodeString, fullUnicodeString, hexaString, base64String };

@@ -2,6 +2,12 @@ import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
+/**
+ * Conjonction of a weight and an arbitrary used by {@link frequency}
+ * in order to generate values
+ *
+ * @public
+ */
 export interface WeightedArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;
@@ -34,10 +40,12 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * Infer the type of the Arbitrary produced by oneof
+ * Infer the type of the Arbitrary produced by {@link frequency}
  * given the type of the source arbitraries
+ *
+ * @public
  */
-type FrequencyArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
+export type FrequencyValue<Ts extends WeightedArbitrary<unknown>[]> = {
   [K in keyof Ts]: Ts[K] extends WeightedArbitrary<infer U> ? U : never;
 }[number];
 
@@ -47,14 +55,14 @@ type FrequencyArbitraryType<Ts extends WeightedArbitrary<unknown>[]> = {
  * **WARNING**: It expects at least one (Arbitrary, weight)
  *
  * @param warbs - (Arbitrary, weight)s that might be called to produce a value
+ *
+ * @public
  */
-function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyArbitraryType<Ts>> {
+function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyValue<Ts>> {
   if (warbs.length === 0) {
     throw new Error('fc.frequency expects at least one parameter');
   }
-  return new FrequencyArbitrary<FrequencyArbitraryType<Ts>>([...warbs] as WeightedArbitrary<
-    FrequencyArbitraryType<Ts>
-  >[]);
+  return new FrequencyArbitrary<FrequencyValue<Ts>>([...warbs] as WeightedArbitrary<FrequencyValue<Ts>>[]);
 }
 
 export { frequency };

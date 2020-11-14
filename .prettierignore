@@ -1,8 +1,9 @@
 .yarn/
-lib/
-lib-*/
+bundle/
 coverage/
 dist/
 docs/
+lib/
+lib-*/
 *.generated.ts
 *.generated.spec.ts

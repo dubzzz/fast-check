@@ -18,9 +18,11 @@ class LazyIterableIterator<T> implements IterableIterator<T> {
 }
 
 /**
- * @internal
  * Create an IterableIterator based on a function that will only be called once if needed
+ *
  * @param producer - Function to instanciate the underlying IterableIterator
+ *
+ * @internal
  */
 export function makeLazy<T>(producer: () => IterableIterator<T>): IterableIterator<T> {
   return new LazyIterableIterator(producer);

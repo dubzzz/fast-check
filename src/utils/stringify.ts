@@ -2,9 +2,9 @@
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
 
 /**
- * @internal
  * Only called with symbol produced by Symbol(string | undefined)
  * Not Symbol.for(string)
+ * @internal
  */
 function getSymbolDescription(s: symbol): string | null {
   if (s.description !== undefined) return s.description;
@@ -96,18 +96,56 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
     }
     case '[object Undefined]':
       return `undefined`;
-    default:
-      try {
-        return (value as any).toString();
-      } catch {
-        return Object.prototype.toString.call(value);
+    case '[object Int8Array]':
+    case '[object Uint8Array]':
+    case '[object Uint8ClampedArray]':
+    case '[object Int16Array]':
+    case '[object Uint16Array]':
+    case '[object Int32Array]':
+    case '[object Uint32Array]':
+    case '[object Float32Array]':
+    case '[object Float64Array]':
+    case '[object BigInt64Array]':
+    case '[object BigUint64Array]': {
+      if (typeof Buffer !== 'undefined' && typeof Buffer.isBuffer === 'function' && Buffer.isBuffer(value)) {
+        return `Buffer.from(${stringifyInternal(Array.from(value.values()), currentValues)})`;
       }
+      const valuePrototype = Object.getPrototypeOf(value);
+      const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
+      if (typeof className === 'string') {
+        const typedArray = (value as unknown) as
+          | Int8Array
+          | Uint8Array
+          | Uint8ClampedArray
+          | Int16Array
+          | Uint16Array
+          | Int32Array
+          | Uint32Array
+          | Float32Array
+          | Float64Array
+          | BigInt64Array
+          | BigUint64Array;
+        const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
+        return `${className}.from(${stringifyInternal(Array.from(valuesFromTypedArr), currentValues)})`;
+      }
+      break;
+    }
+  }
+
+  // default treatment, if none of the above are valid
+  try {
+    return (value as any).toString();
+  } catch {
+    return Object.prototype.toString.call(value);
   }
 }
 
 /**
  * Convert any value to its fast-check string representation
+ *
  * @param value - Value to be converted into a string
+ *
+ * @public
  */
 export function stringify<Ts>(value: Ts): string {
   return stringifyInternal(value, []);

@@ -58,7 +58,7 @@ expectType(
 expectError(fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {}));
 
 // base arbitrary
-expectType<fc.Arbitrary<string[]>>(fc.nat().chain((n) => fc.array(fc.char(), 0, n)));
+expectType<fc.Arbitrary<string[]>>(fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })));
 expectType<fc.Arbitrary<number>>(fc.option(fc.nat()).filter((n): n is number => n !== null));
 expectType<fc.Arbitrary<string>>(fc.nat().map((n) => String(n)));
 
@@ -70,6 +70,10 @@ expectType<fc.Arbitrary<1 | 2 | 'hello'>>(fc.constantFrom(...([1, 2, 'hello'] as
 
 // record arbitrary
 expectType<fc.Arbitrary<{ a: number; b: string }>>(fc.record({ a: fc.nat(), b: fc.string() }));
+expectType<fc.Arbitrary<{ a: number; b: string }>>(fc.record({ a: fc.nat(), b: fc.string() }, {}));
+expectType<fc.Arbitrary<{ a: number; b: string }>>(
+  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: false })
+);
 expectType<fc.Arbitrary<{ a?: number; b?: string }>>(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true })
 );
@@ -125,13 +129,13 @@ expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>(
   }))
 ); // TODO Typings should be improved: referencing an undefined key should failed
 
-// dedup arbitrary
-expectType<fc.Arbitrary<[]>>(fc.dedup(fc.nat(), 0));
-expectType<fc.Arbitrary<[number]>>(fc.dedup(fc.nat(), 1));
-expectType<fc.Arbitrary<[number, number]>>(fc.dedup(fc.nat(), 2));
-expectType<fc.Arbitrary<[number, number, number]>>(fc.dedup(fc.nat(), 3));
-expectType<fc.Arbitrary<[number, number, number, number]>>(fc.dedup(fc.nat(), 4));
-expectType<fc.Arbitrary<number[]>>(fc.dedup(fc.nat(), 5)); // TODO Typings should be improved: handle any number of values
+// clone arbitrary
+expectType<fc.Arbitrary<[]>>(fc.clone(fc.nat(), 0));
+expectType<fc.Arbitrary<[number]>>(fc.clone(fc.nat(), 1));
+expectType<fc.Arbitrary<[number, number]>>(fc.clone(fc.nat(), 2));
+expectType<fc.Arbitrary<[number, number, number]>>(fc.clone(fc.nat(), 3));
+expectType<fc.Arbitrary<[number, number, number, number]>>(fc.clone(fc.nat(), 4));
+expectType<fc.Arbitrary<number[]>>(fc.clone(fc.nat(), 5)); // TODO Typings should be improved: handle any number of values
 
 // func arbitrary
 expectType<fc.Arbitrary<() => number>>(fc.func(fc.nat()));

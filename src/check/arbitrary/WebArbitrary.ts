@@ -11,6 +11,10 @@ import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 
+/**
+ * Constraints to be applied on {@link webAuthority}
+ * @public
+ */
 export interface WebAuthorityConstraints {
   /** Enable IPv4 in host */
   withIPv4?: boolean;
@@ -27,9 +31,11 @@ export interface WebAuthorityConstraints {
 /**
  * For web authority
  *
- * According to RFC 3986 - https://www.ietf.org/rfc/rfc3986.txt - `authority = [ userinfo "@" ] host [ ":" port ]`
+ * According to {@link https://www.ietf.org/rfc/rfc3986.txt | RFC 3986} - `authority = [ userinfo "@" ] host [ ":" port ]`
  *
- * @param constraints
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
  */
 export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<string> {
   const c = constraints || {};
@@ -47,9 +53,11 @@ export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<s
 /**
  * For internal segment of an URI (web included)
  *
- * According to RFC 3986 - https://www.ietf.org/rfc/rfc3986.txt
+ * According to {@link https://www.ietf.org/rfc/rfc3986.txt | RFC 3986}
  *
  * eg.: In the url `https://github.com/dubzzz/fast-check/`, `dubzzz` and `fast-check` are segments
+ *
+ * @public
  */
 export function webSegment(): Arbitrary<string> {
   // pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
@@ -69,9 +77,11 @@ function uriQueryOrFragment() {
 /**
  * For query parameters of an URI (web included)
  *
- * According to RFC 3986 - https://www.ietf.org/rfc/rfc3986.txt
+ * According to {@link https://www.ietf.org/rfc/rfc3986.txt | RFC 3986}
  *
  * eg.: In the url `https://domain/plop/?hello=1&world=2`, `?hello=1&world=2` are query parameters
+ *
+ * @public
  */
 export function webQueryParameters(): Arbitrary<string> {
   return uriQueryOrFragment();
@@ -80,18 +90,24 @@ export function webQueryParameters(): Arbitrary<string> {
 /**
  * For fragments of an URI (web included)
  *
- * According to RFC 3986 - https://www.ietf.org/rfc/rfc3986.txt
+ * According to {@link https://www.ietf.org/rfc/rfc3986.txt | RFC 3986}
  *
  * eg.: In the url `https://domain/plop?page=1#hello=1&world=2`, `?hello=1&world=2` are query parameters
+ *
+ * @public
  */
 export function webFragments(): Arbitrary<string> {
   return uriQueryOrFragment();
 }
 
+/**
+ * Constraints to be applied on {@link webUrl}
+ * @public
+ */
 export interface WebUrlConstraints {
   /** Enforce specific schemes, eg.: http, https */
   validSchemes?: string[];
-  /** Settings for {@see webAuthority} */
+  /** Settings for {@link webAuthority} */
   authoritySettings?: WebAuthorityConstraints;
   /** Enable query parameters in the generated url */
   withQueryParameters?: boolean;
@@ -102,18 +118,14 @@ export interface WebUrlConstraints {
 /**
  * For web url
  *
- * According to RFC 3986 and WHATWG URL Standard
- * - https://www.ietf.org/rfc/rfc3986.txt
- * - https://url.spec.whatwg.org/
+ * According to {@link https://www.ietf.org/rfc/rfc3986.txt | RFC 3986} and
+ * {@link https://url.spec.whatwg.org/ | WHATWG URL Standard}
  *
- * @param constraints
+ * @param constraints - Constraints to apply when building instances
+ *
+ * @public
  */
-export function webUrl(constraints?: {
-  validSchemes?: string[];
-  authoritySettings?: WebAuthorityConstraints;
-  withQueryParameters?: boolean;
-  withFragments?: boolean;
-}): Arbitrary<string> {
+export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
   const c = constraints || {};
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);

@@ -68,11 +68,11 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       // The output for 'steps 2' should have been '-,-,failure'
       const out = fc.check(
         fc.property(
-          fc.array(fc.nat(9), 0, 3),
+          fc.array(fc.nat(9), { maxLength: 3 }),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
             disableReplayLog: true,
           }),
-          fc.array(fc.nat(9), 0, 3),
+          fc.array(fc.nat(9), { maxLength: 3 }),
           (validSteps1, cmds, validSteps2) => {
             const setup = () => ({
               model: { current: { stepId: 0 }, validSteps: [...validSteps1, ...validSteps2] },
@@ -93,11 +93,11 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       const unexpectedPartiallyExecuted: string[] = [];
       const out = fc.check(
         fc.property(
-          fc.array(fc.nat(9), 0, 3),
+          fc.array(fc.nat(9), { maxLength: 3 }),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
             disableReplayLog: true,
           }),
-          fc.array(fc.nat(9), 0, 3),
+          fc.array(fc.nat(9), { maxLength: 3 }),
           (validSteps1, cmds, validSteps2) => {
             if (String(cmds) !== '') {
               // When no command has been started, String(cmds) === ''

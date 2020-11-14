@@ -5,6 +5,12 @@ import { Shrinkable } from './Shrinkable';
 
 /**
  * Abstract class able to generate and shrink values on type `T`
+ *
+ * It can shrink a value that it has not produced through `generate` (contrary to {@link Arbitrary}).
+ * In the case of classical {@link Arbitrary} there is no `shrink` or `shrinkableFor` methods directly on the {@link Arbitrary},
+ * the users have to call `shrink` on the instance of {@link Shrinkable} produced by `generate`.
+ *
+ * @public
  */
 abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
   /**

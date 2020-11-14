@@ -34,7 +34,7 @@ const testSameSeedSameShrinks = function <U, T>(
       fc.property(
         argsForArbGenerator,
         fc.integer().noShrink(),
-        fc.set(fc.nat(100), 1, 10),
+        fc.set(fc.nat(100), { minLength: 1 }),
         (params, seed, shrinkPath) => {
           const arb = arbGenerator(params);
           let s1: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
@@ -65,7 +65,7 @@ const testShrinkPathStrictlyDecreasing = function <U, T>(
       fc.property(
         argsForArbGenerator,
         fc.integer().noShrink(),
-        fc.set(fc.nat(100), 1, 10),
+        fc.set(fc.nat(100), { minLength: 1 }),
         (params, seed, shrinkPath) => {
           const arb = arbGenerator(params);
           let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
@@ -114,7 +114,7 @@ const testAlwaysShrinkToCorrectValues = function <U, T>(
       fc.property(
         argsForArbGenerator,
         fc.integer().noShrink(),
-        fc.set(fc.nat(100), 1, 10),
+        fc.set(fc.nat(100), { minLength: 1 }),
         (params, seed, shrinkPath) => {
           const arb = arbGenerator(params);
           let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
@@ -143,7 +143,7 @@ export const isValidArbitrary = function <U, T>(
 ) {
   const seedGenerator = settings.seedGenerator || fc.constant(undefined);
 
-  const biasedSeedGenerator = fc.tuple(fc.option(fc.integer(2, 100), 2), seedGenerator);
+  const biasedSeedGenerator = fc.tuple(fc.option(fc.integer(2, 100), { freq: 2 }), seedGenerator);
   const biasedArbitraryBuilder = ([biasedFactor, u]: [number | null, U]) => {
     return biasedFactor != null ? arbitraryBuilder(u).withBias(biasedFactor) : arbitraryBuilder(u);
   };

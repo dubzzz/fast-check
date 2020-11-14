@@ -81,7 +81,7 @@ describe('toRoman', () => {
 describe('fromRoman', () => {
   it('should read simple roman strings (no letter doing a minus)', () => {
     fc.assert(
-      fc.property(fc.array(fc.nat(3), NumLetters, NumLetters), (choices) => {
+      fc.property(fc.array(fc.nat(3), { minLength: NumLetters, maxLength: NumLetters }), (choices) => {
         fc.pre(choices.find((e) => e !== 0) !== undefined);
 
         let romanRepr = '';

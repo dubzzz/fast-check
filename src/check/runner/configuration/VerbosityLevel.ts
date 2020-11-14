@@ -1,5 +1,6 @@
 /**
  * Verbosity level
+ * @public
  */
 export enum VerbosityLevel {
   /**
@@ -14,7 +15,7 @@ export enum VerbosityLevel {
    * Level 1
    *
    * Failures reporting:
-   * - {@link VerbosityLevel.None}
+   * - same as `VerbosityLevel.None`
    * - list all the failures encountered during the shrinking process
    */
   Verbose = 1,
@@ -22,7 +23,7 @@ export enum VerbosityLevel {
    * Level 2
    *
    * Execution flow reporting:
-   * - {@link VerbosityLevel.None}
+   * - same as `VerbosityLevel.None`
    * - all runs with their associated status displayed as a tree
    */
   VeryVerbose = 2,

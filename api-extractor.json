@@ -12,9 +12,29 @@
   },
   "docModel": {
     "enabled": true,
-    "apiJsonFilePath": "docs/2-API/fast-check.api.json"
+    "apiJsonFilePath": "docs/fast-check.api.json"
   },
   "apiReport": {
     "enabled": false
+  },
+  "messages": {
+    "compilerMessageReporting": {
+      "default": {
+        "logLevel": "error"
+      }
+    },
+    "extractorMessageReporting": {
+      "default": {
+        "logLevel": "error"
+      },
+      "ae-unresolved-link": {
+        "logLevel": "warning"
+      }
+    },
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "error"
+      }
+    }
   }
 }

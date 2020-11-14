@@ -4,17 +4,39 @@ import { Arbitrary } from './definition/Arbitrary';
 import { frequency } from './FrequencyArbitrary';
 
 /**
- * @internal
+ * Constraints to be applied on {@link lorem}
+ * @public
+ */
+export interface LoremConstraints {
+  /**
+   * Maximal number of entities:
+   * - maximal number of words in case mode is 'words'
+   * - maximal number of sentences in case mode is 'sentences'
+   *
+   * @defaultValue 5
+   */
+  maxCount?: number;
+  /**
+   * Type of strings that should be produced by {@link lorem}:
+   * - words: multiple words
+   * - sentences: multiple sentences
+   *
+   * @defaultValue 'words'
+   */
+  mode?: 'words' | 'sentences';
+}
+
+/**
  * Helper function responsible to build the entries for frequency
+ * @internal
  */
 const h = (v: string, w: number) => {
   return { arbitrary: constant(v), weight: w };
 };
 
 /**
- * @internal
  * Number of occurences extracted from the lorem ipsum:
- * https://fr.wikipedia.org/wiki/Faux-texte#Lorem_ipsum_(version_populaire)
+ * {@link https://fr.wikipedia.org/wiki/Faux-texte#Lorem_ipsum_(version_populaire)}
  *
  * Code generated using:
  * >  Object.entries(
@@ -29,6 +51,8 @@ const h = (v: string, w: number) => {
  * >  .sort(([w1, n1], [w2, n2]) => n2 - n1)
  * >  .reduce((acc, [w, n]) => acc.concat([`h(${JSON.stringify(w)}, ${n})`]), [])
  * >  .join(',')
+ *
+ * @internal
  */
 const loremWord = () =>
   frequency(
@@ -186,30 +210,55 @@ const loremWord = () =>
 
 /**
  * For lorem ipsum strings of words
+ * @public
  */
 function lorem(): Arbitrary<string>;
 /**
  * For lorem ipsum string of words with maximal number of words
+ *
  * @param maxWordsCount - Upper bound of the number of words allowed
+ *
+ * @deprecated
+ * Superceded by `fc.lorem({maxCount})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function lorem(maxWordsCount: number): Arbitrary<string>;
 /**
  * For lorem ipsum string of words or sentences with maximal number of words or sentences
+ *
  * @param maxWordsCount - Upper bound of the number of words/sentences allowed
  * @param sentencesMode - If enabled, multiple sentences might be generated
+ *
+ * @deprecated
+ * Superceded by `fc.lorem({maxCount, mode})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;
-function lorem(maxWordsCount?: number, sentencesMode?: boolean): Arbitrary<string> {
+/**
+ * For lorem ipsum string of words or sentences with maximal number of words or sentences
+ *
+ * @param constraints - Constraints to be applied onto the generated value
+ *
+ * @public
+ */
+function lorem(constraints: LoremConstraints): Arbitrary<string>;
+function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]): Arbitrary<string> {
+  const maxWordsCount = typeof args[0] === 'object' ? args[0].maxCount : args[0];
+  const sentencesMode = typeof args[0] === 'object' ? args[0].mode === 'sentences' : args[1];
   const maxCount = maxWordsCount || 5;
   if (maxCount < 1) throw new Error(`lorem has to produce at least one word/sentence`);
   if (sentencesMode) {
-    const sentence = array(loremWord(), 1, 10)
+    const sentence = array(loremWord(), { minLength: 1 })
       .map((words) => words.join(' '))
       .map((s) => (s[s.length - 1] === ',' ? s.substr(0, s.length - 1) : s))
       .map((s) => s[0].toUpperCase() + s.substring(1) + '.');
-    return array(sentence, 1, maxCount).map((sentences) => sentences.join(' '));
+    return array(sentence, { minLength: 1, maxLength: maxCount }).map((sentences) => sentences.join(' '));
   } else {
-    return array(loremWord(), 1, maxCount).map((words) =>
+    return array(loremWord(), { minLength: 1, maxLength: maxCount }).map((words) =>
       words.map((w) => (w[w.length - 1] === ',' ? w.substr(0, w.length - 1) : w)).join(' ')
     );
   }

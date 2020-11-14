@@ -82,6 +82,8 @@ function buildInitialValues<Ts>(
  * @param params - Optional parameters to customize the execution
  *
  * @returns Test status and other useful details
+ *
+ * @public
  */
 function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 /**
@@ -91,8 +93,22 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  * @param params - Optional parameters to customize the execution
  *
  * @returns Test status and other useful details
+ *
+ * @public
  */
 function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
+/**
+ * Run the property, do not throw contrary to {@link assert}
+ *
+ * WARNING: Has to be awaited if the property is asynchronous
+ *
+ * @param property - Property to be checked
+ * @param params - Optional parameters to customize the execution
+ *
+ * @returns Test status and other useful details
+ *
+ * @public
+ */
 function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
 function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   if (rawProperty == null || rawProperty.generate == null)
@@ -105,7 +121,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   });
   if (qParams.reporter !== null && qParams.asyncReporter !== null)
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
-  if (qParams.asyncReporter !== null && rawProperty.isAsync())
+  if (qParams.asyncReporter !== null && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
   const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
@@ -137,6 +153,8 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
  *
  * @param property - Asynchronous property to be checked
  * @param params - Optional parameters to customize the execution
+ *
+ * @public
  */
 function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
 /**
@@ -147,8 +165,23 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
  *
  * @param property - Synchronous property to be checked
  * @param params - Optional parameters to customize the execution
+ *
+ * @public
  */
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
+/**
+ * Run the property, throw in case of failure
+ *
+ * It can be called directly from describe/it blocks of Mocha.
+ * It does not return anything in case of success.
+ *
+ * WARNING: Has to be awaited if the property is asynchronous
+ *
+ * @param property - Property to be checked
+ * @param params - Optional parameters to customize the execution
+ *
+ * @public
+ */
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const out = check(property, params);

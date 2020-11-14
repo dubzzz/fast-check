@@ -14,11 +14,13 @@ import { set } from './SetArbitrary';
 import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
+import { date } from './DateArbitrary';
 
 /**
- * Constraints for `fc.anything` and `fc.object`
+ * Constraints for {@link anything} and {@link object}
+ * @public
  */
-export type ObjectConstraints = {
+export interface ObjectConstraints {
   /** Maximal depth allowed */
   maxDepth?: number;
   /** Maximal number of keys */
@@ -26,17 +28,17 @@ export type ObjectConstraints = {
   /**
    * Arbitrary for keys
    *
-   * Default for `key` is: `fc.string()`
+   * Default for `key` is: {@link string}
    */
   key?: Arbitrary<string>;
   /**
    * Arbitrary for values
    *
    * Default for `values` are:
-   * - `fc.boolean()`,
-   * - `fc.integer()`,
-   * - `fc.double()`,
-   * - `fc.string()`
+   * - {@link boolean},
+   * - {@link integer},
+   * - {@link double},
+   * - {@link string}
    * - constants among:
    *  - `null`,
    *  - `undefined`,
@@ -64,11 +66,24 @@ export type ObjectConstraints = {
   withNullPrototype?: boolean;
   /** Also generate BigInt */
   withBigInt?: boolean;
-};
+  /** Also generate Date */
+  withDate?: boolean;
+}
 
 /**
- * @internal
+ * Shared constraints for:
+ * - {@link json},
+ * - {@link unicodeJson},
+ * - {@link jsonObject},
+ * - {@link unicodeJsonObject}
+ * @public
  */
+export interface JsonSharedConstraints {
+  /** Maximal depth allowed */
+  maxDepth?: number;
+}
+
+/** @internal */
 class QualifiedObjectConstraints {
   constructor(
     readonly key: Arbitrary<string>,
@@ -79,7 +94,8 @@ class QualifiedObjectConstraints {
     readonly withMap: boolean,
     readonly withObjectString: boolean,
     readonly withNullPrototype: boolean,
-    readonly withBigInt: boolean
+    readonly withBigInt: boolean,
+    readonly withDate: boolean
   ) {}
 
   /**
@@ -148,7 +164,8 @@ class QualifiedObjectConstraints {
       orDefault(settings.withMap, false),
       orDefault(settings.withObjectString, false),
       orDefault(settings.withNullPrototype, false),
-      orDefault(settings.withBigInt, false)
+      orDefault(settings.withBigInt, false),
+      orDefault(settings.withDate, false)
     );
   }
 }
@@ -168,19 +185,19 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
   const maxKeys = constraints.maxKeys;
 
   const entriesOf = <T, U>(keyArb: Arbitrary<T>, valueArb: Arbitrary<U>) =>
-    set(tuple(keyArb, valueArb), 0, maxKeys, (t1, t2) => t1[0] === t2[0]);
+    set(tuple(keyArb, valueArb), { maxLength: maxKeys, compare: (t1, t2) => t1[0] === t2[0] });
 
   const mapOf = <T, U>(ka: Arbitrary<T>, va: Arbitrary<U>) => entriesOf(ka, va).map((v) => new Map(v));
   const dictOf = <U>(ka: Arbitrary<string>, va: Arbitrary<U>) => entriesOf(ka, va).map((v) => toObject(v));
 
   const baseArb = oneof(...arbitrariesForBase);
-  const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, 0, maxKeys)));
+  const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys })));
   const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => dictOf(arbKeys(n), arb)));
   const setBaseArb = () => oneof(...arbitrariesForBase.map((arb) => set(arb, 0, maxKeys).map((v) => new Set(v))));
   const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
-  const arrayArb = memo((n) => oneof(arrayBaseArb, array(anythingArb(n), 0, maxKeys)));
+  const arrayArb = memo((n) => oneof(arrayBaseArb, array(anythingArb(n), { maxLength: maxKeys })));
   // Set<base> | Set<anything>
   const setArb = memo((n) =>
     oneof(
@@ -205,7 +222,8 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       ...(constraints.withSet ? [setArb()] : []),
       ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
       ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : []),
-      ...(constraints.withBigInt ? [bigInt()] : [])
+      ...(constraints.withBigInt ? [bigInt()] : []),
+      ...(constraints.withDate ? [date()] : [])
     );
   });
 
@@ -223,7 +241,11 @@ const objectInternal = (constraints: QualifiedObjectConstraints): Arbitrary<Reco
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * null, undefined, 42, 6.5, 'Hello', {}, {k: [{}, 1, 2]}
+ * ```
+ *
+ * @public
  */
 function anything(): Arbitrary<unknown>;
 /**
@@ -232,7 +254,9 @@ function anything(): Arbitrary<unknown>;
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```null, undefined, 42, 6.5, 'Hello', {} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * null, undefined, 42, 6.5, 'Hello', {}, {k: [{}, 1, 2]}
+ * ```
  *
  * @example
  * ```typescript
@@ -250,6 +274,8 @@ function anything(): Arbitrary<unknown>;
  * ```
  *
  * @param constraints - Constraints to apply when building instances
+ *
+ * @public
  */
 function anything(constraints: ObjectConstraints): Arbitrary<unknown>;
 function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
@@ -262,7 +288,11 @@ function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```{} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * {}, {k: [{}, 1, 2]}
+ * ```
+ *
+ * @public
  */
 function object(): Arbitrary<Record<string, unknown>>;
 /**
@@ -271,9 +301,13 @@ function object(): Arbitrary<Record<string, unknown>>;
  * You may use {@link sample} to preview the values that will be generated
  *
  * @example
- * ```{} or {k: [{}, 1, 2]}```
+ * ```javascript
+ * {}, {k: [{}, 1, 2]}
+ * ```
  *
  * @param constraints - Constraints to apply when building instances
+ *
+ * @public
  */
 function object(constraints: ObjectConstraints): Arbitrary<Record<string, unknown>>;
 function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unknown>> {
@@ -281,16 +315,22 @@ function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unkno
 }
 
 /** @internal */
-function jsonSettings(stringArbitrary: Arbitrary<string>, maxDepth?: number) {
+function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number | JsonSharedConstraints) {
   const key = stringArbitrary;
   const values = [boolean(), integer(), double(), stringArbitrary, constant(null)];
-  return maxDepth != null ? { key, values, maxDepth } : { key, values };
+  return constraints != null
+    ? typeof constraints === 'number'
+      ? { key, values, maxDepth: constraints }
+      : { key, values, maxDepth: constraints.maxDepth }
+    : { key, values };
 }
 
 /**
  * For any JSON compliant values
  *
  * Keys and string values rely on {@link string}
+ *
+ * @public
  */
 function jsonObject(): Arbitrary<unknown>;
 /**
@@ -299,16 +339,34 @@ function jsonObject(): Arbitrary<unknown>;
  * Keys and string values rely on {@link string}
  *
  * @param maxDepth - Maximal depth of the generated values
+ *
+ * @deprecated
+ * Superceded by `fc.jsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function jsonObject(maxDepth: number): Arbitrary<unknown>;
-function jsonObject(maxDepth?: number): Arbitrary<unknown> {
-  return anything(jsonSettings(string(), maxDepth));
+/**
+ * For any JSON compliant values
+ *
+ * Keys and string values rely on {@link string}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function jsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
+  return anything(jsonSettings(string(), constraints));
 }
 
 /**
  * For any JSON compliant values with unicode support
  *
  * Keys and string values rely on {@link unicode}
+ *
+ * @public
  */
 function unicodeJsonObject(): Arbitrary<unknown>;
 /**
@@ -317,16 +375,34 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  * Keys and string values rely on {@link unicode}
  *
  * @param maxDepth - Maximal depth of the generated values
+ *
+ * @deprecated
+ * Superceded by `fc.unicodeJsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
-function unicodeJsonObject(maxDepth?: number): Arbitrary<unknown> {
-  return anything(jsonSettings(unicodeString(), maxDepth));
+/**
+ * For any JSON compliant values with unicode support
+ *
+ * Keys and string values rely on {@link unicode}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
+  return anything(jsonSettings(unicodeString(), constraints));
 }
 
 /**
  * For any JSON strings
  *
  * Keys and string values rely on {@link string}
+ *
+ * @public
  */
 function json(): Arbitrary<string>;
 /**
@@ -335,10 +411,28 @@ function json(): Arbitrary<string>;
  * Keys and string values rely on {@link string}
  *
  * @param maxDepth - Maximal depth of the generated objects
+ *
+ * @deprecated
+ * Superceded by `fc.json({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function json(maxDepth: number): Arbitrary<string>;
-function json(maxDepth?: number): Arbitrary<string> {
-  const arb = maxDepth != null ? jsonObject(maxDepth) : jsonObject();
+/**
+ * For any JSON strings
+ *
+ * Keys and string values rely on {@link string}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function json(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
+  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
+  //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
+  const arb = constraints != null ? jsonObject(constraints as any) : jsonObject();
   return arb.map(JSON.stringify);
 }
 
@@ -346,6 +440,8 @@ function json(maxDepth?: number): Arbitrary<string> {
  * For any JSON strings with unicode support
  *
  * Keys and string values rely on {@link unicode}
+ *
+ * @public
  */
 function unicodeJson(): Arbitrary<string>;
 /**
@@ -354,10 +450,28 @@ function unicodeJson(): Arbitrary<string>;
  * Keys and string values rely on {@link unicode}
  *
  * @param maxDepth - Maximal depth of the generated objects
+ *
+ * @deprecated
+ * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ *
+ * @public
  */
 function unicodeJson(maxDepth: number): Arbitrary<string>;
-function unicodeJson(maxDepth?: number): Arbitrary<string> {
-  const arb = maxDepth != null ? unicodeJsonObject(maxDepth) : unicodeJsonObject();
+/**
+ * For any JSON strings with unicode support
+ *
+ * Keys and string values rely on {@link unicode}
+ *
+ * @param constraints - Constraints to be applied onto the generated instance
+ *
+ * @public
+ */
+function unicodeJson(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function unicodeJson(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
+  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
+  //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
+  const arb = constraints != null ? unicodeJsonObject(constraints as any) : unicodeJsonObject();
   return arb.map(JSON.stringify);
 }
 

@@ -2,10 +2,15 @@ import { date } from '../../../../src/check/arbitrary/DateArbitrary';
 import * as stubRng from '../../stubs/generators';
 import { mocked } from 'ts-jest/utils';
 import * as fc from '../../../../lib/fast-check';
+import { ArbitraryWithShrink } from '../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 
 jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
-import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
+import * as _IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
+
+const IntegerArbitraryMock: {
+  integer: (min: number, max: number) => ArbitraryWithShrink<number>;
+} = _IntegerArbitraryMock;
 
 const mrng = () => stubRng.mutable.nocall();
 
@@ -126,12 +131,12 @@ const invalidRangeConstraintsArb = () =>
 
 const invalidMinConstraintsArb = () =>
   fc
-    .option(fc.date(), 100)
+    .option(fc.date(), { freq: 100 })
     .map((optMax) => optMax || undefined)
     .map((max) => ({ min: new Date(Number.NaN), max }));
 
 const invalidMaxConstraintsArb = () =>
   fc
-    .option(fc.date(), 100)
+    .option(fc.date(), { freq: 100 })
     .map((optMin) => optMin || undefined)
     .map((min) => ({ min, max: new Date(Number.NaN) }));

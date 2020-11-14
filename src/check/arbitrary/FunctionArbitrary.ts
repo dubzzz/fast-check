@@ -11,9 +11,11 @@ import { escapeForMultilineComments } from './helpers/TextEscaper';
  * For pure functions
  *
  * @param arb - Arbitrary responsible to produce the values
+ *
+ * @public
  */
 export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary<(...args: TArgs) => TOut> {
-  return tuple(array(arb, 1, 10), integer().noShrink()).map(([outs, seed]) => {
+  return tuple(array(arb, { minLength: 1 }), integer().noShrink()).map(([outs, seed]) => {
     const producer = () => {
       const recorded: { [key: string]: TOut } = {};
       const f = (...args: TArgs) => {
@@ -23,16 +25,17 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
         return hasCloneMethod(val) ? val[cloneMethod]() : val;
       };
       return Object.assign(f, {
-        toString: () => `function(...args) {
-  // With hash and stringify coming from fast-check
-  ${Object.keys(recorded)
-    .sort()
-    .map((k) => `${k} => ${stringify(recorded[k])}`)
-    .map((line) => `/* ${escapeForMultilineComments(line)} */`)
-    .join('\n  ')}
+        toString: () => {
+          const seenValues = Object.keys(recorded)
+            .sort()
+            .map((k) => `${k} => ${stringify(recorded[k])}`)
+            .map((line) => `/* ${escapeForMultilineComments(line)} */`);
+          return `function(...args) {
+  // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
   const outs = ${stringify(outs)};
   return outs[hash('${seed}' + stringify(args)) % outs.length];
-}`,
+}`;
+        },
         [cloneMethod]: producer,
       });
     };
@@ -55,18 +58,19 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
         return val;
       };
       return Object.assign(f, {
-        toString: () => `function(a, b) {
-  // With hash and stringify coming from fast-check
-  ${Object.keys(recorded)
-    .sort()
-    .map((k) => `${k} => ${stringify(recorded[k])}`)
-    .map((line) => `/* ${escapeForMultilineComments(line)} */`)
-    .join('\n  ')}
+        toString: () => {
+          const seenValues = Object.keys(recorded)
+            .sort()
+            .map((k) => `${k} => ${stringify(recorded[k])}`)
+            .map((line) => `/* ${escapeForMultilineComments(line)} */`);
+          return `function(a, b) {
+  // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
   const cmp = ${cmp};
   const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
   const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};
   return cmp(hA, hB);
-}`,
+}`;
+        },
         [cloneMethod]: producer,
       });
     };
@@ -78,13 +82,15 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
  * For comparison functions
  *
  * A comparison function returns:
- * - negative value whenever a < b
- * - positive value whenever a > b
- * - zero whenever a and b are equivalent
+ * - negative value whenever `a < b`
+ * - positive value whenever `a > b`
+ * - zero whenever `a` and `b` are equivalent
  *
  * Comparison functions are transitive: `a < b and b < c => a < c`
  *
  * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
+ *
+ * @public
  */
 export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
   return compareFuncImplem(
@@ -102,8 +108,10 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
  * For comparison boolean functions
  *
  * A comparison boolean function returns:
- * - true whenever a < b
- * - false otherwise (ie. a = b or a > b)
+ * - `true` whenever `a < b`
+ * - `false` otherwise (ie. `a = b` or `a > b`)
+ *
+ * @public
  */
 export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
   return compareFuncImplem(

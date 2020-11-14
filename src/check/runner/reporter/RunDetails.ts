@@ -6,6 +6,8 @@ import { Parameters } from '../configuration/Parameters';
  * Post-run details produced by {@link check}
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
+ *
+ * @public
  */
 export type RunDetails<Ts> =
   | RunDetailsFailureProperty<Ts>
@@ -16,51 +18,71 @@ export type RunDetails<Ts> =
 /**
  * Run reported as failed because
  * the property failed
+ *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
+ * @public
  */
-export type RunDetailsFailureProperty<Ts> = RunDetailsWithDoc<Ts> & {
+export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: boolean;
   counterexample: Ts;
   counterexamplePath: string;
   error: string;
-};
+}
 
 /**
  * Run reported as failed because
  * too many retries have been attempted to generate valid values
+ *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
+ * @public
  */
-export type RunDetailsFailureTooManySkips<Ts> = RunDetailsWithDoc<Ts> & {
+export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: false;
   counterexample: null;
   counterexamplePath: null;
   error: null;
-};
+}
 
 /**
  * Run reported as failed because
  * it took too long and thus has been interrupted
+ *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
+ * @public
  */
-export type RunDetailsFailureInterrupted<Ts> = RunDetailsWithDoc<Ts> & {
+export interface RunDetailsFailureInterrupted<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: true;
   counterexample: null;
   counterexamplePath: null;
   error: null;
-};
+}
 
 /**
  * Run reported as success
+ *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
+ * @public
  */
-export type RunDetailsSuccess<Ts> = RunDetailsWithDoc<Ts> & {
+export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
   failed: false;
   interrupted: boolean;
   counterexample: null;
   counterexamplePath: null;
   error: null;
-};
+}
 
-interface RunDetailsWithDoc<Ts> {
+/**
+ * Shared part between variants of RunDetails
+ * @public
+ */
+export interface RunDetailsCommon<Ts> {
   /**
    * Does the property failed during the execution of {@link check}?
    */
@@ -90,7 +112,7 @@ interface RunDetailsWithDoc<Ts> {
   /**
    * Seed that have been used by the run
    *
-   * It can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using {@link Parameters}
+   * It can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
    */
   seed: number;
   /**
@@ -104,13 +126,13 @@ interface RunDetailsWithDoc<Ts> {
   /**
    * In case of failure: path to the counterexample
    *
-   * For replay purposes, it can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using {@link Parameters}
+   * For replay purposes, it can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
    */
   counterexamplePath: string | null;
   /**
    * List all failures that have occurred during the run
    *
-   * You must enable verbose with at least {@link Verbosity.Verbose} in {@link Parameters}
+   * You must enable verbose with at least `Verbosity.Verbose` in `Parameters`
    * in order to have values in it
    */
   failures: Ts[];
@@ -120,7 +142,7 @@ interface RunDetailsWithDoc<Ts> {
    * Traces the origin of each value encountered during the test and its execution status.
    * Can help to diagnose shrinking issues.
    *
-   * You must enable verbose with at least {@link Verbosity.Verbose} in {@link Parameters}
+   * You must enable verbose with at least `Verbosity.Verbose` in `Parameters`
    * in order to have values in it:
    * - Verbose: Only failures
    * - VeryVerbose: Failures, Successes and Skipped
@@ -133,8 +155,8 @@ interface RunDetailsWithDoc<Ts> {
   /**
    * Configuration of the run
    *
-   * It includes both local parameters set on `fc.assert` or `fc.check`
-   * and global ones specified using `fc.configureGlobal`
+   * It includes both local parameters set on {@link check} or {@link assert}
+   * and global ones specified using {@link configureGlobal}
    */
   runConfiguration: Parameters<Ts>;
 }

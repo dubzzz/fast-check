@@ -28,6 +28,8 @@ function computeNumChoices<T>(options: { num: number; build: (idInGroup: number)
  *   { num: 10, build: v => String.fromCharCode(v + 0x30) },
  * )
  * ```
+ *
+ * @public
  */
 export function mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T> {
   const numChoices = computeNumChoices(entries);

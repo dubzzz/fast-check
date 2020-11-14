@@ -111,24 +111,30 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
 }
 
 /**
- * Format output of `fc.check` using the default error reporting of `fc.assert`
+ * Format output of {@link check} using the default error reporting of {@link assert}
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
+ *
+ * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
 /**
- * Format output of `fc.check` using the default error reporting of `fc.assert`
+ * Format output of {@link check} using the default error reporting of {@link assert}
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
+ *
+ * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
 /**
- * Format output of `fc.check` using the default error reporting of `fc.assert`
+ * Format output of {@link check} using the default error reporting of {@link assert}
  *
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
+ *
+ * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined;
 function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined {
@@ -154,10 +160,10 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
 }
 
 /**
- * @internal
  * In case this code has to be executed synchronously the caller
  * has to make sure that no asyncReporter has been defined
  * otherwise it might trigger an unchecked promise
+ * @internal
  */
 export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);

@@ -9,8 +9,9 @@ import { tuple } from './TupleArbitrary';
 /**
  * For valid IP v4
  *
- * Following RFC 3986
- * https://tools.ietf.org/html/rfc3986#section-3.2.2
+ * Following {@link https://tools.ietf.org/html/rfc3986#section-3.2.2 | RFC 3986}
+ *
+ * @public
  */
 function ipV4(): Arbitrary<string> {
   // IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
@@ -20,11 +21,11 @@ function ipV4(): Arbitrary<string> {
 /**
  * For valid IP v4 according to WhatWG
  *
- * Following WhatWG, the specification for web-browsers
- * https://url.spec.whatwg.org/
+ * Following {@link https://url.spec.whatwg.org/ | WhatWG}, the specification for web-browsers
  *
- * There is no equivalent for IP v6 according to the IP v6 parser
- * https://url.spec.whatwg.org/#concept-ipv6-parser
+ * There is no equivalent for IP v6 according to the {@link https://url.spec.whatwg.org/#concept-ipv6-parser | IP v6 parser}
+ *
+ * @public
  */
 function ipV4Extended(): Arbitrary<string> {
   const natRepr = (maxValue: number) =>
@@ -50,8 +51,9 @@ function ipV4Extended(): Arbitrary<string> {
 /**
  * For valid IP v6
  *
- * Following RFC 3986
- * https://tools.ietf.org/html/rfc3986#section-3.2.2
+ * Following {@link https://tools.ietf.org/html/rfc3986#section-3.2.2 | RFC 3986}
+ *
+ * @public
  */
 function ipV6(): Arbitrary<string> {
   // h16 = 1*4HEXDIG
@@ -65,27 +67,29 @@ function ipV6(): Arbitrary<string> {
   //               / [ *4( h16 ":" ) h16 ] "::"              ls32
   //               / [ *5( h16 ":" ) h16 ] "::"              h16
   //               / [ *6( h16 ":" ) h16 ] "::"
-  const h16Arb = hexaString(1, 4);
+  const h16Arb = hexaString({ minLength: 1, maxLength: 4 });
   const ls32Arb = oneof(
     tuple(h16Arb, h16Arb).map(([a, b]) => `${a}:${b}`),
     ipV4()
   );
   return oneof(
-    tuple(array(h16Arb, 6, 6), ls32Arb).map(([eh, l]) => `${eh.join(':')}:${l}`),
-    tuple(array(h16Arb, 5, 5), ls32Arb).map(([eh, l]) => `::${eh.join(':')}:${l}`),
-    tuple(array(h16Arb, 0, 1), array(h16Arb, 4, 4), ls32Arb).map(
+    tuple(array(h16Arb, { minLength: 6, maxLength: 6 }), ls32Arb).map(([eh, l]) => `${eh.join(':')}:${l}`),
+    tuple(array(h16Arb, { minLength: 5, maxLength: 5 }), ls32Arb).map(([eh, l]) => `::${eh.join(':')}:${l}`),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 1 }), array(h16Arb, { minLength: 4, maxLength: 4 }), ls32Arb).map(
       ([bh, eh, l]) => `${bh.join(':')}::${eh.join(':')}:${l}`
     ),
-    tuple(array(h16Arb, 0, 2), array(h16Arb, 3, 3), ls32Arb).map(
+    tuple(array(h16Arb, { minLength: 0, maxLength: 2 }), array(h16Arb, { minLength: 3, maxLength: 3 }), ls32Arb).map(
       ([bh, eh, l]) => `${bh.join(':')}::${eh.join(':')}:${l}`
     ),
-    tuple(array(h16Arb, 0, 3), array(h16Arb, 2, 2), ls32Arb).map(
+    tuple(array(h16Arb, { minLength: 0, maxLength: 3 }), array(h16Arb, { minLength: 2, maxLength: 2 }), ls32Arb).map(
       ([bh, eh, l]) => `${bh.join(':')}::${eh.join(':')}:${l}`
     ),
-    tuple(array(h16Arb, 0, 4), h16Arb, ls32Arb).map(([bh, eh, l]) => `${bh.join(':')}::${eh}:${l}`),
-    tuple(array(h16Arb, 0, 5), ls32Arb).map(([bh, l]) => `${bh.join(':')}::${l}`),
-    tuple(array(h16Arb, 0, 6), h16Arb).map(([bh, eh]) => `${bh.join(':')}::${eh}`),
-    tuple(array(h16Arb, 0, 7)).map(([bh]) => `${bh.join(':')}::`)
+    tuple(array(h16Arb, { minLength: 0, maxLength: 4 }), h16Arb, ls32Arb).map(
+      ([bh, eh, l]) => `${bh.join(':')}::${eh}:${l}`
+    ),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 5 }), ls32Arb).map(([bh, l]) => `${bh.join(':')}::${l}`),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 6 }), h16Arb).map(([bh, eh]) => `${bh.join(':')}::${eh}`),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 7 })).map(([bh]) => `${bh.join(':')}::`)
   );
 }
 

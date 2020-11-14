@@ -4,11 +4,11 @@ import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
 
 /**
- * @internal
- *
  * Configuration extracted from incoming Parameters
  *
  * It handles and set the default settings that will be used by runners.
+ *
+ * @internal
  */
 export class QualifiedParameters<T> {
   seed: number;

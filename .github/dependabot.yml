@@ -15,14 +15,14 @@ updates:
   - package-ecosystem: "npm"
     directory: "/example"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     commit-message:
       prefix: "⬆️"
 
   - package-ecosystem: "npm"
     directory: "/test/type"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -33,7 +33,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/node-extension-cjs"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -44,7 +44,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/node-extension-mjs"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -55,7 +55,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/node-with-import"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -66,7 +66,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/node-with-require"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -77,7 +77,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/rollup-with-import"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -88,7 +88,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/rollup-with-require"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -99,7 +99,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/webpack-with-import"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:
@@ -110,7 +110,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/test/esm/webpack-with-require"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "⬆️"
     ignore:

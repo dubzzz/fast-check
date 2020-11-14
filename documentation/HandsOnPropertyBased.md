@@ -1,5 +1,7 @@
 # [:house:](../README.md) Hands on property based
 
+Or go to the [JavaScript version](./HandsOnPropertyBasedJs.md) of the Hands on.
+
 ## What is property based testing?
 
 Property based testing has become quite famous in functional world. Mainly introduced by QuickCheck framework in Haskell, it suggests another way to test software. It targets all the scope covered by example based testing: from unit tests to integration tests.
@@ -85,7 +87,7 @@ Edit `package.json` to configure the test framework:
 // --
 "jest": {
   "moduleFileExtensions": ["ts", "tsx", "js"],
-  "globals": {"ts-jest": {"tsConfig": "tsconfig.json"}},
+  "globals": {"ts-jest": {"tsconfig": "tsconfig.json"}},
   "transform": {"^.+\\.(ts|tsx)$": "ts-jest"},
   "testMatch": ["**/specs/*.+(ts|tsx|js)"]
 },
@@ -137,7 +139,7 @@ test('should produce ordered array', () => {
 
 Copy and paste the code above into `specs/sort.spec.ts` and run `npm run test`.
 
-:tada: Congrats! :tada: You have succesfully implemented your first test using fast-check.
+🎉 Congrats! 🎉 You have succesfully implemented your first test using fast-check.
 
 ---
 

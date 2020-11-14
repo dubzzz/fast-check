@@ -22,6 +22,50 @@ describe('Runner', () => {
     it('Should throw if property is an Arbitrary', () => {
       expect(() => check((char() as any) as IRawProperty<unknown>)).toThrowError();
     });
+    it.each`
+      isAsync
+      ${false}
+      ${true}
+    `('Should throw if both reporter and asyncReporter are defined (isAsync: $isAsync)', ({ isAsync }) => {
+      const p: IRawProperty<[number]> = {
+        isAsync: () => isAsync,
+        generate: () => new Shrinkable([0]),
+        run: () => null,
+      };
+      expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError();
+    });
+    it('Should not throw if reporter is specified on synchronous properties', () => {
+      const p: IRawProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => new Shrinkable([0]),
+        run: () => null,
+      };
+      expect(() => check(p, { reporter: () => {} })).not.toThrowError();
+    });
+    it('Should not throw if reporter is specified on asynchronous properties', () => {
+      const p: IRawProperty<[number]> = {
+        isAsync: () => true,
+        generate: () => new Shrinkable([0]),
+        run: () => null,
+      };
+      expect(() => check(p, { reporter: () => {} })).not.toThrowError();
+    });
+    it('Should throw if asyncReporter is specified on synchronous properties', () => {
+      const p: IRawProperty<[number]> = {
+        isAsync: () => false,
+        generate: () => new Shrinkable([0]),
+        run: () => null,
+      };
+      expect(() => check(p, { asyncReporter: async () => {} })).toThrowError();
+    });
+    it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
+      const p: IRawProperty<[number]> = {
+        isAsync: () => true,
+        generate: () => new Shrinkable([0]),
+        run: () => null,
+      };
+      expect(() => check(p, { asyncReporter: async () => {} })).not.toThrowError();
+    });
     it('Should call the property 100 times by default (on success)', () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
@@ -87,7 +131,7 @@ describe('Runner', () => {
       expect(out.failed).toBe(false);
     });
     it('Should ignore precondition failure runs and generate another value', async () => {
-      const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
+      const gapsBetweenSuccessesArb = fc.array(fc.nat(10), { minLength: 100, maxLength: 100 });
       const successfulRunIdsArb = gapsBetweenSuccessesArb.map((gaps) =>
         gaps.reduce((prev: number[], cur: number) => {
           prev.push(prev.length === 0 ? cur : prev[prev.length - 1] + cur + 1);
@@ -314,7 +358,7 @@ describe('Runner', () => {
     });
     it('Should build the right counterexamplePath', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.nat(99), 1, 100), (seed, failurePoints) => {
+        fc.property(fc.integer(), fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }), (seed, failurePoints) => {
           // Each entry (at index idx) in failurePoints represents the number of runs
           // required before failing for the level <idx>
           // Basically it must fail before the end of the execution (100 runs by default)
