@@ -145,7 +145,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
   test_examples:
-    name: 'Test examples'
+    name: 'Test bundle'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -170,7 +170,7 @@ jobs:
         uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'example'
-      - name: Test examples/
+      - name: Test example/
         run: |
           cd example
           yarn test
@@ -180,10 +180,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-path
+        run: echo "::set-output name=value::$(yarn cache dir)"
+      - name: Caching yarn cache
+        uses: actions/cache@v2
         with:
-          path: '**/test/type/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/test/type/yarn.lock')}}-v14.x
+          path: ${{steps.yarn-cache-path.outputs.value}}
+          key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/type/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -192,19 +196,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link to production package
-        run: |
-          mkdir bundle
-          tar -C bundle -zxvf fast-check.tgz
-          cd bundle/package
-          yarn install --production
-          ls -l node_modules
-          yarn link
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/type'
       - name: Test test/type/
         run: |
-          cd test/type/
-          yarn --frozen-lockfile
-          yarn link "fast-check"
+          cd test/type
           yarn test
   test_typescript_3_2:
     name: 'Test legacy TypeScript'
@@ -212,10 +210,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-path
+        run: echo "::set-output name=value::$(yarn cache dir)"
+      - name: Caching yarn cache
+        uses: actions/cache@v2
         with:
-          path: '**/test/legacy/typescript-3.2/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/test/legacy/typescript-3.2/yarn.lock')}}-v14.x
+          path: ${{steps.yarn-cache-path.outputs.value}}
+          key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/legacy/typescript-3.2/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -224,19 +226,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link to production package
-        run: |
-          mkdir bundle
-          tar -C bundle -zxvf fast-check.tgz
-          cd bundle/package
-          yarn install --production
-          ls -l node_modules
-          yarn link
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/legacy/typescript-3.2'
       - name: Test test/legacy/typescript-3.2/
         run: |
-          cd test/legacy/typescript-3.2/
-          yarn --frozen-lockfile
-          yarn link "fast-check"
+          cd test/legacy/typescript-3.2
           yarn build
   test_node_8:
     name: 'Test legacy Node'
@@ -244,24 +240,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Using Node v8.x
+      - name: Get yarn cache directory path
+        id: yarn-cache-path
+        run: echo "::set-output name=value::$(yarn cache dir)"
+      - name: Caching yarn cache
+        uses: actions/cache@v2
+        with:
+          path: ${{steps.yarn-cache-path.outputs.value}}
+          key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/legacy/node-8/yarn.lock')}}
+      - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
-          node-version: '8.x'
+          node-version: '14.x'
       - name: Download production package
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link to production package
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/legacy/node-8'
+      - name: Using Node v8.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '8.x'
+      - name: Test test/legacy/node-8/
         run: |
-          mkdir bundle
-          tar -C bundle -zxvf fast-check.tgz
-          cd bundle/package
-          yarn install --ignore-engines --production
-          ls -l node_modules
-          yarn link
-      - name: Test test/legacy/main.js
-        run: node test/legacy/main.js
+          cd test/legacy/node-8
+          node main.js
   test_cjs_esm:
     name: 'Test CommonJS & ES Modules'
     needs: production_package
