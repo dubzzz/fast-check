@@ -133,6 +133,12 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build production package
         run: yarn build:prod-ci
+      - name: Debug
+        run: |
+          echo "ℹ️ Print git context..."
+          git --no-pager log --decorate=short --pretty=oneline -n10
+          echo "ℹ️ Print env context..."
+          echo $GITHUB_SHA
       - name: Create bundle
         run: |
           yarn pack
