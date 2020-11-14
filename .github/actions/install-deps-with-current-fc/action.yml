@@ -26,7 +26,7 @@ runs:
         echo "ℹ️ Print..."
         ls -alh "${{inputs.path}}/node_modules/"
         echo "ℹ️ Print fast-check..."
-        cat "${{inputs.path}}/node_modules/lib/fast-check-default.js"
+        cat "${{inputs.path}}/node_modules/fast-check/lib/fast-check-default.js"
         echo "ℹ️ Check version of fast-check..."
         node .github/actions/install-deps-with-current-fc/check-hash.js "${{inputs.path}}/node_modules/fast-check"
       shell: bash
