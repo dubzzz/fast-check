@@ -18,5 +18,5 @@ runs:
       shell: bash
     - run: |
         echo "ℹ️ Check version of fast-check..."
-        node .github/actions/install-with-bundle/check-hash.js "${{inputs.path}}/node_modules/fast-check"
+        node .github/actions/install-deps-with-current-fc/check-hash.js "${{inputs.path}}/node_modules/fast-check"
       shell: bash
