@@ -76,7 +76,7 @@ function getCommitHash() {
   const gitHubCommitHash = process.env.GITHUB_SHA && process.env.GITHUB_SHA.split('\n')[0];
   if (gitHubCommitHash) {
     // eslint-disable-next-line
-    console.info(`Using env variable GITHUB_SHA for the commit hash`);
+    console.info(`Using env variable GITHUB_SHA for the commit hash, got: ${gitHubCommitHash}`);
     return gitHubCommitHash;
   }
   if (process.env.EXPECT_GITHUB_SHA) {
