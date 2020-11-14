@@ -32,7 +32,7 @@ exec('git rev-parse HEAD', (err, stdout, _stderr) => {
     return;
   }
 
-  const commitHash = stdout;
+  const commitHash = stdout.split('\n')[0];
 
   // eslint-disable-next-line
   fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {

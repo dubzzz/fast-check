@@ -9,7 +9,7 @@ exec('git rev-parse HEAD', (err, stdout, _stderr) => {
     console.error('Unable to get commit hash: ' + err.message);
     exit(1);
   }
-  const expectedCommitHash = stdout;
+  const expectedCommitHash = stdout.split('\n')[0];
   if (expectedCommitHash !== __commit_hash) {
     console.error('Expected: ' + expectedCommitHash + ', got: ' + __commit_hash);
     exit(2);
