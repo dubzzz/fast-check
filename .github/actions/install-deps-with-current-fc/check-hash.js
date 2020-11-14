@@ -14,4 +14,6 @@ exec('git rev-parse HEAD', (err, stdout, _stderr) => {
     console.error('Expected: ' + expectedCommitHash + ', got: ' + __commit_hash);
     exit(2);
   }
+  console.log('✔️ Referencing the correct version of fast-check');
+  console.log('✔️ Commit hash matches expected one: ' + expectedCommitHash);
 });

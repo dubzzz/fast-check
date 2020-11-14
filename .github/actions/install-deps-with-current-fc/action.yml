@@ -1,0 +1,22 @@
+name: 'Install dependencies but use current build for fast-check'
+description: 'Install dependencies but use current build for fast-check'
+inputs:
+  path:
+    description: 'Directory path'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - run: |
+        echo "ℹ️ Install dependencies but use current build for fast-check..."
+        PROJECT_ROOT_PATH="$(pwd)"
+        cd ${{inputs.path}}
+        yarn add "$PROJECT_ROOT_PATH/fast-check.tgz"
+        echo "ℹ️ Revert local changes..."
+        git checkout -- package.json
+        git checkout -- yarn.lock
+      shell: bash
+    - run: |
+        echo "ℹ️ Check version of fast-check..."
+        node .github/actions/install-with-bundle/check-hash.js "${{inputs.path}}/node_modules/fast-check"
+      shell: bash

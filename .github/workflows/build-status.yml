@@ -162,7 +162,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - uses: ./.github/actions/install-with-bundle
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'example'
       - name: Test examples/
