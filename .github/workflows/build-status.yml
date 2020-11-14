@@ -90,8 +90,6 @@ jobs:
   documentation:
     name: 'Build documentation'
     runs-on: ubuntu-latest
-    env:
-      COMMIT_HASH: ${{github.sha}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -121,8 +119,6 @@ jobs:
   production_package:
     name: 'Build production package'
     runs-on: ubuntu-latest
-    env:
-      COMMIT_HASH: ${{github.sha}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -152,8 +148,6 @@ jobs:
     name: 'Test examples'
     needs: production_package
     runs-on: ubuntu-latest
-    env:
-      COMMIT_HASH: ${{github.sha}}
     steps:
       - uses: actions/checkout@v2
       - name: Get yarn cache directory path

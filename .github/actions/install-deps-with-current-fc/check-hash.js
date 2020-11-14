@@ -2,9 +2,9 @@ const process = require('process');
 const path = require('path');
 const { __commit_hash } = require(path.join(__dirname, '..', '..', '..', process.argv[2]));
 
-const expectedCommitHash = process.env.COMMIT_HASH;
+const expectedCommitHash = process.env.GITHUB_SHA;
 if (!expectedCommitHash) {
-  console.error('No COMMIT_HASH specified');
+  console.error('No GITHUB_SHA specified');
   process.exit(1);
 }
 if (expectedCommitHash !== __commit_hash) {

@@ -25,10 +25,10 @@ for (const { file, hasChanged } of results) {
 
 // Fill metas related to the package
 
-const commitHash = process.env.COMMIT_HASH && process.env.COMMIT_HASH.split('\n')[0];
+const commitHash = process.env.GITHUB_SHA && process.env.GITHUB_SHA.split('\n')[0];
 if (!commitHash) {
   // eslint-disable-next-line
-  console.error('No COMMIT_HASH specified (env), please use: `COMMIT_HASH=$(git rev-parse HEAD)` to set it');
+  console.error('No GITHUB_SHA specified (env), please use: `GITHUB_SHA=$(git rev-parse HEAD)` to set it');
   process.exit(1);
 }
 
