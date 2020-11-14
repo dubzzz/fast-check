@@ -266,8 +266,8 @@ jobs:
           yarn link
       - name: Test test/legacy/main.js
         run: node test/legacy/main.js
-  test_compatibility_cjs_esm:
-    name: 'Test commonjs/esm compatibility'
+  test_cjs_esm:
+    name: 'Test CommonJS & ES Modules'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -351,7 +351,7 @@ jobs:
       - documentation
       - format_lint
       - test
-      - test_compatibility_cjs_esm
+      - test_cjs_esm
       - test_examples
       - test_node_8
       - test_package_quality
