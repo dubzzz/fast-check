@@ -150,10 +150,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/example/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/example/yarn.lock')}}-v14.x
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
       - uses: ./.github/actions/install-with-bundle
         with:
           path: 'example'
-          node-version: 'v14.x'
       - name: Test examples/
         run: |
           cd example
