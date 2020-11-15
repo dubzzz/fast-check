@@ -235,6 +235,7 @@ jobs:
       - name: Test test/legacy/node-8/
         run: |
           cd test/legacy/node-8
+          node --version
           node main.js
   test_cjs_esm:
     name: 'Test CJS & ESM'
