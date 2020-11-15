@@ -263,18 +263,38 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: bundle
-    - name: Install dependencies but use current build for fast-check
+    - name: Install dependencies but use current build for fast-check (node-extension-cjs)
       uses: ./.github/actions/install-deps-with-current-fc
       with:
-        path: |
-          test/esm/node-extension-cjs
-          test/esm/node-extension-mjs
-          test/esm/node-with-import
-          test/esm/node-with-require
-          test/esm/rollup-with-import
-          test/esm/rollup-with-require
-          test/esm/webpack-with-import
-          test/esm/webpack-with-require
+        path: 'test/esm/node-extension-cjs'
+    - name: Install dependencies but use current build for fast-check (node-extension-mjs)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-extension-mjs'
+    - name: Install dependencies but use current build for fast-check (node-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-import'
+    - name: Install dependencies but use current build for fast-check (node-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-require'
+    - name: Install dependencies but use current build for fast-check (rollup-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-import'
+    - name: Install dependencies but use current build for fast-check (rollup-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-require'
+    - name: Install dependencies but use current build for fast-check (webpack-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-import'
+    - name: Install dependencies but use current build for fast-check (webpack-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-require'
     - name: Check compatibility
       run: |
         cd test/esm
