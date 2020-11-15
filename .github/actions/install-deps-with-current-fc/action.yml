@@ -10,6 +10,8 @@ runs:
     - run: |
         PROJECT_ROOT_PATH="$(pwd)"
         cd "${{inputs.path}}"
+        echo "ℹ️ Clean yarn cache entry for fast-check (if any)..."
+        yarn cache clean fast-check
         echo "ℹ️ Install dependencies..."
         yarn --frozen-lockfile
         echo "ℹ️ Install current build for fast-check..."
