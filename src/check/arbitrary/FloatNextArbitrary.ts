@@ -8,6 +8,11 @@ export const MAX_VALUE_32 = 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23);
 /** @internal */
 export const EPSILON_32 = 2 ** -23;
 
+/** @internal */
+const INDEX_POSITIVE_INFINITY = 2139095040; // floatToIndex(MAX_VALUE_32) + 1;
+/** @internal */
+const INDEX_NEGATIVE_INFINITY = -2139095041; // floatToIndex(-MAX_VALUE_32) - 1
+
 /**
  * Decompose a 32-bit floating point number into a significand and exponent
  * such as:
@@ -68,6 +73,12 @@ function indexInFloatFromDecomp(exponent: number, significand: number) {
  * @internal
  */
 export function floatToIndex(f: number): number {
+  if (f === Number.POSITIVE_INFINITY) {
+    return INDEX_POSITIVE_INFINITY;
+  }
+  if (f === Number.NEGATIVE_INFINITY) {
+    return INDEX_NEGATIVE_INFINITY;
+  }
   const decomp = decomposeFloat(f);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
@@ -89,6 +100,12 @@ export function floatToIndex(f: number): number {
  * @internal
  */
 export function indexToFloat(index: number): number {
+  if (index === INDEX_POSITIVE_INFINITY) {
+    return Number.POSITIVE_INFINITY;
+  }
+  if (index === INDEX_NEGATIVE_INFINITY) {
+    return Number.NEGATIVE_INFINITY;
+  }
   if (index < 0) {
     return -indexToFloat(-index - 1);
   }
@@ -112,14 +129,25 @@ export function indexToFloat(index: number): number {
 export interface FloatNextConstraints {
   /**
    * Lower bound for the generated 32-bit floats (included)
-   * @defaultValue -3.4028234663852886e+38
+   * @defaultValue Number.NEGATIVE_INFINITY, -3.4028234663852886e+38 when noInfinity is true
    */
   min?: number;
   /**
    * Upper bound for the generated 32-bit floats (included)
-   * @defaultValue 3.4028234663852886e+38
+   * @defaultValue Number.POSITIVE_INFINITY, 3.4028234663852886e+38 when noInfinity is true
    */
   max?: number;
+  /**
+   * By default, lower and upper bounds are -infinity and +infinity.
+   * By setting noInfinity to true, you move those defaults to minimal and maximal finite values.
+   * @defaultValue false
+   */
+  noInfinity?: boolean;
+  /**
+   * When set to true, no more Number.NaN can be generated.
+   * @defaultValue false
+   */
+  noNaN?: boolean;
 }
 
 /**
@@ -128,10 +156,17 @@ export interface FloatNextConstraints {
  * @internal
  */
 function safeFloatToIndex(f: number, constraintsLabel: keyof FloatNextConstraints) {
+  const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
+  const errorMessage = 'fc.floatNext constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
+  if (Number.isNaN(f) || (Number.isFinite(f) && (f < -MAX_VALUE_32 || f > MAX_VALUE_32))) {
+    // Number.NaN does not have any associated index in the current implementation
+    // Finite values outside of the 32-bit range for floats cannot be 32-bit floats
+    throw new Error(errorMessage);
+  }
   const index = floatToIndex(f);
-  if (Number.isNaN(index) || !Number.isInteger(index) || f < -MAX_VALUE_32 || f > MAX_VALUE_32) {
-    const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
-    throw new Error('fc.floatNext constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick);
+  if (!Number.isInteger(index)) {
+    // Index not being an integer means that original value was not a valid 32-bit float
+    throw new Error(errorMessage);
   }
   return index;
 }
@@ -150,11 +185,24 @@ function safeFloatToIndex(f: number, constraintsLabel: keyof FloatNextConstraint
  * @public
  */
 export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<number> {
-  const { min = -MAX_VALUE_32, max = MAX_VALUE_32 } = constraints;
+  const {
+    noInfinity = false,
+    noNaN = false,
+    min = noInfinity ? -MAX_VALUE_32 : Number.NEGATIVE_INFINITY,
+    max = noInfinity ? MAX_VALUE_32 : Number.POSITIVE_INFINITY,
+  } = constraints;
   const minIndex = safeFloatToIndex(min, 'min');
   const maxIndex = safeFloatToIndex(max, 'max');
   if (minIndex > maxIndex) {
+    // Comparing min and max might be problematic in case min=+0 and max=-0
+    // For that reason, we prefer to compare computed index to be safer
     throw new Error('fc.floatNext constraints.min must be smaller or equal to constraints.max');
   }
-  return integer(minIndex, maxIndex).map(indexToFloat);
+  if (noNaN) {
+    return integer(minIndex, maxIndex).map(indexToFloat);
+  }
+  return integer(minIndex, maxIndex + 1).map((index) => {
+    if (index > maxIndex) return Number.NaN;
+    else return indexToFloat(index);
+  });
 }
