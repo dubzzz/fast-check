@@ -145,7 +145,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
   test_examples:
-    name: 'Test bundle'
+    name: 'Test examples'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
