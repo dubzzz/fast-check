@@ -20,10 +20,10 @@ runs:
       shell: bash
     - run: |
         echo "ℹ️ Copy script..."
-        cp .github/actions/install-deps-with-current-fc/check-hash.js "${{inputs.path}}/check-hash-$GITHUB_SHA.js"
+        cp .github/actions/install-deps-with-current-fc/check-hash.cjs "${{inputs.path}}/check-hash-$GITHUB_SHA.cjs"
         echo "ℹ️ Check version of fast-check..."
         cd "${{inputs.path}}"
-        node check-hash-*.js
+        node check-hash-*.cjs
         echo "ℹ️ Remove script..."
-        rm "check-hash-$GITHUB_SHA.js"
+        rm "check-hash-$GITHUB_SHA.cjs"
       shell: bash
