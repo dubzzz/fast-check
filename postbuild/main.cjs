@@ -69,6 +69,24 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     // eslint-disable-next-line
     console.info(`Package details added onto d.ts version`);
   }
+
+  function escapeHtml(unsafe) {
+    return unsafe
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+  const docReplacement = replace.sync({
+    files: 'docs/index.html',
+    from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
+    to: [escapeHtml('module'), escapeHtml(packageVersion), escapeHtml(commitHash)],
+  });
+  if (docReplacement.length === 1 && docReplacement[0].hasChanged) {
+    // eslint-disable-next-line
+    console.info(`Package details added onto doc`);
+  }
 });
 
 // Helpers

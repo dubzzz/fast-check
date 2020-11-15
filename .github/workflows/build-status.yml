@@ -106,9 +106,8 @@ jobs:
         run: |
           yarn prebuild
           yarn build:publish-types
-          node postbuild/main.cjs
       - name: Generate documentation
-        run: yarn docs
+        run: yarn docs-ci
       - name: Upload documentation
         uses: actions/upload-artifact@v2
         with:
