@@ -57,3 +57,59 @@ fc.commands([]);
 fc.commands([], 10);
 fc.commands([], 50);
 fc.commands([], { maxCommands: 50 });
+
+// lorem
+
+fc.lorem();
+fc.lorem(5);
+fc.lorem(10);
+fc.lorem(num);
+fc.lorem(5, true);
+fc.lorem(10, true);
+fc.lorem(10, false);
+fc.lorem(10, something);
+fc.lorem(num, something);
+fc.lorem({ maxCount: 10 });
+
+// bigInt
+
+fc.bigInt();
+fc.bigInt(1n, 3n);
+fc.bigInt(BigInt(1), BigInt(3));
+fc.bigInt({ min: 1n, max: 3n });
+
+// bigUint
+
+fc.bigUint();
+fc.bigUint(3n);
+fc.bigUint(BigInt(3));
+fc.bigUint({ max: 3n });
+
+// float
+
+fc.float();
+fc.float(1.0);
+fc.float(2.0);
+fc.float(0.0, 1.0);
+fc.float(0.0, 2.0);
+fc.float(-1.0, 1.0);
+fc.float(-1.0, 2.0);
+fc.float({ min: -1.0, max: 2.0 });
+
+// nat
+
+fc.nat();
+fc.nat(10);
+fc.nat(0x7fffffff);
+fc.nat(2147483647);
+
+// integer
+
+fc.integer();
+fc.integer(10);
+fc.integer(0x7fffffff);
+fc.integer(2147483647);
+fc.integer(-1, 10);
+fc.integer(-0x80000000, 0x7fffffff);
+fc.integer(-2147483648, 2147483647);
+fc.integer({ min: -1, max: 1 });

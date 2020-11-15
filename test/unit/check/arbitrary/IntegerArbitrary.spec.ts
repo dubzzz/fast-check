@@ -6,6 +6,7 @@ import { integer, nat, maxSafeNat, maxSafeInteger } from '../../../../src/check/
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
+import { generateOneValue } from './generic/GenerateOneValue';
 
 const isStrictlySmallerInteger = (v1: number, v2: number) => Math.abs(v1) < Math.abs(v2);
 
@@ -122,7 +123,10 @@ describe('IntegerArbitrary', () => {
           if (range.min === range.max) {
             return g === range.min;
           }
-          return g >= range.min && g - range.min <= log2(range.max - range.min);
+          return (
+            (range.min <= g && g <= range.min + log2(range.max - range.min)) ||
+            (range.max - log2(range.max - range.min) <= g && g <= range.max)
+          );
         })
       ));
     it('Should be able to bias strictly negative integers', () =>
@@ -134,7 +138,10 @@ describe('IntegerArbitrary', () => {
           if (range.min === range.max) {
             return g === range.min;
           }
-          return g <= range.max && range.max - g <= log2(range.max - range.min);
+          return (
+            (range.min <= g && g <= range.min + log2(range.max - range.min)) ||
+            (range.max - log2(range.max - range.min) <= g && g <= range.max)
+          );
         })
       ));
     it('Should be able to bias negative and positive integers', () =>
@@ -143,7 +150,11 @@ describe('IntegerArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = integer(min, max).withBias(1); // 100% of bias - not recommended outside of tests
           const g = arb.generate(mrng).value;
-          return -log2(-min) <= g && g <= log2(max);
+          return (
+            (-log2(-min) <= g && g <= log2(max)) ||
+            (min <= g && g <= min + log2(-min)) ||
+            (max - log2(max) <= g && g <= max)
+          );
         })
       ));
     it('Should throw when minimum number is greater than maximum one', () =>
@@ -158,6 +169,13 @@ describe('IntegerArbitrary', () => {
       genericHelper.isValidArbitrary(() => integer(), {
         isStrictlySmallerValue: isStrictlySmallerInteger,
         isValidValue: (g: number) => typeof g === 'number' && -0x80000000 <= g && g <= 0x7fffffff,
+      });
+    });
+    describe('Given minimal value only [between min and 2**31 -1]', () => {
+      genericHelper.isValidArbitrary((min: number) => integer({ min }), {
+        seedGenerator: fc.integer(),
+        isStrictlySmallerValue: isStrictlySmallerInteger,
+        isValidValue: (g: number, min: number) => typeof g === 'number' && min <= g && g <= 0x7fffffff,
       });
     });
     describe('Given maximal value only [between -2**31 and max]', () => {
@@ -177,6 +195,26 @@ describe('IntegerArbitrary', () => {
             typeof g === 'number' && constraints.min <= g && g <= constraints.max,
         }
       );
+    });
+    describe('Still support older signatures', () => {
+      it('Should support fc.integer(max)', () => {
+        fc.assert(
+          fc.property(fc.integer(), fc.integer(), (seed, max) => {
+            const refArbitrary = integer({ max });
+            const otherArbitrary = integer(max);
+            expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
+      it('Should support fc.integer(min, max)', () => {
+        fc.assert(
+          fc.property(fc.integer(), genericHelper.minMax(fc.integer()), (seed, constraints) => {
+            const refArbitrary = integer(constraints);
+            const otherArbitrary = integer(constraints.min, constraints.max);
+            expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
     });
   });
   describe('maxSafeInteger', () => {
@@ -206,6 +244,17 @@ describe('IntegerArbitrary', () => {
         seedGenerator: fc.nat(),
         isStrictlySmallerValue: isStrictlySmallerInteger,
         isValidValue: (g: number, maxValue: number) => typeof g === 'number' && g >= 0 && g <= maxValue,
+      });
+    });
+    describe('Still support older signatures', () => {
+      it('Should support fc.nat(max)', () => {
+        fc.assert(
+          fc.property(fc.integer(), fc.nat(), (seed, max) => {
+            const refArbitrary = nat({ max });
+            const otherArbitrary = nat(max);
+            expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
       });
     });
   });

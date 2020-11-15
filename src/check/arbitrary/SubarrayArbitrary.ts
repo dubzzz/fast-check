@@ -114,7 +114,7 @@ function subarray<T>(originalArray: T[]): Arbitrary<T[]>;
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.subarray(originalArray, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
@@ -155,7 +155,7 @@ function shuffledSubarray<T>(originalArray: T[]): Arbitrary<T[]>;
  * @param minLength - Lower bound of the generated array size
  * @param maxLength - Upper bound of the generated array size
  *
- * @remarks
+ * @deprecated
  * Superceded by `fc.shuffledSubarray(originalArray, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *

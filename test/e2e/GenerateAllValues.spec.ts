@@ -70,6 +70,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
           withSet: true,
           withObjectString: true,
           withNullPrototype: true,
+          withDate: true,
           ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
         });
         while (++numTries <= 10000) {
@@ -95,6 +96,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
     checkCanProduce('Array', 'object', '[object Array]');
     checkCanProduce('Set', 'object', '[object Set]');
     checkCanProduce('Map', 'object', '[object Map]');
+    checkCanProduce('Date', 'object', '[object Date]');
     checkCanProduce('null prototype object', 'object', '[object Object]', (instance: unknown) => {
       return Object.getPrototypeOf(instance) === null;
     });

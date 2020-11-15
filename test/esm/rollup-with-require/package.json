@@ -10,9 +10,9 @@
     "fast-check": "*"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^15.1.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "rollup": "^2.28.2"
+    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-node-resolve": "^10.0.0",
+    "rollup": "^2.33.1"
   },
   "license": "MIT",
   "private": true
