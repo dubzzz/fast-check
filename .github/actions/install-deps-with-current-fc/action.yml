@@ -12,19 +12,19 @@ runs:
         PATHS="${{inputs.path}}"
         for PATH in ${PATHS//\\n/ }
         do
-          cd "$PATH"
-          echo "ℹ️ Install dependencies for $PATH..."
-          yarn --frozen-lockfile
-          echo "ℹ️ Install current build for fast-check..."
-          yarn add "file:$PROJECT_ROOT_PATH/fast-check.tgz"
-          echo "ℹ️ Revert local changes..."
-          git checkout -- package.json
-          git checkout -- yarn.lock
-          echo "ℹ️ Copy script..."
-          cp "$PROJECT_ROOT_PATH/.github/actions/install-deps-with-current-fc/check-hash.cjs" "check-hash-$GITHUB_SHA.cjs"
-          echo "ℹ️ Check version of fast-check..."
-          node check-hash-*.cjs
-          echo "ℹ️ Remove script..."
-          rm "check-hash-$GITHUB_SHA.cjs"
+          cd "$PATH" ;
+          echo "ℹ️ Install dependencies for $PATH..." ;
+          yarn --frozen-lockfile ;
+          echo "ℹ️ Install current build for fast-check..." ;
+          yarn add "file:$PROJECT_ROOT_PATH/fast-check.tgz" ;
+          echo "ℹ️ Revert local changes..." ;
+          git checkout -- package.json ;
+          git checkout -- yarn.lock ;
+          echo "ℹ️ Copy script..." ;
+          cp "$PROJECT_ROOT_PATH/.github/actions/install-deps-with-current-fc/check-hash.cjs" "check-hash-$GITHUB_SHA.cjs" ;
+          echo "ℹ️ Check version of fast-check..." ;
+          node check-hash-*.cjs ;
+          echo "ℹ️ Remove script..." ;
+          rm "check-hash-$GITHUB_SHA.cjs" ;
         done
       shell: bash
