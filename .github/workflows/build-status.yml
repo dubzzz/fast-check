@@ -144,20 +144,12 @@ jobs:
           path: fast-check.tgz
           if-no-files-found: error
           retention-days: 1
-  test_examples:
-    name: 'Test examples'
+  test_example:
+    name: 'Test example'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #- name: Get yarn cache directory path
-      #  id: yarn-cache-path
-      #  run: echo "::set-output name=value::$(yarn cache dir)"
-      #- name: Caching yarn cache
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ${{steps.yarn-cache-path.outputs.value}}
-      #    key: ${{runner.os}}-yarn-cache-${{hashFiles('**/example/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -180,14 +172,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #- name: Get yarn cache directory path
-      #  id: yarn-cache-path
-      #  run: echo "::set-output name=value::$(yarn cache dir)"
-      #- name: Caching yarn cache
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ${{steps.yarn-cache-path.outputs.value}}
-      #    key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/type/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -210,14 +194,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #- name: Get yarn cache directory path
-      #  id: yarn-cache-path
-      #  run: echo "::set-output name=value::$(yarn cache dir)"
-      #- name: Caching yarn cache
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ${{steps.yarn-cache-path.outputs.value}}
-      #    key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/legacy/typescript-3.2/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -240,14 +216,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #- name: Get yarn cache directory path
-      #  id: yarn-cache-path
-      #  run: echo "::set-output name=value::$(yarn cache dir)"
-      #- name: Caching yarn cache
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ${{steps.yarn-cache-path.outputs.value}}
-      #    key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/legacy/node-8/yarn.lock')}}
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -287,15 +255,7 @@ jobs:
           # Node 10 does not understand ES modules
           - '10'
     steps:
-    - uses: actions/checkout@v2     
-    #- name: Get yarn cache directory path
-    #  id: yarn-cache-path
-    #  run: echo "::set-output name=value::$(yarn cache dir)"
-    #- name: Caching yarn cache
-    #  uses: actions/cache@v2
-    #  with:
-    #    path: ${{steps.yarn-cache-path.outputs.value}}
-    #    key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/esm/**/yarn.lock')}}
+    - uses: actions/checkout@v2
     - name: Using Node v${{matrix.node-version}}
       shell: bash -l {0}
       run: nvm install ${{matrix.node-version}}
@@ -366,7 +326,7 @@ jobs:
       - format_lint
       - test
       - test_cjs_esm
-      - test_examples
+      - test_example
       - test_node_8
       - test_package_quality
       - test_types
