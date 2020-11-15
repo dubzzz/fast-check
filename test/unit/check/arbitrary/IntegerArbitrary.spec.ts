@@ -123,7 +123,10 @@ describe('IntegerArbitrary', () => {
           if (range.min === range.max) {
             return g === range.min;
           }
-          return g >= range.min && g - range.min <= log2(range.max - range.min);
+          return (
+            (range.min <= g && g <= range.min + log2(range.max - range.min)) ||
+            (range.max - log2(range.max - range.min) <= g && g <= range.max)
+          );
         })
       ));
     it('Should be able to bias strictly negative integers', () =>
@@ -135,7 +138,10 @@ describe('IntegerArbitrary', () => {
           if (range.min === range.max) {
             return g === range.min;
           }
-          return g <= range.max && range.max - g <= log2(range.max - range.min);
+          return (
+            (range.min <= g && g <= range.min + log2(range.max - range.min)) ||
+            (range.max - log2(range.max - range.min) <= g && g <= range.max)
+          );
         })
       ));
     it('Should be able to bias negative and positive integers', () =>
@@ -144,7 +150,11 @@ describe('IntegerArbitrary', () => {
           const mrng = stubRng.mutable.fastincrease(seed);
           const arb = integer(min, max).withBias(1); // 100% of bias - not recommended outside of tests
           const g = arb.generate(mrng).value;
-          return -log2(-min) <= g && g <= log2(max);
+          return (
+            (-log2(-min) <= g && g <= log2(max)) ||
+            (min <= g && g <= min + log2(-min)) ||
+            (max - log2(max) <= g && g <= max)
+          );
         })
       ));
     it('Should throw when minimum number is greater than maximum one', () =>

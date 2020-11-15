@@ -8,19 +8,24 @@ import { biasNumeric } from './helpers/BiasNumeric';
 import { shrinkNumber } from './helpers/ShrinkNumeric';
 
 /** @internal */
+function integerLogLike(v: number) {
+  return Math.floor(Math.log(v) / Math.log(2));
+}
+
+/** @internal */
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
   static MIN_INT: number = 0x80000000 | 0;
   static MAX_INT: number = 0x7fffffff | 0;
 
   private biasedIntegerArbitrary: Arbitrary<number> | null = null;
-  constructor(readonly min: number, readonly max: number) {
+  constructor(readonly min: number, readonly max: number, readonly genMin: number, readonly genMax: number) {
     super();
   }
   private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
     return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
   }
   generate(mrng: Random): Shrinkable<number> {
-    return this.wrapper(mrng.nextInt(this.min, this.max), false);
+    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), false);
   }
   shrink(value: number, shrunkOnce?: boolean): Stream<number> {
     return shrinkNumber(this.min, this.max, value, shrunkOnce === true);
@@ -29,8 +34,11 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     if (this.biasedIntegerArbitrary != null) {
       return this.biasedIntegerArbitrary;
     }
-    const log2 = (v: number) => Math.floor(Math.log(v) / Math.log(2));
-    this.biasedIntegerArbitrary = biasNumeric<number>(this.min, this.max, IntegerArbitrary, log2);
+    if (this.min === this.max || this.min !== this.genMin || this.max !== this.genMax) {
+      this.biasedIntegerArbitrary = this;
+      return this.biasedIntegerArbitrary;
+    }
+    this.biasedIntegerArbitrary = biasNumeric<number>(this.min, this.max, IntegerArbitrary, integerLogLike);
     return this.biasedIntegerArbitrary;
   }
   withBias(freq: number): Arbitrary<number> {
@@ -127,7 +135,7 @@ function integer(...args: [] | [number] | [number, number] | [IntegerConstraints
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
   }
-  return new IntegerArbitrary(constraints.min, constraints.max);
+  return new IntegerArbitrary(constraints.min, constraints.max, constraints.min, constraints.max);
 }
 
 /**
@@ -179,7 +187,7 @@ function nat(arg?: number | NatConstraints): ArbitraryWithShrink<number> {
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
   }
-  return new IntegerArbitrary(0, max);
+  return new IntegerArbitrary(0, max, 0, max);
 }
 
 /**

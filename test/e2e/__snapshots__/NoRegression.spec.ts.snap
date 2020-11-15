@@ -173,10 +173,10 @@ Execution summary:
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"a3Jo\\"]
 [32m√[0m [\\"\\"]
-[31m×[0m [\\"Bb==\\"]
+[31m×[0m [\\"Fp==\\"]
 . [32m√[0m [\\"\\"]
 . [32m√[0m [\\"\\"]
-. [31m×[0m [\\"Ab==\\"]
+. [31m×[0m [\\"Ap==\\"]
 . . [32m√[0m [\\"\\"]
 . . [32m√[0m [\\"\\"]
 . . [31m×[0m [\\"AA==\\"]
@@ -550,14 +550,14 @@ Execution summary:
 `;
 
 exports[`NoRegression compareFunc 1`] = `
-"Property failed after 9 tests
-{ seed: 42, path: \\"8\\", endOnFailure: true }
+"Property failed after 5 tests
+{ seed: 42, path: \\"4\\", endOnFailure: true }
 Counterexample: [function(a, b) {
   // With hash and stringify coming from fast-check
-  /* [1,2] => -1761005734 */
+  /* [1,2] => 56991842 */
   const cmp = (hA, hB) => hA - hB;
-  const hA = hash('18' + stringify(a)) % 2407995820;
-  const hB = hash('18' + stringify(b)) % 2407995820;
+  const hA = hash('-2147483626' + stringify(a)) % 2054050044;
+  const hB = hash('-2147483626' + stringify(b)) % 2054050044;
   return cmp(hA, hB);
 }]
 Shrunk 0 time(s)
@@ -566,74 +566,42 @@ Got error: Property failed by returning false
 Execution summary:
 [32m√[0m [function(a, b) {
   // With hash and stringify coming from fast-check
-  /* [1,2] => 8 */
+  /* [1,2] => 517968467 */
   const cmp = (hA, hB) => hA - hB;
-  const hA = hash('-15' + stringify(a)) % 10;
-  const hB = hash('-15' + stringify(b)) % 10;
+  const hA = hash('9' + stringify(a)) % 2014944499;
+  const hB = hash('9' + stringify(b)) % 2014944499;
   return cmp(hA, hB);
 }]
 [32m√[0m [function(a, b) {
   // With hash and stringify coming from fast-check
-  /* [1,2] => 2 */
+  /* [1,2] => 2029596746 */
   const cmp = (hA, hB) => hA - hB;
-  const hA = hash('-994490854' + stringify(a)) % 24;
-  const hB = hash('-994490854' + stringify(b)) % 24;
+  const hA = hash('-994490854' + stringify(a)) % 4294967273;
+  const hB = hash('-994490854' + stringify(b)) % 4294967273;
   return cmp(hA, hB);
 }]
 [32m√[0m [function(a, b) {
   // With hash and stringify coming from fast-check
-  /* [1,2] => -4 */
+  /* [1,2] => -14 */
   const cmp = (hA, hB) => hA - hB;
-  const hA = hash('-1536816376' + stringify(a)) % 23;
-  const hB = hash('-1536816376' + stringify(b)) % 23;
+  const hA = hash('-1536816376' + stringify(a)) % 30;
+  const hB = hash('-1536816376' + stringify(b)) % 30;
   return cmp(hA, hB);
 }]
 [32m√[0m [function(a, b) {
   // With hash and stringify coming from fast-check
-  /* [1,2] => -12 */
+  /* [1,2] => 4 */
   const cmp = (hA, hB) => hA - hB;
-  const hA = hash('7' + stringify(a)) % 29;
-  const hB = hash('7' + stringify(b)) % 29;
-  return cmp(hA, hB);
-}]
-[32m√[0m [function(a, b) {
-  // With hash and stringify coming from fast-check
-  /* [1,2] => 2 */
-  const cmp = (hA, hB) => hA - hB;
-  const hA = hash('-30' + stringify(a)) % 6;
-  const hB = hash('-30' + stringify(b)) % 6;
-  return cmp(hA, hB);
-}]
-[32m√[0m [function(a, b) {
-  // With hash and stringify coming from fast-check
-  /* [1,2] => 0 */
-  const cmp = (hA, hB) => hA - hB;
-  const hA = hash('-2094954216' + stringify(a)) % 2;
-  const hB = hash('-2094954216' + stringify(b)) % 2;
-  return cmp(hA, hB);
-}]
-[32m√[0m [function(a, b) {
-  // With hash and stringify coming from fast-check
-  /* [1,2] => -3 */
-  const cmp = (hA, hB) => hA - hB;
-  const hA = hash('1080227326' + stringify(a)) % 13;
-  const hB = hash('1080227326' + stringify(b)) % 13;
-  return cmp(hA, hB);
-}]
-[32m√[0m [function(a, b) {
-  // With hash and stringify coming from fast-check
-  /* [1,2] => -842483754 */
-  const cmp = (hA, hB) => hA - hB;
-  const hA = hash('11' + stringify(a)) % 2873137524;
-  const hB = hash('11' + stringify(b)) % 2873137524;
+  const hA = hash('-25' + stringify(a)) % 6;
+  const hB = hash('-25' + stringify(b)) % 6;
   return cmp(hA, hB);
 }]
 [31m×[0m [function(a, b) {
   // With hash and stringify coming from fast-check
-  /* [1,2] => -1761005734 */
+  /* [1,2] => 56991842 */
   const cmp = (hA, hB) => hA - hB;
-  const hA = hash('18' + stringify(a)) % 2407995820;
-  const hB = hash('18' + stringify(b)) % 2407995820;
+  const hA = hash('-2147483626' + stringify(a)) % 2054050044;
+  const hB = hash('-2147483626' + stringify(b)) % 2054050044;
   return cmp(hA, hB);
 }]"
 `;
@@ -646,7 +614,7 @@ Shrunk 1 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [new Date(\\"1970-01-01T00:00:00.043Z\\")]
+[31m×[0m [new Date(\\"1969-12-31T23:59:59.992Z\\")]
 . [31m×[0m [new Date(\\"1970-01-01T00:00:00.000Z\\")]"
 `;
 
@@ -809,72 +777,142 @@ Execution summary:
 
 exports[`NoRegression double 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:0:1:0:0:0:0\\", endOnFailure: true }
+{ seed: 42, path: \\"0:0:1:0:0:0:1:1:0:2:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0\\", endOnFailure: true }
 Counterexample: [1.1102230246251565e-16]
-Shrunk 6 time(s)
+Shrunk 25 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [5.960464688481437e-8]
-. [31m×[0m [2.1094237467877974e-15]
+[31m×[0m [0.9999997617677805]
+. [31m×[0m [1.863595944229246e-10]
 . . [32m√[0m [0]
-. . [31m×[0m [1.1102230246251565e-15]
-. . . [31m×[0m [5.551115123125783e-16]
-. . . . [31m×[0m [3.3306690738754696e-16]
-. . . . . [31m×[0m [2.220446049250313e-16]
-. . . . . . [31m×[0m [1.1102230246251565e-16]"
+. . [31m×[0m [9.31797972114623e-11]
+. . . [31m×[0m [4.658995411688238e-11]
+. . . . [31m×[0m [2.3295032569592422e-11]
+. . . . . [31m×[0m [1.1647571795947442e-11]
+. . . . . . [32m√[0m [5.823785897973721e-12]
+. . . . . . [31m×[0m [8.735678846960582e-12]
+. . . . . . . [32m√[0m [4.367839423480291e-12]
+. . . . . . . [31m×[0m [6.551759135220436e-12]
+. . . . . . . . [31m×[0m [3.2759350787614494e-12]
+. . . . . . . . . [32m√[0m [1.638023050531956e-12]
+. . . . . . . . . [32m√[0m [2.457034575797934e-12]
+. . . . . . . . . [31m×[0m [2.8664848272796917e-12]
+. . . . . . . . . . [31m×[0m [1.433297924791077e-12]
+. . . . . . . . . . . [31m×[0m [7.166489623955385e-13]
+. . . . . . . . . . . . [31m×[0m [3.5837999234900053e-13]
+. . . . . . . . . . . . . [31m×[0m [1.7918999617450027e-13]
+. . . . . . . . . . . . . . [31m×[0m [8.959499808725013e-14]
+. . . . . . . . . . . . . . . [32m√[0m [4.4853010194856324e-14]
+. . . . . . . . . . . . . . . [31m×[0m [6.727951529228449e-14]
+. . . . . . . . . . . . . . . . [31m×[0m [3.3639757646142243e-14]
+. . . . . . . . . . . . . . . . . [31m×[0m [1.687538997430238e-14]
+. . . . . . . . . . . . . . . . . . [31m×[0m [8.43769498715119e-15]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [4.218847493575595e-15]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [2.1094237467877974e-15]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [1.1102230246251565e-15]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [5.551115123125783e-16]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [3.3306690738754696e-16]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2.220446049250313e-16]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1.1102230246251565e-16]"
 `;
 
 exports[`NoRegression emailAddress 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:0:0:0:1:1:0:0:2:2:0:1:1:1:0:1\\", endOnFailure: true }
-Counterexample: [\\"a@a.aa.at\\"]
-Shrunk 15 time(s)
+{ seed: 42, path: \\"0:0:0:0:2:2:5:5:1:2:1:0:6:0:1\\", endOnFailure: true }
+Counterexample: [\\"a@a.aaa.av\\"]
+Shrunk 14 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"8i_p#6u^o.|6vsvv\`~8.cb@wsi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm1zzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. [31m×[0m [\\"cb@wsi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm1zzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . [31m×[0m [\\"b@wsi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm1zzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . [31m×[0m [\\"a@wsi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm1zzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . [32m√[0m [\\"a@svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . [31m×[0m [\\"a@asi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm1zzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . [32m√[0m [\\"a@am.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . [31m×[0m [\\"a@agz1y5iqa5ji3ovhnarfm1zzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . [31m×[0m [\\"a@ahnarfm1zzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . [31m×[0m [\\"a@azzhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . [32m√[0m [\\"a@abe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . [32m√[0m [\\"a@azhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . [31m×[0m [\\"a@aazhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . [32m√[0m [\\"a@abe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . [32m√[0m [\\"a@azhbe1wm.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . [31m×[0m [\\"a@aam.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . . [31m×[0m [\\"a@aaa.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . . . [32m√[0m [\\"a@a.svkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . . . [31m×[0m [\\"a@aaa.avkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . . . . [32m√[0m [\\"a@a.avkd9m-cmcasdma90gawd10v7pl.ducat\\"]
-. . . . . . . . . . . . [31m×[0m [\\"a@aaa.al.ducat\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@a.al.ducat\\"]
-. . . . . . . . . . . . . [31m×[0m [\\"a@aaa.aa.ducat\\"]
-. . . . . . . . . . . . . . [31m×[0m [\\"a@a.aa.ducat\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"a@a.a.ducat\\"]
-. . . . . . . . . . . . . . . [31m×[0m [\\"a@a.aa.at\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"a@a.a.at\\"]"
+[31m×[0m [\\"8i_p#6u^o.|6vsvv\`~8.__@zi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. [31m×[0m [\\"__@zi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . [31m×[0m [\\"_@zi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . [31m×[0m [\\"a@zi4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . [32m√[0m [\\"a@fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . [31m×[0m [\\"a@ai4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . [32m√[0m [\\"a@a2.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . [31m×[0m [\\"a@a883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . [32m√[0m [\\"a@aji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . [32m√[0m [\\"a@ay5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . [32m√[0m [\\"a@agz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . [32m√[0m [\\"a@a83gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . [31m×[0m [\\"a@aa83gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . [32m√[0m [\\"a@aji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . [32m√[0m [\\"a@ay5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . [32m√[0m [\\"a@agz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . [32m√[0m [\\"a@a83gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . [31m×[0m [\\"a@aa2.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . [31m×[0m [\\"a@aaa.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . [32m√[0m [\\"a@a.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . [31m×[0m [\\"a@aaa.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . [32m√[0m [\\"a@a.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . [31m×[0m [\\"a@aaa.aawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . [31m×[0m [\\"a@a.aawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a@a.ai.nv\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a@a.ahzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a@a.a4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a@a.a7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a@a.a10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a@a.awd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . . [31m×[0m [\\"a@a.aai.nv\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"a@a.aaa.nv\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"a@a.a.nv\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"a@a.aaa.av\\"]
+. . . . . . . . . . . . . . . [32m√[0m [\\"a@a.a.av\\"]"
 `;
 
 exports[`NoRegression float 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:1\\", endOnFailure: true }
-Counterexample: [4.172325134277344e-7]
-Shrunk 1 time(s)
+{ seed: 42, path: \\"0:1:0:0:0:6:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:1:0:0:0:0\\", endOnFailure: true }
+Counterexample: [5.960464477539063e-8]
+Shrunk 27 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [8.344650268554688e-7]
+[31m×[0m [0.9999990463256836]
 . [32m√[0m [0]
-. [31m×[0m [4.172325134277344e-7]
-. . [32m√[0m [2.384185791015625e-7]
-. . [32m√[0m [3.5762786865234375e-7]"
+. [31m×[0m [0.4999995231628418]
+. . [31m×[0m [0.2499997615814209]
+. . . [31m×[0m [0.12499988079071045]
+. . . . [31m×[0m [0.062499940395355225]
+. . . . . [32m√[0m [0.03125]
+. . . . . [32m√[0m [0.046875]
+. . . . . [32m√[0m [0.0546875]
+. . . . . [32m√[0m [0.05859375]
+. . . . . [32m√[0m [0.060546875]
+. . . . . [32m√[0m [0.0615234375]
+. . . . . [31m×[0m [0.06201171875]
+. . . . . . [31m×[0m [0.031005859375]
+. . . . . . . [31m×[0m [0.0155029296875]
+. . . . . . . . [31m×[0m [0.00775146484375]
+. . . . . . . . . [31m×[0m [0.003875732421875]
+. . . . . . . . . . [31m×[0m [0.0019378662109375]
+. . . . . . . . . . . [31m×[0m [0.00096893310546875]
+. . . . . . . . . . . . [31m×[0m [0.000484466552734375]
+. . . . . . . . . . . . . [31m×[0m [0.0002422332763671875]
+. . . . . . . . . . . . . . [31m×[0m [0.00012111663818359375]
+. . . . . . . . . . . . . . . [31m×[0m [0.000060558319091796875]
+. . . . . . . . . . . . . . . . [31m×[0m [0.000030279159545898438]
+. . . . . . . . . . . . . . . . . [31m×[0m [0.000015139579772949219]
+. . . . . . . . . . . . . . . . . . [31m×[0m [0.000007569789886474609]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [0.000003814697265625]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [0.0000019073486328125]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [9.5367431640625e-7]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [0.000001430511474609375]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [7.152557373046875e-7]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [3.5762786865234375e-7]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [5.364418029785156e-7]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2.980232238769531e-7]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1.7881393432617188e-7]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1.1920928955078125e-7]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [5.960464477539063e-8]"
 `;
 
 exports[`NoRegression frequency 1`] = `
@@ -885,14 +923,14 @@ Shrunk 28 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"\\\\\\"\\"]
+[32m√[0m [\\"{\\"]
+[32m√[0m [\\"#\\"]
 [32m√[0m [\\" \\"]
-[32m√[0m [\\"!\\"]
-[32m√[0m [6]
+[32m√[0m [9]
 [32m√[0m [\\",\\"]
+[32m√[0m [\\"#\\"]
+[32m√[0m [\\"!\\"]
 [32m√[0m [\\"$\\"]
-[32m√[0m [\\"&\\"]
-[32m√[0m [\\"&\\"]
 [32m√[0m [\\"$\\"]
 [32m√[0m [\\"+\\"]
 [32m√[0m [\\"%\\"]
@@ -900,14 +938,14 @@ Execution summary:
 [32m√[0m [\\"b\\"]
 [32m√[0m [\\"I\\"]
 [32m√[0m [\\"R\\"]
-[32m√[0m [\\"$\\"]
+[32m√[0m [\\"&\\"]
 [32m√[0m [\\"7\\"]
 [32m√[0m [\\"e\\"]
 [32m√[0m [\\"D\\"]
 [32m√[0m [\\"!\\"]
-[32m√[0m [\\"%\\"]
-[32m√[0m [\\"$\\"]
 [32m√[0m [\\" \\"]
+[32m√[0m [\\"$\\"]
+[32m√[0m [\\"$\\"]
 [31m×[0m [1866988182]
 . [32m√[0m [0]
 . [31m×[0m [933494091]
@@ -992,17 +1030,17 @@ Execution summary:
 `;
 
 exports[`NoRegression fullUnicodeString 1`] = `
-"Property failed after 26 tests
-{ seed: 42, path: \\"25:7:0\\", endOnFailure: true }
+"Property failed after 73 tests
+{ seed: 42, path: \\"72:1:7:0\\", endOnFailure: true }
 Counterexample: [\\" \\"]
-Shrunk 2 time(s)
+Shrunk 3 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"񩟚􀲷󞧉󎔨􎵔򲁼򀎈𸝔\\"]
 [32m√[0m [\\"󯵺񵽖򙨽񨢫񙵅򃓱\\"]
-[32m√[0m [\\"$􃮛\\"]
+[32m√[0m [\\"+򐐩\\"]
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"񅉂򭧡񓀣򠗛󒍜򀤿𛢝񄽽򔍬𮙶\\"]
 [32m√[0m [\\"񺖚󼑬􎥽򨟄\\"]
@@ -1010,7 +1048,7 @@ Execution summary:
 [32m√[0m [\\"󚝉Ǟ􋗪\\"]
 [32m√[0m [\\"񩵴󡉢𻎲񆂍\\"]
 [32m√[0m [\\"􇸍񐛅󟴵󀻆\\"]
-[32m√[0m [\\"񧦽2򬋴(-2󋀡񒙘+ \\"]
+[32m√[0m [\\"񧦽.򿏪􅸧񡳇􏿱񒙘􏿷4񚷳\\"]
 [32m√[0m [\\"󽨬񒭤𨓧񧞙񙪅\\"]
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"𿍸󍷅򓠒򊓴񹹀󈖃\\"]
@@ -1018,22 +1056,71 @@ Execution summary:
 [32m√[0m [\\"𜞶􀌞񱝙񊵣󳈛𳪯ἂ􋋨􅀬\\"]
 [32m√[0m [\\"󦘂񸞧򓈺񠪈\\"]
 [32m√[0m [\\"񧲸򓍬񀳒𕼈꾴󕊯󥷢\\"]
-[32m√[0m [\\"%󙠈\\\\\\" \\"]
+[32m√[0m [\\"􏿻\\\\\\"!󆳐\\"]
 [32m√[0m [\\"򺢲𼮑𠎙󀧭󫾦񃍮񒴦򋞻\\"]
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"揓󟩇\\"]
 [32m√[0m [\\"򭻹󥌤񭨗𜀘\\"]
 [32m√[0m [\\"\\"]
-[31m×[0m [\\"00񍌊\\"]
+[32m√[0m [\\" 񟠪󶬫\\"]
+[32m√[0m [\\"򨡣򑻹򤬮򏊙\\"]
+[32m√[0m [\\"󄥏񺒱\\"]
+[32m√[0m [\\"􌢁🱵󛆺\\"]
+[32m√[0m [\\"򯮲􀎺𘏋񕍔좩𼣏𕯼򢓲򴫇񳪦\\"]
+[32m√[0m [\\"򁬭𢠒󌥥􎱕񶎦􁎶񣅗򨰁\\"]
+[32m√[0m [\\"󔍍􏿴񍆸򳆾\\"]
+[32m√[0m [\\"򞔻񡰧󈂗􌂽򚝑𩽰\\"]
+[32m√[0m [\\"𸺴󕗭򺍯򙯐𡎵ⰳ𴌢𒱇󅲡↧\\"]
+[32m√[0m [\\"񫥯\\"]
+[32m√[0m [\\"𾦧\\"]
+[32m√[0m [\\"\\"]
+[32m√[0m [\\"򷤱򞮇􆋪(􏿰󾮿񈈑𻁣 󌾶\\"]
+[32m√[0m [\\"򻘷󗔇􏿻􏿫\\"]
+[32m√[0m [\\"\\"]
+[32m√[0m [\\"󎀮񍐭򴊥򡹿󳹆\\"]
+[32m√[0m [\\"򄉊򵹰\\"]
+[32m√[0m [\\"\\"]
+[32m√[0m [\\"岃򏞐\\"]
+[32m√[0m [\\"𷓇𕥣󓕋𙳀\\"]
+[32m√[0m [\\"򺆢\\"]
+[32m√[0m [\\"񃣒%𙬊󬨙񨝘20􏿬􏿻󰼴\\"]
+[32m√[0m [\\"裪􌥘񿽹󡔡󩳃񁌠򌳫\\"]
+[32m√[0m [\\"򜸍\\"]
+[32m√[0m [\\"􏿻񻒪򽌽𢥷\\"]
+[32m√[0m [\\"􏿲\\"]
+[32m√[0m [\\"򯢭񰨦𼅑򀨷󟑣󛫌󌽐󽸄󝸘\\"]
+[32m√[0m [\\"􈢐󨒮⤡󆀼󿁂󣶵򠶠󪏏򍮼\\"]
+[32m√[0m [\\"𮐔󦈗󊫱񫓔秩򶷙\\"]
+[32m√[0m [\\"򰂍񎼀򾄫\\"]
+[32m√[0m [\\"\\"]
+[32m√[0m [\\"󐛏\\"]
+[32m√[0m [\\"򘏺󿎋򚅼󌁘𠋜󩱊񵎈\\"]
+[32m√[0m [\\"󯏮񹪥񋖃𪱹𪌈򅗿򉩭񋲃񔍌\\"]
+[32m√[0m [\\"𥷝􋮗𣮶򰝵񑡖󟭅򍉥\\"]
+[32m√[0m [\\"𳌨\\"]
+[32m√[0m [\\"񄉙񰸏񘂵2/\\"]
+[32m√[0m [\\"鸘򧯋\\"]
+[32m√[0m [\\"򡆐󞁹+\\"]
+[32m√[0m [\\"񣅁񑻽򊅋򁩺\\"]
+[32m√[0m [\\"󡢥\\"]
+[32m√[0m [\\"򢾑󟭚\\"]
+[32m√[0m [\\"𭤐%윦񍰉􏿼*\\"]
+[32m√[0m [\\"󑠚񫯑𚴩󣶳𑺄򗟜󛑪󻩣𡠩򿕩\\"]
+[32m√[0m [\\"򚩌􊞢𷗍􌜟􅶋󐵑򕗤􇴻򏜳񌈭\\"]
+[32m√[0m [\\"劾𳒓𚼖򋶁񶃑𡪉򻍸򒃔򥳿󠮙\\"]
+[32m√[0m [\\"񣝙񁄹􉅛𒢱󷮯󩣖𦕐ۺ\\"]
+[31m×[0m [\\"򓻢򒃏򵇊'11񀯾/􋹧\\"]
 . [32m√[0m [\\"\\"]
-. [32m√[0m [\\"0񍌊\\"]
-. [32m√[0m [\\" 0񍌊\\"]
-. [32m√[0m [\\"(0񍌊\\"]
-. [32m√[0m [\\",0񍌊\\"]
-. [32m√[0m [\\".0񍌊\\"]
-. [32m√[0m [\\"/0񍌊\\"]
-. [31m×[0m [\\"0\\"]
-. . [31m×[0m [\\" \\"]"
+. [31m×[0m [\\"11񀯾/􋹧\\"]
+. . [32m√[0m [\\"񀯾/􋹧\\"]
+. . [32m√[0m [\\"1񀯾/􋹧\\"]
+. . [32m√[0m [\\" 1񀯾/􋹧\\"]
+. . [32m√[0m [\\")1񀯾/􋹧\\"]
+. . [32m√[0m [\\"-1񀯾/􋹧\\"]
+. . [32m√[0m [\\"/1񀯾/􋹧\\"]
+. . [32m√[0m [\\"01񀯾/􋹧\\"]
+. . [31m×[0m [\\"1\\"]
+. . . [31m×[0m [\\" \\"]"
 `;
 
 exports[`NoRegression func 1`] = `
@@ -1043,7 +1130,7 @@ Counterexample: [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 988 */
   const outs = [988];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 Shrunk 29 time(s)
 Got error: Property failed by returning false
@@ -1053,367 +1140,367 @@ Execution summary:
   // With hash and stringify coming from fast-check
   /* [] => 2014944498 */
   const outs = [2014944498];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 0 */
   const outs = [0];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 1007472249 */
   const outs = [1007472249];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 503736125 */
   const outs = [503736125];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 755604187 */
   const outs = [755604187];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 377802094 */
   const outs = [377802094];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 188901047 */
   const outs = [188901047];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 94450524 */
   const outs = [94450524];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 47225262 */
   const outs = [47225262];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 23612631 */
   const outs = [23612631];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 35418947 */
   const outs = [35418947];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 41322105 */
   const outs = [41322105];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 20661053 */
   const outs = [20661053];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 10330527 */
   const outs = [10330527];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 5165264 */
   const outs = [5165264];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 7747896 */
   const outs = [7747896];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 3873948 */
   const outs = [3873948];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 5810922 */
   const outs = [5810922];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 2905461 */
   const outs = [2905461];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 4358192 */
   const outs = [4358192];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 5084557 */
   const outs = [5084557];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 2542279 */
   const outs = [2542279];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 1271140 */
   const outs = [1271140];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 635570 */
   const outs = [635570];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 317785 */
   const outs = [317785];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 158893 */
   const outs = [158893];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 79447 */
   const outs = [79447];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 39724 */
   const outs = [39724];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 59586 */
   const outs = [59586];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 69517 */
   const outs = [69517];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 74482 */
   const outs = [74482];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 37241 */
   const outs = [37241];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 55862 */
   const outs = [55862];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 27931 */
   const outs = [27931];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 41897 */
   const outs = [41897];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 48880 */
   const outs = [48880];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 24440 */
   const outs = [24440];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 12220 */
   const outs = [12220];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 6110 */
   const outs = [6110];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 3055 */
   const outs = [3055];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 1528 */
   const outs = [1528];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 2292 */
   const outs = [2292];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 1146 */
   const outs = [1146];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 573 */
   const outs = [573];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 860 */
   const outs = [860];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 1003 */
   const outs = [1003];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 502 */
   const outs = [502];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 753 */
   const outs = [753];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 878 */
   const outs = [878];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 941 */
   const outs = [941];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 972 */
   const outs = [972];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 988 */
   const outs = [988];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 494 */
   const outs = [494];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 741 */
   const outs = [741];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 865 */
   const outs = [865];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 927 */
   const outs = [927];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 958 */
   const outs = [958];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 973 */
   const outs = [973];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 981 */
   const outs = [981];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 985 */
   const outs = [985];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => 987 */
   const outs = [987];
-  return outs[hash('-22' + stringify(args)) % outs.length];
+  return outs[hash('-27' + stringify(args)) % outs.length];
 }]"
 `;
 
@@ -1428,7 +1515,7 @@ Execution summary:
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"a7984c84\\"]
 [32m√[0m [\\"a6db51\\"]
-[32m√[0m [\\"1b\\"]
+[32m√[0m [\\"19\\"]
 [32m√[0m [\\"\\"]
 [31m×[0m [\\"213bcfddc6\\"]
 . [32m√[0m [\\"\\"]
@@ -1470,12 +1557,12 @@ Execution summary:
 exports[`NoRegression infiniteStream 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0\\", endOnFailure: true }
-Counterexample: [Stream(9,2014944498,9,6,1077723492,465389025,9975393,5,6,1011298813...)]
+Counterexample: [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28...)]
 Shrunk 0 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [Stream(9,2014944498,9,6,1077723492,465389025,9975393,5,6,1011298813...)]"
+[31m×[0m [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28...)]"
 `;
 
 exports[`NoRegression integer 1`] = `
@@ -1486,7 +1573,7 @@ Shrunk 39 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [-15]
+[32m√[0m [9]
 [31m×[0m [-994490854]
 . [32m√[0m [0]
 . [32m√[0m [-497245427]
@@ -1584,131 +1671,116 @@ Execution summary:
 `;
 
 exports[`NoRegression ipV4 1`] = `
-"Property failed after 8 tests
-{ seed: 42, path: \\"7:0:5:5:5:0:5:5\\", endOnFailure: true }
-Counterexample: [\\"0.55.0.0\\"]
-Shrunk 7 time(s)
+"Property failed after 9 tests
+{ seed: 42, path: \\"8:0:0:1:5:0:5\\", endOnFailure: true }
+Counterexample: [\\"0.0.55.0\\"]
+Shrunk 6 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"6.1.6.242\\"]
-[32m√[0m [\\"26.7.40.4\\"]
-[32m√[0m [\\"8.6.171.241\\"]
-[32m√[0m [\\"2.4.101.41\\"]
-[32m√[0m [\\"5.5.246.1\\"]
-[32m√[0m [\\"24.1.219.7\\"]
-[32m√[0m [\\"254.4.196.45\\"]
-[31m×[0m [\\"4.115.31.1\\"]
-. [31m×[0m [\\"0.115.31.1\\"]
-. . [32m√[0m [\\"0.0.31.1\\"]
-. . [32m√[0m [\\"0.58.31.1\\"]
-. . [32m√[0m [\\"0.87.31.1\\"]
-. . [32m√[0m [\\"0.101.31.1\\"]
-. . [32m√[0m [\\"0.108.31.1\\"]
-. . [31m×[0m [\\"0.112.31.1\\"]
-. . . [32m√[0m [\\"0.56.31.1\\"]
-. . . [32m√[0m [\\"0.84.31.1\\"]
-. . . [32m√[0m [\\"0.98.31.1\\"]
-. . . [32m√[0m [\\"0.105.31.1\\"]
-. . . [32m√[0m [\\"0.109.31.1\\"]
-. . . [31m×[0m [\\"0.111.31.1\\"]
-. . . . [32m√[0m [\\"0.56.31.1\\"]
-. . . . [32m√[0m [\\"0.84.31.1\\"]
-. . . . [32m√[0m [\\"0.98.31.1\\"]
-. . . . [32m√[0m [\\"0.105.31.1\\"]
-. . . . [32m√[0m [\\"0.108.31.1\\"]
-. . . . [31m×[0m [\\"0.110.31.1\\"]
-. . . . . [31m×[0m [\\"0.55.31.1\\"]
-. . . . . . [32m√[0m [\\"0.28.31.1\\"]
-. . . . . . [32m√[0m [\\"0.42.31.1\\"]
-. . . . . . [32m√[0m [\\"0.49.31.1\\"]
-. . . . . . [32m√[0m [\\"0.52.31.1\\"]
-. . . . . . [32m√[0m [\\"0.54.31.1\\"]
-. . . . . . [31m×[0m [\\"0.55.0.1\\"]
-. . . . . . . [32m√[0m [\\"0.28.0.1\\"]
-. . . . . . . [32m√[0m [\\"0.42.0.1\\"]
-. . . . . . . [32m√[0m [\\"0.49.0.1\\"]
-. . . . . . . [32m√[0m [\\"0.52.0.1\\"]
-. . . . . . . [32m√[0m [\\"0.54.0.1\\"]
-. . . . . . . [31m×[0m [\\"0.55.0.0\\"]
-. . . . . . . . [32m√[0m [\\"0.28.0.0\\"]
-. . . . . . . . [32m√[0m [\\"0.42.0.0\\"]
-. . . . . . . . [32m√[0m [\\"0.49.0.0\\"]
-. . . . . . . . [32m√[0m [\\"0.52.0.0\\"]
-. . . . . . . . [32m√[0m [\\"0.54.0.0\\"]"
+[32m√[0m [\\"248.242.2.252\\"]
+[32m√[0m [\\"26.249.252.5\\"]
+[32m√[0m [\\"8.5.69.79\\"]
+[32m√[0m [\\"2.5.41.250\\"]
+[32m√[0m [\\"254.251.1.40\\"]
+[32m√[0m [\\"24.3.92.157\\"]
+[32m√[0m [\\"254.253.5.186\\"]
+[32m√[0m [\\"251.23.90.234\\"]
+[31m×[0m [\\"1.73.222.234\\"]
+. [31m×[0m [\\"0.73.222.234\\"]
+. . [31m×[0m [\\"0.0.222.234\\"]
+. . . [32m√[0m [\\"0.0.0.234\\"]
+. . . [31m×[0m [\\"0.0.111.234\\"]
+. . . . [32m√[0m [\\"0.0.56.234\\"]
+. . . . [32m√[0m [\\"0.0.84.234\\"]
+. . . . [32m√[0m [\\"0.0.98.234\\"]
+. . . . [32m√[0m [\\"0.0.105.234\\"]
+. . . . [32m√[0m [\\"0.0.108.234\\"]
+. . . . [31m×[0m [\\"0.0.110.234\\"]
+. . . . . [31m×[0m [\\"0.0.55.234\\"]
+. . . . . . [32m√[0m [\\"0.0.28.234\\"]
+. . . . . . [32m√[0m [\\"0.0.42.234\\"]
+. . . . . . [32m√[0m [\\"0.0.49.234\\"]
+. . . . . . [32m√[0m [\\"0.0.52.234\\"]
+. . . . . . [32m√[0m [\\"0.0.54.234\\"]
+. . . . . . [31m×[0m [\\"0.0.55.0\\"]
+. . . . . . . [32m√[0m [\\"0.0.28.0\\"]
+. . . . . . . [32m√[0m [\\"0.0.42.0\\"]
+. . . . . . . [32m√[0m [\\"0.0.49.0\\"]
+. . . . . . . [32m√[0m [\\"0.0.52.0\\"]
+. . . . . . . [32m√[0m [\\"0.0.54.0\\"]"
 `;
 
 exports[`NoRegression ipV4Extended 1`] = `
-"Property failed after 4 tests
-{ seed: 42, path: \\"3:0:0:1:2:4:1:3:0:0:3:0:0:0:0:5:3:0:2:0:0:2:0:0:0\\", endOnFailure: true }
-Counterexample: [\\"0.611\\"]
-Shrunk 24 time(s)
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:0:0:1:0:0:1:1:1:0:1:0:1:2:2:0:0:0:0:8:4:0:0:0:0:6:0\\", endOnFailure: true }
+Counterexample: [\\"0.166\\"]
+Shrunk 26 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"0x1.13\\"]
-[32m√[0m [\\"027\\"]
-[32m√[0m [\\"06.69.0xcb79\\"]
-[31m×[0m [\\"4.060231633\\"]
-. [31m×[0m [\\"0.060231633\\"]
-. . [31m×[0m [\\"0.12661659\\"]
+[31m×[0m [\\"0x2.15541234\\"]
+. [31m×[0m [\\"2.15541234\\"]
+. . [31m×[0m [\\"0.15541234\\"]
 . . . [32m√[0m [\\"0.0\\"]
-. . . [31m×[0m [\\"0.6330830\\"]
-. . . . [32m√[0m [\\"0.3165415\\"]
-. . . . [32m√[0m [\\"0.4748123\\"]
-. . . . [31m×[0m [\\"0.5539477\\"]
-. . . . . [32m√[0m [\\"0.2769739\\"]
-. . . . . [32m√[0m [\\"0.4154608\\"]
-. . . . . [32m√[0m [\\"0.4847043\\"]
-. . . . . [32m√[0m [\\"0.5193260\\"]
-. . . . . [31m×[0m [\\"0.5366369\\"]
-. . . . . . [32m√[0m [\\"0.2683185\\"]
-. . . . . . [31m×[0m [\\"0.4024777\\"]
-. . . . . . . [32m√[0m [\\"0.2012389\\"]
-. . . . . . . [32m√[0m [\\"0.3018583\\"]
-. . . . . . . [32m√[0m [\\"0.3521680\\"]
-. . . . . . . [31m×[0m [\\"0.3773229\\"]
-. . . . . . . . [31m×[0m [\\"0.1886615\\"]
-. . . . . . . . . [31m×[0m [\\"0.943308\\"]
-. . . . . . . . . . [32m√[0m [\\"0.471654\\"]
-. . . . . . . . . . [32m√[0m [\\"0.707481\\"]
-. . . . . . . . . . [32m√[0m [\\"0.825395\\"]
-. . . . . . . . . . [31m×[0m [\\"0.884352\\"]
-. . . . . . . . . . . [31m×[0m [\\"0.442176\\"]
-. . . . . . . . . . . . [31m×[0m [\\"0.221088\\"]
-. . . . . . . . . . . . . [31m×[0m [\\"0.110544\\"]
-. . . . . . . . . . . . . . [31m×[0m [\\"0.55272\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"0.27636\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"0.41454\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"0.48363\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"0.51818\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"0.53545\\"]
-. . . . . . . . . . . . . . . [31m×[0m [\\"0.54409\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"0.27205\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"0.40807\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"0.47608\\"]
-. . . . . . . . . . . . . . . . [31m×[0m [\\"0.51009\\"]
-. . . . . . . . . . . . . . . . . [31m×[0m [\\"0.25505\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.12753\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.19129\\"]
-. . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.22317\\"]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.11159\\"]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.5580\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.2790\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.4185\\"]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.4883\\"]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.2442\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.1221\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.611\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.306\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.459\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.535\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.573\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.592\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.602\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.607\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.609\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.610\\"]"
+. . . [31m×[0m [\\"0.7770617\\"]
+. . . . [31m×[0m [\\"0.3885309\\"]
+. . . . . [31m×[0m [\\"0.1942655\\"]
+. . . . . . [32m√[0m [\\"0.971328\\"]
+. . . . . . [31m×[0m [\\"0.1456992\\"]
+. . . . . . . [32m√[0m [\\"0.728496\\"]
+. . . . . . . [31m×[0m [\\"0.1092744\\"]
+. . . . . . . . [32m√[0m [\\"0.546372\\"]
+. . . . . . . . [31m×[0m [\\"0.819558\\"]
+. . . . . . . . . [31m×[0m [\\"0.409779\\"]
+. . . . . . . . . . [32m√[0m [\\"0.204890\\"]
+. . . . . . . . . . [31m×[0m [\\"0.307335\\"]
+. . . . . . . . . . . [31m×[0m [\\"0.153668\\"]
+. . . . . . . . . . . . [32m√[0m [\\"0.76834\\"]
+. . . . . . . . . . . . [31m×[0m [\\"0.115251\\"]
+. . . . . . . . . . . . . [32m√[0m [\\"0.57626\\"]
+. . . . . . . . . . . . . [32m√[0m [\\"0.86439\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"0.100845\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"0.50423\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"0.75634\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"0.88240\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"0.44120\\"]
+. . . . . . . . . . . . . . . . [31m×[0m [\\"0.22060\\"]
+. . . . . . . . . . . . . . . . . [31m×[0m [\\"0.11030\\"]
+. . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.5515\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.2758\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.4137\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.4826\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.5171\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.5343\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.5429\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.5472\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.5494\\"]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.5505\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.2753\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.4129\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.4817\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.5161\\"]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.5333\\"]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.2667\\"]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.1334\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.667\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.334\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.167\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.251\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.293\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.314\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.324\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.329\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.332\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"0.166\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.83\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.125\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.146\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.156\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.161\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.164\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"0.165\\"]"
 `;
 
 exports[`NoRegression ipV6 1`] = `
@@ -1719,353 +1791,206 @@ Shrunk 3 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"04::b1\\"]
-. [31m×[0m [\\"::b1\\"]
-. . [31m×[0m [\\"::1\\"]
+[31m×[0m [\\"31::4a\\"]
+. [31m×[0m [\\"::4a\\"]
+. . [31m×[0m [\\"::a\\"]
 . . . [31m×[0m [\\"::0\\"]"
 `;
 
 exports[`NoRegression json 1`] = `
 "Property failed after 3 tests
-{ seed: 42, path: \\"2:4:3:5:3:2:4:2:3:4:3:2:3:2:2:2:2:2:4:5:2:4:2:5:2:3:2:2:2:7:14\\", endOnFailure: true }
-Counterexample: [\\"[5433]\\"]
+{ seed: 42, path: \\"2:1:0:0:1:0:0:0:0:0:0:3:0:0:0:0:0:2:6:6:6:0:0:3:0:1:3:0:0:0:5\\", endOnFailure: true }
+Counterexample: [\\"[-988]\\"]
 Shrunk 30 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [\\"[]\\"]
 [32m√[0m [\\"{\\\\\\"2Spc0sZ\\\\\\":false}\\"]
-[31m×[0m [\\"[2103360753,-124859527,-10,-14,14]\\"]
+[31m×[0m [\\"[2103360753,-124859527,21,1138534142,-497564469]\\"]
 . [32m√[0m [\\"[]\\"]
-. [32m√[0m [\\"[-10,-14,14]\\"]
-. [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. [32m√[0m [\\"[0,-124859527,-10,-14,14]\\"]
-. [31m×[0m [\\"[1051680377,-124859527,-10,-14,14]\\"]
-. . [32m√[0m [\\"[-10,-14,14]\\"]
-. . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . [32m√[0m [\\"[525840189,-124859527,-10,-14,14]\\"]
-. . [31m×[0m [\\"[788760283,-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[394380142,-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[591570213,-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[690165248,-124859527,-10,-14,14]\\"]
-. . . [31m×[0m [\\"[739462766,-124859527,-10,-14,14]\\"]
-. . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . [32m√[0m [\\"[369731383,-124859527,-10,-14,14]\\"]
-. . . . [31m×[0m [\\"[554597075,-124859527,-10,-14,14]\\"]
-. . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . [31m×[0m [\\"[277298538,-124859527,-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[138649269,-124859527,-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[207973904,-124859527,-10,-14,14]\\"]
-. . . . . . [31m×[0m [\\"[242636221,-124859527,-10,-14,14]\\"]
-. . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . [31m×[0m [\\"[121318111,-124859527,-10,-14,14]\\"]
-. . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . [32m√[0m [\\"[60659056,-124859527,-10,-14,14]\\"]
-. . . . . . . . [31m×[0m [\\"[90988584,-124859527,-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[45494292,-124859527,-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[68241438,-124859527,-10,-14,14]\\"]
-. . . . . . . . . [31m×[0m [\\"[79615011,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . [32m√[0m [\\"[39807506,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . [31m×[0m [\\"[59711259,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . [31m×[0m [\\"[29855630,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . [32m√[0m [\\"[14927815,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . [31m×[0m [\\"[22391723,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . [31m×[0m [\\"[11195862,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . [31m×[0m [\\"[5597931,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . [31m×[0m [\\"[2798966,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . [31m×[0m [\\"[1399483,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . [31m×[0m [\\"[699742,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[349871,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[524807,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [31m×[0m [\\"[612275,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[306138,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[459207,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[535741,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[574008,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[287004,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[143502,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[215253,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[251129,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[125565,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[62783,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[94174,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[109870,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[117718,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[58859,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[29430,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[44145,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[22073,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[11037,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[5519,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[2760,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4140,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4830,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5175,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5347,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[5433,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[2717,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4075,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4754,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5094,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5264,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5349,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5391,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5412,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5423,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5428,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5431,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5432,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[5433]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[2717]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4075]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4754]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5094]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5264]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5349]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5391]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5412]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5423]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5428]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5431]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5432]\\"]"
+. [31m×[0m [\\"[21,1138534142,-497564469]\\"]
+. . [31m×[0m [\\"[1138534142,-497564469]\\"]
+. . . [31m×[0m [\\"[-497564469]\\"]
+. . . . [32m√[0m [\\"[0]\\"]
+. . . . [31m×[0m [\\"[-248782235]\\"]
+. . . . . [31m×[0m [\\"[-124391118]\\"]
+. . . . . . [31m×[0m [\\"[-62195559]\\"]
+. . . . . . . [31m×[0m [\\"[-31097780]\\"]
+. . . . . . . . [31m×[0m [\\"[-15548890]\\"]
+. . . . . . . . . [31m×[0m [\\"[-7774445]\\"]
+. . . . . . . . . . [31m×[0m [\\"[-3887223]\\"]
+. . . . . . . . . . . [32m√[0m [\\"[-1943612]\\"]
+. . . . . . . . . . . [32m√[0m [\\"[-2915418]\\"]
+. . . . . . . . . . . [32m√[0m [\\"[-3401321]\\"]
+. . . . . . . . . . . [31m×[0m [\\"[-3644272]\\"]
+. . . . . . . . . . . . [31m×[0m [\\"[-1822136]\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"[-911068]\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"[-455534]\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"[-227767]\\"]
+. . . . . . . . . . . . . . . . [31m×[0m [\\"[-113884]\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-56942]\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-85413]\\"]
+. . . . . . . . . . . . . . . . . [31m×[0m [\\"[-99649]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-49825]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-74737]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-87193]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-93421]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-96535]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-98092]\\"]
+. . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-98871]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-49436]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-74154]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-86513]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-92692]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-95782]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-97327]\\"]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-98099]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-49050]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-73575]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-85837]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-91968]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-95034]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-96567]\\"]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-97333]\\"]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-48667]\\"]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-24334]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-12167]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-18251]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-21293]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-22814]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-11407]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-5704]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-8556]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-4278]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-6417]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-7487]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-8022]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-4011]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-2006]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-1003]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-502]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-753]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-878]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-941]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-972]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-988]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-494]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-741]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-865]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-927]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-958]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-973]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-981]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-985]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-987]\\"]"
 `;
 
 exports[`NoRegression jsonObject 1`] = `
 "Property failed after 3 tests
-{ seed: 42, path: \\"2:4:3:5:3:2:4:2:3:4:3:2:3:2:2:2:2:2:4:5:2:4:2:5:2:3:2:2:2:7:14\\", endOnFailure: true }
-Counterexample: [[5433]]
+{ seed: 42, path: \\"2:1:0:0:1:0:0:0:0:0:0:3:0:0:0:0:0:2:6:6:6:0:0:3:0:1:3:0:0:0:5\\", endOnFailure: true }
+Counterexample: [[-988]]
 Shrunk 30 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [[]]
 [32m√[0m [{\\"2Spc0sZ\\":false}]
-[31m×[0m [[2103360753,-124859527,-10,-14,14]]
+[31m×[0m [[2103360753,-124859527,21,1138534142,-497564469]]
 . [32m√[0m [[]]
-. [32m√[0m [[-10,-14,14]]
-. [32m√[0m [[-124859527,-10,-14,14]]
-. [32m√[0m [[0,-124859527,-10,-14,14]]
-. [31m×[0m [[1051680377,-124859527,-10,-14,14]]
-. . [32m√[0m [[-10,-14,14]]
-. . [32m√[0m [[-124859527,-10,-14,14]]
-. . [32m√[0m [[525840189,-124859527,-10,-14,14]]
-. . [31m×[0m [[788760283,-124859527,-10,-14,14]]
-. . . [32m√[0m [[-10,-14,14]]
-. . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . [32m√[0m [[394380142,-124859527,-10,-14,14]]
-. . . [32m√[0m [[591570213,-124859527,-10,-14,14]]
-. . . [32m√[0m [[690165248,-124859527,-10,-14,14]]
-. . . [31m×[0m [[739462766,-124859527,-10,-14,14]]
-. . . . [32m√[0m [[-10,-14,14]]
-. . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . [32m√[0m [[369731383,-124859527,-10,-14,14]]
-. . . . [31m×[0m [[554597075,-124859527,-10,-14,14]]
-. . . . . [32m√[0m [[-10,-14,14]]
-. . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . [31m×[0m [[277298538,-124859527,-10,-14,14]]
-. . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . [32m√[0m [[138649269,-124859527,-10,-14,14]]
-. . . . . . [32m√[0m [[207973904,-124859527,-10,-14,14]]
-. . . . . . [31m×[0m [[242636221,-124859527,-10,-14,14]]
-. . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . [31m×[0m [[121318111,-124859527,-10,-14,14]]
-. . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . [32m√[0m [[60659056,-124859527,-10,-14,14]]
-. . . . . . . . [31m×[0m [[90988584,-124859527,-10,-14,14]]
-. . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . [32m√[0m [[45494292,-124859527,-10,-14,14]]
-. . . . . . . . . [32m√[0m [[68241438,-124859527,-10,-14,14]]
-. . . . . . . . . [31m×[0m [[79615011,-124859527,-10,-14,14]]
-. . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . [32m√[0m [[39807506,-124859527,-10,-14,14]]
-. . . . . . . . . . [31m×[0m [[59711259,-124859527,-10,-14,14]]
-. . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . [31m×[0m [[29855630,-124859527,-10,-14,14]]
-. . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . [32m√[0m [[14927815,-124859527,-10,-14,14]]
-. . . . . . . . . . . . [31m×[0m [[22391723,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . [31m×[0m [[11195862,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . [31m×[0m [[5597931,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . [31m×[0m [[2798966,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . [31m×[0m [[1399483,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . [31m×[0m [[699742,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[349871,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[524807,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [31m×[0m [[612275,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[306138,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[459207,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[535741,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [[574008,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [[287004,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[143502,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[215253,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [[251129,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[125565,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[62783,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[94174,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[109870,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[117718,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[58859,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[29430,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[44145,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[22073,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[11037,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[5519,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2760,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4140,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4830,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5175,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5347,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[5433,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2717,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4075,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4754,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5094,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5264,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5349,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5391,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5412,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5423,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5428,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5431,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5432,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[5433]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2717]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4075]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4754]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5094]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5264]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5349]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5391]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5412]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5423]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5428]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5431]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5432]]"
+. [31m×[0m [[21,1138534142,-497564469]]
+. . [31m×[0m [[1138534142,-497564469]]
+. . . [31m×[0m [[-497564469]]
+. . . . [32m√[0m [[0]]
+. . . . [31m×[0m [[-248782235]]
+. . . . . [31m×[0m [[-124391118]]
+. . . . . . [31m×[0m [[-62195559]]
+. . . . . . . [31m×[0m [[-31097780]]
+. . . . . . . . [31m×[0m [[-15548890]]
+. . . . . . . . . [31m×[0m [[-7774445]]
+. . . . . . . . . . [31m×[0m [[-3887223]]
+. . . . . . . . . . . [32m√[0m [[-1943612]]
+. . . . . . . . . . . [32m√[0m [[-2915418]]
+. . . . . . . . . . . [32m√[0m [[-3401321]]
+. . . . . . . . . . . [31m×[0m [[-3644272]]
+. . . . . . . . . . . . [31m×[0m [[-1822136]]
+. . . . . . . . . . . . . [31m×[0m [[-911068]]
+. . . . . . . . . . . . . . [31m×[0m [[-455534]]
+. . . . . . . . . . . . . . . [31m×[0m [[-227767]]
+. . . . . . . . . . . . . . . . [31m×[0m [[-113884]]
+. . . . . . . . . . . . . . . . . [32m√[0m [[-56942]]
+. . . . . . . . . . . . . . . . . [32m√[0m [[-85413]]
+. . . . . . . . . . . . . . . . . [31m×[0m [[-99649]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-49825]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-74737]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-87193]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-93421]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-96535]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-98092]]
+. . . . . . . . . . . . . . . . . . [31m×[0m [[-98871]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-49436]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-74154]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-86513]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-92692]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-95782]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-97327]]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [[-98099]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-49050]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-73575]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-85837]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-91968]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-95034]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-96567]]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [[-97333]]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-48667]]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-24334]]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-12167]]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-18251]]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-21293]]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-22814]]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-11407]]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-5704]]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-8556]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-4278]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-6417]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-7487]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-8022]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-4011]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-2006]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-1003]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-502]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-753]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-878]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-941]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-972]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-988]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-494]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-741]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-865]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-927]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-958]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-973]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-981]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-985]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-987]]"
 `;
 
 exports[`NoRegression letrec 1`] = `
-"Property failed after 14 tests
-{ seed: 42, path: \\"13:0\\", endOnFailure: true }
-Counterexample: [11]
-Shrunk 1 time(s)
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:1:0:0:0\\", endOnFailure: true }
+Counterexample: [{\\"left\\":0,\\"right\\":{\\"left\\":0,\\"right\\":0}}]
+Shrunk 5 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [4]
-[32m√[0m [2]
-[32m√[0m [2]
-[32m√[0m [4]
-[32m√[0m [4]
-[32m√[0m [1]
-[32m√[0m [3]
-[32m√[0m [3]
-[32m√[0m [9]
-[32m√[0m [0]
-[32m√[0m [4]
-[32m√[0m [0]
-[32m√[0m [16]
-[31m×[0m [{\\"left\\":19,\\"right\\":{\\"left\\":{\\"left\\":8,\\"right\\":5},\\"right\\":6}}]
-. [31m×[0m [11]
-. . [32m√[0m [0]
-. . [32m√[0m [6]
-. . [32m√[0m [9]
-. . [32m√[0m [10]"
+[31m×[0m [{\\"left\\":4,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":{\\"left\\":{\\"left\\":4,\\"right\\":18},\\"right\\":{\\"left\\":8,\\"right\\":21}},\\"right\\":18},\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":0,\\"right\\":19},\\"right\\":{\\"left\\":17,\\"right\\":1}},\\"right\\":13}},\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":2,\\"right\\":{\\"left\\":20,\\"right\\":{\\"left\\":3,\\"right\\":{\\"left\\":12,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":3,\\"right\\":8},\\"right\\":7},\\"right\\":19}}}}},\\"right\\":{\\"left\\":21,\\"right\\":14}},\\"right\\":17}}}]
+. [32m√[0m [21]
+. [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":{\\"left\\":{\\"left\\":4,\\"right\\":18},\\"right\\":{\\"left\\":8,\\"right\\":21}},\\"right\\":18},\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":0,\\"right\\":19},\\"right\\":{\\"left\\":17,\\"right\\":1}},\\"right\\":13}},\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":2,\\"right\\":{\\"left\\":20,\\"right\\":{\\"left\\":3,\\"right\\":{\\"left\\":12,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":3,\\"right\\":8},\\"right\\":7},\\"right\\":19}}}}},\\"right\\":{\\"left\\":21,\\"right\\":14}},\\"right\\":17}}}]
+. . [32m√[0m [{\\"left\\":0,\\"right\\":19}]
+. . [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":15,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":2,\\"right\\":{\\"left\\":20,\\"right\\":{\\"left\\":3,\\"right\\":{\\"left\\":12,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":3,\\"right\\":8},\\"right\\":7},\\"right\\":19}}}}},\\"right\\":{\\"left\\":21,\\"right\\":14}},\\"right\\":17}}}]
+. . . [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":0,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":2,\\"right\\":{\\"left\\":20,\\"right\\":{\\"left\\":3,\\"right\\":{\\"left\\":12,\\"right\\":{\\"left\\":{\\"left\\":{\\"left\\":3,\\"right\\":8},\\"right\\":7},\\"right\\":19}}}}},\\"right\\":{\\"left\\":21,\\"right\\":14}},\\"right\\":17}}}]
+. . . . [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":0,\\"right\\":21}}]
+. . . . . [31m×[0m [{\\"left\\":0,\\"right\\":{\\"left\\":0,\\"right\\":0}}]"
 `;
 
 exports[`NoRegression lorem 1`] = `
@@ -2082,229 +2007,166 @@ Execution summary:
 `;
 
 exports[`NoRegression mapToConstant 1`] = `
-"Property failed after 24 tests
-{ seed: 42, path: \\"23\\", endOnFailure: true }
-Counterexample: [\\"b\\",\\"b\\"]
+"Property failed after 4 tests
+{ seed: 42, path: \\"3\\", endOnFailure: true }
+Counterexample: [\\"a\\",\\"a\\"]
 Shrunk 0 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"a\\",\\"e\\"]
-[32m√[0m [\\"s\\",\\"c\\"]
-[32m√[0m [\\"u\\",\\"c\\"]
-[32m√[0m [\\"d\\",\\"e\\"]
-[32m√[0m [\\"c\\",\\"e\\"]
+[32m√[0m [\\"z\\",\\"i\\"]
+[32m√[0m [\\"s\\",\\"v\\"]
 [32m√[0m [\\"u\\",\\"b\\"]
-[32m√[0m [\\"u\\",\\"d\\"]
-[32m√[0m [\\"a\\",\\"j\\"]
-[32m√[0m [\\"d\\",\\"v\\"]
-[32m√[0m [\\"c\\",\\"o\\"]
-[32m√[0m [\\"k\\",\\"e\\"]
-[32m√[0m [\\"e\\",\\"a\\"]
-[32m√[0m [\\"u\\",\\"y\\"]
-[32m√[0m [\\"b\\",\\"a\\"]
-[32m√[0m [\\"n\\",\\"b\\"]
-[32m√[0m [\\"y\\",\\"g\\"]
-[32m√[0m [\\"f\\",\\"a\\"]
-[32m√[0m [\\"u\\",\\"n\\"]
-[32m√[0m [\\"x\\",\\"e\\"]
-[32m√[0m [\\"c\\",\\"s\\"]
-[32m√[0m [\\"s\\",\\"b\\"]
-[32m√[0m [\\"i\\",\\"z\\"]
-[32m√[0m [\\"l\\",\\"h\\"]
-[31m×[0m [\\"b\\",\\"b\\"]
-. [32m√[0m [\\"a\\",\\"b\\"]
-. [32m√[0m [\\"b\\",\\"a\\"]"
+[31m×[0m [\\"a\\",\\"a\\"]"
 `;
 
 exports[`NoRegression maxSafeInteger 1`] = `
-"Property failed after 2 tests
-{ seed: 42, path: \\"1:1:0:0:0:0:0:0:0:0:0:0:2:0:0:0:0:0:0:0:0:2:0:0:0:0:0:0:0:3:0:0:0:0:0:0:0:0:0:1:0:3:10:0:2:0:2:0:0\\", endOnFailure: true }
-Counterexample: [2499]
-Shrunk 48 time(s)
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:0\\", endOnFailure: true }
+Counterexample: [-11]
+Shrunk 2 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [15]
-[31m×[0m [7113953471524827]
+[31m×[0m [-44]
 . [32m√[0m [0]
-. [31m×[0m [3556976735762414]
-. . [31m×[0m [1778488367881207]
-. . . [31m×[0m [889244183940604]
-. . . . [31m×[0m [444622091970302]
-. . . . . [31m×[0m [222311045985151]
-. . . . . . [31m×[0m [111155522992576]
-. . . . . . . [31m×[0m [55577761496288]
-. . . . . . . . [31m×[0m [27788880748144]
-. . . . . . . . . [31m×[0m [13894440374072]
-. . . . . . . . . . [31m×[0m [6947220187036]
-. . . . . . . . . . . [31m×[0m [3473610093518]
-. . . . . . . . . . . . [32m√[0m [1736805046759]
-. . . . . . . . . . . . [32m√[0m [2605207570139]
-. . . . . . . . . . . . [31m×[0m [3039408831829]
-. . . . . . . . . . . . . [31m×[0m [1519704415915]
-. . . . . . . . . . . . . . [31m×[0m [759852207958]
-. . . . . . . . . . . . . . . [31m×[0m [379926103979]
-. . . . . . . . . . . . . . . . [31m×[0m [189963051990]
-. . . . . . . . . . . . . . . . . [31m×[0m [94981525995]
-. . . . . . . . . . . . . . . . . . [31m×[0m [47490762998]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [23745381499]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [11872690750]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [5936345375]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [8904518063]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [10388604407]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [5194302204]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2597151102]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1298575551]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [649287776]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [324643888]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [162321944]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [81160972]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [40580486]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [60870729]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [71015851]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [76088412]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [38044206]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [19022103]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [9511052]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4755526]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2377763]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1188882]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [594441]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [297221]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [148611]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [74306]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [111459]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [55730]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [27865]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [41798]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [48764]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [52247]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [26124]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [39186]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [45717]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [48982]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [50615]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [51431]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [51839]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [52043]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [52145]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [52196]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [52222]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [26111]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [13056]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [19584]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [22848]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [11424]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [5712]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [8568]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [9996]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4998]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2499]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [1250]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [1875]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2187]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2343]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2421]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2460]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2480]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2490]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2495]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2497]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2498]"
+. [31m×[0m [-22]
+. . [31m×[0m [-11]
+. . . [32m√[0m [-6]
+. . . [32m√[0m [-9]
+. . . [32m√[0m [-10]"
 `;
 
 exports[`NoRegression maxSafeNat 1`] = `
-"Property failed after 2 tests
-{ seed: 42, path: \\"1:1:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0:1:0:0:0:0:1:0:0:2:0:0:0:0:0:0:0:0:0:2:0:0:0:0:2:2:5:0:0:0:3:0:0:0:0:0\\", endOnFailure: true }
-Counterexample: [277]
-Shrunk 52 time(s)
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:3:0:0:0:2:0:2:0:0:1:0:2:0:0:0:0:0:0:1:1:0:0:0:0:0:3:0:0:0:1:0:3:2:0:7:10:3:0:0:4:2:7\\", endOnFailure: true }
+Counterexample: [990]
+Shrunk 57 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [38]
-[31m×[0m [7111595534479322]
+[31m×[0m [9007199254740940]
 . [32m√[0m [0]
-. [31m×[0m [3555797767239661]
-. . [31m×[0m [1777898883619831]
-. . . [31m×[0m [888949441809916]
-. . . . [31m×[0m [444474720904958]
-. . . . . [31m×[0m [222237360452479]
-. . . . . . [31m×[0m [111118680226240]
-. . . . . . . [31m×[0m [55559340113120]
-. . . . . . . . [31m×[0m [27779670056560]
-. . . . . . . . . [31m×[0m [13889835028280]
-. . . . . . . . . . [31m×[0m [6944917514140]
-. . . . . . . . . . . [32m√[0m [3472458757070]
-. . . . . . . . . . . [31m×[0m [5208688135605]
-. . . . . . . . . . . . [31m×[0m [2604344067803]
-. . . . . . . . . . . . . [31m×[0m [1302172033902]
-. . . . . . . . . . . . . . [32m√[0m [651086016951]
-. . . . . . . . . . . . . . [31m×[0m [976629025427]
-. . . . . . . . . . . . . . . [31m×[0m [488314512714]
-. . . . . . . . . . . . . . . . [31m×[0m [244157256357]
-. . . . . . . . . . . . . . . . . [31m×[0m [122078628179]
-. . . . . . . . . . . . . . . . . . [32m√[0m [61039314090]
-. . . . . . . . . . . . . . . . . . [31m×[0m [91558971135]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [45779485568]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [22889742784]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [11444871392]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [5722435696]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2861217848]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4291826772]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2145913386]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1072956693]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [536478347]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [804717520]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [938837107]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [469418554]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [234709277]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [117354639]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [58677320]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [29338660]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [14669330]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [7334665]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [3667333]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1833667]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [916834]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [1375251]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1604459]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [802230]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [401115]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [200558]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [100279]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [50140]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [75210]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [87745]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [43873]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [65809]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [76777]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [38389]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [57583]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [67180]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [71979]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [74378]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [75578]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [37789]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [18895]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [9448]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4724]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [7086]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [8267]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [8858]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4429]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2215]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1108]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [554]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [277]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [139]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [208]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [243]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [260]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [269]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [273]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [275]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [276]"
+. [31m×[0m [4503599627370470]
+. . [31m×[0m [2251799813685235]
+. . . [31m×[0m [1125899906842618]
+. . . . [31m×[0m [562949953421309]
+. . . . . [31m×[0m [281474976710655]
+. . . . . . [31m×[0m [140737488355328]
+. . . . . . . [31m×[0m [70368744177664]
+. . . . . . . . [31m×[0m [35184372088832]
+. . . . . . . . . [31m×[0m [17592186044416]
+. . . . . . . . . . [31m×[0m [8796093022208]
+. . . . . . . . . . . [31m×[0m [4398046511104]
+. . . . . . . . . . . . [31m×[0m [2199023255552]
+. . . . . . . . . . . . . [31m×[0m [1099511627776]
+. . . . . . . . . . . . . . [31m×[0m [549755813888]
+. . . . . . . . . . . . . . . [31m×[0m [274877906944]
+. . . . . . . . . . . . . . . . [32m√[0m [137438953472]
+. . . . . . . . . . . . . . . . [32m√[0m [206158430208]
+. . . . . . . . . . . . . . . . [32m√[0m [240518168576]
+. . . . . . . . . . . . . . . . [31m×[0m [257698037760]
+. . . . . . . . . . . . . . . . . [31m×[0m [128849018880]
+. . . . . . . . . . . . . . . . . . [31m×[0m [64424509440]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [32212254720]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [16106127360]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [24159191040]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [28185722880]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [14092861440]
+. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [7046430720]
+. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [10569646080]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [12331253760]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [6165626880]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [3082813440]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [1541406720]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2312110080]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1156055040]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [578027520]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [867041280]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1011548160]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [505774080]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [252887040]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [126443520]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [63221760]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [31610880]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [15805440]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [7902720]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [11854080]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [5927040]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [8890560]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4445280]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2222640]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1111320]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [555660]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [277830]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [138915]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [208373]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [243102]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [260466]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [130233]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [65117]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [32559]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [16280]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [24420]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [12210]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [6105]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [9158]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [10684]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [11447]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [5724]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [8586]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [10017]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [5009]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2505]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [3757]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4383]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4696]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4853]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4931]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4970]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4990]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2495]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [3743]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4367]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4679]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4835]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4913]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4952]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4971]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4981]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4986]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4988]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [2494]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [3741]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [4365]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [4677]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [2339]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1170]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [585]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [878]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [1024]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [1097]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1134]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [567]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [851]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [993]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [497]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [745]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [869]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [931]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [962]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [978]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [986]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [990]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [495]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [743]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [867]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [929]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [960]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [975]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [983]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [987]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [989]"
 `;
 
 exports[`NoRegression nat 1`] = `
@@ -2315,7 +2177,7 @@ Shrunk 26 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [16]
+[32m√[0m [2147483626]
 [31m×[0m [1152992794]
 . [32m√[0m [0]
 . [32m√[0m [576496397]
@@ -2433,10 +2295,10 @@ Shrunk 34 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [9]
+[32m√[0m [2147483646]
+[32m√[0m [\\"#\\"]
 [32m√[0m [\\" \\"]
-[32m√[0m [\\"!\\"]
-[32m√[0m [6]
+[32m√[0m [9]
 [31m×[0m [542422934]
 . [32m√[0m [0]
 . [31m×[0m [271211467]
@@ -2517,9 +2379,9 @@ Shrunk 0 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [9]
-[32m√[0m [27]
-[32m√[0m [8]
+[32m√[0m [2147483646]
+[32m√[0m [29]
+[32m√[0m [20]
 [31m×[0m [null]"
 `;
 
@@ -2531,9 +2393,9 @@ Shrunk 36 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [{\\"k1\\":9,\\"k2\\":5}]
-[32m√[0m [{\\"k1\\":27,\\"k2\\":861580584}]
-[32m√[0m [{\\"k1\\":8}]
+[32m√[0m [{\\"k1\\":2147483646}]
+[32m√[0m [{\\"k1\\":29,\\"k2\\":2147483620}]
+[32m√[0m [{\\"k1\\":20,\\"k2\\":2053236037}]
 [32m√[0m [{}]
 [31m×[0m [{\\"k1\\":542422934,\\"k2\\":1272193014}]
 . [32m√[0m [{\\"k1\\":0,\\"k2\\":1272193014}]
@@ -3278,7 +3140,7 @@ Execution summary:
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"W|%=2Spc\\"]
 [32m√[0m [\\"X1DZwS\\"]
-[32m√[0m [\\"$d\\"]
+[32m√[0m [\\"$g\\"]
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"lbV7X&=<dH\\"]
 [32m√[0m [\\"x#bD\\"]
@@ -3334,399 +3196,253 @@ Execution summary:
 `;
 
 exports[`NoRegression tuple 1`] = `
-"Property failed after 2 tests
-{ seed: 42, path: \\"1:2:0:1:2:3:0:0:0:0:0:0:1:0:0:0:1:2:1:5:3:0:0:0:0:0:0:11\\", endOnFailure: true }
-Counterexample: [[2766,0]]
-Shrunk 27 time(s)
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:0:1:1:0:0:0:0:2:0:0:1:1:2:0:0:0:0:0:0:3:1:2:0:0:0:0:1:0:2:5\\", endOnFailure: true }
+Counterexample: [[0,988]]
+Shrunk 30 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [[16,29]]
-[31m×[0m [[1152992794,29]]
-. [32m√[0m [[0,29]]
-. [32m√[0m [[576496397,29]]
-. [31m×[0m [[864744596,29]]
-. . [31m×[0m [[432372298,29]]
-. . . [32m√[0m [[216186149,29]]
-. . . [31m×[0m [[324279224,29]]
-. . . . [32m√[0m [[162139612,29]]
-. . . . [32m√[0m [[243209418,29]]
-. . . . [31m×[0m [[283744321,29]]
-. . . . . [32m√[0m [[141872161,29]]
-. . . . . [32m√[0m [[212808241,29]]
-. . . . . [32m√[0m [[248276281,29]]
-. . . . . [31m×[0m [[266010301,29]]
-. . . . . . [31m×[0m [[133005151,29]]
-. . . . . . . [31m×[0m [[66502576,29]]
-. . . . . . . . [31m×[0m [[33251288,29]]
-. . . . . . . . . [31m×[0m [[16625644,29]]
-. . . . . . . . . . [31m×[0m [[8312822,29]]
-. . . . . . . . . . . [31m×[0m [[4156411,29]]
-. . . . . . . . . . . . [32m√[0m [[2078206,29]]
-. . . . . . . . . . . . [31m×[0m [[3117309,29]]
-. . . . . . . . . . . . . [31m×[0m [[1558655,29]]
-. . . . . . . . . . . . . . [31m×[0m [[779328,29]]
-. . . . . . . . . . . . . . . [31m×[0m [[389664,29]]
-. . . . . . . . . . . . . . . . [32m√[0m [[194832,29]]
-. . . . . . . . . . . . . . . . [31m×[0m [[292248,29]]
-. . . . . . . . . . . . . . . . . [32m√[0m [[146124,29]]
-. . . . . . . . . . . . . . . . . [32m√[0m [[219186,29]]
-. . . . . . . . . . . . . . . . . [31m×[0m [[255717,29]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[127859,29]]
-. . . . . . . . . . . . . . . . . . [31m×[0m [[191788,29]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[95894,29]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[143841,29]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[167815,29]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[179802,29]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[185795,29]]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [[188792,29]]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [[94396,29]]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [[141594,29]]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [[165193,29]]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [[176993,29]]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [[88497,29]]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[44249,29]]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[22125,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[11063,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[5532,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[2766,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[1383,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2075,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2421,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2594,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2680,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2723,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2745,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2756,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2761,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2764,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2765,29]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[2766,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[1383,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2075,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2421,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2594,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2680,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2723,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2745,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2756,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2761,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2764,0]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2765,0]]"
+[31m×[0m [[2147483626,2014944498]]
+. [31m×[0m [[0,2014944498]]
+. . [32m√[0m [[0,0]]
+. . [31m×[0m [[0,1007472249]]
+. . . [32m√[0m [[0,503736125]]
+. . . [31m×[0m [[0,755604187]]
+. . . . [31m×[0m [[0,377802094]]
+. . . . . [31m×[0m [[0,188901047]]
+. . . . . . [31m×[0m [[0,94450524]]
+. . . . . . . [31m×[0m [[0,47225262]]
+. . . . . . . . [32m√[0m [[0,23612631]]
+. . . . . . . . [32m√[0m [[0,35418947]]
+. . . . . . . . [31m×[0m [[0,41322105]]
+. . . . . . . . . [31m×[0m [[0,20661053]]
+. . . . . . . . . . [31m×[0m [[0,10330527]]
+. . . . . . . . . . . [32m√[0m [[0,5165264]]
+. . . . . . . . . . . [31m×[0m [[0,7747896]]
+. . . . . . . . . . . . [32m√[0m [[0,3873948]]
+. . . . . . . . . . . . [31m×[0m [[0,5810922]]
+. . . . . . . . . . . . . [32m√[0m [[0,2905461]]
+. . . . . . . . . . . . . [32m√[0m [[0,4358192]]
+. . . . . . . . . . . . . [31m×[0m [[0,5084557]]
+. . . . . . . . . . . . . . [31m×[0m [[0,2542279]]
+. . . . . . . . . . . . . . . [31m×[0m [[0,1271140]]
+. . . . . . . . . . . . . . . . [31m×[0m [[0,635570]]
+. . . . . . . . . . . . . . . . . [31m×[0m [[0,317785]]
+. . . . . . . . . . . . . . . . . . [31m×[0m [[0,158893]]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [[0,79447]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,39724]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,59586]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,69517]]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,74482]]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,37241]]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,55862]]
+. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,27931]]
+. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,41897]]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,48880]]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,24440]]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,12220]]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,6110]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,3055]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,1528]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,2292]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,1146]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,573]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,860]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,1003]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,502]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,753]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,878]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,941]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,972]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,988]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,494]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,741]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,865]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,927]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,958]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,973]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,981]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,985]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,987]]"
 `;
 
 exports[`NoRegression unicodeJson 1`] = `
 "Property failed after 3 tests
-{ seed: 42, path: \\"2:4:3:5:3:2:4:2:3:4:3:2:3:2:2:2:2:2:4:5:2:4:2:5:2:3:2:2:2:7:14\\", endOnFailure: true }
-Counterexample: [\\"[5433]\\"]
+{ seed: 42, path: \\"2:1:0:0:1:0:0:0:0:0:0:3:0:0:0:0:0:2:6:6:6:0:0:3:0:1:3:0:0:0:5\\", endOnFailure: true }
+Counterexample: [\\"[-988]\\"]
 Shrunk 30 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [\\"[]\\"]
 [32m√[0m [\\"{\\\\\\"ﵔ衼䮈齔댅韛㹦\\\\\\":false}\\"]
-[31m×[0m [\\"[2103360753,-124859527,-10,-14,14]\\"]
+[31m×[0m [\\"[2103360753,-124859527,21,1138534142,-497564469]\\"]
 . [32m√[0m [\\"[]\\"]
-. [32m√[0m [\\"[-10,-14,14]\\"]
-. [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. [32m√[0m [\\"[0,-124859527,-10,-14,14]\\"]
-. [31m×[0m [\\"[1051680377,-124859527,-10,-14,14]\\"]
-. . [32m√[0m [\\"[-10,-14,14]\\"]
-. . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . [32m√[0m [\\"[525840189,-124859527,-10,-14,14]\\"]
-. . [31m×[0m [\\"[788760283,-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[394380142,-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[591570213,-124859527,-10,-14,14]\\"]
-. . . [32m√[0m [\\"[690165248,-124859527,-10,-14,14]\\"]
-. . . [31m×[0m [\\"[739462766,-124859527,-10,-14,14]\\"]
-. . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . [32m√[0m [\\"[369731383,-124859527,-10,-14,14]\\"]
-. . . . [31m×[0m [\\"[554597075,-124859527,-10,-14,14]\\"]
-. . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . [31m×[0m [\\"[277298538,-124859527,-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[138649269,-124859527,-10,-14,14]\\"]
-. . . . . . [32m√[0m [\\"[207973904,-124859527,-10,-14,14]\\"]
-. . . . . . [31m×[0m [\\"[242636221,-124859527,-10,-14,14]\\"]
-. . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . [31m×[0m [\\"[121318111,-124859527,-10,-14,14]\\"]
-. . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . [32m√[0m [\\"[60659056,-124859527,-10,-14,14]\\"]
-. . . . . . . . [31m×[0m [\\"[90988584,-124859527,-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[45494292,-124859527,-10,-14,14]\\"]
-. . . . . . . . . [32m√[0m [\\"[68241438,-124859527,-10,-14,14]\\"]
-. . . . . . . . . [31m×[0m [\\"[79615011,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . [32m√[0m [\\"[39807506,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . [31m×[0m [\\"[59711259,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . [31m×[0m [\\"[29855630,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . [32m√[0m [\\"[14927815,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . [31m×[0m [\\"[22391723,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . [31m×[0m [\\"[11195862,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . [31m×[0m [\\"[5597931,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . [31m×[0m [\\"[2798966,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . [31m×[0m [\\"[1399483,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . [31m×[0m [\\"[699742,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[349871,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[524807,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . [31m×[0m [\\"[612275,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[306138,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[459207,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[535741,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[574008,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[287004,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[143502,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[215253,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[251129,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[125565,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[62783,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[94174,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[109870,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[117718,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[58859,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[29430,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[44145,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[22073,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[11037,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[5519,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[2760,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4140,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4830,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5175,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5347,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[5433,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[2717,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4075,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4754,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5094,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5264,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5349,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5391,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5412,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5423,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5428,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5431,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5432,-124859527,-10,-14,14]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[5433]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[2717]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4075]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[4754]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5094]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5264]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5349]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5391]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5412]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5423]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5428]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5431]\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[5432]\\"]"
+. [31m×[0m [\\"[21,1138534142,-497564469]\\"]
+. . [31m×[0m [\\"[1138534142,-497564469]\\"]
+. . . [31m×[0m [\\"[-497564469]\\"]
+. . . . [32m√[0m [\\"[0]\\"]
+. . . . [31m×[0m [\\"[-248782235]\\"]
+. . . . . [31m×[0m [\\"[-124391118]\\"]
+. . . . . . [31m×[0m [\\"[-62195559]\\"]
+. . . . . . . [31m×[0m [\\"[-31097780]\\"]
+. . . . . . . . [31m×[0m [\\"[-15548890]\\"]
+. . . . . . . . . [31m×[0m [\\"[-7774445]\\"]
+. . . . . . . . . . [31m×[0m [\\"[-3887223]\\"]
+. . . . . . . . . . . [32m√[0m [\\"[-1943612]\\"]
+. . . . . . . . . . . [32m√[0m [\\"[-2915418]\\"]
+. . . . . . . . . . . [32m√[0m [\\"[-3401321]\\"]
+. . . . . . . . . . . [31m×[0m [\\"[-3644272]\\"]
+. . . . . . . . . . . . [31m×[0m [\\"[-1822136]\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"[-911068]\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"[-455534]\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"[-227767]\\"]
+. . . . . . . . . . . . . . . . [31m×[0m [\\"[-113884]\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-56942]\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"[-85413]\\"]
+. . . . . . . . . . . . . . . . . [31m×[0m [\\"[-99649]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-49825]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-74737]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-87193]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-93421]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-96535]\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-98092]\\"]
+. . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-98871]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-49436]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-74154]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-86513]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-92692]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-95782]\\"]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-97327]\\"]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-98099]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-49050]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-73575]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-85837]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-91968]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-95034]\\"]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-96567]\\"]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-97333]\\"]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-48667]\\"]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-24334]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-12167]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-18251]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-21293]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-22814]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-11407]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-5704]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-8556]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-4278]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-6417]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-7487]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-8022]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-4011]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-2006]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-1003]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-502]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-753]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-878]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-941]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-972]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"[-988]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-494]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-741]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-865]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-927]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-958]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-973]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-981]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-985]\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"[-987]\\"]"
 `;
 
 exports[`NoRegression unicodeJsonObject 1`] = `
 "Property failed after 3 tests
-{ seed: 42, path: \\"2:4:3:5:3:2:4:2:3:4:3:2:3:2:2:2:2:2:4:5:2:4:2:5:2:3:2:2:2:7:14\\", endOnFailure: true }
-Counterexample: [[5433]]
+{ seed: 42, path: \\"2:1:0:0:1:0:0:0:0:0:0:3:0:0:0:0:0:2:6:6:6:0:0:3:0:1:3:0:0:0:5\\", endOnFailure: true }
+Counterexample: [[-988]]
 Shrunk 30 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [[]]
 [32m√[0m [{\\"ﵔ衼䮈齔댅韛㹦\\":false}]
-[31m×[0m [[2103360753,-124859527,-10,-14,14]]
+[31m×[0m [[2103360753,-124859527,21,1138534142,-497564469]]
 . [32m√[0m [[]]
-. [32m√[0m [[-10,-14,14]]
-. [32m√[0m [[-124859527,-10,-14,14]]
-. [32m√[0m [[0,-124859527,-10,-14,14]]
-. [31m×[0m [[1051680377,-124859527,-10,-14,14]]
-. . [32m√[0m [[-10,-14,14]]
-. . [32m√[0m [[-124859527,-10,-14,14]]
-. . [32m√[0m [[525840189,-124859527,-10,-14,14]]
-. . [31m×[0m [[788760283,-124859527,-10,-14,14]]
-. . . [32m√[0m [[-10,-14,14]]
-. . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . [32m√[0m [[394380142,-124859527,-10,-14,14]]
-. . . [32m√[0m [[591570213,-124859527,-10,-14,14]]
-. . . [32m√[0m [[690165248,-124859527,-10,-14,14]]
-. . . [31m×[0m [[739462766,-124859527,-10,-14,14]]
-. . . . [32m√[0m [[-10,-14,14]]
-. . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . [32m√[0m [[369731383,-124859527,-10,-14,14]]
-. . . . [31m×[0m [[554597075,-124859527,-10,-14,14]]
-. . . . . [32m√[0m [[-10,-14,14]]
-. . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . [31m×[0m [[277298538,-124859527,-10,-14,14]]
-. . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . [32m√[0m [[138649269,-124859527,-10,-14,14]]
-. . . . . . [32m√[0m [[207973904,-124859527,-10,-14,14]]
-. . . . . . [31m×[0m [[242636221,-124859527,-10,-14,14]]
-. . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . [31m×[0m [[121318111,-124859527,-10,-14,14]]
-. . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . [32m√[0m [[60659056,-124859527,-10,-14,14]]
-. . . . . . . . [31m×[0m [[90988584,-124859527,-10,-14,14]]
-. . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . [32m√[0m [[45494292,-124859527,-10,-14,14]]
-. . . . . . . . . [32m√[0m [[68241438,-124859527,-10,-14,14]]
-. . . . . . . . . [31m×[0m [[79615011,-124859527,-10,-14,14]]
-. . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . [32m√[0m [[39807506,-124859527,-10,-14,14]]
-. . . . . . . . . . [31m×[0m [[59711259,-124859527,-10,-14,14]]
-. . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . [31m×[0m [[29855630,-124859527,-10,-14,14]]
-. . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . [32m√[0m [[14927815,-124859527,-10,-14,14]]
-. . . . . . . . . . . . [31m×[0m [[22391723,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . [31m×[0m [[11195862,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . [31m×[0m [[5597931,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . [31m×[0m [[2798966,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . [31m×[0m [[1399483,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . [31m×[0m [[699742,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[349871,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [32m√[0m [[524807,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . [31m×[0m [[612275,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[306138,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[459207,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [[535741,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [[574008,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [[287004,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[143502,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [[215253,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [[251129,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[125565,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[62783,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[94174,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[109870,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[117718,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[58859,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[29430,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[44145,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[22073,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[11037,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[5519,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2760,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4140,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4830,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5175,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5347,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[5433,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2717,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4075,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4754,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5094,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5264,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5349,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5391,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5412,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5423,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5428,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5431,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5432,-124859527,-10,-14,14]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[5433]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[2717]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4075]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[4754]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5094]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5264]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5349]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5391]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5412]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5423]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5428]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5431]]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[5432]]"
+. [31m×[0m [[21,1138534142,-497564469]]
+. . [31m×[0m [[1138534142,-497564469]]
+. . . [31m×[0m [[-497564469]]
+. . . . [32m√[0m [[0]]
+. . . . [31m×[0m [[-248782235]]
+. . . . . [31m×[0m [[-124391118]]
+. . . . . . [31m×[0m [[-62195559]]
+. . . . . . . [31m×[0m [[-31097780]]
+. . . . . . . . [31m×[0m [[-15548890]]
+. . . . . . . . . [31m×[0m [[-7774445]]
+. . . . . . . . . . [31m×[0m [[-3887223]]
+. . . . . . . . . . . [32m√[0m [[-1943612]]
+. . . . . . . . . . . [32m√[0m [[-2915418]]
+. . . . . . . . . . . [32m√[0m [[-3401321]]
+. . . . . . . . . . . [31m×[0m [[-3644272]]
+. . . . . . . . . . . . [31m×[0m [[-1822136]]
+. . . . . . . . . . . . . [31m×[0m [[-911068]]
+. . . . . . . . . . . . . . [31m×[0m [[-455534]]
+. . . . . . . . . . . . . . . [31m×[0m [[-227767]]
+. . . . . . . . . . . . . . . . [31m×[0m [[-113884]]
+. . . . . . . . . . . . . . . . . [32m√[0m [[-56942]]
+. . . . . . . . . . . . . . . . . [32m√[0m [[-85413]]
+. . . . . . . . . . . . . . . . . [31m×[0m [[-99649]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-49825]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-74737]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-87193]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-93421]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-96535]]
+. . . . . . . . . . . . . . . . . . [32m√[0m [[-98092]]
+. . . . . . . . . . . . . . . . . . [31m×[0m [[-98871]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-49436]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-74154]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-86513]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-92692]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-95782]]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [[-97327]]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [[-98099]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-49050]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-73575]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-85837]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-91968]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-95034]]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [[-96567]]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [[-97333]]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-48667]]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-24334]]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-12167]]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-18251]]
+. . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-21293]]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-22814]]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-11407]]
+. . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-5704]]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-8556]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-4278]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-6417]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-7487]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-8022]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-4011]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-2006]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-1003]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-502]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-753]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-878]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-941]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-972]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[-988]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-494]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-741]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-865]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-927]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-958]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-973]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-981]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-985]]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[-987]]"
 `;
 
 exports[`NoRegression unicodeString 1`] = `
@@ -3740,7 +3456,7 @@ Execution summary:
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"蟚ҷ釉봨ﵔ衼䮈齔\\"]
 [32m√[0m [\\"蕺བ쨽悫蕅ᓱ\\"]
-[32m√[0m [\\")ﮛ\\"]
+[32m√[0m [\\"%尩\\"]
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"驂秡連ꤿᢝ杽ͬ乶\\"]
 [32m√[0m [\\"葬兽Ꞔ\\"]
@@ -3748,7 +3464,7 @@ Execution summary:
 [32m√[0m [\\"흉◪\\"]
 [32m√[0m [\\"赴讲₍\\"]
 [32m√[0m [\\"☍仅贵껆\\"]
-[32m√[0m [\\"ꦽ)˴#/#㠡噘*+\\"]
+[32m√[0m [\\"ꦽ'쏪哇￱噘�#ᷳ\\"]
 [32m√[0m [\\"樬卤᳧㾙抅\\"]
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"魸旅퀒賴칀춃픹\\"]
@@ -3756,13 +3472,13 @@ Execution summary:
 [32m√[0m [\\"㞶꬞Ὑ散ț銯✂狨蠬\\"]
 [32m√[0m [\\"瘂螧ᨺ몈\\"]
 [32m√[0m [\\"겸荬蓒鼈羴⊯䗢\\"]
-[32m√[0m [\\"((+\\"]
+[32m√[0m [\\"￰(+䳐\\"]
 [32m√[0m [\\"墲⮑箙㧭辦፮봦鞻\\"]
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"珓ᩇ\\"]
 [32m√[0m [\\"仹댤託\\"]
 [32m√[0m [\\"\\"]
-[32m√[0m [\\")/權\\"]
+[32m√[0m [\\"!蠪謫\\"]
 [32m√[0m [\\"ꡣ绹ʙ\\"]
 [32m√[0m [\\"饏㒱\\"]
 [32m√[0m [\\"肁鑵馺\\"]
@@ -3784,10 +3500,10 @@ Shrunk 4 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"0000000e-001d-1000-8000-001800ed23f2\\"]
-. [31m×[0m [\\"00000000-001d-1000-8000-001800ed23f2\\"]
-. . [31m×[0m [\\"00000000-0000-1000-8000-001800ed23f2\\"]
-. . . [31m×[0m [\\"00000000-0000-1000-8000-000000ed23f2\\"]
+[31m×[0m [\\"ffffffe8-9cf2-3819-8000-0004ffffffe4\\"]
+. [31m×[0m [\\"00000000-9cf2-3819-8000-0004ffffffe4\\"]
+. . [31m×[0m [\\"00000000-0000-1000-8000-0004ffffffe4\\"]
+. . . [31m×[0m [\\"00000000-0000-1000-8000-0000ffffffe4\\"]
 . . . . [31m×[0m [\\"00000000-0000-1000-8000-000000000000\\"]"
 `;
 
@@ -3799,51 +3515,62 @@ Shrunk 4 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"0000000e-0011-4000-8000-001800ed23f2\\"]
-. [31m×[0m [\\"00000000-0011-4000-8000-001800ed23f2\\"]
-. . [31m×[0m [\\"00000000-0000-4000-8000-001800ed23f2\\"]
-. . . [31m×[0m [\\"00000000-0000-4000-8000-000000ed23f2\\"]
+[31m×[0m [\\"ffffffe8-9cf2-4819-8000-0004ffffffe4\\"]
+. [31m×[0m [\\"00000000-9cf2-4819-8000-0004ffffffe4\\"]
+. . [31m×[0m [\\"00000000-0000-4000-8000-0004ffffffe4\\"]
+. . . [31m×[0m [\\"00000000-0000-4000-8000-0000ffffffe4\\"]
 . . . . [31m×[0m [\\"00000000-0000-4000-8000-000000000000\\"]"
 `;
 
 exports[`NoRegression webAuthority 1`] = `
-"Property failed after 2 tests
-{ seed: 42, path: \\"1:0:0:2:1:3:3:0:1:1\\", endOnFailure: true }
-Counterexample: [\\"aaa.al\\"]
-Shrunk 9 time(s)
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:2:4:5:5:0:1:1:1:0:1\\", endOnFailure: true }
+Counterexample: [\\"a.aa.aw\\"]
+Shrunk 11 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"abz0ch0.acb.yjeswiysf\\"]
-[31m×[0m [\\"a2ecxe.mydad3c.5b1dffjal66dsebg3cb7dq.ulmndl\\"]
-. [31m×[0m [\\"5b1dffjal66dsebg3cb7dq.ulmndl\\"]
-. . [31m×[0m [\\"ab1dffjal66dsebg3cb7dq.ulmndl\\"]
-. . . [32m√[0m [\\"aq.ulmndl\\"]
-. . . [32m√[0m [\\"adsebg3cb7dq.ulmndl\\"]
-. . . [31m×[0m [\\"ajal66dsebg3cb7dq.ulmndl\\"]
-. . . . [32m√[0m [\\"aebg3cb7dq.ulmndl\\"]
-. . . . [31m×[0m [\\"a66dsebg3cb7dq.ulmndl\\"]
-. . . . . [32m√[0m [\\"ag3cb7dq.ulmndl\\"]
-. . . . . [32m√[0m [\\"asebg3cb7dq.ulmndl\\"]
-. . . . . [32m√[0m [\\"a6dsebg3cb7dq.ulmndl\\"]
-. . . . . [31m×[0m [\\"aa6dsebg3cb7dq.ulmndl\\"]
-. . . . . . [32m√[0m [\\"ag3cb7dq.ulmndl\\"]
-. . . . . . [32m√[0m [\\"asebg3cb7dq.ulmndl\\"]
-. . . . . . [32m√[0m [\\"a6dsebg3cb7dq.ulmndl\\"]
-. . . . . . [31m×[0m [\\"aaq.ulmndl\\"]
-. . . . . . . [31m×[0m [\\"aaa.ulmndl\\"]
-. . . . . . . . [32m√[0m [\\"a.ulmndl\\"]
-. . . . . . . . [31m×[0m [\\"aaa.dl\\"]
-. . . . . . . . . [32m√[0m [\\"a.dl\\"]
-. . . . . . . . . [31m×[0m [\\"aaa.al\\"]
-. . . . . . . . . . [32m√[0m [\\"a.al\\"]"
+[31m×[0m [\\"bn47h9db5l0ba8auu77b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. [32m√[0m [\\"7edwncurnj6.lw\\"]
+. [31m×[0m [\\"an47h9db5l0ba8auu77b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . [32m√[0m [\\"a6.7edwncurnj6.lw\\"]
+. . [32m√[0m [\\"a59ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . [31m×[0m [\\"au77b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . [32m√[0m [\\"amed0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . [32m√[0m [\\"aioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . [32m√[0m [\\"a18g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . [32m√[0m [\\"a7b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . [31m×[0m [\\"a77b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . [32m√[0m [\\"aed0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . [32m√[0m [\\"aoh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . [32m√[0m [\\"a8g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . [32m√[0m [\\"ab318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . [32m√[0m [\\"a7b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . [31m×[0m [\\"aa7b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . . [32m√[0m [\\"aed0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . . [32m√[0m [\\"aoh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . . [32m√[0m [\\"a8g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . . [32m√[0m [\\"ab318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . . [32m√[0m [\\"a7b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
+. . . . . [31m×[0m [\\"aa6.7edwncurnj6.lw\\"]
+. . . . . . [31m×[0m [\\"aaa.7edwncurnj6.lw\\"]
+. . . . . . . [32m√[0m [\\"a.7edwncurnj6.lw\\"]
+. . . . . . . [31m×[0m [\\"aaa.aedwncurnj6.lw\\"]
+. . . . . . . . [32m√[0m [\\"a.aedwncurnj6.lw\\"]
+. . . . . . . . [31m×[0m [\\"aaa.a6.lw\\"]
+. . . . . . . . . [32m√[0m [\\"a.a6.lw\\"]
+. . . . . . . . . [31m×[0m [\\"aaa.aa.lw\\"]
+. . . . . . . . . . [31m×[0m [\\"a.aa.lw\\"]
+. . . . . . . . . . . [32m√[0m [\\"a.a.lw\\"]
+. . . . . . . . . . . [31m×[0m [\\"a.aa.aw\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a.a.aw\\"]"
 `;
 
 exports[`NoRegression webFragments 1`] = `
-"Property failed after 11 tests
-{ seed: 42, path: \\"10:1:5:19\\", endOnFailure: true }
-Counterexample: [\\"%F1%BE%81%88\\"]
-Shrunk 3 time(s)
+"Property failed after 8 tests
+{ seed: 42, path: \\"7:1:0:1:5:0:3:1:7:6:1:11:3:1:8:3:2:7\\", endOnFailure: true }
+Counterexample: [\\"%F0%94%9D%AA\\"]
+Shrunk 17 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -3854,63 +3581,107 @@ Execution summary:
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"ve*A!%F1%82%A9%BC3w/B\\"]
 [32m√[0m [\\"uN2*\\"]
-[32m√[0m [\\"DT%31\\"]
-[32m√[0m [\\"VBb\\"]
-[32m√[0m [\\"-?x/\\"]
-[31m×[0m [\\"oa%F2%86%98%AAN\\"]
+[31m×[0m [\\"DT%F4%8F%BF%BB\\"]
 . [32m√[0m [\\"\\"]
-. [31m×[0m [\\"%F2%86%98%AAN\\"]
-. . [32m√[0m [\\"N\\"]
-. . [32m√[0m [\\"%20N\\"]
-. . [32m√[0m [\\"%F1%83%9C%95N\\"]
-. . [32m√[0m [\\"%F1%A4%BA%A0N\\"]
-. . [32m√[0m [\\"%F1%B5%A9%A5N\\"]
-. . [31m×[0m [\\"%F1%BE%81%88N\\"]
-. . . [32m√[0m [\\"N\\"]
-. . . [32m√[0m [\\"%F0%BF%90%A4N\\"]
-. . . [32m√[0m [\\"%F1%9E%A8%B6N\\"]
-. . . [32m√[0m [\\"%F1%AE%94%BFN\\"]
-. . . [32m√[0m [\\"%F1%B6%8B%84N\\"]
-. . . [32m√[0m [\\"%F1%BA%86%86N\\"]
-. . . [32m√[0m [\\"%F1%BC%83%A7N\\"]
-. . . [32m√[0m [\\"%F1%BD%82%98N\\"]
-. . . [32m√[0m [\\"%F1%BD%A1%B0N\\"]
-. . . [32m√[0m [\\"%F1%BD%B1%9CN\\"]
-. . . [32m√[0m [\\"%F1%BD%B9%92N\\"]
-. . . [32m√[0m [\\"%F1%BD%BD%8DN\\"]
-. . . [32m√[0m [\\"%F1%BD%BF%8BN\\"]
-. . . [32m√[0m [\\"%F1%BE%80%8AN\\"]
-. . . [32m√[0m [\\"%F1%BE%80%A9N\\"]
-. . . [32m√[0m [\\"%F1%BE%80%B9N\\"]
-. . . [32m√[0m [\\"%F1%BE%81%81N\\"]
-. . . [32m√[0m [\\"%F1%BE%81%85N\\"]
-. . . [32m√[0m [\\"%F1%BE%81%87N\\"]
-. . . [31m×[0m [\\"%F1%BE%81%88\\"]
-. . . . [32m√[0m [\\"%F0%BF%90%A4\\"]
-. . . . [32m√[0m [\\"%F1%9E%A8%B6\\"]
-. . . . [32m√[0m [\\"%F1%AE%94%BF\\"]
-. . . . [32m√[0m [\\"%F1%B6%8B%84\\"]
-. . . . [32m√[0m [\\"%F1%BA%86%86\\"]
-. . . . [32m√[0m [\\"%F1%BC%83%A7\\"]
-. . . . [32m√[0m [\\"%F1%BD%82%98\\"]
-. . . . [32m√[0m [\\"%F1%BD%A1%B0\\"]
-. . . . [32m√[0m [\\"%F1%BD%B1%9C\\"]
-. . . . [32m√[0m [\\"%F1%BD%B9%92\\"]
-. . . . [32m√[0m [\\"%F1%BD%BD%8D\\"]
-. . . . [32m√[0m [\\"%F1%BD%BF%8B\\"]
-. . . . [32m√[0m [\\"%F1%BE%80%8A\\"]
-. . . . [32m√[0m [\\"%F1%BE%80%A9\\"]
-. . . . [32m√[0m [\\"%F1%BE%80%B9\\"]
-. . . . [32m√[0m [\\"%F1%BE%81%81\\"]
-. . . . [32m√[0m [\\"%F1%BE%81%85\\"]
-. . . . [32m√[0m [\\"%F1%BE%81%87\\"]"
+. [31m×[0m [\\"T%F4%8F%BF%BB\\"]
+. . [31m×[0m [\\"%F4%8F%BF%BB\\"]
+. . . [32m√[0m [\\"%20\\"]
+. . . [31m×[0m [\\"%F2%88%8F%BE\\"]
+. . . . [32m√[0m [\\"%F1%84%97%BF\\"]
+. . . . [32m√[0m [\\"%F1%A6%93%BF\\"]
+. . . . [32m√[0m [\\"%F1%B7%91%BF\\"]
+. . . . [32m√[0m [\\"%F1%BF%B0%BF\\"]
+. . . . [32m√[0m [\\"%F2%84%80%9F\\"]
+. . . . [31m×[0m [\\"%F2%86%88%8F\\"]
+. . . . . [31m×[0m [\\"%F1%83%94%88\\"]
+. . . . . . [32m√[0m [\\"%F0%A1%BA%84\\"]
+. . . . . . [32m√[0m [\\"%F0%B2%A7%86\\"]
+. . . . . . [32m√[0m [\\"%F0%BA%BD%A7\\"]
+. . . . . . [31m×[0m [\\"%F0%BF%88%B8\\"]
+. . . . . . . [32m√[0m [\\"%F0%9F%B4%9C\\"]
+. . . . . . . [31m×[0m [\\"%F0%AF%9E%AA\\"]
+. . . . . . . . [32m√[0m [\\"%F0%97%BF%95\\"]
+. . . . . . . . [32m√[0m [\\"%F0%A3%AF%80\\"]
+. . . . . . . . [32m√[0m [\\"%F0%A9%A6%B5\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AC%A2%B0\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AE%80%AD\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AE%AF%AC\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AF%87%8B\\"]
+. . . . . . . . [31m×[0m [\\"%F0%AF%92%BB\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%97%B9%9E\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%A3%A6%8D\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%A9%9C%A4\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%AC%97%B0\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%AD%B5%96\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%AE%A4%89\\"]
+. . . . . . . . . [31m×[0m [\\"%F0%AE%BB%A2\\"]
+. . . . . . . . . . [32m√[0m [\\"%F0%97%AD%B1\\"]
+. . . . . . . . . . [31m×[0m [\\"%F0%A3%94%AA\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%91%BA%95\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%9A%A7%A0\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%9E%BE%85\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A1%89%98\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A2%8F%81\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A2%B1%B6\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%83%90\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%8B%BD\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%90%94\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%92%9F\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%93%A5\\"]
+. . . . . . . . . . . [31m×[0m [\\"%F0%A3%94%88\\"]
+. . . . . . . . . . . . [32m√[0m [\\"%F0%91%BA%84\\"]
+. . . . . . . . . . . . [32m√[0m [\\"%F0%9A%A7%86\\"]
+. . . . . . . . . . . . [32m√[0m [\\"%F0%9E%BD%A7\\"]
+. . . . . . . . . . . . [31m×[0m [\\"%F0%A1%88%B8\\"]
+. . . . . . . . . . . . . [32m√[0m [\\"%F0%90%B4%9C\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"%F0%98%BE%AA\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%EC%8F%95\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%92%B7%80\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%95%BA%B5\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%97%9C%B0\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%8D%AD\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%A6%8C\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%B2%9B\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%B8%A3\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"%F0%98%BB%A7\\"]
+. . . . . . . . . . . . . . . [32m√[0m [\\"%EC%8D%B4\\"]
+. . . . . . . . . . . . . . . [32m√[0m [\\"%F0%92%B4%AE\\"]
+. . . . . . . . . . . . . . . [32m√[0m [\\"%F0%95%B8%8B\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"%F0%97%99%B9\\"]
+. . . . . . . . . . . . . . . . [32m√[0m [\\"%EB%9C%BD\\"]
+. . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%91%AB%9B\\"]
+. . . . . . . . . . . . . . . . [31m×[0m [\\"%F0%94%A2%AA\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%EA%81%95\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%EF%A2%80\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%92%82%95\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%92%A0\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%BA%A5\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%8E%A8\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%98%A9\\"]
+. . . . . . . . . . . . . . . . . [31m×[0m [\\"%F0%94%9D%AA\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%E9%BE%B5\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%EF%9E%90\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%91%BD%BD\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%8D%B4\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%B5%AF\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%89%AD\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%93%AC\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%98%AB\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9B%8B\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9C%9B\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%83\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%97\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A1\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A6\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A8\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A9\\"]"
 `;
 
 exports[`NoRegression webQueryParameters 1`] = `
-"Property failed after 11 tests
-{ seed: 42, path: \\"10:1:5:19\\", endOnFailure: true }
-Counterexample: [\\"%F1%BE%81%88\\"]
-Shrunk 3 time(s)
+"Property failed after 8 tests
+{ seed: 42, path: \\"7:1:0:1:5:0:3:1:7:6:1:11:3:1:8:3:2:7\\", endOnFailure: true }
+Counterexample: [\\"%F0%94%9D%AA\\"]
+Shrunk 17 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -3921,56 +3692,100 @@ Execution summary:
 [32m√[0m [\\"\\"]
 [32m√[0m [\\"ve*A!%F1%82%A9%BC3w/B\\"]
 [32m√[0m [\\"uN2*\\"]
-[32m√[0m [\\"DT%31\\"]
-[32m√[0m [\\"VBb\\"]
-[32m√[0m [\\"-?x/\\"]
-[31m×[0m [\\"oa%F2%86%98%AAN\\"]
+[31m×[0m [\\"DT%F4%8F%BF%BB\\"]
 . [32m√[0m [\\"\\"]
-. [31m×[0m [\\"%F2%86%98%AAN\\"]
-. . [32m√[0m [\\"N\\"]
-. . [32m√[0m [\\"%20N\\"]
-. . [32m√[0m [\\"%F1%83%9C%95N\\"]
-. . [32m√[0m [\\"%F1%A4%BA%A0N\\"]
-. . [32m√[0m [\\"%F1%B5%A9%A5N\\"]
-. . [31m×[0m [\\"%F1%BE%81%88N\\"]
-. . . [32m√[0m [\\"N\\"]
-. . . [32m√[0m [\\"%F0%BF%90%A4N\\"]
-. . . [32m√[0m [\\"%F1%9E%A8%B6N\\"]
-. . . [32m√[0m [\\"%F1%AE%94%BFN\\"]
-. . . [32m√[0m [\\"%F1%B6%8B%84N\\"]
-. . . [32m√[0m [\\"%F1%BA%86%86N\\"]
-. . . [32m√[0m [\\"%F1%BC%83%A7N\\"]
-. . . [32m√[0m [\\"%F1%BD%82%98N\\"]
-. . . [32m√[0m [\\"%F1%BD%A1%B0N\\"]
-. . . [32m√[0m [\\"%F1%BD%B1%9CN\\"]
-. . . [32m√[0m [\\"%F1%BD%B9%92N\\"]
-. . . [32m√[0m [\\"%F1%BD%BD%8DN\\"]
-. . . [32m√[0m [\\"%F1%BD%BF%8BN\\"]
-. . . [32m√[0m [\\"%F1%BE%80%8AN\\"]
-. . . [32m√[0m [\\"%F1%BE%80%A9N\\"]
-. . . [32m√[0m [\\"%F1%BE%80%B9N\\"]
-. . . [32m√[0m [\\"%F1%BE%81%81N\\"]
-. . . [32m√[0m [\\"%F1%BE%81%85N\\"]
-. . . [32m√[0m [\\"%F1%BE%81%87N\\"]
-. . . [31m×[0m [\\"%F1%BE%81%88\\"]
-. . . . [32m√[0m [\\"%F0%BF%90%A4\\"]
-. . . . [32m√[0m [\\"%F1%9E%A8%B6\\"]
-. . . . [32m√[0m [\\"%F1%AE%94%BF\\"]
-. . . . [32m√[0m [\\"%F1%B6%8B%84\\"]
-. . . . [32m√[0m [\\"%F1%BA%86%86\\"]
-. . . . [32m√[0m [\\"%F1%BC%83%A7\\"]
-. . . . [32m√[0m [\\"%F1%BD%82%98\\"]
-. . . . [32m√[0m [\\"%F1%BD%A1%B0\\"]
-. . . . [32m√[0m [\\"%F1%BD%B1%9C\\"]
-. . . . [32m√[0m [\\"%F1%BD%B9%92\\"]
-. . . . [32m√[0m [\\"%F1%BD%BD%8D\\"]
-. . . . [32m√[0m [\\"%F1%BD%BF%8B\\"]
-. . . . [32m√[0m [\\"%F1%BE%80%8A\\"]
-. . . . [32m√[0m [\\"%F1%BE%80%A9\\"]
-. . . . [32m√[0m [\\"%F1%BE%80%B9\\"]
-. . . . [32m√[0m [\\"%F1%BE%81%81\\"]
-. . . . [32m√[0m [\\"%F1%BE%81%85\\"]
-. . . . [32m√[0m [\\"%F1%BE%81%87\\"]"
+. [31m×[0m [\\"T%F4%8F%BF%BB\\"]
+. . [31m×[0m [\\"%F4%8F%BF%BB\\"]
+. . . [32m√[0m [\\"%20\\"]
+. . . [31m×[0m [\\"%F2%88%8F%BE\\"]
+. . . . [32m√[0m [\\"%F1%84%97%BF\\"]
+. . . . [32m√[0m [\\"%F1%A6%93%BF\\"]
+. . . . [32m√[0m [\\"%F1%B7%91%BF\\"]
+. . . . [32m√[0m [\\"%F1%BF%B0%BF\\"]
+. . . . [32m√[0m [\\"%F2%84%80%9F\\"]
+. . . . [31m×[0m [\\"%F2%86%88%8F\\"]
+. . . . . [31m×[0m [\\"%F1%83%94%88\\"]
+. . . . . . [32m√[0m [\\"%F0%A1%BA%84\\"]
+. . . . . . [32m√[0m [\\"%F0%B2%A7%86\\"]
+. . . . . . [32m√[0m [\\"%F0%BA%BD%A7\\"]
+. . . . . . [31m×[0m [\\"%F0%BF%88%B8\\"]
+. . . . . . . [32m√[0m [\\"%F0%9F%B4%9C\\"]
+. . . . . . . [31m×[0m [\\"%F0%AF%9E%AA\\"]
+. . . . . . . . [32m√[0m [\\"%F0%97%BF%95\\"]
+. . . . . . . . [32m√[0m [\\"%F0%A3%AF%80\\"]
+. . . . . . . . [32m√[0m [\\"%F0%A9%A6%B5\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AC%A2%B0\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AE%80%AD\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AE%AF%AC\\"]
+. . . . . . . . [32m√[0m [\\"%F0%AF%87%8B\\"]
+. . . . . . . . [31m×[0m [\\"%F0%AF%92%BB\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%97%B9%9E\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%A3%A6%8D\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%A9%9C%A4\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%AC%97%B0\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%AD%B5%96\\"]
+. . . . . . . . . [32m√[0m [\\"%F0%AE%A4%89\\"]
+. . . . . . . . . [31m×[0m [\\"%F0%AE%BB%A2\\"]
+. . . . . . . . . . [32m√[0m [\\"%F0%97%AD%B1\\"]
+. . . . . . . . . . [31m×[0m [\\"%F0%A3%94%AA\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%91%BA%95\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%9A%A7%A0\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%9E%BE%85\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A1%89%98\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A2%8F%81\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A2%B1%B6\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%83%90\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%8B%BD\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%90%94\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%92%9F\\"]
+. . . . . . . . . . . [32m√[0m [\\"%F0%A3%93%A5\\"]
+. . . . . . . . . . . [31m×[0m [\\"%F0%A3%94%88\\"]
+. . . . . . . . . . . . [32m√[0m [\\"%F0%91%BA%84\\"]
+. . . . . . . . . . . . [32m√[0m [\\"%F0%9A%A7%86\\"]
+. . . . . . . . . . . . [32m√[0m [\\"%F0%9E%BD%A7\\"]
+. . . . . . . . . . . . [31m×[0m [\\"%F0%A1%88%B8\\"]
+. . . . . . . . . . . . . [32m√[0m [\\"%F0%90%B4%9C\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"%F0%98%BE%AA\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%EC%8F%95\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%92%B7%80\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%95%BA%B5\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%97%9C%B0\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%8D%AD\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%A6%8C\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%B2%9B\\"]
+. . . . . . . . . . . . . . [32m√[0m [\\"%F0%98%B8%A3\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"%F0%98%BB%A7\\"]
+. . . . . . . . . . . . . . . [32m√[0m [\\"%EC%8D%B4\\"]
+. . . . . . . . . . . . . . . [32m√[0m [\\"%F0%92%B4%AE\\"]
+. . . . . . . . . . . . . . . [32m√[0m [\\"%F0%95%B8%8B\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"%F0%97%99%B9\\"]
+. . . . . . . . . . . . . . . . [32m√[0m [\\"%EB%9C%BD\\"]
+. . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%91%AB%9B\\"]
+. . . . . . . . . . . . . . . . [31m×[0m [\\"%F0%94%A2%AA\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%EA%81%95\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%EF%A2%80\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%92%82%95\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%92%A0\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%BA%A5\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%8E%A8\\"]
+. . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%98%A9\\"]
+. . . . . . . . . . . . . . . . . [31m×[0m [\\"%F0%94%9D%AA\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%E9%BE%B5\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%EF%9E%90\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%91%BD%BD\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%8D%B4\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%93%B5%AF\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%89%AD\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%93%AC\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%98%AB\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9B%8B\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9C%9B\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%83\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%97\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A1\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A6\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A8\\"]
+. . . . . . . . . . . . . . . . . . [32m√[0m [\\"%F0%94%9D%A9\\"]"
 `;
 
 exports[`NoRegression webSegment 1`] = `
@@ -4028,18 +3843,19 @@ Execution summary:
 
 exports[`NoRegression webUrl 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:0:0:0:0:0:0:0\\", endOnFailure: true }
-Counterexample: [\\"http://a.ai\\"]
-Shrunk 7 time(s)
+{ seed: 42, path: \\"0:0:0:0:0:0:0:0:0\\", endOnFailure: true }
+Counterexample: [\\"http://a.au\\"]
+Shrunk 8 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"http://bn4cd9ade7al0baedddfy8cdtfd3zafbj3bndfehbea5de-mdcd0dfa7fb4-dc.ndeypp.b.fldeccz.zctlwai/%F3%B1%AE%9D0/%F2%B1%95%A0f*C-&b=PH/Gd/d%F0%96%A7%BE=I&Lg%F4%8D%8E%91/iAWGGS3)\\"]
-. [31m×[0m [\\"http://fldeccz.zctlwai/%F3%B1%AE%9D0/%F2%B1%95%A0f*C-&b=PH/Gd/d%F0%96%A7%BE=I&Lg%F4%8D%8E%91/iAWGGS3)\\"]
-. . [31m×[0m [\\"http://aldeccz.zctlwai/%F3%B1%AE%9D0/%F2%B1%95%A0f*C-&b=PH/Gd/d%F0%96%A7%BE=I&Lg%F4%8D%8E%91/iAWGGS3)\\"]
-. . . [31m×[0m [\\"http://az.zctlwai/%F3%B1%AE%9D0/%F2%B1%95%A0f*C-&b=PH/Gd/d%F0%96%A7%BE=I&Lg%F4%8D%8E%91/iAWGGS3)\\"]
-. . . . [31m×[0m [\\"http://aa.zctlwai/%F3%B1%AE%9D0/%F2%B1%95%A0f*C-&b=PH/Gd/d%F0%96%A7%BE=I&Lg%F4%8D%8E%91/iAWGGS3)\\"]
-. . . . . [31m×[0m [\\"http://a.zctlwai/%F3%B1%AE%9D0/%F2%B1%95%A0f*C-&b=PH/Gd/d%F0%96%A7%BE=I&Lg%F4%8D%8E%91/iAWGGS3)\\"]
-. . . . . . [31m×[0m [\\"http://a.ai/%F3%B1%AE%9D0/%F2%B1%95%A0f*C-&b=PH/Gd/d%F0%96%A7%BE=I&Lg%F4%8D%8E%91/iAWGGS3)\\"]
-. . . . . . . [31m×[0m [\\"http://a.ai\\"]"
+[31m×[0m [\\"http://e.y40g7ch99e2ux9i71yglw.w.eeyzu7uy78we1n.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. [31m×[0m [\\"http://eeyzu7uy78we1n.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . [31m×[0m [\\"http://aeyzu7uy78we1n.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . [31m×[0m [\\"http://an.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . [31m×[0m [\\"http://aa.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . . [31m×[0m [\\"http://a.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . . . [31m×[0m [\\"http://a.su////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . . . . [31m×[0m [\\"http://a.au////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . . . . . [31m×[0m [\\"http://a.au\\"]"
 `;
