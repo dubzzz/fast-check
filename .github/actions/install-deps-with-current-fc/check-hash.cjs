@@ -1,5 +1,5 @@
 const process = require('process');
-const { __commitHash } = require('fast-check');
+const { __commitHash } = require('./node_modules/fast-check');
 
 const expectedCommitHash = process.env.GITHUB_SHA;
 if (!expectedCommitHash) {
