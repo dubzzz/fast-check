@@ -269,7 +269,7 @@ jobs:
           cd test/legacy/node-8
           node main.js
   test_cjs_esm:
-    name: 'Test CommonJS & ES Modules'
+    name: 'Test CJS & ESM'
     needs: production_package
     runs-on: ubuntu-latest
     strategy:
