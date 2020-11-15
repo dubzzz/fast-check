@@ -1,3 +1,29 @@
+# 2.7.0
+
+_Better bias for integers and any derived arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.6.1...v2.7.0)]
+
+## Features
+
+- ([PR#1020](https://github.com/dubzzz/fast-check/pull/1020)) Faster implementation for set
+- ([PR#1034](https://github.com/dubzzz/fast-check/pull/1034)) Stricter limits on email arbitrary
+- ([PR#1035](https://github.com/dubzzz/fast-check/pull/1035)) Stricter limits on domain arbitrary :warning:
+- ([PR#1160](https://github.com/dubzzz/fast-check/pull/1160)) Add commit hash into the generated package (see `fc.__commitHash`)
+- ([PR#1149](https://github.com/dubzzz/fast-check/pull/1149)) Bias towards extreme values for integer and bigint :warning:
+
+## Fixes
+
+- ([PR#1112](https://github.com/dubzzz/fast-check/pull/1112)) Bug: Constraints on `fc.date` might be wrongly applied
+- ([PR#1139](https://github.com/dubzzz/fast-check/pull/1139)) Bug: Bump pure-rand to fix large integers
+- ([PR#1085](https://github.com/dubzzz/fast-check/pull/1085)) CI: Check package's compatibility against latest node
+- ([PR#1086](https://github.com/dubzzz/fast-check/pull/1086)) CI: Add Skypack package score during tests
+- ([PR#1155](https://github.com/dubzzz/fast-check/pull/1155)) CI: No more Travis CI, switch to GitHub actions - ([PR#1155](https://github.com/dubzzz/fast-check/pull/1155), [PR#1156](https://github.com/dubzzz/fast-check/pull/1156), [PR#1157](https://github.com/dubzzz/fast-check/pull/1157), [PR#1158](https://github.com/dubzzz/fast-check/pull/1158))
+- ([PR#1159](https://github.com/dubzzz/fast-check/pull/1159)) CI: Faster installs from production bundles
+- ([PR#1097](https://github.com/dubzzz/fast-check/pull/1097)) Typo: Fix typo in Tips.md
+- ([PR#1140](https://github.com/dubzzz/fast-check/pull/1140)) Tool: Clean warnings related to ts-jest
+
+---
+
 # 2.6.1
 
 _Wrongly typed `fc.record`_
