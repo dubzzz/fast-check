@@ -272,60 +272,72 @@ jobs:
     name: 'Test CommonJS & ES Modules'
     needs: production_package
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          # Node >=13.2.0 enables support for ES modules by default
+          # Our default version of node is above 13.2.0
+          - '14'
+          # Node latest version supports ES modules by default
+          - 'node'
+          # Node 12.x and >=12.18 enables support for ES modules by default
+          - '12.18'
+          # Node <12.18 requires a flag to support ES modules but can understand them
+          - '12.17'
+          # Node 10 does not understand ES modules
+          - '10'
     steps:
-    - uses: actions/checkout@v2
-    - name: Using Node v14.x
+    - uses: actions/checkout@v2     
+    - name: Get yarn cache directory path
+      id: yarn-cache-path
+      run: echo "::set-output name=value::$(yarn cache dir)"
+    - name: Caching yarn cache
+      uses: actions/cache@v2
+      with:
+        path: ${{steps.yarn-cache-path.outputs.value}}
+        key: ${{runner.os}}-yarn-cache-${{hashFiles('**/test/esm/**/yarn.lock')}}
+    - name: Using Node v${{matrix.node-version}}
       shell: bash -l {0}
-      run: nvm install 14
+      run: nvm install ${{matrix.node-version}}
     - name: Download production package
       uses: actions/download-artifact@v2
       with:
         name: bundle
-    - name: Extract and link to production package
-      run: |
-        mkdir bundle
-        tar -C bundle -zxvf fast-check.tgz
-        cd bundle/package
-        yarn install --production
-        ls -l node_modules
-        yarn link
-    # Node >=13.2.0 enables support for ES modules by default
-    # Our default version of node is above 13.2.0
-    - name: Check compatibility against current version of Node
-      run: |
-        cd test/esm
-        node --version
-        sh run.sh
-    # Node latest version supports ES modules by default
-    - name: Check compatibility against latest version of Node
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install node
-        node --version
-        sh run.sh
-    # Node 12.x and >=12.18 enables support for ES modules by default
-    - name: Check compatibility against Node 12.18
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install 12.18
-        node --version
-        sh run.sh
-    # Node <12.18 requires a flag to support ES modules but can understand them
-    - name: Check compatibility against Node 12.17
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install 12.17
-        node --version
-        sh run.sh
-    # Node 10 does not understand ES modules
-    - name: Check compatibility against Node 10
-      shell: bash -l {0}
+    - name: Install dependencies but use current build for fast-check (node-extension-cjs)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-extension-cjs'
+    - name: Install dependencies but use current build for fast-check (node-extension-mjs)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-extension-mjs'
+    - name: Install dependencies but use current build for fast-check (node-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-import'
+    - name: Install dependencies but use current build for fast-check (node-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-require'
+    - name: Install dependencies but use current build for fast-check (rollup-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-import'
+    - name: Install dependencies but use current build for fast-check (rollup-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-require'
+    - name: Install dependencies but use current build for fast-check (webpack-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-import'
+    - name: Install dependencies but use current build for fast-check (webpack-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-require'
+    - name: Check compatibility
       run: |
         cd test/esm
-        nvm install 10
         node --version
         sh run.sh
   publish_documentation:
