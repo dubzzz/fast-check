@@ -1,4 +1,5 @@
 import { Arbitrary } from './definition/Arbitrary';
+import { floatNext, FloatNextConstraints } from './FloatNextArbitrary';
 import { integer } from './IntegerArbitrary';
 import { tuple } from './TupleArbitrary';
 
@@ -17,12 +18,19 @@ const floatInternal = (): Arbitrary<number> => {
  * Constraints to be applied on {@link float}
  * @public
  */
-export interface FloatConstraints {
-  /** Lower bound for the generated floats (included) */
-  min?: number;
-  /** Upper bound for the generated floats (excluded) */
-  max?: number;
-}
+export type FloatConstraints =
+  | {
+      /** Enable new version of fc.float */
+      next?: false;
+      /** Lower bound for the generated floats (included) */
+      min?: number;
+      /** Upper bound for the generated floats (excluded) */
+      max?: number;
+    }
+  | ({
+      /** Enable new version of fc.float */
+      next: true;
+    } & FloatNextConstraints);
 
 /**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**24`
@@ -63,6 +71,9 @@ function float(min: number, max: number): Arbitrary<number>;
 function float(constraints: FloatConstraints): Arbitrary<number>;
 function float(...args: [] | [number] | [number, number] | [FloatConstraints]): Arbitrary<number> {
   if (typeof args[0] === 'object') {
+    if (args[0].next) {
+      return floatNext(args[0]);
+    }
     const min = args[0].min !== undefined ? args[0].min : 0;
     const max = args[0].max !== undefined ? args[0].max : 1;
     return floatInternal().map((v) => min + v * (max - min));
