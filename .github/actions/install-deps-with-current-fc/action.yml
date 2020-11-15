@@ -14,6 +14,8 @@ runs:
         yarn --frozen-lockfile
         echo "ℹ️ Install current build for fast-check..."
         yarn add "file:$PROJECT_ROOT_PATH/fast-check.tgz"
+        echo "ℹ️ Clean yarn cache entry for fast-check..."
+        yarn cache clean fast-check
         echo "ℹ️ Revert local changes..."
         git checkout -- package.json
         git checkout -- yarn.lock
