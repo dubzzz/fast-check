@@ -132,7 +132,7 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
       - name: Build production package
-        run: yarn build:prod
+        run: yarn build:prod-ci
       - name: Create bundle
         run: |
           yarn pack
@@ -144,16 +144,12 @@ jobs:
           path: fast-check.tgz
           if-no-files-found: error
           retention-days: 1
-  test_examples:
-    name: 'Test examples'
+  test_example:
+    name: 'Test example'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: '**/example/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/example/yarn.lock')}}-v14.x
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -162,17 +158,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link to production package
-        run: |
-          mkdir bundle
-          tar -C bundle -zxvf fast-check.tgz
-          cd bundle/package
-          yarn link
-      - name: Test examples/
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'example'
+      - name: Test example/
         run: |
           cd example
-          yarn --immutable
-          yarn link "fast-check"
           yarn test
   test_types:
     name: 'Test types'
@@ -180,10 +172,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: '**/test/type/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/test/type/yarn.lock')}}-v14.x
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -192,17 +180,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link to production package
-        run: |
-          mkdir bundle
-          tar -C bundle -zxvf fast-check.tgz
-          cd bundle/package
-          yarn link
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/type'
       - name: Test test/type/
         run: |
-          cd test/type/
-          yarn --immutable
-          yarn link "fast-check"
+          cd test/type
           yarn test
   test_typescript_3_2:
     name: 'Test legacy TypeScript'
@@ -210,10 +194,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: '**/test/legacy/typescript-3.2/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/test/legacy/typescript-3.2/yarn.lock')}}-v14.x
       - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
@@ -222,17 +202,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link to production package
-        run: |
-          mkdir bundle
-          tar -C bundle -zxvf fast-check.tgz
-          cd bundle/package
-          yarn link
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/legacy/typescript-3.2'
       - name: Test test/legacy/typescript-3.2/
         run: |
-          cd test/legacy/typescript-3.2/
-          yarn --immutable
-          yarn link "fast-check"
+          cd test/legacy/typescript-3.2
           yarn build
   test_node_8:
     name: 'Test legacy Node'
@@ -240,78 +216,89 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Using Node v8.x
+      - name: Using Node v14.x
         uses: actions/setup-node@v2-beta
         with:
-          node-version: '8.x'
+          node-version: '14.x'
       - name: Download production package
         uses: actions/download-artifact@v2
         with:
           name: bundle
-      - name: Extract and link to production package
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/legacy/node-8'
+      - name: Using Node v8.x
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '8.x'
+      - name: Test test/legacy/node-8/
         run: |
-          mkdir bundle
-          tar -C bundle -zxvf fast-check.tgz
-          cd bundle/package
-          yarn link
-      - name: Test test/legacy/main.js
-        run: node test/legacy/main.js
-  test_compatibility_cjs_esm:
-    name: 'Test commonjs/esm compatibility'
+          cd test/legacy/node-8
+          node --version
+          node main.js
+  test_cjs_esm:
+    name: 'Test CJS & ESM'
     needs: production_package
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          # Node >=13.2.0 enables support for ES modules by default
+          # Our default version of node is above 13.2.0
+          - '14'
+          # Node latest version supports ES modules by default
+          - 'node'
+          # Node 12.x and >=12.18 enables support for ES modules by default
+          - '12.18'
+          # Node <12.18 requires a flag to support ES modules but can understand them
+          - '12.17'
+          # Node 10 does not understand ES modules
+          - '10'
     steps:
     - uses: actions/checkout@v2
-    - name: Using Node v14.x
+    - name: Using Node v${{matrix.node-version}}
       shell: bash -l {0}
-      run: nvm install 14
+      run: nvm install ${{matrix.node-version}}
     - name: Download production package
       uses: actions/download-artifact@v2
       with:
         name: bundle
-    - name: Extract and link to production package
-      run: |
-        mkdir bundle
-        tar -C bundle -zxvf fast-check.tgz
-        cd bundle/package
-        yarn link
-    # Node >=13.2.0 enables support for ES modules by default
-    # Our default version of node is above 13.2.0
-    - name: Check compatibility against current version of Node
-      run: |
-        cd test/esm
-        node --version
-        sh run.sh
-    # Node latest version supports ES modules by default
-    - name: Check compatibility against latest version of Node
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install node
-        node --version
-        sh run.sh
-    # Node 12.x and >=12.18 enables support for ES modules by default
-    - name: Check compatibility against Node 12.18
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install 12.18
-        node --version
-        sh run.sh
-    # Node <12.18 requires a flag to support ES modules but can understand them
-    - name: Check compatibility against Node 12.17
-      shell: bash -l {0}
-      run: |
-        cd test/esm
-        nvm install 12.17
-        node --version
-        sh run.sh
-    # Node 10 does not understand ES modules
-    - name: Check compatibility against Node 10
-      shell: bash -l {0}
+    - name: Install dependencies but use current build for fast-check (node-extension-cjs)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-extension-cjs'
+    - name: Install dependencies but use current build for fast-check (node-extension-mjs)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-extension-mjs'
+    - name: Install dependencies but use current build for fast-check (node-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-import'
+    - name: Install dependencies but use current build for fast-check (node-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-require'
+    - name: Install dependencies but use current build for fast-check (rollup-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-import'
+    - name: Install dependencies but use current build for fast-check (rollup-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-require'
+    - name: Install dependencies but use current build for fast-check (webpack-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-import'
+    - name: Install dependencies but use current build for fast-check (webpack-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-require'
+    - name: Check compatibility
       run: |
         cd test/esm
-        nvm install 10
         node --version
         sh run.sh
   publish_documentation:
@@ -339,8 +326,8 @@ jobs:
       - documentation
       - format_lint
       - test
-      - test_compatibility_cjs_esm
-      - test_examples
+      - test_cjs_esm
+      - test_example
       - test_node_8
       - test_package_quality
       - test_types
