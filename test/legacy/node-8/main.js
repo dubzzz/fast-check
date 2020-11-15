@@ -1,6 +1,6 @@
 // @ts-check
 var assert = require('assert');
-var fc = require('../../bundle/package/lib/fast-check');
+var fc = require('fast-check');
 
 function testArbitrary(arb) {
   // should not crash if running a succesful property
