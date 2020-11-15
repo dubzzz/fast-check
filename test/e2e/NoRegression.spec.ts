@@ -35,6 +35,14 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('floatNext', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.float({ next: true }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('double', () => {
     expect(() =>
       fc.assert(
