@@ -129,20 +129,20 @@ export function indexToFloat(index: number): number {
 export interface FloatNextConstraints {
   /**
    * Lower bound for the generated 32-bit floats (included)
-   * @defaultValue Number.NEGATIVE_INFINITY, -3.4028234663852886e+38 when noInfinity is true
+   * @defaultValue Number.NEGATIVE_INFINITY, -3.4028234663852886e+38 when noDefaultInfinity is true
    */
   min?: number;
   /**
    * Upper bound for the generated 32-bit floats (included)
-   * @defaultValue Number.POSITIVE_INFINITY, 3.4028234663852886e+38 when noInfinity is true
+   * @defaultValue Number.POSITIVE_INFINITY, 3.4028234663852886e+38 when noDefaultInfinity is true
    */
   max?: number;
   /**
    * By default, lower and upper bounds are -infinity and +infinity.
-   * By setting noInfinity to true, you move those defaults to minimal and maximal finite values.
+   * By setting noDefaultInfinity to true, you move those defaults to minimal and maximal finite values.
    * @defaultValue false
    */
-  noInfinity?: boolean;
+  noDefaultInfinity?: boolean;
   /**
    * When set to true, no more Number.NaN can be generated.
    * @defaultValue false
@@ -186,10 +186,10 @@ function safeFloatToIndex(f: number, constraintsLabel: keyof FloatNextConstraint
  */
 export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<number> {
   const {
-    noInfinity = false,
+    noDefaultInfinity = false,
     noNaN = false,
-    min = noInfinity ? -MAX_VALUE_32 : Number.NEGATIVE_INFINITY,
-    max = noInfinity ? MAX_VALUE_32 : Number.POSITIVE_INFINITY,
+    min = noDefaultInfinity ? -MAX_VALUE_32 : Number.NEGATIVE_INFINITY,
+    max = noDefaultInfinity ? MAX_VALUE_32 : Number.POSITIVE_INFINITY,
   } = constraints;
   const minIndex = safeFloatToIndex(min, 'min');
   const maxIndex = safeFloatToIndex(max, 'max');

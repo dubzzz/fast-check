@@ -218,7 +218,7 @@ fc.maxSafeNat()
 *&#8195;Signatures*
 
 - `fc.float()`
-- `fc.float({next: true, min?, max?, noInfinity?, noNaN?})`
+- `fc.float({next: true, min?, max?, noDefaultInfinity?, noNaN?})`
 - `fc.float({next?: false, min?, max?})`
 - `fc.float(min, max)`
 - _`fc.float(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
@@ -228,9 +228,9 @@ fc.maxSafeNat()
 *When `next` is `true`...*
 
 - `next` — _use the new version of float_
-- `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noInfinity:true` — _lower bound for the generated 32-bit floats (included)_
-- `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noInfinity:true` — _upper bound for the generated 32-bit floats (included)_
-- `noInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 
 *Otherwise...*
@@ -251,14 +251,14 @@ fc.float({next: true, min: 0})
 // Note: All possible positive 32-bit floating point values (including +∞ and NaN)
 // Examples of generated values: 2.802596928649634e-45, 2.1029948291590276e+24, 9.80908925027372e-45, 2.2572006841955642e+36, 2.1019476964872256e-44…
 
-fc.float({next: true, noInfinity: true, noNaN: true})
+fc.float({next: true, noDefaultInfinity: true, noNaN: true})
 // Note: All possible finite 32-bit floating point values
-// Examples of generated values: -3.6433760072445244e-44, -3.36640080415825e-24, 1.6570621865333383e-35, -1.1210387714598537e-44, 616835121152…
+// Examples of generated values: 4.0637655465419695e-44, 1.4038274882832713e-11, -2.8106043967884853e-14, -2.2420775429197073e-44, 3.053702712160785e+32…
 
-fc.float({next: true, noInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER})
-// Note: Same as fc.float({next: true}), noInfinity just tells that defaults for min and max
+fc.float({next: true, noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER})
+// Note: Same as fc.float({next: true}), noDefaultInfinity just tells that defaults for min and max
 // should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
-// Examples of generated values: -5.720962238325462e+23, 3.6433760072445244e-44, -4.0709934978622186e-7, 0, Number.NaN…
+// Examples of generated values: -3.4028222494407124e+38, -5.1506072030609065e-26, -3.4028190042551758e+38, 3.4028183957828877e+38, 2.382207389352189e-44…
 
 // Legacy mode...
 

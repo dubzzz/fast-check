@@ -23,12 +23,12 @@ const float64raw = () => {
 const floatNextConstraints = () => {
   return fc
     .record(
-      { min: float32raw(), max: float32raw(), noInfinity: fc.boolean(), noNaN: fc.boolean() },
+      { min: float32raw(), max: float32raw(), noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() },
       { withDeletedKeys: true }
     )
     .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
     .filter((ct) => {
-      if (!ct.noInfinity) return true;
+      if (!ct.noDefaultInfinity) return true;
       if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
       if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
       return true;
@@ -63,7 +63,7 @@ describe('FloatNextArbitrary', () => {
       fc.assert(
         fc.property(
           float32raw(),
-          fc.record({ noInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+          fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
           (f, otherCt) => {
             fc.pre(isNotNaN32bits(f));
             expect(floatNext({ ...otherCt, min: f, max: f })).toBeDefined();
@@ -95,9 +95,9 @@ describe('FloatNextArbitrary', () => {
           expect(() => floatNext({ min, max })).toThrowError();
         })
       ));
-    it('Should reject impossible noInfinity-based ranges', () => {
-      expect(() => floatNext({ min: Number.POSITIVE_INFINITY, noInfinity: true })).toThrowError();
-      expect(() => floatNext({ max: Number.NEGATIVE_INFINITY, noInfinity: true })).toThrowError();
+    it('Should reject impossible noDefaultInfinity-based ranges', () => {
+      expect(() => floatNext({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
+      expect(() => floatNext({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
     });
     describe('Is valid arbitrary?', () => {
       genericHelper.isValidArbitrary((ct?: FloatNextConstraints) => floatNext(ct), {
@@ -114,7 +114,7 @@ describe('FloatNextArbitrary', () => {
           }
           if (ct !== undefined && ct.min !== undefined && g < ct.min) return false; // should always be greater than min when specified
           if (ct !== undefined && ct.max !== undefined && g > ct.max) return false; // should always be smaller than max when specified
-          if (ct !== undefined && ct.noInfinity) {
+          if (ct !== undefined && ct.noDefaultInfinity) {
             if (ct.min === undefined && g === Number.NEGATIVE_INFINITY) return false; // should not produce -infinity when noInfity and min unset
             if (ct.max === undefined && g === Number.POSITIVE_INFINITY) return false; // should not produce +infinity when noInfity and max unset
           }
