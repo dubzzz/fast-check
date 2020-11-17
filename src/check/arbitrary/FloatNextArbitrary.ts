@@ -100,14 +100,11 @@ export function floatToIndex(f: number): number {
  * @internal
  */
 export function indexToFloat(index: number): number {
-  if (index === INDEX_POSITIVE_INFINITY) {
-    return Number.POSITIVE_INFINITY;
-  }
-  if (index === INDEX_NEGATIVE_INFINITY) {
-    return Number.NEGATIVE_INFINITY;
-  }
   if (index < 0) {
     return -indexToFloat(-index - 1);
+  }
+  if (index === INDEX_POSITIVE_INFINITY) {
+    return Number.POSITIVE_INFINITY;
   }
   if (index < 0x1000000) {
     // The first 2**24 elements correspond to values having
