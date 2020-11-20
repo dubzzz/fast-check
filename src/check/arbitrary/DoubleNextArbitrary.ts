@@ -1,5 +1,5 @@
-import { Arbitrary } from './definition/Arbitrary';
-import { integer } from './IntegerArbitrary';
+//import { Arbitrary } from './definition/Arbitrary';
+//import { integer } from './IntegerArbitrary';
 
 /** @internal */
 type Int64 = [number, number];
@@ -181,13 +181,13 @@ export interface DoubleNextConstraints {
  *
  * @internal
  */
-function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleNextConstraints) {
+/*function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleNextConstraints) {
   if (Number.isNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
     throw new Error('fc.doubleNext constraints.' + constraintsLabel + ' must be a 32-bit float');
   }
   return doubleToIndex(d);
-}
+}*/
 
 /**
  * For 64-bit floating point numbers:
@@ -199,7 +199,7 @@ function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleNextConstrai
  *
  * @public
  */
-export function doubleNext(constraints: DoubleNextConstraints = {}): Arbitrary<number> {
+/*export function doubleNext(constraints: DoubleNextConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
@@ -220,4 +220,4 @@ export function doubleNext(constraints: DoubleNextConstraints = {}): Arbitrary<n
     if (index > maxIndex) return Number.NaN;
     else return indexToDouble(index);
   });
-}
+}*/
