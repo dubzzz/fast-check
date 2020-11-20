@@ -7,9 +7,9 @@ type Int64 = [number, number];
 type ArrayInt64 = { sign: 1 | -1; data: Int64 };
 
 /** @internal */
-const INDEX_POSITIVE_INFINITY: ArrayInt64 = { sign: 1, data: [0, 0] }; // doubleToIndex(Number.MAX_VALUE) + 1;
+const INDEX_POSITIVE_INFINITY: ArrayInt64 = { sign: 1, data: [2146435072, 0] }; // doubleToIndex(Number.MAX_VALUE) + 1;
 /** @internal */
-const INDEX_NEGATIVE_INFINITY: ArrayInt64 = { sign: -1, data: [0, 0] }; // doubleToIndex(-Number.MAX_VALUE) - 1
+const INDEX_NEGATIVE_INFINITY: ArrayInt64 = { sign: -1, data: [2146435072, 1] }; // doubleToIndex(-Number.MAX_VALUE) - 1
 
 /**
  * Decompose a 64-bit floating point number into a significand and exponent
@@ -65,7 +65,7 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): Int64 {
   // 2**53 + (exponent - (-1022) -1) * 2**52 + (significand - 1) * 2**52
   // (exponent + 1023) * 2**52 + (significand - 1) * 2**52
   const rescaledSignificand = (significand - 1) * 2 ** 52; // (significand-1) * 2**52
-  const exponentOnlyHigh = (exponent + 1023) * 2 ** 30; // (exponent + 1023) * 2**52 => [(exponent + 1023) * 2**30, 0]
+  const exponentOnlyHigh = (exponent + 1023) * 2 ** 20; // (exponent + 1023) * 2**52 => [high: (exponent + 1023) * 2**20, low: 0]
   const index = positiveNumberToInt64(rescaledSignificand);
   index[0] += exponentOnlyHigh;
   return index;
@@ -81,10 +81,10 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): Int64 {
  */
 export function doubleToIndex(d: number): ArrayInt64 {
   if (d === Number.POSITIVE_INFINITY) {
-    return INDEX_POSITIVE_INFINITY;
+    return { sign: INDEX_POSITIVE_INFINITY.sign, data: INDEX_POSITIVE_INFINITY.data.slice() as Int64 };
   }
   if (d === Number.NEGATIVE_INFINITY) {
-    return INDEX_NEGATIVE_INFINITY;
+    return { sign: INDEX_NEGATIVE_INFINITY.sign, data: INDEX_NEGATIVE_INFINITY.data.slice() as Int64 };
   }
   const decomp = decomposeDouble(d);
   const exponent = decomp.exponent;
@@ -93,11 +93,11 @@ export function doubleToIndex(d: number): ArrayInt64 {
     return { sign: 1, data: indexInDoubleFromDecomp(exponent, significand) };
   } else {
     const indexOpposite = indexInDoubleFromDecomp(exponent, -significand);
-    if (indexOpposite[1] === 0) {
-      indexOpposite[0] -= 1;
-      indexOpposite[1] = 0xffffffff;
+    if (indexOpposite[1] === 0xffffffff) {
+      indexOpposite[0] += 1;
+      indexOpposite[1] = 0;
     } else {
-      indexOpposite[1] -= 1;
+      indexOpposite[1] += 1;
     }
     return { sign: -1, data: indexOpposite }; // -indexInDoubleFromDecomp(exponent, -significand) - 1
   }
