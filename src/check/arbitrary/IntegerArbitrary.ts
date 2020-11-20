@@ -4,13 +4,8 @@ import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
-import { biasNumeric } from './helpers/BiasNumeric';
+import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
 import { shrinkNumber } from './helpers/ShrinkNumeric';
-
-/** @internal */
-function integerLogLike(v: number) {
-  return Math.floor(Math.log(v) / Math.log(2));
-}
 
 /** @internal */
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
@@ -32,10 +27,6 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
   }
   private pureBiasedArbitrary(): Arbitrary<number> {
     if (this.biasedIntegerArbitrary != null) {
-      return this.biasedIntegerArbitrary;
-    }
-    if (this.min === this.max || this.min !== this.genMin || this.max !== this.genMax) {
-      this.biasedIntegerArbitrary = this;
       return this.biasedIntegerArbitrary;
     }
     this.biasedIntegerArbitrary = biasNumeric<number>(this.min, this.max, IntegerArbitrary, integerLogLike);

@@ -4,14 +4,8 @@ import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
-import { biasNumeric } from './helpers/BiasNumeric';
+import { biasNumeric, bigIntLogLike } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkNumeric';
-
-/** @internal */
-function bigIntLogLike(v: bigint) {
-  if (v === BigInt(0)) return BigInt(0);
-  return BigInt(v.toString().length);
-}
 
 /** @internal */
 class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
@@ -30,10 +24,6 @@ class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
   }
   private pureBiasedArbitrary(): Arbitrary<bigint> {
     if (this.biasedBigIntArbitrary != null) {
-      return this.biasedBigIntArbitrary;
-    }
-    if (this.min === this.max || this.min !== this.genMin || this.max !== this.genMax) {
-      this.biasedBigIntArbitrary = this;
       return this.biasedBigIntArbitrary;
     }
     this.biasedBigIntArbitrary = biasNumeric(this.min, this.max, BigIntArbitrary, bigIntLogLike);

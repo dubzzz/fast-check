@@ -50,3 +50,14 @@ export function biasNumeric<NType extends Numeric>(
     ? new BiasedNumericArbitrary(arbCloseToMax, arbCloseToMin) // max is closer to zero
     : new BiasedNumericArbitrary(arbCloseToMin, arbCloseToMax); // min is closer to zero
 }
+
+/** @internal */
+export function integerLogLike(v: number): number {
+  return Math.floor(Math.log(v) / Math.log(2));
+}
+
+/** @internal */
+export function bigIntLogLike(v: bigint): bigint {
+  if (v === BigInt(0)) return BigInt(0);
+  return BigInt(v.toString().length);
+}
