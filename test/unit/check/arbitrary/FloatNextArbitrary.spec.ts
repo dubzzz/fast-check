@@ -171,7 +171,7 @@ describe('FloatNextArbitrary', () => {
       // index(2 - EPSILON_32) = index(2) - 1 = index(1 + (2 ** 23 - 1) * EPSILON_32)
       expect(floatToIndex(2 - EPSILON_32)).toEqual(1073741823);
       // 1 === 1. * 2**1 --> m = 1, e = 1
-      // index(2) = index(1) * 2**23
+      // index(2) = index(1) + 2**23
       expect(floatToIndex(2)).toEqual(1073741824);
       expect(floatToIndex(MAX_VALUE_32)).toBe(2139095039);
     });
@@ -184,6 +184,30 @@ describe('FloatNextArbitrary', () => {
       expect(floatToIndex(Number.NEGATIVE_INFINITY)).toBe(floatToIndex(-MAX_VALUE_32) - 1);
       expect(floatToIndex(Number.POSITIVE_INFINITY)).toBe(floatToIndex(MAX_VALUE_32) + 1);
     });
+    it('Should be able to infer index for negative float from the positive one', () =>
+      fc.assert(
+        fc.property(float32raw(), (f) => {
+          fc.pre(isNotNaN32bits(f));
+          const posD = f > 0 || 1 / f > 0 ? f : -f;
+          const indexPos = floatToIndex(posD);
+          const indexNeg = floatToIndex(-posD);
+          expect(indexNeg).toEqual(-indexPos - 1);
+        })
+      ));
+    it('Should return index +1 for the successor of a given float', () =>
+      fc.assert(
+        fc.property(
+          fc.integer({ min: -126, max: +127 }),
+          fc.integer({ min: 0, max: 2 ** 24 - 1 }),
+          (exponent, rescaledSignificand) => {
+            fc.pre(exponent === -126 || rescaledSignificand >= 2 ** 23); // valid
+            fc.pre(exponent !== 127 || rescaledSignificand !== 2 ** 24 - 1); // not max
+            const current = rescaledSignificand * EPSILON_32 * 2 ** exponent;
+            const next = (rescaledSignificand + 1) * EPSILON_32 * 2 ** exponent;
+            expect(floatToIndex(next)).toEqual(floatToIndex(current) + 1);
+          }
+        )
+      ));
     it('Should preserve ordering between two floats', () =>
       fc.assert(
         fc.property(float32raw(), float32raw(), (fa32, fb32) => {
