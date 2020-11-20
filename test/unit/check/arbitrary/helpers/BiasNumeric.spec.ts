@@ -117,7 +117,7 @@ describe('BiasNumeric', () => {
 // Helpers
 
 expect.extend({
-  toBeWithinRange(received, floor, ceiling) {
+  toBeWithinRange(received, floor, ceiling): jest.CustomMatcherResult {
     const pass = received >= floor && received <= ceiling;
     return {
       message: () => `expected ${received} ${pass ? 'not ' : ''} to be within range ${floor} - ${ceiling}`,
@@ -130,7 +130,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Expect {
-      toBeWithinRange(a: number, b: number);
+      toBeWithinRange(a: number, b: number): CustomMatcherResult;
     }
   }
 }
