@@ -212,15 +212,28 @@ fc.maxSafeNat()
 >
 > Generate any floating point value taken into the specified range.
 > The lower bound is included into the range of possible values while the upper one is not.
+>
+> Next version: Always generate valid 32-bit floating point values.
 
 *&#8195;Signatures*
 
 - `fc.float()`
-- `fc.float({min?, max?})`
+- `fc.float({next: true, min?, max?, noDefaultInfinity?, noNaN?})`
+- `fc.float({next?: false, min?, max?})`
 - `fc.float(min, max)`
 - _`fc.float(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
+
+*When `next` is `true`...*
+
+- `next` — _use the new version of float_
+- `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+
+*Otherwise...*
 
 - `min?` — default: `0.0` — _lower bound of the range (included)_
 - `max?` — default: `1.0` — _upper bound of the range (excluded)_
@@ -228,9 +241,30 @@ fc.maxSafeNat()
 *&#8195;Usages*
 
 ```js
+// New behaviour...
+
+fc.float({next: true})
+// Note: All possible 32-bit floating point values (including -∞, +∞ and NaN but also -0)
+// Examples of generated values: -4.979507809409578e+32, -1.6702151959801674e+28, 1.9627621397599177e+28, 350.84765625, 3.363116314379561e-44…
+
+fc.float({next: true, min: 0})
+// Note: All possible positive 32-bit floating point values (including +∞ and NaN)
+// Examples of generated values: 2.802596928649634e-45, 2.1029948291590276e+24, 9.80908925027372e-45, 2.2572006841955642e+36, 2.1019476964872256e-44…
+
+fc.float({next: true, noDefaultInfinity: true, noNaN: true})
+// Note: All possible finite 32-bit floating point values
+// Examples of generated values: 4.0637655465419695e-44, 1.4038274882832713e-11, -2.8106043967884853e-14, -2.2420775429197073e-44, 3.053702712160785e+32…
+
+fc.float({next: true, noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER})
+// Note: Same as fc.float({next: true}), noDefaultInfinity just tells that defaults for min and max
+// should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
+// Examples of generated values: -3.4028222494407124e+38, -5.1506072030609065e-26, -3.4028190042551758e+38, 3.4028183957828877e+38, 2.382207389352189e-44…
+
+// Legacy mode...
+
 fc.float()
 // Note: All possible 32-bit floating point values between `0.0` (included) and `1.0` (excluded)
-// Examples of generated values: 0.731347382068634, 0.9999999403953552, 0.6597227454185486, 0.5946863293647766, 0.6302104592323303…
+// Examples of generated values: 0.8121654987335205, 0.2905852794647217, 0.5317489504814148, 0.8747345805168152, 0.2262873649597168…
 
 fc.float({max: 100})
 // Note: All possible 32-bit floating point values between `0.0` (included) and `100.0` (excluded)

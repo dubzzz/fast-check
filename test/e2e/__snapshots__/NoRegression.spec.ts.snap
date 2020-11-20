@@ -915,6 +915,24 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [5.960464477539063e-8]"
 `;
 
+exports[`NoRegression floatNext 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:0:1\\", endOnFailure: true }
+Counterexample: [-4.203895392974451e-45]
+Shrunk 3 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [-2.382207389352189e-44]
+. [32m√[0m [0]
+. [31m×[0m [-1.1210387714598537e-44]
+. . [31m×[0m [-5.605193857299268e-45]
+. . . [32m√[0m [-2.802596928649634e-45]
+. . . [31m×[0m [-4.203895392974451e-45]
+. . . . [32m√[0m [-1.401298464324817e-45]
+. . . . [32m√[0m [-2.802596928649634e-45]"
+`;
+
 exports[`NoRegression frequency 1`] = `
 "Property failed after 24 tests
 { seed: 42, path: \\"23:1:0:0:0:0:5:0:3:2:0:0:0:0:1:0:6:4:0:0:0:0:2:0:1:0:6:0:10\\", endOnFailure: true }
