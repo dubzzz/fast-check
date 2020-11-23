@@ -198,8 +198,15 @@ export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<num
   if (noNaN) {
     return integer(minIndex, maxIndex).map(indexToFloat);
   }
-  return integer(minIndex, maxIndex + 1).map((index) => {
-    if (index > maxIndex) return Number.NaN;
+  // In case maxIndex > 0 or in other words max > 0,
+  //   values will be [min, ..., +0, ..., max, NaN]
+  //               or [min, ..., max, NaN] if min > +0
+  // Otherwise,
+  //   values will be [NaN, min, ..., max] with max <= +0
+  const minIndexWithNaN = maxIndex > 0 ? minIndex : minIndex - 1;
+  const maxIndexWithNaN = maxIndex > 0 ? maxIndex + 1 : maxIndex;
+  return integer(minIndexWithNaN, maxIndexWithNaN).map((index) => {
+    if (index > maxIndex || index < minIndex) return Number.NaN;
     else return indexToFloat(index);
   });
 }
