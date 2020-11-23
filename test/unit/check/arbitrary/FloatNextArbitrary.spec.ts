@@ -104,9 +104,9 @@ describe('FloatNextArbitrary', () => {
         isStrictlySmallerValue: (fa, fb, ct?: FloatNextConstraints) =>
           Math.abs(fa) < Math.abs(fb) || //              Case 1: abs(a) < abs(b)
           (Object.is(fa, -0) && Object.is(fb, +0)) || // Case 2: -0 < +0
-          (ct !== undefined && ct.max !== undefined && isStrictlySmaller(ct.max, +0)
-            ? Number.isNaN(fa) && !Number.isNaN(fb) //   Case 3: notNaN > NaN when max <  +0
-            : !Number.isNaN(fa) && Number.isNaN(fb)), //         notNaN < NaN when max >= +0
+          (ct !== undefined && ct.max !== undefined && ct.max <= 0
+            ? Number.isNaN(fa) && !Number.isNaN(fb) //   Case 3: notNaN > NaN, when max <= 0 NaN is the minimal value
+            : !Number.isNaN(fa) && Number.isNaN(fb)), //         notNaN < NaN, when max >  0 NaN is the maximal value
         isValidValue: (g: number, ct?: FloatNextConstraints) => {
           if (typeof g !== 'number') return false; // should always produce numbers
           if (!is32bits(g)) return false; // should always produce 32-bit floats
