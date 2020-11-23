@@ -3687,9 +3687,9 @@ punycode@^2.1.0, punycode@^2.1.1:
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
 pure-rand@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-4.0.0.tgz#df8f44bc1b82c4f3d0e245e8f7ced6f09c1e9dc4"
-  integrity sha512-5+HGyGi+6VygEcP1O4jMj0c5HyFgsP9lEy2uA4c+KBq84y21hpmv85wAzPZ/H+q1TUbP3mIMZhqFg08/HAOUqw==
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-4.1.0.tgz#b5c688e62cfbbce271580f61d84d0a0ad97c9884"
+  integrity sha512-dN9fofEFAsg7J5aaQh8vqZhPM6DCNxQLp6w4BcAspQTsUXVVCsIVSnaO9hHT4XBxhMbwb20e7gL7VCknWnPOdg==
 
 qs@~6.5.2:
   version "6.5.2"
