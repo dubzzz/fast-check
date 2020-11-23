@@ -265,6 +265,15 @@ describe('DoubleNextArbitrary', () => {
       return;
     } // Following tests require BigInt to be launched
 
+    it('Should properly find doubles corresponding to well-known values', () => {
+      expect(indexToDouble(toIndex('-9218868437227405313'))).toBe(Number.NEGATIVE_INFINITY);
+      expect(indexToDouble(toIndex('-9218868437227405312'))).toBe(-Number.MAX_VALUE);
+      expect(indexToDouble(toIndex('-1'))).toBe(-0);
+      expect(indexToDouble(toIndex('0'))).toBe(0);
+      expect(indexToDouble(toIndex('4372995238176751616'))).toBe(Number.EPSILON);
+      expect(indexToDouble(toIndex('9218868437227405311'))).toBe(Number.MAX_VALUE);
+      expect(indexToDouble(toIndex('9218868437227405312'))).toBe(Number.POSITIVE_INFINITY);
+    });
     it('Should be reversed by doubleToIndex', () =>
       fc.assert(
         fc.property(
