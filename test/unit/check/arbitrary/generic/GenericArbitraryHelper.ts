@@ -165,8 +165,9 @@ export const isValidArbitrary = function <U, T>(
   testSameSeedSameValues(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
   testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
   if (settings.isStrictlySmallerValue != null) {
+    const isStrictlySmallerValue = settings.isStrictlySmallerValue;
     const biasedIsStrictlySmallerValue = (g1: T, g2: T, [_biasedFactor, u]: [number | null, U]) => {
-      return settings.isStrictlySmallerValue(g1, g2, u);
+      return isStrictlySmallerValue(g1, g2, u);
     };
     testShrinkPathStrictlyDecreasing(
       biasedSeedGenerator,
