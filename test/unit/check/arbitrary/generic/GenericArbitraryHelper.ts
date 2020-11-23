@@ -8,7 +8,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 const testSameSeedSameValues = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
-  assertEquality: (v1: T, v2: T) => void,
+  assertEquality: (v1: T, v2: T, seed: U) => void,
   parameters: fc.Parameters<unknown> | undefined
 ) {
   it(`Should produce the same value given the same seed`, () =>
@@ -17,7 +17,7 @@ const testSameSeedSameValues = function <U, T>(
         const arb = arbGenerator(params);
         const v1 = arb.generate(new Random(prand.xorshift128plus(seed))).value;
         const v2 = arb.generate(new Random(prand.xorshift128plus(seed))).value;
-        assertEquality(v1, v2);
+        assertEquality(v1, v2, params);
       }),
       parameters
     ));
@@ -26,7 +26,7 @@ const testSameSeedSameValues = function <U, T>(
 const testSameSeedSameShrinks = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
-  assertEquality: (v1: T, v2: T) => void,
+  assertEquality: (v1: T, v2: T, seed: U) => void,
   parameters: fc.Parameters<unknown> | undefined
 ) {
   it(`Should produce the same shrunk values given the same seed`, () =>
@@ -41,7 +41,7 @@ const testSameSeedSameShrinks = function <U, T>(
           let s2: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
           let id = 0;
           while (s1 !== null && s2 !== null) {
-            assertEquality(s1.value, s2.value);
+            assertEquality(s1.value, s2.value, params);
             s1 = s1.shrink().getNthOrLast(id);
             s2 = s2.shrink().getNthOrLast(id);
             id = (id + 1) % shrinkPath.length;
@@ -57,7 +57,7 @@ const testSameSeedSameShrinks = function <U, T>(
 const testShrinkPathStrictlyDecreasing = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
-  isStrictlySmallerValue: (g1: T, g2: T) => boolean,
+  isStrictlySmallerValue: (g1: T, g2: T, seed: U) => boolean,
   parameters: fc.Parameters<unknown> | undefined
 ) {
   it(`Should produce strictly smaller values along the shrink path`, () =>
@@ -75,7 +75,7 @@ const testShrinkPathStrictlyDecreasing = function <U, T>(
             shrinkable = shrinkable.shrink().getNthOrLast(id);
             if (shrinkable !== null) {
               const value = shrinkable.value;
-              if (!isStrictlySmallerValue(value, prevValue)) {
+              if (!isStrictlySmallerValue(value, prevValue, params)) {
                 const m = `Expect: ${fc.stringify(value)} to be strictly smaller than ${fc.stringify(prevValue)}`;
                 throw new Error(m);
               }
@@ -139,8 +139,8 @@ export const isValidArbitrary = function <U, T>(
   arbitraryBuilder: (u: U) => Arbitrary<T>,
   settings: {
     seedGenerator?: fc.Arbitrary<U>;
-    isEqual?: (g1: T, g2: T) => boolean;
-    isStrictlySmallerValue?: (g1: T, g2: T) => boolean;
+    isEqual?: (g1: T, g2: T, seed: U) => boolean;
+    isStrictlySmallerValue?: (g1: T, g2: T, seed: U) => boolean;
     isValidValue: (g: T, seed: U) => boolean;
   },
   parameters?: fc.Parameters<unknown>
@@ -155,9 +155,9 @@ export const isValidArbitrary = function <U, T>(
     return settings.isValidValue(g, u);
   };
 
-  const assertEquality = (v1: T, v2: T) => {
+  const assertEquality = (v1: T, v2: T, [, seed]: [number, U]) => {
     if (settings.isEqual) {
-      if (!settings.isEqual(v1, v2)) {
+      if (!settings.isEqual(v1, v2, seed)) {
         throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}`);
       }
     } else expect(v1).toStrictEqual(v2);
@@ -165,10 +165,13 @@ export const isValidArbitrary = function <U, T>(
   testSameSeedSameValues(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
   testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
   if (settings.isStrictlySmallerValue != null) {
+    const biasedIsStrictlySmallerValue = (g1: T, g2: T, [_biasedFactor, u]: [number | null, U]) => {
+      return settings.isStrictlySmallerValue(g1, g2, u);
+    };
     testShrinkPathStrictlyDecreasing(
       biasedSeedGenerator,
       biasedArbitraryBuilder,
-      settings.isStrictlySmallerValue,
+      biasedIsStrictlySmallerValue,
       parameters
     );
   }
