@@ -74,8 +74,12 @@ const testShrinkPathStrictlyDecreasing = function <U, T>(
           while (shrinkable !== null) {
             shrinkable = shrinkable.shrink().getNthOrLast(id);
             if (shrinkable !== null) {
-              expect(isStrictlySmallerValue(shrinkable.value, prevValue)).toBe(true);
-              prevValue = shrinkable.value;
+              const value = shrinkable.value;
+              if (!isStrictlySmallerValue(value, prevValue)) {
+                const m = `Expect: ${fc.stringify(value)} to be strictly smaller than ${fc.stringify(prevValue)}`;
+                throw new Error(m);
+              }
+              prevValue = value;
             }
             id = (id + 1) % shrinkPath.length;
           }
@@ -97,7 +101,7 @@ const testAlwaysGenerateCorrectValues = function <U, T>(
         const arb = arbGenerator(params);
         const shrinkable = arb.generate(new Random(prand.xorshift128plus(seed)));
         if (!isValidValue(shrinkable.value, params))
-          throw new Error(`Invalid value: ${fc.stringify(shrinkable.value_)}`);
+          throw new Error(`Expect: ${fc.stringify(shrinkable.value_)} to be a valid value`);
       }),
       parameters
     ));
@@ -152,8 +156,11 @@ export const isValidArbitrary = function <U, T>(
   };
 
   const assertEquality = (v1: T, v2: T) => {
-    if (settings.isEqual) expect(settings.isEqual(v1, v2)).toBe(true);
-    else expect(v1).toStrictEqual(v2);
+    if (settings.isEqual) {
+      if (!settings.isEqual(v1, v2)) {
+        throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}`);
+      }
+    } else expect(v1).toStrictEqual(v2);
   };
   testSameSeedSameValues(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
   testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
