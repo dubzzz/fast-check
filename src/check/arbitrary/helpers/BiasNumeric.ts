@@ -9,7 +9,7 @@ type Numeric = number | bigint;
 type NumericArbitrary<NType> = new (min: NType, max: NType, genMin: NType, genMax: NType) => Arbitrary<NType>;
 
 /** @internal */
-class BiasedNumericArbitrary<NType extends Numeric> extends Arbitrary<NType> {
+export class BiasedNumericArbitrary<NType> extends Arbitrary<NType> {
   private readonly arbs: Arbitrary<NType>[];
   constructor(readonly arbCloseToZero: Arbitrary<NType>, ...arbs: Arbitrary<NType>[]) {
     super();

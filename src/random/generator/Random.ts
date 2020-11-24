@@ -74,6 +74,20 @@ export class Random {
   }
 
   /**
+   * Generate a random ArrayInt between min (included) and max (included)
+   * @param min - Minimal ArrayInt value
+   * @param max - Maximal ArrayInt value
+   */
+  nextArrayInt(
+    min: { sign: 1 | -1; data: number[] },
+    max: { sign: 1 | -1; data: number[] }
+  ): { sign: 1 | -1; data: number[] } {
+    const g = prand.uniformArrayIntDistribution(min, max, this.internalRng);
+    this.internalRng = g[1];
+    return g[0];
+  }
+
+  /**
    * Generate a random floating point number between 0.0 (included) and 1.0 (excluded)
    */
   nextDouble(): number {
