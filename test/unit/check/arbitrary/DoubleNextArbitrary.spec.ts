@@ -52,7 +52,7 @@ const toBigInt = (index: Index): bigint => {
 };
 
 describe('DoubleNextArbitrary', () => {
-  describe('floatNext', () => {
+  describe('doubleNext', () => {
     it('Should accept any valid range of floating point numbers (including infinity)', () =>
       fc.assert(
         fc.property(doubleNextConstraints(), (ct) => {
