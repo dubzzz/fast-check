@@ -243,11 +243,13 @@ jobs:
     strategy:
       matrix:
         node-version:
+          # Node latest version supports ES modules by default
+          - 'node'
           # Node >=13.2.0 enables support for ES modules by default
           # Our default version of node is above 13.2.0
           - '14'
-          # Node latest version supports ES modules by default
-          - 'node'
+          # Node 12.20 includes import from CJS and removes warnings related to ES Modules
+          - '12.20'
           # Node 12.x and >=12.18 enables support for ES modules by default
           - '12.18'
           # Node <12.18 requires a flag to support ES modules but can understand them
