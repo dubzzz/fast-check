@@ -1,4 +1,5 @@
 import { Arbitrary } from './definition/Arbitrary';
+import { doubleNext, DoubleNextConstraints } from './DoubleNextArbitrary';
 import { floatNext, FloatNextConstraints } from './FloatNextArbitrary';
 import { integer } from './IntegerArbitrary';
 import { tuple } from './TupleArbitrary';
@@ -99,12 +100,19 @@ const doubleInternal = (): Arbitrary<number> => {
  * Constraints to be applied on {@link double}
  * @public
  */
-export interface DoubleConstraints {
-  /** Lower bound for the generated doubles (included) */
-  min?: number;
-  /** Upper bound for the generated doubles (excluded) */
-  max?: number;
-}
+export type DoubleConstraints =
+  | {
+      /** Enable new version of fc.double */
+      next?: false;
+      /** Lower bound for the generated doubles (included) */
+      min?: number;
+      /** Upper bound for the generated doubles (excluded) */
+      max?: number;
+    }
+  | ({
+      /** Enable new version of fc.double */
+      next: true;
+    } & DoubleNextConstraints);
 
 /**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**53`
@@ -145,6 +153,9 @@ function double(min: number, max: number): Arbitrary<number>;
 function double(constraints: DoubleConstraints): Arbitrary<number>;
 function double(...args: [] | [number] | [number, number] | [DoubleConstraints]): Arbitrary<number> {
   if (typeof args[0] === 'object') {
+    if (args[0].next) {
+      return doubleNext(args[0]);
+    }
     const min = args[0].min !== undefined ? args[0].min : 0;
     const max = args[0].max !== undefined ? args[0].max : 1;
     return doubleInternal().map((v) => min + v * (max - min));
