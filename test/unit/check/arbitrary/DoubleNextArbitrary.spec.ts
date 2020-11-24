@@ -1,16 +1,23 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { decomposeDouble, doubleToIndex, indexToDouble } from '../../../../src/check/arbitrary/DoubleNextArbitrary';
+import {
+  decomposeDouble,
+  doubleNext,
+  DoubleNextConstraints,
+  doubleToIndex,
+  indexToDouble,
+} from '../../../../src/check/arbitrary/DoubleNextArbitrary';
+import * as genericHelper from './generic/GenericArbitraryHelper';
 
 const float64raw = () => {
   return fc
     .tuple(fc.integer(), fc.integer())
     .map(([na32, nb32]) => new Float64Array(new Int32Array([na32, nb32]).buffer)[0]);
 };
-/*const floatNextConstraints = () => {
+const doubleNextConstraints = () => {
   return fc
     .record(
-      { min: float32raw(), max: float32raw(), noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() },
+      { min: float64raw(), max: float64raw(), noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() },
       { withDeletedKeys: true }
     )
     .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
@@ -27,7 +34,7 @@ const float64raw = () => {
       if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
       return { ...ct, min: max, max: min };
     });
-};*/
+};
 
 type Index = ReturnType<typeof doubleToIndex>;
 
@@ -45,62 +52,55 @@ const toBigInt = (index: Index): bigint => {
 };
 
 describe('DoubleNextArbitrary', () => {
-  /*describe('floatNext', () => {
-    it('Should accept any valid range of 32-bit floating point numbers (including infinity)', () =>
+  describe('floatNext', () => {
+    it('Should accept any valid range of floating point numbers (including infinity)', () =>
       fc.assert(
-        fc.property(floatNextConstraints(), (ct) => {
-          expect(floatNext(ct)).toBeDefined();
+        fc.property(doubleNextConstraints(), (ct) => {
+          expect(doubleNext(ct)).toBeDefined();
         })
       ));
-    it('Should accept any constraits defining min (32-bit float not-NaN) equal to max', () =>
+    it('Should accept any constraits defining min (not-NaN) equal to max', () =>
       fc.assert(
         fc.property(
-          float32raw(),
+          float64raw(),
           fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
           (f, otherCt) => {
-            fc.pre(isNotNaN32bits(f));
-            expect(floatNext({ ...otherCt, min: f, max: f })).toBeDefined();
+            fc.pre(!Number.isNaN(f));
+            expect(doubleNext({ ...otherCt, min: f, max: f })).toBeDefined();
           }
         )
       ));
-    it('Should reject non-32-bit or NaN floating point numbers if specified for min', () =>
-      fc.assert(
-        fc.property(float64raw(), (f64) => {
-          fc.pre(!isNotNaN32bits(f64));
-          expect(() => floatNext({ min: f64 })).toThrowError();
-        })
-      ));
-    it('Should reject non-32-bit or NaN floating point numbers if specified for max', () =>
-      fc.assert(
-        fc.property(float64raw(), (f64) => {
-          fc.pre(!isNotNaN32bits(f64));
-          expect(() => floatNext({ max: f64 })).toThrowError();
-        })
-      ));
+    it('Should reject NaN if specified for min', () => {
+      expect(() => doubleNext({ min: Number.NaN })).toThrowError();
+    });
+    it('Should reject NaN if specified for max', () => {
+      expect(() => doubleNext({ max: Number.NaN })).toThrowError();
+    });
     it('Should reject if specified min is strictly greater than max', () =>
       fc.assert(
-        fc.property(float32raw(), float32raw(), (fa32, fb32) => {
-          fc.pre(isNotNaN32bits(fa32));
-          fc.pre(isNotNaN32bits(fb32));
-          fc.pre(!Object.is(fa32, fb32)); // Object.is can distinguish -0 from 0, while !== cannot
-          const min = isStrictlySmaller(fa32, fb32) ? fb32 : fa32;
-          const max = isStrictlySmaller(fa32, fb32) ? fa32 : fb32;
-          expect(() => floatNext({ min, max })).toThrowError();
+        fc.property(float64raw(), float64raw(), (da, db) => {
+          fc.pre(!Number.isNaN(da));
+          fc.pre(!Number.isNaN(db));
+          fc.pre(!Object.is(da, db)); // Object.is can distinguish -0 from 0, while !== cannot
+          const min = isStrictlySmaller(da, db) ? db : da;
+          const max = isStrictlySmaller(da, db) ? da : db;
+          expect(() => doubleNext({ min, max })).toThrowError();
         })
       ));
     it('Should reject impossible noDefaultInfinity-based ranges', () => {
-      expect(() => floatNext({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
-      expect(() => floatNext({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
+      expect(() => doubleNext({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
+      expect(() => doubleNext({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
     });
     describe('Is valid arbitrary?', () => {
-      genericHelper.isValidArbitrary((ct?: FloatNextConstraints) => floatNext(ct), {
-        isStrictlySmallerValue: (fa, fb) =>
-          Math.abs(fa) < Math.abs(fb) ||
-          (Object.is(fa, +0) && Object.is(fb, -0)) ||
-          (Number.isNaN(fa) && !Number.isNaN(fb)),
-        isValidValue: (g: number, ct?: FloatNextConstraints) => {
+      genericHelper.isValidArbitrary((ct?: DoubleNextConstraints) => doubleNext(ct), {
+        isStrictlySmallerValue: (fa, fb, ct?: DoubleNextConstraints) =>
+          Math.abs(fa) < Math.abs(fb) || //              Case 1: abs(a) < abs(b)
+          (Object.is(fa, -0) && Object.is(fb, +0)) || // Case 2: -0 < +0
+          (ct !== undefined && ct.max !== undefined && ct.max <= 0
+            ? Number.isNaN(fa) && !Number.isNaN(fb) //   Case 3: notNaN > NaN, when max <= 0 NaN is the minimal value
+            : !Number.isNaN(fa) && Number.isNaN(fb)), //         notNaN < NaN, when max >  0 NaN is the maximal value
+        isValidValue: (g: number, ct?: DoubleNextConstraints) => {
           if (typeof g !== 'number') return false; // should always produce numbers
-          if (!is32bits(g)) return false; // should always produce 32-bit floats
           if (Number.isNaN(g)) {
             if (ct !== undefined && ct.noNaN) return false; // should not produce NaN if explicitely asked not too
             return true;
@@ -113,10 +113,10 @@ describe('DoubleNextArbitrary', () => {
           }
           return true;
         },
-        seedGenerator: fc.option(floatNextConstraints(), { nil: undefined }),
+        seedGenerator: fc.option(doubleNextConstraints(), { nil: undefined }),
       });
     });
-  });*/
+  });
 
   describe('decomposeDouble (@internal)', () => {
     it('Should properly decompose basic values', () => {
