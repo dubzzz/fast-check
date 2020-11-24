@@ -51,6 +51,14 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('doubleNext', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.double({ next: true }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('integer', () => {
     expect(() =>
       fc.assert(
