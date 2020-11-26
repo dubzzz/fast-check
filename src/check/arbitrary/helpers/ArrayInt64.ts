@@ -48,9 +48,12 @@ export function isStrictlySmaller64(a: ArrayInt64, b: ArrayInt64): boolean {
   return !isZero64(a) || !isZero64(b);
 }
 
-/** @internal */
+/**
+ * Expects arrayIntA >= arrayIntB
+ * @internal
+ */
 function substract64Internal(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 {
-  // WARNING: We expect arrayIntA >= arrayIntB
+  // WARNING: We e
   //          In the code of this helper
 
   const lowA = arrayIntA.data[1];
@@ -88,7 +91,11 @@ function substract64Internal(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): Arra
   return { sign: 1, data: [highFirst - highSecond - reminderLow, low] };
 }
 
-/** @internal */
+/**
+ * Substract two ArrayInt64
+ * @returns When result is zero always with sign=1
+ * @internal
+ */
 export function substract64(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 {
   if (isStrictlySmaller64(arrayIntA, arrayIntB)) {
     const out = substract64Internal(arrayIntB, arrayIntA);
@@ -98,15 +105,27 @@ export function substract64(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): Array
   return substract64Internal(arrayIntA, arrayIntB);
 }
 
-/** @internal */
+/**
+ * Negative version of an ArrayInt64
+ * @returns When result is zero always with sign=1
+ * @internal
+ */
 export function negative64(arrayIntA: ArrayInt64): ArrayInt64 {
-  return {
+  const out: ArrayInt64 = {
     sign: -arrayIntA.sign as -1 | 1,
     data: [arrayIntA.data[0], arrayIntA.data[1]],
   };
+  if (isZero64(out)) {
+    out.sign = 1;
+  }
+  return out;
 }
 
-/** @internal */
+/**
+ * Add two ArrayInt64
+ * @returns When result is zero always with sign=1
+ * @internal
+ */
 export function add64(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 {
   if (isZero64(arrayIntB)) {
     return { sign: arrayIntA.sign, data: [arrayIntA.data[0], arrayIntA.data[1]] };
@@ -114,19 +133,35 @@ export function add64(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 
   return substract64(arrayIntA, negative64(arrayIntB));
 }
 
-/** @internal */
+/**
+ * Halve an ArrayInt64
+ * @returns When result is zero always with sign=1
+ * @internal
+ */
 export function halve64(a: ArrayInt64): ArrayInt64 {
-  return {
+  const out: ArrayInt64 = {
     sign: a.sign,
     data: [Math.floor(a.data[0] / 2), (a.data[0] % 2 === 1 ? 0x80000000 : 0) + Math.floor(a.data[1] / 2)],
   };
+  if (isZero64(out)) {
+    out.sign = 1;
+  }
+  return out;
 }
 
-/** @internal */
+/**
+ * Apply log2 to an ArrayInt64
+ * @returns When result is zero always with sign=1
+ * @internal
+ */
 export function logLike64(a: ArrayInt64): ArrayInt64 {
   // Math.floor(Math.log(hi * 2**32 + low) / Math.log(2)) <= Math.floor(Math.log(2**64) / Math.log(2)) = 64
-  return {
+  const out: ArrayInt64 = {
     sign: a.sign,
     data: [0, Math.floor(Math.log(a.data[1] * 0x100000000 + a.data[0]) / Math.log(2))],
   };
+  if (isZero64(out)) {
+    out.sign = 1;
+  }
+  return out;
 }
