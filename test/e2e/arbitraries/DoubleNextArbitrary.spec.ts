@@ -29,14 +29,22 @@ describe(`DoubleNextArbitrary (seed: ${seed})`, () => {
     shouldGenerate(Number.MAX_VALUE);
     shouldGenerate(-Number.MAX_VALUE);
 
-    // Remark: Number.MIN_VALUE = (2**-1022) * (2**-52)
-    // Remark: Number.MAX_VALUE = (2**1023) * (2 - 2**-52)
-    // In range: [Number.MIN_VALUE ; 2 ** -1021[ there are 2**53 distinct values
-    // In range: [2**1023 ; Number.MAX_VALUE] there are 2**52 distinct values
-    // They represent 0.07 % of all the possible values
-    // (indeed there are 18437736874454810624 distinct values for double without -infinity, +infinty and NaN)
+    // Remark:
+    //   Number.MIN_VALUE = (2**-1022) * (2**-52)
+    //   In range: [Number.MIN_VALUE ; 2 ** -1021[ there are 2**53 distinct values
+    // Remark:
+    //   Number.MAX_VALUE = (2**1023) * (2 - 2**-52)
+    //   In range: [2**1023 ; Number.MAX_VALUE] there are 2**52 distinct values
+    //
+    // If we join those 4 ranges (including negative versions), they only represent 0.147 % of all the possible values.
+    // Indeed there are 18_437_736_874_454_810_624 distinct values for double if we exclude -infinity, +infinty and NaN.
+    // So most of the generated values should be in the union of the ranges ]-2**1023 ; -2 ** -1021] and [2 ** -1021 ; 2**1023[.
+
     const filterIntermediateValues = (sample: number[]) => {
-      return sample.filter((v) => v >= 2 ** -1021 && v < 2 ** 1023);
+      return sample.filter((v) => {
+        const absV = Math.abs(v);
+        return absV >= 2 ** -1021 && absV < 2 ** 1023;
+      });
     };
 
     it('Should be able to generate intermediate values most of the time even if biased', () => {
