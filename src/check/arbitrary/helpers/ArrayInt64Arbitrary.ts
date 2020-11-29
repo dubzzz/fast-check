@@ -13,7 +13,6 @@ import {
   isStrictlyPositive64,
   isZero64,
   logLike64,
-  negative64,
   substract64,
   Zero64,
 } from './ArrayInt64';
@@ -77,17 +76,17 @@ class ArrayInt64Arbitrary extends ArbitraryWithShrink<ArrayInt64> {
     const maxStrictlyGreaterZero = isStrictlyPositive64(this.max);
     if (minStrictlySmallerZero && maxStrictlyGreaterZero) {
       // min < 0 && max > 0
-      const logMin = logLike64(this.min); // min !== 0
-      const logMax = logLike64(this.max); // max !== 0
+      const logMin = logLike64(this.min); // min !== 0   ->   <=0
+      const logMax = logLike64(this.max); // max !== 0   ->   >=0
       this.biasedArrayInt64Arbitrary = new BiasedNumericArbitrary(
-        new ArrayInt64Arbitrary(this.min, this.max, negative64(logMin), logMax), // close to zero,
+        new ArrayInt64Arbitrary(this.min, this.max, logMin, logMax), // close to zero,
         new ArrayInt64Arbitrary(this.min, this.max, substract64(this.max, logMax), this.max), // close to max
-        new ArrayInt64Arbitrary(this.min, this.max, this.min, add64(this.min, logMin)) // close to min
+        new ArrayInt64Arbitrary(this.min, this.max, this.min, substract64(this.min, logMin)) // close to min
       );
     } else {
       // Either min < 0 && max <= 0
       // Or min >= 0, so max >= 0
-      const logGap = logLike64(substract64(this.max, this.min)); // max-min !== 0
+      const logGap = logLike64(substract64(this.max, this.min)); // max-min !== 0  ->  >=0
       const arbCloseToMin = new ArrayInt64Arbitrary(this.min, this.max, this.min, add64(this.min, logGap)); // close to min
       const arbCloseToMax = new ArrayInt64Arbitrary(this.min, this.max, substract64(this.max, logGap), this.max); // close to max
       return minStrictlySmallerZero

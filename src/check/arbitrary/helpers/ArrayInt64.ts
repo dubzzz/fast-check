@@ -150,18 +150,13 @@ export function halve64(a: ArrayInt64): ArrayInt64 {
 }
 
 /**
- * Apply log2 to an ArrayInt64
- * @returns When result is zero always with sign=1
+ * Apply log2 to an ArrayInt64 (preserve sign)
  * @internal
  */
 export function logLike64(a: ArrayInt64): ArrayInt64 {
   // Math.floor(Math.log(hi * 2**32 + low) / Math.log(2)) <= Math.floor(Math.log(2**64) / Math.log(2)) = 64
-  const out: ArrayInt64 = {
+  return {
     sign: a.sign,
-    data: [0, Math.floor(Math.log(a.data[1] * 0x100000000 + a.data[0]) / Math.log(2))],
+    data: [0, Math.floor(Math.log(a.data[0] * 0x100000000 + a.data[1]) / Math.log(2))],
   };
-  if (isZero64(out)) {
-    out.sign = 1;
-  }
-  return out;
 }
