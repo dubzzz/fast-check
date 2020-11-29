@@ -211,7 +211,8 @@ export function doubleNext(constraints: DoubleNextConstraints = {}): Arbitrary<n
   } = constraints;
   const minIndex = safeDoubleToIndex(min, 'min');
   const maxIndex = safeDoubleToIndex(max, 'max');
-  if (minIndex > maxIndex) {
+  if (isStrictlySmaller64(maxIndex, minIndex)) {
+    // In other words: minIndex > maxIndex
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
     throw new Error('fc.doubleNext constraints.min must be smaller or equal to constraints.max');
