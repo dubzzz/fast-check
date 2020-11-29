@@ -227,7 +227,7 @@ export function doubleNext(constraints: DoubleNextConstraints = {}): Arbitrary<n
   //   values will be [NaN, min, ..., max] with max <= +0
   const positiveMaxIdx = isStrictlyPositive64(maxIndex);
   const minIndexWithNaN = positiveMaxIdx ? minIndex : substract64(minIndex, Unit64);
-  const maxIndexWithNaN = positiveMaxIdx ? add64(minIndex, Unit64) : maxIndex;
+  const maxIndexWithNaN = positiveMaxIdx ? add64(maxIndex, Unit64) : maxIndex;
   return arrayInt64(minIndexWithNaN, maxIndexWithNaN).map((index) => {
     if (isStrictlySmaller64(maxIndex, index) || isStrictlySmaller64(index, minIndex)) return Number.NaN;
     else return indexToDouble(index);
