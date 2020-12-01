@@ -14,46 +14,15 @@ import * as stubRng from '../../stubs/generators';
 
 import * as ArrayInt64ArbitraryMock from '../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary';
 import { add64, ArrayInt64, isEqual64, substract64, Unit64 } from '../../../../src/check/arbitrary/helpers/ArrayInt64';
+import {
+  defaultDoubleRecordConstraints,
+  doubleNextConstraints,
+  float64raw,
+  isStrictlySmaller,
+} from './generic/FloatingPointHelpers';
 jest.mock('../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary');
 
-const float64raw = () => {
-  return fc
-    .tuple(fc.integer(), fc.integer())
-    .map(([na32, nb32]) => new Float64Array(new Int32Array([na32, nb32]).buffer)[0]);
-};
-const defaultRecordConstraints = {
-  min: float64raw(),
-  max: float64raw(),
-  noDefaultInfinity: fc.boolean(),
-  noNaN: fc.boolean(),
-};
-function doubleNextConstraints(
-  recordConstraints: Partial<typeof defaultRecordConstraints> = defaultRecordConstraints
-): fc.Arbitrary<DoubleNextConstraints> {
-  return fc
-    .record(recordConstraints, { withDeletedKeys: true })
-    .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
-    .filter((ct) => {
-      if (!ct.noDefaultInfinity) return true;
-      if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
-      if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
-      return true;
-    })
-    .map((ct) => {
-      if (ct.min === undefined || ct.max === undefined) return ct;
-      const { min, max } = ct;
-      if (min < max) return ct;
-      if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
-      return { ...ct, min: max, max: min };
-    });
-}
-
 type Index = ReturnType<typeof doubleToIndex>;
-
-const isStrictlySmaller = (da: number, db: number) => {
-  if (da === 0 && db === 0) return 1 / da < 1 / db;
-  return da < db;
-};
 const toIndex = (raw: bigint | string): Index => {
   const b = typeof raw === 'string' ? BigInt(raw) : raw;
   const pb = b < BigInt(0) ? -b : b;
@@ -167,7 +136,7 @@ describe('DoubleNextArbitrary', () => {
     }
 
     describe('with NaN', () => {
-      const withNaNRecordConstraints = { ...defaultRecordConstraints, noNaN: fc.constant(false) };
+      const withNaNRecordConstraints = { ...defaultDoubleRecordConstraints, noNaN: fc.constant(false) };
 
       it('Should ask for a range with one extra value (far from zero)', () =>
         fc.assert(
@@ -224,7 +193,7 @@ describe('DoubleNextArbitrary', () => {
 
     describe('without NaN', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { noNaN, ...noNaNRecordConstraints } = defaultRecordConstraints;
+      const { noNaN, ...noNaNRecordConstraints } = defaultDoubleRecordConstraints;
 
       it('Should ask integers between the indexes corresponding to min and max', () =>
         fc.assert(

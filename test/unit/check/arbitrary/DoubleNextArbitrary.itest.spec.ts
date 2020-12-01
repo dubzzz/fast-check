@@ -1,34 +1,8 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { doubleNext, DoubleNextConstraints } from '../../../../src/check/arbitrary/DoubleNextArbitrary';
+import { doubleNextConstraints } from './generic/FloatingPointHelpers';
 import * as genericHelper from './generic/GenericArbitraryHelper';
-
-const float64raw = () => {
-  return fc
-    .tuple(fc.integer(), fc.integer())
-    .map(([na32, nb32]) => new Float64Array(new Int32Array([na32, nb32]).buffer)[0]);
-};
-const doubleNextConstraints = () => {
-  return fc
-    .record(
-      { min: float64raw(), max: float64raw(), noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() },
-      { withDeletedKeys: true }
-    )
-    .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
-    .filter((ct) => {
-      if (!ct.noDefaultInfinity) return true;
-      if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
-      if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
-      return true;
-    })
-    .map((ct) => {
-      if (ct.min === undefined || ct.max === undefined) return ct;
-      const { min, max } = ct;
-      if (min < max) return ct;
-      if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
-      return { ...ct, min: max, max: min };
-    });
-};
 
 describe('DoubleNextArbitrary', () => {
   describe('doubleNext', () => {

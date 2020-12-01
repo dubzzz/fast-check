@@ -1,4 +1,5 @@
 import * as fc from '../../../../../lib/fast-check';
+import { DoubleNextConstraints } from '../../../../../src/check/arbitrary/DoubleNextArbitrary';
 import { FloatNextConstraints } from '../../../../../src/check/arbitrary/FloatNextArbitrary';
 
 export function float32raw(): fc.Arbitrary<number> {
@@ -11,7 +12,7 @@ export function float64raw(): fc.Arbitrary<number> {
     .map(([na32, nb32]) => new Float64Array(new Int32Array([na32, nb32]).buffer)[0]);
 }
 
-export const defaultRecordConstraints = {
+export const defaultFloatRecordConstraints = {
   min: float32raw(),
   max: float32raw(),
   noDefaultInfinity: fc.boolean(),
@@ -19,8 +20,36 @@ export const defaultRecordConstraints = {
 };
 
 export function floatNextConstraints(
-  recordConstraints: Partial<typeof defaultRecordConstraints> = defaultRecordConstraints
+  recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints
 ): fc.Arbitrary<FloatNextConstraints> {
+  return fc
+    .record(recordConstraints, { withDeletedKeys: true })
+    .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
+    .filter((ct) => {
+      if (!ct.noDefaultInfinity) return true;
+      if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
+      if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
+      return true;
+    })
+    .map((ct) => {
+      if (ct.min === undefined || ct.max === undefined) return ct;
+      const { min, max } = ct;
+      if (min < max) return ct;
+      if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
+      return { ...ct, min: max, max: min };
+    });
+}
+
+export const defaultDoubleRecordConstraints = {
+  min: float64raw(),
+  max: float64raw(),
+  noDefaultInfinity: fc.boolean(),
+  noNaN: fc.boolean(),
+};
+
+export function doubleNextConstraints(
+  recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints
+): fc.Arbitrary<DoubleNextConstraints> {
   return fc
     .record(recordConstraints, { withDeletedKeys: true })
     .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
