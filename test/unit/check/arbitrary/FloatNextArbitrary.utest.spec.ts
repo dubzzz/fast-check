@@ -142,7 +142,6 @@ describe('FloatNextArbitrary', () => {
             // Arrange
             const { max } = minMaxForConstraints(ct);
             const integer = mockNoOpIntegerArb();
-            mockNoOpIntegerArb();
 
             // Act
             floatNext({ ...ct, noNaN: true });
