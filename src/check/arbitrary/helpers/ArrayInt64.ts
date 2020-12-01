@@ -52,43 +52,36 @@ export function clone64(a: ArrayInt64): ArrayInt64 {
 }
 
 /**
- * Expects arrayIntA >= arrayIntB
  * @internal
  */
-function substract64Internal(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 {
-  const lowA = arrayIntA.data[1];
-  const highA = arrayIntA.data[0];
-  const signA = arrayIntA.sign;
-  const lowB = arrayIntB.data[1];
-  const highB = arrayIntB.data[0];
-  const signB = arrayIntB.sign;
-
-  if (signA === 1 && signB === -1) {
-    // Operation is a simple sum of arrayIntA + abs(arrayIntB)
-    const low = lowA + lowB;
-    const high = highA + highB + (low > 0xffffffff ? 1 : 0);
-    return { sign: 1, data: [high >>> 0, low >>> 0] };
-  }
-
-  // signA === -1 with signB === 1 is impossible given: arrayIntA - arrayIntB >= 0
-  // Operation is a substraction
-  let lowFirst = lowA;
-  let highFirst = highA;
-  let lowSecond = lowB;
-  let highSecond = highB;
-  if (signA === -1) {
-    lowFirst = lowB;
-    highFirst = highB;
-    lowSecond = lowA;
-    highSecond = highA;
-  }
+function substract64DataInternal(a: ArrayInt64['data'], b: ArrayInt64['data']): ArrayInt64['data'] {
   let reminderLow = 0;
-  let low = lowFirst - lowSecond;
+  let low = a[1] - b[1];
   if (low < 0) {
     reminderLow = 1;
     low = low >>> 0;
   }
-  return { sign: 1, data: [highFirst - highSecond - reminderLow, low] };
+  return [a[0] - b[0] - reminderLow, low];
+}
+
+/**
+ * Expects arrayIntA >= arrayIntB
+ * @internal
+ */
+function substract64Internal(a: ArrayInt64, b: ArrayInt64): ArrayInt64 {
+  if (a.sign === 1 && b.sign === -1) {
+    // Operation is a simple sum of a + abs(b)
+    const low = a.data[1] + b.data[1];
+    const high = a.data[0] + b.data[0] + (low > 0xffffffff ? 1 : 0);
+    return { sign: 1, data: [high >>> 0, low >>> 0] };
+  }
+
+  // a.sign === -1 with b.sign === 1 is impossible given: a - b >= 0
+  // Operation is a substraction
+  return {
+    sign: 1,
+    data: a.sign === 1 ? substract64DataInternal(a.data, b.data) : substract64DataInternal(b.data, a.data),
+  };
 }
 
 /**
