@@ -22,14 +22,18 @@ function toBigInt(a: ArrayInt64): bigint {
   return BigInt(a.sign) * ((BigInt(a.data[0]) << BigInt(32)) + BigInt(a.data[1]));
 }
 
-function expectValidArrayInt(a: ArrayInt64): boolean {
-  return (
-    (a.sign === 1 || a.sign === -1) &&
-    a.data[0] >= 0 &&
-    a.data[0] <= 0xffffffff &&
-    a.data[1] >= 0 &&
-    a.data[1] <= 0xffffffff
-  );
+function expectValidArrayInt(a: ArrayInt64): void {
+  expect([-1, 1]).toContain(a.sign);
+  expect(a.data[0]).toBeGreaterThanOrEqual(0);
+  expect(a.data[0]).toBeLessThanOrEqual(0xffffffff);
+  expect(a.data[1]).toBeGreaterThanOrEqual(0);
+  expect(a.data[1]).toBeLessThanOrEqual(0xffffffff);
+}
+
+function expectValidZeroIfAny(a: ArrayInt64): void {
+  if (a.data[0] === 0 && a.data[1] === 0) {
+    expect(a.sign).toBe(1);
+  }
 }
 
 describe('ArrayInt64', () => {
@@ -71,6 +75,7 @@ describe('ArrayInt64', () => {
             fc.pre(expectedResult <= MaxArrayIntValue);
             const result64 = substract64(toArrayInt64(a, na), toArrayInt64(b, nb));
             expectValidArrayInt(result64);
+            expectValidZeroIfAny(result64);
             expect(toBigInt(result64)).toBe(expectedResult);
           }
         )
@@ -103,6 +108,7 @@ describe('ArrayInt64', () => {
             fc.pre(expectedResult <= MaxArrayIntValue);
             const result64 = add64(toArrayInt64(a, na), toArrayInt64(b, nb));
             expectValidArrayInt(result64);
+            expectValidZeroIfAny(result64);
             expect(toBigInt(result64)).toBe(expectedResult);
           }
         )

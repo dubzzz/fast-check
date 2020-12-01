@@ -51,9 +51,7 @@ export function clone64(a: ArrayInt64): ArrayInt64 {
   return { sign: a.sign, data: [a.data[0], a.data[1]] };
 }
 
-/**
- * @internal
- */
+/** @internal */
 function substract64DataInternal(a: ArrayInt64['data'], b: ArrayInt64['data']): ArrayInt64['data'] {
   let reminderLow = 0;
   let low = a[1] - b[1];
@@ -100,18 +98,13 @@ export function substract64(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): Array
 
 /**
  * Negative version of an ArrayInt64
- * @returns When result is zero always with sign=1
  * @internal
  */
 export function negative64(arrayIntA: ArrayInt64): ArrayInt64 {
-  const out: ArrayInt64 = {
+  return {
     sign: -arrayIntA.sign as -1 | 1,
     data: [arrayIntA.data[0], arrayIntA.data[1]],
   };
-  if (isZero64(out)) {
-    out.sign = 1;
-  }
-  return out;
 }
 
 /**
@@ -128,18 +121,13 @@ export function add64(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 
 
 /**
  * Halve an ArrayInt64
- * @returns When result is zero always with sign=1
  * @internal
  */
 export function halve64(a: ArrayInt64): ArrayInt64 {
-  const out: ArrayInt64 = {
+  return {
     sign: a.sign,
     data: [Math.floor(a.data[0] / 2), (a.data[0] % 2 === 1 ? 0x80000000 : 0) + Math.floor(a.data[1] / 2)],
   };
-  if (isZero64(out)) {
-    out.sign = 1;
-  }
-  return out;
 }
 
 /**
