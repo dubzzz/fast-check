@@ -38,19 +38,12 @@ function isStrictlySmaller64Internal(a: ArrayInt64['data'], b: ArrayInt64['data'
 /** @internal */
 export function isStrictlySmaller64(a: ArrayInt64, b: ArrayInt64): boolean {
   if (a.sign === b.sign) {
-    if (a.sign === 1) {
-      // a.sign = +1, b.sign = +1
-      return isStrictlySmaller64Internal(a.data, b.data);
-    }
-    // a.sign = -1, b.sign = -1
-    return isStrictlySmaller64Internal(b.data, a.data);
+    return a.sign === 1
+      ? isStrictlySmaller64Internal(a.data, b.data) // a.sign = +1, b.sign = +1
+      : isStrictlySmaller64Internal(b.data, a.data); // a.sign = -1, b.sign = -1
   }
-  if (a.sign === 1) {
-    // a.sign = +1, b.sign = -1
-    return false;
-  }
-  // a.sign = -1, b.sign = +1
-  return !isZero64(a) || !isZero64(b);
+  // a.sign = +1, b.sign = -1 is always false
+  return a.sign === -1 && (!isZero64(a) || !isZero64(b)); // a.sign = -1, b.sign = +1
 }
 
 /** @internal */
