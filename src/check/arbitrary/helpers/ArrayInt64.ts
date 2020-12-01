@@ -65,7 +65,7 @@ function substract64DataInternal(a: ArrayInt64['data'], b: ArrayInt64['data']): 
 }
 
 /**
- * Expects arrayIntA >= arrayIntB
+ * Expects a >= b
  * @internal
  */
 function substract64Internal(a: ArrayInt64, b: ArrayInt64): ArrayInt64 {
@@ -76,7 +76,7 @@ function substract64Internal(a: ArrayInt64, b: ArrayInt64): ArrayInt64 {
     return { sign: 1, data: [high >>> 0, low >>> 0] };
   }
 
-  // a.sign === -1 with b.sign === 1 is impossible given: a - b >= 0
+  // a.sign === -1 with b.sign === 1 is impossible given: a - b >= 0, except for a = 0 and b = 0
   // Operation is a substraction
   return {
     sign: 1,
