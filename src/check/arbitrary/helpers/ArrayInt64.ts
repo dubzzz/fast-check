@@ -31,14 +31,19 @@ export function isEqual64(a: ArrayInt64, b: ArrayInt64): boolean {
 }
 
 /** @internal */
+function isStrictlySmaller64Internal(a: ArrayInt64['data'], b: ArrayInt64['data']): boolean {
+  return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
+}
+
+/** @internal */
 export function isStrictlySmaller64(a: ArrayInt64, b: ArrayInt64): boolean {
   if (a.sign === b.sign) {
     if (a.sign === 1) {
       // a.sign = +1, b.sign = +1
-      return a.data[0] < b.data[0] || (a.data[0] === b.data[0] && a.data[1] < b.data[1]);
+      return isStrictlySmaller64Internal(a.data, b.data);
     }
     // a.sign = -1, b.sign = -1
-    return b.data[0] < a.data[0] || (b.data[0] === a.data[0] && b.data[1] < a.data[1]);
+    return isStrictlySmaller64Internal(b.data, a.data);
   }
   if (a.sign === 1) {
     // a.sign = +1, b.sign = -1
@@ -48,14 +53,16 @@ export function isStrictlySmaller64(a: ArrayInt64, b: ArrayInt64): boolean {
   return !isZero64(a) || !isZero64(b);
 }
 
+/** @internal */
+export function clone64(a: ArrayInt64): ArrayInt64 {
+  return { sign: a.sign, data: [a.data[0], a.data[1]] };
+}
+
 /**
  * Expects arrayIntA >= arrayIntB
  * @internal
  */
 function substract64Internal(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 {
-  // WARNING: We e
-  //          In the code of this helper
-
   const lowA = arrayIntA.data[1];
   const highA = arrayIntA.data[0];
   const signA = arrayIntA.sign;

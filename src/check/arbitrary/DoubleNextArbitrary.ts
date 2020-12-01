@@ -2,6 +2,8 @@ import { Arbitrary } from './definition/Arbitrary';
 import {
   add64,
   ArrayInt64,
+  clone64,
+  isEqual64,
   isStrictlyPositive64,
   isStrictlySmaller64,
   substract64,
@@ -84,10 +86,10 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): ArrayIn
  */
 export function doubleToIndex(d: number): ArrayInt64 {
   if (d === Number.POSITIVE_INFINITY) {
-    return { sign: INDEX_POSITIVE_INFINITY.sign, data: INDEX_POSITIVE_INFINITY.data.slice() as ArrayInt64['data'] };
+    return clone64(INDEX_POSITIVE_INFINITY);
   }
   if (d === Number.NEGATIVE_INFINITY) {
-    return { sign: INDEX_NEGATIVE_INFINITY.sign, data: INDEX_NEGATIVE_INFINITY.data.slice() as ArrayInt64['data'] };
+    return clone64(INDEX_NEGATIVE_INFINITY);
   }
   const decomp = decomposeDouble(d);
   const exponent = decomp.exponent;
@@ -124,7 +126,7 @@ export function indexToDouble(index: ArrayInt64): number {
     }
     return -indexToDouble(indexOpposite); // -indexToDouble(-index - 1);
   }
-  if (index.data[0] === INDEX_POSITIVE_INFINITY.data[0] && index.data[1] === INDEX_POSITIVE_INFINITY.data[1]) {
+  if (isEqual64(index, INDEX_POSITIVE_INFINITY)) {
     return Number.POSITIVE_INFINITY;
   }
   if (index.data[0] < 0x200000) {
