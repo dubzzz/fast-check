@@ -121,7 +121,7 @@ export function negative64(arrayIntA: ArrayInt64): ArrayInt64 {
  */
 export function add64(arrayIntA: ArrayInt64, arrayIntB: ArrayInt64): ArrayInt64 {
   if (isZero64(arrayIntB)) {
-    return { sign: arrayIntA.sign, data: [arrayIntA.data[0], arrayIntA.data[1]] };
+    return clone64(arrayIntA);
   }
   return substract64(arrayIntA, negative64(arrayIntB));
 }
