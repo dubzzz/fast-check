@@ -38,10 +38,11 @@ function minMaxForConstraints(ct: FloatNextConstraints) {
   return { min, max };
 }
 
-function mockNoOpIntegerArb() {
+function mockNoOpIntegerArb(opts: { single?: boolean } = {}) {
   // Mocking integer: not expecting any call there
   const { integer } = mocked(IntegerArbitraryMock);
-  integer.mockImplementationOnce(() => arbitraryFor([]));
+  if (opts.single) integer.mockImplementationOnce(() => arbitraryFor([]));
+  else integer.mockImplementation(() => arbitraryFor([]));
   return integer;
 }
 
@@ -168,7 +169,7 @@ describe('FloatNextArbitrary', () => {
             // Arrange
             // Setup mocks for integer
             const arbitraryGenerated = { value: Number.NaN };
-            const integer = mockNoOpIntegerArb();
+            const integer = mockNoOpIntegerArb({ single: true });
             integer.mockImplementationOnce(() => arbitraryFor([arbitraryGenerated]));
             // Call float next to find out the value required for NaN
             floatNext({ ...ct, noNaN: true });
