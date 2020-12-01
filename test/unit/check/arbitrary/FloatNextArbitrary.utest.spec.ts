@@ -38,17 +38,6 @@ function minMaxForConstraints(ct: FloatNextConstraints) {
   return { min, max };
 }
 
-function mockIntegerArb(ct: FloatNextConstraints, mod: number) {
-  // Mocking integer: expecting one call
-  const { integer } = mocked(IntegerArbitraryMock);
-  const { min, max } = minMaxForConstraints(ct);
-  const minIndex = floatToIndex(min);
-  const maxIndex = floatToIndex(max);
-  const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + 1)) + minIndex;
-  integer.mockImplementationOnce(() => arbitraryFor([{ value: arbitraryGeneratedIndex }]));
-  return arbitraryGeneratedIndex;
-}
-
 function mockNoOpIntegerArb() {
   // Mocking integer: not expecting any call there
   const { integer } = mocked(IntegerArbitraryMock);
@@ -123,6 +112,25 @@ describe('FloatNextArbitrary', () => {
       expect(() => floatNext({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
       expect(() => floatNext({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
     });
+    it('Should properly convert integer value for index between min and max into its associated float value', () =>
+      fc.assert(
+        fc.property(fc.option(floatNextConstraints(), { nil: undefined }), fc.maxSafeNat(), (ct, mod) => {
+          // Arrange
+          const { integer } = mocked(IntegerArbitraryMock);
+          const { min, max } = minMaxForConstraints(ct || {});
+          const minIndex = floatToIndex(min);
+          const maxIndex = floatToIndex(max);
+          const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + 1)) + minIndex;
+          integer.mockImplementationOnce(() => arbitraryFor([{ value: arbitraryGeneratedIndex }]));
+
+          // Act
+          const arb = floatNext(ct);
+          const { value_: f } = arb.generate(mrng());
+
+          // Assert
+          expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
+        })
+      ));
 
     describe('with NaN', () => {
       const withNaNRecordConstraints = { ...defaultRecordConstraints, noNaN: fc.constant(false) };
@@ -152,20 +160,6 @@ describe('FloatNextArbitrary', () => {
               expect(integerConstraintsWithNaN.min).toBe(integerConstraintsNoNaN.min! - 1);
               expect(integerConstraintsWithNaN.max).toBe(integerConstraintsNoNaN.max);
             }
-          })
-        ));
-      it('Should properly convert integer value for index between min and max into its associated float value', () =>
-        fc.assert(
-          fc.property(floatNextConstraints(withNaNRecordConstraints), fc.maxSafeNat(), (ct, mod) => {
-            // Arrange
-            const arbitraryGeneratedIndex = mockIntegerArb(ct, mod);
-
-            // Act
-            const arb = floatNext(ct);
-            const { value_: f } = arb.generate(mrng());
-
-            // Assert
-            expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
           })
         ));
       it('Should properly convert the extra value to NaN', () =>
@@ -215,21 +209,6 @@ describe('FloatNextArbitrary', () => {
             // Assert
             expect(integer).toHaveBeenCalledTimes(1);
             expect(integer).toHaveBeenCalledWith({ min: minIndex, max: maxIndex });
-          })
-        ));
-      it('Should properly convert integer value into its associated float value', () =>
-        fc.assert(
-          fc.property(floatNextConstraints(noNaNRecordConstraints), fc.maxSafeNat(), (ctDraft, mod) => {
-            // Arrange
-            const ct = { ...ctDraft, noNaN: true };
-            const arbitraryGeneratedIndex = mockIntegerArb(ct, mod);
-
-            // Act
-            const arb = floatNext(ct);
-            const { value_: f } = arb.generate(mrng());
-
-            // Assert
-            expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
           })
         ));
     });
