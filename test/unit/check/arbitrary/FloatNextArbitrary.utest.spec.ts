@@ -10,52 +10,61 @@ import {
   floatNext,
   FloatNextConstraints,
 } from '../../../../src/check/arbitrary/FloatNextArbitrary';
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import {
+  floatNextConstraints,
+  float32raw,
+  isNotNaN32bits,
+  float64raw,
+  isStrictlySmaller,
+  isFiniteNotNaN32bits,
+  defaultRecordConstraints,
+} from './generic/FloatingPointHelpers';
 
-const float32raw = () => {
-  return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
-};
-const float64raw = () => {
-  return fc
-    .tuple(fc.integer(), fc.integer())
-    .map(([na32, nb32]) => new Float64Array(new Int32Array([na32, nb32]).buffer)[0]);
-};
-const floatNextConstraints = () => {
-  return fc
-    .record(
-      { min: float32raw(), max: float32raw(), noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() },
-      { withDeletedKeys: true }
-    )
-    .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
-    .filter((ct) => {
-      if (!ct.noDefaultInfinity) return true;
-      if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
-      if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
-      return true;
-    })
-    .map((ct) => {
-      if (ct.min === undefined || ct.max === undefined) return ct;
-      const { min, max } = ct;
-      if (min < max) return ct;
-      if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
-      return { ...ct, min: max, max: min };
-    });
-};
+import { mocked } from 'ts-jest/utils';
+import { arbitraryFor } from './generic/ArbitraryBuilder';
+import * as stubRng from '../../stubs/generators';
 
-const isStrictlySmaller = (fa: number, fb: number) => {
-  if (fa === 0 && fb === 0) return 1 / fa < 1 / fb;
-  return fa < fb;
-};
+import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
+jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
 
-const is32bits = (f64: number) => Object.is(new Float32Array([f64])[0], f64);
-const isNotNaN32bits = (f64: number) => !Number.isNaN(f64) && is32bits(f64);
-const isFiniteNotNaN32bits = (f64: number) => Number.isFinite(f64) && isNotNaN32bits(f64);
+const mrng = () => stubRng.mutable.nocall();
+
+function minMaxForConstraints(ct: FloatNextConstraints) {
+  const noDefaultInfinity = ct.noDefaultInfinity;
+  const {
+    min = noDefaultInfinity ? -MAX_VALUE_32 : Number.NEGATIVE_INFINITY,
+    max = noDefaultInfinity ? MAX_VALUE_32 : Number.POSITIVE_INFINITY,
+  } = ct;
+  return { min, max };
+}
+
+function mockNoOpIntegerArb(opts: { single?: boolean } = {}) {
+  // Mocking integer: not expecting any call there
+  const { integer } = mocked(IntegerArbitraryMock);
+  if (opts.single) integer.mockImplementationOnce(() => arbitraryFor([]));
+  else integer.mockImplementation(() => arbitraryFor([]));
+  return integer;
+}
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.resetAllMocks();
+});
+const previousGlobal = fc.readConfigureGlobal();
+fc.configureGlobal({
+  ...previousGlobal,
+  beforeEach: () => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  },
+});
 
 describe('FloatNextArbitrary', () => {
   describe('floatNext', () => {
     it('Should accept any valid range of 32-bit floating point numbers (including infinity)', () =>
       fc.assert(
         fc.property(floatNextConstraints(), (ct) => {
+          mockNoOpIntegerArb();
           expect(floatNext(ct)).toBeDefined();
         })
       ));
@@ -66,6 +75,7 @@ describe('FloatNextArbitrary', () => {
           fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
           (f, otherCt) => {
             fc.pre(isNotNaN32bits(f));
+            mockNoOpIntegerArb();
             expect(floatNext({ ...otherCt, min: f, max: f })).toBeDefined();
           }
         )
@@ -74,6 +84,7 @@ describe('FloatNextArbitrary', () => {
       fc.assert(
         fc.property(float64raw(), (f64) => {
           fc.pre(!isNotNaN32bits(f64));
+          mockNoOpIntegerArb();
           expect(() => floatNext({ min: f64 })).toThrowError();
         })
       ));
@@ -81,6 +92,7 @@ describe('FloatNextArbitrary', () => {
       fc.assert(
         fc.property(float64raw(), (f64) => {
           fc.pre(!isNotNaN32bits(f64));
+          mockNoOpIntegerArb();
           expect(() => floatNext({ max: f64 })).toThrowError();
         })
       ));
@@ -90,38 +102,115 @@ describe('FloatNextArbitrary', () => {
           fc.pre(isNotNaN32bits(fa32));
           fc.pre(isNotNaN32bits(fb32));
           fc.pre(!Object.is(fa32, fb32)); // Object.is can distinguish -0 from 0, while !== cannot
+          mockNoOpIntegerArb();
           const min = isStrictlySmaller(fa32, fb32) ? fb32 : fa32;
           const max = isStrictlySmaller(fa32, fb32) ? fa32 : fb32;
           expect(() => floatNext({ min, max })).toThrowError();
         })
       ));
     it('Should reject impossible noDefaultInfinity-based ranges', () => {
+      mockNoOpIntegerArb();
       expect(() => floatNext({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
       expect(() => floatNext({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
     });
-    describe('Is valid arbitrary?', () => {
-      genericHelper.isValidArbitrary((ct?: FloatNextConstraints) => floatNext(ct), {
-        isStrictlySmallerValue: (fa, fb) =>
-          Math.abs(fa) < Math.abs(fb) || //              Case 1: abs(a) < abs(b)
-          (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
-          (!Number.isNaN(fa) && Number.isNaN(fb)), //    Case 3: notNaN < NaN, NaN is one of the extreme values
-        isValidValue: (g: number, ct?: FloatNextConstraints) => {
-          if (typeof g !== 'number') return false; // should always produce numbers
-          if (!is32bits(g)) return false; // should always produce 32-bit floats
-          if (Number.isNaN(g)) {
-            if (ct !== undefined && ct.noNaN) return false; // should not produce NaN if explicitely asked not too
-            return true;
-          }
-          if (ct !== undefined && ct.min !== undefined && g < ct.min) return false; // should always be greater than min when specified
-          if (ct !== undefined && ct.max !== undefined && g > ct.max) return false; // should always be smaller than max when specified
-          if (ct !== undefined && ct.noDefaultInfinity) {
-            if (ct.min === undefined && g === Number.NEGATIVE_INFINITY) return false; // should not produce -infinity when noInfity and min unset
-            if (ct.max === undefined && g === Number.POSITIVE_INFINITY) return false; // should not produce +infinity when noInfity and max unset
-          }
-          return true;
-        },
-        seedGenerator: fc.option(floatNextConstraints(), { nil: undefined }),
-      });
+    it('Should properly convert integer value for index between min and max into its associated float value', () =>
+      fc.assert(
+        fc.property(fc.option(floatNextConstraints(), { nil: undefined }), fc.maxSafeNat(), (ct, mod) => {
+          // Arrange
+          const { integer } = mocked(IntegerArbitraryMock);
+          const { min, max } = minMaxForConstraints(ct || {});
+          const minIndex = floatToIndex(min);
+          const maxIndex = floatToIndex(max);
+          const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + 1)) + minIndex;
+          integer.mockImplementationOnce(() => arbitraryFor([{ value: arbitraryGeneratedIndex }]));
+
+          // Act
+          const arb = floatNext(ct);
+          const { value_: f } = arb.generate(mrng());
+
+          // Assert
+          expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
+        })
+      ));
+
+    describe('with NaN', () => {
+      const withNaNRecordConstraints = { ...defaultRecordConstraints, noNaN: fc.constant(false) };
+
+      it('Should ask for a range with one extra value (far from zero)', () =>
+        fc.assert(
+          fc.property(floatNextConstraints(withNaNRecordConstraints), fc.maxSafeInteger(), (ct) => {
+            // Arrange
+            const { max } = minMaxForConstraints(ct);
+            const integer = mockNoOpIntegerArb();
+
+            // Act
+            floatNext({ ...ct, noNaN: true });
+            floatNext(ct);
+
+            // Assert
+            expect(integer).toHaveBeenCalledTimes(2);
+            const integerConstraintsNoNaN = integer.mock.calls[0][0];
+            const integerConstraintsWithNaN = integer.mock.calls[1][0];
+            if (max > 0) {
+              // max > 0  --> NaN will be added as the greatest value
+              expect(integerConstraintsWithNaN.min).toBe(integerConstraintsNoNaN.min);
+              expect(integerConstraintsWithNaN.max).toBe(integerConstraintsNoNaN.max! + 1);
+            } else {
+              // max <= 0 --> NaN will be added as the smallest value
+              expect(integerConstraintsWithNaN.min).toBe(integerConstraintsNoNaN.min! - 1);
+              expect(integerConstraintsWithNaN.max).toBe(integerConstraintsNoNaN.max);
+            }
+          })
+        ));
+      it('Should properly convert the extra value to NaN', () =>
+        fc.assert(
+          fc.property(floatNextConstraints(withNaNRecordConstraints), fc.maxSafeNat(), (ct) => {
+            // Arrange
+            // Setup mocks for integer
+            const arbitraryGenerated = { value: Number.NaN };
+            const integer = mockNoOpIntegerArb({ single: true });
+            integer.mockImplementationOnce(() => arbitraryFor([arbitraryGenerated]));
+            // Call float next to find out the value required for NaN
+            floatNext({ ...ct, noNaN: true });
+            const arb = floatNext(ct);
+            // Extract NaN "index"
+            const { min: minNonNaN } = integer.mock.calls[0][0];
+            const { min: minNaN, max: maxNaN } = integer.mock.calls[1][0];
+            const indexForNaN = minNonNaN !== minNaN ? minNaN : maxNaN;
+            if (indexForNaN === undefined) throw new Error('No value available for NaN');
+            arbitraryGenerated.value = indexForNaN;
+
+            // Act
+            const { value_: f } = arb.generate(mrng());
+
+            // Assert
+            expect(f).toBe(Number.NaN);
+          })
+        ));
+    });
+
+    describe('without NaN', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { noNaN, ...noNaNRecordConstraints } = defaultRecordConstraints;
+
+      it('Should ask integers between the indexes corresponding to min and max', () =>
+        fc.assert(
+          fc.property(floatNextConstraints(noNaNRecordConstraints), (ctDraft) => {
+            // Arrange
+            const ct = { ...ctDraft, noNaN: true };
+            const integer = mockNoOpIntegerArb();
+            const { min, max } = minMaxForConstraints(ct);
+            const minIndex = floatToIndex(min);
+            const maxIndex = floatToIndex(max);
+
+            // Act
+            floatNext(ct);
+
+            // Assert
+            expect(integer).toHaveBeenCalledTimes(1);
+            expect(integer).toHaveBeenCalledWith({ min: minIndex, max: maxIndex });
+          })
+        ));
     });
   });
 

@@ -196,7 +196,7 @@ export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<num
     throw new Error('fc.floatNext constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
-    return integer(minIndex, maxIndex).map(indexToFloat);
+    return integer({ min: minIndex, max: maxIndex }).map(indexToFloat);
   }
   // In case maxIndex > 0 or in other words max > 0,
   //   values will be [min, ..., +0, ..., max, NaN]
@@ -205,7 +205,7 @@ export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<num
   //   values will be [NaN, min, ..., max] with max <= +0
   const minIndexWithNaN = maxIndex > 0 ? minIndex : minIndex - 1;
   const maxIndexWithNaN = maxIndex > 0 ? maxIndex + 1 : maxIndex;
-  return integer(minIndexWithNaN, maxIndexWithNaN).map((index) => {
+  return integer({ min: minIndexWithNaN, max: maxIndexWithNaN }).map((index) => {
     if (index > maxIndex || index < minIndex) return Number.NaN;
     else return indexToFloat(index);
   });
