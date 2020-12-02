@@ -89,7 +89,7 @@ class ArrayInt64Arbitrary extends ArbitraryWithShrink<ArrayInt64> {
       const logGap = logLike64(substract64(this.max, this.min)); // max-min !== 0  ->  >=0
       const arbCloseToMin = new ArrayInt64Arbitrary(this.min, this.max, this.min, add64(this.min, logGap)); // close to min
       const arbCloseToMax = new ArrayInt64Arbitrary(this.min, this.max, substract64(this.max, logGap), this.max); // close to max
-      return minStrictlySmallerZero
+      this.biasedArrayInt64Arbitrary = minStrictlySmallerZero
         ? new BiasedNumericArbitrary(arbCloseToMax, arbCloseToMin) // max is closer to zero
         : new BiasedNumericArbitrary(arbCloseToMin, arbCloseToMax); // min is closer to zero
     }
