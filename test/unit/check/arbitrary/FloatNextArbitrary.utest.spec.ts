@@ -17,7 +17,7 @@ import {
   float64raw,
   isStrictlySmaller,
   isFiniteNotNaN32bits,
-  defaultRecordConstraints,
+  defaultFloatRecordConstraints,
 } from './generic/FloatingPointHelpers';
 
 import { mocked } from 'ts-jest/utils';
@@ -134,7 +134,7 @@ describe('FloatNextArbitrary', () => {
       ));
 
     describe('with NaN', () => {
-      const withNaNRecordConstraints = { ...defaultRecordConstraints, noNaN: fc.constant(false) };
+      const withNaNRecordConstraints = { ...defaultFloatRecordConstraints, noNaN: fc.constant(false) };
 
       it('Should ask for a range with one extra value (far from zero)', () =>
         fc.assert(
@@ -191,7 +191,7 @@ describe('FloatNextArbitrary', () => {
 
     describe('without NaN', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { noNaN, ...noNaNRecordConstraints } = defaultRecordConstraints;
+      const { noNaN, ...noNaNRecordConstraints } = defaultFloatRecordConstraints;
 
       it('Should ask integers between the indexes corresponding to min and max', () =>
         fc.assert(

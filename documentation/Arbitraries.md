@@ -289,11 +289,22 @@ fc.float({min: -100, max: 100})
 *&#8195;Signatures*
 
 - `fc.double()`
+- `fc.double({next: true, min?, max?, noDefaultInfinity?, noNaN?})`
 - `fc.double({min?, max?})`
 - `fc.double(min, max)`
 - _`fc.double(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
+
+*When `next` is `true`...*
+
+- `next` — _use the new version of float_
+- `min?` — default: `-∞` and `-Number.MAX_VALUE` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `Number.MAX_VALUE` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+
+*Otherwise...*
 
 - `min?` — default: `0.0` — _lower bound of the range (included)_
 - `max?` — default: `1.0` — _upper bound of the range (excluded)_
@@ -301,9 +312,30 @@ fc.float({min: -100, max: 100})
 *&#8195;Usages*
 
 ```js
+// New behaviour...
+
+fc.double({next: true})
+// Note: All possible floating point values (including -∞, +∞ and NaN but also -0)
+// Examples of generated values: 2.37e-322, 8.585001320826223e-158, -2.5e-323, 5.895761138020238e+302, -3.7859248062812417e-171…
+
+fc.double({next: true, min: 0})
+// Note: All possible positive floating point values (including +∞ and NaN)
+// Examples of generated values: 1.7976931348623093e+308, 2.8e-322, 3.0427667746799623e-174, 1.2e-322, 1.3e-322…
+
+fc.double({next: true, noDefaultInfinity: true, noNaN: true})
+// Note: All possible finite floating point values
+// Examples of generated values: 7.708517430762217e-92, 8.177542674298762e-87, 5.4e-323, 1.7976931348623071e+308, 4.3922193704082206e+39…
+
+fc.double({next: true, noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER})
+// Note: Same as fc.double({next: true}), noDefaultInfinity just tells that defaults for min and max
+// should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
+// Examples of generated values: 1.7976931348623157e+308, -1.7976931348623061e+308, -2.4e-322, 1.14e-322, 1.7976931348623055e+308…
+
+// Legacy mode...
+
 fc.double()
 // Note: All possible floating point values between `0.0` (included) and `1.0` (excluded)
-// Examples of generated values: 0.4530413804731288, 0.8226463198661818, 0.3829372459587349, 0.7186836451292066, 0.8065718412399295…
+// Examples of generated values: 0.3956174850463876, 0.2384091532256838, 0.7450366348797337, 0.4402490407228471, 3.278255483740722e-7…
 
 fc.double({max: 100})
 // Note: All possible floating point values between `0.0` (included) and `100.0` (excluded)

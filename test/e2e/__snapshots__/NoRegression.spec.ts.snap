@@ -817,6 +817,28 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [1.1102230246251565e-16]"
 `;
 
+exports[`NoRegression doubleNext 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:1:2\\", endOnFailure: true }
+Counterexample: [-1e-322]
+Shrunk 3 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [-2.9e-322]
+. [32m√[0m [0]
+. [31m×[0m [-1.43e-322]
+. . [32m√[0m [-7e-323]
+. . [31m×[0m [-1.1e-322]
+. . . [32m√[0m [-5.4e-323]
+. . . [32m√[0m [-8.4e-323]
+. . . [31m×[0m [-1e-322]
+. . . . [32m√[0m [-5e-323]
+. . . . [32m√[0m [-7.4e-323]
+. . . . [32m√[0m [-9e-323]
+. . . . [32m√[0m [-9.4e-323]"
+`;
+
 exports[`NoRegression emailAddress 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0:0:0:0:2:2:5:5:1:2:1:0:6:0:1\\", endOnFailure: true }
