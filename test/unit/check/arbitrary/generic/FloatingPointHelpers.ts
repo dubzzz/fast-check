@@ -19,9 +19,18 @@ export const defaultFloatRecordConstraints = {
   noNaN: fc.boolean(),
 };
 
-export function floatNextConstraints(
-  recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints
-): fc.Arbitrary<FloatNextConstraints> {
+export const defaultDoubleRecordConstraints = {
+  min: float64raw(),
+  max: float64raw(),
+  noDefaultInfinity: fc.boolean(),
+  noNaN: fc.boolean(),
+};
+
+type NextConstraintsInternalOut = FloatNextConstraints & DoubleNextConstraints;
+type NextConstraintsInternal = {
+  [K in keyof NextConstraintsInternalOut]?: fc.Arbitrary<NextConstraintsInternalOut[K]>;
+};
+function nextConstraintsInternal(recordConstraints: NextConstraintsInternal): fc.Arbitrary<NextConstraintsInternalOut> {
   return fc
     .record(recordConstraints, { withDeletedKeys: true })
     .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
@@ -40,32 +49,16 @@ export function floatNextConstraints(
     });
 }
 
-export const defaultDoubleRecordConstraints = {
-  min: float64raw(),
-  max: float64raw(),
-  noDefaultInfinity: fc.boolean(),
-  noNaN: fc.boolean(),
-};
+export function floatNextConstraints(
+  recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints
+): fc.Arbitrary<FloatNextConstraints> {
+  return nextConstraintsInternal(recordConstraints);
+}
 
 export function doubleNextConstraints(
   recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints
 ): fc.Arbitrary<DoubleNextConstraints> {
-  return fc
-    .record(recordConstraints, { withDeletedKeys: true })
-    .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
-    .filter((ct) => {
-      if (!ct.noDefaultInfinity) return true;
-      if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
-      if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
-      return true;
-    })
-    .map((ct) => {
-      if (ct.min === undefined || ct.max === undefined) return ct;
-      const { min, max } = ct;
-      if (min < max) return ct;
-      if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
-      return { ...ct, min: max, max: min };
-    });
+  return nextConstraintsInternal(recordConstraints);
 }
 
 export function isStrictlySmaller(fa: number, fb: number): boolean {
