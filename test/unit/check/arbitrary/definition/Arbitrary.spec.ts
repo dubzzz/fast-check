@@ -23,6 +23,7 @@ class ForwardArbitrary extends Arbitrary<number> {
     return this.shrinkableFor(mrng.nextInt());
   }
   withBias(freq: number) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const arb = this;
     return new (class extends Arbitrary<number> {
       generate(mrng: Random): Shrinkable<number> {

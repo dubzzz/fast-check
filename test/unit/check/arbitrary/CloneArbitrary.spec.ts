@@ -12,7 +12,7 @@ import { cloneMethod } from '../../../../lib/fast-check';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 
-export const isStrictlySmaller = (arr1: number[], arr2: number[]) => {
+export const isStrictlySmaller = (arr1: number[], arr2: number[]): boolean => {
   for (let idx = 0; idx !== arr1.length; ++idx) {
     if (arr2[idx] >= 0 && arr1[idx] >= arr2[idx]) return false;
     if (arr2[idx] <= 0 && arr1[idx] <= arr2[idx]) return false;

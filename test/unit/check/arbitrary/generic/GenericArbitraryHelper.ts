@@ -180,5 +180,7 @@ export const isValidArbitrary = function <U, T>(
   testAlwaysShrinkToCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue, parameters);
 };
 
-export const minMax = <NType extends number | bigint>(arb: fc.Arbitrary<NType>) =>
+export const minMax = <NType extends number | bigint>(
+  arb: fc.Arbitrary<NType>
+): fc.Arbitrary<{ min: NType; max: NType }> =>
   fc.tuple(arb, arb).map((v) => ({ min: v[0] < v[1] ? v[0] : v[1], max: v[0] < v[1] ? v[1] : v[0] }));
