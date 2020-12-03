@@ -4,10 +4,12 @@ import {
   add64,
   ArrayInt64,
   halve64,
+  isEqual64,
   isStrictlySmaller64,
   logLike64,
   negative64,
   substract64,
+  Zero64,
 } from '../../../../../src/check/arbitrary/helpers/ArrayInt64';
 
 function toArrayInt64(b: bigint, withNegativeZero: boolean): ArrayInt64 {
@@ -46,6 +48,34 @@ describe('ArrayInt64', () => {
 
   const MaxArrayIntValue = (BigInt(1) << BigInt(64)) - BigInt(1);
 
+  describe('isEqual64', () => {
+    it('Should consider identical values as equal', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          expect(isEqual64(toArrayInt64(a, false), toArrayInt64(a, false))).toBe(true);
+        })
+      ));
+    it('Should consider two different values as not equal', () =>
+      fc.assert(
+        fc.property(
+          fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
+          fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
+          fc.boolean(),
+          fc.boolean(),
+          (a, b, na, nb) => {
+            fc.pre(a !== b);
+            expect(isEqual64(toArrayInt64(a, na), toArrayInt64(b, nb))).toBe(false);
+          }
+        )
+      ));
+    it('Should consider zero and -zero to be equal', () => {
+      expect(isEqual64({ sign: -1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(true);
+      expect(isEqual64({ sign: 1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(true);
+      expect(isEqual64({ sign: -1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(true);
+      expect(isEqual64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(true);
+    });
+  });
+
   describe('isStrictlySmaller64', () => {
     it('Should properly compare two ArrayInt64 (including negative zeros)', () =>
       fc.assert(
@@ -59,6 +89,12 @@ describe('ArrayInt64', () => {
           }
         )
       ));
+    it('Should consider zero and -zero as equal values (never strictly smaller that the other)', () => {
+      expect(isStrictlySmaller64({ sign: -1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(false);
+      expect(isStrictlySmaller64({ sign: 1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(false);
+      expect(isStrictlySmaller64({ sign: -1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(false);
+      expect(isStrictlySmaller64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(false);
+    });
   });
 
   describe('substract64', () => {
@@ -79,6 +115,24 @@ describe('ArrayInt64', () => {
             expect(toBigInt(result64)).toBe(expectedResult);
           }
         )
+      ));
+    it('Should correspond to first term if second one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = substract64(toArrayInt64(a, false), Zero64);
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(a, false));
+        })
+      ));
+    it('Should correspond to minus second term if first one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = substract64(Zero64, toArrayInt64(a, false));
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(-a, false));
+        })
       ));
   });
 
@@ -112,6 +166,24 @@ describe('ArrayInt64', () => {
             expect(toBigInt(result64)).toBe(expectedResult);
           }
         )
+      ));
+    it('Should correspond to first term if second one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = add64(toArrayInt64(a, false), Zero64);
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(a, false));
+        })
+      ));
+    it('Should correspond to second term if first one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = add64(Zero64, toArrayInt64(a, false));
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(a, false));
+        })
       ));
   });
 
