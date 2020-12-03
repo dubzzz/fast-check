@@ -7,7 +7,7 @@ import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { frequency } from './FrequencyArbitrary';
-import { integer } from './IntegerArbitrary';
+import { maxSafeInteger } from './IntegerArbitrary';
 import { memo, Memo } from './MemoArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { set } from './SetArbitrary';
@@ -104,23 +104,10 @@ class QualifiedObjectConstraints {
   static defaultValues(): Arbitrary<unknown>[] {
     return [
       boolean(),
-      integer(),
-      double(),
+      maxSafeInteger(), // includes: 0, MIN_SAFE_INTEGER, MAX_SAFE_INTEGER
+      double({ next: true }), // includes: -/+0, -/+inf, -/+MIN_VALUE, -/+MAX_VALUE, NaN
       string(),
       oneof(string(), constant(null), constant(undefined)),
-      oneof(
-        double(),
-        constant(-0),
-        constant(0),
-        constant(Number.NaN),
-        constant(Number.POSITIVE_INFINITY),
-        constant(Number.NEGATIVE_INFINITY),
-        constant(Number.EPSILON),
-        constant(Number.MIN_VALUE),
-        constant(Number.MAX_VALUE),
-        constant(Number.MIN_SAFE_INTEGER),
-        constant(Number.MAX_SAFE_INTEGER)
-      ),
     ];
   }
 
@@ -317,7 +304,13 @@ function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unkno
 /** @internal */
 function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number | JsonSharedConstraints) {
   const key = stringArbitrary;
-  const values = [boolean(), integer(), double(), stringArbitrary, constant(null)];
+  const values = [
+    boolean(),
+    maxSafeInteger(),
+    double({ next: true, noDefaultInfinity: true, noNaN: true }),
+    stringArbitrary,
+    constant(null),
+  ];
   return constraints != null
     ? typeof constraints === 'number'
       ? { key, values, maxDepth: constraints }
