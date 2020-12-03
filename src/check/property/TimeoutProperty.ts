@@ -1,5 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty } from './IRawProperty';
 
 /** @internal */
@@ -23,7 +24,7 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
     return this.property.generate(mrng, runId);
   }
-  async run(v: Ts) {
+  async run(v: Ts): Promise<string | PreconditionFailure | null> {
     const t = timeoutAfter(this.timeMs);
     const propRun = Promise.race([this.property.run(v), t.promise]);
     propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur

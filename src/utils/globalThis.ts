@@ -10,4 +10,4 @@ const internalGlobalThis: any = (function (global) {
  * Internal polyfill for `globalThis`
  * @internal
  */
-export const getGlobal = () => internalGlobalThis;
+export const getGlobal: any = () => internalGlobalThis;

@@ -11,7 +11,10 @@ type MinimalQualifiedParameters<Ts> = Pick<
 >;
 
 /** @internal */
-export function decorateProperty<Ts>(rawProperty: IRawProperty<Ts>, qParams: MinimalQualifiedParameters<Ts>) {
+export function decorateProperty<Ts>(
+  rawProperty: IRawProperty<Ts>,
+  qParams: MinimalQualifiedParameters<Ts>
+): IRawProperty<Ts> {
   let prop = rawProperty;
   if (rawProperty.isAsync() && qParams.timeout != null) prop = new TimeoutProperty(prop, qParams.timeout);
   if (qParams.unbiased === true) prop = new UnbiasedProperty(prop);

@@ -36,7 +36,7 @@ export class RunExecution<Ts> {
     return currentTree;
   }
 
-  fail(value: Ts, id: number, message: string) {
+  fail(value: Ts, id: number, message: string): void {
     if (this.verbosity >= VerbosityLevel.Verbose) {
       const currentTree = this.appendExecutionTree(ExecutionStatus.Failure, value);
       this.currentLevelExecutionTrees = currentTree.children;
@@ -46,7 +46,7 @@ export class RunExecution<Ts> {
     this.value = value;
     this.failure = message;
   }
-  skip(value: Ts) {
+  skip(value: Ts): void {
     if (this.verbosity >= VerbosityLevel.VeryVerbose) {
       this.appendExecutionTree(ExecutionStatus.Skipped, value);
     }
@@ -54,7 +54,7 @@ export class RunExecution<Ts> {
       ++this.numSkips;
     }
   }
-  success(value: Ts) {
+  success(value: Ts): void {
     if (this.verbosity >= VerbosityLevel.VeryVerbose) {
       this.appendExecutionTree(ExecutionStatus.Success, value);
     }
@@ -62,7 +62,7 @@ export class RunExecution<Ts> {
       ++this.numSuccesses;
     }
   }
-  interrupt() {
+  interrupt(): void {
     this.interrupted = true;
   }
 

@@ -13,14 +13,14 @@ export class SourceValuesIterator<Ts> implements IterableIterator<Ts> {
   [Symbol.iterator](): IterableIterator<Ts> {
     return this;
   }
-  next(value?: any): IteratorResult<Ts> {
+  next(): IteratorResult<Ts> {
     if (--this.maxInitialIterations !== -1 && this.remainingSkips >= 0) {
       const n = this.initialValues.next();
       if (!n.done) return { value: n.value(), done: false };
     }
-    return { value, done: true };
+    return { value: undefined, done: true };
   }
-  skippedOne() {
+  skippedOne(): void {
     --this.remainingSkips;
     ++this.maxInitialIterations;
   }

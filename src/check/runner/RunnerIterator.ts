@@ -31,16 +31,16 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   [Symbol.iterator](): IterableIterator<Ts> {
     return this;
   }
-  next(value?: any): IteratorResult<Ts> {
+  next(): IteratorResult<Ts> {
     const nextValue = this.nextValues.next();
     if (nextValue.done || this.runExecution.interrupted) {
-      return { done: true, value };
+      return { done: true, value: undefined };
     }
     this.currentShrinkable = nextValue.value;
     ++this.currentIdx;
     return { done: false, value: nextValue.value.value_ };
   }
-  handleResult(result: PreconditionFailure | string | null) {
+  handleResult(result: PreconditionFailure | string | null): void {
     // WARNING: This function has to be called after a call to next
     //          Otherwise it will not be able to execute with the right currentShrinkable (or crash)
     if (result != null && typeof result === 'string') {
