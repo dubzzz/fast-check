@@ -7,6 +7,7 @@ module.exports = {
     'prettier/@typescript-eslint',
   ],
   rules: {
+    '@typescript-eslint/explicit-module-boundary-types': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-empty-function': 'warn',
