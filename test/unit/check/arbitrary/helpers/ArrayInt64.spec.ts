@@ -55,6 +55,19 @@ describe('ArrayInt64', () => {
           expect(isEqual64(toArrayInt64(a, false), toArrayInt64(a, false))).toBe(true);
         })
       ));
+    it('Should consider two different values as not equal', () =>
+      fc.assert(
+        fc.property(
+          fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
+          fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
+          fc.boolean(),
+          fc.boolean(),
+          (a, b, na, nb) => {
+            fc.pre(a !== b);
+            expect(isEqual64(toArrayInt64(a, na), toArrayInt64(b, nb))).toBe(false);
+          }
+        )
+      ));
     it('Should consider zero and -zero to be equal', () => {
       expect(isEqual64({ sign: -1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(true);
       expect(isEqual64({ sign: 1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(true);
