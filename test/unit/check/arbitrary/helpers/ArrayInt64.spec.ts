@@ -8,6 +8,7 @@ import {
   logLike64,
   negative64,
   substract64,
+  Zero64,
 } from '../../../../../src/check/arbitrary/helpers/ArrayInt64';
 
 function toArrayInt64(b: bigint, withNegativeZero: boolean): ArrayInt64 {
@@ -80,6 +81,24 @@ describe('ArrayInt64', () => {
           }
         )
       ));
+    it('Should correspond to first term if second one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = substract64(toArrayInt64(a, false), Zero64);
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(a, false));
+        })
+      ));
+    it('Should correspond to minus second term if first one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = substract64(Zero64, toArrayInt64(a, false));
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(-a, false));
+        })
+      ));
   });
 
   describe('negative64', () => {
@@ -112,6 +131,24 @@ describe('ArrayInt64', () => {
             expect(toBigInt(result64)).toBe(expectedResult);
           }
         )
+      ));
+    it('Should correspond to first term if second one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = add64(toArrayInt64(a, false), Zero64);
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(a, false));
+        })
+      ));
+    it('Should correspond to second term if first one is zero', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          const result64 = add64(Zero64, toArrayInt64(a, false));
+          expectValidArrayInt(result64);
+          expectValidZeroIfAny(result64);
+          expect(result64).toEqual(toArrayInt64(a, false));
+        })
       ));
   });
 
