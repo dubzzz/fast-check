@@ -4,6 +4,7 @@ import {
   add64,
   ArrayInt64,
   halve64,
+  isEqual64,
   isStrictlySmaller64,
   logLike64,
   negative64,
@@ -47,6 +48,21 @@ describe('ArrayInt64', () => {
 
   const MaxArrayIntValue = (BigInt(1) << BigInt(64)) - BigInt(1);
 
+  describe('isEqual64', () => {
+    it('Should consider identical values as equal', () =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }), (a) => {
+          expect(isEqual64(toArrayInt64(a, false), toArrayInt64(a, false))).toBe(true);
+        })
+      ));
+    it('Should consider zero and -zero to be equal', () => {
+      expect(isEqual64({ sign: -1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(true);
+      expect(isEqual64({ sign: 1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(true);
+      expect(isEqual64({ sign: -1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(true);
+      expect(isEqual64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(true);
+    });
+  });
+
   describe('isStrictlySmaller64', () => {
     it('Should properly compare two ArrayInt64 (including negative zeros)', () =>
       fc.assert(
@@ -60,6 +76,12 @@ describe('ArrayInt64', () => {
           }
         )
       ));
+    it('Should consider zero and -zero as equal values (never strictly smaller that the other)', () => {
+      expect(isStrictlySmaller64({ sign: -1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(false);
+      expect(isStrictlySmaller64({ sign: 1, data: [0, 0] }, { sign: -1, data: [0, 0] })).toBe(false);
+      expect(isStrictlySmaller64({ sign: -1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(false);
+      expect(isStrictlySmaller64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 0] })).toBe(false);
+    });
   });
 
   describe('substract64', () => {
