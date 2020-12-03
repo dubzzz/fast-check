@@ -70,11 +70,11 @@ function shrinkNumeric<NType extends Numeric>(
 }
 
 /** @internal */
-export function shrinkNumber(min: number, max: number, current: number, shrunkOnce: boolean) {
+export function shrinkNumber(min: number, max: number, current: number, shrunkOnce: boolean): Stream<number> {
   return shrinkNumeric(0, min, max, current, shrunkOnce, halvePosNumber, halveNegNumber);
 }
 
 /** @internal */
-export function shrinkBigInt(min: bigint, max: bigint, current: bigint, shrunkOnce: boolean) {
+export function shrinkBigInt(min: bigint, max: bigint, current: bigint, shrunkOnce: boolean): Stream<bigint> {
   return shrinkNumeric(BigInt(0), min, max, current, shrunkOnce, halveBigInt, halveBigInt);
 }

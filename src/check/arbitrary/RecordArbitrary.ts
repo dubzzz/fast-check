@@ -67,7 +67,7 @@ function record<T, Constraints extends RecordConstraints>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints: Constraints
 ): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, Constraints>>;
-function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints) {
+function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints): unknown {
   if (constraints == null || constraints.withDeletedKeys !== true) {
     return rawRecord(recordModel);
   }

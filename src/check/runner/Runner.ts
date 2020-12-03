@@ -110,7 +110,7 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails
  * @public
  */
 function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
-function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
+function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   if (rawProperty == null || rawProperty.generate == null)
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
@@ -183,7 +183,7 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
  * @public
  */
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
-function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>) {
+function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(reportRunDetails);
   else reportRunDetails(out as RunDetails<Ts>);

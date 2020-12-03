@@ -7,5 +7,5 @@ export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProper
   constructor(readonly property: IRawProperty<Ts, IsAsync>) {}
   isAsync = (): IsAsync => this.property.isAsync();
   generate = (mrng: Random, _runId?: number): Shrinkable<Ts> => this.property.generate(mrng);
-  run = (v: Ts) => this.property.run(v);
+  run = (v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> => this.property.run(v);
 }

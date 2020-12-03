@@ -14,7 +14,7 @@ const padEight = (arb: Arbitrary<number>) => arb.map((n) => n.toString(16).padSt
  *
  * @public
  */
-export function uuid() {
+export function uuid(): Arbitrary<string> {
   // According to RFC 4122: Set the two most significant bits (bits 6 and 7) of the clock_seq_hi_and_reserved to zero and one, respectively
   // ie.: ????????-????-X???-Y???-????????????
   //      with X in 1, 2, 3, 4, 5
@@ -36,7 +36,7 @@ export function uuid() {
  *
  * @public
  */
-export function uuidV(versionNumber: 1 | 2 | 3 | 4 | 5) {
+export function uuidV(versionNumber: 1 | 2 | 3 | 4 | 5): Arbitrary<string> {
   const padded = padEight(nat(0xffffffff));
   const secondPadded = padEight(nat(0x0fffffff));
   const thirdPadded = padEight(integer(0x80000000, 0xbfffffff));

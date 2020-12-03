@@ -16,7 +16,7 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
   }
   isAsync = (): IsAsync => this.property.isAsync();
   generate = (mrng: Random, runId?: number): Shrinkable<Ts> => this.property.generate(mrng, runId);
-  run = (v: Ts) => {
+  run = (v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> => {
     if (this.getTime() >= this.skipAfterTime) {
       const preconditionFailure = new PreconditionFailure(this.interruptExecution);
       if (this.isAsync()) {
