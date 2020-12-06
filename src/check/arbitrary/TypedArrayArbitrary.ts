@@ -141,8 +141,8 @@ export type BigIntArrayConstraints = {
 export function bigInt64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigInt64Array> {
   return typedIntArrayBuilder<BigInt64Array, bigint>(
     constraints,
-    BigInt('-0x8000000000000000'),
-    BigInt('0x7fffffffffffffff'),
+    BigInt('-18446744073709551616'),
+    BigInt('18446744073709551615'),
     BigInt64Array,
     bigInt
   );
@@ -156,7 +156,7 @@ export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitr
   return typedIntArrayBuilder<BigUint64Array, bigint>(
     constraints,
     BigInt(0),
-    BigInt('0xffffffffffffffff'),
+    BigInt('36893488147419103231'),
     BigUint64Array,
     bigInt
   );
