@@ -140,6 +140,22 @@ import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
 import { FloatNextConstraints } from './check/arbitrary/FloatNextArbitrary';
+import {
+  bigInt64Array,
+  BigIntArrayConstraints,
+  bigUint64Array,
+  float32Array,
+  float64Array,
+  FloatArrayConstraints,
+  int16Array,
+  int32Array,
+  int8Array,
+  IntArrayConstraints,
+  uint16Array,
+  uint32Array,
+  uint8Array,
+  uint8ClampedArray,
+} from './check/arbitrary/TypedArrayArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -275,6 +291,17 @@ export {
   emailAddress,
   uuid,
   uuidV,
+  int8Array,
+  uint8Array,
+  uint8ClampedArray,
+  int16Array,
+  uint16Array,
+  int32Array,
+  uint32Array,
+  bigInt64Array,
+  bigUint64Array,
+  float32Array,
+  float64Array,
   // model-based
   AsyncCommand,
   Command,
@@ -302,13 +329,16 @@ export {
   hash,
   // constraints
   ArrayConstraints,
+  BigIntArrayConstraints,
   BigIntConstraints,
   BigUintConstraints,
   CommandsContraints,
   DoubleConstraints,
   FalsyContraints,
+  FloatArrayConstraints,
   FloatConstraints,
   FloatNextConstraints,
+  IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,
   LoremConstraints,

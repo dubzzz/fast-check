@@ -166,7 +166,7 @@ export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitr
  * Constraints to be applied on {@link float32Array}
  * @public
  */
-export type Float32ArrayConstraints = {
+export type FloatArrayConstraints = {
   /** Lower bound of the generated array size */
   minLength?: number;
   /** Upper bound of the generated array size */
@@ -177,7 +177,7 @@ export type Float32ArrayConstraints = {
  * For Float32Array
  * @public
  */
-export function float32Array(constraints: Float32ArrayConstraints = {}): Arbitrary<Float32Array> {
+export function float32Array(constraints: FloatArrayConstraints = {}): Arbitrary<Float32Array> {
   return array(float({ ...constraints, next: true }), constraints).map((data) => Float32Array.from(data));
 }
 
