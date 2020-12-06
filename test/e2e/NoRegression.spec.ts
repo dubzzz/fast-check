@@ -8,7 +8,7 @@ import {
 } from './model/CounterCommands';
 
 const testFunc = (value: unknown) => {
-  const repr = fc.stringify(value);
+  const repr = fc.stringify(value).replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5');
   for (let idx = 1; idx < repr.length; ++idx) {
     if (repr[idx - 1] === repr[idx] && repr[idx] !== '"') {
       return false;
@@ -250,6 +250,78 @@ describe(`NoRegression`, () => {
     expect(() =>
       fc.assert(
         fc.property(fc.tuple(fc.nat(), fc.nat()), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('int8Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.int8Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint8Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint8Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint8ClampedArray', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint8ClampedArray(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('int16Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.int16Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint16Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint16Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('int32Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.int32Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint32Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint32Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('float32Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.float32Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('float64Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.float64Array(), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
