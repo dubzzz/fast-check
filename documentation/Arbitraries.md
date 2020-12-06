@@ -43,6 +43,7 @@ fc.assert(
 - [Combinators](#combinators)
   - [Simple](#simple)
   - [Array](#array)
+  - [Typed Array](#typed-array)
   - [Object](#object)
   - [Function](#function)
   - [Recursive structures](#recursive-structures)
@@ -2144,6 +2145,50 @@ fc.infiniteStream(fc.nat(9))
 // • Stream(0,4,6,5,2,3,5,3,2,1...)
 // • Stream(2,5,0,0,1,9,9,0,7,3...)
 // • Stream(2,4,9,4,0,8,8,4,2,2...)
+// • …
+```
+</details>
+
+### Typed Array
+
+<details>
+<summary><b>int8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int8array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Int8Array_
+
+*&#8195;Signatures*
+
+- `fc.int8Array()`
+- `fc.int8Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-128` — _minimal value (included)_
+- `max?` — default: `127` — _minimal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.int8Array()
+// Examples of generated values:
+// • Int8Array.from([6,-1,50,6,-5,-73,-47,-1,123,5])
+// • Int8Array.from([86,-54])
+// • Int8Array.from([2,-5])
+// • Int8Array.from([-47,103,-77,53,5,82])
+// • Int8Array.from([0,3])
+// • …
+
+fc.int8Array({min: 0, minLength: 1})
+// Examples of generated values:
+// • Int8Array.from([92,57,89,63,80,22])
+// • Int8Array.from([117,24,80,67,118,28,112,60,3,25,105])
+// • Int8Array.from([64])
+// • Int8Array.from([39,88,123])
+// • Int8Array.from([93,108,72,37,36,53,119,55,92])
 // • …
 ```
 </details>
