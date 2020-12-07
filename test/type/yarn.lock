@@ -1077,10 +1077,10 @@ trim-newlines@^3.0.0:
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-3.0.0.tgz#79726304a6a898aa8373427298d54c2ee8b1cb30"
   integrity sha512-C4+gOpvmxaSMKuEf9Qc134F1ZuOHVXKRbtEflf4NTtuuJDEIJ9p5PXsalL8SkeRw+qit1Mo+yuvMPAKwWg/1hA==
 
-tsd@^0.13.1:
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/tsd/-/tsd-0.13.1.tgz#d2a8baa80b8319dafea37fbeb29fef3cec86e92b"
-  integrity sha512-+UYM8LRG/M4H8ISTg2ow8SWi65PS7Os+4DUnyiQLbJysXBp2DEmws9SMgBH+m8zHcJZqUJQ+mtDWJXP1IAvB2A==
+tsd@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/tsd/-/tsd-0.14.0.tgz#9bd1c93e925408846949d59fe4754655749a5f2b"
+  integrity sha512-fl1gS5orAwqIb0P2xMdppgCrwv1BfCJn67wBzRBCV9OUaWHVXHqiIqL6yX/519xFgT1ZOaLMhr5W9XDo8kuuRA==
   dependencies:
     eslint-formatter-pretty "^4.0.0"
     globby "^11.0.1"
