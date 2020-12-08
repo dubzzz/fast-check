@@ -1965,6 +1965,94 @@ fc.bigUint64Array({max: 42n, minLength: 1})
 ```
 </details>
 
+<details>
+<summary><b>float32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float32array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Float32Array_
+
+*&#8195;Signatures*
+
+- `fc.float32Array()`
+- `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.float32Array()
+// Examples of generated values:
+// • Float32Array.from([2.838487790382467e+22,1.1814616040137283e-28,-1.2447510050843058e-39])
+// • Float32Array.from([-7.006492321624085e-45,-9.633964538574219])
+// • Float32Array.from([50677384277393410,2.815765430662526e-27,35189715715342990000,-3.809889793395996,1.0517918868948659e+37,8.993062611852643e+32,-2.7968944295546947e-20,-7335792])
+// • Float32Array.from([-7.639300007131037e+28,3.3218551999276265e-35,1.811662677611599e-30])
+// • Float32Array.from([-267187306496,-4202965385667936000,2.647066979020766e-20,66189066240,0.00006144169310573488])
+// • …
+
+fc.float32Array({minLength: 1})
+// Examples of generated values:
+// • Float32Array.from([-503561310315741200])
+// • Float32Array.from([-3.4028220466166163e+38,-1.961817850054744e-44])
+// • Float32Array.from([-3.5715513740798766e+36,1.3295048537642752e+23,2262949.5,-0.0000026030456865555607])
+// • Float32Array.from([8.539668944857956e-14])
+// • Float32Array.from([-5.605193857299268e-45,3.4028181929587916e+38,2.5736176825164795e-23])
+// • …
+```
+</details>
+
+<details>
+<summary><b>float64Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float64array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Float64Array_
+
+*&#8195;Signatures*
+
+- `fc.float64Array()`
+- `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-∞` and `-Number.MAX_VALUE` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `Number.MAX_VALUE` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.float64Array()
+// Examples of generated values:
+// • Float64Array.from([1.616891650937421e+175,-2.6304053149712647e-306,-4.243132822801271e-219])
+// • Float64Array.from([2.5e-323,-54826743.81511721])
+// • Float64Array.from([1.7365802452981713e+129,1.320991370898586e+152,9.109051404240327e+291,-3.6562625294902846e-157,-6.9216731040462545e-192,2.4523695375398673e-67,-1045.8897076512326,-1.9672082630551467e-215])
+// • Float64Array.from([-1.1080655465042191e+231,5.559295309739158e-243,1.5204711046897551e+296])
+// • Float64Array.from([-2.5297510012561425e+91,1.4452619284617389e-161,1.238133303287883e-38,-1.4441430640880058e+187,-9.20327913781559e+267])
+// • …
+
+fc.float64Array({minLength: 1})
+// Examples of generated values:
+// • Float64Array.from([-3.0129659915228672e+141])
+// • Float64Array.from([-1.7976931348623157e+308,1.14e-322])
+// • Float64Array.from([-1.7441105727027757e+292,3.7278990325311785e+46,-2.97662671796463e-185,-2.0953226219959493e-272])
+// • Float64Array.from([1.0842009835971395e-109])
+// • Float64Array.from([-8.4e-323,1.7976931348623131e+308,1.1447746735519345e-185])
+// • …
+```
+</details>
+
 ## Combinators
 
 ### Simple
