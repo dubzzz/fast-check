@@ -11,9 +11,14 @@ import {
   json,
   unicodeJson,
   ObjectConstraints,
+  boxArbitrary,
 } from '../../../../src/check/arbitrary/ObjectArbitrary';
 
 import { Random } from '../../../../src/random/generator/Random';
+import { arbitraryFor } from './generic/ArbitraryBuilder';
+import * as stubRng from '../../stubs/generators';
+
+const mrng = () => stubRng.mutable.nocall();
 
 declare function BigInt(n: number | bigint | string): bigint;
 
@@ -425,6 +430,58 @@ describe('ObjectArbitrary', () => {
           const shrinkable = object().generate(mrng);
           for (const s of shrinkable.shrink()) expect(s.value).not.toStrictEqual(shrinkable.value);
         })
+      ));
+  });
+
+  describe('boxArbitrary (internal)', () => {
+    it.each`
+      type         | arbitrary
+      ${'number'}  | ${fc.double({ next: true })}
+      ${'boolean'} | ${fc.boolean()}
+      ${'string'}  | ${fc.string()}
+    `('Should box any $type', ({ arbitrary }) =>
+      fc.assert(
+        fc.property(arbitrary, (originalValue) => {
+          const boxedArbitrary = boxArbitrary(arbitraryFor([{ value: originalValue }]));
+          const { value } = boxedArbitrary.generate(mrng());
+          expect(typeof value).toBe('object');
+          expect(value).not.toBe(originalValue);
+          if (value != originalValue) {
+            fail(`Expected: ${fc.stringify(originalValue)}, Got: ${fc.stringify(value)}`);
+          }
+        })
+      )
+    );
+
+    it('Should not box unboxable types', () =>
+      fc.assert(
+        fc.property(
+          fc.anything({
+            withBigInt: typeof BigInt !== 'undefined',
+            withBoxedValues: true,
+            withDate: true,
+            withMap: true,
+            withNullPrototype: true,
+            withObjectString: true,
+            withSet: true,
+          }),
+          (originalValue: any) => {
+            fc.pre(typeof originalValue !== 'number');
+            fc.pre(typeof originalValue !== 'boolean');
+            fc.pre(typeof originalValue !== 'string');
+
+            // We ensure originalValue cannot be boxed just in case we missed some cases
+            if (originalValue != null && typeof originalValue !== 'object') {
+              const Ctor: { new (v: typeof originalValue): unknown } = originalValue.constructor;
+              expect(Ctor).toBeInstanceOf(Function);
+              expect(() => new Ctor(originalValue)).toThrow(); //others like symbol, bigint...
+            }
+
+            const boxedArbitrary = boxArbitrary(arbitraryFor([{ value: originalValue }]));
+            const { value } = boxedArbitrary.generate(mrng());
+            expect(value).toBe(originalValue);
+          }
+        )
       ));
   });
 });

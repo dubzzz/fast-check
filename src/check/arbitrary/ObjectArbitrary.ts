@@ -84,6 +84,25 @@ export interface JsonSharedConstraints {
 }
 
 /** @internal */
+export function boxArbitrary(arb: Arbitrary<unknown>): Arbitrary<unknown> {
+  return arb.map((v) => {
+    switch (typeof v) {
+      case 'boolean':
+        // tslint:disable-next-line:no-construct
+        return new Boolean(v);
+      case 'number':
+        // tslint:disable-next-line:no-construct
+        return new Number(v);
+      case 'string':
+        // tslint:disable-next-line:no-construct
+        return new String(v);
+      default:
+        return v;
+    }
+  });
+}
+
+/** @internal */
 class QualifiedObjectConstraints {
   constructor(
     readonly key: Arbitrary<string>,
@@ -112,23 +131,7 @@ class QualifiedObjectConstraints {
   }
 
   private static boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
-    return arbs.map((arb) =>
-      arb.map((v) => {
-        switch (typeof v) {
-          case 'boolean':
-            // tslint:disable-next-line:no-construct
-            return new Boolean(v);
-          case 'number':
-            // tslint:disable-next-line:no-construct
-            return new Number(v);
-          case 'string':
-            // tslint:disable-next-line:no-construct
-            return new String(v);
-          default:
-            return v;
-        }
-      })
-    );
+    return arbs.map((arb) => boxArbitrary(arb));
   }
 
   private static boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
