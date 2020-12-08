@@ -444,9 +444,11 @@ describe('ObjectArbitrary', () => {
         fc.property(arbitrary, (originalValue) => {
           const boxedArbitrary = boxArbitrary(arbitraryFor([{ value: originalValue }]));
           const { value } = boxedArbitrary.generate(mrng());
+
           expect(typeof value).toBe('object');
           expect(value).not.toBe(originalValue);
-          if (value != originalValue) {
+          const underlyingValue = (value as any).valueOf();
+          if (!Object.is(underlyingValue, originalValue)) {
             fail(`Expected: ${fc.stringify(originalValue)}, Got: ${fc.stringify(value)}`);
           }
         })
