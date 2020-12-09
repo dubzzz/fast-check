@@ -72,7 +72,7 @@ describe('TypedArrayArbitrary', () => {
 // Helpers
 
 function assessValidIntTypedArray<T>(
-  arbFun: (ct: IntArrayConstraints) => Arbitrary<T>,
+  arbFun: (ct?: IntArrayConstraints) => Arbitrary<T>,
   Class: { from: (data: number[]) => T },
   lowestInt: number,
   highestInt: number
@@ -83,6 +83,23 @@ function assessValidIntTypedArray<T>(
     expect(unsafeFrom(lowestInt)).toBe(lowestInt);
     expect(unsafeFrom(highestInt)).toBe(highestInt);
     expect(unsafeFrom(highestInt + 1)).not.toBe(highestInt + 1);
+  });
+
+  it('Should default constraints when not specified', () => {
+    // Arrange
+    const { integer } = mocked(IntegerArbitraryMock);
+    const { array } = mocked(ArrayArbitraryMock);
+    const integerArb = Symbol() as any;
+    integer.mockReturnValue(integerArb);
+    const arrayMap = jest.fn();
+    array.mockReturnValue({ map: arrayMap as ReturnType<typeof array>['map'] } as ReturnType<typeof array>);
+
+    // Act
+    arbFun();
+
+    // Assert
+    expect(integer).toHaveBeenLastCalledWith({ min: lowestInt, max: highestInt });
+    expect(array).toHaveBeenLastCalledWith(integerArb, {});
   });
 
   it('Should properly distribute constraints accross arbitraries when receiving valid ones', () =>
