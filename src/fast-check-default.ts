@@ -146,7 +146,7 @@ import {
   bigUint64Array,
   float32Array,
   float64Array,
-  FloatArrayConstraints,
+  Float32ArrayConstraints,
   int16Array,
   int32Array,
   int8Array,
@@ -155,6 +155,7 @@ import {
   uint32Array,
   uint8Array,
   uint8ClampedArray,
+  Float64ArrayConstraints,
 } from './check/arbitrary/TypedArrayArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
@@ -335,7 +336,8 @@ export {
   CommandsContraints,
   DoubleConstraints,
   FalsyContraints,
-  FloatArrayConstraints,
+  Float32ArrayConstraints,
+  Float64ArrayConstraints,
   FloatConstraints,
   FloatNextConstraints,
   IntArrayConstraints,
