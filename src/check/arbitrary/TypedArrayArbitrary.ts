@@ -1,5 +1,4 @@
 import { array } from './ArrayArbitrary';
-import { bigInt } from './BigIntArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { DoubleNextConstraints } from './DoubleNextArbitrary';
 import { double, float } from './FloatingPointArbitrary';
@@ -111,55 +110,6 @@ export function int32Array(constraints: IntArrayConstraints = {}): Arbitrary<Int
  */
 export function uint32Array(constraints: IntArrayConstraints = {}): Arbitrary<Uint32Array> {
   return typedIntArrayBuilder<Uint32Array, number>(constraints, 0, 0xffffffff, Uint32Array, integer);
-}
-
-/**
- * Constraints to be applied on typed arrays for bigint values
- * @public
- */
-export type BigIntArrayConstraints = {
-  /** Lower bound of the generated array size */
-  minLength?: number;
-  /** Upper bound of the generated array size */
-  maxLength?: number;
-  /**
-   * Lower bound for the generated int (included)
-   * @defaultValue smallest possible value for this type
-   */
-  min?: bigint;
-  /**
-   * Upper bound for the generated int (included)
-   * @defaultValue highest possible value for this type
-   */
-  max?: bigint;
-};
-
-/**
- * For BigInt64Array
- * @public
- */
-export function bigInt64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigInt64Array> {
-  return typedIntArrayBuilder<BigInt64Array, bigint>(
-    constraints,
-    BigInt('-18446744073709551616'),
-    BigInt('18446744073709551615'),
-    BigInt64Array,
-    bigInt
-  );
-}
-
-/**
- * For BigUint64Array
- * @public
- */
-export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigUint64Array> {
-  return typedIntArrayBuilder<BigUint64Array, bigint>(
-    constraints,
-    BigInt(0),
-    BigInt('36893488147419103231'),
-    BigUint64Array,
-    bigInt
-  );
 }
 
 /**

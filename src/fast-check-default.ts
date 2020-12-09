@@ -141,9 +141,6 @@ import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
 import { FloatNextConstraints } from './check/arbitrary/FloatNextArbitrary';
 import {
-  bigInt64Array,
-  BigIntArrayConstraints,
-  bigUint64Array,
   float32Array,
   float64Array,
   Float32ArrayConstraints,
@@ -299,8 +296,6 @@ export {
   uint16Array,
   int32Array,
   uint32Array,
-  bigInt64Array,
-  bigUint64Array,
   float32Array,
   float64Array,
   // model-based
@@ -330,7 +325,6 @@ export {
   hash,
   // constraints
   ArrayConstraints,
-  BigIntArrayConstraints,
   BigIntConstraints,
   BigUintConstraints,
   CommandsContraints,
