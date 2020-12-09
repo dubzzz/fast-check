@@ -62,7 +62,7 @@ export type IntArrayConstraints = {
  * @public
  */
 export function int8Array(constraints: IntArrayConstraints = {}): Arbitrary<Int8Array> {
-  return typedIntArrayBuilder<Int8Array, number>(constraints, -127, 128, Int8Array, integer);
+  return typedIntArrayBuilder<Int8Array, number>(constraints, -128, 127, Int8Array, integer);
 }
 
 /**
@@ -86,7 +86,7 @@ export function uint8ClampedArray(constraints: IntArrayConstraints = {}): Arbitr
  * @public
  */
 export function int16Array(constraints: IntArrayConstraints = {}): Arbitrary<Int16Array> {
-  return typedIntArrayBuilder<Int16Array, number>(constraints, -32767, 32768, Int16Array, integer);
+  return typedIntArrayBuilder<Int16Array, number>(constraints, -32768, 32767, Int16Array, integer);
 }
 
 /**
@@ -166,7 +166,7 @@ export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitr
  * Constraints to be applied on {@link float32Array}
  * @public
  */
-export type FloatArrayConstraints = {
+export type Float32ArrayConstraints = {
   /** Lower bound of the generated array size */
   minLength?: number;
   /** Upper bound of the generated array size */
@@ -177,7 +177,7 @@ export type FloatArrayConstraints = {
  * For Float32Array
  * @public
  */
-export function float32Array(constraints: FloatArrayConstraints = {}): Arbitrary<Float32Array> {
+export function float32Array(constraints: Float32ArrayConstraints = {}): Arbitrary<Float32Array> {
   return array(float({ ...constraints, next: true }), constraints).map((data) => Float32Array.from(data));
 }
 

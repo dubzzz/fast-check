@@ -1611,20 +1611,20 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 ```js
 fc.int8Array()
 // Examples of generated values:
-// • Int8Array.from([6,-1,50,6,-5,-73,-47,-1,123,5])
-// • Int8Array.from([86,-54])
-// • Int8Array.from([2,-5])
-// • Int8Array.from([-47,103,-77,53,5,82])
-// • Int8Array.from([0,3])
+// • Int8Array.from([5,-2,49,5,-6,-74,-48,-2,122,4])
+// • Int8Array.from([85,-55])
+// • Int8Array.from([1,-6])
+// • Int8Array.from([-48,102,-78,52,4,81])
+// • Int8Array.from([-1,2])
 // • …
 
 fc.int8Array({min: 0, minLength: 1})
 // Examples of generated values:
-// • Int8Array.from([92,57,89,63,80,22])
-// • Int8Array.from([117,24,80,67,118,28,112,60,3,25,105])
-// • Int8Array.from([64])
-// • Int8Array.from([39,88,123])
-// • Int8Array.from([93,108,72,37,36,53,119,55,92])
+// • Int8Array.from([99,92,51,12,0,31])
+// • Int8Array.from([77,6,12,68,33,85,15,88,115,115,111])
+// • Int8Array.from([125])
+// • Int8Array.from([39,122,124])
+// • Int8Array.from([10,6,116,107,75,56,74,79,123])
 // • …
 ```
 </details>
@@ -1737,20 +1737,20 @@ fc.uint8ClampedArray({max: 42, minLength: 1})
 ```js
 fc.int16Array()
 // Examples of generated values:
-// • Int16Array.from([32764,-14,19461])
-// • Int16Array.from([-7988,4688,24947])
+// • Int16Array.from([32761,-15,19460])
+// • Int16Array.from([-7989,4687,24946])
 // • Int16Array.from([-32765])
-// • Int16Array.from([5979,-14150,-10067,-4948])
-// • Int16Array.from([2,8,-32761,-10,21830,-32759])
+// • Int16Array.from([5978,-14151,-10068,-4949])
+// • Int16Array.from([1,7,-32762,-11,21829,-32762])
 // • …
 
 fc.int16Array({min: 0, minLength: 1})
 // Examples of generated values:
-// • Int16Array.from([4,23113,13,23394,13474])
-// • Int16Array.from([7661,24263])
-// • Int16Array.from([2779,14764,10772,24234,31860,16812,16453])
-// • Int16Array.from([32755,32757,15074])
-// • Int16Array.from([15830])
+// • Int16Array.from([8,12886,11,10845,32410])
+// • Int16Array.from([24045,28817])
+// • Int16Array.from([8634,263,21637,10150,30007,13375,30165])
+// • Int16Array.from([32753,32759,19209])
+// • Int16Array.from([11936])
 // • …
 ```
 </details>

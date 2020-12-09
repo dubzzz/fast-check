@@ -1778,86 +1778,71 @@ Execution summary:
 `;
 
 exports[`NoRegression int8Array 1`] = `
-"Property failed after 3 tests
-{ seed: 42, path: \\"2:1:0:0:3:2:0:0:0\\", endOnFailure: true }
-Counterexample: [Int8Array.from([11])]
-Shrunk 8 time(s)
+"Property failed after 2 tests
+{ seed: 42, path: \\"1:1:0:0:1:0\\", endOnFailure: true }
+Counterexample: [Int8Array.from([-11])]
+Shrunk 5 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [Int8Array.from([])]
-[32m√[0m [Int8Array.from([91,56,74,-87,-43,-3,9,-43])]
-[31m×[0m [Int8Array.from([-5,-41,-66,44,-58,114])]
+[31m×[0m [Int8Array.from([90,55,73,-88,-44,-4,8,-44])]
 . [32m√[0m [Int8Array.from([])]
-. [31m×[0m [Int8Array.from([44,-58,114])]
-. . [31m×[0m [Int8Array.from([-58,114])]
-. . . [31m×[0m [Int8Array.from([114])]
+. [31m×[0m [Int8Array.from([-44,-4,8,-44])]
+. . [31m×[0m [Int8Array.from([8,-44])]
+. . . [31m×[0m [Int8Array.from([-44])]
 . . . . [32m√[0m [Int8Array.from([0])]
-. . . . [32m√[0m [Int8Array.from([57])]
-. . . . [32m√[0m [Int8Array.from([86])]
-. . . . [31m×[0m [Int8Array.from([100])]
-. . . . . [32m√[0m [Int8Array.from([50])]
-. . . . . [32m√[0m [Int8Array.from([75])]
-. . . . . [31m×[0m [Int8Array.from([88])]
-. . . . . . [31m×[0m [Int8Array.from([44])]
-. . . . . . . [31m×[0m [Int8Array.from([22])]
-. . . . . . . . [31m×[0m [Int8Array.from([11])]
-. . . . . . . . . [32m√[0m [Int8Array.from([6])]
-. . . . . . . . . [32m√[0m [Int8Array.from([9])]
-. . . . . . . . . [32m√[0m [Int8Array.from([10])]"
+. . . . [31m×[0m [Int8Array.from([-22])]
+. . . . . [31m×[0m [Int8Array.from([-11])]
+. . . . . . [32m√[0m [Int8Array.from([-6])]
+. . . . . . [32m√[0m [Int8Array.from([-9])]
+. . . . . . [32m√[0m [Int8Array.from([-10])]"
 `;
 
 exports[`NoRegression int16Array 1`] = `
 "Property failed after 2 tests
-{ seed: 42, path: \\"1:1:0:10:2:12\\", endOnFailure: true }
-Counterexample: [Int16Array.from([3744])]
+{ seed: 42, path: \\"1:1:0:2:3:12\\", endOnFailure: true }
+Counterexample: [Int16Array.from([2188])]
 Shrunk 5 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [Int16Array.from([])]
-[31m×[0m [Int16Array.from([-4133,-19272,16842,11561,-10923,-28547,5001,18261])]
+[31m×[0m [Int16Array.from([-4134,-19273,16841,11560,-10924,-28548,5000,18260])]
 . [32m√[0m [Int16Array.from([])]
-. [31m×[0m [Int16Array.from([-10923,-28547,5001,18261])]
-. . [31m×[0m [Int16Array.from([5001,18261])]
-. . . [32m√[0m [Int16Array.from([18261])]
-. . . [32m√[0m [Int16Array.from([0,18261])]
-. . . [32m√[0m [Int16Array.from([2501,18261])]
-. . . [32m√[0m [Int16Array.from([3751,18261])]
-. . . [32m√[0m [Int16Array.from([4376,18261])]
-. . . [32m√[0m [Int16Array.from([4689,18261])]
-. . . [32m√[0m [Int16Array.from([4845,18261])]
-. . . [32m√[0m [Int16Array.from([4923,18261])]
-. . . [32m√[0m [Int16Array.from([4962,18261])]
-. . . [32m√[0m [Int16Array.from([4982,18261])]
-. . . [31m×[0m [Int16Array.from([4992,18261])]
-. . . . [32m√[0m [Int16Array.from([18261])]
-. . . . [32m√[0m [Int16Array.from([2496,18261])]
-. . . . [31m×[0m [Int16Array.from([3744,18261])]
-. . . . . [32m√[0m [Int16Array.from([18261])]
-. . . . . [32m√[0m [Int16Array.from([1872,18261])]
-. . . . . [32m√[0m [Int16Array.from([2808,18261])]
-. . . . . [32m√[0m [Int16Array.from([3276,18261])]
-. . . . . [32m√[0m [Int16Array.from([3510,18261])]
-. . . . . [32m√[0m [Int16Array.from([3627,18261])]
-. . . . . [32m√[0m [Int16Array.from([3686,18261])]
-. . . . . [32m√[0m [Int16Array.from([3715,18261])]
-. . . . . [32m√[0m [Int16Array.from([3730,18261])]
-. . . . . [32m√[0m [Int16Array.from([3737,18261])]
-. . . . . [32m√[0m [Int16Array.from([3741,18261])]
-. . . . . [32m√[0m [Int16Array.from([3743,18261])]
-. . . . . [31m×[0m [Int16Array.from([3744])]
-. . . . . . [32m√[0m [Int16Array.from([1872])]
-. . . . . . [32m√[0m [Int16Array.from([2808])]
-. . . . . . [32m√[0m [Int16Array.from([3276])]
-. . . . . . [32m√[0m [Int16Array.from([3510])]
-. . . . . . [32m√[0m [Int16Array.from([3627])]
-. . . . . . [32m√[0m [Int16Array.from([3686])]
-. . . . . . [32m√[0m [Int16Array.from([3715])]
-. . . . . . [32m√[0m [Int16Array.from([3730])]
-. . . . . . [32m√[0m [Int16Array.from([3737])]
-. . . . . . [32m√[0m [Int16Array.from([3741])]
-. . . . . . [32m√[0m [Int16Array.from([3743])]"
+. [31m×[0m [Int16Array.from([-10924,-28548,5000,18260])]
+. . [31m×[0m [Int16Array.from([5000,18260])]
+. . . [32m√[0m [Int16Array.from([18260])]
+. . . [32m√[0m [Int16Array.from([0,18260])]
+. . . [31m×[0m [Int16Array.from([2500,18260])]
+. . . . [32m√[0m [Int16Array.from([18260])]
+. . . . [32m√[0m [Int16Array.from([1250,18260])]
+. . . . [32m√[0m [Int16Array.from([1875,18260])]
+. . . . [31m×[0m [Int16Array.from([2188,18260])]
+. . . . . [32m√[0m [Int16Array.from([18260])]
+. . . . . [32m√[0m [Int16Array.from([1094,18260])]
+. . . . . [32m√[0m [Int16Array.from([1641,18260])]
+. . . . . [32m√[0m [Int16Array.from([1915,18260])]
+. . . . . [32m√[0m [Int16Array.from([2052,18260])]
+. . . . . [32m√[0m [Int16Array.from([2120,18260])]
+. . . . . [32m√[0m [Int16Array.from([2154,18260])]
+. . . . . [32m√[0m [Int16Array.from([2171,18260])]
+. . . . . [32m√[0m [Int16Array.from([2180,18260])]
+. . . . . [32m√[0m [Int16Array.from([2184,18260])]
+. . . . . [32m√[0m [Int16Array.from([2186,18260])]
+. . . . . [32m√[0m [Int16Array.from([2187,18260])]
+. . . . . [31m×[0m [Int16Array.from([2188])]
+. . . . . . [32m√[0m [Int16Array.from([1094])]
+. . . . . . [32m√[0m [Int16Array.from([1641])]
+. . . . . . [32m√[0m [Int16Array.from([1915])]
+. . . . . . [32m√[0m [Int16Array.from([2052])]
+. . . . . . [32m√[0m [Int16Array.from([2120])]
+. . . . . . [32m√[0m [Int16Array.from([2154])]
+. . . . . . [32m√[0m [Int16Array.from([2171])]
+. . . . . . [32m√[0m [Int16Array.from([2180])]
+. . . . . . [32m√[0m [Int16Array.from([2184])]
+. . . . . . [32m√[0m [Int16Array.from([2186])]
+. . . . . . [32m√[0m [Int16Array.from([2187])]"
 `;
 
 exports[`NoRegression int32Array 1`] = `
