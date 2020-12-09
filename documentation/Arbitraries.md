@@ -40,6 +40,7 @@ fc.assert(
   - [Multiple characters](#multiple-characters)
   - [More specific strings](#more-specific-strings)
 - [Date](#date)
+- [Typed Array](#typed-array)
 - [Combinators](#combinators)
   - [Simple](#simple)
   - [Array](#array)
@@ -1580,6 +1581,390 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 // • new Date("2000-09-24T05:26:49.182Z")
 // • new Date("2000-12-31T23:59:59.999Z")
 // • new Date("2000-07-08T09:22:33.042Z")
+// • …
+```
+</details>
+
+## Typed Array
+
+<details>
+<summary><b>int8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int8array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Int8Array_
+
+*&#8195;Signatures*
+
+- `fc.int8Array()`
+- `fc.int8Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-128` — _minimal value (included)_
+- `max?` — default: `127` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.int8Array()
+// Examples of generated values:
+// • Int8Array.from([5,-2,49,5,-6,-74,-48,-2,122,4])
+// • Int8Array.from([85,-55])
+// • Int8Array.from([1,-6])
+// • Int8Array.from([-48,102,-78,52,4,81])
+// • Int8Array.from([-1,2])
+// • …
+
+fc.int8Array({min: 0, minLength: 1})
+// Examples of generated values:
+// • Int8Array.from([99,92,51,12,0,31])
+// • Int8Array.from([77,6,12,68,33,85,15,88,115,115,111])
+// • Int8Array.from([125])
+// • Int8Array.from([39,122,124])
+// • Int8Array.from([10,6,116,107,75,56,74,79,123])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint8Array_
+
+*&#8195;Signatures*
+
+- `fc.uint8Array()`
+- `fc.uint8Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `255` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint8Array()
+// Examples of generated values:
+// • Uint8Array.from([3,248,4])
+// • Uint8Array.from([203,79,114])
+// • Uint8Array.from([251])
+// • Uint8Array.from([90,185,172,171])
+// • Uint8Array.from([0,2,254,2,69,254])
+// • …
+
+fc.uint8Array({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint8Array.from([16,1])
+// • Uint8Array.from([12,28,2,26,4,38,3])
+// • Uint8Array.from([7,41,34,25,16,18,2,10,30,6,16])
+// • Uint8Array.from([16])
+// • Uint8Array.from([4,12])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint8ClampedArray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8clampedarray">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint8ClampedArray_
+
+*&#8195;Signatures*
+
+- `fc.uint8ClampedArray()`
+- `fc.uint8ClampedArray({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `255` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint8ClampedArray()
+// Examples of generated values:
+// • Uint8ClampedArray.from([150,60,2,11,94])
+// • Uint8ClampedArray.from([165,90,12,252])
+// • Uint8ClampedArray.from([125,130,53,19,245])
+// • Uint8ClampedArray.from([43,109,155,11,128,215,24,46,99])
+// • Uint8ClampedArray.from([52,4,215,253,7,4,4,246,4,2])
+// • …
+
+fc.uint8ClampedArray({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint8ClampedArray.from([40,11,6,19,35,37,25])
+// • Uint8ClampedArray.from([34,22,2,4,39,27,19,37,25])
+// • Uint8ClampedArray.from([11,34,1,31,25])
+// • Uint8ClampedArray.from([15,3,1,37,30,12,38,40,35,41,5])
+// • Uint8ClampedArray.from([17,35,21])
+// • …
+```
+</details>
+
+<details>
+<summary><b>int16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int16array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Int16Array_
+
+*&#8195;Signatures*
+
+- `fc.int16Array()`
+- `fc.int16Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-32768` — _minimal value (included)_
+- `max?` — default: `32767` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.int16Array()
+// Examples of generated values:
+// • Int16Array.from([32761,-15,19460])
+// • Int16Array.from([-7989,4687,24946])
+// • Int16Array.from([-32765])
+// • Int16Array.from([5978,-14151,-10068,-4949])
+// • Int16Array.from([1,7,-32762,-11,21829,-32762])
+// • …
+
+fc.int16Array({min: 0, minLength: 1})
+// Examples of generated values:
+// • Int16Array.from([8,12886,11,10845,32410])
+// • Int16Array.from([24045,28817])
+// • Int16Array.from([8634,263,21637,10150,30007,13375,30165])
+// • Int16Array.from([32753,32759,19209])
+// • Int16Array.from([11936])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint16array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint16Array_
+
+*&#8195;Signatures*
+
+- `fc.uint16Array()`
+- `fc.uint16Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `65535` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint16Array()
+// Examples of generated values:
+// • Uint16Array.from([40338,3413,32529,37241,31799,27569])
+// • Uint16Array.from([])
+// • Uint16Array.from([37642,20057])
+// • Uint16Array.from([20327,25524,65394,34318,27766,53340,23112,2822,26910])
+// • Uint16Array.from([26963,18761,50835,51189,22592,18891,8353,62454,6243])
+// • …
+
+fc.uint16Array({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint16Array.from([27,8,29,3,39,34,13,14])
+// • Uint16Array.from([3,37,4,3,4,16,40,20,0,21])
+// • Uint16Array.from([5,31])
+// • Uint16Array.from([40,2,42,42,41])
+// • Uint16Array.from([19,5,40])
+// • …
+```
+</details>
+
+<details>
+<summary><b>int32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int32array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Int32Array_
+
+*&#8195;Signatures*
+
+- `fc.int32Array()`
+- `fc.int32Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-0x80000000` — _minimal value (included)_
+- `max?` — default: `0x7fffffff` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.int32Array()
+// Examples of generated values:
+// • Int32Array.from([2147483619,-7,841665540])
+// • Int32Array.from([-754622261,809800271,-1634737806])
+// • Int32Array.from([-2147483645])
+// • Int32Array.from([-1499097254,-1996207943,160127148,-1135579989])
+// • Int32Array.from([1,29,-2147483626,-17,-1705126587,-2147483642])
+// • …
+
+fc.int32Array({min: 0, minLength: 1})
+// Examples of generated values:
+// • Int32Array.from([30,1812443734,26,662645341,620592794])
+// • Int32Array.from([536894957,149319825])
+// • Int32Array.from([1265639866,1672446215,356045957,1686054822,2086860087,2035004479,1523119573])
+// • Int32Array.from([2147483618,2147483620,1209289481])
+// • Int32Array.from([946187936])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint32array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint32Array_
+
+*&#8195;Signatures*
+
+- `fc.uint32Array()`
+- `fc.uint32Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `0xffffffff` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint32Array()
+// Examples of generated values:
+// • Uint32Array.from([2729221522,2511211861,3996745489,4234383737,1407876151,483945393])
+// • Uint32Array.from([])
+// • Uint32Array.from([1188401930,1080708697])
+// • Uint32Array.from([4079898471,242967476,1070530418,2475263502,20278390,848810076,2651478600,509283078,418212126])
+// • Uint32Array.from([995846483,1424836937,374064787,802080757,2308659264,165366219,2215846049,310244342,1942755427])
+// • …
+
+fc.uint32Array({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint32Array.from([27,8,29,3,39,34,13,14])
+// • Uint32Array.from([3,37,4,3,4,16,40,20,0,21])
+// • Uint32Array.from([5,31])
+// • Uint32Array.from([40,2,42,42,41])
+// • Uint32Array.from([19,5,40])
+// • …
+```
+</details>
+
+<details>
+<summary><b>float32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float32array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Float32Array_
+
+*&#8195;Signatures*
+
+- `fc.float32Array()`
+- `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.float32Array()
+// Examples of generated values:
+// • Float32Array.from([2.838487790382467e+22,1.1814616040137283e-28,-1.2447510050843058e-39])
+// • Float32Array.from([-7.006492321624085e-45,-9.633964538574219])
+// • Float32Array.from([50677384277393410,2.815765430662526e-27,35189715715342990000,-3.809889793395996,1.0517918868948659e+37,8.993062611852643e+32,-2.7968944295546947e-20,-7335792])
+// • Float32Array.from([-7.639300007131037e+28,3.3218551999276265e-35,1.811662677611599e-30])
+// • Float32Array.from([-267187306496,-4202965385667936000,2.647066979020766e-20,66189066240,0.00006144169310573488])
+// • …
+
+fc.float32Array({minLength: 1})
+// Examples of generated values:
+// • Float32Array.from([-503561310315741200])
+// • Float32Array.from([-3.4028220466166163e+38,-1.961817850054744e-44])
+// • Float32Array.from([-3.5715513740798766e+36,1.3295048537642752e+23,2262949.5,-0.0000026030456865555607])
+// • Float32Array.from([8.539668944857956e-14])
+// • Float32Array.from([-5.605193857299268e-45,3.4028181929587916e+38,2.5736176825164795e-23])
+// • …
+```
+</details>
+
+<details>
+<summary><b>float64Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float64array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Float64Array_
+
+*&#8195;Signatures*
+
+- `fc.float64Array()`
+- `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-∞` and `-Number.MAX_VALUE` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `Number.MAX_VALUE` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.float64Array()
+// Examples of generated values:
+// • Float64Array.from([1.616891650937421e+175,-2.6304053149712647e-306,-4.243132822801271e-219])
+// • Float64Array.from([2.5e-323,-54826743.81511721])
+// • Float64Array.from([1.7365802452981713e+129,1.320991370898586e+152,9.109051404240327e+291,-3.6562625294902846e-157,-6.9216731040462545e-192,2.4523695375398673e-67,-1045.8897076512326,-1.9672082630551467e-215])
+// • Float64Array.from([-1.1080655465042191e+231,5.559295309739158e-243,1.5204711046897551e+296])
+// • Float64Array.from([-2.5297510012561425e+91,1.4452619284617389e-161,1.238133303287883e-38,-1.4441430640880058e+187,-9.20327913781559e+267])
+// • …
+
+fc.float64Array({minLength: 1})
+// Examples of generated values:
+// • Float64Array.from([-3.0129659915228672e+141])
+// • Float64Array.from([-1.7976931348623157e+308,1.14e-322])
+// • Float64Array.from([-1.7441105727027757e+292,3.7278990325311785e+46,-2.97662671796463e-185,-2.0953226219959493e-272])
+// • Float64Array.from([1.0842009835971395e-109])
+// • Float64Array.from([-8.4e-323,1.7976931348623131e+308,1.1447746735519345e-185])
 // • …
 ```
 </details>

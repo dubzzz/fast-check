@@ -2,7 +2,7 @@ import fc from '../../src/fast-check';
 //declare function BigInt(n: number | bigint | string): bigint;
 
 const testFunc = (value: unknown) => {
-  const repr = fc.stringify(value);
+  const repr = fc.stringify(value).replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5');
   for (let idx = 1; idx < repr.length; ++idx) {
     if (repr[idx - 1] === repr[idx] && repr[idx] !== '"') {
       return false;
