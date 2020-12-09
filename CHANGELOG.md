@@ -1,3 +1,31 @@
+# 2.8.0
+
+_New opt-in implementation for fc.float and fc.double_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.7.0...v2.8.0)]
+
+## Features
+
+- ([PR#1040](https://github.com/dubzzz/fast-check/pull/1040)) New opt-in implementation for `fc.float`
+- ([PR#1185](https://github.com/dubzzz/fast-check/pull/1185)) Move NaN as an extreme value for floatNext
+- ([PR#1187](https://github.com/dubzzz/fast-check/pull/1187)) New opt-in implementation for `fc.double`
+
+## Fixes
+
+- ([PR#1190](https://github.com/dubzzz/fast-check/pull/1190)) CI: Check CJS/ESM against node 12.20
+- ([PR#1161](https://github.com/dubzzz/fast-check/pull/1161)) Doc: Show examples for `fc.__version` and `fc.__commitHash`
+- ([PR#1128](https://github.com/dubzzz/fast-check/pull/1128)) Doc: Add link to ReScript bindings
+- ([PR#1173](https://github.com/dubzzz/fast-check/pull/1173)) Test: Add more tests on biasNumeric
+- ([PR#1182](https://github.com/dubzzz/fast-check/pull/1182)) Test: Better error reporting with `isValidArbitrary`
+- ([PR#1184](https://github.com/dubzzz/fast-check/pull/1184)) Test: Pass the original `seed` to callbacks of `isValidArbitrary`
+- ([PR#1183](https://github.com/dubzzz/fast-check/pull/1183)) Test: Wrongly defined `isStrictlySmallerValue` for `floatNext`
+- ([PR#1186](https://github.com/dubzzz/fast-check/pull/1186)) Test: Wrongly defined `isStrictlySmallerValue` for `floatNext` (2)
+- ([PR#1199](https://github.com/dubzzz/fast-check/pull/1199)) Test: Invalid checks to compare zeros in tests of `fc.float(Next)`
+- ([PR#1207](https://github.com/dubzzz/fast-check/pull/1207)) Test: More stable coverage for floatNext
+- ([PR#1211](https://github.com/dubzzz/fast-check/pull/1211)) Test: Add missing legacy tests for node 8 on next floats and others
+- ([PR#1213](https://github.com/dubzzz/fast-check/pull/1213)) Test: Add some more tests for ArrayInt64 for coverage stability
+
+---
+
 # 2.7.0
 
 _Better bias for integers and any derived arbitraries_

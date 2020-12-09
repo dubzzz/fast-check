@@ -58,14 +58,37 @@ jobs:
             yarn build
       - name: Unit tests
         run: yarn test
-      - name: End-to-end tests
-        run: yarn e2e
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           flag-name: node-${{matrix.node-version}}
           parallel: true
+  test_e2e:
+    name: 'Test E2E'
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build the library (dev version)
+        run: |
+            yarn prebuild
+            yarn build
+      - name: End-to-end tests
+        run: yarn e2e
   publish_coverage:
     name: 'Publish coverage'
     needs: test
@@ -327,6 +350,7 @@ jobs:
       - documentation
       - format_lint
       - test
+      - test_e2e
       - test_cjs_esm
       - test_example
       - test_node_8
