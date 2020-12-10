@@ -37,6 +37,7 @@ const anythingEnableAll = {
   withObjectString: true,
   withNullPrototype: true,
   withDate: true,
+  withTypedArray: true,
   ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
 };
 

@@ -2651,7 +2651,7 @@ fc.tuple(
 *&#8195;Signatures*
 
 - `fc.object()`
-- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -2665,6 +2665,7 @@ fc.tuple(
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
+- `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 *&#8195;Usages*
@@ -2722,13 +2723,14 @@ fc.object({
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
+  withTypedArray: true,
 })
 // Examples of generated values:
-// • {"F,r0fx}OWg":[new Date("+160385-01-30T05:38:43.072Z"),22583622805204069477977266286996933943873259784384626171039405815620425326468n,{"{Y":new String("N"),",;04yN":-3.01345181287615e-278}],"x":new Map([["^#z_?","0*V||"],["kQ",{"$yzJA'":new Boolean(true),"":new Boolean(true),"Npb_":new Boolean(true),"]7":new Boolean(false),"vGr?":new Boolean(true)}],["Tb$9",[":qH"]],["h| Lniq02N",new Set([])],["1zl",Object.assign(Object.create(null),{"YBy$<":new Number(2.6449527862922108e+290),"f5#o1&?":-692609174781462})]])}
-// • {}
-// • {"hyu)K.|R-5":"new Set([new String(\"f0q}b8/2*\"),new String(\" scrLAI'KD\"),new String(\"P_krOW\"),new String(\"hZ\"),new String(\"VwvEE}s(;V\")])","85c":1955536278377593253161285446750593118355413969436917489136958056479360825003n,"Y*":2388372876625901,"[n7%b":"new Number(-3.4608399207528395e+137)","L":-36290478173422814553429011041239932856189046009049526980429727311354359757843n,"qe80E%":new Set([8367911590145217,941795744247477,4822043389865637,6220130951629013,5421457185650365]),"z6[U6f*;+=":new Map([[new Set([-3567347934811352,239441571599127]),[-2718573416064087,5.790143130715385e-87,new String("67")]],[{"6d":new Number(-1.6866466511232706e+159),"5yAgxxIc":new Number(-5.068090690402725e+222),"\"u} nH":new Number(1.847151153184187e-248),")i3Kz[":new Number(4.7224658261061445e+45)},new Date("+078678-06-09T18:29:41.290Z")],[new Set([new Number(-3336621735373074),new Number(-2494987236852020),new Number(6189529734915597)]),new Map([])],[-9.22529815263613e-43,new Map([["w-+pH}s+",false],["s7?8?G",new Number(-415.4133108774823)],["pa{ DKb",new Number(-2812315212588830)]])],[Object.assign(Object.create(null),{"$%;HnBoE":new Boolean(true),"s>3@tz":new Boolean(true),"*d15.gW+;o":new Boolean(false)}),12203353690932172709567217855939614123506265212588826155366546446016100180279n]]),"D.o":new Set(["b","|T5S"]),"VtC|[j":{}}
-// • {"r5B":Object.assign(Object.create(null),{"":new Boolean(false),"new Set([4005636172929965,-4245209579127651])":new Boolean(false),"z&# \"\"":new Boolean(true)}),"":{"49n":false,"POG^":false},"%f*":57896044618658097711785492504343953926634992332820282019728792003956564819921n,"N7S4u,8X":"{}"}
-// • {")h&&":-35227683450067019633264767414815297433030615751339400804707291045739244432104n}
+// • {"xvT&":Int8Array.from([-51,43,46,-68,76]),"y":Uint8ClampedArray.from([148,35]),"~U%X&":Float64Array.from([-5.744456827877595e+230,9.464442002118316e+148,-8.498170634981481e-35,-4.625725161228645e-268,6.203333251270261e-272,2.0172265060086206e-119])}
+// • {"Rsv1:ZP":Int8Array.from([-88,-77]),"&ZTIJ#Q":Uint8ClampedArray.from([251,16]),"#$|{y":new Set([-6663670308037104,4120023769076003])}
+// • {"p?EZci9K7":Uint8Array.from([177,113,5]),"Je":Object.assign(Object.create(null),{"``Y":{"ErP@8f!\"":new Boolean(false),"=o2Y7C0":false,"TBb(":",t+\\dQ]s0","yk<+zg":-7905580199664567},"Q.IY+)I":Object.assign(Object.create(null),{"qiQ5Ix":-1.1703850503702754e-199})}),")I.":{}}
+// • {"};;j/k&2T":Uint8Array.from([112,162]),"dt\\\\^idcXL":-50730843874051235193727878949081679545337171593170586799838258339249459767377n,"D^Ev\\vt":new Date("-124851-11-03T08:48:46.455Z"),"tXnf1!":Float64Array.from([-4.135363103527259e-149,4.4639133429566616e+223,7.376878736128993e-302,3.011684349001697e+260]),"1vv":{";tJq<":null,"Float64Array.from([7.988678298210363e+103,-5.461176957322894e-61,2.4579845631144577e+112,-1.1327640594111671e-271,-5.923120123690057e+249,2896.800995462597,5.907953532945632e+276,5.15573377848018e-225,-4.786633227596223e-129,4.3346210093498726e-157])":null,"new Set([\"ukV}Hc*\",\"U,.3GJ;W\",\"npc\"])":null,"a&C":null},"'XH]6Z=":Uint8ClampedArray.from([]),"":Float32Array.from([-2.648670260896324e-7,3.328505519015497e-28,-965121048301776400000,7.625496345475824e-10,0.3421240746974945,-2.021202369458726e+27,8301810318720369000,1.1299675464504365e-33,9.006967616187467e-8,-2.7844586358125586e+31]),"M":Uint8ClampedArray.from([77,19])}
+// • {"RrAs^,;_'d":Object.create(null),"cx:<rwea":new Map([["c4^",null],["jRbo{j,=QA",undefined]]),"~_8\\[';}P":new Set([new Boolean(false),new Boolean(false),new Boolean(true),new Boolean(true)])}
 // • …
 ```
 </details>
@@ -2817,7 +2819,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 *&#8195;Signatures*
 
 - `fc.anything()`
-- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -2831,6 +2833,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
+- `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 *&#8195;Usages*
@@ -2876,13 +2879,14 @@ fc.anything({
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
+  withTypedArray: true,
 })
 // Examples of generated values:
-// • 31n
-// • {"new Set([\"kiF$Qh\",new Number(-2.754711924243414e-89),1424963112941773])":"l"}
-// • 49923639470792901331007151703295270516608099603300111897468945883726467315714n
-// • [{"lloo":0.0000017985989949294505,"1:6O":new Number(-1.970619867127675e-235)," J%S-NiMS9":6.025072670750928e-17,"o1<oChFrGK":"[GT:%k","HHnB":-295117948833672},Object.assign(Object.create(null),{"=":false})]
-// • Object.assign(Object.create(null),{"K\\~c!jADJ5":new Date("-042008-05-13T02:10:57.427Z"),"rBi6zzh":2371026000844887995115928520799279159182492319348459568753669098566854816929n,":<Rzk3":Object.create(null),"&$IJ+Z71e":new Date("+104798-01-21T08:19:12.364Z"),"n&9A.;gcG_":Object.assign(Object.create(null),{"gY`+mW":8.924961250427986e-21,"w+qXQ'[A-l":-6.612603441674412e+192})})
+// • 50262693997624561656566658494844280329167601007133105101730712090471350904016n
+// • Uint16Array.from([64924,45869,14750,25035,2761,46076])
+// • Float32Array.from([0.08553320169448853,-1.6264161412677633e+31,-6.835593778612435e+24,1.664170987467859e+26,4.2968819535433035e+34,-3.622660163541219e-33])
+// • Uint16Array.from([3344,28462])
+// • Int8Array.from([71,-1])
 // • …
 ```
 </details>
