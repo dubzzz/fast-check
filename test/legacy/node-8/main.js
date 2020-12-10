@@ -67,6 +67,11 @@ testArbitrary(fc.float({ next: true, noNaN: true })); // NaN is not properly rec
 testArbitrary(fc.double({ next: true, noNaN: true }));
 testArbitrary(fc.emailAddress());
 testArbitrary(fc.webUrl());
+testArbitrary(fc.int8Array());
+testArbitrary(fc.int16Array());
+testArbitrary(fc.int32Array());
+testArbitrary(fc.float32Array());
+testArbitrary(fc.float64Array());
 testArbitrary(
   fc.mapToConstant(
     {
