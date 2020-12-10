@@ -71,6 +71,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
           withObjectString: true,
           withNullPrototype: true,
           withDate: true,
+          withTypedArray: true,
           ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
         });
         while (++numTries <= 10000) {
@@ -97,6 +98,15 @@ describe(`Generate all values (seed: ${seed})`, () => {
     checkCanProduce('Set', 'object', '[object Set]');
     checkCanProduce('Map', 'object', '[object Map]');
     checkCanProduce('Date', 'object', '[object Date]');
+    checkCanProduce('Int8Array', 'object', '[object Int8Array]');
+    checkCanProduce('Uint8Array', 'object', '[object Uint8Array]');
+    checkCanProduce('Uint8ClampedArray', 'object', '[object Uint8ClampedArray]');
+    checkCanProduce('Int16Array', 'object', '[object Int16Array]');
+    checkCanProduce('Uint16Array', 'object', '[object Uint16Array]');
+    checkCanProduce('Int32Array', 'object', '[object Int32Array]');
+    checkCanProduce('Uint32Array', 'object', '[object Uint32Array]');
+    checkCanProduce('Float32Array', 'object', '[object Float32Array]');
+    checkCanProduce('Float64Array', 'object', '[object Float64Array]');
     checkCanProduce('null prototype object', 'object', '[object Object]', (instance: unknown) => {
       return Object.getPrototypeOf(instance) === null;
     });

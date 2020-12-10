@@ -15,6 +15,17 @@ import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
 import { date } from './DateArbitrary';
+import {
+  float32Array,
+  float64Array,
+  int16Array,
+  int32Array,
+  int8Array,
+  uint16Array,
+  uint32Array,
+  uint8Array,
+  uint8ClampedArray,
+} from './TypedArrayArbitrary';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -68,6 +79,11 @@ export interface ObjectConstraints {
   withBigInt?: boolean;
   /** Also generate Date */
   withDate?: boolean;
+  /**
+   * Also generate typed arrays in: (Uint|Int)(8|16|32)Array and Float(32|64)Array
+   * Remark: no typed arrays made of bigint
+   */
+  withTypedArray?: boolean;
 }
 
 /**
@@ -114,7 +130,8 @@ class QualifiedObjectConstraints {
     readonly withObjectString: boolean,
     readonly withNullPrototype: boolean,
     readonly withBigInt: boolean,
-    readonly withDate: boolean
+    readonly withDate: boolean,
+    readonly withTypedArray: boolean
   ) {}
 
   /**
@@ -155,7 +172,8 @@ class QualifiedObjectConstraints {
       orDefault(settings.withObjectString, false),
       orDefault(settings.withNullPrototype, false),
       orDefault(settings.withBigInt, false),
-      orDefault(settings.withDate, false)
+      orDefault(settings.withDate, false),
+      orDefault(settings.withTypedArray, false)
     );
   }
 }
@@ -213,7 +231,20 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
       ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : []),
       ...(constraints.withBigInt ? [bigInt()] : []),
-      ...(constraints.withDate ? [date()] : [])
+      ...(constraints.withDate ? [date()] : []),
+      ...(constraints.withTypedArray
+        ? [
+            int8Array(),
+            uint8Array(),
+            uint8ClampedArray(),
+            int16Array(),
+            uint16Array(),
+            int32Array(),
+            uint32Array(),
+            float32Array(),
+            float64Array(),
+          ]
+        : [])
     );
   });
 

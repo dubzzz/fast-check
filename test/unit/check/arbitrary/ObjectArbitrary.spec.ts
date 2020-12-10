@@ -215,6 +215,7 @@ describe('ObjectArbitrary', () => {
               withObjectString: fc.boolean(),
               withNullPrototype: fc.boolean(),
               withDate: fc.boolean(),
+              withTypedArray: fc.boolean(),
               ...(typeof BigInt !== 'undefined' ? { withBigInt: fc.boolean() } : {}),
             },
             { withDeletedKeys: true }
@@ -466,6 +467,7 @@ describe('ObjectArbitrary', () => {
             withNullPrototype: true,
             withObjectString: true,
             withSet: true,
+            withTypedArray: true,
           }),
           (originalValue: any) => {
             fc.pre(typeof originalValue !== 'number');
