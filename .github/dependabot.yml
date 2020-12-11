@@ -117,3 +117,9 @@ updates:
       # we run this test against a linked version of fast-check
       # by using `yarn link "fast-check"`
       - dependency-name: "fast-check"
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "⬆️"
