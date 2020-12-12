@@ -1,3 +1,28 @@
+# 2.9.0
+
+_Add arbitraries for typed arrays_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.9.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.8.0...v2.9.0)]
+
+## Features
+
+- ([PR#1210](https://github.com/dubzzz/fast-check/pull/1210)) Wider defaults for numbers in objects
+- ([PR#1212](https://github.com/dubzzz/fast-check/pull/1212)) Add typed arrays arbitraries
+- ([PR#1237](https://github.com/dubzzz/fast-check/pull/1237)) Add option withTypedArray to `fc.object` and `fc.anything`
+
+## Fixes
+
+- ([PR#1231](https://github.com/dubzzz/fast-check/pull/1231)) CI: Split test task into two tasks: one for units, another for e2e
+- ([PR#1232](https://github.com/dubzzz/fast-check/pull/1232)) CI: Run E2E tests on multiple platforms
+- ([PR#1243](https://github.com/dubzzz/fast-check/pull/1243)) CI: Add github-actions to dependabot list
+- ([PR#1230](https://github.com/dubzzz/fast-check/pull/1230)) Test: Reduce flakyness of object boxing coverage
+- ([PR#1233](https://github.com/dubzzz/fast-check/pull/1233)) Test: Wrongly defined test for 'Should box any number'
+- ([PR#1236](https://github.com/dubzzz/fast-check/pull/1236)) Test: Safer URL validation in our web urls e2e tests
+- ([PR#1238](https://github.com/dubzzz/fast-check/pull/1238)) Test: Add legacy tests for typed arrays
+- ([PR#1250](https://github.com/dubzzz/fast-check/pull/1250)) Test: Increase stability of e2e on floatNext/doubleNext
+- ([PR#1251](https://github.com/dubzzz/fast-check/pull/1251)) Test: Add more tests for fc.anything to reduce coverage flakiness
+
+---
+
 # 2.8.0
 
 _New opt-in implementation for fc.float and fc.double_
