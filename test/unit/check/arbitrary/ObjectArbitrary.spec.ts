@@ -176,6 +176,52 @@ describe('ObjectArbitrary', () => {
       checkProduce({ values: [constant(0)], maxDepth: 1, withSet: true }, (v) => v instanceof Set));
     it('Should be able to produce Map', () =>
       checkProduce({ values: [constant(0)], maxDepth: 1, withMap: true }, (v) => v instanceof Map));
+    // Rq: For the moment Date require the depth to be at least of 1
+    it('Should be able to produce Date', () =>
+      checkProduce({ values: [constant(0)], maxDepth: 1, withDate: true }, (v) => v instanceof Date));
+    // Rq: For the moment typed arrays require the depth to be at least of 1
+    it('Should be able to produce typed arrays', () =>
+      checkProduce({ values: [constant(0)], maxDepth: 1, withTypedArray: true }, (v) => {
+        return (
+          v instanceof Int8Array ||
+          v instanceof Uint8Array ||
+          v instanceof Uint8ClampedArray ||
+          v instanceof Int16Array ||
+          v instanceof Uint16Array ||
+          v instanceof Int32Array ||
+          v instanceof Uint32Array ||
+          v instanceof Float32Array ||
+          v instanceof Float64Array
+        );
+      }));
+    // Rq: For the moment stringified representations require the depth to be at least of 1
+    it('Should be able to produce stringified representations of objects', () =>
+      checkProduce({ values: [constant(0)], maxDepth: 1, withObjectString: true }, (v) => {
+        if (typeof v !== 'string') {
+          return false; // non strings are not valid string representations for objects
+        }
+        try {
+          eval(v);
+          return true; // the string was correctly parsed
+        } catch (err) {
+          return false; // not a valid representation
+        }
+      }));
+    it('Should be able to produce stringified representations of objects as keys', () =>
+      checkProduce({ values: [constant(0)], maxDepth: 1, withObjectString: true }, (v) => {
+        if (v === null || typeof v !== 'object') {
+          return false; // not an object
+        }
+        for (const key of Object.keys(v)) {
+          try {
+            eval(key);
+            return true; // the string used as key the string representation of a JavaScript instance
+          } catch (err) {
+            // not a valid representation
+          }
+        }
+        return false;
+      }));
     it('Should not be able to produce Array if maxDepth is zero', () =>
       fc.assert(
         fc.property(fc.integer(), (seed) => {
@@ -272,7 +318,7 @@ describe('ObjectArbitrary', () => {
       expect(counters.numMaps / numTests).toBeGreaterThanOrEqual(0.15);
       expect(counters.numObjects / numTests).toBeGreaterThanOrEqual(0.15);
       expect(counters.numSets / numTests).toBeGreaterThanOrEqual(0.15);
-      expect(counters.numSets / numTests).toBeGreaterThanOrEqual(0.15);
+      expect(counters.numOthers / numTests).toBeGreaterThanOrEqual(0.15);
     });
   });
   describe('json', () => {
