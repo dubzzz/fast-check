@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@testing-library/dom": "^7.28.1",
-    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.5.0",
     "fast-check": "*",
