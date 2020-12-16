@@ -54,22 +54,8 @@ export abstract class Arbitrary<T> {
    */
   filter(predicate: (t: T) => boolean): Arbitrary<T>;
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U> {
-    const arb = this;
-    const refinementOnShrinkable = (s: Shrinkable<T>): s is Shrinkable<U> => {
-      return refinement(s.value);
-    };
-    return new (class extends Arbitrary<U> {
-      generate(mrng: Random): Shrinkable<U> {
-        let g = arb.generate(mrng);
-        while (!refinementOnShrinkable(g)) {
-          g = arb.generate(mrng);
-        }
-        return g.filter(refinement);
-      }
-      withBias(freq: number) {
-        return arb.withBias(freq).filter(refinement);
-      }
-    })();
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return new FilterArbitrary(this, refinement);
   }
 
   /**
@@ -87,32 +73,8 @@ export abstract class Arbitrary<T> {
    * @returns New arbitrary with mapped elements
    */
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
-    const arb = this;
-    return new (class extends Arbitrary<U> {
-      generate(mrng: Random): Shrinkable<U> {
-        return arb.generate(mrng).map(mapper);
-      }
-      withBias(freq: number): Arbitrary<U> {
-        return arb.withBias(freq).map(mapper);
-      }
-    })();
-  }
-
-  /** @internal */
-  private static shrinkChain<T, U>(
-    mrng: Random,
-    src: Shrinkable<T>,
-    dst: Shrinkable<U>,
-    fmapper: (t: T) => Arbitrary<U>
-  ): Shrinkable<U> {
-    return new Shrinkable(dst.value, () =>
-      src
-        .shrink()
-        .map((v: Shrinkable<T>) =>
-          Arbitrary.shrinkChain(mrng.clone(), v, fmapper(v.value).generate(mrng.clone()), fmapper)
-        )
-        .join(dst.shrink())
-    );
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return new MapArbitrary(this, mapper);
   }
 
   /**
@@ -127,18 +89,8 @@ export abstract class Arbitrary<T> {
    * @returns New arbitrary of new type
    */
   chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U> {
-    const arb = this;
-    return new (class extends Arbitrary<U> {
-      generate(mrng: Random): Shrinkable<U> {
-        const clonedMrng = mrng.clone();
-        const src = arb.generate(mrng);
-        const dst = fmapper(src.value).generate(mrng);
-        return Arbitrary.shrinkChain(clonedMrng, src, dst, fmapper);
-      }
-      withBias(freq: number): Arbitrary<U> {
-        return arb.withBias(freq).chain((t: T) => fmapper(t).withBias(freq));
-      }
-    })();
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return new ChainArbitrary(this, fmapper);
   }
 
   /**
@@ -154,15 +106,8 @@ export abstract class Arbitrary<T> {
    * @returns Create another arbitrary with no shrink values
    */
   noShrink(): Arbitrary<T> {
-    const arb = this;
-    return new (class extends Arbitrary<T> {
-      generate(mrng: Random): Shrinkable<T> {
-        return new Shrinkable(arb.generate(mrng).value);
-      }
-      withBias(freq: number) {
-        return arb.withBias(freq).noShrink();
-      }
-    })();
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return new NoShrinkArbitrary(this);
   }
 
   /**
@@ -180,11 +125,94 @@ export abstract class Arbitrary<T> {
    * @param freq - The biased version will be used one time over freq - if it exists
    */
   noBias(): Arbitrary<T> {
-    const arb = this;
-    return new (class extends Arbitrary<T> {
-      generate(mrng: Random): Shrinkable<T> {
-        return arb.generate(mrng);
-      }
-    })();
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return new NoBiasArbitrary(this);
+  }
+}
+
+/** @internal */
+class ChainArbitrary<T, U> extends Arbitrary<U> {
+  constructor(readonly arb: Arbitrary<T>, readonly fmapper: (t: T) => Arbitrary<U>) {
+    super();
+  }
+  generate(mrng: Random): Shrinkable<U> {
+    const clonedMrng = mrng.clone();
+    const src = this.arb.generate(mrng);
+    const dst = this.fmapper(src.value).generate(mrng);
+    return ChainArbitrary.shrinkChain(clonedMrng, src, dst, this.fmapper);
+  }
+  withBias(freq: number): Arbitrary<U> {
+    return this.arb.withBias(freq).chain((t: T) => this.fmapper(t).withBias(freq));
+  }
+  private static shrinkChain<T, U>(
+    mrng: Random,
+    src: Shrinkable<T>,
+    dst: Shrinkable<U>,
+    fmapper: (t: T) => Arbitrary<U>
+  ): Shrinkable<U> {
+    return new Shrinkable(dst.value, () =>
+      src
+        .shrink()
+        .map((v: Shrinkable<T>) =>
+          ChainArbitrary.shrinkChain(mrng.clone(), v, fmapper(v.value).generate(mrng.clone()), fmapper)
+        )
+        .join(dst.shrink())
+    );
+  }
+}
+
+/** @internal */
+class MapArbitrary<T, U> extends Arbitrary<U> {
+  constructor(readonly arb: Arbitrary<T>, readonly mapper: (t: T) => U) {
+    super();
+  }
+  generate(mrng: Random): Shrinkable<U> {
+    return this.arb.generate(mrng).map(this.mapper);
+  }
+  withBias(freq: number): Arbitrary<U> {
+    return this.arb.withBias(freq).map(this.mapper);
+  }
+}
+
+/** @internal */
+class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
+  constructor(readonly arb: Arbitrary<T>, readonly refinement: (t: T) => t is U) {
+    super();
+  }
+  generate(mrng: Random): Shrinkable<U> {
+    let g = this.arb.generate(mrng);
+    while (!this.refinementOnShrinkable(g)) {
+      g = this.arb.generate(mrng);
+    }
+    return g.filter(this.refinement);
+  }
+  withBias(freq: number) {
+    return this.arb.withBias(freq).filter(this.refinement);
+  }
+  private refinementOnShrinkable(s: Shrinkable<T>): s is Shrinkable<U> {
+    return this.refinement(s.value);
+  }
+}
+
+/** @internal */
+class NoShrinkArbitrary<T> extends Arbitrary<T> {
+  constructor(readonly arb: Arbitrary<T>) {
+    super();
+  }
+  generate(mrng: Random): Shrinkable<T> {
+    return new Shrinkable(this.arb.generate(mrng).value);
+  }
+  withBias(freq: number) {
+    return this.arb.withBias(freq).noShrink();
+  }
+}
+
+/** @internal */
+class NoBiasArbitrary<T> extends Arbitrary<T> {
+  constructor(readonly arb: Arbitrary<T>) {
+    super();
+  }
+  generate(mrng: Random): Shrinkable<T> {
+    return this.arb.generate(mrng);
   }
 }
