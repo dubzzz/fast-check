@@ -77,6 +77,17 @@ expectType<fc.Arbitrary<{ a: number; b: string }>>(
 expectType<fc.Arbitrary<{ a?: number; b?: string }>>(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true })
 );
+expectType<fc.Arbitrary<{ a?: number; b?: string }>>(
+  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: [] })
+);
+expectType<fc.Arbitrary<{ a: number; b?: string }>>(
+  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: ['a'] })
+);
+expectType<fc.Arbitrary<{ a: number; b?: string; c: string }>>(
+  fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { withDeletedKeys: true, requiredKeys: ['a', 'c'] })
+);
+expectType<fc.Arbitrary<{ a: number; b: string }>>(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] }));
+expectError(fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: ['c'] }));
 expectError(fc.record({ a: 1 }));
 
 // dictionary arbitrary
