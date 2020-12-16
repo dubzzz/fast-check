@@ -1,3 +1,18 @@
+# 2.10.0
+
+_Increase performances of generic operations of arbitraries: map, filter, chain_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.9.0...v2.10.0)]
+
+## Features
+
+- ([PR#1264](https://github.com/dubzzz/fast-check/pull/1264)) Extract inlined-classes outside of Arbitrary base-class
+
+## Fixes
+
+- ([PR#1260](https://github.com/dubzzz/fast-check/pull/1260)) Test: Better coverage of ArrayInt64 to reduce flakiness in coverage
+
+---
+
 # 2.9.0
 
 _Add arbitraries for typed arrays_
