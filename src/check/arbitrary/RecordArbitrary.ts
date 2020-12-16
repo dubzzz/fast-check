@@ -26,11 +26,17 @@ export type RecordValue<T, Constraints = {}> = Constraints extends {
 
 /** @internal */
 function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
-  const keys = Object.keys(recordModel);
-  const arbs: Arbitrary<any>[] = keys.map((v) => (recordModel as { [key: string]: Arbitrary<any> })[v]);
+  const keys: Extract<keyof T, string>[] = [];
+  const arbs: Arbitrary<T[keyof T]>[] = [];
+  for (const k in recordModel) {
+    keys.push(k);
+    arbs.push(recordModel[k]);
+  }
   return genericTuple(arbs).map((gs: any[]) => {
     const obj: { [key: string]: any } = {};
-    for (let idx = 0; idx !== keys.length; ++idx) obj[keys[idx]] = gs[idx];
+    for (let idx = 0; idx !== keys.length; ++idx) {
+      obj[keys[idx]] = gs[idx];
+    }
     return obj as { [K in keyof T]: T[K] };
   });
 }
@@ -72,15 +78,16 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
     return rawRecord(recordModel);
   }
 
-  const updatedRecordModel: {
-    [key: string]: Arbitrary<{ value: T } | null>;
-  } = {};
-  for (const k of Object.keys(recordModel))
-    updatedRecordModel[k] = option((recordModel as { [key: string]: Arbitrary<any> })[k].map((v) => ({ value: v })));
+  const updatedRecordModel: { [key: string]: Arbitrary<{ value: T[keyof T] } | null> } = {};
+  for (const k in recordModel) {
+    updatedRecordModel[k] = option(recordModel[k].map((v) => ({ value: v })));
+  }
   return rawRecord(updatedRecordModel).map((obj) => {
-    const nobj: { [key: string]: T } = {};
-    for (const k of Object.keys(obj)) {
-      if (obj[k] != null) nobj[k] = (obj[k] as { value: T }).value;
+    const nobj: { [key: string]: T[keyof T] } = {};
+    for (const k in obj) {
+      if (obj[k] != null) {
+        nobj[k] = (obj[k] as { value: T[keyof T] }).value;
+      }
     }
     return nobj;
   });
