@@ -25,7 +25,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
       - name: Install dependencies
@@ -47,7 +47,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: ${{matrix.node-version}}
       - name: Install dependencies
@@ -78,7 +78,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: ${{matrix.node-version}}
       - name: Install dependencies
@@ -105,7 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
       - name: Check package score using skypack
@@ -120,7 +120,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
       - name: Install dependencies
@@ -148,7 +148,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
       - name: Install dependencies
@@ -173,7 +173,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
       - name: Download production package
@@ -192,10 +192,17 @@ jobs:
     name: 'Test types'
     needs: production_package
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ts-version:
+          # Latest version of TypeScript
+          - '*'
+          # Minimal requirement for TypeScript
+          - '3.2'
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
       - name: Download production package
@@ -206,32 +213,16 @@ jobs:
         uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'test/type'
+      - name: Adapt test/type/for TypeScript 3.2
+        if: matrix.ts-version == '3.2'
+        run: |
+          cd test/type
+          sed -i 's/ts-expect-error/ts-ignore/g' *.ts
+          sed -i 's/fc-ignore-if-no-const/ts-ignore/g' *.ts
       - name: Test test/type/
         run: |
           cd test/type
-          yarn test
-  test_typescript_3_2:
-    name: 'Test legacy TypeScript'
-    needs: production_package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
-        with:
-          node-version: '14.x'
-      - name: Download production package
-        uses: actions/download-artifact@v2
-        with:
-          name: bundle
-      - name: Install dependencies but use current build for fast-check
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          path: 'test/legacy/typescript-3.2'
-      - name: Test test/legacy/typescript-3.2/
-        run: |
-          cd test/legacy/typescript-3.2
-          yarn build
+          npx -p typescript@${{matrix.ts-version}} tsc
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
@@ -239,7 +230,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
       - name: Download production package
@@ -251,7 +242,7 @@ jobs:
         with:
           path: 'test/legacy/node-8'
       - name: Using Node v8.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '8.x'
       - name: Test test/legacy/node-8/
@@ -356,12 +347,11 @@ jobs:
       - test_node_8
       - test_package_quality
       - test_types
-      - test_typescript_3_2
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - name: Using Node v14.x
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
