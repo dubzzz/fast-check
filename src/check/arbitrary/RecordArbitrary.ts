@@ -8,10 +8,10 @@ import { genericTuple } from './TupleArbitrary';
  * @public
  */
 export interface RecordConstraints<T = never> {
-  /** Allow to remove keys from the generated record */
-  withDeletedKeys?: boolean;
   /** List keys that should never be deleted */
   requiredKeys?: T[];
+  /** Allow to remove keys from the generated record */
+  withDeletedKeys?: boolean;
 }
 
 /**

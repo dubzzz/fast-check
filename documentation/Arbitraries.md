@@ -2586,11 +2586,12 @@ fc.dictionary(fc.string(), fc.nat())
 *&#8195;Signatures*
 
 - `fc.record(recordModel)`
-- `fc.record(recordModel, {withDeletedKeys?})`
+- `fc.record(recordModel, {requiredKeys?, withDeletedKeys?})`
 
 *&#8195;with:*
 
 - `recordModel` — _structure of the resulting instance_
+- `requiredKeys?` — default: `[]` — _list of keys that should never be deleted, reamrk: need to set `withDeletedKeys:true` to enable deletion of other keys_
 - `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys_
 
 *&#8195;Usages*
@@ -2619,6 +2620,20 @@ fc.record({
 // • {"age":34}
 // • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
 // • {"id":"00000006-0007-4000-8397-86ea00000004"}
+// • …
+
+fc.record({
+  id: fc.uuidV(4),
+  name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
+  age: fc.nat(99)
+}, { requiredKeys:['id'], withDeletedKeys: true })
+// Note: Only age and name will be optional values. id has been marked as required.
+// Examples of generated values:
+// • {"id":"00000018-77a1-4d90-afda-d75700000014","age":81}
+// • {"id":"fffffff5-713e-4d44-87dc-27b96e6cfc2d","name":"Karen","age":5}
+// • {"id":"fffffff8-a23b-487f-ac63-a9d60000001a","name":"Karen","age":48}
+// • {"id":"ffffffec-36b1-447b-8000-001243322c28","name":"Karen","age":15}
+// • {"id":"7dffbea8-cf2f-412b-8000-00020000000f","name":"Luis"}
 // • …
 
 fc.tuple(
