@@ -95,6 +95,7 @@ expectType<number>()(type<number>());
 expectType<never>()(type<never>());
 expectType<any>()(type<any>());
 expectType<unknown>()(type<unknown>());
+expectType<{ a: number }>()(type<{ a: number }>());
 
 // @ts-expect-error
 expectType<number>()(type<5>());
@@ -118,6 +119,12 @@ expectType<unknown>()(type<number>());
 expectType<unknown>()(type<never>());
 // @ts-expect-error
 expectType<unknown>()(type<any>());
+// @ts-expect-error
+expectType<{ a: number }>()(type<{ a?: number }>());
+// @ts-expect-error
+expectType<{ a?: number }>()(type<{ a: number }>());
+// @ts-expect-error
+expectType<{}>()(type<{ a: number }>());
 
 export function expectTypeAssignable<TExpectedType>() {
   return function <TReal>(
@@ -127,3 +134,22 @@ export function expectTypeAssignable<TExpectedType>() {
     // no code
   };
 }
+
+expectTypeAssignable<number>()(type<number>());
+expectTypeAssignable<number>()(type<5>());
+expectTypeAssignable<3 | 5>()(type<5>());
+expectTypeAssignable<unknown>()(type<number>());
+expectTypeAssignable<any>()(type<number>());
+expectTypeAssignable<{ a?: number }>()(type<{ a: number }>());
+expectTypeAssignable<{}>()(type<{ a: number }>());
+
+// @ts-expect-error
+expectTypeAssignable<5>()(type<number>());
+// @ts-expect-error
+expectTypeAssignable<5>()(type<3 | 5>());
+// @ts-expect-error
+expectTypeAssignable<{ a: number }>()(type<{ a?: number }>());
+// @ts-expect-error
+expectTypeAssignable<number>()(type<unknown>());
+// @ts-expect-error
+expectTypeAssignable<never>()(type<unknown>());
