@@ -188,10 +188,17 @@ jobs:
         run: |
           cd example
           yarn test
-  test_typescript_3_2:
-    name: 'Test legacy TypeScript'
+  test_types:
+    name: 'Test types'
     needs: production_package
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ts-version:
+          # Latest version of TypeScript
+          - '*'
+          # Minimal requirement for TypeScript
+          - '3.2'
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
@@ -205,11 +212,11 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/legacy/typescript-3.2'
-      - name: Test test/legacy/typescript-3.2/
+          path: 'test/type'
+      - name: Test test/type/
         run: |
-          cd test/legacy/typescript-3.2
-          yarn build
+          cd test/type
+          npx -p typescript@${{matrix.ts-version}} tsc
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
