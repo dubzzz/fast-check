@@ -76,6 +76,8 @@ const Test_IsSame_unknown_boolean: IsSame<unknown, boolean> = false;
 const Test_IsSame_unknown_any: IsSame<unknown, any> = false;
 const Test_IsSame_unknown_unknown: IsSame<unknown, unknown> = true;
 const Test_IsSame_unknown_never: IsSame<unknown, never> = false;
+const Test_IsSame_tuple_number_tuple_string: IsSame<[number], [string]> = false;
+//const Test_IsSame_tuple_any_tuple_unknown: IsSame<[any], [unknown]> = false;
 
 export function expectType<TExpectedType>() {
   return function <TReal>(
@@ -134,10 +136,10 @@ expectType<Promise<5>>()(type<Promise<number>>());
 expectType<Promise<number>>()(type<Promise<5>>());
 // @ts-expect-error
 expectType<[5]>()(type<[15]>());
-// @ts-expect-error
-expectType<[any]>()(type<[unknown]>());
-// @ts-expect-error
-expectType<[unknown]>()(type<[any]>());
+//// @ts-expect-error
+//expectType<[any]>()(type<[unknown]>());
+//// @ts-expect-error
+//expectType<[unknown]>()(type<[any]>());
 
 export function expectTypeAssignable<TExpectedType>() {
   return function <TReal>(
