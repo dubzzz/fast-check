@@ -28,11 +28,6 @@ fc.assert(
   fc.property(fc.nat(), () => {}),
   { reporter: (out: fc.RunDetails<[string, string]>) => {} }
 );
-// @ts-expect-error - Reporter must be strictly compatible with generated values
-fc.assert(
-  fc.property(fc.nat(), fc.string(), () => {}),
-  { reporter: (out: fc.RunDetails<[number]>) => {} }
-);
 
 // property
 expectTypeAssignable<fc.IProperty<[number]>>()(fc.property(fc.nat(), (a) => {}));
