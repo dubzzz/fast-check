@@ -23,9 +23,9 @@ expectType<void>()(
     { reporter: (out: fc.RunDetails<[number, string]>) => {} }
   )
 );
-// @ts-expect-error - Reporter must be compatible with generated values
 fc.assert(
   fc.property(fc.nat(), () => {}),
+  // @ts-expect-error - Reporter must be compatible with generated values
   { reporter: (out: fc.RunDetails<[string, string]>) => {} }
 );
 
