@@ -20,11 +20,10 @@ export interface RecordConstraints<T = never> {
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type RecordValue<T, TConstraints = {}> = TConstraints extends {
-  withDeletedKeys: true;
-  requiredKeys?: (infer TKeys)[];
-}
-  ? Partial<T> & Pick<T, TKeys & keyof T>
+export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDeletedKeys: true }
+  ? TConstraints extends { requiredKeys: (infer TKeys)[] }
+    ? Partial<T> & Pick<T, TKeys & keyof T>
+    : Partial<T>
   : T;
 
 /** @internal */
