@@ -173,4 +173,4 @@ expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>>()(
 // configureGlobal
 expectType<void>()(fc.configureGlobal({ reporter: (out: fc.RunDetails<unknown>) => {} }));
 // FIXME // @ts-expect-error - reporter cannot be defined with precise type on configureGlobal
-fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} });
+//fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} });
