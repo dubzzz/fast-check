@@ -192,13 +192,6 @@ jobs:
     name: 'Test types'
     needs: production_package
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ts-version:
-          # Latest version of TypeScript
-          - '*'
-          # Minimal requirement for TypeScript
-          - '3.2'
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
@@ -213,15 +206,32 @@ jobs:
         uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'test/type'
-      - name: Adapt test/type/for old versions
-        if: matrix.ts-version == '3.2'
-        run: |
-          cd test/type
-          sed -i 's/ts-expect-error/ts-ignore/g' *.ts
       - name: Test test/type/
         run: |
           cd test/type
-          npx -p typescript@${{matrix.ts-version}} tsc
+          yarn test
+  test_typescript_3_2:
+    name: 'Test legacy TypeScript'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '14.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/legacy/typescript-3.2'
+      - name: Test test/legacy/typescript-3.2/
+        run: |
+          cd test/legacy/typescript-3.2
+          yarn build
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
