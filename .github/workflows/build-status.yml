@@ -213,11 +213,12 @@ jobs:
         uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'test/type'
-      - name: Adapt test/type/for old versions
+      - name: Adapt test/type/for TypeScript 3.2
         if: matrix.ts-version == '3.2'
         run: |
           cd test/type
           sed -i 's/ts-expect-error/ts-ignore/g' *.ts
+          sed -i 's/fc-ignore-if-no-const/ts-ignore/g' *.ts
       - name: Test test/type/
         run: |
           cd test/type

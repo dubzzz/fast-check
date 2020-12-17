@@ -75,8 +75,10 @@ expectType<fc.Arbitrary<string>>()(fc.nat().map((n) => String(n)));
 
 // constantFrom arbitrary
 expectType<fc.Arbitrary<number>>()(fc.constantFrom(1, 2));
+// @fc-ignore-if-no-const
 expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(...([1, 2] as const)));
 expectType<fc.Arbitrary<number | string>>()(fc.constantFrom(1, 2, 'hello'));
+// @fc-ignore-if-no-const
 expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(fc.constantFrom(...([1, 2, 'hello'] as const)));
 
 // record arbitrary
@@ -122,6 +124,7 @@ fc.frequency({ arbitrary: fc.string(), weight: 1 }, { arbitrary: '1', weight: 1 
 // option arbitrary
 expectType<fc.Arbitrary<number | null>>()(fc.option(fc.nat()));
 expectType<fc.Arbitrary<number | null>>()(fc.option(fc.nat(), { nil: null }));
+// @fc-ignore-if-no-const
 expectType<fc.Arbitrary<number | 'custom_default'>>()(fc.option(fc.nat(), { nil: 'custom_default' as const }));
 // @ts-expect-error - option expects arbitraries not raw values
 fc.option(1);
