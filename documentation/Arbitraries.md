@@ -2635,24 +2635,6 @@ fc.record({
 // • {"id":"ffffffec-36b1-447b-8000-001243322c28","name":"Karen","age":15}
 // • {"id":"7dffbea8-cf2f-412b-8000-00020000000f","name":"Luis"}
 // • …
-
-fc.tuple(
-  fc.record({
-    id: fc.uuidV(4)
-  }),
-  fc.record({
-    age: fc.nat(99),
-    birthday: fc.date(),
-  }, { withDeletedKeys: true }),
-).map(([compulsary, opt]) => ({...compulsary, ...opt}))
-// Note: id will always be defined, age and birthday will be optional
-// Examples of generated values:
-// • {"id":"7a85b7cf-bf0c-4437-8268-b669d0aed75a","age":95,"birthday":new Date("1969-12-31T23:59:59.984Z")}
-// • {"id":"a2302ffc-001b-4000-bfff-fff40000000f","age":5}
-// • {"id":"00000012-0000-4000-96cb-a11654c2d99a","age":0}
-// • {"id":"d5157d1d-0010-4000-b79b-320c372e7422","age":0,"birthday":new Date("1970-01-01T00:00:00.048Z")}
-// • {"id":"00000005-8796-4b9c-bfff-fffa00000011","birthday":new Date("+080549-02-03T06:55:17.138Z")}
-// • …
 ```
 </details>
 
