@@ -2630,11 +2630,11 @@ fc.record({
 }, { requiredKeys:['id'] })
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
-// • {"id":"ea083fa6-7249-4b0c-aef2-d835c3f0b289","name":"Luis","age":6}
-// • {"id":"08da81bf-6977-48f4-a92b-da140000001f","name":"Luis","age":78}
-// • {"id":"7efe09e4-0011-4000-81c7-978d48ab7d28","name":"Paul","age":70}
-// • {"id":"0000000b-4fc4-4749-bfff-ffe5fffffff6","name":"Jane","age":33}
-// • {"id":"0e18ded4-0019-4000-bbc7-e9f137c4e417","age":21}
+// • {"id":"00000010-e2be-4b98-8d3a-944affffffe2","age":4,"birthday":new Date("2100-12-31T23:59:59.959Z")}
+// • {"id":"00000001-0005-4000-bfff-fff03ec646bf","age":48,"birthday":new Date("2069-12-20T11:27:18.998Z")}
+// • {"id":"00000003-ffed-4fff-bfff-fff400000012","name":"Jane","birthday":new Date("2028-02-06T17:18:26.370Z")}
+// • {"id":"fa5630bc-000f-4000-8000-001600000018","age":0,"birthday":new Date("1970-01-01T00:00:00.039Z")}
+// • {"id":"00000018-ffee-4fff-8a22-b8770000001b","age":93}
 // • …
 
 fc.record({
