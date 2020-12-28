@@ -7,7 +7,7 @@ import { genericTuple } from './TupleArbitrary';
  * Constraints to be applied on {@link record}
  * @public
  */
-export interface RecordConstraints<T = unknown> {
+export interface RecordConstraints<T = never> {
   /**
    * List keys that should never be deleted.
    * Warning: Cannot be used in conjunction with withDeletedKeys.

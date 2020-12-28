@@ -2591,7 +2591,7 @@ fc.dictionary(fc.string(), fc.nat())
 *&#8195;with:*
 
 - `recordModel` — _structure of the resulting instance_
-- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted, remark: cannot be with `withDeletedKeys`_
+- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted, remark: cannot be used with `withDeletedKeys`_
 - `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys. `withDeletedKeys: true` is equivalent to `requiredKeys: []`, thus the two options cannt be used at the same time_
 
 *&#8195;Usages*
