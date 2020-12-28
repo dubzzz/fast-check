@@ -55,7 +55,7 @@ describe('RecordArbitrary', () => {
 
     describe('Given a custom record configuration', () => {
       genericHelper.isValidArbitrary(
-        ([metas, constraints]: [Meta[], RecordConstraints]) => {
+        ([metas, constraints]: [Meta[], RecordConstraints<number>]) => {
           const recordModel: { [key: string]: Arbitrary<number> } = {};
           for (const m of metas) {
             recordModel[m.key] = integer(m.valueStart, m.valueStart + 10);
@@ -71,7 +71,13 @@ describe('RecordArbitrary', () => {
             }
             for (const m of metas) {
               // values are associated to the right key (if key required)
-              if (constraints.withDeletedKeys === true && !Object.prototype.hasOwnProperty.call(r, m.key)) continue;
+              if (
+                'withDeletedKeys' in constraints &&
+                constraints.withDeletedKeys === true &&
+                !Object.prototype.hasOwnProperty.call(r, m.key)
+              ) {
+                continue;
+              }
               if (typeof r[m.key] !== 'number') return false;
               if (r[m.key] < m.valueStart) return false;
               if (r[m.key] > m.valueStart + 10) return false;
