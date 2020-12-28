@@ -2586,7 +2586,8 @@ fc.dictionary(fc.string(), fc.nat())
 *&#8195;Signatures*
 
 - `fc.record(recordModel)`
-- `fc.record(recordModel, {requiredKeys?, withDeletedKeys?})`
+- `fc.record(recordModel, {requiredKeys?})`
+- `fc.record(recordModel, {withDeletedKeys?})`
 
 *&#8195;with:*
 
