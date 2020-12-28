@@ -61,6 +61,7 @@ jobs:
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
+          name: unit-tests-node-${{matrix.node-version}}-${{runner.os}}
           flags: unit-tests, node-${{matrix.node-version}}, ${{runner.os}}
           fail_ci_if_error: false # default: false
           verbose: true # default: false
