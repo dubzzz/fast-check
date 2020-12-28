@@ -44,6 +44,23 @@ describe('RecordArbitrary', () => {
           return false;
         })
       ));
+    it('Should reject configurations specifying non existing keys as required', () =>
+      fc.assert(
+        fc.property(fc.set(fc.string(), { minLength: 1 }), fc.string(), (keys, requiredKey) => {
+          fc.pre(!keys.includes(requiredKey));
+
+          const recordModel: { [key: string]: Arbitrary<string> } = {};
+          for (const k of keys) {
+            recordModel[k] = constant(`_${k}_`);
+          }
+
+          expect(() =>
+            record(recordModel, {
+              requiredKeys: [requiredKey],
+            })
+          ).toThrowError();
+        })
+      ));
     it('Should reject configurations specifying both requiredKeys and withDeletedKeys (even undefined)', () =>
       fc.assert(
         fc.property(

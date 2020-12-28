@@ -104,6 +104,13 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
 
   const updatedRecordModel: { [key: string]: Arbitrary<{ value: T[keyof T] } | null> } = {};
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
+
+  for (let idx = 0; idx !== requiredKeys.length; ++idx) {
+    if (!(requiredKeys[idx] in recordModel)) {
+      throw new Error(`requiredKeys cannot reference keys that have not been defined in recordModel`);
+    }
+  }
+
   for (const k in recordModel) {
     const requiredArbitrary = recordModel[k].map((v) => ({ value: v }));
     if (requiredKeys.indexOf(k) !== -1) updatedRecordModel[k] = requiredArbitrary;
