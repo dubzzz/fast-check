@@ -62,7 +62,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: unit-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
           fail_ci_if_error: false # default: false
           verbose: false # default: false
       - name: Coveralls
@@ -100,7 +100,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           name: e2e-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: e2e-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: e2e-tests, e2e-tests-${{matrix.node-version}}-${{runner.os}}
           fail_ci_if_error: false # default: false
           verbose: false # default: false
   publish_coverage:
