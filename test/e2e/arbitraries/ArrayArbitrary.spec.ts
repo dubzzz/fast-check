@@ -64,7 +64,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates (but will find some)
       }),
-      { seed, numRuns: 5000 } // increased numRuns to remove flakiness
+      { seed, numRuns: 10000 } // increased numRuns to remove flakiness
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0]).toHaveLength(2);

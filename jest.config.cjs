@@ -8,6 +8,7 @@ module.exports = {
       tsconfig: 'tsconfig.json',
     },
   },
+  collectCoverageFrom: ['<rootDir>/src/**'],
   testMatch: ['<rootDir>/test/**/*.spec.ts'],
   setupFiles: [],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],

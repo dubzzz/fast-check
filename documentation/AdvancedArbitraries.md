@@ -94,7 +94,7 @@ const intNoShrink = fc.integer().noShrink();
 
 You can also fully customize your arbitrary: not derive it from any of the buit-in arbitraries. What you have to do is to extend [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: Random): Shrinkable<T>`.
 
-`generate` is responsable for the generation of one new random entity of type `T` (see signature above). In order to fulfill it in a deterministic way it receives a `mrng: Random`:
+`generate` is responsible for the generation of one new random entity of type `T` (see signature above). In order to fulfill it in a deterministic way it receives a `mrng: Random`:
 - `next(n: number): number`: uniformly distributed n bits value (max value of n = 31)
 - `nextBoolean(): boolean`: uniformly distributed boolean value
 - `nextInt(): number`: uniformly distributed integer value

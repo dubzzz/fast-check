@@ -58,12 +58,13 @@ jobs:
             yarn build
       - name: Unit tests
         run: yarn test
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
+      - name: Codecov
+        uses: codecov/codecov-action@v1
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          flag-name: node-${{matrix.node-version}}
-          parallel: true
+          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          fail_ci_if_error: false # default: false
+          verbose: false # default: false
   test_e2e:
     name: 'Test E2E'
     runs-on: ${{matrix.os}}
@@ -89,16 +90,13 @@ jobs:
             yarn build
       - name: End-to-end tests
         run: yarn e2e
-  publish_coverage:
-    name: 'Publish coverage'
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
+      - name: Codecov
+        uses: codecov/codecov-action@v1
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          parallel-finished: true
+          name: e2e-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: e2e-tests, e2e-tests-${{matrix.node-version}}-${{runner.os}}
+          fail_ci_if_error: false # default: false
+          verbose: false # default: false
   test_package_quality:
     name: 'Test package quality'
     runs-on: ubuntu-latest
