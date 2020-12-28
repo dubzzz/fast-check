@@ -84,22 +84,21 @@ expectType<fc.Arbitrary<{ a?: number; b?: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true })
 );
 expectType<fc.Arbitrary<{ a?: number; b?: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: [] })
+  fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })
 );
 expectType<fc.Arbitrary<{ a: number; b?: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: ['a'] })
-);
-expectType<fc.Arbitrary<{ a: number; b?: string; c: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { withDeletedKeys: true, requiredKeys: ['a', 'c'] })
-);
-expectType<fc.Arbitrary<{ a: number; b: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] })
 );
-expectType<fc.Arbitrary<{ a: number; b: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: false, requiredKeys: ['a'] })
+expectType<fc.Arbitrary<{ a: number; b?: string; c: string }>>()(
+  fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] })
+);
+expectType<fc.Arbitrary<never>>()(
+  // requiredKeys and withDeletedKeys cannot be used together
+  // typings are not perfect but at least they build a value that cannot be used
+  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: [] })
 );
 // @ts-expect-error - requiredKeys references an unknown key
-fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: ['c'] });
+fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['c'] });
 // @ts-expect-error - record expects arbitraries not raw values
 fc.record({ a: 1 });
 

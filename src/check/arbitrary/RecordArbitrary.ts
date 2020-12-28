@@ -7,10 +7,17 @@ import { genericTuple } from './TupleArbitrary';
  * Constraints to be applied on {@link record}
  * @public
  */
-export interface RecordConstraints<T = never> {
-  /** List keys that should never be deleted */
+export interface RecordConstraints<T = unknown> {
+  /**
+   * List keys that should never be deleted.
+   * Warning: Cannot be used in conjunction with withDeletedKeys.
+   */
   requiredKeys?: T[];
-  /** Allow to remove keys from the generated record */
+  /**
+   * Allow to remove keys from the generated record.
+   * Warning: Cannot be used in conjunction with requiredKeys.
+   * Prefer: `requiredKeys: []` over `withDeletedKeys: true`
+   */
   withDeletedKeys?: boolean;
 }
 
@@ -20,10 +27,12 @@ export interface RecordConstraints<T = never> {
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDeletedKeys: true }
-  ? TConstraints extends { requiredKeys: (infer TKeys)[] }
-    ? Partial<T> & Pick<T, TKeys & keyof T>
-    : Partial<T>
+export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDeletedKeys: boolean; requiredKeys: any[] }
+  ? never
+  : TConstraints extends { withDeletedKeys: true }
+  ? Partial<T>
+  : TConstraints extends { requiredKeys: (infer TKeys)[] }
+  ? Partial<T> & Pick<T, TKeys & keyof T>
   : T;
 
 /** @internal */
@@ -76,7 +85,13 @@ function record<T, TConstraints extends RecordConstraints<keyof T>>(
   constraints: TConstraints
 ): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints<keyof T>) {
-  if (constraints == null || constraints.withDeletedKeys !== true) {
+  if (constraints == null) {
+    return rawRecord(recordModel);
+  }
+  if ('withDeletedKeys' in constraints && 'requiredKeys' in constraints) {
+    throw new Error(`requiredKeys and withDeletedKeys cannot be used together in fc.record`);
+  }
+  if (constraints.requiredKeys == null && !constraints.withDeletedKeys) {
     return rawRecord(recordModel);
   }
 
