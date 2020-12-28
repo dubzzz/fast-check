@@ -32,7 +32,9 @@ describe('RecordArbitrary', () => {
         fc.property(fc.set(fc.string(), { minLength: 1 }), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const recordModel: { [key: string]: Arbitrary<string> } = {};
-          for (const k of keys) recordModel[k] = constant(`_${k}_`);
+          for (const k of keys) {
+            recordModel[k] = constant(`_${k}_`);
+          }
 
           const arb = record(recordModel, { withDeletedKeys: true });
           for (let idx = 0; idx != 1000; ++idx) {
@@ -41,6 +43,30 @@ describe('RecordArbitrary', () => {
           }
           return false;
         })
+      ));
+    it('Should reject configurations specifying both requiredKeys and withDeletedKeys (even undefined)', () =>
+      fc.assert(
+        fc.property(
+          fc.set(fc.record({ name: fc.string(), required: fc.boolean() }), {
+            minLength: 1,
+            compare: (a, b) => a.name === b.name,
+          }),
+          fc.option(fc.constant(true), { nil: undefined }),
+          fc.option(fc.boolean(), { nil: undefined }),
+          (keys, withRequiredKeys, withDeletedKeys) => {
+            const recordModel: { [key: string]: Arbitrary<string> } = {};
+            for (const k of keys) {
+              recordModel[k.name] = constant(`_${k.name}_`);
+            }
+
+            expect(() =>
+              record(recordModel, {
+                requiredKeys: withRequiredKeys ? keys.filter((k) => k.required).map((k) => k.name) : undefined,
+                withDeletedKeys: withDeletedKeys,
+              })
+            ).toThrowError();
+          }
+        )
       ));
 
     type Meta = { key: string; valueStart: number; kept: boolean };
