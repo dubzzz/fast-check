@@ -2625,9 +2625,10 @@ fc.record({
 fc.record({
   id: fc.uuidV(4),
   name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
-  age: fc.nat(99)
+  age: fc.nat(99),
+  birthday: fc.date({min: new Date("1970-01-01T00:00:00.000Z"), max: new Date("2100-12-31T23:59:59.999Z")})
 }, { requiredKeys:['id'] })
-// Note: Only age and name will be optional values. id has been marked as required.
+// Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
 // • {"id":"ea083fa6-7249-4b0c-aef2-d835c3f0b289","name":"Luis","age":6}
 // • {"id":"08da81bf-6977-48f4-a92b-da140000001f","name":"Luis","age":78}
