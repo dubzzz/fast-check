@@ -94,10 +94,11 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
   if ('withDeletedKeys' in constraints && 'requiredKeys' in constraints) {
     throw new Error(`requiredKeys and withDeletedKeys cannot be used together in fc.record`);
   }
-  if ('requiredKeys' in constraints && constraints.requiredKeys == null) {
-    return rawRecord(recordModel);
-  }
-  if ('withDeletedKeys' in constraints && !constraints.withDeletedKeys == null) {
+
+  const requireDeletedKeys =
+    ('requiredKeys' in constraints && constraints.requiredKeys !== undefined) ||
+    ('withDeletedKeys' in constraints && !!constraints.withDeletedKeys);
+  if (!requireDeletedKeys) {
     return rawRecord(recordModel);
   }
 
