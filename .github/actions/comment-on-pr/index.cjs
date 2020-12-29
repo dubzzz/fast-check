@@ -16,7 +16,7 @@ const execAsync = (command, options) => {
     verboseLog(`Call to ${prettyCmd}`);
     exec(command, options, (err, stdout, stderr) => {
       verboseLog(`Answer from ${prettyCmd}`);
-      verboseLog(`err:`, cleanErr(err));
+      verboseLog(`err:`, JSON.stringify(cleanErr(err)));
       verboseLog(`stdout:`, stdout.toString());
       verboseLog(`stderr:`, stderr.toString());
       resolve({ err, stdout, stderr });
