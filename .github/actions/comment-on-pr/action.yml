@@ -1,5 +1,10 @@
 name: 'Comment on PR'
 description: 'Give more details regarding useful links for the commit (in PR)'
+inputs:
+  token:
+    description: 'GITHUB_TOKEN'
+    default: ${{github.token}}
+    required: false
 runs:
   using: 'node12'
   main: 'index.cjs'
