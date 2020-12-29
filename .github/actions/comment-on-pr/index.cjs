@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const { exec } = require('child_process');
 
 const verboseLog = (...args) => {
-  core.warning(args.join(' '));
+  core.info(args.join(' '));
 };
 const cleanErr = (err) => {
   if (!err) return err;
