@@ -38,9 +38,14 @@ async function run() {
     core.setFailed(`comment-on-pr failed to get back commit hash, failed with error: ${err}`);
     return;
   }
-  core.setFailed('commitMessage:' + commitMessage + ', hash:' + context.sha);
-  return;
+  const commitMessageRegex = /^Merge ([a-f0-9]+) into ([a-f0-9]+)$/;
+  const m = commitMessageRegex.exec(commitMessage.trim());
+  if (!m) {
+    core.setFailed(`comment-on-pr invalid commit message encountered, got: ${commitMessage.trim()}`);
+    return;
+  }
 
+  const commitHash = m[1];
   const packageUrl = `https://pkg.csb.dev/dubzzz/fast-check/commit/${commitHash.substring(0, 8)}/fast-check`;
   const octokit = github.getOctokit(token);
   const body =
