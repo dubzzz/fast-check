@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { execFile } = require('child_process');
+const { exec } = require('child_process');
 
 const verboseLog = (...args) => {
   core.info(args.join(' '));
@@ -10,11 +10,11 @@ const cleanErr = (err) => {
   const { stack, ...others } = err;
   return others;
 };
-const execFileAsync = (command, args, options) => {
-  const prettyCmd = `execFile(${JSON.stringify(command)}, ${JSON.stringify(args)}, ${JSON.stringify(options)}})`;
+const execAsync = (command, options) => {
+  const prettyCmd = `exec(${JSON.stringify(command)}, ${JSON.stringify(options)}})`;
   return new Promise((resolve) => {
     verboseLog(`Call to ${prettyCmd}`);
-    execFile(command, args, options, (err, stdout, stderr) => {
+    exec(command, options, (err, stdout, stderr) => {
       verboseLog(`Answer from ${prettyCmd}`);
       verboseLog(`err:`, JSON.stringify(cleanErr(err)));
       verboseLog(`stdout:`, stdout.toString());
@@ -33,11 +33,13 @@ async function run() {
     return;
   }
 
-  const { err, stdout: commitHash } = await execFileAsync('git', ['rev-parse', `${context.sha}^`]);
+  const { err, stdout: commitMessage } = await execAsync('git log -1 --format=%s');
   if (err && err.code) {
     core.setFailed(`comment-on-pr failed to get back commit hash, failed with error: ${err}`);
     return;
   }
+  core.setFailed('commitMessage:' + commitMessage + ', hash:' + context.sha);
+  return;
 
   const packageUrl = `https://pkg.csb.dev/dubzzz/fast-check/commit/${commitHash.substring(0, 8)}/fast-check`;
   const octokit = github.getOctokit(token);
