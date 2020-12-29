@@ -1,16 +1,13 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
+const { context, GitHub } = require('@actions/github');
 
 async function run() {
-  const context = github.context;
-
   if (context.eventName !== 'pull_request') {
     core.setFailed(`comment-on-pr can only be used on pull_request`);
     return;
   }
-
   const packageUrl = `https://pkg.csb.dev/dubzzz/fast-check/commit/${context.sha.substring(0, 8)}/fast-check`;
-  const githubClient = new github.GitHub(context.token);
+  const githubClient = new GitHub(context.token);
   const body =
     `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${context.sha} with:\n\n` +
     '```bash\n' +
@@ -33,4 +30,4 @@ async function run() {
   });
 }
 
-run();
+run().catch((err) => core.setFailed(`Failed with error: ${err}`));
