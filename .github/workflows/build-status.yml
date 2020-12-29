@@ -164,6 +164,25 @@ jobs:
           path: fast-check.tgz
           if-no-files-found: error
           retention-days: 1
+  comment_on_pr:
+    name: 'Comment on PR'
+    # There is no real need to be dependant on the step production_package.
+    # The only reason is that the comment would be useless in the case the package cannot be compiled.
+    needs: production_package
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: |
+          cd ./.github/actions/comment-on-pr
+          yarn --frozen-lockfile
+      - name: Comment on PR
+        uses: ./.github/actions/comment-on-pr
   test_example:
     name: 'Test example'
     needs: production_package
