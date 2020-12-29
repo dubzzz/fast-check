@@ -316,7 +316,7 @@ jobs:
         sh run.sh
   comment_on_pr:
     name: 'Comment on PR'
-    needs: production_package
+    #needs: production_package
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
