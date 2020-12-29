@@ -20,6 +20,8 @@ async function run() {
     '```\n\n' +
     '<details>\n' +
     '<summary>More details on this run</summary>\n\n' +
+    `- On Codeclimate: https://codeclimate.com/github/dubzzz/fast-check/pull/${context.issue.number}` +
+    `- On Codecov: https://codecov.io/gh/dubzzz/fast-check/pull/${context.issue.number}` +
     `- On CodeSandbox: https://ci.codesandbox.io/status/dubzzz/fast-check/pr/${context.issue.number}` +
     `- On GitHub Actions: https://github.com/dubzzz/fast-check/actions/runs/${context.runId}` +
     '</details>';
