@@ -2586,12 +2586,14 @@ fc.dictionary(fc.string(), fc.nat())
 *&#8195;Signatures*
 
 - `fc.record(recordModel)`
+- `fc.record(recordModel, {requiredKeys?})`
 - `fc.record(recordModel, {withDeletedKeys?})`
 
 *&#8195;with:*
 
 - `recordModel` — _structure of the resulting instance_
-- `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys_
+- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted, remark: cannot be used with `withDeletedKeys`_
+- `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys. `withDeletedKeys: true` is equivalent to `requiredKeys: []`, thus the two options cannot be used at the same time_
 
 *&#8195;Usages*
 
@@ -2611,6 +2613,34 @@ fc.record({
 fc.record({
   id: fc.uuidV(4),
   age: fc.nat(99)
+}, { requiredKeys: [] })
+// Note: Both id and age will be optional values
+// Examples of generated values:
+// • {"id":"00000000-ffea-4fff-8000-0010220687cc","age":6}
+// • {"id":"fac4b0f1-000e-4000-8000-0013d4108685","age":74}
+// • {"id":"098dd732-d92d-42e3-8000-0004a6defef0","age":34}
+// • {"id":"fffffffa-0007-4000-891f-7a8c033fd020","age":0}
+// • {"id":"00000007-217b-48d8-925a-dd0e0000000c","age":3}
+// • …
+
+fc.record({
+  id: fc.uuidV(4),
+  name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
+  age: fc.nat(99),
+  birthday: fc.date({min: new Date("1970-01-01T00:00:00.000Z"), max: new Date("2100-12-31T23:59:59.999Z")})
+}, { requiredKeys:['id'] })
+// Note: All keys except 'id' will be optional values. id has been marked as required.
+// Examples of generated values:
+// • {"id":"00000010-e2be-4b98-8d3a-944affffffe2","age":4,"birthday":new Date("2100-12-31T23:59:59.959Z")}
+// • {"id":"00000001-0005-4000-bfff-fff03ec646bf","age":48,"birthday":new Date("2069-12-20T11:27:18.998Z")}
+// • {"id":"00000003-ffed-4fff-bfff-fff400000012","name":"Jane","birthday":new Date("2028-02-06T17:18:26.370Z")}
+// • {"id":"fa5630bc-000f-4000-8000-001600000018","age":0,"birthday":new Date("1970-01-01T00:00:00.039Z")}
+// • {"id":"00000018-ffee-4fff-8a22-b8770000001b","age":93}
+// • …
+
+fc.record({
+  id: fc.uuidV(4),
+  age: fc.nat(99)
 }, { withDeletedKeys: true })
 // Note: Both id and age will be optional values
 // Examples of generated values:
@@ -2619,24 +2649,6 @@ fc.record({
 // • {"age":34}
 // • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
 // • {"id":"00000006-0007-4000-8397-86ea00000004"}
-// • …
-
-fc.tuple(
-  fc.record({
-    id: fc.uuidV(4)
-  }),
-  fc.record({
-    age: fc.nat(99),
-    birthday: fc.date(),
-  }, { withDeletedKeys: true }),
-).map(([compulsary, opt]) => ({...compulsary, ...opt}))
-// Note: id will always be defined, age and birthday will be optional
-// Examples of generated values:
-// • {"id":"7a85b7cf-bf0c-4437-8268-b669d0aed75a","age":95,"birthday":new Date("1969-12-31T23:59:59.984Z")}
-// • {"id":"a2302ffc-001b-4000-bfff-fff40000000f","age":5}
-// • {"id":"00000012-0000-4000-96cb-a11654c2d99a","age":0}
-// • {"id":"d5157d1d-0010-4000-b79b-320c372e7422","age":0,"birthday":new Date("1970-01-01T00:00:00.048Z")}
-// • {"id":"00000005-8796-4b9c-bfff-fffa00000011","birthday":new Date("+080549-02-03T06:55:17.138Z")}
 // • …
 ```
 </details>

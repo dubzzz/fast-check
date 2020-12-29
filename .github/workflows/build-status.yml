@@ -62,15 +62,9 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: unit-tests, node-${{matrix.node-version}}, ${{runner.os}}, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
           fail_ci_if_error: false # default: false
           verbose: false # default: false
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          flag-name: node-${{matrix.node-version}}
-          parallel: true
   test_e2e:
     name: 'Test E2E'
     runs-on: ${{matrix.os}}
@@ -100,19 +94,9 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           name: e2e-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: e2e-tests, node-${{matrix.node-version}}, ${{runner.os}}, e2e-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: e2e-tests, e2e-tests-${{matrix.node-version}}-${{runner.os}}
           fail_ci_if_error: false # default: false
           verbose: false # default: false
-  publish_coverage:
-    name: 'Publish coverage'
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          parallel-finished: true
   test_package_quality:
     name: 'Test package quality'
     runs-on: ubuntu-latest

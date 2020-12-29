@@ -13,7 +13,7 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/-API Reference-%23282ea9.svg" title="API Reference" /></a>
 </p>
 <p align="center">
-  <a href="https://coveralls.io/github/dubzzz/fast-check"><img src="https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg" alt="Coverage Status" /></a>
+  <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/master"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/master/graph/badge.svg?flag=unit-tests&precision=0" alt="Coverage Status (unit tests)" /></a>
   <a href="https://david-dm.org/dubzzz/fast-check"><img src="https://david-dm.org/dubzzz/fast-check/status.svg" alt="dependencies Status" /></a>
   <a href="https://david-dm.org/dubzzz/fast-check?type=dev"><img src="https://david-dm.org/dubzzz/fast-check/dev-status.svg" alt="devDependencies Status" /></a>
 </p>
@@ -41,17 +41,17 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
 describe('properties', () => {
-	// string text always contains itself
-	it('should always contain itself', () => {
-		fc.assert(fc.property(fc.string(), text => contains(text, text)));
-	});
-	// string a + b + c always contains b, whatever the values of a, b and c
-	it('should always contain its substrings', () => {
-		fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
-			// Alternatively: no return statement and direct usage of expect or assert
-			return contains(a+b+c, b);
-		}));
-	});
+  // string text always contains itself
+  it('should always contain itself', () => {
+    fc.assert(fc.property(fc.string(), text => contains(text, text)));
+  });
+  // string a + b + c always contains b, whatever the values of a, b and c
+  it('should always contain its substrings', () => {
+    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
+      // Alternatively: no return statement and direct usage of expect or assert
+      return contains(a+b+c, b);
+    }));
+  });
 });
 ```
 
