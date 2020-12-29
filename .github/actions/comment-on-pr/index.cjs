@@ -3,7 +3,6 @@ const github = require('@actions/github');
 
 async function run() {
   const context = github.context;
-  const token = core.getInput('token', { required: true });
 
   if (context.eventName !== 'pull_request') {
     core.setFailed(`comment-on-pr can only be used on pull_request`);
@@ -11,7 +10,7 @@ async function run() {
   }
 
   const packageUrl = `https://pkg.csb.dev/dubzzz/fast-check/commit/${context.sha.substring(0, 8)}/fast-check`;
-  const githubClient = new github.GitHub(token);
+  const githubClient = new github.GitHub(context.token);
   const body =
     `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${context.sha} with:\n\n` +
     '```bash\n' +
