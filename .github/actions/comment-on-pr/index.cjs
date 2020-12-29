@@ -3,17 +3,16 @@ const github = require('@actions/github');
 
 async function run() {
   const context = github.context;
-  const commitHash = core.getInput('commit_hash', {required: true})
   const token = core.getInput('token', { required: true });
 
   if (context.eventName !== 'pull_request') {
     core.setFailed(`comment-on-pr can only be used on pull_request`);
     return;
   }
-  const packageUrl = `https://pkg.csb.dev/dubzzz/fast-check/commit/${commitHash.substring(0, 8)}/fast-check`;
+  const packageUrl = `https://pkg.csb.dev/dubzzz/fast-check/commit/${context.sha.substring(0, 8)}/fast-check`;
   const octokit = github.getOctokit(token);
   const body =
-    `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${commitHash} with:\n\n` +
+    `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${context.sha} with:\n\n` +
     '```bash\n' +
     `yarn add ${packageUrl}\n` +
     `npm i ${packageUrl}\n` +
