@@ -35,7 +35,7 @@ async function run() {
 
   const { err, stdout: commitHash } = await execAsync('git rev-parse HEAD^');
   if (err && err.code) {
-    core.setFailed(`comment-on-pr failed to get back commit hash`);
+    core.setFailed(`comment-on-pr failed to get back commit hash, failed with error: ${err}`);
     return;
   }
 
