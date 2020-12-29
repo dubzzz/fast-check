@@ -5,6 +5,10 @@ inputs:
     description: 'GITHUB_TOKEN'
     default: ${{github.token}}
     required: false
+  commit_hash:
+    description: 'Commit hash'
+    default: ${{env.GITHUB_SHA}}
+    required: false
 runs:
   using: 'node12'
   main: 'index.cjs'
