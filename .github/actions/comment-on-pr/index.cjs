@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 
 const verboseLog = (...args) => {
   core.info(args.join(' '));
@@ -10,11 +10,11 @@ const cleanErr = (err) => {
   const { stack, ...others } = err;
   return others;
 };
-const execAsync = (command, options) => {
-  const prettyCmd = `exec(${JSON.stringify(command)}, ${JSON.stringify(options)}})`;
+const execFileAsync = (command, args, options) => {
+  const prettyCmd = `execFile(${JSON.stringify(command)}, ${JSON.stringify(args)}, ${JSON.stringify(options)}})`;
   return new Promise((resolve) => {
     verboseLog(`Call to ${prettyCmd}`);
-    exec(command, options, (err, stdout, stderr) => {
+    execFile(command, args, options, (err, stdout, stderr) => {
       verboseLog(`Answer from ${prettyCmd}`);
       verboseLog(`err:`, JSON.stringify(cleanErr(err)));
       verboseLog(`stdout:`, stdout.toString());
@@ -33,7 +33,7 @@ async function run() {
     return;
   }
 
-  const { err, stdout: commitHash } = await execAsync('git rev-parse HEAD^');
+  const { err, stdout: commitHash } = await execFileAsync('git', ['rev-parse', `${context.sha}^`]);
   if (err && err.code) {
     core.setFailed(`comment-on-pr failed to get back commit hash, failed with error: ${err}`);
     return;
