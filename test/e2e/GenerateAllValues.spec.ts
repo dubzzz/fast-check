@@ -1,7 +1,7 @@
 import * as prand from 'pure-rand';
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`Generate all values (seed: ${seed})`, () => {
   /**
    * Check the ability of arbitraries to generate all the values
