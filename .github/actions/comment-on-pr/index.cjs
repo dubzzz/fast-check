@@ -56,7 +56,7 @@ async function run() {
     '```\n\n' +
     '⚠️ Package might not be accessible yet. Wait for CodeSandbox.\n\n' +
     '⚠️ By running one of these commands you will install the package defined by the head of the PR. But, tests are run against the result of the merge of the PR, not against the head of the PR*. *_If needed, you can install the package used for the tests by manually retrieving and installing the artifact bundle stored into GitHub Actions._\n\n' +
-    'See also: ' +
+    'Useful links: ' +
     `[Codeclimate](https://codeclimate.com/github/dubzzz/fast-check/pull/${context.issue.number}), ` +
     `[Codecov](https://codecov.io/gh/dubzzz/fast-check/pull/${context.issue.number}), ` +
     `[CodeSandbox](https://ci.codesandbox.io/status/dubzzz/fast-check/pr/${context.issue.number}) and ` +
