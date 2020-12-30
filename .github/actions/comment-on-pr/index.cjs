@@ -54,7 +54,7 @@ async function run() {
     `yarn add ${packageUrl}\n` +
     `npm i ${packageUrl}\n` +
     '```\n\n' +
-    '⚠ By running one of this commands you will install the package defined by the head of the PR. But, tests are run against the result of the merge of the PR, not against the head of the PR.\n\n' +
+    '⚠️ By running one of these commands you will install the package defined by the head of the PR. But, tests are run against the result of the merge of the PR, not against the head of the PR.\n\n' +
     'See also: ' +
     `[Codeclimate](https://codeclimate.com/github/dubzzz/fast-check/pull/${context.issue.number}), ` +
     `[Codecov](https://codecov.io/gh/dubzzz/fast-check/pull/${context.issue.number}), ` +
