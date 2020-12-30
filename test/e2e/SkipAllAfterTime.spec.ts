@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   it('should skip as soon as delay expires and mark run as failed', () => {
     let numRuns = 0;
