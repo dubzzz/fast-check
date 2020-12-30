@@ -59,7 +59,7 @@ async function run() {
     `[Codeclimate](https://codeclimate.com/github/dubzzz/fast-check/pull/${context.issue.number}), ` +
     `[Codecov](https://codecov.io/gh/dubzzz/fast-check/pull/${context.issue.number}), ` +
     `[CodeSandbox](https://ci.codesandbox.io/status/dubzzz/fast-check/pr/${context.issue.number}) and ` +
-    `[GitHub Actions](https://github.com/dubzzz/fast-check/actions/runs/${context.runId}) (the package used for the tests can be downloaded as a zip archive - artifact 'bundle').`;
+    `[GitHub Actions](https://github.com/dubzzz/fast-check/actions/runs/${context.runId}).`;
 
   await octokit.issues.createComment({
     issue_number: context.issue.number,
