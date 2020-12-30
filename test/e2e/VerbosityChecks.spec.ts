@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`VerbosityChecks (seed: ${seed})`, () => {
   it('should produce the right list of failing cases in verbose mode', () => {
     let failed = false;
