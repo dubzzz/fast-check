@@ -58,7 +58,7 @@ jobs:
             yarn build
       - name: Unit tests
         run: |
-            echo GITHUB_RUN_ID
+            echo $GITHUB_RUN_ID
             yarn test
       - name: Codecov
         uses: codecov/codecov-action@v1
