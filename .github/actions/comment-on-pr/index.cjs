@@ -54,13 +54,13 @@ async function run() {
     `yarn add ${packageUrl}\n` +
     `npm i ${packageUrl}\n` +
     '```\n\n' +
-    '<details>\n' +
-    '<summary>More details on this run</summary>\n\n' +
-    `- On Codeclimate: https://codeclimate.com/github/dubzzz/fast-check/pull/${context.issue.number}\n` +
-    `- On Codecov: https://codecov.io/gh/dubzzz/fast-check/pull/${context.issue.number}\n` +
-    `- On CodeSandbox: https://ci.codesandbox.io/status/dubzzz/fast-check/pr/${context.issue.number}\n` +
-    `- On GitHub Actions: https://github.com/dubzzz/fast-check/actions/runs/${context.runId}\n` +
-    '</details>';
+    '⚠️ Package might not be accessible yet. Wait for CodeSandbox.\n\n' +
+    '⚠️ By running one of these commands you will install the package defined by the head of the PR. But, tests are run against the result of the merge of the PR, not against the head of the PR*. *_If needed, you can install the package used for the tests by manually retrieving and installing the artifact bundle stored into GitHub Actions._\n\n' +
+    'Useful links: ' +
+    `[Codeclimate](https://codeclimate.com/github/dubzzz/fast-check/pull/${context.issue.number}), ` +
+    `[Codecov](https://codecov.io/gh/dubzzz/fast-check/pull/${context.issue.number}), ` +
+    `[CodeSandbox](https://ci.codesandbox.io/status/dubzzz/fast-check/pr/${context.issue.number}) and ` +
+    `[GitHub Actions](https://github.com/dubzzz/fast-check/actions/runs/${context.runId}).`;
 
   await octokit.issues.createComment({
     issue_number: context.issue.number,
