@@ -4,13 +4,6 @@ const fc = require('./lib/fast-check');
 // Default timeout of 120s
 jest.setTimeout(120000);
 
-// Use GITHUB_RUN_ID + CONTAINER as default seed
-const runId = process.env.GITHUB_RUN_ID;
-const container = process.env.CONTAINER;
-if (runId != null && container != null) {
-  const runIdValue = +runId
-  const containerValue = +container;
-  fc.configureGlobal({ seed: runIdValue + containerValue });
-} else if (process.env.CI) {
-  throw new Error('Missing env variables for CI');
-}
+const seed = Date.now() ^ (Math.random() * 0x100000000);
+console.log(`Using default seed: ${seed}`);
+fc.configureGlobal({ seed });
