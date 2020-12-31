@@ -59,8 +59,10 @@ jobs:
       - name: Unit tests
         run: |
             echo $GITHUB_RUN_ID
-            echo $GITHUB_RUN_NUMBER
+            echo $CONTAINER
             yarn test
+        env:
+          CONTAINER: ${{ github.job.container.id }}
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -94,8 +96,10 @@ jobs:
       - name: End-to-end tests
         run: |
             echo $GITHUB_RUN_ID
-            echo $GITHUB_RUN_NUMBER
+            echo $CONTAINER
             yarn e2e
+        env:
+          CONTAINER: ${{ github.job.container.id }}
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:

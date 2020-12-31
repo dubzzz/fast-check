@@ -4,11 +4,11 @@ const fc = require('./lib/fast-check');
 // Default timeout of 120s
 jest.setTimeout(120000);
 
-// Use GITHUB_RUN_ID + GITHUB_RUN_NUMBER as default seed
+// Use GITHUB_RUN_ID + CONTAINER as default seed
 const runId = process.env.GITHUB_RUN_ID;
-const runNumber = process.env.GITHUB_RUN_NUMBER;
-if (runId != null && runNumber != null) {
+const container = process.env.CONTAINER;
+if (runId != null && container != null) {
   const runIdValue = +runId
-  const runNumberValue = +runNumber;
-  fc.configureGlobal({ seed: runIdValue + runNumberValue });
+  const containerValue = +container;
+  fc.configureGlobal({ seed: runIdValue + containerValue });
 }
