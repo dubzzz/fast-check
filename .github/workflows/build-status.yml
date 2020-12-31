@@ -59,7 +59,7 @@ jobs:
       - name: Unit tests
         run: |
             echo $GITHUB_RUN_ID
-            echo $GITHUB_ACTION
+            echo $GITHUB_RUN_NUMBER
             yarn test
       - name: Codecov
         uses: codecov/codecov-action@v1
@@ -94,7 +94,7 @@ jobs:
       - name: End-to-end tests
         run: |
             echo $GITHUB_RUN_ID
-            echo $GITHUB_ACTION
+            echo $GITHUB_RUN_NUMBER
             yarn e2e
       - name: Codecov
         uses: codecov/codecov-action@v1
