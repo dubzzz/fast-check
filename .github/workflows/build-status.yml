@@ -56,7 +56,14 @@ jobs:
         run: |
             yarn prebuild
             yarn build
-      - name: Unit tests
+       - name: Dump job context
+         env:
+           JOB_CONTEXT: ${{ toJson(job) }}
+           STEPS_CONTEXT: ${{ toJson(steps) }}
+           RUNNER_CONTEXT: ${{ toJson(runner) }}
+           MATRIX_CONTEXT: ${{ toJson(matrix) }}
+         run: echo "$JOB_CONTEXT $STEPS_CONTEXT $RUNNER_CONTEXT $MATRIX_CONTEXT"
+       - name: Unit tests
         run: |
             echo $GITHUB_RUN_ID
             echo $CONTAINER
