@@ -170,7 +170,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       examples: [[(fc.schedulerFor() as any)(...argsForSchedulerFor)]],
     });
     expect(outRetry.failed).toBe(true);
-    expect(outRetry.numRuns).toBe(421);
+    expect(outRetry.numRuns).toBe(1);
 
     const cleanError = (error: string) => {
       return error.replace(/AsyncScheduler\.spec\.ts:\d+:\d+/g, 'AsyncScheduler.spec.ts:*:*');
