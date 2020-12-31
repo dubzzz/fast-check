@@ -91,7 +91,9 @@ jobs:
             yarn prebuild
             yarn build
       - name: End-to-end tests
-        run: yarn e2e
+        run: |
+            echo $GITHUB_RUN_ID
+            yarn e2e
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
