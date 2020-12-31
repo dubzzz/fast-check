@@ -62,7 +62,7 @@ jobs:
             echo $CONTAINER
             yarn test
         env:
-          CONTAINER: ${{ job.container.id }}
+          CONTAINER: ${{ github.job }}
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -99,7 +99,7 @@ jobs:
             echo $CONTAINER
             yarn e2e
         env:
-          CONTAINER: ${{ job.container.id }}
+          CONTAINER: ${{ github.job }}
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
