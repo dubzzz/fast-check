@@ -1,7 +1,7 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from './seed';
 import { URL } from 'url';
 
-const seed = Date.now();
 describe(`WebArbitrary (seed: ${seed})`, () => {
   it('Should produce valid domains', () => {
     fc.assert(
