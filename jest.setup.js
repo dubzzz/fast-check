@@ -11,4 +11,6 @@ if (runId != null && container != null) {
   const runIdValue = +runId
   const containerValue = +container;
   fc.configureGlobal({ seed: runIdValue + containerValue });
+} else if (process.env.CI) {
+  throw new Error('Missing env variables for CI');
 }

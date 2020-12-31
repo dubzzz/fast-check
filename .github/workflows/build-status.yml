@@ -55,21 +55,9 @@ jobs:
       - name: Build the library (dev version)
         run: |
             yarn prebuild
-            yarn build
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-          RUNNER_CONTEXT: ${{ toJson(runner) }}
-          MATRIX_CONTEXT: ${{ toJson(matrix) }}
-        run: echo "$JOB_CONTEXT $STEPS_CONTEXT $RUNNER_CONTEXT $MATRIX_CONTEXT"
+             yarn build
       - name: Unit tests
-        run: |
-            echo $GITHUB_RUN_ID
-            echo $CONTAINER
-            yarn test
-        env:
-          CONTAINER: ${{ github.job }}
+        run: yarn test
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -101,12 +89,7 @@ jobs:
             yarn prebuild
             yarn build
       - name: End-to-end tests
-        run: |
-            echo $GITHUB_RUN_ID
-            echo $CONTAINER
-            yarn e2e
-        env:
-          CONTAINER: ${{ github.job }}
+        run: yarn e2e
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
