@@ -8,7 +8,7 @@ import {
   CheckLessThanCommand,
   SuccessAlwaysCommand,
 } from './CounterCommands';
-import { seed } from './seed';
+import { seed } from '../seed';
 
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {

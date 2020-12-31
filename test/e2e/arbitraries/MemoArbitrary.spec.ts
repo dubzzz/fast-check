@@ -1,5 +1,5 @@
 import * as fc from '../../../src/fast-check';
-import { seed } from './seed';
+import { seed } from '../seed';
 
 type Tree = Node | Leaf;
 type Node = {

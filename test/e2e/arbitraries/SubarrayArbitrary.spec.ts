@@ -1,5 +1,5 @@
 import * as fc from '../../../src/fast-check';
-import { seed } from './seed';
+import { seed } from '../seed';
 
 const src = [1, 25, 42, 0, -12];
 

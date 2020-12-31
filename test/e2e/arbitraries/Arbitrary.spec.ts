@@ -1,5 +1,5 @@
 import * as fc from '../../../src/fast-check';
-import { seed } from './seed';
+import { seed } from '../seed';
 
 describe(`Arbitrary (seed: ${seed})`, () => {
   describe('chain', () => {

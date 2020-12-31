@@ -1,5 +1,5 @@
 import * as fc from '../../../src/fast-check';
-import { seed } from './seed';
+import { seed } from '../seed';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
