@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`StringArbitrary (seed: ${seed})`, () => {
   describe('base64String', () => {
     it('Should shrink on base64 containing no equal signs', () => {
