@@ -8,8 +8,8 @@ import {
   CheckLessThanCommand,
   SuccessAlwaysCommand,
 } from './CounterCommands';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {
     it('Should shrink up to the shortest failing commands list', () => {
