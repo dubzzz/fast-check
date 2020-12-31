@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`ReplayFailures (seed: ${seed})`, () => {
   const propArbitrary = fc.set(fc.hexaString());
   const propCheck = (data: string[]) => {
