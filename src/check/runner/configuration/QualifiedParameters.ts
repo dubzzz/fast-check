@@ -77,6 +77,10 @@ export class QualifiedParameters<T> {
     // No seed specified
     if (p.seed == null) return Date.now() ^ (Math.random() * 0x100000000);
 
+    // Invalid seed provided
+    if (typeof p.seed !== 'number') throw new Error('seed must be of type number');
+    if (Number.isNaN(p.seed)) throw new Error('seed must not be a valid number, not NaN');
+
     // Seed is a 32 bits signed integer
     const seed32 = p.seed | 0;
     if (p.seed === seed32) return seed32;
