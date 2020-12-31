@@ -55,7 +55,7 @@ jobs:
       - name: Build the library (dev version)
         run: |
             yarn prebuild
-             yarn build
+            yarn build
       - name: Unit tests
         run: yarn test
       - name: Codecov
