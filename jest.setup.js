@@ -7,9 +7,7 @@ jest.setTimeout(120000);
 // Setup fast-check
 const defaultSeedRaw = process.env.DEFAULT_SEED;
 if (defaultSeedRaw != null) {
-  const seed = +defaultSeedRaw;
-  console.log(`Using default seed: ${seed}`);
-  fc.configureGlobal({ seed });
+  fc.configureGlobal({ seed: +defaultSeedRaw });
 } else if (process.env.CI) {
   throw new Error('Missing env variable for DEFAULT_SEED in CI context');
 }
