@@ -58,7 +58,7 @@ jobs:
             yarn build
       - name: Unit tests
         run: |
-            DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+            export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
             echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
             yarn test
       - name: Codecov
@@ -93,7 +93,7 @@ jobs:
             yarn build
       - name: End-to-end tests
         run: |
-            DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+            export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
             echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
             yarn e2e
       - name: Codecov

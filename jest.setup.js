@@ -6,7 +6,6 @@ jest.setTimeout(120000);
 
 // Setup fast-check
 const defaultSeedRaw = process.env.DEFAULT_SEED;
-throw new Error(JSON.stringify(process.env));
 if (defaultSeedRaw != null) {
   const seed = +defaultSeedRaw;
   console.log(`Using default seed: ${seed}`);
