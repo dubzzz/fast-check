@@ -57,7 +57,10 @@ jobs:
             yarn prebuild
             yarn build
       - name: Unit tests
-        run: yarn test
+        run: |
+            DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+            echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+            yarn test
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -89,7 +92,10 @@ jobs:
             yarn prebuild
             yarn build
       - name: End-to-end tests
-        run: yarn e2e
+        run: |
+            DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+            echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+            yarn e2e
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
