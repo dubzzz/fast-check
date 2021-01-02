@@ -106,7 +106,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
-      const playOnIndex = seed % segments.length;
+      const playOnIndex = (seed >>> 0) % segments.length; // seed could be <0
 
       for (let offset = 0; offset !== +segments[playOnIndex]; ++offset) {
         const p = [...segments.slice(0, playOnIndex), offset].join(':');
