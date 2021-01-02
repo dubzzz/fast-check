@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`StateFullArbitraries (seed: ${seed})`, () => {
   describe('Never call on generate', () => {
     const cloneableWithCount = (data: { counter: number }) =>

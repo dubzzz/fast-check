@@ -1,6 +1,5 @@
 import * as fc from '../../../src/fast-check';
-
-const seed = Date.now();
+import { seed } from '../seed';
 
 describe(`FloatNextArbitrary (seed: ${seed})`, () => {
   describe('floatNext', () => {

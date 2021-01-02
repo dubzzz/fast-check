@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`ObjectArbitrary (seed: ${seed})`, () => {
   describe('json', () => {
     const revJson = (json: string): string => {

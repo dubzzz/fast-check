@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`FunctionArbitrary (seed: ${seed})`, () => {
   describe('func', () => {
     it('Should be able to generate multiple values', () => {

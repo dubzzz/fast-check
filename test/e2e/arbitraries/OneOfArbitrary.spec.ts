@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`OneOfArbitrary (seed: ${seed})`, () => {
   describe('oneof', () => {
     it('Should one of the possible element', () => {

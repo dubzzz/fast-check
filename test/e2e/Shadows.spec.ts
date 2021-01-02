@@ -1,4 +1,5 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
 // Code under tests
 // Based on the CodinGame https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1
@@ -154,7 +155,6 @@ const SpaceArbitrary = fc
 
 // Test
 
-const seed = Date.now();
 describe(`Shadows (seed: ${seed})`, () => {
   it('Should detect an implementation issue', () => {
     let failed = false;
