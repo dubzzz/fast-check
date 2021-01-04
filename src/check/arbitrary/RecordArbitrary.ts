@@ -44,15 +44,24 @@ export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDelet
   : T;
 
 /** @internal */
+type RecordKey<T> = Extract<keyof T, string | symbol>;
+
+/** @internal */
+function extractAllKeys<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): RecordKey<T>[] {
+  return (Object.getOwnPropertyNames(recordModel) as RecordKey<T>[]).concat(
+    Object.getOwnPropertySymbols(recordModel) as RecordKey<T>[]
+  );
+}
+
+/** @internal */
 function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<T> {
-  const keys: Extract<keyof T, string>[] = [];
+  const keys = extractAllKeys(recordModel);
   const arbs: Arbitrary<T[keyof T]>[] = [];
-  for (const k in recordModel) {
-    keys.push(k);
-    arbs.push(recordModel[k]);
+  for (let index = 0; index !== keys.length; ++index) {
+    arbs.push(recordModel[keys[index]]);
   }
   return genericTuple(arbs).map((gs: any[]) => {
-    const obj: { [key: string]: any } = {};
+    const obj: Record<RecordKey<T>, any> = {} as any;
     for (let idx = 0; idx !== keys.length; ++idx) {
       obj[keys[idx]] = gs[idx];
     }
@@ -107,7 +116,7 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
     return rawRecord(recordModel);
   }
 
-  const updatedRecordModel: { [key: string]: Arbitrary<{ value: T[keyof T] } | null> } = {};
+  const updatedRecordModel: Record<RecordKey<T>, Arbitrary<{ value: T[keyof T] } | null>> = {} as any;
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
 
   for (let idx = 0; idx !== requiredKeys.length; ++idx) {
@@ -116,14 +125,17 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
     }
   }
 
-  for (const k in recordModel) {
+  const keys = extractAllKeys(recordModel);
+  for (let index = 0; index !== keys.length; ++index) {
+    const k = keys[index];
     const requiredArbitrary = recordModel[k].map((v) => ({ value: v }));
     if (requiredKeys.indexOf(k) !== -1) updatedRecordModel[k] = requiredArbitrary;
     else updatedRecordModel[k] = option(requiredArbitrary);
   }
-  return rawRecord(updatedRecordModel).map((obj) => {
-    const nobj: { [key: string]: T[keyof T] } = {};
-    for (const k in obj) {
+  return rawRecord(updatedRecordModel as any).map((obj: any) => {
+    const nobj: Record<RecordKey<T>, T[keyof T]> = {} as any;
+    for (let index = 0; index !== keys.length; ++index) {
+      const k = keys[index];
       if (obj[k] != null) {
         nobj[k] = (obj[k] as { value: T[keyof T] }).value;
       }
