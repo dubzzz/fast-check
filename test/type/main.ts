@@ -75,7 +75,21 @@ expectType<fc.Arbitrary<number | string>>()(fc.constantFrom(1, 2, 'hello'));
 expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(fc.constantFrom(...([1, 2, 'hello'] as const)));
 
 // record arbitrary
+const mySymbol1 = Symbol('symbol1');
+const mySymbol2 = Symbol('symbol2');
 expectType<fc.Arbitrary<{ a: number; b: string }>>()(fc.record({ a: fc.nat(), b: fc.string() }));
+expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]: string }>>()(
+  fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() })
+);
+// Related to https://github.com/microsoft/TypeScript/issues/27525
+//expectType<fc.Arbitrary<{ [Symbol.iterator]: number; [mySymbol2]: string }>>()(
+//  fc.record({ [Symbol.iterator]: fc.nat(), [mySymbol2]: fc.string() })
+//);
+// Workaround for known symbols not defined as unique ones
+const symbolIterator: unique symbol = Symbol.iterator as any;
+expectType<fc.Arbitrary<{ [symbolIterator]: number; [mySymbol2]: string }>>()(
+  fc.record({ [symbolIterator]: fc.nat(), [mySymbol2]: fc.string() })
+);
 expectType<fc.Arbitrary<{ a: number; b: string }>>()(fc.record({ a: fc.nat(), b: fc.string() }, {}));
 expectType<fc.Arbitrary<{ a: number; b: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: false })
@@ -91,6 +105,20 @@ expectType<fc.Arbitrary<{ a: number; b?: string }>>()(
 );
 expectType<fc.Arbitrary<{ a: number; b?: string; c: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] })
+);
+expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string }>>()(
+  fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [mySymbol1] as [typeof mySymbol1] })
+);
+// Related to https://github.com/microsoft/TypeScript/issues/27525
+//expectType<fc.Arbitrary<{ [Symbol.iterator]: number; [mySymbol2]?: string }>>()(
+//  fc.record({ [Symbol.iterator]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [Symbol.iterator] })
+//);
+// See workaround above
+expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string; a: number; b?: string }>>()(
+  fc.record(
+    { [mySymbol1]: fc.nat(), [mySymbol2]: fc.string(), a: fc.nat(), b: fc.string() },
+    { requiredKeys: [mySymbol1, 'a'] as [typeof mySymbol1, 'a'] }
+  )
 );
 expectType<fc.Arbitrary<never>>()(
   // requiredKeys and withDeletedKeys cannot be used together

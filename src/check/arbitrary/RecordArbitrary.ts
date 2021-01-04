@@ -11,6 +11,11 @@ export type RecordConstraints<T = unknown> =
   | {
       /**
        * List keys that should never be deleted.
+       *
+       * Remark:
+       * You might need to use an explicit typing in case you need to declare symbols as required (not needed when required keys are simple strings).
+       * With something like `{ requiredKeys: [mySymbol1, 'a'] as [typeof mySymbol1, 'a'] }` when both `mySymbol1` and `a` are required.
+       *
        * Warning: Cannot be used in conjunction with withDeletedKeys.
        */
       requiredKeys?: T[];
@@ -39,7 +44,7 @@ export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDelet
   : T;
 
 /** @internal */
-function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<{ [K in keyof T]: T[K] }> {
+function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<T> {
   const keys: Extract<keyof T, string>[] = [];
   const arbs: Arbitrary<T[keyof T]>[] = [];
   for (const k in recordModel) {
@@ -51,7 +56,7 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
     for (let idx = 0; idx !== keys.length; ++idx) {
       obj[keys[idx]] = gs[idx];
     }
-    return obj as { [K in keyof T]: T[K] };
+    return obj as T;
   });
 }
 
@@ -68,7 +73,7 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
  *
  * @public
  */
-function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }>>;
+function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<T>>;
 /**
  * For records following the `recordModel` schema
  *
@@ -86,7 +91,7 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
 function record<T, TConstraints extends RecordConstraints<keyof T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints: TConstraints
-): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
+): Arbitrary<RecordValue<T, TConstraints>>;
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints<keyof T>) {
   if (constraints == null) {
     return rawRecord(recordModel);
