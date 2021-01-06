@@ -144,6 +144,23 @@ describe('stringify', () => {
     expect(stringify(Symbol('fc'))).toEqual('Symbol("fc")');
     expect(stringify(Symbol.for('fc'))).toEqual('Symbol.for("fc")');
   });
+  it('Should be able to stringify well-known Symbols', () => {
+    expect(stringify(Symbol.iterator)).toEqual('Symbol.iterator');
+    expect(stringify(Symbol('Symbol.iterator'))).toEqual('Symbol("Symbol.iterator")');
+
+    // Same as above but with all the known symbols
+    let foundOne = false;
+    for (const symbolName of Object.getOwnPropertyNames(Symbol)) {
+      const s = (Symbol as any)[symbolName];
+      if (typeof s === 'symbol') {
+        foundOne = true;
+        expect(stringify(s)).toEqual(`Symbol.${symbolName}`);
+        expect(stringify(Symbol(`Symbol.${symbolName}`))).toEqual(`Symbol("Symbol.${symbolName}")`);
+        expect(eval(`(function() { return typeof ${stringify(s)}; })()`)).toBe('symbol');
+      }
+    }
+    expect(foundOne).toBe(true);
+  });
   it('Should be able to stringify Object without prototype', () => {
     expect(stringify(Object.create(null))).toEqual('Object.create(null)');
     expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual(
