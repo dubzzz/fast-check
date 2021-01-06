@@ -65,18 +65,27 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
         // Only return what would have been the default toString on Object
         return '[object Object]';
       }
-      const rawRepr =
-        '{' +
-        Object.keys(value)
-          .map(
-            (k) =>
-              `${k === '__proto__' ? '["__proto__"]' : JSON.stringify(k)}:${stringifyInternal(
-                (value as any)[k],
-                currentValues
-              )}`
-          )
-          .join(',') +
-        '}';
+
+      const mapper = (k: string | symbol) =>
+        `${
+          k === '__proto__'
+            ? '["__proto__"]'
+            : typeof k === 'symbol'
+            ? `[${stringifyInternal(k, currentValues)}]`
+            : JSON.stringify(k)
+        }:${stringifyInternal((value as any)[k], currentValues)}`;
+
+      const stringifiedProperties = [
+        ...Object.keys(value).map(mapper),
+        ...Object.getOwnPropertySymbols(value)
+          .filter((s) => {
+            const descriptor = Object.getOwnPropertyDescriptor(value, s);
+            return descriptor && descriptor.enumerable;
+          })
+          .map(mapper),
+      ];
+      const rawRepr = '{' + stringifiedProperties.join(',') + '}';
+
       if (Object.getPrototypeOf(value) === null) {
         return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
       }

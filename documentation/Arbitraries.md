@@ -2059,10 +2059,14 @@ function buildCloneable(objectInstance) {
   // Rq: We do not handle deep objects in this snippet
   // But we will get another instance of objectInstance for each run
   // ie. objectInstanceRunA !== objectInstanceRunB while having isEqual(objectInstanceRunA, objectInstanceRunB)
-  const withCloneMethod = () => ({
-    ...objectInstance,
-    [fc.cloneMethod]: withCloneMethod,
-  });
+  const withCloneMethod = () => {
+    const clone = {...objectInstance};
+    Object.defineProperty(objectInstance, fc.cloneMethod, {
+      value: withCloneMethod,
+      enumerable: false,
+    });
+    return clone;
+  };
   return withCloneMethod();
 }
 // Use the arbitrary:
