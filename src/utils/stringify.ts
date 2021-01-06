@@ -101,7 +101,11 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
         return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
-      return desc !== null ? `Symbol(${JSON.stringify(desc)})` : `Symbol()`;
+      if (desc === null) {
+        return 'Symbol()';
+      }
+      const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
+      return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
     }
     case '[object Undefined]':
       return `undefined`;
