@@ -81,15 +81,15 @@ expectType<fc.Arbitrary<{ a: number; b: string }>>()(fc.record({ a: fc.nat(), b:
 expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]: string }>>()(
   fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() })
 );
-// Related to https://github.com/microsoft/TypeScript/issues/27525
+// Related to https://github.com/microsoft/TypeScript/issues/27525:
 //expectType<fc.Arbitrary<{ [Symbol.iterator]: number; [mySymbol2]: string }>>()(
 //  fc.record({ [Symbol.iterator]: fc.nat(), [mySymbol2]: fc.string() })
 //);
-// Workaround for known symbols not defined as unique ones
-const symbolIterator: unique symbol = Symbol.iterator as any;
-expectType<fc.Arbitrary<{ [symbolIterator]: number; [mySymbol2]: string }>>()(
-  fc.record({ [symbolIterator]: fc.nat(), [mySymbol2]: fc.string() })
-);
+// Workaround for known symbols not defined as unique ones:
+//const symbolIterator: unique symbol = Symbol.iterator as any;
+//expectType<fc.Arbitrary<{ [symbolIterator]: number; [mySymbol2]: string }>>()(
+//  fc.record({ [symbolIterator]: fc.nat(), [mySymbol2]: fc.string() })
+//);
 expectType<fc.Arbitrary<{ a: number; b: string }>>()(fc.record({ a: fc.nat(), b: fc.string() }, {}));
 expectType<fc.Arbitrary<{ a: number; b: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: false })
