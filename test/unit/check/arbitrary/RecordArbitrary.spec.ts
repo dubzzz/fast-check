@@ -19,8 +19,8 @@ describe('RecordArbitrary', () => {
       fc.assert(
         fc.property(fc.set(keyArb, { minLength: 1 }), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
-          const recordModel: Record<string | symbol, Arbitrary<string>> = {};
-          for (const k of keys) recordModel[k] = constant(`_${k}_`);
+          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+          for (const k of keys) recordModel[k] = constant(k);
 
           const arb = record(recordModel, { withDeletedKeys: true });
           for (let idx = 0; idx != 1000; ++idx) {
@@ -34,15 +34,15 @@ describe('RecordArbitrary', () => {
       fc.assert(
         fc.property(fc.set(keyArb, { minLength: 1 }), fc.nat(), fc.integer(), (keys, missingIdx, seed) => {
           const mrng = new Random(prand.xorshift128plus(seed));
-          const recordModel: Record<string | symbol, Arbitrary<string>> = {};
+          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
           for (const k of keys) {
-            recordModel[k] = constant(`_${k}_`);
+            recordModel[k] = constant(k);
           }
 
           const arb = record(recordModel, { withDeletedKeys: true });
           for (let idx = 0; idx != 1000; ++idx) {
             const g = arb.generate(mrng).value;
-            if (g[keys[missingIdx % keys.length]] === `_${keys[missingIdx % keys.length]}_`) return true;
+            if (g[keys[missingIdx % keys.length]] === keys[missingIdx % keys.length]) return true;
           }
           return false;
         })
@@ -52,9 +52,9 @@ describe('RecordArbitrary', () => {
         fc.property(fc.set(keyArb, { minLength: 1 }), keyArb, (keys, requiredKey) => {
           fc.pre(!keys.includes(requiredKey));
 
-          const recordModel: Record<string | symbol, Arbitrary<string>> = {};
+          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
           for (const k of keys) {
-            recordModel[k] = constant(`_${k}_`);
+            recordModel[k] = constant(k);
           }
 
           expect(() =>
@@ -74,9 +74,9 @@ describe('RecordArbitrary', () => {
           fc.option(fc.constant(true), { nil: undefined }),
           fc.option(fc.boolean(), { nil: undefined }),
           (keys, withRequiredKeys, withDeletedKeys) => {
-            const recordModel: Record<string | symbol, Arbitrary<string>> = {};
+            const recordModel: Record<string | symbol, Arbitrary<any>> = {};
             for (const k of keys) {
-              recordModel[k.name] = constant(`_${k.name}_`);
+              recordModel[k.name] = constant(k.name);
             }
 
             expect(() =>
@@ -125,6 +125,7 @@ describe('RecordArbitrary', () => {
               return [metas, constraintsMeta] as [Meta[], RecordConstraints];
             }),
           isValidValue: (r: { [key: string]: number }, [metas, constraints]: [Meta[], RecordConstraints]) => {
+            // Rq: getOwnPropertyNames will also get non enumerable properties, but there are none in our case
             for (const k of [...Object.getOwnPropertyNames(r), ...Object.getOwnPropertySymbols(r)]) {
               // generated object should not have more keys
               if (metas.findIndex((m) => m.key === k) === -1) return false;

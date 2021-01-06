@@ -48,9 +48,16 @@ type RecordKey<T> = Extract<keyof T, string | symbol>;
 
 /** @internal */
 function extractAllKeys<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): RecordKey<T>[] {
-  return (Object.getOwnPropertyNames(recordModel) as RecordKey<T>[]).concat(
-    Object.getOwnPropertySymbols(recordModel) as RecordKey<T>[]
-  );
+  const keys = Object.keys(recordModel) as RecordKey<T>[]; // Only enumerable own properties
+  const symbols = Object.getOwnPropertySymbols(recordModel) as RecordKey<T>[];
+  for (let index = 0; index !== symbols.length; ++index) {
+    const symbol = symbols[index];
+    const descriptor = Object.getOwnPropertyDescriptor(recordModel, symbol);
+    if (descriptor && descriptor.enumerable) {
+      keys.push(symbol);
+    }
+  }
+  return keys;
 }
 
 /** @internal */
@@ -116,7 +123,7 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
     return rawRecord(recordModel);
   }
 
-  const updatedRecordModel: Record<RecordKey<T>, Arbitrary<{ value: T[keyof T] } | null>> = {} as any;
+  const updatedRecordModel: { [K in keyof T]: Arbitrary<{ value: T[K] } | null> } = {} as any;
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
 
   for (let idx = 0; idx !== requiredKeys.length; ++idx) {
@@ -132,11 +139,11 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
     if (requiredKeys.indexOf(k) !== -1) updatedRecordModel[k] = requiredArbitrary;
     else updatedRecordModel[k] = option(requiredArbitrary);
   }
-  return rawRecord(updatedRecordModel as any).map((obj: any) => {
-    const nobj: Record<RecordKey<T>, T[keyof T]> = {} as any;
+  return rawRecord(updatedRecordModel as any).map((obj: { [K in keyof T]: { value: T[keyof T] } | null }) => {
+    const nobj: { [K in keyof T]?: T[keyof T] } = {};
     for (let index = 0; index !== keys.length; ++index) {
       const k = keys[index];
-      if (obj[k] != null) {
+      if (obj[k] !== null) {
         nobj[k] = (obj[k] as { value: T[keyof T] }).value;
       }
     }
