@@ -88,6 +88,25 @@ describe('RecordArbitrary', () => {
           }
         )
       ));
+    it('Should accept empty keys configurations with empty requiredKeys', () => {
+      const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+      expect(() => record(recordModel, { requiredKeys: [] })).not.toThrowError();
+    });
+    it.each`
+      keyName
+      ${'constructor'}
+      ${'toString'}
+      ${'__proto__'}
+    `('Should reject configurations specifying non own properties ($keyName) as requiredKeys', ({ keyName }) => {
+      const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+      expect(() => record(recordModel, { requiredKeys: [keyName] })).toThrowError();
+    });
+    it('Should reject configurations specifying non enumerable properties as requiredKeys', () => {
+      const keyName = 'k';
+      const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+      Object.defineProperty(recordModel, keyName, { value: fc.boolean(), enumerable: false });
+      expect(() => record(recordModel, { requiredKeys: [keyName] })).toThrowError();
+    });
 
     type Meta = { key: any; valueStart: number; kept: boolean };
     const metaArbitrary = fc.set(
