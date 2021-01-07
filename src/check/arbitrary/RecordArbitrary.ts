@@ -127,8 +127,12 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
 
   for (let idx = 0; idx !== requiredKeys.length; ++idx) {
-    if (!(requiredKeys[idx] in recordModel)) {
+    const descriptor = Object.getOwnPropertyDescriptor(recordModel, requiredKeys[idx]);
+    if (descriptor === undefined) {
       throw new Error(`requiredKeys cannot reference keys that have not been defined in recordModel`);
+    }
+    if (!descriptor.enumerable) {
+      throw new Error(`requiredKeys cannot reference keys that have are enumerable in recordModel`);
     }
   }
 
