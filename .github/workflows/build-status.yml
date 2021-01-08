@@ -338,6 +338,34 @@ jobs:
         cd test/esm
         node --version
         sh run.sh
+  publish_netlify:
+    name: 'Publish Netlify'
+    if: github.event_name == 'pull_request'
+    needs:
+      - documentation
+      - production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download documentation
+        uses: actions/download-artifact@v2
+        with:
+          name: docs
+          path: docs/
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+          path: docs/fast-check.tgz
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '14.x'
+      - name: Publish to Netlify
+        run: npx -p netlify-cli netlify deploy --dir=docs/ --message="Publish to Netlify on PR"
+        env:
+          NETLIFY_SITE_ID: ${{secrets.NETLIFY_APP_ID}}
+          NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
