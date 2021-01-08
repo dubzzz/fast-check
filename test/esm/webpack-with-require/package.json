@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "querystring-es3": "^0.2.1",
-    "webpack": "^5.11.1",
+    "webpack": "^5.12.1",
     "webpack-cli": "^4.3.1"
   },
   "license": "MIT",
