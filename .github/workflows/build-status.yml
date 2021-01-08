@@ -356,7 +356,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bundle
-          path: docs/fast-check.tgz
+          path: docs/
       - name: Using Node v14.x
         uses: actions/setup-node@v2.1.4
         with:
