@@ -119,7 +119,7 @@ updates:
       - dependency-name: "fast-check"
 
   - package-ecosystem: "npm"
-    directory: "/.github/actions/comment-on-pr"
+    directory: "/.github/actions/deploy-netlify"
     schedule:
       interval: "weekly"
     commit-message:

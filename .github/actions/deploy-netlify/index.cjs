@@ -29,24 +29,39 @@ async function run() {
   const token = core.getInput('token', { required: true });
 
   if (context.eventName !== 'pull_request') {
-    core.setFailed(`comment-on-pr can only be used on pull_request`);
+    core.setFailed(`deploy-netlify can only be used on pull_request`);
     return;
   }
 
   const { err, stdout: commitMessage } = await execAsync('git log -1 --format=%s');
   if (err && err.code) {
-    core.setFailed(`comment-on-pr failed to get back commit hash, failed with error: ${err}`);
+    core.setFailed(`deploy-netlify failed to get back commit hash, failed with error: ${err}`);
     return;
   }
   const commitMessageRegex = /^Merge ([a-f0-9]+) into ([a-f0-9]+)$/;
   const m = commitMessageRegex.exec(commitMessage.trim());
   if (!m) {
-    core.setFailed(`comment-on-pr invalid commit message encountered, got: ${commitMessage.trim()}`);
+    core.setFailed(`deploy-netlify invalid commit message encountered, got: ${commitMessage.trim()}`);
     return;
   }
 
+  const { err: netlifyDeployErr, stdout: netlifyLog } = await execAsync(
+    'netlify deploy --dir=docs/ --message="Publish to Netlify on PR"'
+  );
+  if (netlifyDeployErr && netlifyDeployErr.code) {
+    core.setFailed(`deploy-netlify failed on deploy: ${netlifyDeployErr}`);
+    return;
+  }
+  // Website Draft URL: https://xxxxxxx.netlify.app
+  const netlifyUrlLine = netlifyLog.split('\n').find((line) => line.startsWith('Website Draft URL: '));
+  if (!netlifyUrlLine) {
+    core.setFailed(`deploy-netlify failed to find the deployment url in:\n\n${netlifyLog}`);
+    return;
+  }
+  const netlifyUrl = netlifyUrlLine.substring('Website Draft URL: '.length);
+
   const commitHash = m[1];
-  const packageUrl = `https://pkg.csb.dev/dubzzz/fast-check/commit/${commitHash.substring(0, 8)}/fast-check`;
+  const packageUrl = `${netlifyUrl}/fast-check.tgz`;
   const octokit = github.getOctokit(token);
   const body =
     `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${commitHash} with:\n\n` +
@@ -54,13 +69,7 @@ async function run() {
     `yarn add ${packageUrl}\n` +
     `npm i ${packageUrl}\n` +
     '```\n\n' +
-    '⚠️ Package might not be accessible yet. Wait for CodeSandbox.\n\n' +
-    '⚠️ By running one of these commands you will install the package defined by the head of the PR. But, tests are run against the result of the merge of the PR, not against the head of the PR*. *_If needed, you can install the package used for the tests by manually retrieving and installing the artifact bundle stored into GitHub Actions._\n\n' +
-    'Useful links: ' +
-    `[Codeclimate](https://codeclimate.com/github/dubzzz/fast-check/pull/${context.issue.number}), ` +
-    `[Codecov](https://codecov.io/gh/dubzzz/fast-check/pull/${context.issue.number}), ` +
-    `[CodeSandbox](https://ci.codesandbox.io/status/dubzzz/fast-check/pr/${context.issue.number}) and ` +
-    `[GitHub Actions](https://github.com/dubzzz/fast-check/actions/runs/${context.runId}).`;
+    `Or have a look to the [generated documentation](${netlifyUrl}).`;
 
   await octokit.issues.createComment({
     issue_number: context.issue.number,

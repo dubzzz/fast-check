@@ -172,22 +172,6 @@ jobs:
           path: fast-check.tgz
           if-no-files-found: error
           retention-days: 1
-  comment_on_pr:
-    name: 'Comment on PR'
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Using Node v14.x
-        uses: actions/setup-node@v2.1.4
-        with:
-          node-version: '14.x'
-      - name: Install dependencies
-        run: |
-          cd ./.github/actions/comment-on-pr
-          yarn --frozen-lockfile
-      - name: Comment on PR
-        uses: ./.github/actions/comment-on-pr
   test_example:
     name: 'Test example'
     needs: production_package
@@ -338,6 +322,38 @@ jobs:
         cd test/esm
         node --version
         sh run.sh
+  deploy_netlify:
+    name: 'Deploy on Netlify'
+    if: github.event_name == 'pull_request'
+    needs:
+      - documentation
+      - production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download documentation
+        uses: actions/download-artifact@v2
+        with:
+          name: docs
+          path: docs/
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+          path: docs/
+      - name: Using Node v14.x
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: |
+          cd ./.github/actions/deploy-netlify
+          yarn --frozen-lockfile
+      - name: Deploy on Netlify
+        uses: ./.github/actions/deploy-netlify
+        env:
+          NETLIFY_SITE_ID: ${{secrets.NETLIFY_APP_ID}}
+          NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
