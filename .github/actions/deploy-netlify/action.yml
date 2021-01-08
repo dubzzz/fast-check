@@ -1,5 +1,5 @@
-name: 'Comment on PR'
-description: 'Give more details regarding useful links for the commit (in PR)'
+name: 'Deploy on Netlify'
+description: 'Deploy on Netlify'
 inputs:
   token:
     description: 'GITHUB_TOKEN'

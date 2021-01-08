@@ -1,9 +1,10 @@
 {
-  "name": "comment-on-pr",
+  "name": "deploy-netlify",
   "main": "index.cjs",
   "private": true,
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/github": "^4.0.0"
+    "@actions/github": "^4.0.0",
+    "netlify-cli": "^2.71.0"
   }
 }
