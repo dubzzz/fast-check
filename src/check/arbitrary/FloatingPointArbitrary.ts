@@ -77,13 +77,32 @@ function float(...args: [] | [number] | [number, number] | [FloatConstraints]): 
     }
     const min = args[0].min !== undefined ? args[0].min : 0;
     const max = args[0].max !== undefined ? args[0].max : 1;
-    return floatInternal().map((v) => min + v * (max - min));
+    return (
+      floatInternal()
+        .map((v) => min + v * (max - min))
+        // For v = 0.9999999403953552, min: 0, max: 5e-324
+        // we have `min + v * (max - min)` equal to `max`
+        .filter((g) => g !== max || g === min)
+    );
   } else {
     const a = args[0];
     const b = args[1];
     if (a === undefined) return floatInternal();
-    if (b === undefined) return floatInternal().map((v) => v * a);
-    return floatInternal().map((v) => a + v * (b - a));
+    if (b === undefined)
+      return (
+        floatInternal()
+          .map((v) => v * a)
+          // For v = 0.9999999403953552, a: 5e-324
+          // we have `v * a` equal to `a`
+          .filter((g) => g !== a || g === 0)
+      );
+    return (
+      floatInternal()
+        .map((v) => a + v * (b - a))
+        // For v = 0.9999999403953552, a: 0, b: 5e-324
+        // we have `a + v * (b - a)` equal to `b`
+        .filter((g) => g !== b || g === a)
+    );
   }
 }
 
@@ -158,13 +177,32 @@ function double(...args: [] | [number] | [number, number] | [DoubleConstraints])
     }
     const min = args[0].min !== undefined ? args[0].min : 0;
     const max = args[0].max !== undefined ? args[0].max : 1;
-    return doubleInternal().map((v) => min + v * (max - min));
+    return (
+      doubleInternal()
+        .map((v) => min + v * (max - min))
+        // For v = 0.9999999999999999, min: 0, max: 5e-324
+        // we have `min + v * (max - min)` equal to `max`
+        .filter((g) => g !== max || g === min)
+    );
   } else {
     const a = args[0];
     const b = args[1];
     if (a === undefined) return doubleInternal();
-    if (b === undefined) return doubleInternal().map((v) => v * a);
-    return doubleInternal().map((v) => a + v * (b - a));
+    if (b === undefined)
+      return (
+        doubleInternal()
+          .map((v) => v * a)
+          // For v = 0.9999999999999999, a: 5e-324
+          // we have `v * a` equal to `a`
+          .filter((g) => g !== a || g === 0)
+      );
+    return (
+      doubleInternal()
+        .map((v) => a + v * (b - a))
+        // For v = 0.9999999999999999, a: 0, b: 5e-324
+        // we have `a + v * (b - a)` equal to `b`
+        .filter((g) => g !== b || g === a)
+    );
   }
 }
 
