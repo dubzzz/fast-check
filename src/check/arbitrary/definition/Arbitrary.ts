@@ -25,6 +25,8 @@ export abstract class Arbitrary<T> {
    * All the values produced by the resulting arbitrary
    * satisfy `predicate(value) == true`
    *
+   * Be aware that using filter may highly impact the time required to generate a valid entry
+   *
    * @example
    * ```typescript
    * const integerGenerator: Arbitrary<number> = ...;
@@ -41,6 +43,8 @@ export abstract class Arbitrary<T> {
    *
    * All the values produced by the resulting arbitrary
    * satisfy `predicate(value) == true`
+   *
+   * Be aware that using filter may highly impact the time required to generate a valid entry
    *
    * @example
    * ```typescript
