@@ -5,7 +5,7 @@ import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
-import { shrinkNumber } from './helpers/ShrinkNumeric';
+import { shrinkInteger } from './helpers/ShrinkInteger';
 
 /** @internal */
 class IntegerArbitrary extends ArbitraryWithShrink<number> {
@@ -23,7 +23,7 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     return this.wrapper(mrng.nextInt(this.genMin, this.genMax), false);
   }
   shrink(value: number, shrunkOnce?: boolean): Stream<number> {
-    return shrinkNumber(this.min, this.max, value, shrunkOnce === true);
+    return shrinkInteger(this.min, this.max, value, shrunkOnce === true);
   }
   private pureBiasedArbitrary(): Arbitrary<number> {
     if (this.biasedIntegerArbitrary != null) {

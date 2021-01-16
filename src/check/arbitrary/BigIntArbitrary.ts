@@ -5,7 +5,7 @@ import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, bigIntLogLike } from './helpers/BiasNumeric';
-import { shrinkBigInt } from './helpers/ShrinkNumeric';
+import { shrinkBigInt } from './helpers/ShrinkBigInt';
 
 /** @internal */
 class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
