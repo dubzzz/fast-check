@@ -133,6 +133,11 @@ describe('stringify', () => {
     expect(stringify(new Date('2014-25-23'))).toEqual('new Date(NaN)');
     expect(stringify(new Date('2019-05-23T22:19:06.049Z'))).toEqual('new Date("2019-05-23T22:19:06.049Z")');
   });
+  it('Should be able to stringify Regex', () => {
+    expect(stringify(/\w+/)).toEqual('/\\w+/');
+    expect(stringify(/^Hello(\d+)(\w*)$/gi)).toEqual('/^Hello(\\d+)(\\w*)$/gi');
+    expect(stringify(new RegExp('\\w+'))).toEqual('/\\w+/');
+  });
   it('Should be able to stringify Set', () => {
     expect(stringify(new Set([1, 2]))).toEqual('new Set([1,2])');
   });
