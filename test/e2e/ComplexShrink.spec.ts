@@ -34,6 +34,9 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // . . . √ [2147482621,2147483641]
     // . . . × [2147482749,2147483641]
     // ...                              <--- and so on and so forth until we reach 1000,1010
+    //
+    // While it was able to reach and report the precise minimal failing case,
+    // the shrinker was too slow to be useful (given the range of values generated).
     const out = fc.check(
       fc.property(fc.nat(), fc.nat(), (a: number, b: number) => {
         if (a < 1000) return true;
