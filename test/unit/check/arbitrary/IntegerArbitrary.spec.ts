@@ -7,8 +7,48 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
 import { generateOneValue } from './generic/GenerateOneValue';
+import { ArbitraryWithShrink } from '../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 
 const isStrictlySmallerInteger = (v1: number, v2: number) => Math.abs(v1) < Math.abs(v2);
+
+type ShrinkTree<T> = [T, ShrinkTree<T>[]];
+function buildShrinkTree(s: Shrinkable<number, number>): ShrinkTree<number> {
+  return [s.value_, [...s.shrink().map((ss) => buildShrinkTree(ss))]];
+}
+function buildShrinkTreeWithShrunkOnce(
+  arb: ArbitraryWithShrink<number>,
+  value: number,
+  shrunkOnce = false
+): ShrinkTree<number> {
+  return [
+    value,
+    [
+      ...arb
+        .shrinkableFor(value, shrunkOnce)
+        .shrink()
+        .map((ss) => buildShrinkTreeWithShrunkOnce(arb, ss.value_, true)),
+    ],
+  ];
+}
+function renderTree(tree: ShrinkTree<number>): string[] {
+  const [current, subTrees] = tree;
+  const lines = [fc.stringify(current)];
+  for (let index = 0; index !== subTrees.length; ++index) {
+    const subTree = subTrees[index];
+    const isLastSubTree = index === subTrees.length - 1;
+    const firstPrefix = isLastSubTree ? '└> ' : '├> ';
+    const otherPrefix = isLastSubTree ? '   ' : '|  ';
+    const subRender = renderTree(subTree);
+    for (let renderedIndex = 0; renderedIndex !== subRender.length; ++renderedIndex) {
+      if (renderedIndex === 0) {
+        lines.push(`${firstPrefix}${subRender[renderedIndex]}`);
+      } else {
+        lines.push(`${otherPrefix}${subRender[renderedIndex]}`);
+      }
+    }
+  }
+  return lines;
+}
 
 describe('IntegerArbitrary', () => {
   describe('integer', () => {
@@ -191,8 +231,11 @@ describe('IntegerArbitrary', () => {
         {
           seedGenerator: genericHelper.minMax(fc.integer()),
           isStrictlySmallerValue: isStrictlySmallerInteger,
-          isValidValue: (g: number, constraints: { min: number; max: number }) =>
-            typeof g === 'number' && constraints.min <= g && g <= constraints.max,
+          isValidValue: (g: number, constraints: { min: number; max: number }) => {
+            const out = typeof g === 'number' && constraints.min <= g && g <= constraints.max;
+            if (!out) throw new Error(fc.stringify({ g, constraints }));
+            return out;
+          },
         }
       );
     });
@@ -214,6 +257,160 @@ describe('IntegerArbitrary', () => {
             expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
           })
         );
+      });
+    });
+
+    describe('contextualShrinkableFor', () => {
+      it('Should shrink strictly positive value for positive range including zero', () => {
+        const arb = integer({ min: 0, max: 10 });
+
+        const tree = buildShrinkTree(arb.contextualShrinkableFor(8));
+
+        // prettier-ignore
+        expect(renderTree(tree).join('\n')).toBe(
+          '8\n' + 
+          '├> 0\n' + 
+          '├> 4\n' + 
+          '|  ├> 2\n' + 
+          '|  |  └> 1\n' + 
+          '|  └> 3\n' + 
+          '├> 6\n' + 
+          '|  └> 5\n' + 
+          '└> 7'
+        );
+        // prettier-ignore-end
+
+        // Remarks:
+        // * When we shrink 5 in path 8 > 6 > 5
+        //   we already now that 4 passed so we now that the smallest failing case
+        //   to look for is >= 5
+        // * Same thing when we shrink 6 in path 8 > 6
+        // * When we shrink 7 in path 8 > 7
+        //   we already now that 6 passed so we now that the smallest failing case
+        //   to look for is >= 7
+      });
+      it('Should shrink strictly positive value for range not included zero', () => {
+        const arb = integer({ min: 10, max: 20 });
+
+        const tree = buildShrinkTree(arb.contextualShrinkableFor(18));
+
+        // prettier-ignore
+        // Same as first case but offset by +10 (as other values)
+        expect(renderTree(tree).join('\n')).toBe(
+          '18\n' + 
+          '├> 10\n' + 
+          '├> 14\n' + 
+          '|  ├> 12\n' + 
+          '|  |  └> 11\n' + 
+          '|  └> 13\n' + 
+          '├> 16\n' + 
+          '|  └> 15\n' + 
+          '└> 17'
+        );
+        // prettier-ignore-end
+      });
+      it('Should shrink strictly negative value for negative range including zero', () => {
+        const arb = integer({ min: -10, max: 0 });
+
+        const tree = buildShrinkTree(arb.contextualShrinkableFor(-8));
+
+        // prettier-ignore
+        // Same as first case but multiplied by -1
+        expect(renderTree(tree).join('\n')).toBe(
+          '-8\n' + 
+          '├> 0\n' + 
+          '├> -4\n' + 
+          '|  ├> -2\n' + 
+          '|  |  └> -1\n' + 
+          '|  └> -3\n' + 
+          '├> -6\n' + 
+          '|  └> -5\n' + 
+          '└> -7'
+        );
+        // prettier-ignore-end
+      });
+    });
+
+    describe('shrinkableFor', () => {
+      // shrinkableFor is the legacy version of contextualShrinkableFor.
+      // It only takes a context telling if we already shrunk once or not.
+      // It proves too slow for deep shrink scenarios, thus contextualShrinkableFor
+      // took its place for faster shrinker.
+
+      it('Should shrink strictly positive value for positive range including zero', () => {
+        const arb = integer({ min: 0, max: 7 });
+
+        const tree = buildShrinkTreeWithShrunkOnce(arb, 6);
+
+        // prettier-ignore
+        expect(renderTree(tree).join('\n')).toBe(
+          '6\n' + 
+          '├> 0\n' + 
+          '├> 3\n' + 
+          '|  └> 2\n' + 
+          '|     └> 1\n' + 
+          '└> 5\n' + 
+          '   ├> 3\n' + 
+          '   |  └> 2\n' + 
+          '   |     └> 1\n' + 
+          '   └> 4\n' + 
+          '      ├> 2\n' + 
+          '      |  └> 1\n' + 
+          '      └> 3\n' + 
+          '         └> 2\n' + 
+          '            └> 1'
+        );
+        // prettier-ignore-end
+      });
+      it('Should shrink strictly positive value for range not included zero', () => {
+        const arb = integer({ min: 2, max: 9 });
+
+        const tree = buildShrinkTreeWithShrunkOnce(arb, 8);
+
+        // prettier-ignore
+        expect(renderTree(tree).join('\n')).toBe(
+          '8\n' + 
+          '├> 2\n' + 
+          '├> 5\n' + 
+          '|  └> 4\n' + 
+          '|     └> 3\n' + 
+          '└> 7\n' + 
+          '   ├> 5\n' + 
+          '   |  └> 4\n' + 
+          '   |     └> 3\n' + 
+          '   └> 6\n' + 
+          '      ├> 4\n' + 
+          '      |  └> 3\n' + 
+          '      └> 5\n' + 
+          '         └> 4\n' + 
+          '            └> 3'
+        );
+        // prettier-ignore-end
+      });
+      it('Should shrink strictly negative value for negative range including zero', () => {
+        const arb = integer({ min: -7, max: 0 });
+
+        const tree = buildShrinkTreeWithShrunkOnce(arb, -6);
+
+        // prettier-ignore
+        expect(renderTree(tree).join('\n')).toBe(
+          '-6\n' + 
+          '├> 0\n' + 
+          '├> -3\n' + 
+          '|  └> -2\n' + 
+          '|     └> -1\n' + 
+          '└> -5\n' + 
+          '   ├> -3\n' + 
+          '   |  └> -2\n' + 
+          '   |     └> -1\n' + 
+          '   └> -4\n' + 
+          '      ├> -2\n' + 
+          '      |  └> -1\n' + 
+          '      └> -3\n' + 
+          '         └> -2\n' + 
+          '            └> -1'
+        );
+        // prettier-ignore-end
       });
     });
   });
