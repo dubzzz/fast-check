@@ -13,28 +13,25 @@ function halveNegInteger(n: number): number {
  * Compute shrunk values to move from current to target
  * @internal
  */
-function shrinkIntegerInternal(current: number, target: number, shrunkOnce: boolean): Stream<number> {
+export function shrinkInteger(current: number, target: number, tryTargetAsap: boolean): Stream<[number, unknown]> {
   const realGap = current - target;
-  function* shrinkDecr(): IterableIterator<number> {
-    const gap = shrunkOnce ? halvePosInteger(realGap) : realGap;
+  function* shrinkDecr(): IterableIterator<[number, unknown]> {
+    let previous: number | undefined = tryTargetAsap ? undefined : target;
+    const gap = tryTargetAsap ? realGap : halvePosInteger(realGap);
     for (let toremove = gap; toremove > 0; toremove = halvePosInteger(toremove)) {
-      yield current - toremove;
+      const next = current - toremove;
+      yield [next, previous]; // previous indicates the last passing value
+      previous = next;
     }
   }
-  function* shrinkIncr(): IterableIterator<number> {
-    const gap = shrunkOnce ? halveNegInteger(realGap) : realGap;
+  function* shrinkIncr(): IterableIterator<[number, unknown]> {
+    let previous: number | undefined = tryTargetAsap ? undefined : target;
+    const gap = tryTargetAsap ? realGap : halveNegInteger(realGap);
     for (let toremove = gap; toremove < 0; toremove = halveNegInteger(toremove)) {
-      yield current - toremove;
+      const next = current - toremove;
+      yield [next, previous]; // previous indicates the last passing value
+      previous = next;
     }
   }
   return realGap > 0 ? stream(shrinkDecr()) : stream(shrinkIncr());
-}
-
-/** @internal */
-export function shrinkInteger(min: number, max: number, current: number, shrunkOnce: boolean): Stream<number> {
-  return min <= 0 && max >= 0
-    ? shrinkIntegerInternal(current, 0, shrunkOnce)
-    : current < 0
-    ? shrinkIntegerInternal(current, max, shrunkOnce)
-    : shrinkIntegerInternal(current, min, shrunkOnce);
 }
