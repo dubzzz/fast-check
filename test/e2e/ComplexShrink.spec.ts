@@ -36,12 +36,13 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // ...                              <--- and so on and so forth until we reach 1000,1001
     //                                       or 1001,1000
     const out = fc.check(
-      fc.property(fc.integer(), fc.integer(), (a: number, b: number) => {
+      fc.property(fc.nat(), fc.nat(), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
         return Math.abs(a - b) >= 1000;
       }),
-      { seed }
+      // We increase numRuns to avoid flakiness in the CI
+      { seed, numRuns: 1000 }
     );
 
     // > should find the failure
