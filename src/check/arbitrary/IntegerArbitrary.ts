@@ -16,11 +16,13 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
   constructor(readonly min: number, readonly max: number, readonly genMin: number, readonly genMax: number) {
     super();
   }
-  private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
-    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
+  private wrapper(value: number, context: unknown): Shrinkable<number> {
+    return new Shrinkable(value, () =>
+      this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
+    );
   }
   generate(mrng: Random): Shrinkable<number> {
-    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), false);
+    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), undefined);
   }
   contextualShrink(current: number, context?: unknown): Stream<[number, unknown]> {
     if (current === 0) {
