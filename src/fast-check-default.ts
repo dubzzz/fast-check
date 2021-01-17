@@ -136,6 +136,7 @@ import {
 } from './check/arbitrary/AsyncSchedulerArbitrary';
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/ArbitraryWithContextualShrink';
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
@@ -317,6 +318,7 @@ export {
   // extend the framework
   Arbitrary,
   ArbitraryWithShrink,
+  ArbitraryWithContextualShrink,
   Shrinkable,
   cloneMethod,
   // print values
