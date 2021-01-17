@@ -87,7 +87,7 @@ abstract class ArbitraryWithContextualShrink<T> extends Arbitrary<T> {
     return new Shrinkable(value, () => {
       const context = shrunkOnce === true ? this.shrunkOnceContext() : undefined;
       return this.contextualShrink(value, context).map((contextualValue) =>
-        this.contextualShrinkableFor(contextualValue[0], contextualValue[1])
+        this.shrinkableFor(contextualValue[0], true)
       );
     });
   }
