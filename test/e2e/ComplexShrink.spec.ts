@@ -37,8 +37,10 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     //
     // While it was able to reach and report the precise minimal failing case,
     // the shrinker was too slow to be useful (given the range of values generated).
+    const MaximalValue = 1000000;
+    const MaximalNumShrinksAllowed = 1000;
     const out = fc.check(
-      fc.property(fc.nat(), fc.nat(), (a: number, b: number) => {
+      fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
         if (b < a) return true;
@@ -61,13 +63,16 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // > should find the minimal failing case
     // Reaching this minimal case requires advanced shrinker logic
     // It implies a shrinker able to shrink on two values at the same time
-    //expect(minimal).toEqual([1000, 1010]); // Not supported yet
+    expect(minimal).toEqual([1000, 1010]);
+    expect(out.numShrinks).toBeLessThanOrEqual(MaximalNumShrinksAllowed);
   });
   it('Should shrink two integers linked by a symmetric relation', () => {
     // Very similar to the case above except that this time
     // if (a, b) fails, (b, a) will also fail.
+    const MaximalValue = 1000000;
+    const MaximalNumShrinksAllowed = 1000;
     const out = fc.check(
-      fc.property(fc.nat(), fc.nat(), (a: number, b: number) => {
+      fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
         if (Math.abs(a - b) < 10) return true;
@@ -83,13 +88,14 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // > should find a barely minimal failing case
     // Such failing case is a local minimum. Reaching a difference
     // of 10 already proves that the shrinker did part of the job.
-    //const [a, b] = out.counterexample!;
-    //const minimal = a < b ? [a, b] : [b, a];
-    //expect(Math.abs(minimal[1] - minimal[0])).toBe(10);
+    const [a, b] = out.counterexample!;
+    const minimal = a < b ? [a, b] : [b, a];
+    expect(Math.abs(minimal[1] - minimal[0])).toBe(10);
 
     // > should find the minimal failing case
     // Reaching this minimal case requires advanced shrinker logic
     // It implies a shrinker able to shrink on two values at the same time
-    //expect(minimal).toEqual([1000, 1010]); // Not supported yet
+    expect(minimal).toEqual([1000, 1010]);
+    expect(out.numShrinks).toBeLessThanOrEqual(MaximalNumShrinksAllowed);
   });
 });

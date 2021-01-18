@@ -1,11 +1,16 @@
 import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
+import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
 import { shrinkInteger } from './helpers/ShrinkInteger';
+
+/** @internal */
+function* shrinkToExact(value: number): IterableIterator<[number, unknown]> {
+  yield [value, undefined];
+}
 
 /** @internal */
 class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
@@ -31,6 +36,20 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
     if (!IntegerArbitrary.isValidContext(current, context)) {
       const target = this.min <= 0 && this.max >= 0 ? 0 : current < 0 ? this.max : this.min;
       return shrinkInteger(current, target, true);
+    }
+    if (Math.abs(current - context) === 1) {
+      // Last chance try...
+      // We already reached what we thought to be the minimal failing value.
+      // But in-between other values may have shrunk (values coming from other arbitraries).
+      // In order to check if they impacted us, we just try to move very close to our current value.
+      // It is not ideal but it can help restart a shrinking process that stopped too early.
+      if (current > 0 && current > this.min) {
+        return stream(shrinkToExact(current - 1)); // reset context in case of failure
+      }
+      if (current < 0 && current < this.max) {
+        return stream(shrinkToExact(current + 1)); // reset context in case of failure
+      }
+      return Stream.nil();
     }
     return shrinkInteger(current, context, false);
   }

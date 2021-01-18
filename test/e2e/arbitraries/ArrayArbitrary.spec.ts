@@ -30,22 +30,6 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([[5, 5]]);
     });
-    it('Should not suggest multiple times the empty array (after first failure)', () => {
-      let failedOnce = false;
-      let numEmptyArrays = 0;
-      const out = fc.check(
-        fc.property(fc.array(fc.integer()), (arr: number[]) => {
-          if (failedOnce && arr.length === 0) ++numEmptyArrays;
-          if (arr.length === 0) return true;
-          failedOnce = true;
-          return false;
-        }),
-        { seed }
-      );
-      expect(out.failed).toBe(true);
-      expect(out.counterexample![0]).toHaveLength(1);
-      expect(numEmptyArrays).toEqual(1);
-    });
     biasIts('integer', fc.integer());
     if (typeof BigInt !== 'undefined') {
       biasIts('bigint', fc.bigIntN(64));
