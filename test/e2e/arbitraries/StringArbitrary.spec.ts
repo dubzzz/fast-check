@@ -54,22 +54,4 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual(['\ud800']);
     });
   });
-  describe('string', () => {
-    it('Should not suggest multiple times the empty string (after first failure)', () => {
-      let failedOnce = false;
-      let numEmptyStringSuggestedByShrink = 0;
-      const out = fc.check(
-        fc.property(fc.string(), (s: string) => {
-          if (failedOnce && s === '') ++numEmptyStringSuggestedByShrink;
-          if (s.length === 0) return true;
-          failedOnce = true;
-          return false;
-        }),
-        { seed }
-      );
-      expect(out.failed).toBe(true);
-      expect(out.counterexample![0]).toHaveLength(1);
-      expect(numEmptyStringSuggestedByShrink).toEqual(1);
-    });
-  });
 });

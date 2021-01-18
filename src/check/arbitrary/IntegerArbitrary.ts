@@ -1,11 +1,16 @@
 import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
+import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
 import { shrinkInteger } from './helpers/ShrinkInteger';
+
+/** @internal */
+function* shrinkToExact(value: number): IterableIterator<[number, unknown]> {
+  yield [value, undefined];
+}
 
 /** @internal */
 class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
@@ -16,11 +21,13 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
   constructor(readonly min: number, readonly max: number, readonly genMin: number, readonly genMax: number) {
     super();
   }
-  private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
-    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
+  private wrapper(value: number, context: unknown): Shrinkable<number> {
+    return new Shrinkable(value, () =>
+      this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
+    );
   }
   generate(mrng: Random): Shrinkable<number> {
-    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), false);
+    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), undefined);
   }
   contextualShrink(current: number, context?: unknown): Stream<[number, unknown]> {
     if (current === 0) {
@@ -30,6 +37,20 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
       const target = this.min <= 0 && this.max >= 0 ? 0 : current < 0 ? this.max : this.min;
       return shrinkInteger(current, target, true);
     }
+
+    // Last chance try...
+    // We already reached what we thought to be the minimal failing value.
+    // But in-between other values may have shrunk (values coming from other arbitraries).
+    // In order to check if they impacted us, we just try to move very close to our current value.
+    // It is not ideal but it can help restart a shrinking process that stopped too early.
+    if (current === context + 1 && current > this.min && current > 0) {
+      return stream(shrinkToExact(context)); // reset context in case of failure
+    }
+    if (current === context - 1 && current < this.max && current < 0) {
+      return stream(shrinkToExact(context)); // reset context in case of failure
+    }
+
+    // Normal shrink process
     return shrinkInteger(current, context, false);
   }
   shrunkOnceContext(): unknown {
