@@ -47,7 +47,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
         return b - a >= 1000;
       }),
       // We increase numRuns to avoid flakiness in the CI
-      { seed, numRuns: 1000 }
+      { seed, numRuns: 5000 }
     );
 
     // > should find the failure
@@ -76,7 +76,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
         return Math.abs(a - b) >= 1000;
       }),
       // We increase numRuns to avoid flakiness in the CI
-      { seed, numRuns: 1000 }
+      { seed, numRuns: 5000 }
     );
 
     // > should find the failure
@@ -104,6 +104,34 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     function flat<T>(arr: T[][]): T[] {
       return arr.reduce((acc, cur) => [...acc, ...cur], []);
     }
+
+    it('bound5', () => {
+      const sum16 = (a: number, b: number): number => {
+        let s = a + b;
+        while (s > 32767) s -= 65536;
+        while (s < -32768) s += 65536;
+        return s;
+      };
+      const int16Arb = fc.integer({ min: -32768, max: 32767 });
+      const boundedListsArb = fc.array(int16Arb, { maxLength: 1 }).filter((x) => x.reduce(sum16, 0) < 256);
+
+      const out = fc.check(
+        fc.property(
+          fc.tuple(boundedListsArb, boundedListsArb, boundedListsArb, boundedListsArb, boundedListsArb),
+          (p) => {
+            return flat(p).reduce(sum16, 0) < 5 * 256;
+          }
+        ),
+        { seed }
+      );
+
+      // > should find the failure
+      expect(out.failed).toBe(true);
+
+      // > should find a barely minimal failing case
+      const [minimal] = out.counterexample!;
+      expect(flat(minimal)).toHaveLength(2);
+    });
 
     it('distinct', () => {
       const out = fc.check(
