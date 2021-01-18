@@ -38,7 +38,6 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // While it was able to reach and report the precise minimal failing case,
     // the shrinker was too slow to be useful (given the range of values generated).
     const MaximalValue = 1000000;
-    const MaximalNumShrinksAllowed = 1000;
     const out = fc.check(
       fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
@@ -64,13 +63,11 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // Reaching this minimal case requires advanced shrinker logic
     // It implies a shrinker able to shrink on two values at the same time
     expect(minimal).toEqual([1000, 1010]);
-    expect(out.numShrinks).toBeLessThanOrEqual(MaximalNumShrinksAllowed);
   });
   it('Should shrink two integers linked by a symmetric relation', () => {
     // Very similar to the case above except that this time
     // if (a, b) fails, (b, a) will also fail.
     const MaximalValue = 1000000;
-    const MaximalNumShrinksAllowed = 1000;
     const out = fc.check(
       fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
@@ -96,6 +93,5 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // Reaching this minimal case requires advanced shrinker logic
     // It implies a shrinker able to shrink on two values at the same time
     expect(minimal).toEqual([1000, 1010]);
-    expect(out.numShrinks).toBeLessThanOrEqual(MaximalNumShrinksAllowed);
   });
 });
