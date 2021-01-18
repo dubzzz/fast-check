@@ -37,20 +37,20 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
       const target = this.min <= 0 && this.max >= 0 ? 0 : current < 0 ? this.max : this.min;
       return shrinkInteger(current, target, true);
     }
-    if (Math.abs(current - context) === 1) {
-      // Last chance try...
-      // We already reached what we thought to be the minimal failing value.
-      // But in-between other values may have shrunk (values coming from other arbitraries).
-      // In order to check if they impacted us, we just try to move very close to our current value.
-      // It is not ideal but it can help restart a shrinking process that stopped too early.
-      if (current > 0 && current > this.min) {
-        return stream(shrinkToExact(current - 1)); // reset context in case of failure
-      }
-      if (current < 0 && current < this.max) {
-        return stream(shrinkToExact(current + 1)); // reset context in case of failure
-      }
-      return Stream.nil();
+
+    // Last chance try...
+    // We already reached what we thought to be the minimal failing value.
+    // But in-between other values may have shrunk (values coming from other arbitraries).
+    // In order to check if they impacted us, we just try to move very close to our current value.
+    // It is not ideal but it can help restart a shrinking process that stopped too early.
+    if (current === context + 1 && current > this.min && current > 0) {
+      return stream(shrinkToExact(context)); // reset context in case of failure
     }
+    if (current === context - 1 && current < this.max && current < 0) {
+      return stream(shrinkToExact(context)); // reset context in case of failure
+    }
+
+    // Normal shrink process
     return shrinkInteger(current, context, false);
   }
   shrunkOnceContext(): unknown {

@@ -273,10 +273,38 @@ describe('IntegerArbitrary', () => {
           '├> 4\n' + 
           '|  ├> 2\n' + 
           '|  |  └> 1\n' + 
+          '|  |     └> 0\n' + // Last try...
           '|  └> 3\n' + 
+          '|     └> 2\n' + // Last try...
+          '|        ├> 0\n' + 
+          '|        └> 1\n' + 
+          '|           └> 0\n' + // Last try...
           '├> 6\n' + 
           '|  └> 5\n' + 
-          '└> 7'
+          '|     └> 4\n' + // Last try...
+          '|        ├> 0\n' + 
+          '|        ├> 2\n' + 
+          '|        |  └> 1\n' + 
+          '|        |     └> 0\n' + // Last try...
+          '|        └> 3\n' + 
+          '|           └> 2\n' + // Last try...
+          '|              ├> 0\n' + 
+          '|              └> 1\n' + 
+          '|                 └> 0\n' + // Last try...
+          '└> 7\n' + 
+          '   └> 6\n' + // Last try...
+          '      ├> 0\n' + 
+          '      ├> 3\n' + 
+          '      |  └> 2\n' + 
+          '      |     └> 1\n' + 
+          '      |        └> 0\n' + // Last try...
+          '      └> 5\n' + 
+          '         └> 4\n' + 
+          '            └> 3\n' + // Last try...
+          '               ├> 0\n' + 
+          '               └> 2\n' + 
+          '                  └> 1\n' + 
+          '                     └> 0' // Last try...
         );
         // prettier-ignore-end
 
@@ -288,6 +316,9 @@ describe('IntegerArbitrary', () => {
         // * When we shrink 7 in path 8 > 7
         //   we already now that 6 passed so we now that the smallest failing case
         //   to look for is >= 7
+        // * "Last try" are used to retry a small move right after all other arbitraries ended.
+        //   It tries to confirm that what we thought to be the minimal failing case is still
+        //   the minimal one given the change that occurred around it
       });
       it('Should shrink strictly positive value for range not included zero', () => {
         const arb = integer({ min: 10, max: 20 });
@@ -302,10 +333,38 @@ describe('IntegerArbitrary', () => {
           '├> 14\n' + 
           '|  ├> 12\n' + 
           '|  |  └> 11\n' + 
+          '|  |     └> 10\n' + // Last try...
           '|  └> 13\n' + 
+          '|     └> 12\n' + // Last try...
+          '|        ├> 10\n' + 
+          '|        └> 11\n' + 
+          '|           └> 10\n' + // Last try...
           '├> 16\n' + 
           '|  └> 15\n' + 
-          '└> 17'
+          '|     └> 14\n' + // Last try...
+          '|        ├> 10\n' + 
+          '|        ├> 12\n' + 
+          '|        |  └> 11\n' + 
+          '|        |     └> 10\n' + // Last try...
+          '|        └> 13\n' + 
+          '|           └> 12\n' + // Last try...
+          '|              ├> 10\n' + 
+          '|              └> 11\n' + 
+          '|                 └> 10\n' + // Last try...
+          '└> 17\n' + 
+          '   └> 16\n' + // Last try...
+          '      ├> 10\n' + 
+          '      ├> 13\n' + 
+          '      |  └> 12\n' + 
+          '      |     └> 11\n' + 
+          '      |        └> 10\n' + // Last try...
+          '      └> 15\n' + 
+          '         └> 14\n' + 
+          '            └> 13\n' + // Last try...
+          '               ├> 10\n' + 
+          '               └> 12\n' + 
+          '                  └> 11\n' + 
+          '                     └> 10' // Last try...
         );
         // prettier-ignore-end
       });
@@ -322,10 +381,38 @@ describe('IntegerArbitrary', () => {
           '├> -4\n' + 
           '|  ├> -2\n' + 
           '|  |  └> -1\n' + 
+          '|  |     └> 0\n' + // Last try...
           '|  └> -3\n' + 
+          '|     └> -2\n' + // Last try...
+          '|        ├> 0\n' + 
+          '|        └> -1\n' + 
+          '|           └> 0\n' + // Last try...
           '├> -6\n' + 
           '|  └> -5\n' + 
-          '└> -7'
+          '|     └> -4\n' + // Last try...
+          '|        ├> 0\n' + 
+          '|        ├> -2\n' + 
+          '|        |  └> -1\n' + 
+          '|        |     └> 0\n' + // Last try...
+          '|        └> -3\n' + 
+          '|           └> -2\n' + // Last try...
+          '|              ├> 0\n' + 
+          '|              └> -1\n' + 
+          '|                 └> 0\n' + // Last try...
+          '└> -7\n' + 
+          '   └> -6\n' + // Last try...
+          '      ├> 0\n' + 
+          '      ├> -3\n' + 
+          '      |  └> -2\n' + 
+          '      |     └> -1\n' + 
+          '      |        └> 0\n' + // Last try...
+          '      └> -5\n' + 
+          '         └> -4\n' + 
+          '            └> -3\n' + // Last try...
+          '               ├> 0\n' + 
+          '               └> -2\n' + 
+          '                  └> -1\n' + 
+          '                     └> 0' // Last try...
         );
         // prettier-ignore-end
       });
@@ -349,16 +436,20 @@ describe('IntegerArbitrary', () => {
           '├> 3\n' + 
           '|  └> 2\n' + 
           '|     └> 1\n' + 
+          '|        └> 0\n' + // Last try...
           '└> 5\n' + 
           '   ├> 3\n' + 
           '   |  └> 2\n' + 
           '   |     └> 1\n' + 
+          '   |        └> 0\n' + // Last try...
           '   └> 4\n' + 
           '      ├> 2\n' + 
           '      |  └> 1\n' + 
+          '      |     └> 0\n' + // Last try...
           '      └> 3\n' + 
           '         └> 2\n' + 
-          '            └> 1'
+          '            └> 1\n' +
+          '               └> 0' // Last try...
         );
         // prettier-ignore-end
       });
@@ -374,16 +465,20 @@ describe('IntegerArbitrary', () => {
           '├> 5\n' + 
           '|  └> 4\n' + 
           '|     └> 3\n' + 
+          '|        └> 2\n' + // Last try...
           '└> 7\n' + 
           '   ├> 5\n' + 
           '   |  └> 4\n' + 
           '   |     └> 3\n' + 
+          '   |        └> 2\n' + // Last try...
           '   └> 6\n' + 
           '      ├> 4\n' + 
           '      |  └> 3\n' + 
+          '      |     └> 2\n' + // Last try...
           '      └> 5\n' + 
           '         └> 4\n' + 
-          '            └> 3'
+          '            └> 3\n' + 
+          '               └> 2' // Last try...
         );
         // prettier-ignore-end
       });
@@ -398,17 +493,21 @@ describe('IntegerArbitrary', () => {
           '├> 0\n' + 
           '├> -3\n' + 
           '|  └> -2\n' + 
-          '|     └> -1\n' + 
+          '|     └> -1\n' +
+          '|        └> 0\n' + // Last try...
           '└> -5\n' + 
           '   ├> -3\n' + 
           '   |  └> -2\n' + 
           '   |     └> -1\n' + 
+          '   |        └> 0\n' + // Last try...
           '   └> -4\n' + 
           '      ├> -2\n' + 
           '      |  └> -1\n' + 
+          '      |     └> 0\n' + // Last try...
           '      └> -3\n' + 
           '         └> -2\n' + 
-          '            └> -1'
+          '            └> -1\n' + 
+          '               └> 0' // Last try...
         );
         // prettier-ignore-end
       });
