@@ -7,28 +7,12 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
 import { generateOneValue } from './generic/GenerateOneValue';
-import { ArbitraryWithShrink } from '../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 
 const isStrictlySmallerInteger = (v1: number, v2: number) => Math.abs(v1) < Math.abs(v2);
 
 type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 function buildShrinkTree(s: Shrinkable<number, number>): ShrinkTree<number> {
   return [s.value_, [...s.shrink().map((ss) => buildShrinkTree(ss))]];
-}
-function buildShrinkTreeWithShrunkOnce(
-  arb: ArbitraryWithShrink<number>,
-  value: number,
-  shrunkOnce = false
-): ShrinkTree<number> {
-  return [
-    value,
-    [
-      ...arb
-        .shrinkableFor(value, shrunkOnce)
-        .shrink()
-        .map((ss) => buildShrinkTreeWithShrunkOnce(arb, ss.value_, true)),
-    ],
-  ];
 }
 function renderTree(tree: ShrinkTree<number>): string[] {
   const [current, subTrees] = tree;
@@ -395,7 +379,7 @@ describe('IntegerArbitrary', () => {
       it('Should shrink strictly positive value for positive range including zero', () => {
         const arb = integer({ min: 0, max: 7 });
 
-        const tree = buildShrinkTreeWithShrunkOnce(arb, 6);
+        const tree = buildShrinkTree(arb.shrinkableFor(6));
 
         // prettier-ignore
         expect(renderTree(tree).join('\n')).toBe(
@@ -424,7 +408,7 @@ describe('IntegerArbitrary', () => {
       it('Should shrink strictly positive value for range not included zero', () => {
         const arb = integer({ min: 2, max: 9 });
 
-        const tree = buildShrinkTreeWithShrunkOnce(arb, 8);
+        const tree = buildShrinkTree(arb.shrinkableFor(8));
 
         // prettier-ignore
         expect(renderTree(tree).join('\n')).toBe(
@@ -453,7 +437,7 @@ describe('IntegerArbitrary', () => {
       it('Should shrink strictly negative value for negative range including zero', () => {
         const arb = integer({ min: -7, max: 0 });
 
-        const tree = buildShrinkTreeWithShrunkOnce(arb, -6);
+        const tree = buildShrinkTree(arb.shrinkableFor(-6));
 
         // prettier-ignore
         expect(renderTree(tree).join('\n')).toBe(
