@@ -119,38 +119,6 @@ describe('IntegerArbitrary', () => {
           );
         })
       ));
-    it('Should not shrink twice towards zero', () =>
-      fc.assert(
-        fc.property(fc.integer().noShrink(), (seed) => {
-          // all value between <sA> and <sB> are failure cases
-          // we have a contiguous range of failures
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const sA = integer().generate(mrng);
-          const sB = integer().generate(mrng);
-          const minValue = Math.min(sA.value, sB.value);
-          const maxValue = Math.max(sA.value, sB.value);
-
-          let shrinkable: Shrinkable<number> | null = sA;
-          let numZeros = 0;
-
-          // simulate the shrinking process
-          // count we do not ask for zero multiple times
-          while (shrinkable !== null) {
-            const oldShrinkable: Shrinkable<number> | null = shrinkable;
-            shrinkable = null;
-            for (const smallerShrinkable of oldShrinkable.shrink()) {
-              if (smallerShrinkable.value === 0) {
-                expect(numZeros).toEqual(0);
-                ++numZeros;
-              }
-              if (minValue <= smallerShrinkable.value && smallerShrinkable.value <= maxValue) {
-                shrinkable = smallerShrinkable;
-                break;
-              }
-            }
-          }
-        })
-      ));
 
     const log2 = (v: number) => Math.log(v) / Math.log(2);
 
