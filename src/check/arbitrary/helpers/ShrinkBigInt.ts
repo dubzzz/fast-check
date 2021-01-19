@@ -12,28 +12,25 @@ function halveBigInt(n: bigint): bigint {
  * Compute shrunk values to move from current to target
  * @internal
  */
-function shrinkBigIntInternal(current: bigint, target: bigint, shrunkOnce: boolean): Stream<bigint> {
+export function shrinkBigInt(current: bigint, target: bigint, tryTargetAsap: boolean): Stream<[bigint, unknown]> {
   const realGap = current - target;
-  function* shrinkDecr(): IterableIterator<bigint> {
-    const gap = shrunkOnce ? halveBigInt(realGap) : realGap;
+  function* shrinkDecr(): IterableIterator<[bigint, unknown]> {
+    let previous: bigint | undefined = tryTargetAsap ? undefined : target;
+    const gap = tryTargetAsap ? realGap : halveBigInt(realGap);
     for (let toremove = gap; toremove > 0; toremove = halveBigInt(toremove)) {
-      yield current - toremove;
+      const next = current - toremove;
+      yield [next, previous]; // previous indicates the last passing value
+      previous = next;
     }
   }
-  function* shrinkIncr(): IterableIterator<bigint> {
-    const gap = shrunkOnce ? halveBigInt(realGap) : realGap;
+  function* shrinkIncr(): IterableIterator<[bigint, unknown]> {
+    let previous: bigint | undefined = tryTargetAsap ? undefined : target;
+    const gap = tryTargetAsap ? realGap : halveBigInt(realGap);
     for (let toremove = gap; toremove < 0; toremove = halveBigInt(toremove)) {
-      yield current - toremove;
+      const next = current - toremove;
+      yield [next, previous]; // previous indicates the last passing value
+      previous = next;
     }
   }
   return realGap > 0 ? stream(shrinkDecr()) : stream(shrinkIncr());
-}
-
-/** @internal */
-export function shrinkBigInt(min: bigint, max: bigint, current: bigint, shrunkOnce: boolean): Stream<bigint> {
-  return min <= 0 && max >= 0
-    ? shrinkBigIntInternal(current, BigInt(0), shrunkOnce)
-    : current < 0
-    ? shrinkBigIntInternal(current, max, shrunkOnce)
-    : shrinkBigIntInternal(current, min, shrunkOnce);
 }

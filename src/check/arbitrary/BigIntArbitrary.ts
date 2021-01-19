@@ -1,26 +1,76 @@
 import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
+import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
-import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, bigIntLogLike } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkBigInt';
 
 /** @internal */
-class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
+function* shrinkToExact(value: bigint): IterableIterator<[bigint, unknown]> {
+  yield [value, undefined];
+}
+
+/** @internal */
+class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
   private biasedBigIntArbitrary: Arbitrary<bigint> | null = null;
   constructor(readonly min: bigint, readonly max: bigint, readonly genMin: bigint, readonly genMax: bigint) {
     super();
   }
-  private wrapper(value: bigint, shrunkOnce: boolean): Shrinkable<bigint> {
-    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
+  private wrapper(value: bigint, context: unknown): Shrinkable<bigint> {
+    return new Shrinkable(value, () =>
+      this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
+    );
   }
   generate(mrng: Random): Shrinkable<bigint> {
-    return this.wrapper(mrng.nextBigInt(this.genMin, this.genMax), false);
+    return this.wrapper(mrng.nextBigInt(this.genMin, this.genMax), undefined);
   }
-  shrink(value: bigint, shrunkOnce?: boolean): Stream<bigint> {
-    return shrinkBigInt(this.min, this.max, value, shrunkOnce === true);
+  contextualShrink(current: bigint, context?: unknown): Stream<[bigint, unknown]> {
+    if (current === BigInt(0)) {
+      return Stream.nil();
+    }
+    if (!BigIntArbitrary.isValidContext(current, context)) {
+      const target = this.min <= 0 && this.max >= 0 ? BigInt(0) : current < 0 ? this.max : this.min;
+      return shrinkBigInt(current, target, true);
+    }
+
+    // Last chance try... (see IntegerArbitrary)
+    if (current === context + BigInt(1) && current > this.min && current > 0) {
+      return stream(shrinkToExact(context)); // reset context in case of failure
+    }
+    if (current === context - BigInt(1) && current < this.max && current < 0) {
+      return stream(shrinkToExact(context)); // reset context in case of failure
+    }
+
+    // Normal shrink process
+    return shrinkBigInt(current, context, false);
+  }
+  shrunkOnceContext(): unknown {
+    // If we already shrunk once it means that we already at least tried the minimal value
+    // requested by our shrinker so we don't need to try it anymore
+    if (this.min <= 0 && this.max >= 0) {
+      // The target is always zero when zero is included in the range
+      return BigInt(0);
+    }
+    // Otherwise the target is the minimal value between min and max in absolute
+    return this.min < 0 ? this.max : this.min;
+  }
+  private static isValidContext(current: bigint, context?: unknown): context is bigint {
+    // Context contains a value between zero and current that is known to be
+    // the closer to zero passing value*.
+    // *More precisely: our shrinker will not try something closer to zero
+    if (context === undefined) {
+      return false;
+    }
+    if (typeof context !== 'bigint') {
+      throw new Error(`Invalid context type passed to BigIntArbitrary (#1)`);
+    }
+    const differentSigns = (current > 0 && context < 0) || (current < 0 && context > 0);
+    if (context !== BigInt(0) && differentSigns) {
+      throw new Error(`Invalid context value passed to BigIntArbitrary (#2)`);
+    }
+    return true;
   }
   private pureBiasedArbitrary(): Arbitrary<bigint> {
     if (this.biasedBigIntArbitrary != null) {
@@ -43,7 +93,7 @@ class BigIntArbitrary extends ArbitraryWithShrink<bigint> {
  *
  * @public
  */
-function bigIntN(n: number): ArbitraryWithShrink<bigint> {
+function bigIntN(n: number): ArbitraryWithContextualShrink<bigint> {
   const min = BigInt(-1) << BigInt(n - 1);
   const max = (BigInt(1) << BigInt(n - 1)) - BigInt(1);
   return new BigIntArbitrary(min, max, min, max);
@@ -58,7 +108,7 @@ function bigIntN(n: number): ArbitraryWithShrink<bigint> {
  *
  * @public
  */
-function bigUintN(n: number): ArbitraryWithShrink<bigint> {
+function bigUintN(n: number): ArbitraryWithContextualShrink<bigint> {
   const min = BigInt(0);
   const max = (BigInt(1) << BigInt(n)) - BigInt(1);
   return new BigIntArbitrary(min, max, min, max);
@@ -115,7 +165,7 @@ function extractBigIntConstraints(args: [] | [bigint, bigint] | [BigIntConstrain
  * For bigint
  * @public
  */
-function bigInt(): ArbitraryWithShrink<bigint>;
+function bigInt(): ArbitraryWithContextualShrink<bigint>;
 /**
  * For bigint between min (included) and max (included)
  *
@@ -124,7 +174,7 @@ function bigInt(): ArbitraryWithShrink<bigint>;
  *
  * @public
  */
-function bigInt(min: bigint, max: bigint): ArbitraryWithShrink<bigint>;
+function bigInt(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint>;
 /**
  * For bigint between min (included) and max (included)
  *
@@ -132,8 +182,8 @@ function bigInt(min: bigint, max: bigint): ArbitraryWithShrink<bigint>;
  *
  * @public
  */
-function bigInt(constraints: BigIntConstraints): ArbitraryWithShrink<bigint>;
-function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): ArbitraryWithShrink<bigint> {
+function bigInt(constraints: BigIntConstraints): ArbitraryWithContextualShrink<bigint>;
+function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): ArbitraryWithContextualShrink<bigint> {
   const constraints = buildCompleteBigIntConstraints(extractBigIntConstraints(args));
   return new BigIntArbitrary(constraints.min, constraints.max, constraints.min, constraints.max);
 }
@@ -151,7 +201,7 @@ export interface BigUintConstraints {
  * For positive bigint
  * @public
  */
-function bigUint(): ArbitraryWithShrink<bigint>;
+function bigUint(): ArbitraryWithContextualShrink<bigint>;
 /**
  * For positive bigint between 0 (included) and max (included)
  *
@@ -159,7 +209,7 @@ function bigUint(): ArbitraryWithShrink<bigint>;
  *
  * @public
  */
-function bigUint(max: bigint): ArbitraryWithShrink<bigint>;
+function bigUint(max: bigint): ArbitraryWithContextualShrink<bigint>;
 /**
  * For positive bigint between 0 (included) and max (included)
  *
@@ -167,8 +217,8 @@ function bigUint(max: bigint): ArbitraryWithShrink<bigint>;
  *
  * @public
  */
-function bigUint(constraints: BigUintConstraints): ArbitraryWithShrink<bigint>;
-function bigUint(constraints?: bigint | BigUintConstraints): ArbitraryWithShrink<bigint> {
+function bigUint(constraints: BigUintConstraints): ArbitraryWithContextualShrink<bigint>;
+function bigUint(constraints?: bigint | BigUintConstraints): ArbitraryWithContextualShrink<bigint> {
   const max = constraints === undefined ? undefined : typeof constraints === 'object' ? constraints.max : constraints;
   return max === undefined ? bigUintN(256) : new BigIntArbitrary(BigInt(0), max, BigInt(0), max);
 }
