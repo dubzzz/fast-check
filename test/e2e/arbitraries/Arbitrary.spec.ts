@@ -34,7 +34,6 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
     });
     it('Should bias both source and destination', () => {
-      // TODO Flaky
       const out = fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
