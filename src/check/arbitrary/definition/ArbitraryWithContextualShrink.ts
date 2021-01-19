@@ -56,14 +56,13 @@ abstract class ArbitraryWithContextualShrink<T> extends Arbitrary<T> {
 
   /**
    * Produce a context for shrunkOnce case
-   * @deprecated Prefer context based variants of shrink and shrinkableFor
    */
   abstract shrunkOnceContext(): unknown;
 
   /**
    * Produce a stream of shrinks of value
    *
-   * @deprecated Prefer contextualShrink
+   * @deprecated Prefer contextualShrink and shrunkOnceContext
    *
    * @param value - Value to shrink
    * @param shrunkOnce - Indicate whether its the first shrink (default: false)
@@ -77,7 +76,7 @@ abstract class ArbitraryWithContextualShrink<T> extends Arbitrary<T> {
   /**
    * Build the Shrinkable associated to value
    *
-   * @deprecated Prefer contextualShrinkableFor
+   * @deprecated Prefer contextualShrinkableFor and shrunkOnceContext
    *
    * @param value - Value to shrink
    * @param shrunkOnce - Indicate whether its the first shrink

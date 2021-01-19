@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
-import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
@@ -11,7 +11,7 @@ import { buildCompareFilter } from './helpers/BuildCompareFilter';
 
 /** @internal */
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
-  readonly lengthArb: ArbitraryWithShrink<number>;
+  readonly lengthArb: ArbitraryWithContextualShrink<number>;
   readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[];
 
   constructor(
@@ -90,7 +90,13 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     if (items.length === 0) {
       return Stream.nil<Shrinkable<T>[]>();
     }
-    const size = this.lengthArb.shrinkableFor(items.length, shrunkOnce);
+    const size = this.lengthArb.contextualShrinkableFor(
+      items.length,
+      // We cannot have more context than just: Did we shrink once?
+      // Actually the context of integer arbitrary is highly dependent on the target value,
+      // passing a context computed for a length of 5 to an array having a length of 4 will not work properly.
+      shrunkOnce ? this.lengthArb.shrunkOnceContext() : undefined
+    );
     return size
       .shrink()
       .map((l) => items.slice(items.length - l.value))
