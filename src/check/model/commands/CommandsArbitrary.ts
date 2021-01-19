@@ -1,7 +1,7 @@
 import { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
 import { Arbitrary } from '../../arbitrary/definition/Arbitrary';
-import { ArbitraryWithShrink } from '../../arbitrary/definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from '../../arbitrary/definition/ArbitraryWithContextualShrink';
 import { Shrinkable } from '../../arbitrary/definition/Shrinkable';
 import { nat } from '../../arbitrary/IntegerArbitrary';
 import { oneof } from '../../arbitrary/OneOfArbitrary';
@@ -20,7 +20,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {
   readonly oneCommandArb: Arbitrary<CommandWrapper<Model, Real, RunResult, CheckAsync>>;
-  readonly lengthArb: ArbitraryWithShrink<number>;
+  readonly lengthArb: ArbitraryWithContextualShrink<number>;
   private replayPath: boolean[];
   private replayPathPosition: number;
   constructor(
@@ -120,7 +120,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     for (let numToKeep = 0; numToKeep !== items.length; ++numToKeep) {
       nextShrinks.push(
         makeLazy(() => {
-          const size = this.lengthArb.shrinkableFor(items.length - 1 - numToKeep, false);
+          const size = this.lengthArb.contextualShrinkableFor(items.length - 1 - numToKeep);
           const fixedStart = items.slice(0, numToKeep);
           return size.shrink().map((l) => fixedStart.concat(items.slice(items.length - (l.value + 1))));
         })
