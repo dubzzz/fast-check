@@ -61,11 +61,6 @@ expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {});
 
-// ArbitraryWithContextualShrink
-expectTypeAssignable<fc.Arbitrary<number>>()(fc.nat());
-expectTypeAssignable<fc.ArbitraryWithShrink<number>>()(fc.nat());
-expectTypeAssignable<fc.ArbitraryWithContextualShrink<number>>()(fc.nat());
-
 // base arbitrary
 expectType<fc.Arbitrary<string[]>>()(fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })));
 expectType<fc.Arbitrary<number>>()(fc.option(fc.nat()).filter((n): n is number => n !== null));
