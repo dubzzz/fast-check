@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
-import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
@@ -11,7 +11,7 @@ import { buildCompareFilter } from './helpers/BuildCompareFilter';
 
 /** @internal */
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
-  readonly lengthArb: ArbitraryWithShrink<number>;
+  readonly lengthArb: ArbitraryWithContextualShrink<number>;
   readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[];
 
   constructor(
@@ -48,10 +48,13 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     }
     return true;
   }
-  private wrapper(itemsRaw: Shrinkable<T>[], shrunkOnce: boolean): Shrinkable<T[]> {
+  private wrapper(itemsRaw: Shrinkable<T>[], lengthArbContext: unknown): Shrinkable<T[]> {
     // We need to explicitly apply filtering on shrink items
     // has they might have duplicates (on non shrunk it is not the case by construct)
-    const items = shrunkOnce ? this.preFilter(itemsRaw) : itemsRaw;
+    // WARNING In order to know whether or not we already shrunk once,
+    //   we are relying on the fact that `lengthArbContext !== undefined` is true
+    //   if and only if we shrunk at least once. A small implementation detail of integer.
+    const items = lengthArbContext !== undefined ? this.preFilter(itemsRaw) : itemsRaw;
     let cloneable = false;
     const vs = [];
     for (let idx = 0; idx !== items.length; ++idx) {
@@ -62,7 +65,9 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     if (cloneable) {
       ArrayArbitrary.makeItCloneable(vs, items);
     }
-    return new Shrinkable(vs, () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true)));
+    return new Shrinkable(vs, () =>
+      this.shrinkImpl(items, lengthArbContext).map(([v, nextLengthArbContext]) => this.wrapper(v, nextLengthArbContext))
+    );
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const targetSizeShrinkable = this.lengthArb.generate(mrng);
@@ -84,25 +89,27 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         numSkippedInRow += 1;
       }
     }
-    return this.wrapper(items, false);
+    return this.wrapper(items, undefined);
   }
-  private shrinkImpl(items: Shrinkable<T>[], shrunkOnce: boolean): Stream<Shrinkable<T>[]> {
+  private shrinkImpl(items: Shrinkable<T>[], lengthArbContext: unknown): Stream<[Shrinkable<T>[], unknown]> {
     if (items.length === 0) {
-      return Stream.nil<Shrinkable<T>[]>();
+      return Stream.nil<[Shrinkable<T>[], unknown]>();
     }
-    const size = this.lengthArb.shrinkableFor(items.length, shrunkOnce);
-    return size
-      .shrink()
-      .map((l) => items.slice(items.length - l.value))
-      .join(items[0].shrink().map((v) => [v].concat(items.slice(1))))
+    return this.lengthArb
+      .contextualShrink(items.length, lengthArbContext)
+      .map(
+        ([l, nextLengthArbContext]) =>
+          [items.slice(items.length - l), nextLengthArbContext] as [Shrinkable<T>[], unknown]
+      )
+      .join(items[0].shrink().map((v) => [[v].concat(items.slice(1)), lengthArbContext]))
       .join(
         items.length > this.minLength
           ? makeLazy(() =>
-              this.shrinkImpl(items.slice(1), false)
-                .filter((vs) => this.minLength <= vs.length + 1)
-                .map((vs) => [items[0]].concat(vs))
+              this.shrinkImpl(items.slice(1), undefined)
+                .filter(([vs]) => this.minLength <= vs.length + 1)
+                .map(([vs, nextLengthArbContext]) => [[items[0]].concat(vs), nextLengthArbContext])
             )
-          : Stream.nil<Shrinkable<T>[]>()
+          : Stream.nil<[Shrinkable<T>[], unknown]>()
       );
   }
   withBias(freq: number): Arbitrary<T[]> {
