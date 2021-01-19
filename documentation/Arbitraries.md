@@ -4,7 +4,7 @@ Property based testing frameworks rely on two main building blocks:
 - [Runners](./Runners.md) — _they are responsible to run, execute and check that properties stay true whatever the generated value_
 - Arbitraries — _they are responsible for the random *but deterministic* generation of values, they may also offer shrinking capabilities_
 
-This documentation lists all the built-in arbitraries provided by `fast-check`. Please note that you can still create your own ones by either [combining them together](#combinators) or by [building it from scratch](./AdvancedArbitraries.md#build-your-own). You can refer also to the [API Reference](https://dubzzz.github.io/fast-check/) for more details.
+This documentation lists all the built-in arbitraries provided by `fast-check`. Please note that you can still create your own ones by either [combining them together](#combinators) or by [building it from scratch](./AdvancedArbitraries.md#build-your-own). You can refer also to the [API Reference](https://dubzzz.github.io/fast-check/modules/fast_check.html) for more details.
 
 In a nutshell, when defining your tests and properties you will have to combine both the [Runners](./Runners.md) and Arbitraries as follow:
 
@@ -54,7 +54,7 @@ fc.assert(
 ## Boolean
 
 <details>
-<summary><b>boolean</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#boolean">api</a>]</summary><br/>
+<summary><b>boolean</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#boolean">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -77,7 +77,7 @@ fc.boolean()
 ### Integer
 
 <details>
-<summary><b>integer</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#integer">api</a>]</summary><br/>
+<summary><b>integer</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#integer">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -124,7 +124,7 @@ fc.integer({min: 65536})
 </details>
 
 <details>
-<summary><b>nat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#nat">api</a>]</summary><br/>
+<summary><b>nat</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#nat">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -161,7 +161,7 @@ fc.nat({max: 1000})
 </details>
 
 <details>
-<summary><b>maxSafeInteger</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafeinteger">api</a>]</summary><br/>
+<summary><b>maxSafeInteger</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#maxsafeinteger">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -182,7 +182,7 @@ fc.maxSafeInteger()
 </details>
 
 <details>
-<summary><b>maxSafeNat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafenat">api</a>]</summary><br/>
+<summary><b>maxSafeNat</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#maxsafenat">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -205,7 +205,7 @@ fc.maxSafeNat()
 ### Floating point
 
 <details>
-<summary><b>float</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float">api</a>]</summary><br/>
+<summary><b>float</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#float">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -278,7 +278,7 @@ fc.float({min: -100, max: 100})
 </details>
 
 <details>
-<summary><b>double</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#double">api</a>]</summary><br/>
+<summary><b>double</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#double">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -352,7 +352,7 @@ fc.double({min: -100, max: 100})
 _if supported by your JavaScript interpreter_
 
 <details>
-<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary><br/>
+<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#bigintn">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -388,7 +388,7 @@ fc.bigIntN(128)
 </details>
 
 <details>
-<summary><b>bigInt</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigint">api</a>]</summary><br/>
+<summary><b>bigInt</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#bigint">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -441,7 +441,7 @@ fc.bigInt({min: 1n << 64n})
 </details>
 
 <details>
-<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary><br/>
+<summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#bigintn">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -477,7 +477,7 @@ fc.bigUintN(128)
 </details>
 
 <details>
-<summary><b>bigUint</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#biguint">api</a>]</summary><br/>
+<summary><b>bigUint</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#biguint">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -518,7 +518,7 @@ fc.bigUint({max: 12345678901234567890n})
 ### Single character
 
 <details>
-<summary><b>hexa</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexa">api</a>]</summary><br/>
+<summary><b>hexa</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#hexa">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -537,7 +537,7 @@ fc.hexa()
 </details>
 
 <details>
-<summary><b>base64</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64">api</a>]</summary><br/>
+<summary><b>base64</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#base64">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -556,7 +556,7 @@ fc.base64()
 </details>
 
 <details>
-<summary><b>char</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char">api</a>]</summary><br/>
+<summary><b>char</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#char">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -575,7 +575,7 @@ fc.char()
 </details>
 
 <details>
-<summary><b>ascii</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ascii">api</a>]</summary><br/>
+<summary><b>ascii</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#ascii">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -594,7 +594,7 @@ fc.ascii()
 </details>
 
 <details>
-<summary><b>unicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicode">api</a>]</summary><br/>
+<summary><b>unicode</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#unicode">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -615,7 +615,7 @@ fc.unicode()
 </details>
 
 <details>
-<summary><b>char16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char16bits">api</a>]</summary><br/>
+<summary><b>char16bits</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#char16bits">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -636,7 +636,7 @@ fc.char16bits()
 </details>
 
 <details>
-<summary><b>fullUnicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicode">api</a>]</summary><br/>
+<summary><b>fullUnicode</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#fullunicode">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -659,7 +659,7 @@ fc.fullUnicode()
 ### Multiple characters
 
 <details>
-<summary><b>hexaString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexastring">api</a>]</summary><br/>
+<summary><b>hexaString</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#hexastring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -698,7 +698,7 @@ fc.hexaString({minLength: 4, maxLength: 6})
 </details>
 
 <details>
-<summary><b>base64String</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64string">api</a>]</summary><br/>
+<summary><b>base64String</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#base64string">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -741,7 +741,7 @@ fc.base64String({minLength: 4, maxLength: 12})
 </details>
 
 <details>
-<summary><b>string</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string">api</a>]</summary><br/>
+<summary><b>string</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#string">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -780,7 +780,7 @@ fc.string({minLength: 4, maxLength: 6})
 </details>
 
 <details>
-<summary><b>asciiString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#asciistring">api</a>]</summary><br/>
+<summary><b>asciiString</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#asciistring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -819,7 +819,7 @@ fc.asciiString({minLength: 4, maxLength: 6})
 </details>
 
 <details>
-<summary><b>unicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodestring">api</a>]</summary><br/>
+<summary><b>unicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#unicodestring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -858,7 +858,7 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 </details>
 
 <details>
-<summary><b>string16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string16bits">api</a>]</summary><br/>
+<summary><b>string16bits</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#string16bits">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -899,7 +899,7 @@ fc.string16bits({minLength: 4, maxLength: 6})
 </details>
 
 <details>
-<summary><b>fullUnicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicodestring">api</a>]</summary><br/>
+<summary><b>fullUnicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#fullunicodestring">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -940,7 +940,7 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 </details>
 
 <details>
-<summary><b>stringOf</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#stringof">api</a>]</summary><br/>
+<summary><b>stringOf</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#stringof">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -986,7 +986,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 ### More specific strings
 
 <details>
-<summary><b>json</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#json">api</a>]</summary><br/>
+<summary><b>json</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#json">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1032,7 +1032,7 @@ fc.json({maxDepth: 1})
 </details>
 
 <details>
-<summary><b>unicodeJson</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejson">api</a>]</summary><br/>
+<summary><b>unicodeJson</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#unicodejson">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1072,7 +1072,7 @@ fc.unicodeJson({maxDepth: 1})
 </details>
 
 <details>
-<summary><b>lorem</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#lorem">api</a>]</summary><br/>
+<summary><b>lorem</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#lorem">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1115,7 +1115,7 @@ fc.lorem({maxCount: 3, mode: "sentences"})
 </details>
 
 <details>
-<summary><b>ipV4</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4">api</a>]</summary><br/>
+<summary><b>ipV4</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#ipv4">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1134,7 +1134,7 @@ fc.ipV4()
 </details>
 
 <details>
-<summary><b>ipV4Extended</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4extended">api</a>]</summary><br/>
+<summary><b>ipV4Extended</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#ipv4extended">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1153,7 +1153,7 @@ fc.ipV4Extended()
 </details>
 
 <details>
-<summary><b>ipV6</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv6">api</a>]</summary><br/>
+<summary><b>ipV6</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#ipv6">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1172,7 +1172,7 @@ fc.ipV6()
 </details>
 
 <details>
-<summary><b>uuid</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuid">api</a>]</summary><br/>
+<summary><b>uuid</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#uuid">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1197,7 +1197,7 @@ fc.uuid()
 </details>
 
 <details>
-<summary><b>uuidV</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuidv">api</a>]</summary><br/>
+<summary><b>uuidV</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#uuidv">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1235,7 +1235,7 @@ fc.uuidV(5)
 </details>
 
 <details>
-<summary><b>domain</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#domain">api</a>]</summary><br/>
+<summary><b>domain</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#domain">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1262,7 +1262,7 @@ fc.domain()
 </details>
 
 <details>
-<summary><b>webAuthority</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webauthority">api</a>]</summary><br/>
+<summary><b>webAuthority</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#webauthority">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1328,7 +1328,7 @@ fc.webAuthority({
 </details>
 
 <details>
-<summary><b>webFragments</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webfragments">api</a>]</summary><br/>
+<summary><b>webFragments</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#webfragments">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1349,7 +1349,7 @@ fc.webFragments()
 </details>
 
 <details>
-<summary><b>webQueryParameters</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webqueryparameters">api</a>]</summary><br/>
+<summary><b>webQueryParameters</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#webqueryparameters">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1370,7 +1370,7 @@ fc.webQueryParameters()
 </details>
 
 <details>
-<summary><b>webSegment</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#websegment">api</a>]</summary><br/>
+<summary><b>webSegment</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#websegment">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1389,7 +1389,7 @@ fc.webSegment()
 </details>
 
 <details>
-<summary><b>webUrl</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#weburl">api</a>]</summary><br/>
+<summary><b>webUrl</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#weburl">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1447,7 +1447,7 @@ fc.webUrl({
 </details>
 
 <details>
-<summary><b>emailAddress</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#emailaddress">api</a>]</summary><br/>
+<summary><b>emailAddress</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#emailaddress">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1474,7 +1474,7 @@ fc.emailAddress()
 </details>
 
 <details>
-<summary><b>mixedCase</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#mixedcase">api</a>]</summary><br/>
+<summary><b>mixedCase</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#mixedcase">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1526,7 +1526,7 @@ fc.mixedCase(
 ## Date
 
 <details>
-<summary><b>date</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#date">api</a>]</summary><br/>
+<summary><b>date</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#date">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1588,7 +1588,7 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 ## Typed Array
 
 <details>
-<summary><b>int8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int8array">api</a>]</summary><br/>
+<summary><b>int8Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#int8array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1630,7 +1630,7 @@ fc.int8Array({min: 0, minLength: 1})
 </details>
 
 <details>
-<summary><b>uint8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8array">api</a>]</summary><br/>
+<summary><b>uint8Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#uint8array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1672,7 +1672,7 @@ fc.uint8Array({max: 42, minLength: 1})
 </details>
 
 <details>
-<summary><b>uint8ClampedArray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8clampedarray">api</a>]</summary><br/>
+<summary><b>uint8ClampedArray</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#uint8clampedarray">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1714,7 +1714,7 @@ fc.uint8ClampedArray({max: 42, minLength: 1})
 </details>
 
 <details>
-<summary><b>int16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int16array">api</a>]</summary><br/>
+<summary><b>int16Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#int16array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1756,7 +1756,7 @@ fc.int16Array({min: 0, minLength: 1})
 </details>
 
 <details>
-<summary><b>uint16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint16array">api</a>]</summary><br/>
+<summary><b>uint16Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#uint16array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1798,7 +1798,7 @@ fc.uint16Array({max: 42, minLength: 1})
 </details>
 
 <details>
-<summary><b>int32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int32array">api</a>]</summary><br/>
+<summary><b>int32Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#int32array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1840,7 +1840,7 @@ fc.int32Array({min: 0, minLength: 1})
 </details>
 
 <details>
-<summary><b>uint32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint32array">api</a>]</summary><br/>
+<summary><b>uint32Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#uint32array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1882,7 +1882,7 @@ fc.uint32Array({max: 42, minLength: 1})
 </details>
 
 <details>
-<summary><b>float32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float32array">api</a>]</summary><br/>
+<summary><b>float32Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#float32array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1926,7 +1926,7 @@ fc.float32Array({minLength: 1})
 </details>
 
 <details>
-<summary><b>float64Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float64array">api</a>]</summary><br/>
+<summary><b>float64Array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#float64array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -1974,7 +1974,7 @@ fc.float64Array({minLength: 1})
 ### Simple
 
 <details>
-<summary><b>constant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#constant">api</a>]</summary><br/>
+<summary><b>constant</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#constant">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2002,7 +2002,7 @@ fc.constant({})
 </details>
 
 <details>
-<summary><b>constantFrom</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#constantfrom">api</a>]</summary><br/>
+<summary><b>constantFrom</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#constantfrom">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2032,7 +2032,7 @@ fc.constantFrom(1, 'string', {})
 </details>
 
 <details>
-<summary><b>clonedConstant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#clonedconstant">api</a>]</summary><br/>
+<summary><b>clonedConstant</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#clonedconstant">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2076,7 +2076,7 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 </details>
 
 <details>
-<summary><b>option</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#option">api</a>]</summary><br/>
+<summary><b>option</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#option">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2112,7 +2112,7 @@ fc.option(fc.string(), { nil: undefined })
 </details>
 
 <details>
-<summary><b>oneof</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#oneof">api</a>]</summary><br/>
+<summary><b>oneof</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#oneof">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2140,7 +2140,7 @@ fc.oneof(fc.char(), fc.boolean(), fc.nat())
 </details>
 
 <details>
-<summary><b>frequency</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#frequency">api</a>]</summary><br/>
+<summary><b>frequency</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#frequency">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2168,7 +2168,7 @@ fc.frequency(
 </details>
 
 <details>
-<summary><b>mapToConstant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maptoconstant">api</a>]</summary><br/>
+<summary><b>mapToConstant</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#maptoconstant">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2196,7 +2196,7 @@ fc.mapToConstant(
 </details>
 
 <details>
-<summary><b>clone</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#clone">api</a>]</summary><br/>
+<summary><b>clone</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#clone">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2231,7 +2231,7 @@ fc.clone(fc.nat(), 3)
 </details>
 
 <details>
-<summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dedup">api</a>]</summary><br/>
+<summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#dedup">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2268,7 +2268,7 @@ fc.dedup(fc.nat(), 3)
 ### Array
 
 <details>
-<summary><b>tuple</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#tuple">api</a>]</summary><br/>
+<summary><b>tuple</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#tuple">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2294,7 +2294,7 @@ fc.tuple(fc.nat(), fc.string())
 </details>
 
 <details>
-<summary><b>genericTuple</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#generictuple">api</a>]</summary><br/>
+<summary><b>genericTuple</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#generictuple">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2322,7 +2322,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 </details>
 
 <details>
-<summary><b>array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#array">api</a>]</summary><br/>
+<summary><b>array</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#array">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2377,7 +2377,7 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 </details>
 
 <details>
-<summary><b>set</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#set">api</a>]</summary><br/>
+<summary><b>set</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#set">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2431,7 +2431,7 @@ fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.le
 </details>
 
 <details>
-<summary><b>subarray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#subarray">api</a>]</summary><br/>
+<summary><b>subarray</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#subarray">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2469,7 +2469,7 @@ fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 </details>
 
 <details>
-<summary><b>shuffledSubarray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#shuffledsubarray">api</a>]</summary><br/>
+<summary><b>shuffledSubarray</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#shuffledsubarray">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2507,7 +2507,7 @@ fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 </details>
 
 <details>
-<summary><b>infiniteStream</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#infinitestream">api</a>]</summary><br/>
+<summary><b>infiniteStream</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#infinitestream">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2540,7 +2540,7 @@ fc.infiniteStream(fc.nat(9))
 ### Object
 
 <details>
-<summary><b>dictionary</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dictionary">api</a>]</summary><br/>
+<summary><b>dictionary</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#dictionary">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2579,7 +2579,7 @@ fc.dictionary(fc.string(), fc.nat())
 </details>
 
 <details>
-<summary><b>record</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#record">api</a>]</summary><br/>
+<summary><b>record</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#record">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2658,7 +2658,7 @@ fc.record({
 </details>
 
 <details>
-<summary><b>object</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#object">api</a>]</summary><br/>
+<summary><b>object</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#object">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2752,7 +2752,7 @@ fc.object({
 </details>
 
 <details>
-<summary><b>jsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#jsonobject">api</a>]</summary><br/>
+<summary><b>jsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#jsonobject">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2789,7 +2789,7 @@ fc.jsonObject({maxDepth: 1})
 </details>
 
 <details>
-<summary><b>unicodeJsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonobject">api</a>]</summary><br/>
+<summary><b>unicodeJsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#unicodejsonobject">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2826,7 +2826,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 </details>
 
 <details>
-<summary><b>anything</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#anything">api</a>]</summary><br/>
+<summary><b>anything</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#anything">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2910,7 +2910,7 @@ fc.anything({
 ### Function
 
 <details>
-<summary><b>compareBooleanFunc</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#comparebooleanfunc">api</a>]</summary><br/>
+<summary><b>compareBooleanFunc</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#comparebooleanfunc">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -2967,7 +2967,7 @@ fc.compareBooleanFunc()
 </details>
 
 <details>
-<summary><b>compareFunc</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#comparefunc">api</a>]</summary><br/>
+<summary><b>compareFunc</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#comparefunc">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -3024,7 +3024,7 @@ fc.compareFunc()
 </details>
 
 <details>
-<summary><b>func</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#func">api</a>]</summary><br/>
+<summary><b>func</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#func">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -3075,7 +3075,7 @@ fc.func(fc.nat())
 ### Recursive structures
 
 <details>
-<summary><b>letrec</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#letrec">api</a>]</summary><br/>
+<summary><b>letrec</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#letrec">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -3122,7 +3122,7 @@ tree
 </details>
 
 <details>
-<summary><b>memo</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#memo">api</a>]</summary><br/>
+<summary><b>memo</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#memo">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -3260,7 +3260,7 @@ fc.nat().chain(min => fc.tuple(fc.constant(min), fc.integer(min, 0xffffffff)))
 ## Others
 
 <details>
-<summary><b>falsy</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#falsy">api</a>]</summary><br/>
+<summary><b>falsy</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#falsy">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -3284,7 +3284,7 @@ fc.falsy({ withBigInt: true })
 </details>
 
 <details>
-<summary><b>context</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#context">api</a>]</summary><br/>
+<summary><b>context</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#context">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -3306,7 +3306,7 @@ fc.context()
 </details>
 
 <details>
-<summary><b>commands</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#commands">api</a>]</summary><br/>
+<summary><b>commands</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#commands">api</a>]</summary><br/>
 
 *&#8195;Description*
 
@@ -3364,7 +3364,7 @@ Refer to [Model based testing or UI test](./Tips.md#model-based-testing-or-ui-te
 </details>
 
 <details>
-<summary><b>scheduler</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#scheduler">api</a>]</summary><br/>
+<summary><b>scheduler</b> - [<a href="https://dubzzz.github.io/fast-check/modules/fast_check.html#scheduler">api</a>]</summary><br/>
 
 *&#8195;Description*
 
