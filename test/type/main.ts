@@ -66,9 +66,18 @@ expectTypeAssignable<fc.Arbitrary<number>>()(fc.nat());
 expectTypeAssignable<fc.ArbitraryWithShrink<number>>()(fc.nat());
 expectTypeAssignable<fc.ArbitraryWithContextualShrink<number>>()(fc.nat());
 
-// base arbitrary
+// base arbitrary (chain)
 expectType<fc.Arbitrary<string[]>>()(fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })));
+expectType<fc.Arbitrary<number>>()(fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value)));
+expectType<fc.Arbitrary<1 | 2 | 3>>()(
+  // without the as, TypeScript refused to compile as constantFrom requires t least one argument
+  fc.constantFrom(...([1, 2, 3] as [1, 2, 3])).chain((value) => fc.constant(value))
+);
+
+// base arbitrary (filter)
 expectType<fc.Arbitrary<number>>()(fc.option(fc.nat()).filter((n): n is number => n !== null));
+
+// base arbitrary (map)
 expectType<fc.Arbitrary<string>>()(fc.nat().map((n) => String(n)));
 
 // constantFrom arbitrary
