@@ -53,23 +53,45 @@ class MixedCaseArbitrary extends Arbitrary<string> {
     }
     return positions;
   }
+  /**
+   * Produce a Shrinkable
+   * @param rawCase - Shrinkable containing the raw string (without any toggled case)
+   * @param chars - Raw string split into an array of code points
+   * @param togglePositions - Array referencing all case sensitive indexes in chars
+   * @param flags - One flag/bit per entry in togglePositions - 1 means change case of the character
+   * @param flagsContext - Context used by bigUintN(togglePositions.length) to optimize shrinker for the value 'flags'
+   * @internal
+   */
   private wrapper(
     rawCase: Shrinkable<string>,
     chars: string[],
     togglePositions: number[],
-    flags: bigint
+    flags: bigint,
+    flagsContext: unknown
   ): Shrinkable<string> {
     const newChars = chars.slice();
     for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
       if (flags & mask) newChars[togglePositions[idx]] = this.toggleCase(newChars[togglePositions[idx]]);
     }
-    return new Shrinkable(newChars.join(''), () => this.shrinkImpl(rawCase, chars, togglePositions, flags));
+    return new Shrinkable(newChars.join(''), () =>
+      this.shrinkImpl(rawCase, chars, togglePositions, flags, flagsContext)
+    );
   }
+  /**
+   * Produce a Stream of Shrinkable
+   * @param rawCase - Shrinkable containing the raw string (without any toggled case)
+   * @param chars - Raw string split into an array of code points
+   * @param togglePositions - Array referencing all case sensitive indexes in chars
+   * @param flags - One flag/bit per entry in togglePositions - 1 means change case of the character
+   * @param flagsContext - Context used by bigUintN(togglePositions.length) to optimize shrinker for the value 'flags'
+   * @internal
+   */
   private shrinkImpl(
     rawCase: Shrinkable<string>,
     chars: string[],
     togglePositions: number[],
-    flags: bigint
+    flags: bigint,
+    flagsContext: unknown
   ): Stream<Shrinkable<string>> {
     return rawCase
       .shrink()
@@ -77,14 +99,21 @@ class MixedCaseArbitrary extends Arbitrary<string> {
         const nChars = [...s.value_];
         const nTogglePositions = this.computeTogglePositions(nChars);
         const nFlags = computeNextFlags(flags, nTogglePositions.length);
-        return this.wrapper(s, nChars, nTogglePositions, nFlags);
+        // Potentially new value for nTogglePositions.length, new value for nFlags
+        // flagsContext is not applicable anymore
+        return this.wrapper(s, nChars, nTogglePositions, nFlags, undefined);
       })
       .join(
         bigUintN(togglePositions.length)
-          .shrinkableFor(flags)
-          .shrink()
-          .map((nFlags) => {
-            return this.wrapper(new Shrinkable(rawCase.value), chars, togglePositions, nFlags.value_);
+          .contextualShrink(flags, flagsContext)
+          .map((contextualValue) => {
+            return this.wrapper(
+              new Shrinkable(rawCase.value),
+              chars,
+              togglePositions,
+              contextualValue[0],
+              contextualValue[1]
+            );
           })
       );
   }
@@ -97,7 +126,7 @@ class MixedCaseArbitrary extends Arbitrary<string> {
     const flagsArb = bigUintN(togglePositions.length);
     const flags = flagsArb.generate(mrng).value_; // true => toggle the char, false => keep it as-is
 
-    return this.wrapper(rawCaseShrinkable, chars, togglePositions, flags);
+    return this.wrapper(rawCaseShrinkable, chars, togglePositions, flags, undefined);
   }
 }
 

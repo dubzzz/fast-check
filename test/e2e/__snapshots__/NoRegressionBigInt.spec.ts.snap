@@ -1160,22 +1160,68 @@ Execution summary:
 `;
 
 exports[`NoRegression BigInt mixedCase 1`] = `
-"Property failed after 4 tests
-{ seed: 42, path: \\"3\\", endOnFailure: true }
-Counterexample: [\\"22\\"]
-Shrunk 0 time(s)
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0\\", endOnFailure: true }
+Counterexample: [\\"CCBAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+Shrunk 31 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"e892Ed\\"]
-[32m√[0m [\\"Aa7\\"]
-[32m√[0m [\\"8A6db51F\\"]
-[31m×[0m [\\"22\\"]
+[31m×[0m [\\"ccBaabbaCABcCcaCCABAcAaaaBbaCabcBB\\"]
+. [32m√[0m [\\"cCbAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. [31m×[0m [\\"CcBAaBbaCabcCcAccAbACAAAABbACABcbb\\"]
+. . [31m×[0m [\\"cCBAABbacAbcCCaCcabaCaaaABBAcaBCBb\\"]
+. . . [31m×[0m [\\"ccbaABbACAbcccACCaBacAAaAbBaCabcBb\\"]
+. . . . [31m×[0m [\\"CCBaABBaCAbCCCAcCABACaAaabbACABcBb\\"]
+. . . . . [31m×[0m [\\"CcBaAbbaCABccCaccAbacaAAaBBAcaBcBb\\"]
+. . . . . . [31m×[0m [\\"cCbAABbaCabCccaCcaBAcaaAAbBaCaBcBb\\"]
+. . . . . . . [31m×[0m [\\"cCbaABbacABCCcACCAbAcAaaabbACaBcBb\\"]
+. . . . . . . . [31m×[0m [\\"cCBaABbACaBcCCAccabACAAAaBBACaBcBb\\"]
+. . . . . . . . . [31m×[0m [\\"ccBaABBacabccCaCCabaCaaAAbBACaBcBb\\"]
+. . . . . . . . . . [31m×[0m [\\"CcBaAbbAcAbCccAcCaBacAaaabBACaBcBb\\"]
+. . . . . . . . . . . [31m×[0m [\\"cCbAABBACABCCCacCABACAAAabBACaBcBb\\"]
+. . . . . . . . . . . . [31m×[0m [\\"cCbaAbBaCaBcccaccAbaCaaAabBACaBcBb\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"cCBaabbacabCCcaCcaBacAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"ccBAaBbAcABcCcACCABACAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"CcbAABBACabcCCAccAbaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaAbBacAbccCaCcaBaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBaabbACAbCccACCABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcBAaBBaCABCCCAccABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCBAAbbaCaBccCaCcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaaBbacabCccACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBAABbAcABCCCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcbaABBACaBccCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccBaAbBacabCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcBaabbAcABCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCbaaBBACaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCBAAbBacaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaabbAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBAaBBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcbAAbBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"CcbAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"cCBAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]"
+`;
+
+exports[`NoRegression BigInt mixedCase(stringOf) 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: \\"0:1:0:0:0:0:4\\", endOnFailure: true }
+Counterexample: [\\"bb\\"]
+Shrunk 6 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [\\"cCbAAbBAcaBCCCACCABaCAaAAbbACaBcBb\\"]
 . [32m√[0m [\\"\\"]
-. [32m√[0m [\\"2\\"]
-. [32m√[0m [\\"02\\"]
-. [32m√[0m [\\"12\\"]
-. [32m√[0m [\\"2\\"]
-. [32m√[0m [\\"20\\"]
-. [32m√[0m [\\"21\\"]"
+. [31m×[0m [\\"ABACAAAABBACABCBB\\"]
+. . [31m×[0m [\\"BBACABCBB\\"]
+. . . [31m×[0m [\\"ABCBB\\"]
+. . . . [31m×[0m [\\"CBB\\"]
+. . . . . [31m×[0m [\\"BB\\"]
+. . . . . . [32m√[0m [\\"B\\"]
+. . . . . . [32m√[0m [\\"AB\\"]
+. . . . . . [32m√[0m [\\"B\\"]
+. . . . . . [32m√[0m [\\"BA\\"]
+. . . . . . [31m×[0m [\\"bb\\"]"
 `;
