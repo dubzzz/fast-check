@@ -10,7 +10,7 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://github.com/dubzzz/fast-check/actions"><img src="https://github.com/dubzzz/fast-check/workflows/Build%20Status/badge.svg?branch=master" alt="Build Status" /></a>
   <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
-  <a href="https://dubzzz.github.io/fast-check/modules/fast_check.html"><img src="https://img.shields.io/badge/-API Reference-%23282ea9.svg" title="API Reference" /></a>
+  <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/-API Reference-%23282ea9.svg" title="API Reference" /></a>
 </p>
 <p align="center">
   <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/master"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/master/graph/badge.svg?flag=unit-tests&precision=0" alt="Coverage Status (unit tests)" /></a>
@@ -76,7 +76,7 @@ Useful documentations:
 - [🔧 Custom arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md)
 - [🏃‍♂️ Property based runners](https://github.com/dubzzz/fast-check/blob/master/documentation/Runners.md)
 - [💥 Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md)
-- [🔌 API Reference](https://dubzzz.github.io/fast-check/modules/fast_check.html)
+- [🔌 API Reference](https://dubzzz.github.io/fast-check/)
 - [⭐ Awesome fast-check](https://github.com/dubzzz/awesome-fast-check)
 - [🤯 How fast-check works?](https://github.com/dubzzz/fast-check/blob/master/documentation/HowItWorks.md)
 

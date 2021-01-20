@@ -69,7 +69,7 @@ async function run() {
     `yarn add ${packageUrl}\n` +
     `npm i ${packageUrl}\n` +
     '```\n\n' +
-    `Or have a look to the [generated documentation](${netlifyUrl}/modules/fast_check.html).`;
+    `Or have a look to the [generated documentation](${netlifyUrl}).`;
 
   await octokit.issues.createComment({
     issue_number: context.issue.number,
