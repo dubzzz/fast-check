@@ -128,20 +128,18 @@ expectType<fc.Arbitrary<number>>()(
   fc.constantFrom(1, 2),
   'By default, "constantFrom" simplifies the type (eg.: "1 -> number")'
 );
+// prettier-ignore
 // @fc-ignore-if-no-const
-expectType<fc.Arbitrary<1 | 2>>()(
-  fc.constantFrom(...([1, 2] as const)),
-  '"as const" prevent extra simplification of "constantFrom"'
-);
+expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(...([1, 2] as const)), '"as const" prevent extra simplification of "constantFrom"');
+// prettier-ignore-end
 expectType<fc.Arbitrary<number | string>>()(
   fc.constantFrom(1, 2, 'hello'),
   '"constantFrom" accepts arguments not having the same types without any typing trick'
 );
+// prettier-ignore
 // @fc-ignore-if-no-const
-expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(
-  fc.constantFrom(...([1, 2, 'hello'] as const)),
-  '"as const" prevent extra simplification of "constantFrom"'
-);
+expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(fc.constantFrom(...([1, 2, 'hello'] as const)), '"as const" prevent extra simplification of "constantFrom"');
+// prettier-ignore-end
 
 // record arbitrary
 const mySymbol1 = Symbol('symbol1');
@@ -257,11 +255,10 @@ expectType<fc.Arbitrary<number | null>>()(
   fc.option(fc.nat(), { nil: null }),
   '"option" with nil overriden to null (the original default)'
 );
+// prettier-ignore
 // @fc-ignore-if-no-const
-expectType<fc.Arbitrary<number | 'custom_default'>>()(
-  fc.option(fc.nat(), { nil: 'custom_default' as const }),
-  '"option" with nil overriden to custom value'
-);
+expectType<fc.Arbitrary<number | 'custom_default'>>()(fc.option(fc.nat(), { nil: 'custom_default' as const }), '"option" with nil overriden to custom value');
+// prettier-ignore-end
 // @ts-expect-error - option expects arbitraries not raw values
 fc.option(1);
 
