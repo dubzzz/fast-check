@@ -105,7 +105,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         .contextualShrink(
           items.length,
           // itemsLengthContext is a context returned by a previous call to the integer
-          // abitrary and the integral value items.length.
+          // arbitrary and the integer value items.length.
           itemsLengthContext
         )
         .map((contextualValue): [Shrinkable<T>[], unknown] => {
