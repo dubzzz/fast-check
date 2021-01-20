@@ -90,7 +90,7 @@ describe(`NoRegression BigInt`, () => {
   it('mixedCase', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.mixedCase(fc.hexaString()), (v) => testFunc(v)),
+        fc.property(fc.mixedCase(fc.stringOf(fc.constantFrom('a', 'b', 'c'), { maxLength: 50 })), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
