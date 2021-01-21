@@ -10,47 +10,64 @@ import { shrinkBigInt } from './helpers/ShrinkBigInt';
 /** @internal */
 class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
   private biasedBigIntArbitrary: Arbitrary<bigint> | null = null;
+
   constructor(readonly min: bigint, readonly max: bigint, readonly genMin: bigint, readonly genMax: bigint) {
     super();
   }
+
   private wrapper(value: bigint, context: unknown): Shrinkable<bigint> {
     return new Shrinkable(value, () =>
       this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
     );
   }
+
   generate(mrng: Random): Shrinkable<bigint> {
     return this.wrapper(mrng.nextBigInt(this.genMin, this.genMax), undefined);
   }
+
   contextualShrink(current: bigint, context?: unknown): Stream<[bigint, unknown]> {
     if (current === BigInt(0)) {
       return Stream.nil();
     }
     if (!BigIntArbitrary.isValidContext(current, context)) {
-      const target = this.min <= 0 && this.max >= 0 ? BigInt(0) : current < 0 ? this.max : this.min;
+      // No context:
+      //   Take default target and shrink towards it
+      //   Try the target on first try
+      const target = this.defaultTarget();
       return shrinkBigInt(current, target, true);
     }
-
-    // Last chance try... (see IntegerArbitrary)
-    if (current === context + BigInt(1) && current > this.min && current > 0) {
-      return Stream.of([context, undefined]); // undefined reset context in case of failure
+    if (this.isLastChanceTry(current, context)) {
+      // Last chance try...
+      // context is set to undefined, so that shrink will restart
+      // without any assumptions in case our try find yet another bug
+      return Stream.of([context, undefined]);
     }
-    if (current === context - BigInt(1) && current < this.max && current < 0) {
-      return Stream.of([context, undefined]); // undefined reset context in case of failure
-    }
-
     // Normal shrink process
     return shrinkBigInt(current, context, false);
   }
+
   shrunkOnceContext(): unknown {
-    // If we already shrunk once it means that we already at least tried the minimal value
-    // requested by our shrinker so we don't need to try it anymore
+    return this.defaultTarget();
+  }
+
+  private defaultTarget(): bigint {
+    // min <= 0 && max >= 0   => shrink towards zero
     if (this.min <= 0 && this.max >= 0) {
-      // The target is always zero when zero is included in the range
       return BigInt(0);
     }
-    // Otherwise the target is the minimal value between min and max in absolute
+    // min < 0                => shrink towards max (closer to zero)
+    // otherwise              => shrink towards min (closer to zero)
     return this.min < 0 ? this.max : this.min;
   }
+
+  private isLastChanceTry(current: bigint, context: bigint): boolean {
+    // Last chance corresponds to scenario where shrink should be empty
+    // But we try a last thing just in case it can work
+    if (current > 0) return current === context + BigInt(1) && current > this.min;
+    if (current < 0) return current === context - BigInt(1) && current < this.max;
+    return false;
+  }
+
   private static isValidContext(current: bigint, context?: unknown): context is bigint {
     // Context contains a value between zero and current that is known to be
     // the closer to zero passing value*.
@@ -67,6 +84,7 @@ class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
     }
     return true;
   }
+
   private pureBiasedArbitrary(): Arbitrary<bigint> {
     if (this.biasedBigIntArbitrary != null) {
       return this.biasedBigIntArbitrary;
@@ -74,6 +92,7 @@ class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
     this.biasedBigIntArbitrary = biasNumeric(this.min, this.max, BigIntArbitrary, bigIntLogLike);
     return this.biasedBigIntArbitrary;
   }
+
   withBias(freq: number): Arbitrary<bigint> {
     return biasWrapper(freq, this, (originalArbitrary: BigIntArbitrary) => originalArbitrary.pureBiasedArbitrary());
   }

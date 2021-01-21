@@ -22,6 +22,7 @@ import { BiasedNumericArbitrary } from './BiasNumeric';
 /** @internal */
 class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
   private biasedArrayInt64Arbitrary: Arbitrary<ArrayInt64> | null = null;
+
   constructor(
     readonly min: ArrayInt64,
     readonly max: ArrayInt64,
@@ -30,11 +31,13 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
   ) {
     super();
   }
+
   private wrapper(value: ArrayInt64, context: unknown): Shrinkable<ArrayInt64> {
     return new Shrinkable(value, () =>
       this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
     );
   }
+
   generate(mrng: Random): Shrinkable<ArrayInt64> {
     const uncheckedValue = mrng.nextArrayInt(this.genMin, this.genMax);
     if (uncheckedValue.data.length === 1) {
@@ -43,7 +46,8 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
     }
     return this.wrapper(uncheckedValue as ArrayInt64, undefined);
   }
-  private shrinkValueTowards(
+
+  private shrinkArrayInt64(
     value: ArrayInt64,
     target: ArrayInt64,
     tryTargetAsap?: boolean
@@ -60,44 +64,52 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
     }
     return stream(shrinkGen());
   }
+
   contextualShrink(current: ArrayInt64, context?: unknown): Stream<[ArrayInt64, unknown]> {
     if (!ArrayInt64Arbitrary.isValidContext(current, context)) {
+      // No context:
+      //   Take default target and shrink towards it
+      //   Try the target on first try
       const target = this.defaultTarget();
-      return this.shrinkValueTowards(current, target, true);
+      return this.shrinkArrayInt64(current, target, true);
     }
-    // Last chance try...
-    const currentIsZero = isZero64(current);
-    const currentIsStPos = !currentIsZero && current.sign === 1;
-    if (
-      currentIsStPos &&
-      isEqual64(current, add64(context, Unit64)) &&
-      isStrictlyPositive64(substract64(current, this.min))
-    ) {
-      return Stream.of([context, undefined]); // undefined reset context in case of failure
-    }
-    const currentIsStNeg = !currentIsZero && current.sign === -1;
-    if (
-      currentIsStNeg &&
-      isEqual64(current, substract64(context, Unit64)) &&
-      isStrictlyNegative64(substract64(current, this.max))
-    ) {
-      return Stream.of([context, undefined]); // undefined reset context in case of failure
+    if (this.isLastChanceTry(current, context)) {
+      // Last chance try...
+      // context is set to undefined, so that shrink will restart
+      // without any assumptions in case our try find yet another bug
+      return Stream.of([context, undefined]);
     }
     // Normal shrink process
-    return this.shrinkValueTowards(current, context, false);
+    return this.shrinkArrayInt64(current, context, false);
   }
+
   shrunkOnceContext(): unknown {
     return this.defaultTarget();
   }
+
   private defaultTarget(): ArrayInt64 {
     // min <= 0 && max >= 0   => shrink towards zero
     if (!isStrictlyPositive64(this.min) && !isStrictlyNegative64(this.max)) {
       return Zero64;
     }
-    // current < 0            => shrink towards max (closer to zero)
+    // min < 0                => shrink towards max (closer to zero)
     // otherwise              => shrink towards min (closer to zero)
     return isStrictlyNegative64(this.min) ? this.max : this.min;
   }
+
+  private isLastChanceTry(current: ArrayInt64, context: ArrayInt64): boolean {
+    // Last chance corresponds to scenario where shrink should be empty
+    // But we try a last thing just in case it can work
+    if (isZero64(current)) {
+      return false;
+    }
+    if (current.sign === 1) {
+      return isEqual64(current, add64(context, Unit64)) && isStrictlyPositive64(substract64(current, this.min));
+    } else {
+      return isEqual64(current, substract64(context, Unit64)) && isStrictlyNegative64(substract64(current, this.max));
+    }
+  }
+
   private static isValidContext(_current: ArrayInt64, context?: unknown): context is ArrayInt64 {
     // Context contains a value between zero and current that is known to be
     // the closer to zero passing value*.
@@ -110,6 +122,7 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
     }
     return true;
   }
+
   private pureBiasedArbitrary(): Arbitrary<ArrayInt64> {
     if (this.biasedArrayInt64Arbitrary != null) {
       return this.biasedArrayInt64Arbitrary;
@@ -141,6 +154,7 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
     }
     return this.biasedArrayInt64Arbitrary;
   }
+
   withBias(freq: number): Arbitrary<ArrayInt64> {
     return biasWrapper(freq, this, (originalArbitrary: ArrayInt64Arbitrary) => originalArbitrary.pureBiasedArbitrary());
   }
