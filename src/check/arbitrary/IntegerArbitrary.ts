@@ -13,51 +13,67 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
   static MAX_INT: number = 0x7fffffff | 0;
 
   private biasedIntegerArbitrary: Arbitrary<number> | null = null;
+
   constructor(readonly min: number, readonly max: number, readonly genMin: number, readonly genMax: number) {
     super();
   }
+
   private wrapper(value: number, context: unknown): Shrinkable<number> {
     return new Shrinkable(value, () =>
       this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
     );
   }
+
   generate(mrng: Random): Shrinkable<number> {
     return this.wrapper(mrng.nextInt(this.genMin, this.genMax), undefined);
   }
+
   contextualShrink(current: number, context?: unknown): Stream<[number, unknown]> {
     if (current === 0) {
       return Stream.nil();
     }
     if (!IntegerArbitrary.isValidContext(current, context)) {
-      const target = this.min <= 0 && this.max >= 0 ? 0 : current < 0 ? this.max : this.min;
+      // No context:
+      //   Take default target and shrink towards it
+      //   Try the target on first try
+      const target = this.defaultTarget();
       return shrinkInteger(current, target, true);
     }
+    if (this.isLastChanceTry(current, context)) {
+      // Last chance try...
+      // context is set to undefined, so that shrink will restart
+      // without any assumptions in case our try find yet another bug
+      return Stream.of([context, undefined]);
+    }
+    // Normal shrink process
+    return shrinkInteger(current, context, false);
+  }
 
-    // Last chance try...
+  shrunkOnceContext(): unknown {
+    return this.defaultTarget();
+  }
+
+  private defaultTarget(): number {
+    // min <= 0 && max >= 0   => shrink towards zero
+    if (this.min <= 0 && this.max >= 0) {
+      return 0;
+    }
+    // min < 0                => shrink towards max (closer to zero)
+    // otherwise              => shrink towards min (closer to zero)
+    return this.min < 0 ? this.max : this.min;
+  }
+
+  private isLastChanceTry(current: number, context: number): boolean {
+    // If true...
     // We already reached what we thought to be the minimal failing value.
     // But in-between other values may have shrunk (values coming from other arbitraries).
     // In order to check if they impacted us, we just try to move very close to our current value.
     // It is not ideal but it can help restart a shrinking process that stopped too early.
-    if (current === context + 1 && current > this.min && current > 0) {
-      return Stream.of([context, undefined]); // undefined resets context in case of failure
-    }
-    if (current === context - 1 && current < this.max && current < 0) {
-      return Stream.of([context, undefined]); // undefined reset context in case of failure
-    }
+    if (current > 0) return current === context + 1 && current > this.min;
+    if (current < 0) return current === context - 1 && current < this.max;
+    return false;
+  }
 
-    // Normal shrink process
-    return shrinkInteger(current, context, false);
-  }
-  shrunkOnceContext(): unknown {
-    // If we already shrunk once it means that we already at least tried the minimal value
-    // requested by our shrinker so we don't need to try it anymore
-    if (this.min <= 0 && this.max >= 0) {
-      // The target is always zero when zero is included in the range
-      return 0;
-    }
-    // Otherwise the target is the minimal value between min and max in absolute
-    return this.min < 0 ? this.max : this.min;
-  }
   private static isValidContext(current: number, context?: unknown): context is number {
     // Context contains a value between zero and current that is known to be
     // the closer to zero passing value*.
@@ -73,6 +89,7 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
     }
     return true;
   }
+
   private pureBiasedArbitrary(): Arbitrary<number> {
     if (this.biasedIntegerArbitrary != null) {
       return this.biasedIntegerArbitrary;
@@ -80,6 +97,7 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
     this.biasedIntegerArbitrary = biasNumeric<number>(this.min, this.max, IntegerArbitrary, integerLogLike);
     return this.biasedIntegerArbitrary;
   }
+
   withBias(freq: number): Arbitrary<number> {
     return biasWrapper(freq, this, (originalArbitrary: IntegerArbitrary) => originalArbitrary.pureBiasedArbitrary());
   }
