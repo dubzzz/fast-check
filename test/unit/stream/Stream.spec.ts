@@ -38,6 +38,24 @@ describe('Stream', () => {
       expect([...s]).toEqual([]);
     });
   });
+  describe('of', () => {
+    it('Should instantiate an empty stream given no elements', () => {
+      const s: Stream<number> = Stream.of();
+      expect([...s]).toEqual([]);
+    });
+    it('Should instantiate a stream containing a single entry given a single element', () => {
+      const s: Stream<number> = Stream.of(1);
+      expect([...s]).toEqual([1]);
+    });
+    it('Should instantiate a stream containing the same entries as passed elements with same ordering', () => {
+      const s: Stream<number> = Stream.of(1, 42, 69);
+      expect([...s]).toEqual([1, 42, 69]);
+    });
+    it('Should not consider elements of type Array differently from other ones', () => {
+      const s: Stream<number[]> = Stream.of([1, 42, 69]);
+      expect([...s]).toEqual([[1, 42, 69]]);
+    });
+  });
   describe('map', () => {
     it('Should apply on each element', () => {
       function* g() {

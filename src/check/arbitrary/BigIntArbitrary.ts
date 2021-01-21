@@ -1,16 +1,11 @@
 import { Random } from '../../random/generator/Random';
-import { stream, Stream } from '../../stream/Stream';
+import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, bigIntLogLike } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkBigInt';
-
-/** @internal */
-function* shrinkToExact(value: bigint): IterableIterator<[bigint, unknown]> {
-  yield [value, undefined];
-}
 
 /** @internal */
 class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
@@ -37,10 +32,10 @@ class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
 
     // Last chance try... (see IntegerArbitrary)
     if (current === context + BigInt(1) && current > this.min && current > 0) {
-      return stream(shrinkToExact(context)); // reset context in case of failure
+      return Stream.of([context, undefined]); // undefined reset context in case of failure
     }
     if (current === context - BigInt(1) && current < this.max && current < 0) {
-      return stream(shrinkToExact(context)); // reset context in case of failure
+      return Stream.of([context, undefined]); // undefined reset context in case of failure
     }
 
     // Normal shrink process

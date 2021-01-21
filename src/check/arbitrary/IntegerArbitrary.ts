@@ -1,16 +1,11 @@
 import { Random } from '../../random/generator/Random';
-import { stream, Stream } from '../../stream/Stream';
+import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
 import { shrinkInteger } from './helpers/ShrinkInteger';
-
-/** @internal */
-function* shrinkToExact(value: number): IterableIterator<[number, unknown]> {
-  yield [value, undefined];
-}
 
 /** @internal */
 class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
@@ -44,10 +39,10 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
     // In order to check if they impacted us, we just try to move very close to our current value.
     // It is not ideal but it can help restart a shrinking process that stopped too early.
     if (current === context + 1 && current > this.min && current > 0) {
-      return stream(shrinkToExact(context)); // reset context in case of failure
+      return Stream.of([context, undefined]); // undefined resets context in case of failure
     }
     if (current === context - 1 && current < this.max && current < 0) {
-      return stream(shrinkToExact(context)); // reset context in case of failure
+      return Stream.of([context, undefined]); // undefined reset context in case of failure
     }
 
     // Normal shrink process

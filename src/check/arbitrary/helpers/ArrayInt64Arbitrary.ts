@@ -20,11 +20,6 @@ import {
 import { BiasedNumericArbitrary } from './BiasNumeric';
 
 /** @internal */
-function* shrinkToExact(value: ArrayInt64): IterableIterator<[ArrayInt64, unknown]> {
-  yield [value, undefined];
-}
-
-/** @internal */
 class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
   private biasedArrayInt64Arbitrary: Arbitrary<ArrayInt64> | null = null;
   constructor(
@@ -78,7 +73,7 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
       isEqual64(current, add64(context, Unit64)) &&
       isStrictlyPositive64(substract64(current, this.min))
     ) {
-      return stream(shrinkToExact(context)); // reset context in case of failure
+      return Stream.of([context, undefined]); // undefined reset context in case of failure
     }
     const currentIsStNeg = !currentIsZero && current.sign === -1;
     if (
@@ -86,7 +81,7 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
       isEqual64(current, substract64(context, Unit64)) &&
       isStrictlyNegative64(substract64(current, this.max))
     ) {
-      return stream(shrinkToExact(context)); // reset context in case of failure
+      return Stream.of([context, undefined]); // undefined reset context in case of failure
     }
     // Normal shrink process
     return this.shrinkValueTowards(current, context, false);
