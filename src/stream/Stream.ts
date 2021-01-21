@@ -14,6 +14,15 @@ export class Stream<T> implements IterableIterator<T> {
     return new Stream(nilHelper());
   }
 
+  /**
+   * Create a stream of T from a variable number of elements
+   *
+   * @param elements - Elements used to create the Stream
+   */
+  static of<T>(...elements: T[]): Stream<T> {
+    return new Stream(elements[Symbol.iterator]());
+  }
+
   // /*DEBUG*/ // no double iteration
   // /*DEBUG*/ private isLive: boolean;
 
