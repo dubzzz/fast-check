@@ -71,19 +71,20 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
       return this.shrinkValueTowards(current, target, true);
     }
     // Last chance try...
-    // current === context + 1 && current > this.min && current > 0
+    const currentIsZero = isZero64(current);
+    const currentIsStPos = !currentIsZero && current.sign === 1;
     if (
+      currentIsStPos &&
       isEqual64(current, add64(context, Unit64)) &&
-      isStrictlyPositive64(substract64(current, this.min)) &&
-      isStrictlyPositive64(current)
+      isStrictlyPositive64(substract64(current, this.min))
     ) {
       return stream(shrinkToExact(context)); // reset context in case of failure
     }
-    // current === context - 1 && current < this.max && current < 0
+    const currentIsStNeg = !currentIsZero && current.sign === -1;
     if (
+      currentIsStNeg &&
       isEqual64(current, substract64(context, Unit64)) &&
-      isStrictlyNegative64(substract64(current, this.max)) &&
-      isStrictlyNegative64(current)
+      isStrictlyNegative64(substract64(current, this.max))
     ) {
       return stream(shrinkToExact(context)); // reset context in case of failure
     }
