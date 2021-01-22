@@ -1,3 +1,42 @@
+# 2.12.0
+
+_More efficient shrinkers_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.12.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.11.0...v2.12.0)]
+
+## Features
+
+- ([PR#1354](https://github.com/dubzzz/fast-check/pull/1354)) Split internal shrinkNumeric for better performances
+- ([PR#1355](https://github.com/dubzzz/fast-check/pull/1355)) Introduce new helper ArbitraryWithContextualShrink
+- ([PR#1358](https://github.com/dubzzz/fast-check/pull/1358)) More efficient shrinker for integer
+- ([PR#1372](https://github.com/dubzzz/fast-check/pull/1372)) More efficient shrinker for bigint
+- ([PR#1377](https://github.com/dubzzz/fast-check/pull/1377)) More efficient shrinker for array
+- ([PR#1382](https://github.com/dubzzz/fast-check/pull/1382)) More efficient shrinker for subarray
+- ([PR#1383](https://github.com/dubzzz/fast-check/pull/1383)) More efficient shrinker for mixedCase
+- ([PR#1384](https://github.com/dubzzz/fast-check/pull/1384)) More efficient shrinker for double
+
+## Fixes
+
+- ([PR#1347](https://github.com/dubzzz/fast-check/pull/1347)) Bug: Legacy float/double should never reach the max specified value
+- ([PR#1359](https://github.com/dubzzz/fast-check/pull/1359)) Bug: Calling `shrinkableFor` should never apply contextual shrinker
+- ([PR#1350](https://github.com/dubzzz/fast-check/pull/1350)) Clean: Re-generate yarn.lock files
+- ([PR#1331](https://github.com/dubzzz/fast-check/pull/1331)) Doc: Deploy temporary documentation and package to Netlify
+- ([PR#1352](https://github.com/dubzzz/fast-check/pull/1352)) Doc: Performance impacts of filter
+- ([PR#1379](https://github.com/dubzzz/fast-check/pull/1379)) Doc: Only specify a single entryPoint in TypeDoc
+- ([PR#1357](https://github.com/dubzzz/fast-check/pull/1357)) Refactor: Re-implement shrinker for integer based on contextual shrinker
+- ([PR#1373](https://github.com/dubzzz/fast-check/pull/1373)) Refactor: Re-use contextual shrinker of integer in array
+- ([PR#1376](https://github.com/dubzzz/fast-check/pull/1376)) Refactor: Re-use contextual shrinker of integer in commands
+- ([PR#1385](https://github.com/dubzzz/fast-check/pull/1385)) Refactor: Extract Stream.of logic for re-use
+- ([PR#1387](https://github.com/dubzzz/fast-check/pull/1387)) Refactor: Restructure implementations of ArbitraryWithContextualShrink
+- ([PR#1353](https://github.com/dubzzz/fast-check/pull/1353)) Test: Add unit tests for stringify on Regex
+- ([PR#1368](https://github.com/dubzzz/fast-check/pull/1368)) Test: Add non-regression tests on shrinking quality
+- ([PR#1375](https://github.com/dubzzz/fast-check/pull/1375)) Test: Typings of ArbitraryWithContextualShrink
+- ([PR#1380](https://github.com/dubzzz/fast-check/pull/1380)) Test: Typings of constantFrom and chain
+- ([PR#1381](https://github.com/dubzzz/fast-check/pull/1381)) Test: Tests on typings should fail with explicit errors
+- ([PR#1386](https://github.com/dubzzz/fast-check/pull/1386)) Test: Add tests for ArbitraryWithContextualShrink
+- ([PR#1388](https://github.com/dubzzz/fast-check/pull/1388)) Test: Add snapshot tests for new core shrinkers: integer, bigint, arrayInt64
+
+---
+
 # 2.11.0
 
 _Add support for Symbol properties and ability to mark keys as required in `fc.record`_
