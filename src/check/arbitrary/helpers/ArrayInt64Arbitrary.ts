@@ -161,6 +161,6 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
 }
 
 /** @internal */
-export function arrayInt64(min: ArrayInt64, max: ArrayInt64): Arbitrary<ArrayInt64> {
+export function arrayInt64(min: ArrayInt64, max: ArrayInt64): ArbitraryWithContextualShrink<ArrayInt64> {
   return new ArrayInt64Arbitrary(min, max, min, max);
 }

@@ -4,6 +4,7 @@ import { bigIntN, bigUintN, bigInt, bigUint } from '../../../../src/check/arbitr
 import { generateOneValue } from './generic/GenerateOneValue';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
+import { buildShrinkTree, renderTree } from './generic/ShrinkTree';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
@@ -78,6 +79,165 @@ describe('BigIntArbitrary', () => {
             expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
           })
         );
+      });
+    });
+
+    describe('contextualShrinkableFor', () => {
+      it('Should shrink strictly positive value for positive range including zero', () => {
+        // Arrange
+        const arb = bigInt({ min: BigInt(0), max: BigInt(10) });
+
+        // Act
+        const tree = buildShrinkTree(arb.contextualShrinkableFor(BigInt(8)));
+        const renderedTree = renderTree(tree).join('\n');
+
+        // Assert
+        //   When there is no more option, the shrinker retry one time with the value
+        //   current-1 to check if something that changed outside (another value not itself)
+        //   may have changed the situation
+        expect(renderedTree).toMatchInlineSnapshot(`
+          "8n
+          ├> 0n
+          ├> 4n
+          |  ├> 2n
+          |  |  └> 1n
+          |  |     └> 0n
+          |  └> 3n
+          |     └> 2n
+          |        ├> 0n
+          |        └> 1n
+          |           └> 0n
+          ├> 6n
+          |  └> 5n
+          |     └> 4n
+          |        ├> 0n
+          |        ├> 2n
+          |        |  └> 1n
+          |        |     └> 0n
+          |        └> 3n
+          |           └> 2n
+          |              ├> 0n
+          |              └> 1n
+          |                 └> 0n
+          └> 7n
+             └> 6n
+                ├> 0n
+                ├> 3n
+                |  └> 2n
+                |     └> 1n
+                |        └> 0n
+                └> 5n
+                   └> 4n
+                      └> 3n
+                         ├> 0n
+                         └> 2n
+                            └> 1n
+                               └> 0n"
+        `);
+      });
+      it('Should shrink strictly positive value for range not including zero', () => {
+        // Arrange
+        const arb = bigInt({ min: BigInt(10), max: BigInt(20) });
+
+        // Act
+        const tree = buildShrinkTree(arb.contextualShrinkableFor(BigInt(18)));
+        const renderedTree = renderTree(tree).join('\n');
+
+        // Assert
+        //   As the range [10, 20] and the value 18
+        //   are just offset by +10 compared to the first case,
+        //   the rendered tree will be offset by 10 too
+        expect(renderedTree).toMatchInlineSnapshot(`
+          "18n
+          ├> 10n
+          ├> 14n
+          |  ├> 12n
+          |  |  └> 11n
+          |  |     └> 10n
+          |  └> 13n
+          |     └> 12n
+          |        ├> 10n
+          |        └> 11n
+          |           └> 10n
+          ├> 16n
+          |  └> 15n
+          |     └> 14n
+          |        ├> 10n
+          |        ├> 12n
+          |        |  └> 11n
+          |        |     └> 10n
+          |        └> 13n
+          |           └> 12n
+          |              ├> 10n
+          |              └> 11n
+          |                 └> 10n
+          └> 17n
+             └> 16n
+                ├> 10n
+                ├> 13n
+                |  └> 12n
+                |     └> 11n
+                |        └> 10n
+                └> 15n
+                   └> 14n
+                      └> 13n
+                         ├> 10n
+                         └> 12n
+                            └> 11n
+                               └> 10n"
+        `);
+      });
+      it('Should shrink strictly negative value for negative range including zero', () => {
+        // Arrange
+        const arb = bigInt({ min: BigInt(-10), max: BigInt(0) });
+
+        // Act
+        const tree = buildShrinkTree(arb.contextualShrinkableFor(BigInt(-8)));
+        const renderedTree = renderTree(tree).join('\n');
+
+        // Assert
+        //   As the range [-10, 0] and the value -8
+        //   are the opposite of first case, the rendered tree will be the same except
+        //   it contains opposite values
+        expect(renderedTree).toMatchInlineSnapshot(`
+          "-8n
+          ├> 0n
+          ├> -4n
+          |  ├> -2n
+          |  |  └> -1n
+          |  |     └> 0n
+          |  └> -3n
+          |     └> -2n
+          |        ├> 0n
+          |        └> -1n
+          |           └> 0n
+          ├> -6n
+          |  └> -5n
+          |     └> -4n
+          |        ├> 0n
+          |        ├> -2n
+          |        |  └> -1n
+          |        |     └> 0n
+          |        └> -3n
+          |           └> -2n
+          |              ├> 0n
+          |              └> -1n
+          |                 └> 0n
+          └> -7n
+             └> -6n
+                ├> 0n
+                ├> -3n
+                |  └> -2n
+                |     └> -1n
+                |        └> 0n
+                └> -5n
+                   └> -4n
+                      └> -3n
+                         ├> 0n
+                         └> -2n
+                            └> -1n
+                               └> 0n"
+        `);
       });
     });
   });
