@@ -14,10 +14,6 @@ Property based testing framework for JavaScript/TypeScript
 </p>
 <p align="center">
   <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/master"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/master/graph/badge.svg?flag=unit-tests&precision=0" alt="Coverage Status (unit tests)" /></a>
-  <a href="https://david-dm.org/dubzzz/fast-check"><img src="https://david-dm.org/dubzzz/fast-check/status.svg" alt="dependencies Status" /></a>
-  <a href="https://david-dm.org/dubzzz/fast-check?type=dev"><img src="https://david-dm.org/dubzzz/fast-check/dev-status.svg" alt="devDependencies Status" /></a>
-</p>
-<p align="center">
   <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
   <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
   <a href="https://dependabot.com/compatibility-score/?dependency-name=fast-check&package-manager=npm_and_yarn&version-scheme=semver"><img src="https://img.shields.io/dependabot/semver/npm_and_yarn/fast-check" alt="Semver stability" /></a>
