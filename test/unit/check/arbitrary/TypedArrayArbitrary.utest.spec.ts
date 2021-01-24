@@ -102,7 +102,7 @@ function assessValidIntTypedArray<T>(
     expect(array).toHaveBeenLastCalledWith(integerArb, {});
   });
 
-  it('Should properly distribute constraints accross arbitraries when receiving valid ones', () =>
+  it('Should properly distribute constraints across arbitraries when receiving valid ones', () =>
     fc.assert(
       fc.property(validArrayConstraintsArb(), validIntegerConstraintsArb(lowestInt, highestInt), (ctArray, ctInt) => {
         // Arrange

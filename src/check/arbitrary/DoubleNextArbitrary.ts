@@ -18,7 +18,7 @@ const INDEX_NEGATIVE_INFINITY: ArrayInt64 = { sign: -1, data: [2146435072, 1] };
 
 /**
  * Decompose a 64-bit floating point number into a significand and exponent
- * such as:
+ * such that:
  * - significand over 53 bits including sign (also referred as fraction)
  * - exponent over 11 bits including sign
  * - whenever there are multiple possibilities we take the one having the highest significand (in abs)
