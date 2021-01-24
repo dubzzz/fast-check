@@ -1,18 +1,18 @@
 # [:house:](../README.md) Arbitraries
 
 Property based testing frameworks rely on two main building blocks:
-- [Runners](./Runners.md) — _they are responsible to run, execute and check that properties stay true whatever the generated value_
+- [Runners](./Runners.md) — _they are responsible for running, executing and checking that properties stay true whatever the generated value_
 - Arbitraries — _they are responsible for the random *but deterministic* generation of values, they may also offer shrinking capabilities_
 
 This documentation lists all the built-in arbitraries provided by `fast-check`. Please note that you can still create your own ones by either [combining them together](#combinators) or by [building it from scratch](./AdvancedArbitraries.md#build-your-own). You can refer also to the [API Reference](https://dubzzz.github.io/fast-check/) for more details.
 
-In a nutshell, when defining your tests and properties you will have to combine both the [Runners](./Runners.md) and Arbitraries as follow:
+In a nutshell, when defining your tests and properties you will have to combine both the [Runners](./Runners.md) and Arbitraries as follows:
 
 ```js
 fc.assert( // run the property several times (in other words execute the test)
   fc.property( // define the property: arbitrary and what should be observed (predicate)
     arb1, arb2, ..., // 1 to +infinity arbitraries
-    (valueGeneratedByArb1, alueGeneratedByArb2, ...) => { // predicate receives generated values
+    (valueGeneratedByArb1, valueGeneratedByArb2, ...) => { // predicate receives generated values
       // In case of success: No return, 'return undefined' or 'return true'
       // In case of failure: Throw or 'return false'
     }
@@ -2118,7 +2118,7 @@ fc.option(fc.string(), { nil: undefined })
 
 > Generate one value based on one of the passed arbitraries
 >
-> Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not accross arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries).
+> Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries).
 
 *&#8195;Signatures*
 
@@ -2154,7 +2154,7 @@ fc.oneof(fc.char(), fc.boolean(), fc.nat())
 
 *&#8195;with:*
 
-- `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the prbability to select this arbitrary will be)_
+- `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
 
 *&#8195;Usages*
 
@@ -3081,7 +3081,7 @@ fc.func(fc.nat())
 
 > Generate recursive structures
 >
-> Contrary to `fc.memo` there is no easy way to stop the resursion. Structure may grow infinitely if growing scenarii are too frequent compared to terminal ones.
+> Contrary to `fc.memo` there is no easy way to stop the recursion. Structure may grow infinitely if growing scenarios are too frequent compared to terminal ones.
 
 *&#8195;Signatures*
 
@@ -3128,7 +3128,7 @@ tree
 
 > Generate recursive structures
 >
-> Contrary to `fc.letrec` you can have a higher control over the depth of the resursion in your `builder` function.
+> Contrary to `fc.letrec` you can have a higher control over the depth of the recursion in your `builder` function.
 
 *&#8195;Signatures*
 
