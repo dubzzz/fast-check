@@ -20,6 +20,7 @@ Property based testing framework for JavaScript/TypeScript
 <p align="center">
   <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
   <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
+  <a href="https://dependabot.com/compatibility-score/?dependency-name=fast-check&package-manager=npm_and_yarn&version-scheme=semver"><img src="https://img.shields.io/dependabot/semver/npm_and_yarn/fast-check" alt="Semver stability" /></a>
 </p>
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/labels/good%20first%20issue"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
