@@ -1,3 +1,5 @@
+// tslint:disable
+
 // See https://github.com/paulmillr/es6-shim/commit/2367e0953edd01ae9a5628e1f47cf14b0377a7d6
 // and https://github.com/tc39/proposal-global/blob/269dd7c646451e72e3e3edc573b57ce766aac86a/README.md#rationale
 
