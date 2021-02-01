@@ -52,7 +52,7 @@ async function run() {
   const packageUrl = `${netlifyUrl}/fast-check.tgz`;
   const octokit = github.getOctokit(token);
   const body =
-    `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${commitHash} with:\n\n` +
+    `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${commitHash.trim()} with:\n\n` +
     '```bash\n' +
     `yarn add ${packageUrl}\n` +
     `npm i ${packageUrl}\n` +
