@@ -28,15 +28,9 @@ async function run() {
   const context = github.context;
   const token = core.getInput('token', { required: true });
 
-  const { err, stdout: commitMessage } = await execAsync('git log -1 --format=%s');
+  const { err, stdout: commitHash } = await execAsync('git rev-parse HEAD');
   if (err && err.code) {
     core.setFailed(`deploy-netlify failed to get back commit hash, failed with error: ${err}`);
-    return;
-  }
-  const commitMessageRegex = /^Merge ([a-f0-9]+) into ([a-f0-9]+)$/;
-  const m = commitMessageRegex.exec(commitMessage.trim());
-  if (!m) {
-    core.setFailed(`deploy-netlify invalid commit message encountered, got: ${commitMessage.trim()}`);
     return;
   }
 
@@ -55,7 +49,6 @@ async function run() {
   }
   const netlifyUrl = netlifyUrlLine.substring('Website Draft URL: '.length);
 
-  const commitHash = m[1];
   const packageUrl = `${netlifyUrl}/fast-check.tgz`;
   const octokit = github.getOctokit(token);
   const body =
