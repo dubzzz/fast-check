@@ -7,8 +7,8 @@ on:
       - created
 
 jobs:
-  run_workflow_check:
-    name: 'Run workflow check'
+  deploy_netlify:
+    name: 'Deploy to Netlify'
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request
     steps:
@@ -31,10 +31,6 @@ jobs:
         run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Using Node v14.x
-        uses: actions/setup-node@v2.1.4
-        with:
-          node-version: '14.x'
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build package
