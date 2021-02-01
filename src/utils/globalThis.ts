@@ -10,7 +10,6 @@ declare const global: any;
  * Internal polyfill for `globalThis`
  * @internal
  */
-/** @internal */
 const internalGlobalThis: any = (function () {
   // the only reliable means to get the global object is
   // `Function('return this')()`
@@ -31,4 +30,4 @@ const internalGlobalThis: any = (function () {
  * Internal polyfill for `globalThis`
  * @internal
  */
-export const getGlobal = () => internalGlobalThis;
+export const getGlobal = (): any => internalGlobalThis;
