@@ -1,18 +1,18 @@
 # [:house:](../README.md) Arbitraries
 
 Property based testing frameworks rely on two main building blocks:
-- [Runners](./Runners.md) — _they are responsible to run, execute and check that properties stay true whatever the generated value_
+- [Runners](./Runners.md) — _they are responsible for running, executing and checking that properties stay true whatever the generated value_
 - Arbitraries — _they are responsible for the random *but deterministic* generation of values, they may also offer shrinking capabilities_
 
 This documentation lists all the built-in arbitraries provided by `fast-check`. Please note that you can still create your own ones by either [combining them together](#combinators) or by [building it from scratch](./AdvancedArbitraries.md#build-your-own). You can refer also to the [API Reference](https://dubzzz.github.io/fast-check/) for more details.
 
-In a nutshell, when defining your tests and properties you will have to combine both the [Runners](./Runners.md) and Arbitraries as follow:
+In a nutshell, when defining your tests and properties you will have to combine both the [Runners](./Runners.md) and Arbitraries as follows:
 
 ```js
 fc.assert( // run the property several times (in other words execute the test)
   fc.property( // define the property: arbitrary and what should be observed (predicate)
     arb1, arb2, ..., // 1 to +infinity arbitraries
-    (valueGeneratedByArb1, alueGeneratedByArb2, ...) => { // predicate receives generated values
+    (valueGeneratedByArb1, valueGeneratedByArb2, ...) => { // predicate receives generated values
       // In case of success: No return, 'return undefined' or 'return true'
       // In case of failure: Throw or 'return false'
     }
@@ -40,6 +40,7 @@ fc.assert(
   - [Multiple characters](#multiple-characters)
   - [More specific strings](#more-specific-strings)
 - [Date](#date)
+- [Typed Array](#typed-array)
 - [Combinators](#combinators)
   - [Simple](#simple)
   - [Array](#array)
@@ -1009,7 +1010,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 ```js
 fc.json()
 // Examples of generated values:
-// • "{\"gDS6ixj)R+\":{\"&>4q\":0.6855670565390797,\".4$\":0.32668776759973894,\"[,Dk$XNln-\":0.6499382656006383},\"W<m$%th\":{\"Dcedl|\":true},\"Qk\":-1159147041}"
+// • "{\"gDS6ixj)R+\":{\"&>4q\":-4.764047835312664e-168,\".4$\":1.7093885319023646e+103,\"[,Dk$XNln-\":2.58973771202385e+32},\"W<m$%th\":{\"Dcedl|\":true},\"Qk\":2482558594970227}"
 // • "true"
 // • "{\"0J4\":{\"6nY3)\\\"\":\";8Y8nAf'@\",\"D';_'3Lc\":true}}"
 // • "[null,null]"
@@ -1017,15 +1018,15 @@ fc.json()
 // • …
 
 fc.json({maxDepth: 0})
-// Examples of generated values: "0.18608385079037526", "false", "null", "0.2558416426181791", "true"…
+// Examples of generated values: "-4911780255358798", "false", "null", "-1.6634303144055188e+149", "true"…
 
 fc.json({maxDepth: 1})
 // Examples of generated values:
 // • "{\"mTZw9f!~2\":null,\"W\":null,\"N'!U6\":null,\"x\":null,\"=l]l\":null}"
-// • "{\" \":-654728085,\"yY\\\"xr|z!H\":0.999999701976774,\"=t6J\":null,\"\":-11}"
-// • "{\"&$|2j1/g\":-2147483646,\",\":true}"
-// • "{\"|\":false,\"*I\":0.8821854617928871,\"r(>uO\":\"I$2`I_6@\",\"N'q\":null}"
-// • "[0.7470952319262365,0.7422909334763742,0.0069430153745627665]"
+// • "{\" \":7217657973387345,\"CyPnYYJ\\\\N\":1.2393294656440357e-193,\"\":-8892329589260656,\"T)=jHSz2u=\":1.79769313486231e+308}"
+// • "{\"&$|2j1/g\":-9007199254740947,\",\":true}"
+// • "{\"|\":false,\"*I\":-6.708213475309735e+40,\"r(>uO\":\"I$2`I_6@\",\"N'q\":null}"
+// • "[0.00005536178133696582,1.0077587675918889e-197,-1.7048414608911972e-193]"
 // • …
 ```
 </details>
@@ -1055,18 +1056,18 @@ fc.json({maxDepth: 1})
 ```js
 fc.unicodeJson()
 // Examples of generated values:
-// • "[0.09723462893806001]"
+// • "[3.051181034070195e+291]"
 // • "{\"荌鏊턳ᦖ\":false,\"냚鶖뜥\":false}"
 // • "{\"\":true,\"䷷ꔼꊐ㍂Ꮋ⧭얘\":false,\"镐菋⹥埒䘺懘ྎᶃ硾넍\":false,\"䶩လ뎙丯㷲ퟬ\":true,\"勯吓ᯇป蹥ꕪ渘Ǭ傟\":false}"
 // • "{\"\":[],\"ᐞ淙\":[]}"
-// • "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":null},\"ቈ保婠꠨旞荫㹢ފ\":{\"콆쳑Ｈ᜞紽ѳ㑓\":false},\"\":{\"ꉶ瀞뿱끮筡팹᧊\":0.9470328025826398},\"끨\":1001562014,\"薀ɿ⫝̸挖\":{\"顅蓦⋨뢫\":0.8487552623602803,\"ঞ\":0.7280241452947824}}"
+// • "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":null},\"ቈ保婠꠨旞荫㹢ފ\":{\"콆쳑Ｈ᜞紽ѳ㑓\":false},\"\":{\"ꉶ瀞뿱끮筡팹᧊\":1.6274784566788148e-174},\"끨\":5242050618033827,\"ɿ⫝̸挖\":{\"顅蓦⋨뢫\":-2.5272766011735403e-36,\"ঞ\":1.109383617471883e+188}}"
 // • …
 
 fc.unicodeJson({maxDepth: 0})
-// Examples of generated values: "-2147483647", "1898171291", "null", "0.22572752833366527", "0.026702941895505816"…
+// Examples of generated values: "-9007199254740952", "1068292005279453", "null", "2.0778770048209322e-188", "-2.787348602876926e-78"…
 
 fc.unicodeJson({maxDepth: 1})
-// Examples of generated values: "-2147483647", "1898171291", "null", "[]", "0.026702941895505816"…
+// Examples of generated values: "-9007199254740952", "1068292005279453", "null", "[]", "-2.787348602876926e-78"…
 ```
 </details>
 
@@ -1584,6 +1585,390 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 ```
 </details>
 
+## Typed Array
+
+<details>
+<summary><b>int8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int8array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Int8Array_
+
+*&#8195;Signatures*
+
+- `fc.int8Array()`
+- `fc.int8Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-128` — _minimal value (included)_
+- `max?` — default: `127` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.int8Array()
+// Examples of generated values:
+// • Int8Array.from([5,-2,49,5,-6,-74,-48,-2,122,4])
+// • Int8Array.from([85,-55])
+// • Int8Array.from([1,-6])
+// • Int8Array.from([-48,102,-78,52,4,81])
+// • Int8Array.from([-1,2])
+// • …
+
+fc.int8Array({min: 0, minLength: 1})
+// Examples of generated values:
+// • Int8Array.from([99,92,51,12,0,31])
+// • Int8Array.from([77,6,12,68,33,85,15,88,115,115,111])
+// • Int8Array.from([125])
+// • Int8Array.from([39,122,124])
+// • Int8Array.from([10,6,116,107,75,56,74,79,123])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint8Array_
+
+*&#8195;Signatures*
+
+- `fc.uint8Array()`
+- `fc.uint8Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `255` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint8Array()
+// Examples of generated values:
+// • Uint8Array.from([3,248,4])
+// • Uint8Array.from([203,79,114])
+// • Uint8Array.from([251])
+// • Uint8Array.from([90,185,172,171])
+// • Uint8Array.from([0,2,254,2,69,254])
+// • …
+
+fc.uint8Array({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint8Array.from([16,1])
+// • Uint8Array.from([12,28,2,26,4,38,3])
+// • Uint8Array.from([7,41,34,25,16,18,2,10,30,6,16])
+// • Uint8Array.from([16])
+// • Uint8Array.from([4,12])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint8ClampedArray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8clampedarray">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint8ClampedArray_
+
+*&#8195;Signatures*
+
+- `fc.uint8ClampedArray()`
+- `fc.uint8ClampedArray({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `255` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint8ClampedArray()
+// Examples of generated values:
+// • Uint8ClampedArray.from([150,60,2,11,94])
+// • Uint8ClampedArray.from([165,90,12,252])
+// • Uint8ClampedArray.from([125,130,53,19,245])
+// • Uint8ClampedArray.from([43,109,155,11,128,215,24,46,99])
+// • Uint8ClampedArray.from([52,4,215,253,7,4,4,246,4,2])
+// • …
+
+fc.uint8ClampedArray({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint8ClampedArray.from([40,11,6,19,35,37,25])
+// • Uint8ClampedArray.from([34,22,2,4,39,27,19,37,25])
+// • Uint8ClampedArray.from([11,34,1,31,25])
+// • Uint8ClampedArray.from([15,3,1,37,30,12,38,40,35,41,5])
+// • Uint8ClampedArray.from([17,35,21])
+// • …
+```
+</details>
+
+<details>
+<summary><b>int16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int16array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Int16Array_
+
+*&#8195;Signatures*
+
+- `fc.int16Array()`
+- `fc.int16Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-32768` — _minimal value (included)_
+- `max?` — default: `32767` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.int16Array()
+// Examples of generated values:
+// • Int16Array.from([32761,-15,19460])
+// • Int16Array.from([-7989,4687,24946])
+// • Int16Array.from([-32765])
+// • Int16Array.from([5978,-14151,-10068,-4949])
+// • Int16Array.from([1,7,-32762,-11,21829,-32762])
+// • …
+
+fc.int16Array({min: 0, minLength: 1})
+// Examples of generated values:
+// • Int16Array.from([8,12886,11,10845,32410])
+// • Int16Array.from([24045,28817])
+// • Int16Array.from([8634,263,21637,10150,30007,13375,30165])
+// • Int16Array.from([32753,32759,19209])
+// • Int16Array.from([11936])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint16array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint16Array_
+
+*&#8195;Signatures*
+
+- `fc.uint16Array()`
+- `fc.uint16Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `65535` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint16Array()
+// Examples of generated values:
+// • Uint16Array.from([40338,3413,32529,37241,31799,27569])
+// • Uint16Array.from([])
+// • Uint16Array.from([37642,20057])
+// • Uint16Array.from([20327,25524,65394,34318,27766,53340,23112,2822,26910])
+// • Uint16Array.from([26963,18761,50835,51189,22592,18891,8353,62454,6243])
+// • …
+
+fc.uint16Array({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint16Array.from([27,8,29,3,39,34,13,14])
+// • Uint16Array.from([3,37,4,3,4,16,40,20,0,21])
+// • Uint16Array.from([5,31])
+// • Uint16Array.from([40,2,42,42,41])
+// • Uint16Array.from([19,5,40])
+// • …
+```
+</details>
+
+<details>
+<summary><b>int32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int32array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Int32Array_
+
+*&#8195;Signatures*
+
+- `fc.int32Array()`
+- `fc.int32Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-0x80000000` — _minimal value (included)_
+- `max?` — default: `0x7fffffff` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.int32Array()
+// Examples of generated values:
+// • Int32Array.from([2147483619,-7,841665540])
+// • Int32Array.from([-754622261,809800271,-1634737806])
+// • Int32Array.from([-2147483645])
+// • Int32Array.from([-1499097254,-1996207943,160127148,-1135579989])
+// • Int32Array.from([1,29,-2147483626,-17,-1705126587,-2147483642])
+// • …
+
+fc.int32Array({min: 0, minLength: 1})
+// Examples of generated values:
+// • Int32Array.from([30,1812443734,26,662645341,620592794])
+// • Int32Array.from([536894957,149319825])
+// • Int32Array.from([1265639866,1672446215,356045957,1686054822,2086860087,2035004479,1523119573])
+// • Int32Array.from([2147483618,2147483620,1209289481])
+// • Int32Array.from([946187936])
+// • …
+```
+</details>
+
+<details>
+<summary><b>uint32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint32array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Uint32Array_
+
+*&#8195;Signatures*
+
+- `fc.uint32Array()`
+- `fc.uint32Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0` — _minimal value (included)_
+- `max?` — default: `0xffffffff` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.uint32Array()
+// Examples of generated values:
+// • Uint32Array.from([2729221522,2511211861,3996745489,4234383737,1407876151,483945393])
+// • Uint32Array.from([])
+// • Uint32Array.from([1188401930,1080708697])
+// • Uint32Array.from([4079898471,242967476,1070530418,2475263502,20278390,848810076,2651478600,509283078,418212126])
+// • Uint32Array.from([995846483,1424836937,374064787,802080757,2308659264,165366219,2215846049,310244342,1942755427])
+// • …
+
+fc.uint32Array({max: 42, minLength: 1})
+// Examples of generated values:
+// • Uint32Array.from([27,8,29,3,39,34,13,14])
+// • Uint32Array.from([3,37,4,3,4,16,40,20,0,21])
+// • Uint32Array.from([5,31])
+// • Uint32Array.from([40,2,42,42,41])
+// • Uint32Array.from([19,5,40])
+// • …
+```
+</details>
+
+<details>
+<summary><b>float32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float32array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Float32Array_
+
+*&#8195;Signatures*
+
+- `fc.float32Array()`
+- `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.float32Array()
+// Examples of generated values:
+// • Float32Array.from([2.838487790382467e+22,1.1814616040137283e-28,-1.2447510050843058e-39])
+// • Float32Array.from([-7.006492321624085e-45,-9.633964538574219])
+// • Float32Array.from([50677384277393410,2.815765430662526e-27,35189715715342990000,-3.809889793395996,1.0517918868948659e+37,8.993062611852643e+32,-2.7968944295546947e-20,-7335792])
+// • Float32Array.from([-7.639300007131037e+28,3.3218551999276265e-35,1.811662677611599e-30])
+// • Float32Array.from([-267187306496,-4202965385667936000,2.647066979020766e-20,66189066240,0.00006144169310573488])
+// • …
+
+fc.float32Array({minLength: 1})
+// Examples of generated values:
+// • Float32Array.from([-503561310315741200])
+// • Float32Array.from([-3.4028220466166163e+38,-1.961817850054744e-44])
+// • Float32Array.from([-3.5715513740798766e+36,1.3295048537642752e+23,2262949.5,-0.0000026030456865555607])
+// • Float32Array.from([8.539668944857956e-14])
+// • Float32Array.from([-5.605193857299268e-45,3.4028181929587916e+38,2.5736176825164795e-23])
+// • …
+```
+</details>
+
+<details>
+<summary><b>float64Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float64array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _Float64Array_
+
+*&#8195;Signatures*
+
+- `fc.float64Array()`
+- `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-∞` and `-Number.MAX_VALUE` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
+- `max?` — default: `+∞` and `Number.MAX_VALUE` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.float64Array()
+// Examples of generated values:
+// • Float64Array.from([1.616891650937421e+175,-2.6304053149712647e-306,-4.243132822801271e-219])
+// • Float64Array.from([2.5e-323,-54826743.81511721])
+// • Float64Array.from([1.7365802452981713e+129,1.320991370898586e+152,9.109051404240327e+291,-3.6562625294902846e-157,-6.9216731040462545e-192,2.4523695375398673e-67,-1045.8897076512326,-1.9672082630551467e-215])
+// • Float64Array.from([-1.1080655465042191e+231,5.559295309739158e-243,1.5204711046897551e+296])
+// • Float64Array.from([-2.5297510012561425e+91,1.4452619284617389e-161,1.238133303287883e-38,-1.4441430640880058e+187,-9.20327913781559e+267])
+// • …
+
+fc.float64Array({minLength: 1})
+// Examples of generated values:
+// • Float64Array.from([-3.0129659915228672e+141])
+// • Float64Array.from([-1.7976931348623157e+308,1.14e-322])
+// • Float64Array.from([-1.7441105727027757e+292,3.7278990325311785e+46,-2.97662671796463e-185,-2.0953226219959493e-272])
+// • Float64Array.from([1.0842009835971395e-109])
+// • Float64Array.from([-8.4e-323,1.7976931348623131e+308,1.1447746735519345e-185])
+// • …
+```
+</details>
+
 ## Combinators
 
 ### Simple
@@ -1674,10 +2059,14 @@ function buildCloneable(objectInstance) {
   // Rq: We do not handle deep objects in this snippet
   // But we will get another instance of objectInstance for each run
   // ie. objectInstanceRunA !== objectInstanceRunB while having isEqual(objectInstanceRunA, objectInstanceRunB)
-  const withCloneMethod = () => ({
-    ...objectInstance,
-    [fc.cloneMethod]: withCloneMethod,
-  });
+  const withCloneMethod = () => {
+    const clone = {...objectInstance};
+    Object.defineProperty(objectInstance, fc.cloneMethod, {
+      value: withCloneMethod,
+      enumerable: false,
+    });
+    return clone;
+  };
   return withCloneMethod();
 }
 // Use the arbitrary:
@@ -1729,7 +2118,7 @@ fc.option(fc.string(), { nil: undefined })
 
 > Generate one value based on one of the passed arbitraries
 >
-> Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not accross arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries).
+> Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries).
 
 *&#8195;Signatures*
 
@@ -1765,7 +2154,7 @@ fc.oneof(fc.char(), fc.boolean(), fc.nat())
 
 *&#8195;with:*
 
-- `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the prbability to select this arbitrary will be)_
+- `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
 
 *&#8195;Usages*
 
@@ -2201,12 +2590,14 @@ fc.dictionary(fc.string(), fc.nat())
 *&#8195;Signatures*
 
 - `fc.record(recordModel)`
+- `fc.record(recordModel, {requiredKeys?})`
 - `fc.record(recordModel, {withDeletedKeys?})`
 
 *&#8195;with:*
 
 - `recordModel` — _structure of the resulting instance_
-- `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys_
+- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted, remark: cannot be used with `withDeletedKeys`_
+- `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys. `withDeletedKeys: true` is equivalent to `requiredKeys: []`, thus the two options cannot be used at the same time_
 
 *&#8195;Usages*
 
@@ -2226,6 +2617,34 @@ fc.record({
 fc.record({
   id: fc.uuidV(4),
   age: fc.nat(99)
+}, { requiredKeys: [] })
+// Note: Both id and age will be optional values
+// Examples of generated values:
+// • {"id":"00000000-ffea-4fff-8000-0010220687cc","age":6}
+// • {"id":"fac4b0f1-000e-4000-8000-0013d4108685","age":74}
+// • {"id":"098dd732-d92d-42e3-8000-0004a6defef0","age":34}
+// • {"id":"fffffffa-0007-4000-891f-7a8c033fd020","age":0}
+// • {"id":"00000007-217b-48d8-925a-dd0e0000000c","age":3}
+// • …
+
+fc.record({
+  id: fc.uuidV(4),
+  name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
+  age: fc.nat(99),
+  birthday: fc.date({min: new Date("1970-01-01T00:00:00.000Z"), max: new Date("2100-12-31T23:59:59.999Z")})
+}, { requiredKeys:['id'] })
+// Note: All keys except 'id' will be optional values. id has been marked as required.
+// Examples of generated values:
+// • {"id":"00000010-e2be-4b98-8d3a-944affffffe2","age":4,"birthday":new Date("2100-12-31T23:59:59.959Z")}
+// • {"id":"00000001-0005-4000-bfff-fff03ec646bf","age":48,"birthday":new Date("2069-12-20T11:27:18.998Z")}
+// • {"id":"00000003-ffed-4fff-bfff-fff400000012","name":"Jane","birthday":new Date("2028-02-06T17:18:26.370Z")}
+// • {"id":"fa5630bc-000f-4000-8000-001600000018","age":0,"birthday":new Date("1970-01-01T00:00:00.039Z")}
+// • {"id":"00000018-ffee-4fff-8a22-b8770000001b","age":93}
+// • …
+
+fc.record({
+  id: fc.uuidV(4),
+  age: fc.nat(99)
 }, { withDeletedKeys: true })
 // Note: Both id and age will be optional values
 // Examples of generated values:
@@ -2234,24 +2653,6 @@ fc.record({
 // • {"age":34}
 // • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
 // • {"id":"00000006-0007-4000-8397-86ea00000004"}
-// • …
-
-fc.tuple(
-  fc.record({
-    id: fc.uuidV(4)
-  }),
-  fc.record({
-    age: fc.nat(99),
-    birthday: fc.date(),
-  }, { withDeletedKeys: true }),
-).map(([compulsary, opt]) => ({...compulsary, ...opt}))
-// Note: id will always be defined, age and birthday will be optional
-// Examples of generated values:
-// • {"id":"7a85b7cf-bf0c-4437-8268-b669d0aed75a","age":95,"birthday":new Date("1969-12-31T23:59:59.984Z")}
-// • {"id":"a2302ffc-001b-4000-bfff-fff40000000f","age":5}
-// • {"id":"00000012-0000-4000-96cb-a11654c2d99a","age":0}
-// • {"id":"d5157d1d-0010-4000-b79b-320c372e7422","age":0,"birthday":new Date("1970-01-01T00:00:00.048Z")}
-// • {"id":"00000005-8796-4b9c-bfff-fffa00000011","birthday":new Date("+080549-02-03T06:55:17.138Z")}
 // • …
 ```
 </details>
@@ -2266,7 +2667,7 @@ fc.tuple(
 *&#8195;Signatures*
 
 - `fc.object()`
-- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -2280,6 +2681,7 @@ fc.tuple(
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
+- `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 *&#8195;Usages*
@@ -2287,11 +2689,11 @@ fc.tuple(
 ```js
 fc.object()
 // Examples of generated values:
-// • {"A%":{"KFfpp":0.15601632430569612,"R;AFyG":0.5147879172882253},"":[0.031204981839495605,{"-;wLYr]a1":9007199254740991,"?HA8T":true,"V:Cmm":1026063650},true,[""]],"WFt=u'":{}}
-// • {"M{]xTH":{"#n;+\"uJ":-531067140,"#IBJPt8":[],"Bng_VbB&":[-938438981,true,1961200770,null,true]},"h(+;Pq":{"":[0,2.220446049250313e-16,2.220446049250313e-16,Number.NEGATIVE_INFINITY],"ck,":-0,"$p$ELwa4":0.665904321745444,"8Ei;%":"8vmt?65Y3j"},"-Gr":{},"(j&13ir":"sN~\\)Xb=L","":[{"Ld\"":0.5204080239001759,"zV":0.7037399006564362,"b]yOC":0.010565763906139058,"oW":0.13754518554962492,"LM[Ufcn":0.12116280558765191},true,[-9007199254740991,"bUe?2",undefined,1255384764]],"Rzdzb#:cJC":Number.POSITIVE_INFINITY,"ycMNhu2f^":{},"#0viE?":1393274772,"F9{":[{"d]#*":"nq2","-eEu3t{":"e`od","BidZM=lIH":"XofQAOc","Gj6xJ":-0},0.05500515729160249,{"3@":0.6057971878524023,"]g":0.8888049320696916,"":0.20253894580064236,"u":0.9986080909514845,"-EHGp..CD":0.8372973503851951}]}
-// • {"NLpz":0.3819334142270202,"`guwWVp\\q":{"OjJ U%NIw":-1412821501},"=SL35Vyp":false,"w{Q_]ZyZ":[0.5792432605379005,0.37573694944373115,0.16947480325839004],"7o5i":{"":{},"i3NvX+":{},"qH ":null,"iFv`}D)":null,"W$d#":{"e6jj":"DjT>_><\\N","2`f1j":0.3137112850382896,"":";a#"}},"R85|iHDs+$":[null,5e-324,{" 6hP :#`Y4":0.17656752603223302,"w[JQ":0.6947822374109164}],"7bN":[[506417717,0.9439922098339762,false,-439421531],[],0.5176499969954053],"0n'+o1]0R":true}
+// • {"A%":{"KFfpp":"kCR;AFy","R>Ep":"kV(z"},"6@'":[-2.207823197850501e+192,3.1613705103044707e-192,-2.3367076093283915e-31,-3707010.362578603,-7.412739576630256e-130],"HA8":":V:Cm"}
+// • {"M{]xTH":{"#n;+\"uJ":-1.7073676461288806e-156,"IBJPt8j*3":"_Vb","&qBA~d":1.3686986067416212e+150},"G_?":[],"":{";PqWCv^qK4":[-3910824142587562],"":-8.676022708683803e+249,"$p$ELwa4":2782667376766209,"8Ei;%":"@8vmt?65","3j":[-5.396595663781126e+218,"&13irr_M","~\\)Xb=L",null]},".W02jL":{"":true},"()b":[[false,true,true,true,true],[null,null],{"":true,"u.*Gz,W_":true,"Ue?27Gm":true}],"O#Rzdz":{"JCZ{g":[false,"OGk ~\"P",6126043138289453,"SK:",true],"jQ":[-1154547227665263]},")fZ$Y3H/":[2797472308099969,[],{"bNV?:2@1-":"%qq+o","xnNe>/Y/":8.713661956243993e+72,"4-..^":false,"":"S"}],"%J)H":[false],"ycMNhu2f^":{}}
+// • {"NLpz":true,"\"`guwWV":[{"OjJ U%NIw":null},{"5":-4444658659744845,"5Vyp~\"X-":5222451871432333,"_]Z":5105405761309303,"f*J5crt2@":1810721905015265,"?\\":-6022619223608399},[true,true],[],{}],"qH ":"6iFv`}D","_tK<DY,rJO":"~~]\\ni","6@M^c. ":7122338718932239,"d#`\"4ce6":{"DjT>_><\\N":5243276801299219,"f1jCD":-8658073716259630,"":-739209854622888},";a#":["H",null,undefined,undefined,undefined],"m\"E":["+KF1 6h"," :#`Y","A",">_}","[JQ"]}
 // • {}
-// • {"qrhd)uEl(b":{},"]fr _{^D":{"1/H-'WwF":{},"(K|5r6O":"tDi'?MuF"},"H":null}
+// • {"qrhd)uEl(b":{},"]fr _{^D":{"1/H-'WwF":{},"(K|5r6O":"tDi'?MuF"},"H":-2.5249124239541926e+105}
 // • …
 
 fc.object({
@@ -2299,10 +2701,10 @@ fc.object({
 })
 // Note: Keys in ['a', 'b', 'c']
 // Examples of generated values:
-// • {"c":{"c":"DIxqj35h9:","a":"#P'DE&gY","b":"F"}}
-// • {"b":-5}
-// • {"b":false,"c":undefined}
-// • {"a":0.9999997472311031,"c":[],"b":true}
+// • {"c":{"c":-4373543690275593,"a":-8390683989876872}}
+// • {"b":"h\""}
+// • {"b":"aDA:0O%&","c":"ml> Vxr|#Z"}
+// • {"a":undefined,"c":{"c":[-2744422.7404951486,-1.8345110504699604e+58,2.569399430912511e+151,1.2315038477032108e+257],"a":{"a":2.0093861895976855e-171},"b":[true,false,false,true,false]},"b":null}
 // • {}
 // • …
 
@@ -2310,22 +2712,22 @@ fc.object({
   maxDepth: 0,
 })
 // Examples of generated values:
-// • {"^lx)`P":0,"</}}e{{":0.3250894455517638,"g21/@#y1B":-0,"8ULm U|p<":Number.NEGATIVE_INFINITY,"mrI#":Number.POSITIVE_INFINITY,"{sS8U7 %E!":2089101388,"=(":0.10812626313097728}
-// • {"s!?U&|m":" !","m}7P4>bQM?":null}
-// • {":WEs/srS+":-1416520206,"lb(<%.BW9":1.7976931348623157e+308,"":true,"PfnX>":0.08774441941808431,"pRw":null,"o};9PoD":"I[r7TL+"}
-// • {"WW!oe%r(1":"FiY","l":0.03574426867100822,"R@~l-":false,"":1980690840,"E:' snhE\"}":" <4QOmI","=k]:kN3b~6":1139673390}
-// • {"y.\"_x":0.6120221921262012}
+// • {"^lx)`P":undefined,"</}}e{{":-5378536758219430,"g21/@#y1B":3.2384309296015956e+137,"ULm U|p<#0":"I#!.^","{sS8U7 %E!":"*=","":false,"*}EBv'":-1638834742805707}
+// • {"s!?U&|m":false," !":-3.5873776188748307e-162}
+// • {":WEs/srS+":-2.5959099787764842e+98,"b(<":null,"96d^[vb)H":true,"PfnX>":"","d":false,"":null}
+// • {"WW!oe%r(1":"FiY","l":null,"aR@~l-ofE*":undefined,"E:' snhE\"}":true," <4QOmI":undefined,":kN3b~6T:#":"2V7Sy8YR%C"}
+// • {"y.\"_x":"&o&sq%!"}
 // • …
 
 fc.object({
   maxDepth: 1,
 })
 // Examples of generated values:
-// • {"^lx)`P":[0.39657042602052384,-422075697,false,"g21/@#y1B",-0],"8ULm U|p<":["I#!.^",false,0,-893577503],"!7U{*=(D":{"":"Bv'W{LK"},"#zWizXp":[],"Q":[1.7976931348623157e+308],"l,yb3jK.Tr":{"BQ0r":-880138661,";G":-1868350386,"S\\":-907998987,"l@l]WFW":-1078718740},"YaIV[oS<":[0.5346349203332164,-1446721885,0.44013632045723694,-0]}
-// • {"s!?U&|m":" !","m}7P4>bQM?":{"k>Eu":"`"}}
-// • {":WEs/srS+":{"lb(<%.BW9":1.7976931348623157e+308,"":true},"":[5e-324],"X>QxWvd=":{"PYo};9PoD":0.7651338760998909,"tI[r7":0.8419325392498929,"k'*HxK?ok":0.5930196131336798,"= \\BMAD":0.31146228911196416,"$":0.5022020727144553},"n/>|":{},"%|>H4JG)JX":{"":false},"3@Vl}e":undefined}
-// • {"WW!oe%r(1":[true,false,false,false,false],"8a$aR@~l":[],"*qB<GE":[undefined,"/er "],"4QOmI<=k]":{"~6T:#H":Number.NEGATIVE_INFINITY},"2V7Sy8YR%C":{"3":"<B3\"Hr","o8`}}V5g":Number.NEGATIVE_INFINITY,"VpV/JOM2s":0.9235439685155197,"`":"x0Og?1UC","":1.7976931348623157e+308},"zR9_1QI|":0.32516117831510116}
-// • {"y.\"_x":{"o&s":".SP} ?11","c2~hNU":"j"}}
+// • {"^lx)`P":["}",undefined,5.755964298241165e+294,8.650252904812954e+203,true],"y1B2T":[null,"p<#0cV",2.5422067646942058e-182],".":{"8U7 %E!7U":-7555514265688970,"(DWJ8*}":-5114783085745144,"'W{LK&#z":-2966500009702849,"Xp0>')OQ+V":8374205272976933},"4l,yb3jK":-1.2850048525206176e-283,")VvBQ":{"":-4.3963104972409935e+26,"S\\":-2.6483895616909132e-48},"@l]WFWxM":[-423430403795023],"<vH":[-9.483743119430094e-141,undefined]}
+// • {"s!?U&|m":false," !":{}}
+// • {":WEs/srS+":{"lb(<%.BW9":"[vb)HR Z","PfnX>":""},"d":[true,false],"Yo};9P":{"\"t":undefined,"TL+k":false,"K?o":undefined},"= \\BMAD":5530437688841405,"l@n/>|.":"%|>H4JG)JX","hy]tN{L3@V":{}}
+// • {"WW!oe%r(1":[true,false,false,false,false],"8a$aR@~l":[],"*qB<GE":["E\"}",true]," <4QOmI":{"":false,"3b~6":false,"#Hs":false,"V7Sy8YR":false},"4;%":null,"}}V5gIZ5v":["B3\"Hr.Vp","/JOM2sXiL"]}
+// • {"y.\"_x":{"o&s":2.5774375427541795e-152,"} ?11wrc":Number.NaN}}
 // • …
 
 
@@ -2337,13 +2739,14 @@ fc.object({
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
+  withTypedArray: true,
 })
 // Examples of generated values:
-// • {"F,r0fx}OWg":[new Date("+160385-01-30T05:38:43.072Z"),22583622805204069477977266286996933943873259784384626171039405815620425326468n,{"{Y":"N",",;04yN":-107026440}],"6x*pJp&3^":"new Number(0.42255506544021615)"}
-// • {}
-// • {"hyu)K.|R-5":"new Set([new String(\"f0q}b8/2*\"),new String(\" scrLAI'KD\"),new String(\"P_krOW\"),new String(\"hZ\"),new String(\"VwvEE}s(;V\")])","85c":1955536278377593253161285446750593118355413969436917489136958056479360825003n,"Y*":new Number(0.4145363362551938),"[n7%b":"new Number(0.861563135058088)","L":-36290478173422814553429011041239932856189046009049526980429727311354359757843n,"qe80E%":new Set([undefined,new String("-:"),new String("@}gz6"),null,new String("f*;+=I8t")]),"":new Set([new Number(0.8938732846739627),new Number(0.5945807356752961)]),"fvH0g*vr":Object.create(null),"e67K#h_N>":Object.assign(Object.create(null),{"5yAgxxIc":null})}
-// • {"r5B":Object.assign(Object.create(null),{"":false,"new Set([new Boolean(false),new Boolean(true)])":true,"Gz&# \"\"}\"$":true}),"":[Object.assign(Object.create(null),{"new Number(0.4019212197728985)":new String("1l}"),"*6Oq=]":false,"":undefined,"q1z8Sx}Fl":Number.POSITIVE_INFINITY,"tbj~o{w5":false}),[new Number(2.220446049250313e-16),new Number(Number.POSITIVE_INFINITY)]],"#%z":new Date("1969-12-31T23:59:59.986Z"),"{#-/\\KqFC":new Set([Object.assign(Object.create(null),{"gJ":new Number(0.27064473338327355),"u9Ow#D29":new String("?X"),"ziV":new Number(0.08456445204561303),"D":new String("MV")}),"new Boolean(false)"])}
-// • {")h&&":-35227683450067019633264767414815297433030615751339400804707291045739244432104n}
+// • {"xvT&":Int8Array.from([-51,43,46,-68,76]),"y":Uint8ClampedArray.from([148,35]),"~U%X&":Float64Array.from([-5.744456827877595e+230,9.464442002118316e+148,-8.498170634981481e-35,-4.625725161228645e-268,6.203333251270261e-272,2.0172265060086206e-119])}
+// • {"Rsv1:ZP":Int8Array.from([-88,-77]),"&ZTIJ#Q":Uint8ClampedArray.from([251,16]),"#$|{y":new Set([-6663670308037104,4120023769076003])}
+// • {"p?EZci9K7":Uint8Array.from([177,113,5]),"Je":Object.assign(Object.create(null),{"``Y":{"ErP@8f!\"":new Boolean(false),"=o2Y7C0":false,"TBb(":",t+\\dQ]s0","yk<+zg":-7905580199664567},"Q.IY+)I":Object.assign(Object.create(null),{"qiQ5Ix":-1.1703850503702754e-199})}),")I.":{}}
+// • {"};;j/k&2T":Uint8Array.from([112,162]),"dt\\\\^idcXL":-50730843874051235193727878949081679545337171593170586799838258339249459767377n,"D^Ev\\vt":new Date("-124851-11-03T08:48:46.455Z"),"tXnf1!":Float64Array.from([-4.135363103527259e-149,4.4639133429566616e+223,7.376878736128993e-302,3.011684349001697e+260]),"1vv":{";tJq<":null,"Float64Array.from([7.988678298210363e+103,-5.461176957322894e-61,2.4579845631144577e+112,-1.1327640594111671e-271,-5.923120123690057e+249,2896.800995462597,5.907953532945632e+276,5.15573377848018e-225,-4.786633227596223e-129,4.3346210093498726e-157])":null,"new Set([\"ukV}Hc*\",\"U,.3GJ;W\",\"npc\"])":null,"a&C":null},"'XH]6Z=":Uint8ClampedArray.from([]),"":Float32Array.from([-2.648670260896324e-7,3.328505519015497e-28,-965121048301776400000,7.625496345475824e-10,0.3421240746974945,-2.021202369458726e+27,8301810318720369000,1.1299675464504365e-33,9.006967616187467e-8,-2.7844586358125586e+31]),"M":Uint8ClampedArray.from([77,19])}
+// • {"RrAs^,;_'d":Object.create(null),"cx:<rwea":new Map([["c4^",null],["jRbo{j,=QA",undefined]]),"~_8\\[';}P":new Set([new Boolean(false),new Boolean(false),new Boolean(true),new Boolean(true)])}
 // • …
 ```
 </details>
@@ -2370,18 +2773,18 @@ fc.object({
 ```js
 fc.jsonObject()
 // Examples of generated values:
-// • 0.5208574682474111
-// • {"8-b;+Ua":0.6025187808808565,"jgMZ$w|b.":0.058392661106537846}
+// • -6.0839481205200126e+47
+// • {"8-b;+Ua":-2.260222054934251e-89,"jgMZ$w|b.":-5.736889009682019e+133}
 // • [false,false,true,true,false]
 // • false
-// • [[-2,-2147483643]]
+// • [[32,-9007199254740968]]
 // • …
 
 fc.jsonObject({maxDepth: 0})
-// Examples of generated values: -312267957, "C{X%3]Q$U", "M}7xc\" _", true, null…
+// Examples of generated values: 892026606610285, "C{X%3]Q$U", "M}7xc\" _", true, null…
 
 fc.jsonObject({maxDepth: 1})
-// Examples of generated values: -312267957, {"{":true,"Q$":null}, "M}7xc\" _", {".b?^O.":"","D1$L":"zDJWs","j*s 9%":"",".":"0N|^?8"}, {}…
+// Examples of generated values: 892026606610285, {"{":true,"Q$":null}, "M}7xc\" _", {".b?^O.":"","D1$L":"zDJWs","j*s 9%":"",".":"0N|^?8"}, {}…
 ```
 </details>
 
@@ -2406,14 +2809,14 @@ fc.jsonObject({maxDepth: 1})
 
 ```js
 fc.unicodeJsonObject()
-// Examples of generated values: false, [[-1517505516,-480082521]], "⠵䟵谉ꏊ㓰捛멮켜", null, [null,null,null,null]…
+// Examples of generated values: false, [[-5431499166376752,50620.20023332868]], "⠵䟵谉ꏊ㓰捛멮켜", null, [null,null,null,null]…
 
 fc.unicodeJsonObject({maxDepth: 0})
-// Examples of generated values: 1.6385302847865546e-7, 0.9999998206220081, true, 2147483623, 1.4056080654967218e-7…
+// Examples of generated values: 2.67e-322, -8e-323, true, 9007199254740987, 1.7976931348623151e+308…
 
 fc.unicodeJsonObject({maxDepth: 1})
 // Examples of generated values:
-// • 1.6385302847865546e-7
+// • 2.67e-322
 // • {"减":null,"鲊ਉ뉄":null,"罧癤鷢൜牶":null,"횆쐌淪燀쯠蝒熹཯":null,"":null}
 // • {"ꁺ척蜱젿됻⫄":true,"㠰䵤᧳ꊺ蹀":true,"劸웤鯁냠漼ⳍ㧞ﰗἭ∎":false}
 // • []
@@ -2432,7 +2835,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 *&#8195;Signatures*
 
 - `fc.anything()`
-- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, values?})`
+- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -2446,6 +2849,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 - `withNullPrototype?` — default: `false` — _enable objects not defining any prototype - eg.: `Object.create(null)`_
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
+- `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 *&#8195;Usages*
@@ -2453,11 +2857,11 @@ fc.unicodeJsonObject({maxDepth: 1})
 ```js
 fc.anything()
 // Examples of generated values:
-// • {"s":["","hTd@sWtR%)"],"-S9":0.3242989104896441,"GhNB:":0}
-// • 0
+// • {"s":[-4.4072022896917126e+272,3.439050850697345e+103],"@sWtR%)`":{},"d;,GhNB":{"66":"2Jagm0~","eN\\y":true,"":true,"xy 45|Z":"-aT@8","XQa^|_IU3^":1.2616016700584982e+82}}
+// • 43
 // • "&,} ~"
 // • {}
-// • {"r1AA`>yA":0.25420680837157195,"hn:9":0.15814639627933325}
+// • {"r1AA`>yA":"O!","|uPbIKR":"~|-m_C}_"}
 // • …
 
 fc.anything({
@@ -2465,23 +2869,23 @@ fc.anything({
 })
 // Note: Generated objects will come with keys in ['a', 'b', 'c']
 // Examples of generated values:
-// • {"b":1.7881393288288194e-7}
-// • [["(y","\"a> ","z"],"!P",Number.NEGATIVE_INFINITY]
-// • {"b":1104845694,"c":1617404783,"a":-86638758}
-// • {"c":-694807229,"b":-1525211291,"a":-97094564}
-// • 5e-324
+// • {"b":null}
+// • [[5.578694493239444e+260,2.3e-322,-1.616149197504394e+145],[null,null],-6464878656125993]
+// • {"b":"lSk1?*.]>","a":"4N|>MD","c":"dHW0wYEu!"}
+// • {"c":true,"a":false,"b":true}
+// • 1.022676058193833e-127
 // • …
 
 fc.anything({
   maxDepth: 0,
 })
 // Note: Only root values
-// Examples of generated values: 0.9999998658895495, true, "<EO", 9007199254740991, 0…
+// Examples of generated values: -9007199254740952, 1068292005279453, "<EO", 2.077877004820932e-188, -2.7873486028769266e-78…
 
 fc.anything({
   maxDepth: 1,
 })
-// Examples of generated values: 0.9999998658895495, true, "<EO", [], 0…
+// Examples of generated values: -9007199254740952, 1068292005279453, "<EO", [], -2.7873486028769266e-78…
 
 fc.anything({
   withBigInt: true,
@@ -2491,13 +2895,14 @@ fc.anything({
   withNullPrototype: true,
   withObjectString: true,
   withSet: true,
+  withTypedArray: true,
 })
 // Examples of generated values:
-// • 31n
-// • {"new Set([new Number(658282252),\"F$\",new Number(0.3487903700973978)])":0.597600347119469}
-// • 49923639470792901331007151703295270516608099603300111897468945883726467315714n
-// • [{"lloo":new String("8k"),":6O":true,"1 J%S-":0.9811743941698315,"J~+`Qo1<o":new Number(0),"KV`MZ[":new Boolean(true)},{"new String(\"%L&#g$l#\")":true,"Ghi":undefined}]
-// • Object.assign(Object.create(null),{"K\\~c!jADJ5":new Date("-042008-05-13T02:10:57.427Z"),"rBi6zzh":2371026000844887995115928520799279159182492319348459568753669098566854816929n,":<Rzk3":Object.create(null),"&$IJ+Z71e":new Date("+104798-01-21T08:19:12.364Z"),"n&9A.;gcG_":Object.assign(Object.create(null),{"gY`+mW":new String("Ci(w+qXQ"),"A-leb&":new String("DIj`F@;")})})
+// • 50262693997624561656566658494844280329167601007133105101730712090471350904016n
+// • Uint16Array.from([64924,45869,14750,25035,2761,46076])
+// • Float32Array.from([0.08553320169448853,-1.6264161412677633e+31,-6.835593778612435e+24,1.664170987467859e+26,4.2968819535433035e+34,-3.622660163541219e-33])
+// • Uint16Array.from([3344,28462])
+// • Int8Array.from([71,-1])
 // • …
 ```
 </details>
@@ -2676,7 +3081,7 @@ fc.func(fc.nat())
 
 > Generate recursive structures
 >
-> Contrary to `fc.memo` there is no easy way to stop the resursion. Structure may grow infinitely if growing scenarii are too frequent compared to terminal ones.
+> Contrary to `fc.memo` there is no easy way to stop the recursion. Structure may grow infinitely if growing scenarios are too frequent compared to terminal ones.
 
 *&#8195;Signatures*
 
@@ -2723,7 +3128,7 @@ tree
 
 > Generate recursive structures
 >
-> Contrary to `fc.letrec` you can have a higher control over the depth of the resursion in your `builder` function.
+> Contrary to `fc.letrec` you can have a higher control over the depth of the recursion in your `builder` function.
 
 *&#8195;Signatures*
 

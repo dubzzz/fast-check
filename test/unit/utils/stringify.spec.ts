@@ -37,6 +37,7 @@ const anythingEnableAll = {
   withObjectString: true,
   withNullPrototype: true,
   withDate: true,
+  withTypedArray: true,
   ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
 };
 
@@ -132,6 +133,11 @@ describe('stringify', () => {
     expect(stringify(new Date('2014-25-23'))).toEqual('new Date(NaN)');
     expect(stringify(new Date('2019-05-23T22:19:06.049Z'))).toEqual('new Date("2019-05-23T22:19:06.049Z")');
   });
+  it('Should be able to stringify Regex', () => {
+    expect(stringify(/\w+/)).toEqual('/\\w+/');
+    expect(stringify(/^Hello(\d+)(\w*)$/gi)).toEqual('/^Hello(\\d+)(\\w*)$/gi');
+    expect(stringify(new RegExp('\\w+'))).toEqual('/\\w+/');
+  });
   it('Should be able to stringify Set', () => {
     expect(stringify(new Set([1, 2]))).toEqual('new Set([1,2])');
   });
@@ -143,10 +149,90 @@ describe('stringify', () => {
     expect(stringify(Symbol('fc'))).toEqual('Symbol("fc")');
     expect(stringify(Symbol.for('fc'))).toEqual('Symbol.for("fc")');
   });
+  it('Should be able to stringify well-known Symbols', () => {
+    expect(stringify(Symbol.iterator)).toEqual('Symbol.iterator');
+    expect(stringify(Symbol('Symbol.iterator'))).toEqual('Symbol("Symbol.iterator")');
+
+    // Same as above but with all the known symbols
+    let foundOne = false;
+    for (const symbolName of Object.getOwnPropertyNames(Symbol)) {
+      const s = (Symbol as any)[symbolName];
+      if (typeof s === 'symbol') {
+        foundOne = true;
+        expect(stringify(s)).toEqual(`Symbol.${symbolName}`);
+        expect(stringify(Symbol(`Symbol.${symbolName}`))).toEqual(`Symbol("Symbol.${symbolName}")`);
+        expect(eval(`(function() { return typeof ${stringify(s)}; })()`)).toBe('symbol');
+      }
+    }
+    expect(foundOne).toBe(true);
+  });
+  it('Should be able to stringify Object', () => {
+    expect(stringify({ a: 1 })).toEqual('{"a":1}');
+    expect(stringify({ a: 1, b: 2 })).toEqual('{"a":1,"b":2}');
+    expect(stringify({ [Symbol.for('a')]: 1 })).toEqual('{[Symbol.for("a")]:1}');
+    expect(stringify({ a: 1, [Symbol.for('a')]: 1 })).toEqual('{"a":1,[Symbol.for("a")]:1}');
+    expect(stringify({ [Symbol.for('a')]: 1, a: 1 })).toEqual('{"a":1,[Symbol.for("a")]:1}');
+  });
+  it('Should be able to stringify Object but skip non enumerable properties', () => {
+    // At least for the moment we don't handle non enumerable properties
+    const obj: any = {};
+    Object.defineProperties(obj, {
+      a: { value: 1, enumerable: false },
+      b: { value: 1, enumerable: true },
+      [Symbol.for('a')]: { value: 1, enumerable: false },
+      [Symbol.for('b')]: { value: 1, enumerable: true },
+    });
+    expect(stringify(obj)).toEqual('{"b":1,[Symbol.for("b")]:1}');
+  });
+  it('Should be able to stringify instances of classes', () => {
+    class A {
+      public a: number;
+      constructor() {
+        this.a = 1;
+        (this as any)[Symbol.for('a')] = 2;
+      }
+      public ma() {
+        // no-op
+      }
+    }
+    expect(stringify(new A())).toEqual('{"a":1,[Symbol.for("a")]:2}');
+
+    class AA {
+      public a = 0;
+    }
+    expect(stringify(new AA())).toEqual('{"a":0}');
+  });
+  it('Should be able to stringify instances of classes inheriting from others', () => {
+    class A {
+      public a: number;
+      constructor() {
+        this.a = 1;
+        (this as any)[Symbol.for('a')] = 2;
+      }
+      public ma() {
+        // no-op
+      }
+    }
+    class B extends A {
+      public b;
+      constructor() {
+        super();
+        this.b = 3;
+        (this as any)[Symbol.for('b')] = 4;
+      }
+      public mb() {
+        // no-op
+      }
+    }
+    expect(stringify(new B())).toEqual('{"a":1,"b":3,[Symbol.for("a")]:2,[Symbol.for("b")]:4}');
+  });
   it('Should be able to stringify Object without prototype', () => {
     expect(stringify(Object.create(null))).toEqual('Object.create(null)');
     expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual(
       'Object.assign(Object.create(null),{"a":1})'
+    );
+    expect(stringify(Object.assign(Object.create(null), { [Symbol.for('a')]: 1 }))).toEqual(
+      'Object.assign(Object.create(null),{[Symbol.for("a")]:1})'
     );
   });
   it('Should be able to stringify Object with custom __proto__ value', () => {

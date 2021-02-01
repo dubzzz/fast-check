@@ -3,13 +3,13 @@
 
 
 fast-check@*:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-2.1.0.tgz#5d7b6f104160253361e95ce9c282b749395a5ee9"
-  integrity sha512-aZe06whLv1ZNFM1rn8mGL3+wf0PQpZyySQ81+O0L3APiLNzCi2PtJqeohn5Xab1yAxF3Vhzf5AvKzPispGd0tQ==
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-2.11.0.tgz#a21bdbdcab27812fbf93612f3c84483883115ca2"
+  integrity sha512-galBVrbyjdHOW+WOCp/NFP3J6t6Pc0uajz0oJaUAFRXLHXt6lcUeD1bcBFqUWV1aeK9QJgeRpIYf4e+PHeASUQ==
   dependencies:
-    pure-rand "^3.0.0"
+    pure-rand "^4.1.1"
 
-pure-rand@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-3.0.0.tgz#9dd90685e0c6ff98871f656a5e37fe90d2bfe0e4"
-  integrity sha512-7/U3rk8elhZPagxdheW1UHEhRr0IF8wCs3qyYVVswSxLoRrrrCMyaTKtAYIrCfuTeUoX/O3rN1piY/pX8JEcEA==
+pure-rand@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-4.1.1.tgz#9fca2d4af5c4e870bac337ed860977426ed17bf6"
+  integrity sha512-cZw4AL/KI6aDTdqHEbJPe2ZoHM3kSdpJRLJetv8c3tfq9o+PvQDXrHNEpB0AWukAGFx4fmeOerAGwkA4rtUgdA==

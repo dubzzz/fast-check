@@ -1,3 +1,130 @@
+# 2.12.1
+
+_Avoid unsafe eval_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.12.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.12.0...v2.12.1)]
+
+## Fixes
+
+- ([PR#1408](https://github.com/dubzzz/fast-check/pull/1408)) Bug/Security: Avoid using unsafe-eval in implementation of getGlobal
+- ([PR#1389](https://github.com/dubzzz/fast-check/pull/1389)) Doc: Add badge from packagequality.com
+- ([PR#1391](https://github.com/dubzzz/fast-check/pull/1391)) Doc: Setup a security policy
+- ([PR#1392](https://github.com/dubzzz/fast-check/pull/1392)) Doc: Add a code of conduct
+- ([PR#1390](https://github.com/dubzzz/fast-check/pull/1390)) Doc: Add Snyk badge for package quality
+- ([PR#1393](https://github.com/dubzzz/fast-check/pull/1393)) Doc: Add semver stability badge
+- ([PR#1394](https://github.com/dubzzz/fast-check/pull/1394)) Doc: Remove dependencies related badges
+- ([PR#1395](https://github.com/dubzzz/fast-check/pull/1395)) Doc: Correct misspellings & other errors in English
+
+# 2.12.0
+
+_More efficient shrinkers_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.12.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.11.0...v2.12.0)]
+
+## Features
+
+- ([PR#1354](https://github.com/dubzzz/fast-check/pull/1354)) Split internal shrinkNumeric for better performances
+- ([PR#1355](https://github.com/dubzzz/fast-check/pull/1355)) Introduce new helper ArbitraryWithContextualShrink
+- ([PR#1358](https://github.com/dubzzz/fast-check/pull/1358)) More efficient shrinker for integer
+- ([PR#1372](https://github.com/dubzzz/fast-check/pull/1372)) More efficient shrinker for bigint
+- ([PR#1377](https://github.com/dubzzz/fast-check/pull/1377)) More efficient shrinker for array
+- ([PR#1382](https://github.com/dubzzz/fast-check/pull/1382)) More efficient shrinker for subarray
+- ([PR#1383](https://github.com/dubzzz/fast-check/pull/1383)) More efficient shrinker for mixedCase
+- ([PR#1384](https://github.com/dubzzz/fast-check/pull/1384)) More efficient shrinker for double
+
+## Fixes
+
+- ([PR#1347](https://github.com/dubzzz/fast-check/pull/1347)) Bug: Legacy float/double should never reach the max specified value
+- ([PR#1359](https://github.com/dubzzz/fast-check/pull/1359)) Bug: Calling `shrinkableFor` should never apply contextual shrinker
+- ([PR#1350](https://github.com/dubzzz/fast-check/pull/1350)) Clean: Re-generate yarn.lock files
+- ([PR#1331](https://github.com/dubzzz/fast-check/pull/1331)) Doc: Deploy temporary documentation and package to Netlify
+- ([PR#1352](https://github.com/dubzzz/fast-check/pull/1352)) Doc: Performance impacts of filter
+- ([PR#1379](https://github.com/dubzzz/fast-check/pull/1379)) Doc: Only specify a single entryPoint in TypeDoc
+- ([PR#1357](https://github.com/dubzzz/fast-check/pull/1357)) Refactor: Re-implement shrinker for integer based on contextual shrinker
+- ([PR#1373](https://github.com/dubzzz/fast-check/pull/1373)) Refactor: Re-use contextual shrinker of integer in array
+- ([PR#1376](https://github.com/dubzzz/fast-check/pull/1376)) Refactor: Re-use contextual shrinker of integer in commands
+- ([PR#1385](https://github.com/dubzzz/fast-check/pull/1385)) Refactor: Extract Stream.of logic for re-use
+- ([PR#1387](https://github.com/dubzzz/fast-check/pull/1387)) Refactor: Restructure implementations of ArbitraryWithContextualShrink
+- ([PR#1353](https://github.com/dubzzz/fast-check/pull/1353)) Test: Add unit tests for stringify on Regex
+- ([PR#1368](https://github.com/dubzzz/fast-check/pull/1368)) Test: Add non-regression tests on shrinking quality
+- ([PR#1375](https://github.com/dubzzz/fast-check/pull/1375)) Test: Typings of ArbitraryWithContextualShrink
+- ([PR#1380](https://github.com/dubzzz/fast-check/pull/1380)) Test: Typings of constantFrom and chain
+- ([PR#1381](https://github.com/dubzzz/fast-check/pull/1381)) Test: Tests on typings should fail with explicit errors
+- ([PR#1386](https://github.com/dubzzz/fast-check/pull/1386)) Test: Add tests for ArbitraryWithContextualShrink
+- ([PR#1388](https://github.com/dubzzz/fast-check/pull/1388)) Test: Add snapshot tests for new core shrinkers: integer, bigint, arrayInt64
+
+---
+
+# 2.11.0
+
+_Add support for Symbol properties and ability to mark keys as required in `fc.record`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.11.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.10.0...v2.11.0)]
+
+## Features
+
+- ([PR#1265](https://github.com/dubzzz/fast-check/pull/1265)) Switch from Object.keys to for..in in record _[reverted]_
+- ([PR#1266](https://github.com/dubzzz/fast-check/pull/1266)) Arbitrary records with optional fields
+- ([PR#1306](https://github.com/dubzzz/fast-check/pull/1306)) Prefer unique symbols over `Symbol.for` :warning:
+- ([PR#1328](https://github.com/dubzzz/fast-check/pull/1328)) Better handling of known symbols with `fc.stringify`
+- ([PR#1321](https://github.com/dubzzz/fast-check/pull/1321)) Add support for Symbol keys in record
+- ([PR#1327](https://github.com/dubzzz/fast-check/pull/1327)) Properly handle objects with symbols as keys in `fc.stringify`
+- ([PR#1329](https://github.com/dubzzz/fast-check/pull/1329)) Throw if non enumerable keys declared in requiredKeys of record
+
+## Fixes
+
+- ([PR#1286](https://github.com/dubzzz/fast-check/pull/1286)) CI: Basic setup for codecov
+- ([PR#1287](https://github.com/dubzzz/fast-check/pull/1287)) CI: Only take into account files from src/ in coverage
+- ([PR#1289](https://github.com/dubzzz/fast-check/pull/1289)) CI: Remove coveralls from the CI
+- ([PR#1290](https://github.com/dubzzz/fast-check/pull/1290)) CI: Remove unused flags in coverage
+- ([PR#1296](https://github.com/dubzzz/fast-check/pull/1296)) CI: Comment with links to install the package defined by the PR
+- ([PR#1304](https://github.com/dubzzz/fast-check/pull/1304)) CI: Better message for automatic comments
+- ([PR#1307](https://github.com/dubzzz/fast-check/pull/1307)) CI: Randomly seed runs in CI (by default)
+- ([PR#1269](https://github.com/dubzzz/fast-check/pull/1269)) Doc: Fix typo in AdvancedArbitraries.md
+- ([PR#1288](https://github.com/dubzzz/fast-check/pull/1288)) Doc: Switch to codecov in README
+- ([PR#1291](https://github.com/dubzzz/fast-check/pull/1291)) Doc: Prefer spaces over tabs in the README (easier to fit in screen)
+- ([PR#1268](https://github.com/dubzzz/fast-check/pull/1268)) Test: Switch from (deprecated) tsd to tsc for type checking
+- ([PR#1280](https://github.com/dubzzz/fast-check/pull/1280)) Test: Reduce flakiness of array e2e
+
+---
+
+# 2.10.0
+
+_Increase performances of generic operations of arbitraries: map, filter, chain_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.9.0...v2.10.0)]
+
+## Features
+
+- ([PR#1264](https://github.com/dubzzz/fast-check/pull/1264)) Extract inlined-classes outside of Arbitrary base-class
+
+## Fixes
+
+- ([PR#1260](https://github.com/dubzzz/fast-check/pull/1260)) Test: Better coverage of ArrayInt64 to reduce flakiness in coverage
+
+---
+
+# 2.9.0
+
+_Add arbitraries for typed arrays_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.9.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.8.0...v2.9.0)]
+
+## Features
+
+- ([PR#1210](https://github.com/dubzzz/fast-check/pull/1210)) Wider defaults for numbers in objects
+- ([PR#1212](https://github.com/dubzzz/fast-check/pull/1212)) Add typed arrays arbitraries
+- ([PR#1237](https://github.com/dubzzz/fast-check/pull/1237)) Add option withTypedArray to `fc.object` and `fc.anything`
+
+## Fixes
+
+- ([PR#1231](https://github.com/dubzzz/fast-check/pull/1231)) CI: Split test task into two tasks: one for units, another for e2e
+- ([PR#1232](https://github.com/dubzzz/fast-check/pull/1232)) CI: Run E2E tests on multiple platforms
+- ([PR#1243](https://github.com/dubzzz/fast-check/pull/1243)) CI: Add github-actions to dependabot list
+- ([PR#1230](https://github.com/dubzzz/fast-check/pull/1230)) Test: Reduce flakyness of object boxing coverage
+- ([PR#1233](https://github.com/dubzzz/fast-check/pull/1233)) Test: Wrongly defined test for 'Should box any number'
+- ([PR#1236](https://github.com/dubzzz/fast-check/pull/1236)) Test: Safer URL validation in our web urls e2e tests
+- ([PR#1238](https://github.com/dubzzz/fast-check/pull/1238)) Test: Add legacy tests for typed arrays
+- ([PR#1250](https://github.com/dubzzz/fast-check/pull/1250)) Test: Increase stability of e2e on floatNext/doubleNext
+- ([PR#1251](https://github.com/dubzzz/fast-check/pull/1251)) Test: Add more tests for fc.anything to reduce coverage flakiness
+
+---
+
 # 2.8.0
 
 _New opt-in implementation for fc.float and fc.double_

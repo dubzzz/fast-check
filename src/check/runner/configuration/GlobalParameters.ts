@@ -2,7 +2,7 @@ import { getGlobal } from '../../../utils/globalThis';
 import { Parameters } from './Parameters';
 
 /** @internal */
-const globalParametersSymbol = Symbol.for('fast-check/GlobalParameters');
+const globalParametersSymbol = Symbol('fast-check/GlobalParameters');
 
 /**
  * Type of legal hook function that can be used in the global parameter `beforeEach` and/or `afterEach`

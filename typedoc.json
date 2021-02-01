@@ -1,6 +1,5 @@
 {
     "out": "docs",
-    "mode": "file",    
     "theme": "default",
     "name": "API Reference | fast-check | Property based testing framework",
     "readme": "none"

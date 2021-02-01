@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
-import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { integer } from './IntegerArbitrary';
@@ -11,7 +11,7 @@ import { buildCompareFilter } from './helpers/BuildCompareFilter';
 
 /** @internal */
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
-  readonly lengthArb: ArbitraryWithShrink<number>;
+  readonly lengthArb: ArbitraryWithContextualShrink<number>;
   readonly preFilter: (tab: Shrinkable<T>[]) => Shrinkable<T>[];
 
   constructor(
@@ -48,7 +48,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     }
     return true;
   }
-  private wrapper(itemsRaw: Shrinkable<T>[], shrunkOnce: boolean): Shrinkable<T[]> {
+  private wrapper(itemsRaw: Shrinkable<T>[], shrunkOnce: boolean, itemsRawLengthContext: unknown): Shrinkable<T[]> {
     // We need to explicitly apply filtering on shrink items
     // has they might have duplicates (on non shrunk it is not the case by construct)
     const items = shrunkOnce ? this.preFilter(itemsRaw) : itemsRaw;
@@ -62,7 +62,17 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     if (cloneable) {
       ArrayArbitrary.makeItCloneable(vs, items);
     }
-    return new Shrinkable(vs, () => this.shrinkImpl(items, shrunkOnce).map((v) => this.wrapper(v, true)));
+    const itemsLengthContext =
+      itemsRaw.length === items.length && itemsRawLengthContext !== undefined
+        ? itemsRawLengthContext // items and itemsRaw have the same length context is applicable
+        : shrunkOnce // otherwise we fallback to default contexts
+        ? this.lengthArb.shrunkOnceContext() // in case we shrunk once we use a dedicated context that should reduce shrink size
+        : undefined;
+    return new Shrinkable(vs, () =>
+      this.shrinkImpl(items, itemsLengthContext).map((contextualValue) =>
+        this.wrapper(contextualValue[0], true, contextualValue[1])
+      )
+    );
   }
   generate(mrng: Random): Shrinkable<T[]> {
     const targetSizeShrinkable = this.lengthArb.generate(mrng);
@@ -84,26 +94,42 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         numSkippedInRow += 1;
       }
     }
-    return this.wrapper(items, false);
+    return this.wrapper(items, false, undefined);
   }
-  private shrinkImpl(items: Shrinkable<T>[], shrunkOnce: boolean): Stream<Shrinkable<T>[]> {
+  private shrinkImpl(items: Shrinkable<T>[], itemsLengthContext: unknown): Stream<[Shrinkable<T>[], unknown]> {
     if (items.length === 0) {
-      return Stream.nil<Shrinkable<T>[]>();
+      return Stream.nil<[Shrinkable<T>[], unknown]>();
     }
-    const size = this.lengthArb.shrinkableFor(items.length, shrunkOnce);
-    return size
-      .shrink()
-      .map((l) => items.slice(items.length - l.value))
-      .join(items[0].shrink().map((v) => [v].concat(items.slice(1))))
-      .join(
-        items.length > this.minLength
-          ? makeLazy(() =>
-              this.shrinkImpl(items.slice(1), false)
-                .filter((vs) => this.minLength <= vs.length + 1)
-                .map((vs) => [items[0]].concat(vs))
-            )
-          : Stream.nil<Shrinkable<T>[]>()
-      );
+    return (
+      this.lengthArb
+        .contextualShrink(
+          items.length,
+          // itemsLengthContext is a context returned by a previous call to the integer
+          // arbitrary and the integer value items.length.
+          itemsLengthContext
+        )
+        .map((contextualValue): [Shrinkable<T>[], unknown] => {
+          return [
+            items.slice(items.length - contextualValue[0]), // array of length contextualValue[0]
+            contextualValue[1], // integer context for value contextualValue[0] (the length)
+          ];
+        })
+        // Context value will be set to undefined for remaining shrinking values
+        // as they are outside of our shrinking process focused on items.length.
+        // None of our computed contexts will apply for them.
+        .join(items[0].shrink().map((v) => [[v].concat(items.slice(1)), undefined]))
+        .join(
+          items.length > this.minLength
+            ? makeLazy(() =>
+                // We pass itemsLengthContext=undefined to next shrinker to start shrinking
+                // without any assumptions on the current state (we never explored that one)
+                this.shrinkImpl(items.slice(1), undefined)
+                  .filter((contextualValue) => this.minLength <= contextualValue[0].length + 1)
+                  .map((contextualValue) => [[items[0]].concat(contextualValue[0]), undefined])
+              )
+            : Stream.nil<[Shrinkable<T>[], unknown]>()
+        )
+    );
   }
   withBias(freq: number): Arbitrary<T[]> {
     return biasWrapper(freq, this, (originalArbitrary: ArrayArbitrary<T>) => {

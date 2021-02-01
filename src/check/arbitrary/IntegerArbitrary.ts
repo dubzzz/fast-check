@@ -1,30 +1,95 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
-import { ArbitraryWithShrink } from './definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
 import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
-import { shrinkNumber } from './helpers/ShrinkNumeric';
+import { shrinkInteger } from './helpers/ShrinkInteger';
 
 /** @internal */
-class IntegerArbitrary extends ArbitraryWithShrink<number> {
+class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
   static MIN_INT: number = 0x80000000 | 0;
   static MAX_INT: number = 0x7fffffff | 0;
 
   private biasedIntegerArbitrary: Arbitrary<number> | null = null;
+
   constructor(readonly min: number, readonly max: number, readonly genMin: number, readonly genMax: number) {
     super();
   }
-  private wrapper(value: number, shrunkOnce: boolean): Shrinkable<number> {
-    return new Shrinkable(value, () => this.shrink(value, shrunkOnce).map((v) => this.wrapper(v, true)));
+
+  private wrapper(value: number, context: unknown): Shrinkable<number> {
+    return new Shrinkable(value, () =>
+      this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
+    );
   }
+
   generate(mrng: Random): Shrinkable<number> {
-    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), false);
+    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), undefined);
   }
-  shrink(value: number, shrunkOnce?: boolean): Stream<number> {
-    return shrinkNumber(this.min, this.max, value, shrunkOnce === true);
+
+  contextualShrink(current: number, context?: unknown): Stream<[number, unknown]> {
+    if (current === 0) {
+      return Stream.nil();
+    }
+    if (!IntegerArbitrary.isValidContext(current, context)) {
+      // No context:
+      //   Take default target and shrink towards it
+      //   Try the target on first try
+      const target = this.defaultTarget();
+      return shrinkInteger(current, target, true);
+    }
+    if (this.isLastChanceTry(current, context)) {
+      // Last chance try...
+      // context is set to undefined, so that shrink will restart
+      // without any assumptions in case our try find yet another bug
+      return Stream.of([context, undefined]);
+    }
+    // Normal shrink process
+    return shrinkInteger(current, context, false);
   }
+
+  shrunkOnceContext(): unknown {
+    return this.defaultTarget();
+  }
+
+  private defaultTarget(): number {
+    // min <= 0 && max >= 0   => shrink towards zero
+    if (this.min <= 0 && this.max >= 0) {
+      return 0;
+    }
+    // min < 0                => shrink towards max (closer to zero)
+    // otherwise              => shrink towards min (closer to zero)
+    return this.min < 0 ? this.max : this.min;
+  }
+
+  private isLastChanceTry(current: number, context: number): boolean {
+    // If true...
+    // We already reached what we thought to be the minimal failing value.
+    // But in-between other values may have shrunk (values coming from other arbitraries).
+    // In order to check if they impacted us, we just try to move very close to our current value.
+    // It is not ideal but it can help restart a shrinking process that stopped too early.
+    if (current > 0) return current === context + 1 && current > this.min;
+    if (current < 0) return current === context - 1 && current < this.max;
+    return false;
+  }
+
+  private static isValidContext(current: number, context?: unknown): context is number {
+    // Context contains a value between zero and current that is known to be
+    // the closer to zero passing value*.
+    // *More precisely: our shrinker will not try something closer to zero
+    if (context === undefined) {
+      return false;
+    }
+    if (typeof context !== 'number') {
+      throw new Error(`Invalid context type passed to IntegerArbitrary (#1)`);
+    }
+    if (context !== 0 && Math.sign(current) !== Math.sign(context)) {
+      throw new Error(`Invalid context value passed to IntegerArbitrary (#2)`);
+    }
+    return true;
+  }
+
   private pureBiasedArbitrary(): Arbitrary<number> {
     if (this.biasedIntegerArbitrary != null) {
       return this.biasedIntegerArbitrary;
@@ -32,6 +97,7 @@ class IntegerArbitrary extends ArbitraryWithShrink<number> {
     this.biasedIntegerArbitrary = biasNumeric<number>(this.min, this.max, IntegerArbitrary, integerLogLike);
     return this.biasedIntegerArbitrary;
   }
+
   withBias(freq: number): Arbitrary<number> {
     return biasWrapper(freq, this, (originalArbitrary: IntegerArbitrary) => originalArbitrary.pureBiasedArbitrary());
   }
@@ -88,7 +154,7 @@ function extractIntegerConstraints(args: [] | [number] | [number, number] | [Int
  * For integers between -2147483648 (included) and 2147483647 (included)
  * @public
  */
-function integer(): ArbitraryWithShrink<number>;
+function integer(): ArbitraryWithContextualShrink<number>;
 /**
  * For integers between -2147483648 (included) and max (included)
  *
@@ -100,7 +166,7 @@ function integer(): ArbitraryWithShrink<number>;
  *
  * @public
  */
-function integer(max: number): ArbitraryWithShrink<number>;
+function integer(max: number): ArbitraryWithContextualShrink<number>;
 /**
  * For integers between min (included) and max (included)
  *
@@ -112,7 +178,7 @@ function integer(max: number): ArbitraryWithShrink<number>;
  *
  * @public
  */
-function integer(min: number, max: number): ArbitraryWithShrink<number>;
+function integer(min: number, max: number): ArbitraryWithContextualShrink<number>;
 /**
  * For integers between min (included) and max (included)
  *
@@ -120,8 +186,10 @@ function integer(min: number, max: number): ArbitraryWithShrink<number>;
  *
  * @public
  */
-function integer(constraints: IntegerConstraints): ArbitraryWithShrink<number>;
-function integer(...args: [] | [number] | [number, number] | [IntegerConstraints]): ArbitraryWithShrink<number> {
+function integer(constraints: IntegerConstraints): ArbitraryWithContextualShrink<number>;
+function integer(
+  ...args: [] | [number] | [number, number] | [IntegerConstraints]
+): ArbitraryWithContextualShrink<number> {
   const constraints = buildCompleteIntegerConstraints(extractIntegerConstraints(args));
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
@@ -133,7 +201,7 @@ function integer(...args: [] | [number] | [number, number] | [IntegerConstraints
  * For integers between Number.MIN_SAFE_INTEGER (included) and Number.MAX_SAFE_INTEGER (included)
  * @public
  */
-function maxSafeInteger(): ArbitraryWithShrink<number> {
+function maxSafeInteger(): ArbitraryWithContextualShrink<number> {
   return integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
 }
 
@@ -153,7 +221,7 @@ export interface NatConstraints {
  * For positive integers between 0 (included) and 2147483647 (included)
  * @public
  */
-function nat(): ArbitraryWithShrink<number>;
+function nat(): ArbitraryWithContextualShrink<number>;
 /**
  * For positive integers between 0 (included) and max (included)
  *
@@ -164,7 +232,7 @@ function nat(): ArbitraryWithShrink<number>;
  *
  * @public
  */
-function nat(max: number): ArbitraryWithShrink<number>;
+function nat(max: number): ArbitraryWithContextualShrink<number>;
 /**
  * For positive integers between 0 (included) and max (included)
  *
@@ -172,8 +240,8 @@ function nat(max: number): ArbitraryWithShrink<number>;
  *
  * @public
  */
-function nat(constraints: NatConstraints): ArbitraryWithShrink<number>;
-function nat(arg?: number | NatConstraints): ArbitraryWithShrink<number> {
+function nat(constraints: NatConstraints): ArbitraryWithContextualShrink<number>;
+function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<number> {
   const max = typeof arg === 'number' ? arg : arg && arg.max !== undefined ? arg.max : IntegerArbitrary.MAX_INT;
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
@@ -185,7 +253,7 @@ function nat(arg?: number | NatConstraints): ArbitraryWithShrink<number> {
  * For positive integers between 0 (included) and Number.MAX_SAFE_INTEGER (included)
  * @public
  */
-function maxSafeNat(): ArbitraryWithShrink<number> {
+function maxSafeNat(): ArbitraryWithContextualShrink<number> {
   return nat(Number.MAX_SAFE_INTEGER);
 }
 

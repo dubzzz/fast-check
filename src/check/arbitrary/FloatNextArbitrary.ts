@@ -15,7 +15,7 @@ const INDEX_NEGATIVE_INFINITY = -2139095041; // floatToIndex(-MAX_VALUE_32) - 1
 
 /**
  * Decompose a 32-bit floating point number into a significand and exponent
- * such as:
+ * such that:
  * - significand over 24 bits including sign (also referred as fraction)
  * - exponent over 8 bits including sign
  * - whenever there are multiple possibilities we take the one having the highest significand (in abs)

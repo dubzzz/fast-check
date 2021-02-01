@@ -7,7 +7,7 @@ import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { frequency } from './FrequencyArbitrary';
-import { integer } from './IntegerArbitrary';
+import { maxSafeInteger } from './IntegerArbitrary';
 import { memo, Memo } from './MemoArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { set } from './SetArbitrary';
@@ -15,6 +15,17 @@ import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { bigInt } from './BigIntArbitrary';
 import { date } from './DateArbitrary';
+import {
+  float32Array,
+  float64Array,
+  int16Array,
+  int32Array,
+  int8Array,
+  uint16Array,
+  uint32Array,
+  uint8Array,
+  uint8ClampedArray,
+} from './TypedArrayArbitrary';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -68,6 +79,11 @@ export interface ObjectConstraints {
   withBigInt?: boolean;
   /** Also generate Date */
   withDate?: boolean;
+  /**
+   * Also generate typed arrays in: (Uint|Int)(8|16|32)Array and Float(32|64)Array
+   * Remark: no typed arrays made of bigint
+   */
+  withTypedArray?: boolean;
 }
 
 /**
@@ -84,6 +100,25 @@ export interface JsonSharedConstraints {
 }
 
 /** @internal */
+export function boxArbitrary(arb: Arbitrary<unknown>): Arbitrary<unknown> {
+  return arb.map((v) => {
+    switch (typeof v) {
+      case 'boolean':
+        // tslint:disable-next-line:no-construct
+        return new Boolean(v);
+      case 'number':
+        // tslint:disable-next-line:no-construct
+        return new Number(v);
+      case 'string':
+        // tslint:disable-next-line:no-construct
+        return new String(v);
+      default:
+        return v;
+    }
+  });
+}
+
+/** @internal */
 class QualifiedObjectConstraints {
   constructor(
     readonly key: Arbitrary<string>,
@@ -95,7 +130,8 @@ class QualifiedObjectConstraints {
     readonly withObjectString: boolean,
     readonly withNullPrototype: boolean,
     readonly withBigInt: boolean,
-    readonly withDate: boolean
+    readonly withDate: boolean,
+    readonly withTypedArray: boolean
   ) {}
 
   /**
@@ -104,44 +140,15 @@ class QualifiedObjectConstraints {
   static defaultValues(): Arbitrary<unknown>[] {
     return [
       boolean(),
-      integer(),
-      double(),
+      maxSafeInteger(), // includes: 0, MIN_SAFE_INTEGER, MAX_SAFE_INTEGER
+      double({ next: true }), // includes: -/+0, -/+inf, -/+MIN_VALUE, -/+MAX_VALUE, NaN
       string(),
       oneof(string(), constant(null), constant(undefined)),
-      oneof(
-        double(),
-        constant(-0),
-        constant(0),
-        constant(Number.NaN),
-        constant(Number.POSITIVE_INFINITY),
-        constant(Number.NEGATIVE_INFINITY),
-        constant(Number.EPSILON),
-        constant(Number.MIN_VALUE),
-        constant(Number.MAX_VALUE),
-        constant(Number.MIN_SAFE_INTEGER),
-        constant(Number.MAX_SAFE_INTEGER)
-      ),
     ];
   }
 
   private static boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
-    return arbs.map((arb) =>
-      arb.map((v) => {
-        switch (typeof v) {
-          case 'boolean':
-            // tslint:disable-next-line:no-construct
-            return new Boolean(v);
-          case 'number':
-            // tslint:disable-next-line:no-construct
-            return new Number(v);
-          case 'string':
-            // tslint:disable-next-line:no-construct
-            return new String(v);
-          default:
-            return v;
-        }
-      })
-    );
+    return arbs.map((arb) => boxArbitrary(arb));
   }
 
   private static boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
@@ -165,7 +172,8 @@ class QualifiedObjectConstraints {
       orDefault(settings.withObjectString, false),
       orDefault(settings.withNullPrototype, false),
       orDefault(settings.withBigInt, false),
-      orDefault(settings.withDate, false)
+      orDefault(settings.withDate, false),
+      orDefault(settings.withTypedArray, false)
     );
   }
 }
@@ -223,7 +231,20 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
       ...(constraints.withNullPrototype ? [objectArb().map((o) => Object.assign(Object.create(null), o))] : []),
       ...(constraints.withBigInt ? [bigInt()] : []),
-      ...(constraints.withDate ? [date()] : [])
+      ...(constraints.withDate ? [date()] : []),
+      ...(constraints.withTypedArray
+        ? [
+            int8Array(),
+            uint8Array(),
+            uint8ClampedArray(),
+            int16Array(),
+            uint16Array(),
+            int32Array(),
+            uint32Array(),
+            float32Array(),
+            float64Array(),
+          ]
+        : [])
     );
   });
 
@@ -317,7 +338,13 @@ function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unkno
 /** @internal */
 function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number | JsonSharedConstraints) {
   const key = stringArbitrary;
-  const values = [boolean(), integer(), double(), stringArbitrary, constant(null)];
+  const values = [
+    boolean(),
+    maxSafeInteger(),
+    double({ next: true, noDefaultInfinity: true, noNaN: true }),
+    stringArbitrary,
+    constant(null),
+  ];
   return constraints != null
     ? typeof constraints === 'number'
       ? { key, values, maxDepth: constraints }

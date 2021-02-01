@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`RandomEnough (seed: ${seed})`, () => {
   it('should not repeat values when noBias enabled', () => {
     const alreadySeenValues = new Set<string>();

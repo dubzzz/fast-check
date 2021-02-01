@@ -12,7 +12,7 @@ A property is just something like:
 
 > for all (x, y, ...)
 >
-> such as precondition(x, y, ...) holds
+> such that precondition(x, y, ...) holds
 >
 > property(x, y, ...) is true
 

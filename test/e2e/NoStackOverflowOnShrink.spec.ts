@@ -1,4 +1,5 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 import * as prand from 'pure-rand';
 
 const computeMaximalStackSize = () => {
@@ -27,7 +28,6 @@ const maxDepthForArrays = 40000;
 // The aim is to check if asking for the first maxShrinksToAsk might trigger unwanted stack overflows
 const maxShrinksToAsk = 100;
 
-const seed = Date.now();
 describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
   const iterateOverShrunkValues = <T>(s: fc.Shrinkable<T>) => {
     const it = s.shrink().take(maxShrinksToAsk)[Symbol.iterator]();

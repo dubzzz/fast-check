@@ -412,7 +412,7 @@ describe('Runner', () => {
               return new Shrinkable([1], () => new Stream(g())) as Shrinkable<[number]>;
             },
             run: async (_value: [number]) => {
-              await new Promise((resolve) => {
+              await new Promise<void>((resolve) => {
                 waitingResolve.push(resolve);
               });
               return ++numCallsRun < num ? null : 'error';

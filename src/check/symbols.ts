@@ -10,7 +10,7 @@
  *
  * @public
  */
-export const cloneMethod = Symbol.for('fast-check/cloneMethod');
+export const cloneMethod = Symbol('fast-check/cloneMethod');
 
 /** @internal */
 export interface WithCloneMethod<T> {

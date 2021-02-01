@@ -1,4 +1,5 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
 type Tree = Node | Leaf;
 type Node = {
@@ -7,7 +8,6 @@ type Node = {
 };
 type Leaf = number;
 
-const seed = Date.now();
 describe(`MemoArbitrary (seed: ${seed})`, () => {
   describe('memo', () => {
     it('Should be able to build deep tree instances (manual depth)', () => {

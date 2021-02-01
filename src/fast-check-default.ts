@@ -136,10 +136,25 @@ import {
 } from './check/arbitrary/AsyncSchedulerArbitrary';
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/ArbitraryWithContextualShrink';
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
 import { FloatNextConstraints } from './check/arbitrary/FloatNextArbitrary';
+import {
+  float32Array,
+  float64Array,
+  Float32ArrayConstraints,
+  int16Array,
+  int32Array,
+  int8Array,
+  IntArrayConstraints,
+  uint16Array,
+  uint32Array,
+  uint8Array,
+  uint8ClampedArray,
+  Float64ArrayConstraints,
+} from './check/arbitrary/TypedArrayArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -275,6 +290,15 @@ export {
   emailAddress,
   uuid,
   uuidV,
+  int8Array,
+  uint8Array,
+  uint8ClampedArray,
+  int16Array,
+  uint16Array,
+  int32Array,
+  uint32Array,
+  float32Array,
+  float64Array,
   // model-based
   AsyncCommand,
   Command,
@@ -294,6 +318,7 @@ export {
   // extend the framework
   Arbitrary,
   ArbitraryWithShrink,
+  ArbitraryWithContextualShrink,
   Shrinkable,
   cloneMethod,
   // print values
@@ -307,8 +332,11 @@ export {
   CommandsContraints,
   DoubleConstraints,
   FalsyContraints,
+  Float32ArrayConstraints,
+  Float64ArrayConstraints,
   FloatConstraints,
   FloatNextConstraints,
+  IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,
   LoremConstraints,

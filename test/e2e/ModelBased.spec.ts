@@ -1,4 +1,5 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
 interface IList<T> {
   push(v: T): void;
@@ -43,7 +44,6 @@ const allCommands = [
   fc.constant(new SizeCommand()),
 ];
 
-const seed = Date.now();
 describe(`Model Based (seed: ${seed})`, () => {
   it('should not detect any issue on built-in list', () => {
     fc.assert(

@@ -1,0 +1,10 @@
+{
+  "name": "deploy-netlify",
+  "main": "index.cjs",
+  "private": true,
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "netlify-cli": "^3.4.6"
+  }
+}

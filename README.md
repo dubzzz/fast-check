@@ -13,9 +13,10 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/-API Reference-%23282ea9.svg" title="API Reference" /></a>
 </p>
 <p align="center">
-  <a href="https://coveralls.io/github/dubzzz/fast-check"><img src="https://coveralls.io/repos/github/dubzzz/fast-check/badge.svg" alt="Coverage Status" /></a>
-  <a href="https://david-dm.org/dubzzz/fast-check"><img src="https://david-dm.org/dubzzz/fast-check/status.svg" alt="dependencies Status" /></a>
-  <a href="https://david-dm.org/dubzzz/fast-check?type=dev"><img src="https://david-dm.org/dubzzz/fast-check/dev-status.svg" alt="devDependencies Status" /></a>
+  <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/master"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/master/graph/badge.svg?flag=unit-tests&precision=0" alt="Coverage Status (unit tests)" /></a>
+  <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
+  <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
+  <a href="https://dependabot.com/compatibility-score/?dependency-name=fast-check&package-manager=npm_and_yarn&version-scheme=semver"><img src="https://img.shields.io/dependabot/semver/npm_and_yarn/fast-check" alt="Semver stability" /></a>
 </p>
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/labels/good%20first%20issue"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
@@ -27,7 +28,7 @@ Property based testing framework for JavaScript/TypeScript
 
 Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?previewwindow=tests).
 
-Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such as precondition(x, y, ...) holds property(x, y, ...) is true*.
+Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such that precondition(x, y, ...) holds property(x, y, ...) is true*.
 
 Install the module with: `yarn add fast-check --dev` or `npm install fast-check --save-dev`
 
@@ -41,17 +42,17 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
 describe('properties', () => {
-	// string text always contains itself
-	it('should always contain itself', () => {
-		fc.assert(fc.property(fc.string(), text => contains(text, text)));
-	});
-	// string a + b + c always contains b, whatever the values of a, b and c
-	it('should always contain its substrings', () => {
-		fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
-			// Alternatively: no return statement and direct usage of expect or assert
-			return contains(a+b+c, b);
-		}));
-	});
+  // string text always contains itself
+  it('should always contain itself', () => {
+    fc.assert(fc.property(fc.string(), text => contains(text, text)));
+  });
+  // string a + b + c always contains b, whatever the values of a, b and c
+  it('should always contain its substrings', () => {
+    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
+      // Alternatively: no return statement and direct usage of expect or assert
+      return contains(a+b+c, b);
+    }));
+  });
 });
 ```
 

@@ -1,5 +1,6 @@
 import * as fc from '../../src/fast-check';
 import * as prand from 'pure-rand';
+import { seed } from './seed';
 
 // Fake commands
 type Model = { counter: number };
@@ -24,7 +25,6 @@ class AlwaysPos implements fc.Command<Model, Real> {
   toString = () => `AlwaysPos()`;
 }
 
-const seed = Date.now();
 describe(`ReplayCommands (seed: ${seed})`, () => {
   const buildProp = (replayPath?: string, mrng?: fc.Random) => {
     let alreadyFailed = false;

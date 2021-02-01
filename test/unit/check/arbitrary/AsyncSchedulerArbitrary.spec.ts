@@ -43,7 +43,7 @@ describe('AsyncSchedulerArbitrary', () => {
         // Arrange
         const buildUnresolved = () => {
           let resolve = () => {};
-          const p = new Promise((r) => (resolve = r));
+          const p = new Promise<void>((r) => (resolve = r));
           return { p, resolve };
         };
         const delay = () => new Promise((r) => setTimeout(r, 0));

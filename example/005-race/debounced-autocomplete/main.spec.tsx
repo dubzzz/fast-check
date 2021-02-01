@@ -32,7 +32,7 @@ describe('DebouncedAutocomplete', () => {
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1)),
+                builder: async () => await userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1)),
               }))
             );
             await waitAllWithTimers(s);
@@ -70,7 +70,8 @@ describe('DebouncedAutocomplete', () => {
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1), { delay: 0 }),
+                builder: async () =>
+                  await userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1), { delay: 0 }),
               }))
             );
             await s.waitAll();

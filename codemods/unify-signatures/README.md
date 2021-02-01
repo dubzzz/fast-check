@@ -1,4 +1,4 @@
-# Codemod - Unify signatures accross arbitraries
+# Codemod - Unify signatures across arbitraries
 _A single way to customize arbitaries of fast-check_
 
 ---

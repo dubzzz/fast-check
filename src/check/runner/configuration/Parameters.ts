@@ -13,8 +13,8 @@ export interface Parameters<T = void> {
    *
    * It can be forced to replay a failed run.
    *
-   * In theory, seeds are supposed to be 32 bits integers.
-   * In case of double value, the seed will be rescaled into a valid 32 bits integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
+   * In theory, seeds are supposed to be 32-bit integers.
+   * In case of double value, the seed will be rescaled into a valid 32-bit integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
    */
   seed?: number;
   /**
@@ -70,7 +70,7 @@ export interface Parameters<T = void> {
    * WARNING:
    * If the test got interrupted before any failure occured
    * and before it reached the requested number of runs specified by `numRuns`
-   * it will be marked as success. Except if `markInterruptAsFailure` as been set to `true`
+   * it will be marked as success. Except if `markInterruptAsFailure` has been set to `true`
    */
   interruptAfterTimeLimit?: number;
   /**

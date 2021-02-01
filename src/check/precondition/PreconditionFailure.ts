@@ -3,7 +3,7 @@
  * @public
  */
 export class PreconditionFailure extends Error {
-  private static readonly SharedFootPrint: symbol = Symbol.for('fast-check/PreconditionFailure');
+  private static readonly SharedFootPrint: symbol = Symbol('fast-check/PreconditionFailure');
   private readonly footprint: symbol;
   constructor(readonly interruptExecution: boolean = false) {
     super();
