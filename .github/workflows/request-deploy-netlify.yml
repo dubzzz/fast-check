@@ -10,7 +10,7 @@ jobs:
   deploy_netlify:
     name: 'Deploy to Netlify'
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request
+    if: github.event.issue.pull_request && startsWith(github.event.issue_comment.comment.body, '@github-actions') && contains(github.event.issue_comment.comment.body, 'deploy')
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
