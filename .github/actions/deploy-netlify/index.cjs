@@ -28,11 +28,6 @@ async function run() {
   const context = github.context;
   const token = core.getInput('token', { required: true });
 
-  if (context.eventName !== 'pull_request') {
-    core.setFailed(`deploy-netlify can only be used on pull_request`);
-    return;
-  }
-
   const { err, stdout: commitMessage } = await execAsync('git log -1 --format=%s');
   if (err && err.code) {
     core.setFailed(`deploy-netlify failed to get back commit hash, failed with error: ${err}`);
