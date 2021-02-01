@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v2.1.4
         with:
           node-version: '14.x'
-      - name: Install dependencies
+      - name: Install github-actions-comments dependencies
         run: |
           cd ./.github/actions/github-actions-comments
           yarn --frozen-lockfile
@@ -31,7 +31,7 @@ jobs:
         run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Install dependencies
+      - name: Install fast-check dependencies
         run: yarn --frozen-lockfile
       - name: Build package
         run: yarn build:prod-ci
@@ -41,7 +41,7 @@ jobs:
         run: |
           yarn pack
           mv fast-check-*.tgz docs/fast-check.tgz
-      - name: Install dependencies
+      - name: Install deploy-netlify dependencies
         run: |
           cd ./.github/actions/deploy-netlify
           yarn --frozen-lockfile
