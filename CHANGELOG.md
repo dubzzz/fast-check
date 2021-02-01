@@ -1,3 +1,19 @@
+# 2.12.1
+
+_Avoid unsafe eval_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.12.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.12.0...v2.12.1)]
+
+## Fixes
+
+- ([PR#1408](https://github.com/dubzzz/fast-check/pull/1408)) Bug/Security: Avoid using unsafe-eval in implementation of getGlobal
+- ([PR#1389](https://github.com/dubzzz/fast-check/pull/1389)) Doc: Add badge from packagequality.com
+- ([PR#1391](https://github.com/dubzzz/fast-check/pull/1391)) Doc: Setup a security policy
+- ([PR#1392](https://github.com/dubzzz/fast-check/pull/1392)) Doc: Add a code of conduct
+- ([PR#1390](https://github.com/dubzzz/fast-check/pull/1390)) Doc: Add Snyk badge for package quality
+- ([PR#1393](https://github.com/dubzzz/fast-check/pull/1393)) Doc: Add semver stability badge
+- ([PR#1394](https://github.com/dubzzz/fast-check/pull/1394)) Doc: Remove dependencies related badges
+- ([PR#1395](https://github.com/dubzzz/fast-check/pull/1395)) Doc: Correct misspellings & other errors in English
+
 # 2.12.0
 
 _More efficient shrinkers_
