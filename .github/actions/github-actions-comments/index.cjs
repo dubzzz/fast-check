@@ -17,6 +17,7 @@ async function run() {
   const comment = context.payload.comment;
   if (comment === undefined || !('body' in comment)) {
     core.setFailed(`Unable to access the body of the comment`);
+    return;
   }
   const commentBody = context.payload.comment.body;
 
@@ -33,6 +34,10 @@ async function run() {
   core.info(`adminRequirementsFulfilled: ${adminRequirementsFulfilled}`);
 
   const acceptedAction = requestToBot && actionFound && adminRequirementsFulfilled;
+  if (!acceptedAction) {
+    core.setFailed(`Invalid command for: "@github-actions ${action}"`);
+    return;
+  }
   core.setOutput('valid_comment', acceptedAction);
   core.setOutput('pull_number', context.issue.number);
 }
