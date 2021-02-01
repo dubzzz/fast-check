@@ -31,6 +31,12 @@ jobs:
         run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Configure git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Merge with master
+        run: git merge master
       - name: Install fast-check dependencies
         run: yarn --frozen-lockfile
       - name: Build package
