@@ -26,6 +26,7 @@ jobs:
         uses: ./.github/actions/github-actions-comments
         with:
           action: 'deploy'
+          reaction: 'rocket'
           require_admin: true
       - name: Checkout Pull Request
         run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"

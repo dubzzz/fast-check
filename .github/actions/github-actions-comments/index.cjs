@@ -19,6 +19,7 @@ async function run() {
   const action = core.getInput('action', { required: true });
   const token = core.getInput('token');
   const requireAdmin = core.getInput('require_admin');
+  const reaction = core.getInput('reaction') || '+1';
   const octokit = github.getOctokit(token);
 
   const comment = context.payload.comment;
@@ -49,10 +50,10 @@ async function run() {
   core.setOutput('pull_number', context.issue.number);
 
   try {
-    await octokit.reactions.createForCommitComment({
+    await octokit.reactions.createForIssueComment({
       ...context.repo,
       comment_id: comment.id,
-      content: 'rocket',
+      content: reaction,
     });
   } catch (err) {
     core.info(`Failed to add a reaction, got error: ${err}`);
