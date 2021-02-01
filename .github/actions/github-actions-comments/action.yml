@@ -1,0 +1,16 @@
+name: 'GitHub Actions comments'
+description: 'Trigger GitHub Actions from comments'
+inputs:
+  token:
+    description: 'GITHUB_TOKEN'
+    default: ${{github.token}}
+    required: false
+  action:
+    description: 'Name of the action'
+    required: true
+  require_admin:
+    description: 'Does it require an admin?'
+    required: false
+runs:
+  using: 'node12'
+  main: 'index.cjs'
