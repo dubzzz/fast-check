@@ -22,20 +22,13 @@ jobs:
           cd ./.github/actions/github-actions-comments
           yarn --frozen-lockfile
       - name: Check comment
+        id: check_comment
         uses: ./.github/actions/github-actions-comments
         with:
           action: 'deploy'
           require_admin: true
-  deploy:
-    name: 'Deploy to Netlify'
-    runs-on: ubuntu-latest
-    if: steps.run_workflow_check.outputs.valid_comment == 'true'
-    needs:
-      - run_workflow_check
-    steps:
-      - uses: actions/checkout@v2
       - name: Checkout Pull Request
-        run: hub pr checkout "${{steps.run_workflow_check.outputs.pull_number}}"
+        run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Using Node v14.x
