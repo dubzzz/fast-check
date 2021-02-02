@@ -5,6 +5,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 ## Table of contents
 
 - [Filter invalid combinations using pre-conditions](#filter-invalid-combinations-using-pre-conditions)
+- [Value depending on another one](#value-depending-on-another-one)
 - [Model based testing or UI test](#model-based-testing-or-ui-test)
 - [Detect race conditions](#detect-race-conditions)
 - [Opt for verbose failures](#opt-for-verbose-failures)
@@ -52,6 +53,76 @@ The advantage of `fc.pre(...)` over `.filter(...)` is that runs having too many 
 However when your arbitrary is safe enough, switching to `.filter(...)` might be considered for two reasons:
 - easier to share the arbitrary across multiple tests
 - higher performances - contrary to `fc.pre`, `fc.filter` is not exception-based making it faster
+
+## Value depending on another one
+
+A frequently asked question is: _How to build two values depending from each others with fast-check?_
+
+There are multiple ways to do that and all of them have their strengths: easier to write, faster to run, more efficient for shrinking...
+Let's dig into some of them through a very simple example: we want to generate `a` and `b` such that `a ≤ b`.
+
+**Option 1** - `.filter` - discards half of the generated values, can infinitely loop if condition is too strict
+
+```js
+fc.assert(
+  fc.property(
+    fc.tuple(fc.nat(), fc.nat()).filter(([a, b]) => a <= b),
+    ([a, b]) => {
+      expect(a).toBeGreaterThanOrEqualTo(b);
+    }
+  )
+);
+```
+
+**Option 2** - `fc.pre` - discards half of the generated values, stop when too many retries
+
+```js
+fc.assert(
+  fc.property(fc.nat(), fc.nat(), (a, b) => {
+    fc.pre(a <= b);
+    expect(a).toBeGreaterThanOrEqualTo(b);
+  })
+);
+```
+
+**Option 3** - `.chain` - shrinker might not shrink towards minimal cases
+
+```js
+fc.assert(
+  fc.property(
+    fc.nat().chain((n) => fc.tuple(fc.nat({ max: n }), fc.constant(n))),
+    ([a, b]) => {
+      expect(a).toBeGreaterThanOrEqualTo(b);
+    }
+  )
+);
+```
+
+**Option 4** - `.map` - sometimes complex to write
+
+```js
+fc.assert(
+  fc.property(
+    fc.tuple(fc.nat(), fc.nat()).map(([a, b]) => (a <= b ? [a, b] : [b, a])),
+    ([a, b]) => {
+      expect(a).toBeGreaterThanOrEqualTo(b);
+    }
+  )
+);
+```
+
+or
+
+```js
+fc.assert(
+  fc.property(
+    fc.tuple(fc.nat(), fc.nat()).map(([a, b]) => [a, a + b]),
+    ([a, b]) => {
+      expect(a).toBeGreaterThan(b);
+    }
+  )
+);
+```
 
 ## Model based testing or UI test
 
