@@ -89,6 +89,44 @@ describe('stringify', () => {
     const repr = stringify(cyclic);
     expect(repr).toEqual('[1,2,3,[cyclic],4]');
   });
+  it('Should be able to stringify small sparse arrays', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([,])).toEqual('[,]'); // empty with one hole
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([, ,])).toEqual('[,,]'); // empty with two holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([, , , ,])).toEqual('[,,,,]'); // empty with four holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, , ,])).toEqual('[1,,,]'); // one value then two holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([, , 1, , 2])).toEqual('[,,1,,2]'); // two holes non-trailing holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, , 2])).toEqual('[1,,2]'); // one hole non-trailing hole
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, 2, ,])).toEqual('[1,2,,]'); // two values then one hole
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, 2, , ,])).toEqual('[1,2,,,]'); // two values then two holes
+  });
+  it('Should be able to stringify large sparse arrays', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify(Array(10000))).toEqual('Array(10000)');
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify(Array(4294967295))).toEqual('Array(4294967295)');
+    // eslint-disable-next-line no-sparse-arrays
+    const sparseNonEmpty: any[] = Array(10000);
+    sparseNonEmpty[150] = 5;
+    sparseNonEmpty[21] = 1;
+    sparseNonEmpty[200] = 10;
+    expect(stringify(sparseNonEmpty)).toEqual('Object.assign(Array(10000),{21:1,150:5,200:10})');
+    // Here are some possibilities for sparse versions:
+    // > (s=Array(10000),s[21]=1,s[150]=5,s[200]=10,s)
+    // > (()=>{const s=Array(10000);s[21]=1;s[150]=5;s[200]=10;return s;})()
+    // > Object.assign(Array(10000), {21:1,150:5,200:10})
+    // > [<20 empty slots>, 1,...] [cannot be copy-pasted]
+    const sparseNonEmptyB: any[] = Array(4294967295);
+    sparseNonEmptyB[1234567890] = 5;
+    expect(stringify(sparseNonEmptyB)).toEqual('Object.assign(Array(4294967295),{1234567890:5})');
+  });
   it('Should be able to stringify cyclic sets', () => {
     const cyclic: Set<any> = new Set([1, 2, 3]);
     cyclic.add(cyclic);
