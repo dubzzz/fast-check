@@ -228,7 +228,7 @@ jobs:
       - name: Test test/type/
         run: |
           cd test/type
-          npx -p typescript@${{matrix.ts-version}} tsc --strict
+          npx -p typescript@${{matrix.ts-version}} tsc
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
