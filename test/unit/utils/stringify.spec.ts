@@ -126,6 +126,10 @@ describe('stringify', () => {
     const sparseNonEmptyB: any[] = Array(4294967295);
     sparseNonEmptyB[1234567890] = 5;
     expect(stringify(sparseNonEmptyB)).toEqual('Object.assign(Array(4294967295),{1234567890:5})');
+    const sparseNonEmptyC: any[] = Array(123456);
+    sparseNonEmptyC[0] = 0;
+    sparseNonEmptyC[1] = 1;
+    expect(stringify(sparseNonEmptyC)).toEqual('Object.assign(Array(123456),{0:0,1:1})');
   });
   it('Should be able to stringify cyclic sets', () => {
     const cyclic: Set<any> = new Set([1, 2, 3]);
