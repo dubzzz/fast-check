@@ -31,6 +31,17 @@ function stringifyNumber(numValue: number) {
 }
 
 /** @internal */
+function isSparseArray(arr: unknown[]): boolean {
+  let previousNumberedIndex = -1;
+  for (const index in arr) {
+    const numberedIndex = Number(index);
+    if (numberedIndex !== previousNumberedIndex + 1) return true; // we've got a hole
+    previousNumberedIndex = numberedIndex;
+  }
+  return previousNumberedIndex + 1 !== arr.length; // we've got a hole if length does not match
+}
+
+/** @internal */
 export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string {
   const currentValues = previousValues.concat([value]);
   if (typeof value === 'object') {
@@ -38,8 +49,27 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
     if (previousValues.indexOf(value) !== -1) return '[cyclic]';
   }
   switch (Object.prototype.toString.call(value)) {
-    case '[object Array]':
-      return `[${(value as any).map((v: any) => stringifyInternal(v, currentValues)).join(',')}]`;
+    case '[object Array]': {
+      const arr = (value as unknown) as unknown[];
+      if (arr.length >= 50 && isSparseArray(arr)) {
+        const assignments: string[] = [];
+        // Discarded: map then join will still show holes
+        // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
+        for (const index in arr) {
+          if (!Number.isNaN(Number(index)))
+            assignments.push(`${index}:${stringifyInternal(arr[index], currentValues)}`);
+        }
+        return assignments.length !== 0
+          ? `Object.assign(Array(${arr.length}),{${assignments.join(',')}})`
+          : `Array(${arr.length})`;
+      }
+      // stringifiedArray results in: '' for [,]
+      // stringifiedArray results in: ',' for [,,]
+      // stringifiedArray results in: '1,' for [1,,]
+      // stringifiedArray results in: '1,,2' for [1,,2]
+      const stringifiedArray = arr.map((v) => stringifyInternal(v, currentValues)).join(',');
+      return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
+    }
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]':
