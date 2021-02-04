@@ -1,4 +1,5 @@
 import { maxLengthFromMinLength } from './ArrayArbitrary';
+import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from './IntegerArbitrary';
 import { set } from './SetArbitrary';
@@ -62,6 +63,9 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   const resultedMaxNumElements = Math.min(maxNumElements, maxLength);
 
   if (noTrailingHole) {
+    if (maxLength === 0) {
+      return constant([]);
+    }
     return set(tuple(nat(maxLength - 1), arb), {
       minLength: minNumElements,
       maxLength: resultedMaxNumElements,

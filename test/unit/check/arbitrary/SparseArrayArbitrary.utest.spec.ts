@@ -13,6 +13,43 @@ jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
 jest.mock('../../../../src/check/arbitrary/SetArbitrary');
 jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
 
+const validSparseArrayConstraints = (removedKeys: (keyof SparseArrayConstraints)[] = []) =>
+  fc
+    .record(
+      {
+        maxLength: removedKeys.includes('maxLength') ? fc.constant(undefined) : fc.nat(),
+        minNumElements: removedKeys.includes('minNumElements') ? fc.constant(undefined) : fc.nat(),
+        maxNumElements: removedKeys.includes('maxNumElements') ? fc.constant(undefined) : fc.nat(),
+        noTrailingHole: removedKeys.includes('noTrailingHole') ? fc.constant(undefined) : fc.boolean(),
+      },
+      { requiredKeys: [] }
+    )
+    .map((ct) => {
+      // We use map there in order not to filter on generated values
+      if (ct.minNumElements !== undefined && ct.maxNumElements !== undefined && ct.minNumElements > ct.maxNumElements) {
+        return { ...ct, minNumElements: ct.maxNumElements, maxNumElements: ct.minNumElements };
+      }
+      return ct;
+    })
+    .map((ct) => {
+      // We use map there in order not to filter on generated values
+      if (ct.minNumElements !== undefined && ct.maxLength !== undefined && ct.minNumElements > ct.maxLength) {
+        return { ...ct, minNumElements: ct.maxLength, maxLength: ct.minNumElements };
+      }
+      return ct;
+    });
+
+function isLimitNoTrailingCase(ct?: SparseArrayConstraints): boolean {
+  // In that precise case the only solution is a simple constant equal to []
+  return ct !== undefined && !!ct.noTrailingHole && ct.maxLength === 0;
+}
+
+class FakeArbitrary extends Arbitrary<unknown> {
+  generate(): Shrinkable<unknown, unknown> {
+    throw new Error('Method not implemented.');
+  }
+}
+
 const beforeEachFunction = () => {
   jest.clearAllMocks();
 };
@@ -25,6 +62,7 @@ describe('SparseArrayArbitrary', () => {
         fc
           .property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
             // Arrange
+            fc.pre(!isLimitNoTrailingCase(ct));
             const { set } = mocked(SetArbitraryMock);
             const { tuple } = mocked(TupleArbitraryMock);
             set.mockImplementationOnce(() => arbitraryFor([{ value: [] }]));
@@ -51,6 +89,7 @@ describe('SparseArrayArbitrary', () => {
         fc
           .property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
             // Arrange
+            fc.pre(!isLimitNoTrailingCase(ct));
             const { set } = mocked(SetArbitraryMock);
             const { tuple } = mocked(TupleArbitraryMock);
             const { nat } = mocked(IntegerArbitraryMock); // called to build indexes
@@ -125,37 +164,3 @@ describe('SparseArrayArbitrary', () => {
     });
   });
 });
-
-// Helpers
-
-const validSparseArrayConstraints = (removedKeys: (keyof SparseArrayConstraints)[] = []) =>
-  fc
-    .record(
-      {
-        maxLength: removedKeys.includes('maxLength') ? fc.constant(undefined) : fc.nat(),
-        minNumElements: removedKeys.includes('minNumElements') ? fc.constant(undefined) : fc.nat(),
-        maxNumElements: removedKeys.includes('maxNumElements') ? fc.constant(undefined) : fc.nat(),
-        noTrailingHole: removedKeys.includes('noTrailingHole') ? fc.constant(undefined) : fc.boolean(),
-      },
-      { requiredKeys: [] }
-    )
-    .map((ct) => {
-      // We use map there in order not to filter on generated values
-      if (ct.minNumElements !== undefined && ct.maxNumElements !== undefined && ct.minNumElements > ct.maxNumElements) {
-        return { ...ct, minNumElements: ct.maxNumElements, maxNumElements: ct.minNumElements };
-      }
-      return ct;
-    })
-    .map((ct) => {
-      // We use map there in order not to filter on generated values
-      if (ct.minNumElements !== undefined && ct.maxLength !== undefined && ct.minNumElements > ct.maxLength) {
-        return { ...ct, minNumElements: ct.maxLength, maxLength: ct.minNumElements };
-      }
-      return ct;
-    });
-
-class FakeArbitrary extends Arbitrary<unknown> {
-  generate(): Shrinkable<unknown, unknown> {
-    throw new Error('Method not implemented.');
-  }
-}
