@@ -1,4 +1,4 @@
-import { sparseArray } from '../../../../src/check/arbitrary/SparseArrayArbitrary';
+import { sparseArray, SparseArrayConstraints } from '../../../../src/check/arbitrary/SparseArrayArbitrary';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { mocked } from 'ts-jest/utils';
@@ -23,7 +23,7 @@ describe('SparseArrayArbitrary', () => {
     it('Should always specify a minLength and maxLength on the underlying set', () => {
       fc.assert(
         fc
-          .property(fc.option(validSparseArrayConstraints, { nil: undefined }), (ct) => {
+          .property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
             // Arrange
             const { set } = mocked(SetArbitraryMock);
             const { tuple } = mocked(TupleArbitraryMock);
@@ -49,7 +49,7 @@ describe('SparseArrayArbitrary', () => {
     it('Should always pass a not too large maxLength to set given the length we expect at the end', () => {
       fc.assert(
         fc
-          .property(fc.option(validSparseArrayConstraints, { nil: undefined }), (ct) => {
+          .property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
             // Arrange
             const { set } = mocked(SetArbitraryMock);
             const { tuple } = mocked(TupleArbitraryMock);
@@ -85,35 +85,74 @@ describe('SparseArrayArbitrary', () => {
           .beforeEach(beforeEachFunction)
       );
     });
+
+    it('Should reject constraints having minNumElements > maxLength', () => {
+      fc.assert(
+        fc.property(
+          validSparseArrayConstraints(['minNumElements', 'maxLength']),
+          fc.nat(4294967295),
+          fc.nat(4294967295),
+          (draftCt, a, b) => {
+            // Arrange
+            fc.pre(a !== b);
+            const ct = { ...draftCt, minNumElements: a > b ? a : b, maxLength: a > b ? b : a };
+            const arb = new FakeArbitrary();
+
+            // Act / Assert
+            expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
+          }
+        )
+      );
+    });
+
+    it('Should reject constraints having minNumElements > maxNumElements', () => {
+      fc.assert(
+        fc.property(
+          validSparseArrayConstraints(['minNumElements', 'maxNumElements']),
+          fc.nat(4294967295),
+          fc.nat(4294967295),
+          (draftCt, a, b) => {
+            // Arrange
+            fc.pre(a !== b);
+            const ct = { ...draftCt, minNumElements: a > b ? a : b, maxNumElements: a > b ? b : a };
+            const arb = new FakeArbitrary();
+
+            // Act / Assert
+            expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
+          }
+        )
+      );
+    });
   });
 });
 
 // Helpers
 
-const validSparseArrayConstraints = fc
-  .record(
-    {
-      maxLength: fc.nat(),
-      minNumElements: fc.nat(),
-      maxNumElements: fc.nat(),
-      noTrailingHole: fc.boolean(),
-    },
-    { requiredKeys: [] }
-  )
-  .map((ct) => {
-    // We use map there in order not to filter on generated values
-    if (ct.minNumElements !== undefined && ct.maxNumElements !== undefined && ct.minNumElements > ct.maxNumElements) {
-      return { ...ct, minNumElements: ct.maxNumElements, maxNumElements: ct.minNumElements };
-    }
-    return ct;
-  })
-  .map((ct) => {
-    // We use map there in order not to filter on generated values
-    if (ct.minNumElements !== undefined && ct.maxLength !== undefined && ct.minNumElements > ct.maxLength) {
-      return { ...ct, minNumElements: ct.maxLength, maxLength: ct.minNumElements };
-    }
-    return ct;
-  });
+const validSparseArrayConstraints = (removedKeys: (keyof SparseArrayConstraints)[] = []) =>
+  fc
+    .record(
+      {
+        maxLength: removedKeys.includes('maxLength') ? fc.constant(undefined) : fc.nat(),
+        minNumElements: removedKeys.includes('minNumElements') ? fc.constant(undefined) : fc.nat(),
+        maxNumElements: removedKeys.includes('maxNumElements') ? fc.constant(undefined) : fc.nat(),
+        noTrailingHole: removedKeys.includes('noTrailingHole') ? fc.constant(undefined) : fc.boolean(),
+      },
+      { requiredKeys: [] }
+    )
+    .map((ct) => {
+      // We use map there in order not to filter on generated values
+      if (ct.minNumElements !== undefined && ct.maxNumElements !== undefined && ct.minNumElements > ct.maxNumElements) {
+        return { ...ct, minNumElements: ct.maxNumElements, maxNumElements: ct.minNumElements };
+      }
+      return ct;
+    })
+    .map((ct) => {
+      // We use map there in order not to filter on generated values
+      if (ct.minNumElements !== undefined && ct.maxLength !== undefined && ct.minNumElements > ct.maxLength) {
+        return { ...ct, minNumElements: ct.maxLength, maxLength: ct.minNumElements };
+      }
+      return ct;
+    });
 
 class FakeArbitrary extends Arbitrary<unknown> {
   generate(): Shrinkable<unknown, unknown> {
