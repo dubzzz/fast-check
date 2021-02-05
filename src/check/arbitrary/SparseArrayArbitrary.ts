@@ -10,7 +10,7 @@ import { tuple } from './TupleArbitrary';
  * @public
  */
 export interface SparseArrayConstraints {
-  /** Upper bound of the generated array size */
+  /** Upper bound of the generated array size (maximal size: 4294967295) */
   maxLength?: number;
   /** Lower bound of the number of non-hole elements */
   minNumElements?: number;
@@ -47,9 +47,9 @@ function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
  */
 export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstraints = {}): Arbitrary<T[]> {
   const {
-    maxLength = 4294967295,
     minNumElements = 0,
     maxNumElements = maxLengthFromMinLength(minNumElements),
+    maxLength = Math.min(maxLengthFromMinLength(maxNumElements), 4294967295),
     noTrailingHole,
   } = constraints;
 

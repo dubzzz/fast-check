@@ -2525,9 +2525,9 @@ fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 *&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
-- `maxLength?` — default: `4294967295` — _maximal length (included) - length includes elements but also holes for sparse arrays_
 - `minNumElements?` — default: `0` — _minimal number of elements (included)_
 - `maxNumElements?` — default: `2 * minNumElements + 10` — _maximal number of elements (included)_
+- `maxLength?` — default: min(`2 * maxNumElements + 10`, `4294967295`) — _maximal length (included) - length includes elements but also holes for sparse arrays_
 - `noTrailingHole?` — default: `false` — _when enabled, all generated arrays will either be the empty array or end by a non-hole_
 
 *&#8195;Usages*
@@ -2562,11 +2562,11 @@ fc.sparseArray(fc.nat(), {maxLength: 20, noTrailingHole: true})
 
 fc.sparseArray(fc.nat())
 // Examples of generated values:
-// • Object.assign(Array(2253333505),{24:7})
-// • Object.assign(Array(4294967291),{1:4687207,3335322172:535782498})
-// • Object.assign(Array(4294967270),{8:2147483632,9:29,1452662249:1935118950,1750686210:791160306,1861276688:444714173,2346542853:1071842921,3605941914:3})
-// • Object.assign(Array(4222821981),{226675544:1993296911,364650750:273021873,648537886:1530566650,1162374748:2043763242,1363793259:1700974328,2073190901:1016859405,2225015063:187425710,3748882302:1953708154,4029720444:783209689,4053890725:956947530})
-// • Object.assign(Array(4079322551),{334867404:1637939285,1043274553:227120261,3117726070:1286355118})
+// • [,,,,7,,,,,,,,,,,,,,]
+// • [,4687207,,,,,,,,,,,,,,,,,,,,,,,,535782498,,]
+// • [,,2147483632,,29,,,,,,,,,,,444714173,,1935118950,,,,,791160306,1071842921,,,1476433628,,]
+// • [,,783209689,,,1953708154,,,,,1993296911,,,273021873,187425710,,,956947530,,2043763242,,,,,,,1016859405,,651418517,1700974328]
+// • [,661680466,,,,,,,,,1637939285,,,,,,,,,,,,1286355118,,,,]
 // • …
 ```
 </details>

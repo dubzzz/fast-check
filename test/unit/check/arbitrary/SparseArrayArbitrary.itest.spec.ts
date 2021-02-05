@@ -7,7 +7,7 @@ const validSparseArrayConstraints = () =>
   fc
     .record(
       {
-        maxLength: fc.nat(),
+        maxLength: fc.nat(100), // Even if full of holes, they still are memory intensive
         minNumElements: fc.nat(100), // we explicitely limit num elements in order
         maxNumElements: fc.nat(100), // to avoid running our tests for too long
         noTrailingHole: fc.boolean(),
@@ -58,7 +58,6 @@ describe('SparseArrayArbitrary', () => {
         // If all the previous checks passed, then array should be ok
         return true;
       },
-      disableShrinkTests: true, // shrinker tests took ages to execute
     });
   });
 });

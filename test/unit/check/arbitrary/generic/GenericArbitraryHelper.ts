@@ -142,7 +142,6 @@ export const isValidArbitrary = function <U, T>(
     isEqual?: (g1: T, g2: T, seed: U) => boolean;
     isStrictlySmallerValue?: (g1: T, g2: T, seed: U) => boolean;
     isValidValue: (g: T, seed: U) => boolean;
-    disableShrinkTests?: boolean;
   },
   parameters?: fc.Parameters<unknown>
 ): void {
@@ -164,10 +163,8 @@ export const isValidArbitrary = function <U, T>(
     } else expect(v1).toStrictEqual(v2);
   };
   testSameSeedSameValues(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
-  if (!settings.disableShrinkTests) {
-    testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
-  }
-  if (!settings.disableShrinkTests && settings.isStrictlySmallerValue != null) {
+  testSameSeedSameShrinks(biasedSeedGenerator, biasedArbitraryBuilder, assertEquality, parameters);
+  if (settings.isStrictlySmallerValue != null) {
     const isStrictlySmallerValue = settings.isStrictlySmallerValue;
     const biasedIsStrictlySmallerValue = (g1: T, g2: T, [_biasedFactor, u]: [number | null, U]) => {
       return isStrictlySmallerValue(g1, g2, u);
@@ -180,9 +177,7 @@ export const isValidArbitrary = function <U, T>(
     );
   }
   testAlwaysGenerateCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue, parameters);
-  if (!settings.disableShrinkTests) {
-    testAlwaysShrinkToCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue, parameters);
-  }
+  testAlwaysShrinkToCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue, parameters);
 };
 
 export const minMax = <NType extends number | bigint>(arb: fc.Arbitrary<NType>) =>
