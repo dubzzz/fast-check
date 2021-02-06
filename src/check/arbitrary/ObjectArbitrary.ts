@@ -239,15 +239,17 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       ...(constraints.withDate ? [date()] : []),
       ...(constraints.withTypedArray
         ? [
-            int8Array(),
-            uint8Array(),
-            uint8ClampedArray(),
-            int16Array(),
-            uint16Array(),
-            int32Array(),
-            uint32Array(),
-            float32Array(),
-            float64Array(),
+            oneof(
+              int8Array(),
+              uint8Array(),
+              uint8ClampedArray(),
+              int16Array(),
+              uint16Array(),
+              int32Array(),
+              uint32Array(),
+              float32Array(),
+              float64Array()
+            ),
           ]
         : []),
       ...(constraints.withSparseArray ? [sparseArray(anythingArb())] : [])

@@ -2805,11 +2805,11 @@ fc.object({
   withTypedArray: true,
 })
 // Examples of generated values:
-// • {"xvT&":Int8Array.from([-51,43,46,-68,76]),"y":Uint8ClampedArray.from([148,35]),"~U%X&":Float64Array.from([-5.744456827877595e+230,9.464442002118316e+148,-8.498170634981481e-35,-4.625725161228645e-268,6.203333251270261e-272,2.0172265060086206e-119])}
-// • {"Rsv1:ZP":Int8Array.from([-88,-77]),"&ZTIJ#Q":Uint8ClampedArray.from([251,16]),"#$|{y":new Set([-6663670308037104,4120023769076003])}
-// • {"p?EZci9K7":Uint8Array.from([177,113,5]),"Je":Object.assign(Object.create(null),{"``Y":{"ErP@8f!\"":new Boolean(false),"=o2Y7C0":false,"TBb(":",t+\\dQ]s0","yk<+zg":-7905580199664567},"Q.IY+)I":Object.assign(Object.create(null),{"qiQ5Ix":-1.1703850503702754e-199})}),")I.":{}}
-// • {"};;j/k&2T":Uint8Array.from([112,162]),"dt\\\\^idcXL":-50730843874051235193727878949081679545337171593170586799838258339249459767377n,"D^Ev\\vt":new Date("-124851-11-03T08:48:46.455Z"),"tXnf1!":Float64Array.from([-4.135363103527259e-149,4.4639133429566616e+223,7.376878736128993e-302,3.011684349001697e+260]),"1vv":{";tJq<":null,"Float64Array.from([7.988678298210363e+103,-5.461176957322894e-61,2.4579845631144577e+112,-1.1327640594111671e-271,-5.923120123690057e+249,2896.800995462597,5.907953532945632e+276,5.15573377848018e-225,-4.786633227596223e-129,4.3346210093498726e-157])":null,"new Set([\"ukV}Hc*\",\"U,.3GJ;W\",\"npc\"])":null,"a&C":null},"'XH]6Z=":Uint8ClampedArray.from([]),"":Float32Array.from([-2.648670260896324e-7,3.328505519015497e-28,-965121048301776400000,7.625496345475824e-10,0.3421240746974945,-2.021202369458726e+27,8301810318720369000,1.1299675464504365e-33,9.006967616187467e-8,-2.7844586358125586e+31]),"M":Uint8ClampedArray.from([77,19])}
-// • {"RrAs^,;_'d":Object.create(null),"cx:<rwea":new Map([["c4^",null],["jRbo{j,=QA",undefined]]),"~_8\\[';}P":new Set([new Boolean(false),new Boolean(false),new Boolean(true),new Boolean(true)])}
+// • {"xvT&":Int32Array.from([-17,2147483621,-2147483644,1556900347,2071464596,-1393559138,-1727276306,-2147483618]),"u#qsXXTvp":-50616070339577782226631178415259058882613774486766356322822085931554199999723n,"-U{3":"t<?]J"}
+// • {"Rsv1:ZP":Int32Array.from([168230707,-730230161,-1469484660,-1063102817,-1909954805,1585343329,-1514159647,-125465986]),"&fXK":new Boolean(true),"4C`-+":new Set([new Map([]),new Set([true,new String("b"),false]),{},{"new Number(1e-322)":new String("k7_9"),"g|[D":new String("O<m)"),"Z%Wn":new String("(]eXm")},[4552479110689169,4675734694908225,-218263686181815,-6997435526521811]])}
+// • {"p?EZci9K7":Object.assign(Object.create(null),{"Je":new String("vBJ>``Y$x"),"?ErP@8f!\"":new String(""),"":new String("%=o2Y7C0'")}),"":new Number(5.637087698537716e+284),"b(0#":Object.assign(Object.create(null),{"Q]s0xIyk<+":"(vi`]/Q.I",")Ie":null,"{`qiQ5Ix2f":null,".":undefined})}
+// • {"};;j/k&2T":{"new Date(\"+220664-08-31T16:38:43.894Z\")":-2289144276660280,"cXLsbV S":1138144113824397},"teD^Ev":"[new Number(-1.5364199974582094e+205),new Number(5.180815866347032e+247),new Number(3.636439525223476e-281)]","!#(o3t":{"1vv":undefined,"wH{;tJ":null},"k{Xkv":{},"":new Set([]),"}":{"false":{"null":true,"kV}Hc*yU,.":true,";Wznpcq":false,"&CH+'X":false}},"j~eyB74Rh?":49587643957724736099798206802098808050113982603655206841016803270013097640979n,"lndQOiBz":{}}
+// • {"RrAs^,;_'d":new Set([]),"cx:<rwea":"new Date(\"+020332-01-16T05:46:46.152Z\")","":Object.assign(Object.create(null),{"L'jRbo{j":-31976587169846070239654687470021029877524367311417431076643014306029456266120n,"';}PmFHH![":Float64Array.from([-8.018908485009337e+30,8.496864005059645e+201,-3.9194568152035106e+268,-3.086464372465133e+126,3.7461513350649476e+307,1.8080540145972749e-16,-3.302613637232917e-16,2.919782715590315e-98,5.497279242648775e-209]),"<!a}uk":Object.assign(Object.create(null),{"h!+#q":new Number(-2.201858778700874e-229),"new String(\"'Hw,fY\")":new Number(1.9321238697686743e+278),"&=v":new Number(2.48097849447125e-108),"":new Number(2.3558707057762255e-53)}),"ineIR":new Boolean(false)})}
 // • …
 ```
 </details>
@@ -2963,11 +2963,11 @@ fc.anything({
   withSparseArray: true,
 })
 // Examples of generated values:
-// • Object.assign(Object.create(null),{"WG":new Boolean(false)})
-// • Uint16Array.from([29101,11])
-// • Uint8Array.from([147])
-// • Uint8ClampedArray.from([])
-// • Object.assign(Object.create(null),{"! ":Int16Array.from([29906])})
+// • "new Map([])"
+// • Object.assign(Object.create(null),{" ir":"5>|p"})
+// • Object.assign(Object.create(null),{"TP":new Date("+119369-09-08T21:50:32.692Z"),"+w[3w6":Object.assign(Object.create(null),{"=":new String("!!9"),"{|){\"[":new String("~~$"),"Kxx":new String("SfM`"),"\"w\\'{d4$)":new String("y|z"),"\"!\"":new String(".\"!")}),"R":{},"|fM":new String("$#B&#&$"),"A":-3643574299506729781124151487342965200249707114662756195372755169163095920767n})
+// • new Set([])
+// • Int32Array.from([-1929856236])
 // • …
 ```
 </details>
