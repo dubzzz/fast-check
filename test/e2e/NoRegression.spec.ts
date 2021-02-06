@@ -230,6 +230,40 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('sparseArray', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.sparseArray(fc.nat()),
+          (v) =>
+            // Sum of first element of each group should be less or equal to 10
+            // If a group starts at index 0, the whole group is ignored
+            Object.entries(v).reduce((acc, [index, cur]) => {
+              if (index === '0' || v[Number(index) - 1] !== undefined) return acc;
+              else return acc + cur;
+            }, 0) <= 10
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('sparseArray({noTrailingHole:true})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.sparseArray(fc.nat(), { noTrailingHole: true }),
+          (v) =>
+            // Sum of first element of each group should be less or equal to 10
+            // If a group starts at index 0, the whole group is ignored
+            Object.entries(v).reduce((acc, [index, cur]) => {
+              if (index === '0' || v[Number(index) - 1] !== undefined) return acc;
+              else return acc + cur;
+            }, 0) <= 10
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('infiniteStream', () => {
     expect(() =>
       fc.assert(
