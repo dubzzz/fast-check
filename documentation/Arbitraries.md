@@ -2913,6 +2913,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 - `withObjectString?` — default: `false` — _enable strings looking as string representations of JavaScript instances - eg.: `"{}"`, `"new Set([1])"`_
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
+- `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 *&#8195;Usages*
@@ -2959,13 +2960,14 @@ fc.anything({
   withObjectString: true,
   withSet: true,
   withTypedArray: true,
+  withSparseArray: true,
 })
 // Examples of generated values:
-// • 50262693997624561656566658494844280329167601007133105101730712090471350904016n
-// • Uint16Array.from([64924,45869,14750,25035,2761,46076])
-// • Float32Array.from([0.08553320169448853,-1.6264161412677633e+31,-6.835593778612435e+24,1.664170987467859e+26,4.2968819535433035e+34,-3.622660163541219e-33])
-// • Uint16Array.from([3344,28462])
-// • Int8Array.from([71,-1])
+// • Object.assign(Object.create(null),{"WG":new Boolean(false)})
+// • Uint16Array.from([29101,11])
+// • Uint8Array.from([147])
+// • Uint8ClampedArray.from([])
+// • Object.assign(Object.create(null),{"! ":Int16Array.from([29906])})
 // • …
 ```
 </details>
