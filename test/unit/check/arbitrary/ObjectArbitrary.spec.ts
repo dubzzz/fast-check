@@ -194,6 +194,12 @@ describe('ObjectArbitrary', () => {
           v instanceof Float64Array
         );
       }));
+    // Rq: For the moment typed arrays require the depth to be at least of 1
+    it('Should be able to produce sparse arrays', () =>
+      checkProduce(
+        { values: [constant(0)], maxDepth: 1, withSparseArray: true },
+        (v) => Array.isArray(v) && v.length !== Object.keys(v).length
+      ));
     // Rq: For the moment stringified representations require the depth to be at least of 1
     it('Should be able to produce stringified representations of objects', () =>
       checkProduce({ values: [constant(0)], maxDepth: 1, withObjectString: true }, (v) => {

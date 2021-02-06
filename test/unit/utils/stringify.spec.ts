@@ -38,6 +38,7 @@ const anythingEnableAll = {
   withNullPrototype: true,
   withDate: true,
   withTypedArray: true,
+  withSparseArray: true,
   ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
 };
 
