@@ -209,6 +209,17 @@ expectType<fc.Arbitrary<never>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: [] }),
   '"record" receiving both withDeletedKeys and requiredKeys is invalid'
 );
+type Query = { data: { field: 'X' } };
+expectType<fc.Arbitrary<Query>>()(
+  // issue 1453
+  fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) }),
+  '"record" can be passed the requested type in <*>'
+);
+expectType<fc.Arbitrary<Partial<Query>>>()(
+  // issue 1453
+  fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) }),
+  '"record" can be passed something assignable to the requested type in <*>'
+);
 // @ts-expect-error - requiredKeys references an unknown key
 fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['c'] });
 // @ts-expect-error - record expects arbitraries not raw values
