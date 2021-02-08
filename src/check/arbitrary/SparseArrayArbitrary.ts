@@ -63,7 +63,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   const resultedMaxNumElements = Math.min(maxNumElements, maxLength);
 
   if (noTrailingHole) {
-    if (maxLength === 0) {
+    if (resultedMaxNumElements === 0) {
       return constant([]);
     }
     return set(tuple(nat(maxLength - 1), arb), {
