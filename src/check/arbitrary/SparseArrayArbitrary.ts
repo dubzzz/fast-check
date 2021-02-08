@@ -1,5 +1,4 @@
 import { maxLengthFromMinLength } from './ArrayArbitrary';
-import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from './IntegerArbitrary';
 import { set } from './SetArbitrary';
@@ -63,14 +62,14 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   const resultedMaxNumElements = Math.min(maxNumElements, maxLength);
 
   if (noTrailingHole) {
-    if (maxLength === 0) {
-      return constant([]);
-    }
-    return set(tuple(nat(maxLength - 1), arb), {
+    const maxIndexAuthorized = Math.max(maxLength - 1, 0); // just preventing special case for maxLength=0
+    return set(tuple(nat(maxIndexAuthorized), arb), {
       minLength: minNumElements,
       maxLength: resultedMaxNumElements,
       compare: (itemA, itemB) => itemA[0] === itemB[0],
     }).map((items) => {
+      // When maxLength=0 (implies resultedMaxNumElements=0) we will have items=[] leading to lastIndex=-1
+      // resulting in an empty array
       const lastIndex = extractMaxIndex(items);
       return arrayFromItems(lastIndex + 1, items);
     });
