@@ -910,20 +910,20 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@netlify/build@^8.0.5":
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/@netlify/build/-/build-8.0.6.tgz#3d8006a953e02c0d8a55e0edde73d2f9da41a202"
-  integrity sha512-V87vLci3TxJ5OLYRLMhds+og8iSG/cqVPqF66ZvNCZhylNRgXoo8wSiRxVOPPrMUTK2Cf3MKAp+SV3ZnqFK8ng==
+"@netlify/build@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@netlify/build/-/build-9.0.0.tgz#c7a261af6ddaa4d1fb53f272ac271363562e26ec"
+  integrity sha512-2Ry0l4E2qTeclDCIVh2SdnB1y7E1nfZZXko2mNx+NKNli81v032c6hGlUsHVN28DUqyomNeKhrH3mDNHhZZiuw==
   dependencies:
     "@bugsnag/js" "^7.0.0"
     "@netlify/cache-utils" "^1.0.6"
-    "@netlify/config" "^3.0.1"
+    "@netlify/config" "^4.0.0"
     "@netlify/functions-utils" "^1.3.4"
     "@netlify/git-utils" "^1.0.6"
     "@netlify/plugin-edge-handlers" "^1.8.0"
     "@netlify/plugins-list" "^2.0.0"
     "@netlify/run-utils" "^1.0.5"
-    "@netlify/zip-it-and-ship-it" "^2.0.0"
+    "@netlify/zip-it-and-ship-it" "^2.1.3"
     "@sindresorhus/slugify" "^1.1.0"
     "@ungap/from-entries" "^0.2.1"
     array-flat-polyfill "^1.0.1"
@@ -983,10 +983,37 @@
     path-exists "^4.0.0"
     readdirp "^3.4.0"
 
-"@netlify/config@^3.0.0", "@netlify/config@^3.0.1", "@netlify/config@^3.1.0":
+"@netlify/config@^3.0.0":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@netlify/config/-/config-3.1.1.tgz#df33e3a3e9a2ac632458e556fd8045fdecc58527"
   integrity sha512-FUOXzkn/iHrWU8wezWnAVsO7x/l2mPXBpcaP2X2BIcMzOePvzreHPCAplekjNof2Q1QPjHfo746Bd/CyMIUOeg==
+  dependencies:
+    "@ungap/from-entries" "^0.2.1"
+    array-flat-polyfill "^1.0.1"
+    chalk "^3.0.0"
+    deepmerge "^4.2.2"
+    execa "^3.4.0"
+    fast-safe-stringify "^2.0.7"
+    figures "^3.2.0"
+    filter-obj "^2.0.1"
+    find-up "^4.1.0"
+    indent-string "^4.0.0"
+    is-plain-obj "^2.1.0"
+    js-yaml "^4.0.0"
+    netlify "^6.0.0"
+    omit.js "^2.0.2"
+    p-locate "^4.1.0"
+    path-exists "^4.0.0"
+    path-type "^4.0.0"
+    toml "^3.0.0"
+    tomlify-j0.4 "^3.0.0"
+    validate-npm-package-name "^3.0.0"
+    yargs "^15.3.0"
+
+"@netlify/config@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@netlify/config/-/config-4.0.0.tgz#47579689bd40b680639c1c529db07fd43c88e25f"
+  integrity sha512-eHuMW6tNwuMTFYUoS8dGi9fsUVQky/qh4lhZNFP1y/HNUO3/iezIm7a/ALfO5PNekOIkf26+23m0pHA85+k3gQ==
   dependencies:
     "@ungap/from-entries" "^0.2.1"
     array-flat-polyfill "^1.0.1"
@@ -1108,10 +1135,10 @@
     "@netlify/traffic-mesh-agent-linux-x64" "^0.27.10"
     "@netlify/traffic-mesh-agent-win32-x64" "^0.27.10"
 
-"@netlify/zip-it-and-ship-it@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@netlify/zip-it-and-ship-it/-/zip-it-and-ship-it-2.0.0.tgz#1f8dabb5f0163d58bfb292f4ce6fa2d9ad975a60"
-  integrity sha512-DQQldFTRmEPHpvvKxAKLNk/RqVIfzZGsBcbmruy3zupPG2W+pGHnQUSMNXrUZmMkqekDh0nCHf8MfG0EakRqGg==
+"@netlify/zip-it-and-ship-it@^2.0.0", "@netlify/zip-it-and-ship-it@^2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@netlify/zip-it-and-ship-it/-/zip-it-and-ship-it-2.1.3.tgz#573fd7e0ff4f29a6023614a78972f83f138e995d"
+  integrity sha512-nYHM4dnlua/aCe74ZPZcIlWAN1QbyGDaWbJi+Qkb0VSe4yX6PYvPNeymABggDbA9xFhk+nEA98wSu2A/beHPfQ==
   dependencies:
     archiver "^4.0.0"
     common-path-prefix "^2.0.0"
@@ -5342,13 +5369,13 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-netlify-cli@^3.4.6:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-3.4.6.tgz#eebf98bf4c5a06180e4e23c6b12a5cf870e1070e"
-  integrity sha512-ZrD6so7tmmatQTWh4U7gApxKmBj1P27Fzo2cdDqhkPUenJY5Iw3AuUY1AvQUCPyxC5Cbco2d3SQdldKQYoL9Qw==
+netlify-cli@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-3.5.0.tgz#8f07782bb11a851debac8987e9338c714ec17e36"
+  integrity sha512-seAaDxlTUQSfEyvK8Y52cRbX16nZuwzNqnFW1Ulw4zy5hGeVozmhnhn87n4TM9Ku73WqqTWNMhkwYbsWq9c69w==
   dependencies:
-    "@netlify/build" "^8.0.5"
-    "@netlify/config" "^3.1.0"
+    "@netlify/build" "^9.0.0"
+    "@netlify/config" "^4.0.0"
     "@netlify/framework-info" "^2.0.0"
     "@netlify/plugin-edge-handlers" "^1.10.0"
     "@netlify/traffic-mesh-agent" "^0.27.10"
