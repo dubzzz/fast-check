@@ -5,12 +5,10 @@ import { mocked } from 'ts-jest/utils';
 
 import fc from '../../../../lib/fast-check';
 
-import * as ConstantArbitraryMock from '../../../../src/check/arbitrary/ConstantArbitrary';
 import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
 import * as SetArbitraryMock from '../../../../src/check/arbitrary/SetArbitrary';
 import * as TupleArbitraryMock from '../../../../src/check/arbitrary/TupleArbitrary';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
-jest.mock('../../../../src/check/arbitrary/ConstantArbitrary');
 jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
 jest.mock('../../../../src/check/arbitrary/SetArbitrary');
 jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
@@ -162,34 +160,6 @@ describe('SparseArrayArbitrary', () => {
             expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
           }
         )
-      );
-    });
-
-    it('Should only produce empty arrays if no trailing holes and no elements allowed', () => {
-      fc.assert(
-        fc
-          .property(fc.option(fc.nat(), { nil: undefined }), (maxLength) => {
-            // Arrange
-            const { constant } = mocked(ConstantArbitraryMock);
-            const { set } = mocked(SetArbitraryMock);
-            const { tuple } = mocked(TupleArbitraryMock);
-            const expectedArbitrary = Symbol();
-            constant.mockReturnValueOnce(expectedArbitrary as any);
-
-            const arb = new FakeArbitrary();
-            const ct: SparseArrayConstraints = { noTrailingHole: true, maxNumElements: 0, maxLength };
-
-            // Act
-            const out = sparseArray(arb, ct);
-
-            // Assert
-            expect(out).toBe(expectedArbitrary);
-            expect(constant).toHaveBeenCalledTimes(1);
-            expect(constant).toHaveBeenCalledWith([]);
-            expect(set).not.toHaveBeenCalled();
-            expect(tuple).not.toHaveBeenCalled();
-          })
-          .beforeEach(beforeEachFunction)
       );
     });
   });
