@@ -1,5 +1,4 @@
 import { maxLengthFromMinLength } from './ArrayArbitrary';
-import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from './IntegerArbitrary';
 import { set } from './SetArbitrary';
