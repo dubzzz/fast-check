@@ -204,6 +204,7 @@ jobs:
           # Latest version of TypeScript
           - '*'
           # Various intermediate versions of Typescript
+          - '3.9'
           - '3.4'
           # Minimal requirement for TypeScript
           - '3.2'
