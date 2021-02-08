@@ -210,11 +210,13 @@ expectType<fc.Arbitrary<never>>()(
   '"record" receiving both withDeletedKeys and requiredKeys is invalid'
 );
 type Query = { data: { field: 'X' } };
+// @fc-ignore-if-3.2
 expectType<fc.Arbitrary<Query>>()(
   // issue 1453
   fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) }),
   '"record" can be passed the requested type in <*>'
 );
+// @fc-ignore-if-3.2
 expectType<fc.Arbitrary<Partial<Query>>>()(
   // issue 1453
   fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) }),
