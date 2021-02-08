@@ -89,7 +89,7 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
  *
  * @public
  */
-function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<T>>;
+function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }>>;
 /**
  * For records following the `recordModel` schema
  *
@@ -107,7 +107,7 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
 function record<T, TConstraints extends RecordConstraints<keyof T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints: TConstraints
-): Arbitrary<RecordValue<T, TConstraints>>;
+): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints<keyof T>) {
   if (constraints == null) {
     return rawRecord(recordModel);
