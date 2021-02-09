@@ -2,12 +2,16 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 async function isAdmin(context, octokit) {
-  const response = await octokit.repos.getCollaboratorPermissionLevel({
-    owner: context.owner,
-    repo: context.repo,
-    username: context.actor,
-  });
-  return response.data.permission === 'admin';
+  try {
+    const response = await octokit.repos.getCollaboratorPermissionLevel({
+      ...context.repo,
+      username: context.actor,
+    });
+    return response.data.permission === 'admin';
+  } catch (err) {
+    core.setFailed(`Unable get details for current user, failed with: ${err}`);
+    return false;
+  }
 }
 
 async function run() {
@@ -15,6 +19,7 @@ async function run() {
   const action = core.getInput('action', { required: true });
   const token = core.getInput('token');
   const requireAdmin = core.getInput('require_admin');
+  const reaction = core.getInput('reaction') || '+1';
   const octokit = github.getOctokit(token);
 
   const comment = context.payload.comment;
@@ -43,12 +48,16 @@ async function run() {
   }
   core.setOutput('valid_comment', acceptedAction);
   core.setOutput('pull_number', context.issue.number);
-  await octokit.reactions.createForCommitComment({
-    owner: context.owner,
-    repo: context.repo,
-    comment_id: comment.id,
-    content: 'rocket',
-  });
+
+  try {
+    await octokit.reactions.createForIssueComment({
+      ...context.repo,
+      comment_id: comment.id,
+      content: reaction,
+    });
+  } catch (err) {
+    core.info(`Failed to add a reaction, got error: ${err}`);
+  }
 }
 
 run().catch((err) => core.setFailed(`Failed with error: ${err}`));

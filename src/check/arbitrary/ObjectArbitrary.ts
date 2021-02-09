@@ -26,6 +26,7 @@ import {
   uint8Array,
   uint8ClampedArray,
 } from './TypedArrayArbitrary';
+import { sparseArray } from './SparseArrayArbitrary';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -84,6 +85,8 @@ export interface ObjectConstraints {
    * Remark: no typed arrays made of bigint
    */
   withTypedArray?: boolean;
+  /** Also generate sparse arrays (arrays with holes) */
+  withSparseArray?: boolean;
 }
 
 /**
@@ -131,7 +134,8 @@ class QualifiedObjectConstraints {
     readonly withNullPrototype: boolean,
     readonly withBigInt: boolean,
     readonly withDate: boolean,
-    readonly withTypedArray: boolean
+    readonly withTypedArray: boolean,
+    readonly withSparseArray: boolean
   ) {}
 
   /**
@@ -173,7 +177,8 @@ class QualifiedObjectConstraints {
       orDefault(settings.withNullPrototype, false),
       orDefault(settings.withBigInt, false),
       orDefault(settings.withDate, false),
-      orDefault(settings.withTypedArray, false)
+      orDefault(settings.withTypedArray, false),
+      orDefault(settings.withSparseArray, false)
     );
   }
 }
@@ -234,17 +239,20 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       ...(constraints.withDate ? [date()] : []),
       ...(constraints.withTypedArray
         ? [
-            int8Array(),
-            uint8Array(),
-            uint8ClampedArray(),
-            int16Array(),
-            uint16Array(),
-            int32Array(),
-            uint32Array(),
-            float32Array(),
-            float64Array(),
+            oneof(
+              int8Array(),
+              uint8Array(),
+              uint8ClampedArray(),
+              int16Array(),
+              uint16Array(),
+              int32Array(),
+              uint32Array(),
+              float32Array(),
+              float64Array()
+            ),
           ]
-        : [])
+        : []),
+      ...(constraints.withSparseArray ? [sparseArray(anythingArb())] : [])
     );
   });
 

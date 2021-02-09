@@ -10,7 +10,7 @@ jobs:
   deploy_netlify:
     name: 'Deploy to Netlify'
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && startsWith(github.event.issue_comment.comment.body, '@github-actions') && contains(github.event.issue_comment.comment.body, 'deploy')
+    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '@github-actions') && contains(github.event.comment.body, 'deploy')
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
@@ -26,6 +26,7 @@ jobs:
         uses: ./.github/actions/github-actions-comments
         with:
           action: 'deploy'
+          reaction: 'rocket'
           require_admin: true
       - name: Checkout Pull Request
         run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"

@@ -155,6 +155,7 @@ import {
   uint8ClampedArray,
   Float64ArrayConstraints,
 } from './check/arbitrary/TypedArrayArbitrary';
+import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -258,6 +259,7 @@ export {
   shuffledSubarray,
   subarray,
   array,
+  sparseArray,
   infiniteStream,
   set,
   tuple,
@@ -347,6 +349,7 @@ export {
   RecordConstraints,
   SchedulerConstraints,
   SetConstraints,
+  SparseArrayConstraints,
   StringSharedConstraints,
   SubarrayConstraints,
   WebAuthorityConstraints,

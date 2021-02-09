@@ -2,6 +2,7 @@
     "compilerOptions": {
         "lib": ["es2015"],
         "noEmit": true,
-        "skipLibCheck": false
+        "skipLibCheck": false,
+        "strict": true
     }
 }

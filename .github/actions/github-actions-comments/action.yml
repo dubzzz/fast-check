@@ -8,6 +8,9 @@ inputs:
   action:
     description: 'Name of the action'
     required: true
+  reaction:
+    description: 'Reaction to add onto the comment'
+    required: false
   require_admin:
     description: 'Does it require an admin?'
     required: false

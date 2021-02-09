@@ -129,7 +129,7 @@ expectType<fc.Arbitrary<number>>()(
   'By default, "constantFrom" simplifies the type (eg.: "1 -> number")'
 );
 // prettier-ignore
-// @fc-ignore-if-no-const
+// @fc-require-ts-3.4
 expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(...([1, 2] as const)), '"as const" prevent extra simplification of "constantFrom"');
 // prettier-ignore-end
 expectType<fc.Arbitrary<number | string>>()(
@@ -137,7 +137,7 @@ expectType<fc.Arbitrary<number | string>>()(
   '"constantFrom" accepts arguments not having the same types without any typing trick'
 );
 // prettier-ignore
-// @fc-ignore-if-no-const
+// @fc-require-ts-3.4
 expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(fc.constantFrom(...([1, 2, 'hello'] as const)), '"as const" prevent extra simplification of "constantFrom"');
 // prettier-ignore-end
 
@@ -209,6 +209,21 @@ expectType<fc.Arbitrary<never>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: [] }),
   '"record" receiving both withDeletedKeys and requiredKeys is invalid'
 );
+type Query = { data: { field: 'X' } };
+expectType<fc.Arbitrary<Query>>()(
+  // issue 1453
+  // @fc-require-ts-3.4
+  fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) }),
+  // @fc-require-ts-3.4
+  '"record" can be passed the requested type in <*>'
+);
+expectType<fc.Arbitrary<Partial<Query>>>()(
+  // issue 1453
+  // @fc-require-ts-3.4
+  fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) }),
+  // @fc-require-ts-3.4
+  '"record" can be passed something assignable to the requested type in <*>'
+);
 // @ts-expect-error - requiredKeys references an unknown key
 fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['c'] });
 // @ts-expect-error - record expects arbitraries not raw values
@@ -256,7 +271,7 @@ expectType<fc.Arbitrary<number | null>>()(
   '"option" with nil overriden to null (the original default)'
 );
 // prettier-ignore
-// @fc-ignore-if-no-const
+// @fc-require-ts-3.4
 expectType<fc.Arbitrary<number | 'custom_default'>>()(fc.option(fc.nat(), { nil: 'custom_default' as const }), '"option" with nil overriden to custom value');
 // prettier-ignore-end
 // @ts-expect-error - option expects arbitraries not raw values

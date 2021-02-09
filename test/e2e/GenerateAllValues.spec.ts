@@ -72,6 +72,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
           withNullPrototype: true,
           withDate: true,
           withTypedArray: true,
+          withSparseArray: true,
           ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
         });
         while (++numTries <= 10000) {
