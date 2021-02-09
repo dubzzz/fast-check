@@ -108,15 +108,19 @@ export class RunExecution<Ts> {
         numSkips: this.numSkips,
         numShrinks: this.numShrinks(),
         seed,
-        // Rq: isSuccess() true => this.pathToFailure == null
+        // Rq: isSuccess() true <=> this.pathToFailure == null
         //     The only path assigning a value to this.pathToFailure is fail
         //     At the same time it also assigns a non-null value to this.value
         //     And this is the only path assigning a value to this.value
         // =>  this.value !== undefined
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         counterexample: this.value!,
+        // See isSuccess: true <=> this.pathToFailure == null
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
         // Rq: Same as this.value
         // =>  this.failure !== undefined
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         error: this.failure!,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,

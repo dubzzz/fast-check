@@ -78,6 +78,8 @@ export function letrec<T>(
   const lazyArbs: { [K in keyof T]?: Arbitrary<T[K]> } = Object.create(null);
   const tie = (key: keyof T): Arbitrary<any> => {
     if (!Object.prototype.hasOwnProperty.call(lazyArbs, key)) lazyArbs[key] = new LazyArbitrary(key as any);
+    // Call to hasOwnProperty ensures that the property key will be defined
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return lazyArbs[key]!;
   };
   const strictArbs = builder(tie as any);

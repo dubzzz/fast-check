@@ -60,6 +60,8 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
  * @internal
  */
 export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
+  // Default hook is a no-op
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   static dummyHook: GlobalPropertyHookFunction = () => {};
   private beforeEachHook: GlobalPropertyHookFunction;
   private afterEachHook: GlobalPropertyHookFunction;

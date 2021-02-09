@@ -12,6 +12,8 @@ const timeoutAfter = (timeMs: number) => {
     }, timeMs);
   });
   return {
+    // `timeoutHandle` will always be initialised at this point: body of `new Promise` has already been executed
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     clear: () => clearTimeout(timeoutHandle!),
     promise,
   };

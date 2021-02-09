@@ -189,6 +189,7 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
     ? memo((n) =>
         frequency(
           { arbitrary: constraints.key, weight: 10 },
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
           { arbitrary: anythingArb(n).map((o) => stringify(o)), weight: 1 }
         )
       )
@@ -210,19 +211,24 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
   const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const arrayArb = memo((n) => oneof(arrayBaseArb, array(anythingArb(n), { maxLength: maxKeys })));
   // Set<base> | Set<anything>
   const setArb = memo((n) =>
     oneof(
       setBaseArb(),
+
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       set(anythingArb(n), 0, maxKeys).map((v) => new Set(v))
     )
   );
   // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
   const mapArb = memo((n) =>
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     oneof(mapBaseArb(n), oneof(mapOf(arbKeys(n), anythingArb(n)), mapOf(anythingArb(n), anythingArb(n))))
   );
   // {[key:string]: base} | {[key:string]: anything}
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const objectArb = memo((n) => oneof(objectBaseArb(n), dictOf(arbKeys(n), anythingArb(n))));
 
   const anythingArb: Memo<unknown> = memo((n) => {

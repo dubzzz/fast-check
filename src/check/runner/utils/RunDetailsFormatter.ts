@@ -30,6 +30,9 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[]): string
     remainingTreesAndDepth.push({ depth: 1, tree });
   }
   while (remainingTreesAndDepth.length !== 0) {
+    // There is at least one item to pop (remainingTreesAndDepth.length !== 0)
+    // And this item is of type: { depth: number; tree: ExecutionTree<Ts> } (not nullable so `!` is safe)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const currentTreeAndDepth = remainingTreesAndDepth.pop()!;
 
     // format current tree according to its depth

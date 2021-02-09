@@ -129,7 +129,12 @@ export class QualifiedParameters<T> {
     p: Parameters<T>,
     key: K,
     defaultValue: V
-  ): NonNullable<Parameters<T>[K]> | V => (p[key] != null ? p[key]! : defaultValue);
+  ): NonNullable<Parameters<T>[K]> | V => {
+    const value = p[key];
+    // value will be non nullable if value != null (even if TypeScript complains about it)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return value != null ? value! : defaultValue;
+  };
 
   /**
    * Extract a runner configuration from Parameters
