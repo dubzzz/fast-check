@@ -98,13 +98,6 @@ jobs:
             export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
             echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
             yarn e2e
-      - name: Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          name: e2e-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: e2e-tests, e2e-tests-${{matrix.node-version}}-${{runner.os}}
-          fail_ci_if_error: false # default: false
-          verbose: false # default: false
   test_package_quality:
     name: 'Test package quality'
     runs-on: ubuntu-latest
