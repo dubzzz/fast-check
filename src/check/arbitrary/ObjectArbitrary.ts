@@ -33,7 +33,10 @@ import { sparseArray } from './SparseArrayArbitrary';
  * @public
  */
 export interface ObjectConstraints {
-  /** Maximal depth allowed */
+  /**
+   * Maximal depth allowed
+   * @remarks Since 0.0.7
+   */
   maxDepth?: number;
   /** Maximal number of keys */
   maxKeys?: number;
@@ -41,6 +44,7 @@ export interface ObjectConstraints {
    * Arbitrary for keys
    *
    * Default for `key` is: {@link string}
+   * @remarks Since 0.0.7
    */
   key?: Arbitrary<string>;
   /**
@@ -64,6 +68,7 @@ export interface ObjectConstraints {
    *  - `Number.MAX_SAFE_INTEGER`,
    *  - `Number.POSITIVE_INFINITY`,
    *  - `Number.NEGATIVE_INFINITY`
+   * @remarks Since 0.0.7
    */
   values?: Arbitrary<unknown>[];
   /** Also generate boxed versions of values */
@@ -280,6 +285,7 @@ const objectInternal = (constraints: QualifiedObjectConstraints): Arbitrary<Reco
  * null, undefined, 42, 6.5, 'Hello', {}, {k: [{}, 1, 2]}
  * ```
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function anything(): Arbitrary<unknown>;
@@ -310,6 +316,7 @@ function anything(): Arbitrary<unknown>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function anything(constraints: ObjectConstraints): Arbitrary<unknown>;
@@ -327,6 +334,7 @@ function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
  * {}, {k: [{}, 1, 2]}
  * ```
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function object(): Arbitrary<Record<string, unknown>>;
@@ -342,6 +350,7 @@ function object(): Arbitrary<Record<string, unknown>>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function object(constraints: ObjectConstraints): Arbitrary<Record<string, unknown>>;
@@ -443,6 +452,7 @@ function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitr
  *
  * Keys and string values rely on {@link string}
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function json(): Arbitrary<string>;
@@ -457,6 +467,7 @@ function json(): Arbitrary<string>;
  * Superceded by `fc.json({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function json(maxDepth: number): Arbitrary<string>;
@@ -482,6 +493,7 @@ function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
  *
  * Keys and string values rely on {@link unicode}
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function unicodeJson(): Arbitrary<string>;
@@ -496,6 +508,7 @@ function unicodeJson(): Arbitrary<string>;
  * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function unicodeJson(maxDepth: number): Arbitrary<string>;

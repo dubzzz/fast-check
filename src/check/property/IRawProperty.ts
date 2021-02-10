@@ -16,6 +16,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    * Is the property asynchronous?
    *
    * true in case of asynchronous property, false otherwise
+   * @remarks Since 0.0.7
    */
   isAsync(): IsAsync;
   /**
@@ -23,11 +24,14 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    *
    * @param mrng - Random number generator
    * @param runId - Id of the generation, starting at 0 - if set the generation might be biased
+   *
+   * @remarks Since 0.0.7
    */
   generate(mrng: Random, runId?: number): Shrinkable<Ts>;
   /**
    * Check the predicate for v
    * @param v - Value of which we want to check the predicate
+   * @remarks Since 0.0.7
    */
   run(
     v: Ts

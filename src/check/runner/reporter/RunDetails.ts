@@ -7,6 +7,7 @@ import { Parameters } from '../configuration/Parameters';
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
  *
+ * @remarks Since 0.0.7
  * @public
  */
 export type RunDetails<Ts> =
@@ -85,6 +86,7 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
 export interface RunDetailsCommon<Ts> {
   /**
    * Does the property failed during the execution of {@link check}?
+   * @remarks Since 0.0.7
    */
   failed: boolean;
   /**
@@ -113,14 +115,17 @@ export interface RunDetailsCommon<Ts> {
    * Seed that have been used by the run
    *
    * It can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
+   * @remarks Since 0.0.7
    */
   seed: number;
   /**
    * In case of failure: the counterexample contains the minimal failing case (first failure after shrinking)
+   * @remarks Since 0.0.7
    */
   counterexample: Ts | null;
   /**
    * In case of failure: it contains the reason of the failure
+   * @remarks Since 0.0.7
    */
   error: string | null;
   /**

@@ -5,7 +5,7 @@ import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
  * A `Shrinkable<T, TShrink = T>` holds an internal value of type `T`
  * and can shrink it to smaller `TShrink` values
  *
- * @remarks Since 0.0.1
+ * @remarks Since 0.0.7
  * @public
  */
 export class Shrinkable<T, TShrink extends T = T> {

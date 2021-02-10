@@ -56,6 +56,7 @@ export type FrequencyValue<Ts extends WeightedArbitrary<unknown>[]> = {
  *
  * @param warbs - (Arbitrary, weight)s that might be called to produce a value
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyValue<Ts>> {
