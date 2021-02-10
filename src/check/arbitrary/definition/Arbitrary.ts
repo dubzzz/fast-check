@@ -112,6 +112,7 @@ export abstract class Arbitrary<T> {
    * ```
    *
    * @returns Create another arbitrary with no shrink values
+   * @remarks Since 0.0.9
    */
   noShrink(): Arbitrary<T> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
