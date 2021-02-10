@@ -57,6 +57,7 @@ function Base64StringArbitrary(unscaledMinLength: number, unscaledMaxLength: num
  *
  * @param charArb - Arbitrary able to generate random strings (possibly multiple characters)
  *
+ * @remarks Since 1.1.3
  * @public
  */
 function stringOf(charArb: Arbitrary<string>): Arbitrary<string>;
@@ -70,6 +71,7 @@ function stringOf(charArb: Arbitrary<string>): Arbitrary<string>;
  * Superceded by `fc.stringOf(charArb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.1.3
  * @public
  */
 function stringOf(charArb: Arbitrary<string>, maxLength: number): Arbitrary<string>;
@@ -84,6 +86,7 @@ function stringOf(charArb: Arbitrary<string>, maxLength: number): Arbitrary<stri
  * Superceded by `fc.stringOf(charArb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.1.3
  * @public
  */
 function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: number): Arbitrary<string>;
