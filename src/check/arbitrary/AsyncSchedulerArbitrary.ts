@@ -207,6 +207,8 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     this.scheduledTasks.push({
       original: task,
       scheduled: scheduledPromise,
+      // `trigger` will always be initialised at this point: body of `new Promise` has already been executed
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       trigger: trigger!,
       schedulingType,
       taskId,
@@ -239,6 +241,8 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const status = { done: false, faulty: false };
     const dummyResolvedPromise: PromiseLike<any> = { then: (f: () => any) => f() };
 
+    // Placeholder resolver, immediately replaced by the one retrieved in `new Promise`
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     let resolveSequenceTask = () => {};
     const sequenceTask = new Promise<void>((resolve) => (resolveSequenceTask = resolve));
 

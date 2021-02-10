@@ -9,7 +9,7 @@ export class PreconditionFailure extends Error {
     super();
     this.footprint = PreconditionFailure.SharedFootPrint;
   }
-  static isFailure(err: any): err is PreconditionFailure {
+  static isFailure(err: unknown): err is PreconditionFailure {
     return err != null && (err as PreconditionFailure).footprint === PreconditionFailure.SharedFootPrint;
   }
 }

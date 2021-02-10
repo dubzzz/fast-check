@@ -15,6 +15,7 @@ class ArbitraryFor<T> extends ArbitraryWithContextualShrink<T> {
     this.runId = 0;
   }
   private shrinkableFromDefinition(def: ArbitraryForDefinition<T>): Shrinkable<T> {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const arb = this;
     function* g(): IterableIterator<Shrinkable<T>> {
       for (const s of def.shrinks || []) {

@@ -108,7 +108,10 @@ function record<T, TConstraints extends RecordConstraints<keyof T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints: TConstraints
 ): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
-function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }, constraints?: RecordConstraints<keyof T>) {
+function record<T>(
+  recordModel: { [K in keyof T]: Arbitrary<T[K]> },
+  constraints?: RecordConstraints<keyof T>
+): unknown {
   if (constraints == null) {
     return rawRecord(recordModel);
   }

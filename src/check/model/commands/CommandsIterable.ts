@@ -14,7 +14,7 @@ export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync 
   [Symbol.iterator](): Iterator<CommandWrapper<Model, Real, RunResult, CheckAsync>> {
     return this.commands[Symbol.iterator]();
   }
-  [cloneMethod]() {
+  [cloneMethod](): CommandsIterable<Model, Real, RunResult, CheckAsync> {
     return new CommandsIterable(
       this.commands.map((c) => c.clone()),
       this.metadataForReplay

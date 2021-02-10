@@ -1,4 +1,5 @@
 import { Random } from '../../random/generator/Random';
+import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty } from './IRawProperty';
 
@@ -13,9 +14,9 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
   ) {
     this.skipAfterTime = this.getTime() + timeLimit;
   }
-  isAsync = () => this.property.isAsync();
-  generate = (mrng: Random, runId?: number) => this.property.generate(mrng, runId);
-  run = (v: Ts) => {
+  isAsync = (): IsAsync => this.property.isAsync();
+  generate = (mrng: Random, runId?: number): Shrinkable<Ts> => this.property.generate(mrng, runId);
+  run = (v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> => {
     if (this.getTime() >= this.skipAfterTime) {
       const preconditionFailure = new PreconditionFailure(this.interruptExecution);
       if (this.isAsync()) {
