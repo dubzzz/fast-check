@@ -100,11 +100,11 @@ class WithShrinkArbitrary extends Arbitrary<number> {
   }
 }
 
-const counter = (value: number): Arbitrary<number> => new CounterArbitrary(value);
-const forward = (): Arbitrary<number> => new ForwardArbitrary();
-const forwardArray = (num: number): Arbitrary<number[]> => new ForwardArrayArbitrary(num);
-const single = <T>(id: T): Arbitrary<T> => new SingleUseArbitrary(id);
-const withShrink = (value: number): Arbitrary<number> => new WithShrinkArbitrary(value);
+const counter = (value: number): CounterArbitrary => new CounterArbitrary(value);
+const forward = (): ForwardArbitrary => new ForwardArbitrary();
+const forwardArray = (num: number): ForwardArrayArbitrary => new ForwardArrayArbitrary(num);
+const single = <T>(id: T): SingleUseArbitrary<T> => new SingleUseArbitrary(id);
+const withShrink = (value: number): WithShrinkArbitrary => new WithShrinkArbitrary(value);
 
 export {
   counter,
