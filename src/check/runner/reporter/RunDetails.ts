@@ -144,6 +144,8 @@ export interface RunDetailsCommon<Ts> {
    *
    * You must enable verbose with at least `Verbosity.Verbose` in `Parameters`
    * in order to have values in it
+   *
+   * @remarks Since 1.1.0
    */
   failures: Ts[];
   /**

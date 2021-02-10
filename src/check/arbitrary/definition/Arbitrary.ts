@@ -123,6 +123,7 @@ export abstract class Arbitrary<T> {
    * Create another Arbitrary having bias - by default return itself
    *
    * @param freq - The biased version will be used one time over freq - if it exists - freq must be superior or equal to 2 to avoid any lock
+   * @remarks Since 1.1.0
    */
   withBias(_freq: number): Arbitrary<T> {
     return this;
@@ -132,6 +133,7 @@ export abstract class Arbitrary<T> {
    * Create another Arbitrary that cannot be biased
    *
    * @param freq - The biased version will be used one time over freq - if it exists
+   * @remarks Since 1.1.0
    */
   noBias(): Arbitrary<T> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define

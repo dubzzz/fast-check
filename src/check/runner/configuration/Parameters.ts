@@ -94,6 +94,7 @@ export interface Parameters<T = void> {
   logger?(v: string): void;
   /**
    * Force the use of unbiased arbitraries: biased by default
+   * @remarks Since 1.1.0
    */
   unbiased?: boolean;
   /**
@@ -103,6 +104,8 @@ export interface Parameters<T = void> {
    *
    * It can prove very useful to troubleshoot issues.
    * See {@link VerbosityLevel} for more details on each level.
+   *
+   * @remarks Since 1.1.0
    */
   verbose?: boolean | VerbosityLevel;
   /**
