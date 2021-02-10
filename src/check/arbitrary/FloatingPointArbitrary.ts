@@ -35,6 +35,7 @@ export type FloatConstraints =
 
 /**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**24`
+ * @remarks Since 0.0.6
  * @public
  */
 function float(): Arbitrary<number>;
@@ -135,6 +136,7 @@ export type DoubleConstraints =
 
 /**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**53`
+ * @remarks Since 0.0.6
  * @public
  */
 function double(): Arbitrary<number>;

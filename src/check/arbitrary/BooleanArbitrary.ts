@@ -3,6 +3,7 @@ import { integer } from './IntegerArbitrary';
 
 /**
  * For boolean values - `true` or `false`
+ * @remarks Since 0.0.6
  * @public
  */
 function boolean(): Arbitrary<boolean> {

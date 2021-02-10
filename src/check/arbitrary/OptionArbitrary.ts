@@ -47,6 +47,7 @@ class OptionArbitrary<T, TNil> extends Arbitrary<T | TNil> {
  *
  * @param arb - Arbitrary that will be called to generate a non null value
  *
+ * @remarks Since 0.0.6
  * @public
  */
 function option<T>(arb: Arbitrary<T>): Arbitrary<T | null>;
@@ -60,6 +61,7 @@ function option<T>(arb: Arbitrary<T>): Arbitrary<T | null>;
  * Superceded by `fc.option(arb, {freq})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.6
  * @public
  */
 function option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>;

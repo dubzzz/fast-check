@@ -5,6 +5,7 @@ import { RunDetails } from '../reporter/RunDetails';
 
 /**
  * Customization of the parameters used to run the properties
+ * @remarks Since 0.0.6
  * @public
  */
 export interface Parameters<T = void> {
@@ -15,6 +16,7 @@ export interface Parameters<T = void> {
    *
    * In theory, seeds are supposed to be 32-bit integers.
    * In case of double value, the seed will be rescaled into a valid 32-bit integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
+   * @remarks Since 0.0.6
    */
   seed?: number;
   /**
@@ -84,6 +86,7 @@ export interface Parameters<T = void> {
   path?: string;
   /**
    * Logger (see {@link statistics}): `console.log` by default
+   * @remarks Since 0.0.6
    */
   logger?(v: string): void;
   /**
