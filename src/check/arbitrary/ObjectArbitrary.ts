@@ -380,6 +380,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number |
  *
  * Keys and string values rely on {@link string}
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function jsonObject(): Arbitrary<unknown>;
@@ -394,6 +395,7 @@ function jsonObject(): Arbitrary<unknown>;
  * Superceded by `fc.jsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function jsonObject(maxDepth: number): Arbitrary<unknown>;
@@ -416,6 +418,7 @@ function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unk
  *
  * Keys and string values rely on {@link unicode}
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function unicodeJsonObject(): Arbitrary<unknown>;
@@ -430,6 +433,7 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  * Superceded by `fc.unicodeJsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
