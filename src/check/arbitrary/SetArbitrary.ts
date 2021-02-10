@@ -66,6 +66,7 @@ export interface SetConstraints<T> {
  *
  * @param arb - Arbitrary used to generate the values inside the array
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
@@ -79,6 +80,7 @@ function set<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  * Superceded by `fc.set(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
@@ -93,6 +95,7 @@ function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  * Superceded by `fc.set(arb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
@@ -106,6 +109,7 @@ function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitr
  * Superceded by `fc.set(arb, {compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
@@ -120,6 +124,7 @@ function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<
  * Superceded by `fc.array(arb, {maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
@@ -135,6 +140,7 @@ function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => b
  * Superceded by `fc.array(arb, {minLength, maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(

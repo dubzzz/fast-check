@@ -72,6 +72,7 @@ function ascii(): Arbitrary<string> {
  * Some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding.
  * Indeed values within 0xd800 and 0xdfff constitute surrogate pair characters and are illegal without their paired character.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function char16bits(): Arbitrary<string> {
@@ -80,6 +81,7 @@ function char16bits(): Arbitrary<string> {
 
 /**
  * For single unicode characters defined in the BMP plan - char code between 0x0000 (included) and 0xffff (included) and without the range 0xd800 to 0xdfff (surrogate pair characters)
+ * @remarks Since 0.0.11
  * @public
  */
 function unicode(): Arbitrary<string> {
@@ -102,6 +104,8 @@ function unicode(): Arbitrary<string> {
  * WARNING: Generated values can have a length greater than 1.
  *
  * {@link https://tc39.github.io/ecma262/#sec-utf16encoding}
+ *
+ * @remarks Since 0.0.11
  * @public
  */
 function fullUnicode(): Arbitrary<string> {

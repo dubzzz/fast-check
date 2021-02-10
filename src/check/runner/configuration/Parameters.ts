@@ -44,6 +44,7 @@ export interface Parameters<T = void> {
    * Maximum time in milliseconds for the predicate to answer: disabled by default
    *
    * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
+   * @remarks Since 0.0.11
    */
   timeout?: number;
   /**

@@ -129,6 +129,7 @@ function string(maxLength: number): Arbitrary<string>;
  * Superceded by `fc.string({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function string(minLength: number, maxLength: number): Arbitrary<string>;
@@ -173,6 +174,7 @@ function asciiString(maxLength: number): Arbitrary<string>;
  * Superceded by `fc.asciiString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
@@ -190,6 +192,7 @@ function asciiString(...args: StringFullConstraintsDefinition): Arbitrary<string
 
 /**
  * For strings of {@link char16bits}
+ * @remarks Since 0.0.11
  * @public
  */
 function string16bits(): Arbitrary<string>;
@@ -202,6 +205,7 @@ function string16bits(): Arbitrary<string>;
  * Superceded by `fc.string16bits({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function string16bits(maxLength: number): Arbitrary<string>;
@@ -215,6 +219,7 @@ function string16bits(maxLength: number): Arbitrary<string>;
  * Superceded by `fc.string16bits({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
@@ -232,6 +237,7 @@ function string16bits(...args: StringFullConstraintsDefinition): Arbitrary<strin
 
 /**
  * For strings of {@link unicode}
+ * @remarks Since 0.0.11
  * @public
  */
 function unicodeString(): Arbitrary<string>;
@@ -244,6 +250,7 @@ function unicodeString(): Arbitrary<string>;
  * Superceded by `fc.unicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function unicodeString(maxLength: number): Arbitrary<string>;
@@ -257,6 +264,7 @@ function unicodeString(maxLength: number): Arbitrary<string>;
  * Superceded by `fc.unicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
@@ -274,6 +282,7 @@ function unicodeString(...args: StringFullConstraintsDefinition): Arbitrary<stri
 
 /**
  * For strings of {@link fullUnicode}
+ * @remarks Since 0.0.11
  * @public
  */
 function fullUnicodeString(): Arbitrary<string>;
@@ -286,6 +295,7 @@ function fullUnicodeString(): Arbitrary<string>;
  * Superceded by `fc.fullUnicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function fullUnicodeString(maxLength: number): Arbitrary<string>;
@@ -299,6 +309,7 @@ function fullUnicodeString(maxLength: number): Arbitrary<string>;
  * Superceded by `fc.fullUnicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function fullUnicodeString(minLength: number, maxLength: number): Arbitrary<string>;
@@ -343,6 +354,7 @@ function hexaString(maxLength: number): Arbitrary<string>;
  * Superceded by `fc.hexaString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
@@ -394,6 +406,7 @@ function base64String(maxLength: number): Arbitrary<string>;
  * Superceded by `fc.base64String({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function base64String(minLength: number, maxLength: number): Arbitrary<string>;
