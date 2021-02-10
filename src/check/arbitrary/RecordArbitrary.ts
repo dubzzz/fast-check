@@ -5,6 +5,7 @@ import { genericTuple } from './TupleArbitrary';
 
 /**
  * Constraints to be applied on {@link record}
+ * @remarks Since 0.0.12
  * @public
  */
 export type RecordConstraints<T = unknown> =
@@ -87,6 +88,7 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
  *
  * @param recordModel - Schema of the record
  *
+ * @remarks Since 0.0.12
  * @public
  */
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }>>;
@@ -102,6 +104,7 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  * @param recordModel - Schema of the record
  * @param constraints - Contraints on the generated record
  *
+ * @remarks Since 0.0.12
  * @public
  */
 function record<T, TConstraints extends RecordConstraints<keyof T>>(
