@@ -15,9 +15,10 @@ export abstract class Arbitrary<T> {
    * Generate a value of type `T` along with its shrink method
    * based on the provided random number generator
    *
-   * @remarks Since 0.0.1
    * @param mrng - Random number generator
    * @returns Random value of type `T` and its shrinker
+   *
+   * @remarks Since 0.0.1
    */
   abstract generate(mrng: Random): Shrinkable<T>;
 
@@ -55,9 +56,10 @@ export abstract class Arbitrary<T> {
    * // new Arbitrary only keeps even values
    * ```
    *
-   * @remarks Since 0.0.1
    * @param predicate - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New arbitrary filtered using predicate
+   *
+   * @remarks Since 0.0.1
    */
   filter(predicate: (t: T) => boolean): Arbitrary<T>;
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U> {
@@ -76,9 +78,10 @@ export abstract class Arbitrary<T> {
    * // transform an Arbitrary producing {r,g,b} integers into an Arbitrary of '#rrggbb'
    * ```
    *
-   * @remarks Since 0.0.1
    * @param mapper - Map function, to produce a new element based on an old one
    * @returns New arbitrary with mapped elements
+   *
+   * @remarks Since 0.0.1
    */
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -95,6 +98,8 @@ export abstract class Arbitrary<T> {
    *
    * @param fmapper - Chain function, to produce a new Arbitrary using a value from another Arbitrary
    * @returns New arbitrary of new type
+   *
+   * @remarks Since 1.2.0
    */
   chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
