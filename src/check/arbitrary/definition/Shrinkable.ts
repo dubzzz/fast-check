@@ -5,6 +5,7 @@ import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
  * A `Shrinkable<T, TShrink = T>` holds an internal value of type `T`
  * and can shrink it to smaller `TShrink` values
  *
+ * @remarks Since 0.0.1
  * @public
  */
 export class Shrinkable<T, TShrink extends T = T> {
@@ -24,16 +25,23 @@ export class Shrinkable<T, TShrink extends T = T> {
    * Depending on `hasToBeCloned` it will either be `value_` or a clone of it
    */
   readonly value!: T;
+  /**
+   * Internal value of the shrinkable
+   */
+  readonly value_: T;
+  /**
+   * Function producing Stream of shrinks associated to value
+   * @remarks Since 0.0.1
+   */
+  readonly shrink: () => Stream<Shrinkable<TShrink>>;
 
   /**
-   * @param value - Internal value of the shrinkable
+   * @param value_ - Internal value of the shrinkable
    * @param shrink - Function producing Stream of shrinks associated to value
    */
-  // tslint:disable-next-line:variable-name
-  constructor(
-    readonly value_: T,
-    readonly shrink: () => Stream<Shrinkable<TShrink>> = () => Stream.nil<Shrinkable<TShrink>>()
-  ) {
+  constructor(value_: T, shrink: () => Stream<Shrinkable<TShrink>> = () => Stream.nil<Shrinkable<TShrink>>()) {
+    this.value_ = value_;
+    this.shrink = shrink;
     this.hasToBeCloned = hasCloneMethod(value_);
     this.readOnce = false;
     Object.defineProperty(this, 'value', { get: this.getValue });
@@ -67,6 +75,7 @@ export class Shrinkable<T, TShrink extends T = T> {
    * Create another shrinkable by mapping all values using the provided `mapper`
    * Both the original value and the shrunk ones are impacted
    *
+   * @remarks Since 0.0.1
    * @param mapper - Map function, to produce a new element based on an old one
    * @returns New shrinkable with mapped elements
    */
@@ -96,6 +105,7 @@ export class Shrinkable<T, TShrink extends T = T> {
    * All the shrunk values produced by the resulting `Shrinkable<T>`
    * satisfy `predicate(value) == true`
    *
+   * @remarks Since 0.0.1
    * @param predicate - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
    */

@@ -94,6 +94,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  *
  * @returns Test status and other useful details
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
@@ -166,6 +167,7 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
  * @param property - Synchronous property to be checked
  * @param params - Optional parameters to customize the execution
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;

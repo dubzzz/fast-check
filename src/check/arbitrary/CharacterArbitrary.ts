@@ -17,6 +17,8 @@ const preferPrintableMapper = (v: number): number => {
  * For single printable ascii characters - char code between 0x20 (included) and 0x7e (included)
  *
  * {@link https://www.ascii-code.com/}
+ *
+ * @remarks Since 0.0.1
  * @public
  */
 function char(): Arbitrary<string> {
@@ -26,6 +28,7 @@ function char(): Arbitrary<string> {
 
 /**
  * For single hexadecimal characters - 0-9 or a-f
+ * @remarks Since 0.0.1
  * @public
  */
 function hexa(): Arbitrary<string> {
@@ -39,6 +42,7 @@ function hexa(): Arbitrary<string> {
 
 /**
  * For single base64 characters - A-Z, a-z, 0-9, + or /
+ * @remarks Since 0.0.1
  * @public
  */
 function base64(): Arbitrary<string> {
@@ -53,6 +57,7 @@ function base64(): Arbitrary<string> {
 
 /**
  * For single ascii characters - char code between 0x00 (included) and 0x7f (included)
+ * @remarks Since 0.0.1
  * @public
  */
 function ascii(): Arbitrary<string> {

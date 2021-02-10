@@ -182,6 +182,7 @@ export interface ArrayConstraints {
 /**
  * For arrays of values coming from `arb`
  * @param arb - Arbitrary used to generate the values inside the array
+ * @remarks Since 0.0.1
  * @public
  */
 function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
@@ -195,6 +196,7 @@ function array<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  * Superceded by `fc.array(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;

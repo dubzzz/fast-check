@@ -32,6 +32,7 @@ export type OneOfValue<Ts extends Arbitrary<unknown>[]> = {
  *
  * @param arbs - Arbitraries that might be called to produce a value
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfValue<Ts>> {

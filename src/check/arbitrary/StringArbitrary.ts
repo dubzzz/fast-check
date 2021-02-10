@@ -102,6 +102,7 @@ function stringOf(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefi
 
 /**
  * For strings of {@link char}
+ * @remarks Since 0.0.1
  * @public
  */
 function string(): Arbitrary<string>;
@@ -114,6 +115,7 @@ function string(): Arbitrary<string>;
  * Superceded by `fc.string({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function string(maxLength: number): Arbitrary<string>;
@@ -144,6 +146,7 @@ function string(...args: StringFullConstraintsDefinition): Arbitrary<string> {
 
 /**
  * For strings of {@link ascii}
+ * @remarks Since 0.0.1
  * @public
  */
 function asciiString(): Arbitrary<string>;
@@ -156,6 +159,7 @@ function asciiString(): Arbitrary<string>;
  * Superceded by `fc.asciiString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function asciiString(maxLength: number): Arbitrary<string>;
@@ -312,6 +316,7 @@ function fullUnicodeString(...args: StringFullConstraintsDefinition): Arbitrary<
 
 /**
  * For strings of {@link hexa}
+ * @remarks Since 0.0.1
  * @public
  */
 function hexaString(): Arbitrary<string>;
@@ -324,6 +329,7 @@ function hexaString(): Arbitrary<string>;
  * Superceded by `fc.hexaString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function hexaString(maxLength: number): Arbitrary<string>;
@@ -357,6 +363,7 @@ function hexaString(...args: StringFullConstraintsDefinition): Arbitrary<string>
  *
  * A base64 string will always have a length multiple of 4 (padded with =)
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function base64String(): Arbitrary<string>;
@@ -371,6 +378,7 @@ function base64String(): Arbitrary<string>;
  * Superceded by `fc.base64String({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function base64String(maxLength: number): Arbitrary<string>;

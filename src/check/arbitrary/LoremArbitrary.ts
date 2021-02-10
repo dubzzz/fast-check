@@ -210,6 +210,7 @@ const loremWord = () =>
 
 /**
  * For lorem ipsum strings of words
+ * @remarks Since 0.0.1
  * @public
  */
 function lorem(): Arbitrary<string>;
@@ -222,6 +223,7 @@ function lorem(): Arbitrary<string>;
  * Superceded by `fc.lorem({maxCount})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function lorem(maxWordsCount: number): Arbitrary<string>;
@@ -235,6 +237,7 @@ function lorem(maxWordsCount: number): Arbitrary<string>;
  * Superceded by `fc.lorem({maxCount, mode})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;

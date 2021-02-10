@@ -25,6 +25,7 @@ class ConstantArbitrary<T> extends Arbitrary<T> {
 /**
  * For `value`
  * @param value - The value to produce
+ * @remarks Since 0.0.1
  * @public
  */
 function constant<T>(value: T): Arbitrary<T> {
