@@ -29,6 +29,7 @@ export interface Parameters<T = void> {
   randomType?: RandomType | ((seed: number) => RandomGenerator);
   /**
    * Number of runs before success: 100 by default
+   * @remarks Since 1.0.0
    */
   numRuns?: number;
   /**
@@ -83,6 +84,7 @@ export interface Parameters<T = void> {
   /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
+   * @remarks Since 1.0.0
    */
   path?: string;
   /**

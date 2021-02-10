@@ -26,6 +26,7 @@ export type RecordConstraints<T = unknown> =
        * Allow to remove keys from the generated record.
        * Warning: Cannot be used in conjunction with requiredKeys.
        * Prefer: `requiredKeys: []` over `withDeletedKeys: true`
+       * @remarks Since 1.0.0
        */
       withDeletedKeys?: boolean;
     };

@@ -67,6 +67,7 @@ export class GenericTupleArbitrary<Ts> extends Arbitrary<Ts[]> {
  *
  * @param arbs - Ordered list of arbitraries
  *
+ * @remarks Since 1.0.0
  * @public
  */
 function genericTuple<Ts>(arbs: Arbitrary<Ts>[]): Arbitrary<Ts[]> {

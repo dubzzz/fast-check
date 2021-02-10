@@ -98,6 +98,8 @@ export interface RunDetailsCommon<Ts> {
    *
    * - In case of failed property: Number of runs up to the first failure (including the failure run)
    * - Otherwise: Number of successful executions
+   *
+   * @remarks Since 1.0.0
    */
   numRuns: number;
   /**
@@ -109,6 +111,7 @@ export interface RunDetailsCommon<Ts> {
   numSkips: number;
   /**
    * Number of shrinks required to get to the minimal failing case (aka counterexample)
+   * @remarks Since 1.0.0
    */
   numShrinks: number;
   /**
@@ -132,6 +135,8 @@ export interface RunDetailsCommon<Ts> {
    * In case of failure: path to the counterexample
    *
    * For replay purposes, it can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
+   *
+   * @remarks Since 1.0.0
    */
   counterexamplePath: string | null;
   /**

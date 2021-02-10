@@ -18,6 +18,7 @@ export function toObject<T>(items: [string, T][]): { [key: string]: T } {
  * @param keyArb - Arbitrary used to generate the keys of the object
  * @param valueArb - Arbitrary used to generate the values of the object
  *
+ * @remarks Since 1.0.0
  * @public
  */
 function dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<Record<string, T>> {
