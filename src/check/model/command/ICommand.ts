@@ -5,6 +5,7 @@
 
 /**
  * Interface that should be implemented in order to define a command
+ * @remarks Since 1.5.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -15,6 +16,8 @@ export interface ICommand<Model extends object, Real, RunResult, CheckAsync exte
    * WARNING: does not change the model
    *
    * @param m - Model, simplified or schematic representation of real system
+   *
+   * @remarks Since 1.5.0
    */
   check(m: Readonly<Model>): CheckAsync extends false ? boolean : Promise<boolean>;
 
@@ -25,11 +28,14 @@ export interface ICommand<Model extends object, Real, RunResult, CheckAsync exte
    *
    * @param m - Model, simplified or schematic representation of real system
    * @param r - Sytem under test
+   *
+   * @remarks Since 1.5.0
    */
   run(m: Model, r: Real): RunResult;
 
   /**
    * Name of the command
+   * @remarks Since 1.5.0
    */
   toString(): string;
 }

@@ -108,6 +108,7 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
  * @param s - Initial state provider
  * @param cmds - Synchronous commands to be executed
  *
+ * @remarks Since 1.5.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -126,6 +127,7 @@ export function modelRun<Model extends object, Real, InitialModel extends Model>
  * @param s - Initial state provider
  * @param cmds - Asynchronous commands to be executed
  *
+ * @remarks Since 1.5.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types

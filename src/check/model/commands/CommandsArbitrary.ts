@@ -155,6 +155,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.5.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -175,6 +176,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.5.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
