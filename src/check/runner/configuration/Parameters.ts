@@ -114,6 +114,8 @@ export interface Parameters<T = void> {
    * Custom values added at the beginning of generated ones
    *
    * It enables users to come with examples they want to test at every run
+   *
+   * @remarks Since 1.4.0
    */
   examples?: T[];
   /**
