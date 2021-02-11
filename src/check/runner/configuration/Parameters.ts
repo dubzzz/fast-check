@@ -39,6 +39,8 @@ export interface Parameters<T = void> {
    * Runner will consider a run to have failed if it skipped maxSkips+1 times before having generated numRuns valid entries.
    *
    * See {@link pre} for more details on pre-conditions
+   *
+   * @remarks Since 1.3.0
    */
   maxSkipsPerRun?: number;
   /**

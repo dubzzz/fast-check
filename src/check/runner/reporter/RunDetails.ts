@@ -107,6 +107,8 @@ export interface RunDetailsCommon<Ts> {
    *
    * As `numRuns` it only takes into account the skipped values that occured before the first failure.
    * Refer to {@link pre} to add such pre-conditions.
+   *
+   * @remarks Since 1.3.0
    */
   numSkips: number;
   /**
