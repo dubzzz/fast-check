@@ -3015,10 +3015,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-marked@^1.2.9:
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-1.2.9.tgz#53786f8b05d4c01a2a5a76b7d1ec9943d29d72dc"
-  integrity sha512-H8lIX2SvyitGX+TRdtS06m1jHMijKN/XjfH6Ooii9fvxMlh8QdqBfBDkGUpMWH2kQNrtixjzYUa3SH8ROTgRRw==
+marked@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-2.0.0.tgz#9662bbcb77ebbded0662a7be66ff929a8611cee5"
+  integrity sha512-NqRSh2+LlN2NInpqTQnS614Y/3NkVMFFU6sJlRFEpxJ/LHuK/qJECH7/fXZjk4VZstPW/Pevjil/VtSONsLc7Q==
 
 merge-stream@^2.0.0:
   version "2.0.0"
@@ -4212,16 +4212,16 @@ typedoc-default-themes@^0.12.7:
   integrity sha512-0XAuGEqID+gon1+fhi4LycOEFM+5Mvm2PjwaiVZNAzU7pn3G2DEpsoXnFOPlLDnHY6ZW0BY0nO7ur9fHOFkBLQ==
 
 typedoc@^0.20.16:
-  version "0.20.23"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.23.tgz#963fcb53b4e0f28c50b2e155721766cf53196105"
-  integrity sha512-RBXuM0MJ2V/7eGg4YrDEmV1bn/ypa3Wx6AO1B0mUBHEQJaOIKEEnNI0Su75J6q7dkB5ksZvGNgsGjvfWL8Myjg==
+  version "0.20.24"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.24.tgz#9dd1cb32e44823a5ebbeb54c9b84af85286c5941"
+  integrity sha512-TadOYtcw8agrk7WTZlXUcct4jLZZcGcYe3xbmARkI+rBpXI6Mw+0P8oUo13+9oFreQvK5zZgMem4YEi7lCXLIw==
   dependencies:
     colors "^1.4.0"
     fs-extra "^9.1.0"
     handlebars "^4.7.6"
     lodash "^4.17.20"
     lunr "^2.3.9"
-    marked "^1.2.9"
+    marked "^2.0.0"
     minimatch "^3.0.0"
     progress "^2.0.3"
     shelljs "^0.8.4"
