@@ -172,6 +172,7 @@ const __type = '__PACKAGE_TYPE__' as string;
 const __version = '__PACKAGE_VERSION__' as string;
 /**
  * Commit hash of the current code (eg.: __COMMIT_HASH__)
+ * @remarks Since 2.7.0
  * @public
  */
 const __commitHash = '__COMMIT_HASH__' as string;
