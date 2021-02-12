@@ -18,6 +18,8 @@ export type RecordConstraints<T = unknown> =
        * With something like `{ requiredKeys: [mySymbol1, 'a'] as [typeof mySymbol1, 'a'] }` when both `mySymbol1` and `a` are required.
        *
        * Warning: Cannot be used in conjunction with withDeletedKeys.
+       *
+       * @remarks Since 2.11.0
        */
       requiredKeys?: T[];
     }
