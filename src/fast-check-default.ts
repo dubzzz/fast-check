@@ -160,11 +160,13 @@ import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArr
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
  * Type of module (commonjs or module)
+ * @remarks Since 1.22.0
  * @public
  */
 const __type = '__PACKAGE_TYPE__' as string;
 /**
  * Version of fast-check used by your project (eg.: __PACKAGE_VERSION__)
+ * @remarks Since 1.22.0
  * @public
  */
 const __version = '__PACKAGE_VERSION__' as string;
