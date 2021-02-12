@@ -7,12 +7,24 @@ import { escapeForTemplateString } from './helpers/TextEscaper';
 
 /**
  * Define an item to be passed to `scheduleSequence`
+ * @remarks Since 1.20.0
  * @public
  */
 export type SchedulerSequenceItem<TMetaData = unknown> =
   | {
+      /**
+       * Builder to start the task
+       * @remarks Since 1.20.0
+       */
       builder: () => Promise<any>;
+      /**
+       * Label
+       * @remarks Since 1.20.0
+       */
       label: string;
+      /**
+       * Metadata to be attached into logs
+       */
       metadata?: TMetaData;
     }
   | (() => Promise<any>);
@@ -56,15 +68,21 @@ export interface SchedulerConstraints {
 }
 
 /**
- * Instance able to reschedule the ordering of promises
- * for a given app
+ * Instance able to reschedule the ordering of promises for a given app
+ * @remarks Since 1.20.0
  * @public
  */
 export interface Scheduler<TMetaData = unknown> {
-  /** Wrap a new task using the Scheduler */
+  /**
+   * Wrap a new task using the Scheduler
+   * @remarks Since 1.20.0
+   */
   schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetaData) => Promise<T>;
 
-  /** Automatically wrap function output using the Scheduler */
+  /**
+   * Automatically wrap function output using the Scheduler
+   * @remarks Since 1.20.0
+   */
   scheduleFunction: <TArgs extends any[], T>(
     asyncFunction: (...args: TArgs) => Promise<T>
   ) => (...args: TArgs) => Promise<T>;
@@ -80,6 +98,8 @@ export interface Scheduler<TMetaData = unknown> {
    * Sequence will be marked:
    * - done if all the promises have been executed properly
    * - faulty if one of the promises within the sequence throws
+   *
+   * @remarks Since 1.20.0
    */
   scheduleSequence(
     sequenceBuilders: SchedulerSequenceItem<TMetaData>[]
@@ -87,18 +107,21 @@ export interface Scheduler<TMetaData = unknown> {
 
   /**
    * Count of pending scheduled tasks
+   * @remarks Since 1.20.0
    */
   count(): number;
 
   /**
    * Wait one scheduled task to be executed
    * @throws Whenever there is no task scheduled
+   * @remarks Since 1.20.0
    */
   waitOne: () => Promise<void>;
 
   /**
    * Wait all scheduled tasks,
    * including the ones that might be created by one of the resolved task
+   * @remarks Since 1.20.0
    */
   waitAll: () => Promise<void>;
 
@@ -364,6 +387,7 @@ class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
 
 /**
  * For scheduler of promises
+ * @remarks Since 1.20.0
  * @public
  */
 function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arbitrary<Scheduler<TMetaData>> {
