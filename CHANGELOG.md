@@ -1,3 +1,13 @@
+# 2.12.2
+
+_Fix regression in typings of record_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.12.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.12.1...v2.12.2)]
+
+## Fixes
+
+- ([PR#1478](https://github.com/dubzzz/fast-check/pull/1478)) Typing: Add missing export for double constraints
+- ([PR#1465](https://github.com/dubzzz/fast-check/pull/1465)) Typing: Regression introduced in typings for `record`
+
 # 2.12.1
 
 _Avoid unsafe eval_
@@ -53,6 +63,17 @@ _More efficient shrinkers_
 
 ---
 
+# 2.11.1
+
+_Avoid unsafe eval and fix regression in typings of record_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.11.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.11.0...v2.11.1)]
+
+## Fixes
+
+- ([PR#1408](https://github.com/dubzzz/fast-check/pull/1408)) Bug/Security: Avoid using unsafe-eval in implementation of getGlobal
+- ([PR#1478](https://github.com/dubzzz/fast-check/pull/1478)) Typing: Add missing export for double constraints
+- ([PR#1465](https://github.com/dubzzz/fast-check/pull/1465)) Typing: Regression introduced in typings for `record`
+
 # 2.11.0
 
 _Add support for Symbol properties and ability to mark keys as required in `fc.record`_
@@ -85,6 +106,16 @@ _Add support for Symbol properties and ability to mark keys as required in `fc.r
 
 ---
 
+# 2.10.1
+
+_Avoid unsafe eval_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.10.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.10.0...v2.10.1)]
+
+## Fixes
+
+- ([PR#1408](https://github.com/dubzzz/fast-check/pull/1408)) Bug/Security: Avoid using unsafe-eval in implementation of getGlobal
+- ([PR#1478](https://github.com/dubzzz/fast-check/pull/1478)) Typing: Add missing export for double constraints
+
 # 2.10.0
 
 _Increase performances of generic operations of arbitraries: map, filter, chain_
@@ -99,6 +130,16 @@ _Increase performances of generic operations of arbitraries: map, filter, chain_
 - ([PR#1260](https://github.com/dubzzz/fast-check/pull/1260)) Test: Better coverage of ArrayInt64 to reduce flakiness in coverage
 
 ---
+
+# 2.9.1
+
+_Avoid unsafe eval_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.9.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.9.0...v2.9.1)]
+
+## Fixes
+
+- ([PR#1408](https://github.com/dubzzz/fast-check/pull/1408)) Bug/Security: Avoid using unsafe-eval in implementation of getGlobal
+- ([PR#1478](https://github.com/dubzzz/fast-check/pull/1478)) Typing: Add missing export for double constraints
 
 # 2.9.0
 
@@ -124,6 +165,16 @@ _Add arbitraries for typed arrays_
 - ([PR#1251](https://github.com/dubzzz/fast-check/pull/1251)) Test: Add more tests for fc.anything to reduce coverage flakiness
 
 ---
+
+# 2.8.1
+
+_Avoid unsafe eval_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.8.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.8.0...v2.8.1)]
+
+## Fixes
+
+- ([PR#1408](https://github.com/dubzzz/fast-check/pull/1408)) Bug/Security: Avoid using unsafe-eval in implementation of getGlobal
+- ([PR#1478](https://github.com/dubzzz/fast-check/pull/1478)) Typing: Add missing export for double constraints
 
 # 2.8.0
 
@@ -152,6 +203,15 @@ _New opt-in implementation for fc.float and fc.double_
 - ([PR#1213](https://github.com/dubzzz/fast-check/pull/1213)) Test: Add some more tests for ArrayInt64 for coverage stability
 
 ---
+
+# 2.7.1
+
+_Avoid unsafe eval_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.7.0...v2.7.1)]
+
+## Fixes
+
+- ([PR#1408](https://github.com/dubzzz/fast-check/pull/1408)) Bug/Security: Avoid using unsafe-eval in implementation of getGlobal
 
 # 2.7.0
 
