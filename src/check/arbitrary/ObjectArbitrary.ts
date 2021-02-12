@@ -38,7 +38,10 @@ export interface ObjectConstraints {
    * @remarks Since 0.0.7
    */
   maxDepth?: number;
-  /** Maximal number of keys */
+  /**
+   * Maximal number of keys
+   * @remarks Since 1.13.0
+   */
   maxKeys?: number;
   /**
    * Arbitrary for keys
