@@ -147,6 +147,7 @@ export async function asyncModelRun<Model extends object, Real, CheckAsync exten
  * @param s - Initial state provider
  * @param cmds - Asynchronous commands to be executed
  *
+ * @remarks Since 1.24.0
  * @public
  */
 export async function scheduledModelRun<
