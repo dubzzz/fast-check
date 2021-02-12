@@ -112,6 +112,7 @@ export interface ObjectConstraints {
   /**
    * Also generate typed arrays in: (Uint|Int)(8|16|32)Array and Float(32|64)Array
    * Remark: no typed arrays made of bigint
+   * @remarks Since 2.9.0
    */
   withTypedArray?: boolean;
   /** Also generate sparse arrays (arrays with holes) */
