@@ -8,7 +8,7 @@
   "dependencies": {
     "@testing-library/dom": "^7.29.2",
     "@testing-library/jest-dom": "^5.11.8",
-    "@testing-library/react": "^11.2.3",
+    "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.0",
     "fast-check": "*",
     "lodash": "^4.17.20",
