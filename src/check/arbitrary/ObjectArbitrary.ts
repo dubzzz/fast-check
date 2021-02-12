@@ -99,7 +99,10 @@ export interface ObjectConstraints {
    * @remarks Since 1.23.0
    */
   withNullPrototype?: boolean;
-  /** Also generate BigInt */
+  /**
+   * Also generate BigInt
+   * @remarks Since 1.26.0
+   */
   withBigInt?: boolean;
   /** Also generate Date */
   withDate?: boolean;

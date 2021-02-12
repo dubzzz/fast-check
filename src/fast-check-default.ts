@@ -185,6 +185,7 @@ type Context = ContextValue;
 
 /**
  * @deprecated Switch to {@link FalsyValue} instead
+ * @remarks Since 1.26.0
  * @public
  */
 type FalsyType = FalsyValue;
