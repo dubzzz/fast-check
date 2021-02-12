@@ -5,6 +5,7 @@ import { frequency } from './FrequencyArbitrary';
 
 /**
  * Constraints to be applied on {@link lorem}
+ * @remarks Since 2.5.0
  * @public
  */
 export interface LoremConstraints {
@@ -14,6 +15,8 @@ export interface LoremConstraints {
    * - maximal number of sentences in case mode is 'sentences'
    *
    * @defaultValue 5
+   *
+   * @remarks Since 2.5.0
    */
   maxCount?: number;
   /**
@@ -22,6 +25,8 @@ export interface LoremConstraints {
    * - sentences: multiple sentences
    *
    * @defaultValue 'words'
+   *
+   * @remarks Since 2.5.0
    */
   mode?: 'words' | 'sentences';
 }
@@ -246,6 +251,7 @@ function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>
  *
  * @param constraints - Constraints to be applied onto the generated value
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function lorem(constraints: LoremConstraints): Arbitrary<string>;

@@ -59,6 +59,7 @@ class CloneArbitrary<T> extends Arbitrary<T[]> {
 
 /**
  * Type of the value produced by {@link clone}
+ * @remarks Since 2.5.0
  * @public
  */
 export type CloneValue<T, N extends number> = N extends 0
@@ -79,6 +80,7 @@ export type CloneValue<T, N extends number> = N extends 0
  * @param arb - Source arbitrary
  * @param numValues - Number of values to produce
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function clone<T, N extends number>(arb: Arbitrary<T>, numValues: N): Arbitrary<CloneValue<T, N>>;

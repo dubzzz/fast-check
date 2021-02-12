@@ -104,7 +104,10 @@ export interface ObjectConstraints {
    * @remarks Since 1.26.0
    */
   withBigInt?: boolean;
-  /** Also generate Date */
+  /**
+   * Also generate Date
+   * @remarks Since 2.5.0
+   */
   withDate?: boolean;
   /**
    * Also generate typed arrays in: (Uint|Int)(8|16|32)Array and Float(32|64)Array
@@ -121,10 +124,15 @@ export interface ObjectConstraints {
  * - {@link unicodeJson},
  * - {@link jsonObject},
  * - {@link unicodeJsonObject}
+ *
+ * @remarks Since 2.5.0
  * @public
  */
 export interface JsonSharedConstraints {
-  /** Maximal depth allowed */
+  /**
+   * Maximal depth allowed
+   * @remarks Since 2.5.0
+   */
   maxDepth?: number;
 }
 
@@ -427,6 +435,7 @@ function jsonObject(maxDepth: number): Arbitrary<unknown>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function jsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
@@ -465,6 +474,7 @@ function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
@@ -503,6 +513,7 @@ function json(maxDepth: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function json(constraints: JsonSharedConstraints): Arbitrary<unknown>;
@@ -544,6 +555,7 @@ function unicodeJson(maxDepth: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function unicodeJson(constraints: JsonSharedConstraints): Arbitrary<unknown>;
