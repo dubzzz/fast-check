@@ -22,7 +22,10 @@ const floatInternal = (): Arbitrary<number> => {
  */
 export type FloatConstraints =
   | {
-      /** Enable new version of fc.float */
+      /**
+       * Enable new version of fc.float
+       * @remarks Since 2.8.0
+       */
       next?: false;
       /**
        * Lower bound for the generated floats (included)
@@ -36,7 +39,10 @@ export type FloatConstraints =
       max?: number;
     }
   | ({
-      /** Enable new version of fc.float */
+      /**
+       * Enable new version of fc.float
+       * @remarks Since 2.8.0
+       */
       next: true;
     } & FloatNextConstraints);
 
@@ -131,7 +137,10 @@ const doubleInternal = (): Arbitrary<number> => {
  */
 export type DoubleConstraints =
   | {
-      /** Enable new version of fc.double */
+      /**
+       * Enable new version of fc.double
+       * @remarks Since 2.8.0
+       */
       next?: false;
       /**
        * Lower bound for the generated doubles (included)
@@ -145,7 +154,10 @@ export type DoubleConstraints =
       max?: number;
     }
   | ({
-      /** Enable new version of fc.double */
+      /**
+       * Enable new version of fc.double
+       * @remarks Since 2.8.0
+       */
       next: true;
     } & DoubleNextConstraints);
 
