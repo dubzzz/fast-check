@@ -6,16 +6,29 @@ import { tuple } from './TupleArbitrary';
 
 /**
  * Constraints to be applied on {@link sparseArray}
+ * @remarks Since 2.13.0
  * @public
  */
 export interface SparseArrayConstraints {
-  /** Upper bound of the generated array size (maximal size: 4294967295) */
+  /**
+   * Upper bound of the generated array size (maximal size: 4294967295)
+   * @remarks Since 2.13.0
+   */
   maxLength?: number;
-  /** Lower bound of the number of non-hole elements */
+  /**
+   * Lower bound of the number of non-hole elements
+   * @remarks Since 2.13.0
+   */
   minNumElements?: number;
-  /** Upper bound of the number of non-hole elements */
+  /**
+   * Upper bound of the number of non-hole elements
+   * @remarks Since 2.13.0
+   */
   maxNumElements?: number;
-  /** When enabled, all generated arrays will either be the empty array or end by a non-hole */
+  /**
+   * When enabled, all generated arrays will either be the empty array or end by a non-hole
+   * @remarks Since 2.13.0
+   */
   noTrailingHole?: boolean;
 }
 
@@ -42,6 +55,7 @@ function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
  * For sparse arrays of values coming from `arb`
  * @param arb - Arbitrary used to generate the values inside the sparse array
  * @param constraints - Constraints to apply when building instances
+ * @remarks Since 2.13.0
  * @public
  */
 export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstraints = {}): Arbitrary<T[]> {

@@ -83,6 +83,7 @@ function buildInitialValues<Ts>(
  *
  * @returns Test status and other useful details
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
@@ -94,6 +95,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  *
  * @returns Test status and other useful details
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
@@ -107,6 +109,7 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails
  *
  * @returns Test status and other useful details
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
@@ -154,6 +157,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
  * @param property - Asynchronous property to be checked
  * @param params - Optional parameters to customize the execution
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
@@ -166,6 +170,7 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
  * @param property - Synchronous property to be checked
  * @param params - Optional parameters to customize the execution
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
@@ -180,6 +185,7 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
  * @param property - Property to be checked
  * @param params - Optional parameters to customize the execution
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;

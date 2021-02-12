@@ -5,6 +5,7 @@ import { genericTuple } from './TupleArbitrary';
 
 /**
  * Constraints to be applied on {@link record}
+ * @remarks Since 0.0.12
  * @public
  */
 export type RecordConstraints<T = unknown> =
@@ -17,6 +18,8 @@ export type RecordConstraints<T = unknown> =
        * With something like `{ requiredKeys: [mySymbol1, 'a'] as [typeof mySymbol1, 'a'] }` when both `mySymbol1` and `a` are required.
        *
        * Warning: Cannot be used in conjunction with withDeletedKeys.
+       *
+       * @remarks Since 2.11.0
        */
       requiredKeys?: T[];
     }
@@ -25,6 +28,7 @@ export type RecordConstraints<T = unknown> =
        * Allow to remove keys from the generated record.
        * Warning: Cannot be used in conjunction with requiredKeys.
        * Prefer: `requiredKeys: []` over `withDeletedKeys: true`
+       * @remarks Since 1.0.0
        */
       withDeletedKeys?: boolean;
     };
@@ -32,6 +36,8 @@ export type RecordConstraints<T = unknown> =
 /**
  * Infer the type of the Arbitrary produced by record
  * given the type of the source arbitrary and constraints to be applied
+ *
+ * @remarks Since 2.2.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -87,6 +93,7 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
  *
  * @param recordModel - Schema of the record
  *
+ * @remarks Since 0.0.12
  * @public
  */
 function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }>>;
@@ -102,6 +109,7 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  * @param recordModel - Schema of the record
  * @param constraints - Contraints on the generated record
  *
+ * @remarks Since 0.0.12
  * @public
  */
 function record<T, TConstraints extends RecordConstraints<keyof T>>(

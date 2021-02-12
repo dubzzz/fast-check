@@ -33,14 +33,21 @@ import { sparseArray } from './SparseArrayArbitrary';
  * @public
  */
 export interface ObjectConstraints {
-  /** Maximal depth allowed */
+  /**
+   * Maximal depth allowed
+   * @remarks Since 0.0.7
+   */
   maxDepth?: number;
-  /** Maximal number of keys */
+  /**
+   * Maximal number of keys
+   * @remarks Since 1.13.0
+   */
   maxKeys?: number;
   /**
    * Arbitrary for keys
    *
    * Default for `key` is: {@link string}
+   * @remarks Since 0.0.7
    */
   key?: Arbitrary<string>;
   /**
@@ -64,28 +71,54 @@ export interface ObjectConstraints {
    *  - `Number.MAX_SAFE_INTEGER`,
    *  - `Number.POSITIVE_INFINITY`,
    *  - `Number.NEGATIVE_INFINITY`
+   * @remarks Since 0.0.7
    */
   values?: Arbitrary<unknown>[];
-  /** Also generate boxed versions of values */
+  /**
+   * Also generate boxed versions of values
+   * @remarks Since 1.11.0
+   */
   withBoxedValues?: boolean;
-  /** Also generate Set */
+  /**
+   * Also generate Set
+   * @remarks Since 1.11.0
+   */
   withSet?: boolean;
-  /** Also generate Map */
+  /**
+   * Also generate Map
+   * @remarks Since 1.11.0
+   */
   withMap?: boolean;
-  /** Also generate string representations of object instances */
+  /**
+   * Also generate string representations of object instances
+   * @remarks Since 1.17.0
+   */
   withObjectString?: boolean;
-  /** Also generate object with null prototype */
+  /**
+   * Also generate object with null prototype
+   * @remarks Since 1.23.0
+   */
   withNullPrototype?: boolean;
-  /** Also generate BigInt */
+  /**
+   * Also generate BigInt
+   * @remarks Since 1.26.0
+   */
   withBigInt?: boolean;
-  /** Also generate Date */
+  /**
+   * Also generate Date
+   * @remarks Since 2.5.0
+   */
   withDate?: boolean;
   /**
    * Also generate typed arrays in: (Uint|Int)(8|16|32)Array and Float(32|64)Array
    * Remark: no typed arrays made of bigint
+   * @remarks Since 2.9.0
    */
   withTypedArray?: boolean;
-  /** Also generate sparse arrays (arrays with holes) */
+  /**
+   * Also generate sparse arrays (arrays with holes)
+   * @remarks Since 2.13.0
+   */
   withSparseArray?: boolean;
 }
 
@@ -95,10 +128,15 @@ export interface ObjectConstraints {
  * - {@link unicodeJson},
  * - {@link jsonObject},
  * - {@link unicodeJsonObject}
+ *
+ * @remarks Since 2.5.0
  * @public
  */
 export interface JsonSharedConstraints {
-  /** Maximal depth allowed */
+  /**
+   * Maximal depth allowed
+   * @remarks Since 2.5.0
+   */
   maxDepth?: number;
 }
 
@@ -280,6 +318,7 @@ const objectInternal = (constraints: QualifiedObjectConstraints): Arbitrary<Reco
  * null, undefined, 42, 6.5, 'Hello', {}, {k: [{}, 1, 2]}
  * ```
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function anything(): Arbitrary<unknown>;
@@ -310,6 +349,7 @@ function anything(): Arbitrary<unknown>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function anything(constraints: ObjectConstraints): Arbitrary<unknown>;
@@ -327,6 +367,7 @@ function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
  * {}, {k: [{}, 1, 2]}
  * ```
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function object(): Arbitrary<Record<string, unknown>>;
@@ -342,6 +383,7 @@ function object(): Arbitrary<Record<string, unknown>>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function object(constraints: ObjectConstraints): Arbitrary<Record<string, unknown>>;
@@ -371,6 +413,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number |
  *
  * Keys and string values rely on {@link string}
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function jsonObject(): Arbitrary<unknown>;
@@ -385,6 +428,7 @@ function jsonObject(): Arbitrary<unknown>;
  * Superceded by `fc.jsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function jsonObject(maxDepth: number): Arbitrary<unknown>;
@@ -395,6 +439,7 @@ function jsonObject(maxDepth: number): Arbitrary<unknown>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function jsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
@@ -407,6 +452,7 @@ function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unk
  *
  * Keys and string values rely on {@link unicode}
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function unicodeJsonObject(): Arbitrary<unknown>;
@@ -421,6 +467,7 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  * Superceded by `fc.unicodeJsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.2.3
  * @public
  */
 function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
@@ -431,6 +478,7 @@ function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
@@ -443,6 +491,7 @@ function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitr
  *
  * Keys and string values rely on {@link string}
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function json(): Arbitrary<string>;
@@ -457,6 +506,7 @@ function json(): Arbitrary<string>;
  * Superceded by `fc.json({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function json(maxDepth: number): Arbitrary<string>;
@@ -467,6 +517,7 @@ function json(maxDepth: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function json(constraints: JsonSharedConstraints): Arbitrary<unknown>;
@@ -482,6 +533,7 @@ function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
  *
  * Keys and string values rely on {@link unicode}
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function unicodeJson(): Arbitrary<string>;
@@ -496,6 +548,7 @@ function unicodeJson(): Arbitrary<string>;
  * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function unicodeJson(maxDepth: number): Arbitrary<string>;
@@ -506,6 +559,7 @@ function unicodeJson(maxDepth: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function unicodeJson(constraints: JsonSharedConstraints): Arbitrary<unknown>;

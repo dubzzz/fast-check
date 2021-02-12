@@ -17,24 +17,38 @@ const floatInternal = (): Arbitrary<number> => {
 
 /**
  * Constraints to be applied on {@link float}
+ * @remarks Since 2.6.0
  * @public
  */
 export type FloatConstraints =
   | {
-      /** Enable new version of fc.float */
+      /**
+       * Enable new version of fc.float
+       * @remarks Since 2.8.0
+       */
       next?: false;
-      /** Lower bound for the generated floats (included) */
+      /**
+       * Lower bound for the generated floats (included)
+       * @remarks Since 2.6.0
+       */
       min?: number;
-      /** Upper bound for the generated floats (excluded) */
+      /**
+       * Upper bound for the generated floats (excluded)
+       * @remarks Since 2.6.0
+       */
       max?: number;
     }
   | ({
-      /** Enable new version of fc.float */
+      /**
+       * Enable new version of fc.float
+       * @remarks Since 2.8.0
+       */
       next: true;
     } & FloatNextConstraints);
 
 /**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**24`
+ * @remarks Since 0.0.6
  * @public
  */
 function float(): Arbitrary<number>;
@@ -47,6 +61,7 @@ function float(): Arbitrary<number>;
  * Superceded by `fc.float({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.0.0
  * @public
  */
 function float(max: number): Arbitrary<number>;
@@ -56,9 +71,8 @@ function float(max: number): Arbitrary<number>;
  * @param min - Lower bound of the generated floating point
  * @param max - Upper bound of the generated floating point
  *
- * @remarks
- * You may prefer to use `fc.float({min, max})` instead.
- *
+ * @remarks You may prefer to use `fc.float({min, max})` instead.
+ * @remarks Since 1.0.0
  * @public
  */
 function float(min: number, max: number): Arbitrary<number>;
@@ -67,6 +81,7 @@ function float(min: number, max: number): Arbitrary<number>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function float(constraints: FloatConstraints): Arbitrary<number>;
@@ -117,24 +132,38 @@ const doubleInternal = (): Arbitrary<number> => {
 
 /**
  * Constraints to be applied on {@link double}
+ * @remarks Since 2.6.0
  * @public
  */
 export type DoubleConstraints =
   | {
-      /** Enable new version of fc.double */
+      /**
+       * Enable new version of fc.double
+       * @remarks Since 2.8.0
+       */
       next?: false;
-      /** Lower bound for the generated doubles (included) */
+      /**
+       * Lower bound for the generated doubles (included)
+       * @remarks Since 2.6.0
+       */
       min?: number;
-      /** Upper bound for the generated doubles (excluded) */
+      /**
+       * Upper bound for the generated doubles (excluded)
+       * @remarks Since 2.6.0
+       */
       max?: number;
     }
   | ({
-      /** Enable new version of fc.double */
+      /**
+       * Enable new version of fc.double
+       * @remarks Since 2.8.0
+       */
       next: true;
     } & DoubleNextConstraints);
 
 /**
  * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**53`
+ * @remarks Since 0.0.6
  * @public
  */
 function double(): Arbitrary<number>;
@@ -147,6 +176,7 @@ function double(): Arbitrary<number>;
  * Superceded by `fc.double({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 1.0.0
  * @public
  */
 function double(max: number): Arbitrary<number>;
@@ -156,9 +186,8 @@ function double(max: number): Arbitrary<number>;
  * @param min - Lower bound of the generated floating point
  * @param max - Upper bound of the generated floating point
  *
- * @remarks
- * You may prefer to use `fc.double({min, max})` instead.
- *
+ * @remarks You may prefer to use `fc.double({min, max})` instead.
+ * @remarks Since 1.0.0
  * @public
  */
 function double(min: number, max: number): Arbitrary<number>;
@@ -167,6 +196,7 @@ function double(min: number, max: number): Arbitrary<number>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function double(constraints: DoubleConstraints): Arbitrary<number>;

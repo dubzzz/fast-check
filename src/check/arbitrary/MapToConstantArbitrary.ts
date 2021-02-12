@@ -29,6 +29,7 @@ function computeNumChoices<T>(options: { num: number; build: (idInGroup: number)
  * )
  * ```
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T> {

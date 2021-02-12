@@ -6,10 +6,19 @@ import { Shrinkable } from './definition/Shrinkable';
  * Conjonction of a weight and an arbitrary used by {@link frequency}
  * in order to generate values
  *
+ * @remarks Since 1.18.0
  * @public
  */
 export interface WeightedArbitrary<T> {
+  /**
+   * Weight to be applied when selecting which arbitrary should be used
+   * @remarks Since 0.0.7
+   */
   weight: number;
+  /**
+   * Instance of Arbitrary
+   * @remarks Since 0.0.7
+   */
   arbitrary: Arbitrary<T>;
 }
 
@@ -43,6 +52,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
  * Infer the type of the Arbitrary produced by {@link frequency}
  * given the type of the source arbitraries
  *
+ * @remarks Since 2.2.0
  * @public
  */
 export type FrequencyValue<Ts extends WeightedArbitrary<unknown>[]> = {
@@ -56,6 +66,7 @@ export type FrequencyValue<Ts extends WeightedArbitrary<unknown>[]> = {
  *
  * @param warbs - (Arbitrary, weight)s that might be called to produce a value
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyValue<Ts>> {

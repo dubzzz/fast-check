@@ -5,12 +5,19 @@ import { nat } from './IntegerArbitrary';
 
 /**
  * Constraints to be applied on {@link option}
+ * @remarks Since 2.2.0
  * @public
  */
 export interface OptionConstraints<TNil = null> {
-  /** The probability to build a nil value is of `1 / freq` */
+  /**
+   * The probability to build a nil value is of `1 / freq`
+   * @remarks Since 1.17.0
+   */
   freq?: number;
-  /** The nil value (default would be null) */
+  /**
+   * The nil value (default would be null)
+   * @remarks Since 1.17.0
+   */
   nil?: TNil;
 }
 
@@ -47,6 +54,7 @@ class OptionArbitrary<T, TNil> extends Arbitrary<T | TNil> {
  *
  * @param arb - Arbitrary that will be called to generate a non null value
  *
+ * @remarks Since 0.0.6
  * @public
  */
 function option<T>(arb: Arbitrary<T>): Arbitrary<T | null>;
@@ -60,6 +68,7 @@ function option<T>(arb: Arbitrary<T>): Arbitrary<T | null>;
  * Superceded by `fc.option(arb, {freq})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.6
  * @public
  */
 function option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>;
@@ -69,6 +78,7 @@ function option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>;
  * @param arb - Arbitrary that will be called to generate a non nil value
  * @param constraints - Constraints on the option
  *
+ * @remarks Since 1.17.0
  * @public
  */
 function option<T, TNil = null>(arb: Arbitrary<T>, constraints: OptionConstraints<TNil>): Arbitrary<T | TNil>;

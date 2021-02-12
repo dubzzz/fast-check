@@ -19,6 +19,8 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
 /**
  * Infer the type of the Arbitrary produced by {@link oneof}
  * given the type of the source arbitraries
+ *
+ * @remarks Since 2.2.0
  * @public
  */
 export type OneOfValue<Ts extends Arbitrary<unknown>[]> = {
@@ -32,6 +34,7 @@ export type OneOfValue<Ts extends Arbitrary<unknown>[]> = {
  *
  * @param arbs - Arbitraries that might be called to produce a value
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfValue<Ts>> {

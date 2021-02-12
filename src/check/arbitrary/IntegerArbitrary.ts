@@ -105,17 +105,20 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
 
 /**
  * Constraints to be applied on {@link integer}
+ * @remarks Since 2.6.0
  * @public
  */
 export interface IntegerConstraints {
   /**
    * Lower bound for the generated integers (included)
    * @defaultValue -0x80000000
+   * @remarks Since 2.6.0
    */
   min?: number;
   /**
    * Upper bound for the generated integers (included)
    * @defaultValue 0x7fffffff
+   * @remarks Since 2.6.0
    */
   max?: number;
 }
@@ -152,6 +155,7 @@ function extractIntegerConstraints(args: [] | [number] | [number, number] | [Int
 
 /**
  * For integers between -2147483648 (included) and 2147483647 (included)
+ * @remarks Since 0.0.1
  * @public
  */
 function integer(): ArbitraryWithContextualShrink<number>;
@@ -164,6 +168,7 @@ function integer(): ArbitraryWithContextualShrink<number>;
  * Superceded by `fc.integer({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function integer(max: number): ArbitraryWithContextualShrink<number>;
@@ -173,9 +178,8 @@ function integer(max: number): ArbitraryWithContextualShrink<number>;
  * @param min - Lower bound for the generated integers (eg.: 0, Number.MIN_SAFE_INTEGER)
  * @param max - Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
  *
- * @remarks
- * You may prefer to use `fc.integer({min, max})` instead.
- *
+ * @remarks You may prefer to use `fc.integer({min, max})` instead.
+ * @remarks Since 0.0.1
  * @public
  */
 function integer(min: number, max: number): ArbitraryWithContextualShrink<number>;
@@ -184,6 +188,7 @@ function integer(min: number, max: number): ArbitraryWithContextualShrink<number
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function integer(constraints: IntegerConstraints): ArbitraryWithContextualShrink<number>;
@@ -199,6 +204,7 @@ function integer(
 
 /**
  * For integers between Number.MIN_SAFE_INTEGER (included) and Number.MAX_SAFE_INTEGER (included)
+ * @remarks Since 1.11.0
  * @public
  */
 function maxSafeInteger(): ArbitraryWithContextualShrink<number> {
@@ -207,18 +213,21 @@ function maxSafeInteger(): ArbitraryWithContextualShrink<number> {
 
 /**
  * Constraints to be applied on {@link nat}
+ * @remarks Since 2.6.0
  * @public
  */
 export interface NatConstraints {
   /**
    * Upper bound for the generated postive integers (included)
    * @defaultValue 0x7fffffff
+   * @remarks Since 2.6.0
    */
   max?: number;
 }
 
 /**
  * For positive integers between 0 (included) and 2147483647 (included)
+ * @remarks Since 0.0.1
  * @public
  */
 function nat(): ArbitraryWithContextualShrink<number>;
@@ -227,9 +236,8 @@ function nat(): ArbitraryWithContextualShrink<number>;
  *
  * @param max - Upper bound for the generated integers
  *
- * @remarks
- * You may prefer to use `fc.nat({max})` instead.
- *
+ * @remarks You may prefer to use `fc.nat({max})` instead.
+ * @remarks Since 0.0.1
  * @public
  */
 function nat(max: number): ArbitraryWithContextualShrink<number>;
@@ -238,6 +246,7 @@ function nat(max: number): ArbitraryWithContextualShrink<number>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function nat(constraints: NatConstraints): ArbitraryWithContextualShrink<number>;
@@ -251,6 +260,7 @@ function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<numbe
 
 /**
  * For positive integers between 0 (included) and Number.MAX_SAFE_INTEGER (included)
+ * @remarks Since 1.11.0
  * @public
  */
 function maxSafeNat(): ArbitraryWithContextualShrink<number> {

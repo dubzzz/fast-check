@@ -105,6 +105,7 @@ class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
  *
  * @param n - Maximal number of bits of the generated bigint
  *
+ * @remarks Since 1.9.0
  * @public
  */
 function bigIntN(n: number): ArbitraryWithContextualShrink<bigint> {
@@ -120,6 +121,7 @@ function bigIntN(n: number): ArbitraryWithContextualShrink<bigint> {
  *
  * @param n - Maximal number of bits of the generated bigint
  *
+ * @remarks Since 1.9.0
  * @public
  */
 function bigUintN(n: number): ArbitraryWithContextualShrink<bigint> {
@@ -130,12 +132,19 @@ function bigUintN(n: number): ArbitraryWithContextualShrink<bigint> {
 
 /**
  * Constraints to be applied on {@link bigInt}
+ * @remarks Since 2.6.0
  * @public
  */
 export interface BigIntConstraints {
-  /** Lower bound for the generated bigints (eg.: -5n, 0n, BigInt(Number.MIN_SAFE_INTEGER)) */
+  /**
+   * Lower bound for the generated bigints (eg.: -5n, 0n, BigInt(Number.MIN_SAFE_INTEGER))
+   * @remarks Since 2.6.0
+   */
   min?: bigint;
-  /** Upper bound for the generated bigints (eg.: -2n, 2147483647n, BigInt(Number.MAX_SAFE_INTEGER)) */
+  /**
+   * Upper bound for the generated bigints (eg.: -2n, 2147483647n, BigInt(Number.MAX_SAFE_INTEGER))
+   * @remarks Since 2.6.0
+   */
   max?: bigint;
 }
 
@@ -177,6 +186,7 @@ function extractBigIntConstraints(args: [] | [bigint, bigint] | [BigIntConstrain
 
 /**
  * For bigint
+ * @remarks Since 1.9.0
  * @public
  */
 function bigInt(): ArbitraryWithContextualShrink<bigint>;
@@ -186,6 +196,7 @@ function bigInt(): ArbitraryWithContextualShrink<bigint>;
  * @param min - Lower bound for the generated bigints (eg.: -5n, 0n, BigInt(Number.MIN_SAFE_INTEGER))
  * @param max - Upper bound for the generated bigints (eg.: -2n, 2147483647n, BigInt(Number.MAX_SAFE_INTEGER))
  *
+ * @remarks Since 1.9.0
  * @public
  */
 function bigInt(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint>;
@@ -194,6 +205,7 @@ function bigInt(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint>
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function bigInt(constraints: BigIntConstraints): ArbitraryWithContextualShrink<bigint>;
@@ -204,15 +216,20 @@ function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary
 
 /**
  * Constraints to be applied on {@link bigUint}
+ * @remarks Since 2.6.0
  * @public
  */
 export interface BigUintConstraints {
-  /** Upper bound for the generated bigints (eg.: 2147483647n, BigInt(Number.MAX_SAFE_INTEGER)) */
+  /**
+   * Upper bound for the generated bigints (eg.: 2147483647n, BigInt(Number.MAX_SAFE_INTEGER))
+   * @remarks Since 2.6.0
+   */
   max?: bigint;
 }
 
 /**
  * For positive bigint
+ * @remarks Since 1.9.0
  * @public
  */
 function bigUint(): ArbitraryWithContextualShrink<bigint>;
@@ -221,6 +238,7 @@ function bigUint(): ArbitraryWithContextualShrink<bigint>;
  *
  * @param max - Upper bound for the generated bigint
  *
+ * @remarks Since 1.9.0
  * @public
  */
 function bigUint(max: bigint): ArbitraryWithContextualShrink<bigint>;
@@ -229,6 +247,7 @@ function bigUint(max: bigint): ArbitraryWithContextualShrink<bigint>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function bigUint(constraints: BigUintConstraints): ArbitraryWithContextualShrink<bigint>;

@@ -22,6 +22,7 @@ const signatureFor = (num, isAsync) => {
         /**
          * Instantiate a new {@link fast-check#I${className}}
          * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
+         * @remarks Since ${className === 'Property' ? '0.0.1' : '0.0.7'}
          * @public
          */
         function ${functionName}<${txCommas(num)}>(

@@ -50,14 +50,24 @@ function extractSetConstraints<T>(
 
 /**
  * Constraints to be applied on {@link set}
+ * @remarks Since 2.4.0
  * @public
  */
 export interface SetConstraints<T> {
-  /** Lower bound of the generated array size */
+  /**
+   * Lower bound of the generated array size
+   * @remarks Since 2.4.0
+   */
   minLength?: number;
-  /** Upper bound of the generated array size */
+  /**
+   * Upper bound of the generated array size
+   * @remarks Since 2.4.0
+   */
   maxLength?: number;
-  /** Compare function - Return true when the two values are equals */
+  /**
+   * Compare function - Return true when the two values are equals
+   * @remarks Since 2.4.0
+   */
   compare?: (a: T, b: T) => boolean;
 }
 
@@ -66,6 +76,7 @@ export interface SetConstraints<T> {
  *
  * @param arb - Arbitrary used to generate the values inside the array
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
@@ -79,6 +90,7 @@ function set<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  * Superceded by `fc.set(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
@@ -93,6 +105,7 @@ function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  * Superceded by `fc.set(arb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
@@ -106,6 +119,7 @@ function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitr
  * Superceded by `fc.set(arb, {compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
@@ -120,6 +134,7 @@ function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<
  * Superceded by `fc.array(arb, {maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => boolean): Arbitrary<T[]>;
@@ -135,6 +150,7 @@ function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => b
  * Superceded by `fc.array(arb, {minLength, maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.11
  * @public
  */
 function set<T>(
@@ -149,6 +165,7 @@ function set<T>(
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function set<T>(arb: Arbitrary<T>, constraints: SetConstraints<T>): Arbitrary<T[]>;

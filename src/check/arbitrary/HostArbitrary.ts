@@ -57,6 +57,7 @@ function subdomainLabel() {
  * {@link https://www.ietf.org/rfc/rfc1123.txt | RFC 1123} and
  * {@link https://url.spec.whatwg.org/ | WHATWG URL Standard}
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function domain(): Arbitrary<string> {

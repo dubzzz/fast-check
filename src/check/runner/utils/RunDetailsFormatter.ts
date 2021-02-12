@@ -119,6 +119,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
  *
+ * @remarks Since 1.25.0
  * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
@@ -128,6 +129,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): unde
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
  *
+ * @remarks Since 1.25.0
  * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
@@ -137,6 +139,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): strin
  * Produce a string containing the formated error in case of failed run,
  * undefined otherwise.
  *
+ * @remarks Since 1.25.0
  * @public
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined;

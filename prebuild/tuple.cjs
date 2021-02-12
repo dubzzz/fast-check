@@ -9,28 +9,29 @@ const signatureFor = (num, opt) =>
   `
         /**
          * For tuples of [${txCommas(num)}]
+         * @remarks Since 0.0.1
          * @public
          */
         function tuple<${txCommas(num)}>(
-                ${commas(num, v => `arb${v}${opt === true ? '?' : ''}: Arbitrary<T${v}>`)}
+                ${commas(num, (v) => `arb${v}${opt === true ? '?' : ''}: Arbitrary<T${v}>`)}
                 )`;
 
 /**
  * @param num {number}
  */
-const generateTuple = num => {
+const generateTuple = (num) => {
   const blocks = [
     // imports
     `import { Arbitrary } from './definition/Arbitrary';`,
     `import { GenericTupleArbitrary } from './TupleArbitrary.generic';`,
     // declare all signatures
-    ...iota(num).map(id => `${signatureFor(id + 1)}: Arbitrary<[${txCommas(id + 1)}]>;`),
+    ...iota(num).map((id) => `${signatureFor(id + 1)}: Arbitrary<[${txCommas(id + 1)}]>;`),
     // declare function
     `function tuple<Ts>(...arbs: Arbitrary<Ts>[]): Arbitrary<Ts[]> {
       return new GenericTupleArbitrary(arbs);
     }`,
     // export
-    `export { tuple };`
+    `export { tuple };`,
   ];
 
   return blocks.join('\n');
@@ -43,8 +44,8 @@ const generateTuple = num => {
 const simpleUnitTest = (num, biased) =>
   `
         it('Should produce the same output for tuple${num} and genericTuple${biased ? ' (enforced bias)' : ''}', () => {
-            const tupleArb = tuple(${commas(num, v => `dummy(${v * v})`)})${biased ? '.withBias(1)' : ''};
-            const genericTupleArb = genericTuple([${commas(num, v => `dummy(${v * v})`)}])${
+            const tupleArb = tuple(${commas(num, (v) => `dummy(${v * v})`)})${biased ? '.withBias(1)' : ''};
+            const genericTupleArb = genericTuple([${commas(num, (v) => `dummy(${v * v})`)}])${
     biased ? '.withBias(1)' : ''
   };
             const mrng1 = stubRng.mutable.fastincrease(0);
@@ -58,7 +59,7 @@ const simpleUnitTest = (num, biased) =>
 /**
  * @param num {number}
  */
-const generateTupleSpec = num => {
+const generateTupleSpec = (num) => {
   const blocks = [
     // imports
     `import { dummy } from './TupleArbitrary.properties';`,
@@ -68,11 +69,11 @@ const generateTupleSpec = num => {
     `describe('TupleArbitrary', () => {`,
     `    describe('tuple', () => {`,
     // units
-    ...iota(num).map(id => simpleUnitTest(id + 1, false)),
-    ...iota(num).map(id => simpleUnitTest(id + 1, true)),
+    ...iota(num).map((id) => simpleUnitTest(id + 1, false)),
+    ...iota(num).map((id) => simpleUnitTest(id + 1, true)),
     // end blocks
     `   });`,
-    `});`
+    `});`,
   ];
 
   return blocks.join('\n');

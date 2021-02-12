@@ -70,6 +70,7 @@ function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary 
  *
  * @param builder - Arbitraries builder based on themselves (through `tie`)
  *
+ * @remarks Since 1.16.0
  * @public
  */
 export function letrec<T>(

@@ -161,28 +161,33 @@ import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
  * Type of module (commonjs or module)
+ * @remarks Since 1.22.0
  * @public
  */
 const __type = '__PACKAGE_TYPE__' as string;
 /**
  * Version of fast-check used by your project (eg.: __PACKAGE_VERSION__)
+ * @remarks Since 1.22.0
  * @public
  */
 const __version = '__PACKAGE_VERSION__' as string;
 /**
  * Commit hash of the current code (eg.: __COMMIT_HASH__)
+ * @remarks Since 2.7.0
  * @public
  */
 const __commitHash = '__COMMIT_HASH__' as string;
 
 /**
  * @deprecated Switch to {@link ContextValue} instead
+ * @remarks Since 1.8.0
  * @public
  */
 type Context = ContextValue;
 
 /**
  * @deprecated Switch to {@link FalsyValue} instead
+ * @remarks Since 1.26.0
  * @public
  */
 type FalsyType = FalsyValue;

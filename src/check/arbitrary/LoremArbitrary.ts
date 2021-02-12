@@ -5,6 +5,7 @@ import { frequency } from './FrequencyArbitrary';
 
 /**
  * Constraints to be applied on {@link lorem}
+ * @remarks Since 2.5.0
  * @public
  */
 export interface LoremConstraints {
@@ -14,6 +15,8 @@ export interface LoremConstraints {
    * - maximal number of sentences in case mode is 'sentences'
    *
    * @defaultValue 5
+   *
+   * @remarks Since 2.5.0
    */
   maxCount?: number;
   /**
@@ -22,6 +25,8 @@ export interface LoremConstraints {
    * - sentences: multiple sentences
    *
    * @defaultValue 'words'
+   *
+   * @remarks Since 2.5.0
    */
   mode?: 'words' | 'sentences';
 }
@@ -210,6 +215,7 @@ const loremWord = () =>
 
 /**
  * For lorem ipsum strings of words
+ * @remarks Since 0.0.1
  * @public
  */
 function lorem(): Arbitrary<string>;
@@ -222,6 +228,7 @@ function lorem(): Arbitrary<string>;
  * Superceded by `fc.lorem({maxCount})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function lorem(maxWordsCount: number): Arbitrary<string>;
@@ -235,6 +242,7 @@ function lorem(maxWordsCount: number): Arbitrary<string>;
  * Superceded by `fc.lorem({maxCount, mode})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
  * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;
@@ -243,6 +251,7 @@ function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>
  *
  * @param constraints - Constraints to be applied onto the generated value
  *
+ * @remarks Since 2.5.0
  * @public
  */
 function lorem(constraints: LoremConstraints): Arbitrary<string>;

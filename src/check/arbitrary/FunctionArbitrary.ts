@@ -12,6 +12,7 @@ import { escapeForMultilineComments } from './helpers/TextEscaper';
  *
  * @param arb - Arbitrary responsible to produce the values
  *
+ * @remarks Since 1.6.0
  * @public
  */
 export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary<(...args: TArgs) => TOut> {
@@ -90,6 +91,7 @@ function compareFuncImplem<T, TOut>(cmp: (hA: number, hB: number) => TOut): Arbi
  *
  * They also satisfy: `a < b <=> b > a` and `a = b <=> b = a`
  *
+ * @remarks Since 1.6.0
  * @public
  */
 export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
@@ -111,6 +113,7 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
  * - `true` whenever `a < b`
  * - `false` otherwise (ie. `a = b` or `a > b`)
  *
+ * @remarks Since 1.6.0
  * @public
  */
 export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {

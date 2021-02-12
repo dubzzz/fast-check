@@ -13,18 +13,34 @@ import { Arbitrary } from './definition/Arbitrary';
 
 /**
  * Constraints to be applied on {@link webAuthority}
+ * @remarks Since 1.14.0
  * @public
  */
 export interface WebAuthorityConstraints {
-  /** Enable IPv4 in host */
+  /**
+   * Enable IPv4 in host
+   * @remarks Since 1.14.0
+   */
   withIPv4?: boolean;
-  /** Enable IPv6 in host */
+  /**
+   * Enable IPv6 in host
+   * @remarks Since 1.14.0
+   */
   withIPv6?: boolean;
-  /** Enable extended IPv4 format */
+  /**
+   * Enable extended IPv4 format
+   * @remarks Since 1.17.0
+   */
   withIPv4Extended?: boolean;
-  /** Enable user information prefix */
+  /**
+   * Enable user information prefix
+   * @remarks Since 1.14.0
+   */
   withUserInfo?: boolean;
-  /** Enable port suffix */
+  /**
+   * Enable port suffix
+   * @remarks Since 1.14.0
+   */
   withPort?: boolean;
 }
 
@@ -35,6 +51,7 @@ export interface WebAuthorityConstraints {
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<string> {
@@ -57,6 +74,7 @@ export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<s
  *
  * eg.: In the url `https://github.com/dubzzz/fast-check/`, `dubzzz` and `fast-check` are segments
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function webSegment(): Arbitrary<string> {
@@ -81,6 +99,7 @@ function uriQueryOrFragment() {
  *
  * eg.: In the url `https://domain/plop/?hello=1&world=2`, `?hello=1&world=2` are query parameters
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function webQueryParameters(): Arbitrary<string> {
@@ -94,6 +113,7 @@ export function webQueryParameters(): Arbitrary<string> {
  *
  * eg.: In the url `https://domain/plop?page=1#hello=1&world=2`, `?hello=1&world=2` are query parameters
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function webFragments(): Arbitrary<string> {
@@ -102,16 +122,29 @@ export function webFragments(): Arbitrary<string> {
 
 /**
  * Constraints to be applied on {@link webUrl}
+ * @remarks Since 1.14.0
  * @public
  */
 export interface WebUrlConstraints {
-  /** Enforce specific schemes, eg.: http, https */
+  /**
+   * Enforce specific schemes, eg.: http, https
+   * @remarks Since 1.14.0
+   */
   validSchemes?: string[];
-  /** Settings for {@link webAuthority} */
+  /**
+   * Settings for {@link webAuthority}
+   * @remarks Since 1.14.0
+   */
   authoritySettings?: WebAuthorityConstraints;
-  /** Enable query parameters in the generated url */
+  /**
+   * Enable query parameters in the generated url
+   * @remarks Since 1.14.0
+   */
   withQueryParameters?: boolean;
-  /** Enable fragments in the generated url */
+  /**
+   * Enable fragments in the generated url
+   * @remarks Since 1.14.0
+   */
   withFragments?: boolean;
 }
 
@@ -123,6 +156,7 @@ export interface WebUrlConstraints {
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {

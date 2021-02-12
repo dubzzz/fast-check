@@ -6,6 +6,7 @@ import { integer } from './IntegerArbitrary';
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 1.17.0
  * @public
  */
 export function date(constraints?: { min?: Date; max?: Date }): Arbitrary<Date> {

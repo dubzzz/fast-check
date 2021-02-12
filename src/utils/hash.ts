@@ -265,6 +265,7 @@ const crc32Table = [
  *
  * @param repr - String value to be hashed
  *
+ * @remarks Since 2.1.0
  * @public
  */
 export function hash(repr: string): number {
