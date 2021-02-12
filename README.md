@@ -1,5 +1,5 @@
 <h3 align="center">
-  <img align="center" src="https://raw.githubusercontent.com/dubzzz/fast-check/master/logo/logo.png" alt="fast-check logo" />
+  <img align="center" src="https://raw.githubusercontent.com/dubzzz/fast-check/main/logo/logo.png" alt="fast-check logo" />
 </h3>
 
 <p align="center">
@@ -7,26 +7,26 @@ Property based testing framework for JavaScript/TypeScript
 </p>
 
 <p align="center">
-  <a href="https://github.com/dubzzz/fast-check/actions"><img src="https://github.com/dubzzz/fast-check/workflows/Build%20Status/badge.svg?branch=master" alt="Build Status" /></a>
+  <a href="https://github.com/dubzzz/fast-check/actions"><img src="https://github.com/dubzzz/fast-check/workflows/Build%20Status/badge.svg?branch=main" alt="Build Status" /></a>
   <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
   <a href="https://dubzzz.github.io/fast-check/"><img src="https://img.shields.io/badge/-API Reference-%23282ea9.svg" title="API Reference" /></a>
 </p>
 <p align="center">
-  <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/master"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/master/graph/badge.svg" alt="Coverage Status (unit tests)" /></a>
+  <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/main"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/main/graph/badge.svg" alt="Coverage Status (unit tests)" /></a>
   <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
   <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
   <a href="https://dependabot.com/compatibility-score/?dependency-name=fast-check&package-manager=npm_and_yarn&version-scheme=semver"><img src="https://img.shields.io/dependabot/semver/npm_and_yarn/fast-check" alt="Semver stability" /></a>
 </p>
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/labels/good%20first%20issue"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
-  <a href="https://github.com/dubzzz/fast-check/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/fast-check.svg" alt="License" /></a>
+  <a href="https://github.com/dubzzz/fast-check/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/fast-check.svg" alt="License" /></a>
   <a href="https://twitter.com/intent/tweet?text=Check%20out%20fast-check%20by%20%40ndubien%20https%3A%2F%2Fgithub.com%2Fdubzzz%2Ffast-check%20%F0%9F%91%8D"><img src="https://img.shields.io/twitter/url/https/github.com/dubzzz/fast-check.svg?style=social" alt="Twitter" /></a>
 </p>
 
 ## Getting started
 
-Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?previewwindow=tests).
+Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such that precondition(x, y, ...) holds property(x, y, ...) is true*.
 
@@ -67,36 +67,36 @@ In case of failure, the test raises a red flag. Its output should help you to di
     Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
 ```
 
-Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-check-examples/blob/master/test-ava/example.spec.js), [jasmine](https://github.com/dubzzz/fast-check-examples/blob/master/test-jasmine/example.spec.js), [jest](https://github.com/dubzzz/fast-check-examples/blob/master/test-jest/example.spec.js), [mocha](https://github.com/dubzzz/fast-check-examples/blob/master/test/longest%20common%20substr/test.js) and [tape](https://github.com/dubzzz/fast-check-examples/blob/master/test-tape/example.spec.js).
+Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-check-examples/blob/main/test-ava/example.spec.js), [jasmine](https://github.com/dubzzz/fast-check-examples/blob/main/test-jasmine/example.spec.js), [jest](https://github.com/dubzzz/fast-check-examples/blob/main/test-jest/example.spec.js), [mocha](https://github.com/dubzzz/fast-check-examples/blob/main/test/longest%20common%20substr/test.js) and [tape](https://github.com/dubzzz/fast-check-examples/blob/main/test-tape/example.spec.js).
 
-More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/master/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
+More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/main/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
-- [🏁 Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/master/documentation/HandsOnPropertyBased.md)
-- [🐣 Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md)
-- [🔧 Custom arbitraries](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md)
-- [🏃‍♂️ Property based runners](https://github.com/dubzzz/fast-check/blob/master/documentation/Runners.md)
-- [💥 Tips](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md)
+- [🏁 Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md)
+- [🐣 Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md)
+- [🔧 Custom arbitraries](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md)
+- [🏃‍♂️ Property based runners](https://github.com/dubzzz/fast-check/blob/main/documentation/Runners.md)
+- [💥 Tips](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md)
 - [🔌 API Reference](https://dubzzz.github.io/fast-check/)
 - [⭐ Awesome fast-check](https://github.com/dubzzz/awesome-fast-check)
-- [🤯 How fast-check works?](https://github.com/dubzzz/fast-check/blob/master/documentation/HowItWorks.md)
+- [🤯 How fast-check works?](https://github.com/dubzzz/fast-check/blob/main/documentation/HowItWorks.md)
 
 ## Why should I migrate to fast-check?
 
 fast-check has initially been designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
 - **Types:** strong and up-to-date types - *thanks to TypeScript*
-- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md#transform-values)\] - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
-- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md#transform-arbitraries)\] - *able to bind the output of an arbitrary as input of another one while keeping the shrink working*
-- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - *filtering invalid entries can be done directly inside the check function if needed*
-- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md#combinors-of-arbitraries-t)\] - *surprisingly some frameworks don't*
-- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/AdvancedArbitraries.md#biased-arbitraries)\] - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
-- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#opt-for-verbose-failures)\] - *easier troubleshooting with verbose mode enabled*
-- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#replay-after-failure)\] - *no need to replay the whole sequence, you get directly the counterexample*
-- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#add-custom-examples-next-to-generated-ones)\] - *no need to duplicate the code to play the property on custom examples*
-- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#log-within-a-predicate)\] - *simplify your troubleshoot with fc.context and its logging feature*
-- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - *use the power of property based testing to test UI, APIs or state machines*
-- **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/master/documentation/Tips.md#detect-race-conditions)\] - *shuffle the way your promises and async calls resolve using the power of property based testing to detect races*
+- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-values)\] - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
+- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-arbitraries)\] - *able to bind the output of an arbitrary as input of another one while keeping the shrink working*
+- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - *filtering invalid entries can be done directly inside the check function if needed*
+- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md#combinors-of-arbitraries-t)\] - *surprisingly some frameworks don't*
+- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#biased-arbitraries)\] - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
+- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#opt-for-verbose-failures)\] - *easier troubleshooting with verbose mode enabled*
+- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#replay-after-failure)\] - *no need to replay the whole sequence, you get directly the counterexample*
+- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#add-custom-examples-next-to-generated-ones)\] - *no need to duplicate the code to play the property on custom examples*
+- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#log-within-a-predicate)\] - *simplify your troubleshoot with fc.context and its logging feature*
+- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - *use the power of property based testing to test UI, APIs or state machines*
+- **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#detect-race-conditions)\] - *shuffle the way your promises and async calls resolve using the power of property based testing to detect races*
 
 For more details, refer to the documentation in the links above.
 
@@ -142,7 +142,7 @@ m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar
 m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
 ```
 
-**[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/master/documentation/IssuesDiscovered.md)**
+**[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**
 
 ## Credits
 

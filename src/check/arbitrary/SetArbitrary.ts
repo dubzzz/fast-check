@@ -88,7 +88,7 @@ function set<T>(arb: Arbitrary<T>): Arbitrary<T[]>;
  *
  * @deprecated
  * Superceded by `fc.set(arb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -103,7 +103,7 @@ function set<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
  *
  * @deprecated
  * Superceded by `fc.set(arb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -117,7 +117,7 @@ function set<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitr
  *
  * @deprecated
  * Superceded by `fc.set(arb, {compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -132,7 +132,7 @@ function set<T>(arb: Arbitrary<T>, compare: (a: T, b: T) => boolean): Arbitrary<
  *
  * @deprecated
  * Superceded by `fc.array(arb, {maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -148,7 +148,7 @@ function set<T>(arb: Arbitrary<T>, maxLength: number, compare: (a: T, b: T) => b
  *
  * @deprecated
  * Superceded by `fc.array(arb, {minLength, maxLength, compare})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public

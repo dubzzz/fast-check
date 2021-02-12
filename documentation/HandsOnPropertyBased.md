@@ -30,7 +30,7 @@ For instance: if whenever the string `a` contains `.` in it, the check above fai
 
 ## Setting up a sample project
 
-> Just wanting to see the result without installing any packages on your machine: try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?previewwindow=tests).
+> Just wanting to see the result without installing any packages on your machine: try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
 
 Initialize a new node project:
 
