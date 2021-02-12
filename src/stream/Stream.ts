@@ -142,6 +142,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Elements to keep
+   * @remarks Since 1.23.0
    */
   filter<U extends T>(f: (v: T) => v is U): Stream<U>;
   /**

@@ -77,10 +77,9 @@ export class Shrinkable<T, TShrink extends T = T> {
   /**
    * Create another shrinkable by mapping all values using the provided `mapper`
    * Both the original value and the shrunk ones are impacted
-   *
-   * @remarks Since 0.0.1
    * @param mapper - Map function, to produce a new element based on an old one
    * @returns New shrinkable with mapped elements
+   * @remarks Since 0.0.1
    */
   map<U>(mapper: (t: T) => U): Shrinkable<U> {
     return new Shrinkable<U>(this.applyMapper(mapper), () => this.shrink().map((v) => v.map<U>(mapper)));
@@ -99,6 +98,8 @@ export class Shrinkable<T, TShrink extends T = T> {
    *
    * @param refinement - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
+   *
+   * @remarks Since 1.23.0
    */
   filter<U extends TShrink>(refinement: (t: TShrink) => t is U): Shrinkable<T, U>;
   /**
@@ -107,10 +108,10 @@ export class Shrinkable<T, TShrink extends T = T> {
    *
    * All the shrunk values produced by the resulting `Shrinkable<T>`
    * satisfy `predicate(value) == true`
-   *
-   * @remarks Since 0.0.1
    * @param predicate - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New shrinkable filtered using predicate
+   *
+   * @remarks Since 0.0.1
    */
   filter(predicate: (t: TShrink) => boolean): Shrinkable<T, TShrink>;
   filter<U extends TShrink>(refinement: (t: TShrink) => t is U): Shrinkable<T, U> {

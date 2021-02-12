@@ -39,6 +39,8 @@ export abstract class Arbitrary<T> {
    *
    * @param refinement - Predicate, to test each produced element. Return true to keep the element, false otherwise
    * @returns New arbitrary filtered using predicate
+   *
+   * @remarks Since 1.23.0
    */
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U>;
   /**

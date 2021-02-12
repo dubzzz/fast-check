@@ -94,7 +94,10 @@ export interface ObjectConstraints {
    * @remarks Since 1.17.0
    */
   withObjectString?: boolean;
-  /** Also generate object with null prototype */
+  /**
+   * Also generate object with null prototype
+   * @remarks Since 1.23.0
+   */
   withNullPrototype?: boolean;
   /** Also generate BigInt */
   withBigInt?: boolean;
