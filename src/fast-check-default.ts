@@ -156,6 +156,7 @@ import {
   Float64ArrayConstraints,
 } from './check/arbitrary/TypedArrayArbitrary';
 import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
+import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -333,6 +334,7 @@ export {
   BigUintConstraints,
   CommandsContraints,
   DoubleConstraints,
+  DoubleNextConstraints,
   FalsyContraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
