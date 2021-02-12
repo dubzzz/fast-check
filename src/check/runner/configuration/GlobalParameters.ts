@@ -6,13 +6,13 @@ const globalParametersSymbol = Symbol('fast-check/GlobalParameters');
 
 /**
  * Type of legal hook function that can be used in the global parameter `beforeEach` and/or `afterEach`
- *
+ * @remarks Since 2.3.0
  * @public
  */
 export type GlobalPropertyHookFunction = () => void;
 /**
  * Type of legal hook function that can be used in the global parameter `asyncBeforeEach` and/or `asyncAfterEach`
- *
+ * @remarks Since 2.3.0
  * @public
  */
 export type GlobalAsyncPropertyHookFunction = (() => Promise<unknown>) | (() => void);
@@ -24,36 +24,44 @@ export type GlobalAsyncPropertyHookFunction = (() => Promise<unknown>) | (() => 
  */
 export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>> & {
   /**
-  Specify a function that will be called before each execution of a property.
-  It behaves as-if you manually called `beforeEach` method on all the properties you execute with fast-check.
-  
-  The function will be used for both {@link fast-check#property} and {@link fast-check#asyncProperty}.
-  This global override should never be used in conjunction with `asyncBeforeEach`.
-  */
+   * Specify a function that will be called before each execution of a property.
+   * It behaves as-if you manually called `beforeEach` method on all the properties you execute with fast-check.
+   *
+   * The function will be used for both {@link fast-check#property} and {@link fast-check#asyncProperty}.
+   * This global override should never be used in conjunction with `asyncBeforeEach`.
+   *
+   * @remarks Since 2.3.0
+   */
   beforeEach?: GlobalPropertyHookFunction;
   /**
-  Specify a function that will be called after each execution of a property.
-  It behaves as-if you manually called `afterEach` method on all the properties you execute with fast-check.
-  
-  The function will be used for both {@link fast-check#property} and {@link fast-check#asyncProperty}.
-  This global override should never be used in conjunction with `asyncAfterEach`.
-  */
+   * Specify a function that will be called after each execution of a property.
+   * It behaves as-if you manually called `afterEach` method on all the properties you execute with fast-check.
+   *
+   * The function will be used for both {@link fast-check#property} and {@link fast-check#asyncProperty}.
+   * This global override should never be used in conjunction with `asyncAfterEach`.
+   *
+   * @remarks Since 2.3.0
+   */
   afterEach?: GlobalPropertyHookFunction;
   /**
-  Specify a function that will be called before each execution of an asynchronous property.
-  It behaves as-if you manually called `beforeEach` method on all the asynchronous properties you execute with fast-check.
-  
-  The function will be used only for {@link fast-check#asyncProperty}. It makes synchronous properties created by {@link fast-check#property} unable to run.
-  This global override should never be used in conjunction with `beforeEach`.
-  */
+   * Specify a function that will be called before each execution of an asynchronous property.
+   * It behaves as-if you manually called `beforeEach` method on all the asynchronous properties you execute with fast-check.
+   *
+   * The function will be used only for {@link fast-check#asyncProperty}. It makes synchronous properties created by {@link fast-check#property} unable to run.
+   * This global override should never be used in conjunction with `beforeEach`.
+   *
+   * @remarks Since 2.3.0
+   */
   asyncBeforeEach?: GlobalAsyncPropertyHookFunction;
   /**
-  Specify a function that will be called after each execution of an asynchronous property.
-  It behaves as-if you manually called `afterEach` method on all the asynchronous properties you execute with fast-check.
-  
-  The function will be used only for {@link fast-check#asyncProperty}. It makes synchronous properties created by {@link fast-check#property} unable to run.
-  This global override should never be used in conjunction with `afterEach`.
-  */
+   * Specify a function that will be called after each execution of an asynchronous property.
+   * It behaves as-if you manually called `afterEach` method on all the asynchronous properties you execute with fast-check.
+   *
+   * The function will be used only for {@link fast-check#asyncProperty}. It makes synchronous properties created by {@link fast-check#property} unable to run.
+   * This global override should never be used in conjunction with `afterEach`.
+   *
+   * @remarks Since 2.3.0
+   */
   asyncAfterEach?: GlobalAsyncPropertyHookFunction;
 };
 /**
