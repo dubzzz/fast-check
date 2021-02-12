@@ -11,6 +11,7 @@ import { tuple } from './TupleArbitrary';
  *
  * Following {@link https://tools.ietf.org/html/rfc3986#section-3.2.2 | RFC 3986}
  *
+ * @remarks Since 1.14.0
  * @public
  */
 function ipV4(): Arbitrary<string> {
@@ -53,6 +54,7 @@ function ipV4Extended(): Arbitrary<string> {
  *
  * Following {@link https://tools.ietf.org/html/rfc3986#section-3.2.2 | RFC 3986}
  *
+ * @remarks Since 1.14.0
  * @public
  */
 function ipV6(): Arbitrary<string> {

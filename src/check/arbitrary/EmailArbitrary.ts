@@ -12,6 +12,7 @@ import { Arbitrary } from './definition/Arbitrary';
  * {@link https://www.ietf.org/rfc/rfc3696.txt | RFC 3696} and
  * {@link https://www.ietf.org/rfc/rfc5322.txt | RFC 5322}
  *
+ * @remarks Since 1.14.0
  * @public
  */
 export function emailAddress(): Arbitrary<string> {
