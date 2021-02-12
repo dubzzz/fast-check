@@ -160,10 +160,13 @@ export interface RunDetailsCommon<Ts> {
    * in order to have values in it:
    * - Verbose: Only failures
    * - VeryVerbose: Failures, Successes and Skipped
+   *
+   * @remarks Since 1.9.0
    */
   executionSummary: ExecutionTree<Ts>[];
   /**
    * Verbosity level required by the user
+   * @remarks Since 1.9.0
    */
   verbose: VerbosityLevel;
   /**
