@@ -27,7 +27,10 @@ export interface WebAuthorityConstraints {
    * @remarks Since 1.14.0
    */
   withIPv6?: boolean;
-  /** Enable extended IPv4 format */
+  /**
+   * Enable extended IPv4 format
+   * @remarks Since 1.17.0
+   */
   withIPv4Extended?: boolean;
   /**
    * Enable user information prefix

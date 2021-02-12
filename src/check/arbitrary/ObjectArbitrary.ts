@@ -89,7 +89,10 @@ export interface ObjectConstraints {
    * @remarks Since 1.11.0
    */
   withMap?: boolean;
-  /** Also generate string representations of object instances */
+  /**
+   * Also generate string representations of object instances
+   * @remarks Since 1.17.0
+   */
   withObjectString?: boolean;
   /** Also generate object with null prototype */
   withNullPrototype?: boolean;

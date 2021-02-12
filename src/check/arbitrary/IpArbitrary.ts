@@ -26,6 +26,7 @@ function ipV4(): Arbitrary<string> {
  *
  * There is no equivalent for IP v6 according to the {@link https://url.spec.whatwg.org/#concept-ipv6-parser | IP v6 parser}
  *
+ * @remarks Since 1.17.0
  * @public
  */
 function ipV4Extended(): Arbitrary<string> {

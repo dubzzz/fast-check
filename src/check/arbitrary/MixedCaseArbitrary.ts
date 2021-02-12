@@ -6,10 +6,14 @@ import { Shrinkable } from './definition/Shrinkable';
 
 /**
  * Constraints to be applied on {@link mixedCase}
+ * @remarks Since 1.17.0
  * @public
  */
 export interface MixedCaseConstraints {
-  /** Transform a character to its upper and/or lower case version */
+  /**
+   * Transform a character to its upper and/or lower case version
+   * @remarks Since 1.17.0
+   */
   toggleCase?: (rawChar: string) => string;
 }
 
@@ -147,6 +151,7 @@ function defaultToggleCase(rawChar: string) {
  * @param stringArb - Arbitrary able to build string values
  * @param constraints - Constraints to be applied when computing upper/lower case version
  *
+ * @remarks Since 1.17.0
  * @public
  */
 export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseConstraints): Arbitrary<string> {

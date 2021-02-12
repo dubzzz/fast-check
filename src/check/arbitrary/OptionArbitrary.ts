@@ -8,9 +8,15 @@ import { nat } from './IntegerArbitrary';
  * @public
  */
 export interface OptionConstraints<TNil = null> {
-  /** The probability to build a nil value is of `1 / freq` */
+  /**
+   * The probability to build a nil value is of `1 / freq`
+   * @remarks Since 1.17.0
+   */
   freq?: number;
-  /** The nil value (default would be null) */
+  /**
+   * The nil value (default would be null)
+   * @remarks Since 1.17.0
+   */
   nil?: TNil;
 }
 
@@ -71,6 +77,7 @@ function option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>;
  * @param arb - Arbitrary that will be called to generate a non nil value
  * @param constraints - Constraints on the option
  *
+ * @remarks Since 1.17.0
  * @public
  */
 function option<T, TNil = null>(arb: Arbitrary<T>, constraints: OptionConstraints<TNil>): Arbitrary<T | TNil>;

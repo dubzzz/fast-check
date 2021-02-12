@@ -12,6 +12,7 @@ const padEight = (arb: Arbitrary<number>) => arb.map((n) => n.toString(16).padSt
  *
  * No mixed case, only lower case digits (0-9a-f)
  *
+ * @remarks Since 1.17.0
  * @public
  */
 export function uuid(): Arbitrary<string> {
@@ -34,6 +35,7 @@ export function uuid(): Arbitrary<string> {
  *
  * No mixed case, only lower case digits (0-9a-f)
  *
+ * @remarks Since 1.17.0
  * @public
  */
 export function uuidV(versionNumber: 1 | 2 | 3 | 4 | 5): Arbitrary<string> {
