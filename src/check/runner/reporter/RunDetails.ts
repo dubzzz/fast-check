@@ -22,6 +22,7 @@ export type RunDetails<Ts> =
  *
  * Refer to {@link RunDetailsCommon} for more details
  *
+ * @remarks Since 1.25.0
  * @public
  */
 export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
@@ -38,6 +39,7 @@ export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
  *
  * Refer to {@link RunDetailsCommon} for more details
  *
+ * @remarks Since 1.25.0
  * @public
  */
 export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> {
@@ -54,6 +56,7 @@ export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> 
  *
  * Refer to {@link RunDetailsCommon} for more details
  *
+ * @remarks Since 1.25.0
  * @public
  */
 export interface RunDetailsFailureInterrupted<Ts> extends RunDetailsCommon<Ts> {
@@ -69,6 +72,7 @@ export interface RunDetailsFailureInterrupted<Ts> extends RunDetailsCommon<Ts> {
  *
  * Refer to {@link RunDetailsCommon} for more details
  *
+ * @remarks Since 1.25.0
  * @public
  */
 export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
@@ -175,6 +179,8 @@ export interface RunDetailsCommon<Ts> {
    *
    * It includes both local parameters set on {@link check} or {@link assert}
    * and global ones specified using {@link configureGlobal}
+   *
+   * @remarks Since 1.25.0
    */
   runConfiguration: Parameters<Ts>;
 }

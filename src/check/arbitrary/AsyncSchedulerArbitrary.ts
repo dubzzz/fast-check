@@ -24,6 +24,7 @@ export type SchedulerSequenceItem<TMetaData = unknown> =
       label: string;
       /**
        * Metadata to be attached into logs
+       * @remarks Since 1.25.0
        */
       metadata?: TMetaData;
     }
@@ -31,6 +32,7 @@ export type SchedulerSequenceItem<TMetaData = unknown> =
 
 /**
  * Describe a task for the report produced by the scheduler
+ * @remarks Since 1.25.0
  * @public
  */
 export interface SchedulerReportItem<TMetaData = unknown> {
@@ -39,6 +41,8 @@ export interface SchedulerReportItem<TMetaData = unknown> {
    * - resolved: task released by the scheduler and successful
    * - rejected: task released by the scheduler but with errors
    * - pending:  task still pending in the scheduler, not released yet
+   *
+   * @remarks Since 1.25.0
    */
   status: 'resolved' | 'rejected' | 'pending';
   /**
@@ -46,15 +50,29 @@ export interface SchedulerReportItem<TMetaData = unknown> {
    * - promise: schedule
    * - function: scheduleFunction
    * - sequence: scheduleSequence
+   *
+   * @remarks Since 1.25.0
    */
   schedulingType: 'promise' | 'function' | 'sequence';
-  /** Incremental id for the task, first received task has taskId = 1 */
+  /**
+   * Incremental id for the task, first received task has taskId = 1
+   * @remarks Since 1.25.0
+   */
   taskId: number;
-  /** Label of the task */
+  /**
+   * Label of the task
+   * @remarks Since 1.25.0
+   */
   label: string;
-  /** Metadata linked when scheduling the task */
+  /**
+   * Metadata linked when scheduling the task
+   * @remarks Since 1.25.0
+   */
   metadata?: TMetaData;
-  /** Stringified version of the output or error computed using fc.stringify */
+  /**
+   * Stringified version of the output or error computed using fc.stringify
+   * @remarks Since 1.25.0
+   */
   outputValue?: string;
 }
 
@@ -133,6 +151,8 @@ export interface Scheduler<TMetaData = unknown> {
    * If the task has been executed, it includes a string representation of the associated output or error produced by the task if any.
    *
    * Tasks will be returned in the order they get executed by the scheduler.
+   *
+   * @remarks Since 1.25.0
    */
   report: () => SchedulerReportItem<TMetaData>[];
 }
@@ -431,6 +451,7 @@ function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arb
  * WARNING:
  * If one the promises is wrongly defined it will fail - for instance asking to resolve 5 while 5 does not exist.
  *
+ * @remarks Since 1.25.0
  * @public
  */
 function schedulerFor<TMetaData = unknown>(
@@ -449,6 +470,7 @@ function schedulerFor<TMetaData = unknown>(
  * @param customOrdering - Array defining in which order the promises will be resolved.
  * Id of the promises start at 1. 1 means first scheduled promise, 2 second scheduled promise and so on.
  *
+ * @remarks Since 1.25.0
  * @public
  */
 function schedulerFor<TMetaData = unknown>(

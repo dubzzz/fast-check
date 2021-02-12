@@ -145,6 +145,8 @@ export interface Parameters<T = void> {
    *
    * Only used when calling {@link assert}
    * Cannot be defined in conjonction with `asyncReporter`
+   *
+   * @remarks Since 1.25.0
    */
   reporter?: (runDetails: RunDetails<T>) => void;
   /**
@@ -156,6 +158,8 @@ export interface Parameters<T = void> {
    * Only used when calling {@link assert}
    * Cannot be defined in conjonction with `reporter`
    * Not compatible with synchronous properties: runner will throw
+   *
+   * @remarks Since 1.25.0
    */
   asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
 }
