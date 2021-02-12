@@ -23,6 +23,7 @@ export class MemoArbitrary<T> extends Arbitrary<T> {
 
 /**
  * Output type for {@link memo}
+ * @remarks Since 1.16.0
  * @public
  */
 export type Memo<T> = (maxDepth?: number) => Arbitrary<T>;
@@ -46,6 +47,7 @@ let contextRemainingDepth = 10;
  *
  * @param builder - Arbitrary builder taken the maximal depth allowed as input (parameter `n`)
  *
+ * @remarks Since 1.16.0
  * @public
  */
 export function memo<T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> {
