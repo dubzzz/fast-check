@@ -65,6 +65,8 @@ export interface Parameters<T = void> {
    * WARNING:
    * It skips runs. Thus test might be marked as failed.
    * Indeed, it might not reached the requested number of successful runs.
+   *
+   * @remarks Since 1.15.0
    */
   skipAllAfterTimeLimit?: number;
   /**

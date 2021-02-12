@@ -188,6 +188,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
  *
  * @param value - Value to be converted into a string
  *
+ * @remarks Since 1.15.0
  * @public
  */
 export function stringify<Ts>(value: Ts): string {
