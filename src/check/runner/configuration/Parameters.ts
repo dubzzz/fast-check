@@ -16,6 +16,7 @@ export interface Parameters<T = void> {
    *
    * In theory, seeds are supposed to be 32-bit integers.
    * In case of double value, the seed will be rescaled into a valid 32-bit integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
+   *
    * @remarks Since 0.0.6
    */
   seed?: number;
@@ -25,6 +26,8 @@ export interface Parameters<T = void> {
    * Random generator is the core element behind the generation of random values - changing it might directly impact the quality and performances of the generation of random values.
    * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus', 'xoroshiro128plus'
    * Or any function able to build a `RandomGenerator` based on a seed
+   *
+   * @remarks Since 1.6.0
    */
   randomType?: RandomType | ((seed: number) => RandomGenerator);
   /**

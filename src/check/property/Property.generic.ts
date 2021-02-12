@@ -27,6 +27,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param invalidHookFunction - Function to be called, please provide a valid hook function
+   * @remarks Since 1.6.0
    */
   beforeEach(
     invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
@@ -35,12 +36,14 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
+   * @remarks Since 1.6.0
    */
   beforeEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
 
   /**
    * Define a function that should be called after all calls to the predicate
    * @param invalidHookFunction - Function to be called, please provide a valid hook function
+   * @remarks Since 1.6.0
    */
   afterEach(
     invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
@@ -48,6 +51,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
+   * @remarks Since 1.6.0
    */
   afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
 }

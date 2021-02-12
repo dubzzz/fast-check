@@ -29,12 +29,14 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
+   * @remarks Since 1.6.0
    */
   beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
+   * @remarks Since 1.6.0
    */
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
