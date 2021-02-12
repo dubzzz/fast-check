@@ -85,6 +85,7 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
 
 /**
  * Shared part between variants of RunDetails
+ * @remarks Since 2.2.0
  * @public
  */
 export interface RunDetailsCommon<Ts> {

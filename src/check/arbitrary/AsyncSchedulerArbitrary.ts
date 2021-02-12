@@ -78,6 +78,7 @@ export interface SchedulerReportItem<TMetaData = unknown> {
 
 /**
  * Constraints to be applied on {@link scheduler}
+ * @remarks Since 2.2.0
  * @public
  */
 export interface SchedulerConstraints {

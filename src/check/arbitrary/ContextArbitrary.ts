@@ -4,6 +4,7 @@ import { Arbitrary } from './definition/Arbitrary';
 
 /**
  * Execution context attached to one predicate run
+ * @remarks Since 2.2.0
  * @public
  */
 export interface ContextValue {
@@ -11,10 +12,12 @@ export interface ContextValue {
    * Log execution details during a test.
    * Very helpful when troubleshooting failures
    * @param data - Data to be logged into the current context
+   * @remarks Since 1.8.0
    */
   log(data: string): void;
   /**
    * Number of logs already logged into current context
+   * @remarks Since 1.8.0
    */
   size(): number;
 }

@@ -34,6 +34,8 @@ export type RecordConstraints<T = unknown> =
 /**
  * Infer the type of the Arbitrary produced by record
  * given the type of the source arbitrary and constraints to be applied
+ *
+ * @remarks Since 2.2.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types

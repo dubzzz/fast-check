@@ -9,6 +9,7 @@ import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
  * on a {@link IAsyncPropertyWithHooks}
  *
+ * @remarks Since 2.2.0
  * @public
  */
 export type AsyncPropertyHookFunction =
@@ -24,6 +25,7 @@ export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
 
 /**
  * Interface for asynchronous property defining hooks, see {@link IAsyncProperty}
+ * @remarks Since 2.2.0
  * @public
  */
 export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {

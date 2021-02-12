@@ -6,12 +6,14 @@ import { scheduleCommands } from './commands/ScheduledCommand';
 
 /**
  * Synchronous definition of model and real
+ * @remarks Since 2.2.0
  * @public
  */
 export type ModelRunSetup<Model, Real> = () => { model: Model; real: Real };
 
 /**
  * Asynchronous definition of model and real
+ * @remarks Since 2.2.0
  * @public
  */
 export type ModelRunAsyncSetup<Model, Real> = () => Promise<{ model: Model; real: Real }>;

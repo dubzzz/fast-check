@@ -1,5 +1,6 @@
 /**
  * Error type produced whenever a precondition fails
+ * @remarks Since 2.2.0
  * @public
  */
 export class PreconditionFailure extends Error {

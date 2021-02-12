@@ -10,6 +10,7 @@ import { Shrinkable } from './Shrinkable';
  * In the case of classical {@link Arbitrary} there is no `shrink` or `shrinkableFor` methods directly on the {@link Arbitrary},
  * the users have to call `shrink` on the instance of {@link Shrinkable} produced by `generate`.
  *
+ * @remarks Since 2.2.0
  * @public
  */
 abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {

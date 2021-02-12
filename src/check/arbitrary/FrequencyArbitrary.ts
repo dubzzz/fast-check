@@ -52,6 +52,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
  * Infer the type of the Arbitrary produced by {@link frequency}
  * given the type of the source arbitraries
  *
+ * @remarks Since 2.2.0
  * @public
  */
 export type FrequencyValue<Ts extends WeightedArbitrary<unknown>[]> = {

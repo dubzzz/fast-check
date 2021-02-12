@@ -9,6 +9,7 @@ import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/confi
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
  * on a {@link IPropertyWithHooks}
  *
+ * @remarks Since 2.2.0
  * @public
  */
 export type PropertyHookFunction = (globalHookFunction: GlobalPropertyHookFunction) => void;
@@ -22,6 +23,7 @@ export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
 /**
  * Interface for synchronous property defining hooks, see {@link IProperty}
+ * @remarks Since 2.2.0
  * @public
  */
 export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {

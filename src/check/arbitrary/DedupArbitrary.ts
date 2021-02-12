@@ -2,6 +2,7 @@ import { clone, CloneValue } from './CloneArbitrary';
 
 /**
  * @deprecated Switch to {@link CloneValue} instead
+ * @remarks Since 2.2.0
  * @public
  */
 export type DedupValue<T, N extends number> = CloneValue<T, N>;

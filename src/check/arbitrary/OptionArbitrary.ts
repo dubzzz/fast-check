@@ -5,6 +5,7 @@ import { nat } from './IntegerArbitrary';
 
 /**
  * Constraints to be applied on {@link option}
+ * @remarks Since 2.2.0
  * @public
  */
 export interface OptionConstraints<TNil = null> {

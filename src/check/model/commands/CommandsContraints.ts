@@ -1,5 +1,6 @@
 /**
  * Parameters for {@link commands}
+ * @remarks Since 2.2.0
  * @public
  */
 export interface CommandsContraints {
