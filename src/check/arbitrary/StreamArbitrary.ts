@@ -32,6 +32,7 @@ class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
  *
  * @param arb - Arbitrary used to generate the values
  *
+ * @remarks Since 1.8.0
  * @public
  */
 function infiniteStream<T>(arb: Arbitrary<T>): Arbitrary<Stream<T>> {

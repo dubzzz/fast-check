@@ -41,6 +41,7 @@ class ContextImplem implements ContextValue {
 
 /**
  * Produce a {@link ContextValue} instance
+ * @remarks Since 1.8.0
  * @public
  */
 export function context(): Arbitrary<ContextValue> {

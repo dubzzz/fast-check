@@ -38,6 +38,7 @@ function constant<T>(value: T): Arbitrary<T> {
 /**
  * For `value`
  * @param value - The value to produce
+ * @remarks Since 1.8.0
  * @public
  */
 function clonedConstant<T>(value: T): Arbitrary<T> {

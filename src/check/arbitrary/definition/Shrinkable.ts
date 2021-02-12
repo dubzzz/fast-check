@@ -12,6 +12,7 @@ export class Shrinkable<T, TShrink extends T = T> {
   /**
    * State storing the result of hasCloneMethod
    * If `true` the value will be cloned each time it gets accessed
+   * @remarks Since 1.8.0
    */
   readonly hasToBeCloned: boolean;
   /**
@@ -23,10 +24,12 @@ export class Shrinkable<T, TShrink extends T = T> {
   /**
    * Safe value of the shrinkable
    * Depending on `hasToBeCloned` it will either be `value_` or a clone of it
+   * @remarks Since 1.8.0
    */
   readonly value!: T;
   /**
    * Internal value of the shrinkable
+   * @remarks Since 1.8.0
    */
   readonly value_: T;
   /**

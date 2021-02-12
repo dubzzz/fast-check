@@ -176,6 +176,7 @@ const __commitHash = '__COMMIT_HASH__' as string;
 
 /**
  * @deprecated Switch to {@link ContextValue} instead
+ * @remarks Since 1.8.0
  * @public
  */
 type Context = ContextValue;

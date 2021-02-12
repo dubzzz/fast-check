@@ -8,6 +8,7 @@
  * the framework to clone it whenever it has to re-use it
  * (mainly required for chrinking process)
  *
+ * @remarks Since 1.8.0
  * @public
  */
 export const cloneMethod = Symbol('fast-check/cloneMethod');
