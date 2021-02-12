@@ -105,17 +105,20 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
 
 /**
  * Constraints to be applied on {@link integer}
+ * @remarks Since 2.6.0
  * @public
  */
 export interface IntegerConstraints {
   /**
    * Lower bound for the generated integers (included)
    * @defaultValue -0x80000000
+   * @remarks Since 2.6.0
    */
   min?: number;
   /**
    * Upper bound for the generated integers (included)
    * @defaultValue 0x7fffffff
+   * @remarks Since 2.6.0
    */
   max?: number;
 }
@@ -185,6 +188,7 @@ function integer(min: number, max: number): ArbitraryWithContextualShrink<number
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function integer(constraints: IntegerConstraints): ArbitraryWithContextualShrink<number>;
@@ -209,12 +213,14 @@ function maxSafeInteger(): ArbitraryWithContextualShrink<number> {
 
 /**
  * Constraints to be applied on {@link nat}
+ * @remarks Since 2.6.0
  * @public
  */
 export interface NatConstraints {
   /**
    * Upper bound for the generated postive integers (included)
    * @defaultValue 0x7fffffff
+   * @remarks Since 2.6.0
    */
   max?: number;
 }
@@ -240,6 +246,7 @@ function nat(max: number): ArbitraryWithContextualShrink<number>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function nat(constraints: NatConstraints): ArbitraryWithContextualShrink<number>;

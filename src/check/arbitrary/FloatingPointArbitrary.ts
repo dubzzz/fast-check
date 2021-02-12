@@ -17,15 +17,22 @@ const floatInternal = (): Arbitrary<number> => {
 
 /**
  * Constraints to be applied on {@link float}
+ * @remarks Since 2.6.0
  * @public
  */
 export type FloatConstraints =
   | {
       /** Enable new version of fc.float */
       next?: false;
-      /** Lower bound for the generated floats (included) */
+      /**
+       * Lower bound for the generated floats (included)
+       * @remarks Since 2.6.0
+       */
       min?: number;
-      /** Upper bound for the generated floats (excluded) */
+      /**
+       * Upper bound for the generated floats (excluded)
+       * @remarks Since 2.6.0
+       */
       max?: number;
     }
   | ({
@@ -68,6 +75,7 @@ function float(min: number, max: number): Arbitrary<number>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function float(constraints: FloatConstraints): Arbitrary<number>;
@@ -118,15 +126,22 @@ const doubleInternal = (): Arbitrary<number> => {
 
 /**
  * Constraints to be applied on {@link double}
+ * @remarks Since 2.6.0
  * @public
  */
 export type DoubleConstraints =
   | {
       /** Enable new version of fc.double */
       next?: false;
-      /** Lower bound for the generated doubles (included) */
+      /**
+       * Lower bound for the generated doubles (included)
+       * @remarks Since 2.6.0
+       */
       min?: number;
-      /** Upper bound for the generated doubles (excluded) */
+      /**
+       * Upper bound for the generated doubles (excluded)
+       * @remarks Since 2.6.0
+       */
       max?: number;
     }
   | ({
@@ -169,6 +184,7 @@ function double(min: number, max: number): Arbitrary<number>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.6.0
  * @public
  */
 function double(constraints: DoubleConstraints): Arbitrary<number>;
