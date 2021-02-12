@@ -15,6 +15,7 @@ export type PropertyHookFunction = (globalHookFunction: GlobalPropertyHookFuncti
 
 /**
  * Interface for synchronous property, see {@link IRawProperty}
+ * @remarks Since 1.19.0
  * @public
  */
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}

@@ -91,6 +91,7 @@ export interface RunDetailsCommon<Ts> {
   failed: boolean;
   /**
    * Was the execution interrupted?
+   * @remarks Since 1.19.0
    */
   interrupted: boolean;
   /**

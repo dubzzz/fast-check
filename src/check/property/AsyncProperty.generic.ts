@@ -17,6 +17,7 @@ export type AsyncPropertyHookFunction =
 
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
+ * @remarks Since 1.19.0
  * @public
  */
 export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}

@@ -82,10 +82,13 @@ export interface Parameters<T = void> {
    * If the test got interrupted before any failure occured
    * and before it reached the requested number of runs specified by `numRuns`
    * it will be marked as success. Except if `markInterruptAsFailure` has been set to `true`
+   *
+   * @remarks Since 1.19.0
    */
   interruptAfterTimeLimit?: number;
   /**
    * Mark interrupted runs as failed runs: disabled by default
+   * @remarks Since 1.19.0
    */
   markInterruptAsFailure?: boolean;
   /**
