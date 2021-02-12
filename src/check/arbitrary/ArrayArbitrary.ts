@@ -170,12 +170,19 @@ export function maxLengthFromMinLength(minLength: number): number {
 
 /**
  * Constraints to be applied on {@link array}
+ * @remarks Since 2.4.0
  * @public
  */
 export interface ArrayConstraints {
-  /** Lower bound of the generated array size */
+  /**
+   * Lower bound of the generated array size
+   * @remarks Since 2.4.0
+   */
   minLength?: number;
-  /** Upper bound of the generated array size */
+  /**
+   * Upper bound of the generated array size
+   * @remarks Since 2.4.0
+   */
   maxLength?: number;
 }
 
@@ -217,8 +224,11 @@ function array<T>(arb: Arbitrary<T>, maxLength: number): Arbitrary<T[]>;
 function array<T>(arb: Arbitrary<T>, minLength: number, maxLength: number): Arbitrary<T[]>;
 /**
  * For arrays of values coming from `arb` having lower and upper bound size
+ *
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances
+ *
+ * @remarks Since 2.4.0
  * @public
  */
 function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints): Arbitrary<T[]>;

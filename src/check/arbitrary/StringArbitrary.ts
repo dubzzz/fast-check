@@ -4,12 +4,19 @@ import { Arbitrary } from './definition/Arbitrary';
 
 /**
  * Constraints to be applied on arbitraries for strings
+ * @remarks Since 2.4.0
  * @public
  */
 export interface StringSharedConstraints {
-  /** Lower bound of the generated string length (included) */
+  /**
+   * Lower bound of the generated string length (included)
+   * @remarks Since 2.4.0
+   */
   minLength?: number;
-  /** Upper bound of the generated string length (included) */
+  /**
+   * Upper bound of the generated string length (included)
+   * @remarks Since 2.4.0
+   */
   maxLength?: number;
 }
 
@@ -96,6 +103,7 @@ function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: numb
  * @param charArb - Arbitrary able to generate random strings (possibly multiple characters)
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function stringOf(charArb: Arbitrary<string>, constraints: StringSharedConstraints): Arbitrary<string>;
@@ -141,6 +149,7 @@ function string(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function string(constraints: StringSharedConstraints): Arbitrary<string>;
@@ -186,6 +195,7 @@ function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function asciiString(constraints: StringSharedConstraints): Arbitrary<string>;
@@ -231,6 +241,7 @@ function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function string16bits(constraints: StringSharedConstraints): Arbitrary<string>;
@@ -276,6 +287,7 @@ function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function unicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
@@ -321,6 +333,7 @@ function fullUnicodeString(minLength: number, maxLength: number): Arbitrary<stri
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function fullUnicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
@@ -366,6 +379,7 @@ function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function hexaString(constraints: StringSharedConstraints): Arbitrary<string>;
@@ -420,6 +434,7 @@ function base64String(minLength: number, maxLength: number): Arbitrary<string>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @remarks Since 2.4.0
  * @public
  */
 function base64String(constraints: StringSharedConstraints): Arbitrary<string>;
