@@ -115,7 +115,10 @@ export interface ObjectConstraints {
    * @remarks Since 2.9.0
    */
   withTypedArray?: boolean;
-  /** Also generate sparse arrays (arrays with holes) */
+  /**
+   * Also generate sparse arrays (arrays with holes)
+   * @remarks Since 2.13.0
+   */
   withSparseArray?: boolean;
 }
 
