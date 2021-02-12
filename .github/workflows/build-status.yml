@@ -3,14 +3,14 @@ name: Build Status
 on:
   push:
     branches: 
-      - master
+      - main
       - next-*
       - fix-v*
     tags:
       - v**
   pull_request:
     branches:
-      - master
+      - main
       - next-*
       - fix-v*
 
@@ -325,7 +325,7 @@ jobs:
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Download documentation

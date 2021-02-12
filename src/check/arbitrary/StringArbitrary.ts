@@ -76,7 +76,7 @@ function stringOf(charArb: Arbitrary<string>): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.stringOf(charArb, {maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 1.1.3
  * @public
@@ -91,7 +91,7 @@ function stringOf(charArb: Arbitrary<string>, maxLength: number): Arbitrary<stri
  *
  * @deprecated
  * Superceded by `fc.stringOf(charArb, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 1.1.3
  * @public
@@ -124,7 +124,7 @@ function string(): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.string({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.1
  * @public
@@ -138,7 +138,7 @@ function string(maxLength: number): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.string({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -170,7 +170,7 @@ function asciiString(): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.asciiString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.1
  * @public
@@ -184,7 +184,7 @@ function asciiString(maxLength: number): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.asciiString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -216,7 +216,7 @@ function string16bits(): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.string16bits({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -230,7 +230,7 @@ function string16bits(maxLength: number): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.string16bits({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -262,7 +262,7 @@ function unicodeString(): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.unicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -276,7 +276,7 @@ function unicodeString(maxLength: number): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.unicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -308,7 +308,7 @@ function fullUnicodeString(): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.fullUnicodeString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -322,7 +322,7 @@ function fullUnicodeString(maxLength: number): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.fullUnicodeString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -354,7 +354,7 @@ function hexaString(): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.hexaString({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.1
  * @public
@@ -368,7 +368,7 @@ function hexaString(maxLength: number): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.hexaString({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public
@@ -405,7 +405,7 @@ function base64String(): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.base64String({maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.1
  * @public
@@ -421,7 +421,7 @@ function base64String(maxLength: number): Arbitrary<string>;
  *
  * @deprecated
  * Superceded by `fc.base64String({minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.11
  * @public

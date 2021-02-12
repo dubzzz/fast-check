@@ -26,9 +26,9 @@ Running the codemod on your code:
 
 ```sh
 # JavaScript code
-npx jscodeshift -t https://raw.githubusercontent.com/dubzzz/fast-check/master/codemods/unify-signatures/transform.cjs <path_to_code>
+npx jscodeshift -t https://raw.githubusercontent.com/dubzzz/fast-check/main/codemods/unify-signatures/transform.cjs <path_to_code>
 # TypeScript code
-npx jscodeshift --parser=ts --extensions=ts -t https://raw.githubusercontent.com/dubzzz/fast-check/master/codemods/unify-signatures/transform.cjs <path_to_code>
+npx jscodeshift --parser=ts --extensions=ts -t https://raw.githubusercontent.com/dubzzz/fast-check/main/codemods/unify-signatures/transform.cjs <path_to_code>
 ```
 
 You may need one of the following additional options:

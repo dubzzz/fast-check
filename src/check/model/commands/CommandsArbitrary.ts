@@ -153,7 +153,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  *
  * @deprecated
  * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 1.5.0
  * @public
@@ -174,7 +174,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  *
  * @deprecated
  * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 1.5.0
  * @public

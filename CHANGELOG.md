@@ -452,7 +452,7 @@ This new major of fast-check is:
 - ([PR#752](https://github.com/dubzzz/fast-check/pull/752)) Support ES Modules and CommonJS
 - ([PR#756](https://github.com/dubzzz/fast-check/pull/756)) Drop browser build
 
-*You may refer to our migration guide in case of issue: https://github.com/dubzzz/fast-check/blob/master/MIGRATION_1.X_TO_2.X.md*
+*You may refer to our migration guide in case of issue: https://github.com/dubzzz/fast-check/blob/main/MIGRATION_1.X_TO_2.X.md*
 
 ## Fixes
 

@@ -128,7 +128,7 @@ function subarray<T>(originalArray: T[]): Arbitrary<T[]>;
  *
  * @deprecated
  * Superceded by `fc.subarray(originalArray, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 1.5.0
  * @public
@@ -172,7 +172,7 @@ function shuffledSubarray<T>(originalArray: T[]): Arbitrary<T[]>;
  *
  * @deprecated
  * Superceded by `fc.shuffledSubarray(originalArray, {minLength, maxLength})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 1.5.0
  * @public

@@ -21,7 +21,7 @@ Please do not hesitate to open issues to ask for new arbitraries.
 
 ## Derive existing arbitraries
 
-All generated arbitraries inherit from the same base class: [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts).
+All generated arbitraries inherit from the same base class: [Arbitrary](https://github.com/dubzzz/fast-check/blob/main/src/check/arbitrary/definition/Arbitrary.ts).
 
 It comes with two useful methods: `filter(predicate: (t: T) => boolean): Arbitrary<T>` and `map<U>(mapper: (t: T) => U): Arbitrary<U>`. These methods are used internally by the framework to derive some Arbitraries from existing ones.
 
@@ -57,7 +57,7 @@ const char = () => fc.integer(0x20, 0x7e).map(String.fromCharCode);
 const string = () => fc.array(fc.char()).map(arr => arr.join(''));
 ```
 
-Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) use this trick to define themselves.
+Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/main/src/check/arbitrary) use this trick to define themselves.
 
 ### Transform arbitraries
 
@@ -90,9 +90,9 @@ const intNoShrink = fc.integer().noShrink();
 
 ## Build your own
 
-**NOTE:** Before writing your own arbitrary from scratch you should have a look to the [examples](https://github.com/dubzzz/fast-check/tree/master/example) provided in the repository. There are examples for: [recursive structures](https://github.com/dubzzz/fast-check/tree/master/example/002-recursive/isSearchTree), [properties for automata or state machine](https://github.com/dubzzz/fast-check/tree/master/example/004-stateMachine/musicPlayer) and others.
+**NOTE:** Before writing your own arbitrary from scratch you should have a look to the [examples](https://github.com/dubzzz/fast-check/tree/main/example) provided in the repository. There are examples for: [recursive structures](https://github.com/dubzzz/fast-check/tree/main/example/002-recursive/isSearchTree), [properties for automata or state machine](https://github.com/dubzzz/fast-check/tree/main/example/004-stateMachine/musicPlayer) and others.
 
-You can also fully customize your arbitrary: not derive it from any of the buit-in arbitraries. What you have to do is to extend [Arbitrary](https://github.com/dubzzz/fast-check/blob/master/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: Random): Shrinkable<T>`.
+You can also fully customize your arbitrary: not derive it from any of the buit-in arbitraries. What you have to do is to extend [Arbitrary](https://github.com/dubzzz/fast-check/blob/main/src/check/arbitrary/definition/Arbitrary.ts) and implement `generate(mrng: Random): Shrinkable<T>`.
 
 `generate` is responsible for the generation of one new random entity of type `T` (see signature above). In order to fulfill it in a deterministic way it receives a `mrng: Random`:
 - `next(n: number): number`: uniformly distributed n bits value (max value of n = 31)
@@ -103,7 +103,7 @@ You can also fully customize your arbitrary: not derive it from any of the buit-
 
 The generated value is responsible for its shrinking. Shrinking derives the item into _smaller_ values and is optional.
 
-Refer to [built-in types](https://github.com/dubzzz/fast-check/tree/master/src/check/arbitrary) for examples of fully custom arbitraries.
+Refer to [built-in types](https://github.com/dubzzz/fast-check/tree/main/src/check/arbitrary) for examples of fully custom arbitraries.
 
 ## Advanced features of arbitraries
 

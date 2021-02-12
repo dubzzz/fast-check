@@ -166,7 +166,7 @@ function integer(): ArbitraryWithContextualShrink<number>;
  *
  * @deprecated
  * Superceded by `fc.integer({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/master/codemods/unify-signatures | our codemod script}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
  *
  * @remarks Since 0.0.1
  * @public
