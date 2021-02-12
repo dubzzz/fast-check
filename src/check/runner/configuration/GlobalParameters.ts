@@ -19,6 +19,7 @@ export type GlobalAsyncPropertyHookFunction = (() => Promise<unknown>) | (() => 
 
 /**
  * Type describing the global overrides
+ * @remarks Since 1.18.0
  * @public
  */
 export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>> & {
@@ -72,6 +73,7 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
  *
  * @param parameters - Global parameters
  *
+ * @remarks Since 1.18.0
  * @public
  */
 export function configureGlobal(parameters: GlobalParameters): void {
@@ -80,6 +82,7 @@ export function configureGlobal(parameters: GlobalParameters): void {
 
 /**
  * Read global parameters that will be used by runners
+ * @remarks Since 1.18.0
  * @public
  */
 export function readConfigureGlobal(): GlobalParameters | undefined {
@@ -88,6 +91,7 @@ export function readConfigureGlobal(): GlobalParameters | undefined {
 
 /**
  * Reset global parameters
+ * @remarks Since 1.18.0
  * @public
  */
 export function resetConfigureGlobal(): void {
