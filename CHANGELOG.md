@@ -1,3 +1,42 @@
+# 2.13.0
+
+_Built-in arbitrary for sparse arrays_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.13.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.12.1...v2.13.0)]
+
+## Features
+
+- ([PR#1443](https://github.com/dubzzz/fast-check/pull/1443)) Support sparse arrays in stringify
+- ([PR#1447](https://github.com/dubzzz/fast-check/pull/1447)) Add a new arbitrary for sparse arrays
+- ([PR#1451](https://github.com/dubzzz/fast-check/pull/1451)) Add support for sparse arrays in `fc.object`
+
+## Fixes
+
+- ([PR#1452](https://github.com/dubzzz/fast-check/pull/1452)) Bug: Reduce bias towards typed arrays in `fc.object`
+- ([PR#1429](https://github.com/dubzzz/fast-check/pull/1429)) CI: Action to publish to Netlify on comment
+- ([PR#1430](https://github.com/dubzzz/fast-check/pull/1430)) CI: Rework workflow "Request Deploy Netlify"
+- ([PR#1431](https://github.com/dubzzz/fast-check/pull/1431)) CI: Clean old netlify job
+- ([PR#1432](https://github.com/dubzzz/fast-check/pull/1432)) CI: Fix skip check for 'Deploy to Netlify'
+- ([PR#1433](https://github.com/dubzzz/fast-check/pull/1433)) CI: Fix API calls for octokit in Netlify job
+- ([PR#1434](https://github.com/dubzzz/fast-check/pull/1434)) CI: Post reactions for netlify on issue comment
+- ([PR#1435](https://github.com/dubzzz/fast-check/pull/1435)) CI: Do not add new lines when adding comit hash in deploy message
+- ([PR#1436](https://github.com/dubzzz/fast-check/pull/1436)) CI: Do not add new lines when adding comit hash in deploy message
+- ([PR#1441](https://github.com/dubzzz/fast-check/pull/1441)) CI: Add `--strict` option for tests on types
+- ([PR#1466](https://github.com/dubzzz/fast-check/pull/1466)) CI: Check typings against more versions of TS
+- ([PR#1471](https://github.com/dubzzz/fast-check/pull/1471)) CI: Stop sending e2e coverage into codecov
+- ([PR#1214](https://github.com/dubzzz/fast-check/pull/1214)) Clean: Reduce the number of lint warnings
+- ([PR#1440](https://github.com/dubzzz/fast-check/pull/1440)) Doc: Add tip regarding "Value depending on another one"
+- ([PR#1475](https://github.com/dubzzz/fast-check/pull/1475)) Doc: Document when each feature has been released (jsdoc)
+- ([PR#1479](https://github.com/dubzzz/fast-check/pull/1479)) Misc: Rename master into main
+- ([PR#1490](https://github.com/dubzzz/fast-check/pull/1490)) Misc: Split changelog by major
+- ([PR#1464](https://github.com/dubzzz/fast-check/pull/1464)) Refactor: No special case for sparse arrays without trailing holes and no elements
+- ([PR#1442](https://github.com/dubzzz/fast-check/pull/1442)) Test: Add `--strict` option for tests on types
+- ([PR#1444](https://github.com/dubzzz/fast-check/pull/1444)) Test: Better coverage for stringify of sparse arrays
+- ([PR#1474](https://github.com/dubzzz/fast-check/pull/1474)) Test: Increase numRuns for bias e2e to limit flakiness
+- ([PR#1465](https://github.com/dubzzz/fast-check/pull/1465)) Typing: Regression introduced in typings for `record`
+- ([PR#1478](https://github.com/dubzzz/fast-check/pull/1478)) Typing: Add missing export for double constraints
+
+---
+
 # 2.12.2
 
 _Fix regression in typings of record_
