@@ -193,6 +193,7 @@ function commands<Model extends object, Real>(
  * @param commandArbs - Arbitraries responsible to build commands
  * @param constraints - Contraints to be applied when generating the commands
  *
+ * @remarks Since 1.11.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -209,6 +210,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * @param commandArbs - Arbitraries responsible to build commands
  * @param constraints - Constraints to be applied when generating the commands
  *
+ * @remarks Since 1.11.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types

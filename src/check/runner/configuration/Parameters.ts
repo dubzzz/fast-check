@@ -128,6 +128,8 @@ export interface Parameters<T = void> {
    *
    * When used in complement to `seed` and `path`,
    * it replays only the minimal counterexample.
+   *
+   * @remarks Since 1.11.0
    */
   endOnFailure?: boolean;
   /**

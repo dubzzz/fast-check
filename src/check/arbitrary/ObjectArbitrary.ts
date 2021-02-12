@@ -71,11 +71,20 @@ export interface ObjectConstraints {
    * @remarks Since 0.0.7
    */
   values?: Arbitrary<unknown>[];
-  /** Also generate boxed versions of values */
+  /**
+   * Also generate boxed versions of values
+   * @remarks Since 1.11.0
+   */
   withBoxedValues?: boolean;
-  /** Also generate Set */
+  /**
+   * Also generate Set
+   * @remarks Since 1.11.0
+   */
   withSet?: boolean;
-  /** Also generate Map */
+  /**
+   * Also generate Map
+   * @remarks Since 1.11.0
+   */
   withMap?: boolean;
   /** Also generate string representations of object instances */
   withObjectString?: boolean;

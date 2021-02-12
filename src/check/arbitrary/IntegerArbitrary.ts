@@ -200,6 +200,7 @@ function integer(
 
 /**
  * For integers between Number.MIN_SAFE_INTEGER (included) and Number.MAX_SAFE_INTEGER (included)
+ * @remarks Since 1.11.0
  * @public
  */
 function maxSafeInteger(): ArbitraryWithContextualShrink<number> {
@@ -252,6 +253,7 @@ function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<numbe
 
 /**
  * For positive integers between 0 (included) and Number.MAX_SAFE_INTEGER (included)
+ * @remarks Since 1.11.0
  * @public
  */
 function maxSafeNat(): ArbitraryWithContextualShrink<number> {
