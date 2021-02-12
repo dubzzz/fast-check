@@ -155,6 +155,7 @@ export function indexToDouble(index: ArrayInt64): number {
 
 /**
  * Constraints to be applied on {@link doubleNext}
+ * @remarks Since 2.8.1
  * @public
  */
 export interface DoubleNextConstraints {
