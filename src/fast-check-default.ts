@@ -139,6 +139,7 @@ import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithS
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
+import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 import { FloatNextConstraints } from './check/arbitrary/FloatNextArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
@@ -306,6 +307,7 @@ export {
   BigUintConstraints,
   CommandsContraints,
   DoubleConstraints,
+  DoubleNextConstraints,
   FalsyContraints,
   FloatConstraints,
   FloatNextConstraints,
