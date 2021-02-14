@@ -154,11 +154,11 @@ export function indexToDouble(index: ArrayInt64): number {
 }
 
 /**
- * Constraints to be applied on {@link doubleNext}
- * @remarks Since 2.8.1
+ * Constraints to be applied on {@link double}
+ * @remarks Since 2.6.0
  * @public
  */
-export interface DoubleNextConstraints {
+export interface DoubleConstraints {
   /**
    * Lower bound for the generated 64-bit floats (included)
    * @defaultValue Number.NEGATIVE_INFINITY, -1.7976931348623157e+308 when noDefaultInfinity is true
@@ -191,10 +191,10 @@ export interface DoubleNextConstraints {
  *
  * @internal
  */
-function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleNextConstraints) {
+function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints) {
   if (Number.isNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
-    throw new Error('fc.doubleNext constraints.' + constraintsLabel + ' must be a 32-bit float');
+    throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 32-bit float');
   }
   return doubleToIndex(d);
 }
@@ -205,11 +205,12 @@ function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleNextConstrai
  * - significand: 52 bits
  * - exponent: 11 bits
  *
- * @param constraints - Constraints to apply when building instances
+ * @param constraints - Constraints to apply when building instances (since 2.8.0)
  *
+ * @remarks Since 0.0.6
  * @public
  */
-export function doubleNext(constraints: DoubleNextConstraints = {}): Arbitrary<number> {
+export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
@@ -222,7 +223,7 @@ export function doubleNext(constraints: DoubleNextConstraints = {}): Arbitrary<n
     // In other words: minIndex > maxIndex
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
-    throw new Error('fc.doubleNext constraints.min must be smaller or equal to constraints.max');
+    throw new Error('fc.double constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
     return arrayInt64(minIndex, maxIndex).map(indexToDouble);

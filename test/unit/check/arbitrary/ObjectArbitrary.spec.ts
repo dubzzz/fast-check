@@ -489,7 +489,7 @@ describe('ObjectArbitrary', () => {
   describe('boxArbitrary (internal)', () => {
     it.each`
       type         | arbitrary
-      ${'number'}  | ${fc.double({ next: true })}
+      ${'number'}  | ${fc.double()}
       ${'boolean'} | ${fc.boolean()}
       ${'string'}  | ${fc.string()}
     `('Should box any $type', ({ arbitrary }) =>
