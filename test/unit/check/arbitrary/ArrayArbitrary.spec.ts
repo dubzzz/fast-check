@@ -8,7 +8,6 @@ import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
 import { isStrictlySmallerArray } from './generic/ArrayHelpers';
-import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
@@ -107,26 +106,6 @@ describe('ArrayArbitrary', () => {
             g.every((v) => typeof v === 'number'),
         }
       );
-    });
-    describe('Still support non recommended signatures', () => {
-      it('Should support fc.array(arb, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
-            const refArbitrary = array(nat(), { maxLength });
-            const nonRecommendedArbitrary = array(nat(), maxLength);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.array(arb, minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
-            const refArbitrary = array(nat(), { minLength: minMaxLength.min, maxLength: minMaxLength.max });
-            const nonRecommendedArbitrary = array(nat(), minMaxLength.min, minMaxLength.max);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
     });
   });
 });
