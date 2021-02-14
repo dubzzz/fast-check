@@ -1,6 +1,6 @@
 import { NextArbitrary } from '../../../check/arbitrary/definition/NextArbitrary';
 import { maxLengthFromMinLength } from '../helpers/MaxLengthFromMinLength';
-import { StringSharedConstraints } from '../helpers/StringConstraintsExtractor';
+import { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
 
 /** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
 export function patternsToStringMapper(tab: string[]): string {
