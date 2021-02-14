@@ -53,12 +53,9 @@ describe('stringify', () => {
   }
   it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>
     fc.assert(
-      fc.property(
-        fc.anything({ values: [fc.boolean(), fc.integer(), fc.double(), fc.fullUnicodeString(), fc.constant(null)] }),
-        (obj) => {
-          expect(stringify(obj)).toEqual(JSON.stringify(obj));
-        }
-      )
+      fc.property(fc.unicodeJsonObject(), (obj) => {
+        expect(stringify(obj)).toEqual(JSON.stringify(obj));
+      })
     ));
   it('Should be readable from eval', () =>
     fc.assert(
