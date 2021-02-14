@@ -2,11 +2,11 @@ import * as fc from '../../../../lib/fast-check';
 
 import {
   decomposeDouble,
-  doubleNext,
-  DoubleNextConstraints,
+  double,
+  DoubleConstraints,
   doubleToIndex,
   indexToDouble,
-} from '../../../../src/check/arbitrary/DoubleNextArbitrary';
+} from '../../../../src/check/arbitrary/DoubleArbitrary';
 
 import { mocked } from 'ts-jest/utils';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
@@ -16,7 +16,7 @@ import * as ArrayInt64ArbitraryMock from '../../../../src/check/arbitrary/helper
 import { add64, ArrayInt64, isEqual64, substract64, Unit64 } from '../../../../src/check/arbitrary/helpers/ArrayInt64';
 import {
   defaultDoubleRecordConstraints,
-  doubleNextConstraints,
+  doubleConstraints,
   float64raw,
   isStrictlySmaller,
 } from './generic/FloatingPointHelpers';
@@ -34,7 +34,7 @@ const toBigInt = (index: Index): bigint => {
 
 const mrng = () => stubRng.mutable.nocall();
 
-function minMaxForConstraints(ct: DoubleNextConstraints) {
+function minMaxForConstraints(ct: DoubleConstraints) {
   const noDefaultInfinity = ct.noDefaultInfinity;
   const {
     min = noDefaultInfinity ? -Number.MAX_VALUE : Number.NEGATIVE_INFINITY,
@@ -64,13 +64,13 @@ fc.configureGlobal({
   },
 });
 
-describe('DoubleNextArbitrary', () => {
-  describe('doubleNext', () => {
+describe('DoubleArbitrary', () => {
+  describe('double', () => {
     it('Should accept any valid range of floating point numbers (including infinity)', () =>
       fc.assert(
-        fc.property(doubleNextConstraints(), (ct) => {
+        fc.property(doubleConstraints(), (ct) => {
           mockNoOpArrayInt64Arb();
-          expect(doubleNext(ct)).toBeDefined();
+          expect(double(ct)).toBeDefined();
         })
       ));
     it('Should accept any constraits defining min (not-NaN) equal to max', () =>
@@ -81,17 +81,17 @@ describe('DoubleNextArbitrary', () => {
           (f, otherCt) => {
             fc.pre(!Number.isNaN(f));
             mockNoOpArrayInt64Arb();
-            expect(doubleNext({ ...otherCt, min: f, max: f })).toBeDefined();
+            expect(double({ ...otherCt, min: f, max: f })).toBeDefined();
           }
         )
       ));
     it('Should reject NaN if specified for min', () => {
       mockNoOpArrayInt64Arb();
-      expect(() => doubleNext({ min: Number.NaN })).toThrowError();
+      expect(() => double({ min: Number.NaN })).toThrowError();
     });
     it('Should reject NaN if specified for max', () => {
       mockNoOpArrayInt64Arb();
-      expect(() => doubleNext({ max: Number.NaN })).toThrowError();
+      expect(() => double({ max: Number.NaN })).toThrowError();
     });
     it('Should reject if specified min is strictly greater than max', () =>
       fc.assert(
@@ -102,19 +102,19 @@ describe('DoubleNextArbitrary', () => {
           mockNoOpArrayInt64Arb();
           const min = isStrictlySmaller(da, db) ? db : da;
           const max = isStrictlySmaller(da, db) ? da : db;
-          expect(() => doubleNext({ min, max })).toThrowError();
+          expect(() => double({ min, max })).toThrowError();
         })
       ));
     it('Should reject impossible noDefaultInfinity-based ranges', () => {
       mockNoOpArrayInt64Arb();
-      expect(() => doubleNext({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
-      expect(() => doubleNext({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
+      expect(() => double({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
+      expect(() => double({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
     });
 
     if (typeof BigInt !== 'undefined') {
       it('Should properly convert integer value for index between min and max into its associated float value', () =>
         fc.assert(
-          fc.property(fc.option(doubleNextConstraints(), { nil: undefined }), fc.bigUintN(64), (ct, mod) => {
+          fc.property(fc.option(doubleConstraints(), { nil: undefined }), fc.bigUintN(64), (ct, mod) => {
             // Arrange
             const { arrayInt64 } = mocked(ArrayInt64ArbitraryMock);
             const { min, max } = minMaxForConstraints(ct || {});
@@ -126,7 +126,7 @@ describe('DoubleNextArbitrary', () => {
             arrayInt64.mockImplementationOnce(() => arbitraryFor([{ value: arbitraryGeneratedIndex }]));
 
             // Act
-            const arb = doubleNext(ct);
+            const arb = double(ct);
             const { value_: f } = arb.generate(mrng());
 
             // Assert
@@ -140,14 +140,14 @@ describe('DoubleNextArbitrary', () => {
 
       it('Should ask for a range with one extra value (far from zero)', () =>
         fc.assert(
-          fc.property(doubleNextConstraints(withNaNRecordConstraints), (ct) => {
+          fc.property(doubleConstraints(withNaNRecordConstraints), (ct) => {
             // Arrange
             const { max } = minMaxForConstraints(ct);
             const arrayInt64 = mockNoOpArrayInt64Arb();
 
             // Act
-            doubleNext({ ...ct, noNaN: true });
-            doubleNext(ct);
+            double({ ...ct, noNaN: true });
+            double(ct);
 
             // Assert
             expect(arrayInt64).toHaveBeenCalledTimes(2);
@@ -166,15 +166,15 @@ describe('DoubleNextArbitrary', () => {
         ));
       it('Should properly convert the extra value to NaN', () =>
         fc.assert(
-          fc.property(doubleNextConstraints(withNaNRecordConstraints), (ct) => {
+          fc.property(doubleConstraints(withNaNRecordConstraints), (ct) => {
             // Arrange
             // Setup mocks for integer
             const arbitraryGenerated = { value: { sign: 1, data: [Number.NaN, Number.NaN] } as ArrayInt64 };
             const arrayInt64 = mockNoOpArrayInt64Arb({ single: true });
             arrayInt64.mockImplementationOnce(() => arbitraryFor([arbitraryGenerated]));
             // Call float next to find out the value required for NaN
-            doubleNext({ ...ct, noNaN: true });
-            const arb = doubleNext(ct);
+            double({ ...ct, noNaN: true });
+            const arb = double(ct);
             // Extract NaN "index"
             const [minNonNaN] = arrayInt64.mock.calls[0];
             const [minNaN, maxNaN] = arrayInt64.mock.calls[1];
@@ -197,7 +197,7 @@ describe('DoubleNextArbitrary', () => {
 
       it('Should ask integers between the indexes corresponding to min and max', () =>
         fc.assert(
-          fc.property(doubleNextConstraints(noNaNRecordConstraints), (ctDraft) => {
+          fc.property(doubleConstraints(noNaNRecordConstraints), (ctDraft) => {
             // Arrange
             const ct = { ...ctDraft, noNaN: true };
             const arrayInt64 = mockNoOpArrayInt64Arb();
@@ -206,7 +206,7 @@ describe('DoubleNextArbitrary', () => {
             const maxIndex = doubleToIndex(max);
 
             // Act
-            doubleNext(ct);
+            double(ct);
 
             // Assert
             expect(arrayInt64).toHaveBeenCalledTimes(1);
