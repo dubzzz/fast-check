@@ -1,19 +1,20 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { doubleNext, DoubleNextConstraints } from '../../../../src/check/arbitrary/DoubleNextArbitrary';
-import { doubleNextConstraints } from './generic/FloatingPointHelpers';
+import { float, FloatConstraints } from '../../../../src/check/arbitrary/FloatArbitrary';
+import { floatConstraints, is32bits } from './generic/FloatingPointHelpers';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
-describe('DoubleNextArbitrary', () => {
-  describe('doubleNext', () => {
+describe('FloatArbitrary', () => {
+  describe('float', () => {
     describe('Is valid arbitrary?', () => {
-      genericHelper.isValidArbitrary((ct?: DoubleNextConstraints) => doubleNext(ct), {
+      genericHelper.isValidArbitrary((ct?: FloatConstraints) => float(ct), {
         isStrictlySmallerValue: (fa, fb) =>
           Math.abs(fa) < Math.abs(fb) || //              Case 1: abs(a) < abs(b)
           (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
           (!Number.isNaN(fa) && Number.isNaN(fb)), //    Case 3: notNaN < NaN, NaN is one of the extreme values
-        isValidValue: (g: number, ct?: DoubleNextConstraints) => {
+        isValidValue: (g: number, ct?: FloatConstraints) => {
           if (typeof g !== 'number') return false; // should always produce numbers
+          if (!is32bits(g)) return false; // should always produce 32-bit floats
           if (Number.isNaN(g)) {
             if (ct !== undefined && ct.noNaN) return false; // should not produce NaN if explicitely asked not too
             return true;
@@ -26,7 +27,7 @@ describe('DoubleNextArbitrary', () => {
           }
           return true;
         },
-        seedGenerator: fc.option(doubleNextConstraints(), { nil: undefined }),
+        seedGenerator: fc.option(floatConstraints(), { nil: undefined }),
       });
     });
   });
