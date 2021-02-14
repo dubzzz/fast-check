@@ -247,7 +247,7 @@ function UserPageProfile(props) {
 test('should not display data related to another user', () =>
   fc.assert(
     fc.asyncProperty(
-      fc.array(fc.uuid(), fc.uuid(), fc.scheduler(),
+      fc.uuid(), fc.uuid(), fc.scheduler(),
       async (uid1, uid2, s) => {
         // Arrange
         getUserProfile.mockImplementation(
