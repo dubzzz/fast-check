@@ -5,7 +5,7 @@ import { array } from '../../arbitrary/array';
 import { boolean } from '../../arbitrary/boolean';
 import { constant } from '../../arbitrary/constant';
 import { dictionary } from '../../arbitrary/dictionary';
-import { double } from './FloatingPointArbitrary';
+import { double } from './DoubleArbitrary';
 import { frequency } from '../../arbitrary/frequency';
 import { maxSafeInteger } from '../../arbitrary/maxSafeInteger';
 import { memo, Memo } from '../../arbitrary/memo';
@@ -183,7 +183,7 @@ class QualifiedObjectConstraints {
     return [
       boolean(),
       maxSafeInteger(), // includes: 0, MIN_SAFE_INTEGER, MAX_SAFE_INTEGER
-      double({ next: true }), // includes: -/+0, -/+inf, -/+MIN_VALUE, -/+MAX_VALUE, NaN
+      double(), // includes: -/+0, -/+inf, -/+MIN_VALUE, -/+MAX_VALUE, NaN
       string(),
       oneof(string(), constant(null), constant(undefined)),
     ];
@@ -399,7 +399,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number |
   const values = [
     boolean(),
     maxSafeInteger(),
-    double({ next: true, noDefaultInfinity: true, noNaN: true }),
+    double({ noDefaultInfinity: true, noNaN: true }),
     stringArbitrary,
     constant(null),
   ];

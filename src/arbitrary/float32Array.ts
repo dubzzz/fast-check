@@ -1,6 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { float } from '../check/arbitrary/FloatingPointArbitrary';
-import { FloatNextConstraints } from '../check/arbitrary/FloatNextArbitrary';
+import { float, FloatConstraints } from '../check/arbitrary/FloatArbitrary';
 import { array } from './array';
 
 /**
@@ -19,7 +18,7 @@ export type Float32ArrayConstraints = {
    * @remarks Since 2.9.0
    */
   maxLength?: number;
-} & FloatNextConstraints;
+} & FloatConstraints;
 
 /**
  * For Float32Array
@@ -27,5 +26,5 @@ export type Float32ArrayConstraints = {
  * @public
  */
 export function float32Array(constraints: Float32ArrayConstraints = {}): Arbitrary<Float32Array> {
-  return array(float({ ...constraints, next: true }), constraints).map((data) => Float32Array.from(data));
+  return array(float(constraints), constraints).map((data) => Float32Array.from(data));
 }

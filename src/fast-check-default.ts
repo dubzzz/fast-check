@@ -44,7 +44,8 @@ import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './arbitrary/dictionary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
-import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
+import { double, DoubleConstraints } from './check/arbitrary/DoubleArbitrary';
+import { float, FloatConstraints } from './check/arbitrary/FloatArbitrary';
 import { frequency, WeightedArbitrary, FrequencyValue, FrequencyContraints } from './arbitrary/frequency';
 import { compareBooleanFunc } from './arbitrary/compareBooleanFunc';
 import { compareFunc } from './arbitrary/compareFunc';
@@ -151,7 +152,6 @@ import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/Arbi
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
-import { FloatNextConstraints } from './check/arbitrary/FloatNextArbitrary';
 import { int8Array, IntArrayConstraints } from './arbitrary/int8Array';
 import { int16Array } from './arbitrary/int16Array';
 import { int32Array } from './arbitrary/int32Array';
@@ -162,7 +162,6 @@ import { uint32Array } from './arbitrary/uint32Array';
 import { float32Array, Float32ArrayConstraints } from './arbitrary/float32Array';
 import { float64Array, Float64ArrayConstraints } from './arbitrary/float64Array';
 import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
-import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
 import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
@@ -365,12 +364,10 @@ export {
   BigUintConstraints,
   CommandsContraints,
   DoubleConstraints,
-  DoubleNextConstraints,
   FalsyContraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
   FloatConstraints,
-  FloatNextConstraints,
   FrequencyContraints,
   IntArrayConstraints,
   IntegerConstraints,
