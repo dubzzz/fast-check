@@ -159,7 +159,7 @@ export interface FloatConstraints {
  */
 function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
   const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
-  const errorMessage = 'fc.floatNext constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
+  const errorMessage = 'fc.float constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
   if (Number.isNaN(f) || (Number.isFinite(f) && (f < -MAX_VALUE_32 || f > MAX_VALUE_32))) {
     // Number.NaN does not have any associated index in the current implementation
     // Finite values outside of the 32-bit range for floats cannot be 32-bit floats
@@ -199,7 +199,7 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
   if (minIndex > maxIndex) {
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
-    throw new Error('fc.floatNext constraints.min must be smaller or equal to constraints.max');
+    throw new Error('fc.float constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
     return integer({ min: minIndex, max: maxIndex }).map(indexToFloat);

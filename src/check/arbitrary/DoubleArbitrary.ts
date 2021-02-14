@@ -194,7 +194,7 @@ export interface DoubleConstraints {
 function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints) {
   if (Number.isNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
-    throw new Error('fc.doubleNext constraints.' + constraintsLabel + ' must be a 32-bit float');
+    throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 32-bit float');
   }
   return doubleToIndex(d);
 }
@@ -223,7 +223,7 @@ export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
     // In other words: minIndex > maxIndex
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
-    throw new Error('fc.doubleNext constraints.min must be smaller or equal to constraints.max');
+    throw new Error('fc.double constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
     return arrayInt64(minIndex, maxIndex).map(indexToDouble);
