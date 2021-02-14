@@ -2413,8 +2413,6 @@ fc.genericTuple([fc.nat(), fc.string()])
 
 - `fc.array(arb)`
 - `fc.array(arb, {minLength?, maxLength?, size?, depthIdentifier?})`
-- _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 

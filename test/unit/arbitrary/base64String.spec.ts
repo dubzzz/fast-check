@@ -75,7 +75,7 @@ describe('base64String', () => {
 
           // Assert
           expect(array).toHaveBeenCalledTimes(1);
-          const constraintsOnArray = array.mock.calls[0][1];
+          const constraintsOnArray = array.mock.calls[0][1]!;
           const rounded4 = (value: number) => {
             switch (value % 4) {
               case 0:

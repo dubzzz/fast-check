@@ -140,45 +140,6 @@ describe('array', () => {
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, n.a) for array(arb, maxLength)', () => {
-    fc.assert(
-      fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
-        // Arrange
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance } = fakeNextArbitrary<unknown[]>();
-        const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
-
-        // Act
-        const arb = array(convertFromNext(childInstance), maxLength);
-
-        // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, undefined);
-        expect(convertToNext(arb)).toBe(instance);
-      })
-    );
-  });
-
-  it('[legacy] should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, n.a) for array(arb, minLength, maxLength)', () => {
-    fc.assert(
-      fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
-        // Arrange
-        const [minLength, maxLength] = aLength < bLength ? [aLength, bLength] : [bLength, aLength];
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance } = fakeNextArbitrary<unknown[]>();
-        const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
-
-        // Act
-        const arb = array(convertFromNext(childInstance), minLength, maxLength);
-
-        // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength, maxLength, undefined);
-        expect(convertToNext(arb)).toBe(instance);
-      })
-    );
-  });
-
   it('should throw when minimum length is greater than maximum one', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
