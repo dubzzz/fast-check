@@ -40,7 +40,6 @@ import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
-import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
 import {
   frequency,
   WeightedArbitrary,
@@ -145,7 +144,7 @@ import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/Arbi
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
-import { FloatNextConstraints } from './check/arbitrary/FloatNextArbitrary';
+import { float, FloatConstraints } from './check/arbitrary/FloatArbitrary';
 import {
   float32Array,
   float64Array,
@@ -161,7 +160,7 @@ import {
   Float64ArrayConstraints,
 } from './check/arbitrary/TypedArrayArbitrary';
 import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
-import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
+import { double, DoubleConstraints } from './check/arbitrary/DoubleArbitrary';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -344,12 +343,10 @@ export {
   BigUintConstraints,
   CommandsContraints,
   DoubleConstraints,
-  DoubleNextConstraints,
   FalsyContraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
   FloatConstraints,
-  FloatNextConstraints,
   FrequencyContraints,
   IntArrayConstraints,
   IntegerConstraints,

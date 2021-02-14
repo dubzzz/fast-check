@@ -120,11 +120,11 @@ export function indexToFloat(index: number): number {
 }
 
 /**
- * Constraints to be applied on {@link floatNext}
- * @remarks Since 2.8.0
+ * Constraints to be applied on {@link float}
+ * @remarks Since 2.6.0
  * @public
  */
-export interface FloatNextConstraints {
+export interface FloatConstraints {
   /**
    * Lower bound for the generated 32-bit floats (included)
    * @defaultValue Number.NEGATIVE_INFINITY, -3.4028234663852886e+38 when noDefaultInfinity is true
@@ -157,9 +157,9 @@ export interface FloatNextConstraints {
  *
  * @internal
  */
-function safeFloatToIndex(f: number, constraintsLabel: keyof FloatNextConstraints) {
+function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
   const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
-  const errorMessage = 'fc.floatNext constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
+  const errorMessage = 'fc.float constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
   if (Number.isNaN(f) || (Number.isFinite(f) && (f < -MAX_VALUE_32 || f > MAX_VALUE_32))) {
     // Number.NaN does not have any associated index in the current implementation
     // Finite values outside of the 32-bit range for floats cannot be 32-bit floats
@@ -182,11 +182,12 @@ function safeFloatToIndex(f: number, constraintsLabel: keyof FloatNextConstraint
  * The smallest non-zero value (in absolute value) that can be represented by such float is: 2 ** -126 * 2 ** -23.
  * And the largest one is: 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23).
  *
- * @param constraints - Constraints to apply when building instances
+ * @param constraints - Constraints to apply when building instances (since 2.8.0)
  *
+ * @remarks Since 0.0.6
  * @public
  */
-export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<number> {
+export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
@@ -198,7 +199,7 @@ export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<num
   if (minIndex > maxIndex) {
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
-    throw new Error('fc.floatNext constraints.min must be smaller or equal to constraints.max');
+    throw new Error('fc.float constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
     return integer({ min: minIndex, max: maxIndex }).map(indexToFloat);

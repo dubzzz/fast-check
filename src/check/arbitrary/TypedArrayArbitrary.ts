@@ -1,8 +1,7 @@
 import { array } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
-import { DoubleNextConstraints } from './DoubleNextArbitrary';
-import { double, float } from './FloatingPointArbitrary';
-import { FloatNextConstraints } from './FloatNextArbitrary';
+import { double, DoubleConstraints } from './DoubleArbitrary';
+import { float, FloatConstraints } from './FloatArbitrary';
 import { integer } from './IntegerArbitrary';
 
 /** @internal */
@@ -144,7 +143,7 @@ export type Float32ArrayConstraints = {
    * @remarks Since 2.9.0
    */
   maxLength?: number;
-} & FloatNextConstraints;
+} & FloatConstraints;
 
 /**
  * For Float32Array
@@ -152,7 +151,7 @@ export type Float32ArrayConstraints = {
  * @public
  */
 export function float32Array(constraints: Float32ArrayConstraints = {}): Arbitrary<Float32Array> {
-  return array(float({ ...constraints, next: true }), constraints).map((data) => Float32Array.from(data));
+  return array(float(constraints), constraints).map((data) => Float32Array.from(data));
 }
 
 /**
@@ -171,7 +170,7 @@ export type Float64ArrayConstraints = {
    * @remarks Since 2.9.0
    */
   maxLength?: number;
-} & DoubleNextConstraints;
+} & DoubleConstraints;
 
 /**
  * For Float64Array
@@ -179,5 +178,5 @@ export type Float64ArrayConstraints = {
  * @public
  */
 export function float64Array(constraints: Float64ArrayConstraints = {}): Arbitrary<Float64Array> {
-  return array(double({ ...constraints, next: true }), constraints).map((data) => Float64Array.from(data));
+  return array(double(constraints), constraints).map((data) => Float64Array.from(data));
 }
