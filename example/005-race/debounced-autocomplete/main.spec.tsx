@@ -18,7 +18,7 @@ describe('DebouncedAutocomplete', () => {
         .asyncProperty(
           fc.scheduler({ act }),
           fc.set(fc.string()),
-          fc.string(1, 10),
+          fc.string({ minLength: 1 }),
           async (s, allResults, userQuery) => {
             // Arrange
             jest.useFakeTimers();
@@ -56,7 +56,7 @@ describe('DebouncedAutocomplete', () => {
         .asyncProperty(
           fc.scheduler({ act }).map(withTimers),
           fc.set(fc.string()),
-          fc.string(1, 10),
+          fc.string({ minLength: 1 }),
           async (s, allResults, userQuery) => {
             // Arrange
             jest.useFakeTimers();
