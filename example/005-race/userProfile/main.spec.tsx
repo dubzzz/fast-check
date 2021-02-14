@@ -32,7 +32,7 @@ describe('UserProfilePage', () => {
           s.scheduleSequence([
             async () => {
               rerender(<UserProfilePage userId={uid2} getUserProfile={getUserProfileImplem} bug={bugId} />);
-            }
+            },
           ]);
           await s.waitAll();
 
@@ -49,7 +49,7 @@ describe('UserProfilePage', () => {
   it('should not display data related to another user (complex)', () =>
     fc.assert(
       fc
-        .asyncProperty(fc.array(fc.uuid(), 1, 10), fc.scheduler(), async (loadedUserIds, s) => {
+        .asyncProperty(fc.array(fc.uuid(), { minLength: 1 }), fc.scheduler(), async (loadedUserIds, s) => {
           // Arrange
           const getUserProfileImplem = s.scheduleFunction(function getUserProfile(userId: string) {
             return Promise.resolve({ id: userId, name: userId });
@@ -61,12 +61,12 @@ describe('UserProfilePage', () => {
             <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} bug={bugId} />
           );
           s.scheduleSequence(
-            loadedUserIds.slice(1).map(uid => ({
+            loadedUserIds.slice(1).map((uid) => ({
               label: `Update user id to ${uid}`,
               builder: async () => {
                 currentUid = uid;
                 rerender(<UserProfilePage userId={uid} getUserProfile={getUserProfileImplem} bug={bugId} />);
-              }
+              },
             }))
           );
 
