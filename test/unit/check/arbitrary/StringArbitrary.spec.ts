@@ -11,7 +11,6 @@ import {
   unicodeString,
 } from '../../../../src/check/arbitrary/StringArbitrary';
 
-import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
@@ -73,29 +72,6 @@ describe('StringArbitrary', () => {
         }
       );
     });
-    describe('Still support non recommended signatures', () => {
-      it('Should support fc.stringOf(charArb, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
-            const refArbitrary = stringOf(constantFrom('a', 'b'), { maxLength });
-            const nonRecommendedArbitrary = stringOf(constantFrom('a', 'b'), maxLength);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.stringOf(charArb, minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
-            const refArbitrary = stringOf(constantFrom('a', 'b'), {
-              minLength: minMaxLength.min,
-              maxLength: minMaxLength.max,
-            });
-            const nonRecommendedArbitrary = stringOf(constantFrom('a', 'b'), minMaxLength.min, minMaxLength.max);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-    });
   });
   describe('string', () => {
     it('Should generate printable characters', () =>
@@ -122,26 +98,6 @@ describe('StringArbitrary', () => {
           return lengths.min <= g.length && g.length <= lengths.max;
         })
       ));
-    describe('Still support non recommended signatures', () => {
-      it('Should support fc.string(maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
-            const refArbitrary = string({ maxLength });
-            const nonRecommendedArbitrary = string(maxLength);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.string(minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
-            const refArbitrary = string({ minLength: minMaxLength.min, maxLength: minMaxLength.max });
-            const nonRecommendedArbitrary = string(minMaxLength.min, minMaxLength.max);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-    });
   });
   describe('asciiString', () => {
     it('Should generate ascii string', () =>
@@ -325,25 +281,5 @@ describe('StringArbitrary', () => {
             .every((s) => s.value.length % 4 === 0 && isValidBase64(s.value) && hasValidBase64Padding(s.value));
         })
       ));
-    describe('Still support non recommended signatures', () => {
-      it('Should support fc.base64String(maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(25), (seed, maxLength) => {
-            const refArbitrary = base64String({ maxLength: maxLength * 4 });
-            const nonRecommendedArbitrary = base64String(maxLength * 4);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.base64String(minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
-            const refArbitrary = base64String({ minLength: minMaxLength.min * 4, maxLength: minMaxLength.max * 4 });
-            const nonRecommendedArbitrary = base64String(minMaxLength.min * 4, minMaxLength.max * 4);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-    });
   });
 });
