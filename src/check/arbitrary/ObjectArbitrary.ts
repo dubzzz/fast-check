@@ -397,7 +397,7 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number |
   const values = [
     boolean(),
     maxSafeInteger(),
-    double({ noDefaultInfinity: true, noNaN: true }).filter((d) => !Object.is(d, -0)),
+    double({ noDefaultInfinity: true, noNaN: true }),
     stringArbitrary,
     constant(null),
   ];
