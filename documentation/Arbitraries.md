@@ -3933,7 +3933,6 @@ fc.context()
 
 - `fc.commands(commandArbs)`
 - `fc.commands(commandArbs, {disableReplayLog?, maxCommands?, size?, replayPath?})`
-- _`fc.commands(commandArbs, maxCommands)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
