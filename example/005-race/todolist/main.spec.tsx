@@ -16,9 +16,9 @@ describe('TodoList', () => {
         .asyncProperty(
           fc.scheduler({ act }),
           TodoListCommands,
-          fc.set(
+          fc.uniqueArray(
             fc.record({ id: fc.hexaString({ minLength: 8, maxLength: 8 }), label: fc.string(), checked: fc.boolean() }),
-            { compare: (a, b) => a.id === b.id }
+            { selector: (entry) => entry.id }
           ),
           fc.infiniteStream(fc.boolean()),
           async (s, commands, initialTodos, allFailures) => {
