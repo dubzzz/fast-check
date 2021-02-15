@@ -194,7 +194,7 @@ const allCommands = [
 ];
 // run everything
 fc.assert(
-  fc.property(fc.commands(allCommands, 100), cmds => {
+  fc.property(fc.commands(allCommands, {maxCommands: 100}), cmds => {
     const s = () => ({ model: { num: 0 }, real: new List() });
     fc.modelRun(s, cmds);
   })
