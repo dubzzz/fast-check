@@ -98,40 +98,6 @@ describe('option', () => {
     );
     expect(out).toBe(expectedArb);
   });
-  it('[legacy] should call FrequencyArbitrary.from with the right parameters when called with only freq', () =>
-    fc.assert(
-      fc.property(fc.nat(), (freq) => {
-        // Arrange
-        const expectedArb = convertFromNext(fakeNextArbitrary().instance);
-        const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
-        fromOld.mockReturnValue(expectedArb);
-        const expectedConstantArb = convertFromNext(fakeNextArbitrary().instance);
-        const constant = jest.spyOn(ConstantMock, 'constant');
-        constant.mockReturnValue(expectedConstantArb);
-        const { instance: nextArb } = fakeNextArbitrary();
-        const arb = convertFromNext(nextArb);
-
-        // Act
-        const out = option(arb, freq);
-
-        // Assert
-        expect(constant).toHaveBeenCalledWith(null);
-        expect(fromOld).toHaveBeenCalledWith(
-          [
-            { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: null } },
-            { arbitrary: arb, weight: freq },
-          ],
-          {
-            withCrossShrink: true,
-            depthFactor: undefined,
-            maxDepth: undefined,
-            depthIdentifier: undefined,
-          },
-          'fc.option'
-        );
-        expect(out).toBe(expectedArb);
-      })
-    ));
 });
 
 describe('option (integration)', () => {

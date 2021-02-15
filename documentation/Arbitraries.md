@@ -1988,7 +1988,6 @@ fc.constantFrom(1, 'string', {})
 
 - `fc.option(arb)`
 - `fc.option(arb, {freq?, nil?, depthFactor?, maxDepth?, depthIdentifier?})`
-- _`fc.option(arb, freq)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
