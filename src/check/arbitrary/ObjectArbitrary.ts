@@ -413,37 +413,12 @@ function jsonSettings(stringArbitrary: Arbitrary<string>, constraints?: number |
  *
  * Keys and string values rely on {@link string}
  *
- * @remarks Since 1.2.3
- * @public
- */
-function jsonObject(): Arbitrary<unknown>;
-/**
- * For any JSON compliant values with a maximal depth
- *
- * Keys and string values rely on {@link string}
- *
- * @param maxDepth - Maximal depth of the generated values
- *
- * @deprecated
- * Superceded by `fc.jsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ * @param constraints - Constraints to be applied onto the generated instance (since 2.5.0)
  *
  * @remarks Since 1.2.3
  * @public
  */
-function jsonObject(maxDepth: number): Arbitrary<unknown>;
-/**
- * For any JSON compliant values
- *
- * Keys and string values rely on {@link string}
- *
- * @param constraints - Constraints to be applied onto the generated instance
- *
- * @remarks Since 2.5.0
- * @public
- */
-function jsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
-function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
+function jsonObject(constraints: JsonSharedConstraints = {}): Arbitrary<unknown> {
   return anything(jsonSettings(string(), constraints));
 }
 
@@ -452,37 +427,12 @@ function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unk
  *
  * Keys and string values rely on {@link unicode}
  *
- * @remarks Since 1.2.3
- * @public
- */
-function unicodeJsonObject(): Arbitrary<unknown>;
-/**
- * For any JSON compliant values with unicode support and a maximal depth
- *
- * Keys and string values rely on {@link unicode}
- *
- * @param maxDepth - Maximal depth of the generated values
- *
- * @deprecated
- * Superceded by `fc.unicodeJsonObject({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ * @param constraints - Constraints to be applied onto the generated instance (since 2.5.0)
  *
  * @remarks Since 1.2.3
  * @public
  */
-function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
-/**
- * For any JSON compliant values with unicode support
- *
- * Keys and string values rely on {@link unicode}
- *
- * @param constraints - Constraints to be applied onto the generated instance
- *
- * @remarks Since 2.5.0
- * @public
- */
-function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
-function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
+function unicodeJsonObject(constraints: JsonSharedConstraints = {}): Arbitrary<unknown> {
   return anything(jsonSettings(unicodeString(), constraints));
 }
 
@@ -491,37 +441,12 @@ function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitr
  *
  * Keys and string values rely on {@link string}
  *
- * @remarks Since 0.0.7
- * @public
- */
-function json(): Arbitrary<string>;
-/**
- * For any JSON strings with a maximal depth
- *
- * Keys and string values rely on {@link string}
- *
- * @param maxDepth - Maximal depth of the generated objects
- *
- * @deprecated
- * Superceded by `fc.json({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ * @param constraints - Constraints to be applied onto the generated instance (since 2.5.0)
  *
  * @remarks Since 0.0.7
  * @public
  */
-function json(maxDepth: number): Arbitrary<string>;
-/**
- * For any JSON strings
- *
- * Keys and string values rely on {@link string}
- *
- * @param constraints - Constraints to be applied onto the generated instance
- *
- * @remarks Since 2.5.0
- * @public
- */
-function json(constraints: JsonSharedConstraints): Arbitrary<unknown>;
-function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
+function json(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
   // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
   //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
   const arb = constraints != null ? jsonObject(constraints as any) : jsonObject();
@@ -533,37 +458,12 @@ function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
  *
  * Keys and string values rely on {@link unicode}
  *
- * @remarks Since 0.0.7
- * @public
- */
-function unicodeJson(): Arbitrary<string>;
-/**
- * For any JSON strings with unicode support and a maximal depth
- *
- * Keys and string values rely on {@link unicode}
- *
- * @param maxDepth - Maximal depth of the generated objects
- *
- * @deprecated
- * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ * @param constraints - Constraints to be applied onto the generated instance (since 2.5.0)
  *
  * @remarks Since 0.0.7
  * @public
  */
-function unicodeJson(maxDepth: number): Arbitrary<string>;
-/**
- * For any JSON strings with unicode support
- *
- * Keys and string values rely on {@link unicode}
- *
- * @param constraints - Constraints to be applied onto the generated instance
- *
- * @remarks Since 2.5.0
- * @public
- */
-function unicodeJson(constraints: JsonSharedConstraints): Arbitrary<unknown>;
-function unicodeJson(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
+function unicodeJson(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
   // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
   //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
   const arb = constraints != null ? unicodeJsonObject(constraints as any) : unicodeJsonObject();
