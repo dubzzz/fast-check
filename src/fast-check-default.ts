@@ -35,7 +35,6 @@ import { clonedConstant, constant, constantFrom } from './check/arbitrary/Consta
 import { context, ContextValue } from './check/arbitrary/ContextArbitrary';
 import { date } from './check/arbitrary/DateArbitrary';
 import { clone, CloneValue } from './check/arbitrary/CloneArbitrary';
-import { dedup, DedupValue } from './check/arbitrary/DedupArbitrary';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
@@ -177,20 +176,6 @@ const __version = '__PACKAGE_VERSION__' as string;
  */
 const __commitHash = '__COMMIT_HASH__' as string;
 
-/**
- * @deprecated Switch to {@link ContextValue} instead
- * @remarks Since 1.8.0
- * @public
- */
-type Context = ContextValue;
-
-/**
- * @deprecated Switch to {@link FalsyValue} instead
- * @remarks Since 1.26.0
- * @public
- */
-type FalsyType = FalsyValue;
-
 // boolean
 // floating point types
 // integer types
@@ -260,7 +245,6 @@ export {
   oneof,
   frequency,
   clone,
-  dedup,
   shuffledSubarray,
   subarray,
   array,
@@ -362,7 +346,6 @@ export {
   // produced values
   CloneValue,
   ContextValue,
-  DedupValue,
   FalsyValue,
   FrequencyValue,
   OneOfValue,
@@ -392,7 +375,4 @@ export {
   Random,
   Stream,
   stream,
-  // depreciated
-  Context,
-  FalsyType,
 };
