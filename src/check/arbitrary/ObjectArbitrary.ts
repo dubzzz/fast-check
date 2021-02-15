@@ -446,7 +446,7 @@ function unicodeJsonObject(constraints: JsonSharedConstraints = {}): Arbitrary<u
  * @remarks Since 0.0.7
  * @public
  */
-function json(constraints: JsonSharedConstraints = {}): Arbitrary<unknown> {
+function json(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
   // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
   //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
   const arb = constraints != null ? jsonObject(constraints as any) : jsonObject();
@@ -463,7 +463,7 @@ function json(constraints: JsonSharedConstraints = {}): Arbitrary<unknown> {
  * @remarks Since 0.0.7
  * @public
  */
-function unicodeJson(constraints: JsonSharedConstraints = {}): Arbitrary<unknown> {
+function unicodeJson(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
   // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
   //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
   const arb = constraints != null ? unicodeJsonObject(constraints as any) : unicodeJsonObject();
