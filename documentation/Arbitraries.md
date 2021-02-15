@@ -1978,50 +1978,6 @@ fc.constantFrom(1, 'string', {})
 </details>
 
 <details>
-<summary><b>clonedConstant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#clonedconstant">api</a>]</summary><br/>
-
-*&#8195;Description*
-
-> Always produce the same value (as `fc.constant`)
->
-> If it exists, the method `[fc.cloneMethod]` will be cloned to clone the instance so that it will be unique for each run
-
-*&#8195;Signatures*
-
-- _`fc.clonedConstant(value)`_ — _deprecated since v2.15.0, prefer `fc.constant`_
-
-*&#8195;with:*
-
-- `value` — _value that will be produced by the arbitrary_
-
-*&#8195;Usages*
-
-```js
-fc.clonedConstant(1)
-// Examples of generated values: 1…
-
-// Setup helpers:
-function buildCloneable(objectInstance) {
-  // Rq: We do not handle deep objects in this snippet
-  // But we will get another instance of objectInstance for each run
-  // ie. objectInstanceRunA !== objectInstanceRunB while having isEqual(objectInstanceRunA, objectInstanceRunB)
-  const withCloneMethod = () => {
-    const clone = {...objectInstance};
-    Object.defineProperty(objectInstance, fc.cloneMethod, {
-      value: withCloneMethod,
-      enumerable: false,
-    });
-    return clone;
-  };
-  return withCloneMethod();
-}
-// Use the arbitrary:
-fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
-// Examples of generated values: {"keyA":1,"keyB":2}…
-```
-</details>
-
-<details>
 <summary><b>option</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#option">api</a>]</summary><br/>
 
 *&#8195;Description*
@@ -2200,41 +2156,6 @@ fc.clone(fc.nat(), 2)
 // Examples of generated values: [25,25], [2147483629,2147483629], [13,13], [815456380,815456380], [2147483643,2147483643]…
 
 fc.clone(fc.nat(), 3)
-// Examples of generated values:
-// • [1395148595,1395148595,1395148595]
-// • [7,7,7]
-// • [1743838935,1743838935,1743838935]
-// • [879259091,879259091,879259091]
-// • [2147483640,2147483640,2147483640]
-// • …
-```
-</details>
-
-<details>
-<summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dedup">api</a>]</summary><br/>
-
-*&#8195;Description*
-
-> Multiple identical values (they might not equal in terms of `===` or `==`)
->
-> Generate tuple containing multiple instances of the same value - values are independent from each others.
-
-*&#8195;Signatures*
-
-- _`fc.dedup(arb, numValues)`_ — _deprecated, prefer `fc.clone` instead_
-
-*&#8195;with:*
-
-- `arb` — _arbitrary instance responsible to generate values_
-- `numValues` — _number of clones (including itself)_
-
-*&#8195;Usages*
-
-```js
-fc.dedup(fc.nat(), 2)
-// Examples of generated values: [25,25], [2147483629,2147483629], [13,13], [815456380,815456380], [2147483643,2147483643]…
-
-fc.dedup(fc.nat(), 3)
 // Examples of generated values:
 // • [1395148595,1395148595,1395148595]
 // • [7,7,7]
