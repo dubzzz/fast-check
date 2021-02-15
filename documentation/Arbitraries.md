@@ -949,7 +949,6 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 
 - `fc.json()`
 - `fc.json({maxDepth?})`
-- _`fc.json(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -995,7 +994,6 @@ fc.json({maxDepth: 1})
 
 - `fc.unicodeJson()`
 - `fc.unicodeJson({maxDepth?})`
-- _`fc.unicodeJson(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2723,7 +2721,6 @@ fc.object({
 
 - `fc.jsonObject()`
 - `fc.jsonObject({maxDepth?})`
-- _`fc.jsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2765,7 +2762,6 @@ fc.jsonObject({maxDepth: 1})
 
 - `fc.unicodeJsonObject()`
 - `fc.unicodeJsonObject({maxDepth?})`
-- _`fc.unicodeJsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
