@@ -59,8 +59,10 @@ class OptionArbitrary<T, TNil> extends Arbitrary<T | TNil> {
  * @public
  */
 function option<T, TNil = null>(arb: Arbitrary<T>, constraints: OptionConstraints<TNil> = {}): Arbitrary<T | TNil> {
-  const { freq = 5, nil = null } = constraints;
-  return new OptionArbitrary(arb, freq, nil as TNil);
+  const { freq = 5 } = constraints;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const nil: TNil = 'nil' in constraints ? constraints.nil! : null!;
+  return new OptionArbitrary(arb, freq, nil);
 }
 
 export { option };
