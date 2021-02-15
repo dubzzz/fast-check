@@ -19,7 +19,7 @@ describe('LoremArbitrary', () => {
       ));
     it('Should generate words by default', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(0, 100), (seed, num) => {
+        fc.property(fc.integer(), fc.integer({ min: 1, max: 100 }), (seed, num) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = lorem({ maxCount: num }).generate(mrng).value;
           expect(g).not.toContain('.');
@@ -27,7 +27,7 @@ describe('LoremArbitrary', () => {
       ));
     it('Should not generate commas for words', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(0, 100), (seed, num) => {
+        fc.property(fc.integer(), fc.integer({ min: 1, max: 100 }), (seed, num) => {
           const mrng = new Random(prand.xorshift128plus(seed));
           const g = lorem({ maxCount: num }).generate(mrng).value;
           expect(g).not.toContain(',');
