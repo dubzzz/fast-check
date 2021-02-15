@@ -3408,8 +3408,7 @@ fc.context()
 *&#8195;Signatures*
 
 - `fc.commands(commandArbs)`
-- `fc.commands(commandArbs, { disableReplayLog?, maxCommands?, replayPath? })`
-- _`fc.commands(commandArbs, maxCommands)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
+- `fc.commands(commandArbs, {disableReplayLog?, maxCommands?, replayPath?})`
 
 *&#8195;with:*
 
