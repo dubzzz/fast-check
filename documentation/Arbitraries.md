@@ -2214,41 +2214,6 @@ fc.clone(fc.nat(), 3)
 ```
 </details>
 
-<details>
-<summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dedup">api</a>]</summary><br/>
-
-*&#8195;Description*
-
-> Multiple identical values (they might not equal in terms of `===` or `==`)
->
-> Generate tuple containing multiple instances of the same value - values are independent from each others.
-
-*&#8195;Signatures*
-
-- _`fc.dedup(arb, numValues)`_ — _deprecated, prefer `fc.clone` instead_
-
-*&#8195;with:*
-
-- `arb` — _arbitrary instance responsible to generate values_
-- `numValues` — _number of clones (including itself)_
-
-*&#8195;Usages*
-
-```js
-fc.dedup(fc.nat(), 2)
-// Examples of generated values: [1458194344,1458194344], [1974332592,1974332592], [605246308,605246308], [187149619,187149619], [1325928130,1325928130]…
-
-fc.dedup(fc.nat(), 3)
-// Examples of generated values:
-// • [1075303821,1075303821,1075303821]
-// • [1289535362,1289535362,1289535362]
-// • [479824585,479824585,479824585]
-// • [61543881,61543881,61543881]
-// • [1082205096,1082205096,1082205096]
-// • …
-```
-</details>
-
 ### Array
 
 <details>
