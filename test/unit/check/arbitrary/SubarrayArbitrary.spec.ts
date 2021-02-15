@@ -2,7 +2,6 @@ import * as fc from '../../../../lib/fast-check';
 
 import { subarray, shuffledSubarray } from '../../../../src/check/arbitrary/SubarrayArbitrary';
 
-import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 const isOrderedSubarray = (originalArray: number[], subarray: number[]): boolean => {
