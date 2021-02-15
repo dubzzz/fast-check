@@ -2421,7 +2421,6 @@ fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.le
 
 - `fc.subarray(originalArray)`
 - `fc.subarray(originalArray, {minLength?, maxLength?})`
-- _`fc.subarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -2459,7 +2458,6 @@ fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 
 - `fc.shuffledSubarray(originalArray)`
 - `fc.shuffledSubarray(originalArray, {minLength?, maxLength?})`
-- _`fc.shuffledSubarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
