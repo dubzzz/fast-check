@@ -2,7 +2,6 @@ import * as fc from '../../../../lib/fast-check';
 
 import { subarray, shuffledSubarray } from '../../../../src/check/arbitrary/SubarrayArbitrary';
 
-import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 const isOrderedSubarray = (originalArray: number[], subarray: number[]): boolean => {
@@ -151,27 +150,6 @@ describe('SubarrayArbitrary', () => {
         }
       );
     });
-    describe('Still support non recommended signatures', () => {
-      it('Should support fc.subarray(originalArray, minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(
-            fc.integer(),
-            fc.array(fc.nat(), { minLength: 1 }),
-            fc.nat(),
-            fc.nat(),
-            (seed, originalArray, aLength, bLength) => {
-              const aLengthMod = aLength % originalArray.length;
-              const bLengthMod = bLength % originalArray.length;
-              const minLength = Math.min(aLengthMod, bLengthMod);
-              const maxLength = Math.max(aLengthMod, bLengthMod);
-              const refArbitrary = subarray(originalArray, { minLength, maxLength });
-              const nonRecommendedArbitrary = subarray(originalArray, minLength, maxLength);
-              expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-            }
-          )
-        );
-      });
-    });
   });
   describe('shuffledSubarray', () => {
     describe('Given no length constraints', () => {
@@ -200,28 +178,6 @@ describe('SubarrayArbitrary', () => {
           },
         }
       );
-    });
-
-    describe('Still support non recommended signatures', () => {
-      it('Should support fc.shuffledSubarray(originalArray, minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(
-            fc.integer(),
-            fc.array(fc.nat(), { minLength: 1 }),
-            fc.nat(),
-            fc.nat(),
-            (seed, originalArray, aLength, bLength) => {
-              const aLengthMod = aLength % originalArray.length;
-              const bLengthMod = bLength % originalArray.length;
-              const minLength = Math.min(aLengthMod, bLengthMod);
-              const maxLength = Math.max(aLengthMod, bLengthMod);
-              const refArbitrary = shuffledSubarray(originalArray, { minLength, maxLength });
-              const nonRecommendedArbitrary = shuffledSubarray(originalArray, minLength, maxLength);
-              expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-            }
-          )
-        );
-      });
     });
   });
 });
