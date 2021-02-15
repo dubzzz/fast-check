@@ -33,13 +33,11 @@ import { char16bits } from './arbitrary/char16bits';
 import { fullUnicode } from './arbitrary/fullUnicode';
 import { hexa } from './arbitrary/hexa';
 import { unicode } from './arbitrary/unicode';
-import { clonedConstant } from './arbitrary/clonedConstant';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
 import { date } from './arbitrary/date';
 import { clone, CloneValue } from './arbitrary/clone';
-import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary, DictionaryConstraints } from './arbitrary/dictionary';
@@ -74,7 +72,6 @@ import { unicodeJson } from './arbitrary/unicodeJson';
 import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './arbitrary/record';
-import { set, SetConstraints, SetConstraintsSelector } from './arbitrary/set';
 import {
   uniqueArray,
   UniqueArrayConstraints,
@@ -202,20 +199,6 @@ const __version = '__PACKAGE_VERSION__' as string;
  */
 const __commitHash = '__COMMIT_HASH__' as string;
 
-/**
- * @deprecated Switch to {@link ContextValue} instead
- * @remarks Since 1.8.0
- * @public
- */
-type Context = ContextValue;
-
-/**
- * @deprecated Switch to {@link FalsyValue} instead
- * @remarks Since 1.26.0
- * @public
- */
-type FalsyType = FalsyValue;
-
 // boolean
 // floating point types
 // integer types
@@ -279,19 +262,16 @@ export {
   lorem,
   constant,
   constantFrom,
-  clonedConstant,
   mapToConstant,
   option,
   oneof,
   frequency,
   clone,
-  dedup,
   shuffledSubarray,
   subarray,
   array,
   sparseArray,
   infiniteStream,
-  set,
   uniqueArray,
   tuple,
   genericTuple,
@@ -403,8 +383,6 @@ export {
   OptionConstraints,
   RecordConstraints,
   SchedulerConstraints,
-  SetConstraints,
-  SetConstraintsSelector,
   UniqueArrayConstraints,
   UniqueArraySharedConstraints,
   UniqueArrayConstraintsRecommended,
@@ -423,7 +401,6 @@ export {
   // produced values
   CloneValue,
   ContextValue,
-  DedupValue,
   FalsyValue,
   FrequencyValue,
   JsonValue,
@@ -460,7 +437,4 @@ export {
   stream,
   DepthIdentifier,
   createDepthIdentifier,
-  // depreciated
-  Context,
-  FalsyType,
 };

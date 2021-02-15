@@ -16,9 +16,9 @@ const wordArbitraryWithoutComma = fc.stringOf(
 const wordArbitrary = fc
   .tuple(wordArbitraryWithoutComma, fc.boolean())
   .map(([word, hasComma]) => (hasComma ? `${word},` : word));
-const wordsArrayArbitrary = fc.set(wordArbitrary, {
+const wordsArrayArbitrary = fc.uniqueArray(wordArbitrary, {
   minLength: 1,
-  compare: (a: string, b: string) => a === b || `${a},` === b || a === `${b},`,
+  selector: (entry) => (entry.endsWith(',') ? entry.substring(0, entry.length - 1) : entry),
 });
 
 describe('wordsToJoinedStringMapper', () => {

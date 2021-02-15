@@ -27,7 +27,7 @@ describe('record', () => {
   it('should call buildPartialRecordArbitrary with keys=undefined when no constraints on keys', () =>
     fc.assert(
       fc.property(
-        fc.set(keyArb, { minLength: 1 }),
+        fc.uniqueArray(keyArb, { minLength: 1 }),
         fc.constantFrom(...([undefined, {}] as const)),
         (keys, constraints) => {
           // Arrange
@@ -56,7 +56,7 @@ describe('record', () => {
 
   it('should call buildPartialRecordArbitrary with keys=[] when constraints defines withDeletedKeys=true', () =>
     fc.assert(
-      fc.property(fc.set(keyArb, { minLength: 1 }), (keys) => {
+      fc.property(fc.uniqueArray(keyArb, { minLength: 1 }), (keys) => {
         // Arrange
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
         for (const k of keys) {
@@ -82,7 +82,7 @@ describe('record', () => {
 
   it('should call buildPartialRecordArbitrary with keys=requiredKeys when constraints defines valid requiredKeys', () =>
     fc.assert(
-      fc.property(fc.set(keyArb, { minLength: 1 }), fc.func(fc.boolean()), (keys, isRequired) => {
+      fc.property(fc.uniqueArray(keyArb, { minLength: 1 }), fc.func(fc.boolean()), (keys, isRequired) => {
         // Arrange
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
         const requiredKeys: any[] = [];
@@ -112,7 +112,7 @@ describe('record', () => {
 
   it('should reject configurations specifying non existing keys as required', () =>
     fc.assert(
-      fc.property(fc.set(keyArb, { minLength: 1 }), keyArb, (keys, requiredKey) => {
+      fc.property(fc.uniqueArray(keyArb, { minLength: 1 }), keyArb, (keys, requiredKey) => {
         // Arrange
         fc.pre(!keys.includes(requiredKey));
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
@@ -133,9 +133,9 @@ describe('record', () => {
   it('should reject configurations specifying both requiredKeys and withDeletedKeys (even undefined)', () =>
     fc.assert(
       fc.property(
-        fc.set(fc.record({ name: keyArb, required: fc.boolean() }), {
+        fc.uniqueArray(fc.record({ name: keyArb, required: fc.boolean() }), {
           minLength: 1,
-          compare: (a, b) => a.name === b.name,
+          selector: (entry) => entry.name,
         }),
         fc.option(fc.constant(true), { nil: undefined }),
         fc.option(fc.boolean(), { nil: undefined }),
@@ -197,13 +197,13 @@ describe('record (integration)', () => {
   const keyArb: fc.Arbitrary<any> = fc
     .tuple(fc.string(), fc.boolean())
     .map(([name, symbol]) => (symbol ? Symbol.for(name) : name));
-  const metaArbitrary = fc.set(
+  const metaArbitrary = fc.uniqueArray(
     fc.record({
       key: keyArb,
       valueStart: fc.nat(1000),
       kept: fc.boolean(),
     }),
-    { compare: (v1, v2) => v1.key === v2.key }
+    { selector: (entry) => entry.key }
   );
   const constraintsArbitrary = fc.oneof(
     fc.record({ withDeletedKeys: fc.boolean() }, { requiredKeys: [] }),

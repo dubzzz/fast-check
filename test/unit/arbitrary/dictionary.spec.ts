@@ -16,8 +16,8 @@ describe('dictionary (integration)', () => {
   type Extra = { keys: string[]; values: unknown[]; constraints?: DictionaryConstraints };
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     {
-      keys: fc.set(fc.string(), { minLength: 35 }), // enough keys to respect constraints
-      values: fc.set(fc.anything(), { minLength: 1 }),
+      keys: fc.uniqueArray(fc.string(), { minLength: 35 }), // enough keys to respect constraints
+      values: fc.uniqueArray(fc.anything(), { minLength: 1 }),
       constraints: fc
         .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
         .map(([min, gap, withMin, withMax]) => ({

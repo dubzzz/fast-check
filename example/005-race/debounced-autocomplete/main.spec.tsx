@@ -22,7 +22,7 @@ describe('DebouncedAutocomplete', () => {
       fc
         .asyncProperty(
           fc.scheduler({ act }),
-          fc.set(fc.string()),
+          fc.uniqueArray(fc.string()),
           fc.string({ minLength: 1 }),
           async (s, allResults, userQuery) => {
             // Arrange
@@ -61,7 +61,7 @@ describe('DebouncedAutocomplete', () => {
       fc
         .asyncProperty(
           fc.scheduler({ act }).map(withTimers),
-          fc.set(fc.string()),
+          fc.uniqueArray(fc.string()),
           fc.string({ minLength: 1 }),
           async (s, allResults, userQuery) => {
             // Arrange

@@ -48,7 +48,9 @@ describe('mapToConstant', () => {
 
 describe('mapToConstant (integration)', () => {
   type Extra = unknown[][];
-  const extraParameters: fc.Arbitrary<Extra> = fc.array(fc.set(fc.anything(), { minLength: 1 }), { minLength: 1 });
+  const extraParameters: fc.Arbitrary<Extra> = fc.array(fc.uniqueArray(fc.anything(), { minLength: 1 }), {
+    minLength: 1,
+  });
 
   const isCorrect = (value: unknown, extra: Extra) => {
     for (const entryCandidate of extra) {
