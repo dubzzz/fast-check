@@ -91,7 +91,6 @@ fc.boolean()
 - `fc.integer()`
 - `fc.integer({min?, max?})`
 - `fc.integer(min, max)`
-- _`fc.integer(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
