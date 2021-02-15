@@ -4,8 +4,6 @@ import * as fc from '../../../../lib/fast-check';
 import { lorem } from '../../../../src/check/arbitrary/LoremArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
-import { generateOneValue } from './generic/GenerateOneValue';
-
 describe('LoremArbitrary', () => {
   describe('lorem', () => {
     it('Should generate the same text with the same random', () =>
@@ -57,26 +55,5 @@ describe('LoremArbitrary', () => {
           expect(sentences.length).toBeLessThanOrEqual(5);
         })
       ));
-
-    describe('Still support non recommended signatures', () => {
-      it('Should support fc.lorem(maxWordsCount)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(100), (seed, maxWordsCount) => {
-            const refArbitrary = lorem({ maxCount: maxWordsCount });
-            const nonRecommendedArbitrary = lorem(maxWordsCount);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.lorem(maxWordsCount, sentencesMode)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(100), fc.boolean(), (seed, maxWordsCount, sentencesMode) => {
-            const refArbitrary = lorem({ maxCount: maxWordsCount, mode: sentencesMode ? 'sentences' : 'words' });
-            const nonRecommendedArbitrary = lorem(maxWordsCount, sentencesMode);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-    });
   });
 });
