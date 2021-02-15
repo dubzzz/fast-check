@@ -33,13 +33,11 @@ import { char16bits } from './arbitrary/char16bits';
 import { fullUnicode } from './arbitrary/fullUnicode';
 import { hexa } from './arbitrary/hexa';
 import { unicode } from './arbitrary/unicode';
-import { clonedConstant } from './arbitrary/clonedConstant';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
 import { date } from './arbitrary/date';
 import { clone, CloneValue } from './arbitrary/clone';
-import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './arbitrary/dictionary';
@@ -181,20 +179,6 @@ const __version = '__PACKAGE_VERSION__' as string;
  */
 const __commitHash = '__COMMIT_HASH__' as string;
 
-/**
- * @deprecated Switch to {@link ContextValue} instead
- * @remarks Since 1.8.0
- * @public
- */
-type Context = ContextValue;
-
-/**
- * @deprecated Switch to {@link FalsyValue} instead
- * @remarks Since 1.26.0
- * @public
- */
-type FalsyType = FalsyValue;
-
 // boolean
 // floating point types
 // integer types
@@ -258,13 +242,11 @@ export {
   lorem,
   constant,
   constantFrom,
-  clonedConstant,
   mapToConstant,
   option,
   oneof,
   frequency,
   clone,
-  dedup,
   shuffledSubarray,
   subarray,
   array,
@@ -385,7 +367,6 @@ export {
   // produced values
   CloneValue,
   ContextValue,
-  DedupValue,
   FalsyValue,
   FrequencyValue,
   OneOfValue,
@@ -416,7 +397,4 @@ export {
   Random,
   Stream,
   stream,
-  // depreciated
-  Context,
-  FalsyType,
 };
