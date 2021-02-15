@@ -66,9 +66,7 @@ import { mixedCase, MixedCaseConstraints } from './arbitrary/mixedCase';
 import { object, ObjectConstraints } from './arbitrary/object';
 import { json, JsonSharedConstraints } from './arbitrary/json';
 import { anything } from './arbitrary/anything';
-import { unicodeJsonObject } from './arbitrary/unicodeJsonObject';
 import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
-import { jsonObject } from './arbitrary/jsonObject';
 import { jsonValue, JsonValue } from './arbitrary/jsonValue';
 import { unicodeJson } from './arbitrary/unicodeJson';
 import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
@@ -302,10 +300,8 @@ export {
   anything,
   object,
   json,
-  jsonObject,
   jsonValue,
   unicodeJson,
-  unicodeJsonObject,
   unicodeJsonValue,
   letrec,
   memo,

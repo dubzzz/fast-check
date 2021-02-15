@@ -445,14 +445,6 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('jsonObject', () => {
-    expect(() =>
-      fc.assert(
-        fc.property(fc.jsonObject(), (v) => testFunc(v)),
-        settings
-      )
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('jsonValue', () => {
     expect(() =>
       fc.assert(
@@ -465,14 +457,6 @@ describe(`NoRegression`, () => {
     expect(() =>
       fc.assert(
         fc.property(fc.unicodeJson(), (v) => testFunc(v)),
-        settings
-      )
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('unicodeJsonObject', () => {
-    expect(() =>
-      fc.assert(
-        fc.property(fc.unicodeJsonObject(), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
