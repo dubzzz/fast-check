@@ -22,7 +22,7 @@ fc.assert(fc.property(fc.nat(), () => {}).afterEach(async () => {}));
 // assert (reporter)
 expectType<void>()(
   fc.assert(
-    fc.property(fc.nat(), fc.string(), () => {}),
+    fc.property(fc.nat(), fc.string(), (a, b) => {}),
     { reporter: (out: fc.RunDetails<[number, string]>) => {} }
   ),
   'Accept a reporter featuring the right types'
@@ -30,6 +30,8 @@ expectType<void>()(
 // prettier-ignore
 // @ts-expect-error - Reporter must be compatible with generated values
 fc.assert(fc.property(fc.nat(), () => {}), { reporter: (out: fc.RunDetails<[string, string]>) => {} });
+// @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
+fc.property(fc.nat(), fc.string(), async (a: number) => {});
 
 // property
 expectTypeAssignable<fc.IProperty<[number]>>()(
@@ -63,20 +65,22 @@ expectTypeAssignable<fc.IAsyncProperty<[number, string]>>()(
 );
 expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
   fc
-    .asyncProperty(fc.nat(), async () => {})
+    .asyncProperty(fc.nat(), async (a) => {})
     .beforeEach(async () => 123)
     .afterEach(async () => 'anything'),
   'Asynchronous property accepts asynchronous hooks'
 );
 expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
   fc
-    .asyncProperty(fc.nat(), async () => {})
+    .asyncProperty(fc.nat(), async (a) => {})
     .beforeEach(() => 123)
     .afterEach(() => 'anything'),
   'Asynchronous property accepts synchronous hooks'
 );
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {});
+// @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
+fc.asyncProperty(fc.nat(), fc.string(), async (a: number) => {});
 
 // ArbitraryWithContextualShrink
 expectTypeAssignable<fc.Arbitrary<number>>()(
