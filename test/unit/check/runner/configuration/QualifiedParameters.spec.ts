@@ -80,7 +80,7 @@ describe('QualifiedParameters', () => {
       const seedsOutsideRangeArb = fc.oneof(
         fc.double(),
         fc.double({ min: Number.MIN_VALUE, max: Number.MAX_VALUE }),
-        fc.integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER),
+        fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }),
         fc.constantFrom(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN)
       );
       it('Should produce 32 bits signed seed', () =>
@@ -113,7 +113,7 @@ describe('QualifiedParameters', () => {
         ));
       it('Should truncate integer values into a 32 signed bits seed', () =>
         fc.assert(
-          fc.property(fc.integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER), (unsafeSeed) => {
+          fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (unsafeSeed) => {
             const qparams = QualifiedParameters.read({ seed: unsafeSeed });
             return qparams.seed === (unsafeSeed | 0);
           })

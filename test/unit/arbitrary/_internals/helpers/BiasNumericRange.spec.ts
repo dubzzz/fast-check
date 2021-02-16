@@ -8,26 +8,30 @@ import {
 describe('biasNumericRange', () => {
   it('should bias close to extreme values and zero if min and max have opposite signs', () =>
     fc.assert(
-      fc.property(fc.integer(Number.MIN_SAFE_INTEGER, -1), fc.integer(1, Number.MAX_SAFE_INTEGER), (min, max) => {
-        // Arrange / Act
-        const ranges = biasNumericRange(min, max, integerLogLike);
+      fc.property(
+        fc.integer({ min: Number.MIN_SAFE_INTEGER, max: -1 }),
+        fc.integer({ min: 1, max: Number.MAX_SAFE_INTEGER }),
+        (min, max) => {
+          // Arrange / Act
+          const ranges = biasNumericRange(min, max, integerLogLike);
 
-        // Assert
-        expect(ranges).toHaveLength(3);
-        expect(ranges).toEqual([
-          { min: expect.toBeWithinRange(min, 0), max: expect.toBeWithinRange(0, max) }, // close to zero
-          { min: expect.toBeWithinRange(0, max), max: max }, // close to max
-          { min: min, max: expect.toBeWithinRange(min, 0) }, // close to min
-        ]);
-      })
+          // Assert
+          expect(ranges).toHaveLength(3);
+          expect(ranges).toEqual([
+            { min: expect.toBeWithinRange(min, 0), max: expect.toBeWithinRange(0, max) }, // close to zero
+            { min: expect.toBeWithinRange(0, max), max: max }, // close to max
+            { min: min, max: expect.toBeWithinRange(min, 0) }, // close to min
+          ]);
+        }
+      )
     ));
 
   it('should bias close to extreme values if min and max have same signs', () =>
     fc.assert(
       fc.property(
         fc.constantFrom(1, -1),
-        fc.integer(0, Number.MAX_SAFE_INTEGER),
-        fc.integer(0, Number.MAX_SAFE_INTEGER),
+        fc.integer({ min: 0, max: Number.MAX_SAFE_INTEGER }),
+        fc.integer({ min: 0, max: Number.MAX_SAFE_INTEGER }),
         (sign, minRaw, maxRaw) => {
           // Arrange
           fc.pre(minRaw !== maxRaw);

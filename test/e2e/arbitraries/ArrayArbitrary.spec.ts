@@ -16,7 +16,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink on the content of the array', () => {
       const out = fc.check(
-        fc.property(fc.array(fc.integer(3, 10)), (arr: number[]) => arr.length < 2),
+        fc.property(fc.array(fc.integer({ min: 3, max: 10 })), (arr: number[]) => arr.length < 2),
         { seed: seed }
       );
       expect(out.failed).toBe(true);
@@ -24,7 +24,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink removing unecessary entries in the array', () => {
       const out = fc.check(
-        fc.property(fc.array(fc.integer(0, 10)), (arr: number[]) => arr.filter((v) => v >= 5).length < 2),
+        fc.property(fc.array(fc.integer({ min: 0, max: 10 })), (arr: number[]) => arr.filter((v) => v >= 5).length < 2),
         { seed: seed }
       );
       expect(out.failed).toBe(true);
