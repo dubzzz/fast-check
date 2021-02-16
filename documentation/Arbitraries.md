@@ -1054,18 +1054,12 @@ fc.unicodeJson({depthFactor: 0.1})
 
 - `fc.lorem()`
 - `fc.lorem({maxCount?, mode?, size?})`
-- _`fc.lorem(maxWordsCount)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.lorem(maxCount, sentenceMode)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `maxCount?` — default: `5` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
 - `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
-- `maxWordsCount?` — _maximal number of words to produce_
-- `sentenceMode?` — default: `false` — _enable sentence mode_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
-
-_Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
 
 *&#8195;Usages*
 
