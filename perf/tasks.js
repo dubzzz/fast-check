@@ -1,6 +1,6 @@
 exports.runComplexFailure = function (fc) {
   const loremIpsum = fc.record({
-    text: fc.lorem(100),
+    text: fc.lorem({ maxCount: 100 }),
     type: fc.constant('x'),
     attrs: fc.constant({}),
     markup: fc.option(

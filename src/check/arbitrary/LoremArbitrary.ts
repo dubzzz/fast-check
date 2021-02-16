@@ -214,53 +214,17 @@ const loremWord = () =>
   );
 
 /**
- * For lorem ipsum strings of words
- * @remarks Since 0.0.1
- * @public
- */
-function lorem(): Arbitrary<string>;
-/**
- * For lorem ipsum string of words with maximal number of words
- *
- * @param maxWordsCount - Upper bound of the number of words allowed
- *
- * @deprecated
- * Superceded by `fc.lorem({maxCount})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
- *
- * @remarks Since 0.0.1
- * @public
- */
-function lorem(maxWordsCount: number): Arbitrary<string>;
-/**
  * For lorem ipsum string of words or sentences with maximal number of words or sentences
  *
- * @param maxWordsCount - Upper bound of the number of words/sentences allowed
- * @param sentencesMode - If enabled, multiple sentences might be generated
- *
- * @deprecated
- * Superceded by `fc.lorem({maxCount, mode})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ * @param constraints - Constraints to be applied onto the generated value (since 2.5.0)
  *
  * @remarks Since 0.0.1
  * @public
  */
-function lorem(maxWordsCount: number, sentencesMode: boolean): Arbitrary<string>;
-/**
- * For lorem ipsum string of words or sentences with maximal number of words or sentences
- *
- * @param constraints - Constraints to be applied onto the generated value
- *
- * @remarks Since 2.5.0
- * @public
- */
-function lorem(constraints: LoremConstraints): Arbitrary<string>;
-function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]): Arbitrary<string> {
-  const maxWordsCount = typeof args[0] === 'object' ? args[0].maxCount : args[0];
-  const sentencesMode = typeof args[0] === 'object' ? args[0].mode === 'sentences' : args[1];
-  const maxCount = maxWordsCount || 5;
+function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
+  const { maxCount = 5, mode = 'words' } = constraints;
   if (maxCount < 1) throw new Error(`lorem has to produce at least one word/sentence`);
-  if (sentencesMode) {
+  if (mode === 'sentences') {
     const sentence = array(loremWord(), { minLength: 1 })
       .map((words) => words.join(' '))
       .map((s) => (s[s.length - 1] === ',' ? s.substr(0, s.length - 1) : s))
