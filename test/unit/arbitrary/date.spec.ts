@@ -10,10 +10,7 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/NextArbitraryAssertions';
 
-import * as _IntegerMock from '../../../src/arbitrary/integer';
-import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
-const IntegerMock: { integer: (constraints?: _IntegerMock.IntegerConstraints) => ArbitraryWithShrink<number> } =
-  _IntegerMock;
+import * as IntegerMock from '../../../src/arbitrary/integer';
 
 function beforeEachHook() {
   jest.resetModules();
