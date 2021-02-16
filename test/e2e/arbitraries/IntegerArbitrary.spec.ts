@@ -5,14 +5,14 @@ describe(`IntegerArbitrary (seed: ${seed})`, () => {
   describe('integer', () => {
     it('Should generate integer within the range', () => {
       const out = fc.check(
-        fc.property(fc.integer(-42, -10), (v: number) => -42 <= v && v <= -10),
+        fc.property(fc.integer({ min: -42, max: -10 }), (v: number) => -42 <= v && v <= -10),
         { seed: seed }
       );
       expect(out.failed).toBe(false);
     });
     it('Should shrink integer with strictly negative range', () => {
       const out = fc.check(
-        fc.property(fc.integer(-1000, -10), (v: number) => v > -100),
+        fc.property(fc.integer({ min: -1000, max: -10 }), (v: number) => v > -100),
         { seed: seed }
       );
       expect(out.failed).toBe(true);

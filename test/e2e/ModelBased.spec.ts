@@ -61,7 +61,7 @@ describe(`Model Based (seed: ${seed})`, () => {
   });
   it('should detect an issue on fixed size circular list', () => {
     const out = fc.check(
-      fc.property(fc.integer(1, 1000), fc.commands(allCommands, { maxCommands: 100 }), (size, cmds) => {
+      fc.property(fc.integer({ min: 1, max: 1000 }), fc.commands(allCommands, { maxCommands: 100 }), (size, cmds) => {
         class CircularList implements IList<number> {
           start = 0;
           end = 0;
