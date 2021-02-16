@@ -75,7 +75,7 @@ describe('sparseArray', () => {
         expect(nat).toHaveBeenCalledTimes(1);
         expect(set).toHaveBeenCalledTimes(1);
         const maxRequestedIndexes = nat.mock.calls[0][0] as number;
-        const maxRequestedLength = set.mock.calls[0][1].maxLength!;
+        const maxRequestedLength = set.mock.calls[0][1]!.maxLength!;
         if (ct !== undefined && ct.noTrailingHole) {
           // maxRequestedIndexes is the maximal index we may have for the current instance (+1 is the length)
           // maxRequestedLength is the maximal number of elements we ask to the set
