@@ -198,11 +198,8 @@ jobs:
         ts-version:
           # Latest version of TypeScript
           - '*'
-          # Various intermediate versions of Typescript
-          - '3.9'
-          - '3.4'
           # Minimal requirement for TypeScript
-          - '3.2'
+          - '4.0'
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Using Node v16.x
@@ -217,16 +214,6 @@ jobs:
         uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'test/type'
-      - name: Adapt test/type/for TypeScript 3.4
-        if: matrix.ts-version == '3.2' || matrix.ts-version == '3.4'
-        run: |
-          cd test/type
-          sed -i 's/ts-expect-error/ts-ignore/g' *.ts
-      - name: Adapt test/type/for TypeScript 3.2
-        if: matrix.ts-version == '3.2'
-        run: |
-          cd test/type
-          sed -i 's/fc-require-ts-3.4/ts-ignore/g' *.ts
       - name: Test test/type/
         run: |
           cd test/type

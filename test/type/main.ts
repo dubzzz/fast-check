@@ -128,18 +128,18 @@ expectType<fc.Arbitrary<number>>()(
   fc.constantFrom(1, 2),
   'By default, "constantFrom" simplifies the type (eg.: "1 -> number")'
 );
-// prettier-ignore
-// @fc-require-ts-3.4
-expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(...([1, 2] as const)), '"as const" prevent extra simplification of "constantFrom"');
-// prettier-ignore-end
+expectType<fc.Arbitrary<1 | 2>>()(
+  fc.constantFrom(...([1, 2] as const)),
+  '"as const" prevent extra simplification of "constantFrom"'
+);
 expectType<fc.Arbitrary<number | string>>()(
   fc.constantFrom(1, 2, 'hello'),
   '"constantFrom" accepts arguments not having the same types without any typing trick'
 );
-// prettier-ignore
-// @fc-require-ts-3.4
-expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(fc.constantFrom(...([1, 2, 'hello'] as const)), '"as const" prevent extra simplification of "constantFrom"');
-// prettier-ignore-end
+expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(
+  fc.constantFrom(...([1, 2, 'hello'] as const)),
+  '"as const" prevent extra simplification of "constantFrom"'
+);
 
 // record arbitrary
 const mySymbol1 = Symbol('symbol1');
@@ -212,16 +212,12 @@ expectType<fc.Arbitrary<never>>()(
 type Query = { data: { field: 'X' } };
 expectType<fc.Arbitrary<Query>>()(
   // issue 1453
-  // @fc-require-ts-3.4
   fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) }),
-  // @fc-require-ts-3.4
   '"record" can be passed the requested type in <*>'
 );
 expectType<fc.Arbitrary<Partial<Query>>>()(
   // issue 1453
-  // @fc-require-ts-3.4
   fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) }),
-  // @fc-require-ts-3.4
   '"record" can be passed something assignable to the requested type in <*>'
 );
 // @ts-expect-error - requiredKeys references an unknown key
@@ -287,10 +283,10 @@ expectType<fc.Arbitrary<number | null>>()(
   fc.option(fc.nat(), { nil: null }),
   '"option" with nil overriden to null (the original default)'
 );
-// prettier-ignore
-// @fc-require-ts-3.4
-expectType<fc.Arbitrary<number | 'custom_default'>>()(fc.option(fc.nat(), { nil: 'custom_default' as const }), '"option" with nil overriden to custom value');
-// prettier-ignore-end
+expectType<fc.Arbitrary<number | 'custom_default'>>()(
+  fc.option(fc.nat(), { nil: 'custom_default' as const }),
+  '"option" with nil overriden to custom value'
+);
 // @ts-expect-error - option expects arbitraries not raw values
 fc.option(1);
 
