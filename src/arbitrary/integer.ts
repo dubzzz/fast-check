@@ -36,7 +36,7 @@ function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Requi
  * Extract constraints from args received by integer
  * @internal
  */
-function extractIntegerConstraints(args: [] | [number] | [number, number] | [IntegerConstraints]): IntegerConstraints {
+function extractIntegerConstraints(args: [] | [number, number] | [IntegerConstraints]): IntegerConstraints {
   if (args[0] === undefined) {
     // integer()
     return {};
@@ -44,7 +44,6 @@ function extractIntegerConstraints(args: [] | [number] | [number, number] | [Int
 
   if (args[1] === undefined) {
     const sargs = args as typeof args & [unknown]; // exactly 1 arg specified
-    if (typeof sargs[0] === 'number') return { max: sargs[0] }; // integer(max)
     return sargs[0]; // integer(constraints)
   } // args.length > 1
 
@@ -58,19 +57,6 @@ function extractIntegerConstraints(args: [] | [number] | [number, number] | [Int
  * @public
  */
 function integer(): ArbitraryWithContextualShrink<number>;
-/**
- * For integers between -2147483648 (included) and max (included)
- *
- * @param max - Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
- *
- * @deprecated
- * Superceded by `fc.integer({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
- *
- * @remarks Since 0.0.1
- * @public
- */
-function integer(max: number): ArbitraryWithContextualShrink<number>;
 /**
  * For integers between min (included) and max (included)
  *
@@ -91,9 +77,7 @@ function integer(min: number, max: number): ArbitraryWithContextualShrink<number
  * @public
  */
 function integer(constraints: IntegerConstraints): ArbitraryWithContextualShrink<number>;
-function integer(
-  ...args: [] | [number] | [number, number] | [IntegerConstraints]
-): ArbitraryWithContextualShrink<number> {
+function integer(...args: [] | [number, number] | [IntegerConstraints]): ArbitraryWithContextualShrink<number> {
   const constraints = buildCompleteIntegerConstraints(extractIntegerConstraints(args));
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
