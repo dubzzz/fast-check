@@ -173,8 +173,8 @@ describe('float', () => {
 
           // Assert
           expect(integer).toHaveBeenCalledTimes(2);
-          const integerConstraintsNoNaN = integer.mock.calls[0][0];
-          const integerConstraintsWithNaN = integer.mock.calls[1][0];
+          const integerConstraintsNoNaN = integer.mock.calls[0][0]!;
+          const integerConstraintsWithNaN = integer.mock.calls[1][0]!;
           if (max > 0) {
             // max > 0  --> NaN will be added as the greatest value
             expect(integerConstraintsWithNaN.min).toBe(integerConstraintsNoNaN.min);
@@ -200,8 +200,8 @@ describe('float', () => {
           float({ ...ct, noNaN: true });
           const arb = float(ct);
           // Extract NaN "index"
-          const { min: minNonNaN } = integer.mock.calls[0][0];
-          const { min: minNaN, max: maxNaN } = integer.mock.calls[1][0];
+          const { min: minNonNaN } = integer.mock.calls[0][0]!;
+          const { min: minNaN, max: maxNaN } = integer.mock.calls[1][0]!;
           const indexForNaN = minNonNaN !== minNaN ? minNaN : maxNaN;
           if (indexForNaN === undefined) throw new Error('No value available for NaN');
           arbitraryGenerated.value = indexForNaN;

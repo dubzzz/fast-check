@@ -18,5 +18,7 @@ export function date(constraints?: { min?: Date; max?: Date }): Arbitrary<Date> 
   if (Number.isNaN(intMin)) throw new Error('fc.date min must be valid instance of Date');
   if (Number.isNaN(intMax)) throw new Error('fc.date max must be valid instance of Date');
   if (intMin > intMax) throw new Error('fc.date max must be greater or equal to min');
-  return convertFromNext(convertToNext(integer(intMin, intMax)).map(timeToDateMapper, timeToDateUnmapper));
+  return convertFromNext(
+    convertToNext(integer({ min: intMin, max: intMax })).map(timeToDateMapper, timeToDateUnmapper)
+  );
 }
