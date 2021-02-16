@@ -147,10 +147,10 @@ describe('IntegerArbitrary', () => {
       });
     });
     describe('Given maximal value only [between -2**31 and max]', () => {
-      genericHelper.isValidArbitrary((maxValue: number) => integer(maxValue), {
+      genericHelper.isValidArbitrary((max: number) => integer({ max }), {
         seedGenerator: fc.integer(),
         isStrictlySmallerValue: isStrictlySmallerInteger,
-        isValidValue: (g: number, maxValue: number) => typeof g === 'number' && -0x80000000 <= g && g <= maxValue,
+        isValidValue: (g: number, max: number) => typeof g === 'number' && -0x80000000 <= g && g <= max,
       });
     });
     describe('Given minimal and maximal values [between min and max]', () => {
@@ -168,15 +168,6 @@ describe('IntegerArbitrary', () => {
       );
     });
     describe('Still support older signatures', () => {
-      it('Should support fc.integer(max)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.integer(), (seed, max) => {
-            const refArbitrary = integer({ max });
-            const otherArbitrary = integer(max);
-            expect(generateOneValue(seed, otherArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
       it('Should support fc.integer(min, max)', () => {
         fc.assert(
           fc.property(fc.integer(), genericHelper.minMax(fc.integer()), (seed, constraints) => {
