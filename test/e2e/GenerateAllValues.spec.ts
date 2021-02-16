@@ -23,7 +23,9 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.integer()', () => {
     it('Should be able to produce all integer values within the range', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.nat(100), (from, gap) => lookForMissing(fc.integer(from, from + gap), gap + 1))
+        fc.property(fc.integer(), fc.nat(100), (from, gap) =>
+          lookForMissing(fc.integer({ min: from, max: from + gap }), gap + 1)
+        )
       ));
   });
   describe('fc.char()', () => {

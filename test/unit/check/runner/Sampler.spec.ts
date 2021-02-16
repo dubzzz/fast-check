@@ -81,7 +81,7 @@ describe('Sampler', () => {
     const rePercent = /(\d+\.\d+)%$/;
     it('Should always produce for non null number of runs', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(1, MAX_NUM_RUNS), (seed, runs) => {
+        fc.property(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), (seed, runs) => {
           const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, numRuns: runs, logger: (v: string) => logs.push(v) });
@@ -170,7 +170,7 @@ describe('Sampler', () => {
       ));
     it('Should not produce more logs than the number of classified values', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(1, 100), (seed, mod) => {
+        fc.property(fc.integer(), fc.integer({ min: 1, max: 100 }), (seed, mod) => {
           const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(mod), classify, { seed: seed, logger: (v: string) => logs.push(v) });

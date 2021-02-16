@@ -30,7 +30,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     readonly setBuilder?: CustomSetBuilder<NextValue<T>>
   ) {
     super();
-    this.lengthArb = convertToNext(integer(minLength, maxGeneratedLength));
+    this.lengthArb = convertToNext(integer({ min: minLength, max: maxGeneratedLength }));
   }
 
   private preFilter(tab: NextValue<T>[]): NextValue<T>[] {
@@ -154,7 +154,10 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // We apply bias for both items and length (1 chance over biasFactor²)
     const maxBiasedLength =
       this.minLength + Math.floor(Math.log(this.maxGeneratedLength - this.minLength) / Math.log(2));
-    const targetSizeValue = convertToNext(integer(this.minLength, maxBiasedLength)).generate(mrng, undefined);
+    const targetSizeValue = convertToNext(integer({ min: this.minLength, max: maxBiasedLength })).generate(
+      mrng,
+      undefined
+    );
     return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }
 

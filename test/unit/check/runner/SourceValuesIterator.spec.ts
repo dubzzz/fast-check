@@ -116,7 +116,7 @@ describe('SourceValuesIterator', () => {
       fc.assert(
         fc.property(
           fc.set(fc.nat(100), { minLength: 1, maxLength: 20 }),
-          fc.integer(1, 100),
+          fc.integer({ min: 1, max: 100 }),
           (skippedValues, missingValues) => {
             const lastSkip = skippedValues.reduce((prev, cur) => (prev > cur ? prev : cur), 0);
             const askedValues = lastSkip + 1 - skippedValues.length + missingValues;

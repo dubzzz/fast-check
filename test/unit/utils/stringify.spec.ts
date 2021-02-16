@@ -334,31 +334,34 @@ describe('stringify', () => {
   });
   it('Should be able to stringify Int8Array', () => {
     expect(stringify(Int8Array.from([-128, 5, 127]))).toEqual('Int8Array.from([-128,5,127])');
-    assertStringifyTypedArraysProperly(fc.integer(-128, 127), Int8Array.from.bind(Int8Array));
+    assertStringifyTypedArraysProperly(fc.integer({ min: -128, max: 127 }), Int8Array.from.bind(Int8Array));
   });
   it('Should be able to stringify Uint8Array', () => {
     expect(stringify(Uint8Array.from([255, 0, 5, 127]))).toEqual('Uint8Array.from([255,0,5,127])');
-    assertStringifyTypedArraysProperly(fc.integer(0, 255), Uint8Array.from.bind(Uint8Array));
+    assertStringifyTypedArraysProperly(fc.integer({ min: 0, max: 255 }), Uint8Array.from.bind(Uint8Array));
   });
   it('Should be able to stringify Int16Array', () => {
     expect(stringify(Int16Array.from([-32768, 5, 32767]))).toEqual('Int16Array.from([-32768,5,32767])');
-    assertStringifyTypedArraysProperly(fc.integer(-32768, 32767), Int16Array.from.bind(Int16Array));
+    assertStringifyTypedArraysProperly(fc.integer({ min: -32768, max: 32767 }), Int16Array.from.bind(Int16Array));
   });
   it('Should be able to stringify Uint16Array', () => {
     expect(stringify(Uint16Array.from([65535, 0, 5, 32767]))).toEqual('Uint16Array.from([65535,0,5,32767])');
-    assertStringifyTypedArraysProperly(fc.integer(0, 65535), Uint16Array.from.bind(Uint16Array));
+    assertStringifyTypedArraysProperly(fc.integer({ min: 0, max: 65535 }), Uint16Array.from.bind(Uint16Array));
   });
   it('Should be able to stringify Int32Array', () => {
     expect(stringify(Int32Array.from([-2147483648, 5, 2147483647]))).toEqual(
       'Int32Array.from([-2147483648,5,2147483647])'
     );
-    assertStringifyTypedArraysProperly(fc.integer(-2147483648, 2147483647), Int32Array.from.bind(Int32Array));
+    assertStringifyTypedArraysProperly(
+      fc.integer({ min: -2147483648, max: 2147483647 }),
+      Int32Array.from.bind(Int32Array)
+    );
   });
   it('Should be able to stringify Uint32Array', () => {
     expect(stringify(Uint32Array.from([4294967295, 0, 5, 2147483647]))).toEqual(
       'Uint32Array.from([4294967295,0,5,2147483647])'
     );
-    assertStringifyTypedArraysProperly(fc.integer(0, 4294967295), Uint32Array.from.bind(Uint32Array));
+    assertStringifyTypedArraysProperly(fc.integer({ min: 0, max: 4294967295 }), Uint32Array.from.bind(Uint32Array));
   });
   it('Should be able to stringify Float32Array', () => {
     expect(stringify(Float32Array.from([0, 0.5, 30, -1]))).toEqual('Float32Array.from([0,0.5,30,-1])');
