@@ -224,7 +224,7 @@ const loremWord = () =>
 function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
   const { maxCount = 5, mode = 'words' } = constraints;
   if (maxCount < 1) throw new Error(`lorem has to produce at least one word/sentence`);
-  if (mode) {
+  if (mode === 'sentences') {
     const sentence = array(loremWord(), { minLength: 1 })
       .map((words) => words.join(' '))
       .map((s) => (s[s.length - 1] === ',' ? s.substr(0, s.length - 1) : s))
