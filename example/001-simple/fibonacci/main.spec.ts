@@ -46,7 +46,7 @@ describe('fibonacci', () => {
 
   it('should fulfill Cassini identity', () => {
     fc.assert(
-      fc.property(fc.integer(1, MaxN), fc.integer(0, MaxN), (p) => {
+      fc.property(fc.integer(1, MaxN), (p) => {
         const sign = p % 2 === 0 ? 1n : -1n; // (-1)^p
         expect(fibo(p + 1) * fibo(p - 1) - fibo(p) * fibo(p)).toBe(sign);
       })
