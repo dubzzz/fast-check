@@ -245,7 +245,8 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
   const baseArb = oneof(...arbitrariesForBase);
   const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys })));
   const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => dictOf(arbKeys(n), arb)));
-  const setBaseArb = () => oneof(...arbitrariesForBase.map((arb) => set(arb, 0, maxKeys).map((v) => new Set(v))));
+  const setBaseArb = () =>
+    oneof(...arbitrariesForBase.map((arb) => set(arb, { maxLength: maxKeys }).map((v) => new Set(v))));
   const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
@@ -257,7 +258,7 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       setBaseArb(),
 
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      set(anythingArb(n), 0, maxKeys).map((v) => new Set(v))
+      set(anythingArb(n), { maxLength: maxKeys }).map((v) => new Set(v))
     )
   );
   // Map<key, base> | (Map<key, anything> | Map<anything, anything>)

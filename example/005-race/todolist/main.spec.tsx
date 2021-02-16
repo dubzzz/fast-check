@@ -18,7 +18,7 @@ describe('TodoList', () => {
           TodoListCommands,
           fc.set(
             fc.record({ id: fc.hexaString({ minLength: 8, maxLength: 8 }), label: fc.string(), checked: fc.boolean() }),
-            (a, b) => a.id === b.id
+            { compare: (a, b) => a.id === b.id }
           ),
           fc.infiniteStream(fc.boolean()),
           async (s, commands, initialTodos, allFailures) => {
