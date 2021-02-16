@@ -104,10 +104,6 @@ fc.integer()
 // Note: All possible integers between `-2147483648` (included) and `2147483647` (included)
 // Examples of generated values: 1502944448, 888414599, 1123740386, -440217435, 19…
 
-fc.integer(1000)
-// Note: All possible integers between `-2147483648` (included) and `1000` (included)
-// Examples of generated values: -1057705109, -8, -1089721660, -1878447823, -741474720…
-
 fc.integer(-99, 99)
 // Note: All possible integers between `-99` (included) and `99` (included)
 // Examples of generated values: 6, -1, -96, 91, 5…
