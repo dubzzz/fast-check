@@ -85,7 +85,7 @@ describe('sparseArray', () => {
         const maxGeneratedIndexes = restrictedIntegerArbitraryBuilder.mock.calls[0][1]; // ie maxGenerated
         const maxRequestedIndexes = restrictedIntegerArbitraryBuilder.mock.calls[0][2]; // ie max
         expect(maxGeneratedIndexes).toBeLessThanOrEqual(maxRequestedIndexes);
-        const maxRequestedLength = set.mock.calls[0][1].maxLength!;
+        const maxRequestedLength = set.mock.calls[0][1]!.maxLength!;
         if (ct !== undefined && ct.noTrailingHole) {
           // maxRequestedIndexes is the maximal index we may have for the current instance (+1 is the length)
           // maxRequestedLength is the maximal number of elements we ask to the set
