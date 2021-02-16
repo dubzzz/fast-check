@@ -100,23 +100,6 @@ describe('integer', () => {
       })
     ));
 
-  it('[legacy] should instantiate IntegerArbitrary(-0x80000000, max) for integer(max)', () =>
-    fc.assert(
-      fc.property(fc.integer({ min: -0x80000000, max: Number.MAX_SAFE_INTEGER }), (max) => {
-        // Arrange
-        const instance = fakeIntegerArbitrary();
-        const IntegerArbitrary = jest.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-        IntegerArbitrary.mockImplementation(() => instance);
-
-        // Act
-        const arb = integer({ max });
-
-        // Assert
-        expect(IntegerArbitrary).toHaveBeenCalledWith(-0x80000000, max);
-        expect(convertToNext(arb)).toBe(instance);
-      })
-    ));
-
   it('[legacy] should instantiate IntegerArbitrary(min, max) for integer(min, max)', () =>
     fc.assert(
       fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b) => {
