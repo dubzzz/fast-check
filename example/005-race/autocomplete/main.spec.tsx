@@ -109,7 +109,7 @@ describe('AutocompleteField', () => {
 
 // Helpers
 
-const AllResultsArbitrary = fc.set(fc.string(), 0, 1000);
+const AllResultsArbitrary = fc.set(fc.string(), { maxLength: 1000 });
 const QueriesArbitrary = fc.array(fc.string(), { minLength: 1 });
 
 /**

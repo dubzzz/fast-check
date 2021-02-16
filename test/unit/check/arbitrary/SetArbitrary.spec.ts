@@ -2,9 +2,7 @@ import * as fc from '../../../../lib/fast-check';
 
 import { set } from '../../../../src/check/arbitrary/SetArbitrary';
 import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
-import { string } from '../../../../src/check/arbitrary/StringArbitrary';
 
-import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 const customMapper = (v: number) => {
@@ -71,56 +69,6 @@ describe('SetArbitrary', () => {
             validSet(g) && g.length >= constraints.min && g.length <= constraints.max,
         }
       );
-    });
-    describe('Still support non recommended signatures', () => {
-      const compare = (a: string, b: string) => {
-        return a.split('').sort().join('') === b.split('').sort().join('');
-      };
-      it('Should support fc.set(arb, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
-            const refArbitrary = set(nat(), { maxLength });
-            const nonRecommendedArbitrary = set(nat(), maxLength);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.set(arb, compare)', () => {
-        fc.assert(
-          fc.property(fc.integer(), (seed) => {
-            const refArbitrary = set(string(), { compare });
-            const nonRecommendedArbitrary = set(string(), compare);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.set(arb, maxLength, compare)', () => {
-        fc.assert(
-          fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
-            const refArbitrary = set(string(), { maxLength, compare });
-            const nonRecommendedArbitrary = set(string(), maxLength, compare);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.set(arb, minLength, maxLength)', () => {
-        fc.assert(
-          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
-            const refArbitrary = set(nat(), { minLength: minMaxLength.min, maxLength: minMaxLength.max });
-            const nonRecommendedArbitrary = set(nat(), minMaxLength.min, minMaxLength.max);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
-      it('Should support fc.set(arb, minLength, maxLength, compare)', () => {
-        fc.assert(
-          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
-            const refArbitrary = set(string(), { minLength: minMaxLength.min, maxLength: minMaxLength.max, compare });
-            const nonRecommendedArbitrary = set(string(), minMaxLength.min, minMaxLength.max, compare);
-            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
-          })
-        );
-      });
     });
   });
 });
