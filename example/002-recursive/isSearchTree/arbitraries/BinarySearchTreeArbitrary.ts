@@ -4,7 +4,7 @@ import { Tree } from '../src/isSearchTree';
 export const binarySearchTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tree<number>> => {
   const leaf = (minValue: number, maxValue: number): fc.Arbitrary<Tree<number>> =>
     fc.record({
-      value: fc.integer(minValue, maxValue),
+      value: fc.integer({ min: minValue, max: maxValue }),
       left: fc.constant(null),
       right: fc.constant(null),
     });
@@ -12,7 +12,7 @@ export const binarySearchTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tre
   const node = (minValue: number, maxValue: number): fc.Memo<Tree<number>> =>
     fc.memo((n) => {
       if (n <= 1) return leaf(minValue, maxValue);
-      return fc.integer(minValue, maxValue).chain((v) => {
+      return fc.integer({ min: minValue, max: maxValue }).chain((v) => {
         // tree(minValue, v)(n - 1) is equivalent to tree(minValue, v)()
         return fc.record({
           value: fc.constant(v),
@@ -33,7 +33,7 @@ export const binarySearchTreeWithMaxDepthOldWay = (
   minValue: number = Number.MIN_SAFE_INTEGER,
   maxValue: number = Number.MAX_SAFE_INTEGER
 ): fc.Arbitrary<Tree<number>> => {
-  const valueArbitrary = fc.integer(minValue, maxValue);
+  const valueArbitrary = fc.integer({ min: minValue, max: maxValue });
   if (maxDepth <= 0) {
     return fc.record({
       value: valueArbitrary,

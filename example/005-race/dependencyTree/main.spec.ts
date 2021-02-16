@@ -37,7 +37,7 @@ describe('dependencyTree', () => {
 
 // Helpers
 
-const AllPackagesArbitrary = fc.integer(1, 5).chain((numPackages) => {
+const AllPackagesArbitrary = fc.integer({ min: 1, max: 5 }).chain((numPackages) => {
   const packageNames = [...Array(numPackages)].map((_, id) => `package-${String.fromCharCode('a'.charCodeAt(0) + id)}`);
   return fc
     .genericTuple(
