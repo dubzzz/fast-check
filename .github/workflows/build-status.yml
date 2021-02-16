@@ -237,10 +237,8 @@ jobs:
           - '*'
           # Various intermediate versions of Typescript
           - '4.4'
-          - '3.9'
-          - '3.4'
           # Minimal requirement for TypeScript
-          - '3.2'
+          - '4.0'
           # Other release channels for TypeScript
           - 'rc'
           - 'next'
@@ -258,16 +256,6 @@ jobs:
         uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'test/type'
-      - name: Adapt test/type/for TypeScript 3.4
-        if: matrix.ts-version == '3.2' || matrix.ts-version == '3.4'
-        run: |
-          cd test/type
-          sed -i 's/ts-expect-error/ts-ignore/g' *.ts
-      - name: Adapt test/type/for TypeScript 3.2
-        if: matrix.ts-version == '3.2'
-        run: |
-          cd test/type
-          sed -i 's/fc-require-ts-3.4/ts-ignore/g' *.ts
       - name: TypeScript version
         run: |
           cd test/type
@@ -282,7 +270,7 @@ jobs:
           cd test/type
           npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
       - name: Test test/type/ with --exactOptionalPropertyTypes
-        if: matrix.ts-version != '3.2' && matrix.ts-version != '3.4' && matrix.ts-version != '3.9'
+        if: matrix.ts-version != '4.0'
         run: |
           cd test/type
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
