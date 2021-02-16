@@ -53,9 +53,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build the library (dev version)
-        run: |
-            yarn prebuild
-            yarn build
+        run: yarn build
       - name: Unit tests
         shell: bash -l {0}
         run: |
@@ -90,9 +88,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build the library (dev version)
-        run: |
-            yarn prebuild
-            yarn build
+        run: yarn build
       - name: End-to-end tests
         shell: bash -l {0}
         run: |
@@ -127,9 +123,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build minimal package
-        run: |
-          yarn prebuild
-          yarn build:publish-types
+        run: yarn build:publish-types
       - name: Generate documentation
         run: yarn docs-ci
       - name: Upload documentation
