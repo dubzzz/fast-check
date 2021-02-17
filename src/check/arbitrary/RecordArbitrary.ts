@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 
 import { option } from './OptionArbitrary';
-import { genericTuple } from './TupleArbitrary';
+import { tuple } from './TupleArbitrary';
 
 /**
  * Constraints to be applied on {@link record}
@@ -73,7 +73,7 @@ function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitra
   for (let index = 0; index !== keys.length; ++index) {
     arbs.push(recordModel[keys[index]]);
   }
-  return genericTuple(arbs).map((gs: any[]) => {
+  return tuple(...arbs).map((gs: any[]) => {
     const obj: Record<RecordKey<T>, any> = {} as any;
     for (let idx = 0; idx !== keys.length; ++idx) {
       obj[keys[idx]] = gs[idx];

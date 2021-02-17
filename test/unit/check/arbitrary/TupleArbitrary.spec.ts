@@ -5,7 +5,7 @@ import { dummy } from './TupleArbitrary.properties';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 import { integer, nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
-import { genericTuple } from '../../../../src/check/arbitrary/TupleArbitrary';
+import { tuple } from '../../../../src/check/arbitrary/TupleArbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
 import { stream } from '../../../../src/stream/Stream';
@@ -15,8 +15,8 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 import * as stubRng from '../../stubs/generators';
 
 describe('TupleArbitrary', () => {
-  describe('genericTuple', () => {
-    genericHelper.isValidArbitrary((mins: number[]) => genericTuple(mins.map((m) => integer(m, m + 10))), {
+  describe('tuple', () => {
+    genericHelper.isValidArbitrary((mins: number[]) => tuple(...mins.map((m) => integer(m, m + 10))), {
       seedGenerator: fc.array(fc.nat(1000)),
       isStrictlySmallerValue: (g1: number[], g2: number[]) => g1.findIndex((v, idx) => v < g2[idx]) !== -1,
       isValidValue: (g: number[], mins: number[]) => {
@@ -31,17 +31,16 @@ describe('TupleArbitrary', () => {
       },
     });
     it('Should throw on null arbitrary', () =>
-      expect(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])).toThrowError());
+      expect(() => tuple(dummy(1), dummy(2), (null as any) as Arbitrary<string>)).toThrowError());
     it('Should throw on invalid arbitrary', () =>
-      expect(() => genericTuple([dummy(1), dummy(2), {} as Arbitrary<any>])).toThrowError());
+      expect(() => tuple(dummy(1), dummy(2), {} as Arbitrary<any>)).toThrowError());
     it('Should produce cloneable tuple if one cloneable children', () =>
       fc.assert(
         fc.property(fc.nat(50), fc.nat(50), (before, after) => {
           const arbsBefore = [...Array(before)].map(() => integer(0, 0));
           const arbsAfter = [...Array(after)].map(() => integer(0, 0));
-          const arbs: Arbitrary<unknown>[] = [...arbsBefore, context(), ...arbsAfter];
           const mrng = stubRng.mutable.counter(0);
-          const g = genericTuple(arbs).generate(mrng).value;
+          const g = tuple(...arbsBefore, context(), ...arbsAfter).generate(mrng).value;
           return hasCloneMethod(g);
         })
       ));
@@ -50,7 +49,7 @@ describe('TupleArbitrary', () => {
         fc.property(fc.nat(100), (num) => {
           const arbs = [...Array(num)].map(() => integer(0, 0));
           const mrng = stubRng.mutable.counter(0);
-          const g = genericTuple(arbs).generate(mrng).value;
+          const g = tuple(...arbs).generate(mrng).value;
           return !hasCloneMethod(g);
         })
       ));
@@ -67,9 +66,8 @@ describe('TupleArbitrary', () => {
           return new Shrinkable(v);
         }
       })();
-      const arbs = [withClonedAndCounter];
       const mrng = stubRng.mutable.counter(0);
-      genericTuple(arbs).generate(mrng);
+      tuple(withClonedAndCounter).generate(mrng);
       expect(numCallsToClone).toEqual(0);
     });
   });
@@ -91,7 +89,7 @@ describe('TupleArbitrary', () => {
         return new Shrinkable(new CloneableInstance(), () => stream(g()));
       }
     })();
-    const arbs = genericTuple([nat(16), cloneableArbitrary, nat(16)] as Arbitrary<any>[]);
+    const arbs = tuple(nat(16), cloneableArbitrary, nat(16));
     const extractId = (shrinkable: Shrinkable<[number, CloneableInstance, number]>) => shrinkable.value_[1].id;
     fc.assert(
       fc.property(fc.integer().noShrink(), fc.infiniteStream(fc.nat()), (seed, shrinkPath) => {

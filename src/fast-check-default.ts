@@ -88,7 +88,7 @@ import {
   unicodeString,
 } from './check/arbitrary/StringArbitrary';
 import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
-import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
+import { tuple } from './check/arbitrary/TupleArbitrary';
 import { uuid, uuidV } from './check/arbitrary/UuidArbitrary';
 import {
   webAuthority,
@@ -257,7 +257,6 @@ export {
   infiniteStream,
   set,
   tuple,
-  genericTuple,
   record,
   dictionary,
   anything,

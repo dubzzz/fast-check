@@ -69,19 +69,6 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
 }
 
 /**
- * For tuples produced by the provided `arbs`
- *
- * @param arbs - Ordered list of arbitraries
- *
- * @deprecated Switch to {@link tuple} instead
- * @remarks Since 1.0.0
- * @public
- */
-function genericTuple<Ts extends unknown[]>(arbs: { [K in keyof Ts]: Arbitrary<Ts[K]> }): Arbitrary<Ts> {
-  return new GenericTupleArbitrary<Ts>(arbs);
-}
-
-/**
  * For tuples produced using the provided `arbs`
  *
  * @param arbs - Ordered list of arbitraries
@@ -93,4 +80,4 @@ function tuple<Ts extends unknown[]>(...arbs: { [K in keyof Ts]: Arbitrary<Ts[K]
   return new GenericTupleArbitrary<Ts>(arbs);
 }
 
-export { genericTuple, tuple };
+export { tuple };
