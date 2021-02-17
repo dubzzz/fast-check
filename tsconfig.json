@@ -6,7 +6,7 @@
         "noFallthroughCasesInSwitch": true,
         "noUnusedLocals": true,
         "preserveConstEnums": true,
-        "removeComments": false,
+        "removeComments": true,
         "sourceMap": true,
         "strict": true,
         "stripInternal": true,
