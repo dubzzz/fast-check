@@ -315,10 +315,7 @@ expectType<fc.Arbitrary<[number, number, number, number, number]>>()(fc.clone(fc
 const nTimesClone: number = 2;
 expectType<fc.Arbitrary<number[]>>()(fc.clone(fc.nat(), nTimesClone), '"clone" with non-precise number of times');
 const nTimesCloneBis: 2 | 3 = 2;
-expectType<fc.Arbitrary<[number, number] | [number, number, number]>>()(
-  fc.clone(fc.nat(), nTimesCloneBis),
-  '"clone" with two possible number of times'
-);
+expectType<fc.Arbitrary<[number, number]>>()(fc.clone(fc.nat(), nTimesCloneBis), '"clone" with two possible number of times');
 
 // func arbitrary
 expectType<fc.Arbitrary<() => number>>()(fc.func(fc.nat()), '"func" producing "nat"');
