@@ -62,7 +62,9 @@ class CloneArbitrary<T> extends Arbitrary<T[]> {
  * @remarks Since 2.5.0
  * @public
  */
-export type CloneValue<T, N extends number, Rest extends T[] = []> = Rest['length'] extends N
+export type CloneValue<T, N extends number, Rest extends T[] = []> = [number] extends [N] // N is number itself?
+  ? T[]
+  : Rest['length'] extends N // End of the recursion?
   ? Rest
   : CloneValue<T, N, [T, ...Rest]>;
 
