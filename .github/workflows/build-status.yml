@@ -195,7 +195,7 @@ jobs:
           # Various intermediate versions of Typescript
           - '4.4'
           # Minimal requirement for TypeScript
-          - '4.0'
+          - '4.1'
           # Other release channels for TypeScript
           - 'rc'
     steps:
