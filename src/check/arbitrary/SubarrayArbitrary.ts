@@ -37,7 +37,7 @@ class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     );
   }
   generate(mrng: Random): Shrinkable<T[]> {
-    const remainingElements = this.originalArray.map((v, idx) => idx);
+    const remainingElements = this.originalArray.map((_v, idx) => idx);
     const size = this.lengthArb.generate(mrng).value;
     const ids: number[] = [];
     for (let idx = 0; idx !== size; ++idx) {

@@ -54,7 +54,7 @@ const internalModelRun = <Model extends object, Real>(
   s: ModelRunSetup<Model, Real>,
   cmds: Iterable<Command<Model, Real>>
 ): void => {
-  const then = (p: undefined, c: () => undefined) => c();
+  const then = (_p: undefined, c: () => undefined) => c();
   const setupProducer: SetupProducer<Model, Real, undefined> = {
     then: (fun: SetupFun<Model, Real, void>) => {
       fun(s());

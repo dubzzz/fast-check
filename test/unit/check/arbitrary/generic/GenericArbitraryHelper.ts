@@ -145,19 +145,19 @@ export const isValidArbitrary = function <U, T>(
   },
   parameters?: fc.Parameters<unknown>
 ): void {
-  const seedGenerator = settings.seedGenerator || fc.constant(undefined);
+  const seedGenerator = settings.seedGenerator || fc.constant((undefined as unknown) as U);
 
   const biasedSeedGenerator = fc.tuple(fc.option(fc.integer(2, 100), { freq: 2 }), seedGenerator);
   const biasedArbitraryBuilder = ([biasedFactor, u]: [number | null, U]) => {
     return biasedFactor != null ? arbitraryBuilder(u).withBias(biasedFactor) : arbitraryBuilder(u);
   };
   const biasedIsValidValue = (g: T, [_biasedFactor, u]: [number | null, U]) => {
-    return settings.isValidValue(g, u);
+    return settings.isValidValue(g, u!);
   };
 
-  const assertEquality = (v1: T, v2: T, [, seed]: [number, U]) => {
+  const assertEquality = (v1: T, v2: T, [, seed]: [number | null, U]) => {
     if (settings.isEqual) {
-      if (!settings.isEqual(v1, v2, seed)) {
+      if (!settings.isEqual(v1, v2, seed!)) {
         throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}`);
       }
     } else expect(v1).toStrictEqual(v2);
@@ -167,7 +167,7 @@ export const isValidArbitrary = function <U, T>(
   if (settings.isStrictlySmallerValue != null) {
     const isStrictlySmallerValue = settings.isStrictlySmallerValue;
     const biasedIsStrictlySmallerValue = (g1: T, g2: T, [_biasedFactor, u]: [number | null, U]) => {
-      return isStrictlySmallerValue(g1, g2, u);
+      return isStrictlySmallerValue(g1, g2, u!);
     };
     testShrinkPathStrictlyDecreasing(
       biasedSeedGenerator,

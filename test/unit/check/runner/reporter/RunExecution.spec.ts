@@ -30,7 +30,7 @@ describe('RunExecution', () => {
           }
           // Assert the value
           const lastFailure = failuresDesc[failuresDesc.length - 1];
-          const details = run.toRunDetails(seed, '', 42, 10000, QualifiedParameters.read({}));
+          const details = run.toRunDetails(seed, '', 10000, QualifiedParameters.read({}));
           expect(details.failed).toBe(true);
           expect(details.interrupted).toBe(false);
           expect(details.counterexamplePath).not.toBe(null);
@@ -64,7 +64,7 @@ describe('RunExecution', () => {
           run.fail(42, failureId, 'Failed');
         }
         // Assert the value
-        expect(run.toRunDetails(seed, '', 42, 10000, QualifiedParameters.read({})).counterexamplePath).toEqual(
+        expect(run.toRunDetails(seed, '', 10000, QualifiedParameters.read({})).counterexamplePath).toEqual(
           path.join(':')
         );
       })
@@ -89,7 +89,7 @@ describe('RunExecution', () => {
           joinedPath[offsetPath.length - 1] += addedPath[0];
           // Assert the value
           expect(
-            run.toRunDetails(seed, offsetPath.join(':'), 42, 10000, QualifiedParameters.read({})).counterexamplePath
+            run.toRunDetails(seed, offsetPath.join(':'), 10000, QualifiedParameters.read({})).counterexamplePath
           ).toEqual(joinedPath.join(':'));
         }
       )
@@ -123,13 +123,7 @@ describe('RunExecution', () => {
                 break;
             }
           }
-          const details = run.toRunDetails(
-            0,
-            '',
-            executionStatuses.length + 1,
-            executionStatuses.length + 1,
-            QualifiedParameters.read({})
-          );
+          const details = run.toRunDetails(0, '', executionStatuses.length + 1, QualifiedParameters.read({}));
           let currentExecutionTrees = details.executionSummary;
           for (let idx = 0, idxInTrees = 0; idx !== executionStatuses.length; ++idx, ++idxInTrees) {
             // Ordered like execution: same value and status

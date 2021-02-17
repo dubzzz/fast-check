@@ -31,7 +31,7 @@ const validSparseArrayConstraints = () =>
 
 describe('SparseArrayArbitrary', () => {
   describe('sparseArray', () => {
-    genericHelper.isValidArbitrary((ct: SparseArrayConstraints) => sparseArray(nat(), ct), {
+    genericHelper.isValidArbitrary((ct: SparseArrayConstraints | undefined) => sparseArray(nat(), ct), {
       seedGenerator: fc.option(validSparseArrayConstraints(), { nil: undefined }),
       isEqual: (g1, g2) => {
         // WARNING: Very long loops in Jest when comparing two very large sparse arrays
