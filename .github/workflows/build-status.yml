@@ -193,7 +193,7 @@ jobs:
           # Latest version of TypeScript
           - '*'
           # Minimal requirement for TypeScript
-          - '4.0'
+          - '4.1'
     steps:
       - uses: actions/checkout@v2
       - name: Using Node v14.x
