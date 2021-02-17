@@ -11,7 +11,7 @@ describe('UuidArbitrary', () => {
   });
   describe('uuidV', () => {
     genericHelper.isValidArbitrary((constraint: 1 | 2 | 3 | 4 | 5) => uuidV(constraint), {
-      seedGenerator: fc.constantFrom(1, 2, 3, 4, 5),
+      seedGenerator: fc.constantFrom(...([1, 2, 3, 4, 5] as const)),
       isValidValue: (g: string, constraint: 1 | 2 | 3 | 4 | 5) =>
         /[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/.test(g) &&
         g[14] === String(constraint),

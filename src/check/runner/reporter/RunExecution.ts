@@ -92,13 +92,7 @@ export class RunExecution<Ts> {
     return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
   };
 
-  toRunDetails(
-    seed: number,
-    basePath: string,
-    numRuns: number,
-    maxSkips: number,
-    qParams: QualifiedParameters<Ts>
-  ): RunDetails<Ts> {
+  toRunDetails(seed: number, basePath: string, maxSkips: number, qParams: QualifiedParameters<Ts>): RunDetails<Ts> {
     if (!this.isSuccess()) {
       // encountered a property failure
       return {

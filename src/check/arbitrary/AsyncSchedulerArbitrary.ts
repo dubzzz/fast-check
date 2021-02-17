@@ -281,7 +281,7 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       );
   }
 
-  scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]) {
+  scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetaData>[]) {
     // We run all the builders sequencially
     // BUT we allow tasks scheduled outside of this sequence
     //     to be called between two of our builders

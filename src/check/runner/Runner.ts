@@ -119,7 +119,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
-    ...readConfigureGlobal(),
+    ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
   if (qParams.reporter !== null && qParams.asyncReporter !== null)
@@ -135,12 +135,11 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
     ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips, qParams)
+        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
       )
     : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
-        qParams.numRuns,
         maxSkips,
         qParams
       );

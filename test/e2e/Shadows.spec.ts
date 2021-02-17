@@ -151,7 +151,7 @@ const SpaceArbitrary = fc
   .map(({ w, h, cx, cy, sx, sy }) =>
     new SpaceBuilder().withDimension(w, h).withSolution(cx, cy).withCurrent(sx, sy).build()
   )
-  .map((space: Space) => [space, Math.ceil(Math.log(Math.max(space.dimX, space.dimY)) / Math.log(2))]);
+  .map((space: Space): [Space, number] => [space, Math.ceil(Math.log(Math.max(space.dimX, space.dimY)) / Math.log(2))]);
 
 // Test
 

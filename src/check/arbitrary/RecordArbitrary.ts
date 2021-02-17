@@ -154,7 +154,8 @@ function record<T>(
     if (requiredKeys.indexOf(k) !== -1) updatedRecordModel[k] = requiredArbitrary;
     else updatedRecordModel[k] = option(requiredArbitrary);
   }
-  return rawRecord(updatedRecordModel as any).map((obj: { [K in keyof T]: { value: T[keyof T] } | null }) => {
+  return rawRecord(updatedRecordModel as any).map((rawObj) => {
+    const obj = rawObj as { [K in keyof T]: { value: T[keyof T] } | null };
     const nobj: { [K in keyof T]?: T[keyof T] } = {};
     for (let index = 0; index !== keys.length; ++index) {
       const k = keys[index];

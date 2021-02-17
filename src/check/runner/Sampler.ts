@@ -28,8 +28,8 @@ function streamSample<Ts>(
 ): IterableIterator<Ts> {
   const extendedParams =
     typeof params === 'number'
-      ? { ...readConfigureGlobal(), numRuns: params }
-      : { ...readConfigureGlobal(), ...params };
+      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
+      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
@@ -97,8 +97,8 @@ function statistics<Ts>(
 ): void {
   const extendedParams =
     typeof params === 'number'
-      ? { ...readConfigureGlobal(), numRuns: params }
-      : { ...readConfigureGlobal(), ...params };
+      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
+      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const recorded: { [key: string]: number } = {};
   for (const g of streamSample(generator, params)) {
