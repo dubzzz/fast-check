@@ -207,7 +207,7 @@ jobs:
           # Various intermediate versions of Typescript
           - '4.4'
           # Minimal requirement for TypeScript
-          - '4.0'
+          - '4.1'
           # Other release channels for TypeScript
           - 'rc'
           - 'next'
@@ -239,7 +239,7 @@ jobs:
           cd test/type
           npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
       - name: Test test/type/ with --exactOptionalPropertyTypes
-        if: matrix.ts-version != '4.0'
+        if: matrix.ts-version != '4.1'
         run: |
           cd test/type
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
