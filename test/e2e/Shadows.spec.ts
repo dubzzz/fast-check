@@ -151,7 +151,7 @@ const SpaceArbitrary = fc
   .map(({ w, h, cx, cy, sx, sy }) =>
     new SpaceBuilder().withDimension(w, h).withSolution(cx, cy).withCurrent(sx, sy).build()
   )
-  .map((space: Space) => [space, Math.ceil(Math.log(Math.max(space.dimX, space.dimY)) / Math.log(2))]);
+  .map((space: Space): [Space, number] => [space, Math.ceil(Math.log(Math.max(space.dimX, space.dimY)) / Math.log(2))]);
 
 // Test
 
@@ -160,7 +160,7 @@ describe(`Shadows (seed: ${seed})`, () => {
     let failed = false;
     try {
       fc.assert(
-        fc.property(SpaceArbitrary, ([space, maxGuesses]: [Space, number]) => {
+        fc.property(SpaceArbitrary, ([space, maxGuesses]) => {
           locateInSpaceBug(space, maxGuesses);
           return space.solved();
         }),
@@ -178,7 +178,7 @@ describe(`Shadows (seed: ${seed})`, () => {
   });
   it('Should not detect any issue', () => {
     fc.assert(
-      fc.property(SpaceArbitrary, ([space, maxGuesses]: [Space, number]) => {
+      fc.property(SpaceArbitrary, ([space, maxGuesses]) => {
         locateInSpace(space, maxGuesses);
         return space.solved();
       }),

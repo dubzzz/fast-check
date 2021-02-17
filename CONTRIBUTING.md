@@ -34,7 +34,6 @@ In order to start playing with the code locally you must run the following set o
 ```bash
 git clone https://github.com/dubzzz/fast-check.git && cd fast-check
 yarn
-yarn prebuild #generate missing implementations: tuple and properties
 yarn build    #compile the code in ./src, build the ./lib content
 ```
 
