@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build:browser": "esbuild main.js --bundle --platform=browser --outfile=dist/main.browser.js",
-    "build:node": "esbuild main.js --bundle --platform=node --outfile=dist/main.node.js",
+    "build:node": "esbuild main.js --bundle --platform=node --format=esm --outfile=dist/main.node.js",
     "build": "yarn build:browser && yarn build:node",
     "out": "node dist/main.browser.js > out.txt && node dist/main.node.js >> out.txt",
     "start": "yarn build && yarn out"
