@@ -8,6 +8,6 @@ jest.setTimeout(120000);
 const defaultSeedRaw = process.env.DEFAULT_SEED;
 if (defaultSeedRaw != null) {
   fc.configureGlobal({ seed: +defaultSeedRaw });
-} else if (process.env.EXPECT_DEFAULT_SEED) {
+} else if (process.env.EXPECT_DEFAULT_SEED || process.env.GITHUB_ACTION) {
   throw new Error('Missing env variable for DEFAULT_SEED in CI context');
 }
