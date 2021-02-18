@@ -143,6 +143,14 @@ describe('ArrayInt64', () => {
           }
         )
       ));
+    it('Should equal to zero when substracting zeros', () => {
+      const negZero: ArrayInt64 = { sign: -1, data: [0, 0] };
+      const posZero: ArrayInt64 = { sign: 1, data: [0, 0] };
+      expect(substract64(negZero, negZero)).toEqual(posZero);
+      expect(substract64(negZero, posZero)).toEqual(posZero);
+      expect(substract64(posZero, negZero)).toEqual(posZero);
+      expect(substract64(posZero, posZero)).toEqual(posZero);
+    });
   });
 
   describe('negative64', () => {
@@ -204,6 +212,14 @@ describe('ArrayInt64', () => {
           }
         )
       ));
+    it('Should equal to zero when adding zeros together', () => {
+      const negZero: ArrayInt64 = { sign: -1, data: [0, 0] };
+      const posZero: ArrayInt64 = { sign: 1, data: [0, 0] };
+      expect(add64(negZero, negZero)).toEqual(posZero);
+      expect(add64(negZero, posZero)).toEqual(posZero);
+      expect(add64(posZero, negZero)).toEqual(posZero);
+      expect(add64(posZero, posZero)).toEqual(posZero);
+    });
   });
 
   describe('halve64', () => {
