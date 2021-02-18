@@ -60,3 +60,13 @@ yarn run dry
 yarn run start
 diff expectedResult.txt out.txt
 cd ..
+
+cd esbuild-with-require
+yarn run start
+diff expectedResult.txt out.txt
+cd ..
+
+cd esbuild-with-import
+yarn run start
+diff expectedResult.txt out.txt
+cd ..
