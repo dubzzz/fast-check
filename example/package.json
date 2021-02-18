@@ -9,7 +9,7 @@
     "@testing-library/dom": "^7.29.2",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.7.0",
+    "@testing-library/user-event": "^12.7.1",
     "fast-check": "*",
     "lodash": "^4.17.20",
     "pure-rand": "^4.1.2",
