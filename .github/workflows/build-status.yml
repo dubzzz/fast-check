@@ -317,6 +317,14 @@ jobs:
       uses: ./.github/actions/install-deps-with-current-fc
       with:
         path: 'test/esm/webpack-with-require'
+    - name: Install dependencies but use current build for fast-check (esbuild-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/esbuild-with-import'
+    - name: Install dependencies but use current build for fast-check (esbuild-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/esbuild-with-require'
     - name: Check compatibility
       run: |
         cd test/esm
