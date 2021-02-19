@@ -49,6 +49,8 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     return new FrequencyArbitrary(warbs, constraints);
   }
 
+  private generateDepth = 0;
+
   private constructor(readonly warbs: WeightedArbitrary<T>[], readonly constraints: FrequencyContraints) {
     super();
     let currentWeight = 0;
@@ -61,10 +63,16 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
   }
 
   generate(mrng: Random): Shrinkable<T> {
-    const selected = mrng.nextInt(0, this.totalWeight - 1);
+    const depthBiasFactor = this.constraints.depthBiasFactor || 0;
+    const depthBenefit = Math.floor(this.generateDepth * depthBiasFactor);
+    const selected = mrng.nextInt(-depthBenefit, this.totalWeight - 1);
+
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
+        ++this.generateDepth; // increase depth
         const itemShrinkable = this.summedWarbs[idx].arbitrary.generate(mrng);
+        --this.generateDepth; // decrease depth (reset depth)
+
         if (idx === 0 || !this.constraints.withCrossShrink) {
           return itemShrinkable;
         }
@@ -124,7 +132,14 @@ export type FrequencyContraints = {
    *
    * Warning: First arbitrary most be the one resulting in the smallest structures
    * for usages on deep tree-like structures.
-   */ withCrossShrink?: boolean;
+   */
+  withCrossShrink?: boolean;
+  /**
+   * While going deeper and deeper within a recursive structure,
+   * this factor will be used to increase the probability to generate instances
+   * of the first passed arbitrary
+   */
+  depthBiasFactor?: number;
 };
 
 /**

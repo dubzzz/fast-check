@@ -12,13 +12,21 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
     return new OneOfArbitrary(arbs, constraints);
   }
 
+  private generateDepth = 0;
+
   private constructor(readonly arbs: Arbitrary<T>[], readonly constraints: OneOfContraints) {
     super();
   }
 
   generate(mrng: Random): Shrinkable<T> {
-    const id = mrng.nextInt(0, this.arbs.length - 1);
-    const itemShrinkable = this.arbs[id].generate(mrng);
+    const depthBiasFactor = this.constraints.depthBiasFactor || 0;
+    const depthBenefit = Math.floor(this.generateDepth * depthBiasFactor);
+    const id = mrng.nextInt(-depthBenefit, this.arbs.length - 1);
+
+    ++this.generateDepth; // increase depth
+    const itemShrinkable = this.arbs[id <= 0 ? 0 : id].generate(mrng);
+    --this.generateDepth; // decrease depth (reset depth)
+
     if (id === 0 || !this.constraints.withCrossShrink) {
       return itemShrinkable;
     }
@@ -77,6 +85,12 @@ export type OneOfContraints = {
    * for usages on deep tree-like structures.
    */
   withCrossShrink?: boolean;
+  /**
+   * While going deeper and deeper within a recursive structure,
+   * this factor will be used to increase the probability to generate instances
+   * of the first passed arbitrary
+   */
+  depthBiasFactor?: number;
 };
 
 /**
