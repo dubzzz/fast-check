@@ -63,9 +63,10 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
   }
 
   generate(mrng: Random): Shrinkable<T> {
+    const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.generateDepth;
     const depthBiasFactor = this.constraints.depthBiasFactor || 0;
     const depthBenefit = Math.floor(this.generateDepth * depthBiasFactor);
-    const selected = mrng.nextInt(-depthBenefit, this.totalWeight - 1);
+    const selected = reachedMaxDepth ? 0 : mrng.nextInt(-depthBenefit, this.totalWeight - 1);
 
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
@@ -140,6 +141,11 @@ export type FrequencyContraints = {
    * of the first passed arbitrary
    */
   depthBiasFactor?: number;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only the first arbitrary will be used.
+   */
+  maxDepth?: number;
 };
 
 /**

@@ -19,12 +19,13 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
   }
 
   generate(mrng: Random): Shrinkable<T> {
+    const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.generateDepth;
     const depthBiasFactor = this.constraints.depthBiasFactor || 0;
     const depthBenefit = Math.floor(this.generateDepth * depthBiasFactor);
-    const id = mrng.nextInt(-depthBenefit, this.arbs.length - 1);
+    const id = reachedMaxDepth ? 0 : Math.max(0, mrng.nextInt(-depthBenefit, this.arbs.length - 1));
 
     ++this.generateDepth; // increase depth
-    const itemShrinkable = this.arbs[id <= 0 ? 0 : id].generate(mrng);
+    const itemShrinkable = this.arbs[id].generate(mrng);
     --this.generateDepth; // decrease depth (reset depth)
 
     if (id === 0 || !this.constraints.withCrossShrink) {
@@ -91,6 +92,11 @@ export type OneOfContraints = {
    * of the first passed arbitrary
    */
   depthBiasFactor?: number;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only the first arbitrary will be used.
+   */
+  maxDepth?: number;
 };
 
 /**
