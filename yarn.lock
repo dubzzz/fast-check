@@ -1984,10 +1984,10 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
-handlebars@^4.7.6:
-  version "4.7.6"
-  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.6.tgz#d4c05c1baf90e9945f77aa68a7a219aa4a7df74e"
-  integrity sha512-1f2BACcBfiwAfStCKZNrUCgqNZkGsAT7UM3kkYtXuLo0KnaVfjKOyf7PRzB6++aK9STyT1Pd2ZCPe3EGOXleXA==
+handlebars@^4.7.7:
+  version "4.7.7"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.7.tgz#9ce33416aad02dbd6c8fafa8240d5d98004945a1"
+  integrity sha512-aAcXm5OAfE/8IXkcZvCepKU3VzW1/39Fb5ZuqMtgI/hT8X2YgoMvBY5dLhq/cpOvw7Lk1nK/UF71aLG/ZnVYRA==
   dependencies:
     minimist "^1.2.5"
     neo-async "^2.6.0"
@@ -2960,10 +2960,10 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
 
-lodash@4.x, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.4, lodash@~4.17.15:
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
-  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+lodash@4.x, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@~4.17.15:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lru-cache@^5.1.1:
   version "5.1.1"
@@ -4212,14 +4212,14 @@ typedoc-default-themes@^0.12.7:
   integrity sha512-0XAuGEqID+gon1+fhi4LycOEFM+5Mvm2PjwaiVZNAzU7pn3G2DEpsoXnFOPlLDnHY6ZW0BY0nO7ur9fHOFkBLQ==
 
 typedoc@^0.20.16:
-  version "0.20.27"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.27.tgz#66391dfe4c4d1add4a4ef95a8f19b6bc62fe3389"
-  integrity sha512-Y61T2wEpBo6x0t0zeMNH6CH0n2Jt8E1IHObcK4fGT9nK9Zq6+Rurf0A9WqVbhRmkGpu1wBsGl+4kSJdIN+AOtg==
+  version "0.20.28"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.28.tgz#6c454904d864dd43a2de9228c44b91e3c53d98ce"
+  integrity sha512-8j0T8u9FuyDkoe+M/3cyoaGJSVgXCY9KwVoo7TLUnmQuzXwqH+wkScY530ZEdK6G39UZ2LFTYPIrL5eykWjx6A==
   dependencies:
     colors "^1.4.0"
     fs-extra "^9.1.0"
-    handlebars "^4.7.6"
-    lodash "^4.17.20"
+    handlebars "^4.7.7"
+    lodash "^4.17.21"
     lunr "^2.3.9"
     marked "^2.0.0"
     minimatch "^3.0.0"
