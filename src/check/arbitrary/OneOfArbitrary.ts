@@ -6,13 +6,33 @@ import { Shrinkable } from './definition/Shrinkable';
 /** @internal */
 type DepthContext = { depth: number };
 
+/** @internal - Never garbage collecting instances */
+const depthContextCache = new Map<string, DepthContext>();
+
+/** @internal */
+export function getDepthContextFor(contextMeta: DepthContext | string | undefined): DepthContext {
+  if (contextMeta === undefined) {
+    return { depth: 0 };
+  }
+  if (typeof contextMeta !== 'string') {
+    return contextMeta;
+  }
+  const cachedContext = depthContextCache.get(contextMeta);
+  if (cachedContext !== undefined) {
+    return cachedContext;
+  }
+  const context = { depth: 0 };
+  depthContextCache.set(contextMeta, context);
+  return context;
+}
+
 /** @internal */
 class OneOfArbitrary<T> extends Arbitrary<T> {
   static from<T>(arbs: Arbitrary<T>[], constraints: OneOfContraints) {
     if (arbs.length === 0) {
       throw new Error('fc.oneof expects at least one parameter');
     }
-    return new OneOfArbitrary(arbs, constraints, constraints.depthContext ?? { depth: 0 });
+    return new OneOfArbitrary(arbs, constraints, getDepthContextFor(constraints.depthContext));
   }
 
   private constructor(
@@ -116,7 +136,7 @@ export type OneOfContraints = {
    * Context potentially shared with other entities.
    * If not provided, a context will be scoped on the instance.
    */
-  depthContext?: DepthContext;
+  depthContext?: DepthContext | string;
 };
 
 /**

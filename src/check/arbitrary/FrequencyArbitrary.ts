@@ -2,6 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
+import { getDepthContextFor } from './OneOfArbitrary';
 
 /** @internal */
 type DepthContext = { depth: number };
@@ -49,7 +50,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     if (constraints.withCrossShrink && warbs[0].weight === 0) {
       throw new Error('fc.frequency expects first arbitrary to be defined with a weight strictly superior to 0');
     }
-    return new FrequencyArbitrary(warbs, constraints, constraints.depthContext ?? { depth: 0 });
+    return new FrequencyArbitrary(warbs, constraints, getDepthContextFor(constraints.depthContext));
   }
 
   private constructor(
@@ -165,7 +166,7 @@ export type FrequencyContraints = {
    * Context potentially shared with other entities.
    * If not provided, a context will be scoped on the instance.
    */
-  depthContext?: DepthContext;
+  depthContext?: DepthContext | string;
 };
 
 /**
