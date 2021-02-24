@@ -55,15 +55,21 @@ function option<T>(arb: Arbitrary<T>, freq: number): Arbitrary<T | null>;
 function option<T, TNil = null>(arb: Arbitrary<T>, constraints: OptionConstraints<TNil>): Arbitrary<T | TNil>;
 function option<T, TNil>(arb: Arbitrary<T>, constraints?: number | OptionConstraints<TNil>): Arbitrary<T | TNil> {
   if (!constraints) {
-    return frequency({ arbitrary: constant((null as any) as TNil), weight: 1 }, { arbitrary: arb, weight: 5 });
+    return frequency(
+      { withCrossShrink: true },
+      { arbitrary: constant((null as any) as TNil), weight: 1 },
+      { arbitrary: arb, weight: 5 }
+    );
   }
   if (typeof constraints === 'number') {
     return frequency(
+      { withCrossShrink: true },
       { arbitrary: constant((null as any) as TNil), weight: 1 },
       { arbitrary: arb, weight: constraints }
     );
   }
   return frequency(
+    { withCrossShrink: true },
     {
       arbitrary: constant(
         Object.prototype.hasOwnProperty.call(constraints, 'nil') ? (constraints.nil as TNil) : ((null as any) as TNil)
