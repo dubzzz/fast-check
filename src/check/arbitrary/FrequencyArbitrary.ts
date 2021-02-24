@@ -69,9 +69,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
 
   generate(mrng: Random): Shrinkable<T> {
     const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth;
-    const depthBiasFactor = this.constraints.depthBiasFactor || 0;
-    const depthBenefit = Math.floor(this.context.depth * depthBiasFactor);
-    const selected = reachedMaxDepth ? 0 : mrng.nextInt(-depthBenefit, this.totalWeight - 1);
+    const selected = reachedMaxDepth ? 0 : mrng.nextInt(-this.computeDepthBenefit(), this.totalWeight - 1);
 
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
@@ -106,6 +104,13 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     return new Shrinkable(shrinkable.value_, () => {
       return Stream.of(getItemShrinkableForFirst()).join(shrinkable.shrink());
     });
+  }
+
+  /** Compute the benefit for the current depth */
+  private computeDepthBenefit(): number {
+    const depthBiasFactor = this.constraints.depthBiasFactor || 0;
+    const depthBenefit = Math.floor(this.context.depth * depthBiasFactor);
+    return depthBenefit;
   }
 
   withBias(freq: number) {

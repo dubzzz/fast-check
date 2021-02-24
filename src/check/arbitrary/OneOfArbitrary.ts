@@ -25,9 +25,7 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
 
   generate(mrng: Random): Shrinkable<T> {
     const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth;
-    const depthBiasFactor = this.constraints.depthBiasFactor || 0;
-    const depthBenefit = Math.floor(this.context.depth * depthBiasFactor);
-    const id = reachedMaxDepth ? 0 : Math.max(0, mrng.nextInt(-depthBenefit, this.arbs.length - 1));
+    const id = reachedMaxDepth ? 0 : Math.max(0, mrng.nextInt(-this.computeDepthBenefit(), this.arbs.length - 1));
 
     ++this.context.depth; // increase depth
     const itemShrinkable = this.arbs[id].generate(mrng);
@@ -57,6 +55,13 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
     return new Shrinkable(shrinkable.value_, () => {
       return Stream.of(getItemShrinkableForFirst()).join(shrinkable.shrink());
     });
+  }
+
+  /** Compute the benefit for the current depth */
+  private computeDepthBenefit(): number {
+    const depthBiasFactor = this.constraints.depthBiasFactor || 0;
+    const depthBenefit = Math.floor(this.context.depth * depthBiasFactor);
+    return depthBenefit;
   }
 
   withBias(freq: number) {
