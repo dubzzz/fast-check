@@ -108,9 +108,13 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
 
   /** Compute the benefit for the current depth */
   private computeDepthBenefit(): number {
-    const depthBiasFactor = this.constraints.depthBiasFactor || 0;
-    const depthBenefit = Math.floor(this.context.depth * depthBiasFactor);
-    return depthBenefit;
+    const depthBiasFactor = this.constraints.depthBiasFactor;
+    if (depthBiasFactor === undefined || depthBiasFactor <= 0) {
+      return 0;
+    }
+    // We use a pow-based biased benefit as the deeper we go the more chance we have
+    // to encounter thousands of instances of the current arbitrary.
+    return Math.min(Math.pow(1 + depthBiasFactor, this.context.depth), Number.MAX_SAFE_INTEGER);
   }
 
   withBias(freq: number) {
