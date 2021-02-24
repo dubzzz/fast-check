@@ -62,7 +62,8 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
   withBias(freq: number) {
     return new OneOfArbitrary(
       this.arbs.map((a) => a.withBias(freq)),
-      this.constraints
+      this.constraints,
+      this.context
     );
   }
 }

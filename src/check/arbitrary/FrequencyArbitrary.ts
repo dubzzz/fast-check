@@ -111,7 +111,8 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
   withBias(freq: number) {
     return new FrequencyArbitrary(
       this.warbs.map((v) => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })),
-      this.constraints
+      this.constraints,
+      this.context
     );
   }
 }
