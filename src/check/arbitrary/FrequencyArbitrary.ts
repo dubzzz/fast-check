@@ -3,6 +3,9 @@ import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
+/** @internal */
+type DepthContext = { depth: number };
+
 /**
  * Conjonction of a weight and an arbitrary used by {@link frequency}
  * in order to generate values
@@ -46,12 +49,14 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     if (constraints.withCrossShrink && warbs[0].weight === 0) {
       throw new Error('fc.frequency expects first arbitrary to be defined with a weight strictly superior to 0');
     }
-    return new FrequencyArbitrary(warbs, constraints);
+    return new FrequencyArbitrary(warbs, constraints, { depth: 0 });
   }
 
-  private generateDepth = 0;
-
-  private constructor(readonly warbs: WeightedArbitrary<T>[], readonly constraints: FrequencyContraints) {
+  private constructor(
+    readonly warbs: WeightedArbitrary<T>[],
+    readonly constraints: FrequencyContraints,
+    readonly context: DepthContext
+  ) {
     super();
     let currentWeight = 0;
     this.summedWarbs = [];
@@ -63,16 +68,16 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
   }
 
   generate(mrng: Random): Shrinkable<T> {
-    const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.generateDepth;
+    const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth;
     const depthBiasFactor = this.constraints.depthBiasFactor || 0;
-    const depthBenefit = Math.floor(this.generateDepth * depthBiasFactor);
+    const depthBenefit = Math.floor(this.context.depth * depthBiasFactor);
     const selected = reachedMaxDepth ? 0 : mrng.nextInt(-depthBenefit, this.totalWeight - 1);
 
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
-        ++this.generateDepth; // increase depth
+        ++this.context.depth; // increase depth
         const itemShrinkable = this.summedWarbs[idx].arbitrary.generate(mrng);
-        --this.generateDepth; // decrease depth (reset depth)
+        --this.context.depth; // decrease depth (reset depth)
 
         if (idx === 0 || !this.constraints.withCrossShrink) {
           return itemShrinkable;

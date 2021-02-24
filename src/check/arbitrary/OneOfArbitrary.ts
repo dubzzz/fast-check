@@ -4,29 +4,34 @@ import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
 /** @internal */
+type DepthContext = { depth: number };
+
+/** @internal */
 class OneOfArbitrary<T> extends Arbitrary<T> {
   static from<T>(arbs: Arbitrary<T>[], constraints: OneOfContraints) {
     if (arbs.length === 0) {
       throw new Error('fc.oneof expects at least one parameter');
     }
-    return new OneOfArbitrary(arbs, constraints);
+    return new OneOfArbitrary(arbs, constraints, { depth: 0 });
   }
 
-  private generateDepth = 0;
-
-  private constructor(readonly arbs: Arbitrary<T>[], readonly constraints: OneOfContraints) {
+  private constructor(
+    readonly arbs: Arbitrary<T>[],
+    readonly constraints: OneOfContraints,
+    readonly context: DepthContext
+  ) {
     super();
   }
 
   generate(mrng: Random): Shrinkable<T> {
-    const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.generateDepth;
+    const reachedMaxDepth = this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth;
     const depthBiasFactor = this.constraints.depthBiasFactor || 0;
-    const depthBenefit = Math.floor(this.generateDepth * depthBiasFactor);
+    const depthBenefit = Math.floor(this.context.depth * depthBiasFactor);
     const id = reachedMaxDepth ? 0 : Math.max(0, mrng.nextInt(-depthBenefit, this.arbs.length - 1));
 
-    ++this.generateDepth; // increase depth
+    ++this.context.depth; // increase depth
     const itemShrinkable = this.arbs[id].generate(mrng);
-    --this.generateDepth; // decrease depth (reset depth)
+    --this.context.depth; // decrease depth (reset depth)
 
     if (id === 0 || !this.constraints.withCrossShrink) {
       return itemShrinkable;
