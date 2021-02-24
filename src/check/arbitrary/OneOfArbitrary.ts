@@ -12,7 +12,7 @@ class OneOfArbitrary<T> extends Arbitrary<T> {
     if (arbs.length === 0) {
       throw new Error('fc.oneof expects at least one parameter');
     }
-    return new OneOfArbitrary(arbs, constraints, { depth: 0 });
+    return new OneOfArbitrary(arbs, constraints, constraints.depthContext ?? { depth: 0 });
   }
 
   private constructor(
@@ -103,6 +103,11 @@ export type OneOfContraints = {
    * Once this depth has been reached only the first arbitrary will be used.
    */
   maxDepth?: number;
+  /**
+   * Context potentially shared with other entities.
+   * If not provided, a context will be scoped on the instance.
+   */
+  depthContext?: DepthContext;
 };
 
 /**

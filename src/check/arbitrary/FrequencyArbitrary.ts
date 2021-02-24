@@ -49,7 +49,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     if (constraints.withCrossShrink && warbs[0].weight === 0) {
       throw new Error('fc.frequency expects first arbitrary to be defined with a weight strictly superior to 0');
     }
-    return new FrequencyArbitrary(warbs, constraints, { depth: 0 });
+    return new FrequencyArbitrary(warbs, constraints, constraints.depthContext ?? { depth: 0 });
   }
 
   private constructor(
@@ -152,6 +152,11 @@ export type FrequencyContraints = {
    * Once this depth has been reached only the first arbitrary will be used.
    */
   maxDepth?: number;
+  /**
+   * Context potentially shared with other entities.
+   * If not provided, a context will be scoped on the instance.
+   */
+  depthContext?: DepthContext;
 };
 
 /**
