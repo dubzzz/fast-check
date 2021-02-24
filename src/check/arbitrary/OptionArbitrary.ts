@@ -1,9 +1,7 @@
 import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { frequency } from './FrequencyArbitrary';
-
-/** @internal */
-type DepthContext = { depth: number };
+import { DepthContext } from './OneOfArbitrary';
 
 /**
  * Constraints to be applied on {@link option}

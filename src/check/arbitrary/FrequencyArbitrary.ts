@@ -2,10 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
-import { getDepthContextFor } from './OneOfArbitrary';
-
-/** @internal */
-type DepthContext = { depth: number };
+import { DepthContext, getDepthContextFor } from './OneOfArbitrary';
 
 /**
  * Conjonction of a weight and an arbitrary used by {@link frequency}

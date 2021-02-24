@@ -3,8 +3,8 @@ import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
-/** @internal */
-type DepthContext = { depth: number };
+/** @public */
+export type DepthContext = { depth: number };
 
 /** @internal - Never garbage collecting instances */
 const depthContextCache = new Map<string, DepthContext>();
