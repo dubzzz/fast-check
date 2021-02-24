@@ -278,6 +278,11 @@ jobs:
           - '12.17'
           # Node 10 does not understand ES modules
           - '10'
+          # Node 13 supports ES modules a bit differently from others
+          - '13.2'
+          - '13.6'
+          - '13.7'
+          - '13'
     steps:
     - uses: actions/checkout@v2
     - name: Using Node v${{matrix.node-version}}
