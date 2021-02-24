@@ -2,6 +2,9 @@ import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { frequency } from './FrequencyArbitrary';
 
+/** @internal */
+type DepthContext = { depth: number };
+
 /**
  * Constraints to be applied on {@link option}
  * @remarks Since 2.2.0
@@ -18,6 +21,22 @@ export interface OptionConstraints<TNil = null> {
    * @remarks Since 1.17.0
    */
   nil?: TNil;
+  /**
+   * While going deeper and deeper within a recursive structure,
+   * this factor will be used to increase the probability to generate instances
+   * of the first passed arbitrary
+   */
+  depthBiasFactor?: number;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only the first arbitrary will be used.
+   */
+  maxDepth?: number;
+  /**
+   * Context potentially shared with other entities.
+   * If not provided, a context will be scoped on the instance.
+   */
+  depthContext?: DepthContext | string;
 }
 
 /**
@@ -69,7 +88,7 @@ function option<T, TNil>(arb: Arbitrary<T>, constraints?: number | OptionConstra
     );
   }
   return frequency(
-    { withCrossShrink: true },
+    { ...constraints, withCrossShrink: true },
     {
       arbitrary: constant(
         Object.prototype.hasOwnProperty.call(constraints, 'nil') ? (constraints.nil as TNil) : ((null as any) as TNil)
