@@ -2,6 +2,11 @@ import { LazyArbitrary } from './_internals/LazyArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
+export interface TieFunction<T> {
+  <K extends keyof T>(key: K): Arbitrary<T[K]>;
+  (key: string): Arbitrary<unknown>;
+}
+
 /**
  * For mutually recursive types
  *
@@ -22,7 +27,7 @@ import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Co
  * @public
  */
 export function letrec<T>(
-  builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }
+  builder: (tie: TieFunction<T>) => { [K in keyof T]: Arbitrary<T[K]> }
 ): { [K in keyof T]: Arbitrary<T[K]> } {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = Object.create(null);
   const tie = (key: keyof T): Arbitrary<any> => {

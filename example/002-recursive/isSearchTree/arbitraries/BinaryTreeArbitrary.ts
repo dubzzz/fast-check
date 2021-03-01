@@ -15,7 +15,11 @@ export const binaryTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tree<numb
 };
 
 export const binaryTreeWithoutMaxDepth = (): fc.Arbitrary<Tree<number>> => {
-  const { tree } = fc.letrec((tie) => ({
+  const { tree } = fc.letrec<{
+    leaf: Tree<number>;
+    node: Tree<number>;
+    tree: Tree<number>;
+  }>((tie) => ({
     leaf: fc.record({
       value: fc.integer(),
       left: fc.constant(null),
@@ -24,7 +28,7 @@ export const binaryTreeWithoutMaxDepth = (): fc.Arbitrary<Tree<number>> => {
     node: fc.record({ value: fc.integer(), left: tie('tree'), right: tie('tree') }),
     tree: fc.oneof({ depthFactor: 0.5 }, tie('leaf'), tie('node')),
   }));
-  return tree as fc.Arbitrary<Tree<number>>;
+  return tree;
 };
 
 // Alternative solutions
