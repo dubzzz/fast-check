@@ -4,7 +4,13 @@ import { Shrinkable } from './definition/Shrinkable';
 
 /** @internal */
 class OneOfArbitrary<T> extends Arbitrary<T> {
-  constructor(readonly arbs: Arbitrary<T>[]) {
+  static from<T>(arbs: Arbitrary<T>[]) {
+    if (arbs.length === 0) {
+      throw new Error('fc.oneof expects at least one arbitrary');
+    }
+    return new OneOfArbitrary(arbs);
+  }
+  private constructor(readonly arbs: Arbitrary<T>[]) {
     super();
   }
   generate(mrng: Random): Shrinkable<T> {
@@ -38,10 +44,7 @@ export type OneOfValue<Ts extends Arbitrary<unknown>[]> = {
  * @public
  */
 function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfValue<Ts>> {
-  if (arbs.length === 0) {
-    throw new Error('fc.oneof expects at least one parameter');
-  }
-  return new OneOfArbitrary<OneOfValue<Ts>>([...arbs] as Arbitrary<OneOfValue<Ts>>[]);
+  return OneOfArbitrary.from(arbs as Arbitrary<OneOfValue<Ts>>[]);
 }
 
 export { oneof };
