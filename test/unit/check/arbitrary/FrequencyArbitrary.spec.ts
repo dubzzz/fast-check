@@ -35,7 +35,6 @@ describe('FrequencyArbitrary', () => {
           return gFreq === gOneOf;
         })
       ));
-
     it('Should reject calls without any weighted arbitraries', () => {
       expect(() => frequency()).toThrowError();
     });
