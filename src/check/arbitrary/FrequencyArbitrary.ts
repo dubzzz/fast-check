@@ -26,7 +26,14 @@ export interface WeightedArbitrary<T> {
 class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly summedWarbs: WeightedArbitrary<T>[];
   readonly totalWeight: number;
-  constructor(readonly warbs: WeightedArbitrary<T>[]) {
+
+  static from<T>(warbs: WeightedArbitrary<T>[]) {
+    if (warbs.length === 0) {
+      throw new Error('fc.frequency expects at least one weigthed arbitrary');
+    }
+    return new FrequencyArbitrary(warbs);
+  }
+  private constructor(readonly warbs: WeightedArbitrary<T>[]) {
     super();
     let currentWeight = 0;
     this.summedWarbs = [];
@@ -70,10 +77,7 @@ export type FrequencyValue<Ts extends WeightedArbitrary<unknown>[]> = {
  * @public
  */
 function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbitrary<FrequencyValue<Ts>> {
-  if (warbs.length === 0) {
-    throw new Error('fc.frequency expects at least one parameter');
-  }
-  return new FrequencyArbitrary<FrequencyValue<Ts>>([...warbs] as WeightedArbitrary<FrequencyValue<Ts>>[]);
+  return FrequencyArbitrary.from(warbs as WeightedArbitrary<FrequencyValue<Ts>>[]);
 }
 
 export { frequency };
