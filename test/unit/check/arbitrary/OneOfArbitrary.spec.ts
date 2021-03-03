@@ -43,6 +43,9 @@ describe('OneOfArbitrary', () => {
           return shrinks.length === 1 && shrinks[0].value === shrinkable.value - 42;
         })
       ));
+    it('Should reject calls without any arbitraries', () => {
+      expect(() => oneof()).toThrowError();
+    });
 
     genericHelper.isValidArbitrary(
       (metas: { type: string; value: number }[]) => {
