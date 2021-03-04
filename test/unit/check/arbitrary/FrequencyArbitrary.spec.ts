@@ -38,5 +38,56 @@ describe('FrequencyArbitrary', () => {
     it('Should reject calls without any weighted arbitraries', () => {
       expect(() => frequency()).toThrowError();
     });
+    it('Should reject calls including at one strictly negative weight', () =>
+      fc.assert(
+        fc.property(
+          fc.integer({ max: -1 }),
+          fc.array(fc.nat()),
+          fc.array(fc.nat()),
+          (negativeWeight, headingWeights, traillingWeights) => {
+            expect(() =>
+              frequency(
+                ...[...headingWeights, negativeWeight, ...traillingWeights].map((weight) => ({
+                  weight,
+                  arbitrary: stubArb.single(0),
+                }))
+              )
+            ).toThrowError();
+          }
+        )
+      ));
+    it('Should reject calls having a total weight of zero', () =>
+      fc.assert(
+        fc.property(fc.nat({ max: 1000 }), (numEntries) => {
+          // Combined with: 'Should reject calls including at one strictly negative weight'
+          // it means that we have: 'Should reject calls having a total weight inferior or equal to zero'
+          expect(() =>
+            frequency(
+              ...[...Array(numEntries)].map(() => ({
+                weight: 0,
+                arbitrary: stubArb.single(0),
+              }))
+            )
+          ).toThrowError();
+        })
+      ));
+    it('Should not reject calls defining a strictly positive total weight without any negative weights', () =>
+      fc.assert(
+        fc.property(
+          fc.integer({ min: 1 }),
+          fc.array(fc.nat()),
+          fc.array(fc.nat()),
+          (negativeWeight, headingWeights, traillingWeights) => {
+            expect(() =>
+              frequency(
+                ...[...headingWeights, negativeWeight, ...traillingWeights].map((weight) => ({
+                  weight,
+                  arbitrary: stubArb.single(0),
+                }))
+              )
+            ).not.toThrowError();
+          }
+        )
+      ));
   });
 });
