@@ -36,29 +36,71 @@ describe('OneOfArbitrary', () => {
       ));
     it('Should call the right shrink on shrink', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.integer(), { minLength: 1 }), (seed, choices) => {
-          const mrng = stubRng.mutable.fastincrease(seed);
-          const shrinkable = oneof(...choices.map((c) => new CustomArbitrary(c))).generate(mrng);
-          const shrinks = [...shrinkable.shrink()];
-          return shrinks.length === 1 && shrinks[0].value === shrinkable.value - 42;
-        })
+        fc.property(
+          fc.integer(),
+          fc.set(fc.integer(), { minLength: 1 }),
+          fc.record({ withCrossShrink: fc.boolean() }, { requiredKeys: [] }),
+          (seed, choices, constraints) => {
+            const mrng = stubRng.mutable.fastincrease(seed);
+            const arbs = choices.map((c) => new CustomArbitrary(c));
+            const g = (constraints !== undefined ? oneof(constraints, ...arbs) : oneof(...arbs)).generate(mrng);
+            const shrinks = [...g.shrink()].map((s) => s.value_);
+            // When withCrossShrink: true is enabled and if arb[0] is not the one that generated the initial value
+            // First shrink will be a value generated using arb[0]: in our case it means that the generated value will be choices[0]
+            if (constraints && constraints.withCrossShrink && g.value !== choices[0]) {
+              expect(shrinks).toEqual([choices[0], g.value - 42]);
+            } else {
+              expect(shrinks).toEqual([g.value - 42]);
+            }
+          }
+        )
       ));
     it('Should reject calls without any arbitraries', () => {
       expect(() => oneof()).toThrowError();
     });
 
-    genericHelper.isValidArbitrary(
-      (metas: { type: string; value: number }[]) => {
-        const arbs = metas.map((m) => (m.type === 'unique' ? constant(m.value) : integer(m.value - 10, m.value)));
-        return oneof(...arbs);
-      },
+    const seedGenerator = fc.record(
       {
-        seedGenerator: fc.array(fc.record({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), {
+        data: fc.array(fc.record({ type: fc.constantFrom('unique', 'range'), value: fc.nat() }), {
           minLength: 1,
         }),
-        isValidValue: (v: number, metas: { type: string; value: number }[]) =>
-          metas.findIndex((m) => (m.type === 'unique' ? m.value === v : m.value - 10 <= v && v <= m.value)) !== -1,
-        isStrictlySmallerValue: (a: number, b: number) => (Math.abs(b - a) <= 10 && b > 0 ? b - a > 0 : b - a < 0),
+        constraints: fc.record({ withCrossShrink: fc.boolean() }, { requiredKeys: [] }),
+      },
+      { requiredKeys: ['data'] }
+    );
+    type SeedGeneratorType = typeof seedGenerator extends fc.Arbitrary<infer T> ? T : never;
+
+    genericHelper.isValidArbitrary(
+      (metas: SeedGeneratorType) => {
+        const arbs = metas.data.map((m) => (m.type === 'unique' ? constant(m.value) : integer(m.value - 10, m.value)));
+        if (metas.constraints === undefined) {
+          return oneof(...arbs);
+        }
+        return oneof(metas.constraints, ...arbs);
+      },
+      {
+        seedGenerator,
+        isValidValue: (v: number, metas: SeedGeneratorType) => {
+          for (const m of metas.data) {
+            if (m.type === 'unique' && m.value === v) return true;
+            if (m.type === 'range' && m.value - 10 <= v && v <= m.value) return true;
+          }
+          return false;
+        },
+        isStrictlySmallerValue: (a: number, b: number, metas: SeedGeneratorType) => {
+          // When withCrossShrink is not toggled, the shrinker cannot jump from one arbitrary to another
+          if (metas.constraints !== undefined && metas.constraints.withCrossShrink) {
+            const canBeInFirstArbitrary =
+              metas.data[0].type === 'unique'
+                ? metas.data[0].value === a
+                : metas.data[0].value - 10 <= a && a <= metas.data[0].value;
+            if (canBeInFirstArbitrary) {
+              // a is possibly coming from our first arbitrary
+              return true;
+            }
+          }
+          return Math.abs(b - a) <= 10 && b > 0 ? b - a > 0 : b - a < 0;
+        },
       }
     );
   });

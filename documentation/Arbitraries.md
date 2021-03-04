@@ -2119,14 +2119,18 @@ fc.option(fc.string(), { nil: undefined })
 > Generate one value based on one of the passed arbitraries
 >
 > Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries).
+>
+> **Warning:** In the upcomping major releases of fast-check the first arbitrary specified on `oneof` will have a privileged position. Constraints like `withCrossShrink` tend to favor it over others and will probably be enabled by default.
 
 *&#8195;Signatures*
 
 - `fc.oneof(...arbitraries)`
+- `fc.oneof({withCrossShrink?}, ...arbitraries)`
 
 *&#8195;with:*
 
 - `...arbitraries` — _arbitraries that could be used to generate a value_
+- `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary. It may be pretty useful for recursive structures as you can easily reduce their depth in case of failure by toggling this flag_
 
 *&#8195;Usages*
 
@@ -2136,6 +2140,12 @@ fc.oneof(fc.char(), fc.boolean())
 
 fc.oneof(fc.char(), fc.boolean(), fc.nat())
 // Examples of generated values: true, 234471686, 485911805, false, "\\"…
+
+fc.oneof({withCrossShrink: true}, fc.boolean(), fc.array(fc.boolean()))
+// Note: In case of failure on an array of boolean values the shrinker will first try to check
+// if a failure can also be triggered with a simple boolean (the first arbitrary specified)
+// if not it will follow on the classical shrinking strategy specifies for arrays of boolean.
+// Examples of generated values: false, true, [false,true,true,false], [false,true,true,true,false,true,true,false], [true,false,false]…
 ```
 </details>
 
