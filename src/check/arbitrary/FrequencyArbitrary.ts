@@ -31,6 +31,17 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     if (warbs.length === 0) {
       throw new Error('fc.frequency expects at least one weigthed arbitrary');
     }
+    let totalWeight = 0;
+    for (let idx = 0; idx !== warbs.length; ++idx) {
+      const currentWeight = warbs[idx].weight;
+      totalWeight += currentWeight;
+      if (currentWeight < 0) {
+        throw new Error('fc.frequency expects weights to be superior or equal to 0');
+      }
+    }
+    if (totalWeight <= 0) {
+      throw new Error('fc.frequency expects the sum of weights to be strictly superior to 0');
+    }
     return new FrequencyArbitrary(warbs);
   }
   private constructor(readonly warbs: WeightedArbitrary<T>[]) {
