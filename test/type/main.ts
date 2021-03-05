@@ -249,6 +249,14 @@ expectType<fc.Arbitrary<string | number>>()(
   fc.oneof(fc.string(), fc.nat()),
   '"oneof" with a multiple arguments of different types'
 );
+expectType<fc.Arbitrary<string | number>>()(
+  fc.oneof({}, fc.string(), fc.nat()),
+  '"oneof" with different types and empty constraints'
+);
+expectType<fc.Arbitrary<string | number>>()(
+  fc.oneof({ withCrossShrink: true }, fc.string(), fc.nat()),
+  '"oneof" with different types and some constraints'
+);
 // @ts-expect-error - oneof expects arbitraries not raw values
 fc.oneof(fc.string(), '1');
 
