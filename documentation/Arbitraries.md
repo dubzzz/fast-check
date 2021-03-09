@@ -2147,14 +2147,18 @@ fc.oneof(fc.char(), fc.boolean(), fc.nat())
 > Generate one value based on one of the passed arbitraries
 >
 > Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight, the higher it is the more it will be probable. It preserves the shrinking capabilities of the underlying arbitrary.
+>
+> **Warning:** In the upcomping major releases of fast-check the first arbitrary specified on `frequency` will have a privileged position. Constraints like `withCrossShrink` tend to favor it over others and will probably be enabled by default.
 
 *&#8195;Signatures*
 
 - `fc.frequency(...{ arbitrary, weight })`
+- `fc.frequency({withCrossShrink?}, ...{ arbitrary, weight })`
 
 *&#8195;with:*
 
 - `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
+- `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary (if and only if its weight is strictly greater than 0). It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
 
 *&#8195;Usages*
 
@@ -2164,6 +2168,16 @@ fc.frequency(
   { arbitrary: fc.boolean(), weight: 1 }
 )
 // Examples of generated values: true, "&", "8", false, "["…
+
+fc.frequency(
+  { withCrossShrink: true },
+  { arbitrary: fc.boolean(), weight: 2 },
+  { arbitrary: fc.array(fc.boolean()), weight: 1 }
+)
+// Note: In case of failure on an array of boolean values the shrinker will first try to check
+// if a failure can also be triggered with a simple boolean (the first arbitrary specified)
+// if not it will carry on the classical shrinking strategy defined for arrays of boolean.
+// Examples of generated values: true, [true,false], [true,false,false], [false,true,true], [false]…
 ```
 </details>
 

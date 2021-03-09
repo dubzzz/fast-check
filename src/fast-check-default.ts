@@ -41,7 +41,12 @@ import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
-import { frequency, WeightedArbitrary, FrequencyValue } from './check/arbitrary/FrequencyArbitrary';
+import {
+  frequency,
+  WeightedArbitrary,
+  FrequencyValue,
+  FrequencyContraints,
+} from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
 import {
@@ -345,6 +350,7 @@ export {
   Float64ArrayConstraints,
   FloatConstraints,
   FloatNextConstraints,
+  FrequencyContraints,
   IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,

@@ -261,6 +261,15 @@ expectType<fc.Arbitrary<number | string>>()(
   fc.frequency({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 }),
   '"frequency" with a multiple arguments of different types'
 );
+expectType<fc.Arbitrary<string | number>>()(
+  fc.frequency({}, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 }),
+  '"frequency" with different types and empty constraints'
+);
+expectType<fc.Arbitrary<string | number>>()(
+  fc.frequency({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 }),
+  '"frequency" with different types and some constraints'
+);
+
 // @ts-expect-error - frequency expects arbitraries not raw values
 fc.frequency({ arbitrary: fc.string(), weight: 1 }, { arbitrary: '1', weight: 1 });
 
