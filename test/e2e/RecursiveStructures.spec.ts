@@ -1,0 +1,59 @@
+import * as fc from '../../src/fast-check';
+import { seed } from './seed';
+
+describe(`RecursiveStructures (seed: ${seed})`, () => {
+  // Test shrinking capabilities on very simple scenario:
+  // >  The arbitrary used as base-case for the recursive structure is a constant.
+  // >  It either pass or fail. But we ca never geenrate the wrong one and miss shrinking opportunities.
+
+  it('Should shrink letrec/oneof towards the smallest case (on very simple scenario)', () => {
+    // Arrange
+    const failingLength = 2;
+    const dataArb = fc.letrec((tie) => ({
+      // TODO - Remove `weight:2` on base-case
+      data: fc.frequency(
+        { withCrossShrink: true },
+        { arbitrary: fc.constant([0]), weight: 2 },
+        { arbitrary: fc.tuple(tie('data'), tie('data')), weight: 1 }
+      ),
+    })).data;
+
+    // Act
+    const out = fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+
+    // Assert
+    expect(out.failed).toBe(true);
+    expect(flat(out.counterexample![0])).toHaveLength(failingLength);
+  });
+
+  it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', () => {
+    // Arrange
+    const failingLength = 2;
+    const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
+      if (n <= 1) return fc.constant([0]);
+      else
+        return fc.frequency(
+          { withCrossShrink: true },
+          { arbitrary: fc.constant([0]), weight: 1 },
+          { arbitrary: fc.tuple(dataArb(), dataArb()), weight: 1 }
+        );
+    });
+
+    // Act
+    const out = fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+
+    // Assert
+    expect(out.failed).toBe(true);
+    expect(flat(out.counterexample![0])).toHaveLength(failingLength);
+  });
+});
+
+// Helpers
+
+function flat(arr: unknown[]): unknown[] {
+  return arr.reduce((acc: unknown[], cur: unknown) => {
+    if (Array.isArray(cur)) acc.push(...flat(cur));
+    else acc.push(cur);
+    return acc;
+  }, []);
+}
