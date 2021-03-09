@@ -1,9 +1,9 @@
 import * as fc from '../../../../lib/fast-check';
-import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 
 import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
+import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
