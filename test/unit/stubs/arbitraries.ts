@@ -61,11 +61,11 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
  */
 class SingleUseArbitrary<T> extends Arbitrary<T> {
   calledOnce = false;
-  constructor(public id: T) {
+  constructor(public id: T, public noCallOnceCheck: boolean) {
     super();
   }
   generate(_mrng: Random): Shrinkable<T> {
-    if (this.calledOnce) {
+    if (!this.noCallOnceCheck && this.calledOnce) {
       throw 'Arbitrary has already been called once';
     }
     this.calledOnce = true;
@@ -103,7 +103,8 @@ class WithShrinkArbitrary extends Arbitrary<number> {
 const counter = (value: number): CounterArbitrary => new CounterArbitrary(value);
 const forward = (): ForwardArbitrary => new ForwardArbitrary();
 const forwardArray = (num: number): ForwardArrayArbitrary => new ForwardArrayArbitrary(num);
-const single = <T>(id: T): SingleUseArbitrary<T> => new SingleUseArbitrary(id);
+const single = <T>(id: T, noCallOnceCheck = false): SingleUseArbitrary<T> =>
+  new SingleUseArbitrary(id, noCallOnceCheck);
 const withShrink = (value: number): WithShrinkArbitrary => new WithShrinkArbitrary(value);
 
 export {
