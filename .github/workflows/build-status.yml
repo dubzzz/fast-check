@@ -351,10 +351,8 @@ jobs:
       - name: Publish to gh-pages
         uses: JamesIves/github-pages-deploy-action@4.1.0
         with:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          BRANCH: gh-pages
-          FOLDER: docs
-          CLEAN: true
+          branch: gh-pages
+          folder: docs
   publish_package:
     name: 'Publish package'
     needs: 
