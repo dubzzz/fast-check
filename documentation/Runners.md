@@ -110,6 +110,8 @@ export interface Parameters<T = void> {
     interruptAfterTimeLimit?: number; // optional, interrupt test execution after a given time limit
                         // in milliseconds (relies on Date.now): disabled by default
     markInterruptAsFailure?: boolean; // optional, mark interrupted runs as failure: disabled by default
+    ignoreEqualValues?: boolean; // optional, do not repeat runs with already covered cases: disabled by default
+    					// This is useful when arbitrary has a limited number of variants
     reporter?: (runDetails: RunDetails<T>) => void; // optional, custom reporter replacing the default one
                         // reporter is responsible for throwing in case of failure, as an example default one throws
                         // whenever `runDetails.failed` is true but it is up to you

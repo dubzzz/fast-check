@@ -6,9 +6,11 @@ import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkabl
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
+import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
 jest.mock('../../../../src/check/property/SkipAfterProperty');
 jest.mock('../../../../src/check/property/TimeoutProperty');
 jest.mock('../../../../src/check/property/UnbiasedProperty');
+jest.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
 
 function buildProperty(asyncProp: boolean) {
   return {
@@ -23,6 +25,7 @@ describe('decorateProperty', () => {
     (SkipAfterProperty as any).mockClear();
     (TimeoutProperty as any).mockClear();
     (UnbiasedProperty as any).mockClear();
+    (IgnoreEqualValuesProperty as any).mockClear();
   });
   it('Should enable none when needed', () => {
     decorateProperty(buildProperty(true), {
@@ -30,10 +33,12 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: false,
+      ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(0);
   });
   it('Should enable SkipAfterProperty on skipAllAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
@@ -41,10 +46,12 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: false,
+      ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(0);
   });
   it('Should enable SkipAfterProperty on interruptAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
@@ -52,10 +59,12 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: 1,
       timeout: null,
       unbiased: false,
+      ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(0);
   });
   it('Should enable TimeoutProperty on timeout', () => {
     decorateProperty(buildProperty(true), {
@@ -63,10 +72,12 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: 1,
       unbiased: false,
+      ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(1);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(0);
   });
   it('Should enable UnbiasedProperty on unbiased', () => {
     decorateProperty(buildProperty(true), {
@@ -74,10 +85,12 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: true,
+      ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(1);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(0);
   });
   it('Should not enable TimeoutProperty on synchronous property', () => {
     decorateProperty(buildProperty(false), {
@@ -85,10 +98,25 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: 1,
       unbiased: false,
+      ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(0);
+  });
+  it('Should enable IgnoreEqualValuesProperty on ignoreEqualValues', () => {
+    decorateProperty(buildProperty(true), {
+      skipAllAfterTimeLimit: null,
+      interruptAfterTimeLimit: null,
+      timeout: null,
+      unbiased: false,
+      ignoreEqualValues: true,
+    });
+    expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
+    expect(TimeoutProperty).toHaveBeenCalledTimes(0);
+    expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(1);
   });
   it('Should enable multiple wrappers when needed', () => {
     decorateProperty(buildProperty(true), {
@@ -96,9 +124,11 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: 1,
       timeout: 1,
       unbiased: true,
+      ignoreEqualValues: true,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(2);
     expect(TimeoutProperty).toHaveBeenCalledTimes(1);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(1);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(1);
   });
 });

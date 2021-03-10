@@ -25,6 +25,7 @@ export class QualifiedParameters<T> {
   skipAllAfterTimeLimit: number | null;
   interruptAfterTimeLimit: number | null;
   markInterruptAsFailure: boolean;
+  ignoreEqualValues: boolean;
   reporter: ((runDetails: RunDetails<T>) => void) | null;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
 
@@ -39,6 +40,7 @@ export class QualifiedParameters<T> {
     this.skipAllAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null);
     this.interruptAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null);
     this.markInterruptAsFailure = QualifiedParameters.readBoolean(p, 'markInterruptAsFailure');
+    this.ignoreEqualValues = QualifiedParameters.readBoolean(p, 'ignoreEqualValues');
     this.logger = QualifiedParameters.readOrDefault(p, 'logger', (v: string) => {
       // tslint:disable-next-line:no-console
       console.log(v);
@@ -62,6 +64,7 @@ export class QualifiedParameters<T> {
       skipAllAfterTimeLimit: orUndefined(this.skipAllAfterTimeLimit),
       interruptAfterTimeLimit: orUndefined(this.interruptAfterTimeLimit),
       markInterruptAsFailure: this.markInterruptAsFailure,
+      ignoreEqualValues: this.ignoreEqualValues,
       path: this.path,
       logger: this.logger,
       unbiased: this.unbiased,

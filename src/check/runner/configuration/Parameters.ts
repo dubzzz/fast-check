@@ -92,6 +92,13 @@ export interface Parameters<T = void> {
    */
   markInterruptAsFailure?: boolean;
   /**
+   * Do not repeat runs with already covered cases.
+   * This is useful when arbitrary has a limited number of variants.
+   *
+   * NOTE: Values are compared by equality of fc.stringify results.
+   */
+  ignoreEqualValues?: boolean;
+  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
    * @remarks Since 1.0.0
