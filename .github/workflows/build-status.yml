@@ -343,6 +343,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Download documentation
         uses: actions/download-artifact@v2
         with:
@@ -353,6 +354,7 @@ jobs:
         with:
           branch: gh-pages
           folder: docs
+          clean: true
   publish_package:
     name: 'Publish package'
     needs: 
