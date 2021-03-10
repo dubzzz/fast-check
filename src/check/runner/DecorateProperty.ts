@@ -3,11 +3,12 @@ import { SkipAfterProperty } from '../property/SkipAfterProperty';
 import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
+import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty';
 
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
   QualifiedParameters<Ts>,
-  'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit'
+  'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit' | 'ignoreEqualValues'
 >;
 
 /** @internal */
@@ -22,5 +23,8 @@ export function decorateProperty<Ts>(
     prop = new SkipAfterProperty(prop, Date.now, qParams.skipAllAfterTimeLimit, false);
   if (qParams.interruptAfterTimeLimit != null)
     prop = new SkipAfterProperty(prop, Date.now, qParams.interruptAfterTimeLimit, true);
+  if (qParams.ignoreEqualValues) {
+    prop = new IgnoreEqualValuesProperty(prop);
+  }
   return prop;
 }
