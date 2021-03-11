@@ -2153,12 +2153,13 @@ fc.oneof(fc.char(), fc.boolean(), fc.nat())
 *&#8195;Signatures*
 
 - `fc.frequency(...{ arbitrary, weight })`
-- `fc.frequency({withCrossShrink?}, ...{ arbitrary, weight })`
+- `fc.frequency({withCrossShrink?, maxDepth?}, ...{ arbitrary, weight })`
 
 *&#8195;with:*
 
 - `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary (if and only if its weight is strictly greater than 0). It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value even if its weight is zero_
 
 *&#8195;Usages*
 
@@ -2178,6 +2179,47 @@ fc.frequency(
 // if a failure can also be triggered with a simple boolean (the first arbitrary specified)
 // if not it will carry on the classical shrinking strategy defined for arrays of boolean.
 // Examples of generated values: true, [true,false], [true,false,false], [false,true,true], [false]…
+
+// fc.frequency fits very well with recursive stuctures built using fc.letrec
+// here are some examples:
+
+fc.letrec(tie => ({
+  list: fc.record({
+    head: fc.nat(),
+    queue: fc.frequency(
+      { maxDepth: 2 },
+      { arbitrary: fc.constant([]), weight: 1 },
+      { arbitrary: tie('list'), weight: 2 }
+    )
+  })
+})).list
+// Note: Create a linked-list having a max-length of 3.
+// Examples of generated values:
+// • {"head":22,"queue":{"head":19,"queue":[]}}
+// • {"head":1525860351,"queue":{"head":27,"queue":{"head":2147483642,"queue":[]}}}
+// • {"head":150027580,"queue":{"head":4,"queue":{"head":1111036126,"queue":[]}}}
+// • {"head":1777171327,"queue":[]}
+// • {"head":6,"queue":{"head":2029127408,"queue":{"head":1041976777,"queue":[]}}}
+// • …
+
+fc.letrec(tie => ({
+  list: fc.record({
+    head: fc.nat(),
+    queue: fc.frequency(
+      { maxDepth: 2 },
+      { arbitrary: fc.constant([]), weight: 0 },
+      { arbitrary: tie('list'), weight: 1 }
+    )
+  })
+})).list
+// Note: Create a linked-list having a length of 3 (not more, not less).
+// Examples of generated values:
+// • {"head":22,"queue":{"head":19,"queue":{"head":2147483640,"queue":[]}}}
+// • {"head":1525860351,"queue":{"head":27,"queue":{"head":2147483642,"queue":[]}}}
+// • {"head":150027580,"queue":{"head":4,"queue":{"head":1111036126,"queue":[]}}}
+// • {"head":1777171327,"queue":{"head":1226266757,"queue":{"head":2147483632,"queue":[]}}}
+// • {"head":6,"queue":{"head":2029127408,"queue":{"head":1041976777,"queue":[]}}}
+// • …
 ```
 </details>
 

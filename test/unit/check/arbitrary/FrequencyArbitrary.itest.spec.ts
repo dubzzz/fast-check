@@ -26,7 +26,7 @@ describe('FrequencyArbitrary', () => {
             const totalWeight = config.reduce((acc, e) => acc + e.weight, 0);
             return totalWeight > 0;
           }),
-        constraints: fc.record({ withCrossShrink: fc.boolean() }, { requiredKeys: [] }),
+        constraints: fc.record({ withCrossShrink: fc.boolean(), maxDepth: fc.nat() }, { requiredKeys: [] }),
       },
       { requiredKeys: ['data'] }
     );
@@ -47,7 +47,10 @@ describe('FrequencyArbitrary', () => {
       {
         seedGenerator,
         isValidValue: (v: number, metas: SeedGeneratorType) => {
-          for (const m of metas.data) {
+          // If maxDepth is 0, then only the first arbitrary can be called
+          const data =
+            metas.constraints !== undefined && metas.constraints.maxDepth === 0 ? [metas.data[0]] : metas.data;
+          for (const m of data) {
             if (m.weight === 0) continue;
             if (m.type === 'unique' && m.value === v) return true;
             if (m.type === 'range' && m.value - 10 <= v && v <= m.value) return true;

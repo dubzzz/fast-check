@@ -1,5 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
@@ -67,6 +69,81 @@ describe('FrequencyArbitrary', () => {
           }
         )
       ));
+    it('Should call the first arbitrary to generate the value when maxDepth of 0', () =>
+      fc.assert(
+        fc.property(frequencyValidInputsArb, (validInputs) => {
+          // Arrange
+          const arb = frequency({ maxDepth: 0 }, ...validInputs);
+          const nextInt: jest.Mock<number, [] | [number] | [number, number]> = jest.fn();
+          const fakeRandom = { nextInt: nextInt as Random['nextInt'] } as Random;
+
+          // Act
+          const g = arb.generate(fakeRandom).value_;
+
+          // Assert
+          expect(nextInt).not.toHaveBeenCalled();
+          expect(g).toBe(validInputs[0].expectedValue);
+        })
+      ));
+    it('Should call the first arbitrary to generate the value as soon as maxDepth has been reached', () => {
+      // Arrange
+      class LazyArb extends Arbitrary<any> {
+        constructor(readonly arbBuilder: () => Arbitrary<any>) {
+          super();
+        }
+        generate(mrng: Random): Shrinkable<any, any> {
+          return this.arbBuilder().generate(mrng);
+        }
+        withBias(freq: number) {
+          return this.arbBuilder().withBias(freq);
+        }
+      }
+      const arb: Arbitrary<any> = frequency(
+        { maxDepth: 5 },
+        { weight: 0, arbitrary: stubArb.single(0) },
+        { weight: 1, arbitrary: new LazyArb(() => arb).map((d) => [d]) }
+      );
+      const nextInt: jest.Mock<number, [] | [number] | [number, number]> = jest.fn().mockReturnValue(0);
+      const fakeRandom = { nextInt: nextInt as Random['nextInt'] } as Random;
+
+      // Act
+      const g = arb.generate(fakeRandom).value_;
+
+      // Assert
+      expect(nextInt).toHaveBeenCalledTimes(5); // maxDepth
+      expect(g).toEqual([[[[[0]]]]]); // const mapper = (d) => [d]; mapper(mapper(mapper(mapper(mapper(0))))) is [[[[[0]]]]]
+    });
+    it('Should not share depth accross distinct instances of frequency (if not requested)', () => {
+      // Arrange
+      const arb: Arbitrary<any> = frequency(
+        { maxDepth: 1 },
+        { weight: 0, arbitrary: stubArb.single(0) },
+        {
+          weight: 1,
+          arbitrary: frequency(
+            { maxDepth: 1 },
+            { weight: 0, arbitrary: stubArb.single(0) },
+            {
+              weight: 1,
+              arbitrary: frequency(
+                { maxDepth: 1 },
+                { weight: 0, arbitrary: stubArb.single(0) },
+                { weight: 1, arbitrary: stubArb.single(1) }
+              ).map((d) => [d]),
+            }
+          ).map((d) => [d]),
+        }
+      );
+      const nextInt: jest.Mock<number, [] | [number] | [number, number]> = jest.fn().mockReturnValue(0);
+      const fakeRandom = { nextInt: nextInt as Random['nextInt'] } as Random;
+
+      // Act
+      const g = arb.generate(fakeRandom).value_;
+
+      // Assert
+      expect(nextInt).toHaveBeenCalledTimes(3); // once per instance of frequency
+      expect(g).toEqual([[1]]);
+    });
 
     it('Should reject calls without any weighted arbitraries', () => {
       expect(() => frequency()).toThrowError();
