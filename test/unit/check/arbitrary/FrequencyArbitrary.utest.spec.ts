@@ -148,6 +148,14 @@ describe('FrequencyArbitrary', () => {
     it('Should reject calls without any weighted arbitraries', () => {
       expect(() => frequency()).toThrowError();
     });
+    it('Should reject calls without weight', () => {
+      expect(() => frequency({ arbitrary: stubArb.single(0), weight: undefined! })).toThrowError(
+        /expects weights to be integer values/
+      );
+    });
+    it('Should reject calls without arbitrary', () => {
+      expect(() => frequency({ arbitrary: undefined!, weight: 1 })).toThrowError(/expects arbitraries to be specified/);
+    });
     it('Should reject calls including at least one strictly negative weight', () =>
       fc.assert(
         fc.property(
