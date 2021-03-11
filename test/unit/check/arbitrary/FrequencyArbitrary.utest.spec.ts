@@ -164,8 +164,8 @@ describe('FrequencyArbitrary', () => {
       arb.generate(fakeRandom).value_;
 
       // Assert
-      expect(nextInt).toHaveBeenCalledWith(0, 1001); // first calls
-      expect(nextInt).toHaveBeenCalledWith(-1, 1001); // as we go deeper (too deep)
+      expect(nextInt).toHaveBeenCalledWith(0, 1000); // first calls: 0-1000 contains 1001 values
+      expect(nextInt).toHaveBeenCalledWith(-1, 1000); // as we go deeper (too deep)
     });
     it('Should never ask ranges containing negative values as we go deeper in the structure if depthFactor with weight of 0 on first arbitrary', () => {
       // Arrange
@@ -191,8 +191,8 @@ describe('FrequencyArbitrary', () => {
       }
 
       // Assert
-      expect(nextInt).toHaveBeenCalledWith(0, 1001); // first calls
-      expect(nextInt).not.toHaveBeenCalledWith(-1, 1001); // never called as first arbitrary has a weight of zero
+      expect(nextInt).toHaveBeenCalledWith(0, 999); // first calls: 0-999 contains 1000 values
+      expect(nextInt).not.toHaveBeenCalledWith(-1, 999); // never called as first arbitrary has a weight of zero
     });
 
     it('Should reject calls without any weighted arbitraries', () => {
