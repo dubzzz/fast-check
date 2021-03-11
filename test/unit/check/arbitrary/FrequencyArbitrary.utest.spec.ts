@@ -192,7 +192,7 @@ describe('FrequencyArbitrary', () => {
 
       // Assert
       expect(nextInt).toHaveBeenCalledWith(0, 1001); // first calls
-      expect(nextInt).not.toHaveBeenCalledWith(-1, 1001); // as we go deeper (too deep)
+      expect(nextInt).not.toHaveBeenCalledWith(-1, 1001); // never called as first arbitrary has a weight of zero
     });
 
     it('Should reject calls without any weighted arbitraries', () => {
