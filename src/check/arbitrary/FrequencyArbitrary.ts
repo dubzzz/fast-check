@@ -70,7 +70,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
       // index=0 can be selected even if it has a weight equal to zero
       return this.safeGenerateForIndex(mrng, 0);
     }
-    const selected = mrng.nextInt(this.computeDepthBenefit(), this.totalWeight - 1);
+    const selected = mrng.nextInt(-this.computeDepthBenefit(), this.totalWeight - 1);
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
         return this.safeGenerateForIndex(mrng, idx);
