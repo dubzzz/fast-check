@@ -3,6 +3,12 @@ import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
 
+/** @internal */
+type DepthContext = {
+  /** Current depth (starts at 0) */
+  depth: number;
+};
+
 /**
  * Conjonction of a weight and an arbitrary used by {@link frequency}
  * in order to generate values
@@ -43,9 +49,13 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     if (totalWeight <= 0) {
       throw new Error('fc.frequency expects the sum of weights to be strictly superior to 0');
     }
-    return new FrequencyArbitrary(warbs, constraints);
+    return new FrequencyArbitrary(warbs, constraints, { depth: 0 });
   }
-  private constructor(readonly warbs: WeightedArbitrary<T>[], readonly constraints: FrequencyContraints) {
+  private constructor(
+    readonly warbs: WeightedArbitrary<T>[],
+    readonly constraints: FrequencyContraints,
+    readonly context: DepthContext
+  ) {
     super();
     let currentWeight = 0;
     this.summedWarbs = [];
@@ -56,14 +66,14 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     this.totalWeight = currentWeight;
   }
   generate(mrng: Random): Shrinkable<T> {
+    if (this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth) {
+      // index=0 can be selected even if it has a weight equal to zero
+      return this.safeGenerateForIndex(mrng, 0);
+    }
     const selected = mrng.nextInt(0, this.totalWeight - 1);
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
-        const itemShrinkable = this.summedWarbs[idx].arbitrary.generate(mrng);
-        if (idx === 0 || !this.constraints.withCrossShrink || this.warbs[0].weight === 0) {
-          return itemShrinkable;
-        }
-        return this.enrichShrinkable(mrng.clone(), itemShrinkable);
+        return this.safeGenerateForIndex(mrng, idx);
       }
     }
     throw new Error(`Unable to generate from fc.frequency`);
@@ -71,8 +81,23 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
   withBias(freq: number) {
     return new FrequencyArbitrary(
       this.warbs.map((v) => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })),
-      this.constraints
+      this.constraints,
+      this.context
     );
+  }
+
+  /** Generate using Arbitrary at index idx and safely handle depth context */
+  private safeGenerateForIndex(mrng: Random, idx: number): Shrinkable<T> {
+    ++this.context.depth; // increase depth
+    try {
+      const itemShrinkable = this.summedWarbs[idx].arbitrary.generate(mrng);
+      if (idx === 0 || !this.constraints.withCrossShrink || this.warbs[0].weight === 0) {
+        return itemShrinkable;
+      }
+      return this.enrichShrinkable(mrng.clone(), itemShrinkable);
+    } finally {
+      --this.context.depth; // decrease depth (reset depth)
+    }
   }
 
   /**
@@ -124,6 +149,13 @@ export type FrequencyContraints = {
    * @remarks Since 2.14.0
    */
   withCrossShrink?: boolean;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only the first arbitrary will be used.
+   *
+   * Warning: First arbitrary will be used even if its weight is set to zero.
+   */
+  maxDepth?: number;
 };
 
 /**
