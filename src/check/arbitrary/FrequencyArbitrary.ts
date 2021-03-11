@@ -154,6 +154,8 @@ export type FrequencyContraints = {
    * Once this depth has been reached only the first arbitrary will be used.
    *
    * Warning: First arbitrary will be used even if its weight is set to zero.
+   *
+   * @remarks Since 2.14.0
    */
   maxDepth?: number;
 };
