@@ -522,7 +522,7 @@ Execution summary:
 
 exports[`NoRegression domain 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:0:0:2:0:1:3:1:0:1:1\\", endOnFailure: true }
+{ seed: 42, path: \\"0:0:0:3:0:1:3:1:0:0:0\\", endOnFailure: true }
 Counterexample: [\\"aa.af\\"]
 Shrunk 10 time(s)
 Got error: Property failed by returning false
@@ -531,6 +531,7 @@ Execution summary:
 [31m×[0m [\\"s.8.y40g7ch99e2ux9i71yglw.swiysf\\"]
 . [31m×[0m [\\"y40g7ch99e2ux9i71yglw.swiysf\\"]
 . . [31m×[0m [\\"a40g7ch99e2ux9i71yglw.swiysf\\"]
+. . . [32m√[0m [\\"a.swiysf\\"]
 . . . [32m√[0m [\\"aw.swiysf\\"]
 . . . [32m√[0m [\\"a2ux9i71yglw.swiysf\\"]
 . . . [31m×[0m [\\"ach99e2ux9i71yglw.swiysf\\"]
@@ -544,11 +545,8 @@ Execution summary:
 . . . . . . . [32m√[0m [\\"aw.swiysf\\"]
 . . . . . . . [31m×[0m [\\"aaa.swiysf\\"]
 . . . . . . . . [31m×[0m [\\"aa.swiysf\\"]
-. . . . . . . . . [32m√[0m [\\"a.swiysf\\"]
 . . . . . . . . . [31m×[0m [\\"aa.sf\\"]
-. . . . . . . . . . [32m√[0m [\\"a.sf\\"]
-. . . . . . . . . . [31m×[0m [\\"aa.af\\"]
-. . . . . . . . . . . [32m√[0m [\\"a.af\\"]"
+. . . . . . . . . . [31m×[0m [\\"aa.af\\"]"
 `;
 
 exports[`NoRegression double 1`] = `
@@ -605,7 +603,7 @@ Execution summary:
 
 exports[`NoRegression emailAddress 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:0:0:0:2:2:5:5:2:1:2:2:0:6:1:0:1\\", endOnFailure: true }
+{ seed: 42, path: \\"0:0:0:0:2:3:5:5:2:1:1:1:0:7:1:0:0\\", endOnFailure: true }
 Counterexample: [\\"a@aa.av\\"]
 Shrunk 16 time(s)
 Got error: Property failed by returning false
@@ -619,6 +617,7 @@ Execution summary:
 . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . [31m×[0m [\\"a@ai4uukteyzu7uy78we1d3t3q1883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . [32m√[0m [\\"a@a.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . [32m√[0m [\\"a@a2.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . [31m×[0m [\\"a@a883gz1y5iqa5ji3ovhnarfm12.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
@@ -639,12 +638,11 @@ Execution summary:
 . . . . . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . [31m×[0m [\\"a@aa.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . [32m√[0m [\\"a@a.re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . [31m×[0m [\\"a@aa.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . . [32m√[0m [\\"a@fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . [32m√[0m [\\"a@a.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . . [31m×[0m [\\"a@aa.aawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . . . [31m×[0m [\\"a@aawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
+. . . . . . . . . . . . . [32m√[0m [\\"a@a.nv\\"]
 . . . . . . . . . . . . . [32m√[0m [\\"a@ai.nv\\"]
 . . . . . . . . . . . . . [32m√[0m [\\"a@ahzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . . . . [32m√[0m [\\"a@a4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
@@ -655,9 +653,7 @@ Execution summary:
 . . . . . . . . . . . . . . [32m√[0m [\\"a@ai.nv\\"]
 . . . . . . . . . . . . . . [31m×[0m [\\"a@aaa.nv\\"]
 . . . . . . . . . . . . . . . [31m×[0m [\\"a@aa.nv\\"]
-. . . . . . . . . . . . . . . . [32m√[0m [\\"a@a.nv\\"]
-. . . . . . . . . . . . . . . . [31m×[0m [\\"a@aa.av\\"]
-. . . . . . . . . . . . . . . . . [32m√[0m [\\"a@a.av\\"]"
+. . . . . . . . . . . . . . . . [31m×[0m [\\"a@aa.av\\"]"
 `;
 
 exports[`NoRegression float 1`] = `
@@ -2079,9 +2075,9 @@ Execution summary:
 
 exports[`NoRegression record 1`] = `
 "Property failed after 5 tests
-{ seed: 42, path: \\"4:1:2:0:0:3:0:1:0:1:0:0:0:1:7:2:2\\", endOnFailure: true }
+{ seed: 42, path: \\"4:2:2:0:0:3:0:1:0:1:0:0:0:1:7:1\\", endOnFailure: true }
 Counterexample: [{\\"k1\\":210974299}]
-Shrunk 16 time(s)
+Shrunk 15 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -2090,6 +2086,7 @@ Execution summary:
 [32m√[0m [{\\"k1\\":20,\\"k2\\":2053236037}]
 [32m√[0m [{}]
 [31m×[0m [{\\"k1\\":542422934,\\"k2\\":1272193014}]
+. [32m√[0m [{\\"k2\\":1272193014}]
 . [32m√[0m [{\\"k1\\":0,\\"k2\\":1272193014}]
 . [31m×[0m [{\\"k1\\":271211467,\\"k2\\":1272193014}]
 . . [32m√[0m [{\\"k1\\":135605734,\\"k2\\":1272193014}]
@@ -2121,13 +2118,8 @@ Execution summary:
 . . . . . . . . . . . . . . [32m√[0m [{\\"k1\\":210974298,\\"k2\\":1272193014}]
 . . . . . . . . . . . . . . [31m×[0m [{\\"k1\\":210974299,\\"k2\\":1272193014}]
 . . . . . . . . . . . . . . . [32m√[0m [{\\"k1\\":210974298,\\"k2\\":1272193014}]
-. . . . . . . . . . . . . . . [32m√[0m [{\\"k2\\":1272193014}]
-. . . . . . . . . . . . . . . [31m×[0m [{\\"k1\\":210974299,\\"k2\\":0}]
-. . . . . . . . . . . . . . . . [32m√[0m [{\\"k1\\":210974298,\\"k2\\":0}]
-. . . . . . . . . . . . . . . . [32m√[0m [{\\"k2\\":0}]
-. . . . . . . . . . . . . . . . [31m×[0m [{\\"k1\\":210974299}]
-. . . . . . . . . . . . . . . . . [32m√[0m [{\\"k1\\":210974298}]
-. . . . . . . . . . . . . . . . . [32m√[0m [{}]"
+. . . . . . . . . . . . . . . [31m×[0m [{\\"k1\\":210974299}]
+. . . . . . . . . . . . . . . . [32m√[0m [{\\"k1\\":210974298}]"
 `;
 
 exports[`NoRegression scheduler 1`] = `
@@ -3553,9 +3545,9 @@ Execution summary:
 
 exports[`NoRegression webAuthority 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:1:3:3:2:6:2:1:2:2:2:0:1\\", endOnFailure: true }
-Counterexample: [\\"aa.aw\\"]
-Shrunk 12 time(s)
+{ seed: 42, path: \\"0:1:4:3:2:6:2:1:1:1:1\\", endOnFailure: true }
+Counterexample: [\\"aa.a.aw\\"]
+Shrunk 10 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -3563,6 +3555,7 @@ Execution summary:
 . [32m√[0m [\\"7edwncurnj6.lw\\"]
 . [31m×[0m [\\"an47h9db5l0ba8auu77b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
 . . [32m√[0m [\\"7edwncurnj6.lw\\"]
+. . [32m√[0m [\\"a.7edwncurnj6.lw\\"]
 . . [32m√[0m [\\"a6.7edwncurnj6.lw\\"]
 . . [32m√[0m [\\"a59ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
 . . [31m×[0m [\\"au77b318g1-dioh859ca5e7med0c1-5ifcbdeycpda6fla6.7edwncurnj6.lw\\"]
@@ -3586,18 +3579,12 @@ Execution summary:
 . . . . . . . [32m√[0m [\\"7edwncurnj6.lw\\"]
 . . . . . . . [31m×[0m [\\"aa.7edwncurnj6.lw\\"]
 . . . . . . . . [32m√[0m [\\"7edwncurnj6.lw\\"]
-. . . . . . . . [32m√[0m [\\"a.7edwncurnj6.lw\\"]
 . . . . . . . . [31m×[0m [\\"aa.aedwncurnj6.lw\\"]
 . . . . . . . . . [32m√[0m [\\"aedwncurnj6.lw\\"]
-. . . . . . . . . [32m√[0m [\\"a.aedwncurnj6.lw\\"]
-. . . . . . . . . [31m×[0m [\\"aa.a6.lw\\"]
-. . . . . . . . . . [32m√[0m [\\"a6.lw\\"]
-. . . . . . . . . . [32m√[0m [\\"a.a6.lw\\"]
-. . . . . . . . . . [31m×[0m [\\"aa.aa.lw\\"]
-. . . . . . . . . . . [31m×[0m [\\"aa.lw\\"]
-. . . . . . . . . . . . [32m√[0m [\\"a.lw\\"]
-. . . . . . . . . . . . [31m×[0m [\\"aa.aw\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a.aw\\"]"
+. . . . . . . . . [31m×[0m [\\"aa.a.lw\\"]
+. . . . . . . . . . [32m√[0m [\\"a.lw\\"]
+. . . . . . . . . . [31m×[0m [\\"aa.a.aw\\"]
+. . . . . . . . . . . [32m√[0m [\\"a.aw\\"]"
 `;
 
 exports[`NoRegression webFragments 1`] = `
@@ -3745,19 +3732,17 @@ Execution summary:
 
 exports[`NoRegression webUrl 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:0:0:0:0:0:0:0:0\\", endOnFailure: true }
+{ seed: 42, path: \\"0:0:0:0:0:0:0\\", endOnFailure: true }
 Counterexample: [\\"http://a.au\\"]
-Shrunk 8 time(s)
+Shrunk 6 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [31m×[0m [\\"http://e.y40g7ch99e2ux9i71yglw.w.eeyzu7uy78we1n.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
 . [31m×[0m [\\"http://eeyzu7uy78we1n.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
 . . [31m×[0m [\\"http://aeyzu7uy78we1n.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
-. . . [31m×[0m [\\"http://an.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
-. . . . [31m×[0m [\\"http://aa.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
-. . . . . [31m×[0m [\\"http://a.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
-. . . . . . [31m×[0m [\\"http://a.su////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
-. . . . . . . [31m×[0m [\\"http://a.au////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
-. . . . . . . . [31m×[0m [\\"http://a.au\\"]"
+. . . [31m×[0m [\\"http://a.xahxbxtksu////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . [31m×[0m [\\"http://a.su////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . . [31m×[0m [\\"http://a.au////N/tM%F0%90%A4%BFm+BTf/@*jHv%F3%9C%B6%82BvSs/0I+G%F2%91%A2%90S+Vc/2X_y&/V%F4%8E%BC%9B)@RpA,\\"]
+. . . . . . [31m×[0m [\\"http://a.au\\"]"
 `;
