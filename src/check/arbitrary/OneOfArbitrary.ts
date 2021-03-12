@@ -1,26 +1,5 @@
-import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
-import { Shrinkable } from './definition/Shrinkable';
-
-/** @internal */
-class OneOfArbitrary<T> extends Arbitrary<T> {
-  static from<T>(arbs: Arbitrary<T>[]) {
-    if (arbs.length === 0) {
-      throw new Error('fc.oneof expects at least one arbitrary');
-    }
-    return new OneOfArbitrary(arbs);
-  }
-  private constructor(readonly arbs: Arbitrary<T>[]) {
-    super();
-  }
-  generate(mrng: Random): Shrinkable<T> {
-    const id = mrng.nextInt(0, this.arbs.length - 1);
-    return this.arbs[id].generate(mrng);
-  }
-  withBias(freq: number) {
-    return new OneOfArbitrary(this.arbs.map((a) => a.withBias(freq)));
-  }
-}
+import { FrequencyArbitrary } from './FrequencyArbitrary';
 
 /**
  * Infer the type of the Arbitrary produced by {@link oneof}
@@ -44,7 +23,8 @@ export type OneOfValue<Ts extends Arbitrary<unknown>[]> = {
  * @public
  */
 function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfValue<Ts>> {
-  return OneOfArbitrary.from(arbs as Arbitrary<OneOfValue<Ts>>[]);
+  const weightedArbs = (arbs as Arbitrary<OneOfValue<Ts>>[]).map((arbitrary) => ({ arbitrary, weight: 1 }));
+  return FrequencyArbitrary.from(weightedArbs, {}, 'fc.oneof');
 }
 
 export { oneof };
