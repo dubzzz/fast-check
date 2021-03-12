@@ -30,34 +30,35 @@ export interface WeightedArbitrary<T> {
 }
 
 /** @internal */
-class FrequencyArbitrary<T> extends Arbitrary<T> {
+export class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly summedWarbs: WeightedArbitrary<T>[];
   readonly totalWeight: number;
 
-  static from<T>(warbs: WeightedArbitrary<T>[], constraints: FrequencyContraints) {
+  static from<T>(warbs: WeightedArbitrary<T>[], constraints: FrequencyContraints, label: string): Arbitrary<T> {
     if (warbs.length === 0) {
-      throw new Error('fc.frequency expects at least one weigthed arbitrary');
+      throw new Error(`${label} expects at least one weigthed arbitrary`);
     }
     let totalWeight = 0;
     for (let idx = 0; idx !== warbs.length; ++idx) {
       const currentArbitrary = warbs[idx].arbitrary;
       if (currentArbitrary === undefined) {
-        throw new Error('fc.frequency expects arbitraries to be specified');
+        throw new Error(`${label} expects arbitraries to be specified`);
       }
       const currentWeight = warbs[idx].weight;
       totalWeight += currentWeight;
       if (!Number.isInteger(currentWeight)) {
-        throw new Error('fc.frequency expects weights to be integer values');
+        throw new Error(`${label} expects weights to be integer values`);
       }
       if (currentWeight < 0) {
-        throw new Error('fc.frequency expects weights to be superior or equal to 0');
+        throw new Error(`${label} expects weights to be superior or equal to 0`);
       }
     }
     if (totalWeight <= 0) {
-      throw new Error('fc.frequency expects the sum of weights to be strictly superior to 0');
+      throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
     return new FrequencyArbitrary(warbs, constraints, { depth: 0 });
   }
+
   private constructor(
     readonly warbs: WeightedArbitrary<T>[],
     readonly constraints: FrequencyContraints,
@@ -72,6 +73,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     this.totalWeight = currentWeight;
   }
+
   generate(mrng: Random): Shrinkable<T> {
     if (this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth) {
       // index=0 can be selected even if it has a weight equal to zero
@@ -85,7 +87,8 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     throw new Error(`Unable to generate from fc.frequency`);
   }
-  withBias(freq: number) {
+
+  withBias(freq: number): Arbitrary<T> {
     return new FrequencyArbitrary(
       this.warbs.map((v) => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })),
       this.constraints,
@@ -230,12 +233,13 @@ function frequency<Ts extends WeightedArbitrary<unknown>[]>(
   ...args: [...Ts] | [FrequencyContraints, ...Ts]
 ): Arbitrary<FrequencyValue<Ts>> {
   // TODO With TypeScript 4.0 it will be possible to properly define typings for `frequency(...arbs, constraints)`
+  const label = 'fc.frequency';
   const constraints = args[0];
   if (isFrequencyContraints(constraints)) {
-    return FrequencyArbitrary.from(args.slice(1) as WeightedArbitrary<FrequencyValue<Ts>>[], constraints);
+    return FrequencyArbitrary.from(args.slice(1) as WeightedArbitrary<FrequencyValue<Ts>>[], constraints, label);
   }
 
-  return FrequencyArbitrary.from(args as WeightedArbitrary<FrequencyValue<Ts>>[], {});
+  return FrequencyArbitrary.from(args as WeightedArbitrary<FrequencyValue<Ts>>[], {}, label);
 }
 
 export { frequency };
