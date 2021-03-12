@@ -21,6 +21,18 @@ const frequencyValidInputsArb = fc
     }));
   });
 
+class LazyArb extends Arbitrary<any> {
+  constructor(readonly arbBuilder: () => Arbitrary<any>) {
+    super();
+  }
+  generate(mrng: Random): Shrinkable<any, any> {
+    return this.arbBuilder().generate(mrng);
+  }
+  withBias(freq: number) {
+    return this.arbBuilder().withBias(freq);
+  }
+}
+
 describe('FrequencyArbitrary', () => {
   describe('frequency', () => {
     it('Should call Random generator to generate values between 0 and total weight (not included)', () =>
@@ -87,17 +99,6 @@ describe('FrequencyArbitrary', () => {
       ));
     it('Should call the first arbitrary to generate the value as soon as maxDepth has been reached', () => {
       // Arrange
-      class LazyArb extends Arbitrary<any> {
-        constructor(readonly arbBuilder: () => Arbitrary<any>) {
-          super();
-        }
-        generate(mrng: Random): Shrinkable<any, any> {
-          return this.arbBuilder().generate(mrng);
-        }
-        withBias(freq: number) {
-          return this.arbBuilder().withBias(freq);
-        }
-      }
       const arb: Arbitrary<any> = frequency(
         { maxDepth: 5 },
         { weight: 0, arbitrary: stubArb.single(0) },
@@ -143,6 +144,55 @@ describe('FrequencyArbitrary', () => {
       // Assert
       expect(nextInt).toHaveBeenCalledTimes(3); // once per instance of frequency
       expect(g).toEqual([[1]]);
+    });
+    it('Should ask ranges containing negative values as we go deeper in the structure if depthFactor', () => {
+      // Arrange
+      const arb: Arbitrary<any> = frequency(
+        { depthFactor: 0.1 },
+        { weight: 1, arbitrary: stubArb.single(0) },
+        { weight: 1000, arbitrary: new LazyArb(() => arb).map((d) => [d]) }
+      );
+      const nextInt: jest.Mock<number, [] | [number] | [number, number]> = jest.fn().mockImplementation((a, b) => {
+        // we stop on the first negative value of a
+        if (a < 0) return a;
+        // otherwise we return b to go deeper in the tree
+        else return b;
+      });
+      const fakeRandom = { nextInt: nextInt as Random['nextInt'] } as Random;
+
+      // Act
+      arb.generate(fakeRandom).value_;
+
+      // Assert
+      expect(nextInt).toHaveBeenCalledWith(0, 1000); // first calls: 0-1000 contains 1001 values
+      expect(nextInt).toHaveBeenCalledWith(-1, 1000); // as we go deeper (too deep)
+    });
+    it('Should never ask ranges containing negative values as we go deeper in the structure if depthFactor with weight of 0 on first arbitrary', () => {
+      // Arrange
+      const arb: Arbitrary<any> = frequency(
+        { depthFactor: 0.1 },
+        { weight: 0, arbitrary: stubArb.single(0) },
+        { weight: 1000, arbitrary: new LazyArb(() => arb).map((d) => [d]) }
+      );
+      const nextInt: jest.Mock<number, [] | [number] | [number, number]> = jest.fn().mockImplementation((a, b) => {
+        // we stop on the first negative value of a
+        if (a < 0) return a;
+        // otherwise we return b to go deeper in the tree
+        else return b;
+      });
+      const fakeRandom = { nextInt: nextInt as Random['nextInt'] } as Random;
+
+      // Act
+      try {
+        arb.generate(fakeRandom).value_;
+        fail('Stack overflow expected as the structure is going deeper and deeper without any end case');
+      } catch (err) {
+        // noop
+      }
+
+      // Assert
+      expect(nextInt).toHaveBeenCalledWith(0, 999); // first calls: 0-999 contains 1000 values
+      expect(nextInt).not.toHaveBeenCalledWith(-1, 999); // never called as first arbitrary has a weight of zero
     });
 
     it('Should reject calls without any weighted arbitraries', () => {

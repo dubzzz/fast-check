@@ -77,7 +77,7 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
       // index=0 can be selected even if it has a weight equal to zero
       return this.safeGenerateForIndex(mrng, 0);
     }
-    const selected = mrng.nextInt(0, this.totalWeight - 1);
+    const selected = mrng.nextInt(this.computeNegDepthBenefit(), this.totalWeight - 1);
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
         return this.safeGenerateForIndex(mrng, idx);
@@ -105,6 +105,19 @@ class FrequencyArbitrary<T> extends Arbitrary<T> {
     } finally {
       --this.context.depth; // decrease depth (reset depth)
     }
+  }
+
+  /** Compute the benefit for the current depth */
+  private computeNegDepthBenefit(): number {
+    const depthFactor = this.constraints.depthFactor;
+    if (depthFactor === undefined || depthFactor <= 0) {
+      return 0;
+    }
+    // We use a pow-based biased benefit as the deeper we go the more chance we have
+    // to encounter thousands of instances of the current arbitrary.
+    const depthBenefit = Math.floor(Math.pow(1 + depthFactor, this.context.depth)) - 1;
+    // -0 has to be converted into 0 thus we call ||0
+    return -Math.min(this.warbs[0].weight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
   }
 
   /**
@@ -157,10 +170,22 @@ export type FrequencyContraints = {
    */
   withCrossShrink?: boolean;
   /**
+   * While going deeper and deeper within a recursive structure,
+   * this factor will be used to increase the probability to generate instances
+   * of the first passed arbitrary.
+   *
+   * Example of values: 0.1 (small impact as depth increases), 0.5, 1 (huge impact as depth increases).
+   *
+   * Warning: First arbitrary will not be used if its weight is set to zero.
+   *
+   * @remarks Since 2.14.0
+   */
+  depthFactor?: number;
+  /**
    * Maximal authorized depth.
    * Once this depth has been reached only the first arbitrary will be used.
    *
-   * Warning: First arbitrary will be used even if its weight is set to zero.
+   * Warning: Contrary to others, first arbitrary will be used even if its weight is set to zero.
    *
    * @remarks Since 2.14.0
    */

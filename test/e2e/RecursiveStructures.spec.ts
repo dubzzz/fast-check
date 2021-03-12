@@ -10,10 +10,9 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
-      // TODO - Remove `weight:2` on base-case
       data: fc.frequency(
-        { withCrossShrink: true },
-        { arbitrary: fc.constant([0]), weight: 2 },
+        { withCrossShrink: true, depthFactor: 0.5 },
+        { arbitrary: fc.constant([0]), weight: 1 },
         { arbitrary: fc.tuple(tie('data'), tie('data')), weight: 1 }
       ),
     })).data;

@@ -26,7 +26,14 @@ describe('FrequencyArbitrary', () => {
             const totalWeight = config.reduce((acc, e) => acc + e.weight, 0);
             return totalWeight > 0;
           }),
-        constraints: fc.record({ withCrossShrink: fc.boolean(), maxDepth: fc.nat() }, { requiredKeys: [] }),
+        constraints: fc.record(
+          {
+            withCrossShrink: fc.boolean(),
+            depthFactor: fc.double({ min: 0, max: Number.MAX_VALUE, noNaN: true }),
+            maxDepth: fc.nat(),
+          },
+          { requiredKeys: [] }
+        ),
       },
       { requiredKeys: ['data'] }
     );

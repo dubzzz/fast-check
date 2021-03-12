@@ -2159,6 +2159,7 @@ fc.oneof(fc.char(), fc.boolean(), fc.nat())
 
 - `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary (if and only if its weight is strictly greater than 0). It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
+- `depthFactor?` — default: `0` — _this factor will be used to increase the probability to generate instances of the first passed arbitrary if its weight is not zero_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value even if its weight is zero_
 
 *&#8195;Usages*
