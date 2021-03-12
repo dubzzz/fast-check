@@ -3,10 +3,28 @@ import * as fc from '../../../../lib/fast-check';
 import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
 import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
-import { getDepthContextFor } from '../../../../src/check/arbitrary/helpers/DepthContext';
-import { Random } from '../../../../src/random/generator/Random';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
+
+import { mocked } from 'ts-jest/utils';
+import * as DepthContextMock from '../../../../src/check/arbitrary/helpers/DepthContext';
+jest.mock('../../../../src/check/arbitrary/helpers/DepthContext');
+
+const depthContextData: Record<string, DepthContextMock.DepthContext> = {};
+
+beforeEach(() => {
+  // Cleaning between runs (WARNING: Doew not clean within properties themselves)
+  for (const k in depthContextData) delete depthContextData[k];
+
+  // Mocking
+  const { getDepthContextFor } = mocked(DepthContextMock);
+  getDepthContextFor.mockImplementation((key) => {
+    if (key === undefined) return { depth: 0 };
+    if (typeof key !== 'string') return key;
+    if (!(key in depthContextData)) depthContextData[key] = { depth: 0 };
+    return depthContextData[key];
+  });
+});
 
 describe('FrequencyArbitrary', () => {
   describe('frequency', () => {
@@ -66,37 +84,27 @@ describe('FrequencyArbitrary', () => {
         if (metas.constraints === undefined) {
           return frequency(...arbs);
         }
+
         const sanitizedConstraints =
           metas.constraints.depthIdentifierMetas !== undefined
             ? { ...metas.constraints, depthIdentifier: metas.constraints.depthIdentifierMetas.identifier }
             : metas.constraints;
-        const arb = frequency(sanitizedConstraints, ...arbs);
         if (metas.constraints.depthIdentifierMetas !== undefined) {
+          // WARNING - This side-effect is not supposed to alter other tests but who knows!?
           const { identifier, initial } = metas.constraints.depthIdentifierMetas;
-          const originalGenerate = arb.generate;
-          arb.generate = (mrng: Random) => {
-            const context = getDepthContextFor(identifier);
-            context.depth = initial;
-            try {
-              const out = originalGenerate.call(arb, mrng);
-              if (context.depth !== initial) {
-                throw new Error('frequency did not reset the depth to its initial value');
-              }
-              return out;
-            } finally {
-              // We want to avoid breaking other tests due to this test
-              // It uses a shared context that should be cleaned on exit (reset to 0)
-              context.depth = 0;
-            }
-          };
+          depthContextData[identifier] = { depth: initial };
         }
-        return arb;
+        return frequency(sanitizedConstraints, ...arbs);
       },
       {
         seedGenerator,
         isValidValue: (v: number, metas: SeedGeneratorType) => {
           const constraints = metas.constraints || {};
-          const { initial: initialDepth = 0 } = constraints.depthIdentifierMetas || {};
+          const { identifier, initial: initialDepth = 0 } = constraints.depthIdentifierMetas || {};
+          // Check if depth has been reset after generate
+          if (identifier !== undefined) {
+            expect(depthContextData[identifier]).toEqual({ depth: initialDepth });
+          }
           // If maxDepth is <= initialDepth, then only the first arbitrary can be called
           if (constraints.maxDepth !== undefined && constraints.maxDepth <= initialDepth) {
             expect(canProduce(metas.data[0], v)).toBe(true);
