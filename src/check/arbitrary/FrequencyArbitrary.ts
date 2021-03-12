@@ -2,12 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
-
-/** @internal */
-type DepthContext = {
-  /** Current depth (starts at 0) */
-  depth: number;
-};
+import { DepthContext, getDepthContextFor } from './helpers/DepthContext';
 
 /**
  * Conjonction of a weight and an arbitrary used by {@link frequency}
@@ -56,7 +51,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     if (totalWeight <= 0) {
       throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
-    return new FrequencyArbitrary(warbs, constraints, { depth: 0 });
+    return new FrequencyArbitrary(warbs, constraints, getDepthContextFor(constraints.depthIdentifier));
   }
 
   private constructor(
@@ -193,6 +188,13 @@ export type FrequencyContraints = {
    * @remarks Since 2.14.0
    */
   maxDepth?: number;
+  /**
+   * Depth identifier can be used to share the current depth between several instances.
+   *
+   * By default, if not specified, each instance of frequency will have its own depth.
+   * In other words: you can have depth=1 in one while you have depth=100 in another one.
+   */
+  depthIdentifier?: string;
 };
 
 /**
