@@ -92,7 +92,7 @@ const testShrinkPathStrictlyDecreasing = function <U, T>(
 const testAlwaysGenerateCorrectValues = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
-  isValidValue: (g: T, seed: U) => boolean,
+  assertIsValidValue: (g: T, seed: U) => void,
   parameters: fc.Parameters<unknown> | undefined
 ) {
   it(`Should always generate correct values`, () =>
@@ -100,8 +100,7 @@ const testAlwaysGenerateCorrectValues = function <U, T>(
       fc.property(argsForArbGenerator, fc.integer().noShrink(), (params, seed) => {
         const arb = arbGenerator(params);
         const shrinkable = arb.generate(new Random(prand.xorshift128plus(seed)));
-        if (!isValidValue(shrinkable.value, params))
-          throw new Error(`Expect: ${fc.stringify(shrinkable.value_)} to be a valid value`);
+        assertIsValidValue(shrinkable.value, params);
       }),
       parameters
     ));
@@ -110,7 +109,7 @@ const testAlwaysGenerateCorrectValues = function <U, T>(
 const testAlwaysShrinkToCorrectValues = function <U, T>(
   argsForArbGenerator: fc.Arbitrary<U>,
   arbGenerator: (u: U) => Arbitrary<T>,
-  isValidValue: (g: T, seed: U) => boolean,
+  assertIsValidValue: (g: T, seed: U) => void,
   parameters: fc.Parameters<unknown> | undefined
 ) {
   it(`Should always shrink to correct values`, () =>
@@ -124,8 +123,7 @@ const testAlwaysShrinkToCorrectValues = function <U, T>(
           let shrinkable: Shrinkable<T> | null = arb.generate(new Random(prand.xorshift128plus(seed)));
           let id = 0;
           while (shrinkable !== null) {
-            if (!isValidValue(shrinkable.value, params))
-              throw new Error(`Invalid value: ${fc.stringify(shrinkable.value_)}`);
+            assertIsValidValue(shrinkable.value, params);
             shrinkable = shrinkable.shrink().getNthOrLast(id);
             id = (id + 1) % shrinkPath.length;
           }
@@ -151,11 +149,16 @@ export const isValidArbitrary = function <U, T>(
   const biasedArbitraryBuilder = ([biasedFactor, u]: [number | null, U]) => {
     return biasedFactor != null ? arbitraryBuilder(u).withBias(biasedFactor) : arbitraryBuilder(u);
   };
-  const biasedIsValidValue = (g: T, [_biasedFactor, u]: [number | null, U]) => {
-    return settings.isValidValue(g, u!);
+  const biasedAssertIsValidValue = (g: T, [_biasedFactor, u]: [number | null, U]): void => {
+    try {
+      const out = settings.isValidValue(g, u!);
+      expect(out).toBe(true);
+    } catch (err) {
+      throw new Error(`Expect: ${fc.stringify(g)} to be a valid value\n\nGot error: ${err}`);
+    }
   };
 
-  const assertEquality = (v1: T, v2: T, [, seed]: [number | null, U]) => {
+  const assertEquality = (v1: T, v2: T, [, seed]: [number | null, U]): void => {
     if (settings.isEqual) {
       if (!settings.isEqual(v1, v2, seed!)) {
         throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}`);
@@ -176,8 +179,8 @@ export const isValidArbitrary = function <U, T>(
       parameters
     );
   }
-  testAlwaysGenerateCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue, parameters);
-  testAlwaysShrinkToCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedIsValidValue, parameters);
+  testAlwaysGenerateCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedAssertIsValidValue, parameters);
+  testAlwaysShrinkToCorrectValues(biasedSeedGenerator, biasedArbitraryBuilder, biasedAssertIsValidValue, parameters);
 };
 
 export const minMax = <NType extends number | bigint>(
