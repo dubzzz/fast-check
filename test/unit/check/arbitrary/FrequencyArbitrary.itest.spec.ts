@@ -6,6 +6,26 @@ import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
+import { mocked } from 'ts-jest/utils';
+import * as DepthContextMock from '../../../../src/check/arbitrary/helpers/DepthContext';
+jest.mock('../../../../src/check/arbitrary/helpers/DepthContext');
+
+const depthContextData: Record<string, DepthContextMock.DepthContext> = {};
+
+beforeEach(() => {
+  // Cleaning between runs (WARNING: Doew not clean within properties themselves)
+  for (const k in depthContextData) delete depthContextData[k];
+
+  // Mocking
+  const { getDepthContextFor } = mocked(DepthContextMock);
+  getDepthContextFor.mockImplementation((key) => {
+    if (key === undefined) return { depth: 0 };
+    if (typeof key !== 'string') return key;
+    if (!(key in depthContextData)) depthContextData[key] = { depth: 0 };
+    return depthContextData[key];
+  });
+});
+
 describe('FrequencyArbitrary', () => {
   describe('frequency', () => {
     const seedGenerator = fc.record(
@@ -28,13 +48,31 @@ describe('FrequencyArbitrary', () => {
             withCrossShrink: fc.boolean(),
             depthFactor: fc.double({ min: 0, max: Number.MAX_VALUE, noNaN: true }),
             maxDepth: fc.nat(),
+            depthIdentifierMetas: fc.record(
+              {
+                identifier: fc.constantFrom('toto', 'titi', 'tata'), // no need to have thousands of them
+                initial: fc.nat(),
+              },
+              { requiredKeys: ['identifier', 'initial'] }
+            ),
           },
           { requiredKeys: [] }
         ),
       },
       { requiredKeys: ['data'] }
     );
+
     type SeedGeneratorType = typeof seedGenerator extends fc.Arbitrary<infer T> ? T : never;
+
+    function canProduce(dataFromMetas: SeedGeneratorType['data'][number], value: number): boolean {
+      switch (dataFromMetas.type) {
+        case 'unique':
+          return dataFromMetas.value === value;
+        case 'range':
+          return dataFromMetas.value - 10 <= value && value <= dataFromMetas.value;
+      }
+      return false;
+    }
 
     genericHelper.isValidArbitrary(
       (metas: SeedGeneratorType) => {
@@ -46,20 +84,34 @@ describe('FrequencyArbitrary', () => {
         if (metas.constraints === undefined) {
           return frequency(...arbs);
         }
-        return frequency(metas.constraints, ...arbs);
+
+        const sanitizedConstraints =
+          metas.constraints.depthIdentifierMetas !== undefined
+            ? { ...metas.constraints, depthIdentifier: metas.constraints.depthIdentifierMetas.identifier }
+            : metas.constraints;
+        if (metas.constraints.depthIdentifierMetas !== undefined) {
+          // WARNING - This side-effect is not supposed to alter other tests but who knows!?
+          const { identifier, initial } = metas.constraints.depthIdentifierMetas;
+          depthContextData[identifier] = { depth: initial };
+        }
+        return frequency(sanitizedConstraints, ...arbs);
       },
       {
         seedGenerator,
         isValidValue: (v: number, metas: SeedGeneratorType) => {
-          // If maxDepth is 0, then only the first arbitrary can be called
-          const data =
-            metas.constraints !== undefined && metas.constraints.maxDepth === 0 ? [metas.data[0]] : metas.data;
-          for (const m of data) {
-            if (m.weight === 0) continue;
-            if (m.type === 'unique' && m.value === v) return true;
-            if (m.type === 'range' && m.value - 10 <= v && v <= m.value) return true;
+          const constraints = metas.constraints || {};
+          const { identifier, initial: initialDepth = 0 } = constraints.depthIdentifierMetas || {};
+          // Check if depth has been reset after generate
+          if (identifier !== undefined) {
+            expect(depthContextData[identifier]).toEqual({ depth: initialDepth });
           }
-          return false;
+          // If maxDepth is <= initialDepth, then only the first arbitrary can be called
+          if (constraints.maxDepth !== undefined && constraints.maxDepth <= initialDepth) {
+            expect(canProduce(metas.data[0], v)).toBe(true);
+          } else {
+            expect(metas.data.some((m) => m.weight !== 0 && canProduce(m, v))).toBe(true);
+          }
+          return true;
         },
         isStrictlySmallerValue: (a: number, b: number, metas: SeedGeneratorType) => {
           // When withCrossShrink is toggled, the shrinker can jump from one arbitrary to the first one on shrink

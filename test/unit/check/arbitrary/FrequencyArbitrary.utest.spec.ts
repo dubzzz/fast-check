@@ -145,6 +145,37 @@ describe('FrequencyArbitrary', () => {
       expect(nextInt).toHaveBeenCalledTimes(3); // once per instance of frequency
       expect(g).toEqual([[1]]);
     });
+    it('Should share depth accross distinct instances of frequency if requested', () => {
+      // Arrange
+      const arb: Arbitrary<any> = frequency(
+        { maxDepth: 1, depthIdentifier: 'toto' },
+        { weight: 0, arbitrary: stubArb.single(0) },
+        {
+          weight: 1,
+          arbitrary: frequency(
+            { maxDepth: 1, depthIdentifier: 'titi' },
+            { weight: 0, arbitrary: stubArb.single(0) },
+            {
+              weight: 1,
+              arbitrary: frequency(
+                { maxDepth: 1, depthIdentifier: 'toto' },
+                { weight: 0, arbitrary: stubArb.single(0) },
+                { weight: 1, arbitrary: stubArb.single(1) }
+              ).map((d) => [d]),
+            }
+          ).map((d) => [d]),
+        }
+      );
+      const nextInt: jest.Mock<number, [] | [number] | [number, number]> = jest.fn().mockReturnValue(0);
+      const fakeRandom = { nextInt: nextInt as Random['nextInt'] } as Random;
+
+      // Act
+      const g = arb.generate(fakeRandom).value_;
+
+      // Assert
+      expect(nextInt).toHaveBeenCalledTimes(2); // one for toto, one for titi
+      expect(g).toEqual([[0]]);
+    });
     it('Should ask ranges containing negative values as we go deeper in the structure if depthFactor', () => {
       // Arrange
       const arb: Arbitrary<any> = frequency(
