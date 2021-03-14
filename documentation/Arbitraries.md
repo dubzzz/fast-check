@@ -2085,7 +2085,7 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 *&#8195;Signatures*
 
 - `fc.option(arb)`
-- `fc.option(arb, {freq?, nil?})`
+- `fc.option(arb, {freq?, nil?, depthFactor?, maxDepth?, depthIdentifier?})`
 - _`fc.option(arb, freq)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
@@ -2093,6 +2093,9 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 - `arb` — _arbitrary that will be called to generate normal values_
 - `freq?` — default: `5` — _probability to build the nil value is of 1 / freq_
 - `nil?` — default: `null` — _nil value_
+- `depthFactor?` — default: `0` — _this factor will be used to increase the probability to generate nil values as we go deeper in a recursive structure_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, only nil could be produced_
+- `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
 *&#8195;Usages*
 
@@ -2108,6 +2111,27 @@ fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 
 fc.option(fc.string(), { nil: undefined })
 // Examples of generated values: "^_|\"T.5rB", "&&", "OqA3D$", undefined, "}"…
+
+// fc.option fits very well with recursive stuctures built using fc.letrec
+// here are some examples:
+
+fc.letrec(tie => ({
+  node: fc.record({
+    value: fc.nat(),
+    left: fc.option(tie('node'), {maxDepth: 2, depthIdentifier: 'tree'}),
+    right: fc.option(tie('node'), {maxDepth: 2, depthIdentifier: 'tree'}),
+  })
+})).node
+// Note: Create a binary tree with maximal depth of 2.
+//       We need to specify `depthIdentifier` to share the depth between left and right branches.
+//       If not specified, the maxDepth will mean: max number of left branches in a path leading to a leaf.
+// Examples of generated values:
+// • {"value":1667728700,"left":{"value":22,"left":{"value":202444547,"left":null,"right":null},"right":{"value":472975548,"left":null,"right":null}},"right":null}
+// • {"value":674845341,"left":{"value":29,"left":{"value":1113327548,"left":null,"right":null},"right":{"value":646640163,"left":null,"right":null}},"right":{"value":1091128126,"left":null,"right":{"value":676885401,"left":null,"right":null}}}
+// • {"value":2147483624,"left":null,"right":{"value":949167600,"left":{"value":1065276813,"left":null,"right":null},"right":{"value":504044156,"left":null,"right":null}}}
+// • {"value":11,"left":{"value":47603542,"left":{"value":4,"left":null,"right":null},"right":{"value":301464458,"left":null,"right":null}},"right":{"value":682881521,"left":null,"right":{"value":607177878,"left":null,"right":null}}}
+// • {"value":13,"left":null,"right":{"value":23,"left":null,"right":{"value":2147483621,"left":null,"right":null}}}
+// • …
 ```
 </details>
 

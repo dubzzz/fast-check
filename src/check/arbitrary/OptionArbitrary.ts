@@ -1,3 +1,4 @@
+import { FrequencyContraints } from '../../fast-check-default';
 import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { FrequencyArbitrary } from './FrequencyArbitrary';
@@ -18,6 +19,30 @@ export interface OptionConstraints<TNil = null> {
    * @remarks Since 1.17.0
    */
   nil?: TNil;
+  /**
+   * While going deeper and deeper within a recursive structure (see {@link letrec}),
+   * this factor will be used to increase the probability to generate nil.
+   *
+   * Example of values: 0.1 (small impact as depth increases), 0.5, 1 (huge impact as depth increases).
+   *
+   * @remarks Since 2.14.0
+   */
+  depthFactor?: number;
+  /**
+   * Maximal authorized depth. Once this depth has been reached only nil will be used.
+   *
+   * @remarks Since 2.14.0
+   */
+  maxDepth?: number;
+  /**
+   * Depth identifier can be used to share the current depth between several instances.
+   *
+   * By default, if not specified, each instance of option will have its own depth.
+   * In other words: you can have depth=1 in one while you have depth=100 in another one.
+   *
+   * @remarks Since 2.14.0
+   */
+  depthIdentifier?: string;
 }
 
 /** @internal */
@@ -68,7 +93,12 @@ function option<T, TNil>(arb: Arbitrary<T>, rawConstraints?: number | OptionCons
     { arbitrary: nilArb, weight: 1 },
     { arbitrary: arb, weight: freq },
   ];
-  const frequencyConstraints = { withCrossShrink: true };
+  const frequencyConstraints: FrequencyContraints = {
+    withCrossShrink: true,
+    depthFactor: constraints.depthFactor,
+    maxDepth: constraints.maxDepth,
+    depthIdentifier: constraints.depthIdentifier,
+  };
   return FrequencyArbitrary.from(weightedArbs, frequencyConstraints, 'fc.option');
 }
 
