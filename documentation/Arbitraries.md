@@ -2112,26 +2112,8 @@ fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 fc.option(fc.string(), { nil: undefined })
 // Examples of generated values: "^_|\"T.5rB", "&&", "OqA3D$", undefined, "}"…
 
-// fc.option fits very well with recursive stuctures built using fc.letrec
-// here are some examples:
-
-fc.letrec(tie => ({
-  node: fc.record({
-    value: fc.nat(),
-    left: fc.option(tie('node'), {maxDepth: 2, depthIdentifier: 'tree'}),
-    right: fc.option(tie('node'), {maxDepth: 2, depthIdentifier: 'tree'}),
-  })
-})).node
-// Note: Create a binary tree with maximal depth of 2.
-//       We need to specify `depthIdentifier` to share the depth between left and right branches.
-//       If not specified, the maxDepth will mean: max number of left branches in a path leading to a leaf.
-// Examples of generated values:
-// • {"value":1667728700,"left":{"value":22,"left":{"value":202444547,"left":null,"right":null},"right":{"value":472975548,"left":null,"right":null}},"right":null}
-// • {"value":674845341,"left":{"value":29,"left":{"value":1113327548,"left":null,"right":null},"right":{"value":646640163,"left":null,"right":null}},"right":{"value":1091128126,"left":null,"right":{"value":676885401,"left":null,"right":null}}}
-// • {"value":2147483624,"left":null,"right":{"value":949167600,"left":{"value":1065276813,"left":null,"right":null},"right":{"value":504044156,"left":null,"right":null}}}
-// • {"value":11,"left":{"value":47603542,"left":{"value":4,"left":null,"right":null},"right":{"value":301464458,"left":null,"right":null}},"right":{"value":682881521,"left":null,"right":{"value":607177878,"left":null,"right":null}}}
-// • {"value":13,"left":null,"right":{"value":23,"left":null,"right":{"value":2147483621,"left":null,"right":null}}}
-// • …
+// fc.option fits very well with recursive stuctures built using fc.letrec.
+// Examples of such recursive structures are available with fc.letrec.
 ```
 </details>
 
@@ -2165,6 +2147,9 @@ fc.oneof(fc.char(), fc.boolean())
 
 fc.oneof(fc.char(), fc.boolean(), fc.nat())
 // Examples of generated values: true, 234471686, 485911805, false, "\\"…
+
+// fc.oneof fits very well with recursive stuctures built using fc.letrec.
+// Examples of such recursive structures are available with fc.letrec.
 ```
 </details>
 
@@ -2211,46 +2196,8 @@ fc.frequency(
 // if not it will carry on the classical shrinking strategy defined for arrays of boolean.
 // Examples of generated values: true, [true,false], [true,false,false], [false,true,true], [false]…
 
-// fc.frequency fits very well with recursive stuctures built using fc.letrec
-// here are some examples:
-
-fc.letrec(tie => ({
-  list: fc.record({
-    head: fc.nat(),
-    queue: fc.frequency(
-      { maxDepth: 2 },
-      { arbitrary: fc.constant([]), weight: 1 },
-      { arbitrary: tie('list'), weight: 2 }
-    )
-  })
-})).list
-// Note: Create a linked-list having a max-length of 3.
-// Examples of generated values:
-// • {"head":22,"queue":{"head":19,"queue":[]}}
-// • {"head":1525860351,"queue":{"head":27,"queue":{"head":2147483642,"queue":[]}}}
-// • {"head":150027580,"queue":{"head":4,"queue":{"head":1111036126,"queue":[]}}}
-// • {"head":1777171327,"queue":[]}
-// • {"head":6,"queue":{"head":2029127408,"queue":{"head":1041976777,"queue":[]}}}
-// • …
-
-fc.letrec(tie => ({
-  list: fc.record({
-    head: fc.nat(),
-    queue: fc.frequency(
-      { maxDepth: 2 },
-      { arbitrary: fc.constant([]), weight: 0 },
-      { arbitrary: tie('list'), weight: 1 }
-    )
-  })
-})).list
-// Note: Create a linked-list having a length of 3 (not more, not less).
-// Examples of generated values:
-// • {"head":22,"queue":{"head":19,"queue":{"head":2147483640,"queue":[]}}}
-// • {"head":1525860351,"queue":{"head":27,"queue":{"head":2147483642,"queue":[]}}}
-// • {"head":150027580,"queue":{"head":4,"queue":{"head":1111036126,"queue":[]}}}
-// • {"head":1777171327,"queue":{"head":1226266757,"queue":{"head":2147483632,"queue":[]}}}
-// • {"head":6,"queue":{"head":2029127408,"queue":{"head":1041976777,"queue":[]}}}
-// • …
+// fc.frequency fits very well with recursive stuctures built using fc.letrec.
+// Examples of such recursive structures are available with fc.letrec.
 ```
 </details>
 
@@ -3233,7 +3180,7 @@ fc.func(fc.nat())
 
 > Generate recursive structures
 >
-> Contrary to `fc.memo` there is no easy way to stop the recursion. Structure may grow infinitely if growing scenarios are too frequent compared to terminal ones.
+> Prefer `fc.letrec` over `fc.memo`. Most of the features offered by `fc.memo` can now be implemented with `fc.letrec`.
 
 *&#8195;Signatures*
 
@@ -3248,13 +3195,11 @@ fc.func(fc.nat())
 ```js
 // Setup the tree structure:
 const { tree } = fc.letrec(tie => ({
-  // tree is 1 / 3 of node, 2 / 3 of leaf
-  // Warning: as there is no control over the depth of the data-structures generated
-  //   by letrec, high probability of node can lead to very deep trees
-  //   thus we limit the probability of a node to p = 1 / 3 in this example
-  // with p = 0.50 the probability to have a tree of depth above 10 is 13.9 %
-  // with p = 0.33 the probability to have a tree of depth above 10 is  0.6 %
-  tree: fc.oneof(tie('node'), tie('leaf'), tie('leaf')),
+  // Warning: In version 2.x and before, there is no automatic control over the depth of the generated data-structures.
+  //   As a consequence to avoid your data-structures to be too deep, it is highly recommended to add the constraint `depthFactor`
+  //   onto your usages of `option`, `oneof` and `frequency` and to put the arbitrary without recursion first.
+  // In version 3.x, `depthFactor` and `withCrossShrink` will be enabled by default.
+  tree: fc.oneof({depthFactor: 0.5, withCrossShrink: true}, tie('leaf'), tie('node')),
   node: fc.record({
     left: tie('tree'),
     right: tie('tree'),
@@ -3264,11 +3209,62 @@ const { tree } = fc.letrec(tie => ({
 // Use the arbitrary:
 tree
 // Examples of generated values:
-// • {"left":13,"right":1774126051}
-// • 2147483641
-// • {"left":{"left":7,"right":{"left":573511110,"right":6}},"right":1575105771}
-// • 1743617912
-// • 260700055
+// • {"left":5,"right":214707493}
+// • {"left":{"left":29,"right":1113327548},"right":{"left":693255074,"right":7}}
+// • 2
+// • 1879186405
+// • 2147483618
+// • …
+
+fc.letrec(tie => ({
+  node: fc.record({
+    value: fc.nat(),
+    left: fc.option(tie('node'), {maxDepth: 1, depthIdentifier: 'tree'}),
+    right: fc.option(tie('node'), {maxDepth: 1, depthIdentifier: 'tree'}),
+  })
+})).node
+// Note: You can limit the depth of the generated structrures by using the constraint `maxDepth` (see `option`, `oneof` and `frequency`).
+//   On the example above we need to specify `depthIdentifier` to share the depth between left and right branches...
+// Examples of generated values:
+// • {"value":1667728700,"left":{"value":22,"left":null,"right":null},"right":{"value":202444547,"left":null,"right":null}}
+// • {"value":674845341,"left":{"value":29,"left":null,"right":null},"right":{"value":1113327548,"left":null,"right":null}}
+// • {"value":2147483624,"left":null,"right":{"value":949167600,"left":null,"right":null}}
+// • {"value":11,"left":{"value":47603542,"left":null,"right":null},"right":{"value":4,"left":null,"right":null}}
+// • {"value":13,"left":null,"right":{"value":23,"left":null,"right":null}}
+// • …
+
+fc.letrec(tie => ({
+  node: fc.record({
+    value: fc.nat(),
+    left: fc.option(tie('node'), {maxDepth: 1}),
+    right: fc.option(tie('node'), {maxDepth: 1}),
+  })
+})).node
+// ...If we don't specify it, the maximal number of right in a given path will be limited to 1, but may include intermediate left.
+//    Thus the resulting trees might be deeper than 1.
+// Examples of generated values:
+// • {"value":22,"left":{"value":27,"left":null,"right":{"value":13,"left":null,"right":null}},"right":null}
+// • {"value":1909660399,"left":{"value":2147483632,"left":null,"right":null},"right":{"value":456478505,"left":{"value":452045085,"left":null,"right":null},"right":null}}
+// • {"value":12,"left":{"value":1619318555,"left":null,"right":{"value":27,"left":null,"right":null}},"right":null}
+// • {"value":8,"left":null,"right":{"value":1744036864,"left":{"value":1633200200,"left":null,"right":null},"right":null}}
+// • {"value":2147483622,"left":{"value":1241600186,"left":null,"right":{"value":92657426,"left":null,"right":null}},"right":null}
+// • …
+
+fc.letrec(tie => ({
+  tree: fc.frequency({maxDepth: 2}, {arbitrary: tie('leaf'), weight: 0}, {arbitrary: tie('node'), weight: 1}),
+  node: fc.record({ left: tie('tree'), right: tie('tree') }),
+  leaf: fc.nat()
+})).tree
+// Note: Exact depth of 2: not more not less.
+// Note: If you use multiple `option`, `oneof` or `frequency` to define such recursive structure
+//   you may want to specify a `depthIdentifier` so that they share the exact same depth.
+//   See examples above for more details.
+// Examples of generated values:
+// • {"left":{"left":2146012257,"right":5},"right":{"left":4,"right":92286720}}
+// • {"left":{"left":17,"right":105221773},"right":{"left":10,"right":1282731170}}
+// • {"left":{"left":289678323,"right":1527632810},"right":{"left":1031855048,"right":861569963}}
+// • {"left":{"left":1001661803,"right":2147483623},"right":{"left":2147483617,"right":729999584}}
+// • {"left":{"left":1517743480,"right":1007350543},"right":{"left":12,"right":2147483643}}
 // • …
 ```
 </details>
@@ -3280,7 +3276,11 @@ tree
 
 > Generate recursive structures
 >
-> Contrary to `fc.letrec` you can have a higher control over the depth of the recursion in your `builder` function.
+> ⚠️ Initially `fc.memo` has been designed to offer a higher control over the generated depth. Unfortunately it came with a cost: the arbitrary itself is costly to build.
+> Most of the features offered by `fc.memo` can now be done using `fc.letrec` coupled with `fc.option`, `fc.oneof` or `fc.frequency`.
+> Whenever possible*, we recommend using `fc.letrec` instead of `fc.memo`.
+>
+> *But sometimes it is not possible and `fc.memo` will be the way to go.
 
 *&#8195;Signatures*
 
