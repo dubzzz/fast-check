@@ -3278,7 +3278,9 @@ fc.letrec(tie => ({
 >
 > ⚠️ Initially `fc.memo` has been designed to offer a higher control over the generated depth. Unfortunately it came with a cost: the arbitrary itself is costly to build.
 > Most of the features offered by `fc.memo` can now be done using `fc.letrec` coupled with `fc.option`, `fc.oneof` or `fc.frequency`.
-> In general we highly recommend using `fc.letrec` instead of `fc.memo`.
+> Whenever possible*, we recommend using `fc.letrec` instead of `fc.memo`.
+>
+> *But sometimes it is not possible and `fc.memo` will be the way to go.
 
 *&#8195;Signatures*
 
