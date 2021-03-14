@@ -96,6 +96,8 @@ export interface Parameters<T = void> {
    * This is useful when arbitrary has a limited number of variants.
    *
    * NOTE: Values are compared by equality of fc.stringify results.
+   *
+   * @remarks Since 2.14.0
    */
   ignoreEqualValues?: boolean;
   /**
