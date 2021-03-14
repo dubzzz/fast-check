@@ -3180,7 +3180,7 @@ fc.func(fc.nat())
 
 > Generate recursive structures
 >
-> Prefer `fc.letrec` over `fc.memo`. Most of the features offered by `fc.memo` can now be implemented with `fc.letrec`. They will be less costly in `fc.letrec`.
+> Prefer `fc.letrec` over `fc.memo`. Most of the features offered by `fc.memo` can now be implemented with `fc.letrec`.
 
 *&#8195;Signatures*
 
