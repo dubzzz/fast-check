@@ -62,10 +62,12 @@ function isLazyArbitrary(arb: Arbitrary<any> | undefined): arb is LazyArbitrary 
  * @example
  * ```typescript
  * const { tree } = fc.letrec(tie => ({
- *   tree: fc.oneof(tie('node'), tie('leaf'), tie('leaf')),
+ *   tree: fc.oneof({depthFactor: 0.5}, tie('leaf'), tie('node')),
  *   node: fc.tuple(tie('tree'), tie('tree')),
  *   leaf: fc.nat()
- * })); // tree is 1 / 3 of node, 2 / 3 of leaf
+ * }));
+ * // tree is 50% of node, 50% of leaf
+ * // the ratio goes in favor of leaves as we go deeper in the tree (thanks to depthFactor)
  * ```
  *
  * @param builder - Arbitraries builder based on themselves (through `tie`)
