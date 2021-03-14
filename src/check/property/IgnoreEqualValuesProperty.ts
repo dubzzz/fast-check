@@ -3,6 +3,7 @@ import { Random } from '../../random/generator/Random';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { stringify } from '../../utils/stringify';
 
+/** @internal */
 export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
   private coveredCases: Map<string, ReturnType<IRawProperty<Ts, IsAsync>['run']>> = new Map();
 
