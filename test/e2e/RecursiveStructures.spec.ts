@@ -25,6 +25,21 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
+  it('Should shrink letrec/oneof towards the smallest case (on very simple scenario)', () => {
+    // Arrange
+    const failingLength = 2;
+    const dataArb = fc.letrec((tie) => ({
+      data: fc.oneof({ withCrossShrink: true, depthFactor: 0.5 }, fc.constant([0]), fc.tuple(tie('data'), tie('data'))),
+    })).data;
+
+    // Act
+    const out = fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+
+    // Assert
+    expect(out.failed).toBe(true);
+    expect(flat(out.counterexample![0])).toHaveLength(failingLength);
+  });
+
   it('Should shrink letrec/option towards the smallest case (on very simple scenario)', () => {
     // Arrange
     const failingLength = 2;
@@ -51,6 +66,22 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
           { arbitrary: fc.constant([0]), weight: 1 },
           { arbitrary: fc.tuple(dataArb(), dataArb()), weight: 1 }
         );
+    });
+
+    // Act
+    const out = fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+
+    // Assert
+    expect(out.failed).toBe(true);
+    expect(flat(out.counterexample![0])).toHaveLength(failingLength);
+  });
+
+  it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', () => {
+    // Arrange
+    const failingLength = 2;
+    const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
+      if (n <= 1) return fc.constant([0]);
+      else return fc.oneof({ withCrossShrink: true }, fc.constant([0]), fc.tuple(dataArb(), dataArb()));
     });
 
     // Act

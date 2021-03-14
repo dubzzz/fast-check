@@ -168,7 +168,7 @@ export type FrequencyContraints = {
    */
   withCrossShrink?: boolean;
   /**
-   * While going deeper and deeper within a recursive structure,
+   * While going deeper and deeper within a recursive structure (see {@link letrec}),
    * this factor will be used to increase the probability to generate instances
    * of the first passed arbitrary.
    *
@@ -224,6 +224,7 @@ function frequency<Ts extends WeightedArbitrary<unknown>[]>(...warbs: Ts): Arbit
  *
  * **WARNING**: It expects at least one (Arbitrary, weight)
  *
+ * @param constraints - Constraints to be applied when generating the values
  * @param warbs - (Arbitrary, weight)s that might be called to produce a value
  *
  * @remarks Since 0.0.7
