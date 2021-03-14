@@ -6,7 +6,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
   // >  The arbitrary used as base-case for the recursive structure is a constant.
   // >  It either pass or fail. But we ca never geenrate the wrong one and miss shrinking opportunities.
 
-  it('Should shrink letrec/oneof towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink letrec/frequency towards the smallest case (on very simple scenario)', () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
@@ -25,7 +25,22 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink letrec/option towards the smallest case (on very simple scenario)', () => {
+    // Arrange
+    const failingLength = 2;
+    const dataArb = fc.letrec((tie) => ({
+      data: fc.option(fc.tuple(tie('data'), tie('data')), { nil: [0], depthFactor: 0.5 }),
+    })).data;
+
+    // Act
+    const out = fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+
+    // Assert
+    expect(out.failed).toBe(true);
+    expect(flat(out.counterexample![0])).toHaveLength(failingLength);
+  });
+
+  it('Should shrink memo/frequency towards the smallest case (on very simple scenario)', () => {
     // Arrange
     const failingLength = 2;
     const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
@@ -36,6 +51,22 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
           { arbitrary: fc.constant([0]), weight: 1 },
           { arbitrary: fc.tuple(dataArb(), dataArb()), weight: 1 }
         );
+    });
+
+    // Act
+    const out = fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+
+    // Assert
+    expect(out.failed).toBe(true);
+    expect(flat(out.counterexample![0])).toHaveLength(failingLength);
+  });
+
+  it('Should shrink memo/option towards the smallest case (on very simple scenario)', () => {
+    // Arrange
+    const failingLength = 2;
+    const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
+      if (n <= 1) return fc.constant([0]);
+      else return fc.option(fc.tuple(dataArb(), dataArb()), { nil: [0], depthFactor: 0.5 });
     });
 
     // Act

@@ -193,6 +193,8 @@ export type FrequencyContraints = {
    *
    * By default, if not specified, each instance of frequency will have its own depth.
    * In other words: you can have depth=1 in one while you have depth=100 in another one.
+   *
+   * @remarks Since 2.14.0
    */
   depthIdentifier?: string;
 };
