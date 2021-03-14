@@ -2147,10 +2147,15 @@ fc.letrec(tie => ({
 *&#8195;Signatures*
 
 - `fc.oneof(...arbitraries)`
+- `fc.oneof({withCrossShrink?, maxDepth?, depthIdentifier?}, ...{ arbitrary, weight })`
 
 *&#8195;with:*
 
 - `...arbitraries` — _arbitraries that could be used to generate a value_
+- `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary. It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
+- `depthFactor?` — default: `0` — _this factor will be used to increase the probability to generate instances of the first passed arbitrary_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value_
+- `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
 *&#8195;Usages*
 
