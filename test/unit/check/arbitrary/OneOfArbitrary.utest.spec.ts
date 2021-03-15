@@ -1,7 +1,7 @@
 import { mocked } from 'ts-jest/utils';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
-import { oneof, OneOfContraints } from '../../../../src/check/arbitrary/OneOfArbitrary';
+import { oneof, OneOfConstraints } from '../../../../src/check/arbitrary/OneOfArbitrary';
 
 import * as FrequencyArbitraryMock from '../../../../src/check/arbitrary/FrequencyArbitrary';
 jest.mock('../../../../src/check/arbitrary/FrequencyArbitrary');
@@ -31,7 +31,7 @@ describe('OneOfArbitrary', () => {
     it('Should pass received constraints to frequency', () => {
       // Arrange
       const from = mocked(FrequencyArbitraryMock.FrequencyArbitrary.from);
-      const constraints: OneOfContraints = { maxDepth: 10, depthIdentifier: 'hello' };
+      const constraints: OneOfConstraints = { maxDepth: 10, depthIdentifier: 'hello' };
       const arb1 = constant(1);
       const arb2 = constant(2);
 
@@ -52,7 +52,7 @@ describe('OneOfArbitrary', () => {
     it('Should pass received constraints to frequency even if empty', () => {
       // Arrange
       const from = mocked(FrequencyArbitraryMock.FrequencyArbitrary.from);
-      const constraints: OneOfContraints = {};
+      const constraints: OneOfConstraints = {};
       const arb1 = constant(1);
       const arb2 = constant(2);
 
