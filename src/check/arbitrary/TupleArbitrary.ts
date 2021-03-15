@@ -73,6 +73,7 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
  *
  * @param arbs - Ordered list of arbitraries
  *
+ * @deprecated Switch to {@link tuple} instead
  * @remarks Since 1.0.0
  * @public
  */
