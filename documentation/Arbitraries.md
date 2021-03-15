@@ -2338,7 +2338,7 @@ fc.tuple(fc.nat(), fc.string())
 
 *&#8195;Signatures*
 
-- `fc.genericTuple(arbitraries)`
+- `fc.genericTuple(arbitraries)` — _deprecated since v2.14.0_
 
 *&#8195;with:*
 
