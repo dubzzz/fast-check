@@ -73,7 +73,7 @@ import {
   unicodeJson,
   unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
-import { oneof, OneOfValue } from './check/arbitrary/OneOfArbitrary';
+import { oneof, OneOfValue, OneOfConstraints } from './check/arbitrary/OneOfArbitrary';
 import { option, OptionConstraints } from './check/arbitrary/OptionArbitrary';
 import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
 import { set, SetConstraints } from './check/arbitrary/SetArbitrary';
@@ -358,6 +358,7 @@ export {
   MixedCaseConstraints,
   NatConstraints,
   ObjectConstraints,
+  OneOfConstraints,
   OptionConstraints,
   RecordConstraints,
   SchedulerConstraints,

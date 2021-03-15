@@ -17,7 +17,7 @@ export type OneOfValue<Ts extends Arbitrary<unknown>[]> = {
  * @remarks Since 2.14.0
  * @public
  */
-export type OneOfContraints = {
+export type OneOfConstraints = {
   /**
    * When set to true, the shrinker of oneof will try to check if the first arbitrary
    * could have been used to discover an issue. It allows to shrink trees.
@@ -59,7 +59,7 @@ export type OneOfContraints = {
 /**
  * @internal
  */
-function isOneOfContraints(param: OneOfContraints | Arbitrary<unknown> | undefined): param is OneOfContraints {
+function isOneOfContraints(param: OneOfConstraints | Arbitrary<unknown> | undefined): param is OneOfConstraints {
   return param != null && typeof param === 'object' && !('generate' in param);
 }
 
@@ -85,9 +85,9 @@ function oneof<Ts extends Arbitrary<unknown>[]>(...arbs: Ts): Arbitrary<OneOfVal
  * @remarks Since 2.14.0
  * @public
  */
-function oneof<Ts extends Arbitrary<unknown>[]>(constraints: OneOfContraints, ...arbs: Ts): Arbitrary<OneOfValue<Ts>>;
+function oneof<Ts extends Arbitrary<unknown>[]>(constraints: OneOfConstraints, ...arbs: Ts): Arbitrary<OneOfValue<Ts>>;
 function oneof<Ts extends Arbitrary<unknown>[]>(
-  ...args: [...Ts] | [OneOfContraints, ...Ts]
+  ...args: [...Ts] | [OneOfConstraints, ...Ts]
 ): Arbitrary<OneOfValue<Ts>> {
   // TODO With TypeScript 4.0 it will be possible to properly define typings for `oneof(...arbs, constraints)`
   const constraints = args[0];
