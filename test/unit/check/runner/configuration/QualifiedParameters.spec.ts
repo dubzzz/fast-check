@@ -21,6 +21,8 @@ const parametersArbitrary = fc.record(
     skipAllAfterTimeLimit: fc.nat(),
     interruptAfterTimeLimit: fc.nat(),
     markInterruptAsFailure: fc.boolean(),
+    skipEqualValues: fc.boolean(),
+    ignoreEqualValues: fc.boolean(),
     path: fc.array(fc.nat()).map((arr) => arr.join(':')),
     logger: fc.func(fc.constant(undefined)),
     unbiased: fc.boolean(),

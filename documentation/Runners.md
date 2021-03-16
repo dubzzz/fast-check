@@ -110,8 +110,13 @@ export interface Parameters<T = void> {
     interruptAfterTimeLimit?: number; // optional, interrupt test execution after a given time limit
                         // in milliseconds (relies on Date.now): disabled by default
     markInterruptAsFailure?: boolean; // optional, mark interrupted runs as failure: disabled by default
+    skipEqualValues?: boolean; // optional, skip repeated runs: disabled by default
+                        // If a same input is encountered multiple times only the first one will be executed,
+                        // next ones will be skipped. Be aware that skipping runs may lead to property failure
+                        // if the arbitrary does not have enough values. In that case use `ignoreEqualValues` instead.
     ignoreEqualValues?: boolean; // optional, do not repeat runs with already covered cases: disabled by default
-    					// This is useful when arbitrary has a limited number of variants
+                        // Similar to `skipEqualValues` but instead of skipping runs, it just don't rerun them.
+                        // It can be useful when arbitrary has a limited number of variants.
     reporter?: (runDetails: RunDetails<T>) => void; // optional, custom reporter replacing the default one
                         // reporter is responsible for throwing in case of failure, as an example default one throws
                         // whenever `runDetails.failed` is true but it is up to you
