@@ -1,3 +1,47 @@
+# 2.14.0
+
+_Easier recursive strcutures and ability discard already seen runs_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.14.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.13.0...v2.14.0)]
+
+## Features
+
+- ([PR#1581](https://github.com/dubzzz/fast-check/pull/1581)) Reject invalid weights on `fc.frequency`
+- ([PR#1598](https://github.com/dubzzz/fast-check/pull/1598)) Add `withCrossShrink` constraint on `fc.frequency`
+- ([PR#1586](https://github.com/dubzzz/fast-check/pull/1586))  Add a way to ignore already covered cases
+- ([PR#1601](https://github.com/dubzzz/fast-check/pull/1601)) Add `maxDepth` constraint on `fc.frequency`
+- ([PR#1602](https://github.com/dubzzz/fast-check/pull/1602)) Stricter checks on args of `fc.frequency`
+- ([PR#1603](https://github.com/dubzzz/fast-check/pull/1603)) Add `depthFactor` constraint on `fc.frequency`
+- ([PR#1606](https://github.com/dubzzz/fast-check/pull/1606)) Adopt variadic tuples for signatures of tuple
+- ([PR#1607](https://github.com/dubzzz/fast-check/pull/1607)) Ability to share depth accross instances
+- ([PR#1609](https://github.com/dubzzz/fast-check/pull/1609)) Add recursive constraints on `fc.option`
+- ([PR#1611](https://github.com/dubzzz/fast-check/pull/1611)) Add recursive constraints on `fc.oneof`
+- ([PR#1624](https://github.com/dubzzz/fast-check/pull/1624)) Mark `fc.genericTuple` as deprecated
+- ([PR#1629](https://github.com/dubzzz/fast-check/pull/1629)) Introduce a way to mark equal values as skipped
+
+## Fixes
+
+- ([PR#1493](https://github.com/dubzzz/fast-check/pull/1493)) Bug: `add64` is not supposed to produce negative zeros
+- ([PR#1514](https://github.com/dubzzz/fast-check/pull/1514)) Doc: Build status should open actions page filtered on main
+- ([PR#1515](https://github.com/dubzzz/fast-check/pull/1515)) Doc: Build status should open builds page filtered on main
+- ([PR#1521](https://github.com/dubzzz/fast-check/pull/1521)) Tooling: Enable strict mode in tsconfig
+- ([PR#1524](https://github.com/dubzzz/fast-check/pull/1524)) Test: Add CJS/ESM tests using esbuild
+- ([PR#1525](https://github.com/dubzzz/fast-check/pull/1525)) CI: Relax check ensuring default seed defined in CI
+- ([PR#1534](https://github.com/dubzzz/fast-check/pull/1534)) Test: Fix coverage flakiness on `add64(0, 0)`
+- ([PR#1555](https://github.com/dubzzz/fast-check/pull/1555)) Test: Run ESM tests against node 13
+- ([PR#1578](https://github.com/dubzzz/fast-check/pull/1578)) Refactor: Rework initialisation phase of `fc.frequency`
+- ([PR#1577](https://github.com/dubzzz/fast-check/pull/1577)) Refactor: Rework initialisation phase of `fc.oneof`
+- ([PR#1597](https://github.com/dubzzz/fast-check/pull/1597)) Test: Rework tests on frequency
+- ([PR#1600](https://github.com/dubzzz/fast-check/pull/1600)) CI: Checkout code before publishing the documentation
+- ([PR#1604](https://github.com/dubzzz/fast-check/pull/1604)) Refactor: Re-use `fc.frequency` for `fc.oneof`
+- ([PR#1605](https://github.com/dubzzz/fast-check/pull/1605)) Refactor: Re-use `fc.frequency` for `fc.option`
+- ([PR#1608](https://github.com/dubzzz/fast-check/pull/1608)) Test: Better errors for isValidValue in helpers
+- ([PR#1610](https://github.com/dubzzz/fast-check/pull/1610)) Doc: Add missing annotations and jsdoc
+- ([PR#1612](https://github.com/dubzzz/fast-check/pull/1612)) Doc: Better documentation for `fc.letrec`
+- ([PR#1613](https://github.com/dubzzz/fast-check/pull/1613)) Doc: Update some `fc.memo` to `fc.letrec`
+- ([PR#1625](https://github.com/dubzzz/fast-check/pull/1625)) Fix: Add missing export for `OneOfConstraints`
+
+---
+
 # 2.13.0
 
 _Built-in arbitrary for sparse arrays_
