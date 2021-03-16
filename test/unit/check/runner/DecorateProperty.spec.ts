@@ -33,6 +33,7 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: false,
+      skipEqualValues: false,
       ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
@@ -46,6 +47,7 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: false,
+      skipEqualValues: false,
       ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
@@ -59,6 +61,7 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: 1,
       timeout: null,
       unbiased: false,
+      skipEqualValues: false,
       ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(1);
@@ -72,6 +75,7 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: 1,
       unbiased: false,
+      skipEqualValues: false,
       ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
@@ -85,6 +89,7 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: true,
+      skipEqualValues: false,
       ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
@@ -98,6 +103,7 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: 1,
       unbiased: false,
+      skipEqualValues: false,
       ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
@@ -111,7 +117,22 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: null,
       timeout: null,
       unbiased: false,
+      skipEqualValues: false,
       ignoreEqualValues: true,
+    });
+    expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
+    expect(TimeoutProperty).toHaveBeenCalledTimes(0);
+    expect(UnbiasedProperty).toHaveBeenCalledTimes(0);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(1);
+  });
+  it('Should enable IgnoreEqualValuesProperty on skipEqualValues', () => {
+    decorateProperty(buildProperty(true), {
+      skipAllAfterTimeLimit: null,
+      interruptAfterTimeLimit: null,
+      timeout: null,
+      unbiased: false,
+      skipEqualValues: true,
+      ignoreEqualValues: false,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(0);
     expect(TimeoutProperty).toHaveBeenCalledTimes(0);
@@ -124,11 +145,12 @@ describe('decorateProperty', () => {
       interruptAfterTimeLimit: 1,
       timeout: 1,
       unbiased: true,
+      skipEqualValues: true,
       ignoreEqualValues: true,
     });
     expect(SkipAfterProperty).toHaveBeenCalledTimes(2);
     expect(TimeoutProperty).toHaveBeenCalledTimes(1);
     expect(UnbiasedProperty).toHaveBeenCalledTimes(1);
-    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(1);
+    expect(IgnoreEqualValuesProperty).toHaveBeenCalledTimes(2);
   });
 });

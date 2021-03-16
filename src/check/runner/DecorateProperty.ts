@@ -8,7 +8,7 @@ import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
   QualifiedParameters<Ts>,
-  'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit' | 'ignoreEqualValues'
+  'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit' | 'skipEqualValues' | 'ignoreEqualValues'
 >;
 
 /** @internal */
@@ -20,7 +20,7 @@ export function decorateProperty<Ts>(
   if (rawProperty.isAsync() && qParams.timeout != null) {
     prop = new TimeoutProperty(prop, qParams.timeout);
   }
-  if (qParams.unbiased === true) {
+  if (qParams.unbiased) {
     prop = new UnbiasedProperty(prop);
   }
   if (qParams.skipAllAfterTimeLimit != null) {
@@ -29,8 +29,11 @@ export function decorateProperty<Ts>(
   if (qParams.interruptAfterTimeLimit != null) {
     prop = new SkipAfterProperty(prop, Date.now, qParams.interruptAfterTimeLimit, true);
   }
+  if (qParams.skipEqualValues) {
+    prop = new IgnoreEqualValuesProperty(prop, true);
+  }
   if (qParams.ignoreEqualValues) {
-    prop = new IgnoreEqualValuesProperty(prop);
+    prop = new IgnoreEqualValuesProperty(prop, false);
   }
   return prop;
 }
