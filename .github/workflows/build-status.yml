@@ -394,6 +394,6 @@ jobs:
         with:
           name: bundle
       - name: Publish package
-        run: npm publish fast-check.tgz
+        run: npm publish fast-check.tgz --tag next
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
