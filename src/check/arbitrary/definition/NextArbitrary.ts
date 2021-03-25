@@ -266,8 +266,10 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
 
 /** @internal */
 class FilterArbitrary<T, U extends T> extends NextArbitrary<U> {
+  readonly bindRefinementOnValue: (v: NextValue<T>) => v is NextValue<U>;
   constructor(readonly arb: NextArbitrary<T>, readonly refinement: (t: T) => t is U) {
     super();
+    this.bindRefinementOnValue = this.refinementOnValue.bind(this);
   }
   generate(mrng: Random): NextValue<U> {
     // eslint-disable-next-line no-constant-condition
@@ -279,7 +281,7 @@ class FilterArbitrary<T, U extends T> extends NextArbitrary<U> {
     }
   }
   shrink(value: U, context?: unknown): Stream<NextValue<U>> {
-    return this.shrink(value, context);
+    return this.arb.shrink(value, context).filter(this.bindRefinementOnValue);
   }
   withBias(freq: number) {
     return this.arb.withBias(freq).filter(this.refinement);
