@@ -1,10 +1,16 @@
 import * as fc from '../../../../../lib/fast-check';
+import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
+import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 
 export type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 
 export function buildShrinkTree<T>(s: Shrinkable<T>): ShrinkTree<T> {
   return [s.value_, [...s.shrink().map((ss) => buildShrinkTree(ss))]];
+}
+
+export function buildNextShrinkTree<T>(arb: NextArbitrary<T>, v: NextValue<T>): ShrinkTree<T> {
+  return [v.value_, [...arb.shrink(v.value_, v.context).map((nv) => buildNextShrinkTree(arb, nv))]];
 }
 
 export function renderTree<T>(tree: ShrinkTree<T>): string[] {
