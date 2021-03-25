@@ -109,7 +109,7 @@ describe('ConverterToNext', () => {
       const transformedInstance = new ConverterToNext(originalInstance);
       const out = transformedInstance.generate(mrng);
       const outShrinkLvl1 = transformedInstance.shrink(out.value, out.context);
-      const firstShrunkValue = outShrinkLvl1.getNthOrLast(0);
+      const firstShrunkValue = outShrinkLvl1.getNthOrLast(0)!;
       const outShrinkLvl2 = transformedInstance.shrink(firstShrunkValue.value, firstShrunkValue.context);
 
       // Assert

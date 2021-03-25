@@ -121,7 +121,7 @@ describe('ConverterFromNext', () => {
       const transformedInstance = new ConverterFromNext(originalInstance);
       const out = transformedInstance.generate(mrng);
       const outShrinkLvl1 = out.shrink();
-      const outShrinkLvl2 = outShrinkLvl1.getNthOrLast(1).shrink();
+      const outShrinkLvl2 = outShrinkLvl1.getNthOrLast(1)!.shrink();
 
       // Assert
       expect([...outShrinkLvl2].map((v) => v.value)).toEqual(expectedShrunkValuesCall2.map((v) => v[0]));
