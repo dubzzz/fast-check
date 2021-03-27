@@ -12,7 +12,7 @@ export function convertFromNext<T>(arb: NextArbitrary<T>): Arbitrary<T> {
 
 export function convertToNext<T>(arb: Arbitrary<T>): NextArbitrary<T> {
   if (ConverterFromNext.isConverterFromNext(arb)) {
-    return arb.arb;
+    return arb.arb as NextArbitrary<T>;
   }
   return new ConverterToNext(arb);
 }
