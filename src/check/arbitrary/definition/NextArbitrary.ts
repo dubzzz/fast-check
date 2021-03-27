@@ -238,7 +238,7 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
   }
   generate(mrng: Random): NextValue<U> {
     const g = this.arb.generate(mrng);
-    return new NextValue(this.mapper(g.value_));
+    return this.valueMapper(g);
   }
   shrink(_value: U, context?: unknown): Stream<NextValue<U>> {
     if (this.isSafeContext(context)) {
