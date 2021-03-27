@@ -9,7 +9,7 @@ import { Stream } from '../../../../src/stream/Stream';
 import * as stubRng from '../../stubs/generators';
 import { buildShrinkTree, renderTree } from './generic/ShrinkTree';
 
-const mrng = stubRng.mutable.nocall();
+const mrngNoCall = stubRng.mutable.nocall();
 
 describe('tuple', () => {
   it('should produce the right shrinking tree', () => {
@@ -19,6 +19,9 @@ describe('tuple', () => {
     class FirstArbitrary extends NextArbitrary<number> {
       generate(_mrng: Random): NextValue<number> {
         return new NextValue(expectedFirst, { step: 2 });
+      }
+      canGenerate(_value: unknown): _value is number {
+        throw new Error('No call expected in that scenario');
       }
       shrink(value: number, context?: unknown): Stream<NextValue<number>> {
         if (typeof context !== 'object' || context === null || !('step' in context)) {
@@ -38,6 +41,9 @@ describe('tuple', () => {
     class SecondArbitrary extends NextArbitrary<number> {
       generate(_mrng: Random): NextValue<number> {
         return new NextValue(expectedSecond, { step: 2 });
+      }
+      canGenerate(_value: unknown): _value is number {
+        throw new Error('No call expected in that scenario');
       }
       shrink(value: number, context?: unknown): Stream<NextValue<number>> {
         if (typeof context !== 'object' || context === null || !('step' in context)) {
@@ -59,7 +65,7 @@ describe('tuple', () => {
     const arb = tuple(firstArb, secondArb);
 
     // Act
-    const g = arb.generate(mrng);
+    const g = arb.generate(mrngNoCall);
     const renderedTree = renderTree(buildShrinkTree(g)).join('\n');
 
     // Assert

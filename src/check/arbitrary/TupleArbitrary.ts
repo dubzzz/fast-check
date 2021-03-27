@@ -50,6 +50,17 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
   generate(mrng: Random): NextValue<Ts> {
     return GenericTupleArbitrary.wrapper<Ts>(this.arbs.map((a) => a.generate(mrng)) as ValuesArray<Ts>);
   }
+  canGenerate(value: unknown): value is Ts {
+    if (!Array.isArray(value) || value.length !== this.arbs.length) {
+      return false;
+    }
+    for (let index = 0; index !== this.arbs.length; ++index) {
+      if (!this.arbs[index].canGenerate(value[index])) {
+        return false;
+      }
+    }
+    return true;
+  }
   shrink(value: Ts, context?: unknown): Stream<NextValue<Ts>> {
     // shrinking one by one is the not the most comprehensive
     // but allows a reasonable number of entries in the shrink
