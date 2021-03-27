@@ -8,7 +8,7 @@ import { Stream } from '../../../../../src/fast-check-default';
 import { ConverterFromNext } from '../../../../../src/check/arbitrary/definition/ConverterFromNext';
 import * as stubRng from '../../../stubs/generators';
 
-const mrng = stubRng.mutable.nocall();
+const mrngNoCall = stubRng.mutable.nocall();
 
 describe('ConverterFromNext', () => {
   describe('isConverterFromNext', () => {
@@ -17,6 +17,9 @@ describe('ConverterFromNext', () => {
       class MyNextArbitrary extends NextArbitrary<number> {
         generate(_mrng: Random): NextValue<number> {
           throw new Error('Method not implemented.');
+        }
+        canGenerate(_value: unknown): _value is number {
+          throw new Error('Method not implemented');
         }
         shrink(_value: number, _context?: unknown): Stream<NextValue<number>> {
           throw new Error('Method not implemented.');
@@ -53,18 +56,21 @@ describe('ConverterFromNext', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
+        canGenerate = (_v): _v is number => {
+          throw new Error('Unexpected call');
+        };
         shrink = shrink;
       }
       const originalInstance = new MyNextArbitrary();
 
       // Act
       const transformedInstance = new ConverterFromNext(originalInstance);
-      const out = transformedInstance.generate(mrng);
+      const out = transformedInstance.generate(mrngNoCall);
 
       // Assert
       expect(out.value).toBe(expectedValue);
       expect(generate).toHaveBeenCalledTimes(1);
-      expect(generate).toHaveBeenCalledWith(mrng);
+      expect(generate).toHaveBeenCalledWith(mrngNoCall);
       expect(shrink).not.toHaveBeenCalled();
     });
 
@@ -79,13 +85,16 @@ describe('ConverterFromNext', () => {
       const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedFirstValue, expectedFirstContext));
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
+        canGenerate = (_v): _v is number => {
+          throw new Error('Unexpected call');
+        };
         shrink = shrink;
       }
       const originalInstance = new MyNextArbitrary();
 
       // Act
       const transformedInstance = new ConverterFromNext(originalInstance);
-      const out = transformedInstance.generate(mrng);
+      const out = transformedInstance.generate(mrngNoCall);
       const outShrink = out.shrink();
 
       // Assert
@@ -113,13 +122,16 @@ describe('ConverterFromNext', () => {
       const generate = jest.fn().mockReturnValueOnce(new NextValue(1, Symbol()));
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
+        canGenerate = (_v): _v is number => {
+          throw new Error('Unexpected call');
+        };
         shrink = shrink;
       }
       const originalInstance = new MyNextArbitrary();
 
       // Act
       const transformedInstance = new ConverterFromNext(originalInstance);
-      const out = transformedInstance.generate(mrng);
+      const out = transformedInstance.generate(mrngNoCall);
       const outShrinkLvl1 = out.shrink();
       const outShrinkLvl2 = outShrinkLvl1.getNthOrLast(1)!.shrink();
 

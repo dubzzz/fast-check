@@ -22,6 +22,10 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
     return new NextValue(g.value_, g);
   }
 
+  canGenerate(_value: unknown): _value is T {
+    return false;
+  }
+
   shrink(_value: T, context?: unknown): Stream<NextValue<T>> {
     if (this.isSafeContext(context)) {
       return context.shrink().map((s) => new NextValue(s.value_, s));

@@ -17,6 +17,9 @@ describe('NextArbitrary', () => {
         generate(_mrng: Random): NextValue<number> {
           return new NextValue(10, { step: 2 });
         }
+        canGenerate(value: unknown): value is number {
+          throw new Error('No call expected in current scenario');
+        }
         shrink(value: number, context?: unknown): Stream<NextValue<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
@@ -102,6 +105,9 @@ describe('NextArbitrary', () => {
         generate(_mrng: Random): NextValue<number> {
           return new NextValue(5, { step: 2 });
         }
+        canGenerate(value: unknown): value is number {
+          throw new Error('No call expected in current scenario');
+        }
         shrink(value: number, context?: unknown): Stream<NextValue<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
@@ -123,6 +129,9 @@ describe('NextArbitrary', () => {
             size: this.size,
             value: this.value,
           });
+        }
+        canGenerate(value: unknown): value is number[] {
+          throw new Error('No call expected in current scenario');
         }
         shrink(value: number[], context?: unknown): Stream<NextValue<number[]>> {
           if (typeof context !== 'object' || context === null || !('size' in context) || !('value' in context)) {
@@ -236,6 +245,9 @@ describe('NextArbitrary', () => {
       class MyArbitrary extends NextArbitrary<number> {
         generate(_mrng: Random): NextValue<number> {
           return new NextValue(10, { step: 3 });
+        }
+        canGenerate(value: unknown): value is number {
+          throw new Error('No call expected in current scenario');
         }
         shrink(value: number, context?: unknown): Stream<NextValue<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {

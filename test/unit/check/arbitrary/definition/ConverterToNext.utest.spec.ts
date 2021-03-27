@@ -8,7 +8,7 @@ import { Stream } from '../../../../../src/fast-check-default';
 import { ConverterToNext } from '../../../../../src/check/arbitrary/definition/ConverterToNext';
 import * as stubRng from '../../../stubs/generators';
 
-const mrng = stubRng.mutable.nocall();
+const mrngNoCall = stubRng.mutable.nocall();
 
 describe('ConverterToNext', () => {
   describe('isConverterToNext', () => {
@@ -34,6 +34,9 @@ describe('ConverterToNext', () => {
         generate(_mrng: Random): NextValue<number> {
           throw new Error('Method not implemented.');
         }
+        canGenerate(_value: unknown): _value is number {
+          throw new Error('Method not implemented.');
+        }
         shrink(_value: number, _context?: unknown): Stream<NextValue<number>> {
           throw new Error('Method not implemented.');
         }
@@ -57,12 +60,12 @@ describe('ConverterToNext', () => {
 
       // Act
       const transformedInstance = new ConverterToNext(originalInstance);
-      const out = transformedInstance.generate(mrng);
+      const out = transformedInstance.generate(mrngNoCall);
 
       // Assert
       expect(out.value).toBe(expectedValue);
       expect(generate).toHaveBeenCalledTimes(1);
-      expect(generate).toHaveBeenCalledWith(mrng);
+      expect(generate).toHaveBeenCalledWith(mrngNoCall);
     });
   });
 
@@ -81,7 +84,7 @@ describe('ConverterToNext', () => {
 
       // Act
       const transformedInstance = new ConverterToNext(originalInstance);
-      const out = transformedInstance.generate(mrng);
+      const out = transformedInstance.generate(mrngNoCall);
       const outShrink = transformedInstance.shrink(out.value, out.context);
 
       // Assert
@@ -107,7 +110,7 @@ describe('ConverterToNext', () => {
 
       // Act
       const transformedInstance = new ConverterToNext(originalInstance);
-      const out = transformedInstance.generate(mrng);
+      const out = transformedInstance.generate(mrngNoCall);
       const outShrinkLvl1 = transformedInstance.shrink(out.value, out.context);
       const firstShrunkValue = outShrinkLvl1.getNthOrLast(0)!;
       const outShrinkLvl2 = transformedInstance.shrink(firstShrunkValue.value, firstShrunkValue.context);
