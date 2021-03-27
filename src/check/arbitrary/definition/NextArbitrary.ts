@@ -347,3 +347,15 @@ class NoBiasArbitrary<T> extends NextArbitrary<T> {
     return this.arb.shrink(value, context);
   }
 }
+
+/**
+ * Ensure an instance is an isntance of NextArbitrary
+ * @param instance - The instance to be checked
+ * @internal
+ */
+export function assertIsNextArbitrary(instance: NextArbitrary<unknown>): void {
+  // TODO - Ideally `: asserts instance is NextArbitrary<unknown>` but requires TS 3.7
+  if (typeof instance !== 'object' || instance === null || !('generate' in instance) || !('shrink' in instance)) {
+    throw new Error('Unexpected value received: not an instance of NextArbitrary');
+  }
+}
