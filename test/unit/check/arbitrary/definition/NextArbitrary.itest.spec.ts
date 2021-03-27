@@ -95,6 +95,141 @@ describe('NextArbitrary', () => {
     });
   });
 
+  describe('chain', () => {
+    it('should produce the right shrinking tree', () => {
+      // Arrange
+      class MyArbitrary extends NextArbitrary<number> {
+        generate(_mrng: Random): NextValue<number> {
+          return new NextValue(5, { step: 2 });
+        }
+        shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+          if (typeof context !== 'object' || context === null || !('step' in context)) {
+            throw new Error('Invalid context for MyArbitrary');
+          }
+          const currentStep = (context as { step: number }).step;
+          if (value - currentStep < 0) {
+            return Stream.nil();
+          }
+          const nextStep = currentStep + 1;
+          return Stream.of(new NextValue(value - currentStep, { step: nextStep }));
+        }
+      }
+      class MyChainedArbitrary extends NextArbitrary<number[]> {
+        constructor(readonly size: number, readonly value: number) {
+          super();
+        }
+        generate(_mrng: Random): NextValue<number[]> {
+          return new NextValue(Array(this.size).fill(this.value), {
+            size: this.size,
+            value: this.value,
+          });
+        }
+        shrink(value: number[], context?: unknown): Stream<NextValue<number[]>> {
+          if (typeof context !== 'object' || context === null || !('size' in context) || !('value' in context)) {
+            throw new Error('Invalid context for MyChainedArbitrary');
+          }
+          const currentContext = context as { size: number; value: number };
+          if (currentContext.size === 0) {
+            return Stream.nil();
+          }
+          return Stream.of(
+            ...(currentContext.value === value[0]
+              ? [new NextValue(Array(currentContext.size).fill(0), currentContext)]
+              : []),
+            ...(value.length > 1 ? [new NextValue([value[0]], currentContext)] : [])
+          );
+        }
+      }
+      const arb = new MyArbitrary().chain((n) => new MyChainedArbitrary(n, n));
+
+      // Act
+      const g = arb.generate(mrngNoCall);
+      const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
+
+      // Assert
+      expect(renderedTree).toMatchInlineSnapshot(`
+        "[5,5,5,5,5]
+        ├> [3,3,3]
+        |  ├> []
+        |  ├> [0,0,0]
+        |  |  ├> []
+        |  |  └> [0]
+        |  |     └> []
+        |  └> [3]
+        |     ├> []
+        |     └> [0,0,0]
+        |        ├> []
+        |        └> [0]
+        |           └> []
+        ├> [0,0,0,0,0]
+        |  ├> [3,3,3]
+        |  |  ├> []
+        |  |  ├> [0,0,0]
+        |  |  |  ├> []
+        |  |  |  └> [0]
+        |  |  |     └> []
+        |  |  └> [3]
+        |  |     ├> []
+        |  |     └> [0,0,0]
+        |  |        ├> []
+        |  |        └> [0]
+        |  |           └> []
+        |  └> [0]
+        |     └> [3,3,3]
+        |        ├> []
+        |        ├> [0,0,0]
+        |        |  ├> []
+        |        |  └> [0]
+        |        |     └> []
+        |        └> [3]
+        |           ├> []
+        |           └> [0,0,0]
+        |              ├> []
+        |              └> [0]
+        |                 └> []
+        └> [5]
+           ├> [3,3,3]
+           |  ├> []
+           |  ├> [0,0,0]
+           |  |  ├> []
+           |  |  └> [0]
+           |  |     └> []
+           |  └> [3]
+           |     ├> []
+           |     └> [0,0,0]
+           |        ├> []
+           |        └> [0]
+           |           └> []
+           └> [0,0,0,0,0]
+              ├> [3,3,3]
+              |  ├> []
+              |  ├> [0,0,0]
+              |  |  ├> []
+              |  |  └> [0]
+              |  |     └> []
+              |  └> [3]
+              |     ├> []
+              |     └> [0,0,0]
+              |        ├> []
+              |        └> [0]
+              |           └> []
+              └> [0]
+                 └> [3,3,3]
+                    ├> []
+                    ├> [0,0,0]
+                    |  ├> []
+                    |  └> [0]
+                    |     └> []
+                    └> [3]
+                       ├> []
+                       └> [0,0,0]
+                          ├> []
+                          └> [0]
+                             └> []"
+      `);
+    });
+  });
+
   describe('filter', () => {
     it('should produce the right shrinking tree', () => {
       // Arrange
