@@ -1,34 +1,33 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
-import { biasWrapper } from './definition/BiasedArbitraryWrapper';
-import { Shrinkable } from './definition/Shrinkable';
+import { nextBiasWrapper } from './definition/BiasedNextArbitraryWrapper';
+import { convertFromNextWithShrunkOnce } from './definition/Converters';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { NextValue } from './definition/NextValue';
 import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
 import { shrinkInteger } from './helpers/ShrinkInteger';
 
 /** @internal */
-class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
+class IntegerArbitrary extends NextArbitrary<number> {
   static MIN_INT: number = 0x80000000 | 0;
   static MAX_INT: number = 0x7fffffff | 0;
 
-  private biasedIntegerArbitrary: Arbitrary<number> | null = null;
+  private biasedIntegerArbitrary: NextArbitrary<number> | null = null;
 
   constructor(readonly min: number, readonly max: number, readonly genMin: number, readonly genMax: number) {
     super();
   }
 
-  private wrapper(value: number, context: unknown): Shrinkable<number> {
-    return new Shrinkable(value, () =>
-      this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
-    );
+  generate(mrng: Random): NextValue<number> {
+    return new NextValue(mrng.nextInt(this.genMin, this.genMax), undefined);
   }
 
-  generate(mrng: Random): Shrinkable<number> {
-    return this.wrapper(mrng.nextInt(this.genMin, this.genMax), undefined);
+  canGenerate(value: unknown): value is number {
+    return typeof value === 'number' && Number.isInteger(value) && this.min <= value && value <= this.max;
   }
 
-  contextualShrink(current: number, context?: unknown): Stream<[number, unknown]> {
+  shrink(current: number, context?: unknown): Stream<NextValue<number>> {
     if (current === 0) {
       return Stream.nil();
     }
@@ -43,17 +42,13 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
       // Last chance try...
       // context is set to undefined, so that shrink will restart
       // without any assumptions in case our try find yet another bug
-      return Stream.of([context, undefined]);
+      return Stream.of(new NextValue(context, undefined));
     }
     // Normal shrink process
     return shrinkInteger(current, context, false);
   }
 
-  shrunkOnceContext(): unknown {
-    return this.defaultTarget();
-  }
-
-  private defaultTarget(): number {
+  defaultTarget(): number {
     // min <= 0 && max >= 0   => shrink towards zero
     if (this.min <= 0 && this.max >= 0) {
       return 0;
@@ -90,7 +85,7 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
     return true;
   }
 
-  private pureBiasedArbitrary(): Arbitrary<number> {
+  private pureBiasedArbitrary(): NextArbitrary<number> {
     if (this.biasedIntegerArbitrary != null) {
       return this.biasedIntegerArbitrary;
     }
@@ -98,8 +93,10 @@ class IntegerArbitrary extends ArbitraryWithContextualShrink<number> {
     return this.biasedIntegerArbitrary;
   }
 
-  withBias(freq: number): Arbitrary<number> {
-    return biasWrapper(freq, this, (originalArbitrary: IntegerArbitrary) => originalArbitrary.pureBiasedArbitrary());
+  withBias(freq: number): NextArbitrary<number> {
+    return nextBiasWrapper(freq, this, (originalArbitrary: IntegerArbitrary) =>
+      originalArbitrary.pureBiasedArbitrary()
+    );
   }
 }
 
@@ -199,7 +196,8 @@ function integer(
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
   }
-  return new IntegerArbitrary(constraints.min, constraints.max, constraints.min, constraints.max);
+  const arb = new IntegerArbitrary(constraints.min, constraints.max, constraints.min, constraints.max);
+  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
 
 /**
@@ -255,7 +253,8 @@ function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<numbe
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
   }
-  return new IntegerArbitrary(0, max, 0, max);
+  const arb = new IntegerArbitrary(0, max, 0, max);
+  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
 
 /**

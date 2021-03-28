@@ -1,23 +1,30 @@
+import { Stream } from '../../../fast-check-default';
 import { Random } from '../../../random/generator/Random';
-import { Arbitrary } from '../definition/Arbitrary';
-import { Shrinkable } from '../definition/Shrinkable';
+import { NextArbitrary } from '../definition/NextArbitrary';
+import { NextValue } from '../definition/NextValue';
 
 /** @internal */
 type Numeric = number | bigint;
 
 /** @internal */
-type NumericArbitrary<NType> = new (min: NType, max: NType, genMin: NType, genMax: NType) => Arbitrary<NType>;
+type NumericArbitrary<NType> = new (min: NType, max: NType, genMin: NType, genMax: NType) => NextArbitrary<NType>;
 
 /** @internal */
-export class BiasedNumericArbitrary<NType> extends Arbitrary<NType> {
-  private readonly arbs: Arbitrary<NType>[];
-  constructor(readonly arbCloseToZero: Arbitrary<NType>, ...arbs: Arbitrary<NType>[]) {
+export class BiasedNumericArbitrary<NType> extends NextArbitrary<NType> {
+  private readonly arbs: NextArbitrary<NType>[];
+  constructor(readonly arbCloseToZero: NextArbitrary<NType>, ...arbs: NextArbitrary<NType>[]) {
     super();
     this.arbs = arbs;
   }
-  generate(mrng: Random): Shrinkable<NType> {
+  generate(mrng: Random): NextValue<NType> {
     const id = mrng.nextInt(-2 * this.arbs.length, this.arbs.length - 1); // 2 close to zero for 1 in others
     return id < 0 ? this.arbCloseToZero.generate(mrng) : this.arbs[id].generate(mrng);
+  }
+  canGenerate(value: unknown): value is NType {
+    return this.arbCloseToZero.canGenerate(value);
+  }
+  shrink(value: NType, context?: unknown): Stream<NextValue<NType>> {
+    return this.arbCloseToZero.shrink(value, context);
   }
 }
 
@@ -27,7 +34,7 @@ export function biasNumeric<NType extends Numeric>(
   max: NType,
   Ctor: NumericArbitrary<NType>,
   logLike: (n: NType) => NType
-): Arbitrary<NType> {
+): NextArbitrary<NType> {
   if (min === max) {
     return new Ctor(min, max, min, max);
   }
