@@ -1,5 +1,4 @@
-import { Arbitrary } from '../../../fast-check-default';
-import { assertIsArbitrary } from './Arbitrary';
+import { Arbitrary, assertIsArbitrary } from './Arbitrary';
 import { ConverterFromNext } from './ConverterFromNext';
 import { ConverterToNext } from './ConverterToNext';
 import { assertIsNextArbitrary, NextArbitrary } from './NextArbitrary';
