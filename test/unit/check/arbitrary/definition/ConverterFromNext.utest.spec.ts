@@ -56,7 +56,7 @@ describe('ConverterFromNext', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (_v): _v is number => {
+        canGenerate = (_v: unknown): _v is number => {
           throw new Error('Unexpected call');
         };
         shrink = shrink;
@@ -85,7 +85,7 @@ describe('ConverterFromNext', () => {
       const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedFirstValue, expectedFirstContext));
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (_v): _v is number => {
+        canGenerate = (_v: unknown): _v is number => {
           throw new Error('Unexpected call');
         };
         shrink = shrink;
@@ -122,7 +122,7 @@ describe('ConverterFromNext', () => {
       const generate = jest.fn().mockReturnValueOnce(new NextValue(1, Symbol()));
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (_v): _v is number => {
+        canGenerate = (_v: unknown): _v is number => {
           throw new Error('Unexpected call');
         };
         shrink = shrink;
