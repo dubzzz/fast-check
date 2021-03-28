@@ -11,8 +11,8 @@ on:
   pull_request:
     branches:
       - main
-      - next-*
-      - fix-v*
+      - 'next-*_*_*'
+      - 'fix-v*'
 
 jobs:
   format_lint:
