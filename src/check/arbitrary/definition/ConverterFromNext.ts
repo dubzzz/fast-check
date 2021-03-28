@@ -1,4 +1,4 @@
-import { Random } from '../../../fast-check-default';
+import { Random } from '../../../random/generator/Random';
 import { Arbitrary } from './Arbitrary';
 import { ConverterToNext } from './ConverterToNext';
 import { NextArbitrary } from './NextArbitrary';
