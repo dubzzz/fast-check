@@ -1,8 +1,10 @@
-import { Random, Shrinkable, Stream } from '../../../fast-check-default';
+import { Random } from '../../../random/generator/Random';
+import { Stream } from '../../../stream/Stream';
 import { Arbitrary } from './Arbitrary';
 import { ConverterFromNext } from './ConverterFromNext';
 import { NextArbitrary } from './NextArbitrary';
 import { NextValue } from './NextValue';
+import { Shrinkable } from './Shrinkable';
 
 const identifier = '__ConverterToNext__';
 
