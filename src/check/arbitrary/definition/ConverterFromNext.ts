@@ -1,5 +1,7 @@
 import { Random } from '../../../random/generator/Random';
+import { Stream } from '../../../stream/Stream';
 import { Arbitrary } from './Arbitrary';
+import { ArbitraryWithContextualShrink } from './ArbitraryWithContextualShrink';
 import { ConverterToNext } from './ConverterToNext';
 import { NextArbitrary } from './NextArbitrary';
 import { NextValue } from './NextValue';
@@ -8,13 +10,13 @@ import { Shrinkable } from './Shrinkable';
 const identifier = '__ConverterFromNext__';
 
 /** @internal */
-export class ConverterFromNext<T> extends Arbitrary<T> {
+export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
   [identifier] = true;
   static isConverterFromNext<T>(arb: Arbitrary<T>): arb is ConverterFromNext<T> {
     return identifier in arb;
   }
 
-  constructor(readonly arb: NextArbitrary<T>) {
+  constructor(readonly arb: NextArbitrary<T>, readonly legacyShrunkOnceContext?: unknown) {
     super();
   }
 
@@ -24,6 +26,14 @@ export class ConverterFromNext<T> extends Arbitrary<T> {
   }
   private toShrinkable(v: NextValue<T>): Shrinkable<T, T> {
     return new Shrinkable(v.value_, () => this.arb.shrink(v.value_, v.context).map((nv) => this.toShrinkable(nv)));
+  }
+
+  contextualShrink(value: T, context?: unknown): Stream<[T, unknown]> {
+    return this.arb.shrink(value, context).map((v) => [v.value_, v.context]);
+  }
+
+  shrunkOnceContext(): unknown {
+    return this.legacyShrunkOnceContext;
   }
 
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U>;
