@@ -1,15 +1,42 @@
 import { Arbitrary } from './definition/Arbitrary';
+import { convertFromNext, convertToNext } from './definition/Converters';
 import { integer } from './IntegerArbitrary';
 
 /** @internal */
-function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number) {
-  return integer(min, max).map((n) => String.fromCodePoint(mapToCode(n)));
+function CharacterArbitrary(
+  min: number,
+  max: number,
+  mapToCode: (v: number) => number,
+  unmapFromCode: (v: number) => number
+) {
+  return convertFromNext(
+    convertToNext(integer(min, max)).map(
+      (n) => String.fromCodePoint(mapToCode(n)),
+      (value: unknown): number => {
+        if (typeof value !== 'string') {
+          throw new Error('Cannot unmap received value');
+        }
+        const n = value.codePointAt(0);
+        if (n === undefined) {
+          throw new Error('Cannot unmap received value');
+        }
+        return unmapFromCode(n);
+      }
+    )
+  );
 }
 
 /** @internal */
 const preferPrintableMapper = (v: number): number => {
   if (v < 95) return v + 0x20; // 0x20-0x7e
   if (v <= 0x7e) return v - 95;
+  return v;
+};
+
+/** @internal */
+const preferPrintableUnmapper = (v: number): number => {
+  if (v >= 0x20 && v <= 0x7e) return v - 0x20; // v + 0x20
+  if (v >= 0 && v <= 0x1f) return v + 95; // v - 95
   return v;
 };
 
@@ -23,7 +50,12 @@ const preferPrintableMapper = (v: number): number => {
  */
 function char(): Arbitrary<string> {
   // Only printable characters: https://www.ascii-code.com/
-  return CharacterArbitrary(0x20, 0x7e, (v) => v);
+  return CharacterArbitrary(
+    0x20,
+    0x7e,
+    (v) => v,
+    (v) => v
+  );
 }
 
 /**
@@ -37,7 +69,12 @@ function hexa(): Arbitrary<string> {
       ? v + 48 // 0-9
       : v + 97 - 10; // a-f
   }
-  return CharacterArbitrary(0, 15, mapper);
+  function unmapper(v: number) {
+    return v < 58
+      ? v - 48 // 0-9
+      : v - 97 + 10; // a-f
+  }
+  return CharacterArbitrary(0, 15, mapper, unmapper);
 }
 
 /**
@@ -52,7 +89,13 @@ function base64(): Arbitrary<string> {
     if (v < 62) return v + 48 - 52; // 0-9
     return v === 62 ? 43 : 47; // +/
   }
-  return CharacterArbitrary(0, 63, mapper);
+  function unmapper(v: number) {
+    if (v >= 65 && v <= 90) return v - 65; // A-Z
+    if (v >= 97 && v <= 122) return v - 97 + 26; // a-z
+    if (v >= 48 && v <= 57) return v - 48 + 52; // 0-9
+    return v === 43 ? 62 : 63; // +/
+  }
+  return CharacterArbitrary(0, 63, mapper, unmapper);
 }
 
 /**
@@ -61,7 +104,7 @@ function base64(): Arbitrary<string> {
  * @public
  */
 function ascii(): Arbitrary<string> {
-  return CharacterArbitrary(0x00, 0x7f, preferPrintableMapper);
+  return CharacterArbitrary(0x00, 0x7f, preferPrintableMapper, preferPrintableUnmapper);
 }
 
 /**
@@ -76,7 +119,7 @@ function ascii(): Arbitrary<string> {
  * @public
  */
 function char16bits(): Arbitrary<string> {
-  return CharacterArbitrary(0x0000, 0xffff, preferPrintableMapper);
+  return CharacterArbitrary(0x0000, 0xffff, preferPrintableMapper, preferPrintableUnmapper);
 }
 
 /**
@@ -91,11 +134,15 @@ function unicode(): Arbitrary<string> {
   // This unicode builder is able to produce a subset of UTF-16 characters called UCS-2
   // You can refer to 'fromCharCode' documentation for more details
   const gapSize = 0xdfff + 1 - 0xd800;
-  function mapping(v: number) {
+  function mapper(v: number) {
     if (v < 0xd800) return preferPrintableMapper(v);
     return v + gapSize;
   }
-  return CharacterArbitrary(0x0000, 0xffff - gapSize, mapping);
+  function unmapper(v: number) {
+    if (v < 0xd800) return preferPrintableUnmapper(v);
+    return v - gapSize;
+  }
+  return CharacterArbitrary(0x0000, 0xffff - gapSize, mapper, unmapper);
 }
 
 /**
@@ -114,11 +161,15 @@ function fullUnicode(): Arbitrary<string> {
   // This unicode builder is able to produce all the UTF-16 characters
   // It only produces valid UTF-16 code points
   const gapSize = 0xdfff + 1 - 0xd800;
-  function mapping(v: number) {
+  function mapper(v: number) {
     if (v < 0xd800) return preferPrintableMapper(v);
     return v + gapSize;
   }
-  return CharacterArbitrary(0x0000, 0x10ffff - gapSize, mapping);
+  function unmapper(v: number) {
+    if (v < 0xd800) return preferPrintableUnmapper(v);
+    return v - gapSize;
+  }
+  return CharacterArbitrary(0x0000, 0x10ffff - gapSize, mapper, unmapper);
 }
 
 export { char, ascii, char16bits, unicode, fullUnicode, hexa, base64 };
