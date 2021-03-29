@@ -93,7 +93,7 @@ function base64(): Arbitrary<string> {
     if (v >= 65 && v <= 90) return v - 65; // A-Z
     if (v >= 97 && v <= 122) return v - 97 + 26; // a-z
     if (v >= 48 && v <= 57) return v - 48 + 52; // 0-9
-    return v === 43 ? 62 : 63; // +/
+    return v === 43 ? 62 : v === 47 ? 63 : -1; // +/
   }
   return CharacterArbitrary(0, 63, mapper, unmapper);
 }
