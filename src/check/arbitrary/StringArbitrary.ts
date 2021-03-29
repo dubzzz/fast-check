@@ -1,6 +1,7 @@
 import { array, maxLengthFromMinLength } from './ArrayArbitrary';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './CharacterArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
+import { convertFromNext, convertToNext } from './definition/Converters';
 
 /**
  * Constraints to be applied on arbitraries for strings
@@ -24,7 +25,32 @@ export interface StringSharedConstraints {
 type StringFullConstraintsDefinition = [] | [number] | [number, number] | [StringSharedConstraints];
 
 /** @internal */
-function StringArbitrary(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefinition) {
+function noopUnmapper(_value: unknown): string[] {
+  throw new Error('Cannot unmap the passed value');
+}
+
+/** @internal */
+function codePointAwareUnmapper(value: unknown): string[] {
+  if (typeof value !== 'string') {
+    throw new Error('Cannot unmap the passed value');
+  }
+  return [...value];
+}
+
+/** @internal */
+function notCodePointAwareUnmapper(value: unknown): string[] {
+  if (typeof value !== 'string') {
+    throw new Error('Cannot unmap the passed value');
+  }
+  return value.split('');
+}
+
+/** @internal */
+function StringArbitrary(
+  charArb: Arbitrary<string>,
+  unmapper: (s: unknown) => string[],
+  ...args: StringFullConstraintsDefinition
+) {
   const arrayArb =
     args[0] !== undefined
       ? typeof args[0] === 'number'
@@ -33,7 +59,7 @@ function StringArbitrary(charArb: Arbitrary<string>, ...args: StringFullConstrai
           : array(charArb, { maxLength: args[0] })
         : array(charArb, args[0])
       : array(charArb);
-  return arrayArb.map((tab) => tab.join(''));
+  return convertFromNext(convertToNext(arrayArb).map((tab) => tab.join(''), unmapper));
 }
 
 /** @internal */
@@ -45,18 +71,35 @@ function Base64StringArbitrary(unscaledMinLength: number, unscaledMaxLength: num
   if (minLength > maxLength) throw new Error('Minimal length should be inferior or equal to maximal length');
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');
   if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
-  return StringArbitrary(base64(), { minLength, maxLength }).map((s) => {
-    switch (s.length % 4) {
-      case 0:
-        return s;
-      case 3:
-        return `${s}=`;
-      case 2:
-        return `${s}==`;
-      default:
-        return s.slice(1); // remove one extra char to get to %4 == 0
-    }
-  });
+  return convertFromNext(
+    convertToNext(StringArbitrary(base64(), codePointAwareUnmapper, { minLength, maxLength })).map(
+      (s) => {
+        switch (s.length % 4) {
+          case 0:
+            return s;
+          case 3:
+            return `${s}=`;
+          case 2:
+            return `${s}==`;
+          default:
+            return s.slice(1); // remove one extra char to get to %4 == 0
+        }
+      },
+      (value: unknown): string => {
+        if (typeof value !== 'string' || value.length % 4 !== 0) {
+          throw new Error('Cannot unmap the passed value');
+        }
+        const lastNonTrailingIndex = value.lastIndexOf('=');
+        if (lastNonTrailingIndex === -1) {
+          return value; // no trailing "="
+        }
+        if (value.length - lastNonTrailingIndex + 1 > 2) {
+          throw new Error('Cannot unmap the passed value');
+        }
+        return value.substring(0, lastNonTrailingIndex - 1);
+      }
+    )
+  );
 }
 
 /**
@@ -108,7 +151,7 @@ function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: numb
  */
 function stringOf(charArb: Arbitrary<string>, constraints: StringSharedConstraints): Arbitrary<string>;
 function stringOf(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return StringArbitrary(charArb, ...args);
+  return StringArbitrary(charArb, noopUnmapper, ...args);
 }
 
 /**
@@ -154,7 +197,7 @@ function string(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function string(constraints: StringSharedConstraints): Arbitrary<string>;
 function string(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return StringArbitrary(char(), ...args);
+  return StringArbitrary(char(), codePointAwareUnmapper, ...args);
 }
 
 /**
@@ -200,7 +243,7 @@ function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function asciiString(constraints: StringSharedConstraints): Arbitrary<string>;
 function asciiString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return StringArbitrary(ascii(), ...args);
+  return StringArbitrary(ascii(), codePointAwareUnmapper, ...args);
 }
 
 /**
@@ -246,7 +289,7 @@ function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function string16bits(constraints: StringSharedConstraints): Arbitrary<string>;
 function string16bits(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return StringArbitrary(char16bits(), ...args);
+  return StringArbitrary(char16bits(), notCodePointAwareUnmapper, ...args);
 }
 
 /**
@@ -292,7 +335,7 @@ function unicodeString(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function unicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
 function unicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return StringArbitrary(unicode(), ...args);
+  return StringArbitrary(unicode(), codePointAwareUnmapper, ...args);
 }
 
 /**
@@ -338,7 +381,7 @@ function fullUnicodeString(minLength: number, maxLength: number): Arbitrary<stri
  */
 function fullUnicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
 function fullUnicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return StringArbitrary(fullUnicode(), ...args);
+  return StringArbitrary(fullUnicode(), codePointAwareUnmapper, ...args);
 }
 
 /**
@@ -384,7 +427,7 @@ function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function hexaString(constraints: StringSharedConstraints): Arbitrary<string>;
 function hexaString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return StringArbitrary(hexa(), ...args);
+  return StringArbitrary(hexa(), codePointAwareUnmapper, ...args);
 }
 
 /**
