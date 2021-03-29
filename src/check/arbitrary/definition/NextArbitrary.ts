@@ -122,14 +122,14 @@ export abstract class NextArbitrary<T> {
    * const arrayAndLimitArbitrary = fc.nat().chain((c: number) => fc.tuple( fc.array(fc.nat(c)), fc.constant(c)));
    * ```
    *
-   * @param fmapper - Chain function, to produce a new Arbitrary using a value from another Arbitrary
+   * @param chainer - Chain function, to produce a new Arbitrary using a value from another Arbitrary
    * @returns New arbitrary of new type
    *
    * @remarks Since 2.15.0
    */
-  chain<U>(fmapper: (t: T) => NextArbitrary<U>): NextArbitrary<U> {
+  chain<U>(chainer: (t: T) => NextArbitrary<U>): NextArbitrary<U> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return new ChainArbitrary(this, fmapper);
+    return new ChainArbitrary(this, chainer);
   }
 
   /**
@@ -183,7 +183,7 @@ type ChainArbitraryContext<T, U> = {
 
 /** @internal */
 class ChainArbitrary<T, U> extends NextArbitrary<U> {
-  constructor(readonly arb: NextArbitrary<T>, readonly fmapper: (t: T) => NextArbitrary<U>) {
+  constructor(readonly arb: NextArbitrary<T>, readonly chainer: (t: T) => NextArbitrary<U>) {
     super();
   }
   generate(mrng: Random): NextValue<U> {
@@ -192,7 +192,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
     return this.valueMapper(src, mrng, clonedMrng);
   }
   canGenerate(value: unknown): value is U {
-    // TODO Need unfmapper
+    // TODO Need unchainer
     return false;
   }
   shrink(value: U, context?: unknown): Stream<NextValue<U>> {
@@ -207,14 +207,14 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
           })
         );
     }
-    // TODO Need unfmapper
+    // TODO Need unchainer
     return Stream.nil();
   }
   withBias(freq: number): NextArbitrary<U> {
-    return this.arb.withBias(freq).chain((t: T) => this.fmapper(t).withBias(freq));
+    return this.arb.withBias(freq).chain((t: T) => this.chainer(t).withBias(freq));
   }
   private valueMapper(v: NextValue<T>, generateMrng: Random, clonedMrng: Random): NextValue<U> {
-    const chainedArbitrary = this.fmapper(v.value_);
+    const chainedArbitrary = this.chainer(v.value_);
     const dst = chainedArbitrary.generate(generateMrng);
     const context: ChainArbitraryContext<T, U> = {
       originalValue: v.value_,
