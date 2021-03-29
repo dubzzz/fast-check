@@ -164,7 +164,7 @@ import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArr
 import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
-import { convertFromNext, convertToNext } from './check/arbitrary/definition/Converters';
+import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -343,6 +343,7 @@ export {
   hasCloneMethod,
   cloneIfNeeded,
   convertFromNext,
+  convertFromNextWithShrunkOnce,
   convertToNext,
   // print values
   stringify,
