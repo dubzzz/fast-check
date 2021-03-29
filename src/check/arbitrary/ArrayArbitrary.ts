@@ -1,6 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { cloneMethod, hasCloneMethod } from '../symbols';
+import { cloneIfNeeded, cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from './IntegerArbitrary';
 import { makeLazy } from '../../stream/LazyIterableIterator';
@@ -127,7 +127,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
 
     const safeContext: ArrayArbitraryContext = this.isSafeContext(context)
       ? context
-      : { shrunkOnce: false, lengthContext: undefined, itemsContexts: value.map(() => undefined) };
+      : { shrunkOnce: false, lengthContext: undefined, itemsContexts: [] };
 
     return (
       this.lengthArb
@@ -141,12 +141,11 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
         // then we we skip the first item (if any) as it will correspond to the minimal accessible size (we already tested as we shrunk once)
         .drop(safeContext.shrunkOnce && safeContext.lengthContext === undefined ? 1 : 0)
         .map((lengthValue): [NextValue<T>[], unknown] => {
+          const sliceStart = value.length - lengthValue.value;
           return [
             value
-              .slice(value.length - lengthValue.value)
-              .map(
-                (v, index) => new NextValue(hasCloneMethod(v) ? v[cloneMethod]() : v, safeContext.itemsContexts[index])
-              ), // array of length lengthValue.value
+              .slice(sliceStart)
+              .map((v, index) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[index + sliceStart])), // array of length lengthValue.value
             lengthValue.context, // integer context for value lengthValue.value (the length)
           ];
         })
@@ -157,12 +156,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
           this.arb.shrink(value[0], safeContext.itemsContexts[0]).map((v) => {
             return [
               [v].concat(
-                value
-                  .slice(1)
-                  .map(
-                    (v, index) =>
-                      new NextValue(hasCloneMethod(v) ? v[cloneMethod]() : v, safeContext.itemsContexts[index + 1])
-                  )
+                value.slice(1).map((v, index) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[index + 1]))
               ),
               undefined, // no length context
             ];
@@ -176,9 +170,10 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
                 this.shrinkImpl(value.slice(1), undefined)
                   .filter((v) => this.minLength <= v[0].length + 1)
                   .map((v): [NextValue<T>[], unknown] => {
-                    const firstValue = value[0];
-                    const safeFirstValue = hasCloneMethod(firstValue) ? firstValue[cloneMethod]() : firstValue;
-                    return [[new NextValue(safeFirstValue, safeContext.itemsContexts[0])].concat(v[0]), undefined];
+                    return [
+                      [new NextValue(cloneIfNeeded(value[0]), safeContext.itemsContexts[0])].concat(v[0]),
+                      undefined,
+                    ];
                   })
               )
             : Stream.nil<[NextValue<T>[], unknown]>()
