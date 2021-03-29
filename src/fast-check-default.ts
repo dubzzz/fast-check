@@ -162,6 +162,9 @@ import {
 } from './check/arbitrary/TypedArrayArbitrary';
 import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
 import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
+import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
+import { NextValue } from './check/arbitrary/definition/NextValue';
+import { convertFromNext, convertToNext } from './check/arbitrary/definition/Converters';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -330,10 +333,14 @@ export {
   SchedulerReportItem,
   // extend the framework
   Arbitrary,
+  NextArbitrary,
   ArbitraryWithShrink,
   ArbitraryWithContextualShrink,
   Shrinkable,
+  NextValue,
   cloneMethod,
+  convertFromNext,
+  convertToNext,
   // print values
   stringify,
   defaultReportMessage,
