@@ -167,7 +167,11 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
             ? makeLazy(() =>
                 // We pass itemsLengthContext=undefined to next shrinker to start shrinking
                 // without any assumptions on the current state (we never explored that one)
-                this.shrinkImpl(value.slice(1), undefined)
+                this.shrinkImpl(value.slice(1), {
+                  shrunkOnce: false,
+                  lengthContext: undefined,
+                  itemsContexts: safeContext.itemsContexts.slice(1),
+                })
                   .filter((v) => this.minLength <= v[0].length + 1)
                   .map((v): [NextValue<T>[], unknown] => {
                     return [
