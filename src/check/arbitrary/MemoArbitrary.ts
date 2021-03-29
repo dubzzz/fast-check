@@ -1,18 +1,27 @@
+import { Stream } from '../../fast-check-default';
 import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
-import { Shrinkable } from './definition/Shrinkable';
+import { convertFromNext, convertToNext } from './definition/Converters';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { NextValue } from './definition/NextValue';
 
 /** @internal */
-export class MemoArbitrary<T> extends Arbitrary<T> {
+export class MemoArbitrary<T> extends NextArbitrary<T> {
   private lastFreq = -1;
-  private lastBiased: Arbitrary<T> = this;
-  constructor(readonly underlying: Arbitrary<T>) {
+  private lastBiased: NextArbitrary<T> = this;
+  constructor(readonly underlying: NextArbitrary<T>) {
     super();
   }
-  generate(mrng: Random): Shrinkable<T> {
+  generate(mrng: Random): NextValue<T> {
     return this.underlying.generate(mrng);
   }
-  withBias(freq: number): Arbitrary<T> {
+  canGenerate(value: unknown): value is T {
+    return this.underlying.canGenerate(value);
+  }
+  shrink(value: T, context?: unknown): Stream<NextValue<T>> {
+    return this.underlying.shrink(value, context);
+  }
+  withBias(freq: number): NextArbitrary<T> {
     if (freq !== this.lastFreq) {
       this.lastFreq = freq;
       this.lastBiased = this.underlying.withBias(freq);
@@ -57,7 +66,7 @@ export function memo<T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> {
     if (!Object.prototype.hasOwnProperty.call(previous, n)) {
       const prev = contextRemainingDepth;
       contextRemainingDepth = n - 1;
-      previous[n] = new MemoArbitrary(builder(n));
+      previous[n] = convertFromNext(new MemoArbitrary(convertToNext(builder(n))));
       contextRemainingDepth = prev;
     }
     return previous[n];
