@@ -1,5 +1,6 @@
 import { ArrayArbitrary, maxLengthFromMinLength } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
+import { convertFromNext, convertToNext } from './definition/Converters';
 
 /**
  * Build fully set SetConstraints from a partial data
@@ -186,7 +187,8 @@ function set<T>(
   const maxLength = constraints.maxLength;
   const compare = constraints.compare;
 
-  const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, compare);
+  const nextArb = convertToNext(arb);
+  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, compare));
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }
