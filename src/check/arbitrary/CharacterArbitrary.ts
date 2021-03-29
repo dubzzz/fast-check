@@ -72,7 +72,9 @@ function hexa(): Arbitrary<string> {
   function unmapper(v: number) {
     return v < 58
       ? v - 48 // 0-9
-      : v - 97 + 10; // a-f
+      : v < 103
+      ? v - 97 + 10 // a-f
+      : -1; // invalid: out of scope
   }
   return CharacterArbitrary(0, 15, mapper, unmapper);
 }
