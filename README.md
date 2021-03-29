@@ -24,7 +24,7 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://twitter.com/intent/tweet?text=Check%20out%20fast-check%20by%20%40ndubien%20https%3A%2F%2Fgithub.com%2Fdubzzz%2Ffast-check%20%F0%9F%91%8D"><img src="https://img.shields.io/twitter/url/https/github.com/dubzzz/fast-check.svg?style=social" alt="Twitter" /></a>
 </p>
 
-## Getting started
+# Getting started
 
 Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
 
@@ -81,7 +81,7 @@ Useful documentations:
 - [⭐ Awesome fast-check](https://github.com/dubzzz/awesome-fast-check)
 - [🤯 How fast-check works?](https://github.com/dubzzz/fast-check/blob/main/documentation/HowItWorks.md)
 
-## Why should I migrate to fast-check?
+# Why should I migrate to fast-check?
 
 fast-check has initially been designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
@@ -100,7 +100,7 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 
 For more details, refer to the documentation in the links above.
 
-## Compatibility
+# Compatibility
 
 Here are the minimal requirements to use fast-check properly without any polyfills:
 
@@ -116,23 +116,23 @@ Here are the minimal requirements to use fast-check properly without any polyfil
 
 Bindings to use fast-check in [ReScript](https://rescript-lang.org) are available in package [rescript-fast-check](https://www.npmjs.com/rescript-fast-check). They are maintained by [@TheSpyder](https://github.com/TheSpyder) as an external project.
 
-## Issues found by fast-check in famous packages
+# Issues found by fast-check in famous packages
 
 fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
 
-### [jest](https://github.com/facebook/jest/)
+**[jest](https://github.com/facebook/jest/)**
 
 **Issue detected:** `toStrictEqual` fails to distinguish 0 from 5e-324 \[[more](https://github.com/facebook/jest/issues/7941)\]
 
 **Code example:** `expect(0).toStrictEqual(5e-324)` succeeds
 
-### [js-yaml](https://github.com/nodeca/js-yaml/)
+**[js-yaml](https://github.com/nodeca/js-yaml/)**
 
 **Issue detected:** enabling `!!int: binary` style when dumping negative integers produces invalid content \[[more](https://github.com/nodeca/js-yaml/pull/398)\]
 
 **Code example:** `yaml.dump({toto: -10}, {styles:{'!!int':'binary'}})` produces `toto: 0b-1010` not `toto: -0b1010`
 
-### [query-string](https://github.com/sindresorhus/query-string)
+**[query-string](https://github.com/sindresorhus/query-string)**
 
 **Issue detected:** enabling the `bracket` setting when exporting arrays containing null values produces an invalid output for the parser \[[more](https://github.com/sindresorhus/query-string/pull/138)\]
 
@@ -144,20 +144,20 @@ m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null,
 
 **[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**
 
-## Credits
+# Credits
 
-### Code Contributors
+**Code Contributors**
 
 This project would not be the same without them 💖 - [Become one of them](CONTRIBUTING.md)
 
 <a href="https://github.com/dubzzz/fast-check/graphs/contributors"><img src="https://opencollective.com/fast-check/contributors.svg?width=890&button=false" /></a>
 
-### Backers
+**Backers**
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/fast-check/contribute)] and help us sustain our community.
 <a href="https://opencollective.com/fast-check#backers"><img src="https://opencollective.com/fast-check/backers.svg?width=890"></a>
 
-### Sponsors
+**Sponsors**
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/fast-check#sponsor)]
 
