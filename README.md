@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img align="center" src="https://raw.githubusercontent.com/dubzzz/fast-check/main/logo/logo.png" alt="fast-check logo" label="fast-check - Property based testing framework for JavaScript/TypeScript" />
+  <img align="center" src="https://raw.githubusercontent.com/dubzzz/fast-check/main/logo/logo.png" alt="fast-check logo" />
 </h1>
 
 <p align="center">
