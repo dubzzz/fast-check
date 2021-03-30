@@ -25,7 +25,7 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
 
   generate(mrng: Random): NextValue<T> {
     const g = this.arb.generate(mrng);
-    return new NextValue(g.value_, g);
+    return new NextValue(g.value_, g, () => g.value);
   }
 
   canGenerate(_value: unknown): _value is T {
@@ -34,7 +34,7 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
 
   shrink(_value: T, context?: unknown): Stream<NextValue<T>> {
     if (this.isSafeContext(context)) {
-      return context.shrink().map((s) => new NextValue(s.value_, s));
+      return context.shrink().map((s) => new NextValue(s.value_, s, () => s.value));
     }
     return Stream.nil();
   }

@@ -29,7 +29,11 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
     return this.toShrinkable(g);
   }
   private toShrinkable(v: NextValue<T>): Shrinkable<T, T> {
-    return new Shrinkable(v.value_, () => this.arb.shrink(v.value_, v.context).map((nv) => this.toShrinkable(nv)));
+    return new Shrinkable(
+      v.value_,
+      () => this.arb.shrink(v.value_, v.context).map((nv) => this.toShrinkable(nv)),
+      () => v.value
+    );
   }
 
   contextualShrink(value: T, context?: unknown): Stream<[T, unknown]> {

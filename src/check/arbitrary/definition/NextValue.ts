@@ -41,13 +41,14 @@ export class NextValue<T> {
   /**
    * @param value_ - Internal value of the shrinkable
    * @param context - Context associated to the generated value (useful for shrink)
+   * @param customGetValue - Limited to internal usages (to ease migration to next), it will be removed on next major
    */
-  constructor(value_: T, context: unknown = undefined) {
+  constructor(value_: T, context: unknown = undefined, customGetValue: (() => T) | undefined = undefined) {
     this.value_ = value_;
     this.context = context;
     this.hasToBeCloned = hasCloneMethod(value_);
     this.readOnce = false;
-    Object.defineProperty(this, 'value', { get: this.getValue });
+    Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
   }
 
   /** @internal */
