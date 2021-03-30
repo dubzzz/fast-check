@@ -60,6 +60,33 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('.filter (next)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.convertFromNext(fc.convertToNext(fc.nat()).filter((n) => n % 3 !== 0)), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.map (next)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.convertFromNext(fc.convertToNext(fc.nat()).map((n) => String(n))), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.chain (next)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.convertFromNext(fc.convertToNext(fc.nat(20)).chain((n) => fc.convertToNext(fc.clone(fc.nat(n), n)))),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('float', () => {
     expect(() =>
       fc.assert(
