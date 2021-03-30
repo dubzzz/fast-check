@@ -27,6 +27,39 @@ describe(`NoRegression`, () => {
   // Moreover, the framework should build consistent values throughout all the versions of node.
   const settings = { seed: 42, verbose: 2 };
 
+  it('.filter', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat().filter((n) => n % 3 !== 0),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.map', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat().map((n) => String(n)),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.chain', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat(20).chain((n) => fc.clone(fc.nat(n), n)),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('float', () => {
     expect(() =>
       fc.assert(
@@ -607,5 +640,16 @@ describe(`NoRegression`, () => {
         settings
       )
     ).rejects.toThrowErrorMatchingSnapshot();
+  });
+  it('context', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.context(), fc.nat(), (ctx, v) => {
+          ctx.log(`Value was ${v}`);
+          return testFunc(v);
+        }),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
 });
