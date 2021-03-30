@@ -6,10 +6,11 @@ import { arrayInt64 } from '../../../../../src/check/arbitrary/helpers/ArrayInt6
 import { mocked } from 'ts-jest/utils';
 import { Random } from '../../../../../src/random/generator/Random';
 import { buildShrinkTree, renderTree } from '../generic/ShrinkTree';
+import { convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
+import { NextArbitrary, NextValue, Stream } from '../../../../../src/fast-check-default';
 
 import * as BiasedNextArbitraryWrapperMock from '../../../../../src/check/arbitrary/definition/BiasedNextArbitraryWrapper';
 import * as BiasNumericMock from '../../../../../src/check/arbitrary/helpers/BiasNumeric';
-import { convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
 jest.mock('../../../../../src/check/arbitrary/definition/BiasedNextArbitraryWrapper');
 jest.mock('../../../../../src/check/arbitrary/helpers/BiasNumeric');
 
@@ -66,6 +67,19 @@ describe('ArrayInt64', () => {
           fc.property(constraintsArb(), fc.integer({ min: 2 }), fc.integer({ min: 2 }), (ct, freq1, freq2) => {
             // Arrange
             const { nextBiasWrapper } = mocked(BiasedNextArbitraryWrapperMock);
+            nextBiasWrapper.mockImplementation(() => {
+              return new (class extends NextArbitrary<any> {
+                generate(_mrng: Random): NextValue<any> {
+                  throw new Error('Method not implemented.');
+                }
+                canGenerate(value: unknown): value is any {
+                  throw new Error('Method not implemented.');
+                }
+                shrink(_value: any, _context?: unknown): Stream<NextValue<any>> {
+                  throw new Error('Method not implemented.');
+                }
+              })();
+            });
             const rawArbitrary = arrayInt64(toArrayInt64(ct.min), toArrayInt64(ct.max));
             const rawNextArbitrary = convertToNext(rawArbitrary);
 
@@ -88,6 +102,19 @@ describe('ArrayInt64', () => {
             // Arrange
             fc.pre(ct.min !== ct.max); // Otherwise we have a special case (biased version is itself)
             const { nextBiasWrapper } = mocked(BiasedNextArbitraryWrapperMock);
+            nextBiasWrapper.mockImplementation(() => {
+              return new (class extends NextArbitrary<any> {
+                generate(_mrng: Random): NextValue<any> {
+                  throw new Error('Method not implemented.');
+                }
+                canGenerate(value: unknown): value is any {
+                  throw new Error('Method not implemented.');
+                }
+                shrink(_value: any, _context?: unknown): Stream<NextValue<any>> {
+                  throw new Error('Method not implemented.');
+                }
+              })();
+            });
             const { BiasedNumericArbitrary } = mocked(BiasNumericMock);
             const rawArbitrary = arrayInt64(toArrayInt64(ct.min), toArrayInt64(ct.max));
             const rawNextArbitrary = convertToNext(rawArbitrary);
@@ -127,6 +154,19 @@ describe('ArrayInt64', () => {
             (minMax, freq) => {
               // Arrange
               const { nextBiasWrapper } = mocked(BiasedNextArbitraryWrapperMock);
+              nextBiasWrapper.mockImplementation(() => {
+                return new (class extends NextArbitrary<any> {
+                  generate(_mrng: Random): NextValue<any> {
+                    throw new Error('Method not implemented.');
+                  }
+                  canGenerate(value: unknown): value is any {
+                    throw new Error('Method not implemented.');
+                  }
+                  shrink(_value: any, _context?: unknown): Stream<NextValue<any>> {
+                    throw new Error('Method not implemented.');
+                  }
+                })();
+              });
               const rawArbitrary = arrayInt64(toArrayInt64(minMax), toArrayInt64(minMax));
               const rawNextArbitrary = convertToNext(rawArbitrary);
 
