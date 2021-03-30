@@ -641,4 +641,15 @@ describe(`NoRegression`, () => {
       )
     ).rejects.toThrowErrorMatchingSnapshot();
   });
+  it('context', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.context(), fc.nat(), (ctx, v) => {
+          ctx.log(`Value was ${v}`);
+          return testFunc(v);
+        }),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
 });
