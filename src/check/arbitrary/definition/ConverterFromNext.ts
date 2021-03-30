@@ -15,6 +15,10 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
   static isConverterFromNext<T>(arb: Arbitrary<T>): arb is ConverterFromNext<T> {
     return identifier in arb;
   }
+  private static convertIfNeeded<T>(arb: NextArbitrary<T>): Arbitrary<T> {
+    if (ConverterToNext.isConverterToNext(arb)) return arb.arb;
+    else return new ConverterFromNext(arb);
+  }
 
   constructor(readonly arb: NextArbitrary<T>, readonly legacyShrunkOnceContext?: unknown) {
     super();
@@ -39,15 +43,15 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U>;
   filter(predicate: (t: T) => boolean): Arbitrary<T>;
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U> {
-    return new ConverterFromNext(this.arb.filter(refinement));
+    return ConverterFromNext.convertIfNeeded(this.arb.filter(refinement));
   }
 
   map<U>(mapper: (t: T) => U): Arbitrary<U> {
-    return new ConverterFromNext(this.arb.map(mapper));
+    return ConverterFromNext.convertIfNeeded(this.arb.map(mapper));
   }
 
   chain<U>(fmapper: (t: T) => Arbitrary<U>): Arbitrary<U> {
-    return new ConverterFromNext(
+    return ConverterFromNext.convertIfNeeded(
       this.arb.chain((t) => {
         const fmapped = fmapper(t);
         if (ConverterFromNext.isConverterFromNext(fmapped)) return fmapped.arb;
@@ -57,14 +61,14 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
   }
 
   noShrink(): Arbitrary<T> {
-    return new ConverterFromNext(this.arb.noShrink());
+    return ConverterFromNext.convertIfNeeded(this.arb.noShrink());
   }
 
   withBias(freq: number): Arbitrary<T> {
-    return new ConverterFromNext(this.arb.withBias(freq));
+    return ConverterFromNext.convertIfNeeded(this.arb.withBias(freq));
   }
 
   noBias(): Arbitrary<T> {
-    return new ConverterFromNext(this.arb.noBias());
+    return ConverterFromNext.convertIfNeeded(this.arb.noBias());
   }
 }

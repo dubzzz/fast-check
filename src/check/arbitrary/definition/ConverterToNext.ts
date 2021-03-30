@@ -14,6 +14,10 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
   static isConverterToNext<T>(arb: NextArbitrary<T>): arb is ConverterToNext<T> {
     return identifier in arb;
   }
+  private static convertIfNeeded<T>(arb: Arbitrary<T>): NextArbitrary<T> {
+    if (ConverterFromNext.isConverterFromNext(arb)) return arb.arb;
+    else return new ConverterToNext(arb);
+  }
 
   constructor(readonly arb: Arbitrary<T>) {
     super();
@@ -43,15 +47,15 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
   filter<U extends T>(refinement: (t: T) => t is U): NextArbitrary<U>;
   filter(predicate: (t: T) => boolean): NextArbitrary<T>;
   filter<U extends T>(refinement: (t: T) => t is U): NextArbitrary<U> {
-    return new ConverterToNext(this.arb.filter(refinement));
+    return ConverterToNext.convertIfNeeded(this.arb.filter(refinement));
   }
 
   map<U>(mapper: (t: T) => U): NextArbitrary<U> {
-    return new ConverterToNext(this.arb.map(mapper));
+    return ConverterToNext.convertIfNeeded(this.arb.map(mapper));
   }
 
   chain<U>(fmapper: (t: T) => NextArbitrary<U>): NextArbitrary<U> {
-    return new ConverterToNext(
+    return ConverterToNext.convertIfNeeded(
       this.arb.chain((t) => {
         const fmapped = fmapper(t);
         if (ConverterToNext.isConverterToNext(fmapped)) return fmapped.arb;
@@ -61,14 +65,14 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
   }
 
   noShrink(): NextArbitrary<T> {
-    return new ConverterToNext(this.arb.noShrink());
+    return ConverterToNext.convertIfNeeded(this.arb.noShrink());
   }
 
   withBias(freq: number): NextArbitrary<T> {
-    return new ConverterToNext(this.arb.withBias(freq));
+    return ConverterToNext.convertIfNeeded(this.arb.withBias(freq));
   }
 
   noBias(): NextArbitrary<T> {
-    return new ConverterToNext(this.arb.noBias());
+    return ConverterToNext.convertIfNeeded(this.arb.noBias());
   }
 }
