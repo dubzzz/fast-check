@@ -1,9 +1,17 @@
-import { MemoArbitrary, memo } from '../../../../src/check/arbitrary/MemoArbitrary';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { MemoArbitrary, memo as memoOld } from '../../../../src/check/arbitrary/MemoArbitrary';
+import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
+import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
+import { Stream } from '../../../../src/stream/Stream';
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 
 import * as stubRng from '../../stubs/generators';
+
+type NextMemo<T> = (maxDepth?: number) => NextArbitrary<T>;
+function memo<T>(builder: (maxDepth: number) => NextArbitrary<T>): NextMemo<T> {
+  const memoed = memoOld((d) => convertFromNext(builder(d)));
+  return (maxDepth?: number) => convertToNext(memoed(maxDepth));
+}
 
 describe('MemoArbitrary', () => {
   describe('memo', () => {
@@ -137,12 +145,18 @@ describe('MemoArbitrary', () => {
   });
 });
 
-const buildArbitrary = (generate: (mrng: Random) => Shrinkable<any>, withBias?: (n: number) => Arbitrary<any>) => {
-  return new (class extends Arbitrary<any> {
+const buildArbitrary = (generate: (mrng: Random) => NextValue<any>, withBias?: (n: number) => NextArbitrary<any>) => {
+  return new (class extends NextArbitrary<any> {
     generate(mrng: Random) {
       return generate(mrng);
     }
-    withBias(n: number): Arbitrary<any> {
+    canGenerate(value: unknown): value is any {
+      throw new Error('Method not implemented.');
+    }
+    shrink(_value: any, _context?: unknown): Stream<NextValue<any>> {
+      throw new Error('Method not implemented.');
+    }
+    withBias(n: number): NextArbitrary<any> {
       return withBias ? withBias(n) : this;
     }
   })();
