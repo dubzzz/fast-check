@@ -125,9 +125,10 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       return Stream.nil();
     }
 
-    const safeContext: ArrayArbitraryContext = this.isSafeContext(context)
-      ? context
-      : { shrunkOnce: false, lengthContext: undefined, itemsContexts: [] };
+    const safeContext: ArrayArbitraryContext =
+      context !== undefined
+        ? (context as ArrayArbitraryContext)
+        : { shrunkOnce: false, lengthContext: undefined, itemsContexts: [] };
 
     return (
       this.lengthArb
@@ -188,16 +189,6 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   shrink(value: T[], context?: unknown): Stream<NextValue<T[]>> {
     return this.shrinkImpl(value, context).map((contextualValue) =>
       this.wrapper(contextualValue[0], true, contextualValue[1])
-    );
-  }
-
-  private isSafeContext(context: unknown): context is ArrayArbitraryContext {
-    return (
-      context != null &&
-      typeof context === 'object' &&
-      typeof (context as ArrayArbitraryContext).shrunkOnce === 'boolean' &&
-      'lengthContext' in (context as ArrayArbitraryContext) &&
-      Array.isArray((context as ArrayArbitraryContext).itemsContexts)
     );
   }
 
