@@ -1,5 +1,6 @@
 import { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
+import { cloneMethod } from '../../symbols';
 import { NextValue } from './NextValue';
 
 /**
@@ -298,8 +299,14 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
     return this.arb.withBias(freq).map(this.mapper);
   }
   private valueMapper(v: NextValue<T>): NextValue<U> {
-    const context: MapArbitraryContext<T> = { originalValue: v.value_, originalContext: v.context };
-    return new NextValue(this.mapper(v.value_), context);
+    const sourceValue = v.value;
+    const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
+    const mappedValue = this.mapper(sourceValue);
+    if (v.hasToBeCloned && mappedValue instanceof Object && Object.isExtensible(mappedValue)) {
+      // WARNING: In case the mapped value is not extensible it will not be extended
+      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapper(v.value) });
+    }
+    return new NextValue(mappedValue, context);
   }
   private isSafeContext(context: unknown): context is MapArbitraryContext<T> {
     return (
