@@ -1,6 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { cloneMethod, hasCloneMethod } from '../symbols';
+import { cloneIfNeeded, cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { convertFromNext, convertToNext } from './definition/Converters';
 import { NextArbitrary } from './definition/NextArbitrary';
@@ -65,18 +65,18 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
     // shrinking one by one is the not the most comprehensive
     // but allows a reasonable number of entries in the shrink
     let s = Stream.nil<NextValue<Ts>>();
-    const safeValue = hasCloneMethod(value) ? value[cloneMethod]() : value;
-    const valueWithContext: NextValue<unknown>[] = safeValue.map(
-      (v, idx) => new NextValue(v, Array.isArray(context) ? context[idx] : undefined)
-    );
+    const safeContext: unknown[] = Array.isArray(context) ? context : [];
     for (let idx = 0; idx !== this.arbs.length; ++idx) {
       const shrinksForIndex: Stream<NextValue<Ts>> = this.arbs[idx]
-        .shrink(valueWithContext[idx].value_, valueWithContext[idx].context)
+        .shrink(value[idx], safeContext[idx])
         .map((v) => {
-          return valueWithContext
+          const nextValues: NextValue<unknown>[] = value.map(
+            (v, idx) => new NextValue(cloneIfNeeded(v), safeContext[idx])
+          );
+          return nextValues
             .slice(0, idx)
             .concat([v])
-            .concat(valueWithContext.slice(idx + 1));
+            .concat(nextValues.slice(idx + 1));
         })
         .map((values) => GenericTupleArbitrary.wrapper(values) as NextValue<Ts>);
       s = s.join(shrinksForIndex);
