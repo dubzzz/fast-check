@@ -138,9 +138,11 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
           // arbitrary and the integer value items.length.
           safeContext.lengthContext
         )
-        // in case we already shrunk once but don't have any dedicated context to help the shrinker
-        // we drop the first item from the shrinking process
-        .drop(safeContext.shrunkOnce && safeContext.lengthContext === undefined ? 1 : 0)
+        // in case we already shrunk once but don't have any dedicated context to help the shrinker, we drop the first item
+        // except if reached we have the minimal size +1, in that case we apply a last chance try policy
+        .drop(
+          safeContext.shrunkOnce && safeContext.lengthContext === undefined && value.length > this.minLength + 1 ? 1 : 0
+        )
         .map((lengthValue): [NextValue<T>[], unknown] => {
           const sliceStart = value.length - lengthValue.value;
           return [
