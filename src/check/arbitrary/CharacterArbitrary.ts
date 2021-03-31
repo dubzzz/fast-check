@@ -13,7 +13,7 @@ function CharacterArbitrary(
     convertToNext(integer(min, max)).map(
       (n) => String.fromCodePoint(mapToCode(n)),
       (value: unknown): number => {
-        if (typeof value !== 'string') {
+        if (typeof value !== 'string' || [...value].length !== 1) {
           throw new Error('Cannot unmap received value');
         }
         const n = value.codePointAt(0);
