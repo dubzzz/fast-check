@@ -103,20 +103,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   }
 
   canGenerate(value: unknown): value is T {
-    ++this.context.depth; // increase depth
-    try {
-      if (this.mustGenerateFirst()) {
-        return this.warbs[0].arbitrary.canGenerate(value);
-      }
-      for (const warb of this.warbs) {
-        if (warb.weight !== 0 && warb.arbitrary.canGenerate(value)) {
-          return true;
-        }
-      }
-      return false;
-    } finally {
-      --this.context.depth; // decrease depth (reset depth)
-    }
+    return this.canGenerateIndex(value) !== -1;
   }
 
   shrink(value: T, context?: unknown): Stream<NextValue<T>> {
@@ -130,8 +117,11 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       }
       return originalShrinks;
     }
-    // TODO
-    return Stream.nil();
+    const potentialSelectedIndex = this.canGenerateIndex(value);
+    if (potentialSelectedIndex === -1) {
+      return Stream.nil(); // No arbitrary found to accept this value
+    }
+    return this.summedWarbs[potentialSelectedIndex].arbitrary.shrink(value);
   }
 
   withBias(freq: number): NextArbitrary<T> {
@@ -140,6 +130,25 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       this.constraints,
       this.context
     );
+  }
+
+  /** Extract the index of the generator that would have been able to gennrate the value */
+  private canGenerateIndex(value: unknown): number {
+    ++this.context.depth; // increase depth
+    try {
+      if (this.mustGenerateFirst()) {
+        return this.warbs[0].arbitrary.canGenerate(value) ? 0 : -1;
+      }
+      for (let idx = 0; idx !== this.warbs.length; ++idx) {
+        const warb = this.warbs[idx];
+        if (warb.weight !== 0 && warb.arbitrary.canGenerate(value)) {
+          return idx;
+        }
+      }
+      return -1;
+    } finally {
+      --this.context.depth; // decrease depth (reset depth)
+    }
   }
 
   /** Generate using Arbitrary at index idx and safely handle depth context */
