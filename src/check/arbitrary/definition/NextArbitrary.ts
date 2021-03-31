@@ -193,7 +193,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
   generate(mrng: Random): NextValue<U> {
     const clonedMrng = mrng.clone();
     const src = this.arb.generate(mrng);
-    return this.valueMapper(src, mrng, clonedMrng);
+    return this.valueChainer(src, mrng, clonedMrng);
   }
   canGenerate(value: unknown): value is U {
     // TODO Need unchainer
@@ -203,7 +203,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
     if (this.isSafeContext(context)) {
       return this.arb
         .shrink(context.originalValue, context.originalContext)
-        .map((v) => this.valueMapper(v, context.clonedMrng.clone(), context.clonedMrng))
+        .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng))
         .join(
           context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
             const newContext: ChainArbitraryContext<T, U> = { ...context, chainedContext: dst.context };
@@ -217,7 +217,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
   withBias(freq: number): NextArbitrary<U> {
     return this.arb.withBias(freq).chain((t: T) => this.chainer(t).withBias(freq));
   }
-  private valueMapper(v: NextValue<T>, generateMrng: Random, clonedMrng: Random): NextValue<U> {
+  private valueChainer(v: NextValue<T>, generateMrng: Random, clonedMrng: Random): NextValue<U> {
     const chainedArbitrary = this.chainer(v.value_);
     const dst = chainedArbitrary.generate(generateMrng);
     const context: ChainArbitraryContext<T, U> = {
