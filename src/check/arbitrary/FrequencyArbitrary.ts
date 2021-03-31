@@ -89,7 +89,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   }
 
   generate(mrng: Random): NextValue<T> {
-    if (this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth) {
+    if (this.mustGenerateFirst()) {
       // index=0 can be selected even if it has a weight equal to zero
       return this.safeGenerateForIndex(mrng, 0);
     }
@@ -103,8 +103,20 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   }
 
   canGenerate(value: unknown): value is T {
-    // TODO
-    return false;
+    ++this.context.depth; // increase depth
+    try {
+      if (this.mustGenerateFirst()) {
+        return this.warbs[0].arbitrary.canGenerate(value);
+      }
+      for (const warb of this.warbs) {
+        if (warb.weight !== 0 && warb.arbitrary.canGenerate(value)) {
+          return true;
+        }
+      }
+      return false;
+    } finally {
+      --this.context.depth; // decrease depth (reset depth)
+    }
   }
 
   shrink(value: T, context?: unknown): Stream<NextValue<T>> {
@@ -138,7 +150,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       const context: FrequencyArbitraryContext = {
         selectedIndex: idx,
         originalContext: value.context,
-        clonedMrngForFallbackFirst: this.shouldShrinkFallbackToFirst(idx) ? mrng.clone() : null,
+        clonedMrngForFallbackFirst: this.mustFallbackToFirstInShrink(idx) ? mrng.clone() : null,
       };
       return new NextValue(value.value, context);
     } finally {
@@ -146,8 +158,13 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     }
   }
 
+  /** Check if generating a value based on the first arbitrary is compulsory */
+  private mustGenerateFirst(): boolean {
+    return this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth;
+  }
+
   /** Check if fallback on first arbitrary during shrinking is required */
-  private shouldShrinkFallbackToFirst(idx: number): boolean {
+  private mustFallbackToFirstInShrink(idx: number): boolean {
     return idx !== 0 && !!this.constraints.withCrossShrink && this.warbs[0].weight !== 0;
   }
 
