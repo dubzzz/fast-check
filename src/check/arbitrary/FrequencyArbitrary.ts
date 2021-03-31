@@ -161,13 +161,9 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   }
 
   /** Map the output of one of the children with the context of frequency */
-  private mapIntoNextValue(
-    selectedIndex: number,
-    value: NextValue<T>,
-    clonedMrngForFallbackFirst: Random | null
-  ): NextValue<T> {
+  private mapIntoNextValue(idx: number, value: NextValue<T>, clonedMrngForFallbackFirst: Random | null): NextValue<T> {
     const context: FrequencyArbitraryContext<T> = {
-      selectedIndex,
+      selectedIndex: idx,
       originalContext: value.context,
       clonedMrngForFallbackFirst,
     };
