@@ -180,6 +180,7 @@ export abstract class NextArbitrary<T> {
 type ChainArbitraryContext<T, U> = {
   originalValue: T;
   originalContext: unknown;
+  stoppedForOriginal: boolean;
   chainedArbitrary: NextArbitrary<U>;
   chainedContext: unknown;
   clonedMrng: Random;
@@ -201,15 +202,21 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
   }
   shrink(value: U, context?: unknown): Stream<NextValue<U>> {
     if (this.isSafeContext(context)) {
-      return this.arb
-        .shrink(context.originalValue, context.originalContext)
-        .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng))
-        .join(
-          context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
-            const newContext: ChainArbitraryContext<T, U> = { ...context, chainedContext: dst.context };
-            return new NextValue(dst.value_, newContext);
-          })
-        );
+      return (!context.stoppedForOriginal
+        ? this.arb
+            .shrink(context.originalValue, context.originalContext)
+            .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng))
+        : Stream.nil<NextValue<U>>()
+      ).join(
+        context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
+          const newContext: ChainArbitraryContext<T, U> = {
+            ...context,
+            chainedContext: dst.context,
+            stoppedForOriginal: true,
+          };
+          return new NextValue(dst.value_, newContext);
+        })
+      );
     }
     // TODO Need unchainer
     return Stream.nil();
@@ -223,6 +230,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
     const context: ChainArbitraryContext<T, U> = {
       originalValue: v.value_,
       originalContext: v.context,
+      stoppedForOriginal: false,
       chainedArbitrary,
       chainedContext: dst.context,
       clonedMrng,
@@ -235,6 +243,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
       typeof context === 'object' &&
       'originalValue' in (context as any) &&
       'originalContext' in (context as any) &&
+      'stoppedForOriginal' in (context as any) &&
       'chainedArbitrary' in (context as any) &&
       'chainedContext' in (context as any) &&
       'clonedMrng' in (context as any)
