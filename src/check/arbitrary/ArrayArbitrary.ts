@@ -9,7 +9,6 @@ import { NextArbitrary } from './definition/NextArbitrary';
 import { convertFromNext, convertToNext } from './definition/Converters';
 import { NextValue } from './definition/NextValue';
 import { nextBiasWrapper } from './definition/BiasedNextArbitraryWrapper';
-import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -76,8 +75,6 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       lengthContext:
         itemsRaw.length === items.length && itemsRawLengthContext !== undefined
           ? itemsRawLengthContext // items and itemsRaw have the same length context is applicable
-          : shrunkOnce // otherwise we fallback to default contexts
-          ? (convertFromNext(this.lengthArb) as ArbitraryWithContextualShrink<number>).shrunkOnceContext() // in case we shrunk once we use a dedicated context that should reduce shrink size
           : undefined,
       itemsContexts: items.map((v) => v.context),
     };
@@ -141,6 +138,9 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
           // arbitrary and the integer value items.length.
           safeContext.lengthContext
         )
+        // in case we already shrunk once but don't have any dedicated context to help the shrinker
+        // we drop the first item from the shrinking process
+        .drop(safeContext.shrunkOnce && safeContext.lengthContext === undefined ? 1 : 0)
         .map((lengthValue): [NextValue<T>[], unknown] => {
           const sliceStart = value.length - lengthValue.value;
           return [
