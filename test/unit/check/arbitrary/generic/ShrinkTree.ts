@@ -6,11 +6,11 @@ import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrink
 export type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 
 export function buildShrinkTree<T>(s: Shrinkable<T>): ShrinkTree<T> {
-  return [s.value_, [...s.shrink().map((ss) => buildShrinkTree(ss))]];
+  return [s.value, [...s.shrink().map((ss) => buildShrinkTree(ss))]];
 }
 
 export function buildNextShrinkTree<T>(arb: NextArbitrary<T>, v: NextValue<T>): ShrinkTree<T> {
-  return [v.value_, [...arb.shrink(v.value_, v.context).map((nv) => buildNextShrinkTree(arb, nv))]];
+  return [v.value, [...arb.shrink(v.value_, v.context).map((nv) => buildNextShrinkTree(arb, nv))]];
 }
 
 export function renderTree<T>(tree: ShrinkTree<T>): string[] {
@@ -31,4 +31,11 @@ export function renderTree<T>(tree: ShrinkTree<T>): string[] {
     }
   }
   return lines;
+}
+
+export function walkTree<T>(tree: ShrinkTree<T>, visit: (t: T) => void): void {
+  visit(tree[0]);
+  for (const subTree of tree[1]) {
+    walkTree(subTree, visit);
+  }
 }

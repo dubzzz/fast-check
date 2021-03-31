@@ -298,14 +298,18 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
   withBias(freq: number): NextArbitrary<U> {
     return this.arb.withBias(freq).map(this.mapper);
   }
-  private valueMapper(v: NextValue<T>): NextValue<U> {
+  private mapperWithCloneIfNeeded(v: NextValue<T>): [U, T] {
     const sourceValue = v.value;
-    const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
     const mappedValue = this.mapper(sourceValue);
     if (v.hasToBeCloned && mappedValue instanceof Object && Object.isExtensible(mappedValue)) {
       // WARNING: In case the mapped value is not extensible it will not be extended
-      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapper(v.value) });
+      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v)[0] });
     }
+    return [mappedValue, sourceValue];
+  }
+  private valueMapper(v: NextValue<T>): NextValue<U> {
+    const [mappedValue, sourceValue] = this.mapperWithCloneIfNeeded(v);
+    const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
     return new NextValue(mappedValue, context);
   }
   private isSafeContext(context: unknown): context is MapArbitraryContext<T> {

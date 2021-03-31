@@ -1,11 +1,12 @@
 import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
 
 import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
+import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
 import { Random } from '../../../../../src/random/generator/Random';
 import { Stream } from '../../../../../src/stream/Stream';
 
 import * as stubRng from '../../../stubs/generators';
-import { buildNextShrinkTree, renderTree } from '../generic/ShrinkTree';
+import { buildNextShrinkTree, renderTree, walkTree } from '../generic/ShrinkTree';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
@@ -95,6 +96,48 @@ describe('NextArbitrary', () => {
                                 └> \\"1\\"
                                    └> \\"0\\""
       `);
+    });
+
+    it('should preserve cloneable capabilities during both generation and shrinking process', () => {
+      // Arrange
+      type MyArbitraryOutput = { value: number };
+      class MyArbitrary extends NextArbitrary<MyArbitraryOutput> {
+        private create(value: number): MyArbitraryOutput {
+          const complexInstance = { value, [cloneMethod]: () => this.create(value) };
+          return complexInstance;
+        }
+        generate(_mrng: Random): NextValue<MyArbitraryOutput> {
+          return new NextValue(this.create(10));
+        }
+        canGenerate(value: unknown): value is MyArbitraryOutput {
+          throw new Error('No call expected in current scenario');
+        }
+        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<NextValue<MyArbitraryOutput>> {
+          const value = v.value;
+          return Stream.of(
+            ...(value - 2 >= 0 ? [new NextValue(this.create(value - 2))] : []),
+            ...(value - 1 >= 0 ? [new NextValue(this.create(value - 1))] : [])
+          );
+        }
+      }
+      const seenInstances = new Set<unknown>();
+      const arb = new MyArbitrary().map((out) => ({ stringValue: String(out.value), counter: 0 }));
+
+      // Act
+      const g = arb.generate(mrngNoCall);
+      const shrinkTree = buildNextShrinkTree(arb, g);
+      const shrinkTreeB = buildNextShrinkTree(arb, g);
+
+      // Assert
+      const visit = (instance: { counter: number }) => {
+        expect(hasCloneMethod(instance)).toBe(true); // clone method should be provided
+        expect(instance.counter).toBe(0); // counter should be unique per cloned instance
+        expect(seenInstances.has(instance)).toBe(false); // each instance must appear only once in the tree
+        instance.counter += 1;
+        seenInstances.add(instance);
+      };
+      walkTree(shrinkTree, visit);
+      walkTree(shrinkTreeB, visit);
     });
   });
 
