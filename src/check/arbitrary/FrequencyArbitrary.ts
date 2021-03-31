@@ -113,7 +113,8 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       const originalArbitrary = this.summedWarbs[selectedIndex].arbitrary;
       const originalShrinks = originalArbitrary.shrink(value, safeContext.originalContext);
       if (safeContext.clonedMrngForFallbackFirst !== null) {
-        return Stream.of(this.safeGenerateForIndex(safeContext.clonedMrngForFallbackFirst, 0)).join(originalShrinks);
+        const valueFromFirst = this.safeGenerateForIndex(safeContext.clonedMrngForFallbackFirst.clone(), 0);
+        return Stream.of(valueFromFirst).join(originalShrinks);
       }
       return originalShrinks;
     }
