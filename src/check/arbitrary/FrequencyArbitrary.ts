@@ -33,10 +33,11 @@ interface WeightedNextArbitrary<T> {
 }
 
 /** @internal */
-type FrequencyArbitraryContext = {
+type FrequencyArbitraryContext<T> = {
   selectedIndex: number;
   originalContext: unknown;
   clonedMrngForFallbackFirst: Random | null;
+  cachedGeneratedForFirst?: NextValue<T>;
 };
 
 /** @internal */
@@ -108,12 +109,15 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
 
   shrink(value: T, context?: unknown): Stream<NextValue<T>> {
     if (context !== undefined) {
-      const safeContext = context as FrequencyArbitraryContext;
+      const safeContext = context as FrequencyArbitraryContext<T>;
       const selectedIndex = safeContext.selectedIndex;
       const originalArbitrary = this.summedWarbs[selectedIndex].arbitrary;
       const originalShrinks = originalArbitrary.shrink(value, safeContext.originalContext);
       if (safeContext.clonedMrngForFallbackFirst !== null) {
-        const valueFromFirst = this.safeGenerateForIndex(safeContext.clonedMrngForFallbackFirst.clone(), 0);
+        if (safeContext.cachedGeneratedForFirst === undefined) {
+          safeContext.cachedGeneratedForFirst = this.safeGenerateForIndex(safeContext.clonedMrngForFallbackFirst, 0);
+        }
+        const valueFromFirst = safeContext.cachedGeneratedForFirst;
         return Stream.of(valueFromFirst).join(originalShrinks);
       }
       return originalShrinks;
@@ -157,7 +161,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     ++this.context.depth; // increase depth
     try {
       const value = this.summedWarbs[idx].arbitrary.generate(mrng);
-      const context: FrequencyArbitraryContext = {
+      const context: FrequencyArbitraryContext<T> = {
         selectedIndex: idx,
         originalContext: value.context,
         clonedMrngForFallbackFirst: this.mustFallbackToFirstInShrink(idx) ? mrng.clone() : null,
