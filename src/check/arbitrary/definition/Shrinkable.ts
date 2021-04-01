@@ -41,13 +41,18 @@ export class Shrinkable<T, TShrink extends T = T> {
   /**
    * @param value_ - Internal value of the shrinkable
    * @param shrink - Function producing Stream of shrinks associated to value
+   * @param customGetValue - Limited to internal usages (to ease migration to next), it will be removed on next major
    */
-  constructor(value_: T, shrink: () => Stream<Shrinkable<TShrink>> = () => Stream.nil<Shrinkable<TShrink>>()) {
+  constructor(
+    value_: T,
+    shrink: () => Stream<Shrinkable<TShrink>> = () => Stream.nil<Shrinkable<TShrink>>(),
+    customGetValue: (() => T) | undefined = undefined
+  ) {
     this.value_ = value_;
     this.shrink = shrink;
     this.hasToBeCloned = hasCloneMethod(value_);
     this.readOnce = false;
-    Object.defineProperty(this, 'value', { get: this.getValue });
+    Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
   }
 
   /** @internal */
