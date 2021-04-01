@@ -7,6 +7,7 @@ import { assertIsNextArbitrary, NextArbitrary } from './NextArbitrary';
 /**
  * Convert an instance of NextArbitrary to an instance of Arbitrary
  * @param arb - The instance to be converted
+ * @remarks Since 2.15.0
  * @public
  */
 export function convertFromNext<T>(arb: NextArbitrary<T>): Arbitrary<T> {
@@ -21,6 +22,7 @@ export function convertFromNext<T>(arb: NextArbitrary<T>): Arbitrary<T> {
  * Convert an instance of NextArbitrary to an instance of ArbitraryWithContextualShrink
  * @param arb - The instance to be converted
  * @param legacyShrunkOnceContext - Default context to be returned when shrunk once
+ * @remarks Since 2.15.0
  * @public
  */
 export function convertFromNextWithShrunkOnce<T>(
@@ -46,6 +48,7 @@ export function convertFromNextWithShrunkOnce<T>(
 /**
  * Convert an instance of Arbitrary to an instance of NextArbitrary
  * @param arb - The instance to be converted
+ * @remarks Since 2.15.0
  * @public
  */
 export function convertToNext<T>(arb: Arbitrary<T>): NextArbitrary<T> {
