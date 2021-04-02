@@ -36,7 +36,7 @@ describe('NextArbitrary', () => {
       const arb = new MyArbitrary().map((n) => String(n));
 
       // Act
-      const g = arb.generate(mrngNoCall);
+      const g = arb.generate(mrngNoCall, undefined);
       const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
 
       // Assert
@@ -124,7 +124,7 @@ describe('NextArbitrary', () => {
       const arb = new MyArbitrary().map((out) => ({ stringValue: String(out.value), counter: 0 }));
 
       // Act
-      const g = arb.generate(mrngNoCall);
+      const g = arb.generate(mrngNoCall, undefined);
       const shrinkTree = buildNextShrinkTree(arb, g);
       const shrinkTreeB = buildNextShrinkTree(arb, g);
 
@@ -195,7 +195,7 @@ describe('NextArbitrary', () => {
       const arb = new MyArbitrary().chain((n) => new MyChainedArbitrary(n, n));
 
       // Act
-      const g = arb.generate(mrngNoCall);
+      const g = arb.generate(mrngNoCall, undefined);
       const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
 
       // Assert
@@ -243,7 +243,7 @@ describe('NextArbitrary', () => {
       const arb = new MyArbitrary().filter((n) => n % 2 === 0);
 
       // Act
-      const g = arb.generate(mrngNoCall);
+      const g = arb.generate(mrngNoCall, undefined);
       const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
 
       // Assert
