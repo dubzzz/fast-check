@@ -6,8 +6,8 @@ import { Random } from '../../../../../src/random/generator/Random';
 import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
 import { ConverterToNext } from '../../../../../src/check/arbitrary/definition/ConverterToNext';
 import { Stream } from '../../../../../src/stream/Stream';
-import * as stubRng from '../../../stubs/generators';
 import { ConverterFromNext } from '../../../../../src/check/arbitrary/definition/ConverterFromNext';
+import * as stubRng from '../../../stubs/generators';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
