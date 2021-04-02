@@ -91,9 +91,6 @@ describe('NextArbitrary', () => {
         chain() {
           throw new Error('Not implemented');
         },
-        withBias() {
-          throw new Error('Not implemented');
-        },
         noBias() {
           throw new Error('Not implemented');
         },

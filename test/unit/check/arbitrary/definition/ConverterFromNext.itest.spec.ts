@@ -46,7 +46,10 @@ describe('ConverterFromNext', () => {
         // Act
         const nextValueFromOriginal = originalInstance.generate(new Random(prand.xorshift128plus(seed)));
         const treeFromOriginal = renderTree(buildNextShrinkTree(originalInstance, nextValueFromOriginal));
-        const nextValueFromTransformed = transformedInstance.generate(new Random(prand.xorshift128plus(seed)));
+        const nextValueFromTransformed = transformedInstance.generate(
+          new Random(prand.xorshift128plus(seed)),
+          undefined
+        );
         const treeFromTransformed = renderTree(buildNextShrinkTree(originalInstance, nextValueFromOriginal));
 
         // Assert
