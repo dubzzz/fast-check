@@ -70,7 +70,33 @@ describe('ConverterFromNext', () => {
       // Assert
       expect(out.value).toBe(expectedValue);
       expect(generate).toHaveBeenCalledTimes(1);
-      expect(generate).toHaveBeenCalledWith(mrngNoCall);
+      expect(generate).toHaveBeenCalledWith(mrngNoCall, undefined);
+      expect(shrink).not.toHaveBeenCalled();
+    });
+
+    it('should be able to generate biased values using the underlying NextArbitrary', () => {
+      // Arrange
+      const expectedValue = 1;
+      const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedValue));
+      const shrink = jest.fn();
+      class MyNextArbitrary extends NextArbitrary<number> {
+        generate = generate;
+        canGenerate = (_v: unknown): _v is number => {
+          throw new Error('Unexpected call');
+        };
+        shrink = shrink;
+      }
+      const biasedFactor = 42;
+      const originalInstance = new MyNextArbitrary();
+
+      // Act
+      const transformedInstance = new ConverterFromNext(originalInstance);
+      const out = transformedInstance.withBias(biasedFactor).generate(mrngNoCall);
+
+      // Assert
+      expect(out.value).toBe(expectedValue);
+      expect(generate).toHaveBeenCalledTimes(1);
+      expect(generate).toHaveBeenCalledWith(mrngNoCall, biasedFactor);
       expect(shrink).not.toHaveBeenCalled();
     });
 

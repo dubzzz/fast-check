@@ -47,8 +47,8 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
     }
     return new NextValue(vs, ctxs);
   }
-  generate(mrng: Random): NextValue<Ts> {
-    return GenericTupleArbitrary.wrapper<Ts>(this.arbs.map((a) => a.generate(mrng)) as ValuesArray<Ts>);
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<Ts> {
+    return GenericTupleArbitrary.wrapper<Ts>(this.arbs.map((a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
   }
   canGenerate(value: unknown): value is Ts {
     if (!Array.isArray(value) || value.length !== this.arbs.length) {
@@ -82,9 +82,6 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
       s = s.join(shrinksForIndex);
     }
     return s;
-  }
-  withBias(freq: number): NextArbitrary<Ts> {
-    return new GenericTupleArbitrary<Ts>(this.arbs.map((a) => a.withBias(freq)) as ArbsArray<Ts>);
   }
 }
 

@@ -53,19 +53,47 @@ describe('ConverterToNext', () => {
       // Arrange
       const expectedValue = 1;
       const generate = jest.fn().mockReturnValueOnce(new Shrinkable(expectedValue));
+      const withBias = jest.fn();
       class MyArbitrary extends Arbitrary<number> {
         generate = generate;
+        withBias = withBias;
       }
       const originalInstance = new MyArbitrary();
 
       // Act
       const transformedInstance = new ConverterToNext(originalInstance);
-      const out = transformedInstance.generate(mrngNoCall);
+      const out = transformedInstance.generate(mrngNoCall, undefined);
 
       // Assert
       expect(out.value).toBe(expectedValue);
       expect(generate).toHaveBeenCalledTimes(1);
       expect(generate).toHaveBeenCalledWith(mrngNoCall);
+      expect(withBias).not.toHaveBeenCalled();
+    });
+
+    it('should be able to generate biased values using the underlying Arbitrary', () => {
+      // Arrange
+      const expectedBiasedFactor = 42;
+      const expectedValue = 1;
+      const generate = jest.fn().mockReturnValueOnce(new Shrinkable(expectedValue));
+      const withBias = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        withBias = withBias;
+      }
+      const originalInstance = new MyArbitrary();
+      withBias.mockReturnValue(originalInstance);
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const out = transformedInstance.generate(mrngNoCall, expectedBiasedFactor);
+
+      // Assert
+      expect(out.value).toBe(expectedValue);
+      expect(generate).toHaveBeenCalledTimes(1);
+      expect(generate).toHaveBeenCalledWith(mrngNoCall);
+      expect(withBias).toHaveBeenCalledTimes(1);
+      expect(withBias).toHaveBeenCalledWith(expectedBiasedFactor);
     });
   });
 
@@ -84,7 +112,7 @@ describe('ConverterToNext', () => {
 
       // Act
       const transformedInstance = new ConverterToNext(originalInstance);
-      const out = transformedInstance.generate(mrngNoCall);
+      const out = transformedInstance.generate(mrngNoCall, undefined);
       const outShrink = transformedInstance.shrink(out.value, out.context);
 
       // Assert
@@ -110,7 +138,7 @@ describe('ConverterToNext', () => {
 
       // Act
       const transformedInstance = new ConverterToNext(originalInstance);
-      const out = transformedInstance.generate(mrngNoCall);
+      const out = transformedInstance.generate(mrngNoCall, undefined);
       const outShrinkLvl1 = transformedInstance.shrink(out.value, out.context);
       const firstShrunkValue = outShrinkLvl1.getNthOrLast(0)!;
       const outShrinkLvl2 = transformedInstance.shrink(firstShrunkValue.value, firstShrunkValue.context);

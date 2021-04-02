@@ -23,8 +23,8 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
     super();
   }
 
-  generate(mrng: Random): NextValue<T> {
-    const g = this.arb.generate(mrng);
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
+    const g = biasFactor !== undefined ? this.arb.withBias(biasFactor).generate(mrng) : this.arb.generate(mrng);
     return new NextValue(g.value_, g, () => g.value);
   }
 

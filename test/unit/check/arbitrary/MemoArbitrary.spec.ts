@@ -81,74 +81,43 @@ describe('MemoArbitrary', () => {
     });
     it('Should be able to delay calls to sub-builders', () => {
       const mrng = stubRng.mutable.nocall();
+      const expectedBiasedFactor = 42;
       const generateMock = jest.fn();
       const simpleArb = buildArbitrary(generateMock);
-      const builderA = memo(() => buildArbitrary((mrng) => builderB().generate(mrng)));
+      const builderA = memo(() => buildArbitrary((mrng, biasedFactor) => builderB().generate(mrng, biasedFactor)));
       const builderB = memo(() => simpleArb);
 
       expect(generateMock).not.toHaveBeenCalled();
-      builderA().generate(mrng);
+      builderA().generate(mrng, expectedBiasedFactor);
 
-      expect(generateMock).toHaveBeenCalled();
+      expect(generateMock).toHaveBeenCalledWith(mrng, expectedBiasedFactor);
     });
   });
   describe('MemoArbitrary', () => {
     it('Should call generate method of underlying on generate', () => {
       const mrng = stubRng.mutable.nocall();
+      const expectedBiasedFactor = 2;
       const expectedGen = Symbol();
       const generateMock = jest.fn();
       generateMock.mockReturnValue(expectedGen);
       const arb = buildArbitrary(generateMock);
       const memoArb = new MemoArbitrary(arb);
 
-      const g = memoArb.generate(mrng);
+      const g = memoArb.generate(mrng, expectedBiasedFactor);
       expect(g).toBe(expectedGen);
       expect(generateMock).toHaveBeenCalledTimes(1);
-    });
-    it('Should be able to bias to the biased value of underlying', () => {
-      const noCallMock = jest.fn();
-      const biasedArb = buildArbitrary(noCallMock);
-      const arb = buildArbitrary(noCallMock, () => biasedArb);
-      const memoArb = new MemoArbitrary(arb);
-
-      const biasedLazy = memoArb.withBias(2);
-      expect(biasedLazy).toBe(biasedArb);
-      expect(noCallMock).not.toHaveBeenCalled();
-    });
-    it('Should cache biased arbitrary for same freq', () => {
-      const biasArb48 = buildArbitrary(jest.fn());
-      const biasMock = jest.fn();
-      biasMock.mockImplementationOnce(() => biasArb48);
-      const arb = buildArbitrary(jest.fn(), biasMock);
-      const memoArb = new MemoArbitrary(arb);
-
-      memoArb.withBias(48);
-      biasMock.mockClear();
-
-      expect(memoArb.withBias(48)).toBe(biasArb48);
-      expect(biasMock).not.toBeCalled();
-    });
-    it('Should not take from cache if freq changed', () => {
-      const biasArb48 = buildArbitrary(jest.fn());
-      const biasArb69 = buildArbitrary(jest.fn());
-      const biasMock = jest.fn();
-      biasMock.mockImplementationOnce(() => biasArb48).mockImplementationOnce(() => biasArb69);
-      const arb = buildArbitrary(jest.fn(), biasMock);
-      const memoArb = new MemoArbitrary(arb);
-
-      memoArb.withBias(48);
-      biasMock.mockClear();
-
-      expect(memoArb.withBias(69)).toBe(biasArb69);
-      expect(biasMock).toBeCalled();
+      expect(generateMock).toHaveBeenCalledWith(mrng, expectedBiasedFactor);
     });
   });
 });
 
-const buildArbitrary = (generate: (mrng: Random) => NextValue<any>, withBias?: (n: number) => NextArbitrary<any>) => {
+const buildArbitrary = (
+  generate: (mrng: Random, biasedFactor: number | undefined) => NextValue<any>,
+  withBias?: (n: number) => NextArbitrary<any>
+) => {
   return new (class extends NextArbitrary<any> {
-    generate(mrng: Random) {
-      return generate(mrng);
+    generate(mrng: Random, biasedFactor: number | undefined) {
+      return generate(mrng, biasedFactor);
     }
     canGenerate(value: unknown): value is any {
       throw new Error('Method not implemented.');

@@ -20,12 +20,16 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
     else return new ConverterFromNext(arb);
   }
 
-  constructor(readonly arb: NextArbitrary<T>, readonly legacyShrunkOnceContext?: unknown) {
+  constructor(
+    readonly arb: NextArbitrary<T>,
+    readonly legacyShrunkOnceContext?: unknown,
+    readonly biasFactor: number | undefined = undefined
+  ) {
     super();
   }
 
   generate(mrng: Random): Shrinkable<T, T> {
-    const g = this.arb.generate(mrng);
+    const g = this.arb.generate(mrng, this.biasFactor);
     return this.toShrinkable(g);
   }
   private toShrinkable(v: NextValue<T>): Shrinkable<T, T> {
@@ -69,7 +73,7 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
   }
 
   withBias(freq: number): Arbitrary<T> {
-    return ConverterFromNext.convertIfNeeded(this.arb.withBias(freq));
+    return new ConverterFromNext(this.arb, this.legacyShrunkOnceContext, freq);
   }
 
   noBias(): Arbitrary<T> {

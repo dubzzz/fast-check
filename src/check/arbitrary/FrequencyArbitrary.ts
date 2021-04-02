@@ -35,6 +35,7 @@ interface WeightedNextArbitrary<T> {
 /** @internal */
 type FrequencyArbitraryContext<T> = {
   selectedIndex: number;
+  originalBias: number | undefined;
   originalContext: unknown;
   clonedMrngForFallbackFirst: Random | null;
   cachedGeneratedForFirst?: NextValue<T>;
@@ -89,15 +90,15 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     this.totalWeight = currentWeight;
   }
 
-  generate(mrng: Random): NextValue<T> {
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
     if (this.mustGenerateFirst()) {
       // index=0 can be selected even if it has a weight equal to zero
-      return this.safeGenerateForIndex(mrng, 0);
+      return this.safeGenerateForIndex(mrng, 0, biasFactor);
     }
     const selected = mrng.nextInt(this.computeNegDepthBenefit(), this.totalWeight - 1);
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
-        return this.safeGenerateForIndex(mrng, idx);
+        return this.safeGenerateForIndex(mrng, idx, biasFactor);
       }
     }
     throw new Error(`Unable to generate from fc.frequency`);
@@ -111,13 +112,18 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     if (context !== undefined) {
       const safeContext = context as FrequencyArbitraryContext<T>;
       const selectedIndex = safeContext.selectedIndex;
+      const originalBias = safeContext.originalBias;
       const originalArbitrary = this.summedWarbs[selectedIndex].arbitrary;
       const originalShrinks = originalArbitrary
         .shrink(value, safeContext.originalContext)
-        .map((v) => this.mapIntoNextValue(selectedIndex, v, null));
+        .map((v) => this.mapIntoNextValue(selectedIndex, v, null, originalBias));
       if (safeContext.clonedMrngForFallbackFirst !== null) {
         if (safeContext.cachedGeneratedForFirst === undefined) {
-          safeContext.cachedGeneratedForFirst = this.safeGenerateForIndex(safeContext.clonedMrngForFallbackFirst, 0);
+          safeContext.cachedGeneratedForFirst = this.safeGenerateForIndex(
+            safeContext.clonedMrngForFallbackFirst,
+            0,
+            originalBias
+          );
         }
         const valueFromFirst = safeContext.cachedGeneratedForFirst;
         return Stream.of(valueFromFirst).join(originalShrinks);
@@ -130,15 +136,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     }
     return this.summedWarbs[potentialSelectedIndex].arbitrary
       .shrink(value)
-      .map((v) => this.mapIntoNextValue(potentialSelectedIndex, v, null));
-  }
-
-  withBias(freq: number): NextArbitrary<T> {
-    return new FrequencyArbitrary(
-      this.warbs.map((v) => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })),
-      this.constraints,
-      this.context
-    );
+      .map((v) => this.mapIntoNextValue(potentialSelectedIndex, v, null, undefined));
   }
 
   /** Extract the index of the generator that would have been able to gennrate the value */
@@ -161,9 +159,15 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   }
 
   /** Map the output of one of the children with the context of frequency */
-  private mapIntoNextValue(idx: number, value: NextValue<T>, clonedMrngForFallbackFirst: Random | null): NextValue<T> {
+  private mapIntoNextValue(
+    idx: number,
+    value: NextValue<T>,
+    clonedMrngForFallbackFirst: Random | null,
+    biasFactor: number | undefined
+  ): NextValue<T> {
     const context: FrequencyArbitraryContext<T> = {
       selectedIndex: idx,
+      originalBias: biasFactor,
       originalContext: value.context,
       clonedMrngForFallbackFirst,
     };
@@ -171,12 +175,12 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   }
 
   /** Generate using Arbitrary at index idx and safely handle depth context */
-  private safeGenerateForIndex(mrng: Random, idx: number): NextValue<T> {
+  private safeGenerateForIndex(mrng: Random, idx: number, biasFactor: number | undefined): NextValue<T> {
     ++this.context.depth; // increase depth
     try {
-      const value = this.summedWarbs[idx].arbitrary.generate(mrng);
+      const value = this.summedWarbs[idx].arbitrary.generate(mrng, biasFactor);
       const clonedMrngForFallbackFirst = this.mustFallbackToFirstInShrink(idx) ? mrng.clone() : null;
-      return this.mapIntoNextValue(idx, value, clonedMrngForFallbackFirst);
+      return this.mapIntoNextValue(idx, value, clonedMrngForFallbackFirst, biasFactor);
     } finally {
       --this.context.depth; // decrease depth (reset depth)
     }

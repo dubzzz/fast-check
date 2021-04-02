@@ -1,23 +1,29 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
-import { nextBiasWrapper } from './definition/BiasedNextArbitraryWrapper';
 import { convertFromNextWithShrunkOnce } from './definition/Converters';
 import { NextArbitrary } from './definition/NextArbitrary';
 import { NextValue } from './definition/NextValue';
-import { biasNumeric, bigIntLogLike } from './helpers/BiasNumeric';
+import { retrieveBiasRangesForNumeric, bigIntLogLike } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkBigInt';
 
 /** @internal */
 class BigIntArbitrary extends NextArbitrary<bigint> {
-  private biasedBigIntArbitrary: NextArbitrary<bigint> | null = null;
-
-  constructor(readonly min: bigint, readonly max: bigint, readonly genMin: bigint, readonly genMax: bigint) {
+  constructor(readonly min: bigint, readonly max: bigint) {
     super();
   }
 
-  generate(mrng: Random): NextValue<bigint> {
-    return new NextValue(mrng.nextBigInt(this.genMin, this.genMax), undefined);
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<bigint> {
+    const range = this.computeGenerateRange(mrng, biasFactor);
+    return new NextValue(mrng.nextBigInt(range.min, range.max), undefined);
+  }
+  private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: bigint; max: bigint } {
+    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+      return { min: this.min, max: this.max };
+    }
+    const ranges = retrieveBiasRangesForNumeric(this.min, this.max, bigIntLogLike);
+    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
+    return id < 0 ? ranges[0] : ranges[id + 1];
   }
 
   canGenerate(value: unknown): value is bigint {
@@ -79,23 +85,11 @@ class BigIntArbitrary extends NextArbitrary<bigint> {
     }
     return true;
   }
-
-  private pureBiasedArbitrary(): NextArbitrary<bigint> {
-    if (this.biasedBigIntArbitrary != null) {
-      return this.biasedBigIntArbitrary;
-    }
-    this.biasedBigIntArbitrary = biasNumeric(this.min, this.max, BigIntArbitrary, bigIntLogLike);
-    return this.biasedBigIntArbitrary;
-  }
-
-  withBias(freq: number): NextArbitrary<bigint> {
-    return nextBiasWrapper(freq, this, (originalArbitrary: BigIntArbitrary) => originalArbitrary.pureBiasedArbitrary());
-  }
 }
 
 /** @internal */
 function buildBigIntArbitrary(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint> {
-  const arb = new BigIntArbitrary(min, max, min, max);
+  const arb = new BigIntArbitrary(min, max);
   return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
 

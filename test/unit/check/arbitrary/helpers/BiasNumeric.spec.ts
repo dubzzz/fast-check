@@ -1,27 +1,26 @@
 import * as fc from '../../../../../lib/fast-check';
 
-import { biasNumeric, integerLogLike, bigIntLogLike } from '../../../../../src/check/arbitrary/helpers/BiasNumeric';
+import {
+  retrieveBiasRangesForNumeric,
+  integerLogLike,
+  bigIntLogLike,
+} from '../../../../../src/check/arbitrary/helpers/BiasNumeric';
 
 describe('BiasNumeric', () => {
   describe('biasNumeric', () => {
     it('Should bias close to extreme values and zero if min and max have opposite signs', () =>
       fc.assert(
         fc.property(fc.integer(Number.MIN_SAFE_INTEGER, -1), fc.integer(1, Number.MAX_SAFE_INTEGER), (min, max) => {
-          // Arrange
-          const Ctor = jest.fn().mockImplementation((min, max, genMin, genMax) => {
-            if (genMin > genMax) throw new Error(`Received genMin=${genMin} > genMax=${genMax}`);
-            if (min > genMin) throw new Error(`Received min=${min} > genMin=${genMin}`);
-            if (max < genMax) throw new Error(`Received max=${max} < genMax=${genMax}`);
-          });
-
-          // Act
-          biasNumeric(min, max, Ctor, integerLogLike);
+          // Arrange / Act
+          const ranges = retrieveBiasRangesForNumeric(min, max, integerLogLike);
 
           // Assert
-          expect(Ctor).toHaveBeenCalledTimes(3);
-          expect(Ctor).toHaveBeenCalledWith(min, max, min, expect.any(Number)); // close to min
-          expect(Ctor).toHaveBeenCalledWith(min, max, expect.any(Number), max); // close to max
-          expect(Ctor).toHaveBeenCalledWith(min, max, expect.toBeWithinRange(min, 0), expect.toBeWithinRange(0, max)); // close to zero
+          expect(ranges).toHaveLength(3);
+          expect(ranges).toEqual([
+            { min: expect.toBeWithinRange(min, 0), max: expect.toBeWithinRange(0, max) }, // close to zero
+            { min: expect.toBeWithinRange(0, max), max: max }, // close to max
+            { min: min, max: expect.toBeWithinRange(min, 0) }, // close to min
+          ]);
         })
       ));
 
@@ -34,21 +33,20 @@ describe('BiasNumeric', () => {
           (sign, minRaw, maxRaw) => {
             // Arrange
             fc.pre(minRaw !== maxRaw);
-            const Ctor = jest.fn().mockImplementation((min, max, genMin, genMax) => {
-              if (genMin > genMax) throw new Error(`Received genMin=${genMin} > genMax=${genMax}`);
-              if (min > genMin) throw new Error(`Received min=${min} > genMin=${genMin}`);
-              if (max < genMax) throw new Error(`Received max=${max} < genMax=${genMax}`);
-            });
-            const min = sign * minRaw;
-            const max = sign * maxRaw;
+            const minRawSigned = sign * minRaw;
+            const maxRawSigned = sign * maxRaw;
+            const [min, max] =
+              minRawSigned < maxRawSigned ? [minRawSigned, maxRawSigned] : [maxRawSigned, minRawSigned];
 
             // Act
-            biasNumeric(min, max, Ctor, integerLogLike);
+            const ranges = retrieveBiasRangesForNumeric(min, max, integerLogLike);
 
             // Assert
-            expect(Ctor).toHaveBeenCalledTimes(2);
-            expect(Ctor).toHaveBeenCalledWith(min, max, min, expect.any(Number)); // close to min
-            expect(Ctor).toHaveBeenCalledWith(min, max, expect.any(Number), max); // close to max
+            expect(ranges).toHaveLength(2);
+            const closeToMin = { min: expect.toBeWithinRange(min + 1, max), max: max }; // close to max
+            const closeToMax = { min: min, max: expect.toBeWithinRange(min, max - 1) }; // close to min
+            if (sign > 0) expect(ranges).toEqual([closeToMax, closeToMin]);
+            else expect(ranges).toEqual([closeToMin, closeToMax]);
           }
         )
       ));
@@ -56,19 +54,12 @@ describe('BiasNumeric', () => {
     it('Should not bias anything for equal values of min and max', () =>
       fc.assert(
         fc.property(fc.maxSafeInteger(), (minMax) => {
-          // Arrange
-          const Ctor = jest.fn().mockImplementation((min, max, genMin, genMax) => {
-            if (genMin > genMax) throw new Error(`Received genMin=${genMin} > genMax=${genMax}`);
-            if (min > genMin) throw new Error(`Received min=${min} > genMin=${genMin}`);
-            if (max < genMax) throw new Error(`Received max=${max} < genMax=${genMax}`);
-          });
-
-          // Act
-          biasNumeric(minMax, minMax, Ctor, integerLogLike);
+          // Arrange / Act
+          const ranges = retrieveBiasRangesForNumeric(minMax, minMax, integerLogLike);
 
           // Assert
-          expect(Ctor).toHaveBeenCalledTimes(1);
-          expect(Ctor).toHaveBeenCalledWith(minMax, minMax, minMax, minMax); // no bias, cannot do more
+          expect(ranges).toHaveLength(1);
+          expect(ranges).toEqual([{ min: minMax, max: minMax }]); // no bias, cannot do more
         })
       ));
 
@@ -78,16 +69,19 @@ describe('BiasNumeric', () => {
           // Arrange
           const min = a < b ? a : b;
           const max = a < b ? b : a;
-          const Ctor = jest.fn().mockImplementation((newMin, newMax, genMin, genMax) => {
-            if (newMin !== min) throw new Error(`Received min=${newMin} !== (expected)${min}`);
-            if (newMax !== max) throw new Error(`Received max=${newMax} !== (expected)${max}`);
-            if (genMin > genMax) throw new Error(`Received genMin=${genMin} > genMax=${genMax}`);
-            if (newMin > genMin) throw new Error(`Received min=${newMin} > genMin=${genMin}`);
-            if (newMax < genMax) throw new Error(`Received max=${newMax} < genMax=${genMax}`);
-          });
 
-          // Act / Assert
-          expect(() => biasNumeric(min, max, Ctor, integerLogLike)).not.toThrow();
+          // Act
+          const ranges = retrieveBiasRangesForNumeric(min, max, integerLogLike);
+
+          // Assert
+          expect(ranges).not.toHaveLength(0);
+          for (const range of ranges) {
+            expect(range.max).toBeGreaterThanOrEqual(range.min);
+            expect(min).toBeLessThanOrEqual(range.max);
+            expect(max).toBeGreaterThanOrEqual(range.max);
+            expect(min).toBeLessThanOrEqual(range.min);
+            expect(max).toBeGreaterThanOrEqual(range.min);
+          }
         })
       ));
 
@@ -98,16 +92,19 @@ describe('BiasNumeric', () => {
             // Arrange
             const min = a < b ? a : b;
             const max = a < b ? b : a;
-            const Ctor = jest.fn().mockImplementation((newMin, newMax, genMin, genMax) => {
-              if (newMin !== min) throw new Error(`Received min=${newMin} !== (expected)${min}`);
-              if (newMax !== max) throw new Error(`Received max=${newMax} !== (expected)${max}`);
-              if (genMin > genMax) throw new Error(`Received genMin=${genMin} > genMax=${genMax}`);
-              if (newMin > genMin) throw new Error(`Received min=${newMin} > genMin=${genMin}`);
-              if (newMax < genMax) throw new Error(`Received max=${newMax} < genMax=${genMax}`);
-            });
 
-            // Act / Assert
-            expect(() => biasNumeric(min, max, Ctor, bigIntLogLike)).not.toThrow();
+            // Act
+            const ranges = retrieveBiasRangesForNumeric(min, max, bigIntLogLike);
+
+            // Assert
+            expect(ranges).not.toHaveLength(0);
+            for (const range of ranges) {
+              expect(range.max).toBeGreaterThan(range.min);
+              expect(min).toBeLessThanOrEqual(range.max);
+              expect(max).toBeGreaterThanOrEqual(range.max);
+              expect(min).toBeLessThanOrEqual(range.min);
+              expect(max).toBeGreaterThanOrEqual(range.min);
+            }
           })
         ));
     }
@@ -118,7 +115,7 @@ describe('BiasNumeric', () => {
 
 expect.extend({
   toBeWithinRange(received, floor, ceiling): jest.CustomMatcherResult {
-    const pass = received >= floor && received <= ceiling;
+    const pass = received >= floor && received <= ceiling && !Number.isNaN(received);
     return {
       message: () => `expected ${received} ${pass ? 'not ' : ''} to be within range ${floor} - ${ceiling}`,
       pass,

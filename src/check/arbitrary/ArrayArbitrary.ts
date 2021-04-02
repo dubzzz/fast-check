@@ -8,7 +8,6 @@ import { buildCompareFilter } from './helpers/BuildCompareFilter';
 import { NextArbitrary } from './definition/NextArbitrary';
 import { convertFromNext, convertToNext } from './definition/Converters';
 import { NextValue } from './definition/NextValue';
-import { nextBiasWrapper } from './definition/BiasedNextArbitraryWrapper';
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -80,9 +79,9 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     };
     return new NextValue(vs, context);
   }
-  generate(mrng: Random): NextValue<T[]> {
-    const targetSizeValue = this.lengthArb.generate(mrng);
-    const targetSize = targetSizeValue.value;
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<T[]> {
+    const biasMeta = this.applyBias(mrng, biasFactor);
+    const targetSize = biasMeta.size;
 
     let numSkippedInRow = 0;
     const items: NextValue<T>[] = [];
@@ -92,7 +91,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // we accept a max of maxLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
     while (items.length < targetSize && numSkippedInRow < this.maxLength) {
-      const current = this.arb.generate(mrng);
+      const current = this.arb.generate(mrng, biasMeta.biasFactorItems);
       if (this.canAppendItem(items, current)) {
         numSkippedInRow = 0;
         items.push(current);
@@ -101,6 +100,21 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       }
     }
     return this.wrapper(items, false, undefined);
+  }
+  private applyBias(mrng: Random, biasFactor: number | undefined): { size: number; biasFactorItems?: number } {
+    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+      // We don't bias anything
+      return { size: this.lengthArb.generate(mrng, undefined).value };
+    }
+    // We apply bias (1 chance over biasFactor)
+    if (mrng.nextInt(1, biasFactor) !== 1 || this.minLength === this.maxLength) {
+      // We only apply bias on items ((biasFactor-1) chances over biasFactor²)
+      return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
+    }
+    // We apply bias for both items and length (1 chance over biasFactor²)
+    const maxBiasedLength = this.minLength + Math.floor(Math.log(this.maxLength - this.minLength) / Math.log(2));
+    const targetSizeValue = convertToNext(integer(this.minLength, maxBiasedLength)).generate(mrng, undefined);
+    return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }
 
   canGenerate(value: unknown): value is T[] {
@@ -192,34 +206,6 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return this.shrinkImpl(value, context).map((contextualValue) =>
       this.wrapper(contextualValue[0], true, contextualValue[1])
     );
-  }
-
-  withBias(freq: number): NextArbitrary<T[]> {
-    return nextBiasWrapper(freq, this, (originalArbitrary: ArrayArbitrary<T>) => {
-      const lowBiased = new ArrayArbitrary(
-        originalArbitrary.arb.withBias(freq),
-        originalArbitrary.minLength,
-        originalArbitrary.maxLength,
-        originalArbitrary.isEqual
-      );
-      const highBiasedArbBuilder = () => {
-        return originalArbitrary.minLength !== originalArbitrary.maxLength
-          ? new ArrayArbitrary(
-              originalArbitrary.arb.withBias(freq),
-              originalArbitrary.minLength,
-              originalArbitrary.minLength +
-                Math.floor(Math.log(originalArbitrary.maxLength - originalArbitrary.minLength) / Math.log(2)),
-              originalArbitrary.isEqual
-            )
-          : new ArrayArbitrary(
-              originalArbitrary.arb.withBias(freq),
-              originalArbitrary.minLength,
-              originalArbitrary.maxLength,
-              originalArbitrary.isEqual
-            );
-      };
-      return nextBiasWrapper(freq, lowBiased, highBiasedArbBuilder);
-    });
   }
 }
 

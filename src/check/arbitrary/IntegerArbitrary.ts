@@ -1,11 +1,10 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
-import { nextBiasWrapper } from './definition/BiasedNextArbitraryWrapper';
 import { convertFromNextWithShrunkOnce } from './definition/Converters';
 import { NextArbitrary } from './definition/NextArbitrary';
 import { NextValue } from './definition/NextValue';
-import { biasNumeric, integerLogLike } from './helpers/BiasNumeric';
+import { retrieveBiasRangesForNumeric, integerLogLike } from './helpers/BiasNumeric';
 import { shrinkInteger } from './helpers/ShrinkInteger';
 
 /** @internal */
@@ -13,14 +12,21 @@ class IntegerArbitrary extends NextArbitrary<number> {
   static MIN_INT: number = 0x80000000 | 0;
   static MAX_INT: number = 0x7fffffff | 0;
 
-  private biasedIntegerArbitrary: NextArbitrary<number> | null = null;
-
-  constructor(readonly min: number, readonly max: number, readonly genMin: number, readonly genMax: number) {
+  constructor(readonly min: number, readonly max: number) {
     super();
   }
 
-  generate(mrng: Random): NextValue<number> {
-    return new NextValue(mrng.nextInt(this.genMin, this.genMax), undefined);
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<number> {
+    const range = this.computeGenerateRange(mrng, biasFactor);
+    return new NextValue(mrng.nextInt(range.min, range.max), undefined);
+  }
+  private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: number; max: number } {
+    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+      return { min: this.min, max: this.max };
+    }
+    const ranges = retrieveBiasRangesForNumeric(this.min, this.max, integerLogLike);
+    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
+    return id < 0 ? ranges[0] : ranges[id + 1];
   }
 
   canGenerate(value: unknown): value is number {
@@ -83,20 +89,6 @@ class IntegerArbitrary extends NextArbitrary<number> {
       throw new Error(`Invalid context value passed to IntegerArbitrary (#2)`);
     }
     return true;
-  }
-
-  private pureBiasedArbitrary(): NextArbitrary<number> {
-    if (this.biasedIntegerArbitrary != null) {
-      return this.biasedIntegerArbitrary;
-    }
-    this.biasedIntegerArbitrary = biasNumeric<number>(this.min, this.max, IntegerArbitrary, integerLogLike);
-    return this.biasedIntegerArbitrary;
-  }
-
-  withBias(freq: number): NextArbitrary<number> {
-    return nextBiasWrapper(freq, this, (originalArbitrary: IntegerArbitrary) =>
-      originalArbitrary.pureBiasedArbitrary()
-    );
   }
 }
 
@@ -196,7 +188,7 @@ function integer(
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
   }
-  const arb = new IntegerArbitrary(constraints.min, constraints.max, constraints.min, constraints.max);
+  const arb = new IntegerArbitrary(constraints.min, constraints.max);
   return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
 
@@ -253,7 +245,7 @@ function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<numbe
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
   }
-  const arb = new IntegerArbitrary(0, max, 0, max);
+  const arb = new IntegerArbitrary(0, max);
   return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
 

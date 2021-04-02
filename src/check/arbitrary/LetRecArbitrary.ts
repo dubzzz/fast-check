@@ -7,24 +7,15 @@ import { NextValue } from './definition/NextValue';
 
 /** @internal */
 export class LazyArbitrary extends NextArbitrary<any> {
-  private static readonly MaxBiasLevels = 5;
-  private numBiasLevels = 0;
-  private lastBiasedArbitrary: {
-    biasedArb: NextArbitrary<any>;
-    arb: NextArbitrary<any>;
-    lvl: number;
-    freq: number;
-  } | null = null;
   underlying: NextArbitrary<any> | null = null;
-
   constructor(readonly name: string) {
     super();
   }
-  generate(mrng: Random): NextValue<any> {
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<any> {
     if (!this.underlying) {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }
-    return this.underlying.generate(mrng);
+    return this.underlying.generate(mrng, biasFactor);
   }
   canGenerate(value: unknown): value is any {
     if (!this.underlying) {
@@ -38,32 +29,6 @@ export class LazyArbitrary extends NextArbitrary<any> {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }
     return this.underlying.shrink(value, context);
-  }
-  withBias(freq: number): NextArbitrary<any> {
-    if (!this.underlying) {
-      throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
-    }
-    if (this.numBiasLevels >= LazyArbitrary.MaxBiasLevels) {
-      return this;
-    }
-    if (
-      this.lastBiasedArbitrary !== null &&
-      this.lastBiasedArbitrary.freq === freq &&
-      this.lastBiasedArbitrary.arb === this.underlying &&
-      this.lastBiasedArbitrary.lvl === this.numBiasLevels
-    ) {
-      return this.lastBiasedArbitrary.biasedArb;
-    }
-    ++this.numBiasLevels;
-    const biasedArb = this.underlying.withBias(freq);
-    --this.numBiasLevels;
-    this.lastBiasedArbitrary = {
-      arb: this.underlying,
-      lvl: this.numBiasLevels,
-      freq,
-      biasedArb,
-    };
-    return biasedArb;
   }
 }
 
