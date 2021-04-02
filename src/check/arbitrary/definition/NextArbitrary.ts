@@ -18,11 +18,12 @@ export abstract class NextArbitrary<T> {
    * based on the provided random number generator
    *
    * @param mrng - Random number generator
+   * @param biasFactor - If taken into account 1 value over biasFactor must be biased. Either integer value >=2 (bias) or undefined (no bias)
    * @returns Random value of type `T` and its context
    *
    * @remarks Since 2.15.0
    */
-  abstract generate(mrng: Random): NextValue<T>;
+  abstract generate(mrng: Random, biasFactor: number | undefined): NextValue<T>;
 
   /**
    * Check if a given value could have been generated
@@ -155,16 +156,6 @@ export abstract class NextArbitrary<T> {
   }
 
   /**
-   * Create another NextArbitrary having bias - by default return itself
-   *
-   * @param freq - The biased version will be used one time over freq - if it exists - freq must be superior or equal to 2 to avoid any lock
-   * @remarks Since 2.15.0
-   */
-  withBias(_freq: number): NextArbitrary<T> {
-    return this;
-  }
-
-  /**
    * Create another NextArbitrary that cannot be biased
    *
    * @param freq - The biased version will be used one time over freq - if it exists
@@ -178,6 +169,7 @@ export abstract class NextArbitrary<T> {
 
 /** @internal */
 type ChainArbitraryContext<T, U> = {
+  originalBias: number | undefined;
   originalValue: T;
   originalContext: unknown;
   stoppedForOriginal: boolean;
@@ -191,10 +183,10 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
   constructor(readonly arb: NextArbitrary<T>, readonly chainer: (t: T) => NextArbitrary<U>) {
     super();
   }
-  generate(mrng: Random): NextValue<U> {
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<U> {
     const clonedMrng = mrng.clone();
-    const src = this.arb.generate(mrng);
-    return this.valueChainer(src, mrng, clonedMrng);
+    const src = this.arb.generate(mrng, biasFactor);
+    return this.valueChainer(src, mrng, clonedMrng, biasFactor);
   }
   canGenerate(value: unknown): value is U {
     // TODO Need unchainer
@@ -205,7 +197,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
       return (!context.stoppedForOriginal
         ? this.arb
             .shrink(context.originalValue, context.originalContext)
-            .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng))
+            .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng, context.originalBias))
         : Stream.nil<NextValue<U>>()
       ).join(
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
@@ -221,13 +213,16 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
     // TODO Need unchainer
     return Stream.nil();
   }
-  withBias(freq: number): NextArbitrary<U> {
-    return this.arb.withBias(freq).chain((t: T) => this.chainer(t).withBias(freq));
-  }
-  private valueChainer(v: NextValue<T>, generateMrng: Random, clonedMrng: Random): NextValue<U> {
+  private valueChainer(
+    v: NextValue<T>,
+    generateMrng: Random,
+    clonedMrng: Random,
+    biasFactor: number | undefined
+  ): NextValue<U> {
     const chainedArbitrary = this.chainer(v.value_);
-    const dst = chainedArbitrary.generate(generateMrng);
+    const dst = chainedArbitrary.generate(generateMrng, biasFactor);
     const context: ChainArbitraryContext<T, U> = {
+      originalBias: biasFactor,
       originalValue: v.value_,
       originalContext: v.context,
       stoppedForOriginal: false,
@@ -241,6 +236,7 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
     return (
       context != null &&
       typeof context === 'object' &&
+      'originalBias' in (context as any) &&
       'originalValue' in (context as any) &&
       'originalContext' in (context as any) &&
       'stoppedForOriginal' in (context as any) &&
@@ -264,8 +260,8 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
     super();
     this.bindValueMapper = this.valueMapper.bind(this);
   }
-  generate(mrng: Random): NextValue<U> {
-    const g = this.arb.generate(mrng);
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<U> {
+    const g = this.arb.generate(mrng, biasFactor);
     return this.valueMapper(g);
   }
   canGenerate(value: unknown): value is U {
@@ -278,9 +274,6 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
     }
     // TODO Need unmapper
     return Stream.nil();
-  }
-  withBias(freq: number): NextArbitrary<U> {
-    return this.arb.withBias(freq).map(this.mapper);
   }
   private mapperWithCloneIfNeeded(v: NextValue<T>): [U, T] {
     const sourceValue = v.value;
@@ -313,10 +306,10 @@ class FilterArbitrary<T, U extends T> extends NextArbitrary<U> {
     super();
     this.bindRefinementOnValue = this.refinementOnValue.bind(this);
   }
-  generate(mrng: Random): NextValue<U> {
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<U> {
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const g = this.arb.generate(mrng);
+      const g = this.arb.generate(mrng, biasFactor);
       if (this.refinementOnValue(g)) {
         return g;
       }
@@ -328,9 +321,6 @@ class FilterArbitrary<T, U extends T> extends NextArbitrary<U> {
   shrink(value: U, context?: unknown): Stream<NextValue<U>> {
     return this.arb.shrink(value, context).filter(this.bindRefinementOnValue);
   }
-  withBias(freq: number) {
-    return this.arb.withBias(freq).filter(this.refinement);
-  }
   private refinementOnValue(v: NextValue<T>): v is NextValue<U> {
     return this.refinement(v.value);
   }
@@ -341,8 +331,8 @@ class NoShrinkArbitrary<T> extends NextArbitrary<T> {
   constructor(readonly arb: NextArbitrary<T>) {
     super();
   }
-  generate(mrng: Random): NextValue<T> {
-    return new NextValue(this.arb.generate(mrng).value_);
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
+    return new NextValue(this.arb.generate(mrng, biasFactor).value_);
   }
   canGenerate(value: unknown): value is T {
     return this.arb.canGenerate(value);
@@ -350,8 +340,8 @@ class NoShrinkArbitrary<T> extends NextArbitrary<T> {
   shrink(_value: T, _context?: unknown): Stream<NextValue<T>> {
     return Stream.nil();
   }
-  withBias(freq: number) {
-    return this.arb.withBias(freq).noShrink();
+  noShrink() {
+    return this;
   }
 }
 
@@ -360,14 +350,17 @@ class NoBiasArbitrary<T> extends NextArbitrary<T> {
   constructor(readonly arb: NextArbitrary<T>) {
     super();
   }
-  generate(mrng: Random): NextValue<T> {
-    return this.arb.generate(mrng);
+  generate(mrng: Random, _biasFactor: number | undefined): NextValue<T> {
+    return this.arb.generate(mrng, undefined);
   }
   canGenerate(value: unknown): value is T {
     return this.arb.canGenerate(value);
   }
   shrink(value: T, context?: unknown): Stream<NextValue<T>> {
     return this.arb.shrink(value, context);
+  }
+  noBias() {
+    return this;
   }
 }
 
