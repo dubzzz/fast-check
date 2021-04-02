@@ -7,6 +7,7 @@ import { NextValue } from '../../../../../src/check/arbitrary/definition/NextVal
 import { ConverterToNext } from '../../../../../src/check/arbitrary/definition/ConverterToNext';
 import { Stream } from '../../../../../src/stream/Stream';
 import * as stubRng from '../../../stubs/generators';
+import { ConverterFromNext } from '../../../../../src/check/arbitrary/definition/ConverterFromNext';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
@@ -148,6 +149,192 @@ describe('ConverterToNext', () => {
       expect(generate).toHaveBeenCalledTimes(1);
       expect(shrinkLvl1).toHaveBeenCalledTimes(1);
       expect(shrinkLvl2).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('filter', () => {
+    it('should call filter directly on the passed instance and convert its result', () => {
+      // Arrange
+      const generate = jest.fn();
+      const filter = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        filter = filter;
+      }
+      const originalInstance = new MyArbitrary();
+      const filteredInstance = new MyArbitrary();
+      filter.mockReturnValue(filteredInstance);
+      const predicate = () => true;
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const transformedInstanceFiltered = transformedInstance.filter(predicate);
+
+      // Assert
+      expect(filter).toHaveBeenCalledTimes(1);
+      expect(filter).toHaveBeenCalledWith(predicate);
+      expect(ConverterToNext.isConverterToNext(transformedInstanceFiltered)).toBe(true);
+      expect((transformedInstanceFiltered as ConverterToNext<number>).arb).toBe(filteredInstance);
+    });
+
+    it('should unwrap instances of ConverterFromNext returned by filter', () => {
+      // Arrange
+      const generate = jest.fn();
+      const canGenerate = jest.fn();
+      const shrink = jest.fn();
+      const filter = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        filter = filter;
+      }
+      class MyNextArbitrary extends NextArbitrary<number> {
+        generate = generate;
+        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        shrink = shrink;
+      }
+      const originalInstance = new MyArbitrary();
+      const filteredInstanceNext = new MyNextArbitrary();
+      filter.mockReturnValue(new ConverterFromNext(filteredInstanceNext));
+      const predicate = () => true;
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const transformedInstanceFiltered = transformedInstance.filter(predicate);
+
+      // Assert
+      expect(ConverterToNext.isConverterToNext(transformedInstanceFiltered)).toBe(false);
+      expect(transformedInstanceFiltered).toBe(filteredInstanceNext);
+    });
+  });
+
+  describe('map', () => {
+    it('should call map directly on the passed instance and convert its result', () => {
+      // Arrange
+      const generate = jest.fn();
+      const map = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        map = map;
+      }
+      const originalInstance = new MyArbitrary();
+      const mappedInstance = new MyArbitrary();
+      map.mockReturnValue(mappedInstance);
+      const mapper = () => 0;
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const transformedInstanceMapped = transformedInstance.map(mapper);
+
+      // Assert
+      expect(map).toHaveBeenCalledTimes(1);
+      expect(map).toHaveBeenCalledWith(mapper);
+      expect(ConverterToNext.isConverterToNext(transformedInstanceMapped)).toBe(true);
+      expect((transformedInstanceMapped as ConverterToNext<number>).arb).toBe(mappedInstance);
+    });
+
+    it('should unwrap instances of ConverterFromNext returned by map', () => {
+      // Arrange
+      const generate = jest.fn();
+      const canGenerate = jest.fn();
+      const shrink = jest.fn();
+      const map = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        map = map;
+      }
+      class MyNextArbitrary extends NextArbitrary<number> {
+        generate = generate;
+        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        shrink = shrink;
+        map = map;
+      }
+      const originalInstance = new MyArbitrary();
+      const mappedInstanceNext = new MyNextArbitrary();
+      map.mockReturnValue(new ConverterFromNext(mappedInstanceNext));
+      const mapper = () => 0;
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const transformedInstanceMapped = transformedInstance.map(mapper);
+
+      // Assert
+      expect(ConverterToNext.isConverterToNext(transformedInstanceMapped)).toBe(false);
+      expect(transformedInstanceMapped).toBe(mappedInstanceNext);
+    });
+  });
+
+  describe('chain', () => {
+    it('should call map directly on the passed instance and convert its result', () => {
+      // Arrange
+      const generate = jest.fn();
+      const chain = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        chain = chain;
+      }
+      const originalInstance = new MyArbitrary();
+      const chainedInstance = new MyArbitrary();
+      const outChainedInstance = new MyArbitrary();
+      const outChainedInstanceNext = new ConverterToNext(outChainedInstance);
+      chain.mockReturnValue(chainedInstance);
+      const chainer = () => outChainedInstanceNext;
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const transformedInstanceMapped = transformedInstance.chain(chainer);
+
+      // Assert
+      expect(chain).toHaveBeenCalledTimes(1);
+      expect(ConverterToNext.isConverterToNext(transformedInstanceMapped)).toBe(true);
+      expect((transformedInstanceMapped as ConverterToNext<number>).arb).toBe(chainedInstance);
+    });
+  });
+
+  describe('noShrink', () => {
+    it('should call noShrink directly on the passed instance and convert its result', () => {
+      // Arrange
+      const generate = jest.fn();
+      const noShrink = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        noShrink = noShrink;
+      }
+      const originalInstance = new MyArbitrary();
+      const noShrinkInstance = new MyArbitrary();
+      noShrink.mockReturnValue(noShrinkInstance);
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const transformedInstanceNoShrink = transformedInstance.noShrink();
+
+      // Assert
+      expect(noShrink).toHaveBeenCalledTimes(1);
+      expect(ConverterToNext.isConverterToNext(transformedInstanceNoShrink)).toBe(true);
+      expect((transformedInstanceNoShrink as ConverterToNext<number>).arb).toBe(noShrinkInstance);
+    });
+  });
+
+  describe('noBias', () => {
+    it('should call noBias directly on the passed instance and convert its result', () => {
+      // Arrange
+      const generate = jest.fn();
+      const noBias = jest.fn();
+      class MyArbitrary extends Arbitrary<number> {
+        generate = generate;
+        noBias = noBias;
+      }
+      const originalInstance = new MyArbitrary();
+      const noBiasInstance = new MyArbitrary();
+      noBias.mockReturnValue(noBiasInstance);
+
+      // Act
+      const transformedInstance = new ConverterToNext(originalInstance);
+      const transformedInstanceNoBias = transformedInstance.noBias();
+
+      // Assert
+      expect(noBias).toHaveBeenCalledTimes(1);
+      expect(ConverterToNext.isConverterToNext(transformedInstanceNoBias)).toBe(true);
+      expect((transformedInstanceNoBias as ConverterToNext<number>).arb).toBe(noBiasInstance);
     });
   });
 });

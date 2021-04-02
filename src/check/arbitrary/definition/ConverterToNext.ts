@@ -68,10 +68,6 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
     return ConverterToNext.convertIfNeeded(this.arb.noShrink());
   }
 
-  withBias(freq: number): NextArbitrary<T> {
-    return ConverterToNext.convertIfNeeded(this.arb.withBias(freq));
-  }
-
   noBias(): NextArbitrary<T> {
     return ConverterToNext.convertIfNeeded(this.arb.noBias());
   }
