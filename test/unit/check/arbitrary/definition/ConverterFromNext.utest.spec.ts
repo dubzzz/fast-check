@@ -91,7 +91,7 @@ describe('ConverterFromNext', () => {
 
       // Act
       const transformedInstance = new ConverterFromNext(originalInstance);
-      const out = transformedInstance.generate(mrngNoCall);
+      const out = transformedInstance.withBias(biasedFactor).generate(mrngNoCall);
 
       // Assert
       expect(out.value).toBe(expectedValue);
