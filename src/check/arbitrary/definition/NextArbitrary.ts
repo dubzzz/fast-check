@@ -15,7 +15,7 @@ export abstract class NextArbitrary<T> {
    * based on the provided random number generator
    *
    * @param mrng - Random number generator
-   * @param biasFactor - If taken into account 1 value over biasFactor must be biased. Either integer value >=2 (bias) or undefined (no bias)
+   * @param biasFactor - If taken into account 1 value over biasFactor must be biased. Either integer value greater or equal to 2 (bias) or undefined (no bias)
    * @returns Random value of type `T` and its context
    *
    * @remarks Since 2.15.0
