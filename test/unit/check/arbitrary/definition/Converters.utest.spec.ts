@@ -1,4 +1,8 @@
-import { convertFromNext, convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
+import {
+  convertFromNext,
+  convertFromNextWithShrunkOnce,
+  convertToNext,
+} from '../../../../../src/check/arbitrary/definition/Converters';
 import { mocked } from 'ts-jest/utils';
 
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
@@ -48,5 +52,24 @@ describe('Converters', () => {
     expect(isConverterToNext).toHaveBeenCalledWith(originalInstance);
     expect(assertIsNextArbitrary).toHaveBeenCalledWith(originalInstance);
     expect(ConverterFromNext).toHaveBeenCalledWith(originalInstance);
+  });
+
+  it('should check the validity of the Arbitrary when performing a conversion with convertFromNextWithShrunkOnce', () => {
+    // Arrange
+    const { assertIsNextArbitrary } = mocked(NextArbitraryMock);
+    const { ConverterToNext } = mocked(ConverterToNextMock);
+    const { ConverterFromNext } = mocked(ConverterFromNextMock);
+    const { isConverterToNext } = mocked(ConverterToNext);
+    isConverterToNext.mockReturnValueOnce(false);
+    const originalInstance = {} as NextArbitrary<any>;
+    const legacyShrunkOnceContext = Symbol();
+
+    // Act
+    convertFromNextWithShrunkOnce(originalInstance, legacyShrunkOnceContext);
+
+    // Assert
+    expect(isConverterToNext).toHaveBeenCalledWith(originalInstance);
+    expect(assertIsNextArbitrary).toHaveBeenCalledWith(originalInstance);
+    expect(ConverterFromNext).toHaveBeenCalledWith(originalInstance, legacyShrunkOnceContext);
   });
 });

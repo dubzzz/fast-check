@@ -335,7 +335,7 @@ class NoShrinkArbitrary<T> extends NextArbitrary<T> {
     super();
   }
   generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
-    return new NextValue(this.arb.generate(mrng, biasFactor).value_);
+    return this.arb.generate(mrng, biasFactor);
   }
   canGenerate(value: unknown): value is T {
     return this.arb.canGenerate(value);
