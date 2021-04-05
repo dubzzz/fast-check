@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-esbuild@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.0.tgz#1a54ab199a144af76fee1399702efa11be99d31f"
-  integrity sha512-soxN5dic/pDMM0LKLUKmpOY/MVfF+6n3RHLS2ez0YQoM0dmd2tTs/hmAC4pxfhm2Pvn/28UtMJyFedRYC+8olA==
+esbuild@^0.11.5:
+  version "0.11.5"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.5.tgz#25b18a2ff2fb9580683edce26a48f64c08c2f2df"
+  integrity sha512-aRs6jAE+bVRp1tyfzUugAw1T/Y0Fwzp4Z2ROikF3h+UifoD5QlEbEYQGc6orNnnSIRhWR5VWBH7LozlAumaLHg==
 
 fast-check@*:
   version "2.13.0"
