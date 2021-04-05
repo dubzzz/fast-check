@@ -1,6 +1,5 @@
 import { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
-import { hasCloneMethod } from '../../symbols';
 import { Arbitrary } from './Arbitrary';
 import { ArbitraryWithContextualShrink } from './ArbitraryWithContextualShrink';
 import { ConverterToNext } from './ConverterToNext';
@@ -34,9 +33,6 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
     return this.toShrinkable(g);
   }
   private toShrinkable(v: NextValue<T>): Shrinkable<T, T> {
-    if (v.hasToBeCloned && !hasCloneMethod(v.value_)) {
-      throw new Error('unexpected: missing clone');
-    }
     return new Shrinkable(
       v.value_,
       () => this.arb.shrink(v.value_, v.context).map((nv) => this.toShrinkable(nv)),
