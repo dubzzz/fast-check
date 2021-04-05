@@ -142,7 +142,7 @@ m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar
 m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
 ```
 
-**[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**
+**[MORE: Issues detected thanks to fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**
 
 ## Credits
 
