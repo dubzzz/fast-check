@@ -593,6 +593,36 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('letrec (oneof:maxDepth)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.letrec((tie) => ({
+            tree: fc.oneof({ withCrossShrink: true, maxDepth: 2 }, tie('leaf'), tie('node')),
+            node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
+            leaf: fc.nat(21),
+          })).tree,
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('letrec (oneof:depthFactor)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.letrec((tie) => ({
+            tree: fc.oneof({ withCrossShrink: true, depthFactor: 0.5 }, tie('leaf'), tie('node')),
+            node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
+            leaf: fc.nat(21),
+          })).tree,
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('commands', () => {
     expect(() =>
       fc.assert(
