@@ -1,5 +1,6 @@
 import { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
+import { hasCloneMethod } from '../../symbols';
 import { Arbitrary } from './Arbitrary';
 import { ConverterFromNext } from './ConverterFromNext';
 import { NextArbitrary } from './NextArbitrary';
@@ -25,6 +26,9 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
 
   generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
     const g = biasFactor !== undefined ? this.arb.withBias(biasFactor).generate(mrng) : this.arb.generate(mrng);
+    if (g.hasToBeCloned && !hasCloneMethod(g.value_)) {
+      throw new Error('unexpected: missing clone');
+    }
     return new NextValue(g.value_, g, () => g.value);
   }
 
@@ -34,7 +38,12 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
 
   shrink(_value: T, context?: unknown): Stream<NextValue<T>> {
     if (this.isSafeContext(context)) {
-      return context.shrink().map((s) => new NextValue(s.value_, s, () => s.value));
+      return context.shrink().map((s) => {
+        if (s.hasToBeCloned && !hasCloneMethod(s.value_)) {
+          throw new Error('unexpected: missing clone');
+        }
+        return new NextValue(s.value_, s, () => s.value);
+      });
     }
     return Stream.nil();
   }

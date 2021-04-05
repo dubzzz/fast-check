@@ -121,12 +121,15 @@ export class Shrinkable<T, TShrink extends T = T> {
   filter(predicate: (t: TShrink) => boolean): Shrinkable<T, TShrink>;
   filter<U extends TShrink>(refinement: (t: TShrink) => t is U): Shrinkable<T, U> {
     const refinementOnShrinkable = (s: Shrinkable<TShrink, TShrink>): s is Shrinkable<U, U> => {
-      return refinement(s.value);
+      return refinement(s.value_);
     };
-    return new Shrinkable<T, U>(this.value, () =>
-      this.shrink()
-        .filter(refinementOnShrinkable)
-        .map((v) => v.filter(refinement))
+    return new Shrinkable<T, U>(
+      this.value,
+      () =>
+        this.shrink()
+          .filter(refinementOnShrinkable)
+          .map((v) => v.filter(refinement) /* touch .value */),
+      () => this.value
     );
   }
 }
