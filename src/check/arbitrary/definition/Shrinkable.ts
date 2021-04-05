@@ -72,7 +72,7 @@ export class Shrinkable<T, TShrink extends T = T> {
     if (this.hasToBeCloned) {
       const out = mapper(this.value);
       if (out instanceof Object) {
-        (out as any)[cloneMethod] = () => mapper(this.value);
+        (out as any)[cloneMethod] = () => this.applyMapper(mapper);
       }
       return out;
     }
