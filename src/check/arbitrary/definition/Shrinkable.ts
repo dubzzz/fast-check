@@ -123,13 +123,10 @@ export class Shrinkable<T, TShrink extends T = T> {
     const refinementOnShrinkable = (s: Shrinkable<TShrink, TShrink>): s is Shrinkable<U, U> => {
       return refinement(s.value_);
     };
-    return new Shrinkable<T, U>(
-      this.value,
-      () =>
-        this.shrink()
-          .filter(refinementOnShrinkable)
-          .map((v) => v.filter(refinement) /* touch .value */),
-      () => this.value
+    return new Shrinkable<T, U>(this.value, () =>
+      this.shrink()
+        .filter(refinementOnShrinkable)
+        .map((v) => v.filter(refinement) /* touch .value */)
     );
   }
 }
