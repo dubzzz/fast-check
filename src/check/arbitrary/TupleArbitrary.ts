@@ -1,6 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { cloneIfNeeded, cloneMethod } from '../symbols';
+import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
 import { convertFromNext, convertToNext } from './definition/Converters';
 import { NextArbitrary } from './definition/NextArbitrary';
@@ -21,20 +21,21 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
         throw new Error(`Invalid parameter encountered at index ${idx}: expecting an Arbitrary`);
     }
   }
-  private static makeItCloneable<Ts>(vs: Ts[], values: NextValue<Ts>[]) {
-    (vs as any)[cloneMethod] = () => {
-      const cloned = [];
-      for (let idx = 0; idx !== values.length; ++idx) {
-        cloned.push(values[idx].value); // push potentially cloned values
-      }
-      GenericTupleArbitrary.makeItCloneable(cloned, values);
-      return cloned;
-    };
-    return vs;
+  private static makeItCloneable<TValue>(vs: TValue[], values: NextValue<TValue>[]): WithCloneMethod<TValue[]> {
+    return Object.defineProperty(vs, cloneMethod, {
+      value: () => {
+        const cloned = [];
+        for (let idx = 0; idx !== values.length; ++idx) {
+          cloned.push(values[idx].value); // push potentially cloned values
+        }
+        GenericTupleArbitrary.makeItCloneable(cloned, values);
+        return cloned;
+      },
+    });
   }
   private static wrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): NextValue<Ts> {
     let cloneable = false;
-    const vs = ([] as unknown) as Ts;
+    const vs = ([] as unknown) as Ts & unknown[];
     const ctxs: unknown[] = [];
     for (let idx = 0; idx !== values.length; ++idx) {
       const v = values[idx];
