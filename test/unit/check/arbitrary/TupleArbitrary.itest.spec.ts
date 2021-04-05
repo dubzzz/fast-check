@@ -62,52 +62,6 @@ describe('tuple', () => {
 
   it('should produce the right shrinking tree', () => {
     // Arrange
-    const expectedFirst = 4;
-    const expectedSecond = 97;
-    class FirstArbitrary extends NextArbitrary<number> {
-      generate(_mrng: Random): NextValue<number> {
-        return new NextValue(expectedFirst, { step: 2 });
-      }
-      canGenerate(_value: unknown): _value is number {
-        throw new Error('No call expected in that scenario');
-      }
-      shrink(value: number, context?: unknown): Stream<NextValue<number>> {
-        if (typeof context !== 'object' || context === null || !('step' in context)) {
-          throw new Error('Invalid context for FirstArbitrary');
-        }
-        if (value <= 0) {
-          return Stream.nil();
-        }
-        const currentStep = (context as { step: number }).step;
-        const nextStep = currentStep + 1;
-        return Stream.of(
-          ...(value - currentStep >= 0 ? [new NextValue(value - currentStep, { step: nextStep })] : []),
-          ...(value - currentStep + 1 >= 0 ? [new NextValue(value - currentStep + 1, { step: nextStep })] : [])
-        );
-      }
-    }
-    class SecondArbitrary extends NextArbitrary<number> {
-      generate(_mrng: Random): NextValue<number> {
-        return new NextValue(expectedSecond, { step: 2 });
-      }
-      canGenerate(_value: unknown): _value is number {
-        throw new Error('No call expected in that scenario');
-      }
-      shrink(value: number, context?: unknown): Stream<NextValue<number>> {
-        if (typeof context !== 'object' || context === null || !('step' in context)) {
-          throw new Error('Invalid context for SecondArbitrary');
-        }
-        if (value >= 100) {
-          return Stream.nil();
-        }
-        const currentStep = (context as { step: number }).step;
-        const nextStep = currentStep + 1;
-        return Stream.of(
-          ...(value + currentStep <= 100 ? [new NextValue(value + currentStep, { step: nextStep })] : []),
-          ...(value + currentStep - 1 <= 100 ? [new NextValue(value + currentStep - 1, { step: nextStep })] : [])
-        );
-      }
-    }
     const arb = tuple(new FirstArbitrary(), new SecondArbitrary());
 
     // Act
@@ -181,3 +135,53 @@ describe('tuple', () => {
     `);
   });
 });
+
+// Helpers
+
+const expectedFirst = 4;
+const expectedSecond = 97;
+
+class FirstArbitrary extends NextArbitrary<number> {
+  generate(_mrng: Random): NextValue<number> {
+    return new NextValue(expectedFirst, { step: 2 });
+  }
+  canGenerate(_value: unknown): _value is number {
+    throw new Error('No call expected in that scenario');
+  }
+  shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+    if (typeof context !== 'object' || context === null || !('step' in context)) {
+      throw new Error('Invalid context for FirstArbitrary');
+    }
+    if (value <= 0) {
+      return Stream.nil();
+    }
+    const currentStep = (context as { step: number }).step;
+    const nextStep = currentStep + 1;
+    return Stream.of(
+      ...(value - currentStep >= 0 ? [new NextValue(value - currentStep, { step: nextStep })] : []),
+      ...(value - currentStep + 1 >= 0 ? [new NextValue(value - currentStep + 1, { step: nextStep })] : [])
+    );
+  }
+}
+class SecondArbitrary extends NextArbitrary<number> {
+  generate(_mrng: Random): NextValue<number> {
+    return new NextValue(expectedSecond, { step: 2 });
+  }
+  canGenerate(_value: unknown): _value is number {
+    throw new Error('No call expected in that scenario');
+  }
+  shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+    if (typeof context !== 'object' || context === null || !('step' in context)) {
+      throw new Error('Invalid context for SecondArbitrary');
+    }
+    if (value >= 100) {
+      return Stream.nil();
+    }
+    const currentStep = (context as { step: number }).step;
+    const nextStep = currentStep + 1;
+    return Stream.of(
+      ...(value + currentStep <= 100 ? [new NextValue(value + currentStep, { step: nextStep })] : []),
+      ...(value + currentStep - 1 <= 100 ? [new NextValue(value + currentStep - 1, { step: nextStep })] : [])
+    );
+  }
+}
