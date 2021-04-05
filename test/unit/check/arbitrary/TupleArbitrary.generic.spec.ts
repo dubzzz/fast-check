@@ -11,25 +11,10 @@ import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
 import { stream } from '../../../../src/stream/Stream';
 import { Random } from '../../../../src/random/generator/Random';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
 import * as stubRng from '../../stubs/generators';
 
 describe('TupleArbitrary', () => {
   describe('genericTuple', () => {
-    genericHelper.isValidArbitrary((mins: number[]) => genericTuple(mins.map((m) => integer(m, m + 10))), {
-      seedGenerator: fc.array(fc.nat(1000)),
-      isStrictlySmallerValue: (g1: number[], g2: number[]) => g1.findIndex((v, idx) => v < g2[idx]) !== -1,
-      isValidValue: (g: number[], mins: number[]) => {
-        // right size
-        if (g.length !== mins.length) return false;
-        // values in the right range
-        for (let idx = 0; idx !== g.length; ++idx) {
-          if (g[idx] < mins[idx]) return false;
-          if (g[idx] > mins[idx] + 10) return false;
-        }
-        return true;
-      },
-    });
     it('Should throw on null arbitrary', () =>
       expect(() => genericTuple([dummy(1), dummy(2), (null as any) as Arbitrary<string>])).toThrowError());
     it('Should throw on invalid arbitrary', () =>
