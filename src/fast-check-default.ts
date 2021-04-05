@@ -127,7 +127,7 @@ import {
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
-import { cloneMethod } from './check/symbols';
+import { cloneMethod, cloneIfNeeded, hasCloneMethod, WithCloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { hash } from './utils/hash';
 import { stringify } from './utils/stringify';
@@ -339,6 +339,9 @@ export {
   Shrinkable,
   NextValue,
   cloneMethod,
+  cloneIfNeeded,
+  hasCloneMethod,
+  WithCloneMethod,
   convertFromNext,
   convertFromNextWithShrunkOnce,
   convertToNext,
