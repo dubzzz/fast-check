@@ -128,7 +128,7 @@ describe('tuple', () => {
       }
     );
 
-    it('should not call underlyings on canGenerate if size if invalid', () => {
+    it('should not call underlyings on canGenerate if size is invalid', () => {
       // Arrange
       const { instance: instanceA, canGenerate: canGenerateA } = fakeNextArbitrary<symbol>();
       const { instance: instanceB, canGenerate: canGenerateB } = fakeNextArbitrary<symbol>();
