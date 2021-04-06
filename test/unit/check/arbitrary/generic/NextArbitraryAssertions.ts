@@ -153,6 +153,42 @@ export function assertShrinkProducesCorrectValues<T, U = never>(
   );
 }
 
+export function assertGenerateEquivalentTo<T, U = never>(
+  arbitraryBuilderA: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilderB: (extraParameters: U) => NextArbitrary<T>,
+  options: {
+    isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
+    isEqualContext?: (c1: unknown, c2: unknown, extraParameters: U) => void | boolean;
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {}
+): void {
+  const {
+    isEqual,
+    isEqualContext,
+    extraParameters: extra = fc.constant((undefined as unknown) as U) as fc.Arbitrary<U>,
+    assertParameters,
+  } = options;
+  fc.assert(
+    fc.property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
+      // Arrange
+      const arbA = arbitraryBuilderA(extraParameters);
+      const arbB = arbitraryBuilderB(extraParameters);
+
+      // Act
+      const gA = arbA.generate(randomFromSeed(seed), biasFactor);
+      const gB = arbB.generate(randomFromSeed(seed), biasFactor);
+
+      // Assert
+      assertEquality(isEqual, gA.value, gB.value, extraParameters);
+      if (isEqualContext) {
+        assertEquality(isEqualContext, gA.context, gB.context, extraParameters);
+      }
+    }),
+    assertParameters
+  );
+}
+
 // Extra requirements
 // The assertions above can be configured to push generators even further. They ensure more complex invariants.
 // Following assertions are mostly derived from the one above.
