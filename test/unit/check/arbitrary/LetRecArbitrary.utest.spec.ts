@@ -252,6 +252,19 @@ describe('letrec', () => {
       expect(canGenerate).toHaveBeenCalledWith(expectedValue);
       expect(out).toBe(expectedStatus);
     });
+
+    it('should throw on canGenerate if tie receives an invalid parameter', () => {
+      // Arrange
+      const expectedValue = Symbol();
+      const { arb1 } = letrec((tie) => ({
+        arb1: tie('missing'),
+      }));
+
+      // Act / Assert
+      expect(() => arb1.canGenerate(expectedValue)).toThrowErrorMatchingInlineSnapshot(
+        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+      );
+    });
   });
 
   describe('shrink', () => {
@@ -277,6 +290,20 @@ describe('letrec', () => {
       expect(shrink).toHaveBeenCalledWith(expectedValue, expectedContext);
       expect(out).toBe(expectedStream);
     });
+
+    it('should throw on shrink if tie receives an invalid parameter', () => {
+      // Arrange
+      const expectedValue = Symbol();
+      const expectedContext = Symbol();
+      const { arb1 } = letrec((tie) => ({
+        arb1: tie('missing'),
+      }));
+
+      // Act / Assert
+      expect(() => arb1.shrink(expectedValue, expectedContext)).toThrowErrorMatchingInlineSnapshot(
+        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+      );
+    });
   });
 
   describe('LazyArbitrary (internal)', () => {
@@ -286,6 +313,26 @@ describe('letrec', () => {
 
       // Assert
       expect(() => lazy.generate(mrngNoCall, 2)).toThrowErrorMatchingInlineSnapshot(
+        `"Lazy arbitrary \\"id007\\" not correctly initialized"`
+      );
+    });
+
+    it('should fail to check canGenerate when no underlying arbitrary', () => {
+      // Arrange / Act
+      const lazy = new LazyArbitrary('id007');
+
+      // Assert
+      expect(() => lazy.canGenerate(1)).toThrowErrorMatchingInlineSnapshot(
+        `"Lazy arbitrary \\"id007\\" not correctly initialized"`
+      );
+    });
+
+    it('should fail to shrink when no underlying arbitrary', () => {
+      // Arrange / Act
+      const lazy = new LazyArbitrary('id007');
+
+      // Assert
+      expect(() => lazy.shrink(1, 2)).toThrowErrorMatchingInlineSnapshot(
         `"Lazy arbitrary \\"id007\\" not correctly initialized"`
       );
     });
