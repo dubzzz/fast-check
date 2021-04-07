@@ -32,11 +32,6 @@ export class LazyArbitrary extends NextArbitrary<any> {
   }
 }
 
-/** @internal */
-function isLazyArbitrary(arb: NextArbitrary<any> | undefined): arb is LazyArbitrary {
-  return typeof arb === 'object' && arb !== null && Object.prototype.hasOwnProperty.call(arb, 'underlying');
-}
-
 /**
  * For mutually recursive types
  *
@@ -59,10 +54,12 @@ function isLazyArbitrary(arb: NextArbitrary<any> | undefined): arb is LazyArbitr
 export function letrec<T>(
   builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }
 ): { [K in keyof T]: Arbitrary<T[K]> } {
-  const lazyArbs: { [K in keyof T]?: NextArbitrary<T[K]> } = Object.create(null);
+  const lazyArbs: { [K in keyof T]?: LazyArbitrary } = Object.create(null);
   const tie = (key: keyof T): Arbitrary<any> => {
-    if (!Object.prototype.hasOwnProperty.call(lazyArbs, key)) lazyArbs[key] = new LazyArbitrary(key as any);
-    // Call to hasOwnProperty ensures that the property key will be defined
+    if (!Object.prototype.hasOwnProperty.call(lazyArbs, key)) {
+      // Call to hasOwnProperty ensures that the property key will be defined
+      lazyArbs[key] = new LazyArbitrary(key as any);
+    }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return convertFromNext(lazyArbs[key]!);
   };
@@ -72,8 +69,8 @@ export function letrec<T>(
       // Prevents accidental iteration over properties inherited from an object’s prototype
       continue;
     }
-    const lazyAtKey = lazyArbs[key];
-    const lazyArb = isLazyArbitrary(lazyAtKey) ? lazyAtKey : new LazyArbitrary(key);
+    const lazyAtKey: LazyArbitrary | undefined = lazyArbs[key];
+    const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
     lazyArb.underlying = convertToNext(strictArbs[key]);
     lazyArbs[key] = lazyArb;
   }

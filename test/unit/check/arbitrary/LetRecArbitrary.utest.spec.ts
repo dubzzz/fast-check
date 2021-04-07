@@ -118,6 +118,29 @@ describe('letrec', () => {
       expect(((arb2 as any) as LazyArbitrary).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
+
+    it('should apply tie the same way for a reversed declaration', () => {
+      // Arrange
+      const { instance: expectedArb } = fakeNextArbitrary();
+
+      // Act
+      const { arb1, arb2, arb3 } = letrec((tie) => ({
+        // Same scenario as 'should apply tie correctly'
+        // except we declared arb3 > arb2 > arb1
+        // instead of arb1 > arb2 > arb3
+        arb3: expectedArb,
+        arb2: tie('arb3'),
+        arb1: tie('arb2'),
+      }));
+
+      // Assert
+      expect(arb1).toBeInstanceOf(LazyArbitrary);
+      expect(arb2).toBeInstanceOf(LazyArbitrary);
+      expect(arb3).not.toBeInstanceOf(LazyArbitrary);
+      expect(((arb1 as any) as LazyArbitrary).underlying).toBe(arb2);
+      expect(((arb2 as any) as LazyArbitrary).underlying).toBe(arb3);
+      expect(arb3).toBe(expectedArb);
+    });
   });
 
   describe('generate', () => {
