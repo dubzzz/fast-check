@@ -1,4 +1,4 @@
-import { Shrinkable } from '../definition/Shrinkable';
+import { NextValue } from '../definition/NextValue';
 
 /** @internal */
 function subArrayContains<T>(tab: T[], upperBound: number, includeValue: (v: T) => boolean): boolean {
@@ -23,8 +23,8 @@ function swap<T>(tab: T[], idx1: number, idx2: number): void {
  * It returns the array without any duplicates.
  * @internal
  */
-export function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): (tab: Shrinkable<T>[]) => Shrinkable<T>[] {
-  return (tab: Shrinkable<T>[]): Shrinkable<T>[] => {
+export function buildCompareFilter<T>(compare: (a: T, b: T) => boolean): (tab: NextValue<T>[]) => NextValue<T>[] {
+  return (tab: NextValue<T>[]): NextValue<T>[] => {
     let finalLength = tab.length;
     for (let idx = tab.length - 1; idx !== -1; --idx) {
       if (subArrayContains(tab, idx, (t) => compare(t.value_, tab[idx].value_))) {
