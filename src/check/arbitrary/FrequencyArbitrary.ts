@@ -1,7 +1,9 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from './definition/Arbitrary';
-import { Shrinkable } from './definition/Shrinkable';
+import { convertFromNext, convertToNext } from './definition/Converters';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { NextValue } from './definition/NextValue';
 import { DepthContext, getDepthContextFor } from './helpers/DepthContext';
 
 /**
@@ -25,8 +27,23 @@ export interface WeightedArbitrary<T> {
 }
 
 /** @internal */
-export class FrequencyArbitrary<T> extends Arbitrary<T> {
-  readonly summedWarbs: WeightedArbitrary<T>[];
+interface WeightedNextArbitrary<T> {
+  weight: number;
+  arbitrary: NextArbitrary<T>;
+}
+
+/** @internal */
+type FrequencyArbitraryContext<T> = {
+  selectedIndex: number;
+  originalBias: number | undefined;
+  originalContext: unknown;
+  clonedMrngForFallbackFirst: Random | null;
+  cachedGeneratedForFirst?: NextValue<T>;
+};
+
+/** @internal */
+export class FrequencyArbitrary<T> extends NextArbitrary<T> {
+  readonly summedWarbs: WeightedNextArbitrary<T>[];
   readonly totalWeight: number;
 
   static from<T>(warbs: WeightedArbitrary<T>[], constraints: FrequencyContraints, label: string): Arbitrary<T> {
@@ -34,6 +51,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
       throw new Error(`${label} expects at least one weigthed arbitrary`);
     }
     let totalWeight = 0;
+    const warbsNext: WeightedNextArbitrary<T>[] = [];
     for (let idx = 0; idx !== warbs.length; ++idx) {
       const currentArbitrary = warbs[idx].arbitrary;
       if (currentArbitrary === undefined) {
@@ -47,15 +65,18 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
       if (currentWeight < 0) {
         throw new Error(`${label} expects weights to be superior or equal to 0`);
       }
+      warbsNext.push({ weight: currentWeight, arbitrary: convertToNext(currentArbitrary) });
     }
     if (totalWeight <= 0) {
       throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
-    return new FrequencyArbitrary(warbs, constraints, getDepthContextFor(constraints.depthIdentifier));
+    return convertFromNext(
+      new FrequencyArbitrary(warbsNext, constraints, getDepthContextFor(constraints.depthIdentifier))
+    );
   }
 
   private constructor(
-    readonly warbs: WeightedArbitrary<T>[],
+    readonly warbs: WeightedNextArbitrary<T>[],
     readonly constraints: FrequencyContraints,
     readonly context: DepthContext
   ) {
@@ -69,40 +90,110 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     this.totalWeight = currentWeight;
   }
 
-  generate(mrng: Random): Shrinkable<T> {
-    if (this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth) {
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
+    if (this.mustGenerateFirst()) {
       // index=0 can be selected even if it has a weight equal to zero
-      return this.safeGenerateForIndex(mrng, 0);
+      return this.safeGenerateForIndex(mrng, 0, biasFactor);
     }
     const selected = mrng.nextInt(this.computeNegDepthBenefit(), this.totalWeight - 1);
     for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
       if (selected < this.summedWarbs[idx].weight) {
-        return this.safeGenerateForIndex(mrng, idx);
+        return this.safeGenerateForIndex(mrng, idx, biasFactor);
       }
     }
     throw new Error(`Unable to generate from fc.frequency`);
   }
 
-  withBias(freq: number): Arbitrary<T> {
-    return new FrequencyArbitrary(
-      this.warbs.map((v) => ({ weight: v.weight, arbitrary: v.arbitrary.withBias(freq) })),
-      this.constraints,
-      this.context
-    );
+  canGenerate(value: unknown): value is T {
+    return this.canGenerateIndex(value) !== -1;
   }
 
-  /** Generate using Arbitrary at index idx and safely handle depth context */
-  private safeGenerateForIndex(mrng: Random, idx: number): Shrinkable<T> {
+  shrink(value: T, context?: unknown): Stream<NextValue<T>> {
+    if (context !== undefined) {
+      const safeContext = context as FrequencyArbitraryContext<T>;
+      const selectedIndex = safeContext.selectedIndex;
+      const originalBias = safeContext.originalBias;
+      const originalArbitrary = this.summedWarbs[selectedIndex].arbitrary;
+      const originalShrinks = originalArbitrary
+        .shrink(value, safeContext.originalContext)
+        .map((v) => this.mapIntoNextValue(selectedIndex, v, null, originalBias));
+      if (safeContext.clonedMrngForFallbackFirst !== null) {
+        if (safeContext.cachedGeneratedForFirst === undefined) {
+          safeContext.cachedGeneratedForFirst = this.safeGenerateForIndex(
+            safeContext.clonedMrngForFallbackFirst,
+            0,
+            originalBias
+          );
+        }
+        const valueFromFirst = safeContext.cachedGeneratedForFirst;
+        return Stream.of(valueFromFirst).join(originalShrinks);
+      }
+      return originalShrinks;
+    }
+    const potentialSelectedIndex = this.canGenerateIndex(value);
+    if (potentialSelectedIndex === -1) {
+      return Stream.nil(); // No arbitrary found to accept this value
+    }
+    return this.summedWarbs[potentialSelectedIndex].arbitrary
+      .shrink(value)
+      .map((v) => this.mapIntoNextValue(potentialSelectedIndex, v, null, undefined));
+  }
+
+  /** Extract the index of the generator that would have been able to gennrate the value */
+  private canGenerateIndex(value: unknown): number {
     ++this.context.depth; // increase depth
     try {
-      const itemShrinkable = this.summedWarbs[idx].arbitrary.generate(mrng);
-      if (idx === 0 || !this.constraints.withCrossShrink || this.warbs[0].weight === 0) {
-        return itemShrinkable;
+      if (this.mustGenerateFirst()) {
+        return this.warbs[0].arbitrary.canGenerate(value) ? 0 : -1;
       }
-      return this.enrichShrinkable(mrng.clone(), itemShrinkable);
+      for (let idx = 0; idx !== this.warbs.length; ++idx) {
+        const warb = this.warbs[idx];
+        if (warb.weight !== 0 && warb.arbitrary.canGenerate(value)) {
+          return idx;
+        }
+      }
+      return -1;
     } finally {
       --this.context.depth; // decrease depth (reset depth)
     }
+  }
+
+  /** Map the output of one of the children with the context of frequency */
+  private mapIntoNextValue(
+    idx: number,
+    value: NextValue<T>,
+    clonedMrngForFallbackFirst: Random | null,
+    biasFactor: number | undefined
+  ): NextValue<T> {
+    const context: FrequencyArbitraryContext<T> = {
+      selectedIndex: idx,
+      originalBias: biasFactor,
+      originalContext: value.context,
+      clonedMrngForFallbackFirst,
+    };
+    return new NextValue(value.value, context);
+  }
+
+  /** Generate using Arbitrary at index idx and safely handle depth context */
+  private safeGenerateForIndex(mrng: Random, idx: number, biasFactor: number | undefined): NextValue<T> {
+    ++this.context.depth; // increase depth
+    try {
+      const value = this.summedWarbs[idx].arbitrary.generate(mrng, biasFactor);
+      const clonedMrngForFallbackFirst = this.mustFallbackToFirstInShrink(idx) ? mrng.clone() : null;
+      return this.mapIntoNextValue(idx, value, clonedMrngForFallbackFirst, biasFactor);
+    } finally {
+      --this.context.depth; // decrease depth (reset depth)
+    }
+  }
+
+  /** Check if generating a value based on the first arbitrary is compulsory */
+  private mustGenerateFirst(): boolean {
+    return this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth;
+  }
+
+  /** Check if fallback on first arbitrary during shrinking is required */
+  private mustFallbackToFirstInShrink(idx: number): boolean {
+    return idx !== 0 && !!this.constraints.withCrossShrink && this.warbs[0].weight !== 0;
   }
 
   /** Compute the benefit for the current depth */
@@ -116,25 +207,6 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     const depthBenefit = Math.floor(Math.pow(1 + depthFactor, this.context.depth)) - 1;
     // -0 has to be converted into 0 thus we call ||0
     return -Math.min(this.warbs[0].weight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
-  }
-
-  /**
-   * Enrich a shrinkable to add another shrink case into the list of possible ones:
-   * shrink towards a value coming from the first arbitrary passed to oneof
-   * @param mrng Cloned instance of the random number generator (will be used later so might not be impacted by others)
-   * @param shrinkable Shrinkable to be enriched
-   */
-  private enrichShrinkable(mrng: Random, shrinkable: Shrinkable<T>): Shrinkable<T> {
-    let shrinkableForFirst: Shrinkable<T> | null = null;
-    const getItemShrinkableForFirst = () => {
-      if (shrinkableForFirst === null) {
-        shrinkableForFirst = this.warbs[0].arbitrary.generate(mrng);
-      }
-      return shrinkableForFirst;
-    };
-    return new Shrinkable(shrinkable.value_, () => {
-      return Stream.of(getItemShrinkableForFirst()).join(shrinkable.shrink());
-    });
   }
 }
 
