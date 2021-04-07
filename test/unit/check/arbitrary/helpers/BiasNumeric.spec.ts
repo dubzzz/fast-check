@@ -99,7 +99,7 @@ describe('BiasNumeric', () => {
             // Assert
             expect(ranges).not.toHaveLength(0);
             for (const range of ranges) {
-              expect(range.max).toBeGreaterThan(range.min);
+              expect(range.max).toBeGreaterThanOrEqual(range.min);
               expect(min).toBeLessThanOrEqual(range.max);
               expect(max).toBeGreaterThanOrEqual(range.max);
               expect(min).toBeLessThanOrEqual(range.min);
