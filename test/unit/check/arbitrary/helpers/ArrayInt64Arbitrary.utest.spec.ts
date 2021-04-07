@@ -1,21 +1,22 @@
 import * as fc from '../../../../../lib/fast-check';
 
+import { arrayInt64 as arrayInt64Old } from '../../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary';
 import { ArrayInt64 } from '../../../../../src/check/arbitrary/helpers/ArrayInt64';
-import { arrayInt64 } from '../../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary';
+import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
+import { convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
 
-import { mocked } from 'ts-jest/utils';
-import { Random } from '../../../../../src/random/generator/Random';
-import { buildShrinkTree, renderTree } from '../generic/ShrinkTree';
+import { buildNextShrinkTree, buildShrinkTree, renderTree } from '../generic/ShrinkTree';
+import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
+import { fakeRandom } from '../generic/RandomHelpers';
 
-import * as BiasedArbitraryWrapperMock from '../../../../../src/check/arbitrary/definition/BiasedArbitraryWrapper';
-import * as BiasNumericMock from '../../../../../src/check/arbitrary/helpers/BiasNumeric';
-jest.mock('../../../../../src/check/arbitrary/definition/BiasedArbitraryWrapper');
-jest.mock('../../../../../src/check/arbitrary/helpers/BiasNumeric');
+function arrayInt64(...args: Parameters<typeof arrayInt64Old>): NextArbitrary<ArrayInt64> {
+  return convertToNext(arrayInt64Old(...args));
+}
 
-function toArrayInt64(b: bigint): ArrayInt64 {
+function toArrayInt64(b: bigint, withNegativeZero: boolean): ArrayInt64 {
   const posB = b < BigInt(0) ? -b : b;
   return {
-    sign: b < BigInt(0) ? -1 : 1,
+    sign: b < BigInt(0) || (withNegativeZero && b === BigInt(0)) ? -1 : 1,
     data: [Number(posB >> BigInt(32)), Number(posB & ((BigInt(1) << BigInt(32)) - BigInt(1)))],
   };
 }
@@ -24,20 +25,7 @@ function toBigInt(a: ArrayInt64): bigint {
   return BigInt(a.sign) * ((BigInt(a.data[0]) << BigInt(32)) + BigInt(a.data[1]));
 }
 
-beforeEach(() => {
-  jest.clearAllMocks();
-  jest.resetAllMocks();
-});
-const previousGlobal = fc.readConfigureGlobal();
-fc.configureGlobal({
-  ...previousGlobal,
-  beforeEach: () => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-  },
-});
-
-describe('ArrayInt64', () => {
+describe('arrayInt64', () => {
   if (typeof BigInt === 'undefined') {
     it('no test', () => {
       expect(true).toBe(true);
@@ -45,108 +33,173 @@ describe('ArrayInt64', () => {
     return;
   }
 
-  const MaxArrayIntValue = (BigInt(1) << BigInt(64)) - BigInt(1);
+  const MinArrayIntValue = -(BigInt(2) ** BigInt(64)) + BigInt(1);
+  const MaxArrayIntValue = BigInt(2) ** BigInt(64) - BigInt(1);
 
-  const constraintsArb = () =>
-    fc
-      .tuple(
-        fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
-        fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue })
-      )
-      .map((vs) => ({
-        min: vs[0] <= vs[1] ? vs[0] : vs[1],
-        max: vs[0] <= vs[1] ? vs[1] : vs[0],
-      }));
-
-  describe('arrayInt64', () => {
-    describe('withBias', () => {
-      it('Should preserve biased instance across calls', () =>
-        fc.assert(
-          fc.property(constraintsArb(), fc.integer({ min: 2 }), fc.integer({ min: 2 }), (ct, freq1, freq2) => {
+  describe('generate', () => {
+    it('should always consider the full range when not biased', () =>
+      fc.assert(
+        fc.property(
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.boolean(),
+          fc.boolean(),
+          (a, b, c, negMin, negMax) => {
             // Arrange
-            const { biasWrapper } = mocked(BiasedArbitraryWrapperMock);
-            const rawArbitrary = arrayInt64(toArrayInt64(ct.min), toArrayInt64(ct.max));
+            const [min, mid, max] = [a, b, c].sort((a, b) => Number(a - b));
+            const min64 = toArrayInt64(min, negMin);
+            const mid64 = toArrayInt64(mid, false);
+            const max64 = toArrayInt64(max, negMax);
+            const { instance: mrng, nextArrayInt, nextInt } = fakeRandom();
+            nextArrayInt.mockReturnValueOnce(mid64);
 
             // Act
-            rawArbitrary.withBias(freq1);
-            rawArbitrary.withBias(freq2);
+            const arb = arrayInt64(min64, max64);
+            const out = arb.generate(mrng, undefined);
 
             // Assert
-            expect(biasWrapper).toHaveBeenCalledTimes(2); // called each time for the moment
-            expect(biasWrapper).toHaveBeenCalledWith(freq1, rawArbitrary, expect.any(Function));
-            expect(biasWrapper).toHaveBeenCalledWith(freq2, rawArbitrary, expect.any(Function));
-            const [[, , biasedBuilder1], [, , biasedBuilder2]] = biasWrapper.mock.calls;
-            expect(biasedBuilder2(rawArbitrary)).toBe(biasedBuilder1(rawArbitrary));
-          })
-        ));
+            expect(out.value).toBe(mid64);
+            expect(nextArrayInt).toHaveBeenCalledTimes(1);
+            expect(nextArrayInt).toHaveBeenCalledWith(min64, max64);
+            expect(nextInt).not.toHaveBeenCalled();
+          }
+        )
+      ));
 
-      it('Should build biased instances compatible with initial constraints', () =>
-        fc.assert(
-          fc.property(constraintsArb(), fc.integer({ min: 2 }), (ct, freq) => {
+    it('should always consider the full range when bias should not apply', () =>
+      fc.assert(
+        fc.property(
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.boolean(),
+          fc.boolean(),
+          fc.integer({ min: 2 }),
+          (a, b, c, negMin, negMax, biasFactor) => {
             // Arrange
-            fc.pre(ct.min !== ct.max); // Otherwise we have a special case (biased version is itself)
-            const { biasWrapper } = mocked(BiasedArbitraryWrapperMock);
-            const { BiasedNumericArbitrary } = mocked(BiasNumericMock);
-            const rawArbitrary = arrayInt64(toArrayInt64(ct.min), toArrayInt64(ct.max));
+            const [min, mid, max] = [a, b, c].sort((a, b) => Number(a - b));
+            const min64 = toArrayInt64(min, negMin);
+            const mid64 = toArrayInt64(mid, false);
+            const max64 = toArrayInt64(max, negMax);
+            const { instance: mrng, nextArrayInt, nextInt } = fakeRandom();
+            nextArrayInt.mockReturnValueOnce(mid64);
+            nextInt.mockImplementationOnce((low, _high) => low + 1); // >low is no bias case
 
             // Act
-            rawArbitrary.withBias(freq);
-            const [, , biasedBuilder] = biasWrapper.mock.calls[0];
-            expect(BiasedNumericArbitrary).not.toHaveBeenCalled();
-            biasedBuilder(rawArbitrary); // Triggers calls to BiasedNumericArbitrary
+            const arb = arrayInt64(min64, max64);
+            const out = arb.generate(mrng, biasFactor);
 
             // Assert
-            expect(BiasedNumericArbitrary).toHaveBeenCalledTimes(1);
-            const biasedArbs = (BiasedNumericArbitrary as any).mock.calls[0];
-            expect(Array.isArray(biasedArbs)).toBe(true);
-            expect(biasedArbs).not.toHaveLength(0);
-            for (const biasedArb of biasedArbs) {
-              expect(biasedArb.constructor).toBe(rawArbitrary.constructor);
-              const nextArrayInt = jest.fn().mockImplementation((min) => min);
-              biasedArb.generate(({ nextArrayInt } as any) as Random);
-              expect(nextArrayInt).toHaveBeenCalledTimes(1);
-              const [min64, max64] = nextArrayInt.mock.calls[0];
-              const [min, max] = [toBigInt(min64), toBigInt(max64)];
-              expect(min).toBeLessThanOrEqual(max);
-              expect(min).toBeGreaterThanOrEqual(ct.min);
-              expect(min).toBeLessThanOrEqual(ct.max);
-              expect(max).toBeGreaterThanOrEqual(ct.min);
-              expect(max).toBeLessThanOrEqual(ct.max);
-            }
-          })
-        ));
+            expect(out.value).toBe(mid64);
+            expect(nextArrayInt).toHaveBeenCalledTimes(1);
+            expect(nextArrayInt).toHaveBeenCalledWith(min64, max64);
+            expect(nextInt).toHaveBeenCalledTimes(1);
+            expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
+          }
+        )
+      ));
 
-      it('Should bias towards itself for single value ranges', () =>
-        fc.assert(
-          fc.property(
-            fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
-            fc.integer({ min: 2 }),
-            (minMax, freq) => {
-              // Arrange
-              const { biasWrapper } = mocked(BiasedArbitraryWrapperMock);
-              const rawArbitrary = arrayInt64(toArrayInt64(minMax), toArrayInt64(minMax));
+    it('should consider sub-ranges when bias applies', () =>
+      fc.assert(
+        fc.property(
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.boolean(),
+          fc.boolean(),
+          fc.integer({ min: 2 }),
+          fc.nat(),
+          (a, b, negMin, negMax, biasFactor, r) => {
+            // Arrange
+            const [min, max] = a < b ? [a, b] : [b, a];
+            fc.pre(max - min >= BigInt(100)); // large enough range (arbitrary value)
+            const min64 = toArrayInt64(min, negMin);
+            const max64 = toArrayInt64(max, negMax);
+            const { instance: mrng, nextArrayInt, nextInt } = fakeRandom();
+            nextArrayInt.mockImplementationOnce((low, _high) => low);
+            nextInt
+              .mockImplementationOnce((low, _high) => low) // low is bias case for first call
+              .mockImplementationOnce((low, high) => low + (r % (high - low + 1))); // random inside the provided range (bias selection step)
 
-              // Act
-              rawArbitrary.withBias(freq);
+            // Act
+            const arb = arrayInt64(min64, max64);
+            arb.generate(mrng, biasFactor);
 
-              // Assert
-              expect(biasWrapper).toHaveBeenCalledTimes(1);
-              expect(biasWrapper).toHaveBeenCalledWith(freq, rawArbitrary, expect.any(Function));
-              const [, , biasedBuilder] = biasWrapper.mock.calls[0];
-              expect(biasedBuilder(rawArbitrary)).toBe(rawArbitrary);
-            }
-          )
-        ));
-    });
+            // Assert
+            expect(nextInt).toHaveBeenCalledTimes(2);
+            expect(nextArrayInt).toHaveBeenCalledTimes(1);
+            expect(nextArrayInt).not.toHaveBeenCalledWith(min64, max64);
+            const receivedMin = toBigInt(nextArrayInt.mock.calls[0][0] as ArrayInt64);
+            const receivedMax = toBigInt(nextArrayInt.mock.calls[0][1] as ArrayInt64);
+            expect(receivedMin).toBeGreaterThanOrEqual(min);
+            expect(receivedMin).toBeLessThanOrEqual(max);
+            expect(receivedMax).toBeGreaterThanOrEqual(min);
+            expect(receivedMax).toBeLessThanOrEqual(max);
+          }
+        )
+      ));
   });
 
-  describe('contextualShrinkableFor', () => {
-    it('Should shrink strictly positive value for positive range including zero', () => {
+  describe('canGenerate', () => {
+    it('should recognize any value it could have generated', () =>
+      fc.assert(
+        fc.property(
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.boolean(),
+          fc.boolean(),
+          fc.boolean(),
+          (a, b, c, negMin, negMid, negMax) => {
+            // Arrange
+            const [min, mid, max] = [a, b, c].sort((a, b) => Number(a - b));
+
+            // Act
+            const arb = arrayInt64(toArrayInt64(min, negMin), toArrayInt64(max, negMax));
+            const out = arb.canGenerate(toArrayInt64(mid, negMid));
+
+            // Assert
+            expect(out).toBe(true);
+          }
+        )
+      ));
+
+    it('should reject values outside of its range', () =>
+      fc.assert(
+        fc.property(
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
+          fc.boolean(),
+          fc.boolean(),
+          fc.boolean(),
+          fc.constantFrom(...(['lower', 'higher'] as const)),
+          (a, b, c, negMin, negSelected, negMax, type) => {
+            // Arrange
+            const sorted = [a, b, c].sort((a, b) => Number(a - b));
+            const [min, max, selected] =
+              type === 'lower' ? [sorted[1], sorted[2], sorted[0]] : [sorted[0], sorted[1], sorted[2]];
+            fc.pre(selected < min || selected > max);
+
+            // Act
+            const arb = arrayInt64(toArrayInt64(min, negMin), toArrayInt64(max, negMax));
+            const out = arb.canGenerate(toArrayInt64(selected, negSelected));
+
+            // Assert
+            expect(out).toBe(false);
+          }
+        )
+      ));
+  });
+
+  describe('shrink', () => {
+    it('should shrink strictly positive value for positive range including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 10] });
+      const source = new NextValue({ sign: 1, data: [0, 8] }); // no context
 
       // Act
-      const tree = buildShrinkTree(arb.contextualShrinkableFor({ sign: 1, data: [0, 8] }));
+      const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
@@ -193,12 +246,13 @@ describe('ArrayInt64', () => {
                              └> {\\"sign\\":1,\\"data\\":[0,0]}"
       `);
     });
-    it('Should shrink strictly positive value for range not including zero', () => {
+    it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
+      const source = new NextValue({ sign: 1, data: [1, 18] }); // no context
 
       // Act
-      const tree = buildShrinkTree(arb.contextualShrinkableFor({ sign: 1, data: [1, 18] }));
+      const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
@@ -245,12 +299,13 @@ describe('ArrayInt64', () => {
                              └> {\\"sign\\":1,\\"data\\":[1,10]}"
       `);
     });
-    it('Should shrink strictly negative value for negative range including zero', () => {
+    it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
+      const source = new NextValue({ sign: -1, data: [0, 8] }); // no context
 
       // Act
-      const tree = buildShrinkTree(arb.contextualShrinkableFor({ sign: -1, data: [0, 8] }));
+      const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
@@ -296,6 +351,48 @@ describe('ArrayInt64', () => {
                           └> {\\"sign\\":-1,\\"data\\":[0,1]}
                              └> {\\"sign\\":1,\\"data\\":[0,0]}"
       `);
+    });
+  });
+
+  describe('contextualShrinkableFor (old)', () => {
+    it('should shrink, as context-less, strictly positive value for positive range including zero', () => {
+      // Arrange
+      const arbNew = arrayInt64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 10] });
+      const arbOld = arrayInt64Old({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 10] });
+      const sourceValue: ArrayInt64 = { sign: 1, data: [0, 8] };
+
+      // Act
+      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue));
+      const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
+
+      // Assert
+      expect(treeOld).toEqual(treeNew);
+    });
+    it('should shrink, as context-less, strictly positive value for range not including zero', () => {
+      // Arrange
+      const arbNew = arrayInt64({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
+      const arbOld = arrayInt64Old({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
+      const sourceValue: ArrayInt64 = { sign: 1, data: [1, 18] };
+
+      // Act
+      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue));
+      const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
+
+      // Assert
+      expect(treeOld).toEqual(treeNew);
+    });
+    it('should shrink, as context-less, strictly negative value for negative range including zero', () => {
+      // Arrange
+      const arbNew = arrayInt64({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
+      const arbOld = arrayInt64Old({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
+      const sourceValue: ArrayInt64 = { sign: -1, data: [0, 8] };
+
+      // Act
+      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue));
+      const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
+
+      // Assert
+      expect(treeOld).toEqual(treeNew);
     });
   });
 });

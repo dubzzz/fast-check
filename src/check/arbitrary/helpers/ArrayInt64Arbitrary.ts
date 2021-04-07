@@ -1,9 +1,9 @@
 import { Random } from '../../../random/generator/Random';
 import { stream, Stream } from '../../../stream/Stream';
-import { Arbitrary } from '../definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from '../definition/ArbitraryWithContextualShrink';
-import { biasWrapper } from '../definition/BiasedArbitraryWrapper';
-import { Shrinkable } from '../definition/Shrinkable';
+import { convertFromNextWithShrunkOnce } from '../definition/Converters';
+import { NextArbitrary } from '../definition/NextArbitrary';
+import { NextValue } from '../definition/NextValue';
 import {
   add64,
   ArrayInt64,
@@ -11,61 +11,76 @@ import {
   isEqual64,
   isStrictlyNegative64,
   isStrictlyPositive64,
+  isStrictlySmaller64,
   isZero64,
   logLike64,
   substract64,
   Unit64,
   Zero64,
 } from './ArrayInt64';
-import { BiasedNumericArbitrary } from './BiasNumeric';
 
 /** @internal */
-class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
-  private biasedArrayInt64Arbitrary: Arbitrary<ArrayInt64> | null = null;
+class ArrayInt64Arbitrary extends NextArbitrary<ArrayInt64> {
+  private biasedRanges: { min: ArrayInt64; max: ArrayInt64 }[] | null = null;
 
-  constructor(
-    readonly min: ArrayInt64,
-    readonly max: ArrayInt64,
-    readonly genMin: ArrayInt64,
-    readonly genMax: ArrayInt64
-  ) {
+  constructor(readonly min: ArrayInt64, readonly max: ArrayInt64) {
     super();
   }
 
-  private wrapper(value: ArrayInt64, context: unknown): Shrinkable<ArrayInt64> {
-    return new Shrinkable(value, () =>
-      this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
-    );
-  }
-
-  generate(mrng: Random): Shrinkable<ArrayInt64> {
-    const uncheckedValue = mrng.nextArrayInt(this.genMin, this.genMax);
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<ArrayInt64> {
+    const range = this.computeGenerateRange(mrng, biasFactor);
+    const uncheckedValue = mrng.nextArrayInt(range.min, range.max);
     if (uncheckedValue.data.length === 1) {
       // either 1 or 2, never 0 or >2
       uncheckedValue.data.unshift(0); // prepend a zero
     }
-    return this.wrapper(uncheckedValue as ArrayInt64, undefined);
+    return new NextValue(uncheckedValue as ArrayInt64, undefined);
+  }
+  private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: ArrayInt64; max: ArrayInt64 } {
+    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+      return { min: this.min, max: this.max };
+    }
+    const ranges = this.retrieveBiasedRanges();
+    if (ranges.length === 1) {
+      return ranges[0];
+    }
+    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
+    return id < 0 ? ranges[0] : ranges[id + 1];
+  }
+
+  canGenerate(value: unknown): value is ArrayInt64 {
+    const unsafeValue = value as ArrayInt64;
+    return (
+      typeof value === 'object' &&
+      value !== null &&
+      (unsafeValue.sign === -1 || unsafeValue.sign === 1) &&
+      Array.isArray(unsafeValue.data) &&
+      unsafeValue.data.length === 2 &&
+      ((isStrictlySmaller64(this.min, unsafeValue) && isStrictlySmaller64(unsafeValue, this.max)) ||
+        isEqual64(this.min, unsafeValue) ||
+        isEqual64(this.max, unsafeValue))
+    );
   }
 
   private shrinkArrayInt64(
     value: ArrayInt64,
     target: ArrayInt64,
     tryTargetAsap?: boolean
-  ): Stream<[ArrayInt64, unknown]> {
+  ): Stream<NextValue<ArrayInt64>> {
     const realGap = substract64(value, target);
-    function* shrinkGen(): IterableIterator<[ArrayInt64, unknown]> {
+    function* shrinkGen(): IterableIterator<NextValue<ArrayInt64>> {
       let previous: ArrayInt64 | undefined = tryTargetAsap ? undefined : target;
       const gap = tryTargetAsap ? realGap : halve64(realGap);
       for (let toremove = gap; !isZero64(toremove); toremove = halve64(toremove)) {
         const next = substract64(value, toremove);
-        yield [next, previous]; // previous indicates the last passing value
+        yield new NextValue(next, previous); // previous indicates the last passing value
         previous = next;
       }
     }
     return stream(shrinkGen());
   }
 
-  contextualShrink(current: ArrayInt64, context?: unknown): Stream<[ArrayInt64, unknown]> {
+  shrink(current: ArrayInt64, context?: unknown): Stream<NextValue<ArrayInt64>> {
     if (!ArrayInt64Arbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
@@ -77,17 +92,13 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
       // Last chance try...
       // context is set to undefined, so that shrink will restart
       // without any assumptions in case our try find yet another bug
-      return Stream.of([context, undefined]);
+      return Stream.of(new NextValue(context, undefined));
     }
     // Normal shrink process
     return this.shrinkArrayInt64(current, context, false);
   }
 
-  shrunkOnceContext(): unknown {
-    return this.defaultTarget();
-  }
-
-  private defaultTarget(): ArrayInt64 {
+  defaultTarget(): ArrayInt64 {
     // min <= 0 && max >= 0   => shrink towards zero
     if (!isStrictlyPositive64(this.min) && !isStrictlyNegative64(this.max)) {
       return Zero64;
@@ -123,13 +134,13 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
     return true;
   }
 
-  private pureBiasedArbitrary(): Arbitrary<ArrayInt64> {
-    if (this.biasedArrayInt64Arbitrary != null) {
-      return this.biasedArrayInt64Arbitrary;
+  private retrieveBiasedRanges(): { min: ArrayInt64; max: ArrayInt64 }[] {
+    if (this.biasedRanges != null) {
+      return this.biasedRanges;
     }
     if (isEqual64(this.min, this.max)) {
-      this.biasedArrayInt64Arbitrary = this;
-      return this;
+      this.biasedRanges = [{ min: this.min, max: this.max }];
+      return this.biasedRanges;
     }
     const minStrictlySmallerZero = isStrictlyNegative64(this.min);
     const maxStrictlyGreaterZero = isStrictlyPositive64(this.max);
@@ -137,30 +148,27 @@ class ArrayInt64Arbitrary extends ArbitraryWithContextualShrink<ArrayInt64> {
       // min < 0 && max > 0
       const logMin = logLike64(this.min); // min !== 0   ->   <=0
       const logMax = logLike64(this.max); // max !== 0   ->   >=0
-      this.biasedArrayInt64Arbitrary = new BiasedNumericArbitrary(
-        new ArrayInt64Arbitrary(this.min, this.max, logMin, logMax), // close to zero,
-        new ArrayInt64Arbitrary(this.min, this.max, substract64(this.max, logMax), this.max), // close to max
-        new ArrayInt64Arbitrary(this.min, this.max, this.min, substract64(this.min, logMin)) // close to min
-      );
+      this.biasedRanges = [
+        { min: logMin, max: logMax }, // close to zero,
+        { min: substract64(this.max, logMax), max: this.max }, // close to max
+        { min: this.min, max: substract64(this.min, logMin) }, // close to min
+      ];
     } else {
       // Either min < 0 && max <= 0
       // Or min >= 0, so max >= 0
       const logGap = logLike64(substract64(this.max, this.min)); // max-min !== 0  ->  >=0
-      const arbCloseToMin = new ArrayInt64Arbitrary(this.min, this.max, this.min, add64(this.min, logGap)); // close to min
-      const arbCloseToMax = new ArrayInt64Arbitrary(this.min, this.max, substract64(this.max, logGap), this.max); // close to max
-      this.biasedArrayInt64Arbitrary = minStrictlySmallerZero
-        ? new BiasedNumericArbitrary(arbCloseToMax, arbCloseToMin) // max is closer to zero
-        : new BiasedNumericArbitrary(arbCloseToMin, arbCloseToMax); // min is closer to zero
+      const arbCloseToMin = { min: this.min, max: add64(this.min, logGap) }; // close to min
+      const arbCloseToMax = { min: substract64(this.max, logGap), max: this.max }; // close to max
+      this.biasedRanges = minStrictlySmallerZero
+        ? [arbCloseToMax, arbCloseToMin] // max is closer to zero
+        : [arbCloseToMin, arbCloseToMax]; // min is closer to zero
     }
-    return this.biasedArrayInt64Arbitrary;
-  }
-
-  withBias(freq: number): Arbitrary<ArrayInt64> {
-    return biasWrapper(freq, this, (originalArbitrary: ArrayInt64Arbitrary) => originalArbitrary.pureBiasedArbitrary());
+    return this.biasedRanges;
   }
 }
 
 /** @internal */
 export function arrayInt64(min: ArrayInt64, max: ArrayInt64): ArbitraryWithContextualShrink<ArrayInt64> {
-  return new ArrayInt64Arbitrary(min, max, min, max);
+  const arb = new ArrayInt64Arbitrary(min, max);
+  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
