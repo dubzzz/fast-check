@@ -1,31 +1,39 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
-import { biasWrapper } from './definition/BiasedArbitraryWrapper';
-import { Shrinkable } from './definition/Shrinkable';
-import { biasNumeric, bigIntLogLike } from './helpers/BiasNumeric';
+import { convertFromNextWithShrunkOnce } from './definition/Converters';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { NextValue } from './definition/NextValue';
+import { retrieveBiasRangesForNumeric, bigIntLogLike } from './helpers/BiasNumeric';
 import { shrinkBigInt } from './helpers/ShrinkBigInt';
 
 /** @internal */
-class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
-  private biasedBigIntArbitrary: Arbitrary<bigint> | null = null;
-
-  constructor(readonly min: bigint, readonly max: bigint, readonly genMin: bigint, readonly genMax: bigint) {
+class BigIntArbitrary extends NextArbitrary<bigint> {
+  constructor(readonly min: bigint, readonly max: bigint) {
     super();
   }
 
-  private wrapper(value: bigint, context: unknown): Shrinkable<bigint> {
-    return new Shrinkable(value, () =>
-      this.contextualShrink(value, context).map(([v, nextContext]) => this.wrapper(v, nextContext))
-    );
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<bigint> {
+    const range = this.computeGenerateRange(mrng, biasFactor);
+    return new NextValue(mrng.nextBigInt(range.min, range.max), undefined);
+  }
+  private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: bigint; max: bigint } {
+    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+      return { min: this.min, max: this.max };
+    }
+    const ranges = retrieveBiasRangesForNumeric(this.min, this.max, bigIntLogLike);
+    if (ranges.length === 1) {
+      return ranges[0];
+    }
+    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
+    return id < 0 ? ranges[0] : ranges[id + 1];
   }
 
-  generate(mrng: Random): Shrinkable<bigint> {
-    return this.wrapper(mrng.nextBigInt(this.genMin, this.genMax), undefined);
+  canGenerate(value: unknown): value is bigint {
+    return typeof value === 'bigint' && this.min <= value && value <= this.max;
   }
 
-  contextualShrink(current: bigint, context?: unknown): Stream<[bigint, unknown]> {
+  shrink(current: bigint, context?: unknown): Stream<NextValue<bigint>> {
     if (current === BigInt(0)) {
       return Stream.nil();
     }
@@ -40,17 +48,13 @@ class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
       // Last chance try...
       // context is set to undefined, so that shrink will restart
       // without any assumptions in case our try find yet another bug
-      return Stream.of([context, undefined]);
+      return Stream.of(new NextValue(context, undefined));
     }
     // Normal shrink process
     return shrinkBigInt(current, context, false);
   }
 
-  shrunkOnceContext(): unknown {
-    return this.defaultTarget();
-  }
-
-  private defaultTarget(): bigint {
+  defaultTarget(): bigint {
     // min <= 0 && max >= 0   => shrink towards zero
     if (this.min <= 0 && this.max >= 0) {
       return BigInt(0);
@@ -84,18 +88,12 @@ class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
     }
     return true;
   }
+}
 
-  private pureBiasedArbitrary(): Arbitrary<bigint> {
-    if (this.biasedBigIntArbitrary != null) {
-      return this.biasedBigIntArbitrary;
-    }
-    this.biasedBigIntArbitrary = biasNumeric(this.min, this.max, BigIntArbitrary, bigIntLogLike);
-    return this.biasedBigIntArbitrary;
-  }
-
-  withBias(freq: number): Arbitrary<bigint> {
-    return biasWrapper(freq, this, (originalArbitrary: BigIntArbitrary) => originalArbitrary.pureBiasedArbitrary());
-  }
+/** @internal */
+function buildBigIntArbitrary(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint> {
+  const arb = new BigIntArbitrary(min, max);
+  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
 
 /**
@@ -111,7 +109,7 @@ class BigIntArbitrary extends ArbitraryWithContextualShrink<bigint> {
 function bigIntN(n: number): ArbitraryWithContextualShrink<bigint> {
   const min = BigInt(-1) << BigInt(n - 1);
   const max = (BigInt(1) << BigInt(n - 1)) - BigInt(1);
-  return new BigIntArbitrary(min, max, min, max);
+  return buildBigIntArbitrary(min, max);
 }
 
 /**
@@ -127,7 +125,7 @@ function bigIntN(n: number): ArbitraryWithContextualShrink<bigint> {
 function bigUintN(n: number): ArbitraryWithContextualShrink<bigint> {
   const min = BigInt(0);
   const max = (BigInt(1) << BigInt(n)) - BigInt(1);
-  return new BigIntArbitrary(min, max, min, max);
+  return buildBigIntArbitrary(min, max);
 }
 
 /**
@@ -211,7 +209,7 @@ function bigInt(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint>
 function bigInt(constraints: BigIntConstraints): ArbitraryWithContextualShrink<bigint>;
 function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): ArbitraryWithContextualShrink<bigint> {
   const constraints = buildCompleteBigIntConstraints(extractBigIntConstraints(args));
-  return new BigIntArbitrary(constraints.min, constraints.max, constraints.min, constraints.max);
+  return buildBigIntArbitrary(constraints.min, constraints.max);
 }
 
 /**
@@ -253,7 +251,7 @@ function bigUint(max: bigint): ArbitraryWithContextualShrink<bigint>;
 function bigUint(constraints: BigUintConstraints): ArbitraryWithContextualShrink<bigint>;
 function bigUint(constraints?: bigint | BigUintConstraints): ArbitraryWithContextualShrink<bigint> {
   const max = constraints === undefined ? undefined : typeof constraints === 'object' ? constraints.max : constraints;
-  return max === undefined ? bigUintN(256) : new BigIntArbitrary(BigInt(0), max, BigInt(0), max);
+  return max === undefined ? bigUintN(256) : buildBigIntArbitrary(BigInt(0), max);
 }
 
 export { bigIntN, bigUintN, bigInt, bigUint };
