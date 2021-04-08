@@ -1,12 +1,15 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { integer, nat, maxSafeNat, maxSafeInteger } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { integer } from '../../../src/arbitrary/integer';
+import { nat } from '../../../src/arbitrary/nat';
+import { maxSafeNat } from '../../../src/arbitrary/maxSafeNat';
+import { maxSafeInteger } from '../../../src/arbitrary/maxSafeInteger';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
-import * as stubRng from '../../stubs/generators';
-import { generateOneValue } from './generic/GenerateOneValue';
-import { buildShrinkTree, renderTree } from './generic/ShrinkTree';
+import * as stubRng from '../stubs/generators';
+import { generateOneValue } from '../check/arbitrary/generic/GenerateOneValue';
+import { buildShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 const isStrictlySmallerInteger = (v1: number, v2: number) => Math.abs(v1) < Math.abs(v2);
 

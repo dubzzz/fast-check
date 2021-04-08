@@ -1,7 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/arbitrary/nat';
 import { infiniteStream } from '../../../../src/check/arbitrary/StreamArbitrary';
 import { Stream } from '../../../../src/stream/Stream';
 

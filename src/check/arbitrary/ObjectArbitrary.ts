@@ -7,7 +7,7 @@ import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { frequency } from './FrequencyArbitrary';
-import { maxSafeInteger } from './IntegerArbitrary';
+import { maxSafeInteger } from '../../arbitrary/maxSafeInteger';
 import { memo, Memo } from './MemoArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { set } from './SetArbitrary';

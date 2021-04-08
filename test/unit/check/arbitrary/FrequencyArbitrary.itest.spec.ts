@@ -1,7 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
-import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { integer } from '../../../../src/arbitrary/integer';
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';

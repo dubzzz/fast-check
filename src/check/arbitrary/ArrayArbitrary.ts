@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { cloneIfNeeded, cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { buildCompareFilter } from './helpers/BuildCompareFilter';
 import { NextArbitrary } from './definition/NextArbitrary';

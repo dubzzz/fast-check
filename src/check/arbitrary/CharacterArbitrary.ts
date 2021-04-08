@@ -1,5 +1,5 @@
 import { Arbitrary } from './definition/Arbitrary';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 
 /** @internal */
 function CharacterArbitrary(min: number, max: number, mapToCode: (v: number) => number) {

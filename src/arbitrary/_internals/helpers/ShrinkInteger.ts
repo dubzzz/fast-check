@@ -1,5 +1,5 @@
+import { NextValue } from '../../../check/arbitrary/definition/NextValue';
 import { Stream, stream } from '../../../stream/Stream';
-import { NextValue } from '../definition/NextValue';
 
 /** @internal */
 function halvePosInteger(n: number): number {

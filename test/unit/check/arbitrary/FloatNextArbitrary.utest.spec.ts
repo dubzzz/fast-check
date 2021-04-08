@@ -24,8 +24,8 @@ import { mocked } from 'ts-jest/utils';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
 import * as stubRng from '../../stubs/generators';
 
-import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
-jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
+import * as IntegerMock from '../../../../src/arbitrary/integer';
+jest.mock('../../../../src/arbitrary/integer');
 
 const mrng = () => stubRng.mutable.nocall();
 
@@ -40,7 +40,7 @@ function minMaxForConstraints(ct: FloatNextConstraints) {
 
 function mockNoOpIntegerArb(opts: { single?: boolean } = {}) {
   // Mocking integer: not expecting any call there
-  const { integer } = mocked(IntegerArbitraryMock);
+  const { integer } = mocked(IntegerMock);
   if (opts.single) integer.mockImplementationOnce(() => arbitraryFor([]));
   else integer.mockImplementation(() => arbitraryFor([]));
   return integer;
@@ -117,7 +117,7 @@ describe('FloatNextArbitrary', () => {
       fc.assert(
         fc.property(fc.option(floatNextConstraints(), { nil: undefined }), fc.maxSafeNat(), (ct, mod) => {
           // Arrange
-          const { integer } = mocked(IntegerArbitraryMock);
+          const { integer } = mocked(IntegerMock);
           const { min, max } = minMaxForConstraints(ct || {});
           const minIndex = floatToIndex(min);
           const maxIndex = floatToIndex(max);

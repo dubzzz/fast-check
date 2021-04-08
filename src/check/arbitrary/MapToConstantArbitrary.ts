@@ -1,5 +1,5 @@
 import { Arbitrary } from './definition/Arbitrary';
-import { nat } from './IntegerArbitrary';
+import { nat } from '../../arbitrary/nat';
 
 /** @internal */
 function computeNumChoices<T>(options: { num: number; build: (idInGroup: number) => T }[]): number {

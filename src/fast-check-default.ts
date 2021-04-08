@@ -49,14 +49,10 @@ import {
 } from './check/arbitrary/FrequencyArbitrary';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
-import {
-  integer,
-  maxSafeInteger,
-  maxSafeNat,
-  nat,
-  IntegerConstraints,
-  NatConstraints,
-} from './check/arbitrary/IntegerArbitrary';
+import { integer, IntegerConstraints } from './arbitrary/integer';
+import { maxSafeInteger } from './arbitrary/maxSafeInteger';
+import { maxSafeNat } from './arbitrary/maxSafeNat';
+import { nat, NatConstraints } from './arbitrary/nat';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './check/arbitrary/LetRecArbitrary';
 import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';

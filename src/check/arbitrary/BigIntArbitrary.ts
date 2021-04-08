@@ -4,7 +4,7 @@ import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContext
 import { convertFromNextWithShrunkOnce } from './definition/Converters';
 import { NextArbitrary } from './definition/NextArbitrary';
 import { NextValue } from './definition/NextValue';
-import { retrieveBiasRangesForNumeric, bigIntLogLike } from './helpers/BiasNumeric';
+import { biasNumericRange, bigIntLogLike } from '../../arbitrary/_internals/helpers/BiasNumericRange';
 import { shrinkBigInt } from './helpers/ShrinkBigInt';
 
 /** @internal */
@@ -21,7 +21,7 @@ class BigIntArbitrary extends NextArbitrary<bigint> {
     if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
       return { min: this.min, max: this.max };
     }
-    const ranges = retrieveBiasRangesForNumeric(this.min, this.max, bigIntLogLike);
+    const ranges = biasNumericRange(this.min, this.max, bigIntLogLike);
     if (ranges.length === 1) {
       return ranges[0];
     }

@@ -3,7 +3,7 @@ import { Stream } from '../../../stream/Stream';
 import { Arbitrary } from '../../arbitrary/definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from '../../arbitrary/definition/ArbitraryWithContextualShrink';
 import { Shrinkable } from '../../arbitrary/definition/Shrinkable';
-import { nat } from '../../arbitrary/IntegerArbitrary';
+import { nat } from '../../../arbitrary/nat';
 import { oneof } from '../../arbitrary/OneOfArbitrary';
 import { AsyncCommand } from '../command/AsyncCommand';
 import { Command } from '../command/Command';

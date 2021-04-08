@@ -13,9 +13,9 @@ import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary'
 
 import { mocked } from 'ts-jest/utils';
 jest.mock('../../../../src/check/arbitrary/ArrayArbitrary');
-jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
+jest.mock('../../../../src/arbitrary/integer');
 import * as ArrayArbitraryMock from '../../../../src/check/arbitrary/ArrayArbitrary';
-import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
+import * as IntegerMock from '../../../../src/arbitrary/integer';
 
 const validArrayConstraintsArb = () =>
   fc.record({ minLength: fc.nat(), maxLength: fc.nat() }, { withDeletedKeys: true }).map((ct) => {
@@ -87,7 +87,7 @@ function assessValidIntTypedArray<T>(
 
   it('Should default constraints when not specified', () => {
     // Arrange
-    const { integer } = mocked(IntegerArbitraryMock);
+    const { integer } = mocked(IntegerMock);
     const { array } = mocked(ArrayArbitraryMock);
     const integerArb = Symbol() as any;
     integer.mockReturnValue(integerArb);
@@ -106,7 +106,7 @@ function assessValidIntTypedArray<T>(
     fc.assert(
       fc.property(validArrayConstraintsArb(), validIntegerConstraintsArb(lowestInt, highestInt), (ctArray, ctInt) => {
         // Arrange
-        const { integer } = mocked(IntegerArbitraryMock);
+        const { integer } = mocked(IntegerMock);
         const { array } = mocked(ArrayArbitraryMock);
         const integerArb = Symbol() as any;
         integer.mockReturnValue(integerArb);
@@ -126,7 +126,7 @@ function assessValidIntTypedArray<T>(
     fc.assert(
       fc.property(validArrayConstraintsArb(), invalidIntegerConstraintsArb(lowestInt, highestInt), (ctArray, ctInt) => {
         // Arrange
-        const { integer } = mocked(IntegerArbitraryMock);
+        const { integer } = mocked(IntegerMock);
         const { array } = mocked(ArrayArbitraryMock);
         const integerArb = Symbol() as any;
         integer.mockReturnValue(integerArb);

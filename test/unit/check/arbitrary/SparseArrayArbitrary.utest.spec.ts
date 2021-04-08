@@ -5,11 +5,11 @@ import { mocked } from 'ts-jest/utils';
 
 import fc from '../../../../lib/fast-check';
 
-import * as IntegerArbitraryMock from '../../../../src/check/arbitrary/IntegerArbitrary';
+import * as NatMock from '../../../../src/arbitrary/nat';
 import * as SetArbitraryMock from '../../../../src/check/arbitrary/SetArbitrary';
 import * as TupleArbitraryMock from '../../../../src/check/arbitrary/TupleArbitrary';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
-jest.mock('../../../../src/check/arbitrary/IntegerArbitrary');
+jest.mock('../../../../src/arbitrary/nat');
 jest.mock('../../../../src/check/arbitrary/SetArbitrary');
 jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
 
@@ -92,7 +92,7 @@ describe('SparseArrayArbitrary', () => {
             fc.pre(!isLimitNoTrailingCase(ct));
             const { set } = mocked(SetArbitraryMock);
             const { tuple } = mocked(TupleArbitraryMock);
-            const { nat } = mocked(IntegerArbitraryMock); // called to build indexes
+            const { nat } = mocked(NatMock); // called to build indexes
             set.mockImplementationOnce(() => arbitraryFor([{ value: [] }]));
             tuple.mockImplementationOnce(() => arbitraryFor([{ value: [] as any }]));
 
