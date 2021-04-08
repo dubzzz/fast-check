@@ -1,5 +1,5 @@
 import { Arbitrary } from './definition/Arbitrary';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 
 /**
  * For boolean values - `true` or `false`

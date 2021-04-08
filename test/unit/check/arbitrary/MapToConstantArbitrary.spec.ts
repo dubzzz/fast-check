@@ -4,7 +4,7 @@ import * as fc from '../../../../lib/fast-check';
 import { mapToConstant } from '../../../../src/check/arbitrary/MapToConstantArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 import { minMax } from './generic/GenericArbitraryHelper';
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/arbitrary/nat';
 
 describe('MapToConstantArbitrary', () => {
   describe('mapToConstant', () => {

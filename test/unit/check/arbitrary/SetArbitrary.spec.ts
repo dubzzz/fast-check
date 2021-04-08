@@ -1,7 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { set } from '../../../../src/check/arbitrary/SetArbitrary';
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/arbitrary/nat';
 import { string } from '../../../../src/check/arbitrary/StringArbitrary';
 
 import { generateOneValue } from './generic/GenerateOneValue';

@@ -3,7 +3,7 @@ import * as fc from '../../../../../lib/fast-check';
 import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
-import { nat } from '../../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../../src/arbitrary/nat';
 import { tuple } from '../../../../../src/check/arbitrary/TupleArbitrary';
 import { Random } from '../../../../../src/random/generator/Random';
 import { stream } from '../../../../../src/stream/Stream';

@@ -4,7 +4,7 @@ import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary'
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/arbitrary/nat';
 import { Random } from '../../../../src/random/generator/Random';
 
 import { isStrictlySmallerArray } from './generic/ArrayHelpers';

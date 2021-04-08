@@ -1,4 +1,4 @@
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/arbitrary/nat';
 import { stringOf } from '../../../../src/check/arbitrary/StringArbitrary';
 import { mixedCase } from '../../../../src/check/arbitrary/MixedCaseArbitrary';
 

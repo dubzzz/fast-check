@@ -1,6 +1,6 @@
 import { maxLengthFromMinLength } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
-import { nat } from './IntegerArbitrary';
+import { nat } from '../../arbitrary/nat';
 import { set } from './SetArbitrary';
 import { tuple } from './TupleArbitrary';
 

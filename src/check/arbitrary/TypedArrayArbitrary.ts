@@ -3,7 +3,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { DoubleNextConstraints } from './DoubleNextArbitrary';
 import { double, float } from './FloatingPointArbitrary';
 import { FloatNextConstraints } from './FloatNextArbitrary';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 
 /** @internal */
 type TypedIntArrayBuilderConstraints<TValue> = {

@@ -3,7 +3,7 @@ import { constantFrom } from './ConstantArbitrary';
 import { constant } from './ConstantArbitrary';
 import { buildAlphaNumericPercentArb } from './helpers/SpecificCharacterRange';
 import { domain, hostUserInfo } from './HostArbitrary';
-import { nat } from './IntegerArbitrary';
+import { nat } from '../../arbitrary/nat';
 import { ipV4, ipV4Extended, ipV6 } from './IpArbitrary';
 import { oneof } from './OneOfArbitrary';
 import { option } from './OptionArbitrary';

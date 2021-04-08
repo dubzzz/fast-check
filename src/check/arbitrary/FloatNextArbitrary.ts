@@ -1,5 +1,5 @@
 import { Arbitrary } from './definition/Arbitrary';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 
 /** @internal */
 export const MIN_VALUE_32 = 2 ** -126 * 2 ** -23;

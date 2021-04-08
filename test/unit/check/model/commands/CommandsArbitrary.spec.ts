@@ -6,7 +6,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
 import { commands } from '../../../../../src/check/model/commands/CommandsArbitrary';
 import { genericTuple } from '../../../../../src/check/arbitrary/TupleArbitrary';
-import { nat } from '../../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../../src/arbitrary/nat';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 

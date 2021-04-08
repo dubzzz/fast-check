@@ -1,7 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { clone } from '../../../../src/check/arbitrary/CloneArbitrary';
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/arbitrary/nat';
 
 import * as genericHelper from './generic/GenericArbitraryHelper';
 

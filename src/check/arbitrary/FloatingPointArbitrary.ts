@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 import { doubleNext, DoubleNextConstraints } from './DoubleNextArbitrary';
 import { floatNext, FloatNextConstraints } from './FloatNextArbitrary';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 import { tuple } from './TupleArbitrary';
 
 /** @internal */

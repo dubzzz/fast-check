@@ -1,5 +1,6 @@
 import { Arbitrary } from './definition/Arbitrary';
-import { integer, nat } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
+import { nat } from '../../arbitrary/nat';
 import { tuple } from './TupleArbitrary';
 
 /** @internal */

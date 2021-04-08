@@ -4,7 +4,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from './definition/ArbitraryWithContextualShrink';
 import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 import { Shrinkable } from './definition/Shrinkable';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 
 /** @internal */

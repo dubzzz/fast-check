@@ -3,7 +3,7 @@ import { stringify } from '../../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../symbols';
 import { array } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
-import { integer } from './IntegerArbitrary';
+import { integer } from '../../arbitrary/integer';
 import { tuple } from './TupleArbitrary';
 import { escapeForMultilineComments } from './helpers/TextEscaper';
 
