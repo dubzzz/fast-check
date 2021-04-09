@@ -1,10 +1,13 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { bigIntN, bigUintN, bigInt, bigUint } from '../../../../src/check/arbitrary/BigIntArbitrary';
-import { generateOneValue } from './generic/GenerateOneValue';
+import { bigInt } from '../../../src/arbitrary/bigInt';
+import { bigIntN } from '../../../src/arbitrary/bigIntN';
+import { bigUint } from '../../../src/arbitrary/bigUint';
+import { bigUintN } from '../../../src/arbitrary/bigUintN';
+import { generateOneValue } from '../check/arbitrary/generic/GenerateOneValue';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
-import { buildShrinkTree, renderTree } from './generic/ShrinkTree';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
+import { buildShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
