@@ -20,7 +20,9 @@ export function shrinkInteger(current: number, target: number, tryTargetAsap: bo
     let previous: number | undefined = tryTargetAsap ? undefined : target;
     const gap = tryTargetAsap ? realGap : halvePosInteger(realGap);
     for (let toremove = gap; toremove > 0; toremove = halvePosInteger(toremove)) {
-      const next = current - toremove;
+      // The check toremove === realGap ensures we will not face any overflow
+      // for values like - current=4489181317763721 and target=-5692628479909134 - we overflow in realGap
+      const next = toremove === realGap ? target : current - toremove;
       yield new NextValue(next, previous); // previous indicates the last passing value
       previous = next;
     }
@@ -29,7 +31,7 @@ export function shrinkInteger(current: number, target: number, tryTargetAsap: bo
     let previous: number | undefined = tryTargetAsap ? undefined : target;
     const gap = tryTargetAsap ? realGap : halveNegInteger(realGap);
     for (let toremove = gap; toremove < 0; toremove = halveNegInteger(toremove)) {
-      const next = current - toremove;
+      const next = toremove === realGap ? target : current - toremove;
       yield new NextValue(next, previous); // previous indicates the last passing value
       previous = next;
     }
