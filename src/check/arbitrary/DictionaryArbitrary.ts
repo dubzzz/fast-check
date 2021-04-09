@@ -1,6 +1,6 @@
 import { Arbitrary } from './definition/Arbitrary';
 
-import { set } from './SetArbitrary';
+import { set } from '../../arbitrary/set';
 import { tuple } from './TupleArbitrary';
 
 /** @internal */

@@ -1,6 +1,7 @@
-import { ArrayArbitrary, maxLengthFromMinLength } from './ArrayArbitrary';
-import { Arbitrary } from './definition/Arbitrary';
-import { convertFromNext, convertToNext } from './definition/Converters';
+import { ArrayArbitrary } from './_internals/ArrayArbitrary';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Build fully set SetConstraints from a partial data
@@ -192,5 +193,4 @@ function set<T>(
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }
-
 export { set };

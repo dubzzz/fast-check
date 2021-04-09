@@ -6,11 +6,11 @@ import { mocked } from 'ts-jest/utils';
 import fc from '../../../../lib/fast-check';
 
 import * as NatMock from '../../../../src/arbitrary/nat';
-import * as SetArbitraryMock from '../../../../src/check/arbitrary/SetArbitrary';
+import * as SetArbitraryMock from '../../../../src/arbitrary/set';
 import * as TupleArbitraryMock from '../../../../src/check/arbitrary/TupleArbitrary';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
 jest.mock('../../../../src/arbitrary/nat');
-jest.mock('../../../../src/check/arbitrary/SetArbitrary');
+jest.mock('../../../../src/arbitrary/set');
 jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
 
 const validSparseArrayConstraints = (removedKeys: (keyof SparseArrayConstraints)[] = []) =>
