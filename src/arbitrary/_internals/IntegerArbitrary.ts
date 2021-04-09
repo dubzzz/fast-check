@@ -17,13 +17,16 @@ export class IntegerArbitrary extends NextArbitrary<number> {
   }
 
   canGenerate(value: unknown): value is number {
-    return typeof value === 'number' && Number.isInteger(value) && this.min <= value && value <= this.max;
+    return (
+      typeof value === 'number' &&
+      Number.isInteger(value) &&
+      !Object.is(value, -0) &&
+      this.min <= value &&
+      value <= this.max
+    );
   }
 
   shrink(current: number, context?: unknown): Stream<NextValue<number>> {
-    if (current === 0) {
-      return Stream.nil();
-    }
     if (!IntegerArbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
