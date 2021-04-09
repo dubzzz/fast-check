@@ -13,7 +13,7 @@ import { oneof } from './OneOfArbitrary';
 import { set } from '../../arbitrary/set';
 import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
-import { bigInt } from './BigIntArbitrary';
+import { bigInt } from '../../arbitrary/bigInt';
 import { date } from './DateArbitrary';
 import {
   float32Array,

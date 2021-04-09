@@ -7,9 +7,6 @@ import { shrinkInteger } from './helpers/ShrinkInteger';
 
 /** @internal */
 export class IntegerArbitrary extends NextArbitrary<number> {
-  static MIN_INT: number = 0x80000000 | 0;
-  static MAX_INT: number = 0x7fffffff | 0;
-
   constructor(readonly min: number, readonly max: number) {
     super();
   }

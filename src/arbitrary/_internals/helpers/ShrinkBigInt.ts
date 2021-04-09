@@ -1,5 +1,5 @@
 import { Stream, stream } from '../../../stream/Stream';
-import { NextValue } from '../definition/NextValue';
+import { NextValue } from '../../../check/arbitrary/definition/NextValue';
 
 /**
  * Halve towards zero
