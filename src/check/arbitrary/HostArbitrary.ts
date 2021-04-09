@@ -1,4 +1,4 @@
-import { array } from './ArrayArbitrary';
+import { array } from '../../arbitrary/array';
 import {
   buildAlphaNumericPercentArb,
   buildLowerAlphaArb,

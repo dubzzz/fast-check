@@ -1,7 +1,7 @@
 import { hash } from '../../utils/hash';
 import { stringify } from '../../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../symbols';
-import { array } from './ArrayArbitrary';
+import { array } from '../../arbitrary/array';
 import { Arbitrary } from './definition/Arbitrary';
 import { integer } from '../../arbitrary/integer';
 import { tuple } from './TupleArbitrary';

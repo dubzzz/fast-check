@@ -1,8 +1,8 @@
-import { maxLengthFromMinLength } from './ArrayArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from '../../arbitrary/nat';
-import { set } from './SetArbitrary';
+import { set } from '../../arbitrary/set';
 import { tuple } from './TupleArbitrary';
+import { maxLengthFromMinLength } from '../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link sparseArray}
