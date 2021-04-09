@@ -42,7 +42,7 @@ function nat(max: number): ArbitraryWithContextualShrink<number>;
  */
 function nat(constraints: NatConstraints): ArbitraryWithContextualShrink<number>;
 function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<number> {
-  const max = typeof arg === 'number' ? arg : arg && arg.max !== undefined ? arg.max : IntegerArbitrary.MAX_INT;
+  const max = typeof arg === 'number' ? arg : arg && arg.max !== undefined ? arg.max : 0x7fffffff;
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
   }

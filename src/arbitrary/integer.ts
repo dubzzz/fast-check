@@ -27,8 +27,8 @@ export interface IntegerConstraints {
  * @internal
  */
 function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Required<IntegerConstraints> {
-  const min = constraints.min !== undefined ? constraints.min : IntegerArbitrary.MIN_INT;
-  const max = constraints.max !== undefined ? constraints.max : IntegerArbitrary.MAX_INT;
+  const min = constraints.min !== undefined ? constraints.min : -0x80000000;
+  const max = constraints.max !== undefined ? constraints.max : 0x7fffffff;
   return { min, max };
 }
 
