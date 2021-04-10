@@ -4,9 +4,9 @@ Or go to the [JavaScript version](./HandsOnPropertyBasedJs.md) of the Hands on.
 
 ## What is property based testing?
 
-Property based testing has become quite famous in functional world. Mainly introduced by QuickCheck framework in Haskell, it suggests another way to test software. It targets all the scope covered by example based testing: from unit tests to integration tests.
+Property based testing has become quite famous in functional world. Mainly introduced by the QuickCheck framework in Haskell, it suggests another way to test software. It targets all of the scope covered by example-based testing; from unit tests to integration tests.
 
-It checks that a function, program or whatever system under test abides by a property. Property can be seen as a trait you expect to see in your output given the inputs. It does not have to be the expected result itself and most of the time it will not be.
+It checks that a function, program or whatever system under test abides by a property. A property can be seen as a trait you expect to see in the output given the inputs; it does not have to be the expected result itself and most of the time it will not be.
 
 A property is just something like:
 
