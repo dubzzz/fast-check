@@ -29,7 +29,7 @@ describe('bigUintN', () => {
 
   it('should instantiate BigIntArbitrary(0, 2^n -1) for bigIntN(n)', () =>
     fc.assert(
-      fc.property(fc.integer({ min: 1, max: 1000 }), (n) => {
+      fc.property(fc.integer({ min: 0, max: 1000 }), (n) => {
         // Arrange
         const instance = fakeBigIntArbitrary();
         const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
