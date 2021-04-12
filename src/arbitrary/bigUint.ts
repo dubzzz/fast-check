@@ -45,8 +45,12 @@ function bigUint(max: bigint): ArbitraryWithContextualShrink<bigint>;
  */
 function bigUint(constraints: BigUintConstraints): ArbitraryWithContextualShrink<bigint>;
 function bigUint(constraints?: bigint | BigUintConstraints): ArbitraryWithContextualShrink<bigint> {
-  const max = constraints === undefined ? undefined : typeof constraints === 'object' ? constraints.max : constraints;
-  const arb = new BigIntArbitrary(BigInt(0), max !== undefined ? max : computeDefaultMax());
+  const requestedMax = typeof constraints === 'object' ? constraints.max : constraints;
+  const max = requestedMax !== undefined ? requestedMax : computeDefaultMax();
+  if (max) {
+    throw new Error('fc.bigUint expects max to be greater than or equal to zero');
+  }
+  const arb = new BigIntArbitrary(BigInt(0), max);
   return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
 export { bigUint };
