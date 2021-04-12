@@ -1,6 +1,6 @@
 import { Arbitrary } from './definition/Arbitrary';
 
-import { option } from './OptionArbitrary';
+import { option } from '../../arbitrary/option';
 import { genericTuple } from './TupleArbitrary';
 
 /**

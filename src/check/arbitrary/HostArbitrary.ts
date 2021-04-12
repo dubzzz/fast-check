@@ -4,7 +4,7 @@ import {
   buildLowerAlphaArb,
   buildLowerAlphaNumericArb,
 } from './helpers/SpecificCharacterRange';
-import { option } from './OptionArbitrary';
+import { option } from '../../arbitrary/option';
 import { stringOf } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { Arbitrary } from './definition/Arbitrary';

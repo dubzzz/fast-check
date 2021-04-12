@@ -2,7 +2,7 @@ import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
 import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
-import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
+import { oneof } from '../../../../src/arbitrary/oneof';
 import {
   anything,
   object,
