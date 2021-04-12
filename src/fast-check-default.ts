@@ -19,7 +19,7 @@ import {
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
-import { array, ArrayConstraints } from './check/arbitrary/ArrayArbitrary';
+import { array, ArrayConstraints } from './arbitrary/array';
 import { bigInt, BigIntConstraints } from './arbitrary/bigInt';
 import { bigIntN } from './arbitrary/bigIntN';
 import { bigUint, BigUintConstraints } from './arbitrary/bigUint';
@@ -63,7 +63,7 @@ import {
 import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
-import { set, SetConstraints } from './check/arbitrary/SetArbitrary';
+import { set, SetConstraints } from './arbitrary/set';
 import { infiniteStream } from './check/arbitrary/StreamArbitrary';
 import {
   asciiString,

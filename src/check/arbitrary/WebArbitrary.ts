@@ -1,4 +1,4 @@
-import { array } from './ArrayArbitrary';
+import { array } from '../../arbitrary/array';
 import { constantFrom } from './ConstantArbitrary';
 import { constant } from './ConstantArbitrary';
 import { buildAlphaNumericPercentArb } from './helpers/SpecificCharacterRange';

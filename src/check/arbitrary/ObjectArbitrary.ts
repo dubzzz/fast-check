@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 
 import { stringify } from '../../utils/stringify';
-import { array } from './ArrayArbitrary';
+import { array } from '../../arbitrary/array';
 import { boolean } from './BooleanArbitrary';
 import { constant } from './ConstantArbitrary';
 import { dictionary, toObject } from './DictionaryArbitrary';
@@ -10,7 +10,7 @@ import { frequency } from '../../arbitrary/frequency';
 import { maxSafeInteger } from '../../arbitrary/maxSafeInteger';
 import { memo, Memo } from './MemoArbitrary';
 import { oneof } from '../../arbitrary/oneof';
-import { set } from './SetArbitrary';
+import { set } from '../../arbitrary/set';
 import { string, unicodeString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 import { bigInt } from '../../arbitrary/bigInt';

@@ -1,7 +1,6 @@
 import * as fc from '../../../../../lib/fast-check';
+import { buildCompareFilter } from '../../../../../src/arbitrary/_internals/helpers/BuildCompareFilter';
 import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
-
-import { buildCompareFilter } from '../../../../../src/check/arbitrary/helpers/BuildCompareFilter';
 
 describe('buildCompareFilter', () => {
   it('should filter array from duplicated values', () =>

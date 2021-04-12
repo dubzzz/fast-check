@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { set } from '../../../../src/check/arbitrary/SetArbitrary';
+import { set } from '../../../../src/arbitrary/set';
 import { nat } from '../../../../src/arbitrary/nat';
 import { string } from '../../../../src/check/arbitrary/StringArbitrary';
 

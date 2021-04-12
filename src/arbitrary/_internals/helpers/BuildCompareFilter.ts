@@ -1,4 +1,4 @@
-import { NextValue } from '../definition/NextValue';
+import { NextValue } from '../../../check/arbitrary/definition/NextValue';
 
 /** @internal */
 function subArrayContains<T>(tab: T[], upperBound: number, includeValue: (v: T) => boolean): boolean {

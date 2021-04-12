@@ -2,7 +2,7 @@ import * as fc from '../../../../lib/fast-check';
 
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
+import { array } from '../../../../src/arbitrary/array';
 import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
 import { nat } from '../../../../src/arbitrary/nat';
 import { Random } from '../../../../src/random/generator/Random';

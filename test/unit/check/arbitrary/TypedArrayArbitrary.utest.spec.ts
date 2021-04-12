@@ -12,9 +12,9 @@ import {
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 
 import { mocked } from 'ts-jest/utils';
-jest.mock('../../../../src/check/arbitrary/ArrayArbitrary');
+jest.mock('../../../../src/arbitrary/array');
 jest.mock('../../../../src/arbitrary/integer');
-import * as ArrayArbitraryMock from '../../../../src/check/arbitrary/ArrayArbitrary';
+import * as ArrayArbitraryMock from '../../../../src/arbitrary/array';
 import * as IntegerMock from '../../../../src/arbitrary/integer';
 
 const validArrayConstraintsArb = () =>
