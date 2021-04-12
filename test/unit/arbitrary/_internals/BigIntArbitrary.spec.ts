@@ -25,6 +25,13 @@ function beforeEachHook() {
 beforeEach(beforeEachHook);
 
 describe('BigIntArbitrary', () => {
+  if (typeof BigInt === 'undefined') {
+    it('no test', () => {
+      expect(true).toBe(true);
+    });
+    return;
+  }
+
   describe('generate', () => {
     it('should never bias and generate the full range when biasFactor is not specified', () =>
       fc.assert(
