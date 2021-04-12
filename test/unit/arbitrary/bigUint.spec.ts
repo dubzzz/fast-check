@@ -66,7 +66,7 @@ describe('bigUint', () => {
 
   it('should instantiate BigIntArbitrary(0, max) for bigUint(max)', () =>
     fc.assert(
-      fc.property(fc.bigInt(), (max) => {
+      fc.property(fc.bigUint(), (max) => {
         // Arrange
         const instance = fakeBigIntArbitrary();
         const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
