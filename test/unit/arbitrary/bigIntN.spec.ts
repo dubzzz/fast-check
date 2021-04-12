@@ -47,9 +47,9 @@ describe('bigIntN', () => {
       })
     ));
 
-  it('should throw when n value is lower than one', () =>
+  it('should throw when n value is lower than zero', () =>
     fc.assert(
-      fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: 0 }), (n) => {
+      fc.property(fc.integer({ min: -1000, max: -1 }), (n) => {
         // Arrange / Act / Assert
         expect(() => bigIntN(n)).toThrowError();
       })
