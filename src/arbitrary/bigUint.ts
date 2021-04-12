@@ -47,7 +47,7 @@ function bigUint(constraints: BigUintConstraints): ArbitraryWithContextualShrink
 function bigUint(constraints?: bigint | BigUintConstraints): ArbitraryWithContextualShrink<bigint> {
   const requestedMax = typeof constraints === 'object' ? constraints.max : constraints;
   const max = requestedMax !== undefined ? requestedMax : computeDefaultMax();
-  if (max) {
+  if (max < 0) {
     throw new Error('fc.bigUint expects max to be greater than or equal to zero');
   }
   const arb = new BigIntArbitrary(BigInt(0), max);
