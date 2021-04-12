@@ -83,6 +83,9 @@ function bigInt(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint>
 function bigInt(constraints: BigIntConstraints): ArbitraryWithContextualShrink<bigint>;
 function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): ArbitraryWithContextualShrink<bigint> {
   const constraints = buildCompleteBigIntConstraints(extractBigIntConstraints(args));
+  if (constraints.min > constraints.max) {
+    throw new Error('fc.bigInt expects max to be greater than or equal to min');
+  }
   const arb = new BigIntArbitrary(constraints.min, constraints.max);
   return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
