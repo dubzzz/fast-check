@@ -29,7 +29,7 @@ describe('bigIntN', () => {
 
   it('should instantiate BigIntArbitrary(-2^(n-1), 2^(n-1) -1) for bigIntN(n)', () =>
     fc.assert(
-      fc.property(fc.integer({ min: 0, max: 1000 }), (n) => {
+      fc.property(fc.integer({ min: 1, max: 1000 }), (n) => {
         // Arrange
         const instance = fakeBigIntArbitrary();
         const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
@@ -47,9 +47,9 @@ describe('bigIntN', () => {
       })
     ));
 
-  it('should throw when n value is lower than zero', () =>
+  it('should throw when n value is lower than one', () =>
     fc.assert(
-      fc.property(fc.integer({ min: -1000, max: -1 }), (n) => {
+      fc.property(fc.integer({ min: -1000, max: 0 }), (n) => {
         // Arrange / Act / Assert
         expect(() => bigIntN(n)).toThrowError();
       })
