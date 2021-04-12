@@ -4,7 +4,7 @@ import { Arbitrary } from '../../arbitrary/definition/Arbitrary';
 import { ArbitraryWithContextualShrink } from '../../arbitrary/definition/ArbitraryWithContextualShrink';
 import { Shrinkable } from '../../arbitrary/definition/Shrinkable';
 import { nat } from '../../../arbitrary/nat';
-import { oneof } from '../../arbitrary/OneOfArbitrary';
+import { oneof } from '../../../arbitrary/oneof';
 import { AsyncCommand } from '../command/AsyncCommand';
 import { Command } from '../command/Command';
 import { ICommand } from '../command/ICommand';

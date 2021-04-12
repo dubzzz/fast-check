@@ -1,6 +1,6 @@
 import { fullUnicode } from '../CharacterArbitrary';
 import { Arbitrary } from '../definition/Arbitrary';
-import { frequency } from '../FrequencyArbitrary';
+import { frequency } from '../../../arbitrary/frequency';
 import { mapToConstant } from '../MapToConstantArbitrary';
 
 /** @internal */

@@ -37,12 +37,7 @@ import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
-import {
-  frequency,
-  WeightedArbitrary,
-  FrequencyValue,
-  FrequencyContraints,
-} from './check/arbitrary/FrequencyArbitrary';
+import { frequency, WeightedArbitrary, FrequencyValue, FrequencyContraints } from './arbitrary/frequency';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
 import { integer, IntegerConstraints } from './arbitrary/integer';
@@ -65,8 +60,8 @@ import {
   unicodeJson,
   unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
-import { oneof, OneOfValue, OneOfConstraints } from './check/arbitrary/OneOfArbitrary';
-import { option, OptionConstraints } from './check/arbitrary/OptionArbitrary';
+import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
+import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
 import { set, SetConstraints } from './check/arbitrary/SetArbitrary';
 import { infiniteStream } from './check/arbitrary/StreamArbitrary';

@@ -1,5 +1,5 @@
-import { Arbitrary } from './definition/Arbitrary';
-import { FrequencyArbitrary } from './FrequencyArbitrary';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
 
 /**
  * Infer the type of the Arbitrary produced by {@link oneof}
@@ -98,5 +98,4 @@ function oneof<Ts extends Arbitrary<unknown>[]>(
   const weightedArbs = (args as Arbitrary<OneOfValue<Ts>>[]).map((arbitrary) => ({ arbitrary, weight: 1 }));
   return FrequencyArbitrary.from(weightedArbs, {}, 'fc.oneof');
 }
-
 export { oneof };

@@ -2,7 +2,7 @@ import { array } from './ArrayArbitrary';
 import { constantFrom } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from '../../arbitrary/nat';
-import { oneof } from './OneOfArbitrary';
+import { oneof } from '../../arbitrary/oneof';
 import { hexaString } from './StringArbitrary';
 import { tuple } from './TupleArbitrary';
 

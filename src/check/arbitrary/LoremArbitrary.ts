@@ -1,7 +1,7 @@
 import { array } from './ArrayArbitrary';
 import { constant } from './ConstantArbitrary';
 import { Arbitrary } from './definition/Arbitrary';
-import { frequency } from './FrequencyArbitrary';
+import { frequency } from '../../arbitrary/frequency';
 
 /**
  * Constraints to be applied on {@link lorem}

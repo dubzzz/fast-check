@@ -1,11 +1,11 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
-import { Random } from '../../../../src/random/generator/Random';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../../src/check/arbitrary/definition/Shrinkable';
+import { frequency } from '../../../src/arbitrary/frequency';
+import { Random } from '../../../src/random/generator/Random';
 
-import * as stubArb from '../../stubs/arbitraries';
+import * as stubArb from '../stubs/arbitraries';
 
 const frequencyValidInputsArb = fc
   .tuple(
