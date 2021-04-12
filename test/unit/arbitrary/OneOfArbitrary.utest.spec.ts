@@ -1,10 +1,10 @@
 import { mocked } from 'ts-jest/utils';
 
-import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
-import { oneof, OneOfConstraints } from '../../../../src/check/arbitrary/OneOfArbitrary';
+import { constant } from '../../../src/check/arbitrary/ConstantArbitrary';
+import { oneof, OneOfConstraints } from '../../../src/arbitrary/oneof';
 
-import * as FrequencyArbitraryMock from '../../../../src/check/arbitrary/FrequencyArbitrary';
-jest.mock('../../../../src/check/arbitrary/FrequencyArbitrary');
+import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
+jest.mock('../../../src/arbitrary/_internals/FrequencyArbitrary');
 
 describe('OneOfArbitrary', () => {
   describe('oneof', () => {

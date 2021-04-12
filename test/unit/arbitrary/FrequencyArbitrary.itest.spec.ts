@@ -1,14 +1,14 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { frequency } from '../../../../src/check/arbitrary/FrequencyArbitrary';
-import { integer } from '../../../../src/arbitrary/integer';
-import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { frequency } from '../../../src/arbitrary/frequency';
+import { integer } from '../../../src/arbitrary/integer';
+import { constant } from '../../../src/check/arbitrary/ConstantArbitrary';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
 import { mocked } from 'ts-jest/utils';
-import * as DepthContextMock from '../../../../src/check/arbitrary/helpers/DepthContext';
-jest.mock('../../../../src/check/arbitrary/helpers/DepthContext');
+import * as DepthContextMock from '../../../src/arbitrary/_internals/helpers/DepthContext';
+jest.mock('../../../src/arbitrary/_internals/helpers/DepthContext');
 
 const depthContextData: Record<string, DepthContextMock.DepthContext> = {};
 

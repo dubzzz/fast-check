@@ -32,9 +32,6 @@ export class BigIntArbitrary extends NextArbitrary<bigint> {
   }
 
   shrink(current: bigint, context?: unknown): Stream<NextValue<bigint>> {
-    if (current === BigInt(0)) {
-      return Stream.nil();
-    }
     if (!BigIntArbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it

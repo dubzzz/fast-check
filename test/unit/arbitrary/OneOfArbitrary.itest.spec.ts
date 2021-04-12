@@ -1,16 +1,16 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
-import { integer } from '../../../../src/arbitrary/integer';
-import { oneof } from '../../../../src/check/arbitrary/OneOfArbitrary';
-import { Random } from '../../../../src/random/generator/Random';
-import { stream } from '../../../../src/stream/Stream';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../../src/check/arbitrary/definition/Shrinkable';
+import { constant } from '../../../src/check/arbitrary/ConstantArbitrary';
+import { integer } from '../../../src/arbitrary/integer';
+import { oneof } from '../../../src/arbitrary/oneof';
+import { Random } from '../../../src/random/generator/Random';
+import { stream } from '../../../src/stream/Stream';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check//arbitrary/generic/GenericArbitraryHelper';
 
-import * as stubRng from '../../stubs/generators';
+import * as stubRng from '../stubs/generators';
 
 class CustomArbitrary extends Arbitrary<number> {
   constructor(readonly value: number) {
