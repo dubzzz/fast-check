@@ -11,7 +11,17 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   readonly summedWarbs: _WeightedNextArbitrary<T>[];
   readonly totalWeight: number;
 
-  static from<T>(warbs: _WeightedArbitrary<T>[], constraints: _FrequencyContraints, label: string): Arbitrary<T> {
+  static fromOld<T>(warbs: _WeightedArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
+    return convertFromNext(
+      FrequencyArbitrary.from(
+        warbs.map((w) => ({ ...w, arbitrary: convertToNext(w.arbitrary) })),
+        constraints,
+        label
+      )
+    );
+  }
+
+  static from<T>(warbs: _WeightedNextArbitrary<T>[], constraints: _Constraints, label: string): NextArbitrary<T> {
     if (warbs.length === 0) {
       throw new Error(`${label} expects at least one weigthed arbitrary`);
     }
@@ -30,19 +40,17 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       if (currentWeight < 0) {
         throw new Error(`${label} expects weights to be superior or equal to 0`);
       }
-      warbsNext.push({ weight: currentWeight, arbitrary: convertToNext(currentArbitrary) });
+      warbsNext.push({ weight: currentWeight, arbitrary: currentArbitrary });
     }
     if (totalWeight <= 0) {
       throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
-    return convertFromNext(
-      new FrequencyArbitrary(warbsNext, constraints, getDepthContextFor(constraints.depthIdentifier))
-    );
+    return new FrequencyArbitrary(warbsNext, constraints, getDepthContextFor(constraints.depthIdentifier));
   }
 
   private constructor(
     readonly warbs: _WeightedNextArbitrary<T>[],
-    readonly constraints: _FrequencyContraints,
+    readonly constraints: _Constraints,
     readonly context: DepthContext
   ) {
     super();
@@ -106,11 +114,11 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
 
   /** Extract the index of the generator that would have been able to gennrate the value */
   private canGenerateIndex(value: unknown): number {
-    ++this.context.depth; // increase depth
+    if (this.mustGenerateFirst()) {
+      return this.warbs[0].arbitrary.canGenerate(value) ? 0 : -1;
+    }
     try {
-      if (this.mustGenerateFirst()) {
-        return this.warbs[0].arbitrary.canGenerate(value) ? 0 : -1;
-      }
+      ++this.context.depth; // increase depth
       for (let idx = 0; idx !== this.warbs.length; ++idx) {
         const warb = this.warbs[idx];
         if (warb.weight !== 0 && warb.arbitrary.canGenerate(value)) {
@@ -176,6 +184,14 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
 }
 
 /** @internal */
+export type _Constraints = {
+  withCrossShrink?: boolean;
+  depthFactor?: number;
+  maxDepth?: number;
+  depthIdentifier?: string;
+};
+
+/** @internal */
 interface _WeightedArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;
@@ -186,14 +202,6 @@ interface _WeightedNextArbitrary<T> {
   weight: number;
   arbitrary: NextArbitrary<T>;
 }
-
-/** @internal */
-type _FrequencyContraints = {
-  withCrossShrink?: boolean;
-  depthFactor?: number;
-  maxDepth?: number;
-  depthIdentifier?: string;
-};
 
 /** @internal */
 type _FrequencyArbitraryContext<T> = {
