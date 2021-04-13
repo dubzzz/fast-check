@@ -47,8 +47,8 @@ export interface OptionConstraints<TNil = null> {
 
 /** @internal */
 function extractOptionConstraints<TNil>(constraints?: number | OptionConstraints<TNil>): OptionConstraints<TNil> {
-  if (!constraints) return {};
   if (typeof constraints === 'number') return { freq: constraints };
+  if (!constraints) return {};
   return constraints;
 }
 
