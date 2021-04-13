@@ -13,8 +13,8 @@ import { BigIntArbitrary } from './_internals/BigIntArbitrary';
  * @public
  */
 export function bigIntN(n: number): ArbitraryWithContextualShrink<bigint> {
-  if (n < 0) {
-    throw new Error('fc.bigIntN expects requested number of bits to be superior or equal to 0');
+  if (n < 1) {
+    throw new Error('fc.bigIntN expects requested number of bits to be superior or equal to 1');
   }
   const min = BigInt(-1) << BigInt(n - 1);
   const max = (BigInt(1) << BigInt(n - 1)) - BigInt(1);
