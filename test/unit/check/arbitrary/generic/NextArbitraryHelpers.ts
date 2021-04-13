@@ -50,24 +50,31 @@ export function fakeNextArbitrary<T = any>(): { instance: NextArbitrary<T> } & M
  * - context less shrink like context full (for first iteration only)
  */
 export class FakeIntegerArbitrary extends NextArbitrary<number> {
+  constructor(readonly offset: number = 0, readonly rangeLength: number = 100) {
+    super();
+  }
   generate(mrng: Random, biasFactor: number | undefined): NextValue<number> {
-    // Worst case: 0-10
-    // No bias   : 0-100
-    const maxLimit = biasFactor !== undefined ? Math.max(10, 100 - biasFactor) : 100;
-    return new NextValue(mrng.nextInt(0, maxLimit), { step: 2 });
+    const minRange = Math.floor(this.rangeLength / 10);
+    const maxRange = this.rangeLength;
+    // Worst case: 0-minRange
+    // No bias   : 0-maxRange
+    const maxLimit = biasFactor !== undefined ? Math.max(minRange, maxRange - biasFactor) : maxRange;
+    return new NextValue(mrng.nextInt(0, maxLimit) + this.offset, { step: 2 });
   }
   canGenerate(value: unknown): value is number {
-    return typeof value === 'number' && value >= 0 && value <= 100 && Number.isInteger(value);
+    return (
+      typeof value === 'number' &&
+      value >= this.offset &&
+      value <= this.rangeLength + this.offset &&
+      Number.isInteger(value)
+    );
   }
   shrink(value: number, context?: unknown): Stream<NextValue<number>> {
-    if (value <= 0) {
-      return Stream.nil();
-    }
     const currentStep = context !== undefined ? (context as { step: number }).step : 2;
     const nextStep = currentStep + 1;
     return Stream.of(
-      ...(value - currentStep >= 0 ? [new NextValue(value - currentStep, { step: nextStep })] : []),
-      ...(value - currentStep + 1 >= 0 ? [new NextValue(value - currentStep + 1, { step: nextStep })] : [])
+      ...(value - currentStep >= this.offset ? [new NextValue(value - currentStep, { step: nextStep })] : []),
+      ...(value - currentStep + 1 >= this.offset ? [new NextValue(value - currentStep + 1, { step: nextStep })] : [])
     );
   }
 }

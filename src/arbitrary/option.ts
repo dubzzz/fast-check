@@ -1,7 +1,6 @@
-import { FrequencyContraints } from '../fast-check-default';
 import { constant } from '../check/arbitrary/ConstantArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
+import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
 
 /**
  * Constraints to be applied on {@link option}
@@ -99,6 +98,6 @@ function option<T, TNil>(arb: Arbitrary<T>, rawConstraints?: number | OptionCons
     maxDepth: constraints.maxDepth,
     depthIdentifier: constraints.depthIdentifier,
   };
-  return FrequencyArbitrary.from(weightedArbs, frequencyConstraints, 'fc.option');
+  return FrequencyArbitrary.fromOld(weightedArbs, frequencyConstraints, 'fc.option');
 }
 export { option };

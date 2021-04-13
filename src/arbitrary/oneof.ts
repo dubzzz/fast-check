@@ -93,9 +93,9 @@ function oneof<Ts extends Arbitrary<unknown>[]>(
   const constraints = args[0];
   if (isOneOfContraints(constraints)) {
     const weightedArbs = (args.slice(1) as Arbitrary<OneOfValue<Ts>>[]).map((arbitrary) => ({ arbitrary, weight: 1 }));
-    return FrequencyArbitrary.from(weightedArbs, constraints, 'fc.oneof');
+    return FrequencyArbitrary.fromOld(weightedArbs, constraints, 'fc.oneof');
   }
   const weightedArbs = (args as Arbitrary<OneOfValue<Ts>>[]).map((arbitrary) => ({ arbitrary, weight: 1 }));
-  return FrequencyArbitrary.from(weightedArbs, {}, 'fc.oneof');
+  return FrequencyArbitrary.fromOld(weightedArbs, {}, 'fc.oneof');
 }
 export { oneof };
