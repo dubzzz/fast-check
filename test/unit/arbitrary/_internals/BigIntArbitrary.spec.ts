@@ -213,7 +213,7 @@ describe('BigIntArbitrary', () => {
           // Assert
           expect(shrinks).toBe(expectedShrinks);
           expect(shrinkBigInt).toHaveBeenCalledTimes(1);
-          expect(shrinkBigInt).toHaveBeenCalledWith(mid, expect.any(Number), true);
+          expect(shrinkBigInt).toHaveBeenCalledWith(mid, expect.any(BigInt), true);
         })
       ));
   });
