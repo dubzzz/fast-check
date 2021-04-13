@@ -106,11 +106,11 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
 
   /** Extract the index of the generator that would have been able to gennrate the value */
   private canGenerateIndex(value: unknown): number {
-    ++this.context.depth; // increase depth
+    if (this.mustGenerateFirst()) {
+      return this.warbs[0].arbitrary.canGenerate(value) ? 0 : -1;
+    }
     try {
-      if (this.mustGenerateFirst()) {
-        return this.warbs[0].arbitrary.canGenerate(value) ? 0 : -1;
-      }
+      ++this.context.depth; // increase depth
       for (let idx = 0; idx !== this.warbs.length; ++idx) {
         const warb = this.warbs[idx];
         if (warb.weight !== 0 && warb.arbitrary.canGenerate(value)) {
