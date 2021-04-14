@@ -1,12 +1,13 @@
-import { LazyArbitrary, letrec as letrecOld } from '../../../../src/check/arbitrary/LetRecArbitrary';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import { letrec as letrecOld } from '../../../src/arbitrary/letrec';
+import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
+import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
-import * as stubRng from '../../stubs/generators';
-import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
-import { fakeNextArbitrary } from './generic/NextArbitraryHelpers';
-import { Stream } from '../../../../src/stream/Stream';
+import * as stubRng from '../stubs/generators';
+import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { Stream } from '../../../src/stream/Stream';
+import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
@@ -114,8 +115,8 @@ describe('letrec', () => {
       expect(arb1).toBeInstanceOf(LazyArbitrary);
       expect(arb2).toBeInstanceOf(LazyArbitrary);
       expect(arb3).not.toBeInstanceOf(LazyArbitrary);
-      expect(((arb1 as any) as LazyArbitrary).underlying).toBe(arb2);
-      expect(((arb2 as any) as LazyArbitrary).underlying).toBe(arb3);
+      expect(((arb1 as any) as LazyArbitrary<unknown>).underlying).toBe(arb2);
+      expect(((arb2 as any) as LazyArbitrary<unknown>).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
 
@@ -137,8 +138,8 @@ describe('letrec', () => {
       expect(arb1).toBeInstanceOf(LazyArbitrary);
       expect(arb2).toBeInstanceOf(LazyArbitrary);
       expect(arb3).not.toBeInstanceOf(LazyArbitrary);
-      expect(((arb1 as any) as LazyArbitrary).underlying).toBe(arb2);
-      expect(((arb2 as any) as LazyArbitrary).underlying).toBe(arb3);
+      expect(((arb1 as any) as LazyArbitrary<unknown>).underlying).toBe(arb2);
+      expect(((arb2 as any) as LazyArbitrary<unknown>).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
   });

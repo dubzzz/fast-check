@@ -45,7 +45,7 @@ import { maxSafeInteger } from './arbitrary/maxSafeInteger';
 import { maxSafeNat } from './arbitrary/maxSafeNat';
 import { nat, NatConstraints } from './arbitrary/nat';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
-import { letrec } from './check/arbitrary/LetRecArbitrary';
+import { letrec } from './arbitrary/letrec';
 import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import { memo, Memo } from './arbitrary/memo';
