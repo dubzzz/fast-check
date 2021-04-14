@@ -1,8 +1,6 @@
-import { MemoArbitrary, memo as memoOld } from '../../../../src/check/arbitrary/MemoArbitrary';
+import { memo as memoOld } from '../../../../src/check/arbitrary/MemoArbitrary';
 import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
 import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { Stream } from '../../../../src/stream/Stream';
 
 import { fakeNextArbitrary } from './generic/NextArbitraryHelpers';
 import * as stubRng from '../../stubs/generators';
@@ -17,7 +15,7 @@ function memo<T>(builder: (maxDepth: number) => NextArbitrary<T>): NextMemo<T> {
 
 describe('memo', () => {
   describe('builder', () => {
-    it('should wrap the arbitrary into a MemoArbitrary', () => {
+    it('should return the produced instance of arbitrary', () => {
       // Arrange
       const { instance: expectedArb } = fakeNextArbitrary();
       const builder = memo(() => expectedArb);
@@ -26,14 +24,12 @@ describe('memo', () => {
       const arb = builder();
 
       // Assert
-      expect(arb).toBeInstanceOf(MemoArbitrary);
-      expect(((arb as any) as MemoArbitrary<any>).underlying).toBe(expectedArb);
+      expect(arb).toBe(expectedArb);
     });
 
     it('should cache arbitraries associated to each depth', () => {
       // Arrange
-      const { instance: expectedArb } = fakeNextArbitrary();
-      const builder = memo(() => expectedArb);
+      const builder = memo(() => fakeNextArbitrary().instance);
 
       // Act
       const arb = builder();
@@ -47,8 +43,7 @@ describe('memo', () => {
 
     it('should instantiate new arbitraries for each depth', () => {
       // Arrange
-      const { instance: expectedArb } = fakeNextArbitrary();
-      const builder = memo(() => expectedArb);
+      const builder = memo(() => fakeNextArbitrary().instance);
 
       // Act
       const b10 = builder(10);
@@ -60,8 +55,7 @@ describe('memo', () => {
 
     it('should consider no depth as depth 10', () => {
       // Arrange
-      const { instance: expectedArb } = fakeNextArbitrary();
-      const builder = memo(() => expectedArb);
+      const builder = memo(() => fakeNextArbitrary().instance);
 
       // Act
       const bDefault = builder();
@@ -134,64 +128,6 @@ describe('memo', () => {
 
       // Assert
       expect(generate).toHaveBeenCalledWith(mrngNoCall, expectedBiasedFactor);
-    });
-  });
-
-  describe('generate', () => {
-    it('should call generate method of underlying on generate', () => {
-      // Arrange
-      const expectedBiasedFactor = 2;
-      const expectedGen = Symbol();
-      const expectedNextValue = new NextValue(expectedGen);
-      const { instance: arb, generate } = fakeNextArbitrary();
-      generate.mockReturnValue(expectedNextValue);
-
-      // Act
-      const memoArb = new MemoArbitrary(arb);
-      const g = memoArb.generate(mrngNoCall, expectedBiasedFactor);
-
-      // Assert
-      expect(g).toBe(expectedNextValue);
-      expect(generate).toHaveBeenCalledTimes(1);
-      expect(generate).toHaveBeenCalledWith(mrngNoCall, expectedBiasedFactor);
-    });
-  });
-
-  describe('canGenerate', () => {
-    it('should call canGenerate method of underlying on canGenerate', () => {
-      // Arrange
-      const expectedValue = Symbol();
-      const { instance: arb, canGenerate } = fakeNextArbitrary();
-      canGenerate.mockReturnValue(true);
-
-      // Act
-      const memoArb = new MemoArbitrary(arb);
-      const out = memoArb.canGenerate(expectedValue);
-
-      // Assert
-      expect(out).toBe(true);
-      expect(canGenerate).toHaveBeenCalledTimes(1);
-      expect(canGenerate).toHaveBeenCalledWith(expectedValue);
-    });
-  });
-
-  describe('shrink', () => {
-    it('should call shrink method of underlying on shrink', () => {
-      // Arrange
-      const expectedValue = Symbol();
-      const expectedContext = Symbol();
-      const expectedShrinks = Stream.of(new NextValue(Symbol()));
-      const { instance: arb, shrink } = fakeNextArbitrary();
-      shrink.mockReturnValue(expectedShrinks);
-
-      // Act
-      const memoArb = new MemoArbitrary(arb);
-      const out = memoArb.shrink(expectedValue, expectedContext);
-
-      // Assert
-      expect(out).toBe(expectedShrinks);
-      expect(shrink).toHaveBeenCalledTimes(1);
-      expect(shrink).toHaveBeenCalledWith(expectedValue, expectedContext);
     });
   });
 });
