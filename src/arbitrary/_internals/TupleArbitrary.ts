@@ -10,7 +10,7 @@ type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: NextArbitrary<Ts[K]> }
 type ValuesArray<Ts extends unknown[]> = { [K in keyof Ts]: NextValue<Ts[K]> };
 
 /** @internal */
-export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<Ts> {
+export class TupleArbitrary<Ts extends unknown[]> extends NextArbitrary<Ts> {
   constructor(readonly arbs: ArbsArray<Ts>) {
     super();
     for (let idx = 0; idx !== arbs.length; ++idx) {
@@ -26,7 +26,7 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
         for (let idx = 0; idx !== values.length; ++idx) {
           cloned.push(values[idx].value); // push potentially cloned values
         }
-        GenericTupleArbitrary.makeItCloneable(cloned, values);
+        TupleArbitrary.makeItCloneable(cloned, values);
         return cloned;
       },
     });
@@ -42,12 +42,12 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
       ctxs.push(v.context);
     }
     if (cloneable) {
-      GenericTupleArbitrary.makeItCloneable(vs, values);
+      TupleArbitrary.makeItCloneable(vs, values);
     }
     return new NextValue(vs, ctxs);
   }
   generate(mrng: Random, biasFactor: number | undefined): NextValue<Ts> {
-    return GenericTupleArbitrary.wrapper<Ts>(this.arbs.map((a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
+    return TupleArbitrary.wrapper<Ts>(this.arbs.map((a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
   }
   canGenerate(value: unknown): value is Ts {
     if (!Array.isArray(value) || value.length !== this.arbs.length) {
@@ -77,7 +77,7 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
             .concat([v])
             .concat(nextValues.slice(idx + 1));
         })
-        .map((values) => GenericTupleArbitrary.wrapper(values) as NextValue<Ts>);
+        .map((values) => TupleArbitrary.wrapper(values) as NextValue<Ts>);
       s = s.join(shrinksForIndex);
     }
     return s;
