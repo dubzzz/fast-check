@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 
 import { set } from '../../arbitrary/set';
-import { tuple } from './TupleArbitrary';
+import { tuple } from '../../arbitrary/tuple';
 
 /** @internal */
 export function toObject<T>(items: [string, T][]): { [key: string]: T } {

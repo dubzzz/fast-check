@@ -41,7 +41,7 @@ const generateProperty = (num, isAsync) => {
   const blocks = [
     // imports
     `import { Arbitrary } from '../arbitrary/definition/Arbitrary';`,
-    `import { genericTuple } from '../arbitrary/TupleArbitrary';`,
+    `import { genericTuple } from '../../arbitrary/genericTuple';`,
     `import { ${className}, I${className}WithHooks } from './${className}.generic';`,
     // declare all signatures
     ...iota(num).map((id) => signatureFor(id + 1, isAsync)),

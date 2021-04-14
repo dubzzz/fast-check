@@ -1,4 +1,4 @@
-import { tuple as tupleOld } from '../../../../src/check/arbitrary/TupleArbitrary';
+import { tuple as tupleOld } from '../../../../src/arbitrary/tuple';
 
 import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
@@ -7,7 +7,7 @@ import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue'
 
 import * as stubRng from '../../stubs/generators';
 
-import { fakeNextArbitrary } from './generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
 

@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 
 import { option } from '../../arbitrary/option';
-import { genericTuple } from './TupleArbitrary';
+import { genericTuple } from '../../arbitrary/genericTuple';
 
 /**
  * Constraints to be applied on {@link record}

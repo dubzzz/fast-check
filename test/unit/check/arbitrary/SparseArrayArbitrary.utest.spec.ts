@@ -6,12 +6,12 @@ import { mocked } from 'ts-jest/utils';
 import fc from '../../../../lib/fast-check';
 
 import * as NatMock from '../../../../src/arbitrary/nat';
-import * as SetArbitraryMock from '../../../../src/arbitrary/set';
-import * as TupleArbitraryMock from '../../../../src/check/arbitrary/TupleArbitrary';
+import * as SetMock from '../../../../src/arbitrary/set';
+import * as TupleMock from '../../../../src/arbitrary/tuple';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
 jest.mock('../../../../src/arbitrary/nat');
 jest.mock('../../../../src/arbitrary/set');
-jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
+jest.mock('../../../../src/arbitrary/tuple');
 
 const validSparseArrayConstraints = (removedKeys: (keyof SparseArrayConstraints)[] = []) =>
   fc
@@ -63,8 +63,8 @@ describe('SparseArrayArbitrary', () => {
           .property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
             // Arrange
             fc.pre(!isLimitNoTrailingCase(ct));
-            const { set } = mocked(SetArbitraryMock);
-            const { tuple } = mocked(TupleArbitraryMock);
+            const { set } = mocked(SetMock);
+            const { tuple } = mocked(TupleMock);
             set.mockImplementationOnce(() => arbitraryFor([{ value: [] }]));
             tuple.mockImplementationOnce(() => arbitraryFor([{ value: [] as any }]));
 
@@ -90,8 +90,8 @@ describe('SparseArrayArbitrary', () => {
           .property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
             // Arrange
             fc.pre(!isLimitNoTrailingCase(ct));
-            const { set } = mocked(SetArbitraryMock);
-            const { tuple } = mocked(TupleArbitraryMock);
+            const { set } = mocked(SetMock);
+            const { tuple } = mocked(TupleMock);
             const { nat } = mocked(NatMock); // called to build indexes
             set.mockImplementationOnce(() => arbitraryFor([{ value: [] }]));
             tuple.mockImplementationOnce(() => arbitraryFor([{ value: [] as any }]));

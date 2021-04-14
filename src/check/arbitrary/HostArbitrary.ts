@@ -6,7 +6,7 @@ import {
 } from './helpers/SpecificCharacterRange';
 import { option } from '../../arbitrary/option';
 import { stringOf } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
+import { tuple } from '../../arbitrary/tuple';
 import { Arbitrary } from './definition/Arbitrary';
 
 /** @internal */

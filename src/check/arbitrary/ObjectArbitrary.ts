@@ -12,7 +12,7 @@ import { memo, Memo } from './MemoArbitrary';
 import { oneof } from '../../arbitrary/oneof';
 import { set } from '../../arbitrary/set';
 import { string, unicodeString } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
+import { tuple } from '../../arbitrary/tuple';
 import { bigInt } from '../../arbitrary/bigInt';
 import { date } from './DateArbitrary';
 import {
