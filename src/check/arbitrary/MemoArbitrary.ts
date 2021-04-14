@@ -1,25 +1,4 @@
-import { Stream } from '../../fast-check-default';
-import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
-import { convertFromNext, convertToNext } from './definition/Converters';
-import { NextArbitrary } from './definition/NextArbitrary';
-import { NextValue } from './definition/NextValue';
-
-/** @internal */
-export class MemoArbitrary<T> extends NextArbitrary<T> {
-  constructor(readonly underlying: NextArbitrary<T>) {
-    super();
-  }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
-    return this.underlying.generate(mrng, biasFactor);
-  }
-  canGenerate(value: unknown): value is T {
-    return this.underlying.canGenerate(value);
-  }
-  shrink(value: T, context?: unknown): Stream<NextValue<T>> {
-    return this.underlying.shrink(value, context);
-  }
-}
 
 /**
  * Output type for {@link memo}
@@ -57,7 +36,7 @@ export function memo<T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> {
     if (!Object.prototype.hasOwnProperty.call(previous, n)) {
       const prev = contextRemainingDepth;
       contextRemainingDepth = n - 1;
-      previous[n] = convertFromNext(new MemoArbitrary(convertToNext(builder(n))));
+      previous[n] = builder(n);
       contextRemainingDepth = prev;
     }
     return previous[n];
