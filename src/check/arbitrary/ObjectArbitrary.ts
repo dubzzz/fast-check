@@ -8,7 +8,7 @@ import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
 import { frequency } from '../../arbitrary/frequency';
 import { maxSafeInteger } from '../../arbitrary/maxSafeInteger';
-import { memo, Memo } from './MemoArbitrary';
+import { memo, Memo } from '../../arbitrary/memo';
 import { oneof } from '../../arbitrary/oneof';
 import { set } from '../../arbitrary/set';
 import { string, unicodeString } from './StringArbitrary';

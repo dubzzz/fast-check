@@ -48,7 +48,7 @@ import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './arbitrary/letrec';
 import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
-import { memo, Memo } from './check/arbitrary/MemoArbitrary';
+import { memo, Memo } from './arbitrary/memo';
 import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
 import {
   anything,
