@@ -1,7 +1,7 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { NextArbitrary } from '../check/arbitrary/definition/NextArbitrary';
-import { GenericTupleArbitrary } from './_internals/TupleArbitrary';
+import { TupleArbitrary } from './_internals/TupleArbitrary';
 
 /**
  * For tuples produced by the provided `arbs`
@@ -14,5 +14,5 @@ import { GenericTupleArbitrary } from './_internals/TupleArbitrary';
  */
 export function genericTuple<Ts extends unknown[]>(arbs: { [K in keyof Ts]: Arbitrary<Ts[K]> }): Arbitrary<Ts> {
   const nextArbs = arbs.map((arb) => convertToNext(arb)) as { [K in keyof Ts]: NextArbitrary<Ts[K]> };
-  return convertFromNext(new GenericTupleArbitrary<Ts>(nextArbs));
+  return convertFromNext(new TupleArbitrary<Ts>(nextArbs));
 }
