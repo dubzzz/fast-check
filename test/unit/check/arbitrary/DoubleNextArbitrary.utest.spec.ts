@@ -140,7 +140,7 @@ describe('DoubleNextArbitrary', () => {
 
       it('Should ask for a range with one extra value (far from zero)', () =>
         fc.assert(
-          fc.property(doubleNextConstraints(withNaNRecordConstraints), fc.maxSafeInteger(), (ct) => {
+          fc.property(doubleNextConstraints(withNaNRecordConstraints), (ct) => {
             // Arrange
             const { max } = minMaxForConstraints(ct);
             const arrayInt64 = mockNoOpArrayInt64Arb();
@@ -166,7 +166,7 @@ describe('DoubleNextArbitrary', () => {
         ));
       it('Should properly convert the extra value to NaN', () =>
         fc.assert(
-          fc.property(doubleNextConstraints(withNaNRecordConstraints), fc.maxSafeNat(), (ct) => {
+          fc.property(doubleNextConstraints(withNaNRecordConstraints), (ct) => {
             // Arrange
             // Setup mocks for integer
             const arbitraryGenerated = { value: { sign: 1, data: [Number.NaN, Number.NaN] } as ArrayInt64 };

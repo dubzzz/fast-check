@@ -194,7 +194,7 @@ const allCommands = [
 ];
 // run everything
 fc.assert(
-  fc.property(fc.commands(allCommands, 100), cmds => {
+  fc.property(fc.commands(allCommands, { maxCommands: 100 }), cmds => {
     const s = () => ({ model: { num: 0 }, real: new List() });
     fc.modelRun(s, cmds);
   })
@@ -247,7 +247,7 @@ function UserPageProfile(props) {
 test('should not display data related to another user', () =>
   fc.assert(
     fc.asyncProperty(
-      fc.array(fc.uuid(), fc.uuid(), fc.scheduler(),
+      fc.uuid(), fc.uuid(), fc.scheduler(),
       async (uid1, uid2, s) => {
         // Arrange
         getUserProfile.mockImplementation(

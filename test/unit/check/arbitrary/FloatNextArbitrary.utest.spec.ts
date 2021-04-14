@@ -138,7 +138,7 @@ describe('FloatNextArbitrary', () => {
 
       it('Should ask for a range with one extra value (far from zero)', () =>
         fc.assert(
-          fc.property(floatNextConstraints(withNaNRecordConstraints), fc.maxSafeInteger(), (ct) => {
+          fc.property(floatNextConstraints(withNaNRecordConstraints), (ct) => {
             // Arrange
             const { max } = minMaxForConstraints(ct);
             const integer = mockNoOpIntegerArb();
@@ -164,7 +164,7 @@ describe('FloatNextArbitrary', () => {
         ));
       it('Should properly convert the extra value to NaN', () =>
         fc.assert(
-          fc.property(floatNextConstraints(withNaNRecordConstraints), fc.maxSafeNat(), (ct) => {
+          fc.property(floatNextConstraints(withNaNRecordConstraints), (ct) => {
             // Arrange
             // Setup mocks for integer
             const arbitraryGenerated = { value: Number.NaN };
