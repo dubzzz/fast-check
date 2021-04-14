@@ -5,10 +5,10 @@ import { ArbitraryWithShrink } from '../../../../src/check/arbitrary/definition/
 
 jest.mock('../../../../src/arbitrary/integer');
 jest.mock('../../../../src/arbitrary/nat');
-jest.mock('../../../../src/check/arbitrary/TupleArbitrary');
+jest.mock('../../../../src/arbitrary/tuple');
 import * as _IntegerMock from '../../../../src/arbitrary/integer';
 import * as _NatMock from '../../../../src/arbitrary/nat';
-import * as TupleArbitraryMock from '../../../../src/check/arbitrary/TupleArbitrary';
+import * as TupleMock from '../../../../src/arbitrary/tuple';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
 
 const IntegerMock: { integer: (min: number, max: number) => ArbitraryWithShrink<number> } = _IntegerMock;
@@ -25,7 +25,7 @@ describe('UuidArbitrary', () => {
       // Arrange
       const { integer } = mocked(IntegerMock);
       const { nat } = mocked(NatMock);
-      const { tuple } = mocked(TupleArbitraryMock);
+      const { tuple } = mocked(TupleMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }, { value: 0 }]));
       integer.mockImplementation((a, _b) => arbitraryFor([{ value: a }]));
       tuple.mockImplementation((...arbs) =>
@@ -44,7 +44,7 @@ describe('UuidArbitrary', () => {
       // Arrange
       const { integer } = mocked(IntegerMock);
       const { nat } = mocked(NatMock);
-      const { tuple } = mocked(TupleArbitraryMock);
+      const { tuple } = mocked(TupleMock);
       nat.mockImplementation((a) => arbitraryFor([{ value: a }, { value: a }, { value: a }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: b }]));
       tuple.mockImplementation((...arbs) =>
@@ -68,7 +68,7 @@ describe('UuidArbitrary', () => {
       // Arrange
       const { integer } = mocked(IntegerMock);
       const { nat } = mocked(NatMock);
-      const { tuple } = mocked(TupleArbitraryMock);
+      const { tuple } = mocked(TupleMock);
       nat.mockImplementation(() => arbitraryFor([{ value: 0 }, { value: 0 }]));
       integer.mockImplementation((a, _b) => arbitraryFor([{ value: a }]));
       tuple.mockImplementation((...arbs) =>
@@ -87,7 +87,7 @@ describe('UuidArbitrary', () => {
       // Arrange
       const { integer } = mocked(IntegerMock);
       const { nat } = mocked(NatMock);
-      const { tuple } = mocked(TupleArbitraryMock);
+      const { tuple } = mocked(TupleMock);
       nat.mockImplementation((a) => arbitraryFor([{ value: a }, { value: a }]));
       integer.mockImplementation((a, b) => arbitraryFor([{ value: b }]));
       tuple.mockImplementation((...arbs) =>

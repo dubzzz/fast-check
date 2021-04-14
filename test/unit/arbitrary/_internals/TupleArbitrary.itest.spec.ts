@@ -1,4 +1,4 @@
-import { tuple as tupleOld } from '../../../../src/check/arbitrary/TupleArbitrary';
+import { tuple as tupleOld } from '../../../../src/arbitrary/tuple';
 
 import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
@@ -8,7 +8,7 @@ import { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
 
 import * as stubRng from '../../stubs/generators';
-import { buildNextShrinkTree, renderTree, walkTree } from './generic/ShrinkTree';
+import { buildNextShrinkTree, renderTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
 import {
   assertGenerateProducesCorrectValues,
   assertGenerateProducesSameValueGivenSameSeed,
@@ -17,8 +17,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertShrinkProducesValuesFlaggedAsCanGenerate,
-} from './generic/NextArbitraryAssertions';
-import { FakeIntegerArbitrary } from './generic/NextArbitraryHelpers';
+} from '../../check/arbitrary/generic/NextArbitraryAssertions';
+import { FakeIntegerArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
 import { cloneMethod } from '../../../../src/check/symbols';
 
 const mrngNoCall = stubRng.mutable.nocall();

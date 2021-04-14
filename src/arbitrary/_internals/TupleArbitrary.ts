@@ -1,10 +1,8 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../symbols';
-import { Arbitrary } from './definition/Arbitrary';
-import { convertFromNext, convertToNext } from './definition/Converters';
-import { NextArbitrary } from './definition/NextArbitrary';
-import { NextValue } from './definition/NextValue';
+import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols';
+import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { NextValue } from '../../check/arbitrary/definition/NextValue';
 
 /** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: NextArbitrary<Ts[K]> };
@@ -85,32 +83,3 @@ export class GenericTupleArbitrary<Ts extends unknown[]> extends NextArbitrary<T
     return s;
   }
 }
-
-/**
- * For tuples produced by the provided `arbs`
- *
- * @param arbs - Ordered list of arbitraries
- *
- * @deprecated Switch to {@link tuple} instead
- * @remarks Since 1.0.0
- * @public
- */
-function genericTuple<Ts extends unknown[]>(arbs: { [K in keyof Ts]: Arbitrary<Ts[K]> }): Arbitrary<Ts> {
-  const nextArbs = arbs.map((arb) => convertToNext(arb)) as { [K in keyof Ts]: NextArbitrary<Ts[K]> };
-  return convertFromNext(new GenericTupleArbitrary<Ts>(nextArbs));
-}
-
-/**
- * For tuples produced using the provided `arbs`
- *
- * @param arbs - Ordered list of arbitraries
- *
- * @remarks Since 0.0.1
- * @public
- */
-function tuple<Ts extends unknown[]>(...arbs: { [K in keyof Ts]: Arbitrary<Ts[K]> }): Arbitrary<Ts> {
-  const nextArbs = arbs.map((arb) => convertToNext(arb)) as { [K in keyof Ts]: NextArbitrary<Ts[K]> };
-  return convertFromNext(new GenericTupleArbitrary<Ts>(nextArbs));
-}
-
-export { genericTuple, tuple };

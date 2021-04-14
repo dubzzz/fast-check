@@ -1,7 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from '../../arbitrary/nat';
 import { set } from '../../arbitrary/set';
-import { tuple } from './TupleArbitrary';
+import { tuple } from '../../arbitrary/tuple';
 import { maxLengthFromMinLength } from '../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 /**

@@ -4,7 +4,7 @@ import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 import { nat } from '../../../../../src/arbitrary/nat';
-import { tuple } from '../../../../../src/check/arbitrary/TupleArbitrary';
+import { tuple } from '../../../../../src/arbitrary/tuple';
 import { Random } from '../../../../../src/random/generator/Random';
 import { stream } from '../../../../../src/stream/Stream';
 

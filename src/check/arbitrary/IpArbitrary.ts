@@ -4,7 +4,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { nat } from '../../arbitrary/nat';
 import { oneof } from '../../arbitrary/oneof';
 import { hexaString } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
+import { tuple } from '../../arbitrary/tuple';
 
 /**
  * For valid IP v4
