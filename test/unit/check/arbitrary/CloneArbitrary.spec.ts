@@ -7,7 +7,7 @@ import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
 import { hasCloneMethod } from '../../../../src/check/symbols';
-import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
+import { context } from '../../../../src/arbitrary/context';
 import { cloneMethod } from '../../../../lib/fast-check';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';

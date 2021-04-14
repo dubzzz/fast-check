@@ -1,6 +1,6 @@
 import * as fc from '../../../../../lib/fast-check';
 
-import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
+import { constant } from '../../../../../src/arbitrary/constant';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 import { nat } from '../../../../../src/arbitrary/nat';

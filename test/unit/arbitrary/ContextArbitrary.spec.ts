@@ -1,7 +1,7 @@
-import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
+import { context } from '../../../src/arbitrary/context';
 
-import * as stubRng from '../../stubs/generators';
-import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
+import * as stubRng from '../stubs/generators';
+import { hasCloneMethod, cloneMethod } from '../../../src/check/symbols';
 
 describe('ContextArbitrary', () => {
   describe('context', () => {

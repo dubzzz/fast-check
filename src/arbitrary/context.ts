@@ -1,6 +1,6 @@
-import { cloneMethod } from '../symbols';
-import { clonedConstant } from './ConstantArbitrary';
-import { Arbitrary } from './definition/Arbitrary';
+import { cloneMethod } from '../check/symbols';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { clonedConstant } from './clonedConstant';
 
 /**
  * Execution context attached to one predicate run

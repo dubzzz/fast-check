@@ -1,5 +1,5 @@
-import { Arbitrary } from './definition/Arbitrary';
-import { constantFrom } from './ConstantArbitrary';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { constantFrom } from './constantFrom';
 
 /**
  * Constraints to be applied on {@link falsy}
@@ -44,9 +44,11 @@ export type FalsyValue<TConstraints extends FalsyContraints = {}> =
  * @remarks Since 1.26.0
  * @public
  */
-function falsy<TConstraints extends FalsyContraints>(constraints?: TConstraints): Arbitrary<FalsyValue<TConstraints>> {
-  if (!constraints || !constraints.withBigInt) return constantFrom<FalsyValue[]>(false, null, undefined, 0, '', NaN);
-  else return constantFrom<FalsyValue<TConstraints>[]>(false, null, undefined, 0, '', NaN, BigInt(0) as any);
+export function falsy<TConstraints extends FalsyContraints>(
+  constraints?: TConstraints
+): Arbitrary<FalsyValue<TConstraints>> {
+  if (!constraints || !constraints.withBigInt) {
+    return constantFrom<FalsyValue[]>(false, null, undefined, 0, '', NaN);
+  }
+  return constantFrom<FalsyValue<TConstraints>[]>(false, null, undefined, 0, '', NaN, BigInt(0) as any);
 }
-
-export { falsy };

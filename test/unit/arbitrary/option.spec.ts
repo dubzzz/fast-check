@@ -3,7 +3,7 @@ import { option, OptionConstraints } from '../../../src/arbitrary/option';
 import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
 import { convertFromNext } from '../../../src/check/arbitrary/definition/Converters';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
-import * as ConstantArbitraryMock from '../../../src/check/arbitrary/ConstantArbitrary';
+import * as ConstantMock from '../../../src/arbitrary/constant';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -32,7 +32,7 @@ describe('option', () => {
           const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
           fromOld.mockReturnValue(expectedArb);
           const expectedConstantArb = convertFromNext(fakeNextArbitrary().instance);
-          const constant = jest.spyOn(ConstantArbitraryMock, 'constant');
+          const constant = jest.spyOn(ConstantMock, 'constant');
           constant.mockReturnValue(expectedConstantArb);
           const { instance: nextArb } = fakeNextArbitrary();
           const arb = convertFromNext(nextArb);
@@ -66,7 +66,7 @@ describe('option', () => {
     const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
     fromOld.mockReturnValue(expectedArb);
     const expectedConstantArb = convertFromNext(fakeNextArbitrary().instance);
-    const constant = jest.spyOn(ConstantArbitraryMock, 'constant');
+    const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockReturnValue(expectedConstantArb);
     const { instance: nextArb } = fakeNextArbitrary();
     const arb = convertFromNext(nextArb);
@@ -99,7 +99,7 @@ describe('option', () => {
         const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
         fromOld.mockReturnValue(expectedArb);
         const expectedConstantArb = convertFromNext(fakeNextArbitrary().instance);
-        const constant = jest.spyOn(ConstantArbitraryMock, 'constant');
+        const constant = jest.spyOn(ConstantMock, 'constant');
         constant.mockReturnValue(expectedConstantArb);
         const { instance: nextArb } = fakeNextArbitrary();
         const arb = convertFromNext(nextArb);

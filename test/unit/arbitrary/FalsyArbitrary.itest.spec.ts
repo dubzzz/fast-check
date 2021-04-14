@@ -1,8 +1,8 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { falsy } from '../../../../src/check/arbitrary/FalsyArbitrary';
+import { falsy } from '../../../src/arbitrary/falsy';
 
-import * as stubRng from '../../stubs/generators';
+import * as stubRng from '../stubs/generators';
 
 describe('FalsyArbitrary', () => {
   describe('falsy', () => {
