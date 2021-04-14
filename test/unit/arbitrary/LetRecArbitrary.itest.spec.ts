@@ -1,16 +1,16 @@
-import { letrec as letrecOld } from '../../../../src/check/arbitrary/LetRecArbitrary';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import { letrec as letrecOld } from '../../../src/arbitrary/letrec';
+import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
-import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
-import { FakeIntegerArbitrary } from './generic/NextArbitraryHelpers';
+import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { FakeIntegerArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
 import {
   assertGenerateEquivalentTo,
   assertGenerateProducesSameValueGivenSameSeed,
   assertGenerateProducesValuesFlaggedAsCanGenerate,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesValuesFlaggedAsCanGenerate,
-} from './generic/NextArbitraryAssertions';
+} from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 // Temporary rewrapping around letrec
 // Should be removed with next major (no more Arbitrary, only NextArbitrary)
