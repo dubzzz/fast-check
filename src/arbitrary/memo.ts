@@ -1,4 +1,4 @@
-import { Arbitrary } from './definition/Arbitrary';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 
 /**
  * Output type for {@link memo}
