@@ -1,24 +1,36 @@
 import { Random } from '../../random/generator/Random';
-import { stream } from '../../stream/Stream';
+import { Stream } from '../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
-import { Shrinkable } from './definition/Shrinkable';
+import { convertFromNext } from './definition/Converters';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { NextValue } from './definition/NextValue';
 
 /** @internal */
-class ConstantArbitrary<T> extends Arbitrary<T> {
+class ConstantArbitrary<T> extends NextArbitrary<T> {
   constructor(readonly values: T[]) {
     super();
   }
-  generate(mrng: Random): Shrinkable<T> {
-    if (this.values.length === 1) return new Shrinkable(this.values[0]);
-
-    const id = mrng.nextInt(0, this.values.length - 1);
-    if (id === 0) return new Shrinkable(this.values[0]);
-
-    function* g(v: T) {
-      yield new Shrinkable(v);
+  generate(mrng: Random, _biasFactor: number | undefined): NextValue<T> {
+    if (this.values.length === 1) {
+      return new NextValue(this.values[0], 0);
     }
-    return new Shrinkable(this.values[id], () => stream(g(this.values[0])));
+    const idx = mrng.nextInt(0, this.values.length - 1);
+    return new NextValue(this.values[idx], idx);
+  }
+  canGenerate(value: unknown): value is T {
+    for (let idx = 0; idx !== this.values.length; ++idx) {
+      if (Object.is(this.values[idx], value)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  shrink(value: T, context?: unknown): Stream<NextValue<T>> {
+    if (context === 0 || value === this.values[0]) {
+      return Stream.nil();
+    }
+    return Stream.of(new NextValue(this.values[0], 0));
   }
 }
 
@@ -32,7 +44,9 @@ function constant<T>(value: T): Arbitrary<T> {
   if (hasCloneMethod(value)) {
     throw new Error('fc.constant does not accept cloneable values, use fc.clonedConstant instead');
   }
-  return new ConstantArbitrary<T>([value]);
+  return convertFromNext(
+    new ConstantArbitrary<T>([value])
+  );
 }
 
 /**
@@ -44,9 +58,11 @@ function constant<T>(value: T): Arbitrary<T> {
 function clonedConstant<T>(value: T): Arbitrary<T> {
   if (hasCloneMethod(value)) {
     const producer = () => value[cloneMethod]();
-    return new ConstantArbitrary([producer]).map((c) => c());
+    return convertFromNext(new ConstantArbitrary([producer]).map((c) => c()));
   }
-  return new ConstantArbitrary<T>([value]);
+  return convertFromNext(
+    new ConstantArbitrary<T>([value])
+  );
 }
 
 /**
@@ -66,7 +82,9 @@ function constantFrom<TArgs extends any[] | [any]>(...values: TArgs): Arbitrary<
   if (values.find((v) => hasCloneMethod(v)) != undefined) {
     throw new Error('fc.constantFrom does not accept cloneable values, not supported for the moment');
   }
-  return new ConstantArbitrary<TArgs[number]>([...values]);
+  return convertFromNext(
+    new ConstantArbitrary<TArgs[number]>([...values])
+  );
 }
 
 export { clonedConstant, constant, constantFrom };
