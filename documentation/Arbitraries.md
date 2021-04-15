@@ -1979,8 +1979,6 @@ fc.float64Array({minLength: 1})
 *&#8195;Description*
 
 > Always produce the same value
->
-> ⚠️ The value will not be cloned by the arbitrary
 
 *&#8195;Signatures*
 
@@ -2009,8 +2007,6 @@ fc.constant({})
 > One of the values specified as argument
 >
 > Randomly chooses among the provided values. It considers the first value as the default value so that in case of failure it will shrink to it. It expects a minimum of one value and throws whether it receives no value as parameters. It can easily be used on arrays with `fc.constantFrom(...myArray)`.
->
-> ⚠️ The values will not be cloned by the arbitrary
 
 *&#8195;Signatures*
 
@@ -2042,7 +2038,7 @@ fc.constantFrom(1, 'string', {})
 
 *&#8195;Signatures*
 
-- `fc.clonedConstant(value)`
+- _`fc.clonedConstant(value)`_ — _deprecated since v2.15.0, prefer `fc.constant`_
 
 *&#8195;with:*
 
