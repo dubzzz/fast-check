@@ -1,8 +1,8 @@
-import { falsy } from '../../../../src/check/arbitrary/FalsyArbitrary';
+import { falsy } from '../../../src/arbitrary/falsy';
 import { mocked } from 'ts-jest/utils';
 
-jest.mock('../../../../src/check/arbitrary/ConstantArbitrary');
-import * as ConstantArbitraryMock from '../../../../src/check/arbitrary/ConstantArbitrary';
+jest.mock('../../../src/arbitrary/constantFrom');
+import * as ConstantFromMock from '../../../src/arbitrary/constantFrom';
 
 describe('FalsyArbitrary', () => {
   describe('falsy', () => {
@@ -11,7 +11,7 @@ describe('FalsyArbitrary', () => {
     });
     it('Should never generate 0n if no constraints have been specified', () => {
       // Arrange
-      const { constantFrom } = mocked(ConstantArbitraryMock);
+      const { constantFrom } = mocked(ConstantFromMock);
       let calledWithValues: unknown[] = [];
       constantFrom.mockImplementationOnce((...values: unknown[]) => {
         calledWithValues = values;
@@ -27,7 +27,7 @@ describe('FalsyArbitrary', () => {
     });
     it('Should never generate 0n if constraints are set to {withBigInt: false}', () => {
       // Arrange
-      const { constantFrom } = mocked(ConstantArbitraryMock);
+      const { constantFrom } = mocked(ConstantFromMock);
       let calledWithValues: unknown[] = [];
       constantFrom.mockImplementationOnce((...values: unknown[]) => {
         calledWithValues = values;
@@ -44,7 +44,7 @@ describe('FalsyArbitrary', () => {
     if (typeof BigInt !== 'undefined') {
       it('Should be able to generate 0n if constraints are set to {withBigInt: true}', () => {
         // Arrange
-        const { constantFrom } = mocked(ConstantArbitraryMock);
+        const { constantFrom } = mocked(ConstantFromMock);
         let calledWithValues: unknown[] = [];
         constantFrom.mockImplementationOnce((...values: unknown[]) => {
           calledWithValues = values;

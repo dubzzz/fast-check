@@ -1,6 +1,6 @@
 import { array } from '../../arbitrary/array';
-import { constantFrom } from './ConstantArbitrary';
-import { constant } from './ConstantArbitrary';
+import { constantFrom } from '../../arbitrary/constantFrom';
+import { constant } from '../../arbitrary/constant';
 import { buildAlphaNumericPercentArb } from './helpers/SpecificCharacterRange';
 import { domain, hostUserInfo } from './HostArbitrary';
 import { nat } from '../../arbitrary/nat';
