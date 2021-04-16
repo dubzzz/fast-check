@@ -41,6 +41,9 @@ class CloneArbitrary<T> extends NextArbitrary<T[]> {
   }
 
   shrink(value: T[], context?: unknown): Stream<NextValue<T[]>> {
+    if (value.length === 0) {
+      return Stream.nil();
+    }
     return new Stream(this.shrinkImpl(value, context !== undefined ? (context as unknown[]) : [])).map((v) =>
       this.wrapper(v)
     );
