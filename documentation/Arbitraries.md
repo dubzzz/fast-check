@@ -2624,7 +2624,7 @@ fc.sparseArray(fc.nat())
 
 ```js
 fc.infiniteStream(fc.nat(9))
-// Examples of generated values: Stream(...)…
+// Examples of generated values: Stream(…)…
 ```
 </details>
 
