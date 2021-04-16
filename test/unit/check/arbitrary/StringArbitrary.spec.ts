@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { constantFrom } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { constantFrom } from '../../../../src/arbitrary/constantFrom';
 import {
   asciiString,
   base64String,

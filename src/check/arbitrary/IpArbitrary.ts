@@ -1,5 +1,5 @@
 import { array } from '../../arbitrary/array';
-import { constantFrom } from './ConstantArbitrary';
+import { constantFrom } from '../../arbitrary/constantFrom';
 import { Arbitrary } from './definition/Arbitrary';
 import { nat } from '../../arbitrary/nat';
 import { oneof } from '../../arbitrary/oneof';

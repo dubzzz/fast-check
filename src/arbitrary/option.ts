@@ -1,4 +1,4 @@
-import { constant } from '../check/arbitrary/ConstantArbitrary';
+import { constant } from './constant';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
 

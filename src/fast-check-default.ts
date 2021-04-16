@@ -25,10 +25,12 @@ import { bigIntN } from './arbitrary/bigIntN';
 import { bigUint, BigUintConstraints } from './arbitrary/bigUint';
 import { bigUintN } from './arbitrary/bigUintN';
 import { boolean } from './check/arbitrary/BooleanArbitrary';
-import { falsy, FalsyContraints, FalsyValue } from './check/arbitrary/FalsyArbitrary';
+import { falsy, FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
-import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
-import { context, ContextValue } from './check/arbitrary/ContextArbitrary';
+import { clonedConstant } from './arbitrary/clonedConstant';
+import { constant } from './arbitrary/constant';
+import { constantFrom } from './arbitrary/constantFrom';
+import { context, ContextValue } from './arbitrary/context';
 import { date } from './check/arbitrary/DateArbitrary';
 import { clone, CloneValue } from './check/arbitrary/CloneArbitrary';
 import { dedup, DedupValue } from './check/arbitrary/DedupArbitrary';
@@ -48,7 +50,7 @@ import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './arbitrary/letrec';
 import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
-import { memo, Memo } from './check/arbitrary/MemoArbitrary';
+import { memo, Memo } from './arbitrary/memo';
 import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
 import {
   anything,
