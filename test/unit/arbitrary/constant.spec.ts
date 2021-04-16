@@ -3,6 +3,7 @@ import { constant } from '../../../src/arbitrary/constant';
 
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { cloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary';
 
@@ -30,4 +31,12 @@ describe('constant', () => {
         expect(convertToNext(arb)).toBe(instance);
       })
     ));
+
+  it('should not throw on cloneable instance', () => {
+    // Arrange
+    const cloneable = { [cloneMethod]: () => cloneable };
+
+    // Act / Assert
+    expect(() => constant(cloneable)).not.toThrowError();
+  });
 });

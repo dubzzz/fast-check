@@ -3,6 +3,7 @@ import { constantFrom } from '../../../src/arbitrary/constantFrom';
 
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { cloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary';
 
@@ -34,5 +35,13 @@ describe('constantFrom', () => {
   it('should throw when receiving no parameters', () => {
     // Arrange / Act / Assert
     expect(() => constantFrom()).toThrowErrorMatchingInlineSnapshot('"fc.constantFrom expects at least one parameter"');
+  });
+
+  it('should not throw on cloneable instance', () => {
+    // Arrange
+    const cloneable = { [cloneMethod]: () => cloneable };
+
+    // Act / Assert
+    expect(() => constantFrom(cloneable)).not.toThrowError();
   });
 });
