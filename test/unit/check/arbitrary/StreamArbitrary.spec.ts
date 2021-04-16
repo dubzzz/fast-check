@@ -27,6 +27,15 @@ describe('StreamArbitrary', () => {
       expect(ctx1.size()).toEqual(1);
       expect(ctx2.size()).toEqual(0);
     });
+    it('Should print correctly values even when cloneable', () => {
+      const mrng = stubRng.mutable.counter(0);
+      const g = infiniteStream(context()).generate(mrng).value_;
+      const [ctx1, ctx2] = [...g.take(2)];
+      ctx1.log('plop');
+      ctx2.log('plip');
+      ctx2.log('plap');
+      expect(String(g)).toEqual('Stream({"logs":["plop"]},{"logs":["plip","plap"]}…)');
+    });
     it('Should be able to generate any number of values', () =>
       fc.assert(
         fc.property(fc.integer(), fc.integer(10, 500), (seed, numberOfReadsBeforeToString) => {
@@ -35,13 +44,13 @@ describe('StreamArbitrary', () => {
           return [...g.take(numberOfReadsBeforeToString)].length === numberOfReadsBeforeToString;
         })
       ));
-    it('Should print the 10 first values of the Stream on toString', () =>
+    it('Should print any of the seen values on toString', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.integer(10, 500), (seed, numberOfReadsBeforeToString) => {
+        fc.property(fc.integer(), fc.integer({ max: 500 }), (seed, numberOfReadsBeforeToString) => {
           const mrng = stubRng.mutable.counter(seed);
           const g = infiniteStream(nat()).generate(mrng).value_;
           const firstN = [...g.take(numberOfReadsBeforeToString)];
-          const expectedToString = `Stream(${firstN.slice(0, 10).join(',')}...)`;
+          const expectedToString = `Stream(${firstN.join(',')}…)`;
           expect(g.toString()).toEqual(expectedToString);
         })
       ));
