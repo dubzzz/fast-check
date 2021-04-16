@@ -228,7 +228,7 @@ describe('ConstantArbitrary (integration)', () => {
   it('should not re-use twice the same instance of cloneable', () => {
     // Arrange
     const alreadySeenCloneable = new Set<unknown>();
-    const buildCloneable = () => {
+    const buildCloneable = (): unknown => {
       return Object.defineProperty([], cloneMethod, { value: buildCloneable });
     };
     const arb = new ConstantArbitrary([buildCloneable()]);
@@ -240,11 +240,11 @@ describe('ConstantArbitrary (integration)', () => {
     const treeB = buildNextShrinkTree(arb, g);
 
     // Assert
-    walkTree(treeA, ([_first, cloneable, _second]) => {
+    walkTree(treeA, (cloneable) => {
       expect(alreadySeenCloneable.has(cloneable)).toBe(false);
       alreadySeenCloneable.add(cloneable);
     });
-    walkTree(treeB, ([_first, cloneable, _second]) => {
+    walkTree(treeB, (cloneable) => {
       expect(alreadySeenCloneable.has(cloneable)).toBe(false);
       alreadySeenCloneable.add(cloneable);
     });
