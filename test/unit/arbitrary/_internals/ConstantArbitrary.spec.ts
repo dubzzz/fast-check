@@ -130,11 +130,11 @@ describe('ConstantArbitrary', () => {
 
     it('should not detect values not equal regarding to Object.is', () => {
       // Arrange
-      const values = [[]];
-      const selectedValue = [];
+      const values: unknown[] = [0, [], {}, ''];
+      const selectedValue: unknown = [];
 
       // Act
-      const arb = new ConstantArbitrary(values);
+      const arb = new ConstantArbitrary<unknown>(values);
       const out = arb.canGenerate(selectedValue);
 
       // Assert
