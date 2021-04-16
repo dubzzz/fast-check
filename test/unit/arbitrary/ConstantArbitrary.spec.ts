@@ -24,8 +24,8 @@ describe('ConstantArbitrary', () => {
       instance.push('world');
       expect(g).toEqual(['hello', 'world']);
     });
-    it('Should throw on cloneable instance', () => {
-      expect(() => constant(cloneable)).toThrowError();
+    it('Should not throw on cloneable instance', () => {
+      expect(() => constant(cloneable)).not.toThrowError();
     });
   });
   describe('constantFrom', () => {
@@ -52,8 +52,8 @@ describe('ConstantArbitrary', () => {
           return false;
         })
       ));
-    it('Should throw on cloneable instance', () => {
-      expect(() => constantFrom(cloneable)).toThrowError();
+    it('Should not throw on cloneable instance', () => {
+      expect(() => constantFrom(cloneable)).not.toThrowError();
     });
     it('Should shrink any of the constants towards the first one', () =>
       fc.assert(
@@ -66,7 +66,7 @@ describe('ConstantArbitrary', () => {
       ));
   });
   describe('clonedConstant', () => {
-    it('Should throw on cloneable instance with flag enabled', () => {
+    it('Should not throw on cloneable instance with flag enabled', () => {
       expect(() => clonedConstant(cloneable)).not.toThrow();
     });
     it('Should clone cloneable on generate', () => {

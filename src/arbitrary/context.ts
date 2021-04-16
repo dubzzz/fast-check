@@ -1,6 +1,6 @@
 import { cloneMethod } from '../check/symbols';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { clonedConstant } from './clonedConstant';
+import { constant } from './constant';
 
 /**
  * Execution context attached to one predicate run
@@ -48,5 +48,5 @@ class ContextImplem implements ContextValue {
  * @public
  */
 export function context(): Arbitrary<ContextValue> {
-  return clonedConstant(new ContextImplem());
+  return constant(new ContextImplem());
 }
