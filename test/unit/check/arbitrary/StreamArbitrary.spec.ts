@@ -34,7 +34,7 @@ describe('StreamArbitrary', () => {
       ctx1.log('plop');
       ctx2.log('plip');
       ctx2.log('plap');
-      expect(String(g)).toEqual('Stream({"logs":["plop"]},{"logs":["plip","plap"]}...)');
+      expect(String(g)).toEqual('Stream({"logs":["plop"]},{"logs":["plip","plap"]}…)');
     });
     it('Should be able to generate any number of values', () =>
       fc.assert(
@@ -50,7 +50,7 @@ describe('StreamArbitrary', () => {
           const mrng = stubRng.mutable.counter(seed);
           const g = infiniteStream(nat()).generate(mrng).value_;
           const firstN = [...g.take(numberOfReadsBeforeToString)];
-          const expectedToString = `Stream(${firstN.join(',')}...)`;
+          const expectedToString = `Stream(${firstN.join(',')}…)`;
           expect(g.toString()).toEqual(expectedToString);
         })
       ));

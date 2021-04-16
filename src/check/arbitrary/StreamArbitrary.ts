@@ -22,7 +22,7 @@ class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
-      const toString = () => `Stream(${seenValues.map(stringify).join(',')}...)`;
+      const toString = () => `Stream(${seenValues.map(stringify).join(',')}…)`;
       return Object.assign(s, { toString, [cloneMethod]: enrichedProducer });
     };
     return new Shrinkable(enrichedProducer());
