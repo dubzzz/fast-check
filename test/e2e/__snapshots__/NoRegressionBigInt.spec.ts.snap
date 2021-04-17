@@ -1161,49 +1161,47 @@ Execution summary:
 
 exports[`NoRegression BigInt mixedCase 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:1:0\\", endOnFailure: true }
-Counterexample: [\\"cCbAaBBacABCcCACcABaCAaAabBACaBcBb\\"]
-Shrunk 32 time(s)
+{ seed: 42, path: \\"0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0\\", endOnFailure: true }
+Counterexample: [\\"CCBAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+Shrunk 31 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"cCbaaBbaCabcCCaCCaBAcaaAABBacaBCBB\\"]
+[31m×[0m [\\"ccBaabbaCABcCcaCCABAcAaaaBbaCabcBB\\"]
 . [32m√[0m [\\"cCbAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
-. [31m×[0m [\\"cCBAABbacAbcccAcCAbAcAaaAbbaCabcbb\\"]
-. . [31m×[0m [\\"ccbaABbACAbCCCaccabACAAaaBbACABCBb\\"]
-. . . [31m×[0m [\\"CCBaABBaCABcccaCCabaCaAAABBAcabcBb\\"]
-. . . . [31m×[0m [\\"CcBaAbbaCabCCcAcCaBacaaaAbBaCABcBb\\"]
-. . . . . [31m×[0m [\\"cCbAABbacABcCCacCABAcAAaabbAcaBcBb\\"]
-. . . . . . [31m×[0m [\\"cCbaABbACabcccaccAbACaAAaBBaCaBcBb\\"]
-. . . . . . . [31m×[0m [\\"cCBaABBacAbCCcaCcabacaaAAbbACaBcBb\\"]
-. . . . . . . . [31m×[0m [\\"ccBaAbbACABcCcACCaBAcAaaaBBACaBcBb\\"]
-. . . . . . . . . [31m×[0m [\\"CcBaaBBaCabcCCAcCAbACAAAAbBACaBcBb\\"]
-. . . . . . . . . . [31m×[0m [\\"cCbaAbbacAbccCaccabaCaaaabBACaBcBb\\"]
-. . . . . . . . . . . [31m×[0m [\\"cCBaaBbACAbCccaCCaBacAAAabBACaBcBb\\"]
-. . . . . . . . . . . . [31m×[0m [\\"ccBAABBaCABCCcAcCABACaaAabBACaBcBb\\"]
-. . . . . . . . . . . . . [31m×[0m [\\"CcbaAbbaCaBcCCaccAbacAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . [31m×[0m [\\"ccBaaBbacabcccaCcaBACAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . [31m×[0m [\\"CcBAABbAcAbCCcACCAbaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . [31m×[0m [\\"cCBaABBACABcCCAccaBaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . [31m×[0m [\\"ccBaAbBaCabccCaCCABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcBaabbacAbCccAccABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCbaaBbACABCCCaCcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCBAABBaCaBcccACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaAbbacabCCCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBaaBbAcABccCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcBAABBACabCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"cCBaAbBacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaaBbaCABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcbAabbACABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCbAABbacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccBAabbacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCbAABBacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcBAaBBacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbAaBBacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"CcBaAbBacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCbAaBBacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCbAaBBacABCcCACcABaCAaAabBACaBcBb\\"]
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"CcBaAbBacABCcCACcABaCAaAabBACaBcBb\\"]"
+. [31m×[0m [\\"CcBAaBbaCabcCcAccAbACAAAABbACABcbb\\"]
+. . [31m×[0m [\\"cCBAABbacAbcCCaCcabaCaaaABBAcaBCBb\\"]
+. . . [31m×[0m [\\"ccbaABbACAbcccACCaBacAAaAbBaCabcBb\\"]
+. . . . [31m×[0m [\\"CCBaABBaCAbCCCAcCABACaAaabbACABcBb\\"]
+. . . . . [31m×[0m [\\"CcBaAbbaCABccCaccAbacaAAaBBAcaBcBb\\"]
+. . . . . . [31m×[0m [\\"cCbAABbaCabCccaCcaBAcaaAAbBaCaBcBb\\"]
+. . . . . . . [31m×[0m [\\"cCbaABbacABCCcACCAbAcAaaabbACaBcBb\\"]
+. . . . . . . . [31m×[0m [\\"cCBaABbACaBcCCAccabACAAAaBBACaBcBb\\"]
+. . . . . . . . . [31m×[0m [\\"ccBaABBacabccCaCCabaCaaAAbBACaBcBb\\"]
+. . . . . . . . . . [31m×[0m [\\"CcBaAbbAcAbCccAcCaBacAaaabBACaBcBb\\"]
+. . . . . . . . . . . [31m×[0m [\\"cCbAABBACABCCCacCABACAAAabBACaBcBb\\"]
+. . . . . . . . . . . . [31m×[0m [\\"cCbaAbBaCaBcccaccAbaCaaAabBACaBcBb\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"cCBaabbacabCCcaCcaBacAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"ccBAaBbAcABcCcACCABACAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"CcbAABBACabcCCAccAbaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaAbBacAbccCaCcaBaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBaabbACAbCccACCABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcBAaBBaCABCCCAccABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCBAAbbaCaBccCaCcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaaBbacabCccACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBAABbAcABCCCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcbaABBACaBccCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccBaAbBacabCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcBaabbAcABCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCbaaBBACaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"cCBAAbBacaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaabbAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBAaBBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CcbAAbBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"ccbaabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [\\"CCBAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"CcbAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [\\"cCBAabBAcaBCcCACcABaCAaAabBACaBcBb\\"]"
 `;
 
 exports[`NoRegression BigInt mixedCase(stringOf) 1`] = `
@@ -1214,7 +1212,7 @@ Shrunk 8 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"a\\"]
+[32m√[0m [\\"bA\\"]
 [31m×[0m [\\"BcbacabbBacBaCCAbBbABBabbBAAAACbbCaCbbCcaBA\\"]
 . [32m√[0m [\\"\\"]
 . [31m×[0m [\\"BABBBAAAACBBCACBBCcABA\\"]
