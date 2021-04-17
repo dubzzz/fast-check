@@ -1,16 +1,16 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { clone } from '../../../../src/check/arbitrary/CloneArbitrary';
-import { nat } from '../../../../src/arbitrary/nat';
+import { clone } from '../../../src/arbitrary/clone';
+import { nat } from '../../../src/arbitrary/nat';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
-import * as stubRng from '../../stubs/generators';
-import { hasCloneMethod } from '../../../../src/check/symbols';
-import { context } from '../../../../src/arbitrary/context';
-import { cloneMethod } from '../../../../lib/fast-check';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
+import * as stubRng from '../stubs/generators';
+import { hasCloneMethod } from '../../../src/check/symbols';
+import { context } from '../../../src/arbitrary/context';
+import { cloneMethod } from '../../../lib/fast-check';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../../src/check/arbitrary/definition/Shrinkable';
 
 export const isStrictlySmaller = (arr1: number[], arr2: number[]): boolean => {
   for (let idx = 0; idx !== arr1.length; ++idx) {
