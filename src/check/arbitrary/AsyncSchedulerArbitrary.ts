@@ -1,9 +1,12 @@
 import { cloneMethod } from '../symbols';
 import { Random } from '../../random/generator/Random';
 import { Arbitrary } from './definition/Arbitrary';
-import { Shrinkable } from './definition/Shrinkable';
 import { stringify } from '../../utils/stringify';
 import { escapeForTemplateString } from './helpers/TextEscaper';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { convertFromNext } from './definition/Converters';
+import { Stream } from '../../fast-check-default';
+import { NextValue } from './definition/NextValue';
 
 /**
  * Define an item to be passed to `scheduleSequence`
@@ -391,12 +394,12 @@ class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 }
 
 /** @internal */
-class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
+class SchedulerArbitrary<TMetaData> extends NextArbitrary<Scheduler<TMetaData>> {
   constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>) {
     super();
   }
 
-  generate(mrng: Random) {
+  generate(mrng: Random, _biasFactor: number | undefined): NextValue<Scheduler<TMetaData>> {
     const buildNextTaskIndex = (r: Random) => {
       return {
         clone: () => buildNextTaskIndex(r.clone()),
@@ -405,7 +408,17 @@ class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
         },
       };
     };
-    return new Shrinkable(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())));
+    return new NextValue(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())));
+  }
+
+  canGenerate(value: unknown): value is Scheduler<TMetaData> {
+    // Not supported yet
+    return false;
+  }
+
+  shrink(_value: Scheduler<TMetaData>, _context?: unknown): Stream<NextValue<Scheduler<TMetaData>>> {
+    // Not supported yet
+    return Stream.nil();
   }
 }
 
@@ -416,7 +429,7 @@ class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
  */
 function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arbitrary<Scheduler<TMetaData>> {
   const { act = (f: () => Promise<void>) => f() } = constraints || {};
-  return new SchedulerArbitrary<TMetaData>(act);
+  return convertFromNext(new SchedulerArbitrary<TMetaData>(act));
 }
 
 /**
