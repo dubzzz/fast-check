@@ -55,6 +55,10 @@ class CloneArbitrary<T> extends Arbitrary<T[]> {
       cur = its.map((it) => it.next());
     }
   }
+
+  withBias(freq: number): CloneArbitrary<T> {
+    return new CloneArbitrary(this.arb.withBias(freq), this.numValues);
+  }
 }
 
 /**
