@@ -3,6 +3,7 @@ import { Stream } from '../../stream/Stream';
 import { bigUintN } from '../../arbitrary/bigUintN';
 import { Arbitrary } from './definition/Arbitrary';
 import { Shrinkable } from './definition/Shrinkable';
+import { biasWrapper } from './definition/BiasedArbitraryWrapper';
 
 /**
  * Constraints to be applied on {@link mixedCase}
@@ -131,6 +132,10 @@ class MixedCaseArbitrary extends Arbitrary<string> {
     const flags = flagsArb.generate(mrng).value_; // true => toggle the char, false => keep it as-is
 
     return this.wrapper(rawCaseShrinkable, chars, togglePositions, flags, undefined);
+  }
+
+  withBias(freq: number): Arbitrary<string> {
+    return biasWrapper(freq, this, () => new MixedCaseArbitrary(this.stringArb.withBias(freq), this.toggleCase));
   }
 }
 
