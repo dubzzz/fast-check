@@ -66,7 +66,7 @@ import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
 import { set, SetConstraints } from './arbitrary/set';
-import { infiniteStream } from './check/arbitrary/StreamArbitrary';
+import { infiniteStream } from './arbitrary/infiniteStream';
 import {
   asciiString,
   base64String,
