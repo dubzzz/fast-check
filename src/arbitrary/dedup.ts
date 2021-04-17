@@ -1,4 +1,4 @@
-import { clone, CloneValue } from './CloneArbitrary';
+import { clone, CloneValue } from './clone';
 
 /**
  * @deprecated Switch to {@link CloneValue} instead
