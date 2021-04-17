@@ -3,20 +3,22 @@ import { Stream } from '../../stream/Stream';
 import { stringify } from '../../utils/stringify';
 import { cloneMethod } from '../symbols';
 import { Arbitrary } from './definition/Arbitrary';
-import { biasWrapper } from './definition/BiasedArbitraryWrapper';
-import { Shrinkable } from './definition/Shrinkable';
+import { convertFromNext, convertToNext } from './definition/Converters';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { NextValue } from './definition/NextValue';
 
 /** @internal */
-class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
-  constructor(readonly arb: Arbitrary<T>) {
+class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
+  constructor(readonly arb: NextArbitrary<T>) {
     super();
   }
-  generate(mrng: Random): Shrinkable<Stream<T>> {
+
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<Stream<T>> {
     const enrichedProducer = () => {
       const seenValues: T[] = [];
-      const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
+      const g = function* (arb: NextArbitrary<T>, clonedMrng: Random) {
         while (true) {
-          const value = arb.generate(clonedMrng).value;
+          const value = arb.generate(clonedMrng, biasFactor).value;
           yield value;
           seenValues.push(value);
         }
@@ -25,10 +27,18 @@ class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
       const toString = () => `Stream(${seenValues.map(stringify).join(',')}…)`;
       return Object.assign(s, { toString, [cloneMethod]: enrichedProducer });
     };
-    return new Shrinkable(enrichedProducer());
+    return new NextValue(enrichedProducer());
   }
-  withBias(freq: number): Arbitrary<Stream<T>> {
-    return biasWrapper(freq, this, () => new StreamArbitrary(this.arb.withBias(freq)));
+
+  canGenerate(value: unknown): value is Stream<T> {
+    // Knowing if we can generate or not an infinite stream would require to iterate over it
+    // (until its "end")
+    return false;
+  }
+
+  shrink(_value: Stream<T>, _context?: unknown): Stream<NextValue<Stream<T>>> {
+    // Not supported yet, even if context was provided
+    return Stream.nil();
   }
 }
 
@@ -43,7 +53,7 @@ class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
  * @public
  */
 function infiniteStream<T>(arb: Arbitrary<T>): Arbitrary<Stream<T>> {
-  return new StreamArbitrary(arb);
+  return convertFromNext(new StreamArbitrary(convertToNext(arb)));
 }
 
 export { infiniteStream };
