@@ -5,6 +5,7 @@ import { Arbitrary } from './definition/Arbitrary';
 import { NextArbitrary } from './definition/NextArbitrary';
 import { convertFromNext, convertToNext } from './definition/Converters';
 import { NextValue } from './definition/NextValue';
+import { makeLazy } from '../../stream/LazyIterableIterator';
 
 /**
  * Constraints to be applied on {@link mixedCase}
@@ -49,10 +50,9 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
 
 /** @internal */
 type MixedCaseArbitraryContext = {
-  chars: string[];
-  togglePositions: number[];
+  rawString: string;
+  rawStringContext: unknown;
   flags: bigint;
-  stringContext: unknown;
   flagsContext: unknown;
 };
 
@@ -73,25 +73,34 @@ class MixedCaseArbitrary extends NextArbitrary<string> {
     return positions;
   }
 
-  private wrapper(
-    rawStringNextValue: NextValue<string>,
-    chars: string[],
-    togglePositions: number[],
-    flagsNextValue: NextValue<bigint>
-  ): NextValue<string> {
-    const newChars = chars.slice();
-    const flags = flagsNextValue.value;
+  /**
+   * Apply flags onto chars
+   * @param chars - Original string split into characters
+   * @param flags - One flag/bit per entry in togglePositions - 1 means change case of the character
+   * @param togglePositions - Array referencing all case sensitive indexes in chars
+   */
+  private applyFlagsOnChars(chars: string[], flags: bigint, togglePositions: number[]) {
     for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
-      if (flags & mask) newChars[togglePositions[idx]] = this.toggleCase(newChars[togglePositions[idx]]);
+      if (flags & mask) chars[togglePositions[idx]] = this.toggleCase(chars[togglePositions[idx]]);
     }
-    const context: MixedCaseArbitraryContext = {
-      chars,
-      togglePositions,
-      flags,
-      stringContext: rawStringNextValue.context,
+    return chars;
+  }
+
+  /**
+   * Create a proper context
+   * @param rawStringNextValue
+   * @param flagsNextValue
+   */
+  private buildContextFor(
+    rawStringNextValue: NextValue<string>,
+    flagsNextValue: NextValue<bigint>
+  ): MixedCaseArbitraryContext {
+    return {
+      rawString: rawStringNextValue.value,
+      rawStringContext: rawStringNextValue.context,
+      flags: flagsNextValue.value,
       flagsContext: flagsNextValue.context,
     };
-    return new NextValue(newChars.join(''), context);
   }
 
   generate(mrng: Random, biasFactor: number | undefined): NextValue<string> {
@@ -103,7 +112,8 @@ class MixedCaseArbitrary extends NextArbitrary<string> {
     const flagsArb = convertToNext(bigUintN(togglePositions.length));
     const flagsNextValue = flagsArb.generate(mrng, undefined); // true => toggle the char, false => keep it as-is
 
-    return this.wrapper(rawStringNextValue, chars, togglePositions, flagsNextValue);
+    this.applyFlagsOnChars(chars, flagsNextValue.value, togglePositions);
+    return new NextValue(chars.join(''), this.buildContextFor(rawStringNextValue, flagsNextValue));
   }
 
   canGenerate(value: unknown): value is string {
@@ -118,26 +128,31 @@ class MixedCaseArbitrary extends NextArbitrary<string> {
     }
 
     const contextSafe = context as MixedCaseArbitraryContext;
-    const chars = contextSafe.chars;
-    const rawString = chars.join('');
+    const rawString = contextSafe.rawString;
     const flags = contextSafe.flags;
-    const togglePositions = contextSafe.togglePositions;
     return this.stringArb
-      .shrink(rawString, contextSafe.stringContext)
-      .map((v) => {
-        const nChars = [...v.value];
+      .shrink(rawString, contextSafe.rawStringContext)
+      .map((nRawStringNextValue) => {
+        const nChars = [...nRawStringNextValue.value];
         const nTogglePositions = this.computeTogglePositions(nChars);
         const nFlags = computeNextFlags(flags, nTogglePositions.length);
         // Potentially new value for nTogglePositions.length, new value for nFlags
-        // flagsContext is not applicable anymore
-        return this.wrapper(v, nChars, nTogglePositions, new NextValue(nFlags));
+        // so flagsContext is not applicable anymore
+        this.applyFlagsOnChars(nChars, nFlags, nTogglePositions);
+        return new NextValue(nChars.join(''), this.buildContextFor(nRawStringNextValue, new NextValue(nFlags)));
       })
       .join(
-        convertToNext(bigUintN(togglePositions.length))
-          .shrink(flags, contextSafe.flagsContext)
-          .map((v) => {
-            return this.wrapper(new NextValue(rawString), chars, togglePositions, v);
-          })
+        makeLazy(() => {
+          const chars = [...rawString];
+          const togglePositions = this.computeTogglePositions(chars);
+          return convertToNext(bigUintN(togglePositions.length))
+            .shrink(flags, contextSafe.flagsContext)
+            .map((nFlagsNextValue) => {
+              const nChars = chars.slice(); // cloning chars
+              this.applyFlagsOnChars(nChars, nFlagsNextValue.value, togglePositions);
+              return new NextValue(nChars.join(''), this.buildContextFor(new NextValue(rawString), nFlagsNextValue));
+            });
+        })
       );
   }
 }
