@@ -1,14 +1,14 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { context } from '../../../../src/arbitrary/context';
-import { nat } from '../../../../src/arbitrary/nat';
-import { infiniteStream } from '../../../../src/check/arbitrary/StreamArbitrary';
-import { Stream } from '../../../../src/stream/Stream';
+import { context } from '../../../src/arbitrary/context';
+import { nat } from '../../../src/arbitrary/nat';
+import { infiniteStream } from '../../../src/arbitrary/infiniteStream';
+import { Stream } from '../../../src/stream/Stream';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
-import * as stubRng from '../../stubs/generators';
-import { hasCloneMethod, cloneMethod, WithCloneMethod } from '../../../../src/check/symbols';
+import * as stubRng from '../stubs/generators';
+import { hasCloneMethod, cloneMethod, WithCloneMethod } from '../../../src/check/symbols';
 
 describe('StreamArbitrary', () => {
   describe('infiniteStream', () => {
