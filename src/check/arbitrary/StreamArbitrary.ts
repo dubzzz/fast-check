@@ -14,11 +14,12 @@ class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
   }
 
   generate(mrng: Random, biasFactor: number | undefined): NextValue<Stream<T>> {
+    const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
     const enrichedProducer = () => {
       const seenValues: T[] = [];
       const g = function* (arb: NextArbitrary<T>, clonedMrng: Random) {
         while (true) {
-          const value = arb.generate(clonedMrng, biasFactor).value;
+          const value = arb.generate(clonedMrng, appliedBiasFactor).value;
           yield value;
           seenValues.push(value);
         }
