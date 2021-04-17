@@ -2,7 +2,10 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { bigUintN } from '../../arbitrary/bigUintN';
 import { Arbitrary } from './definition/Arbitrary';
-import { Shrinkable } from './definition/Shrinkable';
+import { NextArbitrary } from './definition/NextArbitrary';
+import { convertFromNext, convertToNext } from './definition/Converters';
+import { NextValue } from './definition/NextValue';
+import { makeLazy } from '../../stream/LazyIterableIterator';
 
 /**
  * Constraints to be applied on {@link mixedCase}
@@ -46,10 +49,22 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
 }
 
 /** @internal */
-class MixedCaseArbitrary extends Arbitrary<string> {
-  constructor(private readonly stringArb: Arbitrary<string>, private readonly toggleCase: (rawChar: string) => string) {
+type MixedCaseArbitraryContext = {
+  rawString: string;
+  rawStringContext: unknown;
+  flags: bigint;
+  flagsContext: unknown;
+};
+
+/** @internal */
+class MixedCaseArbitrary extends NextArbitrary<string> {
+  constructor(
+    private readonly stringArb: NextArbitrary<string>,
+    private readonly toggleCase: (rawChar: string) => string
+  ) {
     super();
   }
+
   private computeTogglePositions(chars: string[]): number[] {
     const positions: number[] = [];
     for (let idx = 0; idx !== chars.length; ++idx) {
@@ -57,84 +72,88 @@ class MixedCaseArbitrary extends Arbitrary<string> {
     }
     return positions;
   }
+
   /**
-   * Produce a Shrinkable
-   * @param rawCase - Shrinkable containing the raw string (without any toggled case)
-   * @param chars - Raw string split into an array of code points
-   * @param togglePositions - Array referencing all case sensitive indexes in chars
+   * Apply flags onto chars
+   * @param chars - Original string split into characters
    * @param flags - One flag/bit per entry in togglePositions - 1 means change case of the character
-   * @param flagsContext - Context used by bigUintN(togglePositions.length) to optimize shrinker for the value 'flags'
-   * @internal
+   * @param togglePositions - Array referencing all case sensitive indexes in chars
    */
-  private wrapper(
-    rawCase: Shrinkable<string>,
-    chars: string[],
-    togglePositions: number[],
-    flags: bigint,
-    flagsContext: unknown
-  ): Shrinkable<string> {
-    const newChars = chars.slice();
+  private applyFlagsOnChars(chars: string[], flags: bigint, togglePositions: number[]) {
     for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
-      if (flags & mask) newChars[togglePositions[idx]] = this.toggleCase(newChars[togglePositions[idx]]);
+      if (flags & mask) chars[togglePositions[idx]] = this.toggleCase(chars[togglePositions[idx]]);
     }
-    return new Shrinkable(newChars.join(''), () =>
-      this.shrinkImpl(rawCase, chars, togglePositions, flags, flagsContext)
-    );
+    return chars;
   }
+
   /**
-   * Produce a Stream of Shrinkable
-   * @param rawCase - Shrinkable containing the raw string (without any toggled case)
-   * @param chars - Raw string split into an array of code points
-   * @param togglePositions - Array referencing all case sensitive indexes in chars
-   * @param flags - One flag/bit per entry in togglePositions - 1 means change case of the character
-   * @param flagsContext - Context used by bigUintN(togglePositions.length) to optimize shrinker for the value 'flags'
-   * @internal
+   * Create a proper context
+   * @param rawStringNextValue
+   * @param flagsNextValue
    */
-  private shrinkImpl(
-    rawCase: Shrinkable<string>,
-    chars: string[],
-    togglePositions: number[],
-    flags: bigint,
-    flagsContext: unknown
-  ): Stream<Shrinkable<string>> {
-    return rawCase
-      .shrink()
-      .map((s) => {
-        const nChars = [...s.value_];
+  private buildContextFor(
+    rawStringNextValue: NextValue<string>,
+    flagsNextValue: NextValue<bigint>
+  ): MixedCaseArbitraryContext {
+    return {
+      rawString: rawStringNextValue.value,
+      rawStringContext: rawStringNextValue.context,
+      flags: flagsNextValue.value,
+      flagsContext: flagsNextValue.context,
+    };
+  }
+
+  generate(mrng: Random, biasFactor: number | undefined): NextValue<string> {
+    const rawStringNextValue = this.stringArb.generate(mrng, biasFactor);
+
+    const chars = [...rawStringNextValue.value]; // split into valid unicode (keeps surrogate pairs)
+    const togglePositions = this.computeTogglePositions(chars);
+
+    const flagsArb = convertToNext(bigUintN(togglePositions.length));
+    const flagsNextValue = flagsArb.generate(mrng, undefined); // true => toggle the char, false => keep it as-is
+
+    this.applyFlagsOnChars(chars, flagsNextValue.value, togglePositions);
+    return new NextValue(chars.join(''), this.buildContextFor(rawStringNextValue, flagsNextValue));
+  }
+
+  canGenerate(value: unknown): value is string {
+    // Not implemented yet
+    return false;
+  }
+
+  shrink(_value: string, context?: unknown): Stream<NextValue<string>> {
+    if (context === undefined) {
+      // Not implemented yet
+      return Stream.nil();
+    }
+
+    const contextSafe = context as MixedCaseArbitraryContext;
+    const rawString = contextSafe.rawString;
+    const flags = contextSafe.flags;
+    return this.stringArb
+      .shrink(rawString, contextSafe.rawStringContext)
+      .map((nRawStringNextValue) => {
+        const nChars = [...nRawStringNextValue.value];
         const nTogglePositions = this.computeTogglePositions(nChars);
         const nFlags = computeNextFlags(flags, nTogglePositions.length);
         // Potentially new value for nTogglePositions.length, new value for nFlags
-        // flagsContext is not applicable anymore
-        return this.wrapper(s, nChars, nTogglePositions, nFlags, undefined);
+        // so flagsContext is not applicable anymore
+        this.applyFlagsOnChars(nChars, nFlags, nTogglePositions);
+        return new NextValue(nChars.join(''), this.buildContextFor(nRawStringNextValue, new NextValue(nFlags)));
       })
       .join(
-        bigUintN(togglePositions.length)
-          .contextualShrink(flags, flagsContext)
-          .map((contextualValue) => {
-            return this.wrapper(
-              new Shrinkable(rawCase.value),
-              chars,
-              togglePositions,
-              contextualValue[0],
-              contextualValue[1]
-            );
-          })
+        makeLazy(() => {
+          const chars = [...rawString];
+          const togglePositions = this.computeTogglePositions(chars);
+          return convertToNext(bigUintN(togglePositions.length))
+            .shrink(flags, contextSafe.flagsContext)
+            .map((nFlagsNextValue) => {
+              const nChars = chars.slice(); // cloning chars
+              this.applyFlagsOnChars(nChars, nFlagsNextValue.value, togglePositions);
+              return new NextValue(nChars.join(''), this.buildContextFor(new NextValue(rawString), nFlagsNextValue));
+            });
+        })
       );
-  }
-  generate(mrng: Random): Shrinkable<string> {
-    const rawCaseShrinkable = this.stringArb.generate(mrng);
-
-    const chars = [...rawCaseShrinkable.value_]; // split into valid unicode (keeps surrogate pairs)
-    const togglePositions = this.computeTogglePositions(chars);
-
-    const flagsArb = bigUintN(togglePositions.length);
-    const flags = flagsArb.generate(mrng).value_; // true => toggle the char, false => keep it as-is
-
-    return this.wrapper(rawCaseShrinkable, chars, togglePositions, flags, undefined);
-  }
-
-  withBias(freq: number): Arbitrary<string> {
-    return new MixedCaseArbitrary(this.stringArb.withBias(freq), this.toggleCase);
   }
 }
 
@@ -163,5 +182,5 @@ export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseC
     throw new Error(`mixedCase requires BigInt support`);
   }
   const toggleCase = (constraints && constraints.toggleCase) || defaultToggleCase;
-  return new MixedCaseArbitrary(stringArb, toggleCase);
+  return convertFromNext(new MixedCaseArbitrary(convertToNext(stringArb), toggleCase));
 }
