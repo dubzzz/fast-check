@@ -68,7 +68,7 @@ describe('ConstantArbitrary', () => {
             for (let idx = 0; idx !== values.length; ++idx) {
               nextInt.mockImplementationOnce((a, _b) => a + idx);
               const g = arb.generate(mrng, biasFactor);
-              const index = notSeenValues.indexOf(g.value);
+              const index = notSeenValues.findIndex((v) => Object.is(g.value, v));
               expect(index).not.toBe(-1);
               notSeenValues.splice(index, 1);
             }
@@ -189,11 +189,24 @@ describe('ConstantArbitrary', () => {
 
 describe('ConstantArbitrary (integration)', () => {
   type Extra = unknown[];
-  const extraParameters: fc.Arbitrary<Extra> = fc.array(fc.anything(), { minLength: 1 });
+  // We use a `set` for our parameters
+  // Because when shrinking `ConstantArbitrary` shrinks towards the item [0] that can also be the one it shrunk from
+  // Such case being non-expected* we prefer not to treat it (in such case it shrinks to the same value).
+  // *In usual scenario, we expect `ConstantArbitrary` to only be called with distinct values.
+  //  Any other case may fall into imperfect but working shrinker.
+  const extraParameters: fc.Arbitrary<Extra> = fc.set(fc.anything(), {
+    minLength: 1,
+    // We use `Object.is` as compare function for our parameters
+    // In order to properly deal with -0, 0 and Number.NaN
+    compare: (a, b) => Object.is(a, b),
+  });
 
-  const isCorrect = (value: unknown, extra: Extra) => extra.includes(value);
+  // In other words: extra.includes(value)                   --but with Object.is
+  const isCorrect = (value: unknown, extra: Extra) => extra.findIndex((v) => Object.is(value, v)) !== -1;
 
-  const isStrictlySmaller = (v1: unknown, v2: unknown, extra: Extra) => extra.indexOf(v1) < extra.indexOf(v2);
+  // In other words: extra.indexOf(v1) < extra.indexOf(v2)   --but with Object.is
+  const isStrictlySmaller = (v1: unknown, v2: unknown, extra: Extra) =>
+    extra.findIndex((v) => Object.is(v1, v)) < extra.findIndex((v) => Object.is(v2, v));
 
   const constantBuilder = (extra: Extra) => new ConstantArbitrary(extra);
 
