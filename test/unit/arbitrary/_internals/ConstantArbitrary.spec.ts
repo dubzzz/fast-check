@@ -156,7 +156,7 @@ describe('ConstantArbitrary', () => {
           const shrinks = [...arb.shrink(value.value, value.context)];
 
           // Assert
-          if (value.value === values[0]) {
+          if (Object.is(value.value, values[0])) {
             expect(shrinks.map((v) => v.value)).toEqual([]);
           } else {
             expect(shrinks.map((v) => v.value)).toEqual([values[0]]);
