@@ -177,34 +177,41 @@ describe('ConstantArbitrary', () => {
           const shrinks = [...arb.shrink(value.value, undefined)];
 
           // Assert
-          if (value.value === values[0]) {
+          if (Object.is(value.value, values[0])) {
             expect(shrinks.map((v) => v.value)).toEqual([]);
           } else {
             expect(shrinks.map((v) => v.value)).toEqual([values[0]]);
           }
         })
       ));
+
+    it('should not shrink towards the first value if generated value is equal to the first one regarding `Object.is`', () => {
+      // Arrange
+      const { instance: mrng, nextInt } = fakeRandom();
+
+      // Act / Assert
+      const arb = new ConstantArbitrary([Number.NaN, Number.NaN, Number.NaN]);
+      for (let idx = 0; idx !== 3; ++idx) {
+        nextInt.mockReturnValue(idx);
+        const value = arb.generate(mrng, undefined);
+        expect(value.value).toBe(Number.NaN);
+        const shrinks = [...arb.shrink(value.value, value.context)];
+        expect(shrinks).toHaveLength(0);
+      }
+    });
   });
 });
 
 describe('ConstantArbitrary (integration)', () => {
   type Extra = unknown[];
-  // We use a `set` for our parameters
-  // Because when shrinking `ConstantArbitrary` shrinks towards the item [0] that can also be the one it shrunk from
-  // Such case being non-expected* we prefer not to treat it (in such case it shrinks to the same value).
-  // *In usual scenario, we expect `ConstantArbitrary` to only be called with distinct values.
-  //  Any other case may fall into imperfect but working shrinker.
-  const extraParameters: fc.Arbitrary<Extra> = fc.set(fc.anything(), {
-    minLength: 1,
-    // We use `Object.is` as compare function for our parameters
-    // In order to properly deal with -0, 0 and Number.NaN
-    compare: (a, b) => Object.is(a, b),
-  });
+  const extraParameters: fc.Arbitrary<Extra> = fc.array(fc.anything(), { minLength: 1 });
 
   // In other words: extra.includes(value)                   --but with Object.is
   const isCorrect = (value: unknown, extra: Extra) => extra.findIndex((v) => Object.is(value, v)) !== -1;
 
   // In other words: extra.indexOf(v1) < extra.indexOf(v2)   --but with Object.is
+  // If the same value has been declared twice in the `extra` once for `extra[0]` and the other for `extra[n]` (with n > 0)
+  // Shrinker should never shrink `extra[n]` into `extra[0]` if they are equal regarding `Object.is`
   const isStrictlySmaller = (v1: unknown, v2: unknown, extra: Extra) =>
     extra.findIndex((v) => Object.is(v1, v)) < extra.findIndex((v) => Object.is(v2, v));
 

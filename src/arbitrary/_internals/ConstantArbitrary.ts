@@ -25,7 +25,7 @@ export class ConstantArbitrary<T> extends NextArbitrary<T> {
     return false;
   }
   shrink(value: T, context?: unknown): Stream<NextValue<T>> {
-    if (context === 0 || value === this.values[0]) {
+    if (context === 0 || Object.is(value, this.values[0])) {
       return Stream.nil();
     }
     return Stream.of(new NextValue(this.values[0], 0));
