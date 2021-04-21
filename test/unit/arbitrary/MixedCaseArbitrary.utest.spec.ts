@@ -1,12 +1,13 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { mixedCase, countToggledBits, computeNextFlags } from '../../../../src/check/arbitrary/MixedCaseArbitrary';
+import { mixedCase } from '../../../src/arbitrary/mixedCase';
+import { countToggledBits, computeNextFlags } from '../../../src/arbitrary/_internals/MixedCaseArbitrary';
 
-jest.mock('../../../../src/arbitrary/bigUintN');
-import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
-import * as stubRng from '../../stubs/generators';
+jest.mock('../../../src/arbitrary/bigUintN');
+import * as BigUintNMock from '../../../src/arbitrary/bigUintN';
+import * as stubRng from '../stubs/generators';
 import { mocked } from 'ts-jest/utils';
-import { arbitraryFor } from './generic/ArbitraryBuilder';
+import { arbitraryFor } from '../check/arbitrary/generic/ArbitraryBuilder';
 
 const mrng = () => stubRng.mutable.nocall();
 
