@@ -51,7 +51,7 @@ import { letrec } from './arbitrary/letrec';
 import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
 import { memo, Memo } from './arbitrary/memo';
-import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
+import { mixedCase, MixedCaseConstraints } from './arbitrary/mixedCase';
 import {
   anything,
   json,
