@@ -16,7 +16,7 @@ import {
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
 import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
-import { buildNextShrinkTree, renderTree } from '../../check/arbitrary/generic/ShrinkTree';
+import { buildNextShrinkTree, renderTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
 
 describe('CloneArbitrary', () => {
   describe('generate', () => {
@@ -212,6 +212,28 @@ describe('CloneArbitrary (integration)', () => {
          └> [1,1,1,1,1]"
     `);
   });
+
+  it('should not re-use twice the same instance of cloneable', () => {
+    // Arrange
+    const alreadySeenCloneable = new Set<unknown>();
+    const arb = new CloneArbitrary(new CloneableArbitrary(), 5);
+    const { instance: mrng } = fakeRandom();
+
+    // Act
+    const g = arb.generate(mrng, undefined);
+    const treeA = buildNextShrinkTree(arb, g);
+    const treeB = buildNextShrinkTree(arb, g);
+
+    // Assert
+    walkTree(treeA, ([_first, cloneable, _second]) => {
+      expect(alreadySeenCloneable.has(cloneable)).toBe(false);
+      alreadySeenCloneable.add(cloneable);
+    });
+    walkTree(treeB, ([_first, cloneable, _second]) => {
+      expect(alreadySeenCloneable.has(cloneable)).toBe(false);
+      alreadySeenCloneable.add(cloneable);
+    });
+  });
 });
 
 // Helpers
@@ -238,5 +260,27 @@ class FirstArbitrary extends NextArbitrary<number> {
       ...(value - currentStep >= 0 ? [new NextValue(value - currentStep, { step: nextStep })] : []),
       ...(value - currentStep + 1 >= 0 ? [new NextValue(value - currentStep + 1, { step: nextStep })] : [])
     );
+  }
+}
+
+class CloneableArbitrary extends NextArbitrary<number> {
+  private instance() {
+    return Object.defineProperty([], cloneMethod, { value: () => this.instance() });
+  }
+  generate(_mrng: Random): NextValue<number> {
+    return new NextValue(this.instance(), { shrunkOnce: false });
+  }
+  canGenerate(_value: unknown): _value is number {
+    throw new Error('No call expected in that scenario');
+  }
+  shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+    if (typeof context !== 'object' || context === null || !('shrunkOnce' in context)) {
+      throw new Error('Invalid context for CloneableArbitrary');
+    }
+    const safeContext = context as { shrunkOnce: boolean };
+    if (safeContext.shrunkOnce) {
+      return Stream.nil();
+    }
+    return Stream.of(new NextValue(this.instance(), { shrunkOnce: true }));
   }
 }
