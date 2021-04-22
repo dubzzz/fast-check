@@ -1503,12 +1503,12 @@ Execution summary:
 exports[`NoRegression infiniteStream 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0\\", endOnFailure: true }
-Counterexample: [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28,2147483646…)]
+Counterexample: [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]
 Shrunk 0 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28,2147483646…)]"
+[31m×[0m [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]"
 `;
 
 exports[`NoRegression int8Array 1`] = `
