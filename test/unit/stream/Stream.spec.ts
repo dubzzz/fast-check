@@ -138,6 +138,25 @@ describe('Stream', () => {
       const s = stream(g()).take(4);
       expect([...s]).toEqual([1, 2, 3, 4]);
     });
+    it('Should accept stream containing less values than the requested number', () => {
+      function* g() {
+        yield* [1, 2];
+      }
+      const s = stream(g()).take(4);
+      expect([...s]).toEqual([1, 2]);
+    });
+    it('Should only pull the requested number of items not more', () => {
+      let numValues = 0;
+      function* g() {
+        while (true) {
+          ++numValues;
+          yield 0;
+        }
+      }
+      const s = stream(g()).take(4);
+      expect([...s]).toEqual([0, 0, 0, 0]);
+      expect(numValues).toBe(4);
+    });
   });
   describe('takeWhile', () => {
     it('Should take while predicate stays valid', () => {
