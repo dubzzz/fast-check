@@ -18,8 +18,8 @@ export class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
       const g = function* (arb: NextArbitrary<T>, clonedMrng: Random) {
         while (true) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
-          yield value;
           seenValues.push(value);
+          yield value;
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
