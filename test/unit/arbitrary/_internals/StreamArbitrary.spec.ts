@@ -87,13 +87,7 @@ describe('StreamArbitrary', () => {
       // Act
       const arb = new StreamArbitrary(sourceArb);
       const stream = arb.generate(mrng, biasFactor).value;
-      const cursor = stream[Symbol.iterator]();
-      const values: unknown[] = [];
-      for (let i = 0; i !== numValuesToPull; ++i) {
-        const next = cursor.next();
-        expect(next.done).toBe(false);
-        values.push(next.value);
-      }
+      const values = [...stream.take(numValuesToPull)];
 
       // Assert
       expect(generate).toHaveBeenCalledTimes(numValuesToPull);
@@ -166,13 +160,7 @@ describe('StreamArbitrary', () => {
           // Act
           const arb = new StreamArbitrary(sourceArb);
           const stream = arb.generate(mrng, biasFactor).value;
-          const cursor = stream[Symbol.iterator]();
-          const values: unknown[] = [];
-          for (let i = 0; i !== expectedValues.length; ++i) {
-            const next = cursor.next();
-            expect(next.done).toBe(false);
-            values.push(next.value);
-          }
+          const values = [...stream.take(expectedValues.length)];
 
           // Assert
           expect(values).toEqual(expectedValues);
@@ -184,6 +172,38 @@ describe('StreamArbitrary', () => {
           }
         })
       ));
+
+    it('should create independant Stream even in terms of toString', () => {
+      // Arrange
+      const biasFactor = 48;
+      let index = 0;
+      const { instance: sourceArb, generate } = fakeNextArbitrary<number>();
+      generate.mockImplementation(() => new NextValue(index++));
+      const { instance: mrng, clone, nextInt } = fakeRandom();
+      nextInt.mockReturnValueOnce(2); // for no bias
+      const { instance: mrngCloned } = fakeRandom();
+      clone.mockReturnValueOnce(mrngCloned);
+      const stringify = jest.spyOn(StringifyMock, 'stringify');
+      stringify.mockImplementation((v) => '<' + String(v) + '>');
+
+      // Act
+      const arb = new StreamArbitrary(sourceArb);
+      const out = arb.generate(mrng, biasFactor);
+      const stream1 = out.value;
+      const stream2 = out.value;
+      const values1 = [...stream1.take(2)];
+      const values2 = [...stream2.take(3)];
+      const values1Bis = [...stream1.take(2)];
+
+      // Assert
+      expect(values1).toEqual([0, 1]);
+      expect(values2).toEqual([2, 3, 4]);
+      expect(values1Bis).toEqual([5, 6]);
+      expect(String(stream1)).toEqual(`Stream(<0>,<1>,<5>,<6>…)`);
+      expect(String(stream2)).toEqual(`Stream(<2>,<3>,<4>…)`);
+      expect(stringify).toHaveBeenCalledTimes(7);
+      expect(generate).toHaveBeenCalledTimes(7);
+    });
   });
 
   describe('canGenerate', () => {
