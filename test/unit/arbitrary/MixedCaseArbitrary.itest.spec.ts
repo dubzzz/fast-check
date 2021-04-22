@@ -1,8 +1,8 @@
-import { nat } from '../../../../src/arbitrary/nat';
-import { stringOf } from '../../../../src/check/arbitrary/StringArbitrary';
-import { mixedCase } from '../../../../src/check/arbitrary/MixedCaseArbitrary';
+import { nat } from '../../../src/arbitrary/nat';
+import { stringOf } from '../../../src/check/arbitrary/StringArbitrary';
+import { mixedCase } from '../../../src/arbitrary/mixedCase';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
