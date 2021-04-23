@@ -5,10 +5,15 @@ import { Stream } from '../../stream/Stream';
 import { Scheduler } from './interfaces/Scheduler';
 import { ScheduledTask, SchedulerImplem, TaskSelector } from './implementations/SchedulerImplem';
 
-/** @internal */
+/**
+ * @internal
+ * Passed instance of mrng should never be altered from the outside.
+ * Passed instance will never be affected by current code but always cloned before usage.
+ */
 function buildNextTaskIndex<TMetaData>(mrng: Random): TaskSelector<TMetaData> {
+  const clonedMrng = mrng.clone();
   return {
-    clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(mrng.clone()),
+    clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(clonedMrng),
     nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]): number => {
       return mrng.nextInt(0, scheduledTasks.length - 1);
     },
