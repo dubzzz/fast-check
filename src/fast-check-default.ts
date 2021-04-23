@@ -128,7 +128,7 @@ import {
   SchedulerSequenceItem,
   SchedulerReportItem,
   SchedulerConstraints,
-} from './check/arbitrary/AsyncSchedulerArbitrary';
+} from './arbitrary/scheduler';
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
 import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/ArbitraryWithContextualShrink';
