@@ -2,7 +2,7 @@ import { Scheduler } from '../interfaces/Scheduler';
 import { ScheduledTask, SchedulerImplem, TaskSelector } from '../implementations/SchedulerImplem';
 
 /** @internal */
-export function buildNextTaskIndex<TMetaData>(ordering: number[]): TaskSelector<TMetaData> {
+function buildNextTaskIndex<TMetaData>(ordering: number[]): TaskSelector<TMetaData> {
   let numTasks = 0;
   return {
     clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(ordering),

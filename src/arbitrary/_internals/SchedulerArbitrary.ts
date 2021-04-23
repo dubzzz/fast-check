@@ -3,7 +3,17 @@ import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Scheduler } from './interfaces/Scheduler';
-import { ScheduledTask, SchedulerImplem } from './implementations/SchedulerImplem';
+import { ScheduledTask, SchedulerImplem, TaskSelector } from './implementations/SchedulerImplem';
+
+/** @internal */
+function buildNextTaskIndex<TMetaData>(r: Random): TaskSelector<TMetaData> {
+  return {
+    clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(r.clone()),
+    nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]): number => {
+      return r.nextInt(0, scheduledTasks.length - 1);
+    },
+  };
+}
 
 /** @internal */
 export class SchedulerArbitrary<TMetaData> extends NextArbitrary<Scheduler<TMetaData>> {
@@ -12,14 +22,6 @@ export class SchedulerArbitrary<TMetaData> extends NextArbitrary<Scheduler<TMeta
   }
 
   generate(mrng: Random, _biasFactor: number | undefined): NextValue<Scheduler<TMetaData>> {
-    const buildNextTaskIndex = (r: Random) => {
-      return {
-        clone: () => buildNextTaskIndex(r.clone()),
-        nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]) => {
-          return r.nextInt(0, scheduledTasks.length - 1);
-        },
-      };
-    };
     return new NextValue(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())));
   }
 
