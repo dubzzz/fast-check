@@ -1,6 +1,6 @@
 import { ScheduledCommand } from '../../../../../src/check/model/commands/ScheduledCommand';
 import { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
-import { Scheduler, SchedulerSequenceItem } from '../../../../../src/check/arbitrary/AsyncSchedulerArbitrary';
+import { Scheduler, SchedulerSequenceItem } from '../../../../../src/arbitrary/scheduler';
 
 type Model = Record<string, unknown>;
 type Real = unknown;
