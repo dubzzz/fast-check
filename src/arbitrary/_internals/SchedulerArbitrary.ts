@@ -6,11 +6,11 @@ import { Scheduler } from './interfaces/Scheduler';
 import { ScheduledTask, SchedulerImplem, TaskSelector } from './implementations/SchedulerImplem';
 
 /** @internal */
-function buildNextTaskIndex<TMetaData>(r: Random): TaskSelector<TMetaData> {
+function buildNextTaskIndex<TMetaData>(mrng: Random): TaskSelector<TMetaData> {
   return {
-    clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(r.clone()),
+    clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(mrng.clone()),
     nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]): number => {
-      return r.nextInt(0, scheduledTasks.length - 1);
+      return mrng.nextInt(0, scheduledTasks.length - 1);
     },
   };
 }
