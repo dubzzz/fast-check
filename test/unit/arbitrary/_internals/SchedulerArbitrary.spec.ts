@@ -15,9 +15,9 @@ describe('SchedulerArbitrary', () => {
     it('should instanciate a SchedulerImplem on generate and clone the random generator', () => {
       // Arrange
       const act = jest.fn();
-      const { instance: mrng, clone } = fakeRandom();
-      const { instance: mrng1, clone: clone1 } = fakeRandom();
-      const { instance: mrng2 } = fakeRandom();
+      const { instance: mrng, clone } = fakeRandom(); // random received by generate (risk to be altered from the outside so we clone it)
+      const { instance: mrng1, clone: clone1 } = fakeRandom(); // random used by the first taskScheduler
+      const { instance: mrng2 } = fakeRandom(); // random used by the clone of taskScheduler is needed
       clone.mockReturnValueOnce(mrng1);
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
@@ -44,8 +44,8 @@ describe('SchedulerArbitrary', () => {
       const act = jest.fn();
       const scheduledTasks = [{}, {}, {}, {}, {}, {}, {}, {}] as ScheduledTask<unknown>[];
       const { instance: mrng, clone } = fakeRandom();
-      const { instance: mrng1, clone: clone1 } = fakeRandom();
-      const { instance: mrng2, nextInt } = fakeRandom();
+      const { instance: mrng1, clone: clone1, nextInt } = fakeRandom();
+      const { instance: mrng2 } = fakeRandom();
       clone.mockReturnValueOnce(mrng1);
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
@@ -68,13 +68,16 @@ describe('SchedulerArbitrary', () => {
       const act = jest.fn();
       const scheduledTasks = [{}, {}, {}, {}, {}, {}, {}, {}] as ScheduledTask<unknown>[];
       const { instance: mrng, clone } = fakeRandom();
-      const { instance: mrng1, clone: clone1 } = fakeRandom();
-      const { instance: mrng2, clone: clone2, nextInt } = fakeRandom();
-      const { instance: mrng3, nextInt: nextIntBis } = fakeRandom();
+      const { instance: mrng1, clone: clone1, nextInt } = fakeRandom();
+      const { instance: mrng2, clone: clone2, nextInt: nextIntBis } = fakeRandom();
+      const { instance: mrng3 } = fakeRandom();
       clone.mockReturnValueOnce(mrng1);
-      clone1.mockReturnValueOnce(mrng2);
-      clone2.mockImplementationOnce(() => {
+      clone1.mockImplementationOnce(() => {
         expect(nextInt).not.toHaveBeenCalled(); // if we pulled values clone is not a clone of the source
+        return mrng2;
+      });
+      clone2.mockImplementationOnce(() => {
+        expect(nextIntBis).not.toHaveBeenCalled(); // if we pulled values clone is not a clone of the source
         return mrng3;
       });
       nextInt.mockReturnValueOnce(5).mockReturnValueOnce(2);
