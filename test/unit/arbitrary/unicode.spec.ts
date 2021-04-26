@@ -42,7 +42,8 @@ describe('unicode', () => {
 
     // Act / Assert
     fc.assert(
-      fc.property(fc.maxSafeInteger(), (code) => {
+      // [0, 1112063] is the range requested by fullUnicode
+      fc.property(fc.oneof(fc.integer({ min: -1, max: 1112064 }), fc.maxSafeInteger()), (code) => {
         fc.pre(!allPossibleValues.has(code)); // not a possible code for our mapper
         const unmapped = unmapFromCode(code);
         expect(unmapped < min || unmapped > max).toBe(true);
