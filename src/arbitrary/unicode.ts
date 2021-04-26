@@ -19,6 +19,7 @@ function unicodeMapper(v: number) {
 /** @internal */
 function unicodeUnmapper(v: number) {
   if (v < 0xd800) return preferPrintableUnmapper(v);
+  if (v <= 0xdfff) return -1;
   return v - gapSize;
 }
 
