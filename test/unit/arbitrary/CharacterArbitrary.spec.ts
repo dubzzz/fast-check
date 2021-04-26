@@ -1,14 +1,6 @@
-import {
-  char,
-  ascii,
-  char16bits,
-  unicode,
-  hexa,
-  base64,
-  fullUnicode,
-} from '../../../../src/check/arbitrary/CharacterArbitrary';
+import { char, ascii, char16bits, unicode, hexa, base64, fullUnicode } from '../../../src/arbitrary/CharacterArbitrary';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
 const remapCharToIndex = (c: string): number => {
   const cp = c.codePointAt(0)!;

@@ -1,4 +1,4 @@
-import { fullUnicode } from '../CharacterArbitrary';
+import { fullUnicode } from '../../../arbitrary/CharacterArbitrary';
 import { Arbitrary } from '../definition/Arbitrary';
 import { frequency } from '../../../arbitrary/frequency';
 import { mapToConstant } from '../MapToConstantArbitrary';
