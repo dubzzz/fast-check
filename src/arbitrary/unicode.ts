@@ -1,6 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildCharacterArbitrary } from './_internals/builders/CharacterArbitraryBuilder';
-import { preferPrintableMapper } from './_internals/mappers/PreferPrintable';
+import { preferPrintableMapper, preferPrintableUnmapper } from './_internals/mappers/PreferPrintable';
 
 // Characters in the range: U+D800 to U+DFFF
 // are called 'surrogate pairs', they cannot be defined alone and come by pairs
@@ -16,11 +16,18 @@ function unicodeMapper(v: number) {
   return v + gapSize;
 }
 
+/** @internal */
+function unicodeUnmapper(v: number) {
+  if (v < 0xd800) return preferPrintableUnmapper(v);
+  if (v <= 0xdfff) return -1;
+  return v - gapSize;
+}
+
 /**
  * For single unicode characters defined in the BMP plan - char code between 0x0000 (included) and 0xffff (included) and without the range 0xd800 to 0xdfff (surrogate pair characters)
  * @remarks Since 0.0.11
  * @public
  */
 export function unicode(): Arbitrary<string> {
-  return buildCharacterArbitrary(0x0000, 0xffff - gapSize, unicodeMapper);
+  return buildCharacterArbitrary(0x0000, 0xffff - gapSize, unicodeMapper, unicodeUnmapper);
 }

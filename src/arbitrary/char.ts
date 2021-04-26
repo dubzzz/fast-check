@@ -16,5 +16,5 @@ function identity(v: number) {
  */
 export function char(): Arbitrary<string> {
   // Only printable characters: https://www.ascii-code.com/
-  return buildCharacterArbitrary(0x20, 0x7e, identity);
+  return buildCharacterArbitrary(0x20, 0x7e, identity, identity);
 }
