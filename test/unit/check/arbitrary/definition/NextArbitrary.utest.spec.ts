@@ -389,6 +389,96 @@ describe('NextArbitrary', () => {
       expect([...shrinks]).toHaveLength(0);
       expect(shrink).not.toHaveBeenCalled();
     });
+
+    it.each`
+      outputCanGenerate
+      ${false}
+      ${true}
+    `(
+      'should try to unmap the value then call source arbitrary on canGenerate when provided a successful unmapper function',
+      ({ outputCanGenerate }) => {
+        // Arrange
+        const generate = jest.fn();
+        const canGenerate = jest.fn().mockReturnValue(outputCanGenerate);
+        const shrink = jest.fn();
+        const originalValue = Symbol();
+        const unmapperOutput = Symbol();
+        const unmapper = jest.fn().mockReturnValue(unmapperOutput);
+        class MyNextArbitrary extends NextArbitrary<any> {
+          generate = generate;
+          canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+          shrink = shrink;
+        }
+
+        // Act
+        const arb = new MyNextArbitrary().map(() => Symbol(), unmapper);
+        const out = arb.canGenerate(originalValue);
+
+        // Assert
+        expect(out).toBe(outputCanGenerate);
+        expect(unmapper).toHaveBeenCalledTimes(1);
+        expect(unmapper).toHaveBeenCalledWith(originalValue);
+        expect(canGenerate).toHaveBeenCalledTimes(1);
+        expect(canGenerate).toHaveBeenCalledWith(unmapperOutput);
+      }
+    );
+
+    it('should try to unmap the value and stop on error in case of failing unmapper function', () => {
+      // Arrange
+      const generate = jest.fn();
+      const canGenerate = jest.fn();
+      const shrink = jest.fn();
+      const originalValue = Symbol();
+      const unmapper = jest.fn().mockImplementation(() => {
+        throw new Error('Unable to unmap such value');
+      });
+      class MyNextArbitrary extends NextArbitrary<any> {
+        generate = generate;
+        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        shrink = shrink;
+      }
+
+      // Act
+      const arb = new MyNextArbitrary().map(() => Symbol(), unmapper);
+      const out = arb.canGenerate(originalValue);
+
+      // Assert
+      expect(out).toBe(false);
+      expect(unmapper).toHaveBeenCalledTimes(1);
+      expect(unmapper).toHaveBeenCalledWith(originalValue);
+      expect(canGenerate).not.toHaveBeenCalled();
+    });
+
+    it('should return a mapped version of the stream produced by the source arbitrary for the unmapped value when provided an unmapper function', () => {
+      // Arrange
+      const expectedStreamValuesFromSource = Stream.of(
+        new NextValue('titi'),
+        new NextValue('toto'),
+        new NextValue('tutu')
+      );
+      const generate = jest.fn();
+      const canGenerate = jest.fn();
+      const shrink = jest.fn().mockReturnValueOnce(expectedStreamValuesFromSource);
+      const originalValue = Symbol();
+      const unmapperOutput = 'tata';
+      const unmapper = jest.fn().mockReturnValue('tata');
+      class MyNextArbitrary extends NextArbitrary<any> {
+        generate = generate;
+        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        shrink = shrink;
+      }
+
+      // Act
+      const arb = new MyNextArbitrary().map((tag) => Symbol.for(tag), unmapper);
+      const shrinks = [...arb.shrink(originalValue)];
+
+      // Assert
+      expect(shrinks.map((s) => s.value)).toEqual([Symbol.for('titi'), Symbol.for('toto'), Symbol.for('tutu')]);
+      expect(unmapper).toHaveBeenCalledTimes(1);
+      expect(unmapper).toHaveBeenCalledWith(originalValue);
+      expect(shrink).toHaveBeenCalledTimes(1);
+      expect(shrink).toHaveBeenCalledWith(unmapperOutput);
+    });
   });
 
   describe('chain', () => {

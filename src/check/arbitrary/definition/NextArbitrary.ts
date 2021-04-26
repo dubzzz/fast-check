@@ -290,7 +290,7 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
     if (this.unmapper !== undefined) {
       // WARNING: canGenerate must have been called first
       //          shrink should only be called for safe values
-      return this.arb.shrink(this.unmapper(value), undefined).map(this.bindValueMapper);
+      return this.arb.shrink(this.unmapper(value)).map(this.bindValueMapper);
     }
     return Stream.nil();
   }
