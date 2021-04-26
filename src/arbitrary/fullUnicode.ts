@@ -1,6 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildCharacterArbitrary } from './_internals/builders/CharacterArbitraryBuilder';
-import { preferPrintableMapper } from './_internals/mappers/PreferPrintable';
+import { preferPrintableMapper, preferPrintableUnmapper } from './_internals/mappers/PreferPrintable';
 
 // Characters in the range: U+D800 to U+DFFF
 // are called 'surrogate pairs', they cannot be defined alone and come by pairs
@@ -16,6 +16,12 @@ function unicodeMapper(v: number) {
   return v + gapSize;
 }
 
+/** @internal */
+function unicodeUnmapper(v: number) {
+  if (v < 0xd800) return preferPrintableUnmapper(v);
+  return v - gapSize;
+}
+
 /**
  * For single unicode characters - any of the code points defined in the unicode standard
  *
@@ -27,5 +33,5 @@ function unicodeMapper(v: number) {
  * @public
  */
 export function fullUnicode(): Arbitrary<string> {
-  return buildCharacterArbitrary(0x0000, 0x10ffff - gapSize, unicodeMapper);
+  return buildCharacterArbitrary(0x0000, 0x10ffff - gapSize, unicodeMapper, unicodeUnmapper);
 }
