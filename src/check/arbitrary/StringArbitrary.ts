@@ -1,6 +1,12 @@
 import { array } from '../../arbitrary/array';
 import { maxLengthFromMinLength } from '../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from '../../arbitrary/CharacterArbitrary';
+import { ascii } from '../../arbitrary/ascii';
+import { base64 } from '../../arbitrary/base64';
+import { char } from '../../arbitrary/char';
+import { char16bits } from '../../arbitrary/char16bits';
+import { fullUnicode } from '../../arbitrary/fullUnicode';
+import { hexa } from '../../arbitrary/hexa';
+import { unicode } from '../../arbitrary/unicode';
 import { Arbitrary } from './definition/Arbitrary';
 
 /**

@@ -1,4 +1,10 @@
-import { char, ascii, char16bits, unicode, hexa, base64, fullUnicode } from '../../../src/arbitrary/CharacterArbitrary';
+import { char } from '../../../src/arbitrary/char';
+import { ascii } from '../../../src/arbitrary/ascii';
+import { char16bits } from '../../../src/arbitrary/char16bits';
+import { unicode } from '../../../src/arbitrary/unicode';
+import { hexa } from '../../../src/arbitrary/hexa';
+import { base64 } from '../../../src/arbitrary/base64';
+import { fullUnicode } from '../../../src/arbitrary/fullUnicode';
 
 import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
