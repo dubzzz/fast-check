@@ -113,13 +113,14 @@ export abstract class NextArbitrary<T> {
    * ```
    *
    * @param mapper - Map function, to produce a new element based on an old one
+   * @param unmapper - Optional unmap function, it will never be used except when shrinking user defined values. Must throw if value is not compatible
    * @returns New arbitrary with mapped elements
    *
    * @remarks Since 2.15.0
    */
-  map<U>(mapper: (t: T) => U): NextArbitrary<U> {
+  map<U>(mapper: (t: T) => U, unmapper?: (possiblyU: unknown) => T): NextArbitrary<U> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return new MapArbitrary(this, mapper);
+    return new MapArbitrary(this, mapper, unmapper);
   }
 
   /**
@@ -259,7 +260,11 @@ type MapArbitraryContext<T> = {
 /** @internal */
 class MapArbitrary<T, U> extends NextArbitrary<U> {
   readonly bindValueMapper: (v: NextValue<T>) => NextValue<U>;
-  constructor(readonly arb: NextArbitrary<T>, readonly mapper: (t: T) => U) {
+  constructor(
+    readonly arb: NextArbitrary<T>,
+    readonly mapper: (t: T) => U,
+    readonly unmapper?: (possiblyU: unknown) => T
+  ) {
     super();
     this.bindValueMapper = this.valueMapper.bind(this);
   }
@@ -268,14 +273,25 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
     return this.valueMapper(g);
   }
   canGenerate(value: unknown): value is U {
-    // TODO Need unmapper
+    if (this.unmapper !== undefined) {
+      try {
+        const unmapped = this.unmapper(value);
+        return this.arb.canGenerate(unmapped);
+      } catch (_err) {
+        return false;
+      }
+    }
     return false;
   }
   shrink(value: U, context?: unknown): Stream<NextValue<U>> {
     if (this.isSafeContext(context)) {
       return this.arb.shrink(context.originalValue, context.originalContext).map(this.bindValueMapper);
     }
-    // TODO Need unmapper
+    if (this.unmapper !== undefined) {
+      // WARNING: canGenerate must have been called first
+      //          shrink should only be called for safe values
+      return this.arb.shrink(this.unmapper(value), undefined).map(this.bindValueMapper);
+    }
     return Stream.nil();
   }
   private mapperWithCloneIfNeeded(v: NextValue<T>): [U, T] {
