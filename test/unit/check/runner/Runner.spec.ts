@@ -1,7 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
+import { char } from '../../../../src/arbitrary/char';
 import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import { Random } from '../../../../src/random/generator/Random';
