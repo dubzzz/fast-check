@@ -2,7 +2,7 @@ import * as fc from '../../../../lib/fast-check';
 
 import { set } from '../../../../src/arbitrary/set';
 import { nat } from '../../../../src/arbitrary/nat';
-import { string } from '../../../../src/check/arbitrary/StringArbitrary';
+import { string } from '../../../../src/arbitrary/string';
 
 import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';

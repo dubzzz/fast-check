@@ -73,17 +73,14 @@ import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
 import { set, SetConstraints } from './arbitrary/set';
 import { infiniteStream } from './arbitrary/infiniteStream';
-import {
-  asciiString,
-  base64String,
-  fullUnicodeString,
-  hexaString,
-  string,
-  string16bits,
-  stringOf,
-  StringSharedConstraints,
-  unicodeString,
-} from './check/arbitrary/StringArbitrary';
+import { asciiString } from './arbitrary/asciiString';
+import { base64String } from './arbitrary/base64String';
+import { fullUnicodeString } from './arbitrary/fullUnicodeString';
+import { hexaString } from './arbitrary/hexaString';
+import { string, StringSharedConstraints } from './arbitrary/string';
+import { string16bits } from './arbitrary/string16bits';
+import { stringOf } from './arbitrary/stringOf';
+import { unicodeString } from './arbitrary/unicodeString';
 import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple } from './arbitrary/genericTuple';
 import { tuple } from './arbitrary/tuple';
