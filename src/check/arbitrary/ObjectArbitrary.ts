@@ -2,7 +2,7 @@ import { Arbitrary } from './definition/Arbitrary';
 
 import { stringify } from '../../utils/stringify';
 import { array } from '../../arbitrary/array';
-import { boolean } from './BooleanArbitrary';
+import { boolean } from '../../arbitrary/boolean';
 import { constant } from '../../arbitrary/constant';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';

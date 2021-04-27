@@ -24,7 +24,7 @@ import { bigInt, BigIntConstraints } from './arbitrary/bigInt';
 import { bigIntN } from './arbitrary/bigIntN';
 import { bigUint, BigUintConstraints } from './arbitrary/bigUint';
 import { bigUintN } from './arbitrary/bigUintN';
-import { boolean } from './check/arbitrary/BooleanArbitrary';
+import { boolean } from './arbitrary/boolean';
 import { falsy, FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { ascii } from './arbitrary/ascii';
 import { base64 } from './arbitrary/base64';
