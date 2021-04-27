@@ -1,5 +1,5 @@
 import { nat } from '../../../src/arbitrary/nat';
-import { stringOf } from '../../../src/check/arbitrary/StringArbitrary';
+import { stringOf } from '../../../src/arbitrary/stringOf';
 import { mixedCase } from '../../../src/arbitrary/mixedCase';
 
 import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';

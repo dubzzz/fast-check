@@ -1,7 +1,7 @@
 import { array } from '../../arbitrary/array';
 import { buildLowerAlphaNumericArb } from './helpers/SpecificCharacterRange';
 import { domain } from './HostArbitrary';
-import { stringOf } from './StringArbitrary';
+import { stringOf } from '../../arbitrary/stringOf';
 import { tuple } from '../../arbitrary/tuple';
 import { Arbitrary } from './definition/Arbitrary';
 

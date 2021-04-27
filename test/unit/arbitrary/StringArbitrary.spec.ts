@@ -1,20 +1,18 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { constantFrom } from '../../../../src/arbitrary/constantFrom';
-import {
-  asciiString,
-  base64String,
-  hexaString,
-  string,
-  string16bits,
-  stringOf,
-  unicodeString,
-} from '../../../../src/check/arbitrary/StringArbitrary';
+import { constantFrom } from '../../../src/arbitrary/constantFrom';
+import { asciiString } from '../../../src/arbitrary/asciiString';
+import { base64String } from '../../../src/arbitrary/base64String';
+import { hexaString } from '../../../src/arbitrary/hexaString';
+import { string } from '../../../src/arbitrary/string';
+import { string16bits } from '../../../src/arbitrary/string16bits';
+import { stringOf } from '../../../src/arbitrary/stringOf';
+import { unicodeString } from '../../../src/arbitrary/unicodeString';
 
-import { generateOneValue } from './generic/GenerateOneValue';
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import { generateOneValue } from '../check/arbitrary/generic/GenerateOneValue';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
-import * as stubRng from '../../stubs/generators';
+import * as stubRng from '../stubs/generators';
 
 const minMax = fc
   .tuple(fc.integer(0, 10000), fc.integer(0, 10000))

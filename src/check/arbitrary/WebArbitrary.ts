@@ -7,7 +7,7 @@ import { nat } from '../../arbitrary/nat';
 import { ipV4, ipV4Extended, ipV6 } from './IpArbitrary';
 import { oneof } from '../../arbitrary/oneof';
 import { option } from '../../arbitrary/option';
-import { stringOf } from './StringArbitrary';
+import { stringOf } from '../../arbitrary/stringOf';
 import { tuple } from '../../arbitrary/tuple';
 import { Arbitrary } from './definition/Arbitrary';
 
