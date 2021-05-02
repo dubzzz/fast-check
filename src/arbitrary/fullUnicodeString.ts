@@ -1,11 +1,14 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { array } from './array';
 import { fullUnicode } from './fullUnicode';
 import {
-  buildStringArbitrary,
+  extractStringConstraints,
   StringFullConstraintsDefinition,
   StringSharedConstraints,
-} from './_internals/builders/StringArbitraryBuilder';
-export { StringSharedConstraints } from './_internals/builders/StringArbitraryBuilder';
+} from './_internals/helpers/StringConstraintsExtractor';
+import { codePointAwareMapper, codePointAwareUnmapper } from './_internals/mappers/CodePointAware';
+export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
  * For strings of {@link fullUnicode}
@@ -50,6 +53,9 @@ function fullUnicodeString(minLength: number, maxLength: number): Arbitrary<stri
  */
 function fullUnicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
 function fullUnicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return buildStringArbitrary(fullUnicode(), ...args);
+  const constraints = extractStringConstraints(args);
+  return convertFromNext(
+    convertToNext(array(fullUnicode(), constraints)).map(codePointAwareMapper, codePointAwareUnmapper)
+  );
 }
 export { fullUnicodeString };

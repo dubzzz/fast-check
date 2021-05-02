@@ -1,11 +1,14 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { array } from './array';
 import { char16bits } from './char16bits';
 import {
-  buildStringArbitrary,
+  extractStringConstraints,
   StringFullConstraintsDefinition,
   StringSharedConstraints,
-} from './_internals/builders/StringArbitraryBuilder';
-export { StringSharedConstraints } from './_internals/builders/StringArbitraryBuilder';
+} from './_internals/helpers/StringConstraintsExtractor';
+import { notCodePointAwareMapper, notCodePointAwareUnmapper } from './_internals/mappers/NotCodePointAware';
+export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
  * For strings of {@link char16bits}
@@ -50,6 +53,9 @@ function string16bits(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function string16bits(constraints: StringSharedConstraints): Arbitrary<string>;
 function string16bits(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return buildStringArbitrary(char16bits(), ...args);
+  const constraints = extractStringConstraints(args);
+  return convertFromNext(
+    convertToNext(array(char16bits(), constraints)).map(notCodePointAwareMapper, notCodePointAwareUnmapper)
+  );
 }
 export { string16bits };

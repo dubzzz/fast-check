@@ -1,10 +1,13 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { array } from './array';
 import {
-  buildStringArbitrary,
+  extractStringConstraints,
   StringFullConstraintsDefinition,
   StringSharedConstraints,
-} from './_internals/builders/StringArbitraryBuilder';
-export { StringSharedConstraints } from './_internals/builders/StringArbitraryBuilder';
+} from './_internals/helpers/StringConstraintsExtractor';
+import { stringOfMapper, stringOfUnmapperFor } from './_internals/mappers/StringOf';
+export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
  * For strings using the characters produced by `charArb`
@@ -55,6 +58,12 @@ function stringOf(charArb: Arbitrary<string>, minLength: number, maxLength: numb
  */
 function stringOf(charArb: Arbitrary<string>, constraints: StringSharedConstraints): Arbitrary<string>;
 function stringOf(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return buildStringArbitrary(charArb, ...args);
+  const constraints = extractStringConstraints(args);
+  return convertFromNext(
+    convertToNext(array(charArb, constraints)).map(
+      stringOfMapper,
+      stringOfUnmapperFor(convertToNext(charArb), constraints)
+    )
+  );
 }
 export { stringOf };

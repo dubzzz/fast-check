@@ -1,11 +1,14 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { array } from './array';
 import { hexa } from './hexa';
 import {
-  buildStringArbitrary,
+  extractStringConstraints,
   StringFullConstraintsDefinition,
   StringSharedConstraints,
-} from './_internals/builders/StringArbitraryBuilder';
-export { StringSharedConstraints } from './_internals/builders/StringArbitraryBuilder';
+} from './_internals/helpers/StringConstraintsExtractor';
+import { codePointAwareMapper, codePointAwareUnmapper } from './_internals/mappers/CodePointAware';
+export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
  * For strings of {@link hexa}
@@ -50,6 +53,7 @@ function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function hexaString(constraints: StringSharedConstraints): Arbitrary<string>;
 function hexaString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return buildStringArbitrary(hexa(), ...args);
+  const constraints = extractStringConstraints(args);
+  return convertFromNext(convertToNext(array(hexa(), constraints)).map(codePointAwareMapper, codePointAwareUnmapper));
 }
 export { hexaString };

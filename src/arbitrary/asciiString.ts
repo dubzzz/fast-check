@@ -1,11 +1,14 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { array } from './array';
 import { ascii } from './ascii';
 import {
-  buildStringArbitrary,
+  extractStringConstraints,
   StringFullConstraintsDefinition,
   StringSharedConstraints,
-} from './_internals/builders/StringArbitraryBuilder';
-export { StringSharedConstraints } from './_internals/builders/StringArbitraryBuilder';
+} from './_internals/helpers/StringConstraintsExtractor';
+import { codePointAwareMapper, codePointAwareUnmapper } from './_internals/mappers/CodePointAware';
+export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
  * For strings of {@link ascii}
@@ -50,6 +53,7 @@ function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function asciiString(constraints: StringSharedConstraints): Arbitrary<string>;
 function asciiString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return buildStringArbitrary(ascii(), ...args);
+  const constraints = extractStringConstraints(args);
+  return convertFromNext(convertToNext(array(ascii(), constraints)).map(codePointAwareMapper, codePointAwareUnmapper));
 }
 export { asciiString };
