@@ -19,50 +19,45 @@ import {
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
-import { array, ArrayConstraints } from './check/arbitrary/ArrayArbitrary';
-import {
-  bigInt,
-  bigIntN,
-  bigUint,
-  bigUintN,
-  BigIntConstraints,
-  BigUintConstraints,
-} from './check/arbitrary/BigIntArbitrary';
-import { boolean } from './check/arbitrary/BooleanArbitrary';
-import { falsy, FalsyContraints, FalsyValue } from './check/arbitrary/FalsyArbitrary';
-import { ascii, base64, char, char16bits, fullUnicode, hexa, unicode } from './check/arbitrary/CharacterArbitrary';
-import { clonedConstant, constant, constantFrom } from './check/arbitrary/ConstantArbitrary';
-import { context, ContextValue } from './check/arbitrary/ContextArbitrary';
+import { array, ArrayConstraints } from './arbitrary/array';
+import { bigInt, BigIntConstraints } from './arbitrary/bigInt';
+import { bigIntN } from './arbitrary/bigIntN';
+import { bigUint, BigUintConstraints } from './arbitrary/bigUint';
+import { bigUintN } from './arbitrary/bigUintN';
+import { boolean } from './arbitrary/boolean';
+import { falsy, FalsyContraints, FalsyValue } from './arbitrary/falsy';
+import { ascii } from './arbitrary/ascii';
+import { base64 } from './arbitrary/base64';
+import { char } from './arbitrary/char';
+import { char16bits } from './arbitrary/char16bits';
+import { fullUnicode } from './arbitrary/fullUnicode';
+import { hexa } from './arbitrary/hexa';
+import { unicode } from './arbitrary/unicode';
+import { clonedConstant } from './arbitrary/clonedConstant';
+import { constant } from './arbitrary/constant';
+import { constantFrom } from './arbitrary/constantFrom';
+import { context, ContextValue } from './arbitrary/context';
 import { date } from './check/arbitrary/DateArbitrary';
-import { clone, CloneValue } from './check/arbitrary/CloneArbitrary';
-import { dedup, DedupValue } from './check/arbitrary/DedupArbitrary';
+import { clone, CloneValue } from './arbitrary/clone';
+import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './check/arbitrary/DictionaryArbitrary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
-import {
-  frequency,
-  WeightedArbitrary,
-  FrequencyValue,
-  FrequencyContraints,
-} from './check/arbitrary/FrequencyArbitrary';
+import { frequency, WeightedArbitrary, FrequencyValue, FrequencyContraints } from './arbitrary/frequency';
 import { compareBooleanFunc, compareFunc, func } from './check/arbitrary/FunctionArbitrary';
 import { domain } from './check/arbitrary/HostArbitrary';
-import {
-  integer,
-  maxSafeInteger,
-  maxSafeNat,
-  nat,
-  IntegerConstraints,
-  NatConstraints,
-} from './check/arbitrary/IntegerArbitrary';
+import { integer, IntegerConstraints } from './arbitrary/integer';
+import { maxSafeInteger } from './arbitrary/maxSafeInteger';
+import { maxSafeNat } from './arbitrary/maxSafeNat';
+import { nat, NatConstraints } from './arbitrary/nat';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
-import { letrec } from './check/arbitrary/LetRecArbitrary';
+import { letrec } from './arbitrary/letrec';
 import { lorem, LoremConstraints } from './check/arbitrary/LoremArbitrary';
 import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
-import { memo, Memo } from './check/arbitrary/MemoArbitrary';
-import { mixedCase, MixedCaseConstraints } from './check/arbitrary/MixedCaseArbitrary';
+import { memo, Memo } from './arbitrary/memo';
+import { mixedCase, MixedCaseConstraints } from './arbitrary/mixedCase';
 import {
   anything,
   json,
@@ -73,24 +68,22 @@ import {
   unicodeJson,
   unicodeJsonObject,
 } from './check/arbitrary/ObjectArbitrary';
-import { oneof, OneOfValue, OneOfConstraints } from './check/arbitrary/OneOfArbitrary';
-import { option, OptionConstraints } from './check/arbitrary/OptionArbitrary';
+import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
+import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
-import { set, SetConstraints } from './check/arbitrary/SetArbitrary';
-import { infiniteStream } from './check/arbitrary/StreamArbitrary';
-import {
-  asciiString,
-  base64String,
-  fullUnicodeString,
-  hexaString,
-  string,
-  string16bits,
-  stringOf,
-  StringSharedConstraints,
-  unicodeString,
-} from './check/arbitrary/StringArbitrary';
+import { set, SetConstraints } from './arbitrary/set';
+import { infiniteStream } from './arbitrary/infiniteStream';
+import { asciiString } from './arbitrary/asciiString';
+import { base64String } from './arbitrary/base64String';
+import { fullUnicodeString } from './arbitrary/fullUnicodeString';
+import { hexaString } from './arbitrary/hexaString';
+import { string, StringSharedConstraints } from './arbitrary/string';
+import { string16bits } from './arbitrary/string16bits';
+import { stringOf } from './arbitrary/stringOf';
+import { unicodeString } from './arbitrary/unicodeString';
 import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
-import { genericTuple, tuple } from './check/arbitrary/TupleArbitrary';
+import { genericTuple } from './arbitrary/genericTuple';
+import { tuple } from './arbitrary/tuple';
 import { uuid, uuidV } from './check/arbitrary/UuidArbitrary';
 import {
   webAuthority,
@@ -127,7 +120,7 @@ import {
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
 import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
-import { cloneMethod } from './check/symbols';
+import { cloneMethod, cloneIfNeeded, hasCloneMethod, WithCloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { hash } from './utils/hash';
 import { stringify } from './utils/stringify';
@@ -138,7 +131,7 @@ import {
   SchedulerSequenceItem,
   SchedulerReportItem,
   SchedulerConstraints,
-} from './check/arbitrary/AsyncSchedulerArbitrary';
+} from './arbitrary/scheduler';
 import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
 import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/ArbitraryWithContextualShrink';
@@ -162,6 +155,9 @@ import {
 } from './check/arbitrary/TypedArrayArbitrary';
 import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
 import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
+import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
+import { NextValue } from './check/arbitrary/definition/NextValue';
+import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -330,10 +326,18 @@ export {
   SchedulerReportItem,
   // extend the framework
   Arbitrary,
+  NextArbitrary,
   ArbitraryWithShrink,
   ArbitraryWithContextualShrink,
   Shrinkable,
+  NextValue,
   cloneMethod,
+  cloneIfNeeded,
+  hasCloneMethod,
+  WithCloneMethod,
+  convertFromNext,
+  convertFromNextWithShrunkOnce,
+  convertToNext,
   // print values
   stringify,
   defaultReportMessage,

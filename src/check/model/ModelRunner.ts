@@ -1,7 +1,7 @@
 import { AsyncCommand } from './command/AsyncCommand';
 import { Command } from './command/Command';
 import { ICommand } from './command/ICommand';
-import { Scheduler } from '../arbitrary/AsyncSchedulerArbitrary';
+import { Scheduler } from '../../arbitrary/scheduler';
 import { scheduleCommands } from './commands/ScheduledCommand';
 
 /**

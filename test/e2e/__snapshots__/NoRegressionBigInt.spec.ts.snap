@@ -1205,23 +1205,34 @@ Execution summary:
 `;
 
 exports[`NoRegression BigInt mixedCase(stringOf) 1`] = `
-"Property failed after 1 tests
-{ seed: 42, path: \\"0:1:0:0:0:0:4\\", endOnFailure: true }
-Counterexample: [\\"bb\\"]
-Shrunk 6 time(s)
+"Property failed after 2 tests
+{ seed: 42, path: \\"1:1:0:0:1:5:1:3:2\\", endOnFailure: true }
+Counterexample: [\\"aa\\"]
+Shrunk 8 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"cCbAAbBAcaBCCCACCABaCAaAAbbACaBcBb\\"]
+[32m√[0m [\\"bA\\"]
+[31m×[0m [\\"BcbacabbBacBaCCAbBbABBabbBAAAACbbCaCbbCcaBA\\"]
 . [32m√[0m [\\"\\"]
-. [31m×[0m [\\"ABACAAAABBACABCBB\\"]
-. . [31m×[0m [\\"BBACABCBB\\"]
-. . . [31m×[0m [\\"ABCBB\\"]
-. . . . [31m×[0m [\\"CBB\\"]
-. . . . . [31m×[0m [\\"BB\\"]
-. . . . . . [32m√[0m [\\"B\\"]
-. . . . . . [32m√[0m [\\"AB\\"]
-. . . . . . [32m√[0m [\\"B\\"]
-. . . . . . [32m√[0m [\\"BA\\"]
-. . . . . . [31m×[0m [\\"bb\\"]"
+. [31m×[0m [\\"BABBBAAAACBBCACBBCcABA\\"]
+. . [31m×[0m [\\"BCACBBCCABA\\"]
+. . . [31m×[0m [\\"BCCABA\\"]
+. . . . [32m√[0m [\\"ABA\\"]
+. . . . [31m×[0m [\\"CCABA\\"]
+. . . . . [32m√[0m [\\"CABA\\"]
+. . . . . [32m√[0m [\\"ACABA\\"]
+. . . . . [32m√[0m [\\"C\\"]
+. . . . . [32m√[0m [\\"CBA\\"]
+. . . . . [32m√[0m [\\"CABA\\"]
+. . . . . [31m×[0m [\\"CAABA\\"]
+. . . . . . [32m√[0m [\\"ABA\\"]
+. . . . . . [31m×[0m [\\"AABA\\"]
+. . . . . . . [32m√[0m [\\"ABA\\"]
+. . . . . . . [32m√[0m [\\"A\\"]
+. . . . . . . [32m√[0m [\\"ABA\\"]
+. . . . . . . [31m×[0m [\\"AA\\"]
+. . . . . . . . [32m√[0m [\\"A\\"]
+. . . . . . . . [32m√[0m [\\"A\\"]
+. . . . . . . . [31m×[0m [\\"aa\\"]"
 `;

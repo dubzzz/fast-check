@@ -234,3 +234,15 @@ class NoBiasArbitrary<T> extends Arbitrary<T> {
     return this.arb.generate(mrng);
   }
 }
+
+/**
+ * Ensure an instance is an instance of Arbitrary
+ * @param instance - The instance to be checked
+ * @internal
+ */
+export function assertIsArbitrary(instance: Arbitrary<unknown>): void {
+  // TODO - Ideally `: asserts instance is Arbitrary<unknown>` but requires TS 3.7
+  if (typeof instance !== 'object' || instance === null || !('generate' in instance)) {
+    throw new Error('Unexpected value received: not an instance of Arbitrary');
+  }
+}

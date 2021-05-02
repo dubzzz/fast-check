@@ -10,7 +10,7 @@ import {
 const testFunc = (value: unknown) => {
   const repr = fc.stringify(value).replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5');
   for (let idx = 1; idx < repr.length; ++idx) {
-    if (repr[idx - 1] === repr[idx] && repr[idx] !== '"') {
+    if (repr[idx - 1] === repr[idx] && repr[idx] !== '"' && repr[idx] !== '}') {
       return false;
     }
   }
@@ -27,6 +27,39 @@ describe(`NoRegression`, () => {
   // Moreover, the framework should build consistent values throughout all the versions of node.
   const settings = { seed: 42, verbose: 2 };
 
+  it('.filter', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat().filter((n) => n % 3 !== 0),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.map', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat().map((n) => String(n)),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.chain', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat(20).chain((n) => fc.clone(fc.nat(n), n)),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('float', () => {
     expect(() =>
       fc.assert(
@@ -560,6 +593,36 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('letrec (oneof:maxDepth)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.letrec((tie) => ({
+            tree: fc.oneof({ withCrossShrink: true, maxDepth: 2 }, tie('leaf'), tie('node')),
+            node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
+            leaf: fc.nat(21),
+          })).tree,
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('letrec (oneof:depthFactor)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.letrec((tie) => ({
+            tree: fc.oneof({ withCrossShrink: true, depthFactor: 0.5 }, tie('leaf'), tie('node')),
+            node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
+            leaf: fc.nat(21),
+          })).tree,
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('commands', () => {
     expect(() =>
       fc.assert(
@@ -607,5 +670,16 @@ describe(`NoRegression`, () => {
         settings
       )
     ).rejects.toThrowErrorMatchingSnapshot();
+  });
+  it('context', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.context(), fc.nat(), (ctx, v) => {
+          ctx.log(`Value was ${v}`);
+          return testFunc(v);
+        }),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
 });

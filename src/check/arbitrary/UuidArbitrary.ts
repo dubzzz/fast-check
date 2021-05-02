@@ -1,6 +1,7 @@
 import { Arbitrary } from './definition/Arbitrary';
-import { integer, nat } from './IntegerArbitrary';
-import { tuple } from './TupleArbitrary';
+import { integer } from '../../arbitrary/integer';
+import { nat } from '../../arbitrary/nat';
+import { tuple } from '../../arbitrary/tuple';
 
 /** @internal */
 const padEight = (arb: Arbitrary<number>) => arb.map((n) => n.toString(16).padStart(8, '0'));

@@ -1,19 +1,20 @@
 import { Arbitrary } from './definition/Arbitrary';
 
 import { stringify } from '../../utils/stringify';
-import { array } from './ArrayArbitrary';
-import { boolean } from './BooleanArbitrary';
-import { constant } from './ConstantArbitrary';
+import { array } from '../../arbitrary/array';
+import { boolean } from '../../arbitrary/boolean';
+import { constant } from '../../arbitrary/constant';
 import { dictionary, toObject } from './DictionaryArbitrary';
 import { double } from './FloatingPointArbitrary';
-import { frequency } from './FrequencyArbitrary';
-import { maxSafeInteger } from './IntegerArbitrary';
-import { memo, Memo } from './MemoArbitrary';
-import { oneof } from './OneOfArbitrary';
-import { set } from './SetArbitrary';
-import { string, unicodeString } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
-import { bigInt } from './BigIntArbitrary';
+import { frequency } from '../../arbitrary/frequency';
+import { maxSafeInteger } from '../../arbitrary/maxSafeInteger';
+import { memo, Memo } from '../../arbitrary/memo';
+import { oneof } from '../../arbitrary/oneof';
+import { set } from '../../arbitrary/set';
+import { string } from '../../arbitrary/string';
+import { unicodeString } from '../../arbitrary/unicodeString';
+import { tuple } from '../../arbitrary/tuple';
+import { bigInt } from '../../arbitrary/bigInt';
 import { date } from './DateArbitrary';
 import {
   float32Array,
@@ -245,7 +246,8 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
   const baseArb = oneof(...arbitrariesForBase);
   const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys })));
   const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => dictOf(arbKeys(n), arb)));
-  const setBaseArb = () => oneof(...arbitrariesForBase.map((arb) => set(arb, 0, maxKeys).map((v) => new Set(v))));
+  const setBaseArb = () =>
+    oneof(...arbitrariesForBase.map((arb) => set(arb, { maxLength: maxKeys }).map((v) => new Set(v))));
   const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => mapOf(arbKeys(n), arb)));
 
   // base[] | anything[]
@@ -257,7 +259,7 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
       setBaseArb(),
 
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      set(anythingArb(n), 0, maxKeys).map((v) => new Set(v))
+      set(anythingArb(n), { maxLength: maxKeys }).map((v) => new Set(v))
     )
   );
   // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
