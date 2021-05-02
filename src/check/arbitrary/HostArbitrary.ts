@@ -1,12 +1,12 @@
-import { array } from './ArrayArbitrary';
+import { array } from '../../arbitrary/array';
 import {
   buildAlphaNumericPercentArb,
   buildLowerAlphaArb,
   buildLowerAlphaNumericArb,
 } from './helpers/SpecificCharacterRange';
-import { option } from './OptionArbitrary';
-import { stringOf } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
+import { option } from '../../arbitrary/option';
+import { stringOf } from '../../arbitrary/stringOf';
+import { tuple } from '../../arbitrary/tuple';
 import { Arbitrary } from './definition/Arbitrary';
 
 /** @internal */

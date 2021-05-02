@@ -1,8 +1,8 @@
 import { Arbitrary } from './definition/Arbitrary';
 import { doubleNext, DoubleNextConstraints } from './DoubleNextArbitrary';
 import { floatNext, FloatNextConstraints } from './FloatNextArbitrary';
-import { integer } from './IntegerArbitrary';
-import { tuple } from './TupleArbitrary';
+import { integer } from '../../arbitrary/integer';
+import { tuple } from '../../arbitrary/tuple';
 
 /** @internal */
 function next(n: number): Arbitrary<number> {

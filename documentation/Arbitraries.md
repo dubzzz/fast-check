@@ -1494,7 +1494,7 @@ fc.emailAddress()
 
 ```js
 fc.mixedCase(fc.hexaString())
-// Examples of generated values: "c7BC", "D7e0", "e7", "", "5bE4CC29"…
+// Examples of generated values: "", "7E", "dfC", "0de05933eF", "c"…
 
 fc.mixedCase(fc.constant('hello world'))
 // Examples of generated values: "HeLlO woRLD", "HElLO wORlD", "hELlO woRld", "hELLo worLd", "hELlo WORLd"…
@@ -1979,8 +1979,6 @@ fc.float64Array({minLength: 1})
 *&#8195;Description*
 
 > Always produce the same value
->
-> ⚠️ The value will not be cloned by the arbitrary
 
 *&#8195;Signatures*
 
@@ -2009,8 +2007,6 @@ fc.constant({})
 > One of the values specified as argument
 >
 > Randomly chooses among the provided values. It considers the first value as the default value so that in case of failure it will shrink to it. It expects a minimum of one value and throws whether it receives no value as parameters. It can easily be used on arrays with `fc.constantFrom(...myArray)`.
->
-> ⚠️ The values will not be cloned by the arbitrary
 
 *&#8195;Signatures*
 
@@ -2042,7 +2038,7 @@ fc.constantFrom(1, 'string', {})
 
 *&#8195;Signatures*
 
-- `fc.clonedConstant(value)`
+- _`fc.clonedConstant(value)`_ — _deprecated since v2.15.0, prefer `fc.constant`_
 
 *&#8195;with:*
 
@@ -2251,15 +2247,15 @@ fc.mapToConstant(
 
 ```js
 fc.clone(fc.nat(), 2)
-// Examples of generated values: [1458194344,1458194344], [1974332592,1974332592], [605246308,605246308], [187149619,187149619], [1325928130,1325928130]…
+// Examples of generated values: [25,25], [2147483629,2147483629], [13,13], [815456380,815456380], [2147483643,2147483643]…
 
 fc.clone(fc.nat(), 3)
 // Examples of generated values:
-// • [1075303821,1075303821,1075303821]
-// • [1289535362,1289535362,1289535362]
-// • [479824585,479824585,479824585]
-// • [61543881,61543881,61543881]
-// • [1082205096,1082205096,1082205096]
+// • [1395148595,1395148595,1395148595]
+// • [7,7,7]
+// • [1743838935,1743838935,1743838935]
+// • [879259091,879259091,879259091]
+// • [2147483640,2147483640,2147483640]
 // • …
 ```
 </details>
@@ -2286,15 +2282,15 @@ fc.clone(fc.nat(), 3)
 
 ```js
 fc.dedup(fc.nat(), 2)
-// Examples of generated values: [1458194344,1458194344], [1974332592,1974332592], [605246308,605246308], [187149619,187149619], [1325928130,1325928130]…
+// Examples of generated values: [25,25], [2147483629,2147483629], [13,13], [815456380,815456380], [2147483643,2147483643]…
 
 fc.dedup(fc.nat(), 3)
 // Examples of generated values:
-// • [1075303821,1075303821,1075303821]
-// • [1289535362,1289535362,1289535362]
-// • [479824585,479824585,479824585]
-// • [61543881,61543881,61543881]
-// • [1082205096,1082205096,1082205096]
+// • [1395148595,1395148595,1395148595]
+// • [7,7,7]
+// • [1743838935,1743838935,1743838935]
+// • [879259091,879259091,879259091]
+// • [2147483640,2147483640,2147483640]
 // • …
 ```
 </details>
@@ -2624,13 +2620,7 @@ fc.sparseArray(fc.nat())
 
 ```js
 fc.infiniteStream(fc.nat(9))
-// Examples of generated values:
-// • Stream(5,2,2,1,3,9,9,8,9,9...)
-// • Stream(1,0,8,1,6,8,6,7,7,7...)
-// • Stream(0,4,6,5,2,3,5,3,2,1...)
-// • Stream(2,5,0,0,1,9,9,0,7,3...)
-// • Stream(2,4,9,4,0,8,8,4,2,2...)
-// • …
+// Examples of generated values: Stream(…)…
 ```
 </details>
 

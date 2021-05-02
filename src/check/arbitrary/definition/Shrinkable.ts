@@ -41,13 +41,18 @@ export class Shrinkable<T, TShrink extends T = T> {
   /**
    * @param value_ - Internal value of the shrinkable
    * @param shrink - Function producing Stream of shrinks associated to value
+   * @param customGetValue - Limited to internal usages (to ease migration to next), it will be removed on next major
    */
-  constructor(value_: T, shrink: () => Stream<Shrinkable<TShrink>> = () => Stream.nil<Shrinkable<TShrink>>()) {
+  constructor(
+    value_: T,
+    shrink: () => Stream<Shrinkable<TShrink>> = () => Stream.nil<Shrinkable<TShrink>>(),
+    customGetValue: (() => T) | undefined = undefined
+  ) {
     this.value_ = value_;
     this.shrink = shrink;
     this.hasToBeCloned = hasCloneMethod(value_);
     this.readOnce = false;
-    Object.defineProperty(this, 'value', { get: this.getValue });
+    Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
   }
 
   /** @internal */
@@ -67,7 +72,7 @@ export class Shrinkable<T, TShrink extends T = T> {
     if (this.hasToBeCloned) {
       const out = mapper(this.value);
       if (out instanceof Object) {
-        (out as any)[cloneMethod] = () => mapper(this.value);
+        (out as any)[cloneMethod] = () => this.applyMapper(mapper);
       }
       return out;
     }
@@ -116,12 +121,12 @@ export class Shrinkable<T, TShrink extends T = T> {
   filter(predicate: (t: TShrink) => boolean): Shrinkable<T, TShrink>;
   filter<U extends TShrink>(refinement: (t: TShrink) => t is U): Shrinkable<T, U> {
     const refinementOnShrinkable = (s: Shrinkable<TShrink, TShrink>): s is Shrinkable<U, U> => {
-      return refinement(s.value);
+      return refinement(s.value_);
     };
     return new Shrinkable<T, U>(this.value, () =>
       this.shrink()
         .filter(refinementOnShrinkable)
-        .map((v) => v.filter(refinement))
+        .map((v) => v.filter(refinement) /* touch .value */)
     );
   }
 }

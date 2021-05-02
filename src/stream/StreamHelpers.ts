@@ -43,6 +43,17 @@ export function* filterHelper<T, U extends T>(g: IterableIterator<T>, f: (v: T) 
 }
 
 /** @internal */
+export function* takeNHelper<T>(g: IterableIterator<T>, n: number): IterableIterator<T> {
+  for (let i = 0; i < n; ++i) {
+    const cur = g.next();
+    if (cur.done) {
+      break;
+    }
+    yield cur.value;
+  }
+}
+
+/** @internal */
 export function* takeWhileHelper<T>(g: IterableIterator<T>, f: (v: T) => boolean): IterableIterator<T> {
   let cur = g.next();
   while (!cur.done && f(cur.value)) {

@@ -1,8 +1,8 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { func, compareFunc, compareBooleanFunc } from '../../../../src/check/arbitrary/FunctionArbitrary';
-import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
-import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { context } from '../../../../src/arbitrary/context';
+import { integer } from '../../../../src/arbitrary/integer';
 import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
 import { hash } from '../../../../src/utils/hash';
 import { stringify } from '../../../../src/utils/stringify';

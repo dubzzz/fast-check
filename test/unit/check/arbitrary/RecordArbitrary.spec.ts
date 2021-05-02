@@ -1,9 +1,9 @@
 import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
-import { constant } from '../../../../src/check/arbitrary/ConstantArbitrary';
+import { constant } from '../../../../src/arbitrary/constant';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { integer } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { integer } from '../../../../src/arbitrary/integer';
 import { record, RecordConstraints } from '../../../../src/check/arbitrary/RecordArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 

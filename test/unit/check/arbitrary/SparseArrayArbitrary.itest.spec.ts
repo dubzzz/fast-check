@@ -1,5 +1,5 @@
 import { sparseArray, SparseArrayConstraints } from '../../../../src/check/arbitrary/SparseArrayArbitrary';
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { nat } from '../../../../src/arbitrary/nat';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 import fc from '../../../../lib/fast-check';
 

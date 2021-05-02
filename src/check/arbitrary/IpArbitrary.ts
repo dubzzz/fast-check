@@ -1,10 +1,10 @@
-import { array } from './ArrayArbitrary';
-import { constantFrom } from './ConstantArbitrary';
+import { array } from '../../arbitrary/array';
+import { constantFrom } from '../../arbitrary/constantFrom';
 import { Arbitrary } from './definition/Arbitrary';
-import { nat } from './IntegerArbitrary';
-import { oneof } from './OneOfArbitrary';
-import { hexaString } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
+import { nat } from '../../arbitrary/nat';
+import { oneof } from '../../arbitrary/oneof';
+import { hexaString } from '../../arbitrary/hexaString';
+import { tuple } from '../../arbitrary/tuple';
 
 /**
  * For valid IP v4

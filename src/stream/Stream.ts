@@ -1,4 +1,12 @@
-import { filterHelper, flatMapHelper, joinHelper, mapHelper, nilHelper, takeWhileHelper } from './StreamHelpers';
+import {
+  filterHelper,
+  flatMapHelper,
+  joinHelper,
+  mapHelper,
+  nilHelper,
+  takeNHelper,
+  takeWhileHelper,
+} from './StreamHelpers';
 
 /**
  * Wrapper around `IterableIterator` interface
@@ -129,11 +137,8 @@ export class Stream<T> implements IterableIterator<T> {
    * @remarks Since 0.0.1
    */
   take(n: number): Stream<T> {
-    let idx = 0;
-    function helper(): boolean {
-      return idx++ < n;
-    }
-    return this.takeWhile(helper);
+    // /*DEBUG*/ this.closeCurrentStream();
+    return new Stream(takeNHelper(this.g, n));
   }
 
   /**

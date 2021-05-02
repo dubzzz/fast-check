@@ -1,14 +1,14 @@
-import { array } from './ArrayArbitrary';
-import { constantFrom } from './ConstantArbitrary';
-import { constant } from './ConstantArbitrary';
+import { array } from '../../arbitrary/array';
+import { constantFrom } from '../../arbitrary/constantFrom';
+import { constant } from '../../arbitrary/constant';
 import { buildAlphaNumericPercentArb } from './helpers/SpecificCharacterRange';
 import { domain, hostUserInfo } from './HostArbitrary';
-import { nat } from './IntegerArbitrary';
+import { nat } from '../../arbitrary/nat';
 import { ipV4, ipV4Extended, ipV6 } from './IpArbitrary';
-import { oneof } from './OneOfArbitrary';
-import { option } from './OptionArbitrary';
-import { stringOf } from './StringArbitrary';
-import { tuple } from './TupleArbitrary';
+import { oneof } from '../../arbitrary/oneof';
+import { option } from '../../arbitrary/option';
+import { stringOf } from '../../arbitrary/stringOf';
+import { tuple } from '../../arbitrary/tuple';
 import { Arbitrary } from './definition/Arbitrary';
 
 /**

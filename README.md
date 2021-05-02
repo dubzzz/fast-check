@@ -1,6 +1,6 @@
-<h3 align="center">
+<h1 align="center">
   <img align="center" src="./logo/logo.png" alt="fast-check logo" />
-</h3>
+</h1>
 
 <p align="center">
 Property based testing framework for JavaScript/TypeScript
@@ -120,19 +120,19 @@ Bindings to use fast-check in [ReScript](https://rescript-lang.org) are availabl
 
 fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
 
-### [jest](https://github.com/facebook/jest/)
+**[jest](https://github.com/facebook/jest/)**
 
 **Issue detected:** `toStrictEqual` fails to distinguish 0 from 5e-324 \[[more](https://github.com/facebook/jest/issues/7941)\]
 
 **Code example:** `expect(0).toStrictEqual(5e-324)` succeeds
 
-### [js-yaml](https://github.com/nodeca/js-yaml/)
+**[js-yaml](https://github.com/nodeca/js-yaml/)**
 
 **Issue detected:** enabling `!!int: binary` style when dumping negative integers produces invalid content \[[more](https://github.com/nodeca/js-yaml/pull/398)\]
 
 **Code example:** `yaml.dump({toto: -10}, {styles:{'!!int':'binary'}})` produces `toto: 0b-1010` not `toto: -0b1010`
 
-### [query-string](https://github.com/sindresorhus/query-string)
+**[query-string](https://github.com/sindresorhus/query-string)**
 
 **Issue detected:** enabling the `bracket` setting when exporting arrays containing null values produces an invalid output for the parser \[[more](https://github.com/sindresorhus/query-string/pull/138)\]
 
@@ -142,22 +142,22 @@ m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar
 m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
 ```
 
-**[MORE: Issues detected thanks of fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**
+**[MORE: Issues detected thanks to fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**
 
 ## Credits
 
-### Code Contributors
+**Code Contributors**
 
 This project would not be the same without them 💖 - [Become one of them](CONTRIBUTING.md)
 
 <a href="https://github.com/dubzzz/fast-check/graphs/contributors"><img src="https://opencollective.com/fast-check/contributors.svg?width=890&button=false" /></a>
 
-### Backers
+**Backers**
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/fast-check/contribute)] and help us sustain our community.
 <a href="https://opencollective.com/fast-check#backers"><img src="https://opencollective.com/fast-check/backers.svg?width=890"></a>
 
-### Sponsors
+**Sponsors**
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/fast-check#sponsor)]
 
