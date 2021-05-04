@@ -288,9 +288,20 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
       return this.arb.shrink(context.originalValue, context.originalContext).map(this.bindValueMapper);
     }
     if (this.unmapper !== undefined) {
-      // WARNING: canGenerate must have been called first
-      //          shrink should only be called for safe values
-      return this.arb.shrink(this.unmapper(value)).map(this.bindValueMapper);
+      // As `shrink` might be called with correct values where the unmapper has sevaral choices even
+      // entries looking correct could be invalid. If the user has not called `canGenerate` first, we
+      // might easily fall in such cases.
+      //
+      // Let's imagine: `mapper = (arr: string[]) => arr.join(" ")`
+      // >  mapper(["Hello", "how are", "you?"]) = "Hello how are you?"
+      // Unfortunately our unmapper might not unmap it correctly as several inputs give the same output.
+      // In order to be able to execute `shrink` safely on the unmapped value, we also need to check the
+      // unmapped value is correct for the source arbitrary. In the example above, we might imagine that
+      // our source arbitrary can shrink ["Hello", "how are", "you?"] but not ["Hello", "how", "are", "you?"].
+      const unmapped = this.unmapper(value);
+      if (this.arb.canGenerate(unmapped)) {
+        return this.arb.shrink(unmapped).map(this.bindValueMapper);
+      }
     }
     return Stream.nil();
   }

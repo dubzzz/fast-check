@@ -136,7 +136,10 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
             .map((nFlagsNextValue) => {
               const nChars = chars.slice(); // cloning chars
               this.applyFlagsOnChars(nChars, nFlagsNextValue.value, togglePositions);
-              return new NextValue(nChars.join(''), this.buildContextFor(new NextValue(rawString), nFlagsNextValue));
+              return new NextValue(
+                nChars.join(''),
+                this.buildContextFor(new NextValue(rawString, contextSafe.rawStringContext), nFlagsNextValue)
+              );
             });
         })
       );
