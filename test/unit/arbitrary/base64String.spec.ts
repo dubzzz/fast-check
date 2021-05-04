@@ -160,71 +160,19 @@ describe('base64String (integration)', () => {
     assertShrinkProducesValuesFlaggedAsCanGenerate(base64StringBuilder, { extraParameters });
   });
 
-  it('should be able to shrink any valid string (given right length and charset)', () => {
+  it.each`
+    rawValue
+    ${'ABCD'}
+    ${'0123AB=='}
+  `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = convertToNext(base64String());
-    const value = new NextValue('0123AB==');
+    const value = new NextValue(rawValue);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 50 })).join('\n');
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 250 })).join('\n');
 
     // Assert
-    expect(renderedTree).toMatchInlineSnapshot(`
-      "\\"0123AB==\\"
-      ├> \\"\\"
-      ├> \\"3AB=\\"
-      |  ├> \\"AB==\\"
-      |  |  ├> \\"\\"
-      |  |  |  ├> \\"\\"
-      |  |  |  └> \\"\\"
-      |  |  |     └> \\"\\"
-      |  |  ├> \\"\\"
-      |  |  |  └> \\"\\"
-      |  |  └> \\"AA==\\"
-      |  |     ├> \\"\\"
-      |  |     |  └> \\"\\"
-      |  |     └> \\"\\"
-      |  |        └> \\"\\"
-      |  ├> \\"AAB=\\"
-      |  |  ├> \\"AB==\\"
-      |  |  |  ├> \\"\\"
-      |  |  |  |  ├> \\"\\"
-      |  |  |  |  └> \\"\\"
-      |  |  |  |     └> \\"\\"
-      |  |  |  ├> \\"\\"
-      |  |  |  |  └> \\"\\"
-      |  |  |  └> \\"AA==\\"
-      |  |  |     ├> \\"\\"
-      |  |  |     |  └> \\"\\"
-      |  |  |     └> \\"\\"
-      |  |  |        └> \\"\\"
-      |  |  ├> \\"\\"
-      |  |  |  └> \\"\\"
-      |  |  ├> \\"AB==\\"
-      |  |  |  ├> \\"\\"
-      |  |  |  |  ├> \\"\\"
-      |  |  |  |  └> \\"\\"
-      |  |  |  |     └> \\"\\"
-      |  |  |  ├> \\"\\"
-      |  |  |  |  └> \\"\\"
-      |  |  |  └> \\"AA==\\"
-      |  |  |     ├> \\"\\"
-      |  |  |     |  └> \\"\\"
-      |  |  |     └> \\"\\"
-      |  |  |        └> \\"\\"
-      |  |  ├> \\"AA==\\"
-      |  |  |  ├> \\"\\"
-      |  |  |  |  └> \\"\\"
-      |  |  |  └> \\"\\"
-      |  |  |     └> \\"\\"
-      |  |  └> \\"AAA=\\"
-      |  |     ├> \\"AA==\\"
-      |  |     |  ├> \\"\\"
-      |  |     |  |  └> …
-      |  |     |  └> …
-      |  |     └> …
-      |  └> …
-      └> …"
-    `);
+    expect(renderedTree).toMatchSnapshot();
   });
 });

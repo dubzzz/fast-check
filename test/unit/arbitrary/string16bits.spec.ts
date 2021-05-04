@@ -61,75 +61,18 @@ describe('string16bits (integration)', () => {
     assertShrinkProducesValuesFlaggedAsCanGenerate(string16bitsBuilder, { extraParameters });
   });
 
-  it('should be able to shrink any valid string (given right length and charset)', () => {
+  it.each`
+    rawValue
+    ${'Hey \u{1f431}!'}
+  `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = convertToNext(string16bits());
-    const value = new NextValue('Hey \u{1f431}!');
+    const value = new NextValue(rawValue);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 50 })).join('\n');
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 250 })).join('\n');
 
     // Assert
-    expect(renderedTree).toMatchInlineSnapshot(`
-      "\\"Hey 🐱!\\"
-      ├> \\"\\"
-      ├> \\" 🐱!\\"
-      |  ├> \\"\\\\udc31!\\"
-      |  |  ├> \\"!\\"
-      |  |  |  ├> \\"\\"
-      |  |  |  └> \\" \\"
-      |  |  |     └> \\"\\"
-      |  |  ├> \\" !\\"
-      |  |  |  ├> \\"!\\"
-      |  |  |  |  ├> \\"\\"
-      |  |  |  |  └> \\" \\"
-      |  |  |  |     └> \\"\\"
-      |  |  |  ├> \\" \\"
-      |  |  |  |  └> \\"\\"
-      |  |  |  └> \\"  \\"
-      |  |  |     ├> \\" \\"
-      |  |  |     |  └> \\"\\"
-      |  |  |     └> \\" \\"
-      |  |  |        └> \\"\\"
-      |  |  ├> \\"渙!\\"
-      |  |  |  ├> \\"!\\"
-      |  |  |  |  ├> \\"\\"
-      |  |  |  |  └> \\" \\"
-      |  |  |  |     └> \\"\\"
-      |  |  |  ├> \\"㜍!\\"
-      |  |  |  |  ├> \\"!\\"
-      |  |  |  |  |  ├> \\"\\"
-      |  |  |  |  |  └> \\" \\"
-      |  |  |  |  |     └> \\"\\"
-      |  |  |  |  ├> \\"ᮇ!\\"
-      |  |  |  |  |  ├> \\"!\\"
-      |  |  |  |  |  |  ├> \\"\\"
-      |  |  |  |  |  |  └> \\" \\"
-      |  |  |  |  |  |     └> \\"\\"
-      |  |  |  |  |  ├> \\"හ!\\"
-      |  |  |  |  |  |  ├> \\"!\\"
-      |  |  |  |  |  |  |  ├> \\"\\"
-      |  |  |  |  |  |  |  └> \\" \\"
-      |  |  |  |  |  |  |     └> \\"\\"
-      |  |  |  |  |  |  ├> \\"ۢ!\\"
-      |  |  |  |  |  |  |  ├> \\"!\\"
-      |  |  |  |  |  |  |  |  ├> \\"\\"
-      |  |  |  |  |  |  |  |  └> \\" \\"
-      |  |  |  |  |  |  |  |     └> \\"\\"
-      |  |  |  |  |  |  |  ├> \\"ͱ!\\"
-      |  |  |  |  |  |  |  |  ├> \\"!\\"
-      |  |  |  |  |  |  |  |  |  ├> \\"\\"
-      |  |  |  |  |  |  |  |  |  └> \\" \\"
-      |  |  |  |  |  |  |  |  |     └> \\"\\"
-      |  |  |  |  |  |  |  |  └> …
-      |  |  |  |  |  |  |  └> …
-      |  |  |  |  |  |  └> …
-      |  |  |  |  |  └> …
-      |  |  |  |  └> …
-      |  |  |  └> …
-      |  |  └> …
-      |  └> …
-      └> …"
-    `);
+    expect(renderedTree).toMatchSnapshot();
   });
 });

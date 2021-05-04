@@ -2,6 +2,9 @@ import fc from '../../../../../lib/fast-check';
 import { stringOfUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/StringOf';
 import { fakeNextArbitrary } from '../../../check/arbitrary/generic/NextArbitraryHelpers';
 
+// prettier-ignore
+const MorseCode = ['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..'];
+
 describe('stringOfUnmapperFor', () => {
   it.each`
     sourceChunks                 | source            | constraints                       | expectedChunks
@@ -17,6 +20,8 @@ describe('stringOfUnmapperFor', () => {
     ${['a', 'aaaaa']}            | ${'aaaaa'}        | ${{ maxLength: 5 }}               | ${['a', 'a', 'a', 'a', 'a'] /* starts by a: the shortest fit */}
     ${['a', 'aa']}               | ${'aaaaaaaaaaa'}  | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
     ${['a', 'aa']}               | ${'aaaaaaaaaaaa'} | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
+    ${MorseCode}                 | ${'...___...'}    | ${{}}                             | ${['.', '.', '.', '_', '_', '_', '.', '.', '.']}
+    ${MorseCode}                 | ${'...___...'}    | ${{ maxLength: 3 }}               | ${['..', '.__', '_...']}
   `(
     'should properly split $source into chunks ($constraints)',
     ({ sourceChunks, source, constraints, expectedChunks }) => {
