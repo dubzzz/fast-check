@@ -11,6 +11,7 @@ import {
   assertGenerateProducesValuesFlaggedAsCanGenerate,
   assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 describe('stringOf (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number; patterns: string[] };
@@ -50,6 +51,74 @@ describe('stringOf (integration)', () => {
 
   it('should recognize values that would have been generated using it during shrink', () => {
     assertShrinkProducesValuesFlaggedAsCanGenerate(stringOfBuilder, { extraParameters });
+  });
+
+  it('should be able to shrink any valid string (given right length and charset)', () => {
+    // Arrange
+    const arb = convertToNext(stringOf(convertFromNext(new PatternsArbitrary(['A', 'Bb', 'Ccc']))));
+    const value = new NextValue('CccABbBbCcc');
+
+    // Act
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 50 })).join('\n');
+
+    // Assert
+    expect(renderedTree).toMatchInlineSnapshot(`
+      "\\"CccABbBbCcc\\"
+      ├> \\"\\"
+      ├> \\"BbBbCcc\\"
+      |  ├> \\"BbCcc\\"
+      |  |  ├> \\"Ccc\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  └> \\"A\\"
+      |  |  |     └> \\"\\"
+      |  |  ├> \\"ACcc\\"
+      |  |  |  ├> \\"Ccc\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\"A\\"
+      |  |  |  |     └> \\"\\"
+      |  |  |  ├> \\"A\\"
+      |  |  |  |  └> \\"\\"
+      |  |  |  └> \\"AA\\"
+      |  |  |     ├> \\"A\\"
+      |  |  |     |  └> \\"\\"
+      |  |  |     └> \\"A\\"
+      |  |  |        └> \\"\\"
+      |  |  ├> \\"Bb\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  └> \\"A\\"
+      |  |  |     └> \\"\\"
+      |  |  └> \\"BbA\\"
+      |  |     ├> \\"A\\"
+      |  |     |  └> \\"\\"
+      |  |     ├> \\"AA\\"
+      |  |     |  ├> \\"A\\"
+      |  |     |  |  └> \\"\\"
+      |  |     |  └> \\"A\\"
+      |  |     |     └> \\"\\"
+      |  |     └> \\"Bb\\"
+      |  |        ├> \\"\\"
+      |  |        └> \\"A\\"
+      |  |           └> \\"\\"
+      |  ├> \\"ABbCcc\\"
+      |  |  ├> \\"BbCcc\\"
+      |  |  |  ├> \\"Ccc\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\"A\\"
+      |  |  |  |     └> \\"\\"
+      |  |  |  ├> \\"ACcc\\"
+      |  |  |  |  ├> \\"Ccc\\"
+      |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  └> \\"A\\"
+      |  |  |  |  |     └> \\"\\"
+      |  |  |  |  ├> \\"A\\"
+      |  |  |  |  |  └> \\"\\"
+      |  |  |  |  └> \\"AA\\"
+      |  |  |  |     └> …
+      |  |  |  └> …
+      |  |  └> …
+      |  └> …
+      └> …"
+    `);
   });
 });
 

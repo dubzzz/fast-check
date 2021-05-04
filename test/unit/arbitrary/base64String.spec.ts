@@ -12,6 +12,8 @@ import {
 
 import * as ArrayMock from '../../../src/arbitrary/array';
 import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -156,5 +158,75 @@ describe('base64String (integration)', () => {
 
   it('should recognize values that would have been generated using it during shrink', () => {
     assertShrinkProducesValuesFlaggedAsCanGenerate(base64StringBuilder, { extraParameters });
+  });
+
+  it('should be able to shrink any valid string (given right length and charset)', () => {
+    // Arrange
+    const arb = convertToNext(base64String());
+    const value = new NextValue('abcd01==');
+
+    // Act
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 50 })).join('\n');
+
+    // Assert
+    expect(renderedTree).toMatchInlineSnapshot(`
+      "\\"abcd01==\\"
+      ├> \\"\\"
+      ├> \\"d01=\\"
+      |  ├> \\"01==\\"
+      |  |  ├> \\"\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\"\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  |  └> \\"\\"
+      |  |  |  |  |  |  |  |     ├> \\"\\"
+      |  |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  |  |        └> \\"\\"
+      |  |  |  |  |  |  |  └> \\"\\"
+      |  |  |  |  |  |  |     ├> \\"\\"
+      |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  |        ├> \\"\\"
+      |  |  |  |  |  |  |        ├> \\"\\"
+      |  |  |  |  |  |  |        |  └> \\"\\"
+      |  |  |  |  |  |  |        └> \\"\\"
+      |  |  |  |  |  |  |           ├> \\"\\"
+      |  |  |  |  |  |  |           └> \\"\\"
+      |  |  |  |  |  |  |              └> \\"\\"
+      |  |  |  |  |  |  └> \\"\\"
+      |  |  |  |  |  |     ├> \\"\\"
+      |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |        ├> \\"\\"
+      |  |  |  |  |  |        └> \\"\\"
+      |  |  |  |  |  |           ├> \\"\\"
+      |  |  |  |  |  |           ├> \\"\\"
+      |  |  |  |  |  |           |  └> \\"\\"
+      |  |  |  |  |  |           ├> \\"\\"
+      |  |  |  |  |  |           |  ├> \\"\\"
+      |  |  |  |  |  |           |  └> \\"\\"
+      |  |  |  |  |  |           |     ├> \\"\\"
+      |  |  |  |  |  |           |     └> \\"\\"
+      |  |  |  |  |  |           |        └> \\"\\"
+      |  |  |  |  |  |           └> \\"\\"
+      |  |  |  |  |  |              ├> \\"\\"
+      |  |  |  |  |  |              └> \\"\\"
+      |  |  |  |  |  |                 ├> \\"\\"
+      |  |  |  |  |  |                 └> …
+      |  |  |  |  |  └> …
+      |  |  |  |  └> …
+      |  |  |  └> …
+      |  |  └> …
+      |  └> …
+      └> …"
+    `);
   });
 });

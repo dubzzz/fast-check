@@ -2,6 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { string16bits } from '../../../src/arbitrary/string16bits';
 
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertGenerateProducesSameValueGivenSameSeed,
   assertGenerateProducesCorrectValues,
@@ -10,6 +11,7 @@ import {
   assertShrinkProducesCorrectValues,
   assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 describe('string16bits (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };
@@ -57,5 +59,77 @@ describe('string16bits (integration)', () => {
 
   it('should recognize values that would have been generated using it during shrink', () => {
     assertShrinkProducesValuesFlaggedAsCanGenerate(string16bitsBuilder, { extraParameters });
+  });
+
+  it('should be able to shrink any valid string (given right length and charset)', () => {
+    // Arrange
+    const arb = convertToNext(string16bits());
+    const value = new NextValue('Hey \u{1f431}!');
+
+    // Act
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 50 })).join('\n');
+
+    // Assert
+    expect(renderedTree).toMatchInlineSnapshot(`
+      "\\"Hey 🐱!\\"
+      ├> \\"\\"
+      ├> \\" 🐱!\\"
+      |  ├> \\"\\\\udc31!\\"
+      |  |  ├> \\"!\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  └> \\" \\"
+      |  |  |     └> \\"\\"
+      |  |  ├> \\" !\\"
+      |  |  |  ├> \\"!\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\" \\"
+      |  |  |  |     └> \\"\\"
+      |  |  |  ├> \\" \\"
+      |  |  |  |  └> \\"\\"
+      |  |  |  └> \\"  \\"
+      |  |  |     ├> \\" \\"
+      |  |  |     |  └> \\"\\"
+      |  |  |     └> \\" \\"
+      |  |  |        └> \\"\\"
+      |  |  ├> \\"渙!\\"
+      |  |  |  ├> \\"!\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\" \\"
+      |  |  |  |     └> \\"\\"
+      |  |  |  ├> \\"㜍!\\"
+      |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |     └> \\"\\"
+      |  |  |  |  ├> \\"ᮇ!\\"
+      |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  ├> \\"හ!\\"
+      |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  ├> \\"ۢ!\\"
+      |  |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  |  ├> \\"ͱ!\\"
+      |  |  |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  |  |  └> …
+      |  |  |  |  |  |  |  └> …
+      |  |  |  |  |  |  └> …
+      |  |  |  |  |  └> …
+      |  |  |  |  └> …
+      |  |  |  └> …
+      |  |  └> …
+      |  └> …
+      └> …"
+    `);
   });
 });

@@ -3,19 +3,36 @@ import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/Nex
 import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 
+const truncatedSignal: any = Symbol();
+
 export type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 
 export function buildShrinkTree<T>(s: Shrinkable<T>): ShrinkTree<T> {
   return [s.value, [...s.shrink().map((ss) => buildShrinkTree(ss))]];
 }
 
-export function buildNextShrinkTree<T>(arb: NextArbitrary<T>, v: NextValue<T>): ShrinkTree<T> {
-  return [v.value, [...arb.shrink(v.value_, v.context).map((nv) => buildNextShrinkTree(arb, nv))]];
+export function buildNextShrinkTree<T>(
+  arb: NextArbitrary<T>,
+  v: NextValue<T>,
+  lengthLimiter: { numItems: number } = { numItems: Number.POSITIVE_INFINITY }
+): ShrinkTree<T> {
+  --lengthLimiter.numItems;
+  const value = v.value;
+  const context = v.context;
+  const shrinks: ShrinkTree<T>[] = [];
+  for (const nv of arb.shrink(value, context)) {
+    if (lengthLimiter.numItems <= 0) {
+      shrinks.push([truncatedSignal, []]);
+      break;
+    }
+    shrinks.push(buildNextShrinkTree(arb, nv, lengthLimiter));
+  }
+  return [value, shrinks];
 }
 
 export function renderTree<T>(tree: ShrinkTree<T>): string[] {
   const [current, subTrees] = tree;
-  const lines = [fc.stringify(current)];
+  const lines = [current !== truncatedSignal ? fc.stringify(current) : `\u2026`];
   for (let index = 0; index !== subTrees.length; ++index) {
     const subTree = subTrees[index];
     const isLastSubTree = index === subTrees.length - 1;

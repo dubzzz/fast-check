@@ -2,6 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { string } from '../../../src/arbitrary/string';
 
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertGenerateProducesSameValueGivenSameSeed,
   assertGenerateProducesCorrectValues,
@@ -10,6 +11,7 @@ import {
   assertShrinkProducesCorrectValues,
   assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 describe('string (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };
@@ -89,5 +91,77 @@ describe('string (integration)', () => {
 
     // Assert
     expect(out).toBe(false);
+  });
+
+  it('should be able to shrink any valid string (given right length and charset)', () => {
+    // Arrange
+    const arb = convertToNext(string());
+    const value = new NextValue('Hey!');
+
+    // Act
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 50 })).join('\n');
+
+    // Assert
+    expect(renderedTree).toMatchInlineSnapshot(`
+      "\\"Hey!\\"
+      ├> \\"\\"
+      ├> \\"y!\\"
+      |  ├> \\"!\\"
+      |  |  ├> \\"\\"
+      |  |  └> \\" \\"
+      |  |     └> \\"\\"
+      |  ├> \\" !\\"
+      |  |  ├> \\"!\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  └> \\" \\"
+      |  |  |     └> \\"\\"
+      |  |  ├> \\" \\"
+      |  |  |  └> \\"\\"
+      |  |  └> \\"  \\"
+      |  |     ├> \\" \\"
+      |  |     |  └> \\"\\"
+      |  |     └> \\" \\"
+      |  |        └> \\"\\"
+      |  ├> \\"M!\\"
+      |  |  ├> \\"!\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  └> \\" \\"
+      |  |  |     └> \\"\\"
+      |  |  ├> \\"7!\\"
+      |  |  |  ├> \\"!\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\" \\"
+      |  |  |  |     └> \\"\\"
+      |  |  |  ├> \\",!\\"
+      |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |     └> \\"\\"
+      |  |  |  |  ├> \\"&!\\"
+      |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  ├> \\"#!\\"
+      |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  ├> \\"\\\\\\"!\\"
+      |  |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  |  ├> \\"!!\\"
+      |  |  |  |  |  |  |  |  └> …
+      |  |  |  |  |  |  |  └> …
+      |  |  |  |  |  |  └> …
+      |  |  |  |  |  └> …
+      |  |  |  |  └> …
+      |  |  |  └> …
+      |  |  └> …
+      |  └> …
+      └> …"
+    `);
   });
 });

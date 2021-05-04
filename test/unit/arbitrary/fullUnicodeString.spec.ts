@@ -2,6 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { fullUnicodeString } from '../../../src/arbitrary/fullUnicodeString';
 
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertGenerateProducesSameValueGivenSameSeed,
   assertGenerateProducesCorrectValues,
@@ -10,6 +11,7 @@ import {
   assertShrinkProducesCorrectValues,
   assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 describe('fullUnicodeString (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };
@@ -99,5 +101,77 @@ describe('fullUnicodeString (integration)', () => {
 
     // Assert
     expect(out).toBe(false);
+  });
+
+  it('should be able to shrink any valid string (given right length and charset)', () => {
+    // Arrange
+    const arb = convertToNext(fullUnicodeString());
+    const value = new NextValue('Hey \u{1f431}!');
+
+    // Act
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 50 })).join('\n');
+
+    // Assert
+    expect(renderedTree).toMatchInlineSnapshot(`
+      "\\"Hey 🐱!\\"
+      ├> \\"\\"
+      ├> \\" 🐱!\\"
+      |  ├> \\"🐱!\\"
+      |  |  ├> \\"!\\"
+      |  |  |  ├> \\"\\"
+      |  |  |  └> \\" \\"
+      |  |  |     └> \\"\\"
+      |  |  ├> \\" !\\"
+      |  |  |  ├> \\"!\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\" \\"
+      |  |  |  |     └> \\"\\"
+      |  |  |  ├> \\" \\"
+      |  |  |  |  └> \\"\\"
+      |  |  |  └> \\"  \\"
+      |  |  |     ├> \\" \\"
+      |  |  |     |  └> \\"\\"
+      |  |  |     └> \\" \\"
+      |  |  |        └> \\"\\"
+      |  |  ├> \\"︙!\\"
+      |  |  |  ├> \\"!\\"
+      |  |  |  |  ├> \\"\\"
+      |  |  |  |  └> \\" \\"
+      |  |  |  |     └> \\"\\"
+      |  |  |  ├> \\"笍!\\"
+      |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |     └> \\"\\"
+      |  |  |  |  ├> \\"㶇!\\"
+      |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  ├> \\"Ễ!\\"
+      |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  ├> \\"ར!\\"
+      |  |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  |  ├> \\"ޱ!\\"
+      |  |  |  |  |  |  |  |  ├> \\"!\\"
+      |  |  |  |  |  |  |  |  |  ├> \\"\\"
+      |  |  |  |  |  |  |  |  |  └> \\" \\"
+      |  |  |  |  |  |  |  |  |     └> \\"\\"
+      |  |  |  |  |  |  |  |  └> …
+      |  |  |  |  |  |  |  └> …
+      |  |  |  |  |  |  └> …
+      |  |  |  |  |  └> …
+      |  |  |  |  └> …
+      |  |  |  └> …
+      |  |  └> …
+      |  └> …
+      └> …"
+    `);
   });
 });
