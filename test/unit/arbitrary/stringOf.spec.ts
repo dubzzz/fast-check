@@ -63,7 +63,7 @@ describe('stringOf (integration)', () => {
     const value = new NextValue(rawValue);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 250 })).join('\n');
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(renderedTree).toMatchSnapshot();
