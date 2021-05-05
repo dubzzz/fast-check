@@ -37,7 +37,7 @@ import { clonedConstant } from './arbitrary/clonedConstant';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
-import { date } from './check/arbitrary/DateArbitrary';
+import { date } from './arbitrary/date';
 import { clone, CloneValue } from './arbitrary/clone';
 import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
