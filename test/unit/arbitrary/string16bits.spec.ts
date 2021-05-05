@@ -2,7 +2,6 @@ import * as fc from '../../../lib/fast-check';
 import { string16bits } from '../../../src/arbitrary/string16bits';
 
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertGenerateProducesSameValueGivenSameSeed,
   assertGenerateProducesCorrectValues,
@@ -11,7 +10,6 @@ import {
   assertShrinkProducesCorrectValues,
   assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 describe('string16bits (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };
