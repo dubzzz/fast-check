@@ -60,19 +60,4 @@ describe('string16bits (integration)', () => {
   it('should recognize values that would have been generated using it during shrink', () => {
     assertShrinkProducesValuesFlaggedAsCanGenerate(string16bitsBuilder, { extraParameters });
   });
-
-  it.each`
-    rawValue
-    ${'Hey \u{1f431}!'}
-  `('should be able to shrink $rawValue', ({ rawValue }) => {
-    // Arrange
-    const arb = convertToNext(string16bits());
-    const value = new NextValue(rawValue);
-
-    // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
-
-    // Assert
-    expect(renderedTree).toMatchSnapshot();
-  });
 });
