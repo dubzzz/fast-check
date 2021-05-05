@@ -4,7 +4,7 @@ import { mocked } from 'ts-jest/utils';
 import * as fc from '../../../lib/fast-check';
 import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 
-jest.mock('../../../../src/arbitrary/integer');
+jest.mock('../../../src/arbitrary/integer');
 import * as _IntegerMock from '../../../src/arbitrary/integer';
 import { arbitraryFor } from '../check/arbitrary/generic/ArbitraryBuilder';
 
