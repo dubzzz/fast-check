@@ -22,7 +22,7 @@ describe('patternsToStringUnmapperFor', () => {
     ${['a', 'aa']}                    | ${'aaaaaaaaaaaa'} | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
     ${MorseCode}                      | ${'...___...'}    | ${{}}                             | ${['.', '.', '.', '_', '_', '_', '.', '.', '.']}
     ${MorseCode}                      | ${'...___...'}    | ${{ maxLength: 3 }}               | ${['..', '.__', '_...']}
-    ${['\uD83D', '\uDC31', 'a', 'b']} | ${'a\u{1f434}b'}  | ${{}}                             | ${['a', '\uD83D', '\uDC31', 'b']}
+    ${['\uD83D', '\uDC34', 'a', 'b']} | ${'a\u{1f434}b'}  | ${{}}                             | ${['a', '\uD83D', '\uDC34', 'b']}
   `(
     'should properly split $source into chunks ($constraints)',
     ({ sourceChunks, source, constraints, expectedChunks }) => {
