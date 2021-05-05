@@ -1,27 +1,28 @@
 import fc from '../../../../../lib/fast-check';
-import { stringOfUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/StringOf';
+import { patternsToStringUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/PatternsToString';
 import { fakeNextArbitrary } from '../../../check/arbitrary/generic/NextArbitraryHelpers';
 
 // prettier-ignore
 const MorseCode = ['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..'];
 
-describe('stringOfUnmapperFor', () => {
+describe('patternsToStringUnmapperFor', () => {
   it.each`
-    sourceChunks                 | source            | constraints                       | expectedChunks
-    ${['a']}                     | ${'a'}            | ${{}}                             | ${['a']}
-    ${['abc']}                   | ${'abc'}          | ${{}}                             | ${['abc']}
-    ${['a']}                     | ${'aaa'}          | ${{}}                             | ${['a', 'a', 'a']}
-    ${['a', 'b', 'c']}           | ${'abc'}          | ${{}}                             | ${['a', 'b', 'c']}
-    ${['a', 'b', 'c', 'abc']}    | ${'abc'}          | ${{}}                             | ${['a', 'b', 'c'] /* starts by a: the shortest fit */}
-    ${['ab', 'aaa', 'aba', 'a']} | ${'abaaa'}        | ${{ minLength: 2, maxLength: 3 }} | ${['ab', 'aaa'] /* starts by ab: the shortest fit */}
-    ${['ab', 'aaa', 'aba', 'a']} | ${'abaaa'}        | ${{ minLength: 3 }}               | ${['ab', 'a', 'a', 'a']}
-    ${['a', 'aaaaa']}            | ${'aaaaa'}        | ${{ maxLength: 1 }}               | ${['aaaaa']}
-    ${['a', 'aaaaa']}            | ${'aaaaa'}        | ${{ maxLength: 4 }}               | ${['aaaaa']}
-    ${['a', 'aaaaa']}            | ${'aaaaa'}        | ${{ maxLength: 5 }}               | ${['a', 'a', 'a', 'a', 'a'] /* starts by a: the shortest fit */}
-    ${['a', 'aa']}               | ${'aaaaaaaaaaa'}  | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
-    ${['a', 'aa']}               | ${'aaaaaaaaaaaa'} | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
-    ${MorseCode}                 | ${'...___...'}    | ${{}}                             | ${['.', '.', '.', '_', '_', '_', '.', '.', '.']}
-    ${MorseCode}                 | ${'...___...'}    | ${{ maxLength: 3 }}               | ${['..', '.__', '_...']}
+    sourceChunks                      | source            | constraints                       | expectedChunks
+    ${['a']}                          | ${'a'}            | ${{}}                             | ${['a']}
+    ${['abc']}                        | ${'abc'}          | ${{}}                             | ${['abc']}
+    ${['a']}                          | ${'aaa'}          | ${{}}                             | ${['a', 'a', 'a']}
+    ${['a', 'b', 'c']}                | ${'abc'}          | ${{}}                             | ${['a', 'b', 'c']}
+    ${['a', 'b', 'c', 'abc']}         | ${'abc'}          | ${{}}                             | ${['a', 'b', 'c'] /* starts by a: the shortest fit */}
+    ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 2, maxLength: 3 }} | ${['ab', 'aaa'] /* starts by ab: the shortest fit */}
+    ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 3 }}               | ${['ab', 'a', 'a', 'a']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 1 }}               | ${['aaaaa']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 4 }}               | ${['aaaaa']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 5 }}               | ${['a', 'a', 'a', 'a', 'a'] /* starts by a: the shortest fit */}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaa'}  | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaaa'} | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
+    ${MorseCode}                      | ${'...___...'}    | ${{}}                             | ${['.', '.', '.', '_', '_', '_', '.', '.', '.']}
+    ${MorseCode}                      | ${'...___...'}    | ${{ maxLength: 3 }}               | ${['..', '.__', '_...']}
+    ${['\uD83D', '\uDC31', 'a', 'b']} | ${'a\u{1f434}b'}  | ${{}}                             | ${['a', '\uD83D', '\uDC31', 'b']}
   `(
     'should properly split $source into chunks ($constraints)',
     ({ sourceChunks, source, constraints, expectedChunks }) => {
@@ -31,7 +32,7 @@ describe('stringOfUnmapperFor', () => {
       canGenerate.mockImplementation((value) => sourceChunksSet.has(value as string));
 
       // Act
-      const unmapper = stringOfUnmapperFor(instance, constraints);
+      const unmapper = patternsToStringUnmapperFor(instance, constraints);
       const chunks = unmapper(source);
 
       // Assert
@@ -51,7 +52,7 @@ describe('stringOfUnmapperFor', () => {
     canGenerate.mockImplementation((value) => sourceChunksSet.has(value as string));
 
     // Act / Assert
-    const unmapper = stringOfUnmapperFor(instance, constraints);
+    const unmapper = patternsToStringUnmapperFor(instance, constraints);
     expect(() => unmapper(source)).toThrowError();
   });
 
@@ -70,7 +71,7 @@ describe('stringOfUnmapperFor', () => {
           const source = sourceMods.map((mod) => sourceChunks[mod % sourceChunks.length]).join('');
 
           // Act
-          const unmapper = stringOfUnmapperFor(instance, {});
+          const unmapper = patternsToStringUnmapperFor(instance, {});
           const chunks = unmapper(source);
 
           // Assert
@@ -103,7 +104,7 @@ describe('stringOfUnmapperFor', () => {
           };
 
           // Act
-          const unmapper = stringOfUnmapperFor(instance, constraints);
+          const unmapper = patternsToStringUnmapperFor(instance, constraints);
           const chunks = unmapper(source);
 
           // Assert

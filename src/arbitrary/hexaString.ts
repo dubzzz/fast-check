@@ -7,7 +7,7 @@ import {
   StringFullConstraintsDefinition,
   StringSharedConstraints,
 } from './_internals/helpers/StringConstraintsExtractor';
-import { codePointAwareMapper, codePointAwareUnmapper } from './_internals/mappers/CodePointAware';
+import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
@@ -54,6 +54,8 @@ function hexaString(minLength: number, maxLength: number): Arbitrary<string>;
 function hexaString(constraints: StringSharedConstraints): Arbitrary<string>;
 function hexaString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   const constraints = extractStringConstraints(args);
-  return convertFromNext(convertToNext(array(hexa(), constraints)).map(codePointAwareMapper, codePointAwareUnmapper));
+  return convertFromNext(
+    convertToNext(array(hexa(), constraints)).map(codePointsToStringMapper, codePointsToStringUnmapper)
+  );
 }
 export { hexaString };

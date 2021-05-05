@@ -7,7 +7,7 @@ import {
   StringFullConstraintsDefinition,
   StringSharedConstraints,
 } from './_internals/helpers/StringConstraintsExtractor';
-import { codePointAwareMapper, codePointAwareUnmapper } from './_internals/mappers/CodePointAware';
+import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
@@ -55,7 +55,7 @@ function unicodeString(constraints: StringSharedConstraints): Arbitrary<string>;
 function unicodeString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   const constraints = extractStringConstraints(args);
   return convertFromNext(
-    convertToNext(array(unicode(), constraints)).map(codePointAwareMapper, codePointAwareUnmapper)
+    convertToNext(array(unicode(), constraints)).map(codePointsToStringMapper, codePointsToStringUnmapper)
   );
 }
 export { unicodeString };

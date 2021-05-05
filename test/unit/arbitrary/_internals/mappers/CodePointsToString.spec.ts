@@ -1,10 +1,10 @@
 import fc from '../../../../../lib/fast-check';
 import {
-  codePointAwareMapper,
-  codePointAwareUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/CodePointAware';
+  codePointsToStringMapper,
+  codePointsToStringUnmapper,
+} from '../../../../../src/arbitrary/_internals/mappers/CodePointsToString';
 
-describe('codePointAwareUnmapper', () => {
+describe('codePointsToStringUnmapper', () => {
   it.each`
     source                                            | expected
     ${''}                                             | ${[]}
@@ -13,17 +13,17 @@ describe('codePointAwareUnmapper', () => {
     ${'\u{1f468}\u{1f3fe}\u{200d}\u{1f469}\u{1f3fc}'} | ${['\u{1f468}', '\u{1f3fe}', '\u{200d}', '\u{1f469}', '\u{1f3fc}']}
   `('should be able to split $source into code-points', ({ source, expected }) => {
     // Arrange / Act / Assert
-    expect(codePointAwareUnmapper(source)).toEqual(expected);
+    expect(codePointsToStringUnmapper(source)).toEqual(expected);
   });
 
   it('should be able to split any string mapped from code-points into code-points', () =>
     fc.assert(
       fc.property(fc.array(fc.fullUnicode()), (data) => {
         // Arrange
-        const source = codePointAwareMapper(data);
+        const source = codePointsToStringMapper(data);
 
         // Act / Assert
-        expect(codePointAwareUnmapper(source)).toEqual(data);
+        expect(codePointsToStringUnmapper(source)).toEqual(data);
       })
     ));
 });

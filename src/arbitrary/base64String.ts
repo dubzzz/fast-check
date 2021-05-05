@@ -8,7 +8,7 @@ import {
   StringFullConstraintsDefinition,
   StringSharedConstraints,
 } from './_internals/helpers/StringConstraintsExtractor';
-import { codePointAwareMapper, codePointAwareUnmapper } from './_internals/mappers/CodePointAware';
+import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { stringToBase64Mapper, stringToBase64Unmapper } from './_internals/mappers/StringToBase64';
 export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
@@ -86,7 +86,7 @@ function base64String(...args: StringFullConstraintsDefinition): Arbitrary<strin
 
   return convertFromNext(
     convertToNext(array(base64(), { minLength, maxLength }))
-      .map(codePointAwareMapper, codePointAwareUnmapper)
+      .map(codePointsToStringMapper, codePointsToStringUnmapper)
       .map(stringToBase64Mapper, stringToBase64Unmapper)
   );
 }

@@ -7,7 +7,7 @@ import {
   StringFullConstraintsDefinition,
   StringSharedConstraints,
 } from './_internals/helpers/StringConstraintsExtractor';
-import { codePointAwareMapper, codePointAwareUnmapper } from './_internals/mappers/CodePointAware';
+import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
@@ -54,6 +54,8 @@ function asciiString(minLength: number, maxLength: number): Arbitrary<string>;
 function asciiString(constraints: StringSharedConstraints): Arbitrary<string>;
 function asciiString(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   const constraints = extractStringConstraints(args);
-  return convertFromNext(convertToNext(array(ascii(), constraints)).map(codePointAwareMapper, codePointAwareUnmapper));
+  return convertFromNext(
+    convertToNext(array(ascii(), constraints)).map(codePointsToStringMapper, codePointsToStringUnmapper)
+  );
 }
 export { asciiString };

@@ -6,7 +6,7 @@ import {
   StringFullConstraintsDefinition,
   StringSharedConstraints,
 } from './_internals/helpers/StringConstraintsExtractor';
-import { stringOfMapper, stringOfUnmapperFor } from './_internals/mappers/StringOf';
+import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString';
 export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
@@ -61,8 +61,8 @@ function stringOf(charArb: Arbitrary<string>, ...args: StringFullConstraintsDefi
   const constraints = extractStringConstraints(args);
   return convertFromNext(
     convertToNext(array(charArb, constraints)).map(
-      stringOfMapper,
-      stringOfUnmapperFor(convertToNext(charArb), constraints)
+      patternsToStringMapper,
+      patternsToStringUnmapperFor(convertToNext(charArb), constraints)
     )
   );
 }

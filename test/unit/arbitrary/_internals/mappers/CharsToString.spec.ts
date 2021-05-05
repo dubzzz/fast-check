@@ -1,10 +1,10 @@
 import fc from '../../../../../lib/fast-check';
 import {
-  notCodePointAwareMapper,
-  notCodePointAwareUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/NotCodePointAware';
+  charsToStringMapper,
+  charsToStringUnmapper,
+} from '../../../../../src/arbitrary/_internals/mappers/CharsToString';
 
-describe('notCodePointAwareUnmapper', () => {
+describe('charsToStringUnmapper', () => {
   it.each`
     source                              | expected
     ${''}                               | ${[]}
@@ -13,17 +13,17 @@ describe('notCodePointAwareUnmapper', () => {
     ${'\uD83D\uDC34\uDC34\uDC34\uD83D'} | ${['\uD83D', '\uDC34', '\uDC34', '\uDC34', '\uD83D']}
   `('should be able to split $source into chars', ({ source, expected }) => {
     // Arrange / Act / Assert
-    expect(notCodePointAwareUnmapper(source)).toEqual(expected);
+    expect(charsToStringUnmapper(source)).toEqual(expected);
   });
 
   it('should be able to split any string mapped from chars into chars', () =>
     fc.assert(
       fc.property(fc.array(fc.char16bits()), (data) => {
         // Arrange
-        const source = notCodePointAwareMapper(data);
+        const source = charsToStringMapper(data);
 
         // Act / Assert
-        expect(notCodePointAwareUnmapper(source)).toEqual(data);
+        expect(charsToStringUnmapper(source)).toEqual(data);
       })
     ));
 });

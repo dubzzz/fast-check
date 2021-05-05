@@ -1,6 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildCharacterArbitrary } from './_internals/builders/CharacterArbitraryBuilder';
-import { preferPrintableMapper, preferPrintableUnmapper } from './_internals/mappers/PreferPrintable';
+import { indexToPrintableIndexMapper, indexToPrintableIndexUnmapper } from './_internals/mappers/IndexToPrintableIndex';
 
 /**
  * For single characters - all values in 0x0000-0xffff can be generated
@@ -14,5 +14,5 @@ import { preferPrintableMapper, preferPrintableUnmapper } from './_internals/map
  * @public
  */
 export function char16bits(): Arbitrary<string> {
-  return buildCharacterArbitrary(0x0000, 0xffff, preferPrintableMapper, preferPrintableUnmapper);
+  return buildCharacterArbitrary(0x0000, 0xffff, indexToPrintableIndexMapper, indexToPrintableIndexUnmapper);
 }

@@ -7,7 +7,7 @@ import {
   StringFullConstraintsDefinition,
   StringSharedConstraints,
 } from './_internals/helpers/StringConstraintsExtractor';
-import { notCodePointAwareMapper, notCodePointAwareUnmapper } from './_internals/mappers/NotCodePointAware';
+import { charsToStringMapper, charsToStringUnmapper } from './_internals/mappers/CharsToString';
 export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
@@ -55,7 +55,7 @@ function string16bits(constraints: StringSharedConstraints): Arbitrary<string>;
 function string16bits(...args: StringFullConstraintsDefinition): Arbitrary<string> {
   const constraints = extractStringConstraints(args);
   return convertFromNext(
-    convertToNext(array(char16bits(), constraints)).map(notCodePointAwareMapper, notCodePointAwareUnmapper)
+    convertToNext(array(char16bits(), constraints)).map(charsToStringMapper, charsToStringUnmapper)
   );
 }
 export { string16bits };

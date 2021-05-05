@@ -3,16 +3,16 @@ import { maxLengthFromMinLength } from '../helpers/MaxLengthFromMinLength';
 import { StringSharedConstraints } from '../helpers/StringConstraintsExtractor';
 
 /** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
-export function stringOfMapper(tab: string[]): string {
+export function patternsToStringMapper(tab: string[]): string {
   return tab.join('');
 }
 
 /** @internal */
-export function stringOfUnmapperFor(
-  charArb: NextArbitrary<string>,
+export function patternsToStringUnmapperFor(
+  patternsArb: NextArbitrary<string>,
   constraints: StringSharedConstraints
 ): (value: unknown) => string[] {
-  return function stringOfUnmapper(value: unknown): string[] {
+  return function patternsToStringUnmapper(value: unknown): string[] {
     // First match wins! Possibly not the best match.
     // Empty strings are not considered as valid chunks.
     // Example:
@@ -41,7 +41,7 @@ export function stringOfUnmapperFor(
       // Going deeper in the tree
       for (let index = last.nextStartIndex; index <= value.length; ++index) {
         const chunk = value.substring(last.endIndexChunks, index);
-        if (charArb.canGenerate(chunk)) {
+        if (patternsArb.canGenerate(chunk)) {
           const newChunks = last.chunks.concat([chunk]);
           if (index === value.length) {
             if (newChunks.length < minLength || newChunks.length > maxLength) {
