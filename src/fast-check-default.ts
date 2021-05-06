@@ -37,7 +37,7 @@ import { clonedConstant } from './arbitrary/clonedConstant';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
-import { date } from './check/arbitrary/DateArbitrary';
+import { date } from './arbitrary/date';
 import { clone, CloneValue } from './arbitrary/clone';
 import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
@@ -55,7 +55,7 @@ import { nat, NatConstraints } from './arbitrary/nat';
 import { ipV4, ipV4Extended, ipV6 } from './check/arbitrary/IpArbitrary';
 import { letrec } from './arbitrary/letrec';
 import { lorem, LoremConstraints } from './arbitrary/lorem';
-import { mapToConstant } from './check/arbitrary/MapToConstantArbitrary';
+import { mapToConstant } from './arbitrary/mapToConstant';
 import { memo, Memo } from './arbitrary/memo';
 import { mixedCase, MixedCaseConstraints } from './arbitrary/mixedCase';
 import {

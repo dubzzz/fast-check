@@ -24,10 +24,10 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
-      - name: Using Node v14.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Check format
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [10.x, 12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2.1.5
@@ -75,7 +75,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [10.x, 12.x, 14.x, 16.x]
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
     steps:
       - uses: actions/checkout@v2
@@ -105,10 +105,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Using Node v14.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - name: Check package score using skypack
         run: npx @skypack/package-check
   documentation:
@@ -119,11 +119,11 @@ jobs:
       - uses: actions/cache@v2.1.5
         with:
           path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
-      - name: Using Node v14.x
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build minimal package
@@ -147,11 +147,11 @@ jobs:
       - uses: actions/cache@v2.1.5
         with:
           path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v14.x
-      - name: Using Node v14.x
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build production package
@@ -173,10 +173,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Using Node v14.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - name: Download production package
         uses: actions/download-artifact@v2
         with:
@@ -205,10 +205,10 @@ jobs:
           - '3.2'
     steps:
       - uses: actions/checkout@v2
-      - name: Using Node v14.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - name: Download production package
         uses: actions/download-artifact@v2
         with:
@@ -237,10 +237,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Using Node v14.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - name: Download production package
         uses: actions/download-artifact@v2
         with:
@@ -371,10 +371,10 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - name: Using Node v14.x
+      - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14.x'
+          node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Download production package
         uses: actions/download-artifact@v2

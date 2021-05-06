@@ -1,5 +1,5 @@
-import { date } from '../../../../src/check/arbitrary/DateArbitrary';
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import { date } from '../../../src/arbitrary/date';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
 const isValidDate = (date: Date) => {
   return date instanceof Date && !isNaN(date.getTime());

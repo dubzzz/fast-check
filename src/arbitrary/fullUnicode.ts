@@ -1,6 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildCharacterArbitrary } from './_internals/builders/CharacterArbitraryBuilder';
-import { preferPrintableMapper, preferPrintableUnmapper } from './_internals/mappers/PreferPrintable';
+import { indexToPrintableIndexMapper, indexToPrintableIndexUnmapper } from './_internals/mappers/IndexToPrintableIndex';
 
 // Characters in the range: U+D800 to U+DFFF
 // are called 'surrogate pairs', they cannot be defined alone and come by pairs
@@ -12,13 +12,13 @@ const gapSize = 0xdfff + 1 - 0xd800;
 
 /** @internal */
 function unicodeMapper(v: number) {
-  if (v < 0xd800) return preferPrintableMapper(v);
+  if (v < 0xd800) return indexToPrintableIndexMapper(v);
   return v + gapSize;
 }
 
 /** @internal */
 function unicodeUnmapper(v: number) {
-  if (v < 0xd800) return preferPrintableUnmapper(v);
+  if (v < 0xd800) return indexToPrintableIndexUnmapper(v);
   if (v <= 0xdfff) return -1;
   return v - gapSize;
 }

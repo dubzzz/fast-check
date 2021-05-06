@@ -15,7 +15,7 @@ import { string } from '../../arbitrary/string';
 import { unicodeString } from '../../arbitrary/unicodeString';
 import { tuple } from '../../arbitrary/tuple';
 import { bigInt } from '../../arbitrary/bigInt';
-import { date } from './DateArbitrary';
+import { date } from '../../arbitrary/date';
 import {
   float32Array,
   float64Array,

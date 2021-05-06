@@ -1,11 +1,14 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { array } from './array';
 import { char } from './char';
 import {
-  buildStringArbitrary,
+  extractStringConstraints,
   StringFullConstraintsDefinition,
   StringSharedConstraints,
-} from './_internals/builders/StringArbitraryBuilder';
-export { StringSharedConstraints } from './_internals/builders/StringArbitraryBuilder';
+} from './_internals/helpers/StringConstraintsExtractor';
+import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
+export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
 
 /**
  * For strings of {@link char}
@@ -50,6 +53,9 @@ function string(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function string(constraints: StringSharedConstraints): Arbitrary<string>;
 function string(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  return buildStringArbitrary(char(), ...args);
+  const constraints = extractStringConstraints(args);
+  return convertFromNext(
+    convertToNext(array(char(), constraints)).map(codePointsToStringMapper, codePointsToStringUnmapper)
+  );
 }
 export { string };
