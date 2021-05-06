@@ -1,5 +1,6 @@
-import { Arbitrary } from './definition/Arbitrary';
-import { nat } from '../../arbitrary/nat';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { nat } from './nat';
+import { indexToMappedConstantMapperFor } from './_internals/mappers/IndexToMappedConstant';
 
 /** @internal */
 function computeNumChoices<T>(options: { num: number; build: (idInGroup: number) => T }[]): number {
@@ -34,12 +35,5 @@ function computeNumChoices<T>(options: { num: number; build: (idInGroup: number)
  */
 export function mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T> {
   const numChoices = computeNumChoices(entries);
-  return nat(numChoices - 1).map((choice) => {
-    let idx = -1;
-    let numSkips = 0;
-    while (choice >= numSkips) {
-      numSkips += entries[++idx].num;
-    }
-    return entries[idx].build(choice - numSkips + entries[idx].num);
-  });
+  return nat({ max: numChoices - 1 }).map(indexToMappedConstantMapperFor(entries));
 }
