@@ -1,12 +1,12 @@
-import { date } from '../../../../src/check/arbitrary/DateArbitrary';
-import * as stubRng from '../../stubs/generators';
+import { date } from '../../../src/arbitrary/date';
+import * as stubRng from '../stubs/generators';
 import { mocked } from 'ts-jest/utils';
-import * as fc from '../../../../lib/fast-check';
-import { ArbitraryWithShrink } from '../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
+import * as fc from '../../../lib/fast-check';
+import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
 
-jest.mock('../../../../src/arbitrary/integer');
-import * as _IntegerMock from '../../../../src/arbitrary/integer';
-import { arbitraryFor } from './generic/ArbitraryBuilder';
+jest.mock('../../../src/arbitrary/integer');
+import * as _IntegerMock from '../../../src/arbitrary/integer';
+import { arbitraryFor } from '../check/arbitrary/generic/ArbitraryBuilder';
 
 const IntegerArbitraryMock: { integer: (min: number, max: number) => ArbitraryWithShrink<number> } = _IntegerMock;
 

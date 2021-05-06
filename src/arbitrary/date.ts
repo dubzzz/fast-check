@@ -1,5 +1,5 @@
-import { Arbitrary } from './definition/Arbitrary';
-import { integer } from '../../arbitrary/integer';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { integer } from './integer';
 
 /**
  * For date between constraints.min or new Date(-8640000000000000) (included) and constraints.max or new Date(8640000000000000) (included)
