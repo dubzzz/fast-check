@@ -1,24 +1,24 @@
 import * as fc from '../../../../../lib/fast-check';
-import { charToCode } from '../../../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
+import { indexToCharStringUnmapper } from '../../../../../src/arbitrary/_internals/mappers/IndexToCharString';
 
-describe('charToCode', () => {
+describe('indexToCharStringUnmapper', () => {
   it('should reject empty string', () => {
     // Arrange / Act / Assert
-    expect(() => charToCode('')).toThrowError();
+    expect(() => indexToCharStringUnmapper('')).toThrowError();
   });
 
   it('should reject invalid pairs', () => {
     // Arrange / Act / Assert
-    expect(() => charToCode('\ud800\ud800')).toThrowError();
-    expect(() => charToCode('a\ud800')).toThrowError();
-    expect(() => charToCode('\udfff\ud800')).toThrowError();
+    expect(() => indexToCharStringUnmapper('\ud800\ud800')).toThrowError();
+    expect(() => indexToCharStringUnmapper('a\ud800')).toThrowError();
+    expect(() => indexToCharStringUnmapper('\udfff\ud800')).toThrowError();
   });
 
   it('should reject any longer than 1 code-point strings', () =>
     fc.assert(
       fc.property(fc.fullUnicodeString({ minLength: 2 }), (s) => {
         // Arrange / Act / Assert
-        expect(() => charToCode(s)).toThrowError();
+        expect(() => indexToCharStringUnmapper(s)).toThrowError();
       })
     ));
 
@@ -26,7 +26,7 @@ describe('charToCode', () => {
     fc.assert(
       fc.property(fc.fullUnicode(), (c) => {
         // Arrange / Act / Assert
-        expect(charToCode(c)).toBe(c.codePointAt(0));
+        expect(indexToCharStringUnmapper(c)).toBe(c.codePointAt(0));
       })
     ));
 
@@ -34,7 +34,7 @@ describe('charToCode', () => {
     fc.assert(
       fc.property(fc.char16bits(), (c) => {
         // Arrange / Act / Assert
-        expect(charToCode(c)).toBe(c.charCodeAt(0));
+        expect(indexToCharStringUnmapper(c)).toBe(c.charCodeAt(0));
       })
     ));
 });
