@@ -1,10 +1,10 @@
 import * as prand from 'pure-rand';
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { mapToConstant } from '../../../../src/check/arbitrary/MapToConstantArbitrary';
-import { Random } from '../../../../src/random/generator/Random';
-import { minMax } from './generic/GenericArbitraryHelper';
-import { nat } from '../../../../src/arbitrary/nat';
+import { mapToConstant } from '../../../src/arbitrary/mapToConstant';
+import { Random } from '../../../src/random/generator/Random';
+import { minMax } from '../check/arbitrary/generic/GenericArbitraryHelper';
+import { nat } from '../../../src/arbitrary/nat';
 
 describe('MapToConstantArbitrary', () => {
   describe('mapToConstant', () => {

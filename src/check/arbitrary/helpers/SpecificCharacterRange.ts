@@ -1,7 +1,7 @@
 import { fullUnicode } from '../../../arbitrary/fullUnicode';
 import { Arbitrary } from '../definition/Arbitrary';
 import { frequency } from '../../../arbitrary/frequency';
-import { mapToConstant } from '../MapToConstantArbitrary';
+import { mapToConstant } from '../../../arbitrary/mapToConstant';
 
 /** @internal */
 const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
