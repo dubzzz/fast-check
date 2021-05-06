@@ -1,10 +1,10 @@
 import * as prand from 'pure-rand';
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { lorem } from '../../../../src/check/arbitrary/LoremArbitrary';
-import { Random } from '../../../../src/random/generator/Random';
+import { lorem } from '../../../src/arbitrary/lorem';
+import { Random } from '../../../src/random/generator/Random';
 
-import { generateOneValue } from './generic/GenerateOneValue';
+import { generateOneValue } from '../check/arbitrary/generic/GenerateOneValue';
 
 describe('LoremArbitrary', () => {
   describe('lorem', () => {

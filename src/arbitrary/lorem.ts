@@ -1,7 +1,12 @@
-import { array } from '../../arbitrary/array';
-import { constant } from '../../arbitrary/constant';
-import { Arbitrary } from './definition/Arbitrary';
-import { frequency } from '../../arbitrary/frequency';
+import { array } from './array';
+import { constant } from './constant';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { frequency } from './frequency';
+import {
+  sentencesToParagraphMapper,
+  wordsToJoinedStringMapper,
+  wordsToSentenceMapper,
+} from './_internals/mappers/WordsToLorem';
 
 /**
  * Constraints to be applied on {@link lorem}
@@ -259,17 +264,14 @@ function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]):
   const maxWordsCount = typeof args[0] === 'object' ? args[0].maxCount : args[0];
   const sentencesMode = typeof args[0] === 'object' ? args[0].mode === 'sentences' : args[1];
   const maxCount = maxWordsCount || 5;
-  if (maxCount < 1) throw new Error(`lorem has to produce at least one word/sentence`);
+  if (maxCount < 1) {
+    throw new Error(`lorem has to produce at least one word/sentence`);
+  }
   if (sentencesMode) {
-    const sentence = array(loremWord(), { minLength: 1 })
-      .map((words) => words.join(' '))
-      .map((s) => (s[s.length - 1] === ',' ? s.substr(0, s.length - 1) : s))
-      .map((s) => s[0].toUpperCase() + s.substring(1) + '.');
-    return array(sentence, { minLength: 1, maxLength: maxCount }).map((sentences) => sentences.join(' '));
+    const sentence = array(loremWord(), { minLength: 1 }).map(wordsToSentenceMapper);
+    return array(sentence, { minLength: 1, maxLength: maxCount }).map(sentencesToParagraphMapper);
   } else {
-    return array(loremWord(), { minLength: 1, maxLength: maxCount }).map((words) =>
-      words.map((w) => (w[w.length - 1] === ',' ? w.substr(0, w.length - 1) : w)).join(' ')
-    );
+    return array(loremWord(), { minLength: 1, maxLength: maxCount }).map(wordsToJoinedStringMapper);
   }
 }
 
