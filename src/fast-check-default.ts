@@ -42,7 +42,7 @@ import { clone, CloneValue } from './arbitrary/clone';
 import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
-import { dictionary } from './check/arbitrary/DictionaryArbitrary';
+import { dictionary } from './arbitrary/dictionary';
 import { emailAddress } from './check/arbitrary/EmailArbitrary';
 import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency, WeightedArbitrary, FrequencyValue, FrequencyContraints } from './arbitrary/frequency';

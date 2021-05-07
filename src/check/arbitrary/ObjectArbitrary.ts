@@ -4,7 +4,7 @@ import { stringify } from '../../utils/stringify';
 import { array } from '../../arbitrary/array';
 import { boolean } from '../../arbitrary/boolean';
 import { constant } from '../../arbitrary/constant';
-import { dictionary, toObject } from './DictionaryArbitrary';
+import { dictionary } from '../../arbitrary/dictionary';
 import { double } from './FloatingPointArbitrary';
 import { frequency } from '../../arbitrary/frequency';
 import { maxSafeInteger } from '../../arbitrary/maxSafeInteger';
@@ -28,6 +28,7 @@ import {
   uint8ClampedArray,
 } from './TypedArrayArbitrary';
 import { sparseArray } from './SparseArrayArbitrary';
+import { keyValuePairsToObjectMapper } from '../../arbitrary/_internals/mappers/KeyValuePairsToObject';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -241,7 +242,8 @@ const anythingInternal = (constraints: QualifiedObjectConstraints): Arbitrary<un
     set(tuple(keyArb, valueArb), { maxLength: maxKeys, compare: (t1, t2) => t1[0] === t2[0] });
 
   const mapOf = <T, U>(ka: Arbitrary<T>, va: Arbitrary<U>) => entriesOf(ka, va).map((v) => new Map(v));
-  const dictOf = <U>(ka: Arbitrary<string>, va: Arbitrary<U>) => entriesOf(ka, va).map((v) => toObject(v));
+  const dictOf = <U>(ka: Arbitrary<string>, va: Arbitrary<U>) =>
+    entriesOf(ka, va).map((v) => keyValuePairsToObjectMapper(v));
 
   const baseArb = oneof(...arbitrariesForBase);
   const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys })));
