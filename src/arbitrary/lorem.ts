@@ -4,9 +4,13 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { frequency } from './frequency';
 import {
   sentencesToParagraphMapper,
+  sentencesToParagraphUnmapper,
   wordsToJoinedStringMapper,
+  wordsToJoinedStringUnmapperFor,
   wordsToSentenceMapper,
+  wordsToSentenceUnmapperFor,
 } from './_internals/mappers/WordsToLorem';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /**
  * Constraints to be applied on {@link lorem}
@@ -64,8 +68,8 @@ const h = (v: string, w: number) => {
  *
  * @internal
  */
-const loremWord = () =>
-  frequency(
+function loremWord() {
+  return frequency(
     h('non', 6),
     h('adipiscing', 5),
     h('ligula', 5),
@@ -217,6 +221,7 @@ const loremWord = () =>
     h('augue,', 1),
     h('lacus', 1)
   );
+}
 
 /**
  * For lorem ipsum strings of words
@@ -267,11 +272,26 @@ function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]):
   if (maxCount < 1) {
     throw new Error(`lorem has to produce at least one word/sentence`);
   }
+  const wordArbitrary = loremWord();
+  const wordArbitraryNext = convertToNext(wordArbitrary);
   if (sentencesMode) {
-    const sentence = array(loremWord(), { minLength: 1 }).map(wordsToSentenceMapper);
-    return array(sentence, { minLength: 1, maxLength: maxCount }).map(sentencesToParagraphMapper);
+    const sentence = convertToNext(array(wordArbitrary, { minLength: 1 })).map(
+      wordsToSentenceMapper,
+      wordsToSentenceUnmapperFor(wordArbitraryNext)
+    );
+    return convertFromNext(
+      convertToNext(array(convertFromNext(sentence), { minLength: 1, maxLength: maxCount })).map(
+        sentencesToParagraphMapper,
+        sentencesToParagraphUnmapper
+      )
+    );
   } else {
-    return array(loremWord(), { minLength: 1, maxLength: maxCount }).map(wordsToJoinedStringMapper);
+    return convertFromNext(
+      convertToNext(array(wordArbitrary, { minLength: 1, maxLength: maxCount })).map(
+        wordsToJoinedStringMapper,
+        wordsToJoinedStringUnmapperFor(wordArbitraryNext)
+      )
+    );
   }
 }
 
