@@ -1,6 +1,8 @@
-import { ipV4, ipV6, ipV4Extended } from '../../../../src/check/arbitrary/IpArbitrary';
+import { ipV4 } from '../../../src/arbitrary/ipV4';
+import { ipV4Extended } from '../../../src/arbitrary/ipV4Extended';
+import { ipV6 } from '../../../src/arbitrary/ipV6';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
 const isValidIpV4 = (i: string) => {
   if (typeof i !== 'string') return false;

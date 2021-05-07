@@ -1,54 +1,9 @@
-import { array } from '../../arbitrary/array';
-import { constantFrom } from '../../arbitrary/constantFrom';
-import { Arbitrary } from './definition/Arbitrary';
-import { nat } from '../../arbitrary/nat';
-import { oneof } from '../../arbitrary/oneof';
-import { hexaString } from '../../arbitrary/hexaString';
-import { tuple } from '../../arbitrary/tuple';
-
-/**
- * For valid IP v4
- *
- * Following {@link https://tools.ietf.org/html/rfc3986#section-3.2.2 | RFC 3986}
- *
- * @remarks Since 1.14.0
- * @public
- */
-function ipV4(): Arbitrary<string> {
-  // IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
-  return tuple(nat(255), nat(255), nat(255), nat(255)).map(([a, b, c, d]) => `${a}.${b}.${c}.${d}`);
-}
-
-/**
- * For valid IP v4 according to WhatWG
- *
- * Following {@link https://url.spec.whatwg.org/ | WhatWG}, the specification for web-browsers
- *
- * There is no equivalent for IP v6 according to the {@link https://url.spec.whatwg.org/#concept-ipv6-parser | IP v6 parser}
- *
- * @remarks Since 1.17.0
- * @public
- */
-function ipV4Extended(): Arbitrary<string> {
-  const natRepr = (maxValue: number) =>
-    tuple(constantFrom('dec', 'oct', 'hex'), nat(maxValue)).map(([style, v]) => {
-      switch (style) {
-        case 'oct':
-          return `0${Number(v).toString(8)}`;
-        case 'hex':
-          return `0x${Number(v).toString(16)}`;
-        case 'dec':
-        default:
-          return `${v}`;
-      }
-    });
-  return oneof(
-    tuple(natRepr(255), natRepr(255), natRepr(255), natRepr(255)).map(([a, b, c, d]) => `${a}.${b}.${c}.${d}`),
-    tuple(natRepr(255), natRepr(255), natRepr(65535)).map(([a, b, c]) => `${a}.${b}.${c}`),
-    tuple(natRepr(255), natRepr(16777215)).map(([a, b]) => `${a}.${b}`),
-    natRepr(4294967295)
-  );
-}
+import { array } from './array';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { oneof } from './oneof';
+import { hexaString } from './hexaString';
+import { tuple } from './tuple';
+import { ipV4 } from './ipV4';
 
 /**
  * For valid IP v6
@@ -58,7 +13,7 @@ function ipV4Extended(): Arbitrary<string> {
  * @remarks Since 1.14.0
  * @public
  */
-function ipV6(): Arbitrary<string> {
+export function ipV6(): Arbitrary<string> {
   // h16 = 1*4HEXDIG
   // ls32 = ( h16 ":" h16 ) / IPv4address
   // IPv6address   =                            6( h16 ":" ) ls32
@@ -95,5 +50,3 @@ function ipV6(): Arbitrary<string> {
     tuple(array(h16Arb, { minLength: 0, maxLength: 7 })).map(([bh]) => `${bh.join(':')}::`)
   );
 }
-
-export { ipV4, ipV4Extended, ipV6 };
