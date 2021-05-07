@@ -268,7 +268,7 @@ function lorem(constraints: LoremConstraints): Arbitrary<string>;
 function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]): Arbitrary<string> {
   const maxWordsCount = typeof args[0] === 'object' ? args[0].maxCount : args[0];
   const sentencesMode = typeof args[0] === 'object' ? args[0].mode === 'sentences' : args[1];
-  const maxCount = maxWordsCount || 5;
+  const maxCount = maxWordsCount !== undefined ? maxWordsCount : 5;
   if (maxCount < 1) {
     throw new Error(`lorem has to produce at least one word/sentence`);
   }
