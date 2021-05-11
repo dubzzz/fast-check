@@ -48,6 +48,10 @@ describe('keyValuePairsToObjectUnmapper', () => {
     ${Object.create(null)} | ${'it has no prototype'}
     ${new (class A {})()}  | ${'it is not just a simple object but a more complex type'}
     ${[]}                  | ${'it is an Array'}
+    ${new Number(0)}       | ${'it is a boxed-Number'}
+    ${0}                   | ${'it is a number'}
+    ${null}                | ${'it is null'}
+    ${undefined}           | ${'it is undefined'}
   `('should reject unmap on instance when $condition', ({ value }) => {
     // Arrange / Act / Assert
     expect(() => keyValuePairsToObjectUnmapper(value)).toThrowError();
