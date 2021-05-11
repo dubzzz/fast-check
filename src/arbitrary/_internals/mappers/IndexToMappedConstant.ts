@@ -23,7 +23,15 @@ function buildReverseMapping(entries: { num: number; build: (idInGroup: number) 
     const entry = entries[entryIdx];
     for (let idxInEntry = 0; idxInEntry !== entry.num; ++idxInEntry) {
       const value = entry.build(idxInEntry);
-      if (Object.is(value, -0)) {
+      // Remark:
+      // >  Ideally we'd have used `Object.is(value, -0)` but for an unknown reason
+      // >  when using node 10 in some very rare circumstances we get: -5e-324 is -0.
+      // >  The scenario to reproduce the issue is very complex as it requires this code
+      // >  and probably others to be run multiple times before triggering the bug.
+      // >  See: https://github.com/dubzzz/fast-check/issues/1841
+      // >  Seems to be related to: https://bugs.chromium.org/p/chromium/issues/detail?id=903043&q=903043&can=2
+      // >  Fixed by: https://github.com/v8/v8/commit/56f6a763c27d77afbee997a50baa34996e97ba40
+      if (value === 0 && 1 / value === Number.NEGATIVE_INFINITY) {
         reverseMapping.negativeZeroIndex = choiceIndex;
       } else {
         reverseMapping.mapping.set(value, choiceIndex);
