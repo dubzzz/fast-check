@@ -58,7 +58,7 @@ export class NextValue<T> {
         this.readOnce = true;
         return this.value_;
       }
-      return ((this.value_ as unknown) as WithCloneMethod<T>)[cloneMethod]();
+      return (this.value_ as unknown as WithCloneMethod<T>)[cloneMethod]();
     }
     return this.value_;
   }

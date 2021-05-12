@@ -5,7 +5,8 @@ import { Scheduler } from '../../../arbitrary/scheduler';
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync extends boolean>
-  implements AsyncCommand<Model, Real, true> {
+  implements AsyncCommand<Model, Real, true>
+{
   constructor(readonly s: Scheduler, readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>) {}
 
   async check(m: Readonly<Model>): Promise<boolean> {

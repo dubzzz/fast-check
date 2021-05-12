@@ -19,7 +19,7 @@ export function assertGenerateProducesSameValueGivenSameSeed<T, U = never>(
 ): void {
   const {
     isEqual,
-    extraParameters: extra = fc.constant((undefined as unknown) as U) as fc.Arbitrary<U>,
+    extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     assertParameters,
   } = options;
   fc.assert(
@@ -50,7 +50,7 @@ export function assertShrinkProducesSameValueGivenSameSeed<T, U = never>(
   const {
     isEqual,
     noInitialContext,
-    extraParameters: extra = fc.constant((undefined as unknown) as U) as fc.Arbitrary<U>,
+    extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     assertParameters,
   } = options;
   fc.assert(
@@ -97,10 +97,8 @@ export function assertGenerateProducesCorrectValues<T, U = never>(
     assertParameters?: fc.Parameters<unknown>;
   } = {}
 ): void {
-  const {
-    extraParameters: extra = fc.constant((undefined as unknown) as U) as fc.Arbitrary<U>,
-    assertParameters,
-  } = options;
+  const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
+    options;
   fc.assert(
     fc.property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
       // Arrange
@@ -124,10 +122,8 @@ export function assertShrinkProducesCorrectValues<T, U = never>(
     assertParameters?: fc.Parameters<unknown>;
   } = {}
 ): void {
-  const {
-    extraParameters: extra = fc.constant((undefined as unknown) as U) as fc.Arbitrary<U>,
-    assertParameters,
-  } = options;
+  const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
+    options;
   fc.assert(
     fc.property(
       fc.integer().noShrink(),
@@ -166,7 +162,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
   const {
     isEqual,
     isEqualContext,
-    extraParameters: extra = fc.constant((undefined as unknown) as U) as fc.Arbitrary<U>,
+    extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     assertParameters,
   } = options;
   fc.assert(

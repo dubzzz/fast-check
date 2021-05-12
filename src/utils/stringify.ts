@@ -50,7 +50,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
   }
   switch (Object.prototype.toString.call(value)) {
     case '[object Array]': {
-      const arr = (value as unknown) as unknown[];
+      const arr = value as unknown as unknown[];
       if (arr.length >= 50 && isSparseArray(arr)) {
         const assignments: string[] = [];
         // Discarded: map then join will still show holes
@@ -75,7 +75,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
     case '[object Boolean]':
       return typeof value === 'boolean' ? JSON.stringify(value) : `new Boolean(${JSON.stringify(value)})`;
     case '[object Date]': {
-      const d = (value as unknown) as Date;
+      const d = value as unknown as Date;
       return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
     }
     case '[object Map]':
@@ -126,7 +126,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
     case '[object String]':
       return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
     case '[object Symbol]': {
-      const s = (value as unknown) as symbol;
+      const s = value as unknown as symbol;
       if (Symbol.keyFor(s) !== undefined) {
         return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
@@ -156,7 +156,7 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
       const valuePrototype = Object.getPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
       if (typeof className === 'string') {
-        const typedArray = (value as unknown) as
+        const typedArray = value as unknown as
           | Int8Array
           | Uint8Array
           | Uint8ClampedArray

@@ -98,10 +98,10 @@ describe('IntegerArbitrary', () => {
               nextInt.mockImplementationOnce((min, max) => min + (mod % (max - min + 1)));
             }
             nextInt.mockReturnValueOnce(mid); // Remark: this value will most of the time be outside of requested range
-            const biasNumericRange = (jest.spyOn(
+            const biasNumericRange = jest.spyOn(
               BiasNumericRangeMock,
               'biasNumericRange'
-            ) as unknown) as jest.SpyInstance<{ min: number; max: number }[], [number, number, () => number]>;
+            ) as unknown as jest.SpyInstance<{ min: number; max: number }[], [number, number, () => number]>;
             biasNumericRange.mockReturnValueOnce(ranges);
 
             // Act

@@ -32,9 +32,11 @@ export interface Scheduler<TMetaData = unknown> {
    *
    * @remarks Since 1.20.0
    */
-  scheduleSequence(
-    sequenceBuilders: SchedulerSequenceItem<TMetaData>[]
-  ): { done: boolean; faulty: boolean; task: Promise<{ done: boolean; faulty: boolean }> };
+  scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetaData>[]): {
+    done: boolean;
+    faulty: boolean;
+    task: Promise<{ done: boolean; faulty: boolean }>;
+  };
 
   /**
    * Count of pending scheduled tasks

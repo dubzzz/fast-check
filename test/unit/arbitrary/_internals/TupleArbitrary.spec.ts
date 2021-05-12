@@ -201,14 +201,18 @@ describe('TupleArbitrary', () => {
 
     it('should clone cloneable on shrink', () => {
       // Arrange
-      const { instance: fakeArbitraryNotCloneableA, generate: generateA, shrink: shrinkA } = fakeNextArbitrary<
-        string[]
-      >();
+      const {
+        instance: fakeArbitraryNotCloneableA,
+        generate: generateA,
+        shrink: shrinkA,
+      } = fakeNextArbitrary<string[]>();
       const { instance: fakeArbitraryCloneableB, generate: generateB, shrink: shrinkB } = fakeNextArbitrary<string[]>();
 
-      const { instance: fakeArbitraryNotCloneableC, generate: generateC, shrink: shrinkC } = fakeNextArbitrary<
-        string[]
-      >();
+      const {
+        instance: fakeArbitraryNotCloneableC,
+        generate: generateC,
+        shrink: shrinkC,
+      } = fakeNextArbitrary<string[]>();
       const cloneMethodImpl = jest
         .fn()
         .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));

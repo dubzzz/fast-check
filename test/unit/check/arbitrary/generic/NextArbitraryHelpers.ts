@@ -12,7 +12,7 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitr
   NextArbitrary<T>
 > {
   const generate = jest.fn();
-  const canGenerate = (jest.fn() as any) as ((value: unknown) => value is T) &
+  const canGenerate = jest.fn() as any as ((value: unknown) => value is T) &
     MockWithArgs<(value: unknown) => value is T>;
   const shrink = jest.fn();
   const filter = jest.fn();

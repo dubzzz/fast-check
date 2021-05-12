@@ -120,8 +120,8 @@ describe('letrec', () => {
       expect(arb1).toBeInstanceOf(LazyArbitrary);
       expect(arb2).toBeInstanceOf(LazyArbitrary);
       expect(arb3).not.toBeInstanceOf(LazyArbitrary);
-      expect(((arb1 as any) as LazyArbitrary<unknown>).underlying).toBe(arb2);
-      expect(((arb2 as any) as LazyArbitrary<unknown>).underlying).toBe(arb3);
+      expect((arb1 as any as LazyArbitrary<unknown>).underlying).toBe(arb2);
+      expect((arb2 as any as LazyArbitrary<unknown>).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
 
@@ -143,8 +143,8 @@ describe('letrec', () => {
       expect(arb1).toBeInstanceOf(LazyArbitrary);
       expect(arb2).toBeInstanceOf(LazyArbitrary);
       expect(arb3).not.toBeInstanceOf(LazyArbitrary);
-      expect(((arb1 as any) as LazyArbitrary<unknown>).underlying).toBe(arb2);
-      expect(((arb2 as any) as LazyArbitrary<unknown>).underlying).toBe(arb3);
+      expect((arb1 as any as LazyArbitrary<unknown>).underlying).toBe(arb2);
+      expect((arb2 as any as LazyArbitrary<unknown>).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
   });

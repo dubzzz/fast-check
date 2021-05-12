@@ -33,7 +33,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends NextArbitrary<Ts> {
   }
   private static wrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): NextValue<Ts> {
     let cloneable = false;
-    const vs = ([] as unknown) as Ts & unknown[];
+    const vs = [] as unknown as Ts & unknown[];
     const ctxs: unknown[] = [];
     for (let idx = 0; idx !== values.length; ++idx) {
       const v = values[idx];

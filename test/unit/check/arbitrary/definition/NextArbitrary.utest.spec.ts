@@ -30,7 +30,7 @@ describe('NextArbitrary', () => {
           throw new Error('Not implemented.');
         }
       }
-      const fakeArbitrary = (new MyOldArbitrary() as unknown) as NextArbitrary<any>;
+      const fakeArbitrary = new MyOldArbitrary() as unknown as NextArbitrary<any>;
 
       // Act / Assert
       expect(() => assertIsNextArbitrary(fakeArbitrary)).toThrowErrorMatchingInlineSnapshot(
@@ -48,7 +48,7 @@ describe('NextArbitrary', () => {
           throw new Error('Not implemented.');
         }
       }
-      const fakeArbitrary = (new MyOldArbitraryWithShrink() as unknown) as NextArbitrary<any>;
+      const fakeArbitrary = new MyOldArbitraryWithShrink() as unknown as NextArbitrary<any>;
 
       // Act / Assert
       expect(() => assertIsNextArbitrary(fakeArbitrary)).toThrowErrorMatchingInlineSnapshot(
@@ -114,7 +114,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choice1 = new NextValue(1, Symbol());
       const choice2 = new NextValue(2, Symbol());
@@ -143,7 +143,7 @@ describe('NextArbitrary', () => {
     it('should filter the values produced by the original arbitrary on shrink', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const valueToShrink = 5;
       const contextToShrink = Symbol();
@@ -185,7 +185,7 @@ describe('NextArbitrary', () => {
         const predicate = jest.fn();
         class MyNextArbitrary extends NextArbitrary<any> {
           generate = generate;
-          canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+          canGenerate = canGenerate as any as (value: unknown) => value is any;
           shrink = shrink;
         }
         canGenerate.mockReturnValueOnce(canGenerateOutput);
@@ -213,7 +213,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choice = new NextValue(1, Symbol());
       generate.mockReturnValueOnce(choice);
@@ -236,7 +236,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choice = new NextValue({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
       generate.mockReturnValueOnce(choice);
@@ -261,7 +261,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 42;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const source = new NextValue(69, Symbol());
       generate.mockReturnValueOnce(source);
@@ -289,7 +289,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 42;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const source = new NextValue(69, Symbol());
       generate.mockReturnValueOnce(source);
@@ -323,7 +323,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const source = new NextValue({ source: 1, [cloneMethod]: () => source.value_ }, Symbol());
       generate.mockReturnValueOnce(source);
@@ -357,7 +357,7 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -377,7 +377,7 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -407,7 +407,7 @@ describe('NextArbitrary', () => {
         const unmapper = jest.fn().mockReturnValue(unmapperOutput);
         class MyNextArbitrary extends NextArbitrary<any> {
           generate = generate;
-          canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+          canGenerate = canGenerate as any as (value: unknown) => value is any;
           shrink = shrink;
         }
 
@@ -435,7 +435,7 @@ describe('NextArbitrary', () => {
       });
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -465,7 +465,7 @@ describe('NextArbitrary', () => {
       const unmapper = jest.fn().mockReturnValue('tata');
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -498,7 +498,7 @@ describe('NextArbitrary', () => {
       const unmapper = jest.fn().mockReturnValue('tata');
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -531,7 +531,7 @@ describe('NextArbitrary', () => {
       });
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -546,12 +546,12 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choiceRoot = new NextValue(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
       const generateChained = jest.fn();
-      const canGenerateChained = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerateChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
       const choiceChained = new NextValue(50, Symbol());
       generateChained.mockReturnValueOnce(choiceChained);
@@ -583,7 +583,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choiceRoot = new NextValue(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
@@ -592,7 +592,7 @@ describe('NextArbitrary', () => {
       const shrinkRoot3 = new NextValue(15, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2, shrinkRoot3));
       const generateChained = jest.fn();
-      const canGenerateChained = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerateChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
       const choiceChained = new NextValue(50, Symbol());
       const choiceShrink1Chained = new NextValue(58, Symbol()); // chain will be called for each sub-shrink of root
@@ -643,7 +643,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choiceRoot = new NextValue(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
@@ -654,7 +654,7 @@ describe('NextArbitrary', () => {
       const shrinkRoot11 = new NextValue(310, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot11));
       const generateChained = jest.fn();
-      const canGenerateChained = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerateChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
       const choiceChained = new NextValue(50, Symbol());
       const choiceShrink1Chained = new NextValue(58, Symbol()); // chain will be called for each iterated sub-shrink of root (->10)
@@ -706,7 +706,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choiceRoot = new NextValue(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
@@ -714,7 +714,7 @@ describe('NextArbitrary', () => {
       const shrinkRoot2 = new NextValue(11, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2));
       const generateChained = jest.fn();
-      const canGenerateChained = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerateChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
       const choiceChained = new NextValue(50, Symbol());
       const choiceShrink1Chained = new NextValue(58, Symbol());
@@ -760,7 +760,7 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -780,7 +780,7 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<any> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (value: unknown) => value is any;
+        canGenerate = canGenerate as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
@@ -799,7 +799,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
-      const canGenerate = (jest.fn() as any) as (value: unknown) => value is any;
+      const canGenerate = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
       const choice = new NextValue(1, Symbol());
       generate.mockReturnValueOnce(choice);

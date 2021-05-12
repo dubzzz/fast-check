@@ -179,7 +179,7 @@ describe('ConverterFromNext', () => {
       const filter = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         filter = filter;
       }
@@ -207,7 +207,7 @@ describe('ConverterFromNext', () => {
       const filter = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         filter = filter;
       }
@@ -238,7 +238,7 @@ describe('ConverterFromNext', () => {
       const map = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         map = map;
       }
@@ -266,7 +266,7 @@ describe('ConverterFromNext', () => {
       const map = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         map = map;
       }
@@ -297,7 +297,7 @@ describe('ConverterFromNext', () => {
       const chain = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         chain = chain;
       }
@@ -328,7 +328,7 @@ describe('ConverterFromNext', () => {
       const noShrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         noShrink = noShrink;
       }
@@ -356,7 +356,7 @@ describe('ConverterFromNext', () => {
       const noBias = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         noBias = noBias;
       }

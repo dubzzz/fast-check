@@ -198,11 +198,12 @@ class ChainArbitrary<T, U> extends NextArbitrary<U> {
   }
   shrink(value: U, context?: unknown): Stream<NextValue<U>> {
     if (this.isSafeContext(context)) {
-      return (!context.stoppedForOriginal
-        ? this.arb
-            .shrink(context.originalValue, context.originalContext)
-            .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng, context.originalBias))
-        : Stream.nil<NextValue<U>>()
+      return (
+        !context.stoppedForOriginal
+          ? this.arb
+              .shrink(context.originalValue, context.originalContext)
+              .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng, context.originalBias))
+          : Stream.nil<NextValue<U>>()
       ).join(
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
           const newContext: ChainArbitraryContext<T, U> = {
