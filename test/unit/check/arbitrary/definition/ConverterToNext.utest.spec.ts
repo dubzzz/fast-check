@@ -189,7 +189,7 @@ describe('ConverterToNext', () => {
       }
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
       }
       const originalInstance = new MyArbitrary();
@@ -244,7 +244,7 @@ describe('ConverterToNext', () => {
       }
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (canGenerate as any) as (v: unknown) => v is number;
+        canGenerate = canGenerate as any as (v: unknown) => v is number;
         shrink = shrink;
         map = map;
       }

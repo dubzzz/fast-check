@@ -89,7 +89,7 @@ export function expectType<TExpectedType>() {
 }
 
 function type<T>() {
-  return (null as any) as T;
+  return null as any as T;
 }
 
 expectType<5>()(type<5>(), '5 is 5');

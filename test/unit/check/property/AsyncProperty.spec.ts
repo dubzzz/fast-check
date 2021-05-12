@@ -56,7 +56,7 @@ describe('AsyncProperty', () => {
     const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
     let runnerHasCompleted = false;
-    let resolvePromise: (t: boolean) => void = (null as any) as (t: boolean) => void;
+    let resolvePromise: (t: boolean) => void = null as any as (t: boolean) => void;
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       return await new Promise<boolean>(function (resolve) {
         resolvePromise = resolve;

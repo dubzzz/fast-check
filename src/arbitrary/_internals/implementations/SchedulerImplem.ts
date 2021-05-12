@@ -126,9 +126,11 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       );
   }
 
-  scheduleSequence(
-    sequenceBuilders: SchedulerSequenceItem<TMetaData>[]
-  ): { done: boolean; faulty: boolean; task: Promise<{ done: boolean; faulty: boolean }> } {
+  scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetaData>[]): {
+    done: boolean;
+    faulty: boolean;
+    task: Promise<{ done: boolean; faulty: boolean }>;
+  } {
     // We run all the builders sequencially
     // BUT we allow tasks scheduled outside of this sequence
     //     to be called between two of our builders

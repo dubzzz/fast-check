@@ -73,8 +73,12 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   private beforeEachHook: GlobalPropertyHookFunction;
   private afterEachHook: GlobalPropertyHookFunction;
   constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
-    const { beforeEach = Property.dummyHook, afterEach = Property.dummyHook, asyncBeforeEach, asyncAfterEach } =
-      readConfigureGlobal() || {};
+    const {
+      beforeEach = Property.dummyHook,
+      afterEach = Property.dummyHook,
+      asyncBeforeEach,
+      asyncAfterEach,
+    } = readConfigureGlobal() || {};
 
     if (asyncBeforeEach !== undefined) {
       throw Error('"asyncBeforeEach" can\'t be set when running synchronous properties');
