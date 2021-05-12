@@ -19,7 +19,7 @@ jobs:
     name: 'Format & Lint'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/cache@v2.1.5
         with:
           path: '**/node_modules'
@@ -41,7 +41,7 @@ jobs:
       matrix:
         node-version: [10.x, 12.x, 14.x, 16.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/cache@v2.1.5
         with:
           path: '**/node_modules'
@@ -78,7 +78,7 @@ jobs:
         node-version: [10.x, 12.x, 14.x, 16.x]
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/cache@v2.1.5
         with:
           path: '**/node_modules'
@@ -104,7 +104,7 @@ jobs:
     name: 'Test package quality'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
@@ -115,7 +115,7 @@ jobs:
     name: 'Build documentation'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/cache@v2.1.5
         with:
           path: '**/node_modules'
@@ -143,7 +143,7 @@ jobs:
     name: 'Build production package'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/cache@v2.1.5
         with:
           path: '**/node_modules'
@@ -172,7 +172,7 @@ jobs:
     needs: production_package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
@@ -204,7 +204,7 @@ jobs:
           # Minimal requirement for TypeScript
           - '3.2'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
@@ -236,7 +236,7 @@ jobs:
     needs: production_package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Using Node v16.x
         uses: actions/setup-node@v2.1.5
         with:
@@ -284,7 +284,7 @@ jobs:
           - '13.7'
           - '13'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Using Node v${{matrix.node-version}}
       shell: bash -l {0}
       run: nvm install ${{matrix.node-version}}
@@ -343,7 +343,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Download documentation
         uses: actions/download-artifact@v2
         with:
