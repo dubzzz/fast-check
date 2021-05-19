@@ -212,11 +212,14 @@ function constraintsArb() {
 }
 
 function invalidRangeConstraintsArb() {
-  return fc.tuple(fc.date(), fc.date()).map(([d1, d2]) => {
-    const min = d1 < d2 ? d1 : d2;
-    const max = d1 < d2 ? d2 : d1;
-    return { min: max, max: min };
-  });
+  return fc
+    .tuple(fc.date(), fc.date())
+    .filter(([d1, d2]) => +d1 !== +d2)
+    .map(([d1, d2]) => {
+      const min = d1 < d2 ? d1 : d2;
+      const max = d1 < d2 ? d2 : d1;
+      return { min: max, max: min };
+    });
 }
 
 function invalidMinConstraintsArb() {
