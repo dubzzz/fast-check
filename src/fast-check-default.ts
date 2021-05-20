@@ -141,20 +141,15 @@ import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
 import { FloatNextConstraints } from './check/arbitrary/FloatNextArbitrary';
-import {
-  float32Array,
-  float64Array,
-  Float32ArrayConstraints,
-  int16Array,
-  int32Array,
-  int8Array,
-  IntArrayConstraints,
-  uint16Array,
-  uint32Array,
-  uint8Array,
-  uint8ClampedArray,
-  Float64ArrayConstraints,
-} from './check/arbitrary/TypedArrayArbitrary';
+import { int8Array, IntArrayConstraints } from './arbitrary/int8Array';
+import { int16Array } from './arbitrary/int16Array';
+import { int32Array } from './arbitrary/int32Array';
+import { uint8Array } from './arbitrary/uint8Array';
+import { uint8ClampedArray } from './arbitrary/uint8ClampedArray';
+import { uint16Array } from './arbitrary/uint16Array';
+import { uint32Array } from './arbitrary/uint32Array';
+import { float32Array, Float32ArrayConstraints } from './arbitrary/float32Array';
+import { float64Array, Float64ArrayConstraints } from './arbitrary/float64Array';
 import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
 import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
