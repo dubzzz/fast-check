@@ -29,7 +29,8 @@ describe('dictionary (integration)', () => {
       expect(extra.keys).toContain(k);
     }
     for (const v of Object.values(value)) {
-      expect(extra.values).toContain(v);
+      if (Number.isNaN(v)) expect(extra.values.includes(v)).toBe(true);
+      else expect(extra.values).toContain(v); // exact same value (not a copy)
     }
   };
 
