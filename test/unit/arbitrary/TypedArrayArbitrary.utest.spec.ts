@@ -1,21 +1,18 @@
-import * as fc from '../../../../lib/fast-check';
-import {
-  int16Array,
-  int32Array,
-  int8Array,
-  IntArrayConstraints,
-  uint16Array,
-  uint32Array,
-  uint8Array,
-  uint8ClampedArray,
-} from '../../../../src/check/arbitrary/TypedArrayArbitrary';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import * as fc from '../../../lib/fast-check';
+import { int8Array, IntArrayConstraints } from '../../../src/arbitrary/int8Array';
+import { int16Array } from '../../../src/arbitrary/int16Array';
+import { int32Array } from '../../../src/arbitrary/int32Array';
+import { uint8Array } from '../../../src/arbitrary/uint8Array';
+import { uint8ClampedArray } from '../../../src/arbitrary/uint8ClampedArray';
+import { uint16Array } from '../../../src/arbitrary/uint16Array';
+import { uint32Array } from '../../../src/arbitrary/uint32Array';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
 import { mocked } from 'ts-jest/utils';
-jest.mock('../../../../src/arbitrary/array');
-jest.mock('../../../../src/arbitrary/integer');
-import * as ArrayArbitraryMock from '../../../../src/arbitrary/array';
-import * as IntegerMock from '../../../../src/arbitrary/integer';
+jest.mock('../../../src/arbitrary/array');
+jest.mock('../../../src/arbitrary/integer');
+import * as ArrayArbitraryMock from '../../../src/arbitrary/array';
+import * as IntegerMock from '../../../src/arbitrary/integer';
 
 const validArrayConstraintsArb = () =>
   fc.record({ minLength: fc.nat(), maxLength: fc.nat() }, { withDeletedKeys: true }).map((ct) => {

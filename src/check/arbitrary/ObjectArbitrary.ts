@@ -16,17 +16,15 @@ import { unicodeString } from '../../arbitrary/unicodeString';
 import { tuple } from '../../arbitrary/tuple';
 import { bigInt } from '../../arbitrary/bigInt';
 import { date } from '../../arbitrary/date';
-import {
-  float32Array,
-  float64Array,
-  int16Array,
-  int32Array,
-  int8Array,
-  uint16Array,
-  uint32Array,
-  uint8Array,
-  uint8ClampedArray,
-} from './TypedArrayArbitrary';
+import { float32Array } from '../../arbitrary/float32Array';
+import { float64Array } from '../../arbitrary/float64Array';
+import { int16Array } from '../../arbitrary/int16Array';
+import { int32Array } from '../../arbitrary/int32Array';
+import { int8Array } from '../../arbitrary/int8Array';
+import { uint16Array } from '../../arbitrary/uint16Array';
+import { uint32Array } from '../../arbitrary/uint32Array';
+import { uint8Array } from '../../arbitrary/uint8Array';
+import { uint8ClampedArray } from '../../arbitrary/uint8ClampedArray';
 import { sparseArray } from './SparseArrayArbitrary';
 import { keyValuePairsToObjectMapper } from '../../arbitrary/_internals/mappers/KeyValuePairsToObject';
 
