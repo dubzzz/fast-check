@@ -1,15 +1,17 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { func, compareFunc, compareBooleanFunc } from '../../../../src/check/arbitrary/FunctionArbitrary';
-import { context } from '../../../../src/arbitrary/context';
-import { integer } from '../../../../src/arbitrary/integer';
-import { hasCloneMethod, cloneMethod } from '../../../../src/check/symbols';
-import { hash } from '../../../../src/utils/hash';
-import { stringify } from '../../../../src/utils/stringify';
+import { compareBooleanFunc } from '../../../src/arbitrary/compareBooleanFunc';
+import { compareFunc } from '../../../src/arbitrary/compareFunc';
+import { func } from '../../../src/arbitrary/func';
+import { context } from '../../../src/arbitrary/context';
+import { integer } from '../../../src/arbitrary/integer';
+import { hasCloneMethod, cloneMethod } from '../../../src/check/symbols';
+import { hash } from '../../../src/utils/hash';
+import { stringify } from '../../../src/utils/stringify';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
-import * as stubRng from '../../stubs/generators';
+import * as stubRng from '../stubs/generators';
 
 const forceClone = <T>(instance: T) => {
   if (!hasCloneMethod(instance)) throw new Error('Missing [cloneMethod]');
