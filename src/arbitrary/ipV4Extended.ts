@@ -1,8 +1,21 @@
-import { constantFrom } from './constantFrom';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { nat } from './nat';
 import { oneof } from './oneof';
 import { tuple } from './tuple';
+import { buildStringifiedNatArbitrary } from './_internals/builders/StringifiedNatArbitraryBuilder';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+
+/** @internal */
+function dotJoinerMapper(data: string[]): string {
+  return data.join('.');
+}
+
+/** @internal */
+function dotJoinerUnmapper(value: unknown): string[] {
+  if (typeof value !== 'string') {
+    throw new Error('Invalid type');
+  }
+  return value.split('.');
+}
 
 /**
  * For valid IP v4 according to WhatWG
@@ -15,22 +28,32 @@ import { tuple } from './tuple';
  * @public
  */
 export function ipV4Extended(): Arbitrary<string> {
-  const natRepr = (maxValue: number) =>
-    tuple(constantFrom('dec', 'oct', 'hex'), nat(maxValue)).map(([style, v]) => {
-      switch (style) {
-        case 'oct':
-          return `0${Number(v).toString(8)}`;
-        case 'hex':
-          return `0x${Number(v).toString(16)}`;
-        case 'dec':
-        default:
-          return `${v}`;
-      }
-    });
   return oneof(
-    tuple(natRepr(255), natRepr(255), natRepr(255), natRepr(255)).map(([a, b, c, d]) => `${a}.${b}.${c}.${d}`),
-    tuple(natRepr(255), natRepr(255), natRepr(65535)).map(([a, b, c]) => `${a}.${b}.${c}`),
-    tuple(natRepr(255), natRepr(16777215)).map(([a, b]) => `${a}.${b}`),
-    natRepr(4294967295)
+    convertFromNext(
+      convertToNext(
+        tuple<string[]>(
+          buildStringifiedNatArbitrary(255),
+          buildStringifiedNatArbitrary(255),
+          buildStringifiedNatArbitrary(255),
+          buildStringifiedNatArbitrary(255)
+        )
+      ).map(dotJoinerMapper, dotJoinerUnmapper)
+    ),
+    convertFromNext(
+      convertToNext(
+        tuple<string[]>(
+          buildStringifiedNatArbitrary(255),
+          buildStringifiedNatArbitrary(255),
+          buildStringifiedNatArbitrary(65535)
+        )
+      ).map(dotJoinerMapper, dotJoinerUnmapper)
+    ),
+    convertFromNext(
+      convertToNext(tuple<string[]>(buildStringifiedNatArbitrary(255), buildStringifiedNatArbitrary(16777215))).map(
+        dotJoinerMapper,
+        dotJoinerUnmapper
+      )
+    ),
+    buildStringifiedNatArbitrary(4294967295)
   );
 }
