@@ -29,12 +29,12 @@ export function buildCompareFunctionArbitrary<T, TOut>(
             .map((k) => `${k} => ${stringify(recorded[k])}`)
             .map((line) => `/* ${escapeForMultilineComments(line)} */`);
           return `function(a, b) {
-    // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
-    const cmp = ${cmp};
-    const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
-    const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};
-    return cmp(hA, hB);
-  }`;
+  // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
+  const cmp = ${cmp};
+  const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
+  const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};
+  return cmp(hA, hB);
+}`;
         },
         [cloneMethod]: producer,
       });
