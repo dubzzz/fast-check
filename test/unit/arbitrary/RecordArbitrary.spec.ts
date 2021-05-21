@@ -1,13 +1,13 @@
 import * as prand from 'pure-rand';
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { constant } from '../../../../src/arbitrary/constant';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { integer } from '../../../../src/arbitrary/integer';
-import { record, RecordConstraints } from '../../../../src/check/arbitrary/RecordArbitrary';
-import { Random } from '../../../../src/random/generator/Random';
+import { constant } from '../../../src/arbitrary/constant';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import { integer } from '../../../src/arbitrary/integer';
+import { record, RecordConstraints } from '../../../src/arbitrary/record';
+import { Random } from '../../../src/random/generator/Random';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
 
 const keyArb: fc.Arbitrary<any> = fc
   .tuple(fc.string(), fc.boolean())
