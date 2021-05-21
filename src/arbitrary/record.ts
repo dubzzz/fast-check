@@ -1,7 +1,7 @@
-import { Arbitrary } from './definition/Arbitrary';
-
-import { option } from '../../arbitrary/option';
-import { genericTuple } from '../../arbitrary/genericTuple';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { option } from './option';
+import { extractEnumerableKeys } from './_internals/helpers/EnumerableKeysExtractor';
+import { buildFullRecordArbitrary } from './_internals/builders/FullRecordArbitraryBuilder';
 
 /**
  * Constraints to be applied on {@link record}
@@ -49,39 +49,6 @@ export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDelet
   ? Partial<T> & Pick<T, TKeys & keyof T>
   : T;
 
-/** @internal */
-type RecordKey<T> = Extract<keyof T, string | symbol>;
-
-/** @internal */
-function extractAllKeys<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): RecordKey<T>[] {
-  const keys = Object.keys(recordModel) as RecordKey<T>[]; // Only enumerable own properties
-  const symbols = Object.getOwnPropertySymbols(recordModel) as RecordKey<T>[];
-  for (let index = 0; index !== symbols.length; ++index) {
-    const symbol = symbols[index];
-    const descriptor = Object.getOwnPropertyDescriptor(recordModel, symbol);
-    if (descriptor && descriptor.enumerable) {
-      keys.push(symbol);
-    }
-  }
-  return keys;
-}
-
-/** @internal */
-function rawRecord<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<T> {
-  const keys = extractAllKeys(recordModel);
-  const arbs: Arbitrary<T[keyof T]>[] = [];
-  for (let index = 0; index !== keys.length; ++index) {
-    arbs.push(recordModel[keys[index]]);
-  }
-  return genericTuple(arbs).map((gs: any[]) => {
-    const obj: Record<RecordKey<T>, any> = {} as any;
-    for (let idx = 0; idx !== keys.length; ++idx) {
-      obj[keys[idx]] = gs[idx];
-    }
-    return obj as T;
-  });
-}
-
 /**
  * For records following the `recordModel` schema
  *
@@ -121,8 +88,9 @@ function record<T>(
   constraints?: RecordConstraints<keyof T>
 ): unknown {
   if (constraints == null) {
-    return rawRecord(recordModel);
+    return buildFullRecordArbitrary(recordModel);
   }
+
   if ('withDeletedKeys' in constraints && 'requiredKeys' in constraints) {
     throw new Error(`requiredKeys and withDeletedKeys cannot be used together in fc.record`);
   }
@@ -131,12 +99,10 @@ function record<T>(
     ('requiredKeys' in constraints && constraints.requiredKeys !== undefined) ||
     ('withDeletedKeys' in constraints && !!constraints.withDeletedKeys);
   if (!requireDeletedKeys) {
-    return rawRecord(recordModel);
+    return buildFullRecordArbitrary(recordModel);
   }
 
-  const updatedRecordModel: { [K in keyof T]: Arbitrary<{ value: T[K] } | null> } = {} as any;
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
-
   for (let idx = 0; idx !== requiredKeys.length; ++idx) {
     const descriptor = Object.getOwnPropertyDescriptor(recordModel, requiredKeys[idx]);
     if (descriptor === undefined) {
@@ -147,14 +113,15 @@ function record<T>(
     }
   }
 
-  const keys = extractAllKeys(recordModel);
+  const updatedRecordModel: { [K in keyof T]?: Arbitrary<{ value: T[K] } | null> } = {};
+  const keys = extractEnumerableKeys(recordModel);
   for (let index = 0; index !== keys.length; ++index) {
     const k = keys[index];
     const requiredArbitrary = recordModel[k].map((v) => ({ value: v }));
     if (requiredKeys.indexOf(k) !== -1) updatedRecordModel[k] = requiredArbitrary;
     else updatedRecordModel[k] = option(requiredArbitrary);
   }
-  return rawRecord(updatedRecordModel as any).map((rawObj) => {
+  return buildFullRecordArbitrary(updatedRecordModel as any).map((rawObj) => {
     const obj = rawObj as { [K in keyof T]: { value: T[keyof T] } | null };
     const nobj: { [K in keyof T]?: T[keyof T] } = {};
     for (let index = 0; index !== keys.length; ++index) {

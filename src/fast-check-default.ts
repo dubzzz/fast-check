@@ -74,7 +74,7 @@ import {
 } from './check/arbitrary/ObjectArbitrary';
 import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
-import { record, RecordConstraints, RecordValue } from './check/arbitrary/RecordArbitrary';
+import { record, RecordConstraints, RecordValue } from './arbitrary/record';
 import { set, SetConstraints } from './arbitrary/set';
 import { infiniteStream } from './arbitrary/infiniteStream';
 import { asciiString } from './arbitrary/asciiString';
