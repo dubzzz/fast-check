@@ -1,7 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { option } from './option';
-import { extractEnumerableKeys } from './_internals/helpers/EnumerableKeysExtractor';
-import { buildFullRecordArbitrary } from './_internals/builders/FullRecordArbitraryBuilder';
+import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
+import { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
 
 /**
  * Constraints to be applied on {@link record}
@@ -88,7 +87,7 @@ function record<T>(
   constraints?: RecordConstraints<keyof T>
 ): unknown {
   if (constraints == null) {
-    return buildFullRecordArbitrary(recordModel);
+    return buildPartialRecordArbitrary(recordModel, undefined);
   }
 
   if ('withDeletedKeys' in constraints && 'requiredKeys' in constraints) {
@@ -99,7 +98,7 @@ function record<T>(
     ('requiredKeys' in constraints && constraints.requiredKeys !== undefined) ||
     ('withDeletedKeys' in constraints && !!constraints.withDeletedKeys);
   if (!requireDeletedKeys) {
-    return buildFullRecordArbitrary(recordModel);
+    return buildPartialRecordArbitrary(recordModel, undefined);
   }
 
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
@@ -113,25 +112,7 @@ function record<T>(
     }
   }
 
-  const updatedRecordModel: { [K in keyof T]?: Arbitrary<{ value: T[K] } | null> } = {};
-  const keys = extractEnumerableKeys(recordModel);
-  for (let index = 0; index !== keys.length; ++index) {
-    const k = keys[index];
-    const requiredArbitrary = recordModel[k].map((v) => ({ value: v }));
-    if (requiredKeys.indexOf(k) !== -1) updatedRecordModel[k] = requiredArbitrary;
-    else updatedRecordModel[k] = option(requiredArbitrary);
-  }
-  return buildFullRecordArbitrary(updatedRecordModel as any).map((rawObj) => {
-    const obj = rawObj as { [K in keyof T]: { value: T[keyof T] } | null };
-    const nobj: { [K in keyof T]?: T[keyof T] } = {};
-    for (let index = 0; index !== keys.length; ++index) {
-      const k = keys[index];
-      if (obj[k] !== null) {
-        nobj[k] = (obj[k] as { value: T[keyof T] }).value;
-      }
-    }
-    return nobj;
-  });
+  return buildPartialRecordArbitrary(recordModel, requiredKeys as EnumerableKeyOf<T>[]);
 }
 
 export { record };
