@@ -3329,15 +3329,15 @@ dot-prop@^5.1.0, dot-prop@^5.2.0:
   dependencies:
     is-obj "^2.0.0"
 
+dotenv@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
+  integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
+
 dotenv@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
-
-dotenv@^9.0.0:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-9.0.2.tgz#dacc20160935a37dea6364aa1bef819fb9b6ab05"
-  integrity sha512-I9OvvrHp4pIARv4+x9iuewrWycX6CcZtoAu1XrzPxc5UygMJXJZYmBsynku8IkrJwgypE5DGNjDPmPRhDCptUg==
 
 download@^7.1.0:
   version "7.1.0"
@@ -5790,10 +5790,10 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-netlify-cli@^3.30.4:
-  version "3.30.4"
-  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-3.30.4.tgz#796e78b56a8aedd40853b22668969937b8323fdb"
-  integrity sha512-aVCHPXQZgjEYV6Hk00WgCNIvFXWnF622Ci9CWbig1QT8WQA8EQeYm7uaIaTLVjdJfMBEh2DC8bFbr+Cp4A1XDg==
+netlify-cli@^3.30.5:
+  version "3.30.5"
+  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-3.30.5.tgz#ce56a0477473af982e3f31bd8703c55ce6fb8b03"
+  integrity sha512-KOKsJCHpxhVkuw3Yy3Ww6xoyjkuofY2Xd4/8zZcvVHUOisJwqssEogdvaFsrQIjAa4jFqUbAIx8LkKBlD1fJ2Q==
   dependencies:
     "@netlify/build" "^11.18.0"
     "@netlify/config" "^6.6.0"
@@ -5832,7 +5832,7 @@ netlify-cli@^3.30.4:
     debug "^4.1.1"
     del "^5.1.0"
     dot-prop "^5.1.0"
-    dotenv "^9.0.0"
+    dotenv "^10.0.0"
     env-paths "^2.2.0"
     envinfo "^7.3.1"
     execa "^5.0.0"
