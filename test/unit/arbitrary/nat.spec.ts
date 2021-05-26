@@ -19,7 +19,7 @@ function beforeEachHook() {
 }
 beforeEach(beforeEachHook);
 
-describe('integer', () => {
+describe('nat', () => {
   it('should instantiate IntegerArbitrary(0, 0x7fffffff) for nat()', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
