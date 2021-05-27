@@ -87,9 +87,10 @@ function option<T, TNil = null>(arb: Arbitrary<T>, constraints: OptionConstraint
 function option<T, TNil>(arb: Arbitrary<T>, rawConstraints?: number | OptionConstraints<TNil>): Arbitrary<T | TNil> {
   const constraints = extractOptionConstraints(rawConstraints);
   const freq = constraints.freq == null ? 5 : constraints.freq;
-  const nilArb = constant(Object.prototype.hasOwnProperty.call(constraints, 'nil') ? constraints.nil : (null as any));
+  const nilValue = Object.prototype.hasOwnProperty.call(constraints, 'nil') ? constraints.nil : (null as any);
+  const nilArb = constant(nilValue);
   const weightedArbs = [
-    { arbitrary: nilArb, weight: 1 },
+    { arbitrary: nilArb, weight: 1, fallbackValue: { default: nilValue } },
     { arbitrary: arb, weight: freq },
   ];
   const frequencyConstraints: FrequencyContraints = {
