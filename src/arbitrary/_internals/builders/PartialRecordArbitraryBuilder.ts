@@ -1,7 +1,12 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 import { option } from '../../option';
 import { tuple } from '../../tuple';
 import { EnumerableKeyOf, extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor';
+import {
+  buildValuesAndSeparateKeysToObjectMapper,
+  buildValuesAndSeparateKeysToObjectUnmapper,
+} from '../mappers/ValuesAndSeparateKeysToObject';
 
 const noKeyValue: unique symbol = Symbol('no-key');
 type NoKeyType = typeof noKeyValue;
@@ -19,14 +24,10 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
     if (requiredKeys === undefined || requiredKeys.indexOf(k as TKeys) !== -1) arbs.push(requiredArbitrary);
     else arbs.push(option(requiredArbitrary, { nil: noKeyValue }));
   }
-  return tuple(...arbs).map((gs: (T[keyof T] | NoKeyType)[]): Partial<T> & Pick<T, TKeys> => {
-    const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = {};
-    for (let idx = 0; idx !== keys.length; ++idx) {
-      const valueWrapper = gs[idx];
-      if (valueWrapper !== noKeyValue) {
-        obj[keys[idx]] = valueWrapper;
-      }
-    }
-    return obj as Partial<T> & Pick<T, TKeys>;
-  });
+  return convertFromNext(
+    convertToNext(tuple(...arbs)).map(
+      buildValuesAndSeparateKeysToObjectMapper<T, NoKeyType>(keys, noKeyValue),
+      buildValuesAndSeparateKeysToObjectUnmapper<T, NoKeyType>(keys, noKeyValue)
+    )
+  );
 }
