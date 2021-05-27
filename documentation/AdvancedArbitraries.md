@@ -14,8 +14,8 @@ Please do not hesitate to open issues to ask for new arbitraries.
   - [Transform arbitraries](#transform-arbitraries)
   - [Remove the shrinker](#remove-the-shrinker)
 - [Build your own](#build-your-own)
-  - [Starting at version 2.15.0](#starting-at-version-2.15.0)
-  - [Before version 2.15.0](#before-version-2.15.0)
+  - [Starting at version 2.15.0](#starting-at-version-2150)
+  - [Before version 2.15.0](#before-version-2150)
 - [Advanced features of arbitraries](#advanced-features-of-arbitraries)
   - [Biased arbitraries](#biased-arbitraries)
   - [Shrinking](#shrinking)
@@ -98,12 +98,11 @@ In general, whatever the version of fast-check you are using, it is highly recom
 
 **Your version is 2.15.0 or above**
 
-In such case, even if extending the [class `Arbitrary`](https://github.com/dubzzz/fast-check/blob/99e9b3b1c918a627d92138fc7e00f190ea99fecb/src/check/arbitrary/definition/Arbitrary.ts#L13) still works fine, it is highly recommended to extend the [class `NextArbitrary`](https://github.com/dubzzz/fast-check/blob/99e9b3b1c918a627d92138fc7e00f190ea99fecb/src/check/arbitrary/definition/NextArbitrary.ts#L12).
+In such case, even if extending the [class `Arbitrary`](https://github.com/dubzzz/fast-check/blob/c96b3f49317fa588fca852b5671827fdb2fe8d11/src/check/arbitrary/definition/Arbitrary.ts#L13) still works fine, it is highly recommended to extend the [class `NextArbitrary`](https://github.com/dubzzz/fast-check/blob/c96b3f49317fa588fca852b5671827fdb2fe8d11/src/check/arbitrary/definition/NextArbitrary.ts#L12).
 
 An instance of `NextArbitrary` must define three methods:
 - `generate(mrng: Random, biasFactor: number | undefined): NextValue<T>`: Given a random generator and possibly a bias (≥2), it must generate a single value along with its context (if applicable). The context is an opaque value that should only be accessed by the class that produced it. This opaque value can be helpful to guide the shrinker and give it more context on the value, how it has been produced...
 - `shrink(value: T, context: unknown | undefined): Stream<NextValue<T>>`: Given a value and possibly a context (produced by `generate` or `shrink` of the very same instance), it has to produce a Stream of smaller values. Please note that the function always has to be called with a context except if `canShrinkWithoutContext` tells the caller that it can be called context-less for this precise value.
-
 - `canShrinkWithoutContext(value: unknown): value is T`: Given a value it can tells the caller whether or not `shrink` can be called on it without passing a context. If the returned value is `false` then it means that this value should not be passed to `shrink` without its context.
 
 But version 2.x of fast-check does not deal with instances of `NextArbitrary` from an API point-of-view so you need to convert them towards old instances using the helper `convertFromNext`. You can also convert old instances to new ones uisng `convertToNext`.
@@ -114,7 +113,7 @@ Since 2.15.0, most of the built-ins arbitraries coming with fast-check are based
 
 **Your version is strictly older than 2.15.0**
 
-In such case, you have to extend the [class `Arbitrary`](https://github.com/dubzzz/fast-check/blob/99e9b3b1c918a627d92138fc7e00f190ea99fecb/src/check/arbitrary/definition/Arbitrary.ts#L13).
+In such case, you have to extend the [class `Arbitrary`](https://github.com/dubzzz/fast-check/blob/c96b3f49317fa588fca852b5671827fdb2fe8d11/src/check/arbitrary/definition/Arbitrary.ts#L13).
 
 It consists in a single method: `generate(mrng: Random): Shrinkable<T>`.
 It takes a random number generator and it generates a value and the whole shrinking process to shrink it.
