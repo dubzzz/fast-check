@@ -282,14 +282,18 @@ describe('IntegerArbitrary (integration)', () => {
             const arbNegate = new IntegerArbitrary(-max, -min);
 
             // Act
-            const tree = buildNextShrinkTree(arb, new NextValue(mid));
-            const treeNegate = buildNextShrinkTree(arbNegate, new NextValue(-mid));
+            const source = new NextValue(mid, undefined);
+            const sourceNegate = new NextValue(-mid, undefined);
+            const tree = buildNextShrinkTree(arb, source);
+            const treeNegate = buildNextShrinkTree(arbNegate, sourceNegate);
             const flat: number[] = [];
             const flatNegate: number[] = [];
             walkTree(tree, (v) => flat.push(v));
             walkTree(treeNegate, (v) => flatNegate.push(v !== 0 ? -v : 0));
 
             // Assert
+            expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
+            expect(arbNegate.canShrinkWithoutContext(sourceNegate.value)).toBe(true);
             expect(flatNegate).toEqual(flat);
           }
         )
@@ -312,14 +316,18 @@ describe('IntegerArbitrary (integration)', () => {
             const arbOffset = new IntegerArbitrary(min + offset, max + offset);
 
             // Act
-            const tree = buildNextShrinkTree(arb, new NextValue(mid));
-            const treeOffset = buildNextShrinkTree(arbOffset, new NextValue(mid + offset));
+            const source = new NextValue(mid, undefined);
+            const sourceOffset = new NextValue(mid + offset, undefined);
+            const tree = buildNextShrinkTree(arb, source);
+            const treeOffset = buildNextShrinkTree(arbOffset, sourceOffset);
             const flat: number[] = [];
             const flatOffset: number[] = [];
             walkTree(tree, (v) => flat.push(v));
             walkTree(treeOffset, (v) => flatOffset.push(v - offset));
 
             // Assert
+            expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
+            expect(arbOffset.canShrinkWithoutContext(sourceOffset.value)).toBe(true);
             expect(flatOffset).toEqual(flat);
           }
         )
@@ -328,12 +336,14 @@ describe('IntegerArbitrary (integration)', () => {
     it('should shrink strictly positive value for positive range including zero', () => {
       // Arrange
       const arb = new IntegerArbitrary(0, 10);
+      const source = new NextValue(8, undefined);
 
       // Act
-      const tree = buildNextShrinkTree(arb, new NextValue(8));
+      const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
+      expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
       //   When there is no more option, the shrinker retry one time with the value
       //   current-1 to check if something that changed outside (another value not itself)
       //   may have changed the situation.
@@ -390,12 +400,14 @@ describe('IntegerArbitrary (integration)', () => {
     it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
       const arb = new IntegerArbitrary(10, 20);
+      const source = new NextValue(18, undefined);
 
       // Act
-      const tree = buildNextShrinkTree(arb, new NextValue(18));
+      const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
+      expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
       //   As the range [10, 20] and the value 18
       //   are just offset by +10 compared to the first case,
       //   the rendered tree will be offset by 10 too
@@ -443,12 +455,14 @@ describe('IntegerArbitrary (integration)', () => {
     it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
       const arb = new IntegerArbitrary(-10, 0);
+      const source = new NextValue(-8, undefined);
 
       // Act
-      const tree = buildNextShrinkTree(arb, new NextValue(-8));
+      const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
+      expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
       //   As the range [-10, 0] and the value -8
       //   are the opposite of first case, the rendered tree will be the same except
       //   it contains opposite values

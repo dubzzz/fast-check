@@ -107,7 +107,7 @@ describe('NextArbitrary', () => {
           return complexInstance;
         }
         generate(_mrng: Random): NextValue<MyArbitraryOutput> {
-          return new NextValue(this.create(10));
+          return new NextValue(this.create(10), undefined);
         }
         canShrinkWithoutContext(value: unknown): value is MyArbitraryOutput {
           throw new Error('No call expected in current scenario');
@@ -115,8 +115,8 @@ describe('NextArbitrary', () => {
         shrink(v: MyArbitraryOutput, _context?: unknown): Stream<NextValue<MyArbitraryOutput>> {
           const value = v.value;
           return Stream.of(
-            ...(value - 2 >= 0 ? [new NextValue(this.create(value - 2))] : []),
-            ...(value - 1 >= 0 ? [new NextValue(this.create(value - 1))] : [])
+            ...(value - 2 >= 0 ? [new NextValue(this.create(value - 2), undefined)] : []),
+            ...(value - 1 >= 0 ? [new NextValue(this.create(value - 1), undefined)] : [])
           );
         }
       }

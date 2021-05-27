@@ -110,12 +110,13 @@ describe('mapToConstant (integration)', () => {
         { num: 6, build: (index) => String.fromCodePoint(index + 97) } // a-f
       )
     );
-    const value = new NextValue('c');
+    const value = new NextValue('c', undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value)).join('\n');
 
     // Assert
+    expect(arb.canShrinkWithoutContext('c')).toBe(true);
     expect(renderedTree).toMatchSnapshot();
   });
 });

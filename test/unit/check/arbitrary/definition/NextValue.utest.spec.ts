@@ -9,7 +9,7 @@ describe('NextValue', () => {
       const instance = { [cloneMethod]: clone };
 
       // Act
-      const nextValue = new NextValue(instance);
+      const nextValue = new NextValue(instance, undefined);
       const value = nextValue.value;
 
       // Assert
@@ -23,7 +23,7 @@ describe('NextValue', () => {
       const instance = { [cloneMethod]: clone };
 
       // Act
-      const nextValue = new NextValue(instance);
+      const nextValue = new NextValue(instance, undefined);
       const value = nextValue.value;
       const value2 = nextValue.value;
 

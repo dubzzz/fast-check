@@ -196,13 +196,14 @@ describe('arrayInt64', () => {
     it('should shrink strictly positive value for positive range including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 10] });
-      const source = new NextValue({ sign: 1, data: [0, 8] }); // no context
+      const source = new NextValue({ sign: 1, data: [0, 8] }, undefined); // no context
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
+      expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
       //   When there is no more option, the shrinker retry one time with the value
       //   current-1 to check if something that changed outside (another value not itself)
       //   may have changed the situation
@@ -249,13 +250,14 @@ describe('arrayInt64', () => {
     it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
-      const source = new NextValue({ sign: 1, data: [1, 18] }); // no context
+      const source = new NextValue({ sign: 1, data: [1, 18] }, undefined); // no context
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
+      expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
       //   As the range [[1,10], [1,20]] and the value [1,18]
       //   are just offset by +[1,10] compared to the first case,
       //   the rendered tree will be offset by [1,10] too
@@ -302,13 +304,14 @@ describe('arrayInt64', () => {
     it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
-      const source = new NextValue({ sign: -1, data: [0, 8] }); // no context
+      const source = new NextValue({ sign: -1, data: [0, 8] }, undefined); // no context
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
+      expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
       //   As the range [-10, 0] and the value -8
       //   are the opposite of first case, the rendered tree will be the same except
       //   it contains opposite values
@@ -362,7 +365,7 @@ describe('arrayInt64', () => {
       const sourceValue: ArrayInt64 = { sign: 1, data: [0, 8] };
 
       // Act
-      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue));
+      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue, undefined));
       const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
 
       // Assert
@@ -375,7 +378,7 @@ describe('arrayInt64', () => {
       const sourceValue: ArrayInt64 = { sign: 1, data: [1, 18] };
 
       // Act
-      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue));
+      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue, undefined));
       const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
 
       // Assert
@@ -388,7 +391,7 @@ describe('arrayInt64', () => {
       const sourceValue: ArrayInt64 = { sign: -1, data: [0, 8] };
 
       // Act
-      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue));
+      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue, undefined));
       const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
 
       // Assert

@@ -30,7 +30,7 @@ describe('CloneArbitrary', () => {
       const { instance: mrngClone2 } = fakeRandom();
       clone.mockReturnValueOnce(mrngClone1).mockReturnValueOnce(mrngClone2);
       const { instance: sourceArb, generate } = fakeNextArbitrary<symbol>();
-      generate.mockReturnValue(new NextValue(producedValue));
+      generate.mockReturnValue(new NextValue(producedValue, undefined));
 
       // Act
       const arb = new CloneArbitrary(sourceArb, numValues);
@@ -53,8 +53,8 @@ describe('CloneArbitrary', () => {
       const numValues = 1;
       const { instance: mrng } = fakeRandom();
       const { instance: sourceArb, generate } = fakeNextArbitrary<unknown>();
-      if (cloneable) generate.mockReturnValue(new NextValue({ [cloneMethod]: jest.fn() }));
-      else generate.mockReturnValue(new NextValue({ m: jest.fn() }));
+      if (cloneable) generate.mockReturnValue(new NextValue({ [cloneMethod]: jest.fn() }, undefined));
+      else generate.mockReturnValue(new NextValue({ m: jest.fn() }, undefined));
 
       // Act
       const arb = new CloneArbitrary(sourceArb, numValues);
@@ -130,9 +130,9 @@ describe('CloneArbitrary', () => {
       const numValues = 3;
       const { instance: sourceArb, shrink } = fakeNextArbitrary<symbol>();
       shrink
-        .mockReturnValueOnce(Stream.of<NextValue<symbol>>(new NextValue(s1), new NextValue(s2)))
-        .mockReturnValueOnce(Stream.of<NextValue<symbol>>(new NextValue(s1), new NextValue(s2)))
-        .mockReturnValueOnce(Stream.of<NextValue<symbol>>(new NextValue(s1), new NextValue(s2)));
+        .mockReturnValueOnce(Stream.of<NextValue<symbol>>(new NextValue(s1, undefined), new NextValue(s2, undefined)))
+        .mockReturnValueOnce(Stream.of<NextValue<symbol>>(new NextValue(s1, undefined), new NextValue(s2, undefined)))
+        .mockReturnValueOnce(Stream.of<NextValue<symbol>>(new NextValue(s1, undefined), new NextValue(s2, undefined)));
 
       // Act
       const arb = new CloneArbitrary(sourceArb, numValues);

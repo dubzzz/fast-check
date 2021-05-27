@@ -106,12 +106,13 @@ describe('ipV4Extended (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = convertToNext(ipV4Extended());
-    const value = new NextValue(rawValue);
+    const value = new NextValue(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
+    expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);
     expect(renderedTree).toMatchSnapshot();
   });
 });

@@ -60,12 +60,13 @@ describe('stringOf (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue, patterns }) => {
     // Arrange
     const arb = convertToNext(stringOf(convertFromNext(new PatternsArbitrary(patterns))));
-    const value = new NextValue(rawValue);
+    const value = new NextValue(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
+    expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);
     expect(renderedTree).toMatchSnapshot();
   });
 });
@@ -77,7 +78,7 @@ class PatternsArbitrary extends NextArbitrary<string> {
     super();
   }
   generate(mrng: Random): NextValue<string> {
-    return new NextValue(this.patterns[mrng.nextInt(0, this.patterns.length - 1)]);
+    return new NextValue(this.patterns[mrng.nextInt(0, this.patterns.length - 1)], undefined);
   }
   canShrinkWithoutContext(value: unknown): value is string {
     if (typeof value !== 'string') return false;
@@ -88,6 +89,6 @@ class PatternsArbitrary extends NextArbitrary<string> {
     if (patternIndex <= 0) {
       return Stream.nil();
     }
-    return Stream.of(new NextValue(this.patterns[0]));
+    return Stream.of(new NextValue(this.patterns[0], undefined));
   }
 }

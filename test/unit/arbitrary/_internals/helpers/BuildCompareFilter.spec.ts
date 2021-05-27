@@ -8,7 +8,7 @@ describe('buildCompareFilter', () => {
       fc.property(fc.array(fc.nat()), (tab) => {
         // Arrange
         const filter = buildCompareFilter<number>((a, b) => a === b);
-        const adaptedTab = tab.map((v) => new NextValue(v));
+        const adaptedTab = tab.map((v) => new NextValue(v, undefined));
 
         // Act
         const filteredTab = filter(adaptedTab);

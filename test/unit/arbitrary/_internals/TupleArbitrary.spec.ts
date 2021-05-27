@@ -28,9 +28,9 @@ describe('TupleArbitrary', () => {
       const { instance: instanceA, generate: generateA } = fakeNextArbitrary<symbol>();
       const { instance: instanceB, generate: generateB } = fakeNextArbitrary<symbol>();
       const { instance: instanceC, generate: generateC } = fakeNextArbitrary<symbol>();
-      generateA.mockReturnValueOnce(new NextValue(vA));
-      generateB.mockReturnValueOnce(new NextValue(vB));
-      generateC.mockReturnValueOnce(new NextValue(vC));
+      generateA.mockReturnValueOnce(new NextValue(vA, undefined));
+      generateB.mockReturnValueOnce(new NextValue(vB, undefined));
+      generateC.mockReturnValueOnce(new NextValue(vC, undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -48,8 +48,8 @@ describe('TupleArbitrary', () => {
       // Arrange
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
       const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
-      generateA.mockReturnValue(new NextValue([]));
-      generateB.mockReturnValue(new NextValue(Object.defineProperty([], cloneMethod, { value: jest.fn() })));
+      generateA.mockReturnValue(new NextValue([], undefined));
+      generateB.mockReturnValue(new NextValue(Object.defineProperty([], cloneMethod, { value: jest.fn() }), undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -65,8 +65,8 @@ describe('TupleArbitrary', () => {
       // Arrange
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
       const { instance: fakeArbitraryNotCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
-      generateA.mockReturnValue(new NextValue([]));
-      generateB.mockReturnValue(new NextValue([]));
+      generateA.mockReturnValue(new NextValue([], undefined));
+      generateB.mockReturnValue(new NextValue([], undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -83,8 +83,10 @@ describe('TupleArbitrary', () => {
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
       const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
       const cloneMethodImpl = jest.fn();
-      generateA.mockReturnValue(new NextValue([]));
-      generateB.mockReturnValue(new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl })));
+      generateA.mockReturnValue(new NextValue([], undefined));
+      generateB.mockReturnValue(
+        new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
+      );
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -172,10 +174,16 @@ describe('TupleArbitrary', () => {
       const shrinkC1 = Symbol();
       const shrinkC2 = Symbol();
       const shrinkC3 = Symbol();
-      shrinkA.mockReturnValueOnce(Stream.of(new NextValue(shrinkA1 as symbol), new NextValue(shrinkA2)));
-      shrinkB.mockReturnValueOnce(Stream.of(new NextValue(shrinkB1 as symbol)));
+      shrinkA.mockReturnValueOnce(
+        Stream.of(new NextValue(shrinkA1 as symbol, undefined), new NextValue(shrinkA2, undefined))
+      );
+      shrinkB.mockReturnValueOnce(Stream.of(new NextValue(shrinkB1 as symbol, undefined)));
       shrinkC.mockReturnValueOnce(
-        Stream.of(new NextValue(shrinkC1 as symbol), new NextValue(shrinkC2), new NextValue(shrinkC3))
+        Stream.of(
+          new NextValue(shrinkC1 as symbol, undefined),
+          new NextValue(shrinkC2, undefined),
+          new NextValue(shrinkC3, undefined)
+        )
       );
       const { instance: mrng } = fakeRandom();
 
@@ -216,18 +224,27 @@ describe('TupleArbitrary', () => {
       const cloneMethodImpl = jest
         .fn()
         .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
-      generateA.mockReturnValue(new NextValue([]));
-      shrinkA.mockReturnValue(Stream.of(new NextValue([]), new NextValue([])));
-      generateB.mockReturnValue(new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl })));
+      generateA.mockReturnValue(new NextValue([], undefined));
+      shrinkA.mockReturnValue(Stream.of(new NextValue([], undefined), new NextValue([], undefined)));
+      generateB.mockReturnValue(
+        new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
+      );
       shrinkB.mockReturnValue(
         Stream.of(
-          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl })),
-          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl })),
-          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }))
+          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
+          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
+          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
         )
       );
-      generateC.mockReturnValue(new NextValue([]));
-      shrinkC.mockReturnValue(Stream.of(new NextValue([]), new NextValue([]), new NextValue([]), new NextValue([])));
+      generateC.mockReturnValue(new NextValue([], undefined));
+      shrinkC.mockReturnValue(
+        Stream.of(
+          new NextValue([], undefined),
+          new NextValue([], undefined),
+          new NextValue([], undefined),
+          new NextValue([], undefined)
+        )
+      );
       const { instance: mrng } = fakeRandom();
 
       // Act
