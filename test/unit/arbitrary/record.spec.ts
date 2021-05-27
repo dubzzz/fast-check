@@ -12,6 +12,8 @@ import {
   assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
+import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
+
 function beforeEachHook() {
   jest.resetModules();
   jest.restoreAllMocks();
@@ -23,6 +25,92 @@ describe('record', () => {
   const keyArb: fc.Arbitrary<any> = fc
     .tuple(fc.string(), fc.boolean())
     .map(([name, symbol]) => (symbol ? Symbol.for(name) : name));
+
+  it('should call buildPartialRecordArbitrary with keys=undefined when no constraints on keys', () =>
+    fc.assert(
+      fc.property(
+        fc.set(keyArb, { minLength: 1 }),
+        fc.constantFrom(...([undefined, {}] as const)),
+        (keys, constraints) => {
+          // Arrange
+          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+          for (const k of keys) {
+            const { instance } = fakeNextArbitrary();
+            recordModel[k] = convertFromNext(instance);
+          }
+          const { instance } = fakeNextArbitrary<any>();
+          const buildPartialRecordArbitrary = jest.spyOn(
+            PartialRecordArbitraryBuilderMock,
+            'buildPartialRecordArbitrary'
+          );
+          buildPartialRecordArbitrary.mockReturnValue(convertFromNext(instance));
+
+          // Act
+          const arb = record(recordModel, constraints);
+
+          // Assert
+          expect(convertToNext(arb)).toBe(instance);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined);
+        }
+      )
+    ));
+
+  it('should call buildPartialRecordArbitrary with keys=[] when constraints defines withDeletedKeys=true', () =>
+    fc.assert(
+      fc.property(fc.set(keyArb, { minLength: 1 }), (keys) => {
+        // Arrange
+        const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+        for (const k of keys) {
+          const { instance } = fakeNextArbitrary();
+          recordModel[k] = convertFromNext(instance);
+        }
+        const { instance } = fakeNextArbitrary<any>();
+        const buildPartialRecordArbitrary = jest.spyOn(
+          PartialRecordArbitraryBuilderMock,
+          'buildPartialRecordArbitrary'
+        );
+        buildPartialRecordArbitrary.mockReturnValue(convertFromNext(instance));
+
+        // Act
+        const arb = record(recordModel, { withDeletedKeys: true });
+
+        // Assert
+        expect(convertToNext(arb)).toBe(instance);
+        expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
+        expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, []);
+      })
+    ));
+
+  it('should call buildPartialRecordArbitrary with keys=requiredKeys when constraints defines valid requiredKeys', () =>
+    fc.assert(
+      fc.property(fc.set(keyArb, { minLength: 1 }), fc.func(fc.boolean()), (keys, isRequired) => {
+        // Arrange
+        const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+        const requiredKeys: any[] = [];
+        for (const k of keys) {
+          const { instance } = fakeNextArbitrary();
+          recordModel[k] = convertFromNext(instance);
+          if (isRequired(k)) {
+            requiredKeys.push(k);
+          }
+        }
+        const { instance } = fakeNextArbitrary<any>();
+        const buildPartialRecordArbitrary = jest.spyOn(
+          PartialRecordArbitraryBuilderMock,
+          'buildPartialRecordArbitrary'
+        );
+        buildPartialRecordArbitrary.mockReturnValue(convertFromNext(instance));
+
+        // Act
+        const arb = record(recordModel, { requiredKeys });
+
+        // Assert
+        expect(convertToNext(arb)).toBe(instance);
+        expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
+        expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, requiredKeys);
+      })
+    ));
 
   it('should reject configurations specifying non existing keys as required', () =>
     fc.assert(
