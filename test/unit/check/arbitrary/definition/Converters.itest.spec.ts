@@ -34,7 +34,7 @@ describe('Converters', () => {
       generate(_mrng: Random): NextValue<number> {
         throw new Error('Method not implemented.');
       }
-      canGenerate(_value: unknown): _value is number {
+      canShrinkWithoutContext(_value: unknown): _value is number {
         throw new Error('Method not implemented.');
       }
       shrink(_value: number, _context?: unknown): Stream<NextValue<number>> {

@@ -74,7 +74,7 @@ describe('string (integration)', () => {
   `('should be able to generate $source with fc.string()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(string());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(true);
@@ -87,7 +87,7 @@ describe('string (integration)', () => {
   `('should not be able to generate $source with fc.string()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(string());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(false);

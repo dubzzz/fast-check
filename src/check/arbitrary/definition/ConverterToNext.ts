@@ -28,7 +28,7 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
     return new NextValue(g.value_, g, () => g.value);
   }
 
-  canGenerate(_value: unknown): _value is T {
+  canShrinkWithoutContext(_value: unknown): _value is T {
     return false;
   }
 

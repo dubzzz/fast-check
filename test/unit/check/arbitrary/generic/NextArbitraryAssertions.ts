@@ -189,8 +189,8 @@ export function assertGenerateEquivalentTo<T, U = never>(
 // The assertions above can be configured to push generators even further. They ensure more complex invariants.
 // Following assertions are mostly derived from the one above.
 // > assertShrinkProducesSameValueGivenSameSeed with option {noInitialContext:true}
-// > assertGenerateProducesCorrectValues with option isCorrect: (v, _, arb) => arb.canGenerate(v)
-// > assertShrinkProducesCorrectValues with option (v, _, arb) => arb.canGenerate(v)
+// > assertGenerateProducesCorrectValues with option isCorrect: (v, _, arb) => arb.canShrinkWithoutContext(v)
+// > assertShrinkProducesCorrectValues with option (v, _, arb) => arb.canShrinkWithoutContext(v)
 
 export function assertShrinkProducesSameValueWithoutInitialContext<T, U = never>(
   arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
@@ -210,7 +210,7 @@ export function assertGenerateProducesValuesFlaggedAsCanGenerate<T, U = never>(
     assertParameters?: fc.Parameters<unknown>;
   } = {}
 ): void {
-  return assertGenerateProducesCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canGenerate(v), options);
+  return assertGenerateProducesCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canShrinkWithoutContext(v), options);
 }
 
 export function assertShrinkProducesValuesFlaggedAsCanGenerate<T, U = never>(
@@ -220,7 +220,7 @@ export function assertShrinkProducesValuesFlaggedAsCanGenerate<T, U = never>(
     assertParameters?: fc.Parameters<unknown>;
   } = {}
 ): void {
-  return assertShrinkProducesCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canGenerate(v), options);
+  return assertShrinkProducesCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canShrinkWithoutContext(v), options);
 }
 
 export function assertShrinkProducesStrictlySmallerValue<T, U = never>(

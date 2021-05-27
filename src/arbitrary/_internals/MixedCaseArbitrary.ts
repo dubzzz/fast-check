@@ -102,7 +102,7 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
     return new NextValue(chars.join(''), this.buildContextFor(rawStringNextValue, flagsNextValue));
   }
 
-  canGenerate(value: unknown): value is string {
+  canShrinkWithoutContext(value: unknown): value is string {
     // Not implemented yet
     return false;
   }

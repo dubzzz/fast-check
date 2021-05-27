@@ -27,7 +27,7 @@ export class BigIntArbitrary extends NextArbitrary<bigint> {
     return id < 0 ? ranges[0] : ranges[id + 1];
   }
 
-  canGenerate(value: unknown): value is bigint {
+  canShrinkWithoutContext(value: unknown): value is bigint {
     return typeof value === 'bigint' && this.min <= value && value <= this.max;
   }
 

@@ -106,14 +106,14 @@ describe('SchedulerArbitrary', () => {
     });
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it('should return false for any Scheduler received without any context (even for SchedulerImplem)', () => {
       // Arrange
       const act = jest.fn();
 
       // Act
       const arb = new SchedulerArbitrary(act);
-      const out = arb.canGenerate(
+      const out = arb.canShrinkWithoutContext(
         new SchedulerImplemMock.SchedulerImplem(act, { clone: jest.fn(), nextTaskIndex: jest.fn() })
       );
 
@@ -133,7 +133,7 @@ describe('SchedulerArbitrary', () => {
       // Act
       const arb = new SchedulerArbitrary(act);
       const g = arb.generate(mrng, undefined);
-      const out = arb.canGenerate(g.value);
+      const out = arb.canShrinkWithoutContext(g.value);
 
       // Assert
       expect(out).toBe(false);

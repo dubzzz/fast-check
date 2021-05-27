@@ -112,8 +112,8 @@ describe('ConstantArbitrary', () => {
     });
   });
 
-  describe('canGenerate', () => {
-    it("should mark value as 'canGenerate' whenever one of the original values is equal regarding Object.is", () =>
+  describe('canShrinkWithoutContext', () => {
+    it("should mark value as 'canShrinkWithoutContext' whenever one of the original values is equal regarding Object.is", () =>
       fc.assert(
         fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
@@ -121,7 +121,7 @@ describe('ConstantArbitrary', () => {
 
           // Act
           const arb = new ConstantArbitrary(values);
-          const out = arb.canGenerate(selectedValue);
+          const out = arb.canShrinkWithoutContext(selectedValue);
 
           // Assert
           expect(out).toBe(true);
@@ -135,7 +135,7 @@ describe('ConstantArbitrary', () => {
 
       // Act
       const arb = new ConstantArbitrary<unknown>(values);
-      const out = arb.canGenerate(selectedValue);
+      const out = arb.canShrinkWithoutContext(selectedValue);
 
       // Assert
       expect(out).toBe(false); // Object.is([], []) is falsy

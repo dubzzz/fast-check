@@ -15,11 +15,11 @@ export class LazyArbitrary<T> extends NextArbitrary<T> {
     }
     return this.underlying.generate(mrng, biasFactor);
   }
-  canGenerate(value: unknown): value is T {
+  canShrinkWithoutContext(value: unknown): value is T {
     if (!this.underlying) {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }
-    return this.underlying.canGenerate(value);
+    return this.underlying.canShrinkWithoutContext(value);
   }
   shrink(value: T, context?: unknown): Stream<NextValue<T>> {
     if (!this.underlying) {
