@@ -15,7 +15,7 @@
 <!-- Don't forget to add the gitmoji icon in the name of the PR -->
 <!-- See: https://gitmoji.dev/                                  -->
 
-<!-- Fixing bugs, adding feastures... may impact existing ones           -->
+<!-- Fixing bugs, adding features... may impact existing ones           -->
 <!-- in order to track potential issues that could be related to your PR -->
 <!-- please check the impacts and describe more precisely what to expect -->
 
