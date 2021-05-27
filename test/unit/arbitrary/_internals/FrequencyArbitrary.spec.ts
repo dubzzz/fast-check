@@ -669,7 +669,7 @@ describe('FrequencyArbitrary', () => {
             for (let index = 0; index !== warbs.length; ++index) {
               const input = warbs[index];
               const can = index === selectedIndex;
-              input.arbitraryMeta.canGenerate.mockReturnValue(can);
+              input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(42), new NextValue(index)));
             }
             warbs[0].fallbackValue = { default: 48 };
@@ -688,7 +688,7 @@ describe('FrequencyArbitrary', () => {
             } else {
               expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             }
-            expect(warbs[selectedIndex].arbitraryMeta.canGenerate).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
             expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
           }
         )
