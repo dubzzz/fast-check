@@ -63,7 +63,7 @@ class FromValuesArbitrary<T> extends NextArbitrary<T> {
     const index = mrng.nextInt(0, this.source.length - 1);
     return new NextValue(this.source[index]);
   }
-  canGenerate(value: unknown): value is T {
+  canShrinkWithoutContext(value: unknown): value is T {
     // includes might mix 0 and -0
     return this.source.includes(value as any);
   }

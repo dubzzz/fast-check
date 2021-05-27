@@ -79,7 +79,7 @@ class PatternsArbitrary extends NextArbitrary<string> {
   generate(mrng: Random): NextValue<string> {
     return new NextValue(this.patterns[mrng.nextInt(0, this.patterns.length - 1)]);
   }
-  canGenerate(value: unknown): value is string {
+  canShrinkWithoutContext(value: unknown): value is string {
     if (typeof value !== 'string') return false;
     return this.patterns.includes(value);
   }

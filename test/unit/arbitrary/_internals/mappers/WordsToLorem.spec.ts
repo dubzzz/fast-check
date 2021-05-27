@@ -39,8 +39,8 @@ describe('wordsToJoinedStringMapper', () => {
 describe('wordsToJoinedStringUnmapperFor', () => {
   it('should unmap string made of words strictly coming from the source', () => {
     // Arrange
-    const { instance: wordsArbitrary, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance: wordsArbitrary, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello', 'world', 'winter', 'summer'].includes(value)
     );
 
@@ -54,8 +54,8 @@ describe('wordsToJoinedStringUnmapperFor', () => {
 
   it('should unmap string made of words with some having trimmed commas', () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello,', 'world,', 'winter', 'summer'].includes(value)
     );
 
@@ -69,8 +69,8 @@ describe('wordsToJoinedStringUnmapperFor', () => {
 
   it('should reject strings containing unknown words', () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello,', 'world,', 'spring', 'summer'].includes(value)
     );
 
@@ -83,8 +83,8 @@ describe('wordsToJoinedStringUnmapperFor', () => {
     fc.assert(
       fc.property(wordsArrayArbitrary, (words) => {
         // Arrange
-        const { instance, canGenerate } = fakeNextArbitrary<string>();
-        canGenerate.mockImplementation((value) => typeof value === 'string' && words.includes(value));
+        const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+        canShrinkWithoutContext.mockImplementation((value) => typeof value === 'string' && words.includes(value));
 
         // Act
         const mapped = wordsToJoinedStringMapper(words);
@@ -117,8 +117,8 @@ describe('wordsToSentenceMapper', () => {
 describe('wordsToSentenceUnmapperFor', () => {
   it('should unmap string made of words strictly coming from the source', () => {
     // Arrange
-    const { instance: wordsArbitrary, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance: wordsArbitrary, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello', 'world', 'winter', 'summer'].includes(value)
     );
 
@@ -132,8 +132,8 @@ describe('wordsToSentenceUnmapperFor', () => {
 
   it('should unmap string made of words with last one having trimmed comma', () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello,', 'world,', 'winter', 'summer'].includes(value)
     );
 
@@ -147,8 +147,8 @@ describe('wordsToSentenceUnmapperFor', () => {
 
   it('should reject strings containing unknown words', () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello', 'world,', 'spring', 'summer'].includes(value)
     );
 
@@ -160,8 +160,8 @@ describe('wordsToSentenceUnmapperFor', () => {
 
   it('should reject strings not starting by a capital leter', () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value)
     );
 
@@ -173,8 +173,8 @@ describe('wordsToSentenceUnmapperFor', () => {
 
   it('should reject strings not ending by a point', () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value)
     );
 
@@ -186,8 +186,8 @@ describe('wordsToSentenceUnmapperFor', () => {
 
   it('should reject strings with last word ending by a comma followed by point', () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value)
     );
 
@@ -199,8 +199,8 @@ describe('wordsToSentenceUnmapperFor', () => {
 
   it("should reject strings if one of first words do not includes it's expected comma", () => {
     // Arrange
-    const { instance, canGenerate } = fakeNextArbitrary<string>();
-    canGenerate.mockImplementation(
+    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation(
       (value) => typeof value === 'string' && ['hello', 'world,', 'winter,', 'summer'].includes(value)
     );
 
@@ -214,8 +214,8 @@ describe('wordsToSentenceUnmapperFor', () => {
     fc.assert(
       fc.property(wordsArrayArbitrary, (words) => {
         // Arrange
-        const { instance, canGenerate } = fakeNextArbitrary<string>();
-        canGenerate.mockImplementation((value) => typeof value === 'string' && words.includes(value));
+        const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+        canShrinkWithoutContext.mockImplementation((value) => typeof value === 'string' && words.includes(value));
 
         // Act
         const mapped = wordsToSentenceMapper(words);

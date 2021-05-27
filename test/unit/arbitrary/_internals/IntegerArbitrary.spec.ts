@@ -132,7 +132,7 @@ describe('IntegerArbitrary', () => {
       ));
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it('should always tells it can generate values included in the requested range', () =>
       fc.assert(
         fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b, c) => {
@@ -141,7 +141,7 @@ describe('IntegerArbitrary', () => {
 
           // Act
           const arb = new IntegerArbitrary(min, max);
-          const out = arb.canGenerate(mid);
+          const out = arb.canShrinkWithoutContext(mid);
 
           // Assert
           expect(out).toBe(true);
@@ -163,7 +163,7 @@ describe('IntegerArbitrary', () => {
 
             // Act
             const arb = new IntegerArbitrary(min, max);
-            const out = arb.canGenerate(requested);
+            const out = arb.canShrinkWithoutContext(requested);
 
             // Assert
             expect(out).toBe(false);
@@ -186,7 +186,7 @@ describe('IntegerArbitrary', () => {
 
       // Act
       const arb = new IntegerArbitrary(min, max);
-      const out = arb.canGenerate(requested);
+      const out = arb.canShrinkWithoutContext(requested);
 
       // Assert
       expect(out).toBe(false);

@@ -75,7 +75,7 @@ describe('ipV4Extended (integration)', () => {
   `('should be able to generate $source with fc.ipV4Extended()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(ipV4Extended());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(true);
@@ -93,7 +93,7 @@ describe('ipV4Extended (integration)', () => {
   `('should not be able to generate $source with fc.ipV4Extended()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(ipV4Extended());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(false);

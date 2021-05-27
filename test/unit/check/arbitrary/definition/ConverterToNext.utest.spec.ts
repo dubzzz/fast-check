@@ -35,7 +35,7 @@ describe('ConverterToNext', () => {
         generate(_mrng: Random): NextValue<number> {
           throw new Error('Method not implemented.');
         }
-        canGenerate(_value: unknown): _value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('Method not implemented.');
         }
         shrink(_value: number, _context?: unknown): Stream<NextValue<number>> {
@@ -180,7 +180,7 @@ describe('ConverterToNext', () => {
     it('should unwrap instances of ConverterFromNext returned by filter', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const filter = jest.fn();
       class MyArbitrary extends Arbitrary<number> {
@@ -189,7 +189,7 @@ describe('ConverterToNext', () => {
       }
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
       }
       const originalInstance = new MyArbitrary();
@@ -235,7 +235,7 @@ describe('ConverterToNext', () => {
     it('should unwrap instances of ConverterFromNext returned by map', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const map = jest.fn();
       class MyArbitrary extends Arbitrary<number> {
@@ -244,7 +244,7 @@ describe('ConverterToNext', () => {
       }
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         map = map;
       }

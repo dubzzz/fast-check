@@ -11,7 +11,7 @@ import { generateOneValue } from './generic/GenerateOneValue';
 
 const MAX_TRIES = 100;
 describe('FloatingPointArbitrary', () => {
-  const canGenerateFloatingPoint = (mrng: Random, arb: Arbitrary<number>) => {
+  const canShrinkWithoutContextFloatingPoint = (mrng: Random, arb: Arbitrary<number>) => {
     for (let idx = 0; idx != MAX_TRIES; ++idx) {
       const g = arb.generate(mrng).value;
       if (g != Math.round(g)) {
@@ -26,7 +26,7 @@ describe('FloatingPointArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          return canGenerateFloatingPoint(mrng, float());
+          return canShrinkWithoutContextFloatingPoint(mrng, float());
         })
       ));
     describe('Given no constraints [between 0 (included) and 1 (excluded)]', () => {
@@ -95,7 +95,7 @@ describe('FloatingPointArbitrary', () => {
       fc.assert(
         fc.property(fc.integer(), (seed) => {
           const mrng = stubRng.mutable.fastincrease(seed);
-          return canGenerateFloatingPoint(mrng, double());
+          return canShrinkWithoutContextFloatingPoint(mrng, double());
         })
       ));
     describe('Given no constraints [between 0 (included) and 1 (excluded)]', () => {

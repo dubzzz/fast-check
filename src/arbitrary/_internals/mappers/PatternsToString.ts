@@ -41,7 +41,7 @@ export function patternsToStringUnmapperFor(
       // Going deeper in the tree
       for (let index = last.nextStartIndex; index <= value.length; ++index) {
         const chunk = value.substring(last.endIndexChunks, index);
-        if (patternsArb.canGenerate(chunk)) {
+        if (patternsArb.canShrinkWithoutContext(chunk)) {
           const newChunks = last.chunks.concat([chunk]);
           if (index === value.length) {
             if (newChunks.length < minLength || newChunks.length > maxLength) {

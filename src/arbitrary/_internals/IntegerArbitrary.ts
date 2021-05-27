@@ -16,7 +16,7 @@ export class IntegerArbitrary extends NextArbitrary<number> {
     return new NextValue(mrng.nextInt(range.min, range.max), undefined);
   }
 
-  canGenerate(value: unknown): value is number {
+  canShrinkWithoutContext(value: unknown): value is number {
     return (
       typeof value === 'number' &&
       Number.isInteger(value) &&

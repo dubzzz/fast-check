@@ -22,7 +22,7 @@ describe('ConverterFromNext', () => {
             const context = mrng.nextInt(0, 1);
             return new NextValue([v1, v2], context);
           }
-          canGenerate(_value: unknown): _value is [number, number] {
+          canShrinkWithoutContext(_value: unknown): _value is [number, number] {
             throw new Error('Unused in this context');
           }
           shrink(value: [number, number], context?: unknown): Stream<NextValue<[number, number]>> {

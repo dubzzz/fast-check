@@ -121,7 +121,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }
 
-  canGenerate(value: unknown): value is T[] {
+  canShrinkWithoutContext(value: unknown): value is T[] {
     if (!Array.isArray(value) || this.minLength > value.length || value.length > this.maxLength) {
       return false;
     }
@@ -130,7 +130,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
         // sparse array cannot be produced by this instance
         return false;
       }
-      if (!this.arb.canGenerate(value[index])) {
+      if (!this.arb.canShrinkWithoutContext(value[index])) {
         // item at index cannot be produced by our arbitrary
         return false;
       }
