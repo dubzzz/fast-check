@@ -27,7 +27,7 @@ export class SchedulerArbitrary<TMetaData> extends NextArbitrary<Scheduler<TMeta
   }
 
   generate(mrng: Random, _biasFactor: number | undefined): NextValue<Scheduler<TMetaData>> {
-    return new NextValue(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())));
+    return new NextValue(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())), undefined);
   }
 
   canShrinkWithoutContext(value: unknown): value is Scheduler<TMetaData> {
