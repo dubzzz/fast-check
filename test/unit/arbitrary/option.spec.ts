@@ -1,9 +1,17 @@
 import * as fc from '../../../lib/fast-check';
 import { option, OptionConstraints } from '../../../src/arbitrary/option';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
-import { convertFromNext } from '../../../src/check/arbitrary/definition/Converters';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';
+import {
+  assertGenerateProducesCorrectValues,
+  assertGenerateProducesSameValueGivenSameSeed,
+  assertGenerateProducesValuesFlaggedAsCanGenerate,
+  assertShrinkProducesCorrectValues,
+  assertShrinkProducesSameValueWithoutInitialContext,
+  assertShrinkProducesValuesFlaggedAsCanGenerate,
+} from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -28,6 +36,7 @@ describe('option', () => {
         ),
         (constraints: Partial<OptionConstraints<unknown>>) => {
           // Arrange
+          const expectedNil = 'nil' in constraints ? constraints.nil : null;
           const expectedArb = convertFromNext(fakeNextArbitrary().instance);
           const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
           fromOld.mockReturnValue(expectedArb);
@@ -41,10 +50,10 @@ describe('option', () => {
           const out = option(arb, constraints);
 
           // Assert
-          expect(constant).toHaveBeenCalledWith('nil' in constraints ? constraints.nil : null);
+          expect(constant).toHaveBeenCalledWith(expectedNil);
           expect(fromOld).toHaveBeenCalledWith(
             [
-              { arbitrary: expectedConstantArb, weight: 1 },
+              { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: expectedNil } },
               { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! : 5 },
             ],
             {
@@ -78,7 +87,7 @@ describe('option', () => {
     expect(constant).toHaveBeenCalledWith(null);
     expect(fromOld).toHaveBeenCalledWith(
       [
-        { arbitrary: expectedConstantArb, weight: 1 },
+        { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: null } },
         { arbitrary: arb, weight: 5 },
       ],
       {
@@ -111,7 +120,7 @@ describe('option', () => {
         expect(constant).toHaveBeenCalledWith(null);
         expect(fromOld).toHaveBeenCalledWith(
           [
-            { arbitrary: expectedConstantArb, weight: 1 },
+            { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: null } },
             { arbitrary: arb, weight: freq },
           ],
           {
@@ -125,4 +134,43 @@ describe('option', () => {
         expect(out).toBe(expectedArb);
       })
     ));
+});
+
+describe('option (integration)', () => {
+  type Extra = { freq?: number };
+  const extraParameters = fc.record({ freq: fc.nat() }, { requiredKeys: [] });
+
+  const isCorrect = (value: number | null, extra: Extra) =>
+    value === null || ((extra.freq === undefined || extra.freq > 0) && typeof value === 'number');
+
+  const optionBuilder = (extra: Extra) =>
+    convertToNext(option(convertFromNext(new FakeIntegerArbitrary()), { ...extra, nil: null }));
+
+  it('should generate the same values given the same seed', () => {
+    assertGenerateProducesSameValueGivenSameSeed(optionBuilder, { extraParameters });
+  });
+
+  it('should only generate correct values', () => {
+    assertGenerateProducesCorrectValues(optionBuilder, isCorrect, { extraParameters });
+  });
+
+  it('should recognize values that would have been generated using it during generate', () => {
+    assertGenerateProducesValuesFlaggedAsCanGenerate(optionBuilder, { extraParameters });
+  });
+
+  it('should shrink towards the same values given the same seed', () => {
+    assertGenerateProducesSameValueGivenSameSeed(optionBuilder, { extraParameters });
+  });
+
+  it('should be able to shrink without any context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(optionBuilder, { extraParameters });
+  });
+
+  it('should only shrink towards correct values', () => {
+    assertShrinkProducesCorrectValues(optionBuilder, isCorrect, { extraParameters });
+  });
+
+  it('should recognize values that would have been generated using it during shrink', () => {
+    assertShrinkProducesValuesFlaggedAsCanGenerate(optionBuilder, { extraParameters });
+  });
 });
