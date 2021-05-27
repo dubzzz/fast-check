@@ -453,9 +453,9 @@ describe('NextArbitrary', () => {
     it('should return a mapped version of the stream produced by the source arbitrary for the unmapped value when provided an unmapper function', () => {
       // Arrange
       const expectedStreamValuesFromSource = Stream.of(
-        new NextValue('titi'),
-        new NextValue('toto'),
-        new NextValue('tutu')
+        new NextValue('titi', undefined),
+        new NextValue('toto', undefined),
+        new NextValue('tutu', undefined)
       );
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();
