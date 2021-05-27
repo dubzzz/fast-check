@@ -102,7 +102,8 @@ In such case, even if extending the [class `Arbitrary`](https://github.com/dubzz
 
 An instance of `NextArbitrary` must define three methods:
 - `generate(mrng: Random, biasFactor: number | undefined): NextValue<T>`: Given a random generator and possibly a bias (≥2), it must generate a single value along with its context (if applicable). The context is an opaque value that should only be accessed by the class that produced it. This opaque value can be helpful to guide the shrinker and give it more context on the value, how it has been produced...
-- `shrink(value: T, context?: unknown): Stream<NextValue<T>>`: Given a value and possibly a context (produced by `generate` or `shrink` of the very same instance), it has to produce a Stream of smaller values. Please note that the function always has to be called with a context except if `canShrinkWithoutContext` tells the caller that it can be called context-less for this precise value.
+- `shrink(value: T, context: unknown | undefined): Stream<NextValue<T>>`: Given a value and possibly a context (produced by `generate` or `shrink` of the very same instance), it has to produce a Stream of smaller values. Please note that the function always has to be called with a context except if `canShrinkWithoutContext` tells the caller that it can be called context-less for this precise value.
+
 - `canShrinkWithoutContext(value: unknown): value is T`: Given a value it can tells the caller whether or not `shrink` can be called on it without passing a context. If the returned value is `false` then it means that this value should not be passed to `shrink` without its context.
 
 But version 2.x of fast-check does not deal with instances of `NextArbitrary` from an API point-of-view so you need to convert them towards old instances using the helper `convertFromNext`. You can also convert old instances to new ones uisng `convertToNext`.
