@@ -107,7 +107,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     }
     return this.defaultShrinkForFirst(potentialSelectedIndex).join(
       this.warbs[potentialSelectedIndex].arbitrary
-        .shrink(value)
+        .shrink(value, undefined) // re-checked by canShrinkWithoutContextIndex
         .map((v) => this.mapIntoNextValue(potentialSelectedIndex, v, null, undefined))
     );
   }

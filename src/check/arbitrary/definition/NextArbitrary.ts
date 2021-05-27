@@ -46,12 +46,12 @@ export abstract class NextArbitrary<T> {
    * by calling `canShrinkWithoutContext` first on the value.
    *
    * @param value - The value to shrink
-   * @param context - Its associated context (the one returned by generate)
+   * @param context - Its associated context (the one returned by generate) or `undefined` if no context but `canShrinkWithoutContext(value) === true`
    * @returns Stream of shrinks for value based on context (if provided)
    *
    * @remarks Since 2.15.0
    */
-  abstract shrink(value: T, context?: unknown): Stream<NextValue<T>>;
+  abstract shrink(value: T, context: unknown | undefined): Stream<NextValue<T>>;
 
   /**
    * Create another arbitrary by filtering values against `predicate`
@@ -300,7 +300,7 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
       // our source arbitrary can shrink ["Hello", "how are", "you?"] but not ["Hello", "how", "are", "you?"].
       const unmapped = this.unmapper(value);
       if (this.arb.canShrinkWithoutContext(unmapped)) {
-        return this.arb.shrink(unmapped).map(this.bindValueMapper);
+        return this.arb.shrink(unmapped, undefined).map(this.bindValueMapper);
       }
     }
     return Stream.nil();
