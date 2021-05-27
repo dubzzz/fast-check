@@ -19,7 +19,7 @@ describe('ConverterFromNext', () => {
         generate(_mrng: Random): NextValue<number> {
           throw new Error('Method not implemented.');
         }
-        canGenerate(_value: unknown): _value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('Method not implemented');
         }
         shrink(_value: number, _context?: unknown): Stream<NextValue<number>> {
@@ -57,7 +57,7 @@ describe('ConverterFromNext', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (_v: unknown): _v is number => {
+        canShrinkWithoutContext = (_v: unknown): _v is number => {
           throw new Error('Unexpected call');
         };
         shrink = shrink;
@@ -82,7 +82,7 @@ describe('ConverterFromNext', () => {
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (_v: unknown): _v is number => {
+        canShrinkWithoutContext = (_v: unknown): _v is number => {
           throw new Error('Unexpected call');
         };
         shrink = shrink;
@@ -112,7 +112,7 @@ describe('ConverterFromNext', () => {
       const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedFirstValue, expectedFirstContext));
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (_v: unknown): _v is number => {
+        canShrinkWithoutContext = (_v: unknown): _v is number => {
           throw new Error('Unexpected call');
         };
         shrink = shrink;
@@ -149,7 +149,7 @@ describe('ConverterFromNext', () => {
       const generate = jest.fn().mockReturnValueOnce(new NextValue(1, Symbol()));
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = (_v: unknown): _v is number => {
+        canShrinkWithoutContext = (_v: unknown): _v is number => {
           throw new Error('Unexpected call');
         };
         shrink = shrink;
@@ -174,12 +174,12 @@ describe('ConverterFromNext', () => {
     it('should call filter directly on the passed instance and convert its result', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const filter = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         filter = filter;
       }
@@ -202,12 +202,12 @@ describe('ConverterFromNext', () => {
     it('should unwrap instances of ConverterFromNext returned by filter', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const filter = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         filter = filter;
       }
@@ -233,12 +233,12 @@ describe('ConverterFromNext', () => {
     it('should call map directly on the passed instance and convert its result', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const map = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         map = map;
       }
@@ -261,12 +261,12 @@ describe('ConverterFromNext', () => {
     it('should unwrap instances of ConverterFromNext returned by map', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const map = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         map = map;
       }
@@ -292,12 +292,12 @@ describe('ConverterFromNext', () => {
     it('should call chain directly on the passed instance and convert its result', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const chain = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         chain = chain;
       }
@@ -323,12 +323,12 @@ describe('ConverterFromNext', () => {
     it('should call noShrink directly on the passed instance and convert its result', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const noShrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         noShrink = noShrink;
       }
@@ -351,12 +351,12 @@ describe('ConverterFromNext', () => {
     it('should call noBias directly on the passed instance and convert its result', () => {
       // Arrange
       const generate = jest.fn();
-      const canGenerate = jest.fn();
+      const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
       const noBias = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
-        canGenerate = canGenerate as any as (v: unknown) => v is number;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (v: unknown) => v is number;
         shrink = shrink;
         noBias = noBias;
       }

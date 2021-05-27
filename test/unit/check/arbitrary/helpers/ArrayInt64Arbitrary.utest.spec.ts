@@ -140,7 +140,7 @@ describe('arrayInt64', () => {
       ));
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it('should recognize any value it could have generated', () =>
       fc.assert(
         fc.property(
@@ -156,7 +156,7 @@ describe('arrayInt64', () => {
 
             // Act
             const arb = arrayInt64(toArrayInt64(min, negMin), toArrayInt64(max, negMax));
-            const out = arb.canGenerate(toArrayInt64(mid, negMid));
+            const out = arb.canShrinkWithoutContext(toArrayInt64(mid, negMid));
 
             // Assert
             expect(out).toBe(true);
@@ -183,7 +183,7 @@ describe('arrayInt64', () => {
 
             // Act
             const arb = arrayInt64(toArrayInt64(min, negMin), toArrayInt64(max, negMax));
-            const out = arb.canGenerate(toArrayInt64(selected, negSelected));
+            const out = arb.canShrinkWithoutContext(toArrayInt64(selected, negSelected));
 
             // Assert
             expect(out).toBe(false);

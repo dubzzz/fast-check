@@ -59,7 +59,7 @@ describe('ipV4 (integration)', () => {
   `('should be able to generate $source with fc.ipV4()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(ipV4());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(true);
@@ -74,7 +74,7 @@ describe('ipV4 (integration)', () => {
   `('should not be able to generate $source with fc.ipV4()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(ipV4());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(false);

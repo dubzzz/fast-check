@@ -34,33 +34,33 @@ describe('LazyArbitrary', () => {
     });
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it.each`
       returnValue
       ${false}
       ${true}
-    `('should call underlying on canGenerate ($returnValue)', ({ returnValue }) => {
+    `('should call underlying on canShrinkWithoutContext ($returnValue)', ({ returnValue }) => {
       // Arrange
       const value = Symbol();
-      const { instance: underlying, canGenerate } = fakeNextArbitrary();
-      canGenerate.mockReturnValue(returnValue);
+      const { instance: underlying, canShrinkWithoutContext } = fakeNextArbitrary();
+      canShrinkWithoutContext.mockReturnValue(returnValue);
       const lazy = new LazyArbitrary('id007');
       lazy.underlying = underlying;
 
       // Act
-      const out = lazy.canGenerate(value);
+      const out = lazy.canShrinkWithoutContext(value);
 
       // Assert
       expect(out).toBe(returnValue);
-      expect(canGenerate).toHaveBeenCalledWith(value);
+      expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
     });
 
-    it('should fail to check canGenerate when no underlying arbitrary', () => {
+    it('should fail to check canShrinkWithoutContext when no underlying arbitrary', () => {
       // Arrange / Act
       const lazy = new LazyArbitrary('id007');
 
       // Assert
-      expect(() => lazy.canGenerate(1)).toThrowErrorMatchingInlineSnapshot(
+      expect(() => lazy.canShrinkWithoutContext(1)).toThrowErrorMatchingInlineSnapshot(
         `"Lazy arbitrary \\"id007\\" not correctly initialized"`
       );
     });

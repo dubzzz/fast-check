@@ -30,7 +30,7 @@ export class SchedulerArbitrary<TMetaData> extends NextArbitrary<Scheduler<TMeta
     return new NextValue(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())));
   }
 
-  canGenerate(value: unknown): value is Scheduler<TMetaData> {
+  canShrinkWithoutContext(value: unknown): value is Scheduler<TMetaData> {
     // Not supported yet
     return false;
   }

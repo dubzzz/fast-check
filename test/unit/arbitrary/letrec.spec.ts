@@ -261,16 +261,16 @@ describe('letrec', () => {
     });
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it.each`
       expectedStatus
       ${false}
       ${true}
-    `('should call canGenerate on the targets', ({ expectedStatus }) => {
+    `('should call canShrinkWithoutContext on the targets', ({ expectedStatus }) => {
       // Arrange
       const expectedValue = Symbol();
-      const { instance: simpleArb, canGenerate } = fakeNextArbitrary();
-      canGenerate.mockReturnValueOnce(expectedStatus);
+      const { instance: simpleArb, canShrinkWithoutContext } = fakeNextArbitrary();
+      canShrinkWithoutContext.mockReturnValueOnce(expectedStatus);
       const { arb1 } = letrec((tie) => {
         return {
           arb1: tie('arb2'),
@@ -279,15 +279,15 @@ describe('letrec', () => {
       });
 
       // Act
-      const out = arb1.canGenerate(expectedValue);
+      const out = arb1.canShrinkWithoutContext(expectedValue);
 
       // Assert
-      expect(canGenerate).toHaveBeenCalledTimes(1);
-      expect(canGenerate).toHaveBeenCalledWith(expectedValue);
+      expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
+      expect(canShrinkWithoutContext).toHaveBeenCalledWith(expectedValue);
       expect(out).toBe(expectedStatus);
     });
 
-    it('should throw on canGenerate if tie receives an invalid parameter', () => {
+    it('should throw on canShrinkWithoutContext if tie receives an invalid parameter', () => {
       // Arrange
       const expectedValue = Symbol();
       const { arb1 } = letrec((tie) => ({
@@ -295,7 +295,7 @@ describe('letrec', () => {
       }));
 
       // Act / Assert
-      expect(() => arb1.canGenerate(expectedValue)).toThrowErrorMatchingInlineSnapshot(
+      expect(() => arb1.canShrinkWithoutContext(expectedValue)).toThrowErrorMatchingInlineSnapshot(
         `"Lazy arbitrary \\"missing\\" not correctly initialized"`
       );
     });

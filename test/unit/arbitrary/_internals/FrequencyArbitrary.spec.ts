@@ -385,7 +385,7 @@ describe('FrequencyArbitrary', () => {
       ));
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it('should tell it cannot generate the value if no sub-arbitrary can generate the value', () =>
       fc.assert(
         fc.property(frequencyValidInputsArb, frequencyConstraintsArbFor({}), (validInputs, constraints) => {
@@ -396,14 +396,14 @@ describe('FrequencyArbitrary', () => {
           getDepthContextFor.mockReturnValue(depthContext);
           const value = Symbol();
           for (const input of warbs) {
-            input.arbitraryMeta.canGenerate.mockReturnValue(false);
+            input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(false);
           }
 
           // Act
           const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
 
           // Assert
-          expect(arb.canGenerate(value)).toBe(false);
+          expect(arb.canShrinkWithoutContext(value)).toBe(false);
         })
       ));
 
@@ -426,15 +426,15 @@ describe('FrequencyArbitrary', () => {
             getDepthContextFor.mockReturnValue(depthContext);
             const value = Symbol();
             for (const input of warbs) {
-              input.arbitraryMeta.canGenerate.mockReturnValue(false);
+              input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(false);
             }
-            warbs[position % validInputs.length].arbitraryMeta.canGenerate.mockReturnValue(true);
+            warbs[position % validInputs.length].arbitraryMeta.canShrinkWithoutContext.mockReturnValue(true);
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
 
             // Assert
-            expect(arb.canGenerate(value)).toBe(false);
+            expect(arb.canShrinkWithoutContext(value)).toBe(false);
           }
         )
       ));
@@ -457,15 +457,15 @@ describe('FrequencyArbitrary', () => {
             for (let index = 0; index !== warbs.length; ++index) {
               const input = warbs[index];
               const can = index === selectedIndex;
-              input.arbitraryMeta.canGenerate.mockReturnValue(can);
+              input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
             }
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
 
             // Assert
-            expect(arb.canGenerate(value)).toBe(true);
-            expect(warbs[selectedIndex].arbitraryMeta.canGenerate).toHaveBeenCalledWith(value);
+            expect(arb.canShrinkWithoutContext(value)).toBe(true);
+            expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
           }
         )
       ));
@@ -487,17 +487,19 @@ describe('FrequencyArbitrary', () => {
             getDepthContextFor.mockReturnValue(depthContext);
             const value = Symbol();
             for (let index = 0; index !== warbs.length; ++index) {
-              warbs[index].arbitraryMeta.canGenerate.mockReturnValue(index === 0 ? firstCanOrNot : allOthersCanOrNot);
+              warbs[index].arbitraryMeta.canShrinkWithoutContext.mockReturnValue(
+                index === 0 ? firstCanOrNot : allOthersCanOrNot
+              );
             }
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
 
             // Assert
-            expect(arb.canGenerate(value)).toBe(firstCanOrNot);
-            expect(warbs[0].arbitraryMeta.canGenerate).toHaveBeenCalledWith(value);
+            expect(arb.canShrinkWithoutContext(value)).toBe(firstCanOrNot);
+            expect(warbs[0].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
             for (let index = 1; index < warbs.length; ++index) {
-              expect(warbs[index].arbitraryMeta.canGenerate).not.toHaveBeenCalled();
+              expect(warbs[index].arbitraryMeta.canShrinkWithoutContext).not.toHaveBeenCalled();
             }
           }
         )
@@ -632,7 +634,7 @@ describe('FrequencyArbitrary', () => {
             for (let index = 0; index !== warbs.length; ++index) {
               const input = warbs[index];
               const can = index === selectedIndex;
-              input.arbitraryMeta.canGenerate.mockReturnValue(can);
+              input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(42), new NextValue(index)));
             }
 
@@ -642,7 +644,7 @@ describe('FrequencyArbitrary', () => {
 
             // Assert
             expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
-            expect(warbs[selectedIndex].arbitraryMeta.canGenerate).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
             expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
           }
         )
@@ -667,7 +669,7 @@ describe('FrequencyArbitrary', () => {
             for (let index = 0; index !== warbs.length; ++index) {
               const input = warbs[index];
               const can = index === selectedIndex;
-              input.arbitraryMeta.canGenerate.mockReturnValue(can);
+              input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(42), new NextValue(index)));
             }
             warbs[0].fallbackValue = { default: 48 };
@@ -686,7 +688,7 @@ describe('FrequencyArbitrary', () => {
             } else {
               expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             }
-            expect(warbs[selectedIndex].arbitraryMeta.canGenerate).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
             expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
           }
         )
