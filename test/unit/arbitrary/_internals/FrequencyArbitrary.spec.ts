@@ -44,6 +44,7 @@ const fromValidInputs = (metas: { weight: number; arbitraryValue: number }[]) =>
       arbitrary: arbitraryMeta.instance,
       expectedValue: meta.arbitraryValue,
       expectedContext,
+      fallbackValue: undefined as { default: number } | undefined,
     };
   });
 
@@ -644,6 +645,50 @@ describe('FrequencyArbitrary', () => {
             // Assert
             expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
+          }
+        )
+      ));
+
+    it('should be able to shrink without context if one of the sub-arbitrary can generate the value plus prepend fallback of first (whenever possible)', () =>
+      fc.assert(
+        fc.property(
+          frequencyValidInputsArb,
+          frequencyConstraintsArbFor({}),
+          fc.nat(),
+          (validInputs, constraints, mod) => {
+            // Arrange
+            fc.pre(constraints.maxDepth !== 0);
+            const warbs = fromValidInputs(validInputs);
+            const depthContext = { depth: 0 };
+            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            getDepthContextFor.mockReturnValue(depthContext);
+            const value = Symbol();
+            const selectedIndex = mod % warbs.length;
+            fc.pre(warbs[selectedIndex].weight !== 0);
+            for (let index = 0; index !== warbs.length; ++index) {
+              const input = warbs[index];
+              const can = index === selectedIndex;
+              input.arbitraryMeta.canGenerate.mockReturnValue(can);
+              input.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(42), new NextValue(index)));
+            }
+            warbs[0].fallbackValue = { default: 48 };
+
+            // Act
+            const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
+            const shrinks = [...arb.shrink(value as any)];
+
+            // Assert
+            if (warbs[0].weight !== 0 && selectedIndex !== 0 && constraints.withCrossShrink) {
+              // Can only prepend when applicable ie:
+              // - weight of [0] >0
+              // - not shrinking a value coming from [0]
+              // - cross-shrink enabled
+              expect(shrinks.map((v) => v.value)).toEqual([48, 42, selectedIndex]);
+            } else {
+              expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
+            }
+            expect(warbs[selectedIndex].arbitraryMeta.canGenerate).toHaveBeenCalledWith(value);
             expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
           }
         )

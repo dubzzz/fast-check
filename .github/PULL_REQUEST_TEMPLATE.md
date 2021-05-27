@@ -6,7 +6,7 @@
 <!-- Type of PR: [ ] unchecked / [ ] checked -->
 **_Category:_**
 
-- [ ] ⚡️ Introduce new features
+- [ ] ✨ Introduce new features
 - [ ] 📝 Add or update documentation
 - [ ] ✅ Add or update tests
 - [ ] 🐛 Fix a bug
