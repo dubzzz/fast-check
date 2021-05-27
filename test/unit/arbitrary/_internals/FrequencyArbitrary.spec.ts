@@ -640,12 +640,12 @@ describe('FrequencyArbitrary', () => {
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
-            const shrinks = [...arb.shrink(value as any)];
+            const shrinks = [...arb.shrink(value as any, undefined)];
 
             // Assert
             expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
-            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value, undefined);
           }
         )
       ));
@@ -676,7 +676,7 @@ describe('FrequencyArbitrary', () => {
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
-            const shrinks = [...arb.shrink(value as any)];
+            const shrinks = [...arb.shrink(value as any, undefined)];
 
             // Assert
             if (warbs[0].weight !== 0 && selectedIndex !== 0 && constraints.withCrossShrink) {
@@ -689,7 +689,7 @@ describe('FrequencyArbitrary', () => {
               expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             }
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
-            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value, undefined);
           }
         )
       ));

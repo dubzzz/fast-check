@@ -383,7 +383,7 @@ describe('NextArbitrary', () => {
 
       // Act
       const arb = new MyNextArbitrary().map(() => '');
-      const shrinks = arb.shrink('');
+      const shrinks = arb.shrink('', undefined);
 
       // Assert
       expect([...shrinks]).toHaveLength(0);
@@ -471,7 +471,7 @@ describe('NextArbitrary', () => {
 
       // Act
       const arb = new MyNextArbitrary().map((tag) => Symbol.for(tag), unmapper);
-      const shrinks = [...arb.shrink(originalValue)];
+      const shrinks = [...arb.shrink(originalValue, undefined)];
 
       // Assert
       expect(shrinks.map((s) => s.value)).toEqual([Symbol.for('titi'), Symbol.for('toto'), Symbol.for('tutu')]);
@@ -480,7 +480,7 @@ describe('NextArbitrary', () => {
       expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
       expect(canShrinkWithoutContext).toHaveBeenCalledWith(unmapperOutput);
       expect(shrink).toHaveBeenCalledTimes(1);
-      expect(shrink).toHaveBeenCalledWith(unmapperOutput);
+      expect(shrink).toHaveBeenCalledWith(unmapperOutput, undefined);
     });
 
     it('should return an empty stream if source arbitrary tells it cannot generate the value', () => {
@@ -504,7 +504,7 @@ describe('NextArbitrary', () => {
 
       // Act
       const arb = new MyNextArbitrary().map((tag) => Symbol.for(tag), unmapper);
-      const shrinks = [...arb.shrink(originalValue)];
+      const shrinks = [...arb.shrink(originalValue, undefined)];
 
       // Assert
       expect(shrinks.map((s) => s.value)).toEqual([]);
@@ -537,7 +537,7 @@ describe('NextArbitrary', () => {
 
       // Act / Assert
       const arb = new MyNextArbitrary().map((tag) => Symbol.for(tag), unmapper);
-      expect(() => arb.shrink(originalValue)).toThrowError();
+      expect(() => arb.shrink(originalValue, undefined)).toThrowError();
     });
   });
 
@@ -786,7 +786,7 @@ describe('NextArbitrary', () => {
 
       // Act
       const arb = new MyNextArbitrary().chain(() => new MyNextArbitrary());
-      const shrinks = arb.shrink('');
+      const shrinks = arb.shrink('', undefined);
 
       // Assert
       expect([...shrinks]).toHaveLength(0);
