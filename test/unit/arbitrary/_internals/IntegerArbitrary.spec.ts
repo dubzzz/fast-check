@@ -279,7 +279,7 @@ describe('IntegerArbitrary (integration)', () => {
             const min = start;
             const [mid, max] = o1 < o2 ? [min + o1, min + o2] : [min + o2, min + o1];
             const arb = new IntegerArbitrary(min, max);
-            const arbNegate = new IntegerArbitrary(-max, -min);
+            const arbNegate = new IntegerArbitrary(max !== 0 ? -max : 0, min !== 0 ? -min : min); // !==0 to avoid -0
 
             // Act
             const source = new NextValue(mid, undefined);
