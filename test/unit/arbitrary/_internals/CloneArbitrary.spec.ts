@@ -66,57 +66,57 @@ describe('CloneArbitrary', () => {
     });
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it('should return false if passed value does not have the right length', () =>
       fc.assert(
         fc.property(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (numValues, numRequestedValues) => {
           // Arrange
           fc.pre(numValues !== numRequestedValues);
-          const { instance: sourceArb, canGenerate } = fakeNextArbitrary();
+          const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
 
           // Act
           const arb = new CloneArbitrary(sourceArb, numValues);
-          const out = arb.canGenerate([...Array(numRequestedValues)]);
+          const out = arb.canShrinkWithoutContext([...Array(numRequestedValues)]);
 
           // Assert
           expect(out).toBe(false);
-          expect(canGenerate).not.toHaveBeenCalled();
+          expect(canShrinkWithoutContext).not.toHaveBeenCalled();
         })
       ));
 
     it('should return false if values are not equal regarding Object.is', () => {
       // Arrange
-      const { instance: sourceArb, canGenerate } = fakeNextArbitrary();
+      const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
 
       // Act
       const arb = new CloneArbitrary(sourceArb, 2);
-      const out = arb.canGenerate([{}, {}]);
+      const out = arb.canShrinkWithoutContext([{}, {}]);
 
       // Assert
       expect(out).toBe(false);
-      expect(canGenerate).not.toHaveBeenCalled();
+      expect(canShrinkWithoutContext).not.toHaveBeenCalled();
     });
 
     it.each`
-      canGenerateValue
+      canShrinkWithoutContextValue
       ${true}
       ${false}
     `(
       'should ask sub-arbitrary whenever length is correct and children are equal regarding Object.is',
-      ({ canGenerateValue }) => {
+      ({ canShrinkWithoutContextValue }) => {
         // Arrange
         const value = {};
-        const { instance: sourceArb, canGenerate } = fakeNextArbitrary();
-        canGenerate.mockReturnValue(canGenerateValue);
+        const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
+        canShrinkWithoutContext.mockReturnValue(canShrinkWithoutContextValue);
 
         // Act
         const arb = new CloneArbitrary(sourceArb, 2);
-        const out = arb.canGenerate([value, value]);
+        const out = arb.canShrinkWithoutContext([value, value]);
 
         // Assert
-        expect(out).toBe(canGenerateValue);
-        expect(canGenerate).toHaveBeenCalledTimes(1);
-        expect(canGenerate).toHaveBeenCalledWith(value);
+        expect(out).toBe(canShrinkWithoutContextValue);
+        expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
+        expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
       }
     );
   });
@@ -244,7 +244,7 @@ class FirstArbitrary extends NextArbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(expectedFirst, { step: 2 });
   }
-  canGenerate(_value: unknown): _value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
   shrink(value: number, context?: unknown): Stream<NextValue<number>> {
@@ -270,7 +270,7 @@ class CloneableArbitrary extends NextArbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(this.instance(), { shrunkOnce: false });
   }
-  canGenerate(_value: unknown): _value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
   shrink(value: number, context?: unknown): Stream<NextValue<number>> {

@@ -48,7 +48,7 @@ class ArrayInt64Arbitrary extends NextArbitrary<ArrayInt64> {
     return id < 0 ? ranges[0] : ranges[id + 1];
   }
 
-  canGenerate(value: unknown): value is ArrayInt64 {
+  canShrinkWithoutContext(value: unknown): value is ArrayInt64 {
     const unsafeValue = value as ArrayInt64;
     return (
       typeof value === 'object' &&

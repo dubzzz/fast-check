@@ -96,7 +96,7 @@ describe('TupleArbitrary', () => {
     });
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     it.each`
       canA     | canB     | canC
       ${false} | ${false} | ${false}
@@ -105,48 +105,48 @@ describe('TupleArbitrary', () => {
       ${true}  | ${true}  | ${false}
       ${true}  | ${true}  | ${true}
     `(
-      'should merge results coming from underlyings for canGenerate if received array has the right size',
+      'should merge results coming from underlyings for canShrinkWithoutContext if received array has the right size',
       ({ canA, canB, canC }) => {
         // Arrange
         const vA = Symbol();
         const vB = Symbol();
         const vC = Symbol();
-        const { instance: instanceA, canGenerate: canGenerateA } = fakeNextArbitrary<symbol>();
-        const { instance: instanceB, canGenerate: canGenerateB } = fakeNextArbitrary<symbol>();
-        const { instance: instanceC, canGenerate: canGenerateC } = fakeNextArbitrary<symbol>();
-        canGenerateA.mockReturnValueOnce(canA);
-        canGenerateB.mockReturnValueOnce(canB);
-        canGenerateC.mockReturnValueOnce(canC);
+        const { instance: instanceA, canShrinkWithoutContext: canShrinkWithoutContextA } = fakeNextArbitrary<symbol>();
+        const { instance: instanceB, canShrinkWithoutContext: canShrinkWithoutContextB } = fakeNextArbitrary<symbol>();
+        const { instance: instanceC, canShrinkWithoutContext: canShrinkWithoutContextC } = fakeNextArbitrary<symbol>();
+        canShrinkWithoutContextA.mockReturnValueOnce(canA);
+        canShrinkWithoutContextB.mockReturnValueOnce(canB);
+        canShrinkWithoutContextC.mockReturnValueOnce(canC);
 
         // Act
         const arb = new TupleArbitrary([instanceA, instanceB, instanceC]);
-        const out = arb.canGenerate([vA, vB, vC]);
+        const out = arb.canShrinkWithoutContext([vA, vB, vC]);
 
         // Assert
         expect(out).toBe(canA && canB && canC);
-        expect(canGenerateA).toHaveBeenCalledWith(vA);
-        if (canA) expect(canGenerateB).toHaveBeenCalledWith(vB);
-        else expect(canGenerateB).not.toHaveBeenCalled();
-        if (canA && canB) expect(canGenerateC).toHaveBeenCalledWith(vC);
-        else expect(canGenerateC).not.toHaveBeenCalled();
+        expect(canShrinkWithoutContextA).toHaveBeenCalledWith(vA);
+        if (canA) expect(canShrinkWithoutContextB).toHaveBeenCalledWith(vB);
+        else expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
+        if (canA && canB) expect(canShrinkWithoutContextC).toHaveBeenCalledWith(vC);
+        else expect(canShrinkWithoutContextC).not.toHaveBeenCalled();
       }
     );
 
-    it('should not call underlyings on canGenerate if size is invalid', () => {
+    it('should not call underlyings on canShrinkWithoutContext if size is invalid', () => {
       // Arrange
-      const { instance: instanceA, canGenerate: canGenerateA } = fakeNextArbitrary<symbol>();
-      const { instance: instanceB, canGenerate: canGenerateB } = fakeNextArbitrary<symbol>();
-      const { instance: instanceC, canGenerate: canGenerateC } = fakeNextArbitrary<symbol>();
+      const { instance: instanceA, canShrinkWithoutContext: canShrinkWithoutContextA } = fakeNextArbitrary<symbol>();
+      const { instance: instanceB, canShrinkWithoutContext: canShrinkWithoutContextB } = fakeNextArbitrary<symbol>();
+      const { instance: instanceC, canShrinkWithoutContext: canShrinkWithoutContextC } = fakeNextArbitrary<symbol>();
 
       // Act
       const arb = new TupleArbitrary([instanceA, instanceB, instanceC]);
-      const out = arb.canGenerate([Symbol(), Symbol(), Symbol(), Symbol()]);
+      const out = arb.canShrinkWithoutContext([Symbol(), Symbol(), Symbol(), Symbol()]);
 
       // Assert
       expect(out).toBe(false);
-      expect(canGenerateA).not.toHaveBeenCalled();
-      expect(canGenerateB).not.toHaveBeenCalled();
-      expect(canGenerateC).not.toHaveBeenCalled();
+      expect(canShrinkWithoutContextA).not.toHaveBeenCalled();
+      expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
+      expect(canShrinkWithoutContextC).not.toHaveBeenCalled();
     });
   });
 
@@ -393,7 +393,7 @@ class FirstArbitrary extends NextArbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(expectedFirst, { step: 2 });
   }
-  canGenerate(_value: unknown): _value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
   shrink(value: number, context?: unknown): Stream<NextValue<number>> {
@@ -415,7 +415,7 @@ class SecondArbitrary extends NextArbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(expectedSecond, { step: 2 });
   }
-  canGenerate(_value: unknown): _value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
   shrink(value: number, context?: unknown): Stream<NextValue<number>> {
@@ -441,7 +441,7 @@ class CloneableArbitrary extends NextArbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(this.instance(), { shrunkOnce: false });
   }
-  canGenerate(_value: unknown): _value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
   shrink(value: number, context?: unknown): Stream<NextValue<number>> {

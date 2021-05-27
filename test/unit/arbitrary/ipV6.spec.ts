@@ -151,7 +151,7 @@ describe('ipV6 (integration)', () => {
   `('should be able to generate $source with fc.ipV6()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(ipV6());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(true);

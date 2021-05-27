@@ -206,7 +206,7 @@ describe('StreamArbitrary', () => {
     });
   });
 
-  describe('canGenerate', () => {
+  describe('canShrinkWithoutContext', () => {
     function* infiniteG() {
       yield 1;
     }
@@ -217,30 +217,30 @@ describe('StreamArbitrary', () => {
       ${new Stream(infiniteG())}   | ${'infinite stream'}
     `('should return false for any Stream whatever the size ($description)', ({ data }) => {
       // Arrange
-      const { instance: sourceArb, canGenerate } = fakeNextArbitrary();
+      const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
 
       // Act
       const arb = new StreamArbitrary(sourceArb);
-      const out = arb.canGenerate(data);
+      const out = arb.canShrinkWithoutContext(data);
 
       // Assert
       expect(out).toBe(false);
-      expect(canGenerate).not.toHaveBeenCalled();
+      expect(canShrinkWithoutContext).not.toHaveBeenCalled();
     });
 
     it('should return false even for its own values', () => {
       // Arrange
-      const { instance: sourceArb, canGenerate } = fakeNextArbitrary();
+      const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
       const { instance: mrng } = fakeRandom();
 
       // Act
       const arb = new StreamArbitrary(sourceArb);
       const g = arb.generate(mrng, undefined);
-      const out = arb.canGenerate(g.value);
+      const out = arb.canShrinkWithoutContext(g.value);
 
       // Assert
       expect(out).toBe(false);
-      expect(canGenerate).not.toHaveBeenCalled();
+      expect(canShrinkWithoutContext).not.toHaveBeenCalled();
     });
   });
 
@@ -273,7 +273,7 @@ describe('StreamArbitrary (integration)', () => {
   };
 
   const isCorrect = (value: Stream<number>) =>
-    value instanceof Stream && [...value.take(10)].every((v) => sourceArb.canGenerate(v));
+    value instanceof Stream && [...value.take(10)].every((v) => sourceArb.canShrinkWithoutContext(v));
 
   const streamBuilder = () => new StreamArbitrary(sourceArb);
 

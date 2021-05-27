@@ -16,7 +16,7 @@ export class ConstantArbitrary<T> extends NextArbitrary<T> {
     const idx = mrng.nextInt(0, this.values.length - 1);
     return new NextValue(this.values[idx], idx, () => cloneIfNeeded(this.values[idx]));
   }
-  canGenerate(value: unknown): value is T {
+  canShrinkWithoutContext(value: unknown): value is T {
     for (let idx = 0; idx !== this.values.length; ++idx) {
       if (Object.is(this.values[idx], value)) {
         return true;

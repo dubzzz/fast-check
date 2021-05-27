@@ -49,12 +49,12 @@ export class TupleArbitrary<Ts extends unknown[]> extends NextArbitrary<Ts> {
   generate(mrng: Random, biasFactor: number | undefined): NextValue<Ts> {
     return TupleArbitrary.wrapper<Ts>(this.arbs.map((a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
   }
-  canGenerate(value: unknown): value is Ts {
+  canShrinkWithoutContext(value: unknown): value is Ts {
     if (!Array.isArray(value) || value.length !== this.arbs.length) {
       return false;
     }
     for (let index = 0; index !== this.arbs.length; ++index) {
-      if (!this.arbs[index].canGenerate(value[index])) {
+      if (!this.arbs[index].canShrinkWithoutContext(value[index])) {
         return false;
       }
     }

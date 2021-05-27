@@ -12,7 +12,7 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitr
   NextArbitrary<T>
 > {
   const generate = jest.fn();
-  const canGenerate = jest.fn() as any as ((value: unknown) => value is T) &
+  const canShrinkWithoutContext = jest.fn() as any as ((value: unknown) => value is T) &
     MockWithArgs<(value: unknown) => value is T>;
   const shrink = jest.fn();
   const filter = jest.fn();
@@ -23,7 +23,7 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitr
   mocked;
   class FakeNextArbitrary extends NextArbitrary<T> {
     generate = generate;
-    canGenerate = canGenerate;
+    canShrinkWithoutContext = canShrinkWithoutContext;
     shrink = shrink;
     filter = filter;
     map = map;
@@ -31,7 +31,7 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitr
     noShrink = noShrink;
     noBias = noBias;
   }
-  return { Class: FakeNextArbitrary, generate, canGenerate, shrink, filter, map, chain, noShrink, noBias };
+  return { Class: FakeNextArbitrary, generate, canShrinkWithoutContext, shrink, filter, map, chain, noShrink, noBias };
 }
 
 /**
@@ -45,7 +45,7 @@ export function fakeNextArbitrary<T = any>(): { instance: NextArbitrary<T> } & M
 /**
  * Fake instance with the following capabilities:
  * - shrink to strictly smaller values
- * - fully implemented canGenerate
+ * - fully implemented canShrinkWithoutContext
  * - take bias into account on generate
  * - context less shrink like context full (for first iteration only)
  */
@@ -61,7 +61,7 @@ export class FakeIntegerArbitrary extends NextArbitrary<number> {
     const maxLimit = biasFactor !== undefined ? Math.max(minRange, maxRange - biasFactor) : maxRange;
     return new NextValue(mrng.nextInt(0, maxLimit) + this.offset, { step: 2 });
   }
-  canGenerate(value: unknown): value is number {
+  canShrinkWithoutContext(value: unknown): value is number {
     return (
       typeof value === 'number' &&
       value >= this.offset &&

@@ -8,7 +8,7 @@ import { DepthContext, getDepthContextFor } from './helpers/DepthContext';
 
 /** @internal */
 export class FrequencyArbitrary<T> extends NextArbitrary<T> {
-  readonly summedWarbs: _WeightedNextArbitrary<T>[];
+  readonly cumulatedWeights: number[];
   readonly totalWeight: number;
 
   static fromOld<T>(warbs: _WeightedArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
@@ -26,7 +26,6 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       throw new Error(`${label} expects at least one weigthed arbitrary`);
     }
     let totalWeight = 0;
-    const warbsNext: _WeightedNextArbitrary<T>[] = [];
     for (let idx = 0; idx !== warbs.length; ++idx) {
       const currentArbitrary = warbs[idx].arbitrary;
       if (currentArbitrary === undefined) {
@@ -40,12 +39,11 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       if (currentWeight < 0) {
         throw new Error(`${label} expects weights to be superior or equal to 0`);
       }
-      warbsNext.push({ weight: currentWeight, arbitrary: currentArbitrary });
     }
     if (totalWeight <= 0) {
       throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
-    return new FrequencyArbitrary(warbsNext, constraints, getDepthContextFor(constraints.depthIdentifier));
+    return new FrequencyArbitrary(warbs, constraints, getDepthContextFor(constraints.depthIdentifier));
   }
 
   private constructor(
@@ -55,10 +53,10 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   ) {
     super();
     let currentWeight = 0;
-    this.summedWarbs = [];
+    this.cumulatedWeights = [];
     for (let idx = 0; idx !== warbs.length; ++idx) {
       currentWeight += warbs[idx].weight;
-      this.summedWarbs.push({ weight: currentWeight, arbitrary: warbs[idx].arbitrary });
+      this.cumulatedWeights.push(currentWeight);
     }
     this.totalWeight = currentWeight;
   }
@@ -69,16 +67,16 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       return this.safeGenerateForIndex(mrng, 0, biasFactor);
     }
     const selected = mrng.nextInt(this.computeNegDepthBenefit(), this.totalWeight - 1);
-    for (let idx = 0; idx !== this.summedWarbs.length; ++idx) {
-      if (selected < this.summedWarbs[idx].weight) {
+    for (let idx = 0; idx !== this.cumulatedWeights.length; ++idx) {
+      if (selected < this.cumulatedWeights[idx]) {
         return this.safeGenerateForIndex(mrng, idx, biasFactor);
       }
     }
     throw new Error(`Unable to generate from fc.frequency`);
   }
 
-  canGenerate(value: unknown): value is T {
-    return this.canGenerateIndex(value) !== -1;
+  canShrinkWithoutContext(value: unknown): value is T {
+    return this.canShrinkWithoutContextIndex(value) !== -1;
   }
 
   shrink(value: T, context?: unknown): Stream<NextValue<T>> {
@@ -86,7 +84,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       const safeContext = context as _FrequencyArbitraryContext<T>;
       const selectedIndex = safeContext.selectedIndex;
       const originalBias = safeContext.originalBias;
-      const originalArbitrary = this.summedWarbs[selectedIndex].arbitrary;
+      const originalArbitrary = this.warbs[selectedIndex].arbitrary;
       const originalShrinks = originalArbitrary
         .shrink(value, safeContext.originalContext)
         .map((v) => this.mapIntoNextValue(selectedIndex, v, null, originalBias));
@@ -103,25 +101,42 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
       }
       return originalShrinks;
     }
-    const potentialSelectedIndex = this.canGenerateIndex(value);
+    const potentialSelectedIndex = this.canShrinkWithoutContextIndex(value);
     if (potentialSelectedIndex === -1) {
       return Stream.nil(); // No arbitrary found to accept this value
     }
-    return this.summedWarbs[potentialSelectedIndex].arbitrary
-      .shrink(value)
-      .map((v) => this.mapIntoNextValue(potentialSelectedIndex, v, null, undefined));
+    return this.defaultShrinkForFirst(potentialSelectedIndex).join(
+      this.warbs[potentialSelectedIndex].arbitrary
+        .shrink(value)
+        .map((v) => this.mapIntoNextValue(potentialSelectedIndex, v, null, undefined))
+    );
+  }
+
+  /** Generate shrink values for first arbitrary when no context and no value was provided */
+  private defaultShrinkForFirst(selectedIndex: number): Stream<NextValue<T>> {
+    ++this.context.depth; // increase depth
+    try {
+      if (!this.mustFallbackToFirstInShrink(selectedIndex) || this.warbs[0].fallbackValue === undefined) {
+        // Not applicable: no fallback to first arbitrary on shrink OR no hint to shrink without an initial value and context
+        return Stream.nil();
+      }
+    } finally {
+      --this.context.depth; // decrease depth (reset depth)
+    }
+    const rawShrinkValue = new NextValue(this.warbs[0].fallbackValue.default);
+    return Stream.of(this.mapIntoNextValue(0, rawShrinkValue, null, undefined));
   }
 
   /** Extract the index of the generator that would have been able to gennrate the value */
-  private canGenerateIndex(value: unknown): number {
+  private canShrinkWithoutContextIndex(value: unknown): number {
     if (this.mustGenerateFirst()) {
-      return this.warbs[0].arbitrary.canGenerate(value) ? 0 : -1;
+      return this.warbs[0].arbitrary.canShrinkWithoutContext(value) ? 0 : -1;
     }
     try {
       ++this.context.depth; // increase depth
       for (let idx = 0; idx !== this.warbs.length; ++idx) {
         const warb = this.warbs[idx];
-        if (warb.weight !== 0 && warb.arbitrary.canGenerate(value)) {
+        if (warb.weight !== 0 && warb.arbitrary.canShrinkWithoutContext(value)) {
           return idx;
         }
       }
@@ -151,7 +166,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   private safeGenerateForIndex(mrng: Random, idx: number, biasFactor: number | undefined): NextValue<T> {
     ++this.context.depth; // increase depth
     try {
-      const value = this.summedWarbs[idx].arbitrary.generate(mrng, biasFactor);
+      const value = this.warbs[idx].arbitrary.generate(mrng, biasFactor);
       const clonedMrngForFallbackFirst = this.mustFallbackToFirstInShrink(idx) ? mrng.clone() : null;
       return this.mapIntoNextValue(idx, value, clonedMrngForFallbackFirst, biasFactor);
     } finally {
@@ -195,12 +210,14 @@ export type _Constraints = {
 interface _WeightedArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;
+  fallbackValue?: { default: T };
 }
 
 /** @internal */
 interface _WeightedNextArbitrary<T> {
   weight: number;
   arbitrary: NextArbitrary<T>;
+  fallbackValue?: { default: T };
 }
 
 /** @internal */

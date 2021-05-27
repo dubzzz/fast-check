@@ -84,7 +84,7 @@ describe('fullUnicodeString (integration)', () => {
   `('should be able to generate $source with fc.fullUnicodeString()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(fullUnicodeString());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(true);
@@ -97,7 +97,7 @@ describe('fullUnicodeString (integration)', () => {
   `('should not be able to generate $source with fc.fullUnicodeString()', ({ source }) => {
     // Arrange / Act
     const arb = convertToNext(fullUnicodeString());
-    const out = arb.canGenerate(source);
+    const out = arb.canShrinkWithoutContext(source);
 
     // Assert
     expect(out).toBe(false);
