@@ -46,7 +46,7 @@ describe('record', () => {
           buildPartialRecordArbitrary.mockReturnValue(convertFromNext(instance));
 
           // Act
-          const arb = record(recordModel, constraints);
+          const arb = constraints !== undefined ? record(recordModel, constraints) : record(recordModel);
 
           // Assert
           expect(convertToNext(arb)).toBe(instance);
