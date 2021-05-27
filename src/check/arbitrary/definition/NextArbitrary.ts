@@ -288,20 +288,11 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
       return this.arb.shrink(context.originalValue, context.originalContext).map(this.bindValueMapper);
     }
     if (this.unmapper !== undefined) {
-      // As `shrink` might be called with correct values where the unmapper has sevaral choices even
-      // entries looking correct could be invalid. If the user has not called `canShrinkWithoutContext` first, we
-      // might easily fall in such cases.
-      //
-      // Let's imagine: `mapper = (arr: string[]) => arr.join(" ")`
-      // >  mapper(["Hello", "how are", "you?"]) = "Hello how are you?"
-      // Unfortunately our unmapper might not unmap it correctly as several inputs give the same output.
-      // In order to be able to execute `shrink` safely on the unmapped value, we also need to check the
-      // unmapped value is correct for the source arbitrary. In the example above, we might imagine that
-      // our source arbitrary can shrink ["Hello", "how are", "you?"] but not ["Hello", "how", "are", "you?"].
       const unmapped = this.unmapper(value);
-      if (this.arb.canShrinkWithoutContext(unmapped)) {
-        return this.arb.shrink(unmapped, undefined).map(this.bindValueMapper);
-      }
+      // As `shrink` should never be called without a valid context
+      // except if `canShrinkWithoutContext` tells that the value was compatible with a shrink without any context
+      // we can safely consider `this.arb.canShrinkWithoutContext(unmapped)` to be true at that point.
+      return this.arb.shrink(unmapped, undefined).map(this.bindValueMapper);
     }
     return Stream.nil();
   }
