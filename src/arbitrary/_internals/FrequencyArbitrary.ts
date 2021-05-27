@@ -107,7 +107,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     }
     return this.defaultShrinkForFirst(potentialSelectedIndex).join(
       this.warbs[potentialSelectedIndex].arbitrary
-        .shrink(value)
+        .shrink(value, undefined) // re-checked by canShrinkWithoutContextIndex
         .map((v) => this.mapIntoNextValue(potentialSelectedIndex, v, null, undefined))
     );
   }
@@ -123,7 +123,8 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     } finally {
       --this.context.depth; // decrease depth (reset depth)
     }
-    const rawShrinkValue = new NextValue(this.warbs[0].fallbackValue.default);
+    // The arbitrary at [0] accepts to shrink fallbackValue.default without any context (context=undefined)
+    const rawShrinkValue = new NextValue(this.warbs[0].fallbackValue.default, undefined);
     return Stream.of(this.mapIntoNextValue(0, rawShrinkValue, null, undefined));
   }
 
@@ -210,6 +211,7 @@ export type _Constraints = {
 interface _WeightedArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;
+  // If specified, the arbitrary must accept to shrink fallbackValue.default without any context
   fallbackValue?: { default: T };
 }
 
@@ -217,6 +219,7 @@ interface _WeightedArbitrary<T> {
 interface _WeightedNextArbitrary<T> {
   weight: number;
   arbitrary: NextArbitrary<T>;
+  // If specified, the arbitrary must accept to shrink fallbackValue.default without any context
   fallbackValue?: { default: T };
 }
 

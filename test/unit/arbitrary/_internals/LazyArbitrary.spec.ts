@@ -71,7 +71,7 @@ describe('LazyArbitrary', () => {
       // Arrange
       const value = Symbol();
       const context = Symbol();
-      const streamOutput = Stream.of(new NextValue(1));
+      const streamOutput = Stream.of(new NextValue(1, undefined));
       const { instance: underlying, shrink } = fakeNextArbitrary();
       shrink.mockReturnValue(streamOutput);
       const lazy = new LazyArbitrary('id007');

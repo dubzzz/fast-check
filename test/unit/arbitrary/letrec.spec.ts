@@ -154,7 +154,7 @@ describe('letrec', () => {
       // Arrange
       const biasFactor = 69;
       const { instance: simpleArb, generate } = fakeNextArbitrary();
-      generate.mockReturnValueOnce(new NextValue(null));
+      generate.mockReturnValueOnce(new NextValue(null, undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -210,7 +210,7 @@ describe('letrec', () => {
       // Arrange
       const biasFactor = 42;
       const { instance: simpleArb, generate } = fakeNextArbitrary();
-      generate.mockReturnValueOnce(new NextValue(null));
+      generate.mockReturnValueOnce(new NextValue(null, undefined));
       const { tie } = letrec((tie) => ({
         tie: tie('__proto__'),
         ['__proto__']: tie('__defineGetter__​​'),
@@ -242,7 +242,7 @@ describe('letrec', () => {
       // Arrange
       const biasFactor = 42;
       const { instance: simpleArb, generate } = fakeNextArbitrary();
-      generate.mockReturnValueOnce(new NextValue(null));
+      generate.mockReturnValueOnce(new NextValue(null, undefined));
       const { a } = letrec((tie) =>
         Object.assign(Object.create(null), {
           a: tie('b'),
@@ -306,7 +306,7 @@ describe('letrec', () => {
       // Arrange
       const expectedValue = Symbol();
       const expectedContext = Symbol();
-      const expectedStream = Stream.of(new NextValue(Symbol()));
+      const expectedStream = Stream.of(new NextValue(Symbol(), undefined));
       const { instance: simpleArb, shrink } = fakeNextArbitrary();
       shrink.mockReturnValueOnce(expectedStream);
       const { arb1 } = letrec((tie) => {

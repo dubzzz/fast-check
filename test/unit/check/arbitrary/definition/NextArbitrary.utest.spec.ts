@@ -383,7 +383,7 @@ describe('NextArbitrary', () => {
 
       // Act
       const arb = new MyNextArbitrary().map(() => '');
-      const shrinks = arb.shrink('');
+      const shrinks = arb.shrink('', undefined);
 
       // Assert
       expect([...shrinks]).toHaveLength(0);
@@ -453,9 +453,9 @@ describe('NextArbitrary', () => {
     it('should return a mapped version of the stream produced by the source arbitrary for the unmapped value when provided an unmapper function', () => {
       // Arrange
       const expectedStreamValuesFromSource = Stream.of(
-        new NextValue('titi'),
-        new NextValue('toto'),
-        new NextValue('tutu')
+        new NextValue('titi', undefined),
+        new NextValue('toto', undefined),
+        new NextValue('tutu', undefined)
       );
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();
@@ -471,14 +471,14 @@ describe('NextArbitrary', () => {
 
       // Act
       const arb = new MyNextArbitrary().map((tag) => Symbol.for(tag), unmapper);
-      const shrinks = [...arb.shrink(originalValue)];
+      const shrinks = [...arb.shrink(originalValue, undefined)];
 
       // Assert
       expect(shrinks.map((s) => s.value)).toEqual([Symbol.for('titi'), Symbol.for('toto'), Symbol.for('tutu')]);
       expect(unmapper).toHaveBeenCalledTimes(1);
       expect(unmapper).toHaveBeenCalledWith(originalValue);
       expect(shrink).toHaveBeenCalledTimes(1);
-      expect(shrink).toHaveBeenCalledWith(unmapperOutput);
+      expect(shrink).toHaveBeenCalledWith(unmapperOutput, undefined);
     });
   });
 
@@ -727,7 +727,7 @@ describe('NextArbitrary', () => {
 
       // Act
       const arb = new MyNextArbitrary().chain(() => new MyNextArbitrary());
-      const shrinks = arb.shrink('');
+      const shrinks = arb.shrink('', undefined);
 
       // Assert
       expect([...shrinks]).toHaveLength(0);

@@ -125,7 +125,12 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
         // Potentially new value for nTogglePositions.length, new value for nFlags
         // so flagsContext is not applicable anymore
         this.applyFlagsOnChars(nChars, nFlags, nTogglePositions);
-        return new NextValue(nChars.join(''), this.buildContextFor(nRawStringNextValue, new NextValue(nFlags)));
+        // Remark: Value nFlags can be attached to a context equal to undefined
+        // as `canShrinkWithoutContext(nFlags) === true` for the bigint arbitrary
+        return new NextValue(
+          nChars.join(''),
+          this.buildContextFor(nRawStringNextValue, new NextValue(nFlags, undefined))
+        );
       })
       .join(
         makeLazy(() => {

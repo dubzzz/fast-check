@@ -26,7 +26,7 @@ export class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
       const toString = () => `Stream(${seenValues.map(stringify).join(',')}…)`;
       return Object.assign(s, { toString, [cloneMethod]: enrichedProducer });
     };
-    return new NextValue(enrichedProducer());
+    return new NextValue(enrichedProducer(), undefined);
   }
 
   canShrinkWithoutContext(value: unknown): value is Stream<T> {

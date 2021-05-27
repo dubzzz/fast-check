@@ -43,7 +43,7 @@ export class NextValue<T> {
    * @param context - Context associated to the generated value (useful for shrink)
    * @param customGetValue - Limited to internal usages (to ease migration to next), it will be removed on next major
    */
-  constructor(value_: T, context: unknown = undefined, customGetValue: (() => T) | undefined = undefined) {
+  constructor(value_: T, context: unknown, customGetValue: (() => T) | undefined = undefined) {
     this.value_ = value_;
     this.context = context;
     this.hasToBeCloned = hasCloneMethod(value_);

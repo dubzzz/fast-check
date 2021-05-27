@@ -53,7 +53,7 @@ describe('ConverterFromNext', () => {
     it('should be able to generate values using the underlying NextArbitrary', () => {
       // Arrange
       const expectedValue = 1;
-      const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedValue));
+      const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedValue, undefined));
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
@@ -78,7 +78,7 @@ describe('ConverterFromNext', () => {
     it('should be able to generate biased values using the underlying NextArbitrary', () => {
       // Arrange
       const expectedValue = 1;
-      const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedValue));
+      const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedValue, undefined));
       const shrink = jest.fn();
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;
@@ -108,7 +108,7 @@ describe('ConverterFromNext', () => {
       const expectedShrunkValues = [2, 3, 4];
       const shrink = jest
         .fn<Stream<NextValue<number>>, any[]>()
-        .mockReturnValueOnce(Stream.of(...expectedShrunkValues.map((v) => new NextValue(v))));
+        .mockReturnValueOnce(Stream.of(...expectedShrunkValues.map((v) => new NextValue(v, undefined))));
       const generate = jest.fn().mockReturnValueOnce(new NextValue(expectedFirstValue, expectedFirstContext));
       class MyNextArbitrary extends NextArbitrary<number> {
         generate = generate;

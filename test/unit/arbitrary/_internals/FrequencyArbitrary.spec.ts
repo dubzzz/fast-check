@@ -296,7 +296,7 @@ describe('FrequencyArbitrary', () => {
               arbitraryMeta.generate.mockImplementation(() => {
                 calledOnce = true;
                 expect(depthContext).toEqual({ depth: initialDepth + 1 });
-                return new NextValue(expectedValue);
+                return new NextValue(expectedValue, undefined);
               });
             }
 
@@ -526,7 +526,9 @@ describe('FrequencyArbitrary', () => {
             const totalWeightBefore = warbs.slice(0, selectedArbitraryIndex).reduce((acc, cur) => acc + cur.weight, 0);
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
-            selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(1), new NextValue(42)));
+            selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
+              Stream.of(new NextValue(1, undefined), new NextValue(42, undefined))
+            );
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
@@ -567,7 +569,9 @@ describe('FrequencyArbitrary', () => {
             const { instance: anotherMrng } = fakeRandom();
             clone.mockReturnValue(anotherMrng);
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
-            selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(1), new NextValue(42)));
+            selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
+              Stream.of(new NextValue(1, undefined), new NextValue(42, undefined))
+            );
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, { ...constraints, withCrossShrink: true }, 'test');
@@ -600,7 +604,9 @@ describe('FrequencyArbitrary', () => {
 
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockReturnValue(0);
-            warbs[0].arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(1), new NextValue(42)));
+            warbs[0].arbitraryMeta.shrink.mockReturnValue(
+              Stream.of(new NextValue(1, undefined), new NextValue(42, undefined))
+            );
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, { ...constraints, withCrossShrink: true }, 'test');
@@ -635,17 +641,19 @@ describe('FrequencyArbitrary', () => {
               const input = warbs[index];
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
-              input.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(42), new NextValue(index)));
+              input.arbitraryMeta.shrink.mockReturnValue(
+                Stream.of(new NextValue(42, undefined), new NextValue(index, undefined))
+              );
             }
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
-            const shrinks = [...arb.shrink(value as any)];
+            const shrinks = [...arb.shrink(value as any, undefined)];
 
             // Assert
             expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
-            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value, undefined);
           }
         )
       ));
@@ -670,13 +678,15 @@ describe('FrequencyArbitrary', () => {
               const input = warbs[index];
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
-              input.arbitraryMeta.shrink.mockReturnValue(Stream.of(new NextValue(42), new NextValue(index)));
+              input.arbitraryMeta.shrink.mockReturnValue(
+                Stream.of(new NextValue(42, undefined), new NextValue(index, undefined))
+              );
             }
             warbs[0].fallbackValue = { default: 48 };
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
-            const shrinks = [...arb.shrink(value as any)];
+            const shrinks = [...arb.shrink(value as any, undefined)];
 
             // Assert
             if (warbs[0].weight !== 0 && selectedIndex !== 0 && constraints.withCrossShrink) {
@@ -689,7 +699,7 @@ describe('FrequencyArbitrary', () => {
               expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             }
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
-            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value);
+            expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value, undefined);
           }
         )
       ));
