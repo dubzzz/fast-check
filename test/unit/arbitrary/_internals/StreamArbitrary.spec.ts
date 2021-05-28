@@ -4,8 +4,8 @@ import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue'
 import { cloneIfNeeded, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
 import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
@@ -277,11 +277,11 @@ describe('StreamArbitrary (integration)', () => {
 
   const streamBuilder = () => new StreamArbitrary(sourceArb);
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(streamBuilder, { isEqual });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(streamBuilder, { isEqual });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(streamBuilder, isCorrect);
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(streamBuilder, isCorrect);
   });
 });

@@ -6,13 +6,11 @@ import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpe
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 function beforeEachHook() {
@@ -62,32 +60,20 @@ describe('fullUnicode (integration)', () => {
 
   const fullUnicodeBuilder = () => convertToNext(fullUnicode());
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(fullUnicodeBuilder);
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(fullUnicodeBuilder);
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(fullUnicodeBuilder, isCorrect);
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(fullUnicodeBuilder, isCorrect);
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(fullUnicodeBuilder);
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(fullUnicodeBuilder);
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(fullUnicodeBuilder);
-  });
-
-  it('should be able to shrink without any context', () => {
+  it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(fullUnicodeBuilder);
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(fullUnicodeBuilder, isCorrect);
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(fullUnicodeBuilder);
   });
 
   it('should preserve strictly smaller ordering in shrink', () => {

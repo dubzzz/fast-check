@@ -4,12 +4,10 @@ import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
 import {
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesCorrectValues,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
@@ -262,31 +260,19 @@ describe('record (integration)', () => {
     return convertToNext(record(recordModel, constraints));
   };
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(recordBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(recordBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(recordBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(recordBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(recordBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
+    assertProduceValuesShrinkableWithoutContext(recordBuilder, { extraParameters });
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(recordBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink without any context', () => {
+  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(recordBuilder, { extraParameters });
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(recordBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(recordBuilder, { extraParameters });
   });
 });

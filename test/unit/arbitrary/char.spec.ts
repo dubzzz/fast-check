@@ -6,13 +6,11 @@ import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpe
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 function beforeEachHook() {
@@ -59,32 +57,20 @@ describe('char (integration)', () => {
 
   const charBuilder = () => convertToNext(char());
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(charBuilder);
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(charBuilder);
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(charBuilder, isCorrect);
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(charBuilder, isCorrect);
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(charBuilder);
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(charBuilder);
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(charBuilder);
-  });
-
-  it('should be able to shrink without any context', () => {
+  it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(charBuilder);
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(charBuilder, isCorrect);
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(charBuilder);
   });
 
   it('should preserve strictly smaller ordering in shrink', () => {

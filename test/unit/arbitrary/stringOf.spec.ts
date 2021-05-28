@@ -7,9 +7,8 @@ import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
@@ -33,25 +32,17 @@ describe('stringOf (integration)', () => {
   const stringOfBuilder = (extra: Extra) =>
     convertToNext(stringOf(convertFromNext(new PatternsArbitrary(extra.patterns)), extra));
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(stringOfBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(stringOfBuilder, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(stringOfBuilder, { extraParameters });
-  });
-
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(stringOfBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(stringOfBuilder, { extraParameters });
   });
 
   // assertShrinkProducesSameValueWithoutInitialContext is not fully supported by stringOf
   // Indeed depending how much the source strings overlaps there are possibly many possible ways to build a given string
   // so also many possible ways to shrink it.
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(stringOfBuilder, { extraParameters });
-  });
 
   it.each`
     rawValue         | patterns
