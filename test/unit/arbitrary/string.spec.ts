@@ -4,12 +4,10 @@ import { string } from '../../../src/arbitrary/string';
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
+  assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesCorrectValues,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
@@ -37,32 +35,20 @@ describe('string (integration)', () => {
 
   const stringBuilder = (extra: Extra) => convertToNext(string(extra));
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(stringBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(stringBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(stringBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(stringBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(stringBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(stringBuilder, { extraParameters });
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(stringBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink without any context', () => {
+  it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(stringBuilder, { extraParameters });
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(stringBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(stringBuilder, { extraParameters });
   });
 
   it.each`

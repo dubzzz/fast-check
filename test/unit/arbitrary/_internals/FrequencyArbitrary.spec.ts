@@ -4,12 +4,10 @@ import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue'
 import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
+  assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 import { Stream } from '../../../../src/stream/Stream';
@@ -758,31 +756,19 @@ describe('FrequencyArbitrary (integration)', () => {
       'test'
     );
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(frequencyBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(frequencyBuilder, { extraParameters });
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(frequencyBuilder, { extraParameters });
-  });
-
-  it('should shrink towards strictly smaller values (underlyings do)', () => {
+  it('should shrink towards strictly smaller values (if underlyings do)', () => {
     assertShrinkProducesStrictlySmallerValue(frequencyBuilder, isStrictlySmaller, { extraParameters });
   });
 });

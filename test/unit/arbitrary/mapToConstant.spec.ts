@@ -3,12 +3,10 @@ import { mapToConstant } from '../../../src/arbitrary/mapToConstant';
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
@@ -74,32 +72,20 @@ describe('mapToConstant (integration)', () => {
     return convertToNext(mapToConstant(...entries));
   };
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(mapToConstantBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(mapToConstantBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(mapToConstantBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(mapToConstantBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(mapToConstantBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(mapToConstantBuilder, { extraParameters });
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(mapToConstantBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink without any context', () => {
+  it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(mapToConstantBuilder, { extraParameters });
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(mapToConstantBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(mapToConstantBuilder, { extraParameters });
   });
 
   it('should be able to shrink c given hexa-like entries', () => {
@@ -110,13 +96,14 @@ describe('mapToConstant (integration)', () => {
         { num: 6, build: (index) => String.fromCodePoint(index + 97) } // a-f
       )
     );
-    const value = new NextValue('c', undefined);
+    const rawValue = 'c';
+    const value = new NextValue(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value)).join('\n');
 
     // Assert
-    expect(arb.canShrinkWithoutContext('c')).toBe(true);
+    expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);
     expect(renderedTree).toMatchSnapshot();
   });
 });

@@ -5,13 +5,11 @@ import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
 import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
@@ -270,35 +268,23 @@ describe('TupleArbitrary (integration)', () => {
   const tupleBuilder = () =>
     new TupleArbitrary([new FakeIntegerArbitrary(), new FakeIntegerArbitrary(), new FakeIntegerArbitrary()]);
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(tupleBuilder);
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(tupleBuilder);
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(tupleBuilder, isCorrect);
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(tupleBuilder, isCorrect);
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(tupleBuilder);
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(tupleBuilder);
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(tupleBuilder);
-  });
-
-  it('should be able to shrink without any context if underlyings do', () => {
+  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(tupleBuilder);
   });
 
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(tupleBuilder, isCorrect);
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(tupleBuilder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink (underlyings do)', () => {
+  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
     assertShrinkProducesStrictlySmallerValue(tupleBuilder, isStrictlySmaller);
   });
 

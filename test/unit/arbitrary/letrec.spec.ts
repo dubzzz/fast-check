@@ -9,10 +9,9 @@ import { FakeIntegerArbitrary, fakeNextArbitrary } from '../check/arbitrary/gene
 import { fakeRandom } from '../check/arbitrary/generic/RandomHelpers';
 import {
   assertGenerateEquivalentTo,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 // Temporary rewrapping around letrec
@@ -359,23 +358,15 @@ describe('letrec (integration)', () => {
     });
   });
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(letrecBuilder);
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(letrecBuilder);
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(letrecBuilder);
+  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
+    assertProduceValuesShrinkableWithoutContext(letrecBuilder);
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(letrecBuilder);
-  });
-
-  it('should be able to shrink without any context if underlyings do', () => {
+  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(letrecBuilder);
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(letrecBuilder);
   });
 });

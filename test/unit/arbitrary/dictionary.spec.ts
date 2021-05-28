@@ -7,9 +7,9 @@ import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
+  assertProduceCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 describe('dictionary (integration)', () => {
@@ -40,16 +40,16 @@ describe('dictionary (integration)', () => {
     return convertToNext(dictionary(keyArb, valueArb));
   };
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(dictionaryBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(dictionaryBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(dictionaryBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(dictionaryBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(dictionaryBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
+    assertProduceValuesShrinkableWithoutContext(dictionaryBuilder, { extraParameters });
   });
 });
 

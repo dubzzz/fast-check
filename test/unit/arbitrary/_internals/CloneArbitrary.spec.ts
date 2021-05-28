@@ -6,13 +6,11 @@ import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
 import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
@@ -161,35 +159,24 @@ describe('CloneArbitrary (integration)', () => {
 
   const cloneBuilder = (extra: Extra) => new CloneArbitrary(new FakeIntegerArbitrary(), extra);
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(cloneBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(cloneBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(cloneBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(cloneBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate (only when equal regarding Object.is)', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(cloneBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    // Only when equal regarding Object.is
+    assertProduceValuesShrinkableWithoutContext(cloneBuilder, { extraParameters });
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(cloneBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink without any context if underlyings do', () => {
+  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(cloneBuilder, { extraParameters });
   });
 
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(cloneBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should recognize values that would have been generated using it during shrink (only when equal regarding Object.is)', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(cloneBuilder, { extraParameters });
-  });
-
-  it('should preserve strictly smaller ordering in shrink (underlyings do)', () => {
+  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
     assertShrinkProducesStrictlySmallerValue(cloneBuilder, isStrictlySmaller, { extraParameters });
   });
 

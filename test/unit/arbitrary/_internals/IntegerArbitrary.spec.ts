@@ -3,13 +3,11 @@ import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerAr
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
 import {
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceSameValueGivenSameSeed,
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
 
@@ -233,32 +231,20 @@ describe('IntegerArbitrary (integration)', () => {
 
   const integerBuilder = (extra: Extra) => new IntegerArbitrary(extra.min, extra.max);
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(integerBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(integerBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(integerBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(integerBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(integerBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(integerBuilder, { extraParameters });
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(integerBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink without any context', () => {
+  it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(integerBuilder, { extraParameters });
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(integerBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(integerBuilder, { extraParameters });
   });
 
   it('should shrink towards strictly smaller values', () => {

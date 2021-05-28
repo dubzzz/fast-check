@@ -9,36 +9,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 // > The following assertions are supposed to be fulfilled by any of the arbitraries
 // > provided by fast-check.
 
-export function assertGenerateProducesSameValueGivenSameSeed<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
-  options: {
-    isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
-    extraParameters?: fc.Arbitrary<U>;
-    assertParameters?: fc.Parameters<unknown>;
-  } = {}
-): void {
-  const {
-    isEqual,
-    extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
-    assertParameters,
-  } = options;
-  fc.assert(
-    fc.property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
-      // Arrange
-      const arb = arbitraryBuilder(extraParameters);
-
-      // Act
-      const g1 = arb.generate(randomFromSeed(seed), biasFactor);
-      const g2 = arb.generate(randomFromSeed(seed), biasFactor);
-
-      // Assert
-      assertEquality(isEqual, g1.value, g2.value, extraParameters);
-    }),
-    assertParameters
-  );
-}
-
-export function assertShrinkProducesSameValueGivenSameSeed<T, U = never>(
+export function assertProduceSameValueGivenSameSeed<T, U = never>(
   arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
   options: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
@@ -89,32 +60,7 @@ export function assertShrinkProducesSameValueGivenSameSeed<T, U = never>(
 // > The following requirements are optional as they do not break the design of fast-check when they are not totally ensured
 // > But some of them are really recommended to build valid arbitraries that can be used.
 
-export function assertGenerateProducesCorrectValues<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
-  isCorrect: (v: T, extraParameters: U, arb: NextArbitrary<T>) => void | boolean,
-  options: {
-    extraParameters?: fc.Arbitrary<U>;
-    assertParameters?: fc.Parameters<unknown>;
-  } = {}
-): void {
-  const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
-    options;
-  fc.assert(
-    fc.property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
-      // Arrange
-      const arb = arbitraryBuilder(extraParameters);
-
-      // Act
-      const g = arb.generate(randomFromSeed(seed), biasFactor);
-
-      // Assert
-      assertCorrectness(isCorrect, g.value, extraParameters, arb);
-    }),
-    assertParameters
-  );
-}
-
-export function assertShrinkProducesCorrectValues<T, U = never>(
+export function assertProduceCorrectValues<T, U = never>(
   arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
   isCorrect: (v: T, extraParameters: U, arb: NextArbitrary<T>) => void | boolean,
   options: {
@@ -200,27 +146,17 @@ export function assertShrinkProducesSameValueWithoutInitialContext<T, U = never>
     assertParameters?: fc.Parameters<unknown>;
   } = {}
 ): void {
-  return assertShrinkProducesSameValueGivenSameSeed(arbitraryBuilder, { ...options, noInitialContext: true });
+  return assertProduceSameValueGivenSameSeed(arbitraryBuilder, { ...options, noInitialContext: true });
 }
 
-export function assertGenerateProducesValuesFlaggedAsCanGenerate<T, U = never>(
+export function assertProduceValuesShrinkableWithoutContext<T, U = never>(
   arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {}
 ): void {
-  return assertGenerateProducesCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canShrinkWithoutContext(v), options);
-}
-
-export function assertShrinkProducesValuesFlaggedAsCanGenerate<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
-  options: {
-    extraParameters?: fc.Arbitrary<U>;
-    assertParameters?: fc.Parameters<unknown>;
-  } = {}
-): void {
-  return assertShrinkProducesCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canShrinkWithoutContext(v), options);
+  return assertProduceCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canShrinkWithoutContext(v), options);
 }
 
 export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
@@ -255,7 +191,7 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
       previousValue.value = v;
     }
   }
-  return assertShrinkProducesCorrectValues(arbitraryBuilderInternal, isStrictlySmallerInternal, options);
+  return assertProduceCorrectValues(arbitraryBuilderInternal, isStrictlySmallerInternal, options);
 }
 
 // Various helpers

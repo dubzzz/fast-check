@@ -3,11 +3,9 @@ import { base64String } from '../../../src/arbitrary/base64String';
 
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
-  assertShrinkProducesCorrectValues,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceValuesShrinkableWithoutContext,
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 import * as ArrayMock from '../../../src/arbitrary/array';
@@ -133,32 +131,20 @@ describe('base64String (integration)', () => {
 
   const base64StringBuilder = (extra: Extra) => convertToNext(base64String(extra));
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(base64StringBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(base64StringBuilder, { extraParameters });
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(base64StringBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(base64StringBuilder, isCorrect, { extraParameters });
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(base64StringBuilder, { extraParameters });
-  });
-
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(base64StringBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(base64StringBuilder, { extraParameters });
   });
 
   // assertShrinkProducesSameValueWithoutInitialContext is not applicable for base64String has some values will not shrink exactly the same way.
   // For instance: 'abcde' will be mapped to 'abcd', with default shrink it will try to shrink from 'abcde'. With context-less one it will start from 'abcd'.
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(base64StringBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(base64StringBuilder, { extraParameters });
-  });
 
   it.each`
     rawValue

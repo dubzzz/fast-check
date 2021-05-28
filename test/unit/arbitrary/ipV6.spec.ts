@@ -3,12 +3,10 @@ import { ipV6 } from '../../../src/arbitrary/ipV6';
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
-  assertGenerateProducesSameValueGivenSameSeed,
-  assertGenerateProducesCorrectValues,
-  assertGenerateProducesValuesFlaggedAsCanGenerate,
+  assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesCorrectValues,
-  assertShrinkProducesValuesFlaggedAsCanGenerate,
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
@@ -56,32 +54,20 @@ describe('ipV6 (integration)', () => {
 
   const ipV6Builder = () => convertToNext(ipV6());
 
-  it('should generate the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(ipV6Builder);
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(ipV6Builder);
   });
 
-  it('should only generate correct values', () => {
-    assertGenerateProducesCorrectValues(ipV6Builder, isCorrect);
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(ipV6Builder, isCorrect);
   });
 
-  it('should recognize values that would have been generated using it during generate', () => {
-    assertGenerateProducesValuesFlaggedAsCanGenerate(ipV6Builder);
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(ipV6Builder);
   });
 
-  it('should shrink towards the same values given the same seed', () => {
-    assertGenerateProducesSameValueGivenSameSeed(ipV6Builder);
-  });
-
-  it('should be able to shrink without any context', () => {
+  it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(ipV6Builder);
-  });
-
-  it('should only shrink towards correct values', () => {
-    assertShrinkProducesCorrectValues(ipV6Builder, isCorrect);
-  });
-
-  it('should recognize values that would have been generated using it during shrink', () => {
-    assertShrinkProducesValuesFlaggedAsCanGenerate(ipV6Builder);
   });
 
   it.each`
