@@ -269,7 +269,7 @@ describe('IntegerArbitrary (integration)', () => {
 
             // Act
             const source = new NextValue(mid, undefined);
-            const sourceNegate = new NextValue(-mid, undefined);
+            const sourceNegate = new NextValue(mid !== 0 ? -mid : 0, undefined); // !==0 to avoid -0
             const tree = buildNextShrinkTree(arb, source);
             const treeNegate = buildNextShrinkTree(arbNegate, sourceNegate);
             const flat: number[] = [];
