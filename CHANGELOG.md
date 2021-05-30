@@ -1,3 +1,128 @@
+# 2.15.0
+
+_New logo, new way to define fully custom arbitraries using `NextArbitrary`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.15.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.14.0...v2.15.0)]
+
+## Features
+
+- ([PR#1678](https://github.com/dubzzz/fast-check/pull/1678)) Introduce NextArbitrary, new way to define arbitraries
+- ([PR#1690](https://github.com/dubzzz/fast-check/pull/1690)) Document and expose clone related methods
+- ([PR#1730](https://github.com/dubzzz/fast-check/pull/1730)) Ensure bigint are always instanciated with valid ranges
+- ([PR#1750](https://github.com/dubzzz/fast-check/pull/1750)) Add support for cloneable instances in fc.constant and fc.constantFrom
+- ([PR#1756](https://github.com/dubzzz/fast-check/pull/1756)) Add support for bias in clone (and dedup)
+- ([PR#1758](https://github.com/dubzzz/fast-check/pull/1758)) Add support for bias in mixedCase
+- ([PR#1794](https://github.com/dubzzz/fast-check/pull/1794)) Support canGenerate and shrink of user-defined values on map
+- ([PR#1799](https://github.com/dubzzz/fast-check/pull/1799)) Implement unmappers for char arbitraries
+- ([PR#1632](https://github.com/dubzzz/fast-check/pull/1632)) New logo supports dark mode and fits better within README
+- ([PR#1812](https://github.com/dubzzz/fast-check/pull/1812)) Add unmappers for built-in arbitraries on strings
+- ([PR#1836](https://github.com/dubzzz/fast-check/pull/1836)) Add built-in unmapper support onto mapToConstant
+- ([PR#1838](https://github.com/dubzzz/fast-check/pull/1838)) Add built-in unmapper support onto lorem
+- ([PR#1857](https://github.com/dubzzz/fast-check/pull/1857)) Add built-in unmapper support onto dictionary
+- ([PR#1866](https://github.com/dubzzz/fast-check/pull/1866)) Add built-in unmapper support onto date
+- ([PR#1888](https://github.com/dubzzz/fast-check/pull/1888)) Add built-in unmapper support onto ip
+- ([PR#1912](https://github.com/dubzzz/fast-check/pull/1912)) Add built-in unmapper support onto record
+
+## Fixes
+
+- ([PR#1693](https://github.com/dubzzz/fast-check/pull/1693)) Bug: Apply cloneMethod on map/filter instances of Shrinkable
+- ([PR#1712](https://github.com/dubzzz/fast-check/pull/1712)) Bug: Shrinker on integers was possibly generating out-of-range values
+- ([PR#1713](https://github.com/dubzzz/fast-check/pull/1713)) Bug: canGenerate method on integer should reject -0
+- ([PR#1736](https://github.com/dubzzz/fast-check/pull/1736)) Bug: canGenerate of FrequencyArbitrary was not using depth properly
+- ([PR#1737](https://github.com/dubzzz/fast-check/pull/1737)) Bug: freq of 0 not considered the same way in constraints-based and simple arg
+- ([PR#1755](https://github.com/dubzzz/fast-check/pull/1755)) Bug: infiniteStream was not properly cloning cloneable instances
+- ([PR#1759](https://github.com/dubzzz/fast-check/pull/1759)) Bug: Not properly biased mixedCase
+- ([PR#1776](https://github.com/dubzzz/fast-check/pull/1776)) Bug: ConstantArbitrary must not shrink towards the first if it is already the first
+- ([PR#1780](https://github.com/dubzzz/fast-check/pull/1780)) Bug: clone must use Object.is and check values on canGenerate
+- ([PR#1783](https://github.com/dubzzz/fast-check/pull/1783)) Bug: StreamArbitrary should print any value that have been pulled
+- ([PR#1784](https://github.com/dubzzz/fast-check/pull/1784)) Bug: Stream.take pull one unneeded value from the source
+- ([PR#1787](https://github.com/dubzzz/fast-check/pull/1787)) Bug: SchedulerArbitrary is wrongly cloning the passed Random
+- ([PR#1822](https://github.com/dubzzz/fast-check/pull/1822)) Bug: .map should check canGenerate on source before calling shrink
+- ([PR#1821](https://github.com/dubzzz/fast-check/pull/1821)) Bug: mixedCase should only call context-based shrinkers for the string
+- ([PR#1837](https://github.com/dubzzz/fast-check/pull/1837)) Bug: maxCount of 0 was overriden to 5 in lorem instead of being rejected
+- ([PR#1856](https://github.com/dubzzz/fast-check/pull/1856)) Bug: Build reverse-mapping built by mapToConstant for node 10
+- ([PR#1910](https://github.com/dubzzz/fast-check/pull/1910)) Bug: Stricter unmapper for dictionary to prevent unmapping unrelated values
+- ([PR#1914](https://github.com/dubzzz/fast-check/pull/1914)) Bug: option can now properly shrink without any context (incl. to nil)
+- ([PR#1647](https://github.com/dubzzz/fast-check/pull/1647)) CI: Stricter conditions to trigger workflow on push
+- ([PR#1663](https://github.com/dubzzz/fast-check/pull/1663)) CI: Stricter conditions to trigger workflow on push
+- ([PR#1830](https://github.com/dubzzz/fast-check/pull/1830)) CI: Build against Node 16.x
+- ([PR#1760](https://github.com/dubzzz/fast-check/pull/1760)) Clean: Remove duplicated tests for letrec
+- ([PR#1892](https://github.com/dubzzz/fast-check/pull/1892)) Clean: Remove unneeded map in record for required keys
+- ([PR#1917](https://github.com/dubzzz/fast-check/pull/1917)) Clean: Remove unneeded checks in map for context-less shrink
+- ([PR#1664](https://github.com/dubzzz/fast-check/pull/1664)) Doc: Only mark relevant titles as H* in the Readme
+- ([PR#1665](https://github.com/dubzzz/fast-check/pull/1665)) Doc: Move back to H2 for titles in the Readme
+- ([PR#1697](https://github.com/dubzzz/fast-check/pull/1697)) Doc: Fic grammar
+- ([PR#1883](https://github.com/dubzzz/fast-check/pull/1883)) Doc: Rework PR template
+- ([PR#1907](https://github.com/dubzzz/fast-check/pull/1907)) Doc: Fix typos in naming for describe on nat
+- ([PR#1906](https://github.com/dubzzz/fast-check/pull/1906)) Doc: Update mug.svg to be aligned with logo.svg
+- ([PR#1911](https://github.com/dubzzz/fast-check/pull/1911)) Doc: Fit svg to mug.svg
+- ([PR#1919](https://github.com/dubzzz/fast-check/pull/1919)) Doc: Fix typo in PR template
+- ([PR#1915](https://github.com/dubzzz/fast-check/pull/1915)) Doc: Document how to extend fast-check with NextArbitrary
+- ([PR#1920](https://github.com/dubzzz/fast-check/pull/1920)) Doc: Update outdated links in AdvancedArbitraries.md
+- ([PR#1709](https://github.com/dubzzz/fast-check/pull/1709)) Move: Move integer arbitraries into /arbitrary
+- ([PR#1715](https://github.com/dubzzz/fast-check/pull/1715)) Move: Move bigint arbitraries into /arbitrary
+- ([PR#1716](https://github.com/dubzzz/fast-check/pull/1716)) Move: Move array arbitraries into /arbitrary
+- ([PR#1727](https://github.com/dubzzz/fast-check/pull/1727)) Move: Move frequency arbitraries into /arbitrary
+- ([PR#1739](https://github.com/dubzzz/fast-check/pull/1739)) Move: Move tuple arbitraries into /arbitrary
+- ([PR#1743](https://github.com/dubzzz/fast-check/pull/1743)) Move: Move letrec arbitrary into /arbitrary
+- ([PR#1744](https://github.com/dubzzz/fast-check/pull/1744)) Move: Move memo arbitrary into /arbitrary
+- ([PR#1748](https://github.com/dubzzz/fast-check/pull/1748)) Move: Move constant arbitraries into /arbitrary
+- ([PR#1763](https://github.com/dubzzz/fast-check/pull/1763)) Move: Move clone arbitraries into /arbitrary
+- ([PR#1761](https://github.com/dubzzz/fast-check/pull/1761)) Move: Move stream arbitraries into /arbitrary
+- ([PR#1779](https://github.com/dubzzz/fast-check/pull/1779)) Move: Move mixedCase arbitrary into /arbitrary
+- ([PR#1786](https://github.com/dubzzz/fast-check/pull/1786)) Move: Move scheduler arbitrary into /arbitrary
+- ([PR#1798](https://github.com/dubzzz/fast-check/pull/1798)) Move: Move char arbitraries into /arbitrary
+- ([PR#1801](https://github.com/dubzzz/fast-check/pull/1801)) Move: Move boolean arbitrary into /arbitrary
+- ([PR#1802](https://github.com/dubzzz/fast-check/pull/1802)) Move: Move string arbitraries into /arbitrary
+- ([PR#1831](https://github.com/dubzzz/fast-check/pull/1831)) Move: Move date arbitrary into /arbitrary
+- ([PR#1832](https://github.com/dubzzz/fast-check/pull/1832)) Move: Extract internal mapper into its own file
+- ([PR#1834](https://github.com/dubzzz/fast-check/pull/1834)) Move: Move mapToConstant arbitrary into /arbitrary
+- ([PR#1835](https://github.com/dubzzz/fast-check/pull/1835)) Move: Move lorem arbitrary into /arbitrary
+- ([PR#1839](https://github.com/dubzzz/fast-check/pull/1839)) Move: Move ip arbitraries into /arbitrary
+- ([PR#1840](https://github.com/dubzzz/fast-check/pull/1840)) Move: Move dictionary arbitraries into /arbitrary
+- ([PR#1887](https://github.com/dubzzz/fast-check/pull/1887)) Move: Move ip arbitraries into /arbitrary
+- ([PR#1889](https://github.com/dubzzz/fast-check/pull/1889)) Move: Move typed-arrays arbitraries into /arbitrary
+- ([PR#1890](https://github.com/dubzzz/fast-check/pull/1890)) Move: Move record arbitrary into /arbitrary
+- ([PR#1691](https://github.com/dubzzz/fast-check/pull/1691)) Refactor: Migrate tuple to NextArbitrary
+- ([PR#1701](https://github.com/dubzzz/fast-check/pull/1701)) Refactor: Migrate memo to NextArbitrary
+- ([PR#1702](https://github.com/dubzzz/fast-check/pull/1702)) Refactor: Migrate letrec to NextArbitrary
+- ([PR#1704](https://github.com/dubzzz/fast-check/pull/1704)) Refactor: Simplify letrec initial construction
+- ([PR#1705](https://github.com/dubzzz/fast-check/pull/1705)) Refactor: Migrate integer/bigint/double to NextArbitrary
+- ([PR#1706](https://github.com/dubzzz/fast-check/pull/1706)) Refactor: Migrate array/set to NextArbitrary
+- ([PR#1707](https://github.com/dubzzz/fast-check/pull/1707)) Refactor: Migrate frequency to NextArbitrary
+- ([PR#1714](https://github.com/dubzzz/fast-check/pull/1714)) Refactor: Remove unneeded if-branch in shrinker for integer
+- ([PR#1728](https://github.com/dubzzz/fast-check/pull/1728)) Refactor: Remove unneeded if-branch in shrinker for bigint
+- ([PR#1740](https://github.com/dubzzz/fast-check/pull/1740)) Refactor: Migrate missing snippets to our new APIs
+- ([PR#1742](https://github.com/dubzzz/fast-check/pull/1742)) Refactor: Simplify internal implementation of memo
+- ([PR#1746](https://github.com/dubzzz/fast-check/pull/1746)) Refactor: Migrate constant to NextArbitrary
+- ([PR#1747](https://github.com/dubzzz/fast-check/pull/1747)) Refactor: Migrate clone to NextArbitrary
+- ([PR#1757](https://github.com/dubzzz/fast-check/pull/1757)) Refactor: Migrate infiniteStream to NextArbitrary
+- ([PR#1762](https://github.com/dubzzz/fast-check/pull/1762)) Refactor: Migrate scheduler to NextArbitrary
+- ([PR#1764](https://github.com/dubzzz/fast-check/pull/1764)) Refactor: Migrate mixedCase to NextArbitrary
+- ([PR#1891](https://github.com/dubzzz/fast-check/pull/1891)) Refactor: Always use shared-partial record implementation for record
+- ([PR#1918](https://github.com/dubzzz/fast-check/pull/1918)) Refactor: Enforce explicit context-passing for NextArbitrary and related
+- ([PR#1916](https://github.com/dubzzz/fast-check/pull/1916)) Rename: Rename canGenerate into canShrinkWithoutContext before 1st release
+- ([PR#1668](https://github.com/dubzzz/fast-check/pull/1668)) Test: Add non-regression for filter/map/chain
+- ([PR#1669](https://github.com/dubzzz/fast-check/pull/1669)) Test: Add non-regression for context
+- ([PR#1694](https://github.com/dubzzz/fast-check/pull/1694)) Test: Add more non-regression tests on recursive structures
+- ([PR#1695](https://github.com/dubzzz/fast-check/pull/1695)) Test: Rework testFunc for non-regression tests
+- ([PR#1700](https://github.com/dubzzz/fast-check/pull/1700)) Test: Update snapshots for letrec due to migration of tuple
+- ([PR#1711](https://github.com/dubzzz/fast-check/pull/1711)) Test: Rewrite tests dealing with integer
+- ([PR#1729](https://github.com/dubzzz/fast-check/pull/1729)) Test: Rewrite tests dealing with bigInt
+- ([PR#1735](https://github.com/dubzzz/fast-check/pull/1735)) Test: Rewrite tests dealing with frequency
+- ([PR#1741](https://github.com/dubzzz/fast-check/pull/1741)) Test: Rewrite tests dealing with tuple
+- ([PR#1745](https://github.com/dubzzz/fast-check/pull/1745)) Test: Rewrite tests dealing with letrec
+- ([PR#1751](https://github.com/dubzzz/fast-check/pull/1751)) Test: Rewrite tests dealing with constant
+- ([PR#1775](https://github.com/dubzzz/fast-check/pull/1775)) Test: FIX Assumptions in tests related to ConstantArbitrary
+- ([PR#1781](https://github.com/dubzzz/fast-check/pull/1781)) Test: Rewrite tests dealing with clone
+- ([PR#1782](https://github.com/dubzzz/fast-check/pull/1782)) Test: Rewrite tests dealing with infiniteStream
+- ([PR#1788](https://github.com/dubzzz/fast-check/pull/1788)) Test: Rewrite tests dealing with scheduler
+- ([PR#1881](https://github.com/dubzzz/fast-check/pull/1881)) Test: Adapt inputs for wrongly defined property on date
+- ([PR#1886](https://github.com/dubzzz/fast-check/pull/1886)) Test: Fix wrongly written isCorrect in tests on dictionary
+- ([PR#1923](https://github.com/dubzzz/fast-check/pull/1923)) Test: Integer spec was asking if integer can produce -0
+- ([PR#1922](https://github.com/dubzzz/fast-check/pull/1922)) Test: Reduce duplication of assertions on NextArbitrary
+
+---
+
 # 2.14.0
 
 _Easier recursive strcutures and ability discard already seen runs_
