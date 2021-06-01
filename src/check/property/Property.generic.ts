@@ -4,6 +4,7 @@ import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
+import { ConverterFromNext } from '../arbitrary/definition/ConverterFromNext';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -93,6 +94,9 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   }
   isAsync = () => false as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
+    if (ConverterFromNext.isConverterFromNext(this.arb)) {
+      return this.arb.toShrinkable(this.arb.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined));
+    }
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
   run(v: Ts): PreconditionFailure | string | null {

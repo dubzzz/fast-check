@@ -30,7 +30,7 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
     if (ConverterToNext.isConverterToNext(arb)) return arb.arb;
     else return new ConverterFromNext(arb);
   }
-  private toShrinkable: (v: NextValue<T>) => Shrinkable<T, T>;
+  public toShrinkable: (v: NextValue<T>) => Shrinkable<T, T>;
 
   constructor(
     readonly arb: NextArbitrary<T>,
