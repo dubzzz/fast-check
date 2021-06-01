@@ -10,6 +10,17 @@ import { Shrinkable } from './Shrinkable';
 const identifier = '__ConverterFromNext__';
 
 /** @internal */
+function fromNextValueToShrinkableFor<T>(arb: NextArbitrary<T>) {
+  return function fromNextValueToShrinkable(v: NextValue<T>): Shrinkable<T, T> {
+    return new Shrinkable(
+      v.value_,
+      () => arb.shrink(v.value_, v.context).map(fromNextValueToShrinkable),
+      () => v.value
+    );
+  };
+}
+
+/** @internal */
 export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
   [identifier] = true;
   static isConverterFromNext<T>(arb: Arbitrary<T>): arb is ConverterFromNext<T> {
@@ -19,6 +30,7 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
     if (ConverterToNext.isConverterToNext(arb)) return arb.arb;
     else return new ConverterFromNext(arb);
   }
+  private toShrinkable: (v: NextValue<T>) => Shrinkable<T, T>;
 
   constructor(
     readonly arb: NextArbitrary<T>,
@@ -26,18 +38,12 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
     readonly biasFactor: number | undefined = undefined
   ) {
     super();
+    this.toShrinkable = fromNextValueToShrinkableFor(arb);
   }
 
   generate(mrng: Random): Shrinkable<T, T> {
     const g = this.arb.generate(mrng, this.biasFactor);
     return this.toShrinkable(g);
-  }
-  private toShrinkable(v: NextValue<T>): Shrinkable<T, T> {
-    return new Shrinkable(
-      v.value_,
-      () => this.arb.shrink(v.value_, v.context).map((nv) => this.toShrinkable(nv)),
-      () => v.value
-    );
   }
 
   contextualShrink(value: T, context?: unknown): Stream<[T, unknown]> {

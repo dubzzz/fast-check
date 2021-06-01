@@ -9,6 +9,11 @@ import { Shrinkable } from './Shrinkable';
 const identifier = '__ConverterToNext__';
 
 /** @internal */
+function fromShrinkableToNextValue<T>(g: Shrinkable<T>): NextValue<T> {
+  return new NextValue(g.value_, g, () => g.value);
+}
+
+/** @internal */
 export class ConverterToNext<T> extends NextArbitrary<T> {
   [identifier] = true;
   static isConverterToNext<T>(arb: NextArbitrary<T>): arb is ConverterToNext<T> {
@@ -25,7 +30,7 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
 
   generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
     const g = biasFactor !== undefined ? this.arb.withBias(biasFactor).generate(mrng) : this.arb.generate(mrng);
-    return new NextValue(g.value_, g, () => g.value);
+    return fromShrinkableToNextValue(g);
   }
 
   canShrinkWithoutContext(_value: unknown): _value is T {
@@ -34,7 +39,7 @@ export class ConverterToNext<T> extends NextArbitrary<T> {
 
   shrink(_value: T, context?: unknown): Stream<NextValue<T>> {
     if (this.isSafeContext(context)) {
-      return context.shrink().map((s) => new NextValue(s.value_, s, () => s.value));
+      return context.shrink().map(fromShrinkableToNextValue);
     }
     return Stream.nil();
   }
