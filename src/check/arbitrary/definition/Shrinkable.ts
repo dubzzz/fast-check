@@ -50,21 +50,22 @@ export class Shrinkable<T, TShrink extends T = T> {
   ) {
     this.value_ = value_;
     this.shrink = shrink;
-    this.hasToBeCloned = hasCloneMethod(value_);
+    this.hasToBeCloned = customGetValue !== undefined || hasCloneMethod(value_);
     this.readOnce = false;
-    Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
+    if (this.hasToBeCloned) {
+      Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
+    } else {
+      this.value = value_;
+    }
   }
 
   /** @internal */
   private getValue() {
-    if (this.hasToBeCloned) {
-      if (!this.readOnce) {
-        this.readOnce = true;
-        return this.value_;
-      }
-      return (this.value_ as unknown as WithCloneMethod<T>)[cloneMethod]();
+    if (!this.readOnce) {
+      this.readOnce = true;
+      return this.value_;
     }
-    return this.value_;
+    return (this.value_ as unknown as WithCloneMethod<T>)[cloneMethod]();
   }
 
   /** @internal */
