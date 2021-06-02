@@ -31,7 +31,8 @@ class TosserGenerator<Ts> implements IterableIterator<() => Shrinkable<Ts>> {
   next(): IteratorResult<() => Shrinkable<Ts>> {
     ++this.currentIndex;
     if (this.currentIndex < this.examples.length) {
-      return { value: () => new Shrinkable(this.examples[this.currentIndex]), done: false };
+      const exampleIndex = this.currentIndex;
+      return { value: () => new Shrinkable(this.examples[exampleIndex]), done: false };
     }
     this.rng = this.rng.jump ? this.rng.jump() : prand.skipN(this.rng, 42);
     return { value: lazyGenerate(this.generator, this.rng, this.currentIndex - this.examples.length) };
