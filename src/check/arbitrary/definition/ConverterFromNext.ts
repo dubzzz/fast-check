@@ -12,11 +12,12 @@ const identifier = '__ConverterFromNext__';
 /** @internal */
 function fromNextValueToShrinkableFor<T>(arb: NextArbitrary<T>) {
   return function fromNextValueToShrinkable(v: NextValue<T>): Shrinkable<T, T> {
-    return new Shrinkable(
-      v.value_,
-      () => arb.shrink(v.value_, v.context).map(fromNextValueToShrinkable),
-      () => v.value
-    );
+    const value_ = v.value_;
+    const shrinker = () => arb.shrink(value_, v.context).map(fromNextValueToShrinkable);
+    if (!v.hasToBeCloned) {
+      return new Shrinkable(value_, shrinker);
+    }
+    return new Shrinkable(value_, shrinker, () => v.value);
   };
 }
 
