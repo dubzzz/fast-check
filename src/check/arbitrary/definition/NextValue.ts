@@ -46,9 +46,13 @@ export class NextValue<T> {
   constructor(value_: T, context: unknown, customGetValue: (() => T) | undefined = undefined) {
     this.value_ = value_;
     this.context = context;
-    this.hasToBeCloned = hasCloneMethod(value_);
+    this.hasToBeCloned = customGetValue !== undefined || hasCloneMethod(value_);
     this.readOnce = false;
-    Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
+    if (this.hasToBeCloned) {
+      Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
+    } else {
+      this.value = value_;
+    }
   }
 
   /** @internal */
