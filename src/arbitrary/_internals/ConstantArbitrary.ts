@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
-import { cloneIfNeeded } from '../../check/symbols';
+import { cloneMethod, hasCloneMethod } from '../../check/symbols';
 
 /** @internal */
 export class ConstantArbitrary<T> extends NextArbitrary<T> {
@@ -10,11 +10,12 @@ export class ConstantArbitrary<T> extends NextArbitrary<T> {
     super();
   }
   generate(mrng: Random, _biasFactor: number | undefined): NextValue<T> {
-    if (this.values.length === 1) {
-      return new NextValue(this.values[0], 0, () => cloneIfNeeded(this.values[0]));
+    const idx = this.values.length === 1 ? 0 : mrng.nextInt(0, this.values.length - 1);
+    const value = this.values[idx];
+    if (!hasCloneMethod(value)) {
+      return new NextValue(value, idx);
     }
-    const idx = mrng.nextInt(0, this.values.length - 1);
-    return new NextValue(this.values[idx], idx, () => cloneIfNeeded(this.values[idx]));
+    return new NextValue(value, idx, () => value[cloneMethod]());
   }
   canShrinkWithoutContext(value: unknown): value is T {
     for (let idx = 0; idx !== this.values.length; ++idx) {
