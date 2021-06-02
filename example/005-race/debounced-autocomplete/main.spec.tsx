@@ -11,6 +11,11 @@ beforeEach(() => {
   jest.resetAllMocks();
 });
 
+// Copied from https://github.com/testing-library/user-event/issues/586
+function escapeKeyboardInput(value: string): string {
+  return value.replace(/[{[]/g, '$&$&');
+}
+
 describe('DebouncedAutocomplete', () => {
   it('should autocomplete queries (with mocked timers)', async () => {
     await fc.assert(
@@ -32,7 +37,8 @@ describe('DebouncedAutocomplete', () => {
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: async () => await userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1)),
+                builder: async () =>
+                  await userEvent.type(screen.getByRole('textbox'), escapeKeyboardInput(userQuery.substr(idx, 1))),
               }))
             );
             await waitAllWithTimers(s);
@@ -71,7 +77,9 @@ describe('DebouncedAutocomplete', () => {
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
                 builder: async () =>
-                  await userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1), { delay: 0 }),
+                  await userEvent.type(screen.getByRole('textbox'), escapeKeyboardInput(userQuery.substr(idx, 1)), {
+                    delay: 0,
+                  }),
               }))
             );
             await s.waitAll();
