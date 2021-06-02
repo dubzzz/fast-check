@@ -1,3 +1,22 @@
+# 2.16.0
+
+_Performance improvements (+50% in avg compared to 2.14.0, +150% in avg compared to 2.15.0)_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.16.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.15.0...v2.16.0)]
+
+## Features
+
+- ([PR#1943](https://github.com/dubzzz/fast-check/pull/1943)) Try to optimize conversions from/to NextValue
+- ([PR#1944](https://github.com/dubzzz/fast-check/pull/1944)) Call generate on the NextArbitrary from Property
+- ([PR#1945](https://github.com/dubzzz/fast-check/pull/1945)) Faster generate for constant and constantFrom
+- ([PR#1946](https://github.com/dubzzz/fast-check/pull/1946)) Speed-up conversions from/to NextValue
+- ([PR#1948](https://github.com/dubzzz/fast-check/pull/1948)) More performant non-cloneable values in NextValue
+
+## Fixes
+
+- ([PR#1947](https://github.com/dubzzz/fast-check/pull/1947)) Test: Escape strings passed to userEvent.type in examples
+
+--- 
+
 # 2.15.0
 
 _New logo, new way to define fully custom arbitraries using `NextArbitrary`_
