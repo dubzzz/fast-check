@@ -18,8 +18,6 @@ module.exports = async ({ github, context, core, options }) => {
       requireAdmin, // Does it require an admin?
       reaction = '+1', // Reaction to add onto the comment
     } = options;
-    const token = github.token;
-    const octokit = github.getOctokit(token);
 
     const comment = context.payload.comment;
     if (comment === undefined || !('body' in comment)) {
@@ -34,7 +32,7 @@ module.exports = async ({ github, context, core, options }) => {
       .slice(1)
       .map((request) => request.trim());
     const actionFound = requestsFromComment.find((request) => request === action) !== undefined;
-    const adminRequirementsFulfilled = requireAdmin.toLowerCase() === 'true' ? await isAdmin(context, octokit) : true;
+    const adminRequirementsFulfilled = requireAdmin.toLowerCase() === 'true' ? await isAdmin(context, github) : true;
 
     core.info(`requestToBot: ${requestToBot}`);
     core.info(`actionFound: ${actionFound} (request included: ${requestsFromComment.join(', ')})`);
@@ -49,7 +47,7 @@ module.exports = async ({ github, context, core, options }) => {
     core.setOutput('pull_number', context.issue.number);
 
     try {
-      await octokit.reactions.createForIssueComment({
+      await github.reactions.createForIssueComment({
         ...context.repo,
         comment_id: comment.id,
         content: reaction,
