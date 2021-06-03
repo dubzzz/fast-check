@@ -57,7 +57,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^4.1.1"
+    "pure-rand": "5.0.0-experimental.4.1.2.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.9.10",
