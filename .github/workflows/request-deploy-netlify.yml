@@ -19,7 +19,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const script = require('../reaction-to-comment.cjs');
+            const script = require('./actions/reaction-to-comment.cjs');
             const options = { action: 'deploy', reaction: 'rocket', requireAdmin: true };
             await script({ github, context, core, options });
       - name: Checkout Pull Request
