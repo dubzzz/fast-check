@@ -11,6 +11,7 @@
 - [ ] ✅ Add or update tests
 - [ ] 🐛 Fix a bug
 - [ ] 🏷️ Add or update types
+- [ ] ⚡️ Improve performance
 - [ ] _Other(s):_ ...
 <!-- Don't forget to add the gitmoji icon in the name of the PR -->
 <!-- See: https://gitmoji.dev/                                  -->
