@@ -32,7 +32,7 @@ module.exports = async ({ github, context, core, options }) => {
       .slice(1)
       .map((request) => request.trim());
     const actionFound = requestsFromComment.find((request) => request === action) !== undefined;
-    const adminRequirementsFulfilled = requireAdmin.toLowerCase() === 'true' ? await isAdmin(context, github) : true;
+    const adminRequirementsFulfilled = requireAdmin ? await isAdmin(context, github) : true;
 
     core.info(`requestToBot: ${requestToBot}`);
     core.info(`actionFound: ${actionFound} (request included: ${requestsFromComment.join(', ')})`);
