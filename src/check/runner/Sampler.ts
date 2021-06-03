@@ -31,18 +31,13 @@ function streamSample<Ts>(
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
-  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
+  const tossedValues: Stream<Shrinkable<Ts>> = stream(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
   );
   if (qParams.path.length === 0) {
-    return tossedValues.take(qParams.numRuns).map((s) => s().value_);
+    return tossedValues.take(qParams.numRuns).map((s) => s.value_);
   }
-  return stream(
-    pathWalk(
-      qParams.path,
-      tossedValues.map((s) => s())
-    )
-  )
+  return stream(pathWalk(qParams.path, tossedValues))
     .take(qParams.numRuns)
     .map((s) => s.value_);
 }

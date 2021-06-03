@@ -1,4 +1,4 @@
-import { stream } from '../../stream/Stream';
+import { Stream, stream } from '../../stream/Stream';
 import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty } from '../property/IRawProperty';
@@ -48,29 +48,22 @@ async function asyncRunIt<Ts>(
 }
 
 /** @internal */
-function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<Ts>>, path: string) {
+function runnerPathWalker<Ts>(valueProducers: IterableIterator<Shrinkable<Ts>>, path: string): Stream<Shrinkable<Ts>> {
   const pathPoints = path.split(':');
-  const pathStream = stream(valueProducers)
-    .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
-    .map((producer) => producer());
+  const pathStream = stream(valueProducers).drop(pathPoints.length > 0 ? +pathPoints[0] : 0);
   const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
-  return stream(pathWalk(adaptedPath, pathStream)).map((v) => () => v);
+  return stream(pathWalk(adaptedPath, pathStream));
 }
 
 /** @internal */
 function buildInitialValues<Ts>(
-  valueProducers: IterableIterator<() => Shrinkable<Ts>>,
+  valueProducers: IterableIterator<Shrinkable<Ts>>,
   qParams: QualifiedParameters<Ts>
-) {
+): Stream<Shrinkable<Ts>> {
   const rawValues = qParams.path.length === 0 ? stream(valueProducers) : runnerPathWalker(valueProducers, qParams.path);
   if (!qParams.endOnFailure) return rawValues;
   // Disable shrinking capabilities
-  return rawValues.map((shrinkableGen) => {
-    return () => {
-      const s = shrinkableGen();
-      return new Shrinkable(s.value_);
-    };
-  });
+  return rawValues.map((s) => new Shrinkable(s.value_));
 }
 
 /**

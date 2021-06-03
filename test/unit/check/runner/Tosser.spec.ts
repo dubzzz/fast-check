@@ -27,7 +27,7 @@ describe('Tosser', () => {
             ...s
               .drop(start)
               .take(2)
-              .map((f) => f().value),
+              .map((f) => f.value),
           ];
           expect(g1).not.toStrictEqual(g2);
           return true;
@@ -39,11 +39,11 @@ describe('Tosser', () => {
           expect([
             ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
               .take(num)
-              .map((f) => f().value),
+              .map((f) => f.value),
           ]).toStrictEqual([
             ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
               .take(num)
-              .map((f) => f().value),
+              .map((f) => f.value),
           ]);
         })
       ));
@@ -55,9 +55,9 @@ describe('Tosser', () => {
           expect(
             onGoingItems2
               .reverse()
-              .map((f) => f().value)
+              .map((f) => f.value)
               .reverse()
-          ).toStrictEqual(onGoingItems1.map((f) => f().value));
+          ).toStrictEqual(onGoingItems1.map((f) => f.value));
         })
       ));
     it('Should offset toss with the provided examples', () =>
@@ -65,10 +65,10 @@ describe('Tosser', () => {
         fc.property(fc.integer(), fc.nat(20), fc.array(fc.integer()), (seed, num, examples) => {
           const noExamplesProvided = [
             ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num - examples.length),
-          ].map((f) => f().value);
+          ].map((f) => f.value);
           const examplesProvided = [
             ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, examples)).take(num),
-          ].map((f) => f().value);
+          ].map((f) => f.value);
           expect([...examples, ...noExamplesProvided].slice(0, num)).toStrictEqual(examplesProvided);
         })
       ));
