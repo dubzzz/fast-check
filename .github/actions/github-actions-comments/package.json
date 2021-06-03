@@ -1,9 +1,0 @@
-{
-  "name": "github-actions-comments",
-  "main": "index.cjs",
-  "private": true,
-  "dependencies": {
-    "@actions/core": "^1.2.6",
-    "@actions/github": "^4.0.0"
-  }
-}
