@@ -52,14 +52,16 @@ async function run() {
   const packageUrl = `${netlifyUrl}/fast-check.tgz`;
   const octokit = github.getOctokit(token);
   const body =
-    `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${commitHash.split('\n')[0].trim()} with:\n\n` +
+    `Give a try to https://github.com/dubzzz/fast-check/pull/${context.issue.number}/commits/${commitHash
+      .split('\n')[0]
+      .trim()} with:\n\n` +
     '```bash\n' +
     `yarn add ${packageUrl}\n` +
     `npm i ${packageUrl}\n` +
     '```\n\n' +
     `Or have a look to the [generated documentation](${netlifyUrl}).`;
 
-  await octokit.issues.createComment({
+  await octokit.rest.issues.createComment({
     issue_number: context.issue.number,
     owner: context.repo.owner,
     repo: context.repo.repo,
