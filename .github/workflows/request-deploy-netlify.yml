@@ -13,25 +13,23 @@ jobs:
     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '@github-actions') && contains(github.event.comment.body, 'deploy')
     steps:
       - uses: actions/checkout@v2.3.4
-      - name: Using Node v16.x
-        uses: actions/setup-node@v2.1.5
-        with:
-          node-version: '16.x'
-      - name: Install github-actions-comments dependencies
-        run: |
-          cd ./.github/actions/github-actions-comments
-          yarn --frozen-lockfile
       - name: Check comment
         id: check_comment
-        uses: ./.github/actions/github-actions-comments
+        uses: actions/github-script@v4
         with:
-          action: 'deploy'
-          reaction: 'rocket'
-          require_admin: true
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const script = require('./.github/actions/reaction-to-comment.cjs');
+            const options = { action: 'deploy', reaction: 'rocket', requireAdmin: true };
+            await script({ github, context, core, options });
       - name: Checkout Pull Request
         run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
       - name: Install fast-check dependencies
         run: yarn --frozen-lockfile
       - name: Build package
