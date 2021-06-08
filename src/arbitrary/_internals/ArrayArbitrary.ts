@@ -62,11 +62,13 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // has they might have duplicates (on non shrunk it is not the case by construct)
     const items = shrunkOnce ? this.preFilter(itemsRaw) : itemsRaw;
     let cloneable = false;
-    const vs = [];
+    const vs = Array<T>(items.length);
+    const itemsContexts = Array<unknown>(items.length);
     for (let idx = 0; idx !== items.length; ++idx) {
       const s = items[idx];
       cloneable = cloneable || s.hasToBeCloned;
-      vs.push(s.value);
+      vs[idx] = s.value;
+      itemsContexts[idx] = s.context;
     }
     if (cloneable) {
       ArrayArbitrary.makeItCloneable(vs, items);
@@ -77,7 +79,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
         itemsRaw.length === items.length && itemsRawLengthContext !== undefined
           ? itemsRawLengthContext // items and itemsRaw have the same length context is applicable
           : undefined,
-      itemsContexts: items.map((v) => v.context),
+      itemsContexts,
     };
     return new NextValue(vs, context);
   }
