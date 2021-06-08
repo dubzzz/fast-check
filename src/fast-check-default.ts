@@ -157,6 +157,7 @@ import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
 import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
+import { AcceptedRandomGenerator } from './check/runner/configuration/AcceptedRandomGenerator';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -387,6 +388,7 @@ export {
   GlobalAsyncPropertyHookFunction,
   GlobalPropertyHookFunction,
   Parameters,
+  AcceptedRandomGenerator,
   RandomType,
   VerbosityLevel,
   configureGlobal,

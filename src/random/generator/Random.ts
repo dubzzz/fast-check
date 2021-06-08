@@ -1,4 +1,8 @@
 import * as prand from 'pure-rand';
+import {
+  AcceptedRandomGenerator,
+  convertToRandomGenerator,
+} from '../../check/runner/configuration/AcceptedRandomGenerator';
 
 /**
  * Wrapper around an instance of a `pure-rand`'s random number generator
@@ -18,8 +22,8 @@ export class Random {
    * Create a mutable random number generator by cloning the passed one and mutate it
    * @param sourceRng - Immutable random generator from pure-rand library, will not be altered (a clone will be)
    */
-  constructor(sourceRng: prand.RandomGenerator) {
-    this.internalRng = sourceRng.clone();
+  constructor(sourceRng: AcceptedRandomGenerator) {
+    this.internalRng = convertToRandomGenerator(sourceRng).clone();
   }
 
   /**
