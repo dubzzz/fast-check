@@ -12,11 +12,15 @@ export class Random {
   private static DBL_FACTOR: number = Math.pow(2, 27);
   private static DBL_DIVISOR: number = Math.pow(2, -53);
 
+  private internalRng: prand.RandomGenerator;
+
   /**
-   * Create a mutable random number generator
-   * @param internalRng - Immutable random generator from pure-rand library
+   * Create a mutable random number generator by cloning the passed one and mutate it
+   * @param sourceRng - Immutable random generator from pure-rand library, will not be altered (a clone will be)
    */
-  constructor(private internalRng: prand.RandomGenerator) {}
+  constructor(sourceRng: prand.RandomGenerator) {
+    this.internalRng = sourceRng.clone();
+  }
 
   /**
    * Clone the random number generator
@@ -25,18 +29,12 @@ export class Random {
     return new Random(this.internalRng);
   }
 
-  private uniformIn(rangeMin: number, rangeMax: number): number {
-    const g = prand.uniformIntDistribution(rangeMin, rangeMax, this.internalRng);
-    this.internalRng = g[1];
-    return g[0];
-  }
-
   /**
    * Generate an integer having `bits` random bits
    * @param bits - Number of bits to generate
    */
   next(bits: number): number {
-    return this.uniformIn(0, (1 << bits) - 1);
+    return prand.unsafeUniformIntDistribution(0, (1 << bits) - 1, this.internalRng);
   }
 
   /**
@@ -44,7 +42,7 @@ export class Random {
    */
 
   nextBoolean(): boolean {
-    return this.uniformIn(0, 1) === 1;
+    return prand.unsafeUniformIntDistribution(0, 1, this.internalRng) == 1;
   }
 
   /**
@@ -59,7 +57,11 @@ export class Random {
    */
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
-    return this.uniformIn(min == null ? Random.MIN_INT : min, max == null ? Random.MAX_INT : max);
+    return prand.unsafeUniformIntDistribution(
+      min == null ? Random.MIN_INT : min,
+      max == null ? Random.MAX_INT : max,
+      this.internalRng
+    );
   }
 
   /**
@@ -68,9 +70,7 @@ export class Random {
    * @param max - Maximal bigint value
    */
   nextBigInt(min: bigint, max: bigint): bigint {
-    const g = prand.uniformBigIntDistribution(min, max, this.internalRng);
-    this.internalRng = g[1];
-    return g[0];
+    return prand.unsafeUniformBigIntDistribution(min, max, this.internalRng);
   }
 
   /**
@@ -82,9 +82,7 @@ export class Random {
     min: { sign: 1 | -1; data: number[] },
     max: { sign: 1 | -1; data: number[] }
   ): { sign: 1 | -1; data: number[] } {
-    const g = prand.uniformArrayIntDistribution(min, max, this.internalRng);
-    this.internalRng = g[1];
-    return g[0];
+    return prand.unsafeUniformArrayIntDistribution(min, max, this.internalRng);
   }
 
   /**
