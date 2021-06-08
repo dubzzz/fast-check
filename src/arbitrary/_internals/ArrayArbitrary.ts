@@ -45,11 +45,11 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return vs;
   }
 
-  private canAppendItem(items: NextValue<T>[], newItem: NextValue<T>): boolean {
+  private canAppendItem(items: NextValue<T>[], newItem: NextValue<T>, size: number): boolean {
     if (this.isEqual === undefined) {
       return true;
     }
-    for (let idx = 0; idx !== items.length; ++idx) {
+    for (let idx = 0; idx !== size; ++idx) {
       if (this.isEqual(items[idx].value_, newItem.value_)) {
         return false;
       }
@@ -96,7 +96,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // generated to be smaller than the minimal accepted one.
     while (itemCount < targetSize && numSkippedInRow < this.maxLength) {
       const current = this.arb.generate(mrng, biasMeta.biasFactorItems);
-      if (this.canAppendItem(items, current)) {
+      if (this.canAppendItem(items, current, itemCount)) {
         numSkippedInRow = 0;
         items[itemCount++] = current;
       } else {
