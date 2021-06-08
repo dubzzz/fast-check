@@ -86,21 +86,25 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     const biasMeta = this.applyBias(mrng, biasFactor);
     const targetSize = biasMeta.size;
 
+    let itemCount = 0;
     let numSkippedInRow = 0;
-    const items: NextValue<T>[] = [];
+    const items: NextValue<T>[] = Array(targetSize);
     // Try to append into items up to the target size
     // In the case of a set we may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
     // we accept a max of maxLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
-    while (items.length < targetSize && numSkippedInRow < this.maxLength) {
+    while (itemCount < targetSize && numSkippedInRow < this.maxLength) {
       const current = this.arb.generate(mrng, biasMeta.biasFactorItems);
       if (this.canAppendItem(items, current)) {
         numSkippedInRow = 0;
-        items.push(current);
+        items[itemCount++] = current;
       } else {
         numSkippedInRow += 1;
       }
+    }
+    if (itemCount < targetSize) {
+      items.splice(itemCount); // only preserves first <itemCount> items, others are holes
     }
     return this.wrapper(items, false, undefined);
   }
