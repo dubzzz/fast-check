@@ -43,9 +43,9 @@ Once done, everything is ready for you to start working on the code.
 #### Code style
 
 Code style standard is enforced by Prettier.
-Once done with your development you can check it follow the recommended code style by running `yarn format:check` or run autofixes with `yarn format:fix`.
+Once done with your development you can check it follow the recommended code style by running `yarn format:check` or run autofixes with `yarn format`.
 
-You should also check for linting by running `yarn lint:check`.
+You should also check for linting by running `yarn lint:check` and fix lint problems with `yarn lint`.
 
 #### Travis CI integration
 
