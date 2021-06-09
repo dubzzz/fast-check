@@ -2,7 +2,9 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext } from '../check/arbitrary/definition/Converters';
 import { ConstantArbitrary } from './_internals/ConstantArbitrary';
 
+/** @internal */
 type Arrayfy<T> = T extends any[] ? T : T[];
+/** @internal */
 type Elem<T> = T extends any[] ? T[number] : T;
 
 /**
