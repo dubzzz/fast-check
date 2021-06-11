@@ -39,7 +39,7 @@ export function convertFromNextWithShrunkOnce<T>(
     ) {
       throw new Error('Conversion rejected: Underlying arbitrary is not compatible with ArbitraryWithContextualShrink');
     }
-    return arb.arb;
+    return arb.arb as ArbitraryWithContextualShrink<T>;
   }
   assertIsNextArbitrary(arb);
   return new ConverterFromNext(arb, legacyShrunkOnceContext);
