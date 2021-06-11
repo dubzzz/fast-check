@@ -157,6 +157,7 @@ import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
 import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
+import { PureRandom } from './random/generator/PureRandom';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -402,6 +403,7 @@ export {
   RunDetailsSuccess,
   RunDetailsCommon,
   // various utils
+  PureRandom,
   Random,
   Stream,
   stream,
