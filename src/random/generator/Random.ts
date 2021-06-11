@@ -1,4 +1,5 @@
 import * as prand from 'pure-rand';
+import { PureRandom, convertToRandomGenerator } from './PureRandom';
 
 /**
  * Wrapper around an instance of a `pure-rand`'s random number generator
@@ -12,11 +13,15 @@ export class Random {
   private static DBL_FACTOR: number = Math.pow(2, 27);
   private static DBL_DIVISOR: number = Math.pow(2, -53);
 
+  private internalRng: prand.RandomGenerator;
+
   /**
    * Create a mutable random number generator
-   * @param internalRng - Immutable random generator from pure-rand library
+   * @param sourceRng - Immutable random generator from pure-rand library, will not be altered
    */
-  constructor(private internalRng: prand.RandomGenerator) {}
+  constructor(sourceRng: PureRandom) {
+    this.internalRng = convertToRandomGenerator(sourceRng);
+  }
 
   /**
    * Clone the random number generator
