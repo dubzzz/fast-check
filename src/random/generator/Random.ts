@@ -1,4 +1,9 @@
-import * as prand from 'pure-rand';
+import {
+  RandomGenerator,
+  unsafeUniformArrayIntDistribution,
+  unsafeUniformBigIntDistribution,
+  unsafeUniformIntDistribution,
+} from 'pure-rand';
 import { PureRandom, convertToRandomGenerator } from './PureRandom';
 
 /**
@@ -13,7 +18,7 @@ export class Random {
   private static DBL_FACTOR: number = Math.pow(2, 27);
   private static DBL_DIVISOR: number = Math.pow(2, -53);
 
-  private internalRng: prand.RandomGenerator;
+  private internalRng: RandomGenerator;
 
   /**
    * Create a mutable random number generator by cloning the passed one and mutate it
@@ -35,7 +40,7 @@ export class Random {
    * @param bits - Number of bits to generate
    */
   next(bits: number): number {
-    return prand.unsafeUniformIntDistribution(0, (1 << bits) - 1, this.internalRng);
+    return unsafeUniformIntDistribution(0, (1 << bits) - 1, this.internalRng);
   }
 
   /**
@@ -43,7 +48,7 @@ export class Random {
    */
 
   nextBoolean(): boolean {
-    return prand.unsafeUniformIntDistribution(0, 1, this.internalRng) == 1;
+    return unsafeUniformIntDistribution(0, 1, this.internalRng) == 1;
   }
 
   /**
@@ -58,7 +63,7 @@ export class Random {
    */
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
-    return prand.unsafeUniformIntDistribution(
+    return unsafeUniformIntDistribution(
       min == null ? Random.MIN_INT : min,
       max == null ? Random.MAX_INT : max,
       this.internalRng
@@ -71,7 +76,7 @@ export class Random {
    * @param max - Maximal bigint value
    */
   nextBigInt(min: bigint, max: bigint): bigint {
-    return prand.unsafeUniformBigIntDistribution(min, max, this.internalRng);
+    return unsafeUniformBigIntDistribution(min, max, this.internalRng);
   }
 
   /**
@@ -83,7 +88,7 @@ export class Random {
     min: { sign: 1 | -1; data: number[] },
     max: { sign: 1 | -1; data: number[] }
   ): { sign: 1 | -1; data: number[] } {
-    return prand.unsafeUniformArrayIntDistribution(min, max, this.internalRng);
+    return unsafeUniformArrayIntDistribution(min, max, this.internalRng);
   }
 
   /**
