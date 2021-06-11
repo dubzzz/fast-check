@@ -20,7 +20,7 @@ export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, '
   }
 
   return {
-    instance: new MyRandom(null as any),
+    instance: new MyRandom({} as any),
     clone,
     next,
     nextBoolean,
