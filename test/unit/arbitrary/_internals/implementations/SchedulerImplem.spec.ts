@@ -634,18 +634,18 @@ describe('SchedulerImplem', () => {
       await s.waitOne();
       await s.waitOne();
       expect(s.toString()).toMatchInlineSnapshot(`
-          "schedulerFor()\`
-          -> [task\${3}] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
-          -> [task\${1}] function::(0,3) resolved with value 0
-          -> [task\${2}] function::(1,4) pending\`"
-        `);
+        "schedulerFor()\`
+        -> [task\${3}] function::(6,0) rejected with value new Error(\\"Unexpected: 6 >= 0\\")
+        -> [task\${1}] function::(0,3) resolved with value 0
+        -> [task\${2}] function::(1,4) pending\`"
+      `);
       await s.waitOne();
       expect(s.toString()).toMatchInlineSnapshot(`
-          "schedulerFor()\`
-          -> [task\${3}] function::(6,0) rejected with value Error: Unexpected: 6 >= 0
-          -> [task\${1}] function::(0,3) resolved with value 0
-          -> [task\${2}] function::(1,4) resolved with value 1\`"
-        `);
+        "schedulerFor()\`
+        -> [task\${3}] function::(6,0) rejected with value new Error(\\"Unexpected: 6 >= 0\\")
+        -> [task\${1}] function::(0,3) resolved with value 0
+        -> [task\${2}] function::(1,4) resolved with value 1\`"
+      `);
       expect(s.count()).toBe(0);
     });
 
