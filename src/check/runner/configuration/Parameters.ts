@@ -1,7 +1,7 @@
 import { RandomType } from './RandomType';
 import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
-import { AcceptedRandomGenerator } from './AcceptedRandomGenerator';
+import { PureRandom } from '../../../random/generator/PureRandom';
 
 /**
  * Customization of the parameters used to run the properties
@@ -29,7 +29,7 @@ export interface Parameters<T = void> {
    *
    * @remarks Since 1.6.0
    */
-  randomType?: RandomType | ((seed: number) => AcceptedRandomGenerator);
+  randomType?: RandomType | ((seed: number) => PureRandom);
   /**
    * Number of runs before success: 100 by default
    * @remarks Since 1.0.0

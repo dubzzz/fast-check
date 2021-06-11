@@ -3492,10 +3492,10 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-pure-rand@v5.0.0-experimental.4.2.1.0:
-  version "5.0.0-experimental.4.2.1.0"
-  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-5.0.0-experimental.4.2.1.0.tgz#e34655172144eb7960a2add72358ce06fe937741"
-  integrity sha512-Z8zQ0DK6ncZQTG0KzdwauIxmsmA0U7D80+kuEOcUdmCvUQorTdlrLpRWyRXv105EFRVJM0i7+iBI4E8bSfWE+w==
+pure-rand@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-5.0.0.tgz#87f5bdabeadbd8904e316913a5c0b8caac517b37"
+  integrity sha512-lD2/y78q+7HqBx2SaT6OT4UcwtvXNRfEpzYEzl0EQ+9gZq2Qi3fa0HDnYPeqQwhlHJFBUhT7AO3mLU3+8bynHA==
 
 qs@~6.5.2:
   version "6.5.2"
