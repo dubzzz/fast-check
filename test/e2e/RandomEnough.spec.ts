@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`RandomEnough (seed: ${seed})`, () => {
   it('should not repeat values when noBias enabled', () => {
     const alreadySeenValues = new Set<string>();
@@ -27,7 +27,10 @@ describe(`RandomEnough (seed: ${seed})`, () => {
     }
   });
   it('should not repeat values between two consecutive sequences', () => {
-    const [seqA, seqB] = fc.sample(fc.array(fc.integer(), 1000, 1000).noBias(), { seed, numRuns: 2 });
+    const [seqA, seqB] = fc.sample(fc.array(fc.integer(), { minLength: 1000, maxLength: 1000 }).noBias(), {
+      seed,
+      numRuns: 2,
+    });
     const numIdenticalValues = seqA.reduce((acc, item) => {
       return seqB.includes(item) ? acc + 1 : acc;
     }, 0);

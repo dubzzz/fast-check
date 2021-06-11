@@ -21,6 +21,8 @@ const parametersArbitrary = fc.record(
     skipAllAfterTimeLimit: fc.nat(),
     interruptAfterTimeLimit: fc.nat(),
     markInterruptAsFailure: fc.boolean(),
+    skipEqualValues: fc.boolean(),
+    ignoreEqualValues: fc.boolean(),
     path: fc.array(fc.nat()).map((arr) => arr.join(':')),
     logger: fc.func(fc.constant(undefined)),
     unbiased: fc.boolean(),
@@ -77,7 +79,7 @@ describe('QualifiedParameters', () => {
     describe('Seeds outside of 32 bits range', () => {
       const seedsOutsideRangeArb = fc.oneof(
         fc.double(),
-        fc.double(Number.MIN_VALUE, Number.MAX_VALUE),
+        fc.double({ min: Number.MIN_VALUE, max: Number.MAX_VALUE }),
         fc.integer(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER),
         fc.constantFrom(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN)
       );

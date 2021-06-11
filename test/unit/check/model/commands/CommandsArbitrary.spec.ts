@@ -3,14 +3,14 @@ import * as fc from '../../../../../lib/fast-check';
 
 import { Command } from '../../../../../src/check/model/command/Command';
 import { Random } from '../../../../../src/random/generator/Random';
-import { constant } from '../../../../../src/check/arbitrary/ConstantArbitrary';
+import { constant } from '../../../../../src/arbitrary/constant';
 import { commands } from '../../../../../src/check/model/commands/CommandsArbitrary';
-import { genericTuple } from '../../../../../src/check/arbitrary/TupleArbitrary';
-import { nat } from '../../../../../src/check/arbitrary/IntegerArbitrary';
+import { genericTuple } from '../../../../../src/arbitrary/genericTuple';
+import { nat } from '../../../../../src/arbitrary/nat';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 
-import { isStrictlySmallerArray } from '../../arbitrary/ArrayArbitrary.spec';
+import { isStrictlySmallerArray } from '../../arbitrary/generic/ArrayHelpers';
 
 type Model = Record<string, unknown>;
 type Real = unknown;

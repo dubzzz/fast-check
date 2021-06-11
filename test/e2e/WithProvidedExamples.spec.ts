@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`WithProvidedExamples (seed: ${seed})`, () => {
   it('should fail on one of the provided examples', () => {
     // no shrink on examples for the moment

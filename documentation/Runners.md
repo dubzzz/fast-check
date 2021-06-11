@@ -16,7 +16,7 @@ You can refer to the  [API Reference](https://dubzzz.github.io/fast-check/) for 
 
 - `fc.property`: define a new property ie. a list of arbitraries and a test function to assess the success
 
-The predicate would be considered falsy if its throws or if `output` evaluates to `false`.
+The predicate would be considered falsy if it throws or if `output` evaluates to `false`.
 ```typescript
 function property<T1>(
         arb1: Arbitrary<T1>,
@@ -29,7 +29,7 @@ function property<T1,T2>(
 
 - `fc.asyncProperty`: define a new property ie. a list of arbitraries and an asynchronous test function to assess the success
 
-The predicate would be considered falsy if its throws or if `output` evaluates to `false` (after `await`).
+The predicate would be considered falsy if it throws or if `output` evaluates to `false` (after `await`).
 ```typescript
 function asyncProperty<T1>(
         arb1: Arbitrary<T1>,
@@ -58,7 +58,7 @@ asyncProperty(arb1, predicate)
 
 If you want to filter invalid entries directly at predicate level, you can use `fc.pre(...)`.
 
-`fc.pre` is responsible to check for preconditions within predicate scope.
+`fc.pre` is responsible for checking for preconditions within predicate scope.
 
 Whenever running a predicate, the framework runs the `fc.pre` instructions as they come and if one of them has a falsy value, it stops the execution flow and asks for another value to run the predicate on.
 
@@ -110,13 +110,20 @@ export interface Parameters<T = void> {
     interruptAfterTimeLimit?: number; // optional, interrupt test execution after a given time limit
                         // in milliseconds (relies on Date.now): disabled by default
     markInterruptAsFailure?: boolean; // optional, mark interrupted runs as failure: disabled by default
+    skipEqualValues?: boolean; // optional, skip repeated runs: disabled by default
+                        // If a same input is encountered multiple times only the first one will be executed,
+                        // next ones will be skipped. Be aware that skipping runs may lead to property failure
+                        // if the arbitrary does not have enough values. In that case use `ignoreEqualValues` instead.
+    ignoreEqualValues?: boolean; // optional, do not repeat runs with already covered cases: disabled by default
+                        // Similar to `skipEqualValues` but instead of skipping runs, it just don't rerun them.
+                        // It can be useful when arbitrary has a limited number of variants.
     reporter?: (runDetails: RunDetails<T>) => void; // optional, custom reporter replacing the default one
-                        // reporter is responsible to throw in case of failure, as an example default one throws
+                        // reporter is responsible for throwing in case of failure, as an example default one throws
                         // whenever `runDetails.failed` is true but it is up to you
                         // it cannot be used in conjonction with asyncReporter
                         // it will be used by assert for both synchronous and asynchronous properties
     asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>; // optional, custom reporter replacing the default one
-                        // reporter is responsible to throw in case of failure, as an example default one throws
+                        // reporter is responsible for throwing in case of failure, as an example default one throws
                         // whenever `runDetails.failed` is true but it is up to you
                         // it cannot be used in conjonction with reporter
                         // it cannot be set on synchronous properties

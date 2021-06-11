@@ -1,10 +1,11 @@
-import { RandomGenerator } from 'pure-rand';
 import { RandomType } from './RandomType';
 import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
+import { PureRandom } from '../../../random/generator/PureRandom';
 
 /**
  * Customization of the parameters used to run the properties
+ * @remarks Since 0.0.6
  * @public
  */
 export interface Parameters<T = void> {
@@ -13,8 +14,10 @@ export interface Parameters<T = void> {
    *
    * It can be forced to replay a failed run.
    *
-   * In theory, seeds are supposed to be 32 bits integers.
-   * In case of double value, the seed will be rescaled into a valid 32 bits integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
+   * In theory, seeds are supposed to be 32-bit integers.
+   * In case of double value, the seed will be rescaled into a valid 32-bit integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
+   *
+   * @remarks Since 0.0.6
    */
   seed?: number;
   /**
@@ -23,10 +26,13 @@ export interface Parameters<T = void> {
    * Random generator is the core element behind the generation of random values - changing it might directly impact the quality and performances of the generation of random values.
    * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus', 'xoroshiro128plus'
    * Or any function able to build a `RandomGenerator` based on a seed
+   *
+   * @remarks Since 1.6.0
    */
-  randomType?: RandomType | ((seed: number) => RandomGenerator);
+  randomType?: RandomType | ((seed: number) => PureRandom);
   /**
    * Number of runs before success: 100 by default
+   * @remarks Since 1.0.0
    */
   numRuns?: number;
   /**
@@ -36,12 +42,15 @@ export interface Parameters<T = void> {
    * Runner will consider a run to have failed if it skipped maxSkips+1 times before having generated numRuns valid entries.
    *
    * See {@link pre} for more details on pre-conditions
+   *
+   * @remarks Since 1.3.0
    */
   maxSkipsPerRun?: number;
   /**
    * Maximum time in milliseconds for the predicate to answer: disabled by default
    *
    * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
+   * @remarks Since 0.0.11
    */
   timeout?: number;
   /**
@@ -56,6 +65,8 @@ export interface Parameters<T = void> {
    * WARNING:
    * It skips runs. Thus test might be marked as failed.
    * Indeed, it might not reached the requested number of successful runs.
+   *
+   * @remarks Since 1.15.0
    */
   skipAllAfterTimeLimit?: number;
   /**
@@ -70,24 +81,55 @@ export interface Parameters<T = void> {
    * WARNING:
    * If the test got interrupted before any failure occured
    * and before it reached the requested number of runs specified by `numRuns`
-   * it will be marked as success. Except if `markInterruptAsFailure` as been set to `true`
+   * it will be marked as success. Except if `markInterruptAsFailure` has been set to `true`
+   *
+   * @remarks Since 1.19.0
    */
   interruptAfterTimeLimit?: number;
   /**
    * Mark interrupted runs as failed runs: disabled by default
+   * @remarks Since 1.19.0
    */
   markInterruptAsFailure?: boolean;
   /**
+   * Skip runs corresponding to already tried values.
+   *
+   * WARNING:
+   * Discarded runs will be retried. Under the hood they are simple calls to `fc.pre`.
+   * In other words, if you ask for 100 runs but your generator can only generate 10 values then the property will fail as 100 runs will never be reached.
+   * Contrary to `ignoreEqualValues` you always have the number of runs you requested.
+   *
+   * NOTE: Relies on `fc.stringify` to check the equality.
+   *
+   * @remarks Since 2.14.0
+   */
+  skipEqualValues?: boolean;
+  /**
+   * Discard runs corresponding to already tried values.
+   *
+   * WARNING:
+   * Discarded runs will not be replaced.
+   * In other words, if you ask for 100 runs and have 2 discarded runs you will only have 98 effective runs.
+   *
+   * NOTE: Relies on `fc.stringify` to check the equality.
+   *
+   * @remarks Since 2.14.0
+   */
+  ignoreEqualValues?: boolean;
+  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
+   * @remarks Since 1.0.0
    */
   path?: string;
   /**
    * Logger (see {@link statistics}): `console.log` by default
+   * @remarks Since 0.0.6
    */
   logger?(v: string): void;
   /**
    * Force the use of unbiased arbitraries: biased by default
+   * @remarks Since 1.1.0
    */
   unbiased?: boolean;
   /**
@@ -97,12 +139,16 @@ export interface Parameters<T = void> {
    *
    * It can prove very useful to troubleshoot issues.
    * See {@link VerbosityLevel} for more details on each level.
+   *
+   * @remarks Since 1.1.0
    */
   verbose?: boolean | VerbosityLevel;
   /**
    * Custom values added at the beginning of generated ones
    *
    * It enables users to come with examples they want to test at every run
+   *
+   * @remarks Since 1.4.0
    */
   examples?: T[];
   /**
@@ -112,6 +158,8 @@ export interface Parameters<T = void> {
    *
    * When used in complement to `seed` and `path`,
    * it replays only the minimal counterexample.
+   *
+   * @remarks Since 1.11.0
    */
   endOnFailure?: boolean;
   /**
@@ -122,6 +170,8 @@ export interface Parameters<T = void> {
    *
    * Only used when calling {@link assert}
    * Cannot be defined in conjonction with `asyncReporter`
+   *
+   * @remarks Since 1.25.0
    */
   reporter?: (runDetails: RunDetails<T>) => void;
   /**
@@ -133,6 +183,8 @@ export interface Parameters<T = void> {
    * Only used when calling {@link assert}
    * Cannot be defined in conjonction with `reporter`
    * Not compatible with synchronous properties: runner will throw
+   *
+   * @remarks Since 1.25.0
    */
   asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
 }

@@ -1,4 +1,4 @@
-import { ArbitraryWithShrink } from '../../../../../src/check/arbitrary/definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from '../../../../../src/check/arbitrary/definition/ArbitraryWithContextualShrink';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 import { Random } from '../../../../../src/random/generator/Random';
 import { stream, Stream } from '../../../../../src/stream/Stream';
@@ -8,13 +8,14 @@ type ArbitraryForDefinition<T> = {
   shrinks?: ArbitraryForDefinition<T>[];
 };
 
-class ArbitraryFor<T> extends ArbitraryWithShrink<T> {
+class ArbitraryFor<T> extends ArbitraryWithContextualShrink<T> {
   private runId: number;
   constructor(readonly defs: ArbitraryForDefinition<T>[]) {
     super();
     this.runId = 0;
   }
   private shrinkableFromDefinition(def: ArbitraryForDefinition<T>): Shrinkable<T> {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const arb = this;
     function* g(): IterableIterator<Shrinkable<T>> {
       for (const s of def.shrinks || []) {
@@ -36,19 +37,22 @@ class ArbitraryFor<T> extends ArbitraryWithShrink<T> {
     if (def === undefined) throw new Error(`Trying to generate a value out of the definition scope`);
     return this.shrinkableFromDefinition(def);
   }
-  shrink(value: T, _shrunkOnce?: boolean): Stream<T> {
+  contextualShrink(value: T, _context?: unknown): Stream<[T, unknown]> {
     const def = this.findDefinitionFor(this.defs, value);
     if (def === null) return Stream.nil();
 
-    const g = function* (): IterableIterator<T> {
+    const g = function* (): IterableIterator<[T, unknown]> {
       for (const s of def.shrinks || []) {
-        yield s.value;
+        yield [s.value, undefined];
       }
     };
     return stream(g());
   }
+  shrunkOnceContext(): unknown {
+    return undefined;
+  }
 }
 
-export const arbitraryFor = <T>(defs: ArbitraryForDefinition<T>[]): ArbitraryWithShrink<T> => {
+export const arbitraryFor = <T>(defs: ArbitraryForDefinition<T>[]): ArbitraryWithContextualShrink<T> => {
   return new ArbitraryFor(defs);
 };

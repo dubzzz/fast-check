@@ -1,4 +1,10 @@
-import * as prand from 'pure-rand';
+import {
+  RandomGenerator,
+  unsafeUniformArrayIntDistribution,
+  unsafeUniformBigIntDistribution,
+  unsafeUniformIntDistribution,
+} from 'pure-rand';
+import { PureRandom, convertToRandomGenerator } from './PureRandom';
 
 /**
  * Wrapper around an instance of a `pure-rand`'s random number generator
@@ -12,11 +18,15 @@ export class Random {
   private static DBL_FACTOR: number = Math.pow(2, 27);
   private static DBL_DIVISOR: number = Math.pow(2, -53);
 
+  private internalRng: RandomGenerator;
+
   /**
-   * Create a mutable random number generator
-   * @param internalRng - Immutable random generator from pure-rand library
+   * Create a mutable random number generator by cloning the passed one and mutate it
+   * @param sourceRng - Immutable random generator from pure-rand library, will not be altered (a clone will be)
    */
-  constructor(private internalRng: prand.RandomGenerator) {}
+  constructor(sourceRng: PureRandom) {
+    this.internalRng = convertToRandomGenerator(sourceRng).clone();
+  }
 
   /**
    * Clone the random number generator
@@ -25,18 +35,12 @@ export class Random {
     return new Random(this.internalRng);
   }
 
-  private uniformIn(rangeMin: number, rangeMax: number): number {
-    const g = prand.uniformIntDistribution(rangeMin, rangeMax, this.internalRng);
-    this.internalRng = g[1];
-    return g[0];
-  }
-
   /**
    * Generate an integer having `bits` random bits
    * @param bits - Number of bits to generate
    */
   next(bits: number): number {
-    return this.uniformIn(0, (1 << bits) - 1);
+    return unsafeUniformIntDistribution(0, (1 << bits) - 1, this.internalRng);
   }
 
   /**
@@ -44,7 +48,7 @@ export class Random {
    */
 
   nextBoolean(): boolean {
-    return this.uniformIn(0, 1) === 1;
+    return unsafeUniformIntDistribution(0, 1, this.internalRng) == 1;
   }
 
   /**
@@ -59,7 +63,11 @@ export class Random {
    */
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
-    return this.uniformIn(min == null ? Random.MIN_INT : min, max == null ? Random.MAX_INT : max);
+    return unsafeUniformIntDistribution(
+      min == null ? Random.MIN_INT : min,
+      max == null ? Random.MAX_INT : max,
+      this.internalRng
+    );
   }
 
   /**
@@ -68,9 +76,19 @@ export class Random {
    * @param max - Maximal bigint value
    */
   nextBigInt(min: bigint, max: bigint): bigint {
-    const g = prand.uniformBigIntDistribution(min, max, this.internalRng);
-    this.internalRng = g[1];
-    return g[0];
+    return unsafeUniformBigIntDistribution(min, max, this.internalRng);
+  }
+
+  /**
+   * Generate a random ArrayInt between min (included) and max (included)
+   * @param min - Minimal ArrayInt value
+   * @param max - Maximal ArrayInt value
+   */
+  nextArrayInt(
+    min: { sign: 1 | -1; data: number[] },
+    max: { sign: 1 | -1; data: number[] }
+  ): { sign: 1 | -1; data: number[] } {
+    return unsafeUniformArrayIntDistribution(min, max, this.internalRng);
   }
 
   /**

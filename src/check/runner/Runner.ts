@@ -83,6 +83,7 @@ function buildInitialValues<Ts>(
  *
  * @returns Test status and other useful details
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
@@ -94,6 +95,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  *
  * @returns Test status and other useful details
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
@@ -107,16 +109,17 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails
  *
  * @returns Test status and other useful details
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
-function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
+function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   if (rawProperty == null || rawProperty.generate == null)
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
-    ...readConfigureGlobal(),
+    ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
   if (qParams.reporter !== null && qParams.asyncReporter !== null)
@@ -132,12 +135,11 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   return property.isAsync()
     ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, qParams.numRuns, maxSkips, qParams)
+        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
       )
     : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
-        qParams.numRuns,
         maxSkips,
         qParams
       );
@@ -154,6 +156,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>) {
  * @param property - Asynchronous property to be checked
  * @param params - Optional parameters to customize the execution
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
@@ -166,6 +169,7 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
  * @param property - Synchronous property to be checked
  * @param params - Optional parameters to customize the execution
  *
+ * @remarks Since 0.0.1
  * @public
  */
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
@@ -180,10 +184,11 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
  * @param property - Property to be checked
  * @param params - Optional parameters to customize the execution
  *
+ * @remarks Since 0.0.7
  * @public
  */
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
-function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>) {
+function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(reportRunDetails);
   else reportRunDetails(out as RunDetails<Ts>);

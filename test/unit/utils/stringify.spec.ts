@@ -1,7 +1,8 @@
 import * as fc from '../../../lib/fast-check';
 
-// The package is an alias for 'buffer', the most used polyfill for Buffer in the browser
-import { Buffer as NotNodeBuffer } from '@buffer';
+// Importing 'buffer' imports the real implementation from node
+// Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side
+import { Buffer as NotNodeBuffer } from '../../../node_modules/buffer';
 
 import { asyncStringify, stringify } from '../../../src/utils/stringify';
 
@@ -35,6 +36,9 @@ const anythingEnableAll = {
   withSet: true,
   withObjectString: true,
   withNullPrototype: true,
+  withDate: true,
+  withTypedArray: true,
+  withSparseArray: true,
   ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
 };
 
@@ -86,6 +90,48 @@ describe('stringify', () => {
     const repr = stringify(cyclic);
     expect(repr).toEqual('[1,2,3,[cyclic],4]');
   });
+  it('Should be able to stringify small sparse arrays', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([,])).toEqual('[,]'); // empty with one hole
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([, ,])).toEqual('[,,]'); // empty with two holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([, , , ,])).toEqual('[,,,,]'); // empty with four holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, , ,])).toEqual('[1,,,]'); // one value then two holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([, , 1, , 2])).toEqual('[,,1,,2]'); // two holes non-trailing holes
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, , 2])).toEqual('[1,,2]'); // one hole non-trailing hole
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, 2, ,])).toEqual('[1,2,,]'); // two values then one hole
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify([1, 2, , ,])).toEqual('[1,2,,,]'); // two values then two holes
+  });
+  it('Should be able to stringify large sparse arrays', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify(Array(10000))).toEqual('Array(10000)');
+    // eslint-disable-next-line no-sparse-arrays
+    expect(stringify(Array(4294967295))).toEqual('Array(4294967295)');
+    // eslint-disable-next-line no-sparse-arrays
+    const sparseNonEmpty: any[] = Array(10000);
+    sparseNonEmpty[150] = 5;
+    sparseNonEmpty[21] = 1;
+    sparseNonEmpty[200] = 10;
+    expect(stringify(sparseNonEmpty)).toEqual('Object.assign(Array(10000),{21:1,150:5,200:10})');
+    // Here are some possibilities for sparse versions:
+    // > (s=Array(10000),s[21]=1,s[150]=5,s[200]=10,s)
+    // > (()=>{const s=Array(10000);s[21]=1;s[150]=5;s[200]=10;return s;})()
+    // > Object.assign(Array(10000), {21:1,150:5,200:10})
+    // > [<20 empty slots>, 1,...] [cannot be copy-pasted]
+    const sparseNonEmptyB: any[] = Array(4294967295);
+    sparseNonEmptyB[1234567890] = 5;
+    expect(stringify(sparseNonEmptyB)).toEqual('Object.assign(Array(4294967295),{1234567890:5})');
+    const sparseNonEmptyC: any[] = Array(123456);
+    sparseNonEmptyC[0] = 0;
+    sparseNonEmptyC[1] = 1;
+    expect(stringify(sparseNonEmptyC)).toEqual('Object.assign(Array(123456),{0:0,1:1})');
+  });
   it('Should be able to stringify cyclic sets', () => {
     const cyclic: Set<any> = new Set([1, 2, 3]);
     cyclic.add(cyclic);
@@ -130,6 +176,11 @@ describe('stringify', () => {
     expect(stringify(new Date('2014-25-23'))).toEqual('new Date(NaN)');
     expect(stringify(new Date('2019-05-23T22:19:06.049Z'))).toEqual('new Date("2019-05-23T22:19:06.049Z")');
   });
+  it('Should be able to stringify Regex', () => {
+    expect(stringify(/\w+/)).toEqual('/\\w+/');
+    expect(stringify(/^Hello(\d+)(\w*)$/gi)).toEqual('/^Hello(\\d+)(\\w*)$/gi');
+    expect(stringify(new RegExp('\\w+'))).toEqual('/\\w+/');
+  });
   it('Should be able to stringify Set', () => {
     expect(stringify(new Set([1, 2]))).toEqual('new Set([1,2])');
   });
@@ -141,10 +192,90 @@ describe('stringify', () => {
     expect(stringify(Symbol('fc'))).toEqual('Symbol("fc")');
     expect(stringify(Symbol.for('fc'))).toEqual('Symbol.for("fc")');
   });
+  it('Should be able to stringify well-known Symbols', () => {
+    expect(stringify(Symbol.iterator)).toEqual('Symbol.iterator');
+    expect(stringify(Symbol('Symbol.iterator'))).toEqual('Symbol("Symbol.iterator")');
+
+    // Same as above but with all the known symbols
+    let foundOne = false;
+    for (const symbolName of Object.getOwnPropertyNames(Symbol)) {
+      const s = (Symbol as any)[symbolName];
+      if (typeof s === 'symbol') {
+        foundOne = true;
+        expect(stringify(s)).toEqual(`Symbol.${symbolName}`);
+        expect(stringify(Symbol(`Symbol.${symbolName}`))).toEqual(`Symbol("Symbol.${symbolName}")`);
+        expect(eval(`(function() { return typeof ${stringify(s)}; })()`)).toBe('symbol');
+      }
+    }
+    expect(foundOne).toBe(true);
+  });
+  it('Should be able to stringify Object', () => {
+    expect(stringify({ a: 1 })).toEqual('{"a":1}');
+    expect(stringify({ a: 1, b: 2 })).toEqual('{"a":1,"b":2}');
+    expect(stringify({ [Symbol.for('a')]: 1 })).toEqual('{[Symbol.for("a")]:1}');
+    expect(stringify({ a: 1, [Symbol.for('a')]: 1 })).toEqual('{"a":1,[Symbol.for("a")]:1}');
+    expect(stringify({ [Symbol.for('a')]: 1, a: 1 })).toEqual('{"a":1,[Symbol.for("a")]:1}');
+  });
+  it('Should be able to stringify Object but skip non enumerable properties', () => {
+    // At least for the moment we don't handle non enumerable properties
+    const obj: any = {};
+    Object.defineProperties(obj, {
+      a: { value: 1, enumerable: false },
+      b: { value: 1, enumerable: true },
+      [Symbol.for('a')]: { value: 1, enumerable: false },
+      [Symbol.for('b')]: { value: 1, enumerable: true },
+    });
+    expect(stringify(obj)).toEqual('{"b":1,[Symbol.for("b")]:1}');
+  });
+  it('Should be able to stringify instances of classes', () => {
+    class A {
+      public a: number;
+      constructor() {
+        this.a = 1;
+        (this as any)[Symbol.for('a')] = 2;
+      }
+      public ma() {
+        // no-op
+      }
+    }
+    expect(stringify(new A())).toEqual('{"a":1,[Symbol.for("a")]:2}');
+
+    class AA {
+      public a = 0;
+    }
+    expect(stringify(new AA())).toEqual('{"a":0}');
+  });
+  it('Should be able to stringify instances of classes inheriting from others', () => {
+    class A {
+      public a: number;
+      constructor() {
+        this.a = 1;
+        (this as any)[Symbol.for('a')] = 2;
+      }
+      public ma() {
+        // no-op
+      }
+    }
+    class B extends A {
+      public b;
+      constructor() {
+        super();
+        this.b = 3;
+        (this as any)[Symbol.for('b')] = 4;
+      }
+      public mb() {
+        // no-op
+      }
+    }
+    expect(stringify(new B())).toEqual('{"a":1,"b":3,[Symbol.for("a")]:2,[Symbol.for("b")]:4}');
+  });
   it('Should be able to stringify Object without prototype', () => {
     expect(stringify(Object.create(null))).toEqual('Object.create(null)');
     expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual(
       'Object.assign(Object.create(null),{"a":1})'
+    );
+    expect(stringify(Object.assign(Object.create(null), { [Symbol.for('a')]: 1 }))).toEqual(
+      'Object.assign(Object.create(null),{[Symbol.for("a")]:1})'
     );
   });
   it('Should be able to stringify Object with custom __proto__ value', () => {

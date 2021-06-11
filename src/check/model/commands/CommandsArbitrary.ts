@@ -1,10 +1,10 @@
 import { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
 import { Arbitrary } from '../../arbitrary/definition/Arbitrary';
-import { ArbitraryWithShrink } from '../../arbitrary/definition/ArbitraryWithShrink';
+import { ArbitraryWithContextualShrink } from '../../arbitrary/definition/ArbitraryWithContextualShrink';
 import { Shrinkable } from '../../arbitrary/definition/Shrinkable';
-import { nat } from '../../arbitrary/IntegerArbitrary';
-import { oneof } from '../../arbitrary/OneOfArbitrary';
+import { nat } from '../../../arbitrary/nat';
+import { oneof } from '../../../arbitrary/oneof';
 import { AsyncCommand } from '../command/AsyncCommand';
 import { Command } from '../command/Command';
 import { ICommand } from '../command/ICommand';
@@ -20,7 +20,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {
   readonly oneCommandArb: Arbitrary<CommandWrapper<Model, Real, RunResult, CheckAsync>>;
-  readonly lengthArb: ArbitraryWithShrink<number>;
+  readonly lengthArb: ArbitraryWithContextualShrink<number>;
   private replayPath: boolean[];
   private replayPathPosition: number;
   constructor(
@@ -120,7 +120,7 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     for (let numToKeep = 0; numToKeep !== items.length; ++numToKeep) {
       nextShrinks.push(
         makeLazy(() => {
-          const size = this.lengthArb.shrinkableFor(items.length - 1 - numToKeep, false);
+          const size = this.lengthArb.contextualShrinkableFor(items.length - 1 - numToKeep);
           const fixedStart = items.slice(0, numToKeep);
           return size.shrink().map((l) => fixedStart.concat(items.slice(items.length - (l.value + 1))));
         })
@@ -151,6 +151,11 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
  *
+ * @deprecated
+ * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ *
+ * @remarks Since 1.5.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -167,6 +172,11 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * @param commandArbs - Arbitraries responsible to build commands
  * @param maxCommands - Maximal number of commands to build
  *
+ * @deprecated
+ * Superceded by `fc.commands(commandArbs, {maxCommands})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ *
+ * @remarks Since 1.5.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -181,8 +191,9 @@ function commands<Model extends object, Real>(
  * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
- * @param maxCommands - Maximal number of commands to build
+ * @param constraints - Contraints to be applied when generating the commands
  *
+ * @remarks Since 1.11.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -197,8 +208,9 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * It should shrink more efficiently than {@link array} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
- * @param maxCommands - Maximal number of commands to build
+ * @param constraints - Constraints to be applied when generating the commands
  *
+ * @remarks Since 1.11.0
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types

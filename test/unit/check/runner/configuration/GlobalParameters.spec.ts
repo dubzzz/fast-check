@@ -3,6 +3,7 @@ import {
   readConfigureGlobal,
   resetConfigureGlobal,
 } from '../../../../../src/check/runner/configuration/GlobalParameters';
+import * as fc from '../../../../../lib/fast-check';
 
 describe('GlobalParameters', () => {
   afterEach(() => {
@@ -19,5 +20,12 @@ describe('GlobalParameters', () => {
 
     resetConfigureGlobal();
     expect(readConfigureGlobal()).toBe(undefined);
+  });
+  it('should use distinct global configurations for distinct instances of fast-check', () => {
+    const myGlobalConfiguration = { numRuns: 123 };
+
+    configureGlobal(myGlobalConfiguration);
+    expect(readConfigureGlobal()).toBe(myGlobalConfiguration);
+    expect(fc.readConfigureGlobal()).not.toBe(myGlobalConfiguration);
   });
 });

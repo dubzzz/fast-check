@@ -4,11 +4,13 @@ import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
+import { ConverterFromNext } from '../arbitrary/definition/ConverterFromNext';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
  * on a {@link IAsyncPropertyWithHooks}
  *
+ * @remarks Since 2.2.0
  * @public
  */
 export type AsyncPropertyHookFunction =
@@ -17,24 +19,28 @@ export type AsyncPropertyHookFunction =
 
 /**
  * Interface for asynchronous property, see {@link IRawProperty}
+ * @remarks Since 1.19.0
  * @public
  */
 export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
 
 /**
  * Interface for asynchronous property defining hooks, see {@link IAsyncProperty}
+ * @remarks Since 2.2.0
  * @public
  */
 export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
+   * @remarks Since 1.6.0
    */
   beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
+   * @remarks Since 1.6.0
    */
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
@@ -47,6 +53,8 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
+  // Default hook is a no-op
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
@@ -70,6 +78,9 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   }
   isAsync = () => true as const;
   generate(mrng: Random, runId?: number): Shrinkable<Ts> {
+    if (ConverterFromNext.isConverterFromNext(this.arb)) {
+      return this.arb.toShrinkable(this.arb.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined));
+    }
     return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
   }
   async run(v: Ts): Promise<PreconditionFailure | string | null> {

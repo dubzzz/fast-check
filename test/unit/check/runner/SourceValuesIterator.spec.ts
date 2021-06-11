@@ -114,15 +114,19 @@ describe('SourceValuesIterator', () => {
   describe('Too many skipped values', () => {
     it('Should stop as soon as it passes maxSkips skipped values', () =>
       fc.assert(
-        fc.property(fc.set(fc.nat(100), 1, 20), fc.integer(1, 100), (skippedValues, missingValues) => {
-          const lastSkip = skippedValues.reduce((prev, cur) => (prev > cur ? prev : cur), 0);
-          const askedValues = lastSkip + 1 - skippedValues.length + missingValues;
-          const svIt = new SourceValuesIterator(source(), askedValues, skippedValues.length - 1);
-          const svValues = simulateSkips(svIt, skippedValues);
+        fc.property(
+          fc.set(fc.nat(100), { minLength: 1, maxLength: 20 }),
+          fc.integer(1, 100),
+          (skippedValues, missingValues) => {
+            const lastSkip = skippedValues.reduce((prev, cur) => (prev > cur ? prev : cur), 0);
+            const askedValues = lastSkip + 1 - skippedValues.length + missingValues;
+            const svIt = new SourceValuesIterator(source(), askedValues, skippedValues.length - 1);
+            const svValues = simulateSkips(svIt, skippedValues);
 
-          const expectedValues = [...iotaN(lastSkip).filter((v) => !skippedValues.includes(v))];
-          expect(svValues).toEqual(expectedValues);
-        })
+            const expectedValues = [...iotaN(lastSkip).filter((v) => !skippedValues.includes(v))];
+            expect(svValues).toEqual(expectedValues);
+          }
+        )
       ));
   });
 });

@@ -252,7 +252,7 @@ For instance, in the implementation defined above, we call generate with the fol
 
 In few words: `jump` offsets a random number generator, in the context of `xoroshiro128plus` calling `jump` is equivalent to 2^64 calls to `next`. In the case of `pure-rand` neither `jump` nor `next` alter the original instance, they both create a new instance of the generator while keeping the original one unchanged.
 
-No matter how many times our property will call the passed mutable random generator, we will always ignore it to build the generator required for the next iteration. While it might appear strange at first glance, this feature is important as we don't really know what will happen to this instance of our random generator. Among the possible scenarii:
+No matter how many times our property will call the passed mutable random generator, we will always ignore it to build the generator required for the next iteration. While it might appear strange at first glance, this feature is important as we don't really know what will happen to this instance of our random generator. Among the possible scenarios:
 
 - relying on the offset applied by the property to the passed instance of `Random` is problematic as it makes replays difficult to implement except if we re-generate all the values one-by-one whenever replaying stuff
 - instance of `Random` might be kept and re-used later by the property and its `Generator` (we will see that it might be the case in some implementations of shrink), thus calls to generate in subsequent iterations might alter it
@@ -614,9 +614,9 @@ miniFc.tuple(
 )
 ```
 
-Given this arbitrary we have 2<sup>32</sup> equiprobable possible choices for `a` and 2<sup>32</sup> for `b`. The probability to generate `[a, b]` such as `a === b` would be 1 over 2<sup>32</sup> which is obviously very close to zero.
+Given this arbitrary we have 2<sup>32</sup> equiprobable possible choices for `a` and 2<sup>32</sup> for `b`. The probability to generate `[a, b]` such that `a === b` would be 1 over 2<sup>32</sup> which is obviously very close to zero.
 
-With that in mind, we have to come with some tricks to get better bug detection. Let's first see some of the technics that are used in some existing solutions.
+With that in mind, we have to come with some tricks to get better bug detection. Let's first see some of the techniques that are used in some existing solutions.
 
 **Limit the size of generated values and let the user tweak it if needed**:
 
@@ -626,7 +626,7 @@ And anyway in case our users want they can but have to do it themselves.
 
 In terms of implementation, when calling generate the framework passes it a fixed value corresponding to the size factor that should be applied. This factor is constant throughout the execution whatever the run.
 
-As a consequence when using **jsverify** with its default configuration of size the following properties will we considered truthy and will not fail:
+As a consequence when using **jsverify** with its default configuration of size the following properties will be considered truthy and will not fail:
 
 ```js
 const jsc = require('jsverify'); // 0.8.4
@@ -642,7 +642,7 @@ jsc.assert(
 // is true for the framework. Users have to explicitely ask for large values.
 ```
 
-But let's say we know about this issue, so we artificially increase the size for some of our tests. Then we fallback into the original issue: we will never detect some easy issues because our values will always by too large. For instance, this property succeeds in **jsverify**:
+But let's say we know about this issue, so we artificially increase the size for some of our tests. Then we fall back into the original issue: we will never detect some easy issues because our values will always by too large. For instance, this property succeeds in **jsverify**:
 
 ```js
 const jsc = require('jsverify'); // 0.8.4
@@ -654,7 +654,7 @@ jsc.assert(
     )
 )
 // We generate values from -0x80000000 to 0x7fffffff
-// The probability to generate one value such as abs(n) <= 50
+// The probability to generate one value such that abs(n) <= 50
 // is: 101 / 2**32 which is close to zero
 
 // Same issue if we use size option...
@@ -673,7 +673,7 @@ _This approach has been rejected by fast-check. The motto of the framework is to
 
 **Increasing values across the runs**:
 
-**RapidCheck**, a property based testing framework for C++, adopted another technic that has the benefit to cover both small and large values.
+**RapidCheck**, a property based testing framework for C++, adopted another technique that has the benefit to cover both small and large values.
 
 The observation is the following: smallest values have most of the time the benefit of being less costly to manage and as a consequence may find bugs earlier. Indeed sorting and array of 0 items will be quicker than sorting one with a billion of items. But not all algorithms fail with small items so randomly generated values should also cover large ones.
 
@@ -744,7 +744,7 @@ For `fc.array`:
 
 ## Cloneable
 
-Theoritically every generator should produce only pure values that should never be modified by the user.
+Theoretically every generator should produce only pure values that should never be modified by the user.
 
 For instance, you should never alter the array produced by the generator of arrays of fast-check otherwise you may face strange behaviour when shrinking. To be honest, fast-check more or less prevents such bugs internally so that most of the time it will not cause any problems with built-in arbitraries. But the less you do that, the more you avoid strange bugs.
 

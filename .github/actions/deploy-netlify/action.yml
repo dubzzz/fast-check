@@ -1,0 +1,10 @@
+name: 'Deploy on Netlify'
+description: 'Deploy on Netlify'
+inputs:
+  token:
+    description: 'GITHUB_TOKEN'
+    default: ${{github.token}}
+    required: false
+runs:
+  using: 'node12'
+  main: 'index.cjs'

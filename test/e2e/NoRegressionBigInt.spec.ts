@@ -2,7 +2,7 @@ import fc from '../../src/fast-check';
 //declare function BigInt(n: number | bigint | string): bigint;
 
 const testFunc = (value: unknown) => {
-  const repr = fc.stringify(value);
+  const repr = fc.stringify(value).replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5');
   for (let idx = 1; idx < repr.length; ++idx) {
     if (repr[idx - 1] === repr[idx] && repr[idx] !== '"') {
       return false;
@@ -47,6 +47,30 @@ describe(`NoRegression BigInt`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('bigInt({min})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16) }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({max})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt({ max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({min, max})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16), max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('bigUint', () => {
     expect(() =>
       fc.assert(
@@ -55,10 +79,26 @@ describe(`NoRegression BigInt`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('bigUint({max})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigUint({ max: BigInt(1) << BigInt(96) }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('mixedCase', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.mixedCase(fc.hexaString()), (v) => testFunc(v)),
+        fc.property(fc.mixedCase(fc.constant('cCbAabBAcaBCcCACcABaCAaAabBACaBcBb')), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('mixedCase(stringOf)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.mixedCase(fc.stringOf(fc.constantFrom('a', 'b', 'c'), { maxLength: 50 })), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();

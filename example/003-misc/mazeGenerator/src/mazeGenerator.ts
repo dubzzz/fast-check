@@ -1,4 +1,4 @@
-// Implementation inspired from https://github.com/dubzzz/various-algorithms/blob/master/algorithms/graph/maze-generator/implem.cpp
+// Implementation inspired from https://github.com/dubzzz/various-algorithms/blob/main/algorithms/graph/maze-generator/implem.cpp
 import prand from 'pure-rand';
 import { Random } from 'fast-check';
 

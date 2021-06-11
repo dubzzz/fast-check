@@ -1,7 +1,7 @@
 import * as prand from 'pure-rand';
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`Generate all values (seed: ${seed})`, () => {
   /**
    * Check the ability of arbitraries to generate all the values
@@ -49,7 +49,9 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>
       fc.assert(
-        fc.property(fc.set(fc.string(), 1, 40), (csts) => lookForMissing(fc.constantFrom(...csts), csts.length))
+        fc.property(fc.set(fc.string(), { minLength: 1, maxLength: 40 }), (csts) =>
+          lookForMissing(fc.constantFrom(...csts), csts.length)
+        )
       ));
   });
   describe('fc.anything()', () => {
@@ -68,6 +70,9 @@ describe(`Generate all values (seed: ${seed})`, () => {
           withSet: true,
           withObjectString: true,
           withNullPrototype: true,
+          withDate: true,
+          withTypedArray: true,
+          withSparseArray: true,
           ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
         });
         while (++numTries <= 10000) {
@@ -93,6 +98,16 @@ describe(`Generate all values (seed: ${seed})`, () => {
     checkCanProduce('Array', 'object', '[object Array]');
     checkCanProduce('Set', 'object', '[object Set]');
     checkCanProduce('Map', 'object', '[object Map]');
+    checkCanProduce('Date', 'object', '[object Date]');
+    checkCanProduce('Int8Array', 'object', '[object Int8Array]');
+    checkCanProduce('Uint8Array', 'object', '[object Uint8Array]');
+    checkCanProduce('Uint8ClampedArray', 'object', '[object Uint8ClampedArray]');
+    checkCanProduce('Int16Array', 'object', '[object Int16Array]');
+    checkCanProduce('Uint16Array', 'object', '[object Uint16Array]');
+    checkCanProduce('Int32Array', 'object', '[object Int32Array]');
+    checkCanProduce('Uint32Array', 'object', '[object Uint32Array]');
+    checkCanProduce('Float32Array', 'object', '[object Float32Array]');
+    checkCanProduce('Float64Array', 'object', '[object Float64Array]');
     checkCanProduce('null prototype object', 'object', '[object Object]', (instance: unknown) => {
       return Object.getPrototypeOf(instance) === null;
     });

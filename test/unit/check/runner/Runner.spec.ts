@@ -1,7 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { char } from '../../../../src/check/arbitrary/CharacterArbitrary';
+import { char } from '../../../../src/arbitrary/char';
 import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import { Random } from '../../../../src/random/generator/Random';
@@ -14,13 +14,13 @@ const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
     it('Should throw if property is null', () => {
-      expect(() => check((null as any) as IRawProperty<unknown>)).toThrowError();
+      expect(() => check(null as any as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
       expect(() => check({} as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => check((char() as any) as IRawProperty<unknown>)).toThrowError();
+      expect(() => check(char() as any as IRawProperty<unknown>)).toThrowError();
     });
     it.each`
       isAsync
@@ -131,7 +131,7 @@ describe('Runner', () => {
       expect(out.failed).toBe(false);
     });
     it('Should ignore precondition failure runs and generate another value', async () => {
-      const gapsBetweenSuccessesArb = fc.array(fc.nat(10), 100, 100);
+      const gapsBetweenSuccessesArb = fc.array(fc.nat(10), { minLength: 100, maxLength: 100 });
       const successfulRunIdsArb = gapsBetweenSuccessesArb.map((gaps) =>
         gaps.reduce((prev: number[], cur: number) => {
           prev.push(prev.length === 0 ? cur : prev[prev.length - 1] + cur + 1);
@@ -358,7 +358,7 @@ describe('Runner', () => {
     });
     it('Should build the right counterexamplePath', () =>
       fc.assert(
-        fc.property(fc.integer(), fc.array(fc.nat(99), 1, 100), (seed, failurePoints) => {
+        fc.property(fc.integer(), fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }), (seed, failurePoints) => {
           // Each entry (at index idx) in failurePoints represents the number of runs
           // required before failing for the level <idx>
           // Basically it must fail before the end of the execution (100 runs by default)
@@ -412,7 +412,7 @@ describe('Runner', () => {
               return new Shrinkable([1], () => new Stream(g())) as Shrinkable<[number]>;
             },
             run: async (_value: [number]) => {
-              await new Promise((resolve) => {
+              await new Promise<void>((resolve) => {
                 waitingResolve.push(resolve);
               });
               return ++numCallsRun < num ? null : 'error';
@@ -502,13 +502,13 @@ describe('Runner', () => {
     };
 
     it('Should throw if property is null', () => {
-      expect(() => rAssert((null as any) as IRawProperty<unknown>)).toThrowError();
+      expect(() => rAssert(null as any as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
       expect(() => rAssert({} as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => rAssert((char() as any) as IRawProperty<unknown>)).toThrowError();
+      expect(() => rAssert(char() as any as IRawProperty<unknown>)).toThrowError();
     });
     it('Should never throw if no failure occured', () => {
       expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();

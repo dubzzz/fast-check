@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`RecordArbitrary (seed: ${seed})`, () => {
   describe('record', () => {
     it('Should shrink on the minimal failing record', () => {

@@ -1,0 +1,51 @@
+name: Request Deploy Netlify
+# @github-actions deploy
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  deploy_netlify:
+    name: 'Deploy to Netlify'
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '@github-actions') && contains(github.event.comment.body, 'deploy')
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Check comment
+        id: check_comment
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const script = require('./.github/actions/reaction-to-comment.cjs');
+            const options = { action: 'deploy', reaction: 'rocket', requireAdmin: true };
+            await script({ github, context, core, options });
+      - name: Checkout Pull Request
+        run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Install fast-check dependencies
+        run: yarn --frozen-lockfile
+      - name: Build package
+        run: yarn build:prod-ci
+      - name: Generate documentation
+        run: yarn docs-ci
+      - name: Generate bundle
+        run: |
+          yarn pack
+          mv fast-check-*.tgz docs/fast-check.tgz
+      - name: Install deploy-netlify dependencies
+        run: |
+          cd ./.github/actions/deploy-netlify
+          yarn --frozen-lockfile
+      - name: Deploy on Netlify
+        uses: ./.github/actions/deploy-netlify
+        env:
+          NETLIFY_SITE_ID: ${{secrets.NETLIFY_APP_ID}}
+          NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}

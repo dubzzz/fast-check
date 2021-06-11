@@ -21,7 +21,8 @@ const signatureFor = (num, isAsync) => {
   return `
         /**
          * Instantiate a new {@link fast-check#I${className}}
-         * @param predicate - Assess the success of the property. Would be considered falsy if its throws or if its output evaluates to false
+         * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
+         * @remarks Since ${className === 'Property' ? '0.0.1' : '0.0.7'}
          * @public
          */
         function ${functionName}<${txCommas(num)}>(
@@ -40,7 +41,7 @@ const generateProperty = (num, isAsync) => {
   const blocks = [
     // imports
     `import { Arbitrary } from '../arbitrary/definition/Arbitrary';`,
-    `import { genericTuple } from '../arbitrary/TupleArbitrary';`,
+    `import { genericTuple } from '../../arbitrary/genericTuple';`,
     `import { ${className}, I${className}WithHooks } from './${className}.generic';`,
     // declare all signatures
     ...iota(num).map((id) => signatureFor(id + 1, isAsync)),

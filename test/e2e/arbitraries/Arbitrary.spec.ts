@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`Arbitrary (seed: ${seed})`, () => {
   describe('chain', () => {
     it('Should bias nothing', () => {
@@ -39,7 +39,9 @@ describe(`Arbitrary (seed: ${seed})`, () => {
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] <= 100 && v[1] <= 100)
         ),
-        { seed: seed }
+        // Number of runs has been artificially increased to reduce the flakiness of this test
+        // The default (100) was not so bad, but from time to time it led to red runs in the CI
+        { seed: seed, numRuns: 500 }
       );
       expect(out.failed).toBe(true);
     });

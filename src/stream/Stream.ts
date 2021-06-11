@@ -1,17 +1,37 @@
-import { filterHelper, flatMapHelper, joinHelper, mapHelper, nilHelper, takeWhileHelper } from './StreamHelpers';
+import {
+  filterHelper,
+  flatMapHelper,
+  joinHelper,
+  mapHelper,
+  nilHelper,
+  takeNHelper,
+  takeWhileHelper,
+} from './StreamHelpers';
 
 /**
  * Wrapper around `IterableIterator` interface
  * offering a set of helpers to deal with iterations in a simple way
  *
+ * @remarks Since 0.0.7
  * @public
  */
 export class Stream<T> implements IterableIterator<T> {
   /**
    * Create an empty stream of T
+   * @remarks Since 0.0.1
    */
   static nil<T>(): Stream<T> {
     return new Stream(nilHelper());
+  }
+
+  /**
+   * Create a stream of T from a variable number of elements
+   *
+   * @param elements - Elements used to create the Stream
+   * @remarks Since 2.12.0
+   */
+  static of<T>(...elements: T[]): Stream<T> {
+    return new Stream(elements[Symbol.iterator]());
   }
 
   // /*DEBUG*/ // no double iteration
@@ -44,6 +64,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Mapper function
+   * @remarks Since 0.0.1
    */
   map<U>(f: (v: T) => U): Stream<U> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -55,6 +76,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Mapper function
+   * @remarks Since 0.0.1
    */
   flatMap<U>(f: (v: T) => IterableIterator<U>): Stream<U> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -67,6 +89,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Drop condition
+   * @remarks Since 0.0.1
    */
   dropWhile(f: (v: T) => boolean): Stream<T> {
     let foundEligible = false;
@@ -84,6 +107,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param n - Number of elements to drop
+   * @remarks Since 0.0.1
    */
   drop(n: number): Stream<T> {
     let idx = 0;
@@ -98,6 +122,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Take condition
+   * @remarks Since 0.0.1
    */
   takeWhile(f: (v: T) => boolean): Stream<T> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -109,13 +134,11 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param n - Number of elements to take
+   * @remarks Since 0.0.1
    */
   take(n: number): Stream<T> {
-    let idx = 0;
-    function helper(): boolean {
-      return idx++ < n;
-    }
-    return this.takeWhile(helper);
+    // /*DEBUG*/ this.closeCurrentStream();
+    return new Stream(takeNHelper(this.g, n));
   }
 
   /**
@@ -124,6 +147,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Elements to keep
+   * @remarks Since 1.23.0
    */
   filter<U extends T>(f: (v: T) => v is U): Stream<U>;
   /**
@@ -132,6 +156,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Elements to keep
+   * @remarks Since 0.0.1
    */
   filter(f: (v: T) => boolean): Stream<T>;
   filter<U extends T>(f: (v: T) => v is U): Stream<U> {
@@ -145,6 +170,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Condition to check
+   * @remarks Since 0.0.1
    */
   every(f: (v: T) => boolean): boolean {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -161,6 +187,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param f - Condition to check
+   * @remarks Since 0.0.1
    */
   has(f: (v: T) => boolean): [boolean, T | null] {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -178,6 +205,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream and the other ones (as soon as it iterates over them)
    *
    * @param others - Streams to join to the current Stream
+   * @remarks Since 0.0.1
    */
   join(...others: IterableIterator<T>[]): Stream<T> {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -190,6 +218,7 @@ export class Stream<T> implements IterableIterator<T> {
    * WARNING: It closes the current stream
    *
    * @param nth - Position of the element to extract
+   * @remarks Since 0.0.12
    */
   getNthOrLast(nth: number): T | null {
     // /*DEBUG*/ this.closeCurrentStream();
@@ -208,6 +237,7 @@ export class Stream<T> implements IterableIterator<T> {
  *
  * @param g - Underlying data of the Stream
  *
+ * @remarks Since 0.0.7
  * @public
  */
 export function stream<T>(g: IterableIterator<T>): Stream<T> {

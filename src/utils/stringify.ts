@@ -34,6 +34,17 @@ function stringifyNumber(numValue: number) {
 }
 
 /** @internal */
+function isSparseArray(arr: unknown[]): boolean {
+  let previousNumberedIndex = -1;
+  for (const index in arr) {
+    const numberedIndex = Number(index);
+    if (numberedIndex !== previousNumberedIndex + 1) return true; // we've got a hole
+    previousNumberedIndex = numberedIndex;
+  }
+  return previousNumberedIndex + 1 !== arr.length; // we've got a hole if length does not match
+}
+
+/** @internal */
 export function stringifyInternal<Ts>(
   value: Ts,
   previousValues: any[],
@@ -45,14 +56,33 @@ export function stringifyInternal<Ts>(
     if (previousValues.indexOf(value) !== -1) return '[cyclic]';
   }
   switch (Object.prototype.toString.call(value)) {
-    case '[object Array]':
-      return `[${(value as any).map((v: any) => stringifyInternal(v, currentValues, getAsyncContent)).join(',')}]`;
+    case '[object Array]': {
+      const arr = value as unknown as unknown[];
+      if (arr.length >= 50 && isSparseArray(arr)) {
+        const assignments: string[] = [];
+        // Discarded: map then join will still show holes
+        // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
+        for (const index in arr) {
+          if (!Number.isNaN(Number(index)))
+            assignments.push(`${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
+        }
+        return assignments.length !== 0
+          ? `Object.assign(Array(${arr.length}),{${assignments.join(',')}})`
+          : `Array(${arr.length})`;
+      }
+      // stringifiedArray results in: '' for [,]
+      // stringifiedArray results in: ',' for [,,]
+      // stringifiedArray results in: '1,' for [1,,]
+      // stringifiedArray results in: '1,,2' for [1,,2]
+      const stringifiedArray = arr.map((v) => stringifyInternal(v, currentValues, getAsyncContent)).join(',');
+      return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
+    }
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]':
       return typeof value === 'boolean' ? JSON.stringify(value) : `new Boolean(${JSON.stringify(value)})`;
     case '[object Date]': {
-      const d = (value as unknown) as Date;
+      const d = value as unknown as Date;
       return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
     }
     case '[object Map]':
@@ -72,19 +102,27 @@ export function stringifyInternal<Ts>(
         // Only return what would have been the default toString on Object
         return '[object Object]';
       }
-      const rawRepr =
-        '{' +
-        Object.keys(value)
-          .map(
-            (k) =>
-              `${k === '__proto__' ? '["__proto__"]' : JSON.stringify(k)}:${stringifyInternal(
-                (value as any)[k],
-                currentValues,
-                getAsyncContent
-              )}`
-          )
-          .join(',') +
-        '}';
+
+      const mapper = (k: string | symbol) =>
+        `${
+          k === '__proto__'
+            ? '["__proto__"]'
+            : typeof k === 'symbol'
+            ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
+            : JSON.stringify(k)
+        }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
+
+      const stringifiedProperties = [
+        ...Object.keys(value).map(mapper),
+        ...Object.getOwnPropertySymbols(value)
+          .filter((s) => {
+            const descriptor = Object.getOwnPropertyDescriptor(value, s);
+            return descriptor && descriptor.enumerable;
+          })
+          .map(mapper),
+      ];
+      const rawRepr = '{' + stringifiedProperties.join(',') + '}';
+
       if (Object.getPrototypeOf(value) === null) {
         return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
       }
@@ -95,12 +133,16 @@ export function stringifyInternal<Ts>(
     case '[object String]':
       return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
     case '[object Symbol]': {
-      const s = (value as unknown) as symbol;
+      const s = value as unknown as symbol;
       if (Symbol.keyFor(s) !== undefined) {
         return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
-      return desc !== null ? `Symbol(${JSON.stringify(desc)})` : `Symbol()`;
+      if (desc === null) {
+        return 'Symbol()';
+      }
+      const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
+      return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
     }
     case '[object Promise]': {
       const promiseContent = getAsyncContent(value);
@@ -140,7 +182,7 @@ export function stringifyInternal<Ts>(
       const valuePrototype = Object.getPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
       if (typeof className === 'string') {
-        const typedArray = (value as unknown) as
+        const typedArray = value as unknown as
           | Int8Array
           | Uint8Array
           | Uint8ClampedArray
@@ -176,6 +218,7 @@ export function stringifyInternal<Ts>(
  *
  * @param value - Value to be converted into a string
  *
+ * @remarks Since 1.15.0
  * @public
  */
 export function stringify<Ts>(value: Ts): string {
@@ -197,8 +240,9 @@ export async function asyncStringify<Ts>(value: Ts): Promise<string> {
   const cache = new Map<unknown, AsyncContent>();
 
   const unknownState = { state: 'unknown', value: undefined } as const;
-  const getAsyncContent = (p: unknown): AsyncContent => {
+  const getAsyncContent = function getAsyncContent(p: unknown): AsyncContent {
     if (cache.has(p)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return cache.get(p)!;
     }
 

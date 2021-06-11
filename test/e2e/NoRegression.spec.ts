@@ -8,9 +8,9 @@ import {
 } from './model/CounterCommands';
 
 const testFunc = (value: unknown) => {
-  const repr = fc.stringify(value);
+  const repr = fc.stringify(value).replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5');
   for (let idx = 1; idx < repr.length; ++idx) {
-    if (repr[idx - 1] === repr[idx] && repr[idx] !== '"') {
+    if (repr[idx - 1] === repr[idx] && repr[idx] !== '"' && repr[idx] !== '}') {
       return false;
     }
   }
@@ -27,6 +27,39 @@ describe(`NoRegression`, () => {
   // Moreover, the framework should build consistent values throughout all the versions of node.
   const settings = { seed: 42, verbose: 2 };
 
+  it('.filter', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat().filter((n) => n % 3 !== 0),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.map', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat().map((n) => String(n)),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('.chain', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.nat(20).chain((n) => fc.clone(fc.nat(n), n)),
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('float', () => {
     expect(() =>
       fc.assert(
@@ -35,10 +68,26 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('floatNext', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.float({ next: true }), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('double', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.double(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('doubleNext', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.double({ next: true }), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
@@ -182,10 +231,10 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('dedup', () => {
+  it('clone', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.dedup(fc.nat(), 2), (v) => testFunc(v)),
+        fc.property(fc.clone(fc.nat(), 2), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
@@ -214,6 +263,40 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('sparseArray', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.sparseArray(fc.nat()),
+          (v) =>
+            // Sum of first element of each group should be less or equal to 10
+            // If a group starts at index 0, the whole group is ignored
+            Object.entries(v).reduce((acc, [index, cur]) => {
+              if (index === '0' || v[Number(index) - 1] !== undefined) return acc;
+              else return acc + cur;
+            }, 0) <= 10
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('sparseArray({noTrailingHole:true})', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.sparseArray(fc.nat(), { noTrailingHole: true }),
+          (v) =>
+            // Sum of first element of each group should be less or equal to 10
+            // If a group starts at index 0, the whole group is ignored
+            Object.entries(v).reduce((acc, [index, cur]) => {
+              if (index === '0' || v[Number(index) - 1] !== undefined) return acc;
+              else return acc + cur;
+            }, 0) <= 10
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('infiniteStream', () => {
     expect(() =>
       fc.assert(
@@ -234,6 +317,78 @@ describe(`NoRegression`, () => {
     expect(() =>
       fc.assert(
         fc.property(fc.tuple(fc.nat(), fc.nat()), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('int8Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.int8Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint8Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint8Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint8ClampedArray', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint8ClampedArray(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('int16Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.int16Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint16Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint16Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('int32Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.int32Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('uint32Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uint32Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('float32Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.float32Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('float64Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.float64Array(), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
@@ -438,6 +593,36 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('letrec (oneof:maxDepth)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.letrec((tie) => ({
+            tree: fc.oneof({ withCrossShrink: true, maxDepth: 2 }, tie('leaf'), tie('node')),
+            node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
+            leaf: fc.nat(21),
+          })).tree,
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('letrec (oneof:depthFactor)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.letrec((tie) => ({
+            tree: fc.oneof({ withCrossShrink: true, depthFactor: 0.5 }, tie('leaf'), tie('node')),
+            node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
+            leaf: fc.nat(21),
+          })).tree,
+          (v) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('commands', () => {
     expect(() =>
       fc.assert(
@@ -485,5 +670,16 @@ describe(`NoRegression`, () => {
         settings
       )
     ).rejects.toThrowErrorMatchingSnapshot();
+  });
+  it('context', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.context(), fc.nat(), (ctx, v) => {
+          ctx.log(`Value was ${v}`);
+          return testFunc(v);
+        }),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
   });
 });

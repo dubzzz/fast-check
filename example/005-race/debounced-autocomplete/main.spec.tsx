@@ -11,6 +11,11 @@ beforeEach(() => {
   jest.resetAllMocks();
 });
 
+// Copied from https://github.com/testing-library/user-event/issues/586
+function escapeKeyboardInput(value: string): string {
+  return value.replace(/[{[]/g, '$&$&');
+}
+
 describe('DebouncedAutocomplete', () => {
   it('should autocomplete queries (with mocked timers)', async () => {
     await fc.assert(
@@ -18,7 +23,7 @@ describe('DebouncedAutocomplete', () => {
         .asyncProperty(
           fc.scheduler({ act }),
           fc.set(fc.string()),
-          fc.string(1, 10),
+          fc.string({ minLength: 1 }),
           async (s, allResults, userQuery) => {
             // Arrange
             jest.useFakeTimers();
@@ -32,7 +37,8 @@ describe('DebouncedAutocomplete', () => {
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1)),
+                builder: async () =>
+                  await userEvent.type(screen.getByRole('textbox'), escapeKeyboardInput(userQuery.substr(idx, 1))),
               }))
             );
             await waitAllWithTimers(s);
@@ -56,7 +62,7 @@ describe('DebouncedAutocomplete', () => {
         .asyncProperty(
           fc.scheduler({ act }).map(withTimers),
           fc.set(fc.string()),
-          fc.string(1, 10),
+          fc.string({ minLength: 1 }),
           async (s, allResults, userQuery) => {
             // Arrange
             jest.useFakeTimers();
@@ -70,7 +76,10 @@ describe('DebouncedAutocomplete', () => {
             s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
-                builder: () => userEvent.type(screen.getByRole('textbox'), userQuery.substr(idx, 1), { delay: 0 }),
+                builder: async () =>
+                  await userEvent.type(screen.getByRole('textbox'), escapeKeyboardInput(userQuery.substr(idx, 1)), {
+                    delay: 0,
+                  }),
               }))
             );
             await s.waitAll();

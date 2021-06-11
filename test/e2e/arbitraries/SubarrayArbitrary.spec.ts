@@ -1,7 +1,8 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
 const src = [1, 25, 42, 0, -12];
-const seed = Date.now();
+
 describe(`SubarrayArbitrary (seed: ${seed})`, () => {
   describe('subarray', () => {
     it('Should not re-order the values', () => {

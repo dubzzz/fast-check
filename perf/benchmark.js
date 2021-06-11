@@ -20,6 +20,10 @@ const algos = [
   { name: 'gen.fullUnicodeString', run: (fc) => sampler(fc, fc.fullUnicodeString()) },
   { name: 'gen.hexaString', run: (fc) => sampler(fc, fc.hexaString()) },
   { name: 'gen.base64String', run: (fc) => sampler(fc, fc.base64String()) },
+  { name: 'gen.float', run: (fc) => sampler(fc, fc.float()) },
+  { name: 'gen.floatNext', run: (fc) => sampler(fc, fc.float({ next: true })) },
+  { name: 'gen.double', run: (fc) => sampler(fc, fc.double()) },
+  { name: 'gen.doubleNext', run: (fc) => sampler(fc, fc.double({ next: true })) },
 ];
 
 for (const a of algos) {

@@ -1,6 +1,6 @@
 exports.runComplexFailure = function (fc) {
   const loremIpsum = fc.record({
-    text: fc.lorem(100),
+    text: fc.lorem({ maxCount: 100 }),
     type: fc.constant('x'),
     attrs: fc.constant({}),
     markup: fc.option(
@@ -10,8 +10,7 @@ exports.runComplexFailure = function (fc) {
           start: fc.nat(1),
           end: fc.nat(100),
         }),
-        1,
-        10
+        { minLength: 1 }
       )
     ),
   });
@@ -19,7 +18,7 @@ exports.runComplexFailure = function (fc) {
   const section = (n) =>
     fc.record({
       heading: loremIpsum,
-      children: fc.array(n > 0 ? fc.oneof(loremIpsum, loremIpsum, loremIpsum, section(n - 1)) : loremIpsum, 10),
+      children: fc.array(n > 0 ? fc.oneof(loremIpsum, loremIpsum, loremIpsum, section(n - 1)) : loremIpsum),
     });
 
   fc.check(

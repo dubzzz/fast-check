@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`StateFullArbitraries (seed: ${seed})`, () => {
   describe('Never call on generate', () => {
     const cloneableWithCount = (data: { counter: number }) =>
@@ -25,9 +25,9 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       fc.assert(fc.property(cloneableWithCount(data), cloneableWithCount(data), () => {}));
       expect(data.counter).toEqual(0);
     });
-    it('fc.dedup', () => {
+    it('fc.clone', () => {
       const data = { counter: 0 };
-      fc.assert(fc.property(fc.dedup(cloneableWithCount(data), 3), () => {}));
+      fc.assert(fc.property(fc.clone(cloneableWithCount(data), 3), () => {}));
       expect(data.counter).toEqual(0);
     });
     it('fc.tuple', () => {
@@ -100,10 +100,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1]!.size()).toEqual(1);
     });
-    it('fc.dedup', () => {
+    it('fc.clone', () => {
       let nonClonedDetected = false;
       const status = fc.check(
-        fc.property(fc.integer(), fc.dedup(fc.context(), 3), fc.integer(), (a, ctxs, b) => {
+        fc.property(fc.integer(), fc.clone(fc.context(), 3), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
@@ -154,7 +154,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
     it('fc.array', () => {
       let nonClonedDetected = false;
       const status = fc.check(
-        fc.property(fc.integer(), fc.array(fc.context(), 1, 10), fc.integer(), (a, ctxs, b) => {
+        fc.property(fc.integer(), fc.array(fc.context(), { minLength: 1 }), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
@@ -170,7 +170,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
     it('fc.set', () => {
       let nonClonedDetected = false;
       const status = fc.check(
-        fc.property(fc.integer(), fc.set(fc.context(), 1, 10), fc.integer(), (a, ctxs, b) => {
+        fc.property(fc.integer(), fc.set(fc.context(), { minLength: 1 }), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');

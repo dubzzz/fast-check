@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`IntegerArbitrary (seed: ${seed})`, () => {
   describe('integer', () => {
     it('Should generate integer within the range', () => {

@@ -2,11 +2,13 @@ import * as fc from '../../../../lib/fast-check';
 
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-import { array } from '../../../../src/check/arbitrary/ArrayArbitrary';
-import { context } from '../../../../src/check/arbitrary/ContextArbitrary';
-import { nat } from '../../../../src/check/arbitrary/IntegerArbitrary';
+import { array } from '../../../../src/arbitrary/array';
+import { context } from '../../../../src/arbitrary/context';
+import { nat } from '../../../../src/arbitrary/nat';
 import { Random } from '../../../../src/random/generator/Random';
 
+import { isStrictlySmallerArray } from './generic/ArrayHelpers';
+import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../stubs/generators';
@@ -20,18 +22,6 @@ class DummyArbitrary extends Arbitrary<{ key: number }> {
     return new Shrinkable({ key: this.value() });
   }
 }
-
-export const isStrictlySmallerArray = (arr1: number[], arr2: number[]) => {
-  if (arr1.length > arr2.length) return false;
-  if (arr1.length === arr2.length) {
-    return arr1.every((v, idx) => arr1[idx] <= arr2[idx]) && arr1.find((v, idx) => arr1[idx] < arr2[idx]) != null;
-  }
-  for (let idx1 = 0, idx2 = 0; idx1 < arr1.length && idx2 < arr2.length; ++idx1, ++idx2) {
-    while (idx2 < arr2.length && arr1[idx1] > arr2[idx2]) ++idx2;
-    if (idx2 === arr2.length) return false;
-  }
-  return true;
-};
 
 describe('ArrayArbitrary', () => {
   describe('array', () => {
@@ -56,12 +46,12 @@ describe('ArrayArbitrary', () => {
       ));
     it('Should produce cloneable array if one cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
-      const g = array(context(), 1, 10).generate(mrng).value;
+      const g = array(context(), { minLength: 1 }).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(true);
     });
     it('Should not produce cloneable tuple if no cloneable children', () => {
       const mrng = stubRng.mutable.counter(0);
-      const g = array(nat(), 1, 10).generate(mrng).value;
+      const g = array(nat(), { minLength: 1 }).generate(mrng).value;
       expect(hasCloneMethod(g)).toBe(false);
     });
     it('Should not clone on generate', () => {
@@ -87,8 +77,16 @@ describe('ArrayArbitrary', () => {
         isValidValue: (g: number[]) => Array.isArray(g) && g.every((v) => typeof v === 'number'),
       });
     });
+    describe('Given minimal length only', () => {
+      genericHelper.isValidArbitrary((minLength: number) => array(nat(), { minLength }), {
+        seedGenerator: fc.nat(100),
+        isStrictlySmallerValue: isStrictlySmallerArray,
+        isValidValue: (g: number[], minLength: number) =>
+          Array.isArray(g) && g.length >= minLength && g.every((v) => typeof v === 'number'),
+      });
+    });
     describe('Given maximal length only', () => {
-      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), maxLength), {
+      genericHelper.isValidArbitrary((maxLength: number) => array(nat(), { maxLength }), {
         seedGenerator: fc.nat(100),
         isStrictlySmallerValue: isStrictlySmallerArray,
         isValidValue: (g: number[], maxLength: number) =>
@@ -97,7 +95,8 @@ describe('ArrayArbitrary', () => {
     });
     describe('Given minimal and maximal lengths', () => {
       genericHelper.isValidArbitrary(
-        (constraints: { min: number; max: number }) => array(nat(), constraints.min, constraints.max),
+        (constraints: { min: number; max: number }) =>
+          array(nat(), { minLength: constraints.min, maxLength: constraints.max }),
         {
           seedGenerator: genericHelper.minMax(fc.nat(100)),
           isStrictlySmallerValue: isStrictlySmallerArray,
@@ -108,6 +107,26 @@ describe('ArrayArbitrary', () => {
             g.every((v) => typeof v === 'number'),
         }
       );
+    });
+    describe('Still support non recommended signatures', () => {
+      it('Should support fc.array(arb, maxLength)', () => {
+        fc.assert(
+          fc.property(fc.integer(), fc.nat(100), (seed, maxLength) => {
+            const refArbitrary = array(nat(), { maxLength });
+            const nonRecommendedArbitrary = array(nat(), maxLength);
+            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
+      it('Should support fc.array(arb, minLength, maxLength)', () => {
+        fc.assert(
+          fc.property(fc.integer(), genericHelper.minMax(fc.nat(100)), (seed, minMaxLength) => {
+            const refArbitrary = array(nat(), { minLength: minMaxLength.min, maxLength: minMaxLength.max });
+            const nonRecommendedArbitrary = array(nat(), minMaxLength.min, minMaxLength.max);
+            expect(generateOneValue(seed, nonRecommendedArbitrary)).toEqual(generateOneValue(seed, refArbitrary));
+          })
+        );
+      });
     });
   });
 });

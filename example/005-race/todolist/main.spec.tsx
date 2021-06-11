@@ -17,8 +17,8 @@ describe('TodoList', () => {
           fc.scheduler({ act }),
           TodoListCommands,
           fc.set(
-            fc.record({ id: fc.hexaString(8, 8), label: fc.string(), checked: fc.boolean() }),
-            (a, b) => a.id === b.id
+            fc.record({ id: fc.hexaString({ minLength: 8, maxLength: 8 }), label: fc.string(), checked: fc.boolean() }),
+            { compare: (a, b) => a.id === b.id }
           ),
           fc.infiniteStream(fc.boolean()),
           async (s, commands, initialTodos, allFailures) => {
@@ -30,8 +30,8 @@ describe('TodoList', () => {
 
             // Check the final state (no more items should be loading)
             expect(
-              sortTodos((await listTodos()).map(t => ({ label: t.label, checked: t.checked, loading: t.loading })))
-            ).toEqual(sortTodos(expectedTodos().map(t => ({ label: t.label, checked: t.checked, loading: false }))));
+              sortTodos((await listTodos()).map((t) => ({ label: t.label, checked: t.checked, loading: t.loading })))
+            ).toEqual(sortTodos(expectedTodos().map((t) => ({ label: t.label, checked: t.checked, loading: false }))));
           }
         )
         .beforeEach(async () => {
@@ -43,9 +43,9 @@ describe('TodoList', () => {
 // Helpers
 
 const TodoListCommands = fc.commands([
-  fc.string().map(label => new AddItemCommand(label)),
-  fc.nat().map(pos => new ToggleItemCommand(pos)),
-  fc.nat().map(pos => new RemoveItemCommand(pos))
+  fc.string().map((label) => new AddItemCommand(label)),
+  fc.nat().map((pos) => new ToggleItemCommand(pos)),
+  fc.nat().map((pos) => new RemoveItemCommand(pos)),
 ]);
 
 type ApiTodoItem = { id: string; label: string; checked: boolean };
@@ -71,11 +71,9 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     | { status: 'error' }
   > {
     const newTodo = {
-      id: `${Math.random()
-        .toString(16)
-        .substring(2)}-${++lastIdx}`,
+      id: `${Math.random().toString(16).substring(2)}-${++lastIdx}`,
       label,
-      checked: false
+      checked: false,
     };
     if (allFailures.next().value) {
       return { status: 'error' };
@@ -93,11 +91,11 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       }
     | { status: 'error' }
   > {
-    const foundTodo = allTodos.find(t => t.id === id);
+    const foundTodo = allTodos.find((t) => t.id === id);
     if (!foundTodo || allFailures.next().value) {
       return { status: 'error' };
     }
-    allTodos = allTodos.map(t => {
+    allTodos = allTodos.map((t) => {
       if (t.id !== id) return t;
       return { id, label: t.label, checked: !t.checked };
     });
@@ -113,11 +111,11 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       }
     | { status: 'error' }
   > {
-    const foundTodo = allTodos.find(t => t.id === id);
+    const foundTodo = allTodos.find((t) => t.id === id);
     if (!foundTodo || allFailures.next().value) {
       return { status: 'error' };
     }
-    allTodos = allTodos.filter(t => {
+    allTodos = allTodos.filter((t) => {
       if (t.id !== id) return true;
       return false;
     });
@@ -129,8 +127,8 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       fetchAllTodos,
       addTodo,
       toggleTodo,
-      removeTodo
+      removeTodo,
     },
-    expectedTodos: () => allTodos.slice()
+    expectedTodos: () => allTodos.slice(),
   };
 };

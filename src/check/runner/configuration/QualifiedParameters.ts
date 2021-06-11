@@ -1,7 +1,8 @@
-import prand, { RandomGenerator } from 'pure-rand';
+import prand from 'pure-rand';
 import { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
+import { PureRandom } from '../../../random/generator/PureRandom';
 
 /**
  * Configuration extracted from incoming Parameters
@@ -12,7 +13,7 @@ import { RunDetails } from '../reporter/RunDetails';
  */
 export class QualifiedParameters<T> {
   seed: number;
-  randomType: (seed: number) => RandomGenerator;
+  randomType: (seed: number) => PureRandom;
   numRuns: number;
   maxSkipsPerRun: number;
   timeout: number | null;
@@ -25,6 +26,8 @@ export class QualifiedParameters<T> {
   skipAllAfterTimeLimit: number | null;
   interruptAfterTimeLimit: number | null;
   markInterruptAsFailure: boolean;
+  skipEqualValues: boolean;
+  ignoreEqualValues: boolean;
   reporter: ((runDetails: RunDetails<T>) => void) | null;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
 
@@ -39,6 +42,8 @@ export class QualifiedParameters<T> {
     this.skipAllAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null);
     this.interruptAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null);
     this.markInterruptAsFailure = QualifiedParameters.readBoolean(p, 'markInterruptAsFailure');
+    this.skipEqualValues = QualifiedParameters.readBoolean(p, 'skipEqualValues');
+    this.ignoreEqualValues = QualifiedParameters.readBoolean(p, 'ignoreEqualValues');
     this.logger = QualifiedParameters.readOrDefault(p, 'logger', (v: string) => {
       // tslint:disable-next-line:no-console
       console.log(v);
@@ -62,6 +67,8 @@ export class QualifiedParameters<T> {
       skipAllAfterTimeLimit: orUndefined(this.skipAllAfterTimeLimit),
       interruptAfterTimeLimit: orUndefined(this.interruptAfterTimeLimit),
       markInterruptAsFailure: this.markInterruptAsFailure,
+      skipEqualValues: this.skipEqualValues,
+      ignoreEqualValues: this.ignoreEqualValues,
       path: this.path,
       logger: this.logger,
       unbiased: this.unbiased,
@@ -85,7 +92,7 @@ export class QualifiedParameters<T> {
     const gap = p.seed - seed32;
     return seed32 ^ (gap * 0x100000000);
   };
-  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => RandomGenerator) => {
+  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => PureRandom) => {
     if (p.randomType == null) return prand.xorshift128plus;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
@@ -129,7 +136,12 @@ export class QualifiedParameters<T> {
     p: Parameters<T>,
     key: K,
     defaultValue: V
-  ): NonNullable<Parameters<T>[K]> | V => (p[key] != null ? p[key]! : defaultValue);
+  ): NonNullable<Parameters<T>[K]> | V => {
+    const value = p[key];
+    // value will be non nullable if value != null (even if TypeScript complains about it)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return value != null ? value! : defaultValue;
+  };
 
   /**
    * Extract a runner configuration from Parameters

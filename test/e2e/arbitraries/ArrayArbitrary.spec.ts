@@ -1,7 +1,8 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
+
 declare function BigInt(n: number | bigint | string): bigint;
 
-const seed = Date.now();
 describe(`ArrayArbitrary (seed: ${seed})`, () => {
   describe('array', () => {
     it('Should shrink on the size of the array', () => {
@@ -29,22 +30,6 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([[5, 5]]);
     });
-    it('Should not suggest multiple times the empty array (after first failure)', () => {
-      let failedOnce = false;
-      let numEmptyArrays = 0;
-      const out = fc.check(
-        fc.property(fc.array(fc.integer()), (arr: number[]) => {
-          if (failedOnce && arr.length === 0) ++numEmptyArrays;
-          if (arr.length === 0) return true;
-          failedOnce = true;
-          return false;
-        }),
-        { seed }
-      );
-      expect(out.failed).toBe(true);
-      expect(out.counterexample![0]).toHaveLength(1);
-      expect(numEmptyArrays).toEqual(1);
-    });
     biasIts('integer', fc.integer());
     if (typeof BigInt !== 'undefined') {
       biasIts('bigint', fc.bigIntN(64));
@@ -53,19 +38,18 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
 });
 
 function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
-  it(`Should be biased by default and suggest small entries [${label}]`, () => {
+  it(`Should be biased by default and suggest extreme entries more often [${label}]`, () => {
+    // When bias is toggled (default), there is a higher chance to geenrate values close to zero
+    // but also close to min or max (for numeric types). Here arb is a numeric arbitrary.
     // Falsy implementation of removeDuplicates
     const removeDuplicates = (arr: T[]) => [...arr];
     // Expect a failure
     const out = fc.check(
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
-        for (const v of filtered) {
-          if (filtered.filter((i) => i === v).length > 1) return false; // duplicates detected
-        }
-        return true;
+        expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates (but will find some)
       }),
-      { seed, numRuns: 5000 } // increased numRuns to remove flakiness
+      { seed, numRuns: 10000 } // increased numRuns to remove flakiness
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0]).toHaveLength(2);
@@ -78,10 +62,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
     const out = fc.check(
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
-        for (const v of filtered) {
-          if (filtered.filter((i) => i === v).length > 1) return false; // duplicates detected
-        }
-        return true;
+        expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates
       }),
       { seed, unbiased: true }
     );

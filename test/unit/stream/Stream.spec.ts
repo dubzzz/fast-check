@@ -38,6 +38,24 @@ describe('Stream', () => {
       expect([...s]).toEqual([]);
     });
   });
+  describe('of', () => {
+    it('Should instantiate an empty stream given no elements', () => {
+      const s: Stream<number> = Stream.of();
+      expect([...s]).toEqual([]);
+    });
+    it('Should instantiate a stream containing a single entry given a single element', () => {
+      const s: Stream<number> = Stream.of(1);
+      expect([...s]).toEqual([1]);
+    });
+    it('Should instantiate a stream containing the same entries as passed elements with same ordering', () => {
+      const s: Stream<number> = Stream.of(1, 42, 69);
+      expect([...s]).toEqual([1, 42, 69]);
+    });
+    it('Should not consider elements of type Array differently from other ones', () => {
+      const s: Stream<number[]> = Stream.of([1, 42, 69]);
+      expect([...s]).toEqual([[1, 42, 69]]);
+    });
+  });
   describe('map', () => {
     it('Should apply on each element', () => {
       function* g() {
@@ -119,6 +137,25 @@ describe('Stream', () => {
       }
       const s = stream(g()).take(4);
       expect([...s]).toEqual([1, 2, 3, 4]);
+    });
+    it('Should accept stream containing less values than the requested number', () => {
+      function* g() {
+        yield* [1, 2];
+      }
+      const s = stream(g()).take(4);
+      expect([...s]).toEqual([1, 2]);
+    });
+    it('Should only pull the requested number of items not more', () => {
+      let numValues = 0;
+      function* g() {
+        while (true) {
+          ++numValues;
+          yield 0;
+        }
+      }
+      const s = stream(g()).take(4);
+      expect([...s]).toEqual([0, 0, 0, 0]);
+      expect(numValues).toBe(4);
     });
   });
   describe('takeWhile', () => {

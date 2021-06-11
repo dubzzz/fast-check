@@ -117,3 +117,39 @@ updates:
       # we run this test against a linked version of fast-check
       # by using `yarn link "fast-check"`
       - dependency-name: "fast-check"
+
+  - package-ecosystem: "npm"
+    directory: "/test/esm/esbuild-with-import"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
+  - package-ecosystem: "npm"
+    directory: "/test/esm/esbuild-with-require"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "⬆️"
+    ignore:
+      # we run this test against a linked version of fast-check
+      # by using `yarn link "fast-check"`
+      - dependency-name: "fast-check"
+
+  - package-ecosystem: "npm"
+    directory: "/.github/actions/deploy-netlify"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "⬆️"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "⬆️"

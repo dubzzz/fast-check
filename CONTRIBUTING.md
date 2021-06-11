@@ -14,8 +14,8 @@ Use your best judgment, and feel free to propose changes to this document in a p
 
 Before asking questions, please double-check you can not find your answer in one of the examples provided or in the documentation of the project:
 
-- [Documentation](https://github.com/dubzzz/fast-check/blob/master/README.md)
-- [Examples provided inside the project](https://github.com/dubzzz/fast-check/tree/master/example)
+- [Documentation](https://github.com/dubzzz/fast-check/blob/main/README.md)
+- [Examples provided inside the project](https://github.com/dubzzz/fast-check/tree/main/example)
 - [Examples of properties](https://github.com/dubzzz/fast-check-examples)
 - [Example: fuzzing a REST API](https://github.com/dubzzz/fuzz-rest-api)
 
@@ -43,9 +43,9 @@ Once done, everything is ready for you to start working on the code.
 #### Code style
 
 Code style standard is enforced by Prettier.
-Once done with your development you can check it follow the recommended code style by running `yarn format:check` or run autofixes with `yarn format:fix`.
+Once done with your development you can check it follow the recommended code style by running `yarn format:check` or run autofixes with `yarn format`.
 
-You should also check for linting by running `yarn lint:check`.
+You should also check for linting by running `yarn lint:check` and fix lint problems with `yarn lint`.
 
 #### Travis CI integration
 
@@ -58,21 +58,21 @@ If you plan to update your PR with either a fix for the tests or change followin
 
 Before your fix:
 ```
---*---> master    on dubzzz/fast-check
+--*---> main    on dubzzz/fast-check
    \
    #1   branch-pr on your fork
 ```
 
 After your fix:
 ```
---*--->        master    on dubzzz/fast-check
+--*--->        main    on dubzzz/fast-check
    \
    #1 --- #2   branch-pr on your fork
 ```
 
-#### Resync PR with master
+#### Resync PR with main
 
-Ideally to resync your branch with master prefer a merge of master branch into your PR branch. It has the advantage to preserves the commit history on GitHub PR (contrary to rebase and force push).
+Ideally to resync your branch with main prefer a merge of main branch into your PR branch. It has the advantage to preserves the commit history on GitHub PR (contrary to rebase and force push).
 
 ### Examples
 
@@ -122,4 +122,4 @@ The `legacy` spec is responsible to check that most of the arbitraries provided 
 
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @internal */` tag to hide internals - otherwise they would get published into the generated documentation
 
-- Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/master/documentation/Arbitraries.md
+- Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md

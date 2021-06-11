@@ -10,13 +10,13 @@ const biasedBoolean = fc.frequency(
 describe('ReplayPath', () => {
   it('Should be able to read back itself', () =>
     fc.assert(
-      fc.property(fc.array(fc.boolean(), 0, 1000), (replayPath: boolean[]) => {
+      fc.property(fc.array(fc.boolean(), { maxLength: 1000 }), (replayPath: boolean[]) => {
         expect(ReplayPath.parse(ReplayPath.stringify(replayPath))).toEqual(replayPath);
       })
     ));
   it('Should be able to read back itself (biased boolean)', () =>
     fc.assert(
-      fc.property(fc.array(biasedBoolean, 0, 1000), (replayPath: boolean[]) => {
+      fc.property(fc.array(biasedBoolean, { maxLength: 1000 }), (replayPath: boolean[]) => {
         expect(ReplayPath.parse(ReplayPath.stringify(replayPath))).toEqual(replayPath);
       })
     ));

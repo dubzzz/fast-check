@@ -1,0 +1,386 @@
+name: Build Status
+
+on:
+  push:
+    branches: 
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
+    tags:
+      - v**
+  pull_request:
+    branches:
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
+
+jobs:
+  format_lint:
+    name: 'Format & Lint'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/cache@v2.1.6
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Check format
+        run: yarn format:check
+      - name: Check lint
+        run: yarn lint:check
+  test:
+    name: 'Test'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 16.x]
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/cache@v2.1.6
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build the library (dev version)
+        run: |
+            yarn prebuild
+            yarn build
+      - name: Unit tests
+        shell: bash -l {0}
+        run: |
+            export EXPECT_DEFAULT_SEED="true"
+            export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+            echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+            yarn test
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.2
+        with:
+          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          fail_ci_if_error: false # default: false
+          verbose: false # default: false
+  test_e2e:
+    name: 'Test E2E'
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 16.x]
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/cache@v2.1.6
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build the library (dev version)
+        run: |
+            yarn prebuild
+            yarn build
+      - name: End-to-end tests
+        shell: bash -l {0}
+        run: |
+            export EXPECT_DEFAULT_SEED="true"
+            export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+            echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+            yarn e2e
+  test_package_quality:
+    name: 'Test package quality'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Check package score using skypack
+        run: npx @skypack/package-check
+  documentation:
+    name: 'Build documentation'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/cache@v2.1.6
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build minimal package
+        run: |
+          yarn prebuild
+          yarn build:publish-types
+      - name: Generate documentation
+        run: yarn docs-ci
+      - name: Upload documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: docs
+          path: docs/
+          if-no-files-found: error
+          retention-days: 1
+  production_package:
+    name: 'Build production package'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/cache@v2.1.6
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build production package
+        run: yarn build:prod-ci
+      - name: Create bundle
+        run: |
+          yarn pack
+          mv fast-check-*.tgz fast-check.tgz
+      - name: Upload production package
+        uses: actions/upload-artifact@v2
+        with:
+          name: bundle
+          path: fast-check.tgz
+          if-no-files-found: error
+          retention-days: 1
+  test_example:
+    name: 'Test example'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'example'
+      - name: Test example/
+        run: |
+          cd example
+          yarn test
+  test_types:
+    name: 'Test types'
+    needs: production_package
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ts-version:
+          # Latest version of TypeScript
+          - '*'
+          # Various intermediate versions of Typescript
+          - '3.9'
+          - '3.4'
+          # Minimal requirement for TypeScript
+          - '3.2'
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/type'
+      - name: Adapt test/type/for TypeScript 3.4
+        if: matrix.ts-version == '3.2' || matrix.ts-version == '3.4'
+        run: |
+          cd test/type
+          sed -i 's/ts-expect-error/ts-ignore/g' *.ts
+      - name: Adapt test/type/for TypeScript 3.2
+        if: matrix.ts-version == '3.2'
+        run: |
+          cd test/type
+          sed -i 's/fc-require-ts-3.4/ts-ignore/g' *.ts
+      - name: Test test/type/
+        run: |
+          cd test/type
+          npx -p typescript@${{matrix.ts-version}} tsc
+  test_node_8:
+    name: 'Test legacy Node'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Install dependencies but use current build for fast-check
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/legacy/node-8'
+      - name: Using Node v8.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '8.x'
+      - name: Test test/legacy/node-8/
+        run: |
+          cd test/legacy/node-8
+          node --version
+          node main.js
+  test_cjs_esm:
+    name: 'Test CJS & ESM'
+    needs: production_package
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          # Node latest version supports ES modules by default
+          - 'node'
+          # Node >=13.2.0 enables support for ES modules by default
+          # Our default version of node is above 13.2.0
+          - '14'
+          # Node 12.20 includes import from CJS and removes warnings related to ES Modules
+          - '12.20'
+          # Node 12.x and >=12.18 enables support for ES modules by default
+          - '12.18'
+          # Node <12.18 requires a flag to support ES modules but can understand them
+          - '12.17'
+          # Node 10 does not understand ES modules
+          - '10'
+          # Node 13 supports ES modules a bit differently from others
+          - '13.2'
+          - '13.6'
+          - '13.7'
+          - '13'
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - name: Using Node v${{matrix.node-version}}
+      shell: bash -l {0}
+      run: nvm install ${{matrix.node-version}}
+    - name: Download production package
+      uses: actions/download-artifact@v2
+      with:
+        name: bundle
+    - name: Install dependencies but use current build for fast-check (node-extension-cjs)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-extension-cjs'
+    - name: Install dependencies but use current build for fast-check (node-extension-mjs)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-extension-mjs'
+    - name: Install dependencies but use current build for fast-check (node-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-import'
+    - name: Install dependencies but use current build for fast-check (node-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/node-with-require'
+    - name: Install dependencies but use current build for fast-check (rollup-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-import'
+    - name: Install dependencies but use current build for fast-check (rollup-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/rollup-with-require'
+    - name: Install dependencies but use current build for fast-check (webpack-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-import'
+    - name: Install dependencies but use current build for fast-check (webpack-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/webpack-with-require'
+    - name: Install dependencies but use current build for fast-check (esbuild-with-import)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/esbuild-with-import'
+    - name: Install dependencies but use current build for fast-check (esbuild-with-require)
+      uses: ./.github/actions/install-deps-with-current-fc
+      with:
+        path: 'test/esm/esbuild-with-require'
+    - name: Check compatibility
+      run: |
+        cd test/esm
+        node --version
+        sh run.sh
+  publish_documentation:
+    name: 'Publish documentation'
+    needs: documentation
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Download documentation
+        uses: actions/download-artifact@v2
+        with:
+          name: docs
+          path: docs/
+      - name: Publish to gh-pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: docs
+          clean: true
+  publish_package:
+    name: 'Publish package'
+    needs: 
+      - production_package
+      - documentation
+      - format_lint
+      - test
+      - test_e2e
+      - test_cjs_esm
+      - test_example
+      - test_node_8
+      - test_package_quality
+      - test_types
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Using Node v16.x
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Download production package
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+      - name: Publish package
+        run: npm publish fast-check.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

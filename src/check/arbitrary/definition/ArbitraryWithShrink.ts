@@ -10,6 +10,7 @@ import { Shrinkable } from './Shrinkable';
  * In the case of classical {@link Arbitrary} there is no `shrink` or `shrinkableFor` methods directly on the {@link Arbitrary},
  * the users have to call `shrink` on the instance of {@link Shrinkable} produced by `generate`.
  *
+ * @remarks Since 2.2.0
  * @public
  */
 abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
@@ -19,6 +20,8 @@ abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
    *
    * @param mrng - Random number generator
    * @returns Random value of type `T` and its shrinker
+   *
+   * @remarks Since 1.0.0
    */
   abstract generate(mrng: Random): Shrinkable<T>;
 
@@ -28,6 +31,8 @@ abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
    * @param value - Value to shrink
    * @param shrunkOnce - Indicate whether its the first shrink (default: false)
    * @returns Stream of shrinks associated to value
+   *
+   * @remarks Since 1.0.0
    */
   abstract shrink(value: T, shrunkOnce?: boolean): Stream<T>;
 
@@ -37,6 +42,8 @@ abstract class ArbitraryWithShrink<T> extends Arbitrary<T> {
    * @param value - Value to shrink
    * @param shrunkOnce - Indicate whether its the first shrink
    * @returns Shrinkable associated to value
+   *
+   * @remarks Since 1.0.0
    */
   shrinkableFor(value: T, shrunkOnce?: boolean): Shrinkable<T> {
     return new Shrinkable(value, () => this.shrink(value, shrunkOnce === true).map((v) => this.shrinkableFor(v, true)));

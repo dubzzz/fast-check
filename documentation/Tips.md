@@ -5,6 +5,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 ## Table of contents
 
 - [Filter invalid combinations using pre-conditions](#filter-invalid-combinations-using-pre-conditions)
+- [Value depending on another one](#value-depending-on-another-one)
 - [Model based testing or UI test](#model-based-testing-or-ui-test)
 - [Detect race conditions](#detect-race-conditions)
 - [Opt for verbose failures](#opt-for-verbose-failures)
@@ -49,9 +50,79 @@ Whenever it encounters a failing precondition, the framework generates another v
 
 The advantage of `fc.pre(...)` over `.filter(...)` is that runs having too many rejected values will be marked as faulty. When used in combination of `fc.check(...)` it can help to design new filtered arbitraries as the number of skipped values will be computed and available in the output.
 
-However when your arbitrary is safe enough, switching to `.filter(...)` might be taken into for two reasons:
+However when your arbitrary is safe enough, switching to `.filter(...)` might be considered for two reasons:
 - easier to share the arbitrary across multiple tests
 - higher performances - contrary to `fc.pre`, `fc.filter` is not exception-based making it faster
+
+## Value depending on another one
+
+A frequently asked question is: _How to build two values depending from each others with fast-check?_
+
+There are multiple ways to do that and all of them have their strengths: easier to write, faster to run, more efficient for shrinking...
+Let's dig into some of them through a very simple example: we want to generate `a` and `b` such that `a ≤ b`.
+
+**Option 1** - `.filter` - discards half of the generated values, can infinitely loop if condition is too strict
+
+```js
+fc.assert(
+  fc.property(
+    fc.tuple(fc.nat(), fc.nat()).filter(([a, b]) => a <= b),
+    ([a, b]) => {
+      expect(a).toBeGreaterThanOrEqualTo(b);
+    }
+  )
+);
+```
+
+**Option 2** - `fc.pre` - discards half of the generated values, stop when too many retries
+
+```js
+fc.assert(
+  fc.property(fc.nat(), fc.nat(), (a, b) => {
+    fc.pre(a <= b);
+    expect(a).toBeGreaterThanOrEqualTo(b);
+  })
+);
+```
+
+**Option 3** - `.chain` - shrinker might not shrink towards minimal cases
+
+```js
+fc.assert(
+  fc.property(
+    fc.nat().chain((n) => fc.tuple(fc.nat({ max: n }), fc.constant(n))),
+    ([a, b]) => {
+      expect(a).toBeGreaterThanOrEqualTo(b);
+    }
+  )
+);
+```
+
+**Option 4** - `.map` - sometimes complex to write
+
+```js
+fc.assert(
+  fc.property(
+    fc.tuple(fc.nat(), fc.nat()).map(([a, b]) => (a <= b ? [a, b] : [b, a])),
+    ([a, b]) => {
+      expect(a).toBeGreaterThanOrEqualTo(b);
+    }
+  )
+);
+```
+
+or
+
+```js
+fc.assert(
+  fc.property(
+    fc.tuple(fc.nat(), fc.nat()).map(([a, b]) => [a, a + b]),
+    ([a, b]) => {
+      expect(a).toBeGreaterThan(b);
+    }
+  )
+);
+```
 
 ## Model based testing or UI test
 
@@ -59,7 +130,7 @@ Model based testing approach have been introduced into fast-check to ease UI tes
 
 The idea of the approach is to define commands that could be applied to your system. The framework then picks zero, one or more commands and run them sequentially if they can be executed on the current state.
 
-A full example is available [here](https://github.com/dubzzz/fast-check/tree/master/example/004-stateMachine/musicPlayer).
+A full example is available [here](https://github.com/dubzzz/fast-check/tree/main/example/004-stateMachine/musicPlayer).
 
 Let's take the case of a list class with `pop`, `push`, `size` methods as an example.
 
@@ -123,7 +194,7 @@ const allCommands = [
 ];
 // run everything
 fc.assert(
-  fc.property(fc.commands(allCommands, 100), cmds => {
+  fc.property(fc.commands(allCommands, { maxCommands: 100 }), cmds => {
     const s = () => ({ model: { num: 0 }, real: new List() });
     fc.modelRun(s, cmds);
   })
@@ -140,9 +211,9 @@ Even if JavaScript is mostly a mono-threaded language, it is quite easy to intro
 
 `fast-check` comes with a built-in feature accessible through `fc.scheduler` that will help you to detect such issues earlier during the development. It basically re-orders the execution of your promises or async tasks in order to make it crash under unexpected orderings.
 
-The best way to see it in action is certainly to check the snippets provided in our [CodeSandbox@005-race](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests).
+The best way to see it in action is certainly to check the snippets provided in our [CodeSandbox@005-race](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests).
 
-Here is a very simple React-based example that you can play with on [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/master/example?hidenavigation=1&module=%2F005-race%2FuserProfile%2Fmain.spec.tsx&previewwindow=tests):
+Here is a very simple React-based example that you can play with on [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?hidenavigation=1&module=%2F005-race%2FuserProfile%2Fmain.spec.tsx&previewwindow=tests):
 
 ```jsx
 /* Component */
@@ -176,7 +247,7 @@ function UserPageProfile(props) {
 test('should not display data related to another user', () =>
   fc.assert(
     fc.asyncProperty(
-      fc.array(fc.uuid(), fc.uuid(), fc.scheduler(),
+      fc.uuid(), fc.uuid(), fc.scheduler(),
       async (uid1, uid2, s) => {
         // Arrange
         getUserProfile.mockImplementation(
@@ -351,7 +422,7 @@ fc.statistics(
 
 ## Replay after failure
 
-`fast-check` comes with a must have feature: replay a failing case immediately given its seed and path (seed only to replay all).
+`fast-check` comes with a must-have feature: replay a failing case immediately given its seed and path (seed only to replay all).
 
 Whenever `fc.assert` encounters a failure, it displays an error log featuring both the seed and the path to replay it. For instance, in the output below the seed is 1525890375951 and the path 0:0.
 
@@ -443,7 +514,7 @@ The value stored into `replayPath` encodes the history of what was really execut
 
 ## Add custom examples next to generated ones
 
-Sometimes it might be useful to run your test on some custom examples you think useful: either because they caused your code to fail in the past or because you explicitely want to confirm it succeeds on this specific example.
+Sometimes it might be useful to run your test on some custom examples you think useful: either because they caused your code to fail in the past or because you explicitly want to confirm it succeeds on this specific example.
 
 Whatever the reason, the framework provides you the ability to set a custom list of examples into the settings of `fc.assert`.
 Those examples will be executed first followed by the values generated by the framework. It does not impact the number of values that will be tested against your property - *meaning that if you add 5 custom examples, you remove 5 generated values from the run*.
@@ -527,7 +598,7 @@ Please note that in the two examples above, the resulting arbitraries will not h
 
 ## Setup global settings
 
-All the runners provided by fast-check come with an optional parameter to customize how the runner will behave (see `fc.assert`, `fc.check`, `fc.sample` or `fc.statistics`). In the past, this parameter had to be provided runner by runner otherwise user would have fallbacked on the default values hardcoded in fast-check code. For instance, if one wanted to override the default number of runs of properties, it would have written:
+All the runners provided by fast-check come with an optional parameter to customize how the runner will behave (see `fc.assert`, `fc.check`, `fc.sample` or `fc.statistics`). In the past, this parameter had to be provided runner by runner otherwise user would have fallen back on the default values hardcoded in fast-check code. For instance, if one wanted to override the default number of runs of properties, it would have written:
 
 ```typescript
 test('test #1', () => {
@@ -584,7 +655,7 @@ const fc = require("fast-check");
 fc.configureGlobal({ numRuns: 10 });
 ```
 
-## Avoid tests to reach the timeout of your test runner
+## Avoid tests reaching the timeout of your test runner
 
 Most of the time, test runners like Jest, Mocha or even Jasmine come with default timeouts. Whenever one test takes longer than this time limit, the test runner might stop it immediately. Unfortunately whenever fast-check gets stopped at the middle of a run, it cannot give back the seed nor the path that were used during this test.
 

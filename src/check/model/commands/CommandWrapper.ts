@@ -7,7 +7,8 @@ import { ICommand } from '../command/ICommand';
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean>
-  implements ICommand<Model, Real, RunResult, CheckAsync> {
+  implements ICommand<Model, Real, RunResult, CheckAsync>
+{
   hasRan = false;
   constructor(readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>) {}
   check(m: Readonly<Model>): CheckAsync extends false ? boolean : Promise<boolean> {

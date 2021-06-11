@@ -17,8 +17,7 @@ describe('RunExecution', () => {
             failureId: fc.nat(1000),
             message: fc.fullUnicodeString(),
           }),
-          1,
-          10
+          { minLength: 1 }
         ),
         (seed, verbosityLevel, failuresDesc) => {
           // Simulate the run
@@ -31,7 +30,7 @@ describe('RunExecution', () => {
           }
           // Assert the value
           const lastFailure = failuresDesc[failuresDesc.length - 1];
-          const details = run.toRunDetails(seed, '', 42, 10000, QualifiedParameters.read({}));
+          const details = run.toRunDetails(seed, '', 10000, QualifiedParameters.read({}));
           expect(details.failed).toBe(true);
           expect(details.interrupted).toBe(false);
           expect(details.counterexamplePath).not.toBe(null);
@@ -55,7 +54,7 @@ describe('RunExecution', () => {
     ));
   it('Should generate correct counterexamplePath with no initial offset', () =>
     fc.assert(
-      fc.property(fc.integer(), fc.array(fc.nat(1000), 1, 10), (seed, path) => {
+      fc.property(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
         // Simulate the run
         const run = new RunExecution<number>(VerbosityLevel.None, false);
         for (let idx = 0; idx !== path[0]; ++idx) {
@@ -65,7 +64,7 @@ describe('RunExecution', () => {
           run.fail(42, failureId, 'Failed');
         }
         // Assert the value
-        expect(run.toRunDetails(seed, '', 42, 10000, QualifiedParameters.read({})).counterexamplePath).toEqual(
+        expect(run.toRunDetails(seed, '', 10000, QualifiedParameters.read({})).counterexamplePath).toEqual(
           path.join(':')
         );
       })
@@ -74,8 +73,8 @@ describe('RunExecution', () => {
     fc.assert(
       fc.property(
         fc.integer(),
-        fc.array(fc.nat(1000), 1, 10),
-        fc.array(fc.nat(1000), 1, 10),
+        fc.array(fc.nat(1000), { minLength: 1 }),
+        fc.array(fc.nat(1000), { minLength: 1 }),
         (seed, offsetPath, addedPath) => {
           // Simulate the run
           const run = new RunExecution<number>(VerbosityLevel.None, false);
@@ -90,7 +89,7 @@ describe('RunExecution', () => {
           joinedPath[offsetPath.length - 1] += addedPath[0];
           // Assert the value
           expect(
-            run.toRunDetails(seed, offsetPath.join(':'), 42, 10000, QualifiedParameters.read({})).counterexamplePath
+            run.toRunDetails(seed, offsetPath.join(':'), 10000, QualifiedParameters.read({})).counterexamplePath
           ).toEqual(joinedPath.join(':'));
         }
       )
@@ -103,8 +102,10 @@ describe('RunExecution', () => {
             status: fc.constantFrom(ExecutionStatus.Success, ExecutionStatus.Failure, ExecutionStatus.Skipped),
             value: fc.nat(),
           }),
-          1,
-          100
+          {
+            minLength: 1,
+            maxLength: 100,
+          }
         ),
         (executionStatuses) => {
           // Simulate the run
@@ -122,13 +123,7 @@ describe('RunExecution', () => {
                 break;
             }
           }
-          const details = run.toRunDetails(
-            0,
-            '',
-            executionStatuses.length + 1,
-            executionStatuses.length + 1,
-            QualifiedParameters.read({})
-          );
+          const details = run.toRunDetails(0, '', executionStatuses.length + 1, QualifiedParameters.read({}));
           let currentExecutionTrees = details.executionSummary;
           for (let idx = 0, idxInTrees = 0; idx !== executionStatuses.length; ++idx, ++idxInTrees) {
             // Ordered like execution: same value and status

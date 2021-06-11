@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`CharacterArbitrary (seed: ${seed})`, () => {
   describe('fullUnicode', () => {
     it('Should shrink towards a character of size greater than one', () => {

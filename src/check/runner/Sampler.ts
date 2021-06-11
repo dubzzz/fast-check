@@ -28,8 +28,8 @@ function streamSample<Ts>(
 ): IterableIterator<Ts> {
   const extendedParams =
     typeof params === 'number'
-      ? { ...readConfigureGlobal(), numRuns: params }
-      : { ...readConfigureGlobal(), ...params };
+      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
+      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
     toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
@@ -59,6 +59,7 @@ function streamSample<Ts>(
  * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *
+ * @remarks Since 0.0.6
  * @public
  */
 function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
@@ -86,6 +87,7 @@ function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parame
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *
+ * @remarks Since 0.0.6
  * @public
  */
 function statistics<Ts>(
@@ -95,8 +97,8 @@ function statistics<Ts>(
 ): void {
   const extendedParams =
     typeof params === 'number'
-      ? { ...readConfigureGlobal(), numRuns: params }
-      : { ...readConfigureGlobal(), ...params };
+      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
+      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const recorded: { [key: string]: number } = {};
   for (const g of streamSample(generator, params)) {

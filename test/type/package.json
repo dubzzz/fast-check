@@ -1,16 +1,9 @@
 {
-  "name": "fast-check-test-type",
-  "version": "1.0.0",
-  "description": "Test types bundled with fast-check",
   "scripts": {
-    "test": "tsd"
   },
-  "dependencies": {},
-  "devDependencies": {
-    "fast-check": "*",
-    "tsd": "^0.13.1"
+  "dependencies": {
+    "fast-check": "*"
   },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
   "private": true
 }

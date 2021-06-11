@@ -1,7 +1,7 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 import { URL } from 'url';
 
-const seed = Date.now();
 describe(`WebArbitrary (seed: ${seed})`, () => {
   it('Should produce valid domains', () => {
     fc.assert(
@@ -53,9 +53,13 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
             hash: fragment === '' ? '' : `#${fragment}`,
           });
 
+          // Transform    /%2e into /.
+          // Transform /%2e%2e into /..
+          // Transform   /%2e. into /..  - related to #1235
+          // Transform   /.%2e into /..  - related to #1235
           const dotSanitizedPath = path
             .replace(/\/(%2e|%2E)($|\/)/g, '/.$2')
-            .replace(/\/(%2e|%2E)(%2e|%2E)($|\/)/g, '/..$3');
+            .replace(/\/(%2e|%2E|\.)(%2e|%2E|\.)($|\/)/g, '/..$3');
           if (!dotSanitizedPath.includes('/..')) {
             const sanitizedPath = dotSanitizedPath
               .replace(/\/\.\/(\.\/)*/g, '/') // replace /./, /././, etc.. by /

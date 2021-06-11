@@ -1,4 +1,4 @@
-// Implementation inspired from https://github.com/dubzzz/various-algorithms/blob/master/algorithms/numbers/roman-numbers/implem.cpp
+// Implementation inspired from https://github.com/dubzzz/various-algorithms/blob/main/algorithms/numbers/roman-numbers/implem.cpp
 
 export const LettersValue: [number, string][] = [
   [1, 'I'],

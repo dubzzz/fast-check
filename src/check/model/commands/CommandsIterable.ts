@@ -6,7 +6,8 @@ import { CommandWrapper } from './CommandWrapper';
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync extends boolean = false>
-  implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>> {
+  implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>>
+{
   constructor(
     readonly commands: CommandWrapper<Model, Real, RunResult, CheckAsync>[],
     readonly metadataForReplay: () => string
@@ -14,7 +15,7 @@ export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync 
   [Symbol.iterator](): Iterator<CommandWrapper<Model, Real, RunResult, CheckAsync>> {
     return this.commands[Symbol.iterator]();
   }
-  [cloneMethod]() {
+  [cloneMethod](): CommandsIterable<Model, Real, RunResult, CheckAsync> {
     return new CommandsIterable(
       this.commands.map((c) => c.clone()),
       this.metadataForReplay

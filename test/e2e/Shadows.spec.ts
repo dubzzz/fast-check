@@ -1,4 +1,5 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
 // Code under tests
 // Based on the CodinGame https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1
@@ -150,11 +151,10 @@ const SpaceArbitrary = fc
   .map(({ w, h, cx, cy, sx, sy }) =>
     new SpaceBuilder().withDimension(w, h).withSolution(cx, cy).withCurrent(sx, sy).build()
   )
-  .map((space: Space) => [space, Math.ceil(Math.log(Math.max(space.dimX, space.dimY)) / Math.log(2))]);
+  .map((space: Space): [Space, number] => [space, Math.ceil(Math.log(Math.max(space.dimX, space.dimY)) / Math.log(2))]);
 
 // Test
 
-const seed = Date.now();
 describe(`Shadows (seed: ${seed})`, () => {
   it('Should detect an implementation issue', () => {
     let failed = false;

@@ -8,7 +8,13 @@ import { Random } from '../../../src/random/generator/Random';
  * should not be called on any of its methods
  */
 class NoCallGenerator implements RandomGenerator {
+  clone(): RandomGenerator {
+    return this;
+  }
   next(): [number, RandomGenerator] {
+    throw new Error('Method not implemented.');
+  }
+  unsafeNext(): number {
     throw new Error('Method not implemented.');
   }
   min(): number {
@@ -32,10 +38,21 @@ class FastIncreaseRandomGenerator implements RandomGenerator {
     this.value = value;
     this.incr = incr === undefined || incr === 0 ? 1 : incr;
   }
+  clone(): RandomGenerator {
+    return new FastIncreaseRandomGenerator(this.value, this.incr);
+  }
   next(): [number, RandomGenerator] {
     // need to tweak incr in order to use a large range of values
     // uniform distribution expects some entropy
     return [this.value, new FastIncreaseRandomGenerator((this.value + this.incr) | 0, 2 * this.incr + 1)];
+  }
+  unsafeNext(): number {
+    // need to tweak incr in order to use a large range of values
+    // uniform distribution expects some entropy
+    const out = this.value;
+    this.value = (this.value + this.incr) | 0;
+    this.incr = 2 * this.incr + 1;
+    return out;
   }
   min(): number {
     return -0x80000000;
@@ -56,8 +73,16 @@ class CounterRandomGenerator implements RandomGenerator {
   constructor(value: number) {
     this.value = value;
   }
+  clone(): RandomGenerator {
+    return new CounterRandomGenerator(this.value);
+  }
   next(): [number, RandomGenerator] {
     return [this.value, new CounterRandomGenerator((this.value + 1) | 0)];
+  }
+  unsafeNext(): number {
+    const out = this.value;
+    this.value = (this.value + 1) | 0;
+    return out;
   }
   min(): number {
     return -0x80000000;
@@ -68,15 +93,15 @@ class CounterRandomGenerator implements RandomGenerator {
 }
 
 const raw = {
-  counter: (value: number) => new CounterRandomGenerator(value),
-  nocall: () => new NoCallGenerator(),
-  fastincrease: (value: number) => new FastIncreaseRandomGenerator(value),
+  counter: (value: number): RandomGenerator => new CounterRandomGenerator(value),
+  nocall: (): RandomGenerator => new NoCallGenerator(),
+  fastincrease: (value: number): RandomGenerator => new FastIncreaseRandomGenerator(value),
 };
 
 const mutable = {
-  counter: (value: number) => new Random(new CounterRandomGenerator(value)),
-  nocall: () => new Random(new NoCallGenerator()),
-  fastincrease: (value: number) => new Random(new FastIncreaseRandomGenerator(value)),
+  counter: (value: number): Random => new Random(new CounterRandomGenerator(value)),
+  nocall: (): Random => new Random(new NoCallGenerator()),
+  fastincrease: (value: number): Random => new Random(new FastIncreaseRandomGenerator(value)),
 };
 
 export { mutable, raw, CounterRandomGenerator, NoCallGenerator, FastIncreaseRandomGenerator };

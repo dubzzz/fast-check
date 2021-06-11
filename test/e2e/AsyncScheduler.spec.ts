@@ -1,6 +1,6 @@
 import fc from '../../src/fast-check';
+import { seed } from './seed';
 
-const seed = Date.now();
 describe(`AsyncScheduler (seed: ${seed})`, () => {
   it('should detect trivial race conditions', async () => {
     // The code below relies on the fact/expectation that fetchA takes less time that fetchB

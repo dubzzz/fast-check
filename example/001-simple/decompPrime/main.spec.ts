@@ -5,7 +5,7 @@ import { decompPrime } from './src/decompPrime';
 const MAX_INPUT = 65536;
 
 describe('decompPrime', () => {
-  it('should produce an array such as the product equals the input', () => {
+  it('should produce an array such that the product equals the input', () => {
     fc.assert(
       fc.property(fc.nat(MAX_INPUT), (n) => {
         const factors = decompPrime(n);

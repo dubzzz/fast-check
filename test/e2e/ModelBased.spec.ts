@@ -1,4 +1,5 @@
 import * as fc from '../../src/fast-check';
+import { seed } from './seed';
 
 interface IList<T> {
   push(v: T): void;
@@ -43,11 +44,10 @@ const allCommands = [
   fc.constant(new SizeCommand()),
 ];
 
-const seed = Date.now();
 describe(`Model Based (seed: ${seed})`, () => {
   it('should not detect any issue on built-in list', () => {
     fc.assert(
-      fc.property(fc.commands(allCommands, 100), (cmds) => {
+      fc.property(fc.commands(allCommands, { maxCommands: 100 }), (cmds) => {
         class BuiltinList implements IList<number> {
           data: number[] = [];
           push = (v: number) => this.data.push(v);
@@ -61,7 +61,7 @@ describe(`Model Based (seed: ${seed})`, () => {
   });
   it('should detect an issue on fixed size circular list', () => {
     const out = fc.check(
-      fc.property(fc.integer(1, 1000), fc.commands(allCommands, 100), (size, cmds) => {
+      fc.property(fc.integer(1, 1000), fc.commands(allCommands, { maxCommands: 100 }), (size, cmds) => {
         class CircularList implements IList<number> {
           start = 0;
           end = 0;

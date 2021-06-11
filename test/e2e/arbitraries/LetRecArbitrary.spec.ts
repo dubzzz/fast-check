@@ -1,6 +1,6 @@
 import * as fc from '../../../src/fast-check';
+import { seed } from '../seed';
 
-const seed = Date.now();
 describe(`LetRecArbitrary (seed: ${seed})`, () => {
   describe('letrec', () => {
     it('Should be able to rebuild simple arbitraries', () => {

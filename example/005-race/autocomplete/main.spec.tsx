@@ -31,7 +31,7 @@ describe('AutocompleteField', () => {
         .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
           const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
-            return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
+            return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
           });
 
           // Act
@@ -45,7 +45,7 @@ describe('AutocompleteField', () => {
 
             const autocompletionValue = input.attributes.getNamedItem('value')!.value;
             const suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
-            if (!suggestions.every(suggestion => suggestion.includes(autocompletionValue))) {
+            if (!suggestions.every((suggestion) => suggestion.includes(autocompletionValue))) {
               throw new Error(
                 `Invalid suggestions for ${JSON.stringify(autocompletionValue)}, got: ${JSON.stringify(suggestions)}`
               );
@@ -65,7 +65,7 @@ describe('AutocompleteField', () => {
           // Arrange
           const query = queries[queries.length - 1];
           const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
-            return Promise.resolve(allResults.filter(r => r.includes(query)).slice(0, maxResults));
+            return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
           });
 
           // Act
@@ -90,13 +90,13 @@ describe('AutocompleteField', () => {
             if (suggestions.length < prevSuggestions.length) {
               const got = JSON.stringify({
                 prevSuggestions,
-                suggestions
+                suggestions,
               });
               throw new Error(`We expect to have more and more suggestions as we resolve queries, got: ${got}`);
             }
           }
           // At the end we expect to get results matching <query>
-          if (!suggestions.every(s => s.startsWith(query))) {
+          if (!suggestions.every((s) => s.startsWith(query))) {
             throw new Error(`Must start with ${JSON.stringify(query)}, got: ${JSON.stringify(suggestions)}`);
           }
         })
@@ -109,8 +109,8 @@ describe('AutocompleteField', () => {
 
 // Helpers
 
-const AllResultsArbitrary = fc.set(fc.string(), 0, 1000);
-const QueriesArbitrary = fc.array(fc.string(), 1, 10);
+const AllResultsArbitrary = fc.set(fc.string(), { maxLength: 1000 });
+const QueriesArbitrary = fc.array(fc.string(), { minLength: 1 });
 
 /**
  * Generate a sequence of events that have to be fired onto the component
