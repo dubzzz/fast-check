@@ -9,7 +9,7 @@ import { Random } from '../../../src/random/generator/Random';
  */
 class NoCallGenerator implements RandomGenerator {
   clone(): RandomGenerator {
-    throw new Error('Method not implemented.');
+    return this;
   }
   next(): [number, RandomGenerator] {
     throw new Error('Method not implemented.');
