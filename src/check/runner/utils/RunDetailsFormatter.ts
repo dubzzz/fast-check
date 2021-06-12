@@ -247,7 +247,7 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
   if (!out.failed) return;
-  throw await asyncDefaultReportMessage(out);
+  throw new Error(await asyncDefaultReportMessage(out));
 }
 
 /**
