@@ -207,6 +207,9 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
   >();
   function stringifyOne(value: unknown): string {
     const syncVersion = stringify(value);
+    if (value === 0) {
+      return syncVersion;
+    }
     registeredValues.set(value, {
       syncVersion,
       // We fallback to the synchronous version in case of error
