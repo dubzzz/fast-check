@@ -194,3 +194,17 @@ export function stringifyInternal<Ts>(value: Ts, previousValues: any[]): string 
 export function stringify<Ts>(value: Ts): string {
   return stringifyInternal(value, []);
 }
+
+/**
+ * Convert any value to its fast-check string representation
+ *
+ * This asynchronous version is also able to dig into the status of Promise
+ *
+ * @param value - Value to be converted into a string
+ *
+ * @remarks Since 2.17.0
+ * @public
+ */
+export async function asyncStringify<Ts>(value: Ts): Promise<string> {
+  return stringifyInternal(value, []);
+}

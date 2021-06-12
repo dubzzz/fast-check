@@ -13,7 +13,7 @@ import { RunnerIterator } from './RunnerIterator';
 import { SourceValuesIterator } from './SourceValuesIterator';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
-import { reportRunDetails } from './utils/RunDetailsFormatter';
+import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
 
@@ -190,7 +190,7 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   const out = check(property, params);
-  if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(reportRunDetails);
+  if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(asyncReportRunDetails);
   else reportRunDetails(out as RunDetails<Ts>);
 }
 

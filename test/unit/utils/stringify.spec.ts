@@ -4,7 +4,7 @@ import * as fc from '../../../lib/fast-check';
 // Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side
 import { Buffer as NotNodeBuffer } from '../../../node_modules/buffer';
 
-import { stringify } from '../../../src/utils/stringify';
+import { asyncStringify, stringify } from '../../../src/utils/stringify';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
@@ -364,6 +364,17 @@ describe('stringify', () => {
     });
     expect(stringify(instance)).toEqual('[object Object]');
   });
+});
+
+describe('asyncStringify', () => {
+  it('Should behave as stringify for synchronous values produced by fc.anything()', () =>
+    fc.assert(
+      fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
+        const expectedStringifiedValue = stringify(value);
+        const stringifiedValue = await asyncStringify(value);
+        expect(stringifiedValue).toBe(expectedStringifiedValue);
+      })
+    ));
 });
 
 // Helpers
