@@ -133,6 +133,92 @@ Execution summary:
 . . . . . . . . . . . [32m√[0m [\\"854975879\\"]"
 `;
 
+exports[`NoRegression Promise<number> (sync) 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: \\"1:4:0:0:0:0:3:0:0:3:0:1:1:0:2\\", endOnFailure: true }
+Counterexample: [[-873632988,new Promise(() => {/*unknown*/})]]
+Shrunk 14 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[32m√[0m [[9,new Promise(() => {/*unknown*/})]]
+[31m×[0m [[-994490854,new Promise(() => {/*unknown*/})]]
+. [32m√[0m [[0,new Promise(() => {/*unknown*/})]]
+. [32m√[0m [[-497245427,new Promise(() => {/*unknown*/})]]
+. [32m√[0m [[-745868141,new Promise(() => {/*unknown*/})]]
+. [32m√[0m [[-870179498,new Promise(() => {/*unknown*/})]]
+. [31m×[0m [[-932335176,new Promise(() => {/*unknown*/})]]
+. . [31m×[0m [[-901257337,new Promise(() => {/*unknown*/})]]
+. . . [31m×[0m [[-885718418,new Promise(() => {/*unknown*/})]]
+. . . . [31m×[0m [[-877948958,new Promise(() => {/*unknown*/})]]
+. . . . . [31m×[0m [[-874064228,new Promise(() => {/*unknown*/})]]
+. . . . . . [32m√[0m [[-872121863,new Promise(() => {/*unknown*/})]]
+. . . . . . [32m√[0m [[-873093046,new Promise(() => {/*unknown*/})]]
+. . . . . . [32m√[0m [[-873578637,new Promise(() => {/*unknown*/})]]
+. . . . . . [31m×[0m [[-873821433,new Promise(() => {/*unknown*/})]]
+. . . . . . . [31m×[0m [[-873700035,new Promise(() => {/*unknown*/})]]
+. . . . . . . . [31m×[0m [[-873639336,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . [32m√[0m [[-873608987,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . [32m√[0m [[-873624162,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . [32m√[0m [[-873631749,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . [31m×[0m [[-873635543,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . [31m×[0m [[-873633646,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . [32m√[0m [[-873632698,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . [31m×[0m [[-873633172,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . [32m√[0m [[-873632935,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . [31m×[0m [[-873633054,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . . [31m×[0m [[-873632995,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . . . [32m√[0m [[-873632965,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . . . [32m√[0m [[-873632980,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . . . [31m×[0m [[-873632988,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . . . . [32m√[0m [[-873632984,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . . . . [32m√[0m [[-873632986,new Promise(() => {/*unknown*/})]]
+. . . . . . . . . . . . . . . [32m√[0m [[-873632987,new Promise(() => {/*unknown*/})]]"
+`;
+
+exports[`NoRegression Promise<number> 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: \\"1:4:0:0:0:0:3:0:0:3:0:1:1:0:2\\", endOnFailure: true }
+Counterexample: [Promise.resolve(-873632988)]
+Shrunk 14 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [Promise.resolve(-994490854)]
+. [31m×[0m [Promise.resolve(-932335176)]
+. . [31m×[0m [Promise.resolve(-901257337)]
+. . . [31m×[0m [Promise.resolve(-885718418)]
+. . . . [31m×[0m [Promise.resolve(-877948958)]
+. . . . . [31m×[0m [Promise.resolve(-874064228)]
+. . . . . . [31m×[0m [Promise.resolve(-873821433)]
+. . . . . . . [31m×[0m [Promise.resolve(-873700035)]
+. . . . . . . . [31m×[0m [Promise.resolve(-873639336)]
+. . . . . . . . . [31m×[0m [Promise.resolve(-873635543)]
+. . . . . . . . . . [31m×[0m [Promise.resolve(-873633646)]
+. . . . . . . . . . . [31m×[0m [Promise.resolve(-873633172)]
+. . . . . . . . . . . . [31m×[0m [Promise.resolve(-873633054)]
+. . . . . . . . . . . . . [31m×[0m [Promise.resolve(-873632995)]
+. . . . . . . . . . . . . . [31m×[0m [Promise.resolve(-873632988)]
+. . . . . . . . . . . . . . . [32m√[0m [Promise.resolve(-873632987)]
+. . . . . . . . . . . . . . . [32m√[0m [Promise.resolve(-873632986)]
+. . . . . . . . . . . . . . . [32m√[0m [Promise.resolve(-873632984)]
+. . . . . . . . . . . . . . [32m√[0m [Promise.resolve(-873632980)]
+. . . . . . . . . . . . . . [32m√[0m [Promise.resolve(-873632965)]
+. . . . . . . . . . . . [32m√[0m [Promise.resolve(-873632935)]
+. . . . . . . . . . . [32m√[0m [Promise.resolve(-873632698)]
+. . . . . . . . . [32m√[0m [Promise.resolve(-873631749)]
+. . . . . . . . . [32m√[0m [Promise.resolve(-873624162)]
+. . . . . . . . . [32m√[0m [Promise.resolve(-873608987)]
+. . . . . . [32m√[0m [Promise.resolve(-873578637)]
+. . . . . . [32m√[0m [Promise.resolve(-873093046)]
+. . . . . . [32m√[0m [Promise.resolve(-872121863)]
+. [32m√[0m [Promise.resolve(-870179498)]
+. [32m√[0m [Promise.resolve(-745868141)]
+. [32m√[0m [Promise.resolve(-497245427)]
+. [32m√[0m [Promise.resolve(0)]
+[32m√[0m [Promise.resolve(9)]"
+`;
+
 exports[`NoRegression anything 1`] = `
 "Property failed after 3 tests
 { seed: 42, path: \\"2:1:0:0:2:3:3:1:2:1:1:1:1:1:2:1:1:1:1:3:1:1:2:1:5:1:7:1:1:1:1:1:3\\", endOnFailure: true }
