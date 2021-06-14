@@ -226,15 +226,16 @@ export function stringify<Ts>(value: Ts): string {
 }
 
 /**
- * Convert any value to its fast-check string representation
+ * Mid-way between stringify and asyncStringify
  *
- * This asynchronous version is also able to dig into the status of Promise
+ * If the value can be stringified in a synchronous way then it returns a string.
+ * Otherwise, it tries to go further in investigations and return a Promise<string>.
  *
- * @param value - Value to be converted into a string
+ * Not publicly exposed yet!
  *
- * @public
+ * @internal
  */
-export async function asyncStringify<Ts>(value: Ts): Promise<string> {
+export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
   const stillPendingMarker = Symbol();
   const pendingPromisesForCache: Promise<void>[] = [];
   const cache = new Map<unknown, AsyncContent>();
@@ -265,8 +266,7 @@ export async function asyncStringify<Ts>(value: Ts): Promise<string> {
     return unknownState;
   };
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
+  function loop(): string | Promise<string> {
     // Rq.: While this implementation is not optimal in case we have deeply nested Promise
     //      a single loop (or two) will must of the time be enough for most of the values.
     //      Nested Promise will be a sub-optimal case, but given the fact that it barely never
@@ -275,22 +275,9 @@ export async function asyncStringify<Ts>(value: Ts): Promise<string> {
     if (pendingPromisesForCache.length === 0) {
       return stringifiedValue;
     }
-    await Promise.all(pendingPromisesForCache.splice(0));
+    return Promise.all(pendingPromisesForCache.splice(0)).then(loop);
   }
-}
-
-/**
- * Mid-way between stringify and asyncStringify
- *
- * If the value can be stringified in a synchronous way then it returns a string.
- * Otherwise, it tries to go further in investigations and return a Promise<string>.
- *
- * Not publicly exposed yet!
- *
- * @internal
- */
-export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
-  return stringifyInternal(value, []);
+  return loop();
 }
 
 /**
