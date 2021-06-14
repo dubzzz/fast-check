@@ -683,7 +683,19 @@ describe(`NoRegression`, () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  it('Promise<number>', async () => {
+  it('Promise<number> (sync)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.integer().map((v) => [v, Promise.resolve(v)] as const),
+          ([v, _p]) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('Promise<number> (async)', async () => {
     await expect(
       async () =>
         await fc.assert(
@@ -696,15 +708,13 @@ describe(`NoRegression`, () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('Promise<number> (sync)', () => {
-    expect(() =>
-      fc.assert(
-        fc.property(
-          fc.integer().map((v) => [v, Promise.resolve(v)] as const),
-          ([v, _p]) => testFunc(v)
-        ),
-        settings
-      )
-    ).toThrowErrorMatchingSnapshot();
+  it('number (async)', async () => {
+    await expect(
+      async () =>
+        await fc.assert(
+          fc.asyncProperty(fc.integer(), async (v) => testFunc(v)),
+          settings
+        )
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
