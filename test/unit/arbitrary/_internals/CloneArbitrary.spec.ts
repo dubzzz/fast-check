@@ -250,17 +250,17 @@ class FirstArbitrary extends NextArbitrary<number> {
   }
 }
 
-class CloneableArbitrary extends NextArbitrary<number> {
+class CloneableArbitrary extends NextArbitrary<number[]> {
   private instance() {
     return Object.defineProperty([], cloneMethod, { value: () => this.instance() });
   }
-  generate(_mrng: Random): NextValue<number> {
+  generate(_mrng: Random): NextValue<number[]> {
     return new NextValue(this.instance(), { shrunkOnce: false });
   }
-  canShrinkWithoutContext(_value: unknown): _value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number[] {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+  shrink(value: number[], context?: unknown): Stream<NextValue<number[]>> {
     if (typeof context !== 'object' || context === null || !('shrunkOnce' in context)) {
       throw new Error('Invalid context for CloneableArbitrary');
     }

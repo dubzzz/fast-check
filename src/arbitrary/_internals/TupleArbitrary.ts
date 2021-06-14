@@ -29,7 +29,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends NextArbitrary<Ts> {
         TupleArbitrary.makeItCloneable(cloned, values);
         return cloned;
       },
-    });
+    }) as unknown as WithCloneMethod<TValue[]>;
   }
   private static wrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): NextValue<Ts> {
     let cloneable = false;
