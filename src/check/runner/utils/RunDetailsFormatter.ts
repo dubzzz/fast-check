@@ -1,4 +1,4 @@
-import { stringify, asyncStringify } from '../../../utils/stringify';
+import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
 import { ExecutionTree } from '../reporter/ExecutionTree';
@@ -201,41 +201,32 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
-  const registeredValues = new Map<
-    unknown,
-    { syncVersion: string; asyncVersion?: string; asyncVersionAwaiter: Promise<string> }
-  >();
+  const pendingStringifieds: Promise<[unknown, string]>[] = [];
   function stringifyOne(value: unknown): string {
-    const syncVersion = stringify(value);
-    if (value === 0) {
-      return syncVersion;
+    const stringified = possiblyAsyncStringify(value);
+    if (typeof stringified === 'string') {
+      return stringified;
     }
-    registeredValues.set(value, {
-      syncVersion,
-      // We fallback to the synchronous version in case of error
-      asyncVersionAwaiter: asyncStringify(value).catch(() => syncVersion),
-    });
-    return syncVersion;
+    pendingStringifieds.push(Promise.all([value, stringified]));
+    return '\u2026'; // ellipsis
   }
   const firstTryMessage = defaultReportMessageInternal(out, stringifyOne);
 
   // Checks if async mode would have changed the message
-  let diffExpected = false;
-  for (const entry of registeredValues.values()) {
-    entry.asyncVersion = await entry.asyncVersionAwaiter;
-    diffExpected = diffExpected || entry.asyncVersion !== entry.syncVersion;
-  }
-  if (!diffExpected) {
+  if (pendingStringifieds.length === 0) {
+    // No asynchronous stringify have been queued: the computation was synchronous
     return firstTryMessage;
   }
 
   // Retry with async stringified versions in mind
+  const registeredValues = new Map(await Promise.all(pendingStringifieds));
   function stringifySecond(value: unknown): string {
-    const registered = registeredValues.get(value);
-    if (registered !== undefined && registered.asyncVersion !== undefined) {
-      return registered.asyncVersion;
+    const asyncStringifiedIfRegistered = registeredValues.get(value);
+    if (asyncStringifiedIfRegistered !== undefined) {
+      return asyncStringifiedIfRegistered;
     }
-    // Should never happen as pointers are supposed to be stable from one call to another
+    // Here we ALWAYS recompute sync versions to avoid putting a cost penalty
+    // on usual paths, the ones not having any async generated values
     return stringify(value);
   }
   return defaultReportMessageInternal(out, stringifySecond);

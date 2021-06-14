@@ -196,6 +196,20 @@ export function stringify<Ts>(value: Ts): string {
 }
 
 /**
+ * Mid-way between stringify and asyncStringify
+ *
+ * If the value can be stringified in a synchronous way then it returns a string.
+ * Otherwise, it tries to go further in investigations and return a Promise<string>.
+ *
+ * Not publicly exposed yet!
+ *
+ * @internal
+ */
+export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
+  return stringifyInternal(value, []);
+}
+
+/**
  * Convert any value to its fast-check string representation
  *
  * This asynchronous version is also able to dig into the status of Promise
@@ -206,5 +220,5 @@ export function stringify<Ts>(value: Ts): string {
  * @public
  */
 export async function asyncStringify<Ts>(value: Ts): Promise<string> {
-  return stringifyInternal(value, []);
+  return Promise.resolve(possiblyAsyncStringify(value));
 }
