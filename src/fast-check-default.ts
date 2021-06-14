@@ -127,7 +127,7 @@ import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod, cloneIfNeeded, hasCloneMethod, WithCloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { hash } from './utils/hash';
-import { stringify } from './utils/stringify';
+import { stringify, asyncStringify } from './utils/stringify';
 import {
   scheduler,
   schedulerFor,
@@ -136,7 +136,7 @@ import {
   SchedulerReportItem,
   SchedulerConstraints,
 } from './arbitrary/scheduler';
-import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
+import { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
 import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/ArbitraryWithContextualShrink';
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
@@ -340,7 +340,9 @@ export {
   convertToNext,
   // print values
   stringify,
+  asyncStringify,
   defaultReportMessage,
+  asyncDefaultReportMessage,
   hash,
   // constraints
   ArrayConstraints,
