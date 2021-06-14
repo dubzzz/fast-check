@@ -26,7 +26,7 @@ function formatFailures<Ts>(failures: Ts[], stringifyOne: (value: Ts) => string)
 function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringifyOne: (value: Ts) => string): string {
   const summaryLines: string[] = [];
   const remainingTreesAndDepth: { depth: number; tree: ExecutionTree<Ts> }[] = [];
-  for (const tree of executionTrees.reverse()) {
+  for (const tree of executionTrees.slice().reverse()) {
     remainingTreesAndDepth.push({ depth: 1, tree });
   }
   while (remainingTreesAndDepth.length !== 0) {
@@ -48,7 +48,7 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
     summaryLines.push(`${leftPadding}${statusIcon} ${stringifyOne(currentTree.value)}`);
 
     // push its children to the queue
-    for (const tree of currentTree.children.reverse()) {
+    for (const tree of currentTree.children.slice().reverse()) {
       remainingTreesAndDepth.push({ depth: currentDepth + 1, tree });
     }
   }
