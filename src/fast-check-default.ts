@@ -136,7 +136,7 @@ import {
   SchedulerReportItem,
   SchedulerConstraints,
 } from './arbitrary/scheduler';
-import { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
+import { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
 import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/ArbitraryWithContextualShrink';
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
@@ -342,6 +342,7 @@ export {
   stringify,
   asyncStringify,
   defaultReportMessage,
+  asyncDefaultReportMessage,
   hash,
   // constraints
   ArrayConstraints,

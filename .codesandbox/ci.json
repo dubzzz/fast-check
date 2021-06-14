@@ -2,7 +2,8 @@
 
 {
     "buildCommand": "build:prod",
-    "sandboxes": ["vanilla", "/example"]
+    "sandboxes": ["vanilla", "/example"],
+    "node": "14"
   }
   
   
