@@ -455,15 +455,16 @@ describe('asyncStringify', () => {
   });
   it('Should be able to stringify self nested Promise', async () => {
     const resolvedValueChildLvl1 = {
-      lvl2: Promise.resolve<unknown>(null),
+      a1: Promise.resolve<unknown>(null),
     };
     const resolvedValue = {
-      lvl1: Promise.resolve(resolvedValueChildLvl1),
+      a: Promise.resolve(resolvedValueChildLvl1),
+      b: { b1: Promise.resolve(resolvedValueChildLvl1) },
     };
     const nestedPromises = Promise.resolve(resolvedValue);
-    resolvedValueChildLvl1.lvl2 = nestedPromises;
+    resolvedValueChildLvl1.a1 = nestedPromises;
     expect(await asyncStringify(nestedPromises)).toEqual(
-      'Promise.resolve({"lvl1":Promise.resolve({"lvl2":Promise.resolve(2)})})'
+      'Promise.resolve({"a":Promise.resolve({"a1":[cyclic]}),"b":{"b1":Promise.resolve({"a1":[cyclic]})}})'
     );
   });
 });
