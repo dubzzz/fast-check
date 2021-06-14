@@ -682,4 +682,39 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+
+  it('Promise<number> (sync)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          fc.integer().map((v) => [v, Promise.resolve(v)] as const),
+          ([v, _p]) => testFunc(v)
+        ),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('Promise<number> (async)', async () => {
+    await expect(
+      async () =>
+        await fc.assert(
+          fc.asyncProperty(
+            fc.integer().map((v) => Promise.resolve(v)),
+            async (v) => testFunc(await v)
+          ),
+          settings
+        )
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('number (async)', async () => {
+    await expect(
+      async () =>
+        await fc.assert(
+          fc.asyncProperty(fc.integer(), async (v) => testFunc(v)),
+          settings
+        )
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
 });

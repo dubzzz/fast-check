@@ -282,6 +282,18 @@ describe('stringify', () => {
     expect(stringify({ ['__proto__']: 1 })).toEqual('{["__proto__"]:1}');
     // NOTE: {__proto__: 1} and {'__proto__': 1} are not the same as {['__proto__']: 1}
   });
+  it('Should be able to stringify Promise but not show its value or status in sync mode', () => {
+    const p1 = Promise.resolve(1); // resolved
+    const p2 = Promise.reject(1); // rejected
+    const p3 = new Promise(() => {}); // unresolved (ie pending)
+
+    expect(stringify(p1)).toEqual('new Promise(() => {/*unknown*/})');
+    expect(stringify(p2)).toEqual('new Promise(() => {/*unknown*/})');
+    expect(stringify(p3)).toEqual('new Promise(() => {/*unknown*/})');
+    expect(stringify({ p1 })).toEqual('{"p1":new Promise(() => {/*unknown*/})}');
+
+    [p1, p2, p3].map((p) => p.catch(() => {})); // no unhandled rejections
+  });
   it('Should be able to stringify Buffer', () => {
     expect(stringify(Buffer.from([1, 2, 3, 4]))).toEqual('Buffer.from([1,2,3,4])');
     expect(stringify(Buffer.alloc(3))).toEqual('Buffer.from([0,0,0])');
@@ -376,6 +388,15 @@ describe('possiblyAsyncStringify', () => {
         expect(stringifiedValue as string).toBe(expectedStringifiedValue);
       })
     ));
+  it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
+    fc.assert(
+      fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
+        const expectedStringifiedValue = stringify(value);
+        const stringifiedValue = possiblyAsyncStringify(Promise.resolve(value));
+        expect(typeof stringifiedValue).not.toBe('string');
+        expect(await stringifiedValue).toBe(`Promise.resolve(${expectedStringifiedValue})`);
+      })
+    ));
 });
 
 describe('asyncStringify', () => {
@@ -388,6 +409,64 @@ describe('asyncStringify', () => {
         expect(await stringifiedValue).toBe(expectedStringifiedValue);
       })
     ));
+  it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
+    fc.assert(
+      fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
+        const expectedStringifiedValue = stringify(value);
+        const stringifiedValue = asyncStringify(Promise.resolve(value));
+        expect(typeof stringifiedValue).not.toBe('string');
+        expect(await stringifiedValue).toBe(`Promise.resolve(${expectedStringifiedValue})`);
+      })
+    ));
+
+  it('Should be able to stringify resolved Promise', async () => {
+    const p = Promise.resolve(1);
+    expect(await asyncStringify(p)).toEqual('Promise.resolve(1)');
+  });
+  it('Should be able to stringify rejected Promise', async () => {
+    const p = Promise.reject(1);
+    expect(await asyncStringify(p)).toEqual('Promise.reject(1)');
+    p.catch(() => {}); // no unhandled rejections
+  });
+  it('Should be able to stringify rejected Promise with Error', async () => {
+    const p = Promise.reject(new Error('message'));
+    expect(await asyncStringify(p)).toEqual('Promise.reject(new Error("message"))');
+    p.catch(() => {}); // no unhandled rejections
+  });
+  it('Should be able to stringify pending Promise', async () => {
+    const p = new Promise(() => {});
+    expect(await asyncStringify(p)).toEqual('new Promise(() => {/*pending*/})');
+  });
+  it('Should be able to stringify Promise in other instances', async () => {
+    const p1 = Promise.resolve(1);
+    expect(await asyncStringify([p1])).toEqual('[Promise.resolve(1)]');
+    expect(await asyncStringify(new Set([p1]))).toEqual('new Set([Promise.resolve(1)])');
+    expect(await asyncStringify({ p1 })).toEqual('{"p1":Promise.resolve(1)}');
+  });
+  it('Should be able to stringify nested Promise', async () => {
+    const nestedPromises = Promise.resolve({
+      lvl1: Promise.resolve({
+        lvl2: Promise.resolve(2),
+      }),
+    });
+    expect(await asyncStringify(nestedPromises)).toEqual(
+      'Promise.resolve({"lvl1":Promise.resolve({"lvl2":Promise.resolve(2)})})'
+    );
+  });
+  it('Should be able to stringify self nested Promise', async () => {
+    const resolvedValueChildLvl1 = {
+      a1: Promise.resolve<unknown>(null),
+    };
+    const resolvedValue = {
+      a: Promise.resolve(resolvedValueChildLvl1),
+      b: { b1: Promise.resolve(resolvedValueChildLvl1) },
+    };
+    const nestedPromises = Promise.resolve(resolvedValue);
+    resolvedValueChildLvl1.a1 = nestedPromises;
+    expect(await asyncStringify(nestedPromises)).toEqual(
+      'Promise.resolve({"a":Promise.resolve({"a1":[cyclic]}),"b":{"b1":Promise.resolve({"a1":[cyclic]})}})'
+    );
+  });
 });
 
 // Helpers
