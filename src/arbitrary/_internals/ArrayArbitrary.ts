@@ -104,7 +104,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       }
     }
     if (itemCount < targetSize) {
-      items.splice(itemCount); // only preserves first <itemCount> items, others are holes
+      items.length = itemCount; // only preserve the first <itemCount> items, others were holes
     }
     return this.wrapper(items, false, undefined);
   }
