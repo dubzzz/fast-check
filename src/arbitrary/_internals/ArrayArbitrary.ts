@@ -45,16 +45,46 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return vs;
   }
 
-  private canAppendItem(items: NextValue<T>[], newItem: NextValue<T>): boolean {
-    if (this.isEqual === undefined) {
-      return true;
-    }
+  private static canAppendItem<T>(
+    items: NextValue<T>[],
+    newItem: NextValue<T>,
+    isEqual: (valueA: T, valueB: T) => boolean
+  ): boolean {
     for (let idx = 0; idx !== items.length; ++idx) {
-      if (this.isEqual(items[idx].value_, newItem.value_)) {
+      if (isEqual(items[idx].value_, newItem.value_)) {
         return false;
       }
     }
     return true;
+  }
+
+  private generateNItemsNoDuplicates(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
+    let numSkippedInRow = 0;
+    const items: NextValue<T>[] = [];
+    // Try to append into items up to the target size
+    // In the case of a set we may reject some items as they are already part of the set
+    // so we need to retry and generate other ones. In order to prevent infinite loop,
+    // we accept a max of maxLength consecutive failures. This circuit breaker may cause
+    // generated to be smaller than the minimal accepted one.
+    while (items.length < N && numSkippedInRow < this.maxLength) {
+      const current = this.arb.generate(mrng, biasFactorItems);
+      if (this.isEqual === undefined || ArrayArbitrary.canAppendItem(items, current, this.isEqual)) {
+        numSkippedInRow = 0;
+        items.push(current);
+      } else {
+        numSkippedInRow += 1;
+      }
+    }
+    return items;
+  }
+
+  private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
+    const items: NextValue<T>[] = [];
+    for (let index = 0; index !== N; ++index) {
+      const current = this.arb.generate(mrng, biasFactorItems);
+      items.push(current);
+    }
+    return items;
   }
 
   private wrapper(itemsRaw: NextValue<T>[], shrunkOnce: boolean, itemsRawLengthContext: unknown): NextValue<T[]> {
@@ -85,23 +115,10 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   generate(mrng: Random, biasFactor: number | undefined): NextValue<T[]> {
     const biasMeta = this.applyBias(mrng, biasFactor);
     const targetSize = biasMeta.size;
-
-    let numSkippedInRow = 0;
-    const items: NextValue<T>[] = [];
-    // Try to append into items up to the target size
-    // In the case of a set we may reject some items as they are already part of the set
-    // so we need to retry and generate other ones. In order to prevent infinite loop,
-    // we accept a max of maxLength consecutive failures. This circuit breaker may cause
-    // generated to be smaller than the minimal accepted one.
-    while (items.length < targetSize && numSkippedInRow < this.maxLength) {
-      const current = this.arb.generate(mrng, biasMeta.biasFactorItems);
-      if (this.canAppendItem(items, current)) {
-        numSkippedInRow = 0;
-        items.push(current);
-      } else {
-        numSkippedInRow += 1;
-      }
-    }
+    const items =
+      this.isEqual !== undefined
+        ? this.generateNItemsNoDuplicates(targetSize, mrng, biasMeta.biasFactorItems)
+        : this.generateNItems(targetSize, mrng, biasMeta.biasFactorItems);
     return this.wrapper(items, false, undefined);
   }
 
