@@ -83,7 +83,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   }
 
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
-    const items: NextValue<T>[] = [];
+    const items: NextValue<T>[] = Array(N);
     for (let index = 0; index !== N; ++index) {
       items[index] = this.arb.generate(mrng, biasFactorItems);
     }
