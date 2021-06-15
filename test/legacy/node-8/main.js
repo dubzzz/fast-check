@@ -110,3 +110,24 @@ testArbitrary(
     return tree();
   })()
 );
+(function testGlobalParameters() {
+  // Initial global parameters
+  assert.deepStrictEqual(fc.readConfigureGlobal(), {});
+
+  // Parameters after a first edit
+  fc.configureGlobal({ numRuns: 123 });
+  assert.deepStrictEqual(fc.readConfigureGlobal(), { numRuns: 123 });
+
+  // Parameters after a reset
+  fc.resetConfigureGlobal();
+  assert.deepStrictEqual(fc.readConfigureGlobal(), {});
+
+  // Parameters after a second edit (we set number of runs to zero)
+  fc.configureGlobal({ numRuns: 0 });
+  assert.deepStrictEqual(fc.readConfigureGlobal(), { numRuns: 0 });
+  fc.assert(fc.property(fc.nat(), () => false));
+
+  // Parameters after a reset
+  fc.resetConfigureGlobal();
+  assert.deepStrictEqual(fc.readConfigureGlobal(), {});
+})();

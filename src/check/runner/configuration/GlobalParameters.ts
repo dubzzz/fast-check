@@ -1,8 +1,7 @@
-import { getGlobal } from '../../../utils/globalThis';
 import { Parameters } from './Parameters';
 
 /** @internal */
-const globalParametersSymbol = Symbol('fast-check/GlobalParameters');
+let globalParameters: GlobalParameters = {};
 
 /**
  * Type of legal hook function that can be used in the global parameter `beforeEach` and/or `afterEach`
@@ -85,7 +84,7 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
  * @public
  */
 export function configureGlobal(parameters: GlobalParameters): void {
-  getGlobal()[globalParametersSymbol] = parameters;
+  globalParameters = parameters;
 }
 
 /**
@@ -94,7 +93,7 @@ export function configureGlobal(parameters: GlobalParameters): void {
  * @public
  */
 export function readConfigureGlobal(): GlobalParameters | undefined {
-  return getGlobal()[globalParametersSymbol];
+  return globalParameters;
 }
 
 /**
@@ -103,5 +102,5 @@ export function readConfigureGlobal(): GlobalParameters | undefined {
  * @public
  */
 export function resetConfigureGlobal(): void {
-  delete getGlobal()[globalParametersSymbol];
+  globalParameters = {};
 }
