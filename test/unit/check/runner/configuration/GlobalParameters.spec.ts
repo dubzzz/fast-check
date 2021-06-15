@@ -19,7 +19,7 @@ describe('GlobalParameters', () => {
     expect(readConfigureGlobal()).toBe(myGlobalConfiguration);
 
     resetConfigureGlobal();
-    expect(readConfigureGlobal()).toBe(undefined);
+    expect(readConfigureGlobal()).toBe({});
   });
   it('should use distinct global configurations for distinct instances of fast-check', () => {
     const myGlobalConfiguration = { numRuns: 123 };
