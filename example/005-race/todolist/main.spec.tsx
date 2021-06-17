@@ -10,7 +10,7 @@ import { RemoveItemCommand } from './model-based/RemoveItemCommand';
 import { listTodos, sortTodos } from './model-based/Model';
 
 describe('TodoList', () => {
-  it('should detect potential issues with the TodoList', async () =>
+  it('should detect potential issues with the TodoList', async () => {
     await fc.assert(
       fc
         .asyncProperty(
@@ -37,7 +37,8 @@ describe('TodoList', () => {
         .beforeEach(async () => {
           await cleanup();
         })
-    ));
+    );
+  });
 });
 
 // Helpers
@@ -61,9 +62,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     return { status: 'success', response: allTodos.slice() };
   });
 
-  const addTodo = s.scheduleFunction(async function addTodo(
-    label: string
-  ): Promise<
+  const addTodo = s.scheduleFunction(async function addTodo(label: string): Promise<
     | {
         status: 'success';
         response: ApiTodoItem;
@@ -82,9 +81,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     return { status: 'success', response: newTodo };
   });
 
-  const toggleTodo = s.scheduleFunction(async function toggleTodo(
-    id: string
-  ): Promise<
+  const toggleTodo = s.scheduleFunction(async function toggleTodo(id: string): Promise<
     | {
         status: 'success';
         response: ApiTodoItem;
@@ -102,9 +99,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     return { status: 'success', response: { ...foundTodo, checked: !foundTodo.checked } };
   });
 
-  const removeTodo = s.scheduleFunction(async function removeTodo(
-    id: string
-  ): Promise<
+  const removeTodo = s.scheduleFunction(async function removeTodo(id: string): Promise<
     | {
         status: 'success';
         response: ApiTodoItem;

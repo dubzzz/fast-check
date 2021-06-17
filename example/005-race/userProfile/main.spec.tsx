@@ -16,8 +16,8 @@ if (!fc.readConfigureGlobal()) {
 }
 
 describe('UserProfilePage', () => {
-  it('should not display data related to another user', () =>
-    fc.assert(
+  it('should not display data related to another user', async () => {
+    await fc.assert(
       fc
         .asyncProperty(fc.uuid(), fc.uuid(), fc.scheduler({ act }), async (uid1, uid2, s) => {
           // Arrange
@@ -44,10 +44,11 @@ describe('UserProfilePage', () => {
           jest.resetAllMocks();
           await cleanup();
         })
-    ));
+    );
+  });
 
-  it('should not display data related to another user (complex)', () =>
-    fc.assert(
+  it('should not display data related to another user (complex)', async () => {
+    await fc.assert(
       fc
         .asyncProperty(fc.array(fc.uuid(), { minLength: 1 }), fc.scheduler(), async (loadedUserIds, s) => {
           // Arrange
@@ -87,5 +88,6 @@ describe('UserProfilePage', () => {
           jest.resetAllMocks();
           await cleanup();
         })
-    ));
+    );
+  });
 });

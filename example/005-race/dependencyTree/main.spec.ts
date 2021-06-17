@@ -9,8 +9,8 @@ if (!fc.readConfigureGlobal()) {
 }
 
 describe('dependencyTree', () => {
-  it('should be able to compute a dependency tree for any package of the registry', () =>
-    fc.assert(
+  it('should be able to compute a dependency tree for any package of the registry', async () => {
+    await fc.assert(
       fc.asyncProperty(AllPackagesArbitrary, fc.scheduler(), async (packages, s) => {
         // Arrange
         const selectedPackage = Object.keys(packages)[0];
@@ -31,7 +31,8 @@ describe('dependencyTree', () => {
           await s.waitOne();
         }
       })
-    ));
+    );
+  });
 });
 
 // Helpers

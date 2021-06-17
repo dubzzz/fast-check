@@ -25,8 +25,8 @@ if (!fc.readConfigureGlobal()) {
 }
 
 describe('AutocompleteField', () => {
-  it('should suggest results matching the value of the autocomplete field', () =>
-    fc.assert(
+  it('should suggest results matching the value of the autocomplete field', async () => {
+    await fc.assert(
       fc
         .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
@@ -56,10 +56,11 @@ describe('AutocompleteField', () => {
           jest.resetAllMocks();
           await cleanup();
         })
-    ));
+    );
+  });
 
-  it('should display more and more sugestions as results come', () =>
-    fc.assert(
+  it('should display more and more sugestions as results come', async () => {
+    await fc.assert(
       fc
         .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
@@ -104,7 +105,8 @@ describe('AutocompleteField', () => {
           jest.resetAllMocks();
           await cleanup();
         })
-    ));
+    );
+  });
 });
 
 // Helpers
