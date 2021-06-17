@@ -272,16 +272,26 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
   const pendingPromisesForCache: Promise<void>[] = [];
   const cache = new Map<unknown, AsyncContent>();
 
-  function delay0(): Promise<typeof stillPendingMarker> {
-    return new Promise((resolve) => {
+  function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
+    let handleId: ReturnType<typeof setTimeout> | null = null;
+    const cancel = () => {
+      if (handleId !== null) {
+        clearTimeout(handleId);
+      }
+    };
+    const delay = new Promise<typeof stillPendingMarker>((resolve) => {
       // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
       // including nested ones like:
       // >  (async () => {
       // >    await Promise.resolve();
       // >    await Promise.resolve();
       // >  })()
-      setTimeout(resolve, 0);
-    }).then(() => stillPendingMarker);
+      handleId = setTimeout(() => {
+        handleId = null;
+        resolve(stillPendingMarker);
+      }, 0);
+    });
+    return { delay, cancel };
   }
 
   const unknownState = { state: 'unknown', value: undefined } as const;
@@ -292,6 +302,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
       return cache.get(cacheKey)!;
     }
 
+    const delay0 = createDelay0();
     const p: Promise<unknown> =
       asyncToStringMethod in data
         ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
@@ -303,13 +314,15 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
       // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
       // > If the iterable contains one or more non-promise value and/or an already settled promise,
       // > then Promise.race will resolve to the first of these values found in the iterable.
-      Promise.race([p, delay0()]).then(
+      Promise.race([p, delay0.delay]).then(
         (successValue) => {
           if (successValue === stillPendingMarker) cache.set(cacheKey, { state: 'pending', value: undefined });
           else cache.set(cacheKey, { state: 'fulfilled', value: successValue });
+          delay0.cancel();
         },
         (errorValue) => {
           cache.set(cacheKey, { state: 'rejected', value: errorValue });
+          delay0.cancel();
         }
       )
     );
