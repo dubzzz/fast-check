@@ -4,7 +4,13 @@ import * as fc from '../../../lib/fast-check';
 // Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side
 import { Buffer as NotNodeBuffer } from '../../../node_modules/buffer';
 
-import { asyncStringify, possiblyAsyncStringify, stringify } from '../../../src/utils/stringify';
+import {
+  asyncStringify,
+  asyncToStringMethod,
+  possiblyAsyncStringify,
+  stringify,
+  toStringMethod,
+} from '../../../src/utils/stringify';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
@@ -376,6 +382,48 @@ describe('stringify', () => {
     });
     expect(stringify(instance)).toEqual('[object Object]');
   });
+  it('Should use [toStringMethod] if any on the instance or its prototype', () => {
+    const instance1 = { [toStringMethod]: () => 'hello1' };
+    expect(stringify(instance1)).toEqual('hello1');
+
+    const instance2 = Object.create(null);
+    Object.defineProperty(instance2, toStringMethod, {
+      value: () => 'hello2',
+      configurable: false,
+      enumerable: false,
+      writable: false,
+    });
+    expect(stringify(instance2)).toEqual('hello2');
+
+    // prettier-ignore
+    const instance3 = { [toStringMethod]: () => { throw new Error('hello3'); } };
+    expect(stringify(instance3)).toEqual(
+      '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error(\'hello3\'); }}'
+    ); // fallbacking to default
+
+    class InProto {
+      [toStringMethod]() {
+        return 'hello4';
+      }
+    }
+    const instance4 = new InProto();
+    expect(stringify(instance4)).toEqual('hello4');
+
+    const instance5 = { [toStringMethod]: 1 }; // not callable
+    expect(stringify(instance5)).toEqual('{[Symbol("fast-check/toStringMethod")]:1}');
+  });
+  it('Should not be able to rely on the output of [asyncToStringMethod] in sync mode', () => {
+    const instance1 = { [asyncToStringMethod]: () => 'hello1' }; // not even async there
+    expect(stringify(instance1)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:() => \'hello1\'}'); // fallbacking to default
+
+    const instance2 = { [asyncToStringMethod]: () => 'hello2', [toStringMethod]: () => 'world' };
+    expect(stringify(instance2)).toEqual('world'); // fallbacking to [toStringMethod]
+
+    const instance3ProbeFn = jest.fn();
+    const instance3 = { [asyncToStringMethod]: instance3ProbeFn };
+    stringify(instance3);
+    expect(instance3ProbeFn).not.toHaveBeenCalled(); // never calling [asyncToStringMethod] in sync mode
+  });
 });
 
 describe('possiblyAsyncStringify', () => {
@@ -466,6 +514,58 @@ describe('asyncStringify', () => {
     expect(await asyncStringify(nestedPromises)).toEqual(
       'Promise.resolve({"a":Promise.resolve({"a1":[cyclic]}),"b":{"b1":Promise.resolve({"a1":[cyclic]})}})'
     );
+  });
+  it('Should use [asyncToStringMethod] if any on the instance or its prototype', async () => {
+    const instance1 = { [asyncToStringMethod]: async () => 'hello1' };
+    expect(await asyncStringify(instance1)).toEqual('hello1');
+
+    const instance2 = Object.create(null);
+    Object.defineProperty(instance2, asyncToStringMethod, {
+      value: () => 'hello2',
+      configurable: false,
+      enumerable: false,
+      writable: false,
+    });
+    expect(await asyncStringify(instance2)).toEqual('hello2');
+
+    const instance3 = { [asyncToStringMethod]: async () => 'hello3', [toStringMethod]: () => 'world' };
+    expect(await asyncStringify(instance3)).toEqual('hello3'); // even when [toStringMethod] has been defined
+
+    // prettier-ignore
+    const instance4 = { [asyncToStringMethod]: async () => { throw new Error('hello4'); } };
+    expect(await asyncStringify(instance4)).toEqual(
+      '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error(\'hello4\'); }}'
+    ); // fallbacking to default
+
+    // prettier-ignore
+    const instance5 = { [asyncToStringMethod]: async () => { throw new Error('hello5'); }, [toStringMethod]: () => "world" };
+    expect(await asyncStringify(instance5)).toEqual('world'); // fallbacking to [toStringMethod]
+
+    // prettier-ignore
+    const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
+    expect(await asyncStringify(instance6)).toEqual(
+      '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error(\'hello6\'); }}'
+    ); // fallbacking to default
+
+    class InProto {
+      async [asyncToStringMethod]() {
+        return 'hello7';
+      }
+    }
+    const instance7 = new InProto();
+    expect(await asyncStringify(instance7)).toEqual('hello7');
+
+    const instance8 = { [asyncToStringMethod]: 1 }; // not callable
+    expect(await asyncStringify(instance8)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:1}');
+
+    const instance9 = {
+      [asyncToStringMethod]: async () => {
+        const s1 = await asyncStringify(Promise.resolve('hello9'));
+        const s2 = await asyncStringify(Promise.resolve('world9'));
+        return `${s1} ${s2}`;
+      },
+    };
+    expect(await asyncStringify(instance9)).toEqual('Promise.resolve("hello9") Promise.resolve("world9")');
   });
 });
 
