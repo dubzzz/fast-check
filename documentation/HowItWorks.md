@@ -71,7 +71,7 @@ miniFc.integer = (min, max) => {
 
 Our random integer `Generator` is simply returning the value forged by the passed random number generator.
 
-But we want to go further as generators should be able to generate not only integers, they are supposed to generate barely any kind of values. In fast-check, for instance, you can generate numbers, strings, arrays but also objects, functions, recursive structures and also infinite streams of any kind of stuff. In order to produce so many different kind of values without copying the same code again and again, they rely on taking root structures and deriving them into more complex ones as described below:
+But we want to go further as generators should be able to generate not only integers, they are supposed to generate nearly any kind of values. In fast-check, for instance, you can generate numbers, strings, arrays but also objects, functions, recursive structures and also infinite streams of any kind of stuff. In order to produce so many different kind of values without copying the same code again and again, they rely on taking root structures and deriving them into more complex ones as described below:
 
 ![From integers to anything](./images/generators.png)
 
