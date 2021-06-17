@@ -292,16 +292,12 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
       return cache.get(cacheKey)!;
     }
 
-    let p: Promise<unknown>;
-    if (asyncToStringMethod in data) {
-      try {
-        p = (data as WithAsyncToStringMethod)[asyncToStringMethod]();
-      } catch (err) {
-        p = Promise.reject();
-      }
-    } else {
-      p = data as Promise<unknown>;
-    }
+    const p: Promise<unknown> =
+      asyncToStringMethod in data
+        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
+        : (data as Promise<unknown>);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
 
     pendingPromisesForCache.push(
       // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
