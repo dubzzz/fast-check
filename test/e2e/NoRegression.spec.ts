@@ -697,6 +697,8 @@ describe(`NoRegression`, () => {
 });
 
 describe(`NoRegression (async)`, () => {
+  const asyncNumber = fc.integer().map((v) => Promise.resolve(v));
+
   it('number', async () => {
     await expect(
       async () =>
@@ -711,10 +713,17 @@ describe(`NoRegression (async)`, () => {
     await expect(
       async () =>
         await fc.assert(
-          fc.asyncProperty(
-            fc.integer().map((v) => Promise.resolve(v)),
-            async (v) => testFunc(await v)
-          ),
+          fc.asyncProperty(asyncNumber, async (v) => testFunc(await v)),
+          settings
+        )
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('func (to Promise)', async () => {
+    await expect(
+      async () =>
+        await fc.assert(
+          fc.asyncProperty(fc.func(asyncNumber), async (f) => testFunc(await f())),
           settings
         )
     ).rejects.toThrowErrorMatchingSnapshot();

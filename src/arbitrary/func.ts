@@ -1,5 +1,5 @@
 import { hash } from '../utils/hash';
-import { stringify } from '../utils/stringify';
+import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../check/symbols';
 import { array } from './array';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
@@ -25,19 +25,22 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
         recorded[repr] = val;
         return hasCloneMethod(val) ? val[cloneMethod]() : val;
       };
-      return Object.assign(f, {
-        toString: () => {
-          const seenValues = Object.keys(recorded)
-            .sort()
-            .map((k) => `${k} => ${stringify(recorded[k])}`)
-            .map((line) => `/* ${escapeForMultilineComments(line)} */`);
-          return `function(...args) {
+      function prettyPrint(stringifiedOuts: string): string {
+        const seenValues = Object.keys(recorded)
+          .sort()
+          .map((k) => `${k} => ${stringify(recorded[k])}`)
+          .map((line) => `/* ${escapeForMultilineComments(line)} */`);
+        return `function(...args) {
   // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
-  const outs = ${stringify(outs)};
+  const outs = ${stringifiedOuts};
   return outs[hash('${seed}' + stringify(args)) % outs.length];
 }`;
-        },
-        [cloneMethod]: producer,
+      }
+      return Object.defineProperties(f, {
+        toString: { value: () => prettyPrint(stringify(outs)) },
+        [toStringMethod]: { value: () => prettyPrint(stringify(outs)) },
+        [asyncToStringMethod]: { value: async () => prettyPrint(await asyncStringify(outs)) },
+        [cloneMethod]: { value: producer },
       });
     };
     return producer();
