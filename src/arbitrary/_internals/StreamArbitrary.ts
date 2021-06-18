@@ -3,7 +3,12 @@ import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { cloneMethod } from '../../check/symbols';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { stringify } from '../../utils/stringify';
+import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify';
+
+/** @internal */
+function prettyPrint(seenValuesStrings: string[]): string {
+  return `Stream(${seenValuesStrings.join(',')}…)`;
+}
 
 /** @internal */
 export class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
@@ -23,8 +28,12 @@ export class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
-      const toString = () => `Stream(${seenValues.map(stringify).join(',')}…)`;
-      return Object.assign(s, { toString, [cloneMethod]: enrichedProducer });
+      return Object.defineProperties(s, {
+        toString: { value: () => prettyPrint(seenValues.map(stringify)) },
+        [toStringMethod]: { value: () => prettyPrint(seenValues.map(stringify)) },
+        [asyncToStringMethod]: { value: async () => prettyPrint(await Promise.all(seenValues.map(asyncStringify))) },
+        [cloneMethod]: { value: enrichedProducer },
+      });
     };
     return new NextValue(enrichedProducer(), undefined);
   }

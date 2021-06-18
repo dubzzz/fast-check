@@ -728,4 +728,14 @@ describe(`NoRegression (async)`, () => {
         )
     ).rejects.toThrowErrorMatchingSnapshot();
   });
+
+  it('infiniteStream (to Promise)', async () => {
+    await expect(
+      async () =>
+        await fc.assert(
+          fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+          settings
+        )
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
 });

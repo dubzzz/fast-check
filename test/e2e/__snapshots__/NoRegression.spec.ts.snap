@@ -646,6 +646,17 @@ Execution summary:
 }]"
 `;
 
+exports[`NoRegression (async) infiniteStream (to Promise) 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: \\"0\\", endOnFailure: true }
+Counterexample: [Stream(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]
+Shrunk 0 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m [Stream(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]"
+`;
+
 exports[`NoRegression (async) number 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: \\"1:4:0:0:0:0:3:0:0:3:0:1:1:0:2\\", endOnFailure: true }
