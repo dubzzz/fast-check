@@ -1,3 +1,16 @@
+/**
+ * Ability to override the default output of stringified for a given value
+ * @internal
+ */
+export const toStringMethod = Symbol('fast-check/toStringMethod');
+/**
+ * Ability to override the default output of stringified for a given value
+ * @internal
+ */
+export const asyncToStringMethod = Symbol('fast-check/asyncToStringMethod');
+/** @internal */
+type WithAsyncToStringMethod = { [asyncToStringMethod]: () => Promise<string> };
+
 /** @internal */
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
 
@@ -48,12 +61,31 @@ function isSparseArray(arr: unknown[]): boolean {
 export function stringifyInternal<Ts>(
   value: Ts,
   previousValues: any[],
-  getAsyncContent: (p: unknown) => AsyncContent
+  getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent
 ): string {
   const currentValues = previousValues.concat([value]);
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (previousValues.indexOf(value) !== -1) return '[cyclic]';
+    if (previousValues.indexOf(value) !== -1) {
+      return '[cyclic]';
+    }
+  }
+  if (value !== null && (typeof value === 'object' || typeof value === 'function')) {
+    // user defined custom async serialization function, we use it first
+    if (asyncToStringMethod in value) {
+      const content = getAsyncContent(value as any as WithAsyncToStringMethod);
+      if (content.state === 'fulfilled') {
+        return content.value as string;
+      }
+    }
+    // user defined custom sync serialization function
+    if (toStringMethod in value) {
+      try {
+        return ((value as any)[toStringMethod] as () => string)();
+      } catch (err) {
+        // fallback to defaults...
+      }
+    }
   }
   switch (Object.prototype.toString.call(value)) {
     case '[object Array]': {
@@ -145,7 +177,7 @@ export function stringifyInternal<Ts>(
       return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
     }
     case '[object Promise]': {
-      const promiseContent = getAsyncContent(value);
+      const promiseContent = getAsyncContent(value as any as Promise<unknown>);
       switch (promiseContent.state) {
         case 'fulfilled':
           return `Promise.resolve(${stringifyInternal(promiseContent.value, currentValues, getAsyncContent)})`;
@@ -240,29 +272,62 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
   const pendingPromisesForCache: Promise<void>[] = [];
   const cache = new Map<unknown, AsyncContent>();
 
+  function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
+    let handleId: ReturnType<typeof setTimeout> | null = null;
+    const cancel = () => {
+      if (handleId !== null) {
+        clearTimeout(handleId);
+      }
+    };
+    const delay = new Promise<typeof stillPendingMarker>((resolve) => {
+      // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
+      // including nested ones like:
+      // >  (async () => {
+      // >    await Promise.resolve();
+      // >    await Promise.resolve();
+      // >  })()
+      handleId = setTimeout(() => {
+        handleId = null;
+        resolve(stillPendingMarker);
+      }, 0);
+    });
+    return { delay, cancel };
+  }
+
   const unknownState = { state: 'unknown', value: undefined } as const;
-  const getAsyncContent = function getAsyncContent(p: unknown): AsyncContent {
-    if (cache.has(p)) {
+  const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
+    const cacheKey = data;
+    if (cache.has(cacheKey)) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return cache.get(p)!;
+      return cache.get(cacheKey)!;
     }
+
+    const delay0 = createDelay0();
+    const p: Promise<unknown> =
+      asyncToStringMethod in data
+        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
+        : (data as Promise<unknown>);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
 
     pendingPromisesForCache.push(
       // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
       // > If the iterable contains one or more non-promise value and/or an already settled promise,
       // > then Promise.race will resolve to the first of these values found in the iterable.
-      Promise.race([p, stillPendingMarker]).then(
+      Promise.race([p, delay0.delay]).then(
         (successValue) => {
-          if (successValue === stillPendingMarker) cache.set(p, { state: 'pending', value: undefined });
-          else cache.set(p, { state: 'fulfilled', value: successValue });
+          if (successValue === stillPendingMarker) cache.set(cacheKey, { state: 'pending', value: undefined });
+          else cache.set(cacheKey, { state: 'fulfilled', value: successValue });
+          delay0.cancel();
         },
         (errorValue) => {
-          cache.set(p, { state: 'rejected', value: errorValue });
+          cache.set(cacheKey, { state: 'rejected', value: errorValue });
+          delay0.cancel();
         }
       )
     );
 
-    cache.set(p, unknownState);
+    cache.set(cacheKey, unknownState);
     return unknownState;
   };
 
