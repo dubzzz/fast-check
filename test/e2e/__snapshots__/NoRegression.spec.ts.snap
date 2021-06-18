@@ -43,6 +43,609 @@ Execution summary:
 . . . . . . . . . . . . . . . [32m√[0m [Promise.resolve(-873632987)]"
 `;
 
+exports[`NoRegression (async) func (to Promise) 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: \\"1:3:1:1:0:2:0:1:12:5:4:3:4:5:3:5:6:3:3:5:5\\", endOnFailure: true }
+Counterexample: [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(0)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+Shrunk 20 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-132539150)];
+  return outs[hash('-27' + stringify(args)) % outs.length];
+}]
+[31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-576819238),Promise.resolve(-872008521),Promise.resolve(1594409417),Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(1594409417),Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-872008521),Promise.resolve(1594409417),Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(1594409417),Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1594409417),Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(876260010),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(440518484),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-365383294),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-548074941),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-639420764),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-685093676),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-707930132),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-719348360),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-725057474),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-727912031),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729339309),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729339309),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-728625670),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-728982490),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729160900),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729160900),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729071695),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729116298),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729116298),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729093997),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729093997),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729082846),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729088422),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729088422),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729085634),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087028),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087725),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087725),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087377),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087377),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087203),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087290),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087334),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087334),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087312),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087323),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087332),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087332),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087331),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087331),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087330),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(1605711835),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(0),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(-736891290)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(0)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(0)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(0)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(0),Promise.resolve(0)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(0),Promise.resolve(0)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]
+. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
+  // With hash and stringify coming from fast-check
+  /* [] => new Promise(() => {/*unknown*\\\\/}) */
+  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0)];
+  return outs[hash('19' + stringify(args)) % outs.length];
+}]"
+`;
+
 exports[`NoRegression (async) number 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: \\"1:4:0:0:0:0:3:0:0:3:0:1:1:0:2\\", endOnFailure: true }
