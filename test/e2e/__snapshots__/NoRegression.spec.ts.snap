@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NoRegression (async) Promise<number> 1`] = `
+exports[`NoRegression (async) .map (to Promise) 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: \\"1:4:0:0:0:0:3:0:0:3:0:1:1:0:2\\", endOnFailure: true }
 Counterexample: [Promise.resolve(-873632988)]

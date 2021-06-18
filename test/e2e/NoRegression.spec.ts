@@ -707,7 +707,7 @@ describe(`NoRegression (async)`, () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('Promise<number>', async () => {
+  it('.map (to Promise)', async () => {
     await expect(
       async () =>
         await fc.assert(
