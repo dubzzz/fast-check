@@ -127,7 +127,16 @@ import { ExecutionTree } from './check/runner/reporter/ExecutionTree';
 import { cloneMethod, cloneIfNeeded, hasCloneMethod, WithCloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { hash } from './utils/hash';
-import { stringify, asyncStringify } from './utils/stringify';
+import {
+  stringify,
+  asyncStringify,
+  toStringMethod,
+  hasToStringMethod,
+  WithToStringMethod,
+  asyncToStringMethod,
+  hasAsyncToStringMethod,
+  WithAsyncToStringMethod,
+} from './utils/stringify';
 import {
   scheduler,
   schedulerFor,
@@ -338,6 +347,12 @@ export {
   convertFromNext,
   convertFromNextWithShrunkOnce,
   convertToNext,
+  toStringMethod,
+  hasToStringMethod,
+  WithToStringMethod,
+  asyncToStringMethod,
+  hasAsyncToStringMethod,
+  WithAsyncToStringMethod,
   // print values
   stringify,
   asyncStringify,

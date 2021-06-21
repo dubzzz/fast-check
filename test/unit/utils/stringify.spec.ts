@@ -566,6 +566,10 @@ describe('asyncStringify', () => {
       },
     };
     expect(await asyncStringify(instance9)).toEqual('Promise.resolve("hello9") Promise.resolve("world9")');
+
+    const p10 = Promise.resolve('hello10');
+    const instance10 = { [asyncToStringMethod]: () => p10.then((v) => `got: ${v}`) };
+    expect(await asyncStringify(instance10)).toEqual('got: hello10');
   });
 });
 

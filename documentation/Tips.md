@@ -21,6 +21,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Create a CodeSandbox link on error](#create-a-codesandbox-link-on-error)
 - [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
 - [Supported targets from node to deno](#supported-targets-from-node-to-deno)
+- [Override default toString for a given instance](#override-default-toString-for-a-given-instance)
 
 ## Filter invalid combinations using pre-conditions
 
@@ -805,3 +806,37 @@ Web Browser:
 ```
 
 More details on [pika](https://www.pika.dev/npm/fast-check/).
+
+## Override default toString for a given instance
+
+By default `fast-check` will serialize the generated values using it's internal stringify helper: `fc.stringify`. From time to time you may be interested in having better stringified versions of your instances. In order to do that `fast-check` offers multiple solutions:
+
+1. If your instance defines a `toString` method then `fast-check` will use it to properly report this instance. Except if one of the following one has been defined (they have higher priorities).
+2. But defining `toString` might be to intrusive. In such case `fast-check` comes with two methods: `fc.toStringMethod` and `fc.asyncToStringMethod`.
+
+Most of the time you may only need to define `fc.toStringMethod`. `fc.toStringMethod` is the serializer method that will be used by `fast-check` to serialize your instance whatever the context: asynchronous or synchronous properties.
+
+```ts
+Object.defineProperties(
+  myInstanceWithoutCustomToString,
+  { [fc.toStringMethod]: { value: () => 'my-value' } }
+);
+// here your instance defines a custom serializer that will be used by fast-check
+// whenever needed
+```
+
+But when working with asynchronous values, you may need an async code to get back the value. For instance:
+
+```ts
+Object.defineProperties(
+  myPromisePossiblyResolved,
+  { [fc.asyncToStringMethod]: { value: async () => {
+    const resolved = await myPromisePossiblyResolved;
+    return `My value: ${resolved}`;
+  } } }
+);
+```
+
+Please note that:
+1. `fc.asyncToStringMethod` will only be used in the context of asynchronous properties
+2. While `fc.asyncToStringMethod` is marked as asynchronous it should not be too long. More precisely it should resolve barely instantly.
