@@ -40,7 +40,8 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
         toString: { value: () => prettyPrint(stringify(outs)) },
         [toStringMethod]: { value: () => prettyPrint(stringify(outs)) },
         [asyncToStringMethod]: { value: async () => prettyPrint(await asyncStringify(outs)) },
-        [cloneMethod]: { value: producer },
+        // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
+        [cloneMethod]: { value: producer, configurable: true },
       });
     };
     return producer();
