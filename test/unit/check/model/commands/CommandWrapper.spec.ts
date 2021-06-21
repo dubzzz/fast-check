@@ -2,6 +2,7 @@ import { CommandWrapper } from '../../../../../src/check/model/commands/CommandW
 import { Command } from '../../../../../src/check/model/command/Command';
 import { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
 import { cloneMethod } from '../../../../../src/check/symbols';
+import { asyncToStringMethod, toStringMethod } from '../../../../../src/utils/stringify';
 
 type Model = Record<string, unknown>;
 type Real = unknown;
@@ -115,5 +116,51 @@ describe('CommandWrapper', () => {
 
     expect(cloned).not.toBe(wrapper);
     expect(cloned.cmd).toBe(wrapper.cmd);
+  });
+  it('Should not define [toStringMethod] if underlying command does not', async () => {
+    const cmd = new (class implements Command<Model, Real> {
+      check = jest.fn();
+      run = jest.fn();
+      toString = jest.fn();
+    })();
+
+    const wrapper = new CommandWrapper(cmd);
+    expect(toStringMethod in wrapper).toBe(false);
+  });
+  it('Should define [toStringMethod] if underlying command does', async () => {
+    const cmd = new (class implements Command<Model, Real> {
+      check = jest.fn();
+      run = jest.fn();
+      toString = jest.fn();
+      [toStringMethod] = () => 'hello';
+    })();
+
+    const wrapper = new CommandWrapper(cmd);
+    expect(toStringMethod in wrapper).toBe(true);
+    expect(asyncToStringMethod in wrapper).toBe(false);
+    expect((wrapper as any)[toStringMethod]()).toBe('hello');
+  });
+  it('Should not define [asyncToStringMethod] if underlying command does not', async () => {
+    const cmd = new (class implements Command<Model, Real> {
+      check = jest.fn();
+      run = jest.fn();
+      toString = jest.fn();
+    })();
+
+    const wrapper = new CommandWrapper(cmd);
+    expect(toStringMethod in wrapper).toBe(false);
+  });
+  it('Should define [asyncToStringMethod] if underlying command does', async () => {
+    const cmd = new (class implements Command<Model, Real> {
+      check = jest.fn();
+      run = jest.fn();
+      toString = jest.fn();
+      [asyncToStringMethod] = async () => 'world';
+    })();
+
+    const wrapper = new CommandWrapper(cmd);
+    expect(asyncToStringMethod in wrapper).toBe(true);
+    expect(toStringMethod in wrapper).toBe(false);
+    expect(await (wrapper as any)[asyncToStringMethod]()).toBe('world');
   });
 });
