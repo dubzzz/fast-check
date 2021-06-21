@@ -15,7 +15,7 @@ describe('hasCloneMethod', () => {
     ${[]}                  | ${'arrays'}
     ${() => {}}            | ${'functions'}
   `('should be able to detect [cloneMethod] on $description', ({ obj }) => {
-    Object.defineProperty({}, cloneMethod, { value: () => 'yes' });
+    Object.defineProperty(obj, cloneMethod, { value: () => 'yes' });
     expect(hasCloneMethod(obj)).toBe(true);
   });
 
