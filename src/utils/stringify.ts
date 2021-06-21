@@ -3,13 +3,34 @@
  * @internal
  */
 export const toStringMethod = Symbol('fast-check/toStringMethod');
+/** @internal */
+export type WithToStringMethod = { [toStringMethod]: () => string };
+/** @internal */
+export function hasToStringMethod<T>(instance: T): instance is T & WithToStringMethod {
+  return (
+    instance !== null &&
+    (typeof instance === 'object' || typeof instance === 'function') &&
+    toStringMethod in instance &&
+    typeof (instance as any)[toStringMethod] === 'function'
+  );
+}
+
 /**
  * Ability to override the default output of stringified for a given value
  * @internal
  */
 export const asyncToStringMethod = Symbol('fast-check/asyncToStringMethod');
 /** @internal */
-type WithAsyncToStringMethod = { [asyncToStringMethod]: () => Promise<string> };
+export type WithAsyncToStringMethod = { [asyncToStringMethod]: () => Promise<string> };
+/** @internal */
+export function hasAsyncToStringMethod<T>(instance: T): instance is T & WithAsyncToStringMethod {
+  return (
+    instance !== null &&
+    (typeof instance === 'object' || typeof instance === 'function') &&
+    asyncToStringMethod in instance &&
+    typeof (instance as any)[asyncToStringMethod] === 'function'
+  );
+}
 
 /** @internal */
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
@@ -70,23 +91,23 @@ export function stringifyInternal<Ts>(
       return '[cyclic]';
     }
   }
-  if (value !== null && (typeof value === 'object' || typeof value === 'function')) {
-    // user defined custom async serialization function, we use it first
-    if (asyncToStringMethod in value) {
-      const content = getAsyncContent(value as any as WithAsyncToStringMethod);
-      if (content.state === 'fulfilled') {
-        return content.value as string;
-      }
-    }
-    // user defined custom sync serialization function
-    if (toStringMethod in value) {
-      try {
-        return ((value as any)[toStringMethod] as () => string)();
-      } catch (err) {
-        // fallback to defaults...
-      }
+
+  if (hasAsyncToStringMethod(value)) {
+    // if user defined custom async serialization function, we use it first
+    const content = getAsyncContent(value);
+    if (content.state === 'fulfilled') {
+      return content.value as string;
     }
   }
+  if (hasToStringMethod(value)) {
+    // if user defined custom sync serialization function, we use it before next ones
+    try {
+      return value[toStringMethod]();
+    } catch (err) {
+      // fallback to defaults...
+    }
+  }
+
   switch (Object.prototype.toString.call(value)) {
     case '[object Array]': {
       const arr = value as unknown as unknown[];
