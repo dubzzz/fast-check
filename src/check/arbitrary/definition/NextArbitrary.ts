@@ -299,7 +299,11 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
   private mapperWithCloneIfNeeded(v: NextValue<T>): [U, T] {
     const sourceValue = v.value;
     const mappedValue = this.mapper(sourceValue);
-    if (v.hasToBeCloned && mappedValue instanceof Object && Object.isExtensible(mappedValue)) {
+    if (
+      v.hasToBeCloned &&
+      ((typeof mappedValue === 'object' && mappedValue !== null) || typeof mappedValue === 'function') &&
+      Object.isExtensible(mappedValue)
+    ) {
       // WARNING: In case the mapped value is not extensible it will not be extended
       Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v)[0] });
     }
