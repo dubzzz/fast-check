@@ -32,7 +32,8 @@ export class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
         toString: { value: () => prettyPrint(seenValues.map(stringify)) },
         [toStringMethod]: { value: () => prettyPrint(seenValues.map(stringify)) },
         [asyncToStringMethod]: { value: async () => prettyPrint(await Promise.all(seenValues.map(asyncStringify))) },
-        [cloneMethod]: { value: enrichedProducer },
+        // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
+        [cloneMethod]: { value: enrichedProducer, enumerable: true },
       });
     };
     return new NextValue(enrichedProducer(), undefined);
