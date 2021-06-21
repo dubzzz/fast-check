@@ -32,7 +32,12 @@ export function hasCloneMethod<T>(instance: T | WithCloneMethod<T>): instance is
   //   [], {}, () => {}, function() {}, async () => {}, async function() {}
   // Invalid ones:
   //   1, "", Symbol(), null, undefined
-  return instance instanceof Object && typeof (instance as any)[cloneMethod] === 'function';
+  return (
+    instance !== null &&
+    (typeof instance === 'object' || typeof instance === 'function') &&
+    cloneMethod in instance &&
+    typeof (instance as any)[cloneMethod] === 'function'
+  );
 }
 
 /**
