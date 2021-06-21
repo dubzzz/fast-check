@@ -1,3 +1,39 @@
+# 2.17.0
+
+_Better typings for `constantFrom` and better support for Promises in `stringify`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.17.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.16.0...v2.17.0)]
+
+## Features
+
+- ([PR#1969](https://github.com/dubzzz/fast-check/pull/1969)) Enhance typings of constantFrom
+- ([PR#1953](https://github.com/dubzzz/fast-check/pull/1953)) Speed-up random by using unsafe methods of pure-rand
+- ([PR#1996](https://github.com/dubzzz/fast-check/pull/1996)) Fork paths of array/set in ArrayArbitrary::generate
+- ([PR#1984](https://github.com/dubzzz/fast-check/pull/1984)) Async reporters can enrich the output with async data
+- ([PR#1972](https://github.com/dubzzz/fast-check/pull/1972)) Enhance stringify on Promise
+- ([PR#2006](https://github.com/dubzzz/fast-check/pull/2006)) Support custom\* async serializer in stringify (\*via internal symbol)
+- ([PR#2015](https://github.com/dubzzz/fast-check/pull/2015)) Forward the custom toString methods of the underlying commands
+- ([PR#2014](https://github.com/dubzzz/fast-check/pull/2014)) Better stringified value for func producing async values
+- ([PR#2018](https://github.com/dubzzz/fast-check/pull/2018)) Better stringified value for infiniteStream producing async values
+- ([PR#2019](https://github.com/dubzzz/fast-check/pull/2019)) Expose custom to string methods
+
+## Fixes
+
+- ([PR#1997](https://github.com/dubzzz/fast-check/pull/1997)) Bug: Default reporter performed side-effects on the output
+- ([PR#2017](https://github.com/dubzzz/fast-check/pull/2017)) Bug: Better detection for objects that could define cloneMethod in `map`
+- ([PR#2016](https://github.com/dubzzz/fast-check/pull/2016)) Bug: Safer check for cloneMethod to also support prototype-less objects
+- ([PR#1954](https://github.com/dubzzz/fast-check/pull/1954)) CI: Rewrite reaction to comment action using github-script
+- ([PR#1981](https://github.com/dubzzz/fast-check/pull/1981)) CI: Drop Node 10 from CI tool-chain
+- ([PR#1982](https://github.com/dubzzz/fast-check/pull/1982)) CI: Drop Node 10 from CI tool-chain
+- ([PR#1983](https://github.com/dubzzz/fast-check/pull/1983)) CI: Override default version of node in codesandbox with node 14
+- ([PR#1951](https://github.com/dubzzz/fast-check/pull/1951)) Doc: Add "Performance" category into the PR template
+- ([PR#1970](https://github.com/dubzzz/fast-check/pull/1970)) Doc: Fix wrong format command and add lint fixing command
+- ([PR#2005](https://github.com/dubzzz/fast-check/pull/2005)) Doc: Fix typo barely -> nearly
+- ([PR#2007](https://github.com/dubzzz/fast-check/pull/2007)) Doc: Prefer more explicit async/await properties in examples/
+- ([PR#2001](https://github.com/dubzzz/fast-check/pull/2001)) Refactor: No more use of window for global configuration
+- ([PR#2002](https://github.com/dubzzz/fast-check/pull/2002)) Refactor: Build context when building the item itself in ArrayArbitrary
+
+---
+
 # 2.16.0
 
 _Performance improvements (+50% in avg compared to 2.14.0, +150% in avg compared to 2.15.0)_
