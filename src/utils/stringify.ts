@@ -1,11 +1,24 @@
 /**
- * Ability to override the default output of stringified for a given value
- * @internal
+ * Use this symbol to define a custom serializer for your instances.
+ * Serializer must be a function returning a string (see {@link WithToStringMethod}).
+ *
+ * @remarks Since 2.17.0
+ * @public
  */
 export const toStringMethod = Symbol('fast-check/toStringMethod');
-/** @internal */
+/**
+ * Interface to implement for {@link toStringMethod}
+ *
+ * @remarks Since 2.17.0
+ * @public
+ */
 export type WithToStringMethod = { [toStringMethod]: () => string };
-/** @internal */
+/**
+ * Check if an instance implements {@link WithToStringMethod}
+ *
+ * @remarks Since 2.17.0
+ * @public
+ */
 export function hasToStringMethod<T>(instance: T): instance is T & WithToStringMethod {
   return (
     instance !== null &&
@@ -16,13 +29,30 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
 }
 
 /**
- * Ability to override the default output of stringified for a given value
- * @internal
+ * Use this symbol to define a custom serializer for your instances.
+ * Serializer must be a function returning a promise of string (see {@link WithAsyncToStringMethod}).
+ *
+ * Please note that:
+ * 1. It will only be useful for asynchronous properties.
+ * 2. It has to return barely instantly.
+ *
+ * @remarks Since 2.17.0
+ * @public
  */
 export const asyncToStringMethod = Symbol('fast-check/asyncToStringMethod');
-/** @internal */
+/**
+ * Interface to implement for {@link asyncToStringMethod}
+ *
+ * @remarks Since 2.17.0
+ * @public
+ */
 export type WithAsyncToStringMethod = { [asyncToStringMethod]: () => Promise<string> };
-/** @internal */
+/**
+ * Check if an instance implements {@link WithAsyncToStringMethod}
+ *
+ * @remarks Since 2.17.0
+ * @public
+ */
 export function hasAsyncToStringMethod<T>(instance: T): instance is T & WithAsyncToStringMethod {
   return (
     instance !== null &&
