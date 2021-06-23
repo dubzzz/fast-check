@@ -18,4 +18,34 @@ describe('numberToPaddedEightUnmapper', () => {
         expect(out).toBe(n);
       })
     ));
+
+  it('should reject the value whenever it has an invalid length', () => {
+    // Arrange
+    const valueNk = '012345678';
+    const valueOk = '01234567';
+
+    // Act / Assert
+    expect(() => numberToPaddedEightUnmapper(valueNk)).toThrowError();
+    expect(() => numberToPaddedEightUnmapper(valueOk)).not.toThrowError();
+  });
+
+  it('should reject the value whenever it contains an invalid character', () => {
+    // Arrange
+    const valueNk = '0123456z';
+    const valueOk = '01234567';
+
+    // Act / Assert
+    expect(() => numberToPaddedEightUnmapper(valueNk)).toThrowError();
+    expect(() => numberToPaddedEightUnmapper(valueOk)).not.toThrowError();
+  });
+
+  it('should reject the value whenever it contains an uppercase hexa character', () => {
+    // Arrange
+    const valueNk = '89abcdeF';
+    const valueOk = '89abcdef';
+
+    // Act / Assert
+    expect(() => numberToPaddedEightUnmapper(valueNk)).toThrowError();
+    expect(() => numberToPaddedEightUnmapper(valueOk)).not.toThrowError();
+  });
 });
