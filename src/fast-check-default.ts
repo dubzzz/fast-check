@@ -88,7 +88,8 @@ import { unicodeString } from './arbitrary/unicodeString';
 import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
 import { genericTuple } from './arbitrary/genericTuple';
 import { tuple } from './arbitrary/tuple';
-import { uuid, uuidV } from './check/arbitrary/UuidArbitrary';
+import { uuid } from './arbitrary/uuid';
+import { uuidV } from './arbitrary/uuidV';
 import {
   webAuthority,
   WebAuthorityConstraints,
