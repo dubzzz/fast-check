@@ -43,6 +43,21 @@ export function fakeNextArbitrary<T = any>(): { instance: NextArbitrary<T> } & M
 }
 
 /**
+ * Generate a fake instance inheriting from NextArbitrary but always producing the same value
+ */
+export function fakeNextArbitraryStaticValue<T>(
+  value: () => T,
+  context: () => unknown = () => undefined
+): { instance: NextArbitrary<T> } {
+  const { instance, generate, map } = fakeNextArbitrary<T>();
+  generate.mockImplementation(() => new NextValue(value(), context()));
+  map.mockImplementation((mapper) => {
+    return fakeNextArbitraryStaticValue(() => mapper(value())).instance;
+  });
+  return { instance };
+}
+
+/**
  * Fake instance with the following capabilities:
  * - shrink to strictly smaller values
  * - fully implemented canShrinkWithoutContext
