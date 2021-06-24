@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { escapeForMultilineComments } from '../../../check/arbitrary/helpers/TextEscaper';
+import { escapeForMultilineComments } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
 import { hash } from '../../../utils/hash';
 import { stringify } from '../../../utils/stringify';
