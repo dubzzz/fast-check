@@ -10,11 +10,42 @@ import { oneof } from './oneof';
 import { option } from './option';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /** @internal */
 function hostUserInfo(): Arbitrary<string> {
   const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':'];
   return stringOf(buildAlphaNumericPercentArbitrary(others));
+}
+
+/** @internal */
+function userHostPortMapper([u, h, p]: [string | null, string, number | null]): string {
+  return (u === null ? '' : `${u}@`) + h + (p === null ? '' : `:${p}`);
+}
+/** @internal */
+function userHostPortUnmapper(value: unknown): [string | null, string, number | null] {
+  if (typeof value !== 'string') {
+    throw new Error('Unsupported');
+  }
+  const atPosition = value.indexOf('@');
+  const user = atPosition !== -1 ? value.substring(0, atPosition) : null;
+  const portRegex = /:(\d+)$/;
+  const m = portRegex.exec(value);
+  const port = m !== null ? Number(m[1]) : null;
+  const host =
+    m !== null ? value.substring(atPosition + 1, value.length - m[1].length - 1) : value.substring(atPosition + 1);
+  return [user, host, port];
+}
+/** @internal */
+function bracketedMapper(s: string): string {
+  return `[${s}]`;
+}
+/** @internal */
+function bracketedUnmapper(value: unknown): string {
+  if (typeof value !== 'string' || value[0] !== '[' || value[value.length - 1] !== ']') {
+    throw new Error('Unsupported');
+  }
+  return value.substring(1, value.length - 1);
 }
 
 /**
@@ -64,11 +95,15 @@ export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<s
   const c = constraints || {};
   const hostnameArbs = [domain()]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
-    .concat(c.withIPv6 === true ? [ipV6().map((ip) => `[${ip}]`)] : [])
+    .concat(c.withIPv6 === true ? [convertFromNext(convertToNext(ipV6()).map(bracketedMapper, bracketedUnmapper))] : [])
     .concat(c.withIPv4Extended === true ? [ipV4Extended()] : []);
-  return tuple(
-    c.withUserInfo === true ? option(hostUserInfo()) : constant(null),
-    oneof(...hostnameArbs),
-    c.withPort === true ? option(nat(65535)) : constant(null)
-  ).map(([u, h, p]) => (u === null ? '' : `${u}@`) + h + (p === null ? '' : `:${p}`));
+  return convertFromNext(
+    convertToNext(
+      tuple(
+        c.withUserInfo === true ? option(hostUserInfo()) : constant(null),
+        oneof(...hostnameArbs),
+        c.withPort === true ? option(nat(65535)) : constant(null)
+      )
+    ).map(userHostPortMapper, userHostPortUnmapper)
+  );
 }

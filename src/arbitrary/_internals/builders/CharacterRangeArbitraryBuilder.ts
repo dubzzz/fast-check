@@ -2,6 +2,7 @@ import { fullUnicode } from '../../fullUnicode';
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { frequency } from '../../frequency';
 import { mapToConstant } from '../../mapToConstant';
+import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 
 /** @internal */
 const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
@@ -13,10 +14,21 @@ const upperCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v +
 const numericMapper = { num: 10, build: (v: number) => String.fromCharCode(v + 0x30) };
 
 /** @internal */
-const percentCharArb = fullUnicode().map((c) => {
+function percentCharArbMapper(c: string): string {
   const encoded = encodeURIComponent(c);
   return c !== encoded ? encoded : `%${c.charCodeAt(0).toString(16)}`; // always %xy / no %x or %xyz
-});
+}
+/** @internal */
+function percentCharArbUnmapper(value: unknown): string {
+  if (typeof value !== 'string') {
+    throw new Error('Unsupported');
+  }
+  const decoded = decodeURIComponent(value);
+  return decoded;
+}
+
+/** @internal */
+const percentCharArb = convertFromNext(convertToNext(fullUnicode()).map(percentCharArbMapper, percentCharArbUnmapper));
 
 /** @internal */
 export const buildLowerAlphaArbitrary = (others: string[]): Arbitrary<string> =>
