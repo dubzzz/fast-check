@@ -43,13 +43,13 @@ import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary } from './arbitrary/dictionary';
-import { emailAddress } from './check/arbitrary/EmailArbitrary';
+import { emailAddress } from './arbitrary/emailAddress';
 import { double, float, DoubleConstraints, FloatConstraints } from './check/arbitrary/FloatingPointArbitrary';
 import { frequency, WeightedArbitrary, FrequencyValue, FrequencyContraints } from './arbitrary/frequency';
 import { compareBooleanFunc } from './arbitrary/compareBooleanFunc';
 import { compareFunc } from './arbitrary/compareFunc';
 import { func } from './arbitrary/func';
-import { domain } from './check/arbitrary/HostArbitrary';
+import { domain } from './arbitrary/domain';
 import { integer, IntegerConstraints } from './arbitrary/integer';
 import { maxSafeInteger } from './arbitrary/maxSafeInteger';
 import { maxSafeNat } from './arbitrary/maxSafeNat';
@@ -90,15 +90,11 @@ import { genericTuple } from './arbitrary/genericTuple';
 import { tuple } from './arbitrary/tuple';
 import { uuid } from './arbitrary/uuid';
 import { uuidV } from './arbitrary/uuidV';
-import {
-  webAuthority,
-  WebAuthorityConstraints,
-  webFragments,
-  webQueryParameters,
-  webSegment,
-  webUrl,
-  WebUrlConstraints,
-} from './check/arbitrary/WebArbitrary';
+import { webAuthority, WebAuthorityConstraints } from './arbitrary/webAuthority';
+import { webFragments } from './arbitrary/webFragments';
+import { webQueryParameters } from './arbitrary/webQueryParameters';
+import { webSegment } from './arbitrary/webSegment';
+import { webUrl, WebUrlConstraints } from './arbitrary/webUrl';
 
 import { AsyncCommand } from './check/model/command/AsyncCommand';
 import { Command } from './check/model/command/Command';

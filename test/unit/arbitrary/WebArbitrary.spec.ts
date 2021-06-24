@@ -1,8 +1,8 @@
-import { webUrl } from '../../../../src/check/arbitrary/WebArbitrary';
+import { webUrl } from '../../../src/arbitrary/webUrl';
 
 import { URL } from 'url';
-import * as genericHelper from './generic/GenericArbitraryHelper';
-import fc from '../../../../lib/fast-check';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
+import fc from '../../../lib/fast-check';
 
 const isValidUrl = (t: string) => {
   // Valid url given the specs defined by WHATWG URL Standard

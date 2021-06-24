@@ -1,9 +1,9 @@
-import { array } from '../../arbitrary/array';
-import { buildLowerAlphaNumericArb } from './helpers/SpecificCharacterRange';
-import { domain } from './HostArbitrary';
-import { stringOf } from '../../arbitrary/stringOf';
-import { tuple } from '../../arbitrary/tuple';
-import { Arbitrary } from './definition/Arbitrary';
+import { array } from './array';
+import { buildLowerAlphaNumericArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
+import { domain } from './domain';
+import { stringOf } from './stringOf';
+import { tuple } from './tuple';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 
 /**
  * For email address
@@ -17,7 +17,7 @@ import { Arbitrary } from './definition/Arbitrary';
  */
 export function emailAddress(): Arbitrary<string> {
   const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];
-  const atextArb = buildLowerAlphaNumericArb(others);
+  const atextArb = buildLowerAlphaNumericArbitrary(others);
   const localPartArb = array(stringOf(atextArb, { minLength: 1, maxLength: 10 }), { minLength: 1, maxLength: 5 })
     .map((a) => a.join('.'))
     // According to RFC 2821:

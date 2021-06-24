@@ -1,7 +1,8 @@
-import { domain, filterInvalidSubdomainLabel } from '../../../../src/check/arbitrary/HostArbitrary';
+import { domain } from '../../../src/arbitrary/domain';
+import { filterInvalidSubdomainLabel } from '../../../src/arbitrary/_internals/helpers/InvalidSubdomainLabelFiIter';
 
-import * as genericHelper from './generic/GenericArbitraryHelper';
-import fc from '../../../../lib/fast-check';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
+import fc from '../../../lib/fast-check';
 
 const isValidDomain = (t: string) => {
   // According to https://www.ietf.org/rfc/rfc1034.txt
