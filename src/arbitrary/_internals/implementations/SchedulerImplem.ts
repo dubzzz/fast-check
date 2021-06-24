@@ -1,4 +1,4 @@
-import { escapeForTemplateString } from '../../../check/arbitrary/helpers/TextEscaper';
+import { escapeForTemplateString } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
 import { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';

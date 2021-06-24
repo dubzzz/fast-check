@@ -5,7 +5,7 @@ import { array } from './array';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { integer } from './integer';
 import { tuple } from './tuple';
-import { escapeForMultilineComments } from '../check/arbitrary/helpers/TextEscaper';
+import { escapeForMultilineComments } from './_internals/helpers/TextEscaper';
 
 /**
  * For pure functions
