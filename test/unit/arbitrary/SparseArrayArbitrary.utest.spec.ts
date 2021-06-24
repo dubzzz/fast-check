@@ -1,17 +1,17 @@
-import { sparseArray, SparseArrayConstraints } from '../../../../src/check/arbitrary/SparseArrayArbitrary';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { sparseArray, SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import { Shrinkable } from '../../../src/check/arbitrary/definition/Shrinkable';
 import { mocked } from 'ts-jest/utils';
 
-import fc from '../../../../lib/fast-check';
+import fc from '../../../lib/fast-check';
 
-import * as NatMock from '../../../../src/arbitrary/nat';
-import * as SetMock from '../../../../src/arbitrary/set';
-import * as TupleMock from '../../../../src/arbitrary/tuple';
-import { arbitraryFor } from './generic/ArbitraryBuilder';
-jest.mock('../../../../src/arbitrary/nat');
-jest.mock('../../../../src/arbitrary/set');
-jest.mock('../../../../src/arbitrary/tuple');
+import * as NatMock from '../../../src/arbitrary/nat';
+import * as SetMock from '../../../src/arbitrary/set';
+import * as TupleMock from '../../../src/arbitrary/tuple';
+import { arbitraryFor } from '../check/arbitrary/generic/ArbitraryBuilder';
+jest.mock('../../../src/arbitrary/nat');
+jest.mock('../../../src/arbitrary/set');
+jest.mock('../../../src/arbitrary/tuple');
 
 const validSparseArrayConstraints = (removedKeys: (keyof SparseArrayConstraints)[] = []) =>
   fc

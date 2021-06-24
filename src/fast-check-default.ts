@@ -158,7 +158,7 @@ import { uint16Array } from './arbitrary/uint16Array';
 import { uint32Array } from './arbitrary/uint32Array';
 import { float32Array, Float32ArrayConstraints } from './arbitrary/float32Array';
 import { float64Array, Float64ArrayConstraints } from './arbitrary/float64Array';
-import { sparseArray, SparseArrayConstraints } from './check/arbitrary/SparseArrayArbitrary';
+import { sparseArray, SparseArrayConstraints } from './arbitrary/sparseArray';
 import { DoubleNextConstraints } from './check/arbitrary/DoubleNextArbitrary';
 import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
