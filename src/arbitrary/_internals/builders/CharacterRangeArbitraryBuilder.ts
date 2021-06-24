@@ -1,7 +1,7 @@
-import { fullUnicode } from '../../../arbitrary/fullUnicode';
-import { Arbitrary } from '../definition/Arbitrary';
-import { frequency } from '../../../arbitrary/frequency';
-import { mapToConstant } from '../../../arbitrary/mapToConstant';
+import { fullUnicode } from '../../fullUnicode';
+import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import { frequency } from '../../frequency';
+import { mapToConstant } from '../../mapToConstant';
 
 /** @internal */
 const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
@@ -19,26 +19,17 @@ const percentCharArb = fullUnicode().map((c) => {
 });
 
 /** @internal */
-export const buildLowerAlphaArb = (others: string[]): Arbitrary<string> =>
+export const buildLowerAlphaArbitrary = (others: string[]): Arbitrary<string> =>
   mapToConstant(lowerCaseMapper, { num: others.length, build: (v) => others[v] });
 
 /** @internal */
-export const buildLowerAlphaNumericArb = (others: string[]): Arbitrary<string> =>
+export const buildLowerAlphaNumericArbitrary = (others: string[]): Arbitrary<string> =>
   mapToConstant(lowerCaseMapper, numericMapper, { num: others.length, build: (v) => others[v] });
 
 /** @internal */
-export const buildAlphaNumericArb = (others: string[]): Arbitrary<string> =>
+export const buildAlphaNumericArbitrary = (others: string[]): Arbitrary<string> =>
   mapToConstant(lowerCaseMapper, upperCaseMapper, numericMapper, { num: others.length, build: (v) => others[v] });
 
 /** @internal */
-export const buildAlphaNumericPercentArb = (others: string[]): Arbitrary<string> =>
-  frequency(
-    {
-      weight: 10,
-      arbitrary: buildAlphaNumericArb(others),
-    },
-    {
-      weight: 1,
-      arbitrary: percentCharArb,
-    }
-  );
+export const buildAlphaNumericPercentArbitrary = (others: string[]): Arbitrary<string> =>
+  frequency({ weight: 10, arbitrary: buildAlphaNumericArbitrary(others) }, { weight: 1, arbitrary: percentCharArb });
