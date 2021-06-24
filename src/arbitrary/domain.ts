@@ -8,6 +8,22 @@ import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+
+/** @internal */
+function toSubdomainLabelMapper([f, d]: [string, [string, string] | null]): string {
+  return d === null ? f : `${f}${d[0]}${d[1]}`;
+}
+/** @internal */
+function toSubdomainLabelUnmapper(value: unknown): [string, [string, string] | null] {
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error('Unsupported');
+  }
+  if (value.length === 1) {
+    return [value[0], null];
+  }
+  return [value[0], [value.substring(1, value.length - 1), value[value.length - 1]]];
+}
 
 /** @internal */
 function subdomainLabel() {
@@ -15,9 +31,26 @@ function subdomainLabel() {
   const alphaNumericHyphenArb = buildLowerAlphaNumericArbitrary(['-']);
   // Rq: maxLength = 61 because max length of a label is 63 according to RFC 1034
   //     and we add 2 characters to this generated value
-  return tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb, { maxLength: 61 }), alphaNumericArb)))
-    .map(([f, d]) => (d === null ? f : `${f}${d[0]}${d[1]}`))
-    .filter(filterInvalidSubdomainLabel);
+  return convertFromNext(
+    convertToNext(
+      tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb, { maxLength: 61 }), alphaNumericArb)))
+    )
+      .map(toSubdomainLabelMapper, toSubdomainLabelUnmapper)
+      .filter(filterInvalidSubdomainLabel)
+  );
+}
+
+/** @internal */
+function labelsMapper(elements: [string[], string]): string {
+  return `${elements[0].join('.')}.${elements[1]}`;
+}
+/** @internal */
+function labelsUnmapper(value: unknown): [string[], string] {
+  if (typeof value !== 'string') {
+    throw new Error('Unsupported type');
+  }
+  const lastDotIndex = value.lastIndexOf('.');
+  return [value.substring(0, lastDotIndex).split('.'), value.substring(lastDotIndex + 1)];
 }
 
 /**
@@ -35,12 +68,12 @@ function subdomainLabel() {
 export function domain(): Arbitrary<string> {
   const alphaNumericArb = buildLowerAlphaArbitrary([]);
   // A list of public suffixes can be found here: https://publicsuffix.org/list/public_suffix_list.dat
-  // our current implementation does not follwo this list and generate a fully randomized suffix
+  // our current implementation does not follow this list and generate a fully randomized suffix
   // which is probably not in this list (probability would be low)
   const publicSuffixArb = stringOf(alphaNumericArb, { minLength: 2, maxLength: 10 });
-  return (
-    tuple(array(subdomainLabel(), { minLength: 1, maxLength: 5 }), publicSuffixArb)
-      .map(([mid, ext]) => `${mid.join('.')}.${ext}`)
+  return convertFromNext(
+    convertToNext(tuple(array(subdomainLabel(), { minLength: 1, maxLength: 5 }), publicSuffixArb))
+      .map(labelsMapper, labelsUnmapper)
       // Required by RFC 1034:
       //    To simplify implementations, the total number of octets that represent
       //    a domain name (i.e., the sum of all label octets and label lengths) is limited to 255.
