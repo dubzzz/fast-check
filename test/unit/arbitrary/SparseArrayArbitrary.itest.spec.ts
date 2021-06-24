@@ -1,7 +1,7 @@
-import { sparseArray, SparseArrayConstraints } from '../../../../src/check/arbitrary/SparseArrayArbitrary';
-import { nat } from '../../../../src/arbitrary/nat';
-import * as genericHelper from './generic/GenericArbitraryHelper';
-import fc from '../../../../lib/fast-check';
+import { sparseArray, SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
+import { nat } from '../../../src/arbitrary/nat';
+import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
+import fc from '../../../lib/fast-check';
 
 const validSparseArrayConstraints = () =>
   fc

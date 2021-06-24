@@ -25,7 +25,7 @@ import { uint16Array } from '../../arbitrary/uint16Array';
 import { uint32Array } from '../../arbitrary/uint32Array';
 import { uint8Array } from '../../arbitrary/uint8Array';
 import { uint8ClampedArray } from '../../arbitrary/uint8ClampedArray';
-import { sparseArray } from './SparseArrayArbitrary';
+import { sparseArray } from '../../arbitrary/sparseArray';
 import { keyValuePairsToObjectMapper } from '../../arbitrary/_internals/mappers/KeyValuePairsToObject';
 
 /**
