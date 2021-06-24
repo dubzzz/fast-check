@@ -4,6 +4,30 @@ import { domain } from './domain';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+
+/** @internal */
+function dotMapper(a: string[]): string {
+  return a.join('.');
+}
+/** @internal */
+function dotUnmapper(value: unknown): string[] {
+  if (typeof value !== 'string') {
+    throw new Error('Unsupported');
+  }
+  return value.split('.');
+}
+/** @internal */
+function atMapper(data: [string, string]): string {
+  return `${data[0]}@${data[1]}`;
+}
+/** @internal */
+function atUnmapper(value: unknown): [string, string] {
+  if (typeof value !== 'string') {
+    throw new Error('Unsupported');
+  }
+  return value.split('@', 2) as [string, string];
+}
 
 /**
  * For email address
@@ -18,11 +42,13 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 export function emailAddress(): Arbitrary<string> {
   const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];
   const atextArb = buildLowerAlphaNumericArbitrary(others);
-  const localPartArb = array(stringOf(atextArb, { minLength: 1, maxLength: 10 }), { minLength: 1, maxLength: 5 })
-    .map((a) => a.join('.'))
-    // According to RFC 2821:
-    //    The maximum total length of a user name or other local-part is 64 characters.
-    .filter((lp) => lp.length <= 64);
+  const localPartArb = convertFromNext(
+    convertToNext(array(stringOf(atextArb, { minLength: 1, maxLength: 10 }), { minLength: 1, maxLength: 5 }))
+      .map(dotMapper, dotUnmapper)
+      // According to RFC 2821:
+      //    The maximum total length of a user name or other local-part is 64 characters.
+      .filter((lp) => lp.length <= 64)
+  );
 
-  return tuple(localPartArb, domain()).map(([lp, d]) => `${lp}@${d}`);
+  return convertFromNext(convertToNext(tuple(localPartArb, domain())).map(atMapper, atUnmapper));
 }
