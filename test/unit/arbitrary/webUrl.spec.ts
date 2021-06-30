@@ -1,6 +1,7 @@
 import fc from '../../../lib/fast-check';
 import { webUrl, WebUrlConstraints } from '../../../src/arbitrary/webUrl';
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { URL } from 'url';
 
 import {
   assertProduceCorrectValues,
