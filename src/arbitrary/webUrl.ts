@@ -30,7 +30,7 @@ function partsToUrlMapper(data: [string, string, string, string | null, string |
 }
 /** @internal More details on RFC 3986, https://www.ietf.org/rfc/rfc3986.txt */
 const UrlSplitRegex =
-  /^([A-Za-Z0-9+.-]+):\/\/([^/]*)(.*)(\?[A-Za-z0-9\-._~!$&'()*+,;=:@/?%]*)?(#[A-Za-z0-9\-._~!$&'()*+,;=:@/?%]*)?$/;
+  /^([A-Za-z0-9+.-]+):\/\/([^/]*)([^?#]*)(\?[A-Za-z0-9\-._~!$&'()*+,;=:@/?%]*)?(#[A-Za-z0-9\-._~!$&'()*+,;=:@/?%]*)?$/;
 
 /** @internal */
 function partsToUrlUnmapper(value: unknown): [string, string, string, string | null, string | null] {

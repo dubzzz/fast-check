@@ -74,10 +74,17 @@ describe('webUrl (integration)', () => {
   it.each`
     rawValue
     ${'http://my.domain.org/a/z'}
+    ${'http://user:pass@my.domain.org/a/z'}
     ${'http://my.domain.org/a/z?query#fragments'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(webUrl({ withQueryParameters: true, withFragments: true }));
+    const arb = convertToNext(
+      webUrl({
+        authoritySettings: { withUserInfo: true },
+        withQueryParameters: true,
+        withFragments: true,
+      })
+    );
     const value = new NextValue(rawValue, undefined);
 
     // Act
