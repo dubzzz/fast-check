@@ -9,6 +9,8 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -67,5 +69,22 @@ describe('webUrl (integration)', () => {
 
   it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, { extraParameters });
+  });
+
+  it.each`
+    rawValue
+    ${'http://my.domain.org/a/z'}
+    ${'http://my.domain.org/a/z?query#fragments'}
+  `('should be able to shrink $rawValue', ({ rawValue }) => {
+    // Arrange
+    const arb = convertToNext(webUrl({ withQueryParameters: true, withFragments: true }));
+    const value = new NextValue(rawValue, undefined);
+
+    // Act
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+
+    // Assert
+    expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);
+    expect(renderedTree).toMatchSnapshot();
   });
 });
