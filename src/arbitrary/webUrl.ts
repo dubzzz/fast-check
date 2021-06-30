@@ -16,8 +16,11 @@ function segmentsToPathMapper(segments: string[]): string {
 }
 /** @internal */
 function segmentsToPathUnmapper(value: unknown): string[] {
-  if (typeof value !== 'string' || value[0] !== '/') {
-    throw new Error('Incompatible value received');
+  if (typeof value !== 'string') {
+    throw new Error('Incompatible value received: type');
+  }
+  if (value.length !== 0 && value[0] !== '/') {
+    throw new Error('Incompatible value received: start');
   }
   return value.split('/').splice(1);
 }

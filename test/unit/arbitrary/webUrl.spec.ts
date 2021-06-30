@@ -41,16 +41,9 @@ describe('webUrl (integration)', () => {
   );
 
   const isCorrect = (t: string) => {
-    // Valid url given the specs defined by WHATWG URL Standard
-    // https://url.spec.whatwg.org/
-    try {
-      // A TypeError will be thrown if the input is not a valid URL.
-      // https://nodejs.org/api/url.html#url_constructor_new_url_input_base
-      new URL(t);
-      return true;
-    } catch (err) {
-      return false;
-    }
+    // Valid url given the specs defined by WHATWG URL Standard: https://url.spec.whatwg.org/
+    // A TypeError will be thrown if the input is not a valid URL: https://nodejs.org/api/url.html#url_constructor_new_url_input_base
+    expect(() => new URL(t)).not.toThrow();
   };
 
   const webUrlBuilder = (extra: Extra) => convertToNext(webUrl(extra));
