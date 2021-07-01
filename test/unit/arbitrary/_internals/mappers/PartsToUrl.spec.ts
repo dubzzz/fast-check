@@ -31,12 +31,12 @@ describe('partsToUrlUnmapper', () => {
           // Cannot assert on hostname: ips are sanitized
           // Cannot assert on pathname: paths are sanitized (eg.: .., .)
           if (parsed.search.length !== 0) {
-            expect(decodeURIComponent(query)).toBe(decodeURIComponent(parsed.search.substring(1)));
+            expect(decodeURIComponent(query!)).toBe(decodeURIComponent(parsed.search.substring(1)));
           } else {
             expect([null, '']).toContain(query);
           }
           if (parsed.hash.length !== 0) {
-            expect(decodeURIComponent(fragments)).toBe(decodeURIComponent(parsed.hash.substring(1)));
+            expect(decodeURIComponent(fragments!)).toBe(decodeURIComponent(parsed.hash.substring(1)));
           } else {
             expect([null, '']).toContain(fragments);
           }
