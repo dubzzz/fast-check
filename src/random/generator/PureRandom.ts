@@ -1,7 +1,7 @@
 import { RandomGenerator as PureRandRandomGenerator } from 'pure-rand';
 
 /**
- * Interface for `RandomGenerator` as declared in pure-rand for versions <5.x.x
+ * Interface for `RandomGenerator` as declared in pure-rand for versions strictly lower than 5.x.x
  * @remarks Since 2.17.0
  * @public
  */
