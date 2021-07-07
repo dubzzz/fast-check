@@ -1,22 +1,19 @@
 import * as prand from 'pure-rand';
-import * as fc from '../../../../lib/fast-check';
+import * as fc from '../../../lib/fast-check';
 
-import { constant } from '../../../../src/arbitrary/constant';
-import { oneof } from '../../../../src/arbitrary/oneof';
-import {
-  anything,
-  object,
-  jsonObject,
-  unicodeJsonObject,
-  json,
-  unicodeJson,
-  ObjectConstraints,
-  boxArbitrary,
-} from '../../../../src/check/arbitrary/ObjectArbitrary';
+import { constant } from '../../../src/arbitrary/constant';
+import { oneof } from '../../../src/arbitrary/oneof';
+import { anything } from '../../../src/arbitrary/anything';
+import { object, ObjectConstraints } from '../../../src/arbitrary/object';
+import { jsonObject } from '../../../src/arbitrary/jsonObject';
+import { unicodeJsonObject } from '../../../src/arbitrary/unicodeJsonObject';
+import { json } from '../../../src/arbitrary/json';
+import { unicodeJson } from '../../../src/arbitrary/unicodeJson';
+import { boxedArbitraryBuilder } from '../../../src/arbitrary/_internals/builders/BoxedArbitraryBuilder';
 
-import { Random } from '../../../../src/random/generator/Random';
-import { arbitraryFor } from './generic/ArbitraryBuilder';
-import * as stubRng from '../../stubs/generators';
+import { Random } from '../../../src/random/generator/Random';
+import { arbitraryFor } from '../check/arbitrary/generic/ArbitraryBuilder';
+import * as stubRng from '../stubs/generators';
 
 const mrng = () => stubRng.mutable.nocall();
 
@@ -495,7 +492,7 @@ describe('ObjectArbitrary', () => {
     `('Should box any $type', ({ arbitrary }) =>
       fc.assert(
         fc.property(arbitrary, (originalValue) => {
-          const boxedArbitrary = boxArbitrary(arbitraryFor([{ value: originalValue }]));
+          const boxedArbitrary = boxedArbitraryBuilder(arbitraryFor([{ value: originalValue }]));
           const { value } = boxedArbitrary.generate(mrng());
 
           expect(typeof value).toBe('object');
@@ -533,7 +530,7 @@ describe('ObjectArbitrary', () => {
               expect(() => new Ctor(originalValue)).toThrow(); //others like symbol, bigint...
             }
 
-            const boxedArbitrary = boxArbitrary(arbitraryFor([{ value: originalValue }]));
+            const boxedArbitrary = boxedArbitraryBuilder(arbitraryFor([{ value: originalValue }]));
             const { value } = boxedArbitrary.generate(mrng());
             expect(value).toBe(originalValue);
           }
