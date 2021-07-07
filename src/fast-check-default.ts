@@ -62,16 +62,12 @@ import { lorem, LoremConstraints } from './arbitrary/lorem';
 import { mapToConstant } from './arbitrary/mapToConstant';
 import { memo, Memo } from './arbitrary/memo';
 import { mixedCase, MixedCaseConstraints } from './arbitrary/mixedCase';
-import {
-  anything,
-  json,
-  JsonSharedConstraints,
-  jsonObject,
-  object,
-  ObjectConstraints,
-  unicodeJson,
-  unicodeJsonObject,
-} from './check/arbitrary/ObjectArbitrary';
+import { object, ObjectConstraints } from './arbitrary/object';
+import { json, JsonSharedConstraints } from './arbitrary/json';
+import { anything } from './arbitrary/anything';
+import { unicodeJsonObject } from './arbitrary/unicodeJsonObject';
+import { jsonObject } from './arbitrary/jsonObject';
+import { unicodeJson } from './arbitrary/unicodeJson';
 import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './arbitrary/record';
