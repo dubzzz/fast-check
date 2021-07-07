@@ -10,6 +10,9 @@ export { JsonSharedConstraints };
  *
  * Keys and string values rely on {@link unicode}
  *
+ * As `JSON.parse` preserves `-0`, `unicodeJsonObject` can also have `-0` as a value.
+ * `unicodeJsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
+ *
  * @remarks Since 1.2.3
  * @public
  */
@@ -18,6 +21,9 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  * For any JSON compliant values with unicode support and a maximal depth
  *
  * Keys and string values rely on {@link unicode}
+ *
+ * As `JSON.parse` preserves `-0`, `unicodeJsonObject` can also have `-0` as a value.
+ * `unicodeJsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
  *
  * @param maxDepth - Maximal depth of the generated values
  *
@@ -33,6 +39,9 @@ function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
  * For any JSON compliant values with unicode support
  *
  * Keys and string values rely on {@link unicode}
+ *
+ * As `JSON.parse` preserves `-0`, `unicodeJsonObject` can also have `-0` as a value.
+ * `unicodeJsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
