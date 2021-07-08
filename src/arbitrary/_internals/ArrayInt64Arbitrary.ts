@@ -1,9 +1,9 @@
-import { Random } from '../../../random/generator/Random';
-import { stream, Stream } from '../../../stream/Stream';
-import { ArbitraryWithContextualShrink } from '../definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../definition/Converters';
-import { NextArbitrary } from '../definition/NextArbitrary';
-import { NextValue } from '../definition/NextValue';
+import { Random } from '../../random/generator/Random';
+import { stream, Stream } from '../../stream/Stream';
+import { ArbitraryWithContextualShrink } from '../../check/arbitrary/definition/ArbitraryWithContextualShrink';
+import { convertFromNextWithShrunkOnce } from '../../check/arbitrary/definition/Converters';
+import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import {
   add64,
   ArrayInt64,
@@ -17,7 +17,7 @@ import {
   substract64,
   Unit64,
   Zero64,
-} from './ArrayInt64';
+} from './helpers/ArrayInt64';
 
 /** @internal */
 class ArrayInt64Arbitrary extends NextArbitrary<ArrayInt64> {

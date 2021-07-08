@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
-import { double } from '../../../check/arbitrary/FloatingPointArbitrary';
+import { double } from '../../double';
 import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';

@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { floatNext, FloatNextConstraints } from '../../../../src/check/arbitrary/FloatNextArbitrary';
+import { floatNext, FloatNextConstraints } from '../../../../src/arbitrary/_next/floatNext';
 import { floatNextConstraints, is32bits } from './generic/FloatingPointHelpers';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 
