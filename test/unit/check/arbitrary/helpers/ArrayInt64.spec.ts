@@ -9,7 +9,7 @@ import {
   logLike64,
   negative64,
   substract64,
-} from '../../../../../src/check/arbitrary/helpers/ArrayInt64';
+} from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 
 function toArrayInt64(b: bigint, withNegativeZero: boolean): ArrayInt64 {
   const posB = b < BigInt(0) ? -b : b;

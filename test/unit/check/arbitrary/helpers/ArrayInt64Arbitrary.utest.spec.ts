@@ -1,7 +1,7 @@
 import * as fc from '../../../../../lib/fast-check';
 
-import { arrayInt64 as arrayInt64Old } from '../../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary';
-import { ArrayInt64 } from '../../../../../src/check/arbitrary/helpers/ArrayInt64';
+import { arrayInt64 as arrayInt64Old } from '../../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
+import { ArrayInt64 } from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
 

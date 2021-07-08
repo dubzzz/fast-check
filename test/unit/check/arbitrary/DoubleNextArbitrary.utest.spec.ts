@@ -1,26 +1,31 @@
 import * as fc from '../../../../lib/fast-check';
 
-import {
-  decomposeDouble,
-  doubleNext,
-  DoubleNextConstraints,
-  doubleToIndex,
-  indexToDouble,
-} from '../../../../src/check/arbitrary/DoubleNextArbitrary';
+import { doubleNext, DoubleNextConstraints } from '../../../../src/arbitrary/_next/doubleNext';
 
 import { mocked } from 'ts-jest/utils';
 import { arbitraryFor } from './generic/ArbitraryBuilder';
 import * as stubRng from '../../stubs/generators';
 
-import * as ArrayInt64ArbitraryMock from '../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary';
-import { add64, ArrayInt64, isEqual64, substract64, Unit64 } from '../../../../src/check/arbitrary/helpers/ArrayInt64';
+import * as ArrayInt64ArbitraryMock from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
+import {
+  add64,
+  ArrayInt64,
+  isEqual64,
+  substract64,
+  Unit64,
+} from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import {
   defaultDoubleRecordConstraints,
   doubleNextConstraints,
   float64raw,
   isStrictlySmaller,
 } from './generic/FloatingPointHelpers';
-jest.mock('../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary');
+import {
+  decomposeDouble,
+  doubleToIndex,
+  indexToDouble,
+} from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
+jest.mock('../../../../src/arbitrary/_internals/ArrayInt64Arbitrary');
 
 type Index = ReturnType<typeof doubleToIndex>;
 const toIndex = (raw: bigint | string): Index => {

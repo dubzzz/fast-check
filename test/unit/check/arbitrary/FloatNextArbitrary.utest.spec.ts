@@ -1,15 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import {
-  decomposeFloat,
-  floatToIndex,
-  indexToFloat,
-  EPSILON_32,
-  MAX_VALUE_32,
-  MIN_VALUE_32,
-  floatNext,
-  FloatNextConstraints,
-} from '../../../../src/check/arbitrary/FloatNextArbitrary';
+import { floatNext, FloatNextConstraints } from '../../../../src/arbitrary/_next/floatNext';
 import {
   floatNextConstraints,
   float32raw,
@@ -25,6 +16,14 @@ import { arbitraryFor } from './generic/ArbitraryBuilder';
 import * as stubRng from '../../stubs/generators';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer';
+import {
+  decomposeFloat,
+  EPSILON_32,
+  floatToIndex,
+  indexToFloat,
+  MAX_VALUE_32,
+  MIN_VALUE_32,
+} from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
 jest.mock('../../../../src/arbitrary/integer');
 
 const mrng = () => stubRng.mutable.nocall();

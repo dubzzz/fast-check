@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { doubleNext, DoubleNextConstraints } from '../../../../src/check/arbitrary/DoubleNextArbitrary';
+import { doubleNext, DoubleNextConstraints } from '../../../../src/arbitrary/_next/doubleNext';
 import { doubleNextConstraints } from './generic/FloatingPointHelpers';
 import * as genericHelper from './generic/GenericArbitraryHelper';
 

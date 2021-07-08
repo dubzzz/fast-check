@@ -1,6 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { DoubleNextConstraints } from '../check/arbitrary/DoubleNextArbitrary';
-import { double } from '../check/arbitrary/FloatingPointArbitrary';
+import { DoubleNextConstraints } from './_next/doubleNext';
+import { double } from './double';
 import { array } from './array';
 
 /**

@@ -1,7 +1,7 @@
 import * as fc from '../../../../../lib/fast-check';
 
-import { ArrayInt64 } from '../../../../../src/check/arbitrary/helpers/ArrayInt64';
-import { arrayInt64 } from '../../../../../src/check/arbitrary/helpers/ArrayInt64Arbitrary';
+import { ArrayInt64 } from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import { arrayInt64 } from '../../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 import * as genericHelper from '../generic/GenericArbitraryHelper';
 
 function toArrayInt64(b: bigint): ArrayInt64 {
