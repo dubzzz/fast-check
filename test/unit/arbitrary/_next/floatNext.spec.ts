@@ -8,12 +8,19 @@ import {
   float64raw,
   isStrictlySmaller,
   defaultFloatRecordConstraints,
+  is32bits,
 } from '../../check/arbitrary/generic/FloatingPointHelpers';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
-import { convertFromNextWithShrunkOnce } from '../../../../src/check/arbitrary/definition/Converters';
+import { convertFromNextWithShrunkOnce, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 
 import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from '../../check/arbitrary/generic/NextArbitraryHelpers';
 import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+
+import {
+  assertProduceCorrectValues,
+  assertShrinkProducesStrictlySmallerValue,
+  assertProduceSameValueGivenSameSeed,
+} from '../../check/arbitrary/generic/NextArbitraryAssertions';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer';
 
@@ -229,6 +236,54 @@ describe('floatNext', () => {
         })
       );
     });
+  });
+});
+
+describe('floatNext (integration)', () => {
+  type Extra = FloatNextConstraints | undefined;
+  const extraParameters: fc.Arbitrary<Extra> = fc.option(floatNextConstraints(), { nil: undefined });
+
+  const isCorrect = (v: number, extra: Extra) => {
+    expect(typeof v).toBe('number'); // should always produce numbers
+    expect(is32bits(v)).toBe(true); // should always produce 32-bit floats
+    if (Number.isNaN(v)) {
+      expect(extra === undefined || !extra.noNaN).toBe(true); // should not produce NaN if explicitely asked not too
+    }
+    expect(extra === undefined || extra.min === undefined || v >= extra.min).toBe(true); // should always be greater than min when specified
+    expect(extra === undefined || extra.max === undefined || v <= extra.max).toBe(true); // should always be smaller than max when specified
+    if (extra !== undefined && extra.noDefaultInfinity) {
+      expect(extra.min !== undefined || v !== Number.NEGATIVE_INFINITY).toBe(true); // should not produce -infinity when noInfinity and min unset
+      expect(extra.max !== undefined || v !== Number.POSITIVE_INFINITY).toBe(true); // should not produce +infinity when noInfinity and max unset
+    }
+  };
+
+  const isStrictlySmaller = (fa: number, fb: number) =>
+    Math.abs(fa) < Math.abs(fb) || //              Case 1: abs(a) < abs(b)
+    (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
+    (!Number.isNaN(fa) && Number.isNaN(fb)); //    Case 3: notNaN < NaN, NaN is one of the extreme values
+
+  const floatNextBuilder = (extra: Extra) => convertToNext(floatNext(extra));
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(floatNextBuilder, { extraParameters });
+  });
+
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(floatNextBuilder, isCorrect, { extraParameters });
+  });
+
+  // Not Implemented Yet!
+  //it('should produce values seen as shrinkable without any context', () => {
+  //  assertProduceValuesShrinkableWithoutContext(floatNextBuilder, { extraParameters });
+  //});
+
+  // Not Implemented Yet!
+  //it('should be able to shrink to the same values without initial context', () => {
+  //  assertShrinkProducesSameValueWithoutInitialContext(floatNextBuilder, { extraParameters });
+  //});
+
+  it('should preserve strictly smaller ordering in shrink', () => {
+    assertShrinkProducesStrictlySmallerValue(floatNextBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 

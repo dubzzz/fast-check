@@ -17,8 +17,14 @@ import {
 import { doubleToIndex, indexToDouble } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 
 import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from '../../check/arbitrary/generic/NextArbitraryHelpers';
-import { convertFromNextWithShrunkOnce } from '../../../../src/check/arbitrary/definition/Converters';
+import { convertFromNextWithShrunkOnce, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+
+import {
+  assertProduceCorrectValues,
+  assertShrinkProducesStrictlySmallerValue,
+  assertProduceSameValueGivenSameSeed,
+} from '../../check/arbitrary/generic/NextArbitraryAssertions';
 
 import * as ArrayInt64ArbitraryMock from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 
@@ -221,6 +227,53 @@ describe('doubleNext', () => {
         })
       );
     });
+  });
+});
+
+describe('doubleNext (integration)', () => {
+  type Extra = DoubleNextConstraints | undefined;
+  const extraParameters: fc.Arbitrary<Extra> = fc.option(doubleNextConstraints(), { nil: undefined });
+
+  const isCorrect = (v: number, extra: Extra) => {
+    expect(typeof v).toBe('number'); // should always produce numbers
+    if (Number.isNaN(v)) {
+      expect(extra === undefined || !extra.noNaN).toBe(true); // should not produce NaN if explicitely asked not too
+    }
+    expect(extra === undefined || extra.min === undefined || v >= extra.min).toBe(true); // should always be greater than min when specified
+    expect(extra === undefined || extra.max === undefined || v <= extra.max).toBe(true); // should always be smaller than max when specified
+    if (extra !== undefined && extra.noDefaultInfinity) {
+      expect(extra.min !== undefined || v !== Number.NEGATIVE_INFINITY).toBe(true); // should not produce -infinity when noInfity and min unset
+      expect(extra.max !== undefined || v !== Number.POSITIVE_INFINITY).toBe(true); // should not produce +infinity when noInfity and max unset
+    }
+  };
+
+  const isStrictlySmaller = (fa: number, fb: number) =>
+    Math.abs(fa) < Math.abs(fb) || //              Case 1: abs(a) < abs(b)
+    (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
+    (!Number.isNaN(fa) && Number.isNaN(fb)); //    Case 3: notNaN < NaN, NaN is one of the extreme values
+
+  const doubleNextBuilder = (extra: Extra) => convertToNext(doubleNext(extra));
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(doubleNextBuilder, { extraParameters });
+  });
+
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(doubleNextBuilder, isCorrect, { extraParameters });
+  });
+
+  // Not Implemented Yet!
+  //it('should produce values seen as shrinkable without any context', () => {
+  //  assertProduceValuesShrinkableWithoutContext(doubleNextBuilder, { extraParameters });
+  //});
+
+  // Not Implemented Yet!
+  //it('should be able to shrink to the same values without initial context', () => {
+  //  assertShrinkProducesSameValueWithoutInitialContext(doubleNextBuilder, { extraParameters });
+  //});
+
+  it('should preserve strictly smaller ordering in shrink', () => {
+    assertShrinkProducesStrictlySmallerValue(doubleNextBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 
