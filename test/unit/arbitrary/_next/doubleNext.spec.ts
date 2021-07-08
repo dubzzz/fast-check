@@ -236,14 +236,26 @@ describe('doubleNext (integration)', () => {
 
   const isCorrect = (v: number, extra: Extra) => {
     expect(typeof v).toBe('number'); // should always produce numbers
-    if (Number.isNaN(v)) {
-      expect(extra === undefined || !extra.noNaN).toBe(true); // should not produce NaN if explicitely asked not too
+
+    if (extra === undefined) {
+      return; // no other constraints
     }
-    expect(extra === undefined || extra.min === undefined || v >= extra.min).toBe(true); // should always be greater than min when specified
-    expect(extra === undefined || extra.max === undefined || v <= extra.max).toBe(true); // should always be smaller than max when specified
-    if (extra !== undefined && extra.noDefaultInfinity) {
-      expect(extra.min !== undefined || v !== Number.NEGATIVE_INFINITY).toBe(true); // should not produce -infinity when noInfity and min unset
-      expect(extra.max !== undefined || v !== Number.POSITIVE_INFINITY).toBe(true); // should not produce +infinity when noInfity and max unset
+    if (extra.noNaN) {
+      expect(v).not.toBe(Number.NaN); // should not produce NaN if explicitely asked not too
+    }
+    if (extra.min !== undefined) {
+      expect(v).toBeGreaterThanOrEqual(extra.min); // should always be greater than min when specified
+    }
+    if (extra.max !== undefined) {
+      expect(v).toBeLessThanOrEqual(extra.max); // should always be smaller than max when specified
+    }
+    if (extra.noDefaultInfinity) {
+      if (extra.min === undefined) {
+        expect(v).not.toBe(Number.NEGATIVE_INFINITY); // should not produce -infinity when noInfinity and min unset
+      }
+      if (extra.max === undefined) {
+        expect(v).not.toBe(Number.NEGATIVE_INFINITY); // should not produce +infinity when noInfinity and max unset
+      }
     }
   };
 
