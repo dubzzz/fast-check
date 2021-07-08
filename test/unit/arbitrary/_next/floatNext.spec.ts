@@ -253,10 +253,10 @@ describe('floatNext (integration)', () => {
     if (extra.noNaN) {
       expect(v).not.toBe(Number.NaN); // should not produce NaN if explicitely asked not too
     }
-    if (extra.min !== undefined) {
+    if (extra.min !== undefined && !Number.isNaN(v)) {
       expect(v).toBeGreaterThanOrEqual(extra.min); // should always be greater than min when specified
     }
-    if (extra.max !== undefined) {
+    if (extra.max !== undefined && !Number.isNaN(v)) {
       expect(v).toBeLessThanOrEqual(extra.max); // should always be smaller than max when specified
     }
     if (extra.noDefaultInfinity) {
