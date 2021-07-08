@@ -17,22 +17,6 @@ import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer';
 
-function spyInteger() {
-  const { instance, map } = fakeNextArbitrary<number>();
-  const { instance: mappedInstance } = fakeNextArbitrary();
-  const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
-  map.mockReturnValue(mappedInstance);
-  return integer;
-}
-
-function spyIntegerWithValue(value: () => number) {
-  const { instance } = fakeNextArbitraryStaticValue<number>(value);
-  const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
-  return integer;
-}
-
 function beforeEachHook() {
   jest.resetModules();
   jest.restoreAllMocks();
@@ -247,3 +231,21 @@ describe('floatNext', () => {
     });
   });
 });
+
+// Helpers
+
+function spyInteger() {
+  const { instance, map } = fakeNextArbitrary<number>();
+  const { instance: mappedInstance } = fakeNextArbitrary();
+  const integer = jest.spyOn(IntegerMock, 'integer');
+  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  map.mockReturnValue(mappedInstance);
+  return integer;
+}
+
+function spyIntegerWithValue(value: () => number) {
+  const { instance } = fakeNextArbitraryStaticValue<number>(value);
+  const integer = jest.spyOn(IntegerMock, 'integer');
+  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  return integer;
+}
