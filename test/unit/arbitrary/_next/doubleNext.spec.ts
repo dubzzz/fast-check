@@ -254,7 +254,7 @@ describe('doubleNext (integration)', () => {
         expect(v).not.toBe(Number.NEGATIVE_INFINITY); // should not produce -infinity when noInfinity and min unset
       }
       if (extra.max === undefined) {
-        expect(v).not.toBe(Number.NEGATIVE_INFINITY); // should not produce +infinity when noInfinity and max unset
+        expect(v).not.toBe(Number.POSITIVE_INFINITY); // should not produce +infinity when noInfinity and max unset
       }
     }
   };
