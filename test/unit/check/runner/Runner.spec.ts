@@ -452,7 +452,7 @@ describe('Runner', () => {
       expect(out.failed).toBe(false);
     });
     it('Should not timeout if timeout not reached', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(resolve, timeMs));
+      const wait = (timeMs: number) => new Promise<void>((resolve) => setTimeout(resolve, timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
@@ -462,7 +462,7 @@ describe('Runner', () => {
       expect(out.failed).toBe(false);
     });
     it('Should timeout if it reached the timeout', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(resolve, timeMs));
+      const wait = (timeMs: number) => new Promise<void>((resolve) => setTimeout(resolve, timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
         generate: () => new Shrinkable([1]) as Shrinkable<[number]>,
