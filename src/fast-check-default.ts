@@ -33,7 +33,6 @@ import { char16bits } from './arbitrary/char16bits';
 import { fullUnicode } from './arbitrary/fullUnicode';
 import { hexa } from './arbitrary/hexa';
 import { unicode } from './arbitrary/unicode';
-import { clonedConstant } from './arbitrary/clonedConstant';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
@@ -239,7 +238,6 @@ export {
   lorem,
   constant,
   constantFrom,
-  clonedConstant,
   mapToConstant,
   option,
   oneof,
