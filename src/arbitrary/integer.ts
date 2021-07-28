@@ -1,4 +1,4 @@
-import { ArbitraryWithContextualShrink as _IntegerMock } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
+import { ArbitraryWithContextualShrink } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
 import { convertFromNextWithShrunkOnce } from '../check/arbitrary/definition/Converters';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary';
 
@@ -57,7 +57,7 @@ function extractIntegerConstraints(args: [] | [number] | [number, number] | [Int
  * @remarks Since 0.0.1
  * @public
  */
-function integer(): _IntegerMock<number>;
+function integer(): ArbitraryWithContextualShrink<number>;
 /**
  * For integers between -2147483648 (included) and max (included)
  *
@@ -70,7 +70,7 @@ function integer(): _IntegerMock<number>;
  * @remarks Since 0.0.1
  * @public
  */
-function integer(max: number): _IntegerMock<number>;
+function integer(max: number): ArbitraryWithContextualShrink<number>;
 /**
  * For integers between min (included) and max (included)
  *
@@ -81,7 +81,7 @@ function integer(max: number): _IntegerMock<number>;
  * @remarks Since 0.0.1
  * @public
  */
-function integer(min: number, max: number): _IntegerMock<number>;
+function integer(min: number, max: number): ArbitraryWithContextualShrink<number>;
 /**
  * For integers between min (included) and max (included)
  *
@@ -90,8 +90,10 @@ function integer(min: number, max: number): _IntegerMock<number>;
  * @remarks Since 2.6.0
  * @public
  */
-function integer(constraints: IntegerConstraints): _IntegerMock<number>;
-function integer(...args: [] | [number] | [number, number] | [IntegerConstraints]): _IntegerMock<number> {
+function integer(constraints: IntegerConstraints): ArbitraryWithContextualShrink<number>;
+function integer(
+  ...args: [] | [number] | [number, number] | [IntegerConstraints]
+): ArbitraryWithContextualShrink<number> {
   const constraints = buildCompleteIntegerConstraints(extractIntegerConstraints(args));
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
