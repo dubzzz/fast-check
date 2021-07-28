@@ -35,7 +35,7 @@ export interface SetConstraints<T> {
  * @remarks Since 0.0.11
  * @public
  */
-function set<T>(arb: Arbitrary<T>, constraints: SetConstraints<T> = {}): Arbitrary<T[]> {
+export function set<T>(arb: Arbitrary<T>, constraints: SetConstraints<T> = {}): Arbitrary<T[]> {
   const {
     minLength = 0,
     maxLength = maxLengthFromMinLength(minLength),
@@ -47,4 +47,3 @@ function set<T>(arb: Arbitrary<T>, constraints: SetConstraints<T> = {}): Arbitra
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }
-export { set };
