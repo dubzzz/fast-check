@@ -40,8 +40,8 @@ describe('dependencyTree', () => {
 const AllPackagesArbitrary = fc.integer(1, 5).chain((numPackages) => {
   const packageNames = [...Array(numPackages)].map((_, id) => `package-${String.fromCharCode('a'.charCodeAt(0) + id)}`);
   return fc
-    .genericTuple(
-      packageNames.map((pname) =>
+    .tuple(
+      ...packageNames.map((pname) =>
         fc.tuple(
           fc.constant(pname),
           fc.record({
