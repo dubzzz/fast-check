@@ -85,7 +85,6 @@ import { string16bits } from './arbitrary/string16bits';
 import { stringOf } from './arbitrary/stringOf';
 import { unicodeString } from './arbitrary/unicodeString';
 import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
-import { genericTuple } from './arbitrary/genericTuple';
 import { tuple } from './arbitrary/tuple';
 import { uuid, uuidV } from './check/arbitrary/UuidArbitrary';
 import {
@@ -260,7 +259,6 @@ export {
   infiniteStream,
   set,
   tuple,
-  genericTuple,
   record,
   dictionary,
   anything,
