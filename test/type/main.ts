@@ -243,8 +243,10 @@ expectType<fc.Arbitrary<Record<string, number>>>()(fc.dictionary(fc.string(), fc
 fc.dictionary(fc.nat(), fc.nat());
 
 // tuple arbitrary
+expectType<fc.Arbitrary<[]>>()(fc.tuple(), '"tuple" with zero argument');
 expectType<fc.Arbitrary<[number]>>()(fc.tuple(fc.nat()), '"tuple" with a single argument');
-expectType<fc.Arbitrary<[number, string]>>()(fc.tuple(fc.nat(), fc.string()), '"tuple" with a multiple arguments');
+expectType<fc.Arbitrary<[number, string]>>()(fc.tuple(fc.nat(), fc.string()), '"tuple" with multiple arguments');
+expectType<fc.Arbitrary<number[]>>()(fc.tuple(...([] as fc.Arbitrary<number>[])), '"tuple" with spread arrays');
 // @ts-expect-error - tuple expects arbitraries not raw values
 fc.tuple(fc.nat(), '');
 
