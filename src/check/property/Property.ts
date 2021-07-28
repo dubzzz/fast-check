@@ -1,5 +1,5 @@
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { tuple } from '../arbitrary/TupleArbitrary';
+import { tuple } from '../../arbitrary/tuple';
 import { Property, IProperty, IPropertyWithHooks, PropertyHookFunction } from './Property.generic';
 
 /**
