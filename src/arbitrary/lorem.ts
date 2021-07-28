@@ -231,7 +231,7 @@ function loremWord() {
  * @remarks Since 0.0.1
  * @public
  */
-export function lorem(constraints: LoremConstraints): Arbitrary<string> {
+export function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
   const { maxCount = 5, mode = 'words' } = constraints;
   if (maxCount < 1) {
     throw new Error(`lorem has to produce at least one word/sentence`);
