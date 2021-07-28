@@ -89,7 +89,6 @@ import { stringOf } from './arbitrary/stringOf';
 import { unicodeString } from './arbitrary/unicodeString';
 import { subarray, SubarrayConstraints } from './arbitrary/subarray';
 import { shuffledSubarray, ShuffledSubarrayConstraints } from './arbitrary/shuffledSubarray';
-import { genericTuple } from './arbitrary/genericTuple';
 import { tuple } from './arbitrary/tuple';
 import { uuid } from './arbitrary/uuid';
 import { uuidV } from './arbitrary/uuidV';
@@ -262,7 +261,6 @@ export {
   infiniteStream,
   uniqueArray,
   tuple,
-  genericTuple,
   record,
   dictionary,
   anything,
