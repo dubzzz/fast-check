@@ -242,7 +242,9 @@ describe(`NoRegression`, () => {
   it('shuffledSubarray', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.shuffledSubarray([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]), (v) => testFunc(v)),
+        fc.property(fc.shuffledSubarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
+          testFunc(v.join(''))
+        ),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
@@ -250,7 +252,9 @@ describe(`NoRegression`, () => {
   it('subarray', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.subarray([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]), (v) => testFunc(v)),
+        fc.property(fc.subarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
+          testFunc(v.join(''))
+        ),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
