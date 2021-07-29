@@ -55,7 +55,6 @@ describe('ConstantArbitrary', () => {
         fc.property(
           fc.array(fc.anything(), { minLength: 2 }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
-          fc.nat(),
           (values, biasFactor) => {
             // Arrange
             const { instance: mrng, nextInt } = fakeRandom();

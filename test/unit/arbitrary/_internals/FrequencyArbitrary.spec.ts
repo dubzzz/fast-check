@@ -315,7 +315,6 @@ describe('FrequencyArbitrary', () => {
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthFactor'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
-          fc.nat(),
           (validInputs, constraints, biasFactor) => {
             // Arrange
             const warbs = fromValidInputs(validInputs);
@@ -357,7 +356,6 @@ describe('FrequencyArbitrary', () => {
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthFactor'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
-          fc.nat(),
           (validInputs, constraints, biasFactor) => {
             // Arrange
             const warbs = fromValidInputs(validInputs);
