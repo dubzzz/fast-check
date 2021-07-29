@@ -109,7 +109,7 @@ describe('integer', () => {
         IntegerArbitrary.mockImplementation(() => instance);
 
         // Act
-        const arb = integer({ max });
+        const arb = integer(max);
 
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(-0x80000000, max);
@@ -127,7 +127,7 @@ describe('integer', () => {
         IntegerArbitrary.mockImplementation(() => instance);
 
         // Act
-        const arb = integer({ min, max });
+        const arb = integer(min, max);
 
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(min, max);
