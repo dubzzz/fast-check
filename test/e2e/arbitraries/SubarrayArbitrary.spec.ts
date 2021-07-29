@@ -40,7 +40,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
           }
           return true;
         }),
-        { seed: seed }
+        { seed: seed, verbose: 2 }
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample![0]).toHaveLength(2);
