@@ -13,7 +13,7 @@ import { makeLazy } from '../../../stream/LazyIterableIterator';
 import { NextArbitrary } from '../../arbitrary/definition/NextArbitrary';
 import { IntegerArbitrary } from '../../../arbitrary/_internals/IntegerArbitrary';
 import { convertFromNext, convertToNext } from '../../arbitrary/definition/Converters';
-import { NextValue } from '../../../fast-check-default';
+import { NextValue } from '../../arbitrary/definition/NextValue';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type CommandsArbitraryContext<Model extends object, Real, RunResult, CheckAsync extends boolean> = {
