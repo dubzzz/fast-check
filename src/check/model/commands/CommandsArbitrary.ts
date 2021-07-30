@@ -51,13 +51,9 @@ class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extend
     items: NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[],
     shrunkOnce: boolean
   ) {
-    return new NextValue(
-      new CommandsIterable(
-        items.map((item) => item.value_),
-        () => this.metadataForReplay()
-      ),
-      { shrunkOnce, items }
-    );
+    const commands = items.map((item) => item.value_);
+    const context: CommandsArbitraryContext<Model, Real, RunResult, CheckAsync> = { shrunkOnce, items };
+    return new NextValue(new CommandsIterable(commands, () => this.metadataForReplay()), context);
   }
 
   generate(mrng: Random): NextValue<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
