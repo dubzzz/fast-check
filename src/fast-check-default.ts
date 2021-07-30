@@ -96,7 +96,7 @@ import { webUrl, WebUrlConstraints } from './arbitrary/webUrl';
 import { AsyncCommand } from './check/model/command/AsyncCommand';
 import { Command } from './check/model/command/Command';
 import { ICommand } from './check/model/command/ICommand';
-import { commands } from './check/model/commands/CommandsArbitrary';
+import { commands } from './arbitrary/commands';
 import {
   asyncModelRun,
   modelRun,
