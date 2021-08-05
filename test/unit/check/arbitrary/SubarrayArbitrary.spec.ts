@@ -1,6 +1,7 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { subarray, shuffledSubarray } from '../../../../src/check/arbitrary/SubarrayArbitrary';
+import { subarray } from '../../../../src/arbitrary/subarray';
+import { shuffledSubarray } from '../../../../src/arbitrary/shuffledSubarray';
 
 import { generateOneValue } from './generic/GenerateOneValue';
 import * as genericHelper from './generic/GenericArbitraryHelper';

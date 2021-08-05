@@ -82,7 +82,8 @@ import { string, StringSharedConstraints } from './arbitrary/string';
 import { string16bits } from './arbitrary/string16bits';
 import { stringOf } from './arbitrary/stringOf';
 import { unicodeString } from './arbitrary/unicodeString';
-import { shuffledSubarray, subarray, SubarrayConstraints } from './check/arbitrary/SubarrayArbitrary';
+import { subarray, SubarrayConstraints } from './arbitrary/subarray';
+import { shuffledSubarray, ShuffledSubarrayConstraints } from './arbitrary/shuffledSubarray';
 import { genericTuple } from './arbitrary/genericTuple';
 import { tuple } from './arbitrary/tuple';
 import { uuid } from './arbitrary/uuid';
@@ -381,6 +382,7 @@ export {
   SparseArrayConstraints,
   StringSharedConstraints,
   SubarrayConstraints,
+  ShuffledSubarrayConstraints,
   WebAuthorityConstraints,
   WebUrlConstraints,
   WeightedArbitrary,
