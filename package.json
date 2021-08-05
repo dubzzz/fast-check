@@ -32,6 +32,7 @@
     "watch": "tsc -w",
     "test": "jest --config jest.unit.config.cjs --coverage",
     "test:watch": "jest --config jest.unit.config.cjs --watch",
+    "test:debug": "node --inspect node_modules/jest/bin/jest.js --config jest.unit.config.cjs --watch --runInBand",
     "e2e": "jest --config jest.e2e.config.cjs --coverage",
     "e2e:watch": "jest --config jest.e2e.config.cjs --watch",
     "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
