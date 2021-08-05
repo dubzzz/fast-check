@@ -29,10 +29,10 @@ export class SubarrayArbitrary<T> extends NextArbitrary<T[]> {
       throw new Error('fc.*{s|S}ubarrayOf expects the minimal length to be inferior or equal to the maximal length');
 
     this.lengthArb = new IntegerArbitrary(minLength, maxLength);
-    this.biasedLengthArb = new IntegerArbitrary(
-      minLength,
-      minLength + Math.floor(Math.log(maxLength - minLength) / Math.log(2))
-    );
+    this.biasedLengthArb =
+      minLength !== maxLength
+        ? new IntegerArbitrary(minLength, minLength + Math.floor(Math.log(maxLength - minLength) / Math.log(2)))
+        : this.lengthArb;
   }
 
   generate(mrng: Random, biasFactor: number | undefined): NextValue<T[]> {
