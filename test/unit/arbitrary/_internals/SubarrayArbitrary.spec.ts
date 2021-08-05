@@ -190,7 +190,7 @@ describe('SubarrayArbitrary (integration)', () => {
   });
 
   it('should only produce correct values', () => {
-    assertProduceCorrectValues(SubarrayArbitraryBuilder, isCorrect);
+    assertProduceCorrectValues(SubarrayArbitraryBuilder, isCorrect, { extraParameters });
   });
 
   it('should produce values seen as shrinkable without any context', () => {
