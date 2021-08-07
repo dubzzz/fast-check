@@ -27,7 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.3.2
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: '16.x'
       - name: Install fast-check dependencies
