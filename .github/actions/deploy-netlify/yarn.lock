@@ -920,10 +920,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@netlify/build@^17.5.0":
-  version "17.5.0"
-  resolved "https://registry.yarnpkg.com/@netlify/build/-/build-17.5.0.tgz#cccd09d7b599591dc142b3b2254c2005eba55e9d"
-  integrity sha512-RoduCaYiLJweuxFi/dbsj9txPFY76zuutoxM1Qa56AAxmrP3pek8ytp2PLSPrCSrxmu4Ss+O/tTg9LcDiDS1gA==
+"@netlify/build@^17.9.2":
+  version "17.9.2"
+  resolved "https://registry.yarnpkg.com/@netlify/build/-/build-17.9.2.tgz#303e0c4b0eb9e65ac5f16ae2beea745ba8e83edf"
+  integrity sha512-RbaHBWkbrwiXdLf73gjcjJAn7z3zsRqhXqaF2K9ycru7K7XIVG/BGEKztSD8IoAYR2DuY9KqmrlbPuiQg0IFFg==
   dependencies:
     "@bugsnag/js" "^7.0.0"
     "@netlify/cache-utils" "^2.0.0"
@@ -931,7 +931,7 @@
     "@netlify/functions-utils" "^2.0.0"
     "@netlify/git-utils" "^2.0.0"
     "@netlify/plugin-edge-handlers" "^1.11.22"
-    "@netlify/plugins-list" "^3.0.1"
+    "@netlify/plugins-list" "^3.2.1"
     "@netlify/run-utils" "^2.0.0"
     "@netlify/zip-it-and-ship-it" "^4.16.0"
     "@sindresorhus/slugify" "^1.1.0"
@@ -996,10 +996,10 @@
     path-exists "^4.0.0"
     readdirp "^3.4.0"
 
-"@netlify/config@^14.0.0", "@netlify/config@^14.1.1":
-  version "14.1.1"
-  resolved "https://registry.yarnpkg.com/@netlify/config/-/config-14.1.1.tgz#bfca410c55a7ec8bbc6cce27bf5c536ea7bb8818"
-  integrity sha512-MkvOylysm55h1SPoS+nsC6/uFMF0LCmSwEf4z1QSrsuzJqxtLs6rgyrREq/owb4DDDTdR98JTPJss3zc7b6LRw==
+"@netlify/config@^14.0.0", "@netlify/config@^14.4.3":
+  version "14.4.3"
+  resolved "https://registry.yarnpkg.com/@netlify/config/-/config-14.4.3.tgz#e941d924f11273ee89968dd8fcc53156cbb5676d"
+  integrity sha512-lCuhs58xDIkDF34A1Xz4CTXvr9xgVHJn5Y5Xwmj1Tgp78eOSQFozgYLVXEwLqTTg3EFiniPoHy0oSPMmrhCZMw==
   dependencies:
     "@ungap/from-entries" "^0.2.1"
     array-flat-polyfill "^1.0.1"
@@ -1019,7 +1019,7 @@
     make-dir "^3.1.0"
     map-obj "^4.0.0"
     netlify "^8.0.0"
-    netlify-redirect-parser "^8.1.0"
+    netlify-redirect-parser "^8.2.0"
     omit.js "^2.0.2"
     p-locate "^4.1.0"
     path-exists "^4.0.0"
@@ -1034,10 +1034,10 @@
   resolved "https://registry.yarnpkg.com/@netlify/esbuild/-/esbuild-0.13.6.tgz#ef0fda98604e708528ef0a57e853c50a6fc987f2"
   integrity sha512-tiKmDcHM2riSVN79c0mJY/67EBDafXQAMitHuLiCDAMdtz3kfv+NqdVG5krgf5lWR8Uf8AeZrUW5Q9RP25REvw==
 
-"@netlify/framework-info@^5.7.3":
-  version "5.7.3"
-  resolved "https://registry.yarnpkg.com/@netlify/framework-info/-/framework-info-5.7.3.tgz#0e71238dd27fdd3ccd0774d70394cf1159ebd8b0"
-  integrity sha512-8u3ElX3VBjw+yH5eh5t0pCt4LsiA23cWMhHEHVXCWkty+spyW8LMNDU503mwrz3NwYqSs9sXEsJOwFlThHp1/w==
+"@netlify/framework-info@^5.8.0":
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/@netlify/framework-info/-/framework-info-5.8.0.tgz#10fcc59b4762e1e71059661c0c444f7d6b07a147"
+  integrity sha512-gc8K0BT6CSHnYFirLmUWLoKah+AjStWBsGmwa7gbRmeAaRThJhkRcRVE03EhSnrMQkAMO3IIIMklbE8i/9UpEg==
   dependencies:
     ajv "^8.0.0"
     filter-obj "^2.0.1"
@@ -1175,10 +1175,10 @@
     rollup-plugin-terser "^7.0.2"
     typescript "^4.1.5"
 
-"@netlify/plugins-list@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@netlify/plugins-list/-/plugins-list-3.0.1.tgz#b014507d7a9bc2cc7f913b4238124d406f12b49b"
-  integrity sha512-uRWpQEP6aMkYKISmoTbu6J/I73xiroq1BO+dm03N5N4d+xsovo6RQDdwzmMfOSMeM6inDLGu8Ul8fl0xoo+IGg==
+"@netlify/plugins-list@^3.2.1", "@netlify/plugins-list@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@netlify/plugins-list/-/plugins-list-3.3.0.tgz#e39d0645680cf5e6b38ad87e423d0e535a31c4c7"
+  integrity sha512-wuwDeBx8FK/jY1hQoI0w2MK+Q/6hcEnbaDDBzw+W0Ueu48r7QRIcZMin2OnOSMkTRpAHXqXyQUrm1lnULXKBfg==
 
 "@netlify/routing-local-proxy-darwin-arm64@^0.31.0":
   version "0.31.0"
@@ -5762,17 +5762,17 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-netlify-cli@^5.4.7:
-  version "5.4.7"
-  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-5.4.7.tgz#6c3fdb1075ac8ecdcff6d0f8c69c4f96b42a9020"
-  integrity sha512-oH0ijd+X8E13N0y81KZ9NF4gBgFNBb+8ncziqSjCrkmDaF0GJPrH2VlWN1W9C+bCpLzII0pz7OEsX1bHZtoWnA==
+netlify-cli@^6.0.9:
+  version "6.0.9"
+  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-6.0.9.tgz#179a3ffcb29c94255d3ba11290bfac23ecf13dc1"
+  integrity sha512-eOZSTnEZO6bPMJWvsKxYgm0+lG3uv6anqEylomDEZEszfd8jXO8B5DIpGholtoCC9WKTeiE7XfizrdTXLFI3UQ==
   dependencies:
-    "@netlify/build" "^17.5.0"
-    "@netlify/config" "^14.1.1"
-    "@netlify/framework-info" "^5.7.3"
+    "@netlify/build" "^17.9.2"
+    "@netlify/config" "^14.4.3"
+    "@netlify/framework-info" "^5.8.0"
     "@netlify/local-functions-proxy" "^1.1.0"
     "@netlify/plugin-edge-handlers" "^1.11.22"
-    "@netlify/plugins-list" "^3.0.1"
+    "@netlify/plugins-list" "^3.3.0"
     "@netlify/routing-local-proxy" "^0.31.0"
     "@netlify/zip-it-and-ship-it" "4.16.0"
     "@oclif/command" "^1.6.1"
@@ -5842,7 +5842,7 @@ netlify-cli@^5.4.7:
     minimist "^1.2.5"
     multiparty "^4.2.1"
     netlify "^8.0.0"
-    netlify-redirect-parser "^8.1.0"
+    netlify-redirect-parser "^8.2.0"
     netlify-redirector "^0.2.1"
     node-fetch "^2.6.0"
     node-version-alias "^1.0.1"
@@ -5879,10 +5879,10 @@ netlify-cli@^5.4.7:
     winston "^3.2.1"
     write-file-atomic "^3.0.0"
 
-netlify-redirect-parser@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/netlify-redirect-parser/-/netlify-redirect-parser-8.1.0.tgz#549c5d98fd539b35c68a0db1573173dd6c2675e5"
-  integrity sha512-y5uzRHSyHVDDIgcFwvRRIELliBc7SKFuvuyVgsIMZWaNDCKNO4Etk2CIeGlJG+++g7NFD/XlYJaqgw2jJkqe4A==
+netlify-redirect-parser@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/netlify-redirect-parser/-/netlify-redirect-parser-8.2.0.tgz#cf4eb0b0e960468857407005a69618fc244e4b9d"
+  integrity sha512-XaCojsgAKs19vlT2C4CEs4bp166bBsgA/brt10x2HLsgp4tF3dSacClPfZgGknyHB1MnMK8j3SFp9yq6rYm8CQ==
   dependencies:
     filter-obj "^2.0.2"
     is-plain-obj "^2.1.0"
