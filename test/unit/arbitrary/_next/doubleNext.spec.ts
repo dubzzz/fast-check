@@ -24,6 +24,8 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
+  assertShrinkProducesSameValueWithoutInitialContext,
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 
 import * as ArrayInt64ArbitraryMock from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
@@ -274,15 +276,13 @@ describe('doubleNext (integration)', () => {
     assertProduceCorrectValues(doubleNextBuilder, isCorrect, { extraParameters });
   });
 
-  // Not Implemented Yet!
-  //it('should produce values seen as shrinkable without any context', () => {
-  //  assertProduceValuesShrinkableWithoutContext(doubleNextBuilder, { extraParameters });
-  //});
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(doubleNextBuilder, { extraParameters });
+  });
 
-  // Not Implemented Yet!
-  //it('should be able to shrink to the same values without initial context', () => {
-  //  assertShrinkProducesSameValueWithoutInitialContext(doubleNextBuilder, { extraParameters });
-  //});
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(doubleNextBuilder, { extraParameters });
+  });
 
   it('should preserve strictly smaller ordering in shrink', () => {
     assertShrinkProducesStrictlySmallerValue(doubleNextBuilder, isStrictlySmaller, { extraParameters });
