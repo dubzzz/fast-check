@@ -20,6 +20,8 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
+  assertShrinkProducesSameValueWithoutInitialContext,
 } from '../../check/arbitrary/generic/NextArbitraryAssertions';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer';
@@ -284,15 +286,13 @@ describe('floatNext (integration)', () => {
     assertProduceCorrectValues(floatNextBuilder, isCorrect, { extraParameters });
   });
 
-  // Not Implemented Yet!
-  //it('should produce values seen as shrinkable without any context', () => {
-  //  assertProduceValuesShrinkableWithoutContext(floatNextBuilder, { extraParameters });
-  //});
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(floatNextBuilder, { extraParameters });
+  });
 
-  // Not Implemented Yet!
-  //it('should be able to shrink to the same values without initial context', () => {
-  //  assertShrinkProducesSameValueWithoutInitialContext(floatNextBuilder, { extraParameters });
-  //});
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(floatNextBuilder, { extraParameters });
+  });
 
   it('should preserve strictly smaller ordering in shrink', () => {
     assertShrinkProducesStrictlySmallerValue(floatNextBuilder, isStrictlySmaller, { extraParameters });
