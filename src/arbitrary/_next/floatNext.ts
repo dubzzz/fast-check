@@ -1,6 +1,7 @@
 import { integer } from '../integer';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from '../_internals/helpers/FloatHelpers';
+import { convertFromNext, convertToNext } from '../../check/arbitrary/definition/Converters';
 
 /**
  * Constraints to be applied on {@link floatNext}
@@ -56,6 +57,12 @@ function safeFloatToIndex(f: number, constraintsLabel: keyof FloatNextConstraint
   return index;
 }
 
+/** @internal */
+function unmapperFloatToIndex(value: unknown): number {
+  if (typeof value !== 'number') throw new Error('Unsupported type');
+  return floatToIndex(value);
+}
+
 /**
  * For 32-bit floating point numbers:
  * - sign: 1 bit
@@ -84,7 +91,9 @@ export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<num
     throw new Error('fc.floatNext constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
-    return integer({ min: minIndex, max: maxIndex }).map(indexToFloat);
+    return convertFromNext(
+      convertToNext(integer({ min: minIndex, max: maxIndex })).map(indexToFloat, unmapperFloatToIndex)
+    );
   }
   // In case maxIndex > 0 or in other words max > 0,
   //   values will be [min, ..., +0, ..., max, NaN]
@@ -93,8 +102,17 @@ export function floatNext(constraints: FloatNextConstraints = {}): Arbitrary<num
   //   values will be [NaN, min, ..., max] with max <= +0
   const minIndexWithNaN = maxIndex > 0 ? minIndex : minIndex - 1;
   const maxIndexWithNaN = maxIndex > 0 ? maxIndex + 1 : maxIndex;
-  return integer({ min: minIndexWithNaN, max: maxIndexWithNaN }).map((index) => {
-    if (index > maxIndex || index < minIndex) return Number.NaN;
-    else return indexToFloat(index);
-  });
+  return convertFromNext(
+    convertToNext(integer({ min: minIndexWithNaN, max: maxIndexWithNaN })).map(
+      (index) => {
+        if (index > maxIndex || index < minIndex) return Number.NaN;
+        else return indexToFloat(index);
+      },
+      (value) => {
+        if (typeof value !== 'number') throw new Error('Unsupported type');
+        if (Number.isNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
+        return floatToIndex(value);
+      }
+    )
+  );
 }
