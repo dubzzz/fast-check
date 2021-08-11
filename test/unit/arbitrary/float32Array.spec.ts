@@ -6,8 +6,8 @@ import { convertToNext } from '../../../src/check/arbitrary/definition/Converter
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-  //assertProduceValuesShrinkableWithoutContext,
-  //assertShrinkProducesSameValueWithoutInitialContext,
+  assertProduceValuesShrinkableWithoutContext,
+  assertShrinkProducesSameValueWithoutInitialContext,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 
 function beforeEachHook() {
@@ -62,13 +62,11 @@ describe('float32Array (integration)', () => {
     assertProduceCorrectValues(float32ArrayBuilder, isCorrect, { extraParameters });
   });
 
-  //it('should produce values seen as shrinkable without any context', () => {
-  //  assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
-  //});
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(float32ArrayBuilder, { extraParameters });
+  });
 
-  //it('should be able to shrink to the same values without initial context', () => {
-  //  assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
-  //    extraParameters,
-  //  });
-  //});
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(float32ArrayBuilder, { extraParameters });
+  });
 });

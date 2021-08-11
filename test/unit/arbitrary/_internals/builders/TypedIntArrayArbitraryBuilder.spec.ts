@@ -12,8 +12,8 @@ import * as ArrayMock from '../../../../../src/arbitrary/array';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-  //assertProduceValuesShrinkableWithoutContext,
-  //assertShrinkProducesSameValueWithoutInitialContext,
+  assertProduceValuesShrinkableWithoutContext,
+  assertShrinkProducesSameValueWithoutInitialContext,
 } from '../../../check/arbitrary/generic/NextArbitraryAssertions';
 
 function beforeEachHook() {
@@ -175,15 +175,15 @@ describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
     assertProduceCorrectValues(typedIntArrayArbitraryArbitraryBuilderBuilder, isCorrect, { extraParameters });
   });
 
-  //it('should produce values seen as shrinkable without any context', () => {
-  //  assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
-  //});
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
+  });
 
-  //it('should be able to shrink to the same values without initial context', () => {
-  //  assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
-  //    extraParameters,
-  //  });
-  //});
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
+      extraParameters,
+    });
+  });
 });
 
 // Helpers

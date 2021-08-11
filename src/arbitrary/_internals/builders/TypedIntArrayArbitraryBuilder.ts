@@ -1,4 +1,5 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 import { array } from '../../array';
 
 /** @internal */
@@ -10,7 +11,7 @@ type TypedIntArrayBuilderConstraints<TValue> = {
 };
 
 /** @internal */
-export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType, TValue>(
+export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType extends Iterable<TValue>, TValue>(
   constraints: TypedIntArrayBuilderConstraints<TValue>,
   defaultMin: TValue,
   defaultMax: TValue,
@@ -28,7 +29,15 @@ export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType, TValue>(
   if (max > defaultMax) {
     throw new Error(`Invalid max value passed to ${generatorName}: max must be lower than or equal to ${defaultMax}`);
   }
-  return array(arbitraryBuilder({ min, max }), arrayConstraints).map((data) => TypedArrayClass.from(data));
+  return convertFromNext(
+    convertToNext(array(arbitraryBuilder({ min, max }), arrayConstraints)).map(
+      (data) => TypedArrayClass.from(data),
+      (value: unknown): TValue[] => {
+        if (!(value instanceof TypedArrayClass)) throw new Error('Invalid type');
+        return [...(value as TTypedArrayType)];
+      }
+    )
+  );
 }
 
 /**
