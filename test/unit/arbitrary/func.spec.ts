@@ -7,13 +7,12 @@ import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
-import { hash } from '../../../src/utils/hash';
-import { stringify } from '../../../src/utils/stringify';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from '../check/arbitrary/generic/NextArbitraryAssertions';
 import { FakeIntegerArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
 
 describe('func (integration)', () => {
   const funcBuilder = () => convertToNext(func(convertFromNext(new FakeIntegerArbitrary())));
@@ -72,34 +71,9 @@ describe('func (integration)', () => {
   });
 
   it('should give a re-usable string representation of the function', () => {
-    assertProduceCorrectValues(
-      funcBuilder,
-      (f, calls) => {
-        let assertionHasBeenExecuted = false;
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        (function (hash, stringify) {
-          assertionHasBeenExecuted = true;
-          try {
-            // As the output of toString might be different if the function has been called
-            // before or after toString, we assess both cases
-            const dataFromToStringBefore = eval(
-              `(function() { const f = ${f}; return calls.map((args) => f(...args)); })()`
-            );
-            const data = calls.map((args) => f(...args));
-            const dataFromToString = eval(`(function() { const f = ${f}; return calls.map((args) => f(...args)); })()`);
-
-            expect(dataFromToStringBefore).toStrictEqual(data);
-            expect(dataFromToString).toStrictEqual(data);
-          } catch (err) {
-            throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`);
-          }
-        })(hash, stringify);
-
-        expect(assertionHasBeenExecuted).toBe(true);
-      },
-      { extraParameters: fc.array(fc.array(fc.anything())) }
-    );
+    assertProduceCorrectValues(funcBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
+      extraParameters: fc.array(fc.array(fc.anything())),
+    });
   });
 
   it('should produce cloneable instances with independant histories', () => {
