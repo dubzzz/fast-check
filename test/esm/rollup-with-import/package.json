@@ -12,7 +12,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
-    "rollup": "^2.56.1"
+    "rollup": "^2.56.2"
   },
   "license": "MIT",
   "private": true
