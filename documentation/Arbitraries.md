@@ -2848,7 +2848,7 @@ fc.object({
 > As `JSON.parse` preserves `-0`, `jsonObject` can also have `-0` as a value.
 > `jsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
 >
-> Please note that: `JSON.stringify(JSON.parse(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
+> Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
 
 *&#8195;Signatures*
 
@@ -2890,7 +2890,7 @@ fc.jsonObject({maxDepth: 1})
 > As `JSON.parse` preserves `-0`, `unicodeJsonObject` can also have `-0` as a value.
 > `unicodeJsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
 >
-> Please note that: `JSON.stringify(JSON.parse(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
+> Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
 
 *&#8195;Signatures*
 
