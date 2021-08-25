@@ -64,7 +64,7 @@ jobs:
             echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
             yarn test
       - name: Codecov
-        uses: codecov/codecov-action@v2.0.2
+        uses: codecov/codecov-action@v2.0.3
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
           flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
