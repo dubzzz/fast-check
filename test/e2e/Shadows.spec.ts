@@ -166,13 +166,14 @@ describe(`Shadows (seed: ${seed})`, () => {
         }),
         { seed: seed }
       );
-    } catch (err) {
+    } catch (err: unknown) {
       failed = true;
-      expect(err.message).toContain(`seed: ${seed | 0}, path:`);
-      expect(err.message).toMatch(
+      expect(err).toBeInstanceOf(Error);
+      expect((err as Error).message).toContain(`seed: ${seed | 0}, path:`);
+      expect((err as Error).message).toMatch(
         /\[Space\(grid\{x:\d+,y:\d+\},solution\{x:\d+,y:\d+\},initial\{x:\d+,y:\d+\}\),\d+\]/
       );
-      expect(err.message).toMatch(/failed after \d+ test/);
+      expect((err as Error).message).toMatch(/failed after \d+ test/);
     }
     expect(failed).toBe(true);
   });

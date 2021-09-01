@@ -20,9 +20,10 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
           verbose: fc.VerbosityLevel.Verbose,
         }
       );
-    } catch (err) {
+    } catch (err: unknown) {
       failed = true;
-      expect(err.message).toContain(expectedLines.join('\n'));
+      expect(err).toBeInstanceOf(Error);
+      expect((err as Error).message).toContain(expectedLines.join('\n'));
     }
     expect(failed).toBe(true);
   });
@@ -51,9 +52,10 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
           verbose: fc.VerbosityLevel.VeryVerbose,
         }
       );
-    } catch (err) {
+    } catch (err: unknown) {
       failed = true;
-      expect(err.message).toContain(expectedLines.join('\n'));
+      expect(err).toBeInstanceOf(Error);
+      expect((err as Error).message).toContain(expectedLines.join('\n'));
     }
     expect(failed).toBe(true);
   });
