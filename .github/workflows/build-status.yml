@@ -203,6 +203,8 @@ jobs:
           - '3.4'
           # Minimal requirement for TypeScript
           - '3.2'
+          # Other release channels for TypeScript
+          - 'rc'
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Using Node v16.x
