@@ -3,5 +3,5 @@
  * @internal
  */
 export function maxLengthFromMinLength(minLength: number): number {
-  return 2 * minLength + 10;
+  return Math.min(2 * minLength + 10, 0x7fffffff);
 }
