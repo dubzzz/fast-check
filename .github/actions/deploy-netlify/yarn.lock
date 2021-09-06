@@ -922,10 +922,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@netlify/build@^18.7.2":
-  version "18.7.2"
-  resolved "https://registry.yarnpkg.com/@netlify/build/-/build-18.7.2.tgz#cc20e1499e472d544be15a6e35feb55a89800f46"
-  integrity sha512-y3NxhI9AZB+6O0Oe6ubQMj4M+7IxKGPzZImuinrHucdI8gvUm7uBanRK3Pui8DPOcr1/g7h1l/nnndBCUc6L+g==
+"@netlify/build@^18.7.3":
+  version "18.7.4"
+  resolved "https://registry.yarnpkg.com/@netlify/build/-/build-18.7.4.tgz#156b7893ba4af8d475d552f40cf9357cbb110b1b"
+  integrity sha512-3USSCfE47/qwVmkXn9N8DbcBUAY0VHFzrL0Bizas3AhP5GYYw2al9F1/KM4x3FMB3yZ+Fi3jXfFUB82DzzszxQ==
   dependencies:
     "@bugsnag/js" "^7.0.0"
     "@netlify/cache-utils" "^2.0.0"
@@ -933,7 +933,7 @@
     "@netlify/functions-utils" "^2.0.0"
     "@netlify/git-utils" "^2.0.0"
     "@netlify/plugin-edge-handlers" "^1.11.22"
-    "@netlify/plugins-list" "^3.5.0"
+    "@netlify/plugins-list" "^3.6.0"
     "@netlify/run-utils" "^2.0.0"
     "@netlify/zip-it-and-ship-it" "^4.20.0"
     "@sindresorhus/slugify" "^1.1.0"
@@ -945,7 +945,7 @@
     execa "^5.1.1"
     figures "^3.2.0"
     filter-obj "^2.0.1"
-    got "^9.6.0"
+    got "^10.0.0"
     indent-string "^4.0.0"
     is-plain-obj "^3.0.0"
     js-yaml "^4.0.0"
@@ -997,10 +997,10 @@
     path-exists "^4.0.0"
     readdirp "^3.4.0"
 
-"@netlify/config@^15.0.0", "@netlify/config@^15.5.0":
-  version "15.5.0"
-  resolved "https://registry.yarnpkg.com/@netlify/config/-/config-15.5.0.tgz#3e123057eb4170561a26284ff6ff693cf0f654d5"
-  integrity sha512-c+ICajSGQ7gD6O1V0wsl9SFxSC+owzg5JQyW9SBKV68nDxQBMwn31QHOHijopWeDPMQnp+gIHc2/wgwwtQ2YMQ==
+"@netlify/config@^15.0.0", "@netlify/config@^15.5.1":
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/@netlify/config/-/config-15.5.1.tgz#8805a782935033672816b7da8025a57c8431abc2"
+  integrity sha512-KjXgfIl4AtnFpUZswGRNAt1+RP8wyDlUG/KX28hCwjhaShaPirex/Z5Lo3kvVz1uQxCUBv2s82VR84iogzgGwQ==
   dependencies:
     "@ungap/from-entries" "^0.2.1"
     array-flat-polyfill "^1.0.1"
@@ -1175,10 +1175,10 @@
     rollup-plugin-terser "^7.0.2"
     typescript "^4.1.5"
 
-"@netlify/plugins-list@^3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@netlify/plugins-list/-/plugins-list-3.5.0.tgz#e2752ad582c8d1ebfd99cd3a8b755764df3b6b11"
-  integrity sha512-qBJC80fWY1T/UrvOsr/54ftfBoL2uybjzWuTZY8uYG2DnlJ4OaWjM3O9Srf7LXxHL3pdwV7kfdr9fQ6gbmARKg==
+"@netlify/plugins-list@^3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@netlify/plugins-list/-/plugins-list-3.6.0.tgz#5003b983ba2c35982dddbb129d8c1cc2054479a1"
+  integrity sha512-yRgsmBw8Wzk6/I/afcerhC+3XtVxXUF0xrSMOYgxV0bmaKJmB/0StJG4FY9TOAmb/IzCp82mR/63ZpzwIvpVzw==
 
 "@netlify/routing-local-proxy-darwin-arm64@^0.31.0":
   version "0.31.0"
@@ -4210,7 +4210,7 @@ gonzales-pe@^4.2.3:
   dependencies:
     minimist "^1.2.5"
 
-got@^10.7.0:
+got@^10.0.0, got@^10.7.0:
   version "10.7.0"
   resolved "https://registry.yarnpkg.com/got/-/got-10.7.0.tgz#62889dbcd6cca32cd6a154cc2d0c6895121d091f"
   integrity sha512-aWTDeNw9g+XqEZNcTjMMZSy7B7yE9toWOFYip7ofFTLleJhvZwUxxTxkTpKvF+p1SAA4VHmuEy7PiHTHyq8tJg==
@@ -5702,17 +5702,17 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-netlify-cli@^6.8.0:
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-6.8.0.tgz#e261d18cc69ad0a7049fee5b7fb4d7d0b8501576"
-  integrity sha512-7vXXcUqW9d2nIrFbGQcwm0q7EibNCsfEkFMcUZlI/L2tcVyC8AdofybDrZum7DQYQb8aJuab21juCc9Y5kijKg==
+netlify-cli@^6.8.6:
+  version "6.8.6"
+  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-6.8.6.tgz#5615116ab804fafddb5e71a271bcd693691a4fd2"
+  integrity sha512-H5wPrJUdGnCkFooNJZSPHSJkt+RKGljLaVF7Mmb+8fgC2kcowULN49QmNCw8bdp58w7pJEhFVLvBj2dCUiTtGg==
   dependencies:
-    "@netlify/build" "^18.7.2"
-    "@netlify/config" "^15.5.0"
+    "@netlify/build" "^18.7.3"
+    "@netlify/config" "^15.5.1"
     "@netlify/framework-info" "^5.9.1"
     "@netlify/local-functions-proxy" "^1.1.1"
     "@netlify/plugin-edge-handlers" "^1.11.22"
-    "@netlify/plugins-list" "^3.5.0"
+    "@netlify/plugins-list" "^3.6.0"
     "@netlify/routing-local-proxy" "^0.31.0"
     "@netlify/zip-it-and-ship-it" "4.20.0"
     "@oclif/command" "^1.6.1"
