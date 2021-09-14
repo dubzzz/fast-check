@@ -48,7 +48,9 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       -> [task\${2}] function::fetchHeroesById() resolved with value [{\\"name\\":\\"James Bond\\"}]
       -> [task\${1}] function::fetchHeroName() pending\`"
     `);
-    expect(out.error).toContain(`Cannot read property 'toLowerCase' of undefined`);
+    // Node  <16: Cannot read property 'toLowerCase' of undefined
+    // Node >=16: TypeError: Cannot read properties of undefined (reading 'toLowerCase')
+    expect(out.error).toContain(`'toLowerCase'`);
   });
 
   it('should detect race conditions leading to infinite loops', async () => {
