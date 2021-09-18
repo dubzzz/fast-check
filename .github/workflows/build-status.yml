@@ -230,6 +230,10 @@ jobs:
         run: |
           cd test/type
           sed -i 's/fc-require-ts-3.4/ts-ignore/g' *.ts
+      - name: TypeScript version
+        run: |
+          cd test/type
+          npx -p typescript@${{matrix.ts-version}} tsc --version
       - name: Test test/type/
         run: |
           cd test/type
