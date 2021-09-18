@@ -187,6 +187,14 @@ expectType<fc.Arbitrary<{ a: number; b?: string; c: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] }),
   '"record" only applies optional on keys declared within requiredKeys even if multiple ones specified'
 );
+// prettier-ignore
+// @fc-expect-error-require-exactOptionalPropertyTypes
+expectType<fc.Arbitrary<{ a?: number; b?: string | undefined }>>()(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] }), '"record" only applies optional on keys declared within requiredKeys by adding ? without |undefined');
+// prettier-ignore-end
+expectType<fc.Arbitrary<{ a?: number; b?: string | undefined }>>()(
+  fc.record({ a: fc.nat(), b: fc.option(fc.string(), { nil: undefined }) }, { requiredKeys: [] }),
+  '"record" only applies optional on keys declared within requiredKeys and preserves existing |undefined when adding ?'
+);
 expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string }>>()(
   fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [mySymbol1] as [typeof mySymbol1] }),
   '"record" only applies optional on keys declared within requiredKeys even if it contains symbols'
