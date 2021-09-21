@@ -28,7 +28,7 @@ Property based testing framework for JavaScript/TypeScript
 
 Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
 
-Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such that precondition(x, y, ...) holds property(x, y, ...) is true*.
+Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such that precondition(x, y, ...) holds predicate(x, y, ...) is true*.
 
 Install the module with: `yarn add fast-check --dev` or `npm install fast-check --save-dev`
 
