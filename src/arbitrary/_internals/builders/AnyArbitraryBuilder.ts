@@ -84,7 +84,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
     anything: oneof(
       { maxDepth },
       baseArb, // Final recursion case
-      tie('anything'),
+      tie('array'),
       tie('object'),
       ...(constraints.withMap ? [tie('map')] : []),
       ...(constraints.withSet ? [tie('set')] : []),

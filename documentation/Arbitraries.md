@@ -1013,7 +1013,7 @@ fc.json()
 // • "{\"gDS6ixj)R+\":{\"&>4q\":-4.764047835312664e-168,\".4$\":1.7093885319023646e+103,\"[,Dk$XNln-\":2.58973771202385e+32},\"W<m$%th\":{\"Dcedl|\":true},\"Qk\":2482558594970227}"
 // • "true"
 // • "{\"0J4\":{\"6nY3)\\\"\":true,\";8Y8nAf'@\":3915511530095453}}"
-// • "null"
+// • "[null,null]"
 // • "{}"
 // • …
 
@@ -1026,7 +1026,7 @@ fc.json({maxDepth: 1})
 // • "{\" \":-1.7976931348623071e+308,\"yY\\\"xr|z!H\":5.4758838181459106e+209,\"Sz2u=\":null,\"0`\":null}"
 // • "{\"&$|2j1/g\":-51,\"\\\"\":true}"
 // • "{\"|\":null,\"};*Iow&\":8.0652700695997815e+93,\">uO!AbI$\":\"I_6@YN'qO\",\"Oh\":true}"
-// • "null"
+// • "[0.00005536178133696582,1.0077587675918889e-197,-1.7048414608911972e-193]"
 // • …
 ```
 </details>
@@ -1056,18 +1056,18 @@ fc.json({maxDepth: 1})
 ```js
 fc.unicodeJson()
 // Examples of generated values:
-// • "1.8432537516365635e+223"
+// • "[3.051181034070195e+291]"
 // • "{\"荌鏊턳ᦖ\":false,\"냚鶖뜥\":false}"
 // • "{\"\":true,\"䷷ꔼꊐ㍂Ꮋ⧭얘\":false,\"镐菋⹥埒䘺懘ྎᶃ硾넍\":false,\"䶩လ뎙丯㷲ퟬ\":true,\"勯吓ᯇป蹥ꕪ渘Ǭ傟\":false}"
-// • "{\"\":-6093183694206201,\"ᐞ淙\":null}"
-// • "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":2.0426960705516796e+39},\"保婠꠨旞荫㹢ފ漀\":false,\"Ｈ᜞紽ѳ\":-2045714598217379,\"\":{\"ꉶ瀞뿱끮筡팹᧊\":null},\"䋷곺缇㱐⢋⮦\":5782588851984803000}"
+// • "{\"\":[],\"ᐞ淙\":[]}"
+// • "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":2.0426960705516796e+39},\"保婠꠨旞荫㹢ފ漀\":[null,false,true,4.88692343953534e-119],\"ㅜޞ욵ꤣ漓ꉶ瀞뿱끮\":null,\"ㇱɶ䋷곺缇㱐⢋\":\"꿸\",\"龞ꚢ\":false}"
 // • …
 
 fc.unicodeJson({maxDepth: 0})
 // Examples of generated values: "null", "false", "\"켔Ꚗޔ넡+/\"", "-718042952162017", "-1.92632490853631e-246"…
 
 fc.unicodeJson({maxDepth: 1})
-// Examples of generated values: "-9007199254740952", "1068292005279453", "null", "2.0778770048209322e-188", "-2.787348602876926e-78"…
+// Examples of generated values: "-9007199254740952", "1068292005279453", "null", "[]", "-2.787348602876926e-78"…
 ```
 </details>
 
@@ -2776,9 +2776,9 @@ fc.record({
 ```js
 fc.object()
 // Examples of generated values:
-// • {"A%":{"KFfpp":"kCR;AFy","R>Ep":"kV(z"},"6@'":-4.701922637177449e-208,"r]a1(ff":true}
-// • {"M{]xTH":{"#n;+\"uJ":-1.7073676461288806e-156,"IBJPt8j*3":"_Vb","&qBA~d":1.3686986067416212e+150},"G_?":"$Fh(+","PqWCv^q":{"lwck,m":-8.676022708683803e+249},"$p$ELwa4":2782667376766209,"8Ei;%":"@8vmt?65","3j":undefined,"y3Z":undefined,"3irr":undefined,"~\\)Xb=L":null}
-// • {"NLpz":true,"\"`guwWV":{"=x":4558218590727633," U%NIwh":1383342983065661},"35Vyp~":-4976358045086261,"Q_]ZyZT":{"rt2@!7":-8.938480971221343e+207,"\"=?\\)D":1.2089707177880785e+300,"i3NvX+":1.1709153563901103e-271,"h qH H}v":6.491155638681213e+202,"v`}D)_tK<":-2.3504569308248843e+33},"rJOYQxJ":undefined,"":"6@M^c. ","IoW$d#`\"4c":{},"NkD":{}}
+// • {"A%":{"KFfpp":"kCR;AFy","R>Ep":"kV(z"},"6@'":[-2.207823197850501e+192,3.1613705103044707e-192,-2.3367076093283915e-31,-3707010.362578603,-7.412739576630256e-130],"HA8":":V:Cm"}
+// • {"M{]xTH":{"#n;+\"uJ":-1.7073676461288806e-156,"IBJPt8j*3":"_Vb","&qBA~d":1.3686986067416212e+150},"G_?":[],"":{";PqWCv^qK4":[-590225360151775],"k,m <":[true,true],"a4=+p)r8E":8.91780974835176e+286,"r@8v":{},"Y3":{"rTy":null}},"j":{},"N":{"b=L8erH.W0":{"\"":"","zV":null,"b]yOC":"coWmiiL","[Ufcn'\\":-6441427503517816,"u.*Gz,W_":5761619189052005}},"?27Gmq!O":false,"zb#:cJCZ{g":[{},"OGk ~\"P",{"saSK:":true,"T6":false,"Tug'Ak=)f":true,"Y3H/) J{":true," 0^":false},"nrb",null],"2@1-M3:l%q":{"xnNe>/Y/":[-6874463638710630],"..^w%a^^t":null,"%J)H":[-4.3116841601448e+271],"":[-2.080916153335585e+156]}," Z]ycMNhu2":[{"v":false,"?<t9CF9{N":true,"q!p2":false,"#":false,"Ronq2(":false},3.058122441672037e-115]}
+// • {"NLpz":true,"\"`guwWV":[{"OjJ U%NIw":null},{"5":-4444658659744845,"5Vyp~\"X-":5222451871432333,"_]Z":5105405761309303,"f*J5crt2@":1810721905015265,"?\\":-6022619223608399},[true,true],[],{}],"qH ":"6iFv`}D","_tK<DY,rJO":"~~]\\ni","6@M^c. ":7122338718932239,"d#`\"4ce6":{"DjT>_><\\N":5243276801299219,"f1jCD":-8658073716259630,"":-739209854622888},";a#":["H",null,undefined,undefined,undefined],"m\"E":["+KF1 6h"," :#`Y","A",">_}","[JQ"]}
 // • {}
 // • {"qrhd)uEl(b":{},"]fr _{^D":{"1/H-'WwF":{},"(K|5r6O":"tDi'?MuF"},"H":-2.5249124239541926e+105}
 // • …
@@ -2791,7 +2791,7 @@ fc.object({
 // • {"c":{"c":-4373543690275593,"a":-8390683989876872}}
 // • {"b":"h\""}
 // • {"b":"aDA:0O%&","c":"ml> Vxr|#Z"}
-// • {"a":undefined,"c":{"c":-2683409340584047,"b":"","a":true},"b":{"b":"!=","c":3379910923726865}}
+// • {"a":undefined,"c":{"c":[-2744422.7404951486,-1.8345110504699604e+58,2.569399430912511e+151,1.2315038477032108e+257],"a":{"a":2.0093861895976855e-171},"b":[true,false,false,true,false]},"b":{"c":-7208713713650586,"a":17}}
 // • {}
 // • …
 
@@ -2810,10 +2810,10 @@ fc.object({
   maxDepth: 1,
 })
 // Examples of generated values:
-// • {"^lx)`P":undefined,"</}}e{{":-5378536758219430,"g21/@#y1B":{"8ULm U|p<":"cVmrI#!.^("},"":6032519616844529," %E":"{*=(DWJ8*","W{LK&#":{"Xp0>')OQ+V":true,"4l,yb3jK":",@","Vv":null,"rTT;Gr":"\\{>l@l]WFW"},"MY":6591061759524581}
+// • {"^lx)`P":[8028483004798607,"e{{Og>-",8.650252904812954e+203,4.9593414298533554e-110,""],"B2T_v8UL":["<#0cVm","I#!.^","{sS8U7 %E!","U"],"*=":[1.2209036140815505e+27,"Bv'W{LK"],"#zWizXp":[],"Q":[true],"l,yb3jK.Tr":{"BQ0r":";G","s":null,"":undefined,"l@l]WFW":null},"YaIV[oS<":[-0.00012452262210966197,-9.483743119430094e-141,"HX",1.305154276862804e-174]}
 // • {"s!?U&|m":false," !":{}}
-// • {":WEs/srS+":{"lb(<%.BW9":-1.12096281696434e+147,"":-2808744269250452},"":true,"PfnX>":{"d":undefined,"w}QPY":"9P","D":null,"tI[r7":1.2261777325406722e-66,"":-4.112730909088678e-115},"K?o":undefined,"= \\BMAD":5530437688841405,"l@n/>|.":"%|>H4JG)JX"}
-// • {"WW!oe%r(1":"FiY","l":null,"aR@~l-ofE*":{"E:' snhE\"}":-2.661271169692448e-26," <4QOmI":"k"},":kN3b~6T:#":"2V7Sy8YR%C",";%<o8`":{"3":null,"6":"3\"Hr.V","IZ":undefined,"V/J":null,"":undefined},"XiL(":"cx0Og"}
+// • {":WEs/srS+":{"lb(<%.BW9":-1.12096281696434e+147,"":-2808744269250452},"":[undefined],"nX>QxWv":{"w}QPY":"9P","D":null},"tI[r7":{"*HxK?ok[":-6343525974464806," \\BMAD7?":5530437688841405},"l@n/>|.":"%|>H4JG)JX","hy]tN{L3@V":{}}
+// • {"WW!oe%r(1":[true,false,false,false,false],"8a$aR@~l":[],"*qB<GE":["hE\"}6",true]," <4QOmI":{"":false,"3b~6":false,"#Hs":false,"V7Sy8YR":false},"4;%":null,"}}V5gIZ5v":["B3\"Hr.Vp","/JOM2sXiL"]}
 // • {"y.\"_x":{"o&s":2.5774375427541795e-152,"} ?11wrc":Number.NaN}}
 // • …
 
@@ -2832,8 +2832,8 @@ fc.object({
 // • {"xvT&":Int32Array.from([-17,2147483621,-2147483644,1556900347,2071464596,-1393559138,-1727276306,-2147483618]),"u#qsXXTvp":-50616070339577782226631178415259058882613774486766356322822085931554199999723n,"-U{3":"t<?]J"}
 // • {"Rsv1:ZP":Int32Array.from([168230707,-730230161,-1469484660,-1063102817,-1909954805,1585343329,-1514159647,-125465986]),"&fXK":new Boolean(true),"4C`-+":new Set([new Map([]),new Set([new Boolean(true),true,new String("b")]),false,{},{"new Number(2.5e-323)":new String("\"M6|"),"}o}Z":new String("Wn##m="),"/x98o":new String("")}])}
 // • {"p?EZci9K7":Object.assign(Object.create(null),{"Je":new String("vBJ>``Y$x"),"?ErP@8f!\"":new String(""),"":new String("%=o2Y7C0'")}),"":new Number(5.637087698537716e+284),"b(0#":Object.assign(Object.create(null),{"Q]s0xIyk<+":"(vi`]/Q.I",")Ie":null,"{`qiQ5Ix2f":null,".":undefined})}
-// • {"};;j/k&2T":{"new Date(\"+220664-08-31T16:38:43.894Z\")":-2289144276660280,"cXLsbV S":1138144113824397},"teD^Ev":"undefined","":"null","f1!":new Map([]),",#":Int32Array.from([-1755508721,272578669,468571813,1477257493,-1430305524,1596950866,-2080800454,436337744,-1761849063]),";tJq<":"new Number(-5960036636306053)","KQ`Bh:@}":{"false":{"2995845410082023":true,"kV}Hc*yU,.":true,";Wznpcq":false,"&CH+'X":false}},"6W,~y/":new Date("-211027-11-03T15:54:15.338Z")}
-// • {"RrAs^,;_'d":new Set([]),"cx:<rwea":"new Date(\"+020332-01-16T05:46:46.152Z\")","":Object.assign(Object.create(null),{"L'jRbo{j":-31976587169846070239654687470021029877524367311417431076643014306029456266120n,"';}PmFHH![":Float64Array.from([-8.018908485009337e+30,8.496864005059645e+201,-3.9194568152035106e+268,-3.086464372465133e+126,3.7461513350649476e+307,1.8080540145972749e-16,-3.302613637232917e-16,2.919782715590315e-98,5.497279242648775e-209]),"<!a}uk":Object.assign(Object.create(null),{"h!+#q":new Number(-2.201858778700874e-229),"-1.2569260788236659e-20":new Number(-7.614430918991341e-292),"fY*":new Number(-5.6031793388037794e+178),"=v{~S":new Number(1.0861583449836279e-82)}),"3ine":false})}
+// • {"};;j/k&2T":{"new Date(\"+220664-08-31T16:38:43.894Z\")":-2289144276660280,"cXLsbV S":1138144113824397},"teD^Ev":"[new Number(-1.5364199974582094e+205),new Number(5.180815866347032e+247),new Number(3.636439525223476e-281)]","!#(o3t":{"1vv":undefined,"wH{;tJ":null},"k{Xkv":{},"":new Set([]),"}":{"false":{"2995845410082023":true,"kV}Hc*yU,.":true,";Wznpcq":false,"&CH+'X":false}},"6W,~y/":new Date("-211027-11-03T15:54:15.338Z"),"ndQOiBz":{}}
+// • {"RrAs^,;_'d":new Set([]),"cx:<rwea":"new Date(\"+020332-01-16T05:46:46.152Z\")","":Object.assign(Object.create(null),{"L'jRbo{j":-31976587169846070239654687470021029877524367311417431076643014306029456266120n,"';}PmFHH![":Float64Array.from([-8.018908485009337e+30,8.496864005059645e+201,-3.9194568152035106e+268,-3.086464372465133e+126,3.7461513350649476e+307,1.8080540145972749e-16,-3.302613637232917e-16,2.919782715590315e-98,5.497279242648775e-209]),"<!a}uk":Object.assign(Object.create(null),{"h!+#q":new Number(-2.201858778700874e-229),"-1.2569260788236659e-20":new Number(-7.614430918991341e-292),"fY*":new Number(-5.6031793388037794e+178),"=v{~S":new Number(1.0861583449836279e-82)}),"3ine":[new Boolean(false),false]})}
 // • …
 ```
 </details>
@@ -2867,9 +2867,9 @@ fc.jsonObject()
 // Examples of generated values:
 // • -6.0839481205200126e+47
 // • {"8-b;+Ua":-2.260222054934251e-89,"jgMZ$w|b.":-5.736889009682019e+133}
+// • [false,false,true,true,false]
 // • false
-// • {"v":4.792770346263981e-211,"":-1.5495745118515853e-132,"`l+$I":-3.259520050917687e+23,"kSros":-9.846950617736166e-88}
-// • -9007199254740941
+// • [[32,-9007199254740968]]
 // • …
 
 fc.jsonObject({maxDepth: 0})
@@ -2906,13 +2906,7 @@ fc.jsonObject({maxDepth: 1})
 
 ```js
 fc.unicodeJsonObject()
-// Examples of generated values:
-// • false
-// • -2.0382394971523248e+153
-// • "⠵䟵谉ꏊ㓰捛멮켜"
-// • null
-// • {"":-2326967678035651,"뻺祮ᄲ뜎숾":1298601443077189,"壾":-8286713437925858,"Ⴏ뇽ᑑ蜾爫䏬ẃ뿊呞":4510155515636105,"烍솷쿻⪢ﯤ躂":-871879012624147}
-// • …
+// Examples of generated values: false, [[null,-5431499166376752]], "⠵䟵谉ꏊ㓰捛멮켜", null, [null,null,null,null]…
 
 fc.unicodeJsonObject({maxDepth: 0})
 // Examples of generated values: null, "⤓竑", "꙰ꁺ蜱", "⛙", true…
@@ -2922,8 +2916,8 @@ fc.unicodeJsonObject({maxDepth: 1})
 // • 2.67e-322
 // • {"减":null,"鲊ਉ뉄":null,"罧癤鷢൜牶":null,"횆쐌淪燀쯠蝒熹཯":null,"":null}
 // • {"ꁺ척蜱젿됻⫄":true,"㠰䵤᧳ꊺ蹀":true,"劸웤鯁냠漼ⳍ㧞ﰗἭ∎":false}
-// • 9007199254740987
-// • 1.7976931348623151e+308
+// • []
+// • [false]
 // • …
 ```
 </details>
@@ -2961,7 +2955,7 @@ fc.unicodeJsonObject({maxDepth: 1})
 ```js
 fc.anything()
 // Examples of generated values:
-// • {"s":3.5444267130400605e+224,"":{"@sWtR%)`":"9;[d;,G","NB:<~!66":"%","2Jagm0~":895066956945211,"yS9!9F":true},"xy 45|Z":"-aT@8"}
+// • {"s":[-4.4072022896917126e+272,3.439050850697345e+103],"@sWtR%)`":{},"d;,GhNB":{"66":"%","2Jagm0~":895066956945211,"yS9!9F":true,"xy 45|Z":undefined,"-aT@8":true}}
 // • 43
 // • "&,} ~"
 // • {}
@@ -2974,7 +2968,7 @@ fc.anything({
 // Note: Generated objects will come with keys in ['a', 'b', 'c']
 // Examples of generated values:
 // • {"b":null}
-// • 4.669065366920601e+122
+// • [[5.578694493239444e+260,2.3e-322,-1.616149197504394e+145],[null,null],-6464878656125993]
 // • {"b":"lSk1?*.]>","a":"4N|>MD","c":"dHW0wYEu!"}
 // • {"c":true,"a":false,"b":true}
 // • 1.022676058193833e-127
@@ -2989,7 +2983,7 @@ fc.anything({
 fc.anything({
   maxDepth: 1,
 })
-// Examples of generated values: -9007199254740952, 1068292005279453, "<EO", 2.077877004820932e-188, -2.7873486028769266e-78…
+// Examples of generated values: -9007199254740952, 1068292005279453, "<EO", [], -2.7873486028769266e-78…
 
 fc.anything({
   withBigInt: true,
@@ -3005,7 +2999,7 @@ fc.anything({
 // Examples of generated values:
 // • "new Map([])"
 // • Object.assign(Object.create(null),{" ir":"5>|p"})
-// • Object.assign(Object.create(null),{"TP":new Date("+119369-09-08T21:50:32.692Z"),"+w[3w6":Object.assign(Object.create(null),{"=":new String("!!9"),"{|){\"[":new String("~~$"),"Kxx":new String("SfM`"),"\"w\\'{d4$)":new String("y|z"),"new Number(9.177323100224516e-274)":new String("!|!")}),"m>+RNt9":new Boolean(false),"<Rr":new Set([false,true]),"undefined":[,,,,,,,,,,,,,,,,,,,,,,,,,,,]})
+// • Object.assign(Object.create(null),{"TP":new Date("+119369-09-08T21:50:32.692Z"),"+w[3w6":Object.assign(Object.create(null),{"=":new String("!!9"),"{|){\"[":new String("~~$"),"Kxx":new String("SfM`"),"\"w\\'{d4$)":new String("y|z"),"new Number(9.177323100224516e-274)":new String("!|!")}),"m>+RNt9":[-20,5703819954978061],"new String(\"$#B&#&$\")":Object.assign(Object.create(null),{"\"]^\"":new Number(-3.053588182018372e-106),"#3\" 9e#kK":new Number(-2.297629815251847e-104),"sl-[]":new Number(1.8403850887589697e-175)}),"P&":Object.assign(Object.create(null),{"#X4VGSMSv":null,"j(y[%D ":new Number(4974894300524177),"R)R":new Boolean(false),"3@~)":new Number(-400925104691661),"}IV":null})})
 // • new Set([])
 // • Int32Array.from([-1929856236])
 // • …
