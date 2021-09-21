@@ -3,7 +3,6 @@ import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { stringify } from '../../../utils/stringify';
 import { array } from '../../array';
 import { frequency } from '../../frequency';
-import { memo, Memo } from '../../memo';
 import { oneof } from '../../oneof';
 import { set } from '../../set';
 import { tuple } from '../../tuple';
@@ -25,6 +24,7 @@ import { convertFromNext, convertToNext } from '../../../check/arbitrary/definit
 import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
 import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
 import { objectToPrototypeLessMapper, objectToPrototypeLessUnmapper } from '../mappers/ObjectToPrototypeLess';
+import { letrec } from '../../letrec';
 
 /** @internal */
 function entriesOf<T, U>(keyArb: Arbitrary<T>, valueArb: Arbitrary<U>, maxKeys: number) {
@@ -75,64 +75,51 @@ function typedArray() {
 
 /** @internal */
 export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Arbitrary<unknown> {
-  const arbKeys = constraints.withObjectString
-    ? memo((n) =>
-        frequency(
-          { arbitrary: constraints.key, weight: 10 },
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          { arbitrary: anythingArb(n).map((o) => stringify(o)), weight: 1 }
-        )
-      )
-    : memo(() => constraints.key);
   const arbitrariesForBase = constraints.values;
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
-
   const baseArb = oneof(...arbitrariesForBase);
-  const arrayBaseArb = oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys })));
-  const objectBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => dictOf(arbKeys(n), arb, maxKeys)));
-  const setBaseArb = () => oneof(...arbitrariesForBase.map((arb) => setOf(arb, maxKeys)));
-  const mapBaseArb = (n: number) => oneof(...arbitrariesForBase.map((arb) => mapOf(arbKeys(n), arb, maxKeys)));
 
-  // base[] | anything[]
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const arrayArb = memo((n) => oneof(arrayBaseArb, array(anythingArb(n), { maxLength: maxKeys })));
-  // Set<base> | Set<anything>
-  const setArb = memo((n) =>
-    oneof(
-      setBaseArb(),
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      setOf(anythingArb(n), maxKeys)
-    )
-  );
-  // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
-  const mapArb = memo((n) =>
-    oneof(
-      mapBaseArb(n),
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      oneof(mapOf(arbKeys(n), anythingArb(n), maxKeys), mapOf(anythingArb(n), anythingArb(n), maxKeys))
-    )
-  );
-  // {[key:string]: base} | {[key:string]: anything}
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const objectArb = memo((n) => oneof(objectBaseArb(n), dictOf(arbKeys(n), anythingArb(n), maxKeys)));
-
-  const anythingArb: Memo<unknown> = memo((n) => {
-    if (n <= 0) return oneof(baseArb);
-    return oneof(
-      baseArb,
-      arrayArb(),
-      objectArb(),
-      ...(constraints.withMap ? [mapArb()] : []),
-      ...(constraints.withSet ? [setArb()] : []),
-      ...(constraints.withObjectString ? [anythingArb().map((o) => stringify(o))] : []),
-      ...(constraints.withNullPrototype ? [prototypeLessOf(objectArb())] : []),
+  return letrec((tie) => ({
+    anything: oneof(
+      { maxDepth },
+      baseArb, // Final recursion case
+      tie('anything'),
+      tie('object'),
+      ...(constraints.withMap ? [tie('map')] : []),
+      ...(constraints.withSet ? [tie('set')] : []),
+      ...(constraints.withObjectString ? [tie('anything').map((o) => stringify(o))] : []),
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
       ...(constraints.withBigInt ? [bigInt()] : []),
       ...(constraints.withDate ? [date()] : []),
       ...(constraints.withTypedArray ? [typedArray()] : []),
-      ...(constraints.withSparseArray ? [sparseArray(anythingArb())] : [])
-    );
-  });
-
-  return anythingArb(maxDepth);
+      ...(constraints.withSparseArray ? [sparseArray(tie('anything'))] : [])
+    ),
+    // String keys
+    keys: constraints.withObjectString
+      ? frequency(
+          { arbitrary: constraints.key, weight: 10 },
+          { arbitrary: tie('anything').map((o) => stringify(o)), weight: 1 }
+        )
+      : constraints.key,
+    // base[] | anything[]
+    arrayBase: oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys }))),
+    array: oneof(tie('arrayBase'), array(tie('anything'), { maxLength: maxKeys })),
+    // Set<base> | Set<anything>
+    setBase: oneof(...arbitrariesForBase.map((arb) => setOf(arb, maxKeys))),
+    set: oneof(tie('setBase'), setOf(tie('anything'), maxKeys)),
+    // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
+    mapBase: oneof(...arbitrariesForBase.map((arb) => mapOf(tie('keys') as Arbitrary<string>, arb, maxKeys))),
+    map: oneof(
+      tie('mapBase'),
+      oneof(
+        mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys),
+        mapOf(tie('anything'), tie('anything'), maxKeys)
+      )
+    ),
+    // {[key:string]: base} | {[key:string]: anything}
+    objectBase: oneof(...arbitrariesForBase.map((arb) => dictOf(tie('keys') as Arbitrary<string>, arb, maxKeys))),
+    object: oneof(tie('objectBase'), dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys)),
+  })).anything;
 }
