@@ -73,7 +73,7 @@
     "eslint-config-prettier": "^8.1.0",
     "jest": "^26.1.0",
     "mkdirp": "^1.0.4",
-    "prettier": "2.3.2",
+    "prettier": "2.4.1",
     "replace-in-file": "^6.0.0",
     "source-map-support": "^0.5.19",
     "ts-jest": "^26.2.0",
