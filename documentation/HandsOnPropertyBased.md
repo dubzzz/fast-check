@@ -14,7 +14,7 @@ A property is just something like:
 >
 > such that precondition(x, y, ...) holds
 >
-> property(x, y, ...) is true
+> predicate(x, y, ...) is true
 
 For example, using properties you might state that:
 
