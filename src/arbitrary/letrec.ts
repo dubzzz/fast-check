@@ -21,9 +21,9 @@ import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Co
  * @remarks Since 1.16.0
  * @public
  */
-export function letrec<T>(
-  builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }
-): { [K in keyof T]: Arbitrary<T[K]> } {
+export function letrec<T>(builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }): {
+  [K in keyof T]: Arbitrary<T[K]>;
+} {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = Object.create(null);
   const tie = (key: keyof T): Arbitrary<any> => {
     if (!Object.prototype.hasOwnProperty.call(lazyArbs, key)) {
