@@ -316,7 +316,7 @@ describe('ObjectArbitrary', () => {
             break;
         }
       }
-      // We check that each bucket receive at list 15 % of the values
+      // We check that each bucket receive at least 15 % of the values
       expect(counters.numArrays / numTests).toBeGreaterThanOrEqual(0.15);
       expect(counters.numMaps / numTests).toBeGreaterThanOrEqual(0.15);
       expect(counters.numObjects / numTests).toBeGreaterThanOrEqual(0.15);
