@@ -1,29 +1,20 @@
-import * as fc from '../../../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
-import { arrayInt64 as arrayInt64Old } from '../../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
-import { ArrayInt64 } from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
-import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
-import { convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
+import { arrayInt64 as arrayInt64Old } from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
+import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 
-import { buildNextShrinkTree, buildShrinkTree, renderTree } from '../generic/ShrinkTree';
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
-import { fakeRandom } from '../generic/RandomHelpers';
-
-function arrayInt64(...args: Parameters<typeof arrayInt64Old>): NextArbitrary<ArrayInt64> {
-  return convertToNext(arrayInt64Old(...args));
-}
-
-function toArrayInt64(b: bigint, withNegativeZero: boolean): ArrayInt64 {
-  const posB = b < BigInt(0) ? -b : b;
-  return {
-    sign: b < BigInt(0) || (withNegativeZero && b === BigInt(0)) ? -1 : 1,
-    data: [Number(posB >> BigInt(32)), Number(posB & ((BigInt(1) << BigInt(32)) - BigInt(1)))],
-  };
-}
-
-function toBigInt(a: ArrayInt64): bigint {
-  return BigInt(a.sign) * ((BigInt(a.data[0]) << BigInt(32)) + BigInt(a.data[1]));
-}
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { buildNextShrinkTree, renderTree, buildShrinkTree } from '../../check/arbitrary/generic/ShrinkTree';
+import {
+  assertProduceSameValueGivenSameSeed,
+  assertProduceCorrectValues,
+  assertProduceValuesShrinkableWithoutContext,
+  assertShrinkProducesSameValueWithoutInitialContext,
+  assertShrinkProducesStrictlySmallerValue,
+} from '../../check/arbitrary/generic/NextArbitraryAssertions';
 
 describe('arrayInt64', () => {
   if (typeof BigInt === 'undefined') {
@@ -37,7 +28,7 @@ describe('arrayInt64', () => {
   const MaxArrayIntValue = BigInt(2) ** BigInt(64) - BigInt(1);
 
   describe('generate', () => {
-    it('should always consider the full range when not biased', () =>
+    it('should always consider the full range when not biased', () => {
       fc.assert(
         fc.property(
           fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
@@ -65,9 +56,10 @@ describe('arrayInt64', () => {
             expect(nextInt).not.toHaveBeenCalled();
           }
         )
-      ));
+      );
+    });
 
-    it('should always consider the full range when bias should not apply', () =>
+    it('should always consider the full range when bias should not apply', () => {
       fc.assert(
         fc.property(
           fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
@@ -98,9 +90,10 @@ describe('arrayInt64', () => {
             expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
           }
         )
-      ));
+      );
+    });
 
-    it('should consider sub-ranges when bias applies', () =>
+    it('should consider sub-ranges when bias applies', () => {
       fc.assert(
         fc.property(
           fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
@@ -137,11 +130,12 @@ describe('arrayInt64', () => {
             expect(receivedMax).toBeLessThanOrEqual(max);
           }
         )
-      ));
+      );
+    });
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should recognize any value it could have generated', () =>
+    it('should recognize any value it could have generated', () => {
       fc.assert(
         fc.property(
           fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
@@ -162,9 +156,10 @@ describe('arrayInt64', () => {
             expect(out).toBe(true);
           }
         )
-      ));
+      );
+    });
 
-    it('should reject values outside of its range', () =>
+    it('should reject values outside of its range', () => {
       fc.assert(
         fc.property(
           fc.bigInt(MinArrayIntValue, MaxArrayIntValue),
@@ -189,7 +184,8 @@ describe('arrayInt64', () => {
             expect(out).toBe(false);
           }
         )
-      ));
+      );
+    });
   });
 
   describe('shrink', () => {
@@ -247,6 +243,7 @@ describe('arrayInt64', () => {
                              └> {\\"sign\\":1,\\"data\\":[0,0]}"
       `);
     });
+
     it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
@@ -301,6 +298,7 @@ describe('arrayInt64', () => {
                              └> {\\"sign\\":1,\\"data\\":[1,10]}"
       `);
     });
+
     it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
@@ -371,6 +369,7 @@ describe('arrayInt64', () => {
       // Assert
       expect(treeOld).toEqual(treeNew);
     });
+
     it('should shrink, as context-less, strictly positive value for range not including zero', () => {
       // Arrange
       const arbNew = arrayInt64({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
@@ -384,6 +383,7 @@ describe('arrayInt64', () => {
       // Assert
       expect(treeOld).toEqual(treeNew);
     });
+
     it('should shrink, as context-less, strictly negative value for negative range including zero', () => {
       // Arrange
       const arbNew = arrayInt64({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
@@ -399,3 +399,94 @@ describe('arrayInt64', () => {
     });
   });
 });
+
+describe('arrayInt64 (integration)', () => {
+  if (typeof BigInt === 'undefined') {
+    it('no test', () => {
+      expect(true).toBe(true);
+    });
+    return;
+  }
+
+  type Extra = { min: bigint; max: bigint };
+  const MaxArrayIntValue = BigInt(2) ** BigInt(64) - BigInt(1);
+  const extraParameters: fc.Arbitrary<Extra> = fc
+    .tuple(
+      fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
+      fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue })
+    )
+    .map((vs) => ({
+      min: vs[0] <= vs[1] ? vs[0] : vs[1],
+      max: vs[0] <= vs[1] ? vs[1] : vs[0],
+    }));
+
+  const isCorrect = (v: ArrayInt64, extra: Extra) => {
+    if (!isValidArrayInt(v)) {
+      return false;
+    }
+    const vbg = toBigInt(v);
+    if (vbg === BigInt(0) && v.sign === -1) {
+      return false; // zero is always supposed to be marked with sign 1
+    }
+    return extra.min <= vbg && vbg <= extra.max;
+  };
+
+  const isStrictlySmaller = (v1: ArrayInt64, v2: ArrayInt64) => {
+    const vbg1 = toBigInt(v1);
+    const vbg2 = toBigInt(v2);
+    const absVbg1 = vbg1 < BigInt(0) ? -vbg1 : vbg1;
+    const absVbg2 = vbg2 < BigInt(0) ? -vbg2 : vbg2;
+    return absVbg1 < absVbg2;
+  };
+
+  const arrayInt64Builder = (extra: Extra) =>
+    arrayInt64(toArrayInt64(extra.min, false), toArrayInt64(extra.max, false));
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(arrayInt64Builder, { extraParameters });
+  });
+
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(arrayInt64Builder, isCorrect, { extraParameters });
+  });
+
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(arrayInt64Builder, { extraParameters });
+  });
+
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(arrayInt64Builder, { extraParameters });
+  });
+
+  it('should preserve strictly smaller ordering in shrink', () => {
+    assertShrinkProducesStrictlySmallerValue(arrayInt64Builder, isStrictlySmaller, { extraParameters });
+  });
+});
+
+// Helpers
+
+function arrayInt64(...args: Parameters<typeof arrayInt64Old>): NextArbitrary<ArrayInt64> {
+  return convertToNext(arrayInt64Old(...args));
+}
+
+function toArrayInt64(b: bigint, withNegativeZero: boolean): ArrayInt64 {
+  const posB = b < BigInt(0) ? -b : b;
+  return {
+    sign: b < BigInt(0) || (withNegativeZero && b === BigInt(0)) ? -1 : 1,
+    data: [Number(posB >> BigInt(32)), Number(posB & ((BigInt(1) << BigInt(32)) - BigInt(1)))],
+  };
+}
+
+function toBigInt(a: ArrayInt64): bigint {
+  return BigInt(a.sign) * ((BigInt(a.data[0]) << BigInt(32)) + BigInt(a.data[1]));
+}
+
+function isValidArrayInt(a: ArrayInt64): boolean {
+  return (
+    (a.sign === 1 || a.sign === -1) &&
+    a.data[0] >= 0 &&
+    a.data[0] <= 0xffffffff &&
+    a.data[1] >= 0 &&
+    a.data[1] <= 0xffffffff
+  );
+}
