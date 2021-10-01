@@ -107,6 +107,7 @@ export interface ObjectConstraints {
  */
 export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues'>>;
 
+/** @internal */
 function defaultValues(): Arbitrary<unknown>[] {
   return [
     boolean(),
@@ -117,14 +118,20 @@ function defaultValues(): Arbitrary<unknown>[] {
   ];
 }
 
+/** @internal */
 function boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
   return arbs.map((arb) => boxedArbitraryBuilder(arb));
 }
 
+/** @internal */
 function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
   return boxEnabled ? boxArbitraries(arbs).concat(arbs) : arbs;
 }
 
+/**
+ * Convert constraints of type ObjectConstraints into fully qualified constraints
+ * @internal
+ */
 export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
   function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
     return optionalValue !== undefined ? optionalValue : defaultValue;
