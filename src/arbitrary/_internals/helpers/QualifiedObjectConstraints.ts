@@ -105,63 +105,52 @@ export interface ObjectConstraints {
  * Internal wrapper around an `ObjectConstraints`, it adds all the missing pieces in the configuration
  * @internal
  */
-export class QualifiedObjectConstraints {
-  constructor(
-    readonly key: Arbitrary<string>,
-    readonly values: Arbitrary<unknown>[],
-    readonly maxDepth: number,
-    readonly maxKeys: number,
-    readonly withSet: boolean,
-    readonly withMap: boolean,
-    readonly withObjectString: boolean,
-    readonly withNullPrototype: boolean,
-    readonly withBigInt: boolean,
-    readonly withDate: boolean,
-    readonly withTypedArray: boolean,
-    readonly withSparseArray: boolean
-  ) {}
+export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues'>>;
 
-  /**
-   * Default value of ObjectConstraints.values field
-   */
-  static defaultValues(): Arbitrary<unknown>[] {
-    return [
-      boolean(),
-      maxSafeInteger(),
-      double({ next: true }),
-      string(),
-      oneof(string(), constant(null), constant(undefined)),
-    ];
-  }
+/** @internal */
+function defaultValues(): Arbitrary<unknown>[] {
+  return [
+    boolean(),
+    maxSafeInteger(),
+    double({ next: true }),
+    string(),
+    oneof(string(), constant(null), constant(undefined)),
+  ];
+}
 
-  private static boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
-    return arbs.map((arb) => boxedArbitraryBuilder(arb));
-  }
+/** @internal */
+function boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
+  return arbs.map((arb) => boxedArbitraryBuilder(arb));
+}
 
-  private static boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
-    return boxEnabled ? QualifiedObjectConstraints.boxArbitraries(arbs).concat(arbs) : arbs;
-  }
+/** @internal */
+function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
+  return boxEnabled ? boxArbitraries(arbs).concat(arbs) : arbs;
+}
 
-  static from(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
-    function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
-      return optionalValue !== undefined ? optionalValue : defaultValue;
-    }
-    return new QualifiedObjectConstraints(
-      orDefault(settings.key, string()),
-      QualifiedObjectConstraints.boxArbitrariesIfNeeded(
-        orDefault(settings.values, QualifiedObjectConstraints.defaultValues()),
-        orDefault(settings.withBoxedValues, false)
-      ),
-      orDefault(settings.maxDepth, 2),
-      orDefault(settings.maxKeys, 5),
-      orDefault(settings.withSet, false),
-      orDefault(settings.withMap, false),
-      orDefault(settings.withObjectString, false),
-      orDefault(settings.withNullPrototype, false),
-      orDefault(settings.withBigInt, false),
-      orDefault(settings.withDate, false),
-      orDefault(settings.withTypedArray, false),
-      orDefault(settings.withSparseArray, false)
-    );
+/**
+ * Convert constraints of type ObjectConstraints into fully qualified constraints
+ * @internal
+ */
+export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
+  function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
+    return optionalValue !== undefined ? optionalValue : defaultValue;
   }
+  return {
+    key: orDefault(settings.key, string()),
+    values: boxArbitrariesIfNeeded(
+      orDefault(settings.values, defaultValues()),
+      orDefault(settings.withBoxedValues, false)
+    ),
+    maxDepth: orDefault(settings.maxDepth, 2),
+    maxKeys: orDefault(settings.maxKeys, 5),
+    withSet: orDefault(settings.withSet, false),
+    withMap: orDefault(settings.withMap, false),
+    withObjectString: orDefault(settings.withObjectString, false),
+    withNullPrototype: orDefault(settings.withNullPrototype, false),
+    withBigInt: orDefault(settings.withBigInt, false),
+    withDate: orDefault(settings.withDate, false),
+    withTypedArray: orDefault(settings.withTypedArray, false),
+    withSparseArray: orDefault(settings.withSparseArray, false),
+  };
 }
