@@ -1,6 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { anyArbitraryBuilder } from './_internals/builders/AnyArbitraryBuilder';
-import { QualifiedObjectConstraints, ObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
+import { ObjectConstraints, toQualifiedObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
 
 export { ObjectConstraints };
 
@@ -50,6 +50,6 @@ function anything(): Arbitrary<unknown>;
  */
 function anything(constraints: ObjectConstraints): Arbitrary<unknown>;
 function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
-  return anyArbitraryBuilder(QualifiedObjectConstraints.from(constraints));
+  return anyArbitraryBuilder(toQualifiedObjectConstraints(constraints));
 }
 export { anything };

@@ -1,7 +1,11 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { dictionary } from './dictionary';
 import { anyArbitraryBuilder } from './_internals/builders/AnyArbitraryBuilder';
-import { QualifiedObjectConstraints, ObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
+import {
+  QualifiedObjectConstraints,
+  toQualifiedObjectConstraints,
+  ObjectConstraints,
+} from './_internals/helpers/QualifiedObjectConstraints';
 
 export { ObjectConstraints };
 
@@ -41,6 +45,6 @@ function object(): Arbitrary<Record<string, unknown>>;
  */
 function object(constraints: ObjectConstraints): Arbitrary<Record<string, unknown>>;
 function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unknown>> {
-  return objectInternal(QualifiedObjectConstraints.from(constraints));
+  return objectInternal(toQualifiedObjectConstraints(constraints));
 }
 export { object };
