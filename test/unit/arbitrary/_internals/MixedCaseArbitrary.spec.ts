@@ -1,3 +1,4 @@
+import fc from '../../../../lib/fast-check';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -9,7 +10,6 @@ import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCa
 import { stringOf } from '../../../../src/arbitrary/stringOf';
 import { nat } from '../../../../src/arbitrary/nat';
 import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
-import fc from '../../../../lib/fast-check';
 
 describe('MixedCaseArbitrary (integration)', () => {
   if (typeof BigInt === 'undefined') {
