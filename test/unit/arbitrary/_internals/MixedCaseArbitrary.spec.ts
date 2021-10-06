@@ -8,7 +8,7 @@ import {
 import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCaseArbitrary';
 import { stringOf } from '../../../../src/arbitrary/stringOf';
 import { nat } from '../../../../src/arbitrary/nat';
-import { convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
+import { convertFromNext, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 import fc from '../../../../lib/fast-check';
 
 describe('MixedCaseArbitrary (integration)', () => {
@@ -21,9 +21,12 @@ describe('MixedCaseArbitrary (integration)', () => {
 
   type Extra = { withoutToggle: boolean };
   const extraParameters: fc.Arbitrary<Extra> = fc.record({ withoutToggle: fc.boolean() });
+  const mixedCaseBaseChars = ['0', '1', 'A', 'B'];
 
   const isCorrect = (value: string, extra: Extra) => {
-    const acceptedChars = extra.withoutToggle ? '01AB' : '01abAB';
+    const acceptedChars = extra.withoutToggle
+      ? mixedCaseBaseChars
+      : [...mixedCaseBaseChars, ...mixedCaseBaseChars.map((c) => c.toLowerCase())];
     return typeof value === 'string' && [...value].every((c) => acceptedChars.includes(c));
   };
 
@@ -31,8 +34,18 @@ describe('MixedCaseArbitrary (integration)', () => {
 
   const mixedCaseBuilder = (extra: Extra) =>
     new MixedCaseArbitrary(
-      convertToNext(stringOf(nat(3).map((id) => ['0', '1', 'A', 'B'][id]))),
-      extra.withoutToggle ? (rawChar) => rawChar : (rawChar) => rawChar.toLowerCase()
+      convertToNext(
+        stringOf(
+          convertFromNext(
+            convertToNext(nat(mixedCaseBaseChars.length - 1)).map(
+              (id) => mixedCaseBaseChars[id],
+              (c) => mixedCaseBaseChars.indexOf(c as string)
+            )
+          )
+        )
+      ),
+      extra.withoutToggle ? (rawChar) => rawChar : (rawChar) => rawChar.toLowerCase(),
+      (rawString) => rawString.toUpperCase()
     );
 
   it('should produce the same values given the same seed', () => {
