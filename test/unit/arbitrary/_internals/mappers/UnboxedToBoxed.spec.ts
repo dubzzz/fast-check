@@ -4,7 +4,45 @@ import {
   unboxedToBoxedUnmapper,
 } from '../../../../../src/arbitrary/_internals/mappers/UnboxedToBoxed';
 
-describe('charsToStringUnmapper', () => {
+describe('unboxedToBoxedMapper', () => {
+  it.each`
+    source   | expectedType
+    ${false} | ${Boolean}
+    ${true}  | ${Boolean}
+    ${0}     | ${Number}
+    ${10}    | ${Number}
+    ${''}    | ${String}
+    ${'a'}   | ${String}
+  `('should be able to box $source', ({ source, expectedType }) => {
+    // Arrange / Act
+    const boxed = unboxedToBoxedMapper(source);
+
+    // Assert
+    expect(typeof boxed).toBe('object');
+    expect(boxed).toBeInstanceOf(expectedType);
+    expect((boxed as any).valueOf()).toBe(source);
+  });
+
+  it.each`
+    source
+    ${new Boolean(false)}
+    ${new Number(0)}
+    ${new String('')}
+    ${{}}
+    ${Object.create(null)}
+    ${[]}
+    ${new Set()}
+    ${new Map()}
+  `('should not alter unboxable values like $source', ({ source }) => {
+    // Arrange / Act
+    const boxed = unboxedToBoxedMapper(source);
+
+    // Assert
+    expect(boxed).toBe(source);
+  });
+});
+
+describe('unboxedToBoxedUnmapper', () => {
   it.each`
     source                | expected
     ${new Boolean(false)} | ${false}
