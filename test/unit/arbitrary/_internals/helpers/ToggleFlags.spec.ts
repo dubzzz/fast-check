@@ -119,7 +119,7 @@ describe('computeTogglePositions', () => {
         // Assert
         for (let index = 0; index !== chars.length; ++index) {
           if (!positions.includes(index)) {
-            expect(toggleCase[chars[index]]).toBe(chars[index]);
+            expect(toggleCase(chars[index])).toBe(chars[index]);
           }
         }
       })
