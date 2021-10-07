@@ -104,7 +104,7 @@ describe('computeTogglePositions', () => {
 
         // Assert
         for (const p of positions) {
-          expect(toggleCase[chars[p]]).not.toBe(chars[p]);
+          expect(toggleCase(chars[p])).not.toBe(chars[p]);
         }
       })
     );
