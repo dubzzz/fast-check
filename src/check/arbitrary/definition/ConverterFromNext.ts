@@ -43,7 +43,7 @@ export class ConverterFromNext<T> extends ArbitraryWithContextualShrink<T> {
   }
 
   generate(mrng: Random): Shrinkable<T, T> {
-    const g = this.arb.bigUintNGenerate(mrng, this.biasFactor);
+    const g = this.arb.generate(mrng, this.biasFactor);
     return this.toShrinkable(g);
   }
 
