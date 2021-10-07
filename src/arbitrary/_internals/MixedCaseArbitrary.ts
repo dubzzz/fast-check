@@ -35,6 +35,27 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
 }
 
 /** @internal */
+/**
+ * Compute the flags required to move from untoggledChars to toggledChars
+ * @param untoggledChars - Original string split into characters
+ * @param toggledChars - Toggled version of the string
+ * @param togglePositions - Array referencing all case sensitive indexes in chars
+ */
+export function computeFlagsFromChars(
+  untoggledChars: string[],
+  toggledChars: string[],
+  togglePositions: number[]
+): bigint {
+  let flags = BigInt(0);
+  for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
+    if (untoggledChars[togglePositions[idx]] !== toggledChars[togglePositions[idx]]) {
+      flags |= mask;
+    }
+  }
+  return flags;
+}
+
+/** @internal */
 type MixedCaseArbitraryContext = {
   rawString: string;
   rawStringContext: unknown;
@@ -46,7 +67,8 @@ type MixedCaseArbitraryContext = {
 export class MixedCaseArbitrary extends NextArbitrary<string> {
   constructor(
     private readonly stringArb: NextArbitrary<string>,
-    private readonly toggleCase: (rawChar: string) => string
+    private readonly toggleCase: (rawChar: string) => string,
+    private readonly untoggleAll: ((toggledString: string) => string) | undefined
   ) {
     super();
   }
@@ -103,17 +125,42 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
   }
 
   canShrinkWithoutContext(value: unknown): value is string {
-    // Not implemented yet
-    return false;
+    if (typeof value !== 'string') {
+      return false;
+    }
+    return this.untoggleAll !== undefined
+      ? this.stringArb.canShrinkWithoutContext(this.untoggleAll(value))
+      : // If nothing was toggled or if the underlying generator can still shrink it, we consider it shrinkable
+        this.stringArb.canShrinkWithoutContext(value);
   }
 
-  shrink(_value: string, context?: unknown): Stream<NextValue<string>> {
-    if (context === undefined) {
-      // Not implemented yet
-      return Stream.nil();
+  shrink(value: string, context?: unknown): Stream<NextValue<string>> {
+    let contextSafe: MixedCaseArbitraryContext;
+    if (context !== undefined) {
+      contextSafe = context as MixedCaseArbitraryContext;
+    } else {
+      // As user should have called canShrinkWithoutContext first;
+      // We know that the untoggled string can be shrunk without any context
+      if (this.untoggleAll !== undefined) {
+        const untoggledValue = this.untoggleAll(value);
+        const valueChars = [...value];
+        const untoggledValueChars = [...untoggledValue];
+        const togglePositions = this.computeTogglePositions(untoggledValueChars);
+        contextSafe = {
+          rawString: untoggledValue,
+          rawStringContext: undefined,
+          flags: computeFlagsFromChars(untoggledValueChars, valueChars, togglePositions),
+          flagsContext: undefined,
+        };
+      } else {
+        contextSafe = {
+          rawString: value,
+          rawStringContext: undefined,
+          flags: BigInt(0),
+          flagsContext: undefined,
+        };
+      }
     }
-
-    const contextSafe = context as MixedCaseArbitraryContext;
     const rawString = contextSafe.rawString;
     const flags = contextSafe.flags;
     return this.stringArb

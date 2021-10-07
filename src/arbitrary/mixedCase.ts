@@ -13,6 +13,12 @@ export interface MixedCaseConstraints {
    * @remarks Since 1.17.0
    */
   toggleCase?: (rawChar: string) => string;
+  /**
+   * In order to be fully reversable (only in case you want to shrink user definable values)
+   * you should provide a function taking a string containing possibly toggled items and returning its
+   * untoggled version.
+   */
+  untoggleAll?: (toggledString: string) => string;
 }
 
 /** @internal */
@@ -40,5 +46,6 @@ export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseC
     throw new Error(`mixedCase requires BigInt support`);
   }
   const toggleCase = (constraints && constraints.toggleCase) || defaultToggleCase;
-  return convertFromNext(new MixedCaseArbitrary(convertToNext(stringArb), toggleCase));
+  const untoggleAll = constraints && constraints.untoggleAll;
+  return convertFromNext(new MixedCaseArbitrary(convertToNext(stringArb), toggleCase, untoggleAll));
 }
