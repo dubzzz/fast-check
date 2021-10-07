@@ -5,34 +5,12 @@ import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../../check/arbitrary/definition/Converters';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { makeLazy } from '../../stream/LazyIterableIterator';
-
-/** @internal */
-export function countToggledBits(n: bigint): number {
-  let count = 0;
-  while (n > BigInt(0)) {
-    if (n & BigInt(1)) ++count;
-    n >>= BigInt(1);
-  }
-  return count;
-}
-
-/** @internal */
-export function computeNextFlags(flags: bigint, nextSize: number): bigint {
-  // whenever possible we want to preserve the same number of toggled positions
-  // whenever possible we want to keep them at the same place
-  // flags: 1000101 -> 10011 or 11001 (second choice for the moment)
-  const allowedMask = (BigInt(1) << BigInt(nextSize)) - BigInt(1);
-  const preservedFlags = flags & allowedMask;
-  let numMissingFlags = countToggledBits(flags - preservedFlags);
-  let nFlags = preservedFlags;
-  for (let mask = BigInt(1); mask <= allowedMask && numMissingFlags !== 0; mask <<= BigInt(1)) {
-    if (!(nFlags & mask)) {
-      nFlags |= mask;
-      --numMissingFlags;
-    }
-  }
-  return nFlags;
-}
+import {
+  applyFlagsOnChars,
+  computeFlagsFromChars,
+  computeNextFlags,
+  computeTogglePositions,
+} from './helpers/ToggleFlags';
 
 /** @internal */
 type MixedCaseArbitraryContext = {
@@ -46,30 +24,10 @@ type MixedCaseArbitraryContext = {
 export class MixedCaseArbitrary extends NextArbitrary<string> {
   constructor(
     private readonly stringArb: NextArbitrary<string>,
-    private readonly toggleCase: (rawChar: string) => string
+    private readonly toggleCase: (rawChar: string) => string,
+    private readonly untoggleAll: ((toggledString: string) => string) | undefined
   ) {
     super();
-  }
-
-  private computeTogglePositions(chars: string[]): number[] {
-    const positions: number[] = [];
-    for (let idx = 0; idx !== chars.length; ++idx) {
-      if (this.toggleCase(chars[idx]) !== chars[idx]) positions.push(idx);
-    }
-    return positions;
-  }
-
-  /**
-   * Apply flags onto chars
-   * @param chars - Original string split into characters
-   * @param flags - One flag/bit per entry in togglePositions - 1 means change case of the character
-   * @param togglePositions - Array referencing all case sensitive indexes in chars
-   */
-  private applyFlagsOnChars(chars: string[], flags: bigint, togglePositions: number[]) {
-    for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
-      if (flags & mask) chars[togglePositions[idx]] = this.toggleCase(chars[togglePositions[idx]]);
-    }
-    return chars;
   }
 
   /**
@@ -93,38 +51,63 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
     const rawStringNextValue = this.stringArb.generate(mrng, biasFactor);
 
     const chars = [...rawStringNextValue.value]; // split into valid unicode (keeps surrogate pairs)
-    const togglePositions = this.computeTogglePositions(chars);
+    const togglePositions = computeTogglePositions(chars, this.toggleCase);
 
     const flagsArb = convertToNext(bigUintN(togglePositions.length));
     const flagsNextValue = flagsArb.generate(mrng, undefined); // true => toggle the char, false => keep it as-is
 
-    this.applyFlagsOnChars(chars, flagsNextValue.value, togglePositions);
+    applyFlagsOnChars(chars, flagsNextValue.value, togglePositions, this.toggleCase);
     return new NextValue(chars.join(''), this.buildContextFor(rawStringNextValue, flagsNextValue));
   }
 
   canShrinkWithoutContext(value: unknown): value is string {
-    // Not implemented yet
-    return false;
+    if (typeof value !== 'string') {
+      return false;
+    }
+    return this.untoggleAll !== undefined
+      ? this.stringArb.canShrinkWithoutContext(this.untoggleAll(value))
+      : // If nothing was toggled or if the underlying generator can still shrink it, we consider it shrinkable
+        this.stringArb.canShrinkWithoutContext(value);
   }
 
-  shrink(_value: string, context?: unknown): Stream<NextValue<string>> {
-    if (context === undefined) {
-      // Not implemented yet
-      return Stream.nil();
+  shrink(value: string, context?: unknown): Stream<NextValue<string>> {
+    let contextSafe: MixedCaseArbitraryContext;
+    if (context !== undefined) {
+      contextSafe = context as MixedCaseArbitraryContext;
+    } else {
+      // As user should have called canShrinkWithoutContext first;
+      // We know that the untoggled string can be shrunk without any context
+      if (this.untoggleAll !== undefined) {
+        const untoggledValue = this.untoggleAll(value);
+        const valueChars = [...value];
+        const untoggledValueChars = [...untoggledValue];
+        const togglePositions = computeTogglePositions(untoggledValueChars, this.toggleCase);
+        contextSafe = {
+          rawString: untoggledValue,
+          rawStringContext: undefined,
+          flags: computeFlagsFromChars(untoggledValueChars, valueChars, togglePositions),
+          flagsContext: undefined,
+        };
+      } else {
+        contextSafe = {
+          rawString: value,
+          rawStringContext: undefined,
+          flags: BigInt(0),
+          flagsContext: undefined,
+        };
+      }
     }
-
-    const contextSafe = context as MixedCaseArbitraryContext;
     const rawString = contextSafe.rawString;
     const flags = contextSafe.flags;
     return this.stringArb
       .shrink(rawString, contextSafe.rawStringContext)
       .map((nRawStringNextValue) => {
         const nChars = [...nRawStringNextValue.value];
-        const nTogglePositions = this.computeTogglePositions(nChars);
+        const nTogglePositions = computeTogglePositions(nChars, this.toggleCase);
         const nFlags = computeNextFlags(flags, nTogglePositions.length);
         // Potentially new value for nTogglePositions.length, new value for nFlags
         // so flagsContext is not applicable anymore
-        this.applyFlagsOnChars(nChars, nFlags, nTogglePositions);
+        applyFlagsOnChars(nChars, nFlags, nTogglePositions, this.toggleCase);
         // Remark: Value nFlags can be attached to a context equal to undefined
         // as `canShrinkWithoutContext(nFlags) === true` for the bigint arbitrary
         return new NextValue(
@@ -135,12 +118,12 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
       .join(
         makeLazy(() => {
           const chars = [...rawString];
-          const togglePositions = this.computeTogglePositions(chars);
+          const togglePositions = computeTogglePositions(chars, this.toggleCase);
           return convertToNext(bigUintN(togglePositions.length))
             .shrink(flags, contextSafe.flagsContext)
             .map((nFlagsNextValue) => {
               const nChars = chars.slice(); // cloning chars
-              this.applyFlagsOnChars(nChars, nFlagsNextValue.value, togglePositions);
+              applyFlagsOnChars(nChars, nFlagsNextValue.value, togglePositions, this.toggleCase);
               return new NextValue(
                 nChars.join(''),
                 this.buildContextFor(new NextValue(rawString, contextSafe.rawStringContext), nFlagsNextValue)

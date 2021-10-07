@@ -194,6 +194,34 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
   return assertProduceCorrectValues(arbitraryBuilderInternal, isStrictlySmallerInternal, options);
 }
 
+export function assertProduceSomeSpecificValues<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  isSpecificValue: (value: T) => boolean,
+  options: {
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {}
+): void {
+  let foundOne = false;
+  function detectSpecificValue(value: T): boolean {
+    if (isSpecificValue(value)) {
+      foundOne = true;
+      return false; // failure of the property
+    }
+    return true; // success of the property
+  }
+  try {
+    assertProduceCorrectValues(arbitraryBuilder, detectSpecificValue, {
+      ...options,
+      // We default numRuns to 1000, but let user override it whenever needed
+      assertParameters: { numRuns: 1000, ...options.assertParameters, endOnFailure: true },
+    });
+  } catch (err) {
+    // no-op
+  }
+  expect(foundOne).toBe(true);
+}
+
 // Various helpers
 
 function randomFromSeed(seed: number): Random {

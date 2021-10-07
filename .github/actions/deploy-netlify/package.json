@@ -3,8 +3,8 @@
   "main": "index.cjs",
   "private": true,
   "dependencies": {
-    "@actions/core": "^1.5.0",
+    "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
-    "netlify-cli": "^6.9.24"
+    "netlify-cli": "^6.9.30"
   }
 }
