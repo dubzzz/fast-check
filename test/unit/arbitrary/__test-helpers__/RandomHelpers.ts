@@ -1,5 +1,5 @@
 import { MaybeMocked } from 'ts-jest/dist/utils/testing';
-import { Random } from '../../../../../src/random/generator/Random';
+import { Random } from '../../../../src/random/generator/Random';
 
 export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
   const clone = jest.fn();

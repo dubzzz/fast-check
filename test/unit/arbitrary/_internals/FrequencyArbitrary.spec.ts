@@ -1,14 +1,14 @@
 import * as fc from '../../../../lib/fast-check';
 import { FrequencyArbitrary, _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
+} from '../__test-helpers__/NextArbitraryAssertions';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 import { Stream } from '../../../../src/stream/Stream';
 

@@ -2,7 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { context, ContextValue } from '../../../src/arbitrary/context';
 
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantMock from '../../../src/arbitrary/constant';

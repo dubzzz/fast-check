@@ -9,8 +9,8 @@ import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
+} from './__test-helpers__/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('stringOf (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number; patterns: string[] };

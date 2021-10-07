@@ -1,7 +1,7 @@
 import { infiniteStream } from '../../../src/arbitrary/infiniteStream';
 
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as StreamArbitraryMock from '../../../src/arbitrary/_internals/StreamArbitrary';
 

@@ -1,17 +1,17 @@
 import fc from '../../../lib/fast-check';
 import { uuid } from '../../../src/arbitrary/uuid';
-import { fakeNextArbitraryStaticValue } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
 import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
 import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
-import { fakeRandom } from '../check/arbitrary/generic/RandomHelpers';
+import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 const IntegerMock: { integer: (ct: { min: number; max: number }) => ArbitraryWithShrink<number> } = _IntegerMock;
 
 function beforeEachHook() {

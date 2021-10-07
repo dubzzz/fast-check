@@ -7,7 +7,7 @@ jest.mock('../../../src/arbitrary/bigUintN');
 import * as BigUintNMock from '../../../src/arbitrary/bigUintN';
 import * as stubRng from '../stubs/generators';
 import { mocked } from 'ts-jest/utils';
-import { arbitraryFor } from '../check/arbitrary/generic/ArbitraryBuilder';
+import { arbitraryFor } from './__test-helpers__/ArbitraryBuilder';
 
 const mrng = () => stubRng.mutable.nocall();
 

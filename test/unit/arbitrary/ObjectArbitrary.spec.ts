@@ -12,7 +12,7 @@ import { unicodeJson } from '../../../src/arbitrary/unicodeJson';
 import { boxedArbitraryBuilder } from '../../../src/arbitrary/_internals/builders/BoxedArbitraryBuilder';
 
 import { Random } from '../../../src/random/generator/Random';
-import { arbitraryFor } from '../check/arbitrary/generic/ArbitraryBuilder';
+import { arbitraryFor } from './__test-helpers__/ArbitraryBuilder';
 import * as stubRng from '../stubs/generators';
 
 const mrng = () => stubRng.mutable.nocall();

@@ -2,7 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { falsy } from '../../../src/arbitrary/falsy';
 
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as ConstantFromMock from '../../../src/arbitrary/constantFrom';
 

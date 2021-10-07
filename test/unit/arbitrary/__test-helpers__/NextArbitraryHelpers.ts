@@ -1,9 +1,9 @@
 import { mocked } from 'ts-jest';
 import { MaybeMocked, MockWithArgs } from 'ts-jest/dist/utils/testing';
-import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
-import { Random } from '../../../../../src/random/generator/Random';
-import { Stream } from '../../../../../src/stream/Stream';
+import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Random } from '../../../../src/random/generator/Random';
+import { Stream } from '../../../../src/stream/Stream';
 
 /**
  * Generate a fake Class inheriting from NextArbitrary with all methods being mocked

@@ -6,7 +6,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();

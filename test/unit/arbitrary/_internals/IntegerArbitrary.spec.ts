@@ -1,15 +1,15 @@
 import * as fc from '../../../../lib/fast-check';
 import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
+} from '../__test-helpers__/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
 import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange';
 import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers/ShrinkInteger';

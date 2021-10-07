@@ -2,7 +2,7 @@ import { nat } from '../../../src/arbitrary/nat';
 import { stringOf } from '../../../src/arbitrary/stringOf';
 import { mixedCase } from '../../../src/arbitrary/mixedCase';
 
-import * as genericHelper from '../check/arbitrary/generic/GenericArbitraryHelper';
+import * as genericHelper from './__test-helpers__/GenericArbitraryHelper';
 
 declare function BigInt(n: number | bigint | string): bigint;
 

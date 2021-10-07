@@ -2,13 +2,13 @@ import fc from '../../../lib/fast-check';
 import { record, RecordConstraints } from '../../../src/arbitrary/record';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 
 import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
 

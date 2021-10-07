@@ -1,7 +1,7 @@
 import { LazyArbitrary } from '../../../../src/arbitrary/_internals/LazyArbitrary';
 import { NextValue, Stream } from '../../../../src/fast-check-default';
-import { fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 describe('LazyArbitrary', () => {
   describe('generate', () => {

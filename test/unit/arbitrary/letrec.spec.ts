@@ -5,14 +5,14 @@ import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { Stream } from '../../../src/stream/Stream';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
-import { fakeRandom } from '../check/arbitrary/generic/RandomHelpers';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertGenerateEquivalentTo,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 
 // Temporary rewrapping around letrec
 // should be removed with next major (no more Arbitrary, only NextArbitrary)

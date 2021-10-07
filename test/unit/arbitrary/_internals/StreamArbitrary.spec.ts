@@ -6,9 +6,9 @@ import { Stream } from '../../../../src/stream/Stream';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+} from '../__test-helpers__/NextArbitraryAssertions';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 import * as StringifyMock from '../../../../src/utils/stringify';
 

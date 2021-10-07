@@ -1,7 +1,7 @@
-import * as fc from '../../../../../lib/fast-check';
-import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
-import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
+import * as fc from '../../../../lib/fast-check';
+import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 
 const truncatedSignal: any = Symbol();
 

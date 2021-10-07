@@ -8,9 +8,9 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
-import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
+import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();

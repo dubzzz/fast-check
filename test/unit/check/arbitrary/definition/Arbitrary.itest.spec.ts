@@ -8,8 +8,6 @@ import { tuple } from '../../../../../src/arbitrary/tuple';
 import { Random } from '../../../../../src/random/generator/Random';
 import { stream } from '../../../../../src/stream/Stream';
 
-import * as genericHelper from '../generic/GenericArbitraryHelper';
-
 import * as stubRng from '../../../stubs/generators';
 
 class ForwardArbitrary extends Arbitrary<number> {
@@ -184,12 +182,6 @@ describe('Arbitrary', () => {
           return true;
         })
       ));
-
-    describe('Should abide by arbitraries rules', () => {
-      genericHelper.isValidArbitrary(() => nat(100).chain((v: number) => tuple(nat(v), constant(v))), {
-        isValidValue: (g: [number, number]) => g[0] <= g[1],
-      });
-    });
   });
 
   describe('noShrink', () => {

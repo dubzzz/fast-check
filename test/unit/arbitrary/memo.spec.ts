@@ -1,8 +1,8 @@
 import { memo as memoOld } from '../../../src/arbitrary/memo';
 import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
-import { fakeRandom } from '../check/arbitrary/generic/RandomHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeRandom } from './__test-helpers__/RandomHelpers';
 
 type NextMemo<T> = (maxDepth?: number) => NextArbitrary<T>;
 

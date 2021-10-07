@@ -2,7 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { hexa } from '../../../src/arbitrary/hexa';
 
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
 import {
@@ -11,7 +11,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();

@@ -7,7 +7,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth';
 
 describe('jsonObject (integration)', () => {

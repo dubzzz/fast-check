@@ -10,7 +10,7 @@ import { nat } from '../../../../../src/arbitrary/nat';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
 
-import { isStrictlySmallerArray } from '../../arbitrary/generic/ArrayHelpers';
+import { isStrictlySmallerArray } from '../../../arbitrary/__test-helpers__/ArrayHelpers';
 
 type Model = Record<string, unknown>;
 type Real = unknown;
