@@ -1,3 +1,64 @@
+# 2.18.0
+
+_All built-ins arbitraries rely on the new API and most of them can now shrink user-definable values_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.18.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.17.0...v2.18.0)]
+
+## Features
+
+- ([PR#2031](https://github.com/dubzzz/fast-check/pull/2031)) Add built-in unmapper support onto uuid and uuidV
+- ([PR#2035](https://github.com/dubzzz/fast-check/pull/2035)) Add built-in unmapper support onto domain
+- ([PR#2036](https://github.com/dubzzz/fast-check/pull/2036)) Add built-in unmapper support onto emailAddress
+- ([PR#2037](https://github.com/dubzzz/fast-check/pull/2037)) Add built-in unmapper support onto webAuthority
+- ([PR#2056](https://github.com/dubzzz/fast-check/pull/2056)) Add built-in unmapper support onto webUrl
+- ([PR#2089](https://github.com/dubzzz/fast-check/pull/2089)) Add built-in unmapper support onto object arbitraries
+- ([PR#2199](https://github.com/dubzzz/fast-check/pull/2199)) Add built-in unmapper support onto float
+- ([PR#2200](https://github.com/dubzzz/fast-check/pull/2200)) Add built-in unmapper support onto double
+- ([PR#2204](https://github.com/dubzzz/fast-check/pull/2204)) Add built-in unmapper support onto typed-arrays
+- ([PR#2309](https://github.com/dubzzz/fast-check/pull/2309)) Lighter implementation for anything arbitrary
+- ([PR#2318](https://github.com/dubzzz/fast-check/pull/2318)) Implement unmapping for sparseArray
+- ([PR#2361](https://github.com/dubzzz/fast-check/pull/2361)) Add umapping capabilities on mixedCase
+
+## Fixes
+
+- ([PR#2262](https://github.com/dubzzz/fast-check/pull/2262)) Bug: Cap auto-maxLength of array to 2\*\*31-1
+- ([PR#2359](https://github.com/dubzzz/fast-check/pull/2359)) Bug: Too many keys in the sparse arrays of anything
+- ([PR#2256](https://github.com/dubzzz/fast-check/pull/2256)) CI: Check typings against RC releases of TypeScript
+- ([PR#2087](https://github.com/dubzzz/fast-check/pull/2087)) Doc: Clarify the case of -0 on jsonObject and unicodeJsonObject
+- ([PR#2237](https://github.com/dubzzz/fast-check/pull/2237)) Doc: stringify then parse in code example
+- ([PR#2308](https://github.com/dubzzz/fast-check/pull/2308)) Doc: Use predicate instead of property to define a property
+- ([PR#2368](https://github.com/dubzzz/fast-check/pull/2368)) Doc: Update contributing guide
+- ([PR#2032](https://github.com/dubzzz/fast-check/pull/2032)) Move: Move web arbitraries into /arbitrary
+- ([PR#2033](https://github.com/dubzzz/fast-check/pull/2033)) Move: Move text escapers into internals of /arbitrary
+- ([PR#2034](https://github.com/dubzzz/fast-check/pull/2034)) Move: Move sparseArray arbitrary into /arbitrary
+- ([PR#2085](https://github.com/dubzzz/fast-check/pull/2085)) Move: Move object arbitraries into /arbitrary
+- ([PR#2090](https://github.com/dubzzz/fast-check/pull/2090)) Move: Move floating point arbitraries into /arbitrary
+- ([PR#2154](https://github.com/dubzzz/fast-check/pull/2154)) Move: Move commands arbitrary into /arbitrary
+- ([PR#2366](https://github.com/dubzzz/fast-check/pull/2366)) Move: Move and clean tests helpers
+- ([PR#2153](https://github.com/dubzzz/fast-check/pull/2153)) Refactor: Migrate commands to NextArbitrary
+- ([PR#2150](https://github.com/dubzzz/fast-check/pull/2150)) Refactor: Migrate \*subarray to NextArbitrary
+- ([PR#2339](https://github.com/dubzzz/fast-check/pull/2339)) Refactor: Simplify conversion to qualified object's constraints
+- ([PR#2177](https://github.com/dubzzz/fast-check/pull/2177)) Script: Add test:debug script for easier debugging
+- ([PR#2091](https://github.com/dubzzz/fast-check/pull/2091)) Test: Rewrite tests on next generation of floating point arbitraries
+- ([PR#2146](https://github.com/dubzzz/fast-check/pull/2146)) Test: Fix tests on legacy versions of integer
+- ([PR#2151](https://github.com/dubzzz/fast-check/pull/2151)) Test: Rework no regressions tests for subarrays
+- ([PR#2178](https://github.com/dubzzz/fast-check/pull/2178)) Test: Rewrite tests on subarray
+- ([PR#2198](https://github.com/dubzzz/fast-check/pull/2198)) Test: Rewrite tests dealing with typed arrays
+- ([PR#2205](https://github.com/dubzzz/fast-check/pull/2205)) Test: Rewrite tests on legacy float/double
+- ([PR#2209](https://github.com/dubzzz/fast-check/pull/2209)) Test: Rewrite tests dealing with sparseArray
+- ([PR#2210](https://github.com/dubzzz/fast-check/pull/2210)) Test: Rewrite func-related tests
+- ([PR#2263](https://github.com/dubzzz/fast-check/pull/2263)) Test: Add some basic tests for array and set
+- ([PR#2291](https://github.com/dubzzz/fast-check/pull/2291)) Test: Adapt e2e on scheduler for node 16
+- ([PR#2274](https://github.com/dubzzz/fast-check/pull/2274)) Test: Make sure --exactOptionalPropertyTypes is properly handled
+- ([PR#2315](https://github.com/dubzzz/fast-check/pull/2315)) Test: Migrate tests of arrayInt64 to new format
+- ([PR#2338](https://github.com/dubzzz/fast-check/pull/2338)) Test: Add tests for JSON arbitraries
+- ([PR#2360](https://github.com/dubzzz/fast-check/pull/2360)) Test: Move tests on object to new approach
+- ([PR#2365](https://github.com/dubzzz/fast-check/pull/2365)) Test: Move tests on mixedCase to new approach
+- ([PR#2059](https://github.com/dubzzz/fast-check/pull/2059)) Typo: Invalid HTML element in PureRand.ts
+- ([PR#2149](https://github.com/dubzzz/fast-check/pull/2149)) Typo: Remove unused arbitraries from properties in unit-tests
+- ([PR#2147](https://github.com/dubzzz/fast-check/pull/2147)) Typo: Clean badly renamed import in integer
+
+---
+
 # 2.17.0
 
 _Better typings for `constantFrom` and better support for Promises in `stringify`_
