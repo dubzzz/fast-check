@@ -1,6 +1,6 @@
 import * as fc from '../../../../../lib/fast-check';
 
-import { float64raw, isStrictlySmaller } from '../../../check/arbitrary/generic/FloatingPointHelpers';
+import { float64raw, isStrictlySmaller } from '../../__test-helpers__/FloatingPointHelpers';
 import {
   decomposeDouble,
   doubleToIndex,

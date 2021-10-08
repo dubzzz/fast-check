@@ -5,7 +5,7 @@ import {
   isNotNaN32bits,
   isStrictlySmaller,
   isFiniteNotNaN32bits,
-} from '../../../check/arbitrary/generic/FloatingPointHelpers';
+} from '../../__test-helpers__/FloatingPointHelpers';
 import {
   decomposeFloat,
   EPSILON_32,
