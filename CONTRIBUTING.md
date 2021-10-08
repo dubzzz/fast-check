@@ -84,7 +84,7 @@ Before adding any new arbitrary into fast-check please make sure to fill a `Feat
 
 ✔️ *Code the arbitrary*
 
-All the arbitraries defined by fast-check are available in `src/check/arbitrary`.
+All the arbitraries defined by fast-check are available in `src/arbitrary`.
 Create a new file for the new one if it does not fit into the existing ones.
 
 ✔️ *Test the arbitrary*
@@ -92,20 +92,69 @@ Create a new file for the new one if it does not fit into the existing ones.
 Most of the newly added arbitraries will just be a combination of existing ones (mostly mapping from one entry to another).
 We expect a quite minimal amount of tests to be added as most of the logic depends on the built-in blocks.
 
-- *Unit-test* - in `test/unit/check/arbitrary`
+- *Unit-test* &amp; *Integration* - in `test/unit/arbitrary`
 
 ```js
-import { myArb } from '../../../../src/check/arbitrary/MyArbitrary';
-import * as genericHelper from './generic/GenericArbitraryHelper';
+import * as fc from '../../../lib/fast-check';
+import { myArbitrary } from '../../../../src/arbitrary/MyArbitrary';
+import {
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
+  assertShrinkProducesSameValueWithoutInitialContext,
+  assertShrinkProducesStrictlySmallerValue,
+} from './__test-helpers__/NextArbitraryAssertions';
 
-describe('MyArbitrary', () => {
-  describe('myArb', () => {
-    // genericHelper.isValidArbitrary is repsonsible to ensure that the arbitrary is valid
-    // and fulfill the minimum requirements asked by fast-check
-    genericHelper.isValidArbitrary((settings) => myArb(settings), {
-      isValidValue: (g: MyArbGeneratedType, settings) => isValidMyArbOutput(g),
-      seedGenerator: anArbitraryProducingSettingsExpectedByMyArb // optional field
-    });
+describe('myArbitrary', () => {
+  // Tests in isolation!
+  // You may want to check that generate, canShrinkWithoutContext and shrink
+  // are working as expecting given mocked or stubbed data (see our usage of spies).
+});
+
+describe('myArbitrary (integration)', () => {
+  // Tests in real life!
+  // In this section we assess that the arbitrary will work as expected by calling it with a real random generator
+  // and without mocking any of its underlyings. In order to do that we have an already predefined set of helpers.
+  // Among those helpers only some are really compulsory as they will ensure that the arbitrary does not break the
+  // rules. The other ones tend to have the best possible version of the arbitrary by ensuring the shrinker will
+  // always shrink towards strictly smaller values or that user defined values can be shrunk.
+
+  type Extra = /* Typing for the extra props received by myArbitraryBuilder */;
+  const extraParameters: fc.Arbitrary<Extra> = /* Arbitrary producing values for myArbitraryBuilder */;
+
+  const isCorrect = (value: /* Type of the value */, extra: Extra) => {
+    // Returns true if the value is correct given extra
+    // Returs false or throws (possibly via expect) if value is invalid
+  };
+
+  const isStrictlySmaller = (vNew: /* Type of the value */, vOld: /* Type of the value */, extra: Extra) => {
+    // Returns true if the vNew is really strictly smaller than vOld
+    // Returs false or throws (possibly via expect) otherwise
+  };
+
+  const myArbitraryBuilder = (extra: Extra) => convertToNext(myArbitrary(extra));
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(myArbitraryBuilder, { extraParameters });
+  });
+
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(myArbitraryBuilder, isCorrect, { extraParameters });
+  });
+
+  // OPTIONAL STEP
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(myArbitraryBuilder, { extraParameters });
+  });
+
+  // OPTIONAL STEP
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(myArbitraryBuilder, { extraParameters });
+  });
+
+  // OPTIONAL STEP
+  it('should preserve strictly smaller ordering in shrink', () => {
+    assertShrinkProducesStrictlySmallerValue(myArbitraryBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 ```
@@ -117,6 +166,10 @@ Then run `yarn e2e -- -u` locally to update the snapshot file. The `NoRegression
 - Legacy support test - in `test/legacy/main.js`
 
 The `legacy` spec is responsible to check that most of the arbitraries provided by fast-check are working fine on very old releases of node.
+
+- Typing test - in `test/type/main.ts`
+
+The `type` spec is responsible to check that the typings are correct but they also ensure that they will not break with future changes or upcoming releases of TypeScript.
 
 ✔️ *Document the arbitrary*
 
