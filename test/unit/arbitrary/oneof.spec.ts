@@ -1,5 +1,5 @@
 import { oneof, OneOfConstraints } from '../../../src/arbitrary/oneof';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { convertFromNext } from '../../../src/check/arbitrary/definition/Converters';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 

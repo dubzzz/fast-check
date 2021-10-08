@@ -6,7 +6,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
 import { ConverterFromNext } from '../../../../../src/check/arbitrary/definition/ConverterFromNext';
 import { ConverterToNext } from '../../../../../src/check/arbitrary/definition/ConverterToNext';
-import { buildNextShrinkTree, renderTree } from '../generic/ShrinkTree';
+import { buildNextShrinkTree, renderTree } from '../../../arbitrary/__test-helpers__/ShrinkTree';
 import { Stream } from '../../../../../src/stream/Stream';
 
 describe('ConverterFromNext', () => {

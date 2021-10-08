@@ -1,5 +1,5 @@
 import { SchedulerArbitrary } from '../../../../src/arbitrary/_internals/SchedulerArbitrary';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 import * as SchedulerImplemMock from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 import { ScheduledTask } from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';

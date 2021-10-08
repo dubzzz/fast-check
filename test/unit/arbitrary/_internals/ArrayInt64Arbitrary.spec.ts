@@ -6,15 +6,15 @@ import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextAr
 import { convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
-import { buildNextShrinkTree, renderTree, buildShrinkTree } from '../../check/arbitrary/generic/ShrinkTree';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { buildNextShrinkTree, renderTree, buildShrinkTree } from '../__test-helpers__/ShrinkTree';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
+} from '../__test-helpers__/NextArbitraryAssertions';
 
 describe('arrayInt64', () => {
   if (typeof BigInt === 'undefined') {

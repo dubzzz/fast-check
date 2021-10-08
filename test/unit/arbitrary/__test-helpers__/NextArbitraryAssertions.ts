@@ -1,9 +1,9 @@
 import * as prand from 'pure-rand';
-import * as fc from '../../../../../lib/fast-check';
+import * as fc from '../../../../lib/fast-check';
 
-import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
-import { Random } from '../../../../../src/random/generator/Random';
+import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Random } from '../../../../src/random/generator/Random';
 
 // Minimal requirements
 // > The following assertions are supposed to be fulfilled by any of the arbitraries

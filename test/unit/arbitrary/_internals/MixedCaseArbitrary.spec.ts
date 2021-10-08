@@ -5,7 +5,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
+} from '../__test-helpers__/NextArbitraryAssertions';
 import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCaseArbitrary';
 import { stringOf } from '../../../../src/arbitrary/stringOf';
 import { nat } from '../../../../src/arbitrary/nat';
@@ -15,9 +15,9 @@ import {
   convertToNext,
 } from '../../../../src/check/arbitrary/definition/Converters';
 import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
-import { fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 function beforeEachHook() {
   jest.resetModules();

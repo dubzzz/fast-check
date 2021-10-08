@@ -7,8 +7,8 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
+} from './__test-helpers__/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('mapToConstant', () => {
   it('should reject any inputs containing at least one strictly negative entry', () =>

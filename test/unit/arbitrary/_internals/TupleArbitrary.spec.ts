@@ -1,7 +1,7 @@
 import { TupleArbitrary } from '../../../../src/arbitrary/_internals/TupleArbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
 import {
@@ -10,8 +10,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
+} from '../__test-helpers__/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 

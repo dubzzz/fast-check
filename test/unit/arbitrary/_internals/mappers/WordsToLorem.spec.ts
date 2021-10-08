@@ -7,7 +7,7 @@ import {
   wordsToSentenceMapper,
   wordsToSentenceUnmapperFor,
 } from '../../../../../src/arbitrary/_internals/mappers/WordsToLorem';
-import { fakeNextArbitrary } from '../../../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from '../../__test-helpers__/NextArbitraryHelpers';
 
 const wordArbitraryWithoutComma = fc.stringOf(
   fc.nat({ max: 25 }).map((v) => String.fromCodePoint(97 + v)),

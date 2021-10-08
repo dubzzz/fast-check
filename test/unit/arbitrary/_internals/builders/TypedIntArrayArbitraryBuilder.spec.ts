@@ -6,7 +6,7 @@ import {
   FakeIntegerArbitrary,
   fakeNextArbitrary,
   fakeNextArbitraryStaticValue,
-} from '../../../check/arbitrary/generic/NextArbitraryHelpers';
+} from '../../__test-helpers__/NextArbitraryHelpers';
 
 import * as ArrayMock from '../../../../../src/arbitrary/array';
 import {
@@ -14,7 +14,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../../check/arbitrary/generic/NextArbitraryAssertions';
+} from '../../__test-helpers__/NextArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();

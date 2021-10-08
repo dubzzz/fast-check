@@ -7,7 +7,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 
 describe('string16bits (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };

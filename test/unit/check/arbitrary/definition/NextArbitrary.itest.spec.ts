@@ -6,7 +6,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 import { Stream } from '../../../../../src/stream/Stream';
 
 import * as stubRng from '../../../stubs/generators';
-import { buildNextShrinkTree, renderTree, walkTree } from '../generic/ShrinkTree';
+import { buildNextShrinkTree, renderTree, walkTree } from '../../../arbitrary/__test-helpers__/ShrinkTree';
 
 const mrngNoCall = stubRng.mutable.nocall();
 

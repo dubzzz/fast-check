@@ -1,6 +1,6 @@
 import fc from '../../../../../lib/fast-check';
 import { patternsToStringUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/PatternsToString';
-import { fakeNextArbitrary } from '../../../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from '../../__test-helpers__/NextArbitraryHelpers';
 
 // prettier-ignore
 const MorseCode = ['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..'];

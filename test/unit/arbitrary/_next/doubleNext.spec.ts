@@ -13,12 +13,12 @@ import {
   doubleNextConstraints,
   float64raw,
   isStrictlySmaller,
-} from '../../check/arbitrary/generic/FloatingPointHelpers';
+} from '../__test-helpers__/FloatingPointHelpers';
 import { doubleToIndex, indexToDouble } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 
-import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from '../../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from '../__test-helpers__/NextArbitraryHelpers';
 import { convertFromNextWithShrunkOnce, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 import {
   assertProduceCorrectValues,
@@ -26,7 +26,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
+} from '../__test-helpers__/NextArbitraryAssertions';
 
 import * as ArrayInt64ArbitraryMock from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 

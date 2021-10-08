@@ -1,6 +1,6 @@
-import * as fc from '../../../../../lib/fast-check';
-import { DoubleNextConstraints } from '../../../../../src/arbitrary/_next/doubleNext';
-import { FloatNextConstraints } from '../../../../../src/arbitrary/_next/floatNext';
+import * as fc from '../../../../lib/fast-check';
+import { DoubleNextConstraints } from '../../../../src/arbitrary/_next/doubleNext';
+import { FloatNextConstraints } from '../../../../src/arbitrary/_next/floatNext';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);

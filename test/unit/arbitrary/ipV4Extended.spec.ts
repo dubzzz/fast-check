@@ -7,8 +7,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
+} from './__test-helpers__/NextArbitraryAssertions';
+import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('ipV4Extended (integration)', () => {
   const isCorrect = (value: string) => {

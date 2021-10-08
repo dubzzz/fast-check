@@ -2,7 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { array } from '../../../src/arbitrary/array';
 
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
 import {
@@ -11,10 +11,10 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
-import { isStrictlySmallerArray } from '../check/arbitrary/generic/ArrayHelpers';
+} from './__test-helpers__/NextArbitraryAssertions';
+import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
-import { buildNextShrinkTree, renderTree } from '../check/arbitrary/generic/ShrinkTree';
+import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();

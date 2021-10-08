@@ -12,7 +12,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceSomeSpecificValues,
   assertProduceValuesShrinkableWithoutContext,
-} from '../../../check/arbitrary/generic/NextArbitraryAssertions';
+} from '../../__test-helpers__/NextArbitraryAssertions';
 import { computeObjectDepth } from '../../__test-helpers__/ComputeObjectDepth';
 import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKeys';
 

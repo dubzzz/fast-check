@@ -1,14 +1,14 @@
 import fc from '../../../../lib/fast-check';
 import { ConstantArbitrary } from '../../../../src/arbitrary/_internals/ConstantArbitrary';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { cloneMethod } from '../../../../src/check/symbols';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
-import { buildNextShrinkTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
+} from '../__test-helpers__/NextArbitraryAssertions';
+import { buildNextShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
 describe('ConstantArbitrary', () => {
   describe('generate', () => {

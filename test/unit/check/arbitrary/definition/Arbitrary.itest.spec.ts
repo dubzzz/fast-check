@@ -3,12 +3,8 @@ import * as fc from '../../../../../lib/fast-check';
 import { constant } from '../../../../../src/arbitrary/constant';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from '../../../../../src/check/arbitrary/definition/Shrinkable';
-import { nat } from '../../../../../src/arbitrary/nat';
-import { tuple } from '../../../../../src/arbitrary/tuple';
 import { Random } from '../../../../../src/random/generator/Random';
 import { stream } from '../../../../../src/stream/Stream';
-
-import * as genericHelper from '../generic/GenericArbitraryHelper';
 
 import * as stubRng from '../../../stubs/generators';
 
@@ -184,12 +180,6 @@ describe('Arbitrary', () => {
           return true;
         })
       ));
-
-    describe('Should abide by arbitraries rules', () => {
-      genericHelper.isValidArbitrary(() => nat(100).chain((v: number) => tuple(nat(v), constant(v))), {
-        isValidValue: (g: [number, number]) => g[0] <= g[1],
-      });
-    });
   });
 
   describe('noShrink', () => {

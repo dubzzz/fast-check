@@ -11,10 +11,10 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../../check/arbitrary/generic/NextArbitraryHelpers';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
-import { buildNextShrinkTree, renderTree, walkTree } from '../../check/arbitrary/generic/ShrinkTree';
+} from '../__test-helpers__/NextArbitraryAssertions';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { buildNextShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
 describe('CloneArbitrary', () => {
   describe('generate', () => {

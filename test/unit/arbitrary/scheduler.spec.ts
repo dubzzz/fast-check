@@ -1,5 +1,5 @@
 import { scheduler, Scheduler, schedulerFor } from '../../../src/arbitrary/scheduler';
-import { fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 
 import * as BuildSchedulerForMock from '../../../src/arbitrary/_internals/helpers/BuildSchedulerFor';

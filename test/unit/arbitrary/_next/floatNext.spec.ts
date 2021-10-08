@@ -9,12 +9,12 @@ import {
   isStrictlySmaller,
   defaultFloatRecordConstraints,
   is32bits,
-} from '../../check/arbitrary/generic/FloatingPointHelpers';
+} from '../__test-helpers__/FloatingPointHelpers';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
 import { convertFromNextWithShrunkOnce, convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 
-import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from '../../check/arbitrary/generic/NextArbitraryHelpers';
-import { fakeRandom } from '../../check/arbitrary/generic/RandomHelpers';
+import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 import {
   assertProduceCorrectValues,
@@ -22,7 +22,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../check/arbitrary/generic/NextArbitraryAssertions';
+} from '../__test-helpers__/NextArbitraryAssertions';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer';
 

@@ -1,6 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { option, OptionConstraints } from '../../../src/arbitrary/option';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../check/arbitrary/generic/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';
@@ -9,7 +9,7 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from '../check/arbitrary/generic/NextArbitraryAssertions';
+} from './__test-helpers__/NextArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
