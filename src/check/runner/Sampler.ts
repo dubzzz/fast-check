@@ -1,6 +1,7 @@
 import { Stream, stream } from '../../stream/Stream';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { NextValue } from '../arbitrary/definition/NextValue';
+import { convertToNextProperty } from '../property/ConvertersProperty';
 import { IRawProperty } from '../property/IRawProperty';
 import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
@@ -31,8 +32,10 @@ function streamSample<Ts>(
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
-  const tossedValues: Stream<() => Shrinkable<Ts>> = stream(
-    toss(toProperty(generator, qParams), qParams.seed, qParams.randomType, qParams.examples)
+  const nextProperty = convertToNextProperty(toProperty(generator, qParams));
+  const shrink = nextProperty.shrink.bind(nextProperty);
+  const tossedValues: Stream<() => NextValue<Ts>> = stream(
+    toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
   );
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map((s) => s().value_);
@@ -40,7 +43,8 @@ function streamSample<Ts>(
   return stream(
     pathWalk(
       qParams.path,
-      tossedValues.map((s) => s())
+      tossedValues.map((s) => s()),
+      shrink
     )
   )
     .take(qParams.numRuns)
