@@ -9,7 +9,7 @@ import { Shrinkable } from './Shrinkable';
 const identifier = '__ConverterToNext__';
 
 /** @internal */
-function fromShrinkableToNextValue<T>(g: Shrinkable<T>): NextValue<T> {
+export function fromShrinkableToNextValue<T>(g: Shrinkable<T>): NextValue<T> {
   if (!g.hasToBeCloned) {
     return new NextValue(g.value_, g);
   }
