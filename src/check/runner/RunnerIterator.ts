@@ -1,4 +1,4 @@
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { NextValue } from '../../fast-check-default';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunExecution } from './reporter/RunExecution';
@@ -17,10 +17,11 @@ import { SourceValuesIterator } from './SourceValuesIterator';
 export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   runExecution: RunExecution<Ts>;
   private currentIdx: number;
-  private currentShrinkable: Shrinkable<Ts> | undefined;
-  private nextValues: IterableIterator<Shrinkable<Ts>>;
+  private currentValue: NextValue<Ts> | undefined;
+  private nextValues: IterableIterator<NextValue<Ts>>;
   constructor(
-    readonly sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
+    readonly sourceValues: SourceValuesIterator<NextValue<Ts>>,
+    readonly shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
     verbose: VerbosityLevel,
     interruptedAsFailure: boolean
   ) {
@@ -36,7 +37,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     if (nextValue.done || this.runExecution.interrupted) {
       return { done: true, value: undefined };
     }
-    this.currentShrinkable = nextValue.value;
+    this.currentValue = nextValue.value;
     ++this.currentIdx;
     return { done: false, value: nextValue.value.value_ };
   }
@@ -47,15 +48,15 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     if (result != null && typeof result === 'string') {
       // failed run
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runExecution.fail(this.currentShrinkable!.value_, this.currentIdx, result);
+      this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result);
       this.currentIdx = -1;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.nextValues = this.currentShrinkable!.shrink();
+      this.nextValues = this.shrink(this.currentValue!);
     } else if (result != null) {
       if (!result.interruptExecution) {
         // skipped run
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.runExecution.skip(this.currentShrinkable!.value_);
+        this.runExecution.skip(this.currentValue!.value_);
         this.sourceValues.skippedOne();
       } else {
         // interrupt signal
@@ -64,7 +65,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     } else {
       // successful run
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runExecution.success(this.currentShrinkable!.value_);
+      this.runExecution.success(this.currentValue!.value_);
     }
   }
 }

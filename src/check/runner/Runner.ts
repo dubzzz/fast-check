@@ -1,5 +1,4 @@
-import { stream } from '../../stream/Stream';
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { Stream, stream } from '../../stream/Stream';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty } from '../property/IRawProperty';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
@@ -16,15 +15,19 @@ import { pathWalk } from './utils/PathWalker';
 import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
+import { INextRawProperty } from '../property/INextRawProperty';
+import { NextValue } from '../../fast-check-default';
+import { convertToNextProperty } from '../property/ConvertersProperty';
 
 /** @internal */
 function runIt<Ts>(
-  property: IRawProperty<Ts>,
-  sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
+  property: INextRawProperty<Ts>,
+  shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
+  sourceValues: SourceValuesIterator<NextValue<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
 ): RunExecution<Ts> {
-  const runner = new RunnerIterator(sourceValues, verbose, interruptedAsFailure);
+  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
     const out = property.run(v) as PreconditionFailure | string | null;
     runner.handleResult(out);
@@ -34,12 +37,13 @@ function runIt<Ts>(
 
 /** @internal */
 async function asyncRunIt<Ts>(
-  property: IRawProperty<Ts>,
-  sourceValues: SourceValuesIterator<Shrinkable<Ts>>,
+  property: INextRawProperty<Ts>,
+  shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
+  sourceValues: SourceValuesIterator<NextValue<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
 ): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, verbose, interruptedAsFailure);
+  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
     const out = await property.run(v);
     runner.handleResult(out);
@@ -48,29 +52,29 @@ async function asyncRunIt<Ts>(
 }
 
 /** @internal */
-function runnerPathWalker<Ts>(valueProducers: IterableIterator<() => Shrinkable<Ts>>, path: string) {
+function runnerPathWalker<Ts>(
+  valueProducers: IterableIterator<() => NextValue<Ts>>,
+  shrink: (value: NextValue<Ts>) => Stream<NextValue<Ts>>,
+  path: string
+): Stream<() => NextValue<Ts>> {
   const pathPoints = path.split(':');
   const pathStream = stream(valueProducers)
     .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
     .map((producer) => producer());
   const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
-  return stream(pathWalk(adaptedPath, pathStream)).map((v) => () => v);
+  return stream(pathWalk(adaptedPath, pathStream, shrink)).map((v) => () => v);
 }
 
 /** @internal */
 function buildInitialValues<Ts>(
-  valueProducers: IterableIterator<() => Shrinkable<Ts>>,
+  valueProducers: IterableIterator<() => NextValue<Ts>>,
+  shrink: (value: NextValue<Ts>) => Stream<NextValue<Ts>>,
   qParams: QualifiedParameters<Ts>
-) {
-  const rawValues = qParams.path.length === 0 ? stream(valueProducers) : runnerPathWalker(valueProducers, qParams.path);
-  if (!qParams.endOnFailure) return rawValues;
-  // Disable shrinking capabilities
-  return rawValues.map((shrinkableGen) => {
-    return () => {
-      const s = shrinkableGen();
-      return new Shrinkable(s.value_);
-    };
-  });
+): Stream<() => NextValue<Ts>> {
+  if (qParams.path.length === 0) {
+    return stream(valueProducers);
+  }
+  return runnerPathWalker(valueProducers, shrink, qParams.path);
 }
 
 /**
@@ -127,17 +131,20 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   if (qParams.asyncReporter !== null && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
-  const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
+  const nextProperty = convertToNextProperty(property);
+  const generator = toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples);
 
   const maxInitialIterations = qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const initialValues = buildInitialValues(generator, qParams);
+  const shrink = nextProperty.shrink.bind(nextProperty);
+  const initialValues = buildInitialValues(generator, shrink, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
-  return property.isAsync()
-    ? asyncRunIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+  const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
+  return nextProperty.isAsync()
+    ? asyncRunIt(nextProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
         e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
       )
-    : runIt(property, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
+    : runIt(nextProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         maxSkips,
