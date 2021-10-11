@@ -1,7 +1,8 @@
 import { Random } from '../../random/generator/Random';
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { Stream } from '../../stream/Stream';
+import { NextValue } from '../arbitrary/definition/NextValue';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IRawProperty } from './IRawProperty';
+import { INextRawProperty } from './INextRawProperty';
 
 /** @internal */
 const timeoutAfter = (timeMs: number) => {
@@ -20,12 +21,21 @@ const timeoutAfter = (timeMs: number) => {
 };
 
 /** @internal */
-export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
-  constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {}
-  isAsync = () => true as const;
-  generate(mrng: Random, runId?: number): Shrinkable<Ts> {
+export class TimeoutProperty<Ts> implements INextRawProperty<Ts, true> {
+  constructor(readonly property: INextRawProperty<Ts>, readonly timeMs: number) {}
+
+  isAsync(): true {
+    return true;
+  }
+
+  generate(mrng: Random, runId?: number): NextValue<Ts> {
     return this.property.generate(mrng, runId);
   }
+
+  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
+    return this.property.shrink(value);
+  }
+
   async run(v: Ts): Promise<string | PreconditionFailure | null> {
     const t = timeoutAfter(this.timeMs);
     const propRun = Promise.race([this.property.run(v), t.promise]);
