@@ -23,7 +23,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
 
   static from<T>(warbs: _WeightedNextArbitrary<T>[], constraints: _Constraints, label: string): NextArbitrary<T> {
     if (warbs.length === 0) {
-      throw new Error(`${label} expects at least one weigthed arbitrary`);
+      throw new Error(`${label} expects at least one weighted arbitrary`);
     }
     let totalWeight = 0;
     for (let idx = 0; idx !== warbs.length; ++idx) {
