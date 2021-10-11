@@ -1,7 +1,7 @@
 import { Stream, stream } from '../../stream/Stream';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { NextValue } from '../arbitrary/definition/NextValue';
-import { convertToNextProperty } from '../property/ConvertersProperty';
+import { convertFromNextProperty, convertToNextProperty } from '../property/ConvertersProperty';
 import { IRawProperty } from '../property/IRawProperty';
 import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
@@ -19,7 +19,7 @@ function toProperty<Ts>(
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
     : (generator as IRawProperty<Ts>);
-  return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
+  return qParams.unbiased === true ? convertFromNextProperty(new UnbiasedProperty(convertToNextProperty(prop))) : prop;
 }
 
 /** @internal */
