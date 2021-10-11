@@ -1,4 +1,4 @@
-import { NextValue } from '../../fast-check-default';
+import { NextValue } from '../arbitrary/definition/NextValue';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunExecution } from './reporter/RunExecution';
