@@ -1,12 +1,13 @@
+import { NextValue } from '../../../fast-check-default';
 import { Stream, stream } from '../../../stream/Stream';
-import { Shrinkable } from '../../arbitrary/definition/Shrinkable';
 
 /** @internal */
 export function pathWalk<Ts>(
   path: string,
-  initialValues: IterableIterator<Shrinkable<Ts>>
-): IterableIterator<Shrinkable<Ts>> {
-  let values: Stream<Shrinkable<Ts>> = stream(initialValues);
+  initialValues: IterableIterator<NextValue<Ts>>,
+  shrink: (value: NextValue<Ts>) => Stream<NextValue<Ts>>
+): IterableIterator<NextValue<Ts>> {
+  let values: Stream<NextValue<Ts>> = stream(initialValues);
   const segments: number[] = path.split(':').map((text: string) => +text);
   if (segments.length === 0) return values;
   if (!segments.every((v) => !Number.isNaN(v))) {
@@ -18,7 +19,7 @@ export function pathWalk<Ts>(
     if (valueToShrink == null) {
       throw new Error(`Unable to replay, got wrong path=${path}`);
     }
-    values = valueToShrink.shrink().drop(s);
+    values = shrink(valueToShrink).drop(s);
   }
   return values;
 }
