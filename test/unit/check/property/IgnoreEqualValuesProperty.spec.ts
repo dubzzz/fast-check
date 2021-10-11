@@ -1,29 +1,23 @@
-import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
-
-function buildProperty() {
-  const mocks = {
-    isAsync: jest.fn(),
-    generate: jest.fn(),
-    run: jest.fn(),
-  };
-  return { mocks, property: mocks as IRawProperty<any> };
-}
+import { fakeNextProperty } from './__test-helpers__/PropertyHelpers';
 
 describe('IgnoreEqualValuesProperty', () => {
   it.each`
     skipRuns
     ${false}
     ${true}
-  `('should not run decorated property when property is run on the same value', ({ skipRuns }) => {
-    const { mocks: propertyMock, property: decoratedProperty } = buildProperty();
+  `('should not call run on the decorated property when property is run on the same value', ({ skipRuns }) => {
+    // Arrange
+    const { instance: decoratedProperty, run } = fakeNextProperty();
+
+    // Act
     const property = new IgnoreEqualValuesProperty(decoratedProperty, skipRuns);
     property.run(1);
     property.run(1);
 
-    expect(propertyMock.run.mock.calls.length).toBe(1);
+    // Assert
+    expect(run).toHaveBeenCalledTimes(1);
   });
 
   it.each`
@@ -37,21 +31,19 @@ describe('IgnoreEqualValuesProperty', () => {
   `(
     'should always return the cached value for skipRuns=false, originalValue=$originalValue, isAsync=$isAsync',
     ({ originalValue, isAsync }) => {
+      // Arrange
       // success -> success
       // failure -> failure
       // skip    -> skip
-      const property = new IgnoreEqualValuesProperty(
-        {
-          isAsync: () => isAsync,
-          run: () => (isAsync ? Promise.resolve(originalValue) : originalValue),
-          generate: () => new Shrinkable(null),
-        },
-        false
-      );
+      const { instance: decoratedProperty, run } = fakeNextProperty(isAsync);
+      run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
+      // Act
+      const property = new IgnoreEqualValuesProperty(decoratedProperty, false);
       const initialRunOutput = property.run(null);
       const secondRunOutput = property.run(null);
 
+      // Assert
       expect(secondRunOutput).toBe(initialRunOutput);
     }
   );
@@ -66,22 +58,20 @@ describe('IgnoreEqualValuesProperty', () => {
     ${new PreconditionFailure() /* skip */} | ${true}
   `(
     'should return the cached value but skip success for skipRuns=true, originalValue=$originalValue, isAsync=$isAsync',
-    // success -> skip
-    // failure -> failure
-    // skip    -> skip
     async ({ originalValue, isAsync }) => {
-      const property = new IgnoreEqualValuesProperty(
-        {
-          isAsync: () => isAsync,
-          run: () => (isAsync ? Promise.resolve(originalValue) : originalValue),
-          generate: () => new Shrinkable(null),
-        },
-        true
-      );
+      // Arrange
+      // success -> skip
+      // failure -> failure
+      // skip    -> skip
+      const { instance: decoratedProperty, run } = fakeNextProperty(isAsync);
+      run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
+      // Act
+      const property = new IgnoreEqualValuesProperty(decoratedProperty, true);
       const initialRunOutput = await property.run(null);
       const secondRunOutput = await property.run(null);
 
+      // Assert
       if (initialRunOutput === null) {
         // success
         expect(secondRunOutput).not.toBe(initialRunOutput);
@@ -98,11 +88,15 @@ describe('IgnoreEqualValuesProperty', () => {
     ${false}
     ${true}
   `('should run decorated property when property is run on another value', ({ skipRuns }) => {
-    const { mocks: propertyMock, property: decoratedProperty } = buildProperty();
+    // Arrange
+    const { instance: decoratedProperty, run } = fakeNextProperty();
+
+    // Act
     const property = new IgnoreEqualValuesProperty(decoratedProperty, skipRuns);
     property.run(1);
     property.run(2);
 
-    expect(propertyMock.run.mock.calls.length).toBe(2);
+    // Assert
+    expect(run).toHaveBeenCalledTimes(2);
   });
 });

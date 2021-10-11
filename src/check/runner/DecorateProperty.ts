@@ -31,10 +31,10 @@ export function decorateProperty<Ts>(
     prop = new SkipAfterProperty(prop, Date.now, qParams.interruptAfterTimeLimit, true);
   }
   if (qParams.skipEqualValues) {
-    prop = new IgnoreEqualValuesProperty(prop, true);
+    prop = convertFromNextProperty(new IgnoreEqualValuesProperty(convertToNextProperty(prop), true));
   }
   if (qParams.ignoreEqualValues) {
-    prop = new IgnoreEqualValuesProperty(prop, false);
+    prop = convertFromNextProperty(new IgnoreEqualValuesProperty(convertToNextProperty(prop), false));
   }
   return prop;
 }
