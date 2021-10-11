@@ -16,7 +16,7 @@ import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsForma
 import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
 import { INextRawProperty } from '../property/INextRawProperty';
-import { NextValue } from '../../fast-check-default';
+import { NextValue } from '../arbitrary/definition/NextValue';
 import { convertToNextProperty } from '../property/ConvertersProperty';
 
 /** @internal */
