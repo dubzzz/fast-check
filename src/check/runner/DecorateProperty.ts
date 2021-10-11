@@ -25,10 +25,14 @@ export function decorateProperty<Ts>(
     prop = convertFromNextProperty(new UnbiasedProperty(convertToNextProperty(prop)));
   }
   if (qParams.skipAllAfterTimeLimit != null) {
-    prop = new SkipAfterProperty(prop, Date.now, qParams.skipAllAfterTimeLimit, false);
+    prop = convertFromNextProperty(
+      new SkipAfterProperty(convertToNextProperty(prop), Date.now, qParams.skipAllAfterTimeLimit, false)
+    );
   }
   if (qParams.interruptAfterTimeLimit != null) {
-    prop = new SkipAfterProperty(prop, Date.now, qParams.interruptAfterTimeLimit, true);
+    prop = convertFromNextProperty(
+      new SkipAfterProperty(convertToNextProperty(prop), Date.now, qParams.interruptAfterTimeLimit, true)
+    );
   }
   if (qParams.skipEqualValues) {
     prop = new IgnoreEqualValuesProperty(prop, true);

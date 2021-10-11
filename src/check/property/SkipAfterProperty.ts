@@ -1,22 +1,34 @@
 import { Random } from '../../random/generator/Random';
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { Stream } from '../../stream/Stream';
+import { NextValue } from '../arbitrary/definition/NextValue';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IRawProperty } from './IRawProperty';
+import { INextRawProperty } from './INextRawProperty';
 
 /** @internal */
-export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
+export class SkipAfterProperty<Ts, IsAsync extends boolean> implements INextRawProperty<Ts, IsAsync> {
   private skipAfterTime: number;
   constructor(
-    readonly property: IRawProperty<Ts, IsAsync>,
+    readonly property: INextRawProperty<Ts, IsAsync>,
     readonly getTime: () => number,
     timeLimit: number,
     readonly interruptExecution: boolean
   ) {
     this.skipAfterTime = this.getTime() + timeLimit;
   }
-  isAsync = (): IsAsync => this.property.isAsync();
-  generate = (mrng: Random, runId?: number): Shrinkable<Ts> => this.property.generate(mrng, runId);
-  run = (v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> => {
+
+  isAsync(): IsAsync {
+    return this.property.isAsync();
+  }
+
+  generate(mrng: Random, runId?: number): NextValue<Ts> {
+    return this.property.generate(mrng, runId);
+  }
+
+  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
+    return this.property.shrink(value);
+  }
+
+  run(v: Ts): ReturnType<INextRawProperty<Ts, IsAsync>['run']> {
     if (this.getTime() >= this.skipAfterTime) {
       const preconditionFailure = new PreconditionFailure(this.interruptExecution);
       if (this.isAsync()) {
@@ -26,5 +38,5 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
       }
     }
     return this.property.run(v);
-  };
+  }
 }
