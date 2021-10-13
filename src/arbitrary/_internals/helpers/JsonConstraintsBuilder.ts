@@ -34,7 +34,7 @@ export function jsonConstraintsBuilder(
   const key = stringArbitrary;
   const values = [
     boolean(), // any boolean
-    double({ next: true, noDefaultInfinity: true, noNaN: true }), // any number
+    double({ noDefaultInfinity: true, noNaN: true }), // any number
     stringArbitrary, // any string
     constant(null),
   ];
