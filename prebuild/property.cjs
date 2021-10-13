@@ -1,5 +1,4 @@
 // @ts-check
-const { cp } = require('fs');
 const { commas, iota, txCommas } = require('./helpers.cjs');
 
 /**
