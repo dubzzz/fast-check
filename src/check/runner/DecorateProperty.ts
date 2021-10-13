@@ -4,7 +4,8 @@ import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty';
-import { convertFromNextProperty, convertToNextProperty } from '../property/ConvertersProperty';
+import { convertToNextProperty } from '../property/ConvertersProperty';
+import { INextRawProperty } from '../property/INextRawProperty';
 
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
@@ -16,29 +17,25 @@ type MinimalQualifiedParameters<Ts> = Pick<
 export function decorateProperty<Ts>(
   rawProperty: IRawProperty<Ts>,
   qParams: MinimalQualifiedParameters<Ts>
-): IRawProperty<Ts> {
-  let prop = rawProperty;
+): INextRawProperty<Ts> {
+  let prop = convertToNextProperty(rawProperty);
   if (rawProperty.isAsync() && qParams.timeout != null) {
-    prop = convertFromNextProperty(new TimeoutProperty(convertToNextProperty(prop), qParams.timeout));
+    prop = new TimeoutProperty(prop, qParams.timeout);
   }
   if (qParams.unbiased) {
-    prop = convertFromNextProperty(new UnbiasedProperty(convertToNextProperty(prop)));
+    prop = new UnbiasedProperty(prop);
   }
   if (qParams.skipAllAfterTimeLimit != null) {
-    prop = convertFromNextProperty(
-      new SkipAfterProperty(convertToNextProperty(prop), Date.now, qParams.skipAllAfterTimeLimit, false)
-    );
+    prop = new SkipAfterProperty(prop, Date.now, qParams.skipAllAfterTimeLimit, false);
   }
   if (qParams.interruptAfterTimeLimit != null) {
-    prop = convertFromNextProperty(
-      new SkipAfterProperty(convertToNextProperty(prop), Date.now, qParams.interruptAfterTimeLimit, true)
-    );
+    prop = new SkipAfterProperty(prop, Date.now, qParams.interruptAfterTimeLimit, true);
   }
   if (qParams.skipEqualValues) {
-    prop = convertFromNextProperty(new IgnoreEqualValuesProperty(convertToNextProperty(prop), true));
+    prop = new IgnoreEqualValuesProperty(prop, true);
   }
   if (qParams.ignoreEqualValues) {
-    prop = convertFromNextProperty(new IgnoreEqualValuesProperty(convertToNextProperty(prop), false));
+    prop = new IgnoreEqualValuesProperty(prop, false);
   }
   return prop;
 }

@@ -17,7 +17,6 @@ import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
 import { INextRawProperty } from '../property/INextRawProperty';
 import { NextValue } from '../arbitrary/definition/NextValue';
-import { convertToNextProperty } from '../property/ConvertersProperty';
 
 /** @internal */
 function runIt<Ts>(
@@ -131,20 +130,19 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   if (qParams.asyncReporter !== null && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
-  const nextProperty = convertToNextProperty(property);
-  const generator = toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples);
+  const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 
   const maxInitialIterations = qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const shrink = nextProperty.shrink.bind(nextProperty);
+  const shrink = property.shrink.bind(property);
   const initialValues = buildInitialValues(generator, shrink, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
-  return nextProperty.isAsync()
-    ? asyncRunIt(nextProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+  return property.isAsync()
+    ? asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
         e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
       )
-    : runIt(nextProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
+    : runIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         maxSkips,
