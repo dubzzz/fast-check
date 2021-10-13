@@ -100,12 +100,16 @@ describe('QualifiedParameters', () => {
         ));
       it('Should transform distinct values between 0 and 1 into distinct seeds', () =>
         fc.assert(
-          fc.property(fc.double(), fc.double(), (unsafeSeed1, unsafeSeed2) => {
-            fc.pre(Math.abs(unsafeSeed1 * 0xffffffff - unsafeSeed2 * 0xffffffff) >= 1);
-            const qparams1 = QualifiedParameters.read({ seed: unsafeSeed1 });
-            const qparams2 = QualifiedParameters.read({ seed: unsafeSeed2 });
-            return qparams1.seed !== qparams2.seed;
-          })
+          fc.property(
+            fc.double({ min: 0, max: 1 - Number.EPSILON }),
+            fc.double({ min: 0, max: 1 - Number.EPSILON }),
+            (unsafeSeed1, unsafeSeed2) => {
+              fc.pre(Math.abs(unsafeSeed1 * 0xffffffff - unsafeSeed2 * 0xffffffff) >= 1);
+              const qparams1 = QualifiedParameters.read({ seed: unsafeSeed1 });
+              const qparams2 = QualifiedParameters.read({ seed: unsafeSeed2 });
+              return qparams1.seed !== qparams2.seed;
+            }
+          )
         ));
       it('Should truncate integer values into a 32 signed bits seed', () =>
         fc.assert(

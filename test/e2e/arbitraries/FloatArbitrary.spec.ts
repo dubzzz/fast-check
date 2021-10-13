@@ -1,20 +1,20 @@
 import * as fc from '../../../src/fast-check';
 import { seed } from '../seed';
 
-describe(`FloatNextArbitrary (seed: ${seed})`, () => {
-  describe('floatNext', () => {
+describe(`FloatArbitrary (seed: ${seed})`, () => {
+  describe('float', () => {
     const limitedNumRuns = 1000;
     const numRuns = 25000;
-    const sampleFloatNext = fc.sample(fc.float({ next: true }), { seed, numRuns });
-    const sampleFloatNextNoBias = fc.sample(fc.float({ next: true }).noBias(), { seed, numRuns });
+    const sampleFloat = fc.sample(fc.float(), { seed, numRuns });
+    const sampleFloatNoBias = fc.sample(fc.float().noBias(), { seed, numRuns });
 
     function shouldGenerate(expectedValue: number) {
       it('Should be able to generate ' + fc.stringify(expectedValue), () => {
-        const hasValue = sampleFloatNext.findIndex((v) => Object.is(v, expectedValue)) !== -1;
+        const hasValue = sampleFloat.findIndex((v) => Object.is(v, expectedValue)) !== -1;
         expect(hasValue).toBe(true);
       });
       it('Should not be able to generate ' + fc.stringify(expectedValue) + ' if not biased (very unlikely)', () => {
-        const hasValue = sampleFloatNextNoBias.findIndex((v) => Object.is(v, expectedValue)) !== -1;
+        const hasValue = sampleFloatNoBias.findIndex((v) => Object.is(v, expectedValue)) !== -1;
         expect(hasValue).toBe(false);
       });
     }
@@ -37,7 +37,7 @@ describe(`FloatNextArbitrary (seed: ${seed})`, () => {
     }
     it(`Should be able to generate one of the extreme values in a limited amount of runs (${limitedNumRuns})`, () => {
       const hasValue =
-        sampleFloatNext.slice(0, limitedNumRuns).findIndex((v) => {
+        sampleFloat.slice(0, limitedNumRuns).findIndex((v) => {
           // Check if we can find one of the extreme values in our limited sample
           return extremeValues.findIndex((expectedValue) => Object.is(v, expectedValue)) !== -1;
         }) !== -1;
@@ -63,13 +63,13 @@ describe(`FloatNextArbitrary (seed: ${seed})`, () => {
     };
 
     it('Should be able to generate intermediate values most of the time even if biased', () => {
-      const countIntermediate = filterIntermediateValues(sampleFloatNext).length;
-      expect(countIntermediate).toBeGreaterThan(0.5 * sampleFloatNext.length);
+      const countIntermediate = filterIntermediateValues(sampleFloat).length;
+      expect(countIntermediate).toBeGreaterThan(0.5 * sampleFloat.length);
     });
 
     it('Should be able to generate intermediate values most of the time if not biased', () => {
-      const countIntermediate = filterIntermediateValues(sampleFloatNextNoBias).length;
-      expect(countIntermediate).toBeGreaterThan(0.5 * sampleFloatNextNoBias.length);
+      const countIntermediate = filterIntermediateValues(sampleFloatNoBias).length;
+      expect(countIntermediate).toBeGreaterThan(0.5 * sampleFloatNoBias.length);
     });
   });
 });
