@@ -128,7 +128,7 @@ function defaultValues(constraints: { size: SizeForArbitrary }): Arbitrary<unkno
   return [
     boolean(),
     maxSafeInteger(),
-    double({ next: true }),
+    double(),
     string(constraints),
     oneof(string(constraints), constant(null), constant(undefined)),
   ];
