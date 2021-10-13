@@ -1,10 +1,13 @@
 import { Random } from '../../random/generator/Random';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { ConverterFromNext } from '../arbitrary/definition/ConverterFromNext';
+import { INextRawProperty } from './INextRawProperty';
+import { NextValue } from '../arbitrary/definition/NextValue';
+import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
+import { convertToNext } from '../arbitrary/definition/Converters';
+import { Stream } from '../../stream/Stream';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -60,6 +63,26 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
 }
 
+/** @internal */
+interface INextProperty<Ts> extends INextRawProperty<Ts, false> {}
+
+/** @internal */
+interface INextPropertyWithHooks<Ts> extends INextProperty<Ts> {
+  beforeEach(
+    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
+  ): 'beforeEach expects a synchronous function but was given a function returning a Promise';
+
+  beforeEach(hookFunction: PropertyHookFunction): INextPropertyWithHooks<Ts>;
+
+  afterEach(
+    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
+  ): 'afterEach expects a synchronous function but was given a function returning a Promise';
+  afterEach(hookFunction: PropertyHookFunction): INextPropertyWithHooks<Ts>;
+}
+
+/** @internal */
+const UndefinedContextPlaceholder = Symbol('UndefinedContextPlaceholder');
+
 /**
  * Property, see {@link IProperty}
  *
@@ -67,13 +90,14 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
  *
  * @internal
  */
-export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
+export class Property<Ts> implements INextProperty<Ts>, INextPropertyWithHooks<Ts> {
   // Default hook is a no-op
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   static dummyHook: GlobalPropertyHookFunction = () => {};
   private beforeEachHook: GlobalPropertyHookFunction;
   private afterEachHook: GlobalPropertyHookFunction;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
+  private arb: NextArbitrary<Ts>;
+  constructor(rawArb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
     const {
       beforeEach = Property.dummyHook,
       afterEach = Property.dummyHook,
@@ -91,14 +115,33 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
 
     this.beforeEachHook = beforeEach;
     this.afterEachHook = afterEach;
+    this.arb = convertToNext(rawArb);
   }
-  isAsync = () => false as const;
-  generate(mrng: Random, runId?: number): Shrinkable<Ts> {
-    if (ConverterFromNext.isConverterFromNext(this.arb)) {
-      return this.arb.toShrinkable(this.arb.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined));
+
+  isAsync(): false {
+    return false;
+  }
+
+  generate(mrng: Random, runId?: number): NextValue<Ts> {
+    const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
+    if (value.context !== undefined) {
+      return value;
     }
-    return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
+    if (value.hasToBeCloned) {
+      return new NextValue(value.value_, UndefinedContextPlaceholder, () => value.value);
+    }
+    return new NextValue(value.value_, UndefinedContextPlaceholder);
   }
+
+  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
+    if (value.context === undefined) {
+      // `undefined` can only be coming from values derived from examples provided by the user
+      return Stream.nil();
+    }
+    const safeContext = value.context !== UndefinedContextPlaceholder ? value.context : undefined;
+    return this.arb.shrink(value.value_, safeContext);
+  }
+
   run(v: Ts): PreconditionFailure | string | null {
     this.beforeEachHook();
     try {
