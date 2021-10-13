@@ -1,125 +1,117 @@
+import {
+  add64,
+  ArrayInt64,
+  isEqual64,
+  isStrictlyPositive64,
+  isStrictlySmaller64,
+  substract64,
+  Unit64,
+} from './_internals/helpers/ArrayInt64';
+import { arrayInt64 } from './_internals/ArrayInt64Arbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { integer } from './integer';
-import { tuple } from './tuple';
-import { doubleNext, DoubleNextConstraints } from './_next/doubleNext';
-
-/** @internal */
-function next(n: number): Arbitrary<number> {
-  return integer(0, (1 << n) - 1);
-}
-
-/** @internal */ const doubleFactor = Math.pow(2, 27);
-/** @internal */ const doubleDivisor = Math.pow(2, -53);
-
-/** @internal */
-const doubleInternal = (): Arbitrary<number> => {
-  // uniformaly in the range 0 (inc.), 1 (exc.)
-  return tuple(next(26), next(27)).map((v) => (v[0] * doubleFactor + v[1]) * doubleDivisor);
-};
+import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers';
+import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /**
  * Constraints to be applied on {@link double}
  * @remarks Since 2.6.0
  * @public
  */
-export type DoubleConstraints =
-  | {
-      /**
-       * Enable new version of fc.double
-       * @remarks Since 2.8.0
-       */
-      next?: false;
-      /**
-       * Lower bound for the generated doubles (included)
-       * @remarks Since 2.6.0
-       */
-      min?: number;
-      /**
-       * Upper bound for the generated doubles (excluded)
-       * @remarks Since 2.6.0
-       */
-      max?: number;
-    }
-  | ({
-      /**
-       * Enable new version of fc.double
-       * @remarks Since 2.8.0
-       */
-      next: true;
-    } & DoubleNextConstraints);
+export interface DoubleConstraints {
+  /**
+   * Lower bound for the generated 64-bit floats (included)
+   * @defaultValue Number.NEGATIVE_INFINITY, -1.7976931348623157e+308 when noDefaultInfinity is true
+   * @remarks Since 2.8.0
+   */
+  min?: number;
+  /**
+   * Upper bound for the generated 64-bit floats (included)
+   * @defaultValue Number.POSITIVE_INFINITY, 1.7976931348623157e+308 when noDefaultInfinity is true
+   * @remarks Since 2.8.0
+   */
+  max?: number;
+  /**
+   * By default, lower and upper bounds are -infinity and +infinity.
+   * By setting noDefaultInfinity to true, you move those defaults to minimal and maximal finite values.
+   * @defaultValue false
+   * @remarks Since 2.8.0
+   */
+  noDefaultInfinity?: boolean;
+  /**
+   * When set to true, no more Number.NaN can be generated.
+   * @defaultValue false
+   * @remarks Since 2.8.0
+   */
+  noNaN?: boolean;
+}
 
 /**
- * For floating point numbers between 0.0 (included) and 1.0 (excluded) - accuracy of `1 / 2**53`
+ * Same as {@link doubleToIndex} except it throws in case of invalid double
+ *
+ * @internal
+ */
+function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints) {
+  if (Number.isNaN(d)) {
+    // Number.NaN does not have any associated index in the current implementation
+    throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 32-bit float');
+  }
+  return doubleToIndex(d);
+}
+
+/** @internal */
+function unmapperDoubleToIndex(value: unknown): ArrayInt64 {
+  if (typeof value !== 'number') throw new Error('Unsupported type');
+  return doubleToIndex(value);
+}
+
+/**
+ * For 64-bit floating point numbers:
+ * - sign: 1 bit
+ * - significand: 52 bits
+ * - exponent: 11 bits
+ *
+ * @param constraints - Constraints to apply when building instances (since 2.8.0)
+ *
  * @remarks Since 0.0.6
  * @public
  */
-function double(): Arbitrary<number>;
-/**
- * For floating point numbers between 0.0 (included) and max (excluded) - accuracy of `max / 2**53`
- *
- * @param max - Upper bound of the generated floating point
- *
- * @deprecated
- * Superceded by `fc.double({max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
- *
- * @remarks Since 1.0.0
- * @public
- */
-function double(max: number): Arbitrary<number>;
-/**
- * For floating point numbers between min (included) and max (excluded) - accuracy of `(max - min) / 2**53`
- *
- * @param min - Lower bound of the generated floating point
- * @param max - Upper bound of the generated floating point
- *
- * @remarks You may prefer to use `fc.double({min, max})` instead.
- * @remarks Since 1.0.0
- * @public
- */
-function double(min: number, max: number): Arbitrary<number>;
-/**
- * For floating point numbers in range defined by constraints - accuracy of `(max - min) / 2**53`
- *
- * @param constraints - Constraints to apply when building instances
- *
- * @remarks Since 2.6.0
- * @public
- */
-function double(constraints: DoubleConstraints): Arbitrary<number>;
-function double(...args: [] | [number] | [number, number] | [DoubleConstraints]): Arbitrary<number> {
-  if (typeof args[0] === 'object') {
-    if (args[0].next) {
-      return doubleNext(args[0]);
-    }
-    const min = args[0].min !== undefined ? args[0].min : 0;
-    const max = args[0].max !== undefined ? args[0].max : 1;
-    return (
-      doubleInternal()
-        .map((v) => min + v * (max - min))
-        // For v = 0.9999999999999999, min: 0, max: 5e-324
-        // we have `min + v * (max - min)` equal to `max`
-        .filter((g) => g !== max || g === min)
-    );
-  } else {
-    const a = args[0];
-    const b = args[1];
-    if (a === undefined) return doubleInternal();
-    if (b === undefined)
-      return (
-        doubleInternal()
-          .map((v) => v * a)
-          // For v = 0.9999999999999999, a: 5e-324
-          // we have `v * a` equal to `a`
-          .filter((g) => g !== a || g === 0)
-      );
-    return (
-      doubleInternal()
-        .map((v) => a + v * (b - a))
-        // For v = 0.9999999999999999, a: 0, b: 5e-324
-        // we have `a + v * (b - a)` equal to `b`
-        .filter((g) => g !== b || g === a)
-    );
+export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
+  const {
+    noDefaultInfinity = false,
+    noNaN = false,
+    min = noDefaultInfinity ? -Number.MAX_VALUE : Number.NEGATIVE_INFINITY,
+    max = noDefaultInfinity ? Number.MAX_VALUE : Number.POSITIVE_INFINITY,
+  } = constraints;
+  const minIndex = safeDoubleToIndex(min, 'min');
+  const maxIndex = safeDoubleToIndex(max, 'max');
+  if (isStrictlySmaller64(maxIndex, minIndex)) {
+    // In other words: minIndex > maxIndex
+    // Comparing min and max might be problematic in case min=+0 and max=-0
+    // For that reason, we prefer to compare computed index to be safer
+    throw new Error('fc.double constraints.min must be smaller or equal to constraints.max');
   }
+  if (noNaN) {
+    return convertFromNext(convertToNext(arrayInt64(minIndex, maxIndex)).map(indexToDouble, unmapperDoubleToIndex));
+  }
+  // In case maxIndex > 0 or in other words max > 0,
+  //   values will be [min, ..., +0, ..., max, NaN]
+  //               or [min, ..., max, NaN] if min > +0
+  // Otherwise,
+  //   values will be [NaN, min, ..., max] with max <= +0
+  const positiveMaxIdx = isStrictlyPositive64(maxIndex);
+  const minIndexWithNaN = positiveMaxIdx ? minIndex : substract64(minIndex, Unit64);
+  const maxIndexWithNaN = positiveMaxIdx ? add64(maxIndex, Unit64) : maxIndex;
+  return convertFromNext(
+    convertToNext(arrayInt64(minIndexWithNaN, maxIndexWithNaN)).map(
+      (index) => {
+        if (isStrictlySmaller64(maxIndex, index) || isStrictlySmaller64(index, minIndex)) return Number.NaN;
+        else return indexToDouble(index);
+      },
+      (value) => {
+        if (typeof value !== 'number') throw new Error('Unsupported type');
+        if (Number.isNaN(value)) return !isEqual64(maxIndex, maxIndexWithNaN) ? maxIndexWithNaN : minIndexWithNaN;
+        return doubleToIndex(value);
+      }
+    )
+  );
 }
-export { double };

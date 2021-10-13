@@ -1,6 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { DoubleNextConstraints } from './_next/doubleNext';
-import { double } from './double';
+import { double, DoubleConstraints } from './double';
 import { array } from './array';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
@@ -20,7 +19,7 @@ export type Float64ArrayConstraints = {
    * @remarks Since 2.9.0
    */
   maxLength?: number;
-} & DoubleNextConstraints;
+} & DoubleConstraints;
 
 /** @internal */
 function toTypedMapper(data: number[]): Float64Array {
@@ -39,7 +38,5 @@ function fromTypedUnmapper(value: unknown): number[] {
  * @public
  */
 export function float64Array(constraints: Float64ArrayConstraints = {}): Arbitrary<Float64Array> {
-  return convertFromNext(
-    convertToNext(array(double({ ...constraints, next: true }), constraints)).map(toTypedMapper, fromTypedUnmapper)
-  );
+  return convertFromNext(convertToNext(array(double(constraints), constraints)).map(toTypedMapper, fromTypedUnmapper));
 }
