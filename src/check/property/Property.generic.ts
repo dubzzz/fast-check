@@ -80,6 +80,9 @@ interface INextPropertyWithHooks<Ts> extends INextProperty<Ts> {
   afterEach(hookFunction: PropertyHookFunction): INextPropertyWithHooks<Ts>;
 }
 
+/** @internal */
+const UndefinedContextPlaceholder = Symbol('UndefinedContextPlaceholder');
+
 /**
  * Property, see {@link IProperty}
  *
@@ -121,10 +124,13 @@ export class Property<Ts> implements INextProperty<Ts>, INextPropertyWithHooks<T
 
   generate(mrng: Random, runId?: number): NextValue<Ts> {
     const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
-    if (value.hasToBeCloned) {
-      return new NextValue(value.value_, { context: value.context }, () => value.value);
+    if (value.context !== undefined) {
+      return value;
     }
-    return new NextValue(value.value_, { context: value.context });
+    if (value.hasToBeCloned) {
+      return new NextValue(value.value_, UndefinedContextPlaceholder, () => value.value);
+    }
+    return new NextValue(value.value_, UndefinedContextPlaceholder);
   }
 
   shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
@@ -132,8 +138,8 @@ export class Property<Ts> implements INextProperty<Ts>, INextPropertyWithHooks<T
       // `undefined` can only be coming from values derived from examples provided by the user
       return Stream.nil();
     }
-    const safeContext = value.context as { context: unknown };
-    return this.arb.shrink(value.value_, safeContext.context);
+    const safeContext = value.context !== UndefinedContextPlaceholder ? value.context : undefined;
+    return this.arb.shrink(value.value_, safeContext);
   }
 
   run(v: Ts): PreconditionFailure | string | null {

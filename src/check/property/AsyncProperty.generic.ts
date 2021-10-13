@@ -57,6 +57,9 @@ interface INextAsyncPropertyWithHooks<Ts> extends INextAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): INextAsyncPropertyWithHooks<Ts>;
 }
 
+/** @internal */
+const UndefinedContextPlaceholder = Symbol('UndefinedContextPlaceholder');
+
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -97,10 +100,13 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
 
   generate(mrng: Random, runId?: number): NextValue<Ts> {
     const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
-    if (value.hasToBeCloned) {
-      return new NextValue(value.value_, { context: value.context }, () => value.value);
+    if (value.context !== undefined) {
+      return value;
     }
-    return new NextValue(value.value_, { context: value.context });
+    if (value.hasToBeCloned) {
+      return new NextValue(value.value_, UndefinedContextPlaceholder, () => value.value);
+    }
+    return new NextValue(value.value_, UndefinedContextPlaceholder);
   }
 
   shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
@@ -108,8 +114,8 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
       // `undefined` can only be coming from values derived from examples provided by the user
       return Stream.nil();
     }
-    const safeContext = value.context as { context: unknown };
-    return this.arb.shrink(value.value_, safeContext.context);
+    const safeContext = value.context !== UndefinedContextPlaceholder ? value.context : undefined;
+    return this.arb.shrink(value.value_, safeContext);
   }
 
   async run(v: Ts): Promise<PreconditionFailure | string | null> {
