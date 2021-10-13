@@ -96,7 +96,11 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
   }
 
   generate(mrng: Random, runId?: number): NextValue<Ts> {
-    return this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
+    const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
+    if (value.hasToBeCloned) {
+      return new NextValue(value.value_, { context: value.context }, () => value.value);
+    }
+    return new NextValue(value.value_, { context: value.context });
   }
 
   shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
@@ -105,7 +109,8 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
       // undefined can only be coming from values derived from examples provided by the user
       return Stream.nil();
     }
-    return this.arb.shrink(value.value_, value.context);
+    const safeContext = value.context as { context: unknown };
+    return this.arb.shrink(value.value_, safeContext);
   }
 
   async run(v: Ts): Promise<PreconditionFailure | string | null> {
