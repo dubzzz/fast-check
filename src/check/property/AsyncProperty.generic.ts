@@ -1,10 +1,13 @@
 import { Random } from '../../random/generator/Random';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { ConverterFromNext } from '../arbitrary/definition/ConverterFromNext';
+import { INextRawProperty } from './INextRawProperty';
+import { NextValue } from '../arbitrary/definition/NextValue';
+import { Stream } from '../../stream/Stream';
+import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
+import { convertToNext } from '../arbitrary/definition/Converters';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -45,6 +48,15 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
+/** @internal */
+interface INextAsyncProperty<Ts> extends INextRawProperty<Ts, true> {}
+
+/** @internal */
+interface INextAsyncPropertyWithHooks<Ts> extends INextAsyncProperty<Ts> {
+  beforeEach(hookFunction: AsyncPropertyHookFunction): INextAsyncPropertyWithHooks<Ts>;
+  afterEach(hookFunction: AsyncPropertyHookFunction): INextAsyncPropertyWithHooks<Ts>;
+}
+
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -52,13 +64,14 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  *
  * @internal
  */
-export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
+export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
   // Default hook is a no-op
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
+  private arb: NextArbitrary<Ts>;
+  constructor(rawArb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
     const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
 
     if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
@@ -75,14 +88,26 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
 
     this.beforeEachHook = asyncBeforeEach || beforeEach || AsyncProperty.dummyHook;
     this.afterEachHook = asyncAfterEach || afterEach || AsyncProperty.dummyHook;
+    this.arb = convertToNext(rawArb);
   }
-  isAsync = () => true as const;
-  generate(mrng: Random, runId?: number): Shrinkable<Ts> {
-    if (ConverterFromNext.isConverterFromNext(this.arb)) {
-      return this.arb.toShrinkable(this.arb.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined));
+
+  isAsync(): true {
+    return true;
+  }
+
+  generate(mrng: Random, runId?: number): NextValue<Ts> {
+    return this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
+  }
+
+  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
+    if (value.context === undefined) {
+      // The underlying arbitrary will never produce any undefined on generate
+      // undefined can only be coming from values derived from examples provided by the user
+      return Stream.nil();
     }
-    return runId != null ? this.arb.withBias(runIdToFrequency(runId)).generate(mrng) : this.arb.generate(mrng);
+    return this.arb.shrink(value.value_, value.context);
   }
+
   async run(v: Ts): Promise<PreconditionFailure | string | null> {
     await this.beforeEachHook();
     try {

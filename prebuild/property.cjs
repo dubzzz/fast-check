@@ -1,4 +1,5 @@
 // @ts-check
+const { cp } = require('fs');
 const { commas, iota, txCommas } = require('./helpers.cjs');
 
 /**
@@ -38,10 +39,12 @@ const signatureFor = (num, isAsync) => {
 const generateProperty = (num, isAsync) => {
   const functionName = isAsync ? 'asyncProperty' : 'property';
   const className = isAsync ? 'AsyncProperty' : 'Property';
+  const converterFunction = isAsync ? 'convertFromNextAsyncPropertyWithHooks' : 'convertFromNextPropertyWithHooks';
   const blocks = [
     // imports
     `import { Arbitrary } from '../arbitrary/definition/Arbitrary';`,
     `import { genericTuple } from '../../arbitrary/genericTuple';`,
+    `import { ${converterFunction} } from './ConvertersProperty';`,
     `import { ${className}, I${className}WithHooks } from './${className}.generic';`,
     // declare all signatures
     ...iota(num).map((id) => signatureFor(id + 1, isAsync)),
@@ -50,7 +53,7 @@ const generateProperty = (num, isAsync) => {
       if (args.length < 2) throw new Error('${functionName} expects at least two parameters');
       const arbs = args.slice(0, args.length -1);
       const p = args[args.length -1];
-      return new ${className}(genericTuple(arbs), t => p(...t));
+      return ${converterFunction}(new ${className}(genericTuple(arbs), t => p(...t)));
     }`,
     // export
     `export { ${functionName} };`,

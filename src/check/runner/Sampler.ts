@@ -1,7 +1,8 @@
 import { Stream, stream } from '../../stream/Stream';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { NextValue } from '../arbitrary/definition/NextValue';
-import { convertFromNextProperty, convertToNextProperty } from '../property/ConvertersProperty';
+import { convertToNextProperty } from '../property/ConvertersProperty';
+import { INextRawProperty } from '../property/INextRawProperty';
 import { IRawProperty } from '../property/IRawProperty';
 import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
@@ -15,11 +16,11 @@ import { pathWalk } from './utils/PathWalker';
 function toProperty<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   qParams: QualifiedParameters<Ts>
-): IRawProperty<Ts> {
+): INextRawProperty<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
-    : (generator as IRawProperty<Ts>);
-  return qParams.unbiased === true ? convertFromNextProperty(new UnbiasedProperty(convertToNextProperty(prop))) : prop;
+    : convertToNextProperty(generator as IRawProperty<Ts>);
+  return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }
 
 /** @internal */
@@ -32,7 +33,7 @@ function streamSample<Ts>(
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
-  const nextProperty = convertToNextProperty(toProperty(generator, qParams));
+  const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues: Stream<() => NextValue<Ts>> = stream(
     toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
