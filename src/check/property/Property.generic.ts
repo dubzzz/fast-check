@@ -134,7 +134,7 @@ export class Property<Ts> implements INextProperty<Ts>, INextPropertyWithHooks<T
       return Stream.nil();
     }
     const safeContext = value.context as { context: unknown };
-    return this.arb.shrink(value.value_, safeContext);
+    return this.arb.shrink(value.value_, safeContext.context);
   }
 
   run(v: Ts): PreconditionFailure | string | null {

@@ -110,7 +110,7 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
       return Stream.nil();
     }
     const safeContext = value.context as { context: unknown };
-    return this.arb.shrink(value.value_, safeContext);
+    return this.arb.shrink(value.value_, safeContext.context);
   }
 
   async run(v: Ts): Promise<PreconditionFailure | string | null> {
