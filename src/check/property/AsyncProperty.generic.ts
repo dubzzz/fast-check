@@ -105,8 +105,7 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
 
   shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
     if (value.context === undefined) {
-      // The underlying arbitrary will never produce any undefined on generate
-      // undefined can only be coming from values derived from examples provided by the user
+      // `undefined` can only be coming from values derived from examples provided by the user
       return Stream.nil();
     }
     const safeContext = value.context as { context: unknown };
