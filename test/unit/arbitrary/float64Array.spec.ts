@@ -24,8 +24,8 @@ describe('float64Array (integration)', () => {
       {
         minLength: fc.nat({ max: 5 }),
         maxLength: fc.nat({ max: 25 }),
-        min: fc.double({ next: true, noDefaultInfinity: true, noNaN: true }),
-        max: fc.double({ next: true, noDefaultInfinity: true, noNaN: true }),
+        min: fc.double({ noDefaultInfinity: true, noNaN: true }),
+        max: fc.double({ noDefaultInfinity: true, noNaN: true }),
         noDefaultInfinity: fc.boolean(),
         noNaN: fc.boolean(),
       },

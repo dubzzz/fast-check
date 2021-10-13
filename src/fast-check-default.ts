@@ -156,7 +156,6 @@ import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/Arbi
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
-import { FloatNextConstraints } from './arbitrary/_next/floatNext';
 import { int8Array, IntArrayConstraints } from './arbitrary/int8Array';
 import { int16Array } from './arbitrary/int16Array';
 import { int32Array } from './arbitrary/int32Array';
@@ -167,7 +166,6 @@ import { uint32Array } from './arbitrary/uint32Array';
 import { float32Array, Float32ArrayConstraints } from './arbitrary/float32Array';
 import { float64Array, Float64ArrayConstraints } from './arbitrary/float64Array';
 import { sparseArray, SparseArrayConstraints } from './arbitrary/sparseArray';
-import { DoubleNextConstraints } from './arbitrary/_next/doubleNext';
 import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
 import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
@@ -388,13 +386,11 @@ export {
   DictionaryConstraints,
   DomainConstraints,
   DoubleConstraints,
-  DoubleNextConstraints,
   EmailAddressConstraints,
   FalsyContraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
   FloatConstraints,
-  FloatNextConstraints,
   FrequencyContraints,
   IntArrayConstraints,
   IntegerConstraints,
