@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
-import { DoubleNextConstraints } from '../../../../src/arbitrary/_next/doubleNext';
-import { FloatNextConstraints } from '../../../../src/arbitrary/_next/floatNext';
+import { DoubleConstraints } from '../../../../src/arbitrary/double';
+import { FloatConstraints } from '../../../../src/arbitrary/float';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
@@ -26,11 +26,11 @@ export const defaultDoubleRecordConstraints = {
   noNaN: fc.boolean(),
 };
 
-type NextConstraintsInternalOut = FloatNextConstraints & DoubleNextConstraints;
-type NextConstraintsInternal = {
-  [K in keyof NextConstraintsInternalOut]?: fc.Arbitrary<NextConstraintsInternalOut[K]>;
+type ConstraintsInternalOut = FloatConstraints & DoubleConstraints;
+type ConstraintsInternal = {
+  [K in keyof ConstraintsInternalOut]?: fc.Arbitrary<ConstraintsInternalOut[K]>;
 };
-function nextConstraintsInternal(recordConstraints: NextConstraintsInternal): fc.Arbitrary<NextConstraintsInternalOut> {
+function constraintsInternal(recordConstraints: ConstraintsInternal): fc.Arbitrary<ConstraintsInternalOut> {
   return fc
     .record(recordConstraints, { withDeletedKeys: true })
     .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
@@ -49,16 +49,16 @@ function nextConstraintsInternal(recordConstraints: NextConstraintsInternal): fc
     });
 }
 
-export function floatNextConstraints(
+export function floatConstraints(
   recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints
-): fc.Arbitrary<FloatNextConstraints> {
-  return nextConstraintsInternal(recordConstraints);
+): fc.Arbitrary<FloatConstraints> {
+  return constraintsInternal(recordConstraints);
 }
 
-export function doubleNextConstraints(
+export function doubleConstraints(
   recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints
-): fc.Arbitrary<DoubleNextConstraints> {
-  return nextConstraintsInternal(recordConstraints);
+): fc.Arbitrary<DoubleConstraints> {
+  return constraintsInternal(recordConstraints);
 }
 
 export function isStrictlySmaller(fa: number, fb: number): boolean {
