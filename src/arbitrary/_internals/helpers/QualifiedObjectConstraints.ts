@@ -109,13 +109,7 @@ export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withB
 
 /** @internal */
 function defaultValues(): Arbitrary<unknown>[] {
-  return [
-    boolean(),
-    maxSafeInteger(),
-    double({ next: true }),
-    string(),
-    oneof(string(), constant(null), constant(undefined)),
-  ];
+  return [boolean(), maxSafeInteger(), double(), string(), oneof(string(), constant(null), constant(undefined))];
 }
 
 /** @internal */

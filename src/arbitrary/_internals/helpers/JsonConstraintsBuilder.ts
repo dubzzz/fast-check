@@ -36,7 +36,7 @@ export function jsonConstraintsBuilder(
   const values = [
     boolean(),
     maxSafeInteger(),
-    double({ next: true, noDefaultInfinity: true, noNaN: true }),
+    double({ noDefaultInfinity: true, noNaN: true }),
     stringArbitrary,
     constant(null),
   ];
