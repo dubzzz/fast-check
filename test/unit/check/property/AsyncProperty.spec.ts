@@ -7,6 +7,11 @@ import { configureGlobal, resetConfigureGlobal } from '../../../../src/check/run
 
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
+import { convertToNextProperty } from '../../../../src/check/property/ConvertersProperty';
+import { convertFromNext } from '../../../../src/check/arbitrary/definition/Converters';
+import { Stream } from '../../../../src/stream/Stream';
 
 describe('AsyncProperty', () => {
   afterEach(() => resetConfigureGlobal());
@@ -266,5 +271,41 @@ describe('AsyncProperty', () => {
     expect(() => asyncProperty(stubArb.single(8), async () => {})).toThrowError(
       'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties'
     );
+  });
+  it('should not call shrink on the arbitrary if no context and not unhandled value', () => {
+    // Arrange
+    const { instance: arb, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
+    canShrinkWithoutContext.mockReturnValue(false);
+    const value = Symbol();
+
+    // Act
+    const p = convertToNextProperty(asyncProperty(convertFromNext(arb), jest.fn()));
+    const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
+
+    // Assert
+    expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
+    expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
+    expect(shrink).not.toHaveBeenCalled();
+    expect([...shrinks]).toEqual([]);
+  });
+  it('should call shrink on the arbitrary if no context but properly handled value', () => {
+    // Arrange
+    const { instance: arb, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
+    canShrinkWithoutContext.mockReturnValue(true);
+    const s1 = Symbol();
+    const s2 = Symbol();
+    shrink.mockReturnValue(Stream.of(new NextValue<symbol>(s1, undefined), new NextValue(s2, undefined)));
+    const value = Symbol();
+
+    // Act
+    const p = convertToNextProperty(asyncProperty(convertFromNext(arb), jest.fn()));
+    const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
+
+    // Assert
+    expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
+    expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
+    expect(shrink).toHaveBeenCalledWith(value, undefined);
+    expect(shrink).toHaveBeenCalledTimes(1);
+    expect([...shrinks].map((s) => s.value_)).toEqual([[s1], [s2]]);
   });
 });
