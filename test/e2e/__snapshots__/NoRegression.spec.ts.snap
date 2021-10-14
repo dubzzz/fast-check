@@ -4789,6 +4789,54 @@ Execution summary:
 . . [32m√[0m [\\"\\"]"
 `;
 
+exports[`NoRegression user defined examples 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: \\"1:1:17\\", endOnFailure: true }
+Counterexample: [\\"ll\\"]
+Shrunk 2 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[32m√[0m [\\"hi\\"]
+[31m×[0m [\\"hello\\"]
+. [32m√[0m [\\"\\"]
+. [31m×[0m [\\"llo\\"]
+. . [32m√[0m [\\"lo\\"]
+. . [32m√[0m [\\" lo\\"]
+. . [32m√[0m [\\"Flo\\"]
+. . [32m√[0m [\\"Ylo\\"]
+. . [32m√[0m [\\"clo\\"]
+. . [32m√[0m [\\"hlo\\"]
+. . [32m√[0m [\\"jlo\\"]
+. . [32m√[0m [\\"klo\\"]
+. . [32m√[0m [\\"l\\"]
+. . [32m√[0m [\\"lo\\"]
+. . [32m√[0m [\\"l o\\"]
+. . [32m√[0m [\\"lFo\\"]
+. . [32m√[0m [\\"lYo\\"]
+. . [32m√[0m [\\"lco\\"]
+. . [32m√[0m [\\"lho\\"]
+. . [32m√[0m [\\"ljo\\"]
+. . [32m√[0m [\\"lko\\"]
+. . [31m×[0m [\\"ll\\"]
+. . . [32m√[0m [\\"l\\"]
+. . . [32m√[0m [\\" l\\"]
+. . . [32m√[0m [\\"Fl\\"]
+. . . [32m√[0m [\\"Yl\\"]
+. . . [32m√[0m [\\"cl\\"]
+. . . [32m√[0m [\\"hl\\"]
+. . . [32m√[0m [\\"jl\\"]
+. . . [32m√[0m [\\"kl\\"]
+. . . [32m√[0m [\\"l\\"]
+. . . [32m√[0m [\\"l \\"]
+. . . [32m√[0m [\\"lF\\"]
+. . . [32m√[0m [\\"lY\\"]
+. . . [32m√[0m [\\"lc\\"]
+. . . [32m√[0m [\\"lh\\"]
+. . . [32m√[0m [\\"lj\\"]
+. . . [32m√[0m [\\"lk\\"]"
+`;
+
 exports[`NoRegression uuid 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: \\"0:0:0:0:0\\", endOnFailure: true }

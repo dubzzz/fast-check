@@ -698,6 +698,14 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('user defined examples', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.string(), (v) => testFunc(v)),
+        { ...settings, examples: [['hi'], ['hello'], ['hey']] }
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe(`NoRegression (async)`, () => {
