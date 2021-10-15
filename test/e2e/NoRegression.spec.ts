@@ -706,6 +706,38 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('user defined examples (including not shrinkable values)', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(
+          // Shrinkable: built-in
+          fc.nat(),
+          // Cannot shrinking: missing unmapper
+          fc.convertFromNext(fc.convertToNext(fc.nat()).map((v) => String(v))),
+          // Shrinkable: unmapper provided
+          fc.convertFromNext(
+            fc.convertToNext(fc.nat()).map(
+              (v) => String(v),
+              (v) => Number(v)
+            )
+          ),
+          // Shrinkable: filter can shrink given the value to shrink matches the predicate
+          fc.nat().filter((v) => v % 2 === 0),
+          (a, b, c, d) => testFunc([a, b, c, d])
+        ),
+        {
+          ...settings,
+          examples: [
+            [1, '2', '3', 4],
+            [5, '6', '7', 8],
+            [9, '10', '11', 12],
+            [13, '14', '15', 16],
+            [17, '18', '19', 20],
+          ],
+        }
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe(`NoRegression (async)`, () => {

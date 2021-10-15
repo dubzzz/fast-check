@@ -45,6 +45,8 @@ const generateProperty = (num, isAsync) => {
     `import { genericTuple } from '../../arbitrary/genericTuple';`,
     `import { ${converterFunction} } from './ConvertersProperty';`,
     `import { ${className}, I${className}WithHooks } from './${className}.generic';`,
+    `import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';`,
+    `import { convertFromNext, convertToNext } from '../arbitrary/definition/Converters';`,
     // declare all signatures
     ...iota(num).map((id) => signatureFor(id + 1, isAsync)),
     // declare function
@@ -52,7 +54,7 @@ const generateProperty = (num, isAsync) => {
       if (args.length < 2) throw new Error('${functionName} expects at least two parameters');
       const arbs = args.slice(0, args.length -1);
       const p = args[args.length -1];
-      return ${converterFunction}(new ${className}(genericTuple(arbs), t => p(...t)));
+      return ${converterFunction}(new ${className}(genericTuple(arbs.map(arb => convertFromNext(new AlwaysShrinkableArbitrary(convertToNext(arb))))), t => p(...t)));
     }`,
     // export
     `export { ${functionName} };`,
