@@ -2,7 +2,7 @@ import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { noUndefinedAsContext } from './helpers/NoUndefinedAsContext';
+import { noUndefinedAsContext, UndefinedContextPlaceholder } from './helpers/NoUndefinedAsContext';
 
 /**
  * Arbitrary considering any value as shrinkable whatever the received context.
@@ -30,6 +30,7 @@ export class AlwaysShrinkableArbitrary<Ts> extends NextArbitrary<Ts> {
       // neither during `generate` nor during `shrink`
       return Stream.nil();
     }
-    return this.arb.shrink(value, context).map(noUndefinedAsContext);
+    const safeContext = context !== UndefinedContextPlaceholder ? context : UndefinedContextPlaceholder;
+    return this.arb.shrink(value, safeContext).map(noUndefinedAsContext);
   }
 }
