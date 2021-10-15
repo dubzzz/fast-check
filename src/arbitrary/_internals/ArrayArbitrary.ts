@@ -160,6 +160,36 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return filtered.length === value.length;
   }
 
+  private shrinkItemByItem(
+    value: T[],
+    safeContext: ArrayArbitraryContext,
+    startIndex: number,
+    endIndex: number
+  ): IterableIterator<[NextValue<T>[], unknown]> {
+    if (startIndex >= endIndex) {
+      return Stream.nil();
+    }
+    return makeLazy(() =>
+      this.arb
+        .shrink(value[startIndex], safeContext.itemsContexts[startIndex])
+        .map((v): [NextValue<T>[], unknown] => {
+          return [
+            value
+              .slice(0, startIndex)
+              .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i]))
+              .concat(v)
+              .concat(
+                value
+                  .slice(startIndex + 1)
+                  .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i + startIndex + 1]))
+              ),
+            undefined, // no length context
+          ];
+        })
+        .join(this.shrinkItemByItem(value, safeContext, startIndex + 1, endIndex))
+    );
+  }
+
   private shrinkImpl(value: T[], context?: unknown): Stream<[NextValue<T>[], unknown]> {
     if (value.length === 0) {
       return Stream.nil();
@@ -196,14 +226,9 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
         // as they are outside of our shrinking process focused on items.length.
         // None of our computed contexts will apply for them.
         .join(
-          this.arb.shrink(value[0], safeContext.itemsContexts[0]).map((v) => {
-            return [
-              [v].concat(
-                value.slice(1).map((v, index) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[index + 1]))
-              ),
-              undefined, // no length context
-            ];
-          })
+          value.length > this.minLength
+            ? this.shrinkItemByItem(value, safeContext, 0, 1)
+            : this.shrinkItemByItem(value, safeContext, 0, value.length)
         )
         .join(
           value.length > this.minLength
@@ -223,7 +248,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
                     ];
                   })
               )
-            : Stream.nil<[NextValue<T>[], unknown]>()
+            : Stream.nil()
         )
     );
   }
