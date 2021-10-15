@@ -8,6 +8,10 @@ import { NextValue } from '../arbitrary/definition/NextValue';
 import { Stream } from '../../stream/Stream';
 import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../arbitrary/definition/Converters';
+import {
+  noUndefinedAsContext,
+  UndefinedContextPlaceholder,
+} from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -57,9 +61,6 @@ interface INextAsyncPropertyWithHooks<Ts> extends INextAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): INextAsyncPropertyWithHooks<Ts>;
 }
 
-/** @internal */
-const UndefinedContextPlaceholder = Symbol('UndefinedContextPlaceholder');
-
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -100,13 +101,7 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
 
   generate(mrng: Random, runId?: number): NextValue<Ts> {
     const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
-    if (value.context !== undefined) {
-      return value;
-    }
-    if (value.hasToBeCloned) {
-      return new NextValue(value.value_, UndefinedContextPlaceholder, () => value.value);
-    }
-    return new NextValue(value.value_, UndefinedContextPlaceholder);
+    return noUndefinedAsContext(value);
   }
 
   shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
@@ -116,7 +111,7 @@ export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
       return Stream.nil();
     }
     const safeContext = value.context !== UndefinedContextPlaceholder ? value.context : undefined;
-    return this.arb.shrink(value.value_, safeContext);
+    return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
   async run(v: Ts): Promise<PreconditionFailure | string | null> {

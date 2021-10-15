@@ -8,6 +8,10 @@ import { NextValue } from '../arbitrary/definition/NextValue';
 import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../arbitrary/definition/Converters';
 import { Stream } from '../../stream/Stream';
+import {
+  noUndefinedAsContext,
+  UndefinedContextPlaceholder,
+} from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -80,9 +84,6 @@ interface INextPropertyWithHooks<Ts> extends INextProperty<Ts> {
   afterEach(hookFunction: PropertyHookFunction): INextPropertyWithHooks<Ts>;
 }
 
-/** @internal */
-const UndefinedContextPlaceholder = Symbol('UndefinedContextPlaceholder');
-
 /**
  * Property, see {@link IProperty}
  *
@@ -124,13 +125,7 @@ export class Property<Ts> implements INextProperty<Ts>, INextPropertyWithHooks<T
 
   generate(mrng: Random, runId?: number): NextValue<Ts> {
     const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
-    if (value.context !== undefined) {
-      return value;
-    }
-    if (value.hasToBeCloned) {
-      return new NextValue(value.value_, UndefinedContextPlaceholder, () => value.value);
-    }
-    return new NextValue(value.value_, UndefinedContextPlaceholder);
+    return noUndefinedAsContext(value);
   }
 
   shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
@@ -140,7 +135,7 @@ export class Property<Ts> implements INextProperty<Ts>, INextPropertyWithHooks<T
       return Stream.nil();
     }
     const safeContext = value.context !== UndefinedContextPlaceholder ? value.context : undefined;
-    return this.arb.shrink(value.value_, safeContext);
+    return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
   run(v: Ts): PreconditionFailure | string | null {
