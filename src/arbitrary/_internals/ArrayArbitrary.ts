@@ -13,6 +13,7 @@ type ArrayArbitraryContext = {
   shrunkOnce: boolean;
   lengthContext: unknown;
   itemsContexts: unknown[];
+  startIndex: number;
 };
 
 /** @internal */
@@ -87,7 +88,12 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return items;
   }
 
-  private wrapper(itemsRaw: NextValue<T>[], shrunkOnce: boolean, itemsRawLengthContext: unknown): NextValue<T[]> {
+  private wrapper(
+    itemsRaw: NextValue<T>[],
+    shrunkOnce: boolean,
+    itemsRawLengthContext: unknown,
+    startIndex: number
+  ): NextValue<T[]> {
     // We need to explicitly apply filtering on shrink items
     // has they might have duplicates (on non shrunk it is not the case by construct)
     const items = shrunkOnce ? this.preFilter(itemsRaw) : itemsRaw;
@@ -110,6 +116,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
           ? itemsRawLengthContext // items and itemsRaw have the same length context is applicable
           : undefined,
       itemsContexts,
+      startIndex,
     };
     return new NextValue(vs, context);
   }
@@ -121,7 +128,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       this.isEqual !== undefined
         ? this.generateNItemsNoDuplicates(targetSize, mrng, biasMeta.biasFactorItems)
         : this.generateNItems(targetSize, mrng, biasMeta.biasFactorItems);
-    return this.wrapper(items, false, undefined);
+    return this.wrapper(items, false, undefined, 0);
   }
 
   private applyBias(mrng: Random, biasFactor: number | undefined): { size: number; biasFactorItems?: number } {
@@ -160,7 +167,37 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return filtered.length === value.length;
   }
 
-  private shrinkImpl(value: T[], context?: unknown): Stream<[NextValue<T>[], unknown]> {
+  private shrinkItemByItem(
+    value: T[],
+    safeContext: ArrayArbitraryContext,
+    endIndex: number
+  ): IterableIterator<[NextValue<T>[], unknown, number]> {
+    let shrinks = Stream.nil<[NextValue<T>[], unknown, number]>();
+    for (let index = safeContext.startIndex; index < endIndex; ++index) {
+      shrinks = shrinks.join(
+        makeLazy(() =>
+          this.arb
+            .shrink(value[index], safeContext.itemsContexts[index])
+            .map((v): [NextValue<T>[], unknown, number] => {
+              const beforeCurrent = value
+                .slice(0, index)
+                .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i]));
+              const afterCurrent = value
+                .slice(index + 1)
+                .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i + index + 1]));
+              return [
+                beforeCurrent.concat(v).concat(afterCurrent),
+                undefined, // no length context
+                index, // avoid shrinking entries before index in sub-shrinks
+              ];
+            })
+        )
+      );
+    }
+    return shrinks;
+  }
+
+  private shrinkImpl(value: T[], context?: unknown): Stream<[NextValue<T>[], unknown, number]> {
     if (value.length === 0) {
       return Stream.nil();
     }
@@ -168,7 +205,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     const safeContext: ArrayArbitraryContext =
       context !== undefined
         ? (context as ArrayArbitraryContext)
-        : { shrunkOnce: false, lengthContext: undefined, itemsContexts: [] };
+        : { shrunkOnce: false, lengthContext: undefined, itemsContexts: [], startIndex: 0 };
 
     return (
       this.lengthArb
@@ -183,54 +220,55 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
         .drop(
           safeContext.shrunkOnce && safeContext.lengthContext === undefined && value.length > this.minLength + 1 ? 1 : 0
         )
-        .map((lengthValue): [NextValue<T>[], unknown] => {
+        .map((lengthValue): [NextValue<T>[], unknown, number] => {
           const sliceStart = value.length - lengthValue.value;
           return [
             value
               .slice(sliceStart)
               .map((v, index) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[index + sliceStart])), // array of length lengthValue.value
             lengthValue.context, // integer context for value lengthValue.value (the length)
+            0,
           ];
         })
-        // Context value will be set to undefined for remaining shrinking values
+        // Length context value will be set to undefined for remaining shrinking values
         // as they are outside of our shrinking process focused on items.length.
         // None of our computed contexts will apply for them.
         .join(
-          this.arb.shrink(value[0], safeContext.itemsContexts[0]).map((v) => {
-            return [
-              [v].concat(
-                value.slice(1).map((v, index) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[index + 1]))
-              ),
-              undefined, // no length context
-            ];
-          })
+          makeLazy(() =>
+            value.length > this.minLength
+              ? this.shrinkItemByItem(value, safeContext, 1)
+              : this.shrinkItemByItem(value, safeContext, value.length)
+          )
         )
         .join(
           value.length > this.minLength
-            ? makeLazy(() =>
+            ? makeLazy(() => {
                 // We pass itemsLengthContext=undefined to next shrinker to start shrinking
                 // without any assumptions on the current state (we never explored that one)
-                this.shrinkImpl(value.slice(1), {
+                const subContext: ArrayArbitraryContext = {
                   shrunkOnce: false,
                   lengthContext: undefined,
                   itemsContexts: safeContext.itemsContexts.slice(1),
-                })
+                  startIndex: 0,
+                };
+                return this.shrinkImpl(value.slice(1), subContext)
                   .filter((v) => this.minLength <= v[0].length + 1)
-                  .map((v): [NextValue<T>[], unknown] => {
+                  .map((v): [NextValue<T>[], unknown, number] => {
                     return [
                       [new NextValue(cloneIfNeeded(value[0]), safeContext.itemsContexts[0])].concat(v[0]),
                       undefined,
+                      0,
                     ];
-                  })
-              )
-            : Stream.nil<[NextValue<T>[], unknown]>()
+                  });
+              })
+            : Stream.nil()
         )
     );
   }
 
   shrink(value: T[], context?: unknown): Stream<NextValue<T[]>> {
     return this.shrinkImpl(value, context).map((contextualValue) =>
-      this.wrapper(contextualValue[0], true, contextualValue[1])
+      this.wrapper(contextualValue[0], true, contextualValue[1], contextualValue[2])
     );
   }
 }
