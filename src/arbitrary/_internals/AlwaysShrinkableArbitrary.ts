@@ -2,6 +2,7 @@ import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { noUndefinedAsContext } from './helpers/NoUndefinedAsContext';
 
 /**
  * Arbitrary considering any value as shrinkable whatever the received context.
@@ -15,7 +16,8 @@ export class AlwaysShrinkableArbitrary<Ts> extends NextArbitrary<Ts> {
   }
 
   generate(mrng: Random, biasFactor: number | undefined): NextValue<Ts> {
-    return this.arb.generate(mrng, biasFactor);
+    const value = this.arb.generate(mrng, biasFactor);
+    return noUndefinedAsContext(value);
   }
 
   canShrinkWithoutContext(value: unknown): value is Ts {
@@ -24,10 +26,10 @@ export class AlwaysShrinkableArbitrary<Ts> extends NextArbitrary<Ts> {
 
   shrink(value: Ts, context: unknown): Stream<NextValue<Ts>> {
     if (context === undefined && !this.arb.canShrinkWithoutContext(value)) {
-      // At this point we make the asumption that if some arbitrary attaches the value undefined
-      // to its value it must be able to recognize it as something it can shrink if it can shrink it.
+      // This arbitrary will never produce any context being `undefined`
+      // neither during `generate` nor during `shrink`
       return Stream.nil();
     }
-    return this.arb.shrink(value, context);
+    return this.arb.shrink(value, context).map(noUndefinedAsContext);
   }
 }
