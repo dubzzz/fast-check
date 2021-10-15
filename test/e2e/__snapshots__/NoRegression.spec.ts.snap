@@ -45,14 +45,14 @@ Execution summary:
 
 exports[`NoRegression (async) func (to Promise) 1`] = `
 "Property failed after 2 tests
-{ seed: 42, path: \\"1:3:1:1:0:2:0:1:12:5:4:3:4:5:3:5:6:3:3:5:5\\", endOnFailure: true }
+{ seed: 42, path: \\"1:3:1:1:0:2:0:1\\", endOnFailure: true }
 Counterexample: [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(0)];
+  const outs = [Promise.resolve(0),Promise.resolve(-730766587),Promise.resolve(1605711835),Promise.resolve(-736891290)];
   return outs[hash('19' + stringify(args)) % outs.length];
 }]
-Shrunk 20 time(s)
+Shrunk 7 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -179,469 +179,7 @@ Execution summary:
 . . . . . . . . [32m√[0m [function(...args) {
   // With hash and stringify coming from fast-check
   /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-365383294),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-548074941),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-639420764),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-685093676),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-707930132),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-719348360),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-725057474),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-727912031),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729339309),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729339309),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-728625670),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-728982490),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729160900),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729160900),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729071695),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729116298),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729116298),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729093997),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729093997),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729082846),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729088422),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729088422),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729085634),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087028),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087725),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087725),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087377),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087377),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087203),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087290),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087334),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087334),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087312),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087323),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087332),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087332),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087331),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087331),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087330),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(1605711835),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(0),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(-736891290)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . [31m×[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(0)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(-729087330),Promise.resolve(0),Promise.resolve(0)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(0)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(0),Promise.resolve(0)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087329),Promise.resolve(0),Promise.resolve(0)];
-  return outs[hash('19' + stringify(args)) % outs.length];
-}]
-. . . . . . . . . . . . . . . . . . . . . [32m√[0m [function(...args) {
-  // With hash and stringify coming from fast-check
-  /* [] => new Promise(() => {/*unknown*\\\\/}) */
-  const outs = [Promise.resolve(0),Promise.resolve(-729087330),Promise.resolve(0)];
+  const outs = [Promise.resolve(0),Promise.resolve(-730766587),Promise.resolve(-736891290)];
   return outs[hash('19' + stringify(args)) % outs.length];
 }]"
 `;
@@ -1072,9 +610,9 @@ Execution summary:
 
 exports[`NoRegression base64String 1`] = `
 "Property failed after 4 tests
-{ seed: 42, path: \\"3:2:2\\", endOnFailure: true }
-Counterexample: [\\"AA==\\"]
-Shrunk 2 time(s)
+{ seed: 42, path: \\"3:2\\", endOnFailure: true }
+Counterexample: [\\"Ap==\\"]
+Shrunk 1 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -1086,10 +624,7 @@ Execution summary:
 . [32m√[0m [\\"\\"]
 . [31m×[0m [\\"Ap==\\"]
 . . [32m√[0m [\\"\\"]
-. . [32m√[0m [\\"\\"]
-. . [31m×[0m [\\"AA==\\"]
-. . . [32m√[0m [\\"\\"]
-. . . [32m√[0m [\\"\\"]"
+. . [32m√[0m [\\"\\"]"
 `;
 
 exports[`NoRegression clone 1`] = `
@@ -1526,9 +1061,9 @@ Execution summary:
 
 exports[`NoRegression emailAddress 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:0:0:0:2:3:5:5:2:1:1:1:0:7:1:0:0:0\\", endOnFailure: true }
-Counterexample: [\\"a@aa.aa\\"]
-Shrunk 17 time(s)
+{ seed: 42, path: \\"0:0:0:0:2:3:5:5:2:1:1:1:1:0:0:0\\", endOnFailure: true }
+Counterexample: [\\"a@a.aa\\"]
+Shrunk 15 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -1563,21 +1098,12 @@ Execution summary:
 . . . . . . . . . . [32m√[0m [\\"a@re1w76p5vkd9m-cmcasdm1.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . [31m×[0m [\\"a@aa.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
 . . . . . . . . . . . [32m√[0m [\\"a@fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . [31m×[0m [\\"a@aa.aawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . . [31m×[0m [\\"a@aawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@a.nv\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@ai.nv\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@ahzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@a4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@a7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@a10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . . . [32m√[0m [\\"a@awd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.nv\\"]
-. . . . . . . . . . . . . [31m×[0m [\\"a@aai.nv\\"]
-. . . . . . . . . . . . . . [32m√[0m [\\"a@ai.nv\\"]
-. . . . . . . . . . . . . . [31m×[0m [\\"a@aaa.nv\\"]
-. . . . . . . . . . . . . . . [31m×[0m [\\"a@aa.nv\\"]
-. . . . . . . . . . . . . . . . [31m×[0m [\\"a@aa.av\\"]
-. . . . . . . . . . . . . . . . . [31m×[0m [\\"a@aa.aa\\"]"
+. . . . . . . . . . . [31m×[0m [\\"a@aa.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.av\\"]
+. . . . . . . . . . . . [32m√[0m [\\"a@fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.av\\"]
+. . . . . . . . . . . . [31m×[0m [\\"a@aa.fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.aa\\"]
+. . . . . . . . . . . . . [31m×[0m [\\"a@fawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.aa\\"]
+. . . . . . . . . . . . . . [31m×[0m [\\"a@aawd10v7p7vxi4d-av8-nx7d16hzye9y7p3di3fea50laxl-myli.aa\\"]
+. . . . . . . . . . . . . . . [31m×[0m [\\"a@a.aa\\"]"
 `;
 
 exports[`NoRegression float 1`] = `
@@ -2200,9 +1726,9 @@ Execution summary:
 
 exports[`NoRegression hexaString 1`] = `
 "Property failed after 6 tests
-{ seed: 42, path: \\"5:1:1:10:1:5:0\\", endOnFailure: true }
-Counterexample: [\\"66\\"]
-Shrunk 6 time(s)
+{ seed: 42, path: \\"5:1:1:7\\", endOnFailure: true }
+Counterexample: [\\"dd\\"]
+Shrunk 3 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -2223,26 +1749,13 @@ Execution summary:
 . . . [32m√[0m [\\"cdc6\\"]
 . . . [32m√[0m [\\"d\\"]
 . . . [32m√[0m [\\"dc6\\"]
-. . . [32m√[0m [\\"d0c6\\"]
-. . . [32m√[0m [\\"d7c6\\"]
-. . . [32m√[0m [\\"dac6\\"]
-. . . [31m×[0m [\\"dcc6\\"]
-. . . . [32m√[0m [\\"c6\\"]
-. . . . [31m×[0m [\\"cc6\\"]
-. . . . . [32m√[0m [\\"c6\\"]
-. . . . . [32m√[0m [\\"bc6\\"]
-. . . . . [32m√[0m [\\"c\\"]
-. . . . . [32m√[0m [\\"c6\\"]
-. . . . . [32m√[0m [\\"c06\\"]
-. . . . . [31m×[0m [\\"c66\\"]
-. . . . . . [31m×[0m [\\"66\\"]
-. . . . . . . [32m√[0m [\\"6\\"]
-. . . . . . . [32m√[0m [\\"36\\"]
-. . . . . . . [32m√[0m [\\"56\\"]
-. . . . . . . [32m√[0m [\\"6\\"]
-. . . . . . . [32m√[0m [\\"60\\"]
-. . . . . . . [32m√[0m [\\"63\\"]
-. . . . . . . [32m√[0m [\\"65\\"]"
+. . . [31m×[0m [\\"dd\\"]
+. . . . [32m√[0m [\\"d\\"]
+. . . . [32m√[0m [\\"0d\\"]
+. . . . [32m√[0m [\\"7d\\"]
+. . . . [32m√[0m [\\"ad\\"]
+. . . . [32m√[0m [\\"cd\\"]
+. . . . [32m√[0m [\\"d\\"]"
 `;
 
 exports[`NoRegression infiniteStream 1`] = `
@@ -4232,13 +3745,7 @@ Execution summary:
 . . [32m√[0m [\\"?C\\"]
 . . [32m√[0m [\\"AC\\"]
 . . [32m√[0m [\\"BC\\"]
-. . [32m√[0m [\\"C\\"]
-. . [32m√[0m [\\"C \\"]
-. . [32m√[0m [\\"C2\\"]
-. . [32m√[0m [\\"C;\\"]
-. . [32m√[0m [\\"C?\\"]
-. . [32m√[0m [\\"CA\\"]
-. . [32m√[0m [\\"CB\\"]"
+. . [32m√[0m [\\"C\\"]"
 `;
 
 exports[`NoRegression stringOf 1`] = `
@@ -4816,7 +4323,7 @@ Execution summary:
 
 exports[`NoRegression user defined examples 1`] = `
 "Property failed after 2 tests
-{ seed: 42, path: \\"1:1:17\\", endOnFailure: true }
+{ seed: 42, path: \\"1:1:10\\", endOnFailure: true }
 Counterexample: [\\"ll\\"]
 Shrunk 2 time(s)
 Got error: Property failed by returning false
@@ -4836,13 +4343,6 @@ Execution summary:
 . . [32m√[0m [\\"klo\\"]
 . . [32m√[0m [\\"l\\"]
 . . [32m√[0m [\\"lo\\"]
-. . [32m√[0m [\\"l o\\"]
-. . [32m√[0m [\\"lFo\\"]
-. . [32m√[0m [\\"lYo\\"]
-. . [32m√[0m [\\"lco\\"]
-. . [32m√[0m [\\"lho\\"]
-. . [32m√[0m [\\"ljo\\"]
-. . [32m√[0m [\\"lko\\"]
 . . [31m×[0m [\\"ll\\"]
 . . . [32m√[0m [\\"l\\"]
 . . . [32m√[0m [\\" l\\"]
@@ -4852,14 +4352,7 @@ Execution summary:
 . . . [32m√[0m [\\"hl\\"]
 . . . [32m√[0m [\\"jl\\"]
 . . . [32m√[0m [\\"kl\\"]
-. . . [32m√[0m [\\"l\\"]
-. . . [32m√[0m [\\"l \\"]
-. . . [32m√[0m [\\"lF\\"]
-. . . [32m√[0m [\\"lY\\"]
-. . . [32m√[0m [\\"lc\\"]
-. . . [32m√[0m [\\"lh\\"]
-. . . [32m√[0m [\\"lj\\"]
-. . . [32m√[0m [\\"lk\\"]"
+. . . [32m√[0m [\\"l\\"]"
 `;
 
 exports[`NoRegression uuid 1`] = `
@@ -4894,7 +4387,7 @@ Execution summary:
 
 exports[`NoRegression webAuthority 1`] = `
 "Property failed after 1 tests
-{ seed: 42, path: \\"0:1:4:3:2:6:2:1:1:1:1:1:0\\", endOnFailure: true }
+{ seed: 42, path: \\"0:1:4:3:2:6:2:1:1:1:0:0:0\\", endOnFailure: true }
 Counterexample: [\\"a.aa\\"]
 Shrunk 12 time(s)
 Got error: Property failed by returning false
@@ -4928,13 +4421,11 @@ Execution summary:
 . . . . . . . [32m√[0m [\\"7edwncurnj6.lw\\"]
 . . . . . . . [31m×[0m [\\"aa.7edwncurnj6.lw\\"]
 . . . . . . . . [32m√[0m [\\"7edwncurnj6.lw\\"]
-. . . . . . . . [31m×[0m [\\"aa.aedwncurnj6.lw\\"]
-. . . . . . . . . [32m√[0m [\\"aedwncurnj6.lw\\"]
-. . . . . . . . . [31m×[0m [\\"aa.a.lw\\"]
-. . . . . . . . . . [32m√[0m [\\"a.lw\\"]
-. . . . . . . . . . [31m×[0m [\\"aa.a.aw\\"]
-. . . . . . . . . . . [32m√[0m [\\"a.aw\\"]
-. . . . . . . . . . . [31m×[0m [\\"aa.a.aa\\"]
+. . . . . . . . [31m×[0m [\\"aa.7edwncurnj6.aw\\"]
+. . . . . . . . . [32m√[0m [\\"7edwncurnj6.aw\\"]
+. . . . . . . . . [31m×[0m [\\"aa.7edwncurnj6.aa\\"]
+. . . . . . . . . . [31m×[0m [\\"7edwncurnj6.aa\\"]
+. . . . . . . . . . . [31m×[0m [\\"aedwncurnj6.aa\\"]
 . . . . . . . . . . . . [31m×[0m [\\"a.aa\\"]"
 `;
 
@@ -5032,7 +4523,7 @@ Execution summary:
 
 exports[`NoRegression webSegment 1`] = `
 "Property failed after 3 tests
-{ seed: 42, path: \\"2:2:0:17\\", endOnFailure: true }
+{ seed: 42, path: \\"2:2:0:10\\", endOnFailure: true }
 Counterexample: [\\"::\\"]
 Shrunk 3 time(s)
 Got error: Property failed by returning false
@@ -5055,13 +4546,6 @@ Execution summary:
 . . . [32m√[0m [\\"=:0T\\"]
 . . . [32m√[0m [\\":\\"]
 . . . [32m√[0m [\\":0T\\"]
-. . . [32m√[0m [\\":a0T\\"]
-. . . [32m√[0m [\\":N0T\\"]
-. . . [32m√[0m [\\":60T\\"]
-. . . [32m√[0m [\\":&0T\\"]
-. . . [32m√[0m [\\":+0T\\"]
-. . . [32m√[0m [\\":;0T\\"]
-. . . [32m√[0m [\\":=0T\\"]
 . . . [31m×[0m [\\"::\\"]
 . . . . [32m√[0m [\\":\\"]
 . . . . [32m√[0m [\\"a:\\"]
@@ -5071,14 +4555,7 @@ Execution summary:
 . . . . [32m√[0m [\\"+:\\"]
 . . . . [32m√[0m [\\";:\\"]
 . . . . [32m√[0m [\\"=:\\"]
-. . . . [32m√[0m [\\":\\"]
-. . . . [32m√[0m [\\":a\\"]
-. . . . [32m√[0m [\\":N\\"]
-. . . . [32m√[0m [\\":6\\"]
-. . . . [32m√[0m [\\":&\\"]
-. . . . [32m√[0m [\\":+\\"]
-. . . . [32m√[0m [\\":;\\"]
-. . . . [32m√[0m [\\":=\\"]"
+. . . . [32m√[0m [\\":\\"]"
 `;
 
 exports[`NoRegression webUrl 1`] = `

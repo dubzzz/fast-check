@@ -173,27 +173,31 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     startIndex: number,
     endIndex: number
   ): IterableIterator<[NextValue<T>[], unknown, number]> {
-    if (startIndex >= endIndex) {
-      return Stream.nil();
+    let shrinks = Stream.nil<[NextValue<T>[], unknown, number]>();
+    for (let index = startIndex; index < endIndex; ++index) {
+      shrinks = shrinks.join(
+        makeLazy(() =>
+          this.arb
+            .shrink(value[index], safeContext.itemsContexts[index])
+            .map((v): [NextValue<T>[], unknown, number] => {
+              return [
+                value
+                  .slice(0, index)
+                  .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i]))
+                  .concat(v)
+                  .concat(
+                    value
+                      .slice(index + 1)
+                      .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i + index + 1]))
+                  ),
+                undefined, // no length context
+                index, // avoid shrinking onto previous entries on later sub-shrink
+              ];
+            })
+        )
+      );
     }
-    return this.arb
-      .shrink(value[startIndex], safeContext.itemsContexts[startIndex])
-      .map((v): [NextValue<T>[], unknown, number] => {
-        return [
-          value
-            .slice(0, startIndex)
-            .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i]))
-            .concat(v)
-            .concat(
-              value
-                .slice(startIndex + 1)
-                .map((v, i) => new NextValue(cloneIfNeeded(v), safeContext.itemsContexts[i + startIndex + 1]))
-            ),
-          undefined, // no length context
-          startIndex, // avoid shrinking onto previous entries on later sub-shrink
-        ];
-      })
-      .join(makeLazy(() => this.shrinkItemByItem(value, safeContext, startIndex + 1, endIndex)));
+    return shrinks;
   }
 
   private shrinkImpl(value: T[], context?: unknown): Stream<[NextValue<T>[], unknown, number]> {
@@ -233,9 +237,11 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
         // as they are outside of our shrinking process focused on items.length.
         // None of our computed contexts will apply for them.
         .join(
-          value.length > this.minLength
-            ? this.shrinkItemByItem(value, safeContext, Math.max(0, safeContext.startIndex), 1)
-            : this.shrinkItemByItem(value, safeContext, Math.max(0, safeContext.startIndex), value.length)
+          makeLazy(() =>
+            value.length > this.minLength
+              ? this.shrinkItemByItem(value, safeContext, Math.max(0, safeContext.startIndex), 1)
+              : this.shrinkItemByItem(value, safeContext, Math.max(0, safeContext.startIndex), value.length)
+          )
         )
         .join(
           value.length > this.minLength
