@@ -30,7 +30,7 @@ export class AlwaysShrinkableArbitrary<Ts> extends NextArbitrary<Ts> {
       // neither during `generate` nor during `shrink`
       return Stream.nil();
     }
-    const safeContext = context !== UndefinedContextPlaceholder ? context : UndefinedContextPlaceholder;
+    const safeContext = context !== UndefinedContextPlaceholder ? context : undefined;
     return this.arb.shrink(value, safeContext).map(noUndefinedAsContext);
   }
 }
