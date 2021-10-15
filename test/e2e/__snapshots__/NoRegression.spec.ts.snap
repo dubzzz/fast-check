@@ -4789,6 +4789,29 @@ Execution summary:
 . . [32m√[0m [\\"\\"]"
 `;
 
+exports[`NoRegression user defined examples (including not shrinkable values) 1`] = `
+"Property failed after 3 tests
+{ seed: 42, path: \\"2:0:4\\", endOnFailure: true }
+Counterexample: [0,\\"10\\",\\"11\\",0]
+Shrunk 2 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[32m√[0m [1,\\"2\\",\\"3\\",4]
+[32m√[0m [5,\\"6\\",\\"7\\",8]
+[31m×[0m [9,\\"10\\",\\"11\\",12]
+. [31m×[0m [0,\\"10\\",\\"11\\",12]
+. . [32m√[0m [0,\\"10\\",\\"0\\",12]
+. . [32m√[0m [0,\\"10\\",\\"6\\",12]
+. . [32m√[0m [0,\\"10\\",\\"9\\",12]
+. . [32m√[0m [0,\\"10\\",\\"10\\",12]
+. . [31m×[0m [0,\\"10\\",\\"11\\",0]
+. . . [32m√[0m [0,\\"10\\",\\"0\\",0]
+. . . [32m√[0m [0,\\"10\\",\\"6\\",0]
+. . . [32m√[0m [0,\\"10\\",\\"9\\",0]
+. . . [32m√[0m [0,\\"10\\",\\"10\\",0]"
+`;
+
 exports[`NoRegression user defined examples 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: \\"1:1:17\\", endOnFailure: true }
