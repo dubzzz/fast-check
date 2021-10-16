@@ -36,7 +36,7 @@ describe('float64Array (integration)', () => {
       if ('minLength' in constraints && 'maxLength' in constraints && constraints.minLength! > constraints.maxLength!) {
         [constraints.minLength, constraints.maxLength] = [constraints.maxLength, constraints.minLength];
       }
-      if ('min' in constraints && 'max' in constraints && constraints.min! > constraints.max!) {
+      if ('min' in constraints && 'max' in constraints && strictlyLowerThan(constraints.max!, constraints.min!)) {
         [constraints.min, constraints.max] = [constraints.max, constraints.min];
       }
       return constraints;
@@ -70,3 +70,9 @@ describe('float64Array (integration)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(float64ArrayBuilder, { extraParameters });
   });
 });
+
+// Helper
+
+function strictlyLowerThan(a: number, b: number): boolean {
+  return a < b || (a === b && Object.is(a, -0) && Object.is(b, 0));
+}
