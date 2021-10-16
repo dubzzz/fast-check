@@ -22,7 +22,7 @@ describe('float32Array (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc
     .record(
       {
-        minLength: fc.nat({ max: 25 }),
+        minLength: fc.nat({ max: 5 }),
         maxLength: fc.nat({ max: 25 }),
         min: fc.float({ next: true, noDefaultInfinity: true, noNaN: true }),
         max: fc.float({ next: true, noDefaultInfinity: true, noNaN: true }),

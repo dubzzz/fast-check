@@ -12,7 +12,7 @@ import {
 describe('asciiString (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };
   const extraParameters: fc.Arbitrary<Extra> = fc
-    .tuple(fc.nat({ max: 30 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
+    .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
     .map(([min, gap, withMin, withMax]) => ({
       minLength: withMin ? min : undefined,
       maxLength: withMax ? min + gap : undefined,

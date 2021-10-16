@@ -197,7 +197,9 @@ function validSparseArrayConstraints(
     .record(
       {
         maxLength: removedKeys.includes('maxLength') ? fc.constant(undefined) : fc.nat({ max }),
-        minNumElements: removedKeys.includes('minNumElements') ? fc.constant(undefined) : fc.nat({ max }),
+        minNumElements: removedKeys.includes('minNumElements')
+          ? fc.constant(undefined)
+          : fc.nat({ max: max !== undefined ? Math.min(5, max) : undefined }),
         maxNumElements: removedKeys.includes('maxNumElements') ? fc.constant(undefined) : fc.nat({ max }),
         noTrailingHole: removedKeys.includes('noTrailingHole') ? fc.constant(undefined) : fc.boolean(),
       },
