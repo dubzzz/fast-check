@@ -132,7 +132,7 @@ describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc
     .record(
       {
-        minLength: fc.nat({ max: 25 }),
+        minLength: fc.nat({ max: 5 }),
         maxLength: fc.nat({ max: 25 }),
         min: fc.integer({ min: -128, max: 127 }),
         max: fc.integer({ min: -128, max: 127 }),

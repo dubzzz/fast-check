@@ -16,7 +16,7 @@ describe('stringOf (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number; patterns: string[] };
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(
-      fc.nat({ max: 30 }),
+      fc.nat({ max: 5 }),
       fc.nat({ max: 30 }),
       fc.boolean(),
       fc.boolean(),
