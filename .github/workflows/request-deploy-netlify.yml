@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '@github-actions') && contains(github.event.comment.body, 'deploy')
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Check comment
         id: check_comment
         uses: actions/github-script@v5
