@@ -24,7 +24,7 @@ describe('base64String', () => {
   it('should accept any constraints accepting at least one length multiple of 4', () =>
     fc.assert(
       fc.property(
-        fc.nat({ max: 30 }),
+        fc.nat({ max: 5 }),
         fc.integer({ min: 3, max: 30 }),
         fc.boolean(),
         fc.boolean(),
