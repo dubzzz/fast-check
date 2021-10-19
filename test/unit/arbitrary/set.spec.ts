@@ -11,7 +11,6 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
-import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
@@ -302,8 +301,6 @@ describe('set (integration)', () => {
     }
     expect([...new Set(value)]).toEqual(value);
   };
-
-  const isStrictlySmaller = isStrictlySmallerArray;
 
   const setBuilder = (extra: Extra) => convertToNext(set(convertFromNext(new FakeIntegerArbitrary()), extra));
 
