@@ -2,7 +2,6 @@ import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
-import { maxSafeInteger } from '../../maxSafeInteger';
 import { ObjectConstraints } from './QualifiedObjectConstraints';
 
 /**
@@ -34,10 +33,9 @@ export function jsonConstraintsBuilder(
 ): ObjectConstraints {
   const key = stringArbitrary;
   const values = [
-    boolean(),
-    maxSafeInteger(),
-    double({ next: true, noDefaultInfinity: true, noNaN: true }),
-    stringArbitrary,
+    boolean(), // any boolean
+    double({ next: true, noDefaultInfinity: true, noNaN: true }), // any number
+    stringArbitrary, // any string
     constant(null),
   ];
   return constraints != null
