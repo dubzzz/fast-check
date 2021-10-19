@@ -29,7 +29,7 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
 /** @internal */
 export function computeTogglePositions(chars: string[], toggleCase: (rawChar: string) => string): number[] {
   const positions: number[] = [];
-  for (let idx = 0; idx !== chars.length; ++idx) {
+  for (let idx = chars.length - 1; idx !== -1; --idx) {
     if (toggleCase(chars[idx]) !== chars[idx]) positions.push(idx);
   }
   return positions;

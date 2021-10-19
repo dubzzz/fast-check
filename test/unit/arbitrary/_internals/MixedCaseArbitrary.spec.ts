@@ -65,7 +65,7 @@ describe('MixedCaseArbitrary (integration)', () => {
       const g = arb.generate(mrng, undefined);
 
       // Assert
-      expect(g.value).toBe('AzeRty');
+      expect(g.value).toBe('azErtY');
       expect(bigUintN).toHaveBeenCalledWith(6); // num toggleable chars in string = 6
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
@@ -83,7 +83,7 @@ describe('MixedCaseArbitrary (integration)', () => {
       const g = arb.generate(mrng, undefined);
 
       // Assert
-      expect(g.value).toBe('aZ01tY');
+      expect(g.value).toBe('Az01Ty');
       expect(bigUintN).toHaveBeenCalledWith(4); // // num toggleable chars in string = 4 as 01 upper version is the same -> only 4 can be toggled not 6
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
@@ -170,7 +170,7 @@ describe('MixedCaseArbitrary (integration)', () => {
 
   type Extra = { withoutToggle: boolean };
   const extraParameters: fc.Arbitrary<Extra> = fc.record({ withoutToggle: fc.boolean() });
-  const mixedCaseBaseChars = ['0', '1', 'A', 'B'];
+  const mixedCaseBaseChars = ['A', 'B', '|', '~'];
 
   const isCorrect = (value: string, extra: Extra) => {
     const acceptedChars = extra.withoutToggle
@@ -179,7 +179,7 @@ describe('MixedCaseArbitrary (integration)', () => {
     return typeof value === 'string' && [...value].every((c) => acceptedChars.includes(c));
   };
 
-  const isStrictlySmaller = (v1: string, v2: string) => v1.length < v2.length || v1 < v2; /* '0' < 'A' < 'a' */
+  const isStrictlySmaller = (v1: string, v2: string) => v1.length < v2.length || v1 < v2; /* 'A' < 'a' < '|' < '~' */
 
   const mixedCaseBuilder = (extra: Extra) =>
     new MixedCaseArbitrary(
