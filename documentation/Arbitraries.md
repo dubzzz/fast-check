@@ -1495,10 +1495,10 @@ fc.emailAddress()
 
 ```js
 fc.mixedCase(fc.hexaString())
-// Examples of generated values: "", "7E", "dfC", "0de05933eF", "c"…
+// Examples of generated values: "", "7E", "Dfc", "0De05933ef", "c"…
 
 fc.mixedCase(fc.constant('hello world'))
-// Examples of generated values: "HeLlO woRLD", "HElLO wORlD", "hELlO woRld", "hELLo worLd", "hELlo WORLd"…
+// Examples of generated values: "HELlo WoRlD", "HeLLo WOrLD", "heLlo WoRLd", "hEllo wORLd", "hELLO woRLd"…
 
 fc.mixedCase(
   fc.constant('hello world'),
@@ -1509,11 +1509,11 @@ fc.mixedCase(
   }
 )
 // Examples of generated values:
-// • "UP(h)eUP(l)lo wUP(o)UP(r)lUP(d)"
-// • "hello UP(w)UP(o)rlUP(d)"
-// • "hUP(e)lUP(l)UP(o)UP( )woUP(r)UP(l)d"
-// • "UP(h)UP(e)lUP(l)oUP( )UP(w)UP(o)rld"
-// • "UP(h)UP(e)lUP(l)oUP( )worUP(l)UP(d)"
+// • "UP(h)eUP(l)UP(l)o woUP(r)lUP(d)"
+// • "UP(h)elUP(l)UP(o) world"
+// • "hUP(e)UP(l)loUP( )UP(w)UP(o)rUP(l)d"
+// • "helUP(l)UP(o)UP( )wUP(o)rUP(l)UP(d)"
+// • "UP(h)UP(e)lloUP( )wUP(o)rUP(l)UP(d)"
 // • …
 
 fc.mixedCase(
@@ -1522,7 +1522,7 @@ fc.mixedCase(
     toggleCase: (rawChar) => rawChar === '🐱' ? '🐯' : '🐇',
   }
 )
-// Examples of generated values: "🐱🐇🐱🐇🐱🐇", "🐱🐇🐯🐇🐯🐇", "🐱🐇🐯🐇🐱🐇", "🐱🐇🐯🐇🐯🐢", "🐯🐇🐯🐇🐯🐢"…
+// Examples of generated values: "🐯🐢🐯🐢🐯🐢", "🐯🐇🐯🐇🐯🐢", "🐯🐢🐯🐇🐯🐢", "🐱🐇🐯🐇🐯🐢", "🐱🐇🐯🐇🐯🐇"…
 ```
 </details>
 
