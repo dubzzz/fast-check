@@ -53,7 +53,6 @@ describe('ascii', () => {
 describe('ascii (integration)', () => {
   const isCorrect = (value: string) => value.length === 1 && 0x00 <= value.charCodeAt(0) && value.charCodeAt(0) <= 0x7f;
 
-  // Expect: "~" to be strictly smaller than "\u0000"
   const isStrictlySmaller = (c1: string, c2: string) => remapCharToIndex(c1) < remapCharToIndex(c2);
 
   const asciiBuilder = () => convertToNext(ascii());
