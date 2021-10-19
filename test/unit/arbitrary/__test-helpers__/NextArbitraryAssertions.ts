@@ -44,8 +44,8 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
         while (g1 !== null && g2 !== null) {
           assertEquality(isEqual, g1.value, g2.value, extraParameters);
           const pos = shrinkPath.next().value;
-          g1 = arb.shrink(g1.value, g1.context).getNthOrLast(pos);
-          g2 = arb.shrink(g2.value, g2.context).getNthOrLast(pos);
+          g1 = arb.shrink(g1.value_, g1.context).getNthOrLast(pos);
+          g2 = arb.shrink(g2.value_, g2.context).getNthOrLast(pos);
         }
         expect(g1).toBe(null);
         expect(g2).toBe(null);
@@ -236,14 +236,16 @@ function assertEquality<T, U>(
   v2: T,
   extraParameters: U
 ): void {
-  if (isEqual) {
-    try {
+  try {
+    if (isEqual) {
       const out = isEqual(v1, v2, extraParameters);
       expect(out).not.toBe(false);
-    } catch (err) {
-      throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`);
+    } else {
+      expect(v1).toStrictEqual(v2);
     }
-  } else expect(v1).toStrictEqual(v2);
+  } catch (err) {
+    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`);
+  }
 }
 
 function assertCorrectness<T, U>(
