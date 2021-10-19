@@ -1010,22 +1010,22 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 ```js
 fc.json()
 // Examples of generated values:
-// • "{\"gDS6ixj)R+\":{\"&>4q\":-4.764047835312664e-168,\".4$\":1.7093885319023646e+103,\"[,Dk$XNln-\":2.58973771202385e+32},\"W<m$%th\":{\"Dcedl|\":true},\"Qk\":2482558594970227}"
-// • "true"
-// • "{\"0J4\":{\"6nY3)\\\"\":true,\";8Y8nAf'@\":3915511530095453}}"
-// • "[null,null]"
+// • "{\"gDS6ixj)R+\":{\"&>4q\":-4.764047835312664e-168,\".4$\":1.7093885319023646e+103,\"[,Dk$XNln-\":2.58973771202385e+32},\"W<m$%th\":{\"Dcedl|\":null},\"^QkBb\":{\"SVCv&\":-1.6154796371174082e-142}}"
+// • "null"
+// • "{\"0J4\":{\"6nY3)\\\"\":-46689949447452340,\"\":-1.6163619845542715e+137}}"
+// • "[true,true]"
 // • "{}"
 // • …
 
 fc.json({maxDepth: 0})
-// Examples of generated values: "31", "null", "2156652758328671", "-6701292482420545", "false"…
+// Examples of generated values: "null", "2.393389240281231e+175", "false", "true", "\"E\""…
 
 fc.json({maxDepth: 1})
 // Examples of generated values:
 // • "{\"mTZw9f!~2\":null,\"W\":null,\"N'!U6\":null,\"x\":null,\"=l]l\":null}"
-// • "{\" \":-1.7976931348623071e+308,\"yY\\\"xr|z!H\":5.4758838181459106e+209,\"Sz2u=\":null,\"0`\":null}"
-// • "{\"&$|2j1/g\":-51,\"\\\"\":true}"
-// • "{\"|\":null,\"};*Iow&\":8.0652700695997815e+93,\">uO!AbI$\":\"I_6@YN'qO\",\"Oh\":true}"
+// • "{\" \":null,\"}y\":null,\"N\":null,\"3$\\\\r\\\\`vl9\":null}"
+// • "{\"&$|2j1/g\":null,\"!\":null}"
+// • "{\"|\":-9.444458547528003e-26,\"*I\":false,\"6zr(>uO!A\":false,\"2`I_6@YN\":null}"
 // • "[0.00005536178133696582,1.0077587675918889e-197,-1.7048414608911972e-193]"
 // • …
 ```
@@ -1056,18 +1056,18 @@ fc.json({maxDepth: 1})
 ```js
 fc.unicodeJson()
 // Examples of generated values:
-// • "[3.051181034070195e+291]"
-// • "{\"荌鏊턳ᦖ\":false,\"냚鶖뜥\":false}"
-// • "{\"\":true,\"䷷ꔼꊐ㍂Ꮋ⧭얘\":false,\"镐菋⹥埒䘺懘ྎᶃ硾넍\":false,\"䶩လ뎙丯㷲ퟬ\":true,\"勯吓ᯇป蹥ꕪ渘Ǭ傟\":false}"
+// • "[\"琷\"]"
+// • "{\"荌鏊턳ᦖ\":null,\"%￿㷹\":null}"
+// • "{\"\":\"瘓䷷\",\"ꊐ\":\"Ꮋ⧭얘⓪\",\"镐菋⹥埒䘺懘ྎᶃ硾넍\":\"丧䶩လ뎙\",\"㷲ퟬ礍ᱥ勯\":\"ᯇป\",\"ꕪ\":\"Ǭ\"}"
 // • "{\"\":[],\"ᐞ淙\":[]}"
-// • "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":2.0426960705516796e+39},\"保婠꠨旞荫㹢ފ漀\":[null,false,true,4.88692343953534e-119],\"ㅜޞ욵ꤣ漓ꉶ瀞뿱끮\":null,\"ㇱɶ䋷곺缇㱐⢋\":\"꿸\",\"龞ꚢ\":false}"
+// • "{\"迵끀꧋좡ꏶ塣퐼띞\":{\"䧎﹥ï\":true},\"ቈ保婠꠨旞荫㹢ފ\":{\"콆쳑Ｈ᜞紽ѳ㑓\":null},\"ㅜޞ욵ꤣ漓ꉶ瀞뿱끮\":1.3767310454632738e-207,\"䋷곺缇㱐⢋⮦\":false,\"龞ꚢ\":null}"
 // • …
 
 fc.unicodeJson({maxDepth: 0})
-// Examples of generated values: "null", "false", "\"켔Ꚗޔ넡+/\"", "-718042952162017", "-1.92632490853631e-246"…
+// Examples of generated values: "false", "\"켔Ꚗޔ넡+/\"", "null", "\"倣\"", "4.1604273853370814e+265"…
 
 fc.unicodeJson({maxDepth: 1})
-// Examples of generated values: "-9007199254740952", "1068292005279453", "null", "[]", "-2.787348602876926e-78"…
+// Examples of generated values: "false", "true", "\"㬻켔㣃Ꚗ⧅ޔ\"", "[]", "-2.787348602876926e-78"…
 ```
 </details>
 
@@ -2868,18 +2868,24 @@ fc.object({
 ```js
 fc.jsonObject()
 // Examples of generated values:
-// • -6.0839481205200126e+47
-// • {"8-b;+Ua":-2.260222054934251e-89,"jgMZ$w|b.":-5.736889009682019e+133}
-// • [false,false,true,true,false]
+// • true
+// • {"8-b;+Ua":null,"~]jg":null}
+// • [1.7976931348623151e+308,-9.190547540715046e+257,-1.7e-322,1.93e-322,-5.117109475756065e-41]
 // • false
-// • [[32,-9007199254740968]]
+// • [[null,null]]
 // • …
 
 fc.jsonObject({maxDepth: 0})
-// Examples of generated values: 2.5e-322, null, "$!.&${J}&9", "ufS7FkiH0r", false…
+// Examples of generated values: null, "", 4.4e-323, true, false…
 
 fc.jsonObject({maxDepth: 1})
-// Examples of generated values: 892026606610285, {"{":-7117470558757856,"Q$":"M$gD(]"}, "M}7xc\" _", {".b?^O.":"","D1$L":"zDJWs","j*s 9%":"",".":"0N|^?8"}, {}…
+// Examples of generated values:
+// • true
+// • {"{":"3]Q$","$M$gD(":3.0063876318112862e-266}
+// • "M}7xc\" _"
+// • {".b?^O.":2.2675666777479575e+300,"1$L{zDJ":-4.497309943661619e+91,"j*s 9%":2.4621957913205494e+195,"m":1.0932950225144496e-204}
+// • {}
+// • …
 ```
 </details>
 
@@ -2909,18 +2915,18 @@ fc.jsonObject({maxDepth: 1})
 
 ```js
 fc.unicodeJsonObject()
-// Examples of generated values: false, [[null,-5431499166376752]], "⠵䟵谉ꏊ㓰捛멮켜", null, [null,null,null,null]…
+// Examples of generated values: null, [[-2.6704522931006526e-132,null]], 3.4453237274410463e+71, [true,false,false,false], []…
 
 fc.unicodeJsonObject({maxDepth: 0})
-// Examples of generated values: null, "⤓竑", "꙰ꁺ蜱", "⛙", true…
+// Examples of generated values: 1.7976931348623131e+308, false, "꙰ꁺ蜱", "⛙", -9.43140467271473e+139…
 
 fc.unicodeJsonObject({maxDepth: 1})
 // Examples of generated values:
-// • 2.67e-322
-// • {"减":null,"鲊ਉ뉄":null,"罧癤鷢൜牶":null,"횆쐌淪燀쯠蝒熹཯":null,"":null}
-// • {"ꁺ척蜱젿됻⫄":true,"㠰䵤᧳ꊺ蹀":true,"劸웤鯁냠漼ⳍ㧞ﰗἭ∎":false}
+// • false
+// • {"减":"鲊ਉ뉄","罧癤鷢൜牶":"횆쐌淪燀쯠蝒熹཯","":"�\"붧","ˀ␠":"㳐뛣","矟戍頵槱":"欬襞ﯫ惘"}
+// • {"ꁺ척蜱젿됻⫄":null,"ั㠰":null,"᧳ꊺ蹀렍ǻ劸":null}
 // • []
-// • [false]
+// • [null]
 // • …
 ```
 </details>
