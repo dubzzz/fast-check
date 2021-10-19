@@ -94,6 +94,6 @@ function extractArgumentsForBuildCharacter(build: () => void) {
 function remapCharToIndex(c: string): number {
   const cp = c.codePointAt(0)!;
   if (cp >= 0x20 && cp <= 0x7e) return cp - 0x20;
-  if (cp < 0x20) return cp + 0x7e - 0x20;
+  if (cp < 0x20) return cp + 0x7e - 0x20 + 1;
   return cp;
 }

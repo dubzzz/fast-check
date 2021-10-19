@@ -53,6 +53,7 @@ describe('ascii', () => {
 describe('ascii (integration)', () => {
   const isCorrect = (value: string) => value.length === 1 && 0x00 <= value.charCodeAt(0) && value.charCodeAt(0) <= 0x7f;
 
+  // Expect: "~" to be strictly smaller than "\u0000"
   const isStrictlySmaller = (c1: string, c2: string) => remapCharToIndex(c1) < remapCharToIndex(c2);
 
   const asciiBuilder = () => convertToNext(ascii());
@@ -93,6 +94,6 @@ function extractArgumentsForBuildCharacter(build: () => void) {
 function remapCharToIndex(c: string): number {
   const cp = c.codePointAt(0)!;
   if (cp >= 0x20 && cp <= 0x7e) return cp - 0x20;
-  if (cp < 0x20) return cp + 0x7e - 0x20;
+  if (cp < 0x20) return cp + 0x7e - 0x20 + 1;
   return cp;
 }
