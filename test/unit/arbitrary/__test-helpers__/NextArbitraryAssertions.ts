@@ -28,7 +28,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
     fc.property(
       fc.integer().noShrink(),
       biasFactorArbitrary(),
-      fc.array(fc.nat(100), { minLength: 1 }),
+      fc.infiniteStream(fc.nat({ max: 20 })),
       extra,
       (seed, biasFactor, shrinkPath, extraParameters) => {
         // Arrange
@@ -41,12 +41,11 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
           const originalG2 = g2!;
           g2 = new NextValue(originalG2.value_, undefined, () => originalG2.value);
         }
-        let id = 0;
         while (g1 !== null && g2 !== null) {
           assertEquality(isEqual, g1.value, g2.value, extraParameters);
-          g1 = arb.shrink(g1.value, g1.context).getNthOrLast(id);
-          g2 = arb.shrink(g2.value, g2.context).getNthOrLast(id);
-          id = (id + 1) % shrinkPath.length;
+          const pos = shrinkPath.next().value;
+          g1 = arb.shrink(g1.value_, g1.context).getNthOrLast(pos);
+          g2 = arb.shrink(g2.value_, g2.context).getNthOrLast(pos);
         }
         expect(g1).toBe(null);
         expect(g2).toBe(null);
@@ -74,7 +73,7 @@ export function assertProduceCorrectValues<T, U = never>(
     fc.property(
       fc.integer().noShrink(),
       biasFactorArbitrary(),
-      fc.array(fc.nat(100), { minLength: 1 }),
+      fc.infiniteStream(fc.nat({ max: 20 })),
       extra,
       (seed, biasFactor, shrinkPath, extraParameters) => {
         // Arrange
@@ -82,11 +81,10 @@ export function assertProduceCorrectValues<T, U = never>(
 
         // Act / Assert
         let g: NextValue<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
-        let id = 0;
         while (g !== null) {
           assertCorrectness(isCorrect, g.value, extraParameters, arb);
-          g = arb.shrink(g.value, g.context).getNthOrLast(id);
-          id = (id + 1) % shrinkPath.length;
+          const pos = shrinkPath.next().value;
+          g = arb.shrink(g.value, g.context).getNthOrLast(pos);
         }
         expect(g).toBe(null);
       }
@@ -238,14 +236,16 @@ function assertEquality<T, U>(
   v2: T,
   extraParameters: U
 ): void {
-  if (isEqual) {
-    try {
+  try {
+    if (isEqual) {
       const out = isEqual(v1, v2, extraParameters);
       expect(out).not.toBe(false);
-    } catch (err) {
-      throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`);
+    } else {
+      expect(v1).toStrictEqual(v2);
     }
-  } else expect(v1).toStrictEqual(v2);
+  } catch (err) {
+    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`);
+  }
 }
 
 function assertCorrectness<T, U>(

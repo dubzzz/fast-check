@@ -10,9 +10,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
 } from './__test-helpers__/NextArbitraryAssertions';
-import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
@@ -304,8 +302,6 @@ describe('set (integration)', () => {
     expect([...new Set(value)]).toEqual(value);
   };
 
-  const isStrictlySmaller = isStrictlySmallerArray;
-
   const setBuilder = (extra: Extra) => convertToNext(set(convertFromNext(new FakeIntegerArbitrary()), extra));
 
   it('should produce the same values given the same seed', () => {
@@ -324,9 +320,11 @@ describe('set (integration)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(setBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(setBuilder, isStrictlySmaller, { extraParameters });
-  });
+  // Property: should preserve strictly smaller ordering in shrink
+  // Is not applicable in the case of `set` as some values may not be in the "before" version
+  // of the array while they can suddenly appear on shrink. They might have been hidden because
+  // another value inside the array shadowed them. While on shrink those entries shadowing others
+  // may have disappear.
 
   it.each`
     rawValue                 | minLength
