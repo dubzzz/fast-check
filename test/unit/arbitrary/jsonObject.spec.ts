@@ -6,7 +6,6 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
 import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth';
 
@@ -40,7 +39,8 @@ describe('jsonObject (integration)', () => {
     assertProduceValuesShrinkableWithoutContext(jsonObjectBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(jsonObjectBuilder, { extraParameters });
-  });
+  // Property: should be able to shrink to the same values without initial context
+  // Is not applicable given the fact that: Object.keys() has a specific handling of integer keys over string ones.
+  // eg.: Object.keys({"2": "2", "0": "0", "C": "C", "A": "A", "B": "B", "1": "1"}) -> ["0", "1", "2", "C", "A", "B"]
+  // As a consequence there is no way to rebuild the source array of tuples (key, value) in the right order.
 });
