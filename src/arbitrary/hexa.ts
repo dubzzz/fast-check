@@ -12,7 +12,7 @@ function hexaMapper(v: number): number {
 function hexaUnmapper(v: number): number {
   return v < 58
     ? v - 48 // 0-9
-    : v < 103
+    : v >= 97 && v < 103
     ? v - 97 + 10 // a-f
     : -1; // invalid: out of scope
 }
