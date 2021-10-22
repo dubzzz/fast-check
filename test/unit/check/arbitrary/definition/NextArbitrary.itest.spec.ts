@@ -139,6 +139,48 @@ describe('NextArbitrary', () => {
       walkTree(shrinkTree, visit);
       walkTree(shrinkTreeB, visit);
     });
+
+    it('should preserve cloneable capabilities during both generation and shrinking process even if output of map is already cloneable', () => {
+      // Arrange
+      type MyArbitraryOutput = { value: number; counter: number };
+      class MyArbitrary extends NextArbitrary<MyArbitraryOutput> {
+        private create(value: number): MyArbitraryOutput {
+          const complexInstance = { value, counter: 0, [cloneMethod]: () => this.create(value) };
+          return complexInstance;
+        }
+        generate(_mrng: Random): NextValue<MyArbitraryOutput> {
+          return new NextValue(this.create(10), undefined);
+        }
+        canShrinkWithoutContext(value: unknown): value is MyArbitraryOutput {
+          throw new Error('No call expected in current scenario');
+        }
+        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<NextValue<MyArbitraryOutput>> {
+          const value = v.value;
+          return Stream.of(
+            ...(value - 2 >= 0 ? [new NextValue(this.create(value - 2), undefined)] : []),
+            ...(value - 1 >= 0 ? [new NextValue(this.create(value - 1), undefined)] : [])
+          );
+        }
+      }
+      const seenInstances = new Set<unknown>();
+      const arb = new MyArbitrary().map((out) => out); // out is already cloneable
+
+      // Act
+      const g = arb.generate(mrngNoCall, undefined);
+      const shrinkTree = buildNextShrinkTree(arb, g);
+      const shrinkTreeB = buildNextShrinkTree(arb, g);
+
+      // Assert
+      const visit = (instance: { counter: number }) => {
+        expect(hasCloneMethod(instance)).toBe(true); // clone method should be provided
+        expect(instance.counter).toBe(0); // counter should be unique per cloned instance
+        expect(seenInstances.has(instance)).toBe(false); // each instance must appear only once in the tree
+        instance.counter += 1;
+        seenInstances.add(instance);
+      };
+      walkTree(shrinkTree, visit);
+      walkTree(shrinkTreeB, visit);
+    });
   });
 
   describe('chain', () => {
