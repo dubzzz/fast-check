@@ -1,6 +1,6 @@
 import { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
-import { cloneMethod } from '../../symbols';
+import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { NextValue } from './NextValue';
 
 /**
@@ -299,7 +299,12 @@ class MapArbitrary<T, U> extends NextArbitrary<U> {
   private mapperWithCloneIfNeeded(v: NextValue<T>): [U, T] {
     const sourceValue = v.value;
     const mappedValue = this.mapper(sourceValue);
-    if (v.hasToBeCloned && mappedValue instanceof Object && Object.isExtensible(mappedValue)) {
+    if (
+      v.hasToBeCloned &&
+      mappedValue instanceof Object &&
+      Object.isExtensible(mappedValue) &&
+      !hasCloneMethod(mappedValue)
+    ) {
       // WARNING: In case the mapped value is not extensible it will not be extended
       Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v)[0] });
     }

@@ -257,6 +257,35 @@ describe('NextArbitrary', () => {
       expect(generate).toHaveBeenCalledWith(mrngNoCall, expectedBiasFactor);
     });
 
+    it('should not alter the mapped value if already cloneable on generate', () => {
+      // Arrange
+      const expectedBiasFactor = 48;
+      const generate = jest.fn();
+      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
+      const shrink = jest.fn();
+      const choice = new NextValue({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
+      const mappedClone = jest.fn();
+      const mapped = { source: 42, [cloneMethod]: mappedClone };
+      generate.mockReturnValueOnce(choice);
+      class MyNextArbitrary extends NextArbitrary<any> {
+        generate = generate;
+        canShrinkWithoutContext = canShrinkWithoutContext;
+        shrink = shrink;
+      }
+
+      // Act
+      const arb = new MyNextArbitrary().map((_v) => mapped); // mapped already comes with clone capacities
+      const g = arb.generate(mrngNoCall, expectedBiasFactor);
+
+      // Assert
+      expect(g.value_).toBe(mapped); // value has been mapped
+      expect(g.value_.source).toBe(mapped.source); // value has been mapped and value not altered
+      expect(g.value_[cloneMethod]).toBe(mapped[cloneMethod]); // value has been mapped and clone method has been preserved
+      expect(g.hasToBeCloned).toBe(true); // clone has been preserved on NextValue
+      expect(hasCloneMethod(g.value_)).toBe(true); // clone has been preserved on the instance
+      expect(generate).toHaveBeenCalledWith(mrngNoCall, expectedBiasFactor);
+    });
+
     it('should properly shrink output of generate by calling back shrink with the right context', () => {
       // Arrange
       const expectedBiasFactor = 42;
