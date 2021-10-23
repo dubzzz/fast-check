@@ -132,7 +132,16 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   }
 
   private applyBias(mrng: Random, biasFactor: number | undefined): { size: number; biasFactorItems?: number } {
-    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+    if (biasFactor === undefined) {
+      // We don't bias anything
+      return { size: this.lengthArb.generate(mrng, undefined).value };
+    }
+    // We directly forward bias to items whenever no bias applicable onto length
+    if (this.minLength === this.maxLength) {
+      // We only apply bias on items
+      return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
+    }
+    if (mrng.nextInt(1, biasFactor) !== 1) {
       // We don't bias anything
       return { size: this.lengthArb.generate(mrng, undefined).value };
     }
