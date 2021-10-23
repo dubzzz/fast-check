@@ -1,3 +1,12 @@
+# 2.18.1
+
+_Fix regression when mapper returns an already cloneable value_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.18.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.18.0...v2.18.1)]
+
+## Fixes
+
+- ([PR#2421](https://github.com/dubzzz/fast-check/pull/2421)) Bug: Accept already cloneable values as output of `.map`
+
 # 2.18.0
 
 _All built-ins arbitraries rely on the new API and most of them can now shrink user-definable values_
@@ -59,6 +68,15 @@ _All built-ins arbitraries rely on the new API and most of them can now shrink u
 
 ---
 
+# 2.17.1
+
+_Fix regression when mapper returns an already cloneable value_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.17.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.17.0...v2.17.1)]
+
+## Fixes
+
+- ([PR#2421](https://github.com/dubzzz/fast-check/pull/2421)) Bug: Accept already cloneable values as output of `.map`
+
 # 2.17.0
 
 _Better typings for `constantFrom` and better support for Promises in `stringify`_
@@ -95,6 +113,15 @@ _Better typings for `constantFrom` and better support for Promises in `stringify
 
 ---
 
+# 2.16.1
+
+_Fix regression when mapper returns an already cloneable value_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.16.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.16.0...v2.16.1)]
+
+## Fixes
+
+- ([PR#2421](https://github.com/dubzzz/fast-check/pull/2421)) Bug: Accept already cloneable values as output of `.map`
+
 # 2.16.0
 
 _Performance improvements (+50% in avg compared to 2.14.0, +150% in avg compared to 2.15.0)_
@@ -112,7 +139,16 @@ _Performance improvements (+50% in avg compared to 2.14.0, +150% in avg compared
 
 - ([PR#1947](https://github.com/dubzzz/fast-check/pull/1947)) Test: Escape strings passed to userEvent.type in examples
 
---- 
+---
+
+# 2.15.1
+
+_Fix regression when mapper returns an already cloneable value_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.15.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.15.0...v2.15.1)]
+
+## Fixes
+
+- ([PR#2421](https://github.com/dubzzz/fast-check/pull/2421)) Bug: Accept already cloneable values as output of `.map`
 
 # 2.15.0
 
