@@ -1167,7 +1167,7 @@ fc.ipV4Extended()
 
 ```js
 fc.ipV6()
-// Examples of generated values: "5998:7144:3dc:ff:b:5ae5:3::", "::231:b:d0:7:9bd", "59::9:150.144.165.251", "d::fa8f", "::0:afb:f4e:a:2.4.250.160"…
+// Examples of generated values: "5998:7144:3dc:ff:b:5ae5:3::", "::c1e0:b3a:3:5.249.0.0", "59::9:150.144.165.251", "d::fa8f", "::f3:be0:0c2a:e:252.1.4.153"…
 ```
 </details>
 
