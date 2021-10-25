@@ -1,3 +1,40 @@
+# 2.19.0
+
+_Move to next generation of properties and unlock shrink on user definable examples_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.19.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.18.0...v2.19.0)]
+
+## Features
+
+- ([PR#2391](https://github.com/dubzzz/fast-check/pull/2391)) Automatically shrink user defined examples
+- ([PR#2393](https://github.com/dubzzz/fast-check/pull/2393)) Support shrink on examples with unshrinkable parts
+- ([PR#2395](https://github.com/dubzzz/fast-check/pull/2395)) Better shrinker for arrays requested minLength
+- ([PR#2423](https://github.com/dubzzz/fast-check/pull/2423)) Make fixed sized arrays as biased as tuples
+
+## Fixes
+
+- ([PR#2371](https://github.com/dubzzz/fast-check/pull/2371)) Refactor: Declare API and converters for the next gen property
+- ([PR#2372](https://github.com/dubzzz/fast-check/pull/2372)) Refactor: Migrate runners to rely on next gen properties
+- ([PR#2373](https://github.com/dubzzz/fast-check/pull/2373)) Refactor: Migrate UnbiasedProperty to next gen property
+- ([PR#2374](https://github.com/dubzzz/fast-check/pull/2374)) Refactor: Migrate IgnoreEqualValuesProperty to next gen property
+- ([PR#2375](https://github.com/dubzzz/fast-check/pull/2375)) Refactor: Migrate TimeoutProperty to next gen property
+- ([PR#2376](https://github.com/dubzzz/fast-check/pull/2376)) Refactor: Migrate SkipAfterProperty to next gen property
+- ([PR#2387](https://github.com/dubzzz/fast-check/pull/2387)) Refactor: Produce next gen properties via decorateProperty
+- ([PR#2388](https://github.com/dubzzz/fast-check/pull/2388)) Refactor: Migrate property builders to produce next gen
+- ([PR#2377](https://github.com/dubzzz/fast-check/pull/2377)) Typo: Typo in error thrown when invalid arguments passed to frequency
+- ([PR#2394](https://github.com/dubzzz/fast-check/pull/2394)) Bug: Properly re-wrap values on shrink in properties
+- ([PR#2399](https://github.com/dubzzz/fast-check/pull/2399)) Test: Ensure correct min/max for float32/64Arrays in tests
+- ([PR#2402](https://github.com/dubzzz/fast-check/pull/2402)) Test: Reduce the maximal minLength requested in tests
+- ([PR#2415](https://github.com/dubzzz/fast-check/pull/2415)) Refactor: Update the way we use flags for mixedCase
+- ([PR#2416](https://github.com/dubzzz/fast-check/pull/2416)) Refactor: Do not favor numeric values over others in json arbitraries
+- ([PR#2403](https://github.com/dubzzz/fast-check/pull/2403)) Test: Better asserts of shrinks by going deeper in path
+- ([PR#2417](https://github.com/dubzzz/fast-check/pull/2417)) Bug: Unmapper function of hexa was not unmapping properly
+- ([PR#2421](https://github.com/dubzzz/fast-check/pull/2421)) Bug: Accept already cloneable values as output of .map
+- ([PR#2424](https://github.com/dubzzz/fast-check/pull/2424)) CI: Run tests with verbose flag enabled
+- ([PR#2426](https://github.com/dubzzz/fast-check/pull/2426)) Doc: Document shrink of user definable values
+- ([PR#2427](https://github.com/dubzzz/fast-check/pull/2427)) Test: Stop flakiness on legacy tests of float/double
+
+---
+
 # 2.18.1
 
 _Fix regression when mapper returns an already cloneable value_
