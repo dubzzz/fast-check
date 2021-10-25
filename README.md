@@ -97,6 +97,7 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 - **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#log-within-a-predicate)\] - *simplify your troubleshoot with fc.context and its logging feature*
 - **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - *use the power of property based testing to test UI, APIs or state machines*
 - **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#detect-race-conditions)\] - *shuffle the way your promises and async calls resolve using the power of property based testing to detect races*
+- **Unique:** simplify user definable corner cases \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#simplify-user-definable-corner-cases)\] - *simplify bug resolution by asking fast-check if it can find an even simpler corner case*
 
 For more details, refer to the documentation in the links above.
 

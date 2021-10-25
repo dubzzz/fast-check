@@ -14,6 +14,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Replay after failure](#replay-after-failure)
 - [Replay after failure for commands](#replay-after-failure-for-commands)
 - [Add custom examples next to generated ones](#add-custom-examples-next-to-generated-ones)
+- [Simplify user deinable corner cases](#simplify-user-definable-corner-cases)
 - [Combine with other faker or random generator libraries](#combine-with-other-faker-or-random-generator-libraries)
 - [Setup global settings](#setup-global-settings)
 - [Avoid tests to reach the timeout of your test runner](#avoid-tests-to-reach-the-timeout-of-your-test-runner)
@@ -552,6 +553,57 @@ fc.assert(
 ```
 
 Please keep in mind that property based testing frameworks are fully able to find corner-cases with no help at all.
+
+## Simplify user deinable corner cases
+
+Sometimes, you may discover a bug even before you took time to write a test for it.
+But, from time to time, the corner cases you might not be that easy to troubleshoot and a smaller case would clearly help you in your investigation.
+
+Since version 2.19.0, fast-check comes with a built-in way to shrink automatically user definable examples defined in `examples`.
+
+Once you have a property that fails with your case (possibly just something like: should not crash), you just have to pass the corner case within `examples` and let fast-check reduce it to something simpler to troubleshoot.
+
+```typescript
+fc.assert(
+  fc.property(
+    fc.array(fc.string()),
+    myCheckFunction
+  ),
+  { examples: [
+    // the user definable corner case
+    [ ['__', 'proto', '__'] ]
+  ]}
+)
+```
+
+Please note that currently if you want fast-check to shrink values for you, you have to give `map` a way to unmap the values.
+Most of the other built-in arbitraries come with built-in support, so no special treatment for `fc.record`, `fc.string` or others.
+Please note that for the moment `chain` is not supported, as a consequence arbitraries defined via `chain` will not be able to shrink user definable values.
+
+If you want to use it with `map`, the syntax is a bit more verbose at the moment, but it will be less verbose starting at 3.x (no more need for `fc.convertFromNext` or `fc.convertToNext`).
+
+```typescript
+fc.assert(
+  fc.property(
+    fc.convertFromNext(
+      fc.convertToNext(fc.array(fc.string())).map(
+        arr => arr.join(','),
+        raw => {
+          // unmapper is supposed to handle not supported values by throwing
+          if (typeof raw !== 'string') throw new Error('Unsupported');
+          // remaning is supported
+          return raw.split(',');
+        }
+      )
+    ),
+    myCheckFunction
+  ),
+  { examples: [
+    // the user definable corner case
+    [ '__,proto,__' ]
+  ]}
+)
+```
 
 ## Combine with other faker or random generator libraries
 
