@@ -3524,9 +3524,9 @@ repeat-string@^1.6.1:
   integrity sha1-jcrkcOHIirwtYA//Sndihtp15jc=
 
 replace-in-file@^6.0.0:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/replace-in-file/-/replace-in-file-6.3.1.tgz#9905e1392593fc4da2c5bd394f0c764bbe93d51d"
-  integrity sha512-zZhS5k/kM1RitWKZwED6MGbGJ2jqdRvkh9r/PTImSxxh21vnr3aTKANtkfchqLPva9VvJqqA6Npuuz7I/aADCQ==
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/replace-in-file/-/replace-in-file-6.3.2.tgz#0f19835137177c89932f45df319f3539a019484f"
+  integrity sha512-Dbt5pXKvFVPL3WAaEB3ZX+95yP0CeAtIPJDwYzHbPP5EAHn+0UoegH/Wg3HKflU9dYBH8UnBC2NvY3P+9EZtTg==
   dependencies:
     chalk "^4.1.2"
     glob "^7.2.0"
