@@ -36,7 +36,9 @@ describe('float (integration)', () => {
     typeof value === 'number' && min <= value && value < max;
   };
 
-  const isStrictlySmaller = (v1: number, v2: number) => Math.abs(v1) < Math.abs(v2);
+  // v1 === v2 is required for cases in which min and max are too close and result in shrinks being too close from each others
+  // like: {"min":21474830.69,"max":21474830.75}
+  const isStrictlySmallerOrEqual = (v1: number, v2: number) => Math.abs(v1) < Math.abs(v2) || v1 === v2;
 
   const floatBuilder = (extra: Extra) => convertToNext(float(extra));
 
@@ -49,6 +51,6 @@ describe('float (integration)', () => {
   });
 
   it('should shrink towards strictly smaller values', () => {
-    assertShrinkProducesStrictlySmallerValue(floatBuilder, isStrictlySmaller, { extraParameters });
+    assertShrinkProducesStrictlySmallerValue(floatBuilder, isStrictlySmallerOrEqual, { extraParameters });
   });
 });

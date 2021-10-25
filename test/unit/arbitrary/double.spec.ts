@@ -36,7 +36,8 @@ describe('double (integration)', () => {
     typeof value === 'number' && min <= value && value < max;
   };
 
-  const isSmaller = (v1: number, v2: number) => Math.abs(v1) <= Math.abs(v2);
+  // v1 === v2 is required for cases in which min and max are too close and result in shrinks being too close from each others
+  const isSmallerOrEqual = (v1: number, v2: number) => Math.abs(v1) <= Math.abs(v2) || v1 === v2;
 
   const doubleBuilder = (extra: Extra) => convertToNext(double(extra));
 
@@ -49,6 +50,6 @@ describe('double (integration)', () => {
   });
 
   it('should shrink towards smaller values', () => {
-    assertShrinkProducesStrictlySmallerValue(doubleBuilder, isSmaller, { extraParameters });
+    assertShrinkProducesStrictlySmallerValue(doubleBuilder, isSmallerOrEqual, { extraParameters });
   });
 });
