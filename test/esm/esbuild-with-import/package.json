@@ -10,7 +10,7 @@
     "fast-check": "*"
   },
   "devDependencies": {
-    "esbuild": "^0.13.9"
+    "esbuild": "^0.13.12"
   },
   "license": "MIT",
   "private": true
