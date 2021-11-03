@@ -21,15 +21,15 @@ describe('IgnoreEqualValuesProperty', () => {
   });
 
   it.each`
-    originalValue                           | isAsync
-    ${null /* success */}                   | ${false}
-    ${'error' /* failure */}                | ${false}
-    ${new PreconditionFailure() /* skip */} | ${false}
-    ${null /* success */}                   | ${true}
-    ${'error' /* failure */}                | ${true}
-    ${new PreconditionFailure() /* skip */} | ${true}
+    originalValue                           | originalValuePretty            | isAsync
+    ${null /* success */}                   | ${'null'}                      | ${false}
+    ${'error' /* failure */}                | ${'"error"'}                   | ${false}
+    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${false}
+    ${null /* success */}                   | ${'null'}                      | ${true}
+    ${'error' /* failure */}                | ${'"error"'}                   | ${true}
+    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${true}
   `(
-    'should always return the cached value for skipRuns=false, originalValue=$originalValue, isAsync=$isAsync',
+    'should always return the cached value for skipRuns=false, originalValue=$originalValuePretty, isAsync=$isAsync',
     ({ originalValue, isAsync }) => {
       // Arrange
       // success -> success
@@ -49,15 +49,15 @@ describe('IgnoreEqualValuesProperty', () => {
   );
 
   it.each`
-    originalValue                           | isAsync
-    ${null /* success */}                   | ${false}
-    ${'error' /* failure */}                | ${false}
-    ${new PreconditionFailure() /* skip */} | ${false}
-    ${null /* success */}                   | ${true}
-    ${'error' /* failure */}                | ${true}
-    ${new PreconditionFailure() /* skip */} | ${true}
+    originalValue                           | originalValuePretty            | isAsync
+    ${null /* success */}                   | ${'null'}                      | ${false}
+    ${'error' /* failure */}                | ${'"error"'}                   | ${false}
+    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${false}
+    ${null /* success */}                   | ${'null'}                      | ${true}
+    ${'error' /* failure */}                | ${'"error"'}                   | ${true}
+    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${true}
   `(
-    'should return the cached value but skip success for skipRuns=true, originalValue=$originalValue, isAsync=$isAsync',
+    'should return the cached value but skip success for skipRuns=true, originalValue=$originalValuePretty, isAsync=$isAsync',
     async ({ originalValue, isAsync }) => {
       // Arrange
       // success -> skip
