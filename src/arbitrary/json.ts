@@ -38,7 +38,7 @@ function json(maxDepth: number): Arbitrary<string>;
  * @remarks Since 2.5.0
  * @public
  */
-function json(constraints: JsonSharedConstraints): Arbitrary<unknown>;
+function json(constraints: JsonSharedConstraints): Arbitrary<string>;
 function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
   // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
   //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
