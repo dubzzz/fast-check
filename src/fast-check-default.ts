@@ -67,7 +67,7 @@ import { object, ObjectConstraints } from './arbitrary/object';
 import { json, JsonSharedConstraints } from './arbitrary/json';
 import { anything } from './arbitrary/anything';
 import { unicodeJsonObject } from './arbitrary/unicodeJsonObject';
-import { jsonObject } from './arbitrary/jsonObject';
+import { jsonObject, JsonValue } from './arbitrary/jsonObject';
 import { unicodeJson } from './arbitrary/unicodeJson';
 import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
@@ -392,6 +392,7 @@ export {
   DedupValue,
   FalsyValue,
   FrequencyValue,
+  JsonValue,
   OneOfValue,
   RecordValue,
   // arbitrary types (mostly when produced values are difficult to formalize)

@@ -1,9 +1,9 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { string } from './string';
-import { jsonConstraintsBuilder, JsonSharedConstraints } from './_internals/helpers/JsonConstraintsBuilder';
+import { jsonConstraintsBuilder, JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
 import { anything } from './anything';
 
-export { JsonSharedConstraints };
+export { JsonSharedConstraints, JsonValue };
 
 /**
  * For any JSON compliant values
@@ -16,7 +16,7 @@ export { JsonSharedConstraints };
  * @remarks Since 1.2.3
  * @public
  */
-function jsonObject(): Arbitrary<unknown>;
+function jsonObject(): Arbitrary<JsonValue>;
 /**
  * For any JSON compliant values with a maximal depth
  *
@@ -34,7 +34,7 @@ function jsonObject(): Arbitrary<unknown>;
  * @remarks Since 1.2.3
  * @public
  */
-function jsonObject(maxDepth: number): Arbitrary<unknown>;
+function jsonObject(maxDepth: number): Arbitrary<JsonValue>;
 /**
  * For any JSON compliant values
  *
@@ -48,8 +48,8 @@ function jsonObject(maxDepth: number): Arbitrary<unknown>;
  * @remarks Since 2.5.0
  * @public
  */
-function jsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
-function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
-  return anything(jsonConstraintsBuilder(string(), constraints));
+function jsonObject(constraints: JsonSharedConstraints): Arbitrary<JsonValue>;
+function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<JsonValue> {
+  return anything(jsonConstraintsBuilder(string(), constraints)) as Arbitrary<JsonValue>;
 }
 export { jsonObject };

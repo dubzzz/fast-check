@@ -1,9 +1,9 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { unicodeString } from './unicodeString';
-import { jsonConstraintsBuilder, JsonSharedConstraints } from './_internals/helpers/JsonConstraintsBuilder';
+import { jsonConstraintsBuilder, JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
 import { anything } from './anything';
 
-export { JsonSharedConstraints };
+export { JsonSharedConstraints, JsonValue };
 
 /**
  * For any JSON compliant values with unicode support
@@ -16,7 +16,7 @@ export { JsonSharedConstraints };
  * @remarks Since 1.2.3
  * @public
  */
-function unicodeJsonObject(): Arbitrary<unknown>;
+function unicodeJsonObject(): Arbitrary<JsonValue>;
 /**
  * For any JSON compliant values with unicode support and a maximal depth
  *
@@ -34,7 +34,7 @@ function unicodeJsonObject(): Arbitrary<unknown>;
  * @remarks Since 1.2.3
  * @public
  */
-function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
+function unicodeJsonObject(maxDepth: number): Arbitrary<JsonValue>;
 /**
  * For any JSON compliant values with unicode support
  *
@@ -48,8 +48,8 @@ function unicodeJsonObject(maxDepth: number): Arbitrary<unknown>;
  * @remarks Since 2.5.0
  * @public
  */
-function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<unknown>;
-function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<unknown> {
-  return anything(jsonConstraintsBuilder(unicodeString(), constraints));
+function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<JsonValue>;
+function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<JsonValue> {
+  return anything(jsonConstraintsBuilder(unicodeString(), constraints)) as Arbitrary<JsonValue>;
 }
 export { unicodeJsonObject };
