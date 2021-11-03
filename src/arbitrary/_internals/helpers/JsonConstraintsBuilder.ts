@@ -46,20 +46,8 @@ export function jsonConstraintsBuilder(
 }
 
 /**
- * Typings for a Json object
- * @internal
- */
-type JsonObject = { [key in string]?: JsonValue };
-
-/**
- * Typings for a Json array
- * @internal
- */
-type JsonArray = JsonValue[];
-
-/**
  * Typings for a Json value
  * @remarks Since 2.20.0
  * @public
  */
-export type JsonValue = boolean | number | string | null | JsonArray | JsonObject;
+export type JsonValue = boolean | number | string | null | JsonValue[] | { [key in string]?: JsonValue };
