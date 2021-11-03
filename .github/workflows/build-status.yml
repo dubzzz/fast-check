@@ -221,7 +221,7 @@ jobs:
           cd test/type
           npx -p typescript@${{matrix.ts-version}} tsc
       - name: Test test/type/ with --exactOptionalPropertyTypes
-        if: matrix.ts-version != '3.2' && matrix.ts-version != '3.4' && matrix.ts-version != '3.9'
+        if: matrix.ts-version != '4.0'
         run: |
           cd test/type
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
