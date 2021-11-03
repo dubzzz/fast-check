@@ -77,7 +77,10 @@ function integer(max: number): ArbitraryWithContextualShrink<number>;
  * @param min - Lower bound for the generated integers (eg.: 0, Number.MIN_SAFE_INTEGER)
  * @param max - Upper bound for the generated integers (eg.: 2147483647, Number.MAX_SAFE_INTEGER)
  *
- * @remarks You may prefer to use `fc.integer({min, max})` instead.
+ * @deprecated
+ * Superceded by `fc.integer({min,max})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
+ * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ *
  * @remarks Since 0.0.1
  * @public
  */
