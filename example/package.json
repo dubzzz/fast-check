@@ -22,7 +22,7 @@
     "@types/react": "^17.0.27",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.6",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.4"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
