@@ -1,5 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { jsonObject } from './jsonObject';
+import { jsonValue } from './jsonValue';
 import { JsonSharedConstraints } from './_internals/helpers/JsonConstraintsBuilder';
 
 export { JsonSharedConstraints };
@@ -40,9 +40,9 @@ function json(maxDepth: number): Arbitrary<string>;
  */
 function json(constraints: JsonSharedConstraints): Arbitrary<string>;
 function json(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
-  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
-  //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
-  const arb = constraints != null ? jsonObject(constraints as any) : jsonObject();
+  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'jsonValue(number)'
+  //     and cannot be passed to 'jsonValue(JsonConstraints)' (both are too strict)
+  const arb = constraints != null ? jsonValue(constraints as any) : jsonValue();
   return arb.map(JSON.stringify);
 }
 export { json };

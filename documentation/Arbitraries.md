@@ -2842,6 +2842,47 @@ fc.object({
 </details>
 
 <details>
+<summary><b>jsonValue</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#jsonvalue">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate any value eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_.
+>
+> As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
+> `jsonValue` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
+>
+> Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
+
+*&#8195;Signatures*
+
+- `fc.jsonValue()`
+- `fc.jsonValue({maxDepth?})`
+
+*&#8195;with:*
+
+- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
+
+*&#8195;Usages*
+
+```js
+fc.jsonValue()
+// Examples of generated values:
+// • {"_":null,"":-1.7976931348623125e+308,"!|z&zt&8yg":{"oZ":null},"foL+as'":[],"aB*Jaag<G":true}
+// • {"3O":"UX:","jL*":""," ;":"ao@HR"}
+// • "y^-"
+// • "#5"
+// • {"kJyK":"T}Eg\"% #Pz"}
+// • …
+
+fc.jsonValue({maxDepth: 0})
+// Examples of generated values: 7.890307626412925e-165, null, 2.57e-322, -1.7976931348623153e+308, false…
+
+fc.jsonValue({maxDepth: 1})
+// Examples of generated values: [2.8337350635976525e-30,null], -1.2e-322, [], "W!oe%r(", {"!.kQF":0.07337742984045371,"Oc&o&sq%!":-1.0382289906424423e+276}…
+```
+</details>
+
+<details>
 <summary><b>jsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#jsonobject">api</a>]</summary><br/>
 
 *&#8195;Description*
@@ -2855,8 +2896,8 @@ fc.object({
 
 *&#8195;Signatures*
 
-- `fc.jsonObject()`
-- `fc.jsonObject({maxDepth?})`
+- `fc.jsonObject()` — _deprecated, prefer `fc.jsonValue` instead_
+- `fc.jsonObject({maxDepth?})` — _deprecated, prefer `fc.jsonValue` instead_
 - _`fc.jsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
@@ -2890,6 +2931,53 @@ fc.jsonObject({maxDepth: 1})
 </details>
 
 <details>
+<summary><b>unicodeJsonValue</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonvalue">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate any value eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_
+>
+> As `JSON.parse` preserves `-0`, `unicodeJsonValue` can also have `-0` as a value.
+> `unicodeJsonValue` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
+>
+> Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
+
+*&#8195;Signatures*
+
+- `fc.unicodeJsonValue()`
+- `fc.unicodeJsonValue({maxDepth?})`
+
+*&#8195;with:*
+
+- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
+
+*&#8195;Usages*
+
+```js
+fc.unicodeJsonValue()
+// Examples of generated values:
+// • [[""],-1.8253757080013491e+80,[null,null],{"司⁪๣":"䦋뛋춹"}]
+// • "펯氅䧲㽸"
+// • [{"೶夌켿趪⎈":null,"唧疝ᒓ먐뾘㎏":null,"࿳瘝珍뛗㩄":null},true,["륡ҏ",false,null,true,5.6700627944305465e+281],7.919075075355225e-245]
+// • []
+// • [{"댞浱犇괤ώ":2.037479233723486e+58,"ࡪ쨙㣶꛱":1.2057629913499813e-226,"㩁ꊊ":3.487804442707472e-291},[null,null,null,null],[true,-2.3882756793055076e-288,"夾佘ᆎ",null],{"":false,"棂辔ാ":false},{"䥁ꎋ⻢껗輘곢错ⱈ":-2.6201257754568063e-232,"丨빹ᨢᰋ噓퉇讉౳Ჺ":true}]
+// • …
+
+fc.unicodeJsonValue({maxDepth: 0})
+// Examples of generated values: -1.7976931348623047e+308, true, "힮褣", "", 1.128781208000642e+83…
+
+fc.unicodeJsonValue({maxDepth: 1})
+// Examples of generated values:
+// • true
+// • [null,null,false,-1.026519328099302e-180,null]
+// • [null,null,null,-6.73497623395787e+186]
+// • false
+// • {"\"*ᅤ鎞넨!.㼑䃌,":true,"拚臽猺":true}
+// • …
+```
+</details>
+
+<details>
 <summary><b>unicodeJsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonobject">api</a>]</summary><br/>
 
 *&#8195;Description*
@@ -2903,8 +2991,8 @@ fc.jsonObject({maxDepth: 1})
 
 *&#8195;Signatures*
 
-- `fc.unicodeJsonObject()`
-- `fc.unicodeJsonObject({maxDepth?})`
+- `fc.unicodeJsonObject()` — _deprecated, prefer `fc.unicodeJsonValue` instead_
+- `fc.unicodeJsonObject({maxDepth?})` — _deprecated, prefer `fc.unicodeJsonValue` instead_
 - _`fc.unicodeJsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*

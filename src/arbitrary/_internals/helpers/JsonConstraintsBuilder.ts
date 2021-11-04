@@ -8,8 +8,8 @@ import { ObjectConstraints } from './QualifiedObjectConstraints';
  * Shared constraints for:
  * - {@link json},
  * - {@link unicodeJson},
- * - {@link jsonObject},
- * - {@link unicodeJsonObject}
+ * - {@link jsonValue},
+ * - {@link unicodeJsonValue}
  *
  * @remarks Since 2.5.0
  * @public
