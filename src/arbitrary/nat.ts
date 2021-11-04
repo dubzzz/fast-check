@@ -46,6 +46,9 @@ function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<numbe
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
   }
+  if (!Number.isInteger(max)) {
+    throw new Error('fc.nat maximum value should be an integer');
+  }
   const arb = new IntegerArbitrary(0, max);
   return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }
