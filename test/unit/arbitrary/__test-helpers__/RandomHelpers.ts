@@ -2,7 +2,7 @@ import { MaybeMocked } from 'ts-jest/dist/utils/testing';
 import { Random } from '../../../../src/random/generator/Random';
 
 export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
-  const clone = jest.fn();
+  const clone = jest.fn().mockImplementation(() => new MyRandom({} as any));
   const next = jest.fn();
   const nextBoolean = jest.fn();
   const nextInt = jest.fn();
