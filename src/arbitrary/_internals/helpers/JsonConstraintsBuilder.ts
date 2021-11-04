@@ -48,16 +48,16 @@ export function jsonConstraintsBuilder(
 /**
  * Typings for a Json array
  * @remarks Since 2.20.0
- * @internal
+ * @public
  */
-interface JsonArray extends Array<JsonValue> {}
+export interface JsonArray extends Array<JsonValue> {}
 
 /**
  * Typings for a Json object
  * @remarks Since 2.20.0
- * @internal
+ * @public
  */
-type JsonObject = { [key in string]?: JsonValue };
+export type JsonObject = { [key in string]?: JsonValue };
 
 /**
  * Typings for a Json value
