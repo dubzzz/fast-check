@@ -44,3 +44,24 @@ export function jsonConstraintsBuilder(
       : { key, values, maxDepth: constraints.maxDepth }
     : { key, values };
 }
+
+/**
+ * Typings for a Json array
+ * @remarks Since 2.20.0
+ * @public
+ */
+export interface JsonArray extends Array<JsonValue> {}
+
+/**
+ * Typings for a Json object
+ * @remarks Since 2.20.0
+ * @public
+ */
+export type JsonObject = { [key in string]?: JsonValue };
+
+/**
+ * Typings for a Json value
+ * @remarks Since 2.20.0
+ * @public
+ */
+export type JsonValue = boolean | number | string | null | JsonArray | JsonObject;
