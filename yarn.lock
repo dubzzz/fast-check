@@ -494,26 +494,26 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@microsoft/api-extractor-model@7.13.14":
-  version "7.13.14"
-  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.13.14.tgz#071bf881942814c7786a20c6805bc5cde4019bc5"
-  integrity sha512-mKc917+QhOuOZebSnE77i8Tavj/G5ydIFoJqDIY9LpmAfJjsVHgL2pc7vkvW58QTxH2wadIDK1tLzcteOMEt4w==
+"@microsoft/api-extractor-model@7.13.15":
+  version "7.13.15"
+  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.13.15.tgz#151242b8d81eca791ed32bb70a4cf06c0f1443e7"
+  integrity sha512-AhcRPr3q5Nq64+5bFv9Drvvzsb876OyNNip6041x8qTOB7dsI9Q4ZFWWdTTQGCsVXzznMPgdjRkb/PQDTSLLpA==
   dependencies:
     "@microsoft/tsdoc" "0.13.2"
     "@microsoft/tsdoc-config" "~0.15.2"
-    "@rushstack/node-core-library" "3.43.0"
+    "@rushstack/node-core-library" "3.43.1"
 
 "@microsoft/api-extractor@^7.9.10":
-  version "7.18.17"
-  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor/-/api-extractor-7.18.17.tgz#3139f803fcaef919c7ff68e02bd6759bc637a64b"
-  integrity sha512-gZuJ//FAyfrOqWssY0cyU2bEo8FOIaIYVs+pU5IDyfImkye6YkT2Qnm5PAFhyYSkfUjV5SjvyuP4+VsDfS3jww==
+  version "7.18.18"
+  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor/-/api-extractor-7.18.18.tgz#df1d2e522843776bd0112b13473ab6cdb4260e66"
+  integrity sha512-rETXF7+NdwSta8WfSHupphsUTshjAczL5Caq38jmz2VNrscId/44mrjSt+eQB8fCssDS9BwVaZzdVLCmeDVKvA==
   dependencies:
-    "@microsoft/api-extractor-model" "7.13.14"
+    "@microsoft/api-extractor-model" "7.13.15"
     "@microsoft/tsdoc" "0.13.2"
     "@microsoft/tsdoc-config" "~0.15.2"
-    "@rushstack/node-core-library" "3.43.0"
-    "@rushstack/rig-package" "0.3.4"
-    "@rushstack/ts-command-line" "4.10.3"
+    "@rushstack/node-core-library" "3.43.1"
+    "@rushstack/rig-package" "0.3.5"
+    "@rushstack/ts-command-line" "4.10.4"
     colors "~1.2.1"
     lodash "~4.17.15"
     resolve "~1.17.0"
@@ -557,10 +557,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@rushstack/node-core-library@3.43.0":
-  version "3.43.0"
-  resolved "https://registry.yarnpkg.com/@rushstack/node-core-library/-/node-core-library-3.43.0.tgz#aace43bf49bc907445fa306f8c2e6010a8353cda"
-  integrity sha512-MFLW+6X83k6o8m8KnWkDhL/8NCJYHbFnnDokPSX1UHC3JwiEvVhHmEnxZv2YEzwnXeFYoKViub2G2t2liHbHLA==
+"@rushstack/node-core-library@3.43.1":
+  version "3.43.1"
+  resolved "https://registry.yarnpkg.com/@rushstack/node-core-library/-/node-core-library-3.43.1.tgz#3d6e5961a7070394210c4a19a28311b3ffcd76e3"
+  integrity sha512-yu9LILddKKz8o6tCsU37Ox2C+djvZdG7wZeCmlObT6dV8xpS+AZbpIVj/kyuPXHiiNg1ZhvN//roHs9yOXEFaA==
   dependencies:
     "@types/node" "12.20.24"
     colors "~1.2.1"
@@ -572,18 +572,18 @@
     timsort "~0.3.0"
     z-schema "~3.18.3"
 
-"@rushstack/rig-package@0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@rushstack/rig-package/-/rig-package-0.3.4.tgz#13987cea8eef2f350e2e7538e028fa839f8c4f3c"
-  integrity sha512-NsCzPxPQ8cu7lnqa/4xBQXuCJwaBrb5vEbOC8Q/bMQK7GDOxeVUN3/f+NCYjgQSl39toAm8jQJ7TJe+RYYX3yQ==
+"@rushstack/rig-package@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@rushstack/rig-package/-/rig-package-0.3.5.tgz#7ddab0994647837bab8fdef26f990f1774d82e78"
+  integrity sha512-CvqWw+E81U5lRBN/lUj7Ngr/XQa/PPb2jAS5QcLP7WL+IMUl+3+Cc2qYrsDoB4zke81kz+usWGmBQpBzGMLmAA==
   dependencies:
     resolve "~1.17.0"
     strip-json-comments "~3.1.1"
 
-"@rushstack/ts-command-line@4.10.3":
-  version "4.10.3"
-  resolved "https://registry.yarnpkg.com/@rushstack/ts-command-line/-/ts-command-line-4.10.3.tgz#2b8610473f2aa9e22450273f662abb02a3979a11"
-  integrity sha512-DdDfwr8CO6CP/kBZlQrrwKyA6UxOteujaIBrmoHa+J+dyLZC19YA/LK0fAHjr2qHLAJHHXVpZwPH8BpqN84oVg==
+"@rushstack/ts-command-line@4.10.4":
+  version "4.10.4"
+  resolved "https://registry.yarnpkg.com/@rushstack/ts-command-line/-/ts-command-line-4.10.4.tgz#05142b74e5cb207d3dd9b935c82f80d7fcb68042"
+  integrity sha512-4T5ao4UgDb6LmiRj4GumvG3VT/p6RSMgl7TN7S58ifaAGN2GeTNBajFCDdJs9QQP0d/4tA5p0SFzT7Ps5Byirg==
   dependencies:
     "@types/argparse" "1.0.38"
     argparse "~1.0.9"
