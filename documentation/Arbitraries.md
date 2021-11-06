@@ -2128,7 +2128,7 @@ fc.option(fc.string(), { nil: undefined })
 *&#8195;Signatures*
 
 - `fc.oneof(...arbitraries)`
-- `fc.oneof({withCrossShrink?, maxDepth?, depthIdentifier?}, ...{ arbitrary, weight })`
+- `fc.oneof({withCrossShrink?, maxDepth?, depthIdentifier?}, ...arbitraries)`
 
 *&#8195;with:*
 
