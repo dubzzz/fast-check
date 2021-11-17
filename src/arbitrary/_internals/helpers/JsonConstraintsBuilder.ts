@@ -50,7 +50,7 @@ export function jsonConstraintsBuilder(
   return constraints != null
     ? typeof constraints === 'number'
       ? { key, values, maxDepth: constraints }
-      : { key, values, maxDepth: constraints.maxDepth }
+      : { key, values, depthFactor: constraints.depthFactor, maxDepth: constraints.maxDepth }
     : { key, values };
 }
 
