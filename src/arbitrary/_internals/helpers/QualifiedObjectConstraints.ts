@@ -13,6 +13,15 @@ import { boxedArbitraryBuilder } from '../builders/BoxedArbitraryBuilder';
  */
 export interface ObjectConstraints {
   /**
+   * Limit the depth of the object by increasing the probability to generate simple values (defined via values)
+   * as we go deeper in the object.
+   *
+   * Example of values: 0.1 (small impact as depth increases), 0.5, 1 (huge impact as depth increases).
+   *
+   * @remarks Since 2.20.0
+   */
+  depthFactor?: number;
+  /**
    * Maximal depth allowed
    * @remarks Since 0.0.7
    */
@@ -142,6 +151,7 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
       orDefault(settings.values, defaultValues()),
       orDefault(settings.withBoxedValues, false)
     ),
+    depthFactor: orDefault(settings.depthFactor, 0),
     maxDepth: orDefault(settings.maxDepth, 2),
     maxKeys: orDefault(settings.maxKeys, 5),
     withSet: orDefault(settings.withSet, false),

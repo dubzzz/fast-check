@@ -998,11 +998,12 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 *&#8195;Signatures*
 
 - `fc.json()`
-- `fc.json({maxDepth?})`
+- `fc.json({depthFactor?, maxDepth?})`
 - _`fc.json(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
+- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -1044,11 +1045,12 @@ fc.json({maxDepth: 1})
 *&#8195;Signatures*
 
 - `fc.unicodeJson()`
-- `fc.unicodeJson({maxDepth?})`
+- `fc.unicodeJson({depthFactor?, maxDepth?})`
 - _`fc.unicodeJson(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
+- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -2757,11 +2759,12 @@ fc.record({
 *&#8195;Signatures*
 
 - `fc.object()`
-- `fc.object({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
+- `fc.object({key?, depthFactor?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
+- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
@@ -2838,6 +2841,19 @@ fc.object({
 // • {"};;j/k&2T":{"new Date(\"+220664-08-31T16:38:43.894Z\")":-2289144276660280,"cXLsbV S":1138144113824397},"teD^Ev":"[new Number(-1.5364199974582094e+205),new Number(5.180815866347032e+247),new Number(3.636439525223476e-281)]","!#(o3t":{"1vv":undefined,"wH{;tJ":null},"k{Xkv":{},"":new Set([]),"}":{"false":{"2995845410082023":true,"kV}Hc*yU,.":true,";Wznpcq":false,"&CH+'X":false}},"6W,~y/":new Date("-211027-11-03T15:54:15.338Z"),"ndQOiBz":{}}
 // • {"RrAs^,;_'d":new Set([]),"cx:<rwea":"new Date(\"+020332-01-16T05:46:46.152Z\")","":Object.assign(Object.create(null),{"L'jRbo{j":-31976587169846070239654687470021029877524367311417431076643014306029456266120n,"';}PmFHH![":Float64Array.from([-8.018908485009337e+30,8.496864005059645e+201,-3.9194568152035106e+268,-3.086464372465133e+126,3.7461513350649476e+307,1.8080540145972749e-16,-3.302613637232917e-16,2.919782715590315e-98,5.497279242648775e-209]),"<!a}uk":Object.assign(Object.create(null),{"h!+#q":new Number(-2.201858778700874e-229),"-1.2569260788236659e-20":new Number(-7.614430918991341e-292),"fY*":new Number(-5.6031793388037794e+178),"=v{~S":new Number(1.0861583449836279e-82)}),"3ine":[new Boolean(false),false]})}
 // • …
+
+fc.object({
+  depthFactor: 0.1,
+  maxDepth: 1000,
+})
+// Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
+// Examples of generated values:
+// • {"#$!":[-6284333281935340],"rfzf":{"\"!`":-1.909234660360722e+235},"{}a~":[]}
+// • {"eE:":[-8.95172863816096e-249,-3.288461904004645e+282],"4s{$4":{"{/$^Sz":"*4"},"|y)-$J":false,"Ai%":[3.538086683290918e-47],"[":[true,true,false,false],"X5BF[d6&'I":[],"H9 :My":[],"[waR\\H":[{"L4xCzK":4132248318901977,"0[x5DB":true,"y":{"Ykx#K!":["","j=Mg%",""],"D lxo>e1":{"":-3.2491742827673436e+204,"m}-tBgvv4\"":-2.6247571723139775e+205,",{*":2.9035310672004322e+206,"~":-1.710487457996338e-260},"\\_k":{"V)sp>=C":" x6","Swj":"(","#<VDu[":"gL","^1b_":"(+m"}},"vw'bGz":[-1.120167166012887e-197]},{"jvn":false,"v|(:db":true,"":true},"d3S ",{"yluHsgJ}s":undefined,"(h$)2]Pk4}":"OK ","nq":undefined,"+y^*.ov9,":undefined}]}
+// • {"0":[2.6703788454731695e+117,-1.6285761065806155e+41,-4.520334174621359e-56,1.492553358044542e+214],"{1Z\\sxWae_":[2565154082148461,8302012241278541,-1390788262228714],"[#.'O/ly;Y":{",cx`iZ":7119745345023617,"j":457026501372385,"=Y":-8910772974540265,"().1Dd^":3683425995195221},"":{",0T":839214944033725,"n8cu]":-2390850956257159,"vkg%(B{5Vv":2876244094548489},"ehE>h-C":[{"#b$Yu6:^O[":[{"x7FG&:":"sWH(=2\\5}","QEb9T":undefined,"{M=x1 ":"_m2"},[true],"5Wo",[null,"",""],{"vcg\"nZ%?ne":{"FiVp:W;":-3.096943297573584e+46,"e3/YX,+4z,":-3.499884681652477e-94,";u":1.1081655059865526e+222,"'@O":-1.9771446652696e-98},"c,0QZ|":[],"":{"B%l{POF":2.517622513383714e+185,"_E236z":-9.365880577754715e-216,"J<SO3":2.892270139519411e-20},"1j":[";4W$z'G-/R",{"IY:y=vzGR":-1.5331683125242364e+82,"a1":-7.368585047763132e-67,"<[/":2.5398091144876033e+88},{},["xp%4","c)WYY","\"35woC","f","&7"],{"(Qf(GZ":"&IM$<]I","d:`":"Y^bL:Od%t","-pVb":"JD!HJAj8\"e","oLQ/h-k,":"aeFafS*}","":"g\"'cJ]-)RS"}]}],"D":{":t_xR,nU":3.7663289884259713e+99,"0C0E7{^":-3.1206201241376693e-93,"":6.04818821701892e+142},"S5":[],"A|.~EX\"(0":"gx"},[{}],{},"3fs0mb9"],"PyTK-2-ecs":{"x":4735433617528581,"@_":{".Csd=UQ":{"MB%}47!\"":9.366687842298366e-178,"F\"`-zN":2.3420168472347057e-241,"uM":4.6277351388165825e-156,"|{":-1.0109916072104198e+114},"~7h&Ap":">_~!","'qs&gG<n":["Q","g5lDpx\\T","4B&v\\j",undefined,"`L[a:ka"],"ti\\q6Iz.w":-2031288555963222},">":[undefined]},"Y\"Qx4&[:d":{},"Q":{"Yc":{"0":"fs[ ","":"c2g T1c>cu","X5(Swxt":"m["},"^D+1-#+V":{"3f&ZRS":false,"Ob":false},"N":["#{",[""],4.228004803697316e-259]},"-U-scsErAG":{"":true,"~":false,"un()":true,"\\_Kj^":true}}
+// • {"M\\ ":{"2F2SCMM>4R":"E","ahq=S|5pS":undefined,"N5<VQ":undefined},"\"|z!":{"p":undefined},"^jk":[-6.76864040582647e-62]}
+// • {"% ":[{},[]],"":{"/":[[]]},"aSC0":[-1.2027554126668666e+206,-2.2823599405296565e+32]}
+// • …
 ```
 </details>
 
@@ -2856,11 +2872,12 @@ fc.object({
 *&#8195;Signatures*
 
 - `fc.jsonObject()`
-- `fc.jsonObject({maxDepth?})`
+- `fc.jsonObject({depthFactor?, maxDepth?})`
 - _`fc.jsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
+- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -2904,11 +2921,12 @@ fc.jsonObject({maxDepth: 1})
 *&#8195;Signatures*
 
 - `fc.unicodeJsonObject()`
-- `fc.unicodeJsonObject({maxDepth?})`
+- `fc.unicodeJsonObject({depthFactor?, maxDepth?})`
 - _`fc.unicodeJsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
+- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -2941,11 +2959,12 @@ fc.unicodeJsonObject({maxDepth: 1})
 *&#8195;Signatures*
 
 - `fc.anything()`
-- `fc.anything({key?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
+- `fc.anything({key?, depthFactor?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
+- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
@@ -3012,6 +3031,13 @@ fc.anything({
 // • new Set([])
 // • Int32Array.from([-1929856236])
 // • …
+
+fc.anything({
+  depthFactor: 0.1,
+  maxDepth: 1000,
+})
+// Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
+// Examples of generated values: "<M3<BDD", [[],{"IKoG7_ji":{"\\`~@":true,"g2Yf57C-[":true}},[false],-3.324808399720659e+44], [""], true, -1.0395574284395397e-83…
 ```
 </details>
 
