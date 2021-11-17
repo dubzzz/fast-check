@@ -2916,15 +2916,6 @@ fc.jsonObject({maxDepth: 1})
 // • {}
 // • …
 
-fc.jsonObject({depthFactor: 0.01, maxDepth: 1000})
-// Examples of generated values:
-// • 1.632639383041831e-286
-// • [[],{"IKoG7_ji":{"\\`~@":1.1383666559247216e-218,"2Yf5":3.1096726241025258e-294}},{},[null,{"/i3W\"FS":[]}]]
-// • [""]
-// • null
-// • -1.0395574284395395e-83
-// • …
-
 fc.jsonObject({depthFactor: 0.1})
 // Examples of generated values:
 // • 2.6e-322
@@ -2932,15 +2923,6 @@ fc.jsonObject({depthFactor: 0.1})
 // • -1e-322
 // • {"wnP-!E%SNp":"Cu2[ '}","}t":"u"}
 // • {"!(":{"ldvae;X":6.618751109058961e+41,"(bvLV5Q":4.163017031290256e+162,"K\"F":1.5339457181496153e+35,"o<|c":-1.3214581486561883e-288,"8< bZ] DP":-6003430007757.388},",":{}}
-// • …
-
-fc.jsonObject({depthFactor: 1})
-// Examples of generated values:
-// • false
-// • {"Z}%Y .":-4.3433701524965336e-129}
-// • {"_J":true," 16\\g'":[true,true,false,true],"A]{nM\\iw<":true,"M":{"7":true,"c~&`>r:":false,"A1xkeCSV":true,"U8q#$g":true,",7b3":true}}
-// • {"0":-1.797693134862306e+308,"I,}Xl":[1.2e-322,true,true,true]}
-// • ["Sk%","*"]
 // • …
 ```
 </details>
@@ -2986,9 +2968,6 @@ fc.unicodeJsonObject({maxDepth: 1})
 // • [null]
 // • …
 
-fc.unicodeJsonObject({depthFactor: 0.01, maxDepth: 1000})
-// Examples of generated values: null, "憞", {"+":null,"䤌抵":null,"㞔踏⫫ওᠶ䧁㩦":null,"&,%ბꧧ蛶":null,"":null}, {}, []…
-
 fc.unicodeJsonObject({depthFactor: 0.1})
 // Examples of generated values:
 // • "荽醮郺旽粈㈾"
@@ -2996,15 +2975,6 @@ fc.unicodeJsonObject({depthFactor: 0.1})
 // • false
 // • {" 㲉䑝*":[false]}
 // • {"":{"":false,"霵":2.2e-322,"￵":4e-323},"-\"者":{"봋":true,"윂ꎽ〚Ꮳ㟺㙰㒈♖暶ጼ":false},"㴴몖":{"谔挴欋킆醴殒ꬖ캩":null,"":"䎕쳳ᆰ"},"#귯໢ഐꃒ礖(&頫":[null,null,null,null,null]}
-// • …
-
-fc.unicodeJsonObject({depthFactor: 1})
-// Examples of generated values:
-// • [1.1219945151091497e+195,3.1543268721301525e+101,1.8992521576017034e-284]
-// • {"滢ⴛ瑖㻡ꎾ쾻":"","&":{"ﾐ䉤᫔㈧":"돦","/￶ ":null,"흷씖*!":-6.231586447634778e+81,"옱ຈ睺䝛㉪⢟":-1.7976931348623083e+308},"":null}
-// • [null]
-// • null
-// • []
 // • …
 ```
 </details>
