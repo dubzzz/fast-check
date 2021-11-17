@@ -14,9 +14,13 @@ import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKey
 describe('unicodeJsonObject (integration)', () => {
   type Extra = JsonSharedConstraints | undefined;
   const extraParameters: fc.Arbitrary<Extra> = fc.option(
-    fc.record({
-      maxDepth: fc.nat({ max: 5 }),
-    }),
+    fc.record(
+      {
+        depthFactor: fc.double({ min: 0, max: 10 }),
+        maxDepth: fc.nat({ max: 5 }),
+      },
+      { requiredKeys: [] }
+    ),
     { nil: undefined }
   );
 
