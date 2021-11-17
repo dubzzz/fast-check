@@ -1029,6 +1029,9 @@ fc.json({maxDepth: 1})
 // • "{\"|\":-9.444458547528003e-26,\"*I\":false,\"6zr(>uO!A\":false,\"2`I_6@YN\":null}"
 // • "[0.00005536178133696582,1.0077587675918889e-197,-1.7048414608911972e-193]"
 // • …
+
+fc.json({depthFactor: 0.1})
+// Examples of generated values: "[{},[false,true]]", "-1.2e-322", "[]", "\"W!oe%r(\"", "{\"!.kQF\":0.07337742984045371,\"Oc&o&sq%!\":-1.0382289906424423e+276}"…
 ```
 </details>
 
@@ -1070,6 +1073,15 @@ fc.unicodeJson({maxDepth: 0})
 
 fc.unicodeJson({maxDepth: 1})
 // Examples of generated values: "false", "true", "\"㬻켔㣃Ꚗ⧅ޔ\"", "[]", "-2.787348602876926e-78"…
+
+fc.unicodeJson({depthFactor: 0.1})
+// Examples of generated values:
+// • "true"
+// • "[null,[],{},{\"麷梒쨼䰻㝚堊\":7.713096177634078e-23,\"\":-2.032086846640786e-16,\"쓹ﻹ벒ﶁКᢷཿ\":\"巌竌﯆뺃孽\"},[7.41252258596104e-103,1.4519829349301023e+133,-9.416217557470048e+125]]"
+// • "[null,[8.629895099097849e+77,null],{\"Ҟﺱoㅕꆗ킬휈悺\":-1.9972723911875336e-192,\"ﰨꇹ綾籭栤\":\"䴦⑌辘峰֊\",\"ᴊ칠ǳ쉷ꎅ䨹㑋酁\":\"ኡￛo蝈聿آ輗᎐\"},[null,-1.40463020552399e+163,-9.604956113050041e+55,true]]"
+// • "false"
+// • "{\"\\\"*ᅤ鎞넨!.㼑䃌,\":true,\"拚臽猺\":true}"
+// • …
 ```
 </details>
 
@@ -2903,6 +2915,33 @@ fc.jsonObject({maxDepth: 1})
 // • {".b?^O.":2.2675666777479575e+300,"1$L{zDJ":-4.497309943661619e+91,"j*s 9%":2.4621957913205494e+195,"m":1.0932950225144496e-204}
 // • {}
 // • …
+
+fc.jsonObject({depthFactor: 0.01, maxDepth: 1000})
+// Examples of generated values:
+// • 1.632639383041831e-286
+// • [[],{"IKoG7_ji":{"\\`~@":1.1383666559247216e-218,"2Yf5":3.1096726241025258e-294}},{},[null,{"/i3W\"FS":[]}]]
+// • [""]
+// • null
+// • -1.0395574284395395e-83
+// • …
+
+fc.jsonObject({depthFactor: 0.1})
+// Examples of generated values:
+// • 2.6e-322
+// • [["H\"C@en.Z-K","}","(WeB`%sT","w","o+vJj7"],["\".B",null]]
+// • -1e-322
+// • {"wnP-!E%SNp":"Cu2[ '}","}t":"u"}
+// • {"!(":{"ldvae;X":6.618751109058961e+41,"(bvLV5Q":4.163017031290256e+162,"K\"F":1.5339457181496153e+35,"o<|c":-1.3214581486561883e-288,"8< bZ] DP":-6003430007757.388},",":{}}
+// • …
+
+fc.jsonObject({depthFactor: 1})
+// Examples of generated values:
+// • false
+// • {"Z}%Y .":-4.3433701524965336e-129}
+// • {"_J":{"16\\g'vAG":null,"l[+":null},"RA]{n":[],"":{"M":true,"D$vc~":true,">r:":false},"A1xkeCSV":[1.9895949472513747e+93,-8012385929821.01]}
+// • {"0":[null],",}Xl":[1.2e-322,true,true,true]}
+// • ["Sk%","*"]
+// • …
 ```
 </details>
 
@@ -2945,6 +2984,27 @@ fc.unicodeJsonObject({maxDepth: 1})
 // • {"ꁺ척蜱젿됻⫄":null,"ั㠰":null,"᧳ꊺ蹀렍ǻ劸":null}
 // • []
 // • [null]
+// • …
+
+fc.unicodeJsonObject({depthFactor: 0.01, maxDepth: 1000})
+// Examples of generated values: null, "憞", {"+":null,"䤌抵":null,"㞔踏⫫ওᠶ䧁㩦":null,"&,%ბꧧ蛶":null,"":null}, {}, []…
+
+fc.unicodeJsonObject({depthFactor: 0.1})
+// Examples of generated values:
+// • "荽醮郺旽粈㈾"
+// • [{"솆薠롺□嬞⥨萳퐋":null,"Ϊ᪤퟿䧂콂讵⨷噟쒖":null,"㶄ﾼ":null,"所":null,"䵮␉":null},[]]
+// • false
+// • {" 㲉䑝*":[false]}
+// • {"":{"":false,"霵":2.2e-322,"￵":4e-323},"-\"者":{"봋":true,"윂ꎽ〚Ꮳ㟺㙰㒈♖暶ጼ":false},"㴴몖":{"谔挴欋킆醴殒ꬖ캩":null,"":"䎕쳳ᆰ"},"#귯໢ഐꃒ礖(&頫":[null,null,null,null,null]}
+// • …
+
+fc.unicodeJsonObject({depthFactor: 1})
+// Examples of generated values:
+// • [1.1219945151091497e+195,3.1543268721301525e+101,1.8992521576017034e-284]
+// • {"滢ⴛ瑖㻡ꎾ쾻":[null,null,null,null],"黦넅￰ᗰﾐ'":[1.7976931348623081e+308],"⺓졆ό䌈諐":-9.005091069307619e-302}
+// • [null]
+// • null
+// • []
 // • …
 ```
 </details>
