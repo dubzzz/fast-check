@@ -162,4 +162,24 @@ describe('integer', () => {
         expect(() => integer({ min: high, max: low })).toThrowError();
       })
     ));
+
+  it('should throw when minimum value or maximum value is not an integer', () => {
+    fc.assert(
+      fc.property(
+        fc.oneof(
+          fc.tuple(fc.maxSafeInteger(), fc.double({ next: true })),
+          fc.tuple(fc.double({ next: true }), fc.double({ next: true }))
+        ),
+        ([a, b]) => {
+          // Arrange
+          fc.pre(!Number.isInteger(a) || !Number.isInteger(b));
+          fc.pre(a !== b);
+          const [low, high] = a < b ? [a, b] : [b, a];
+
+          // Act / Assert
+          expect(() => integer({ min: low, max: high })).toThrowError();
+        }
+      )
+    );
+  });
 });

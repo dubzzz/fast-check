@@ -16,6 +16,15 @@ import { ObjectConstraints } from './QualifiedObjectConstraints';
  */
 export interface JsonSharedConstraints {
   /**
+   * Limit the depth of the object by increasing the probability to generate simple values (defined via values)
+   * as we go deeper in the object.
+   *
+   * Example of values: 0.1 (small impact as depth increases), 0.5, 1 (huge impact as depth increases).
+   *
+   * @remarks Since 2.20.0
+   */
+  depthFactor?: number;
+  /**
    * Maximal depth allowed
    * @remarks Since 2.5.0
    */
@@ -41,7 +50,7 @@ export function jsonConstraintsBuilder(
   return constraints != null
     ? typeof constraints === 'number'
       ? { key, values, maxDepth: constraints }
-      : { key, values, maxDepth: constraints.maxDepth }
+      : { key, values, depthFactor: constraints.depthFactor, maxDepth: constraints.maxDepth }
     : { key, values };
 }
 

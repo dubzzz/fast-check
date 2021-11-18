@@ -89,4 +89,16 @@ describe('nat', () => {
         expect(() => nat({ max })).toThrowError();
       })
     ));
+
+  it('should throw when maximum value is not an integer', () => {
+    fc.assert(
+      fc.property(fc.double({ next: true }), (max) => {
+        // Arrange
+        fc.pre(!Number.isInteger(max));
+
+        // Act / Assert
+        expect(() => nat({ max })).toThrowError();
+      })
+    );
+  });
 });

@@ -90,6 +90,7 @@ describe('anyArbitraryBuilder (integration)', () => {
   type Extra = ObjectConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     {
+      depthFactor: fc.double({ min: 0, max: 10 }),
       maxDepth: fc.nat({ max: 5 }),
       maxKeys: fc.nat({ max: 10 }),
       withBigInt: fc.boolean(),

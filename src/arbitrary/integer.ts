@@ -101,6 +101,12 @@ function integer(
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
   }
+  if (!Number.isInteger(constraints.min)) {
+    throw new Error('fc.integer minimum value should be an integer');
+  }
+  if (!Number.isInteger(constraints.max)) {
+    throw new Error('fc.integer maximum value should be an integer');
+  }
   const arb = new IntegerArbitrary(constraints.min, constraints.max);
   return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
 }

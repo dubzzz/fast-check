@@ -2,6 +2,10 @@ import { RandomGenerator as PureRandRandomGenerator } from 'pure-rand';
 
 /**
  * Interface for `RandomGenerator` as declared in pure-rand for versions strictly lower than 5.x.x
+ *
+ * @deprecated
+ * Temporary helper that will disappear and not be supported anymore in next major release.
+ *
  * @remarks Since 2.17.0
  * @public
  */
@@ -20,6 +24,10 @@ export interface LegacyPureRandRandomGenerator {
  * The minimal API for a random generator as requested by fast-check.
  * The most important point being that the generator HAS TO BE pure.
  * In other words, it has to expose methods to compute a random value while not impacting itself (see next/jump).
+ *
+ * @deprecated
+ * Temporary helper that will disappear in next major release.
+ * Prefer referencing directly RandomGenerator from RandomGenerator.
  *
  * @remarks Since 2.17.0
  * @public

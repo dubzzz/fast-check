@@ -76,13 +76,14 @@ function typedArray() {
 /** @internal */
 export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Arbitrary<unknown> {
   const arbitrariesForBase = constraints.values;
+  const depthFactor = constraints.depthFactor;
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
   const baseArb = oneof(...arbitrariesForBase);
 
   return letrec((tie) => ({
     anything: oneof(
-      { maxDepth },
+      { maxDepth, depthFactor },
       baseArb, // Final recursion case
       tie('array'),
       tie('object'),
