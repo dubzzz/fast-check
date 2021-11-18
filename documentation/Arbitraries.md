@@ -2884,10 +2884,11 @@ fc.object({
 *&#8195;Signatures*
 
 - `fc.jsonValue()`
-- `fc.jsonValue({maxDepth?})`
+- `fc.jsonValue({depthFactor?, maxDepth?})`
 
 *&#8195;with:*
 
+- `depthFactor?` — default: `0.1` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -2983,10 +2984,11 @@ fc.jsonObject({depthFactor: 0.1})
 *&#8195;Signatures*
 
 - `fc.unicodeJsonValue()`
-- `fc.unicodeJsonValue({maxDepth?})`
+- `fc.unicodeJsonValue({depthFactor?, maxDepth?})`
 
 *&#8195;with:*
 
+- `depthFactor?` — default: `0.1` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
