@@ -72,6 +72,7 @@
     "eslint": "^7.1.0",
     "eslint-config-prettier": "^8.1.0",
     "jest": "^26.1.0",
+    "jscodeshift": "^0.13.0",
     "mkdirp": "^1.0.4",
     "prettier": "2.4.1",
     "replace-in-file": "^6.0.0",
