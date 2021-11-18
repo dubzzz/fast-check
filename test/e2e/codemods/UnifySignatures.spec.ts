@@ -12,14 +12,16 @@ const defaultTransformOptions = {
   local: false,
 };
 
-describe('codemods::unify-signature', () => {
+describe.each([['babel'], ['ts'], ['tsx']])('codemods::unify-signature (parser: %s)', (parser) => {
+  const testOptions = { parser };
+
   describe('require', () => {
     it('should recognize default require', () => {
       const source = trim`
         const fc = require('fast-check');
         fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -29,7 +31,7 @@ describe('codemods::unify-signature', () => {
         const fc = require('not-fast-check');
         fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -38,7 +40,7 @@ describe('codemods::unify-signature', () => {
         const { assert, property, array, nat } = require('fast-check');
         assert(property(array(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -48,7 +50,7 @@ describe('codemods::unify-signature', () => {
         const { assert, property, array, nat } = require('not-fast-check');
         assert(property(array(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -58,7 +60,7 @@ describe('codemods::unify-signature', () => {
         const { array: fcArray } = require('fast-check');
         assert(property(fcArray(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -69,7 +71,7 @@ describe('codemods::unify-signature', () => {
         const { array: fcArray } = require('not-fast-check');
         assert(property(fcArray(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -79,7 +81,7 @@ describe('codemods::unify-signature', () => {
           const fc = require('./path');
           fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
         `;
-        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
         expect(sanitize(output)).toBe(sanitize(source));
       });
 
@@ -99,7 +101,7 @@ describe('codemods::unify-signature', () => {
           const { array: localArray } = require('./path');
           fc.assert(fc.property(localArray(fc.nat(), 7, 10), () => true));
         `;
-        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
         expect(sanitize(output)).toBe(sanitize(source));
       });
 
@@ -141,7 +143,7 @@ describe('codemods::unify-signature', () => {
         import fc from 'fast-check';
         fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -151,7 +153,7 @@ describe('codemods::unify-signature', () => {
         import fc from 'not-fast-check';
         fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -160,7 +162,7 @@ describe('codemods::unify-signature', () => {
         import * as fc from 'fast-check';
         fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -170,7 +172,7 @@ describe('codemods::unify-signature', () => {
         import * as fc from 'not-fast-check';
         fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -179,7 +181,7 @@ describe('codemods::unify-signature', () => {
         import { assert, property, array, nat } from 'fast-check';
         assert(property(array(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -189,7 +191,7 @@ describe('codemods::unify-signature', () => {
         import { assert, property, array, nat } from 'not-fast-check';
         assert(property(array(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -199,7 +201,7 @@ describe('codemods::unify-signature', () => {
         import { array as fcArray } from 'fast-check';
         assert(property(fcArray(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -210,7 +212,7 @@ describe('codemods::unify-signature', () => {
         import { array as fcArray } from 'not-fast-check';
         assert(property(fcArray(nat(), 7, 10), () => true));
       `;
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -220,7 +222,7 @@ describe('codemods::unify-signature', () => {
           import fc from './path';
           fc.assert(fc.property(fc.array(fc.nat(), 7, 10), () => true));
         `;
-        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
         expect(sanitize(output)).toBe(sanitize(source));
       });
 
@@ -240,7 +242,7 @@ describe('codemods::unify-signature', () => {
           import { array as localArray } from './path';
           fc.assert(fc.property(localArray(fc.nat(), 7, 10), () => true));
         `;
-        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
         expect(sanitize(output)).toBe(sanitize(source));
       });
 
@@ -298,7 +300,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(maxLength);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -306,7 +308,7 @@ describe('codemods::unify-signature', () => {
       'should migrate %s',
       (expression) => {
         const source = buildSourceFor(expression);
-        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
         expect(sanitize(output)).not.toBe(sanitize(source));
         expect(output).toMatchSnapshot();
       }
@@ -320,7 +322,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(arb, maxLength);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -330,7 +332,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(arb, minLength, maxLength);`],
     ])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -344,7 +346,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(arb, minLength, maxLength);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -360,7 +362,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(arb, minLength, maxLength, compare);`],
     ])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -369,7 +371,7 @@ describe('codemods::unify-signature', () => {
   describe.each([['subarray'], ['shuffledSubarray']])('%s', (arbitrary) => {
     it.each([[`fc.${arbitrary}([1, 2, 3]);`]])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -379,7 +381,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(computeArray(), 1, 2);`],
     ])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -392,13 +394,13 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(maxDepth);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
     it.each([[`fc.${arbitrary}(2);`]])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -411,13 +413,13 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(arb, freq);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
     it.each([[`fc.${arbitrary}(arb, 10);`]])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -430,13 +432,13 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}([], maxCommands);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
     it.each([[`fc.${arbitrary}([], 10);`]])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -449,7 +451,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(num);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -460,7 +462,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(num, mode);`],
     ])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -469,13 +471,13 @@ describe('codemods::unify-signature', () => {
   describe.each([['bigInt']])('%s', (arbitrary) => {
     it.each([[`fc.${arbitrary}();`], [`fc.${arbitrary}({});`]])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
     it.each([[`fc.${arbitrary}(1n, 2n);`], [`fc.${arbitrary}(min, max);`]])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -488,7 +490,7 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(max);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
@@ -496,7 +498,7 @@ describe('codemods::unify-signature', () => {
       'should migrate %s',
       (expression) => {
         const source = buildSourceFor(expression);
-        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+        const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
         expect(sanitize(output)).not.toBe(sanitize(source));
         expect(output).toMatchSnapshot();
       }
@@ -510,13 +512,13 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(max);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
     it.each([[`fc.${arbitrary}(1n);`], [`fc.${arbitrary}(BigInt(1));`]])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });
@@ -529,13 +531,13 @@ describe('codemods::unify-signature', () => {
       [`fc.${arbitrary}(max);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
     it.each([[`fc.${arbitrary}(1);`]])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
-      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
+      const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source }, testOptions);
       expect(sanitize(output)).not.toBe(sanitize(source));
       expect(output).toMatchSnapshot();
     });

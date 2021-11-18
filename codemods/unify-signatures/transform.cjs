@@ -155,7 +155,8 @@ module.exports = function (file, api, options) {
       (argument.type === 'CallExpression' &&
         argument.callee.type === 'Identifier' &&
         argument.callee.name === 'BigInt') ||
-      ((argument.type === 'Literal' || argument.type === 'BigIntLiteral') && typeof argument.value === 'bigint')
+      (argument.type === 'Literal' && typeof argument.value === 'bigint') ||
+      argument.type === 'BigIntLiteral'
     );
   }
 
