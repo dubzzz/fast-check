@@ -295,7 +295,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}();`],
       [`fc.${arbitrary}({});`],
-      //[`fc.${arbitrary}(maxLength);`], // ambiguous
+      [`fc.${arbitrary}(maxLength);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
@@ -317,7 +317,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}(arb);`],
       [`fc.${arbitrary}(arb, {});`],
-      //[`fc.${arbitrary}(arb, maxLength);`], // ambiguous
+      [`fc.${arbitrary}(arb, maxLength);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
@@ -389,7 +389,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}();`],
       [`fc.${arbitrary}({});`],
-      //[`fc.${arbitrary}(maxDepth);`], // ambiguous
+      [`fc.${arbitrary}(maxDepth);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
@@ -408,7 +408,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}(arb);`],
       [`fc.${arbitrary}(arb, {});`],
-      //[`fc.${arbitrary}(arb, freq);`], // ambiguous
+      [`fc.${arbitrary}(arb, freq);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
@@ -427,7 +427,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}([]);`],
       [`fc.${arbitrary}([], {});`],
-      //[`fc.${arbitrary}([], maxCommands);`], // ambiguous
+      [`fc.${arbitrary}([], maxCommands);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
@@ -446,7 +446,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}();`],
       [`fc.${arbitrary}({});`],
-      //[`fc.${arbitrary}(num);`], // ambiguous
+      [`fc.${arbitrary}(num);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
@@ -485,7 +485,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}();`],
       [`fc.${arbitrary}({});`],
-      //[`fc.${arbitrary}(max);`], // ambiguous
+      [`fc.${arbitrary}(max);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
@@ -507,14 +507,14 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}();`],
       [`fc.${arbitrary}({});`],
-      //[`fc.${arbitrary}(max);`], // ambiguous
+      [`fc.${arbitrary}(max);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
       expect(sanitize(output)).toBe(sanitize(source));
     });
 
-    it.each([[`fc.${arbitrary}(1n);`]])('should migrate %s', (expression) => {
+    it.each([[`fc.${arbitrary}(1n);`], [`fc.${arbitrary}(BigInt(1));`]])('should migrate %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });
       expect(sanitize(output)).not.toBe(sanitize(source));
@@ -526,7 +526,7 @@ describe('codemods::unify-signature', () => {
     it.each([
       [`fc.${arbitrary}();`],
       [`fc.${arbitrary}({});`],
-      //[`fc.${arbitrary}(max);`], // ambiguous
+      [`fc.${arbitrary}(max);`], // ambiguous
     ])('should not alter %s', (expression) => {
       const source = buildSourceFor(expression);
       const output = applyTransform(unifySignatureTransform, defaultTransformOptions, { source });

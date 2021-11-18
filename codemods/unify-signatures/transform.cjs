@@ -148,6 +148,16 @@ module.exports = function (file, api, options) {
     // true           -- Default parser: Literal / TS parser: BooleanLiteral
     return (argument.type === 'Literal' || argument.type === 'BooleanLiteral') && typeof argument.value === 'boolean';
   }
+  function isBigInt(argument) {
+    // BigInt(1) -- CallExpression
+    // 1n        -- Default parser: Literal / TS parser: BigIntLiteral
+    return (
+      (argument.type === 'CallExpression' &&
+        argument.callee.type === 'Identifier' &&
+        argument.callee.name === 'BigInt') ||
+      ((argument.type === 'Literal' || argument.type === 'BigIntLiteral') && typeof argument.value === 'bigint')
+    );
+  }
 
   function isNumericValue(argument, value) {
     if (value < 0) {
@@ -156,6 +166,10 @@ module.exports = function (file, api, options) {
       );
     }
     return isNumeric(argument) && argument.value === value;
+  }
+
+  function isSafeArgument(argument, check) {
+    return argument.type !== 'ObjectExpression' && (options.allowAmbiguity || check(argument));
   }
 
   return root
@@ -193,7 +207,7 @@ module.exports = function (file, api, options) {
           const numCompulsaryArgs = ['array', 'stringOf'].includes(nameForFastCheck) ? 1 : 0;
           if (
             p.value.arguments.length === numCompulsaryArgs + 1 &&
-            p.value.arguments[numCompulsaryArgs].type !== 'ObjectExpression'
+            isSafeArgument(p.value.arguments[numCompulsaryArgs], isNumeric)
           ) {
             // fc.string(maxLength) -> fc.string({maxLength})
             // fc.array(arb, maxLength) -> fc.array(arb, {maxLength})
@@ -279,7 +293,7 @@ module.exports = function (file, api, options) {
         case 'unicodeJson':
         case 'jsonObject':
         case 'unicodeJsonObject': {
-          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 1 && isSafeArgument(p.value.arguments[0], isNumeric)) {
             // fc.json(10) -> fc.json({maxDepth})
             const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 2);
             p.value.arguments = computeNewArguments(
@@ -290,7 +304,7 @@ module.exports = function (file, api, options) {
           break;
         }
         case 'option': {
-          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 2 && isSafeArgument(p.value.arguments[1], isNumeric)) {
             // fc.option(arb, 10) -> fc.option(arb, {freq})
             p.value.arguments = computeNewArguments(
               [p.value.arguments[0]],
@@ -300,7 +314,7 @@ module.exports = function (file, api, options) {
           break;
         }
         case 'commands': {
-          if (p.value.arguments.length === 2 && p.value.arguments[1].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 2 && isSafeArgument(p.value.arguments[1], isNumeric)) {
             // fc.commands(commandArbs, maxCommands) -> fc.commands(commandArbs, {maxCommands})
             const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 10);
             p.value.arguments = computeNewArguments(
@@ -311,7 +325,7 @@ module.exports = function (file, api, options) {
           break;
         }
         case 'lorem': {
-          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 1 && isSafeArgument(p.value.arguments[0], isNumeric)) {
             // fc.lorem(maxWordsCount) -> fc.lorem({maxCount})
             const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 5);
             p.value.arguments = computeNewArguments(
@@ -350,7 +364,7 @@ module.exports = function (file, api, options) {
           break;
         }
         case 'bigUint': {
-          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 1 && isSafeArgument(p.value.arguments[0], isBigInt)) {
             // fc.bigUint(max) -> fc.bigUint({max})
             p.value.arguments = computeNewArguments(
               [],
@@ -361,7 +375,7 @@ module.exports = function (file, api, options) {
         }
         case 'double':
         case 'float': {
-          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 1 && isSafeArgument(p.value.arguments[0], isNumeric)) {
             // fc.float(max) -> fc.float({max})
             const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 1.0);
             p.value.arguments = computeNewArguments(
@@ -381,7 +395,7 @@ module.exports = function (file, api, options) {
           break;
         }
         case 'nat': {
-          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 1 && isSafeArgument(p.value.arguments[0], isNumeric)) {
             // fc.nat(max) -> fc.nat({max})
             const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 0x7fffffff);
             p.value.arguments = computeNewArguments(
@@ -392,7 +406,7 @@ module.exports = function (file, api, options) {
           break;
         }
         case 'integer': {
-          if (p.value.arguments.length === 1 && p.value.arguments[0].type !== 'ObjectExpression') {
+          if (p.value.arguments.length === 1 && isSafeArgument(p.value.arguments[0], isNumeric)) {
             // fc.integer(max) -> fc.integer({max})
             const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[0], 0x7fffffff);
             p.value.arguments = computeNewArguments(
