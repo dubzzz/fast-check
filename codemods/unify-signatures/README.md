@@ -32,6 +32,7 @@ npx jscodeshift --parser=ts --extensions=ts -t https://raw.githubusercontent.com
 ```
 
 You may need one of the following additional options:
+- `--allowAmbiguity=true` - _enforce potentially invalid conversions, it may be used as a second step if first execution let some non-migrated calls like `fc.array(arb, myCustomMaxLength)`_
 - `--debug=true` - _enable debug mode for the codemod_
 - `--local=true` - _mostly when lauching the codemod against the codebase of fast-check, it considers that local imports are imports of fast-check_
 

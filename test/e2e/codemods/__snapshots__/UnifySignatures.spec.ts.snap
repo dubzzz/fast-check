@@ -92,6 +92,13 @@ fc.bigUint({
 });"
 `;
 
+exports[`codemods::unify-signature bigUint should migrate fc.bigUint(BigInt(1)); 1`] = `
+"const fc = require('fast-check');
+fc.bigUint({
+  max: BigInt(1)
+});"
+`;
+
 exports[`codemods::unify-signature commands should migrate fc.commands([], 10); 1`] = `
 "const fc = require('fast-check');
 fc.commands([], {
