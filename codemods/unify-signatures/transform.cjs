@@ -1,8 +1,8 @@
 // You can try this codemod as follow:
-//    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true --simplifyMin=true --simplifyMax=true
-//    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true --simplifyMin=true --simplifyMax=true
+//    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true
+//    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true
 // Or against the codebase of fast-check itself:
-//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true --simplifyMin=true --simplifyMax=true
+//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true
 
 // Useful ressources:
 // - https://astexplorer.net/
@@ -148,10 +148,6 @@ module.exports = function (file, api, options) {
     // true           -- Default parser: Literal / TS parser: BooleanLiteral
     return (argument.type === 'Literal' || argument.type === 'BooleanLiteral') && typeof argument.value === 'boolean';
   }
-  function isArray(argument) {
-    // [1, 2, 3]      -- Default & TS parser: ArrayExpression
-    return argument.type === 'ArrayExpression';
-  }
 
   function isNumericValue(argument, value) {
     if (value < 0) {
@@ -160,9 +156,6 @@ module.exports = function (file, api, options) {
       );
     }
     return isNumeric(argument) && argument.value === value;
-  }
-  function getArrayLength(argument) {
-    return isArray(argument) ? argument.elements.length : Number.NaN;
   }
 
   return root
@@ -211,11 +204,9 @@ module.exports = function (file, api, options) {
           } else if (p.value.arguments.length === numCompulsaryArgs + 2) {
             // fc.string(minLength, maxLength) -> fc.string({minLength, maxLength})
             // fc.array(arb, minLength, maxLength) -> fc.array(arb, {minLength, maxLength})
-            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[numCompulsaryArgs], 0);
-            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[numCompulsaryArgs + 1], 10);
             p.value.arguments = computeNewArguments(p.value.arguments.slice(0, numCompulsaryArgs), [
-              !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[numCompulsaryArgs]),
-              !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[numCompulsaryArgs + 1]),
+              j.property('init', j.identifier('minLength'), p.value.arguments[numCompulsaryArgs]),
+              j.property('init', j.identifier('maxLength'), p.value.arguments[numCompulsaryArgs + 1]),
             ]);
           }
           break;
@@ -239,13 +230,11 @@ module.exports = function (file, api, options) {
           } else if (p.value.arguments.length === 3) {
             if (isNumeric(p.value.arguments[2])) {
               // fc.set(arb, minLength, maxLength) -> fc.set(arb, {minLength, maxLength})
-              const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
-              const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[2], 10);
               p.value.arguments = computeNewArguments(
                 [p.value.arguments[0]],
                 [
-                  !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
-                  !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
+                  j.property('init', j.identifier('minLength'), p.value.arguments[1]),
+                  j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
                 ]
               );
             } else if (isFunction(p.value.arguments[2])) {
@@ -261,13 +250,11 @@ module.exports = function (file, api, options) {
             }
           } else if (p.value.arguments.length === 4) {
             // fc.set(arb, minLength, maxLength, compare) -> fc.set(arb, {minLength, maxLength, compare})
-            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
-            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[2], 10);
             p.value.arguments = computeNewArguments(
               [p.value.arguments[0]],
               [
-                !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
-                !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
+                j.property('init', j.identifier('minLength'), p.value.arguments[1]),
+                j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
                 j.property('init', j.identifier('compare'), p.value.arguments[3]),
               ]
             );
@@ -278,16 +265,11 @@ module.exports = function (file, api, options) {
         case 'shuffledSubarray': {
           if (p.value.arguments.length === 3) {
             // fc.subarray(originalArray, minLength, maxLength) -> fc.subarray(originalArray, {minLength, maxLength})
-            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[1], 0);
-            const simplifyMax =
-              options.simplifyMax &&
-              isArray(p.value.arguments[0]) &&
-              isNumericValue(p.value.arguments[2], getArrayLength(p.value.arguments[0]));
             p.value.arguments = computeNewArguments(
               [p.value.arguments[0]],
               [
-                !simplifyMin && j.property('init', j.identifier('minLength'), p.value.arguments[1]),
-                !simplifyMax && j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
+                j.property('init', j.identifier('minLength'), p.value.arguments[1]),
+                j.property('init', j.identifier('maxLength'), p.value.arguments[2]),
               ]
             );
           }
@@ -388,13 +370,11 @@ module.exports = function (file, api, options) {
             );
           } else if (p.value.arguments.length === 2) {
             // fc.float(min, max) -> fc.float({min, max})
-            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[0], 0.0);
-            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 1.0);
             p.value.arguments = computeNewArguments(
               [],
               [
-                !simplifyMin && j.property('init', j.identifier('min'), p.value.arguments[0]),
-                !simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[1]),
+                j.property('init', j.identifier('min'), p.value.arguments[0]),
+                j.property('init', j.identifier('max'), p.value.arguments[1]),
               ]
             );
           }
@@ -421,13 +401,11 @@ module.exports = function (file, api, options) {
             );
           } else if (p.value.arguments.length === 2) {
             // fc.integer(min, max) -> fc.integer({min, max})
-            const simplifyMin = options.simplifyMin && isNumericValue(p.value.arguments[0], -0x80000000);
-            const simplifyMax = options.simplifyMax && isNumericValue(p.value.arguments[1], 0x7fffffff);
             p.value.arguments = computeNewArguments(
               [],
               [
-                !simplifyMin && j.property('init', j.identifier('min'), p.value.arguments[0]),
-                !simplifyMax && j.property('init', j.identifier('max'), p.value.arguments[1]),
+                j.property('init', j.identifier('min'), p.value.arguments[0]),
+                j.property('init', j.identifier('max'), p.value.arguments[1]),
               ]
             );
           }

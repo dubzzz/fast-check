@@ -32,10 +32,6 @@ npx jscodeshift --parser=ts --extensions=ts -t https://raw.githubusercontent.com
 ```
 
 You may need one of the following additional options:
-- `--simplifyMin=true` - _do not use `minLength` if it corresponds to the default_
-- `--simplifyMax=true` - _do not use `maxLength` if it corresponds to the default_
-
-And some others that you might not need:
 - `--debug=true` - _enable debug mode for the codemod_
 - `--local=true` - _mostly when lauching the codemod against the codebase of fast-check, it considers that local imports are imports of fast-check_
 
