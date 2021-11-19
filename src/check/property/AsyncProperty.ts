@@ -8,7 +8,6 @@ import {
 } from './AsyncProperty.generic';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
 import { convertFromNext, convertToNext } from '../arbitrary/definition/Converters';
-import { convertFromNextAsyncPropertyWithHooks } from './ConvertersProperty';
 
 /**
  * Instantiate a new {@link fast-check#IAsyncProperty}
@@ -27,7 +26,7 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   const mappedArbs = arbs.map((arb): typeof arb =>
     convertFromNext(new AlwaysShrinkableArbitrary(convertToNext(arb)))
   ) as typeof arbs;
-  return convertFromNextAsyncPropertyWithHooks(new AsyncProperty(tuple<Ts>(...mappedArbs), (t) => p(...t)));
+  return new AsyncProperty(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 
 export { asyncProperty, IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction };

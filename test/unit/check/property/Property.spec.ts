@@ -9,7 +9,6 @@ import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
 import { convertFromNext } from '../../../../src/check/arbitrary/definition/Converters';
-import { convertToNextProperty } from '../../../../src/check/property/ConvertersProperty';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { Stream } from '../../../../src/stream/Stream';
 
@@ -251,7 +250,7 @@ describe('Property', () => {
     const value = Symbol();
 
     // Act
-    const p = convertToNextProperty(property(convertFromNext(arb), jest.fn()));
+    const p = property(convertFromNext(arb), jest.fn());
     const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert
@@ -270,7 +269,7 @@ describe('Property', () => {
     const value = Symbol();
 
     // Act
-    const p = convertToNextProperty(property(convertFromNext(arb), jest.fn()));
+    const p = property(convertFromNext(arb), jest.fn());
     const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert
