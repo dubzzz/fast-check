@@ -1,7 +1,6 @@
 import { RandomGenerator, skipN } from 'pure-rand';
 
 import { Random } from '../../random/generator/Random';
-import { PureRandom, convertToRandomGenerator } from '../../random/generator/PureRandom';
 import { INextRawProperty } from '../property/INextRawProperty';
 import { NextValue } from '../arbitrary/definition/NextValue';
 
@@ -14,12 +13,12 @@ function lazyGenerate<Ts>(generator: INextRawProperty<Ts>, rng: RandomGenerator,
 export function* toss<Ts>(
   generator: INextRawProperty<Ts>,
   seed: number,
-  random: (seed: number) => PureRandom,
+  random: (seed: number) => RandomGenerator,
   examples: Ts[]
 ): IterableIterator<() => NextValue<Ts>> {
   yield* examples.map((e) => () => new NextValue(e, undefined));
   let idx = 0;
-  let rng = convertToRandomGenerator(random(seed));
+  let rng = random(seed);
   for (;;) {
     rng = rng.jump ? rng.jump() : skipN(rng, 42);
     yield lazyGenerate(generator, rng, idx++);
