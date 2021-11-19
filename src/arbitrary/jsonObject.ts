@@ -1,7 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { string } from './string';
-import { jsonConstraintsBuilder, JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
-import { anything } from './anything';
+import { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
+import { jsonValue } from './jsonValue';
 
 export { JsonSharedConstraints, JsonValue };
 
@@ -13,6 +12,7 @@ export { JsonSharedConstraints, JsonValue };
  * As `JSON.parse` preserves `-0`, `jsonObject` can also have `-0` as a value.
  * `jsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
  *
+ * @deprecated Switch to {@link jsonValue} instead
  * @remarks Since 1.2.3
  * @public
  */
@@ -45,11 +45,17 @@ function jsonObject(maxDepth: number): Arbitrary<JsonValue>;
  *
  * @param constraints - Constraints to be applied onto the generated instance
  *
+ * @deprecated Switch to {@link jsonValue} instead
  * @remarks Since 2.5.0
  * @public
  */
 function jsonObject(constraints: JsonSharedConstraints): Arbitrary<JsonValue>;
 function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<JsonValue> {
-  return anything(jsonConstraintsBuilder(string(), constraints)) as Arbitrary<JsonValue>;
+  return typeof constraints === 'number'
+    ? jsonValue({ maxDepth: constraints, depthFactor: 0 })
+    : jsonValue({
+        ...constraints,
+        depthFactor: constraints !== undefined && constraints.depthFactor !== undefined ? constraints.depthFactor : 0,
+      });
 }
 export { jsonObject };

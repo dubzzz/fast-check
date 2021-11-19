@@ -1,6 +1,6 @@
 import fc from '../../../lib/fast-check';
 
-import { jsonObject, JsonSharedConstraints } from '../../../src/arbitrary/jsonObject';
+import { unicodeJsonValue, JsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceCorrectValues,
@@ -11,16 +11,18 @@ import {
 import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth';
 import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKeys';
 
-describe('jsonObject (integration)', () => {
+describe('unicodeJsonValue (integration)', () => {
   type Extra = JsonSharedConstraints | undefined;
   const extraParameters: fc.Arbitrary<Extra> = fc.option(
-    fc.record(
-      {
-        depthFactor: fc.double({ min: 0, max: 10 }),
-        maxDepth: fc.nat({ max: 5 }),
-      },
-      { requiredKeys: [] }
-    ),
+    fc
+      .record(
+        {
+          depthFactor: fc.double({ min: 0, max: 10 }),
+          maxDepth: fc.nat({ max: 5 }),
+        },
+        { requiredKeys: [] }
+      )
+      .filter((ct) => ct.depthFactor === undefined || ct.depthFactor >= 0.1 || ct.maxDepth !== undefined),
     { nil: undefined }
   );
 
@@ -31,18 +33,18 @@ describe('jsonObject (integration)', () => {
     }
   };
 
-  const jsonObjectBuilder = (extra: Extra) => convertToNext(extra !== undefined ? jsonObject(extra) : jsonObject());
+  const unicodeJsonValueBuilder = (extra: Extra) => convertToNext(unicodeJsonValue(extra));
 
   it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(jsonObjectBuilder, { extraParameters });
+    assertProduceSameValueGivenSameSeed(unicodeJsonValueBuilder, { extraParameters });
   });
 
   it('should only produce correct values', () => {
-    assertProduceCorrectValues(jsonObjectBuilder, isCorrect, { extraParameters });
+    assertProduceCorrectValues(unicodeJsonValueBuilder, isCorrect, { extraParameters });
   });
 
   it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(jsonObjectBuilder, { extraParameters });
+    assertProduceValuesShrinkableWithoutContext(unicodeJsonValueBuilder, { extraParameters });
   });
 
   // Property: should be able to shrink to the same values without initial context
@@ -51,7 +53,7 @@ describe('jsonObject (integration)', () => {
   // As a consequence there is no way to rebuild the source array of tuples (key, value) in the right order in such case (when numerics).
   it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(
-      (extra) => jsonObjectBuilder(extra).filter((o) => !isObjectWithNumericKeys(o)),
+      (extra) => unicodeJsonValueBuilder(extra).filter((o) => !isObjectWithNumericKeys(o)),
       { extraParameters }
     );
   });

@@ -8,8 +8,8 @@ import { ObjectConstraints } from './QualifiedObjectConstraints';
  * Shared constraints for:
  * - {@link json},
  * - {@link unicodeJson},
- * - {@link jsonObject},
- * - {@link unicodeJsonObject}
+ * - {@link jsonValue},
+ * - {@link unicodeJsonValue}
  *
  * @remarks Since 2.5.0
  * @public
@@ -32,14 +32,15 @@ export interface JsonSharedConstraints {
 }
 
 /**
- * Derive `ObjectConstraints` from a `number | JsonSharedConstraints`
+ * Derive `ObjectConstraints` from a `JsonSharedConstraints`
  * @internal
  */
 
 export function jsonConstraintsBuilder(
   stringArbitrary: Arbitrary<string>,
-  constraints?: number | JsonSharedConstraints
+  constraints: JsonSharedConstraints
 ): ObjectConstraints {
+  const { depthFactor = 0.1, maxDepth } = constraints;
   const key = stringArbitrary;
   const values = [
     boolean(), // any boolean
@@ -47,11 +48,7 @@ export function jsonConstraintsBuilder(
     stringArbitrary, // any string
     constant(null),
   ];
-  return constraints != null
-    ? typeof constraints === 'number'
-      ? { key, values, maxDepth: constraints }
-      : { key, values, depthFactor: constraints.depthFactor, maxDepth: constraints.maxDepth }
-    : { key, values };
+  return { key, values, depthFactor, maxDepth };
 }
 
 /**

@@ -1,5 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { unicodeJsonObject } from './unicodeJsonObject';
+import { unicodeJsonValue } from './unicodeJsonValue';
 import { JsonSharedConstraints } from './_internals/helpers/JsonConstraintsBuilder';
 
 export { JsonSharedConstraints };
@@ -40,9 +40,9 @@ function unicodeJson(maxDepth: number): Arbitrary<string>;
  */
 function unicodeJson(constraints: JsonSharedConstraints): Arbitrary<string>;
 function unicodeJson(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
-  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonObject(number)'
-  //     and cannot be passed to 'unicodeJsonObject(JsonConstraints)' (both are too strict)
-  const arb = constraints != null ? unicodeJsonObject(constraints as any) : unicodeJsonObject();
+  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonValue(number)'
+  //     and cannot be passed to 'unicodeJsonValue(JsonConstraints)' (both are too strict)
+  const arb = constraints != null ? unicodeJsonValue(constraints as any) : unicodeJsonValue();
   return arb.map(JSON.stringify);
 }
 export { unicodeJson };
