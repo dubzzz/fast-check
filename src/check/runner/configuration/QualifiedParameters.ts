@@ -2,7 +2,7 @@ import prand from 'pure-rand';
 import { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
-import { PureRandom } from '../../../random/generator/PureRandom';
+import { RandomGenerator } from 'pure-rand';
 
 /**
  * Configuration extracted from incoming Parameters
@@ -13,7 +13,7 @@ import { PureRandom } from '../../../random/generator/PureRandom';
  */
 export class QualifiedParameters<T> {
   seed: number;
-  randomType: (seed: number) => PureRandom;
+  randomType: (seed: number) => RandomGenerator;
   numRuns: number;
   maxSkipsPerRun: number;
   timeout: number | null;
@@ -92,7 +92,7 @@ export class QualifiedParameters<T> {
     const gap = p.seed - seed32;
     return seed32 ^ (gap * 0x100000000);
   };
-  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => PureRandom) => {
+  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => RandomGenerator) => {
     if (p.randomType == null) return prand.xorshift128plus;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
