@@ -722,7 +722,7 @@ fc.assert(
 // is equivalent to sort by x and for equal values of x sort by y.
 ```
 
-If we apply the suggestion above, during early runs we will generate very small arrays thus the chance to have cases in which `a.x === b.x` will be limited. Then as we reach the end, we will generate larger arrays but with large scopes of values for `x` thus the probabilty to have twice the same value for `x` will be once again low.
+If we apply the suggestion above, during early runs we will generate very small arrays thus the chance to have cases in which `a.x === b.x` will be limited. Then as we reach the end, we will generate larger arrays but with large scopes of values for `x` thus the probability to have twice the same value for `x` will be once again low.
 
 _fast-check approach is close to this one but adds an extra trick to it._
 
