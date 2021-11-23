@@ -139,7 +139,7 @@ test('should produce ordered array', () => {
 
 Copy and paste the code above into `specs/sort.spec.ts` and run `npm run test`.
 
-🎉 Congrats! 🎉 You have succesfully implemented your first test using fast-check.
+🎉 Congrats! 🎉 You have successfully implemented your first test using fast-check.
 
 ---
 
