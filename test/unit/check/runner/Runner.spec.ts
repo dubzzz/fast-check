@@ -396,7 +396,13 @@ describe('Runner', () => {
             generate: (_mrng: Random) => new NextValue([0], failurePoints.length - 1),
             shrink: (value) => {
               const depth = value.context as number;
-              return depth > 0 ? Stream.of(new NextValue([0], depth - 1)) : Stream.nil();
+              if (depth <= 0) {
+                return Stream.nil();
+              }
+              function* g(): IterableIterator<NextValue<[number]>> {
+                while (true) yield new NextValue([0], depth - 1);
+              }
+              return new Stream(g());
             },
             run: (_value: [number]) => {
               if (--remainingBeforeFailure >= 0) return null;
