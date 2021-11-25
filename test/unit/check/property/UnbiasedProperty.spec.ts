@@ -1,11 +1,11 @@
 import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
-import { fakeNextProperty } from './__test-helpers__/PropertyHelpers';
+import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 
 describe('UnbiasedProperty', () => {
   it('should not pass runId towards the decorated property on generate', () => {
     // Arrange
-    const { instance: decoratedProperty, generate } = fakeNextProperty();
+    const { instance: decoratedProperty, generate } = fakeProperty();
     const { instance: mrng } = fakeRandom();
 
     // Act

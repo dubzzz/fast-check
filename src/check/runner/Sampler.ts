@@ -1,8 +1,6 @@
 import { Stream, stream } from '../../stream/Stream';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { NextValue } from '../arbitrary/definition/NextValue';
-import { convertToNextProperty } from '../property/ConvertersProperty';
-import { INextRawProperty } from '../property/INextRawProperty';
 import { IRawProperty } from '../property/IRawProperty';
 import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
@@ -16,10 +14,10 @@ import { pathWalk } from './utils/PathWalker';
 function toProperty<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   qParams: QualifiedParameters<Ts>
-): INextRawProperty<Ts> {
+): IRawProperty<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
-    : convertToNextProperty(generator as IRawProperty<Ts>);
+    : (generator as IRawProperty<Ts>);
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }
 

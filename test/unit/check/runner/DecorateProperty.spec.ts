@@ -1,6 +1,7 @@
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
 import { IRawProperty } from '../../../../src/check/property/IRawProperty';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Stream } from '../../../../src/stream/Stream';
 
 // Mocks
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
@@ -15,7 +16,8 @@ jest.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
 function buildProperty(asyncProp: boolean) {
   return {
     isAsync: () => asyncProp,
-    generate: () => new Shrinkable({}),
+    generate: () => new NextValue({}, undefined),
+    shrink: () => Stream.nil(),
     run: () => null,
   } as IRawProperty<any>;
 }

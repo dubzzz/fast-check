@@ -15,12 +15,11 @@ import { pathWalk } from './utils/PathWalker';
 import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
-import { INextRawProperty } from '../property/INextRawProperty';
 import { NextValue } from '../arbitrary/definition/NextValue';
 
 /** @internal */
 function runIt<Ts>(
-  property: INextRawProperty<Ts>,
+  property: IRawProperty<Ts>,
   shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
   sourceValues: SourceValuesIterator<NextValue<Ts>>,
   verbose: VerbosityLevel,
@@ -36,7 +35,7 @@ function runIt<Ts>(
 
 /** @internal */
 async function asyncRunIt<Ts>(
-  property: INextRawProperty<Ts>,
+  property: IRawProperty<Ts>,
   shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
   sourceValues: SourceValuesIterator<NextValue<Ts>>,
   verbose: VerbosityLevel,

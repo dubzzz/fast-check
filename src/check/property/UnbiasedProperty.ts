@@ -1,11 +1,11 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { NextValue } from '../arbitrary/definition/NextValue';
-import { INextRawProperty } from './INextRawProperty';
+import { IRawProperty } from './IRawProperty';
 
 /** @internal */
-export class UnbiasedProperty<Ts, IsAsync extends boolean> implements INextRawProperty<Ts, IsAsync> {
-  constructor(readonly property: INextRawProperty<Ts, IsAsync>) {}
+export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
+  constructor(readonly property: IRawProperty<Ts, IsAsync>) {}
 
   isAsync(): IsAsync {
     return this.property.isAsync();
@@ -19,7 +19,7 @@ export class UnbiasedProperty<Ts, IsAsync extends boolean> implements INextRawPr
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<INextRawProperty<Ts, IsAsync>['run']> {
+  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
     return this.property.run(v);
   }
 }
