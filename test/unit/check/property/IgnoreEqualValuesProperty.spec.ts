@@ -1,6 +1,6 @@
 import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
-import { fakeNextProperty } from './__test-helpers__/PropertyHelpers';
+import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 
 describe('IgnoreEqualValuesProperty', () => {
   it.each`
@@ -9,7 +9,7 @@ describe('IgnoreEqualValuesProperty', () => {
     ${true}
   `('should not call run on the decorated property when property is run on the same value', ({ skipRuns }) => {
     // Arrange
-    const { instance: decoratedProperty, run } = fakeNextProperty();
+    const { instance: decoratedProperty, run } = fakeProperty();
 
     // Act
     const property = new IgnoreEqualValuesProperty(decoratedProperty, skipRuns);
@@ -35,7 +35,7 @@ describe('IgnoreEqualValuesProperty', () => {
       // success -> success
       // failure -> failure
       // skip    -> skip
-      const { instance: decoratedProperty, run } = fakeNextProperty(isAsync);
+      const { instance: decoratedProperty, run } = fakeProperty(isAsync);
       run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
       // Act
@@ -63,7 +63,7 @@ describe('IgnoreEqualValuesProperty', () => {
       // success -> skip
       // failure -> failure
       // skip    -> skip
-      const { instance: decoratedProperty, run } = fakeNextProperty(isAsync);
+      const { instance: decoratedProperty, run } = fakeProperty(isAsync);
       run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
       // Act
@@ -89,7 +89,7 @@ describe('IgnoreEqualValuesProperty', () => {
     ${true}
   `('should run decorated property when property is run on another value', ({ skipRuns }) => {
     // Arrange
-    const { instance: decoratedProperty, run } = fakeNextProperty();
+    const { instance: decoratedProperty, run } = fakeProperty();
 
     // Act
     const property = new IgnoreEqualValuesProperty(decoratedProperty, skipRuns);
