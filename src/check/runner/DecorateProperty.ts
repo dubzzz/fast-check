@@ -4,8 +4,6 @@ import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty';
-import { convertToNextProperty } from '../property/ConvertersProperty';
-import { INextRawProperty } from '../property/INextRawProperty';
 
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
@@ -17,8 +15,8 @@ type MinimalQualifiedParameters<Ts> = Pick<
 export function decorateProperty<Ts>(
   rawProperty: IRawProperty<Ts>,
   qParams: MinimalQualifiedParameters<Ts>
-): INextRawProperty<Ts> {
-  let prop = convertToNextProperty(rawProperty);
+): IRawProperty<Ts> {
+  let prop = rawProperty;
   if (rawProperty.isAsync() && qParams.timeout != null) {
     prop = new TimeoutProperty(prop, qParams.timeout);
   }

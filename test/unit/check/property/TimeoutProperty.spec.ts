@@ -1,7 +1,7 @@
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
-import { fakeNextProperty } from './__test-helpers__/PropertyHelpers';
+import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 
 describe('TimeoutProperty', () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe('TimeoutProperty', () => {
   it('should forward calls to generate', () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, generate } = fakeNextProperty(true);
+    const { instance: decoratedProperty, generate } = fakeProperty(true);
     const { instance: mrng } = fakeRandom();
     const expectedRunId = 42;
     const expectedOut = new NextValue(Symbol('value'), Symbol('context'));
@@ -30,7 +30,7 @@ describe('TimeoutProperty', () => {
   it('should forward inputs to run', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeNextProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty(true);
     const expectedRunInput = { anything: Symbol('something') };
 
     // Act
@@ -47,7 +47,7 @@ describe('TimeoutProperty', () => {
   it('should not timeout if it succeeds in time', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeNextProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(null), 10);
@@ -67,7 +67,7 @@ describe('TimeoutProperty', () => {
   it('should not timeout if it fails in time', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeNextProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         // underlying property is not supposed to throw (reject)
@@ -88,7 +88,7 @@ describe('TimeoutProperty', () => {
   it('should clear all started timeouts on success', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeNextProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockResolvedValueOnce(null);
 
     // Act
@@ -103,7 +103,7 @@ describe('TimeoutProperty', () => {
   it('should clear all started timeouts on failure', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeNextProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockResolvedValueOnce('plop');
 
     // Act
@@ -118,7 +118,7 @@ describe('TimeoutProperty', () => {
   it('should timeout if it takes to long', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeNextProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(null), 100);
@@ -137,7 +137,7 @@ describe('TimeoutProperty', () => {
   it('Should timeout if it never ends', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeNextProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(new Promise(() => {}));
 
     // Act
