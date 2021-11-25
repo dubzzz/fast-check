@@ -1,5 +1,6 @@
 import { Random } from '../../random/generator/Random';
-import { Shrinkable } from '../arbitrary/definition/Shrinkable';
+import { Stream } from '../../stream/Stream';
+import { NextValue } from '../arbitrary/definition/NextValue';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
 /**
@@ -20,15 +21,26 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    * @remarks Since 0.0.7
    */
   isAsync(): IsAsync;
+
   /**
    * Generate values of type Ts
    *
    * @param mrng - Random number generator
    * @param runId - Id of the generation, starting at 0 - if set the generation might be biased
    *
-   * @remarks Since 0.0.7
+   * @remarks Since 0.0.7 (return type changed in 3.0.0)
    */
-  generate(mrng: Random, runId?: number): Shrinkable<Ts>;
+  generate(mrng: Random, runId?: number): NextValue<Ts>;
+
+  /**
+   * Shrink value of type Ts
+   *
+   * @param value - The value to be shrunk, it can be context-less
+   *
+   * @remarks Since 3.0.0
+   */
+  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>>;
+
   /**
    * Check the predicate for v
    * @param v - Value of which we want to check the predicate
