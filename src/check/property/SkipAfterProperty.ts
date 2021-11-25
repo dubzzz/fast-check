@@ -2,13 +2,13 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { NextValue } from '../arbitrary/definition/NextValue';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { INextRawProperty } from './INextRawProperty';
+import { IRawProperty } from './IRawProperty';
 
 /** @internal */
-export class SkipAfterProperty<Ts, IsAsync extends boolean> implements INextRawProperty<Ts, IsAsync> {
+export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
   private skipAfterTime: number;
   constructor(
-    readonly property: INextRawProperty<Ts, IsAsync>,
+    readonly property: IRawProperty<Ts, IsAsync>,
     readonly getTime: () => number,
     timeLimit: number,
     readonly interruptExecution: boolean
@@ -28,7 +28,7 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements INextRawP
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<INextRawProperty<Ts, IsAsync>['run']> {
+  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
     if (this.getTime() >= this.skipAfterTime) {
       const preconditionFailure = new PreconditionFailure(this.interruptExecution);
       if (this.isAsync()) {

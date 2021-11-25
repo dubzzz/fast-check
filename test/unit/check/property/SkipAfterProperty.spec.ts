@@ -1,6 +1,6 @@
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
-import { fakeNextProperty } from './__test-helpers__/PropertyHelpers';
+import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 
@@ -11,7 +11,7 @@ describe('SkipAfterProperty', () => {
   it('should call timer at construction', async () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty } = fakeNextProperty();
+    const { instance: decoratedProperty } = fakeProperty();
 
     // Act
     new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -23,7 +23,7 @@ describe('SkipAfterProperty', () => {
   it('should not call timer on isAsync but forward call', async () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeNextProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -40,7 +40,7 @@ describe('SkipAfterProperty', () => {
   it('should not call timer on generate but forward call', async () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeNextProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
     const { instance: mrng } = fakeRandom();
 
     // Act
@@ -58,7 +58,7 @@ describe('SkipAfterProperty', () => {
   it('should not call timer on shrink but forward call', async () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeNextProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -75,7 +75,7 @@ describe('SkipAfterProperty', () => {
   it('should call timer on run and forward call if ok', () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeNextProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -95,7 +95,7 @@ describe('SkipAfterProperty', () => {
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeNextProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -116,7 +116,7 @@ describe('SkipAfterProperty', () => {
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
-    const { instance: decoratedProperty } = fakeNextProperty();
+    const { instance: decoratedProperty } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -133,7 +133,7 @@ describe('SkipAfterProperty', () => {
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
-    const { instance: decoratedProperty } = fakeNextProperty();
+    const { instance: decoratedProperty } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, true);
