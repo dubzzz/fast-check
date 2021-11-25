@@ -1,3 +1,31 @@
+# 2.20.0
+
+_Some refinements on object-related arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.20.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.19.0...v2.20.0)]
+
+## Features
+
+- ([PR#2459](https://github.com/dubzzz/fast-check/pull/2459)) More precise typings for `json` and `unicodeJson` :warning:
+- ([PR#2461](https://github.com/dubzzz/fast-check/pull/2461)) Mark `integer(min, max)` as deprecated
+- ([PR#2460](https://github.com/dubzzz/fast-check/pull/2460)) More precise typing for jsonObject and related :warning:
+- ([PR#2463](https://github.com/dubzzz/fast-check/pull/2463)) Mark forked typings of pure-rand as deprecated
+- ([PR#2465](https://github.com/dubzzz/fast-check/pull/2465)) Warn users earlier for wrong params on integer :warning:
+- ([PR#2490](https://github.com/dubzzz/fast-check/pull/2490)) `depthFactor` on arbitraries for objects
+- ([PR#2464](https://github.com/dubzzz/fast-check/pull/2464)) Prepare rename of `jsonObject` into `jsonValue`
+
+## Fixes
+
+- ([PR#2496](https://github.com/dubzzz/fast-check/pull/2496)) Bug: No dangerous transform in codemod
+- ([PR#2480](https://github.com/dubzzz/fast-check/pull/2480)) Doc: Remove outdated dependabot's badge
+- ([PR#2493](https://github.com/dubzzz/fast-check/pull/2493)) Refactor: Simplify codemod to be more focused
+- ([PR#2458](https://github.com/dubzzz/fast-check/pull/2458)) Test: Avoid Error tags in reports caused by some tests
+- ([PR#2492](https://github.com/dubzzz/fast-check/pull/2492)) Test: Add some tests for codemods
+- ([PR#2497](https://github.com/dubzzz/fast-check/pull/2497)) Test: Check codemod against several parsers
+- ([PR#2472](https://github.com/dubzzz/fast-check/pull/2472)) Typo: Documentation fix for `fc.oneof`
+- ([PR#2508](https://github.com/dubzzz/fast-check/pull/2508)) Typo: Fix various typos in the documentation
+
+---
+
 # 2.19.0
 
 _Move to next generation of properties and unlock shrink on user definable examples_
