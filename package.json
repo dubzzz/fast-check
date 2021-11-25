@@ -74,7 +74,7 @@
     "jest": "^26.1.0",
     "jscodeshift": "^0.13.0",
     "mkdirp": "^1.0.4",
-    "prettier": "2.4.1",
+    "prettier": "2.5.0",
     "replace-in-file": "^6.0.0",
     "source-map-support": "^0.5.19",
     "ts-jest": "^26.2.0",
