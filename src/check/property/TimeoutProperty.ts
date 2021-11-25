@@ -2,7 +2,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { NextValue } from '../arbitrary/definition/NextValue';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { INextRawProperty } from './INextRawProperty';
+import { IRawProperty } from './IRawProperty';
 
 /** @internal */
 const timeoutAfter = (timeMs: number) => {
@@ -21,8 +21,8 @@ const timeoutAfter = (timeMs: number) => {
 };
 
 /** @internal */
-export class TimeoutProperty<Ts> implements INextRawProperty<Ts, true> {
-  constructor(readonly property: INextRawProperty<Ts>, readonly timeMs: number) {}
+export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
+  constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {}
 
   isAsync(): true {
     return true;
