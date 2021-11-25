@@ -3,15 +3,15 @@ import * as fc from '../../../../lib/fast-check';
 import { toss } from '../../../../src/check/runner/Tosser';
 import { Stream, stream } from '../../../../src/stream/Stream';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { INextRawProperty } from '../../../../src/check/property/INextRawProperty';
+import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { Random } from '../../../../src/random/generator/Random';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 
 import * as stubArb from '../../stubs/arbitraries';
 import prand from 'pure-rand';
 
-const wrap = <T>(arb: Arbitrary<T>): INextRawProperty<T> =>
-  new (class implements INextRawProperty<T> {
+const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
+  new (class implements IRawProperty<T> {
     constructor(readonly arb: Arbitrary<T>) {}
     isAsync = () => false;
     generate = (rng: Random) => new NextValue(this.arb.generate(rng).value_, undefined);
