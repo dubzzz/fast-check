@@ -3,7 +3,6 @@ import { tuple } from '../../arbitrary/tuple';
 import { Property, IProperty, IPropertyWithHooks, PropertyHookFunction } from './Property.generic';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
 import { convertFromNext, convertToNext } from '../arbitrary/definition/Converters';
-import { convertFromNextPropertyWithHooks } from './ConvertersProperty';
 
 /**
  * Instantiate a new {@link fast-check#IProperty}
@@ -22,7 +21,7 @@ function property<Ts extends [unknown, ...unknown[]]>(
   const mappedArbs = arbs.map((arb): typeof arb =>
     convertFromNext(new AlwaysShrinkableArbitrary(convertToNext(arb)))
   ) as typeof arbs;
-  return convertFromNextPropertyWithHooks(new Property(tuple<Ts>(...mappedArbs), (t) => p(...t)));
+  return new Property(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 
 export { property, IProperty, IPropertyWithHooks, PropertyHookFunction };

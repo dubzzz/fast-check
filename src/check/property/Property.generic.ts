@@ -3,7 +3,6 @@ import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { INextRawProperty } from './INextRawProperty';
 import { NextValue } from '../arbitrary/definition/NextValue';
 import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../arbitrary/definition/Converters';
@@ -67,23 +66,6 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
 }
 
-/** @internal */
-interface INextProperty<Ts> extends INextRawProperty<Ts, false> {}
-
-/** @internal */
-interface INextPropertyWithHooks<Ts> extends INextProperty<Ts> {
-  beforeEach(
-    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
-  ): 'beforeEach expects a synchronous function but was given a function returning a Promise';
-
-  beforeEach(hookFunction: PropertyHookFunction): INextPropertyWithHooks<Ts>;
-
-  afterEach(
-    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
-  ): 'afterEach expects a synchronous function but was given a function returning a Promise';
-  afterEach(hookFunction: PropertyHookFunction): INextPropertyWithHooks<Ts>;
-}
-
 /**
  * Property, see {@link IProperty}
  *
@@ -91,7 +73,7 @@ interface INextPropertyWithHooks<Ts> extends INextProperty<Ts> {
  *
  * @internal
  */
-export class Property<Ts> implements INextProperty<Ts>, INextPropertyWithHooks<Ts> {
+export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   // Default hook is a no-op
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   static dummyHook: GlobalPropertyHookFunction = () => {};
