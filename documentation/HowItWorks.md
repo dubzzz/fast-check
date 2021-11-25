@@ -364,7 +364,7 @@ Let's apply this logic onto our example `[4, 1, 2, 1, 3]`:
 - `[4, 0, 2, 1, 3]` = `[4] :: [0, 2, 1, 3]` (due to 3.2.)
 - ...
 
-We can adapt our implementation of array to to support shrinking as follow:
+We can adapt our implementation of array to support shrinking as follow:
 
 ```js
 miniFc.array = (itemGenerator) => {
@@ -546,7 +546,7 @@ While our current shape for `Generator` seems to be able to deal with many kind 
 - the `map` function requires a `mapper` and a `rmapper` otherwise it cannot shrink on generated values
 - some arbitraries such as `oneof` are barely impossible to write correctly
 
-Indeed, if you think a little bit about implementing `oneof` with current design while preserving shrinking capabilities you may struggle a bit. `oneof` could be used used as follow by users:
+Indeed, if you think a little bit about implementing `oneof` with current design while preserving shrinking capabilities you may struggle a bit. `oneof` could be used as follow by users:
 
 ```js
 miniFc.oneof(
@@ -722,7 +722,7 @@ fc.assert(
 // is equivalent to sort by x and for equal values of x sort by y.
 ```
 
-If we apply the suggestion above, during early runs we will generate very small arrays thus the chance to have cases in which `a.x === b.x` will be limited. Then as we reach the end, we will generate larger arrays but with large scopes of values for `x` thus the probabilty to have twice the same value for `x` will be once again low.
+If we apply the suggestion above, during early runs we will generate very small arrays thus the chance to have cases in which `a.x === b.x` will be limited. Then as we reach the end, we will generate larger arrays but with large scopes of values for `x` thus the probability to have twice the same value for `x` will be once again low.
 
 _fast-check approach is close to this one but adds an extra trick to it._
 

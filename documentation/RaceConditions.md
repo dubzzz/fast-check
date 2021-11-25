@@ -209,7 +209,7 @@ const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(s: Schedule
 const newAddTodo = scheduleMockedServerFunction(s, (label) => mockedApi.addTodo(label))
 // With newAddTodo = s.scheduleFunction((label) => mockedApi.addTodo(label))
 // The mockedApi would have received todo-1 first, followed by todo-2
-// When each of those calls resolve would have been the responsability of s
+// When each of those calls resolve would have been the responsibility of s
 // In the contrary, with scheduleMockedServerFunction, the mockedApi might receive todo-2 first.
 newAddTodo('todo-1') // .then
 newAddTodo('todo-2') // .then
