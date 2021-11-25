@@ -3,7 +3,6 @@ import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { INextRawProperty } from './INextRawProperty';
 import { NextValue } from '../arbitrary/definition/NextValue';
 import { Stream } from '../../stream/Stream';
 import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
@@ -52,15 +51,6 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
-/** @internal */
-interface INextAsyncProperty<Ts> extends INextRawProperty<Ts, true> {}
-
-/** @internal */
-interface INextAsyncPropertyWithHooks<Ts> extends INextAsyncProperty<Ts> {
-  beforeEach(hookFunction: AsyncPropertyHookFunction): INextAsyncPropertyWithHooks<Ts>;
-  afterEach(hookFunction: AsyncPropertyHookFunction): INextAsyncPropertyWithHooks<Ts>;
-}
-
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -68,7 +58,7 @@ interface INextAsyncPropertyWithHooks<Ts> extends INextAsyncProperty<Ts> {
  *
  * @internal
  */
-export class AsyncProperty<Ts> implements INextAsyncPropertyWithHooks<Ts> {
+export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   // Default hook is a no-op
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
