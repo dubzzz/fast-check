@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
@@ -21,7 +21,7 @@ function buildNextTaskIndex<TMetaData>(mrng: Random): TaskSelector<TMetaData> {
 }
 
 /** @internal */
-export class SchedulerArbitrary<TMetaData> extends NextArbitrary<Scheduler<TMetaData>> {
+export class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
   constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>) {
     super();
   }

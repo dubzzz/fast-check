@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { array } from '../../../src/arbitrary/array';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
@@ -32,7 +31,7 @@ describe('array', () => {
     ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
     // Act
-    const arb = array(convertFromNext(childInstance));
+    const arb = array(childInstance);
 
     // Assert
     expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number));
@@ -40,7 +39,7 @@ describe('array', () => {
     expect(receivedMaxLength).toBeGreaterThan(0);
     expect(receivedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
     expect(Number.isInteger(receivedMaxLength)).toBe(true);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should instantiate ArrayArbitrary(arb, 0, maxLength) for array(arb, {maxLength})', () => {
@@ -53,11 +52,11 @@ describe('array', () => {
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
-        const arb = array(convertFromNext(childInstance), { maxLength });
+        const arb = array(childInstance, { maxLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -72,7 +71,7 @@ describe('array', () => {
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
-        const arb = array(convertFromNext(childInstance), { minLength });
+        const arb = array(childInstance, { minLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, expect.any(Number));
@@ -84,7 +83,7 @@ describe('array', () => {
         } else {
           expect(receivedMaxLength).toEqual(minLength);
         }
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -100,11 +99,11 @@ describe('array', () => {
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
-        const arb = array(convertFromNext(childInstance), { minLength, maxLength });
+        const arb = array(childInstance, { minLength, maxLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -118,7 +117,7 @@ describe('array', () => {
         const { instance: childInstance } = fakeNextArbitrary<unknown>();
 
         // Act / Assert
-        expect(() => array(convertFromNext(childInstance), { minLength, maxLength })).toThrowError();
+        expect(() => array(childInstance, { minLength, maxLength })).toThrowError();
       })
     );
   });
@@ -147,7 +146,7 @@ describe('array (integration)', () => {
 
   const isStrictlySmaller = isStrictlySmallerArray;
 
-  const arrayBuilder = (extra: Extra) => convertToNext(array(convertFromNext(new FakeIntegerArbitrary()), extra));
+  const arrayBuilder = (extra: Extra) => array(new FakeIntegerArbitrary(), extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(arrayBuilder, { extraParameters });
@@ -178,7 +177,7 @@ describe('array (integration)', () => {
   `('should be able to shrink $rawValue given constraints minLength:$minLength', ({ rawValue, minLength }) => {
     // Arrange
     const constraints = { minLength };
-    const arb = convertToNext(array(convertFromNext(new FakeIntegerArbitrary(0, 1000)), constraints));
+    const arb = array(new FakeIntegerArbitrary(0, 1000), constraints);
     const value = new NextValue(rawValue, undefined);
 
     // Act

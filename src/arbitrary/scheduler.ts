@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext } from '../check/arbitrary/definition/Converters';
 import { Scheduler } from './_internals/interfaces/Scheduler';
 import { buildSchedulerFor } from './_internals/helpers/BuildSchedulerFor';
 import { SchedulerArbitrary } from './_internals/SchedulerArbitrary';
@@ -25,7 +24,7 @@ export interface SchedulerConstraints {
  */
 export function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arbitrary<Scheduler<TMetaData>> {
   const { act = (f: () => Promise<void>) => f() } = constraints || {};
-  return convertFromNext(new SchedulerArbitrary<TMetaData>(act));
+  return new SchedulerArbitrary<TMetaData>(act);
 }
 
 /**

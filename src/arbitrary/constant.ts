@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext } from '../check/arbitrary/definition/Converters';
 import { ConstantArbitrary } from './_internals/ConstantArbitrary';
 
 /**
@@ -9,5 +8,5 @@ import { ConstantArbitrary } from './_internals/ConstantArbitrary';
  * @public
  */
 export function constant<T>(value: T): Arbitrary<T> {
-  return convertFromNext(new ConstantArbitrary([value]));
+  return new ConstantArbitrary([value]);
 }

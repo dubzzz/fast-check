@@ -1,14 +1,12 @@
 import * as fc from '../../../lib/fast-check';
 import { integer } from '../../../src/arbitrary/integer';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
 
 function fakeIntegerArbitrary() {
   const instance = fakeNextArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
-  instance.defaultTarget = jest.fn();
   return instance;
 }
 
@@ -31,7 +29,7 @@ describe('integer', () => {
 
     // Assert
     expect(IntegerArbitrary).toHaveBeenCalledWith(-0x80000000, 0x7fffffff);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should instantiate IntegerArbitrary(-0x80000000, 0x7fffffff) for integer({})', () => {
@@ -45,7 +43,7 @@ describe('integer', () => {
 
     // Assert
     expect(IntegerArbitrary).toHaveBeenCalledWith(-0x80000000, 0x7fffffff);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should instantiate IntegerArbitrary(min, 0x7fffffff) for integer({min})', () =>
@@ -61,7 +59,7 @@ describe('integer', () => {
 
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(min, 0x7fffffff);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 
@@ -78,7 +76,7 @@ describe('integer', () => {
 
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(-0x80000000, max);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 
@@ -96,7 +94,7 @@ describe('integer', () => {
 
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(min, max);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 

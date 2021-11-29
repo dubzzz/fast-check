@@ -697,13 +697,11 @@ describe(`NoRegression`, () => {
           // Shrinkable: built-in
           fc.nat(),
           // Cannot shrinking: missing unmapper
-          fc.convertFromNext(fc.convertToNext(fc.nat()).map((v) => String(v))),
+          fc.nat().map((v) => String(v)),
           // Shrinkable: unmapper provided
-          fc.convertFromNext(
-            fc.convertToNext(fc.nat()).map(
-              (v) => String(v),
-              (v) => Number(v)
-            )
+          fc.nat().map(
+            (v) => String(v),
+            (v) => Number(v)
           ),
           // Shrinkable: filter can shrink given the value to shrink matches the predicate
           fc.nat().filter((v) => v % 2 === 0),

@@ -1,6 +1,5 @@
 import { ipV6 } from '../../../src/arbitrary/ipV6';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -52,7 +51,7 @@ describe('ipV6 (integration)', () => {
     return firstElision !== -1 ? equivalentChunkLength < 8 : equivalentChunkLength === 8;
   };
 
-  const ipV6Builder = () => convertToNext(ipV6());
+  const ipV6Builder = () => ipV6();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(ipV6Builder);
@@ -136,7 +135,7 @@ describe('ipV6 (integration)', () => {
     ${'0123:5678:9abc:ef01:2345:6789:0123::'}
   `('should be able to generate $source with fc.ipV6()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(ipV6());
+    const arb = ipV6();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -149,7 +148,7 @@ describe('ipV6 (integration)', () => {
     ${'0123:5678:9abc:ef01:2345:6789:128.0.0.1'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(ipV6());
+    const arb = ipV6();
     const value = new NextValue(rawValue, undefined);
 
     // Act

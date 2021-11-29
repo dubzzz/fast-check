@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { set } from './set';
 import { tuple } from './tuple';
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject';
@@ -14,10 +13,8 @@ import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_i
  * @public
  */
 export function dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<Record<string, T>> {
-  return convertFromNext(
-    convertToNext(set(tuple(keyArb, valueArb), { compare: { selector: (t) => t[0] } })).map(
-      keyValuePairsToObjectMapper,
-      keyValuePairsToObjectUnmapper
-    )
+  return set(tuple(keyArb, valueArb), { compare: { selector: (t) => t[0] } }).map(
+    keyValuePairsToObjectMapper,
+    keyValuePairsToObjectUnmapper
   );
 }

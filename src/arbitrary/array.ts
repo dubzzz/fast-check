@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 
@@ -31,10 +30,9 @@ export interface ArrayConstraints {
  * @public
  */
 function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitrary<T[]> {
-  const nextArb = convertToNext(arb);
   const minLength = constraints.minLength || 0;
   const specifiedMaxLength = constraints.maxLength;
   const maxLength = specifiedMaxLength !== undefined ? specifiedMaxLength : maxLengthFromMinLength(minLength);
-  return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength));
+  return new ArrayArbitrary<T>(arb, minLength, maxLength);
 }
 export { array };

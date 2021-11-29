@@ -6,7 +6,6 @@ import {
   ObjectConstraints,
 } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
 
-import { convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
@@ -19,70 +18,70 @@ import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKey
 describe('anyArbitraryBuilder (integration)', () => {
   it('should be able to produce Set (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSet: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSet: true })),
       isSet
     );
   });
 
   it('should be able to produce Map (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withMap: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withMap: true })),
       isMap
     );
   });
 
   it('should be able to produce Date (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withDate: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withDate: true })),
       isDate
     );
   });
 
   it('should be able to produce typed arrays (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withTypedArray: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withTypedArray: true })),
       isTypedArray
     );
   });
 
   it('should be able to produce sparse array (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSparseArray: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSparseArray: true })),
       isSparseArray
     );
   });
 
   it('should be able to produce stringified representations of objects (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true })),
       isStringified
     );
   });
 
   it('should be able to produce stringified representations of objects as keys (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true })),
       isStringifiedAsKeys
     );
   });
 
   it('should be able to produce boxed values (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBoxedValues: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBoxedValues: true })),
       isBoxed
     );
   });
 
   it('should be able to produce objects without any prototype values (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withNullPrototype: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withNullPrototype: true })),
       isNullPrototype
     );
   });
 
   it('should be able to produce bigint (when asked to)', () => {
     assertProduceSomeSpecificValues(
-      () => convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBigInt: true }))),
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBigInt: true })),
       isBigInt
     );
   });
@@ -141,8 +140,7 @@ describe('anyArbitraryBuilder (integration)', () => {
     // In the coming major releases withObjectString might even disappear
   };
 
-  const anyArbitraryBuilderBuilder = (extra: Extra) =>
-    convertToNext(anyArbitraryBuilder(toQualifiedObjectConstraints(extra)));
+  const anyArbitraryBuilderBuilder = (extra: Extra) => anyArbitraryBuilder(toQualifiedObjectConstraints(extra));
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(anyArbitraryBuilderBuilder, { extraParameters });

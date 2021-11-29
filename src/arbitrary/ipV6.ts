@@ -1,6 +1,5 @@
 import { array } from './array';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { oneof } from './oneof';
 import { hexaString } from './hexaString';
 import { tuple } from './tuple';
@@ -53,58 +52,28 @@ export function ipV6(): Arbitrary<string> {
   //               / [ *5( h16 ":" ) h16 ] "::"              h16
   //               / [ *6( h16 ":" ) h16 ] "::"
   const h16Arb = hexaString({ minLength: 1, maxLength: 4 });
-  const ls32Arb = oneof(
-    convertFromNext(convertToNext(tuple(h16Arb, h16Arb)).map(h16sTol32Mapper, h16sTol32Unmapper)),
-    ipV4()
-  );
+  const ls32Arb = oneof(tuple(h16Arb, h16Arb).map(h16sTol32Mapper, h16sTol32Unmapper), ipV4());
   return oneof(
-    convertFromNext(
-      convertToNext(tuple(array(h16Arb, { minLength: 6, maxLength: 6 }), ls32Arb)).map(
-        fullySpecifiedMapper,
-        fullySpecifiedUnmapper
-      )
+    tuple(array(h16Arb, { minLength: 6, maxLength: 6 }), ls32Arb).map(fullySpecifiedMapper, fullySpecifiedUnmapper),
+    tuple(array(h16Arb, { minLength: 5, maxLength: 5 }), ls32Arb).map(onlyTrailingMapper, onlyTrailingUnmapper),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 1 }), array(h16Arb, { minLength: 4, maxLength: 4 }), ls32Arb).map(
+      multiTrailingMapper,
+      multiTrailingUnmapper
     ),
-    convertFromNext(
-      convertToNext(tuple(array(h16Arb, { minLength: 5, maxLength: 5 }), ls32Arb)).map(
-        onlyTrailingMapper,
-        onlyTrailingUnmapper
-      )
+    tuple(array(h16Arb, { minLength: 0, maxLength: 2 }), array(h16Arb, { minLength: 3, maxLength: 3 }), ls32Arb).map(
+      multiTrailingMapper,
+      multiTrailingUnmapper
     ),
-    convertFromNext(
-      convertToNext(
-        tuple(array(h16Arb, { minLength: 0, maxLength: 1 }), array(h16Arb, { minLength: 4, maxLength: 4 }), ls32Arb)
-      ).map(multiTrailingMapper, multiTrailingUnmapper)
+    tuple(array(h16Arb, { minLength: 0, maxLength: 3 }), array(h16Arb, { minLength: 2, maxLength: 2 }), ls32Arb).map(
+      multiTrailingMapper,
+      multiTrailingUnmapper
     ),
-    convertFromNext(
-      convertToNext(
-        tuple(array(h16Arb, { minLength: 0, maxLength: 2 }), array(h16Arb, { minLength: 3, maxLength: 3 }), ls32Arb)
-      ).map(multiTrailingMapper, multiTrailingUnmapper)
+    tuple(array(h16Arb, { minLength: 0, maxLength: 4 }), h16Arb, ls32Arb).map(
+      multiTrailingMapperOne,
+      multiTrailingUnmapperOne
     ),
-    convertFromNext(
-      convertToNext(
-        tuple(array(h16Arb, { minLength: 0, maxLength: 3 }), array(h16Arb, { minLength: 2, maxLength: 2 }), ls32Arb)
-      ).map(multiTrailingMapper, multiTrailingUnmapper)
-    ),
-    convertFromNext(
-      convertToNext(tuple(array(h16Arb, { minLength: 0, maxLength: 4 }), h16Arb, ls32Arb)).map(
-        multiTrailingMapperOne,
-        multiTrailingUnmapperOne
-      )
-    ),
-    convertFromNext(
-      convertToNext(tuple(array(h16Arb, { minLength: 0, maxLength: 5 }), ls32Arb)).map(
-        singleTrailingMapper,
-        singleTrailingUnmapper
-      )
-    ),
-    convertFromNext(
-      convertToNext(tuple(array(h16Arb, { minLength: 0, maxLength: 6 }), h16Arb)).map(
-        singleTrailingMapper,
-        singleTrailingUnmapper
-      )
-    ),
-    convertFromNext(
-      convertToNext(tuple(array(h16Arb, { minLength: 0, maxLength: 7 }))).map(noTrailingMapper, noTrailingUnmapper)
-    )
+    tuple(array(h16Arb, { minLength: 0, maxLength: 5 }), ls32Arb).map(singleTrailingMapper, singleTrailingUnmapper),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 6 }), h16Arb).map(singleTrailingMapper, singleTrailingUnmapper),
+    tuple(array(h16Arb, { minLength: 0, maxLength: 7 })).map(noTrailingMapper, noTrailingUnmapper)
   );
 }

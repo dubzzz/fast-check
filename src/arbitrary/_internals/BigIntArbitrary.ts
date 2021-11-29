@@ -1,12 +1,12 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { biasNumericRange, bigIntLogLike } from './helpers/BiasNumericRange';
 import { shrinkBigInt } from './helpers/ShrinkBigInt';
 
 /** @internal */
-export class BigIntArbitrary extends NextArbitrary<bigint> {
+export class BigIntArbitrary extends Arbitrary<bigint> {
   constructor(readonly min: bigint, readonly max: bigint) {
     super();
   }
@@ -49,7 +49,7 @@ export class BigIntArbitrary extends NextArbitrary<bigint> {
     return shrinkBigInt(current, context, false);
   }
 
-  defaultTarget(): bigint {
+  private defaultTarget(): bigint {
     // min <= 0 && max >= 0   => shrink towards zero
     if (this.min <= 0 && this.max >= 0) {
       return BigInt(0);

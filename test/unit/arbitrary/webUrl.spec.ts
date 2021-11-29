@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { webUrl, WebUrlConstraints } from '../../../src/arbitrary/webUrl';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { URL } from 'url';
 
 import {
@@ -46,7 +45,7 @@ describe('webUrl (integration)', () => {
     expect(() => new URL(t)).not.toThrow();
   };
 
-  const webUrlBuilder = (extra: Extra) => convertToNext(webUrl(extra));
+  const webUrlBuilder = (extra: Extra) => webUrl(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters });
@@ -71,13 +70,11 @@ describe('webUrl (integration)', () => {
     ${'http://my.domain.org/a/z?query#fragments'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(
-      webUrl({
-        authoritySettings: { withUserInfo: true },
-        withQueryParameters: true,
-        withFragments: true,
-      })
-    );
+    const arb = webUrl({
+      authoritySettings: { withUserInfo: true },
+      withQueryParameters: true,
+      withFragments: true,
+    });
     const value = new NextValue(rawValue, undefined);
 
     // Act

@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { sparseArray, SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   FakeIntegerArbitrary,
   fakeNextArbitrary,
@@ -37,12 +36,12 @@ describe('sparseArray', () => {
         const tuple = jest.spyOn(TupleMock, 'tuple');
         const { instance: setInstance } = fakeNextArbitraryStaticValue(() => []);
         const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
-        set.mockReturnValueOnce(convertFromNext(setInstance));
-        tuple.mockReturnValueOnce(convertFromNext(tupleInstance));
+        set.mockReturnValueOnce(setInstance);
+        tuple.mockReturnValueOnce(tupleInstance);
         const { instance: arb } = fakeNextArbitrary();
 
         // Act
-        sparseArray(convertFromNext(arb), ct);
+        sparseArray(arb, ct);
 
         // Assert
         expect(set).toHaveBeenCalledTimes(1);
@@ -64,12 +63,12 @@ describe('sparseArray', () => {
         const nat = jest.spyOn(NatMock, 'nat'); // called to build indexes
         const { instance: setInstance } = fakeNextArbitraryStaticValue(() => []);
         const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
-        set.mockReturnValueOnce(convertFromNext(setInstance));
-        tuple.mockReturnValueOnce(convertFromNext(tupleInstance));
+        set.mockReturnValueOnce(setInstance);
+        tuple.mockReturnValueOnce(tupleInstance);
         const { instance: arb } = fakeNextArbitrary();
 
         // Act
-        sparseArray(convertFromNext(arb), ct);
+        sparseArray(arb, ct);
 
         // Assert
         expect(nat).toHaveBeenCalledTimes(1);
@@ -107,7 +106,7 @@ describe('sparseArray', () => {
           const { instance: arb } = fakeNextArbitrary();
 
           // Act / Assert
-          expect(() => sparseArray(convertFromNext(arb), ct)).toThrowError(/non-hole/);
+          expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
         }
       )
     );
@@ -126,7 +125,7 @@ describe('sparseArray', () => {
           const { instance: arb } = fakeNextArbitrary();
 
           // Act / Assert
-          expect(() => sparseArray(convertFromNext(arb), ct)).toThrowError(/non-hole/);
+          expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
         }
       )
     );
@@ -167,8 +166,7 @@ describe('sparseArray (integration)', () => {
     return true;
   };
 
-  const sparseArrayBuilder = (extra: Extra) =>
-    convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), extra));
+  const sparseArrayBuilder = (extra: Extra) => sparseArray(new FakeIntegerArbitrary(), extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(sparseArrayBuilder, { extraParameters, isEqual });

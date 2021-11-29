@@ -5,8 +5,6 @@ import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
 import { NextValue } from '../arbitrary/definition/NextValue';
 import { Stream } from '../../stream/Stream';
-import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
-import { convertToNext } from '../arbitrary/definition/Converters';
 import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
@@ -64,8 +62,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
-  private arb: NextArbitrary<Ts>;
-  constructor(rawArb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
+  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
     const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
 
     if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
@@ -82,7 +79,6 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
 
     this.beforeEachHook = asyncBeforeEach || beforeEach || AsyncProperty.dummyHook;
     this.afterEachHook = asyncAfterEach || afterEach || AsyncProperty.dummyHook;
-    this.arb = convertToNext(rawArb);
   }
 
   isAsync(): true {

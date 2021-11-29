@@ -8,7 +8,6 @@ import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /** @internal */
 function toSubdomainLabelMapper([f, d]: [string, [string, string] | null]): string {
@@ -31,13 +30,9 @@ function subdomainLabel() {
   const alphaNumericHyphenArb = buildLowerAlphaNumericArbitrary(['-']);
   // Rq: maxLength = 61 because max length of a label is 63 according to RFC 1034
   //     and we add 2 characters to this generated value
-  return convertFromNext(
-    convertToNext(
-      tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb, { maxLength: 61 }), alphaNumericArb)))
-    )
-      .map(toSubdomainLabelMapper, toSubdomainLabelUnmapper)
-      .filter(filterInvalidSubdomainLabel)
-  );
+  return tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb, { maxLength: 61 }), alphaNumericArb)))
+    .map(toSubdomainLabelMapper, toSubdomainLabelUnmapper)
+    .filter(filterInvalidSubdomainLabel);
 }
 
 /** @internal */
@@ -71,8 +66,8 @@ export function domain(): Arbitrary<string> {
   // our current implementation does not follow this list and generate a fully randomized suffix
   // which is probably not in this list (probability would be low)
   const publicSuffixArb = stringOf(alphaNumericArb, { minLength: 2, maxLength: 10 });
-  return convertFromNext(
-    convertToNext(tuple(array(subdomainLabel(), { minLength: 1, maxLength: 5 }), publicSuffixArb))
+  return (
+    tuple(array(subdomainLabel(), { minLength: 1, maxLength: 5 }), publicSuffixArb)
       .map(labelsMapper, labelsUnmapper)
       // Required by RFC 1034:
       //    To simplify implementations, the total number of octets that represent

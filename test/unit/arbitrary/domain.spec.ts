@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { domain } from '../../../src/arbitrary/domain';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 
 import {
@@ -40,7 +39,7 @@ describe('domain (integration)', () => {
 
   const isCorrect = isValidDomainWithExtension;
 
-  const domainBuilder = () => convertToNext(domain());
+  const domainBuilder = () => domain();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(domainBuilder);
@@ -63,7 +62,7 @@ describe('domain (integration)', () => {
     ${'domain.com'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(domain());
+    const arb = domain();
     const value = new NextValue(rawValue, undefined);
 
     // Act
