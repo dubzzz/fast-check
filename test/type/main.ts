@@ -82,24 +82,6 @@ fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
 fc.asyncProperty(fc.nat(), fc.string(), async (a: number) => {});
 
-// ArbitraryWithContextualShrink
-expectTypeAssignable<fc.Arbitrary<number>>()(
-  null as any as fc.ArbitraryWithShrink<number>,
-  'ArbitraryWithShrink<number> implements Arbitrary<number>'
-);
-expectTypeAssignable<fc.Arbitrary<number>>()(
-  null as any as fc.ArbitraryWithContextualShrink<number>,
-  'ArbitraryWithContextualShrink<number> implements Arbitrary<number>'
-);
-expectTypeAssignable<fc.ArbitraryWithShrink<number>>()(
-  null as any as fc.ArbitraryWithContextualShrink<number>,
-  'ArbitraryWithContextualShrink<number> implements ArbitraryWithShrink<number>'
-);
-expectTypeAssignable<fc.ArbitraryWithContextualShrink<number>>()(
-  fc.nat(),
-  '"nat" implements ArbitraryWithContextualShrink<number>'
-);
-
 // base arbitrary (chain)
 expectType<fc.Arbitrary<string[]>>()(
   fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })),
