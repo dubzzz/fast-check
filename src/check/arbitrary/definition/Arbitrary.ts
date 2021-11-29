@@ -114,7 +114,7 @@ export abstract class Arbitrary<T> {
    * ```
    *
    * @param mapper - Map function, to produce a new element based on an old one
-   * @param unmapper - Optional unmap function, it will never be used except when shrinking user defined values. Must throw if value is not compatible
+   * @param unmapper - Optional unmap function, it will never be used except when shrinking user defined values. Must throw if value is not compatible (since 3.0.0)
    * @returns New arbitrary with mapped elements
    *
    * @remarks Since 0.0.1
