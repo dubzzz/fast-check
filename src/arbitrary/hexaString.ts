@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { array } from './array';
 import { hexa } from './hexa';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
@@ -15,8 +14,6 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 function hexaString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return convertFromNext(
-    convertToNext(array(hexa(), constraints)).map(codePointsToStringMapper, codePointsToStringUnmapper)
-  );
+  return array(hexa(), constraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }
 export { hexaString };

@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { webUrl, WebUrlConstraints } from '../../../src/arbitrary/webUrl';
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { URL } from 'url';
 
 import {
@@ -33,15 +32,14 @@ describe('webUrl', () => {
       fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
         // Arrange
         const { instance } = fakeNextArbitrary();
-        const instanceOld = convertFromNext(instance);
         const buildUriPathArbitrary = jest.spyOn(UriPathArbitraryBuilderMock, 'buildUriPathArbitrary');
-        buildUriPathArbitrary.mockReturnValue(instanceOld);
+        buildUriPathArbitrary.mockReturnValue(instance);
         const webAuthority = jest.spyOn(WebAuthorityMock, 'webAuthority');
-        webAuthority.mockReturnValue(instanceOld);
+        webAuthority.mockReturnValue(instance);
         const webFragments = jest.spyOn(WebFragmentsMock, 'webFragments');
-        webFragments.mockReturnValue(instanceOld);
+        webFragments.mockReturnValue(instance);
         const webQueryParameters = jest.spyOn(WebQueryParametersMock, 'webQueryParameters');
-        webQueryParameters.mockReturnValue(instanceOld);
+        webQueryParameters.mockReturnValue(instance);
 
         // Act
         withConfiguredGlobal(config, () => webUrl(constraints));
@@ -75,7 +73,7 @@ describe('webUrl (integration)', () => {
     expect(() => new URL(t)).not.toThrow();
   };
 
-  const webUrlBuilder = (extra: Extra) => convertToNext(webUrl(extra));
+  const webUrlBuilder = (extra: Extra) => webUrl(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters: extraParametersBuilder() });
@@ -102,13 +100,11 @@ describe('webUrl (integration)', () => {
     ${'http://my.domain.org/a/z?query#fragments'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(
-      webUrl({
-        authoritySettings: { withUserInfo: true },
-        withQueryParameters: true,
-        withFragments: true,
-      })
-    );
+    const arb = webUrl({
+      authoritySettings: { withUserInfo: true },
+      withQueryParameters: true,
+      withFragments: true,
+    });
     const value = new NextValue(rawValue, undefined);
 
     // Act

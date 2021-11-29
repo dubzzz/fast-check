@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { constantFrom } from '../../../src/arbitrary/constantFrom';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { cloneMethod } from '../../../src/check/symbols';
 
@@ -28,7 +27,7 @@ describe('constantFrom', () => {
 
         // Assert
         expect(ConstantArbitrary).toHaveBeenCalledWith(csts);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 

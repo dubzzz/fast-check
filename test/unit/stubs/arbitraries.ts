@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../src/check/arbitrary/definition/Shrinkable';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../src/random/generator/Random';
-import { stream } from '../../../src/stream/Stream';
+import { Stream } from '../../../src/stream/Stream';
 
 /**
  * CounterArbitrary
@@ -14,10 +14,16 @@ class CounterArbitrary extends Arbitrary<number> {
   constructor(private value: number) {
     super();
   }
-  generate(_mrng: Random): Shrinkable<number> {
+  generate(_mrng: Random): NextValue<number> {
     const last = this.value++ | 0; // keep it in integer range
     this.generatedValues.push(last);
-    return new Shrinkable(last);
+    return new NextValue(last, undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is number {
+    return false;
+  }
+  shrink(_value: number, _context: unknown): Stream<NextValue<number>> {
+    return Stream.nil();
   }
 }
 
@@ -30,8 +36,14 @@ class ForwardArbitrary extends Arbitrary<number> {
   constructor() {
     super();
   }
-  generate(rng: Random): Shrinkable<number> {
-    return new Shrinkable(rng.nextInt());
+  generate(rng: Random): NextValue<number> {
+    return new NextValue(rng.nextInt(), undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is number {
+    return false;
+  }
+  shrink(_value: number, _context: unknown): Stream<NextValue<number>> {
+    return Stream.nil();
   }
 }
 
@@ -44,12 +56,18 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
   constructor(readonly num: number) {
     super();
   }
-  generate(mrng: Random): Shrinkable<number[]> {
+  generate(mrng: Random): NextValue<number[]> {
     const out = [];
     for (let idx = 0; idx !== this.num; ++idx) {
       out.push(mrng.nextInt());
     }
-    return new Shrinkable(out);
+    return new NextValue(out, undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is number[] {
+    return false;
+  }
+  shrink(_value: number[], _context: unknown): Stream<NextValue<number[]>> {
+    return Stream.nil();
   }
 }
 
@@ -64,39 +82,18 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
   constructor(public id: T, public noCallOnceCheck: boolean) {
     super();
   }
-  generate(_mrng: Random): Shrinkable<T> {
+  generate(_mrng: Random): NextValue<T> {
     if (!this.noCallOnceCheck && this.calledOnce) {
       throw 'Arbitrary has already been called once';
     }
     this.calledOnce = true;
-    return new Shrinkable(this.id);
+    return new NextValue(this.id, undefined);
   }
-}
-
-/**
- * WithShrinkArbitrary
- *
- * like counter except it can be shrinked towards zero
- */
-class WithShrinkArbitrary extends Arbitrary<number> {
-  constructor(private value: number) {
-    super();
+  canShrinkWithoutContext(value: unknown): value is T {
+    return false;
   }
-  private static shrinkIt(v: number): Shrinkable<number> {
-    function* g() {
-      let vv = v;
-      while (Math.abs(vv) > 0) {
-        vv = vv > 0 ? Math.floor(vv / 2) : Math.ceil(vv / 2);
-        if (v != vv) {
-          yield WithShrinkArbitrary.shrinkIt(vv);
-        }
-      }
-    }
-    return new Shrinkable(v, () => stream(g()));
-  }
-  generate(_mrng: Random): Shrinkable<number> {
-    const last = this.value++ | 0; // keep it in integer range
-    return WithShrinkArbitrary.shrinkIt(last);
+  shrink(_value: T, _context: unknown): Stream<NextValue<T>> {
+    return Stream.nil();
   }
 }
 
@@ -105,17 +102,14 @@ const forward = (): ForwardArbitrary => new ForwardArbitrary();
 const forwardArray = (num: number): ForwardArrayArbitrary => new ForwardArrayArbitrary(num);
 const single = <T>(id: T, noCallOnceCheck = false): SingleUseArbitrary<T> =>
   new SingleUseArbitrary(id, noCallOnceCheck);
-const withShrink = (value: number): WithShrinkArbitrary => new WithShrinkArbitrary(value);
 
 export {
   counter,
   forward,
   forwardArray,
   single,
-  withShrink,
   CounterArbitrary,
   ForwardArbitrary,
   ForwardArrayArbitrary,
   SingleUseArbitrary,
-  WithShrinkArbitrary,
 };

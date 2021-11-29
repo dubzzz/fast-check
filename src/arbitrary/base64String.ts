@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { array } from './array';
 import { base64 } from './base64';
 import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength';
@@ -29,10 +28,8 @@ function base64String(constraints: StringSharedConstraints = {}): Arbitrary<stri
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');
   if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
 
-  return convertFromNext(
-    convertToNext(array(base64(), { minLength, maxLength, size: requestedSize }))
-      .map(codePointsToStringMapper, codePointsToStringUnmapper)
-      .map(stringToBase64Mapper, stringToBase64Unmapper)
-  );
+  return array(base64(), { minLength, maxLength, size: requestedSize })
+    .map(codePointsToStringMapper, codePointsToStringUnmapper)
+    .map(stringToBase64Mapper, stringToBase64Unmapper);
 }
 export { base64String };

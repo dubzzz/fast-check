@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { base64String } from '../../../src/arbitrary/base64String';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -67,7 +66,7 @@ describe('base64String', () => {
           const constraints = { minLength: withMin ? min : undefined, maxLength: withMax ? min + gap : undefined };
           const array = jest.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance, map } = fakeNextArbitrary();
-          array.mockReturnValue(convertFromNext(arrayInstance));
+          array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map
 
           // Act
@@ -120,7 +119,7 @@ describe('base64String', () => {
           };
           const array = jest.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance, map } = fakeNextArbitrary();
-          array.mockReturnValue(convertFromNext(arrayInstance));
+          array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map
 
           // Act
@@ -159,7 +158,7 @@ describe('base64String (integration)', () => {
     expect(['', '=', '==']).toContainEqual(afterEqualValue);
   };
 
-  const base64StringBuilder = (extra: Extra) => convertToNext(base64String(extra));
+  const base64StringBuilder = (extra: Extra) => base64String(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(base64StringBuilder, { extraParameters });
@@ -183,7 +182,7 @@ describe('base64String (integration)', () => {
     ${'0123AB==' /* too large */}        | ${{ maxLength: 7 }}
   `('should not be able to generate $source with fc.base64String($constraints)', ({ source, constraints }) => {
     // Arrange / Act
-    const arb = convertToNext(base64String(constraints));
+    const arb = base64String(constraints);
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -198,7 +197,7 @@ describe('base64String (integration)', () => {
     ${'ABCD'.repeat(50)}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(base64String());
+    const arb = base64String();
     const value = new NextValue(rawValue, undefined);
 
     // Act

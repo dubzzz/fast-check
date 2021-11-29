@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext } from '../check/arbitrary/definition/Converters';
 import { ConstantArbitrary } from './_internals/ConstantArbitrary';
 
 /** @internal */
@@ -35,7 +34,7 @@ function constantFrom<TArgs extends any[] | [any] | any>(...values: Arrayfy<TArg
   if (values.length === 0) {
     throw new Error('fc.constantFrom expects at least one parameter');
   }
-  return convertFromNext(new ConstantArbitrary(values)) as Arbitrary<Elem<TArgs>>;
+  return new ConstantArbitrary(values) as Arbitrary<Elem<TArgs>>;
 }
 
 export { constantFrom };

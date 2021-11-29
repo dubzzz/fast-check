@@ -1,10 +1,9 @@
 import fc from '../../../lib/fast-check';
 import { uuidV } from '../../../src/arbitrary/uuidV';
 import { fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
-import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
-import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertProduceCorrectValues,
@@ -12,7 +11,7 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
-const IntegerMock: { integer: (ct: { min: number; max: number }) => ArbitraryWithShrink<number> } = _IntegerMock;
+const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
 function beforeEachHook() {
   jest.resetModules();
@@ -35,11 +34,11 @@ describe('uuidV', () => {
     const integer = jest.spyOn(IntegerMock, 'integer');
     integer.mockImplementation(({ min }) => {
       const { instance } = fakeNextArbitraryStaticValue(() => min);
-      return convertFromNextWithShrunkOnce(instance, undefined);
+      return instance;
     });
 
     // Act
-    const arb = convertToNext(uuidV(version));
+    const arb = uuidV(version);
     const out = arb.generate(mrng, undefined);
 
     // Assert
@@ -59,11 +58,11 @@ describe('uuidV', () => {
     const integer = jest.spyOn(IntegerMock, 'integer');
     integer.mockImplementation(({ max }) => {
       const { instance } = fakeNextArbitraryStaticValue(() => max);
-      return convertFromNextWithShrunkOnce(instance, undefined);
+      return instance;
     });
 
     // Act
-    const arb = convertToNext(uuidV(version));
+    const arb = uuidV(version);
     const out = arb.generate(mrng, undefined);
 
     // Assert
@@ -80,7 +79,7 @@ describe('uuidV (integration)', () => {
     expect(u[14]).toBe(String(extra));
   };
 
-  const uuidVBuilder = (extra: Extra) => convertToNext(uuidV(extra));
+  const uuidVBuilder = (extra: Extra) => uuidV(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(uuidVBuilder, { extraParameters });

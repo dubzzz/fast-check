@@ -1,11 +1,11 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 
 /** @internal */
-export class LazyArbitrary<T> extends NextArbitrary<T> {
-  underlying: NextArbitrary<T> | null = null;
+export class LazyArbitrary<T> extends Arbitrary<T> {
+  underlying: Arbitrary<T> | null = null;
   constructor(readonly name: string) {
     super();
   }

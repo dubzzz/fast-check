@@ -17,7 +17,6 @@ import {
 import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 
 import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
-import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 
 import {
@@ -125,24 +124,29 @@ describe('double', () => {
   if (typeof BigInt !== 'undefined') {
     it('should properly convert integer value for index between min and max into its associated float value', () => {
       fc.assert(
-        fc.property(fc.option(doubleConstraints(), { nil: undefined }), fc.bigUintN(64), (ct, mod) => {
-          // Arrange
-          const { instance: mrng } = fakeRandom();
-          const { min, max } = minMaxForConstraints(ct || {});
-          const minIndex = doubleToIndex(min);
-          const maxIndex = doubleToIndex(max);
-          const arbitraryGeneratedIndex = toIndex(
-            (mod % (toBigInt(maxIndex) - toBigInt(minIndex) + BigInt(1))) + toBigInt(minIndex)
-          );
-          spyArrayInt64WithValue(() => arbitraryGeneratedIndex);
+        fc.property(
+          fc.option(doubleConstraints(), { nil: undefined }),
+          fc.bigUintN(64),
+          fc.option(fc.integer({ min: 2 }), { nil: undefined }),
+          (ct, mod, biasFactor) => {
+            // Arrange
+            const { instance: mrng } = fakeRandom();
+            const { min, max } = minMaxForConstraints(ct || {});
+            const minIndex = doubleToIndex(min);
+            const maxIndex = doubleToIndex(max);
+            const arbitraryGeneratedIndex = toIndex(
+              (mod % (toBigInt(maxIndex) - toBigInt(minIndex) + BigInt(1))) + toBigInt(minIndex)
+            );
+            spyArrayInt64WithValue(() => arbitraryGeneratedIndex);
 
-          // Act
-          const arb = double(ct);
-          const { value_: f } = arb.generate(mrng);
+            // Act
+            const arb = double(ct);
+            const { value_: f } = arb.generate(mrng, biasFactor);
 
-          // Assert
-          expect(f).toBe(indexToDouble(arbitraryGeneratedIndex));
-        })
+            // Assert
+            expect(f).toBe(indexToDouble(arbitraryGeneratedIndex));
+          }
+        )
       );
     });
   }
@@ -180,28 +184,32 @@ describe('double', () => {
 
     it('should properly convert the extra value to NaN', () => {
       fc.assert(
-        fc.property(doubleConstraints(withNaNRecordConstraints), (ct) => {
-          // Arrange
-          // Setup mocks for integer
-          const { instance: mrng } = fakeRandom();
-          const arbitraryGenerated = { value: { sign: 1, data: [Number.NaN, Number.NaN] } as ArrayInt64 };
-          const arrayInt64 = spyArrayInt64WithValue(() => arbitraryGenerated.value);
-          // Call float next to find out the value required for NaN
-          double({ ...ct, noNaN: true });
-          const arb = double(ct);
-          // Extract NaN "index"
-          const [minNonNaN] = arrayInt64.mock.calls[0];
-          const [minNaN, maxNaN] = arrayInt64.mock.calls[1];
-          const indexForNaN = !isEqual64(minNonNaN, minNaN) ? minNaN : maxNaN;
-          if (indexForNaN === undefined) throw new Error('No value available for NaN');
-          arbitraryGenerated.value = indexForNaN;
+        fc.property(
+          doubleConstraints(withNaNRecordConstraints),
+          fc.option(fc.integer({ min: 2 }), { nil: undefined }),
+          (ct, biasFactor) => {
+            // Arrange
+            // Setup mocks for integer
+            const { instance: mrng } = fakeRandom();
+            const arbitraryGenerated = { value: { sign: 1, data: [Number.NaN, Number.NaN] } as ArrayInt64 };
+            const arrayInt64 = spyArrayInt64WithValue(() => arbitraryGenerated.value);
+            // Call float next to find out the value required for NaN
+            double({ ...ct, noNaN: true });
+            const arb = double(ct);
+            // Extract NaN "index"
+            const [minNonNaN] = arrayInt64.mock.calls[0];
+            const [minNaN, maxNaN] = arrayInt64.mock.calls[1];
+            const indexForNaN = !isEqual64(minNonNaN, minNaN) ? minNaN : maxNaN;
+            if (indexForNaN === undefined) throw new Error('No value available for NaN');
+            arbitraryGenerated.value = indexForNaN;
 
-          // Act
-          const { value_: f } = arb.generate(mrng);
+            // Act
+            const { value_: f } = arb.generate(mrng, biasFactor);
 
-          // Assert
-          expect(f).toBe(Number.NaN);
-        })
+            // Assert
+            expect(f).toBe(Number.NaN);
+          }
+        )
       );
     });
   });
@@ -266,7 +274,7 @@ describe('double (integration)', () => {
     (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
     (!Number.isNaN(fa) && Number.isNaN(fb)); //    Case 3: notNaN < NaN, NaN is one of the extreme values
 
-  const doubleBuilder = (extra: Extra) => convertToNext(double(extra));
+  const doubleBuilder = (extra: Extra) => double(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(doubleBuilder, { extraParameters });
@@ -316,7 +324,7 @@ function spyArrayInt64() {
   const { instance, map } = fakeNextArbitrary<ArrayInt64>();
   const { instance: mappedInstance } = fakeNextArbitrary();
   const arrayInt64 = jest.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
-  arrayInt64.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  arrayInt64.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   return arrayInt64;
 }
@@ -324,6 +332,6 @@ function spyArrayInt64() {
 function spyArrayInt64WithValue(value: () => ArrayInt64) {
   const { instance } = fakeNextArbitraryStaticValue<ArrayInt64>(value);
   const integer = jest.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  integer.mockReturnValue(instance);
   return integer;
 }

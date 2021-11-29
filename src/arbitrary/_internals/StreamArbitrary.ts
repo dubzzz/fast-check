@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { cloneMethod } from '../../check/symbols';
 import { Random } from '../../random/generator/Random';
@@ -11,8 +11,8 @@ function prettyPrint(seenValuesStrings: string[]): string {
 }
 
 /** @internal */
-export class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
-  constructor(readonly arb: NextArbitrary<T>) {
+export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
+  constructor(readonly arb: Arbitrary<T>) {
     super();
   }
 
@@ -20,7 +20,7 @@ export class StreamArbitrary<T> extends NextArbitrary<Stream<T>> {
     const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
     const enrichedProducer = () => {
       const seenValues: T[] = [];
-      const g = function* (arb: NextArbitrary<T>, clonedMrng: Random) {
+      const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
         while (true) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
           seenValues.push(value);

@@ -1,8 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { stringOf } from '../../../src/arbitrary/stringOf';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
@@ -29,8 +28,7 @@ describe('stringOf (integration)', () => {
       patterns,
     }));
 
-  const stringOfBuilder = (extra: Extra) =>
-    convertToNext(stringOf(convertFromNext(new PatternsArbitrary(extra.patterns)), extra));
+  const stringOfBuilder = (extra: Extra) => stringOf(new PatternsArbitrary(extra.patterns), extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(stringOfBuilder, { extraParameters });
@@ -53,7 +51,7 @@ describe('stringOf (integration)', () => {
     'should not be able to generate $source with fc.stringOf(arb($patterns), $constraints)',
     ({ source, patterns, constraints }) => {
       // Arrange / Act
-      const arb = convertToNext(stringOf(convertFromNext(new PatternsArbitrary(patterns)), constraints));
+      const arb = stringOf(new PatternsArbitrary(patterns), constraints);
       const out = arb.canShrinkWithoutContext(source);
 
       // Assert
@@ -68,7 +66,7 @@ describe('stringOf (integration)', () => {
     ${'..'.repeat(50) /* longer than default maxGeneratedLength but ok for shrink */} | ${['..', '__']}
   `('should be able to shrink $rawValue', ({ rawValue, patterns }) => {
     // Arrange
-    const arb = convertToNext(stringOf(convertFromNext(new PatternsArbitrary(patterns))));
+    const arb = stringOf(new PatternsArbitrary(patterns));
     const value = new NextValue(rawValue, undefined);
 
     // Act
@@ -82,7 +80,7 @@ describe('stringOf (integration)', () => {
 
 // Helpers
 
-class PatternsArbitrary extends NextArbitrary<string> {
+class PatternsArbitrary extends Arbitrary<string> {
   constructor(readonly patterns: string[]) {
     super();
   }

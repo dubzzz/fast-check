@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { compareFunc } from '../../../src/arbitrary/compareFunc';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { hasCloneMethod, cloneIfNeeded } from '../../../src/check/symbols';
 import {
   assertProduceCorrectValues,
@@ -10,7 +9,7 @@ import {
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
 
 describe('compareFunc (integration)', () => {
-  const compareFuncBuilder = () => convertToNext(compareFunc());
+  const compareFuncBuilder = () => compareFunc();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(compareFuncBuilder, {

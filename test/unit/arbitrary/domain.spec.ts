@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { domain, DomainConstraints } from '../../../src/arbitrary/domain';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { URL } from 'url';
 
@@ -52,7 +51,7 @@ describe('domain (integration)', () => {
     expect(() => new URL(`http://${domain}`)).not.toThrow();
   };
 
-  const domainBuilder = (extra: Extra) => convertToNext(domain(extra));
+  const domainBuilder = (extra: Extra) => domain(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(domainBuilder, { extraParameters });
@@ -80,7 +79,7 @@ describe('domain (integration)', () => {
     ${`${'a.'.repeat(128)}com` /* domain too long >255 */}
   `('should not be able to generate $source with fc.domain()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(domain());
+    const arb = domain();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -94,7 +93,7 @@ describe('domain (integration)', () => {
     ${'very-very-very-very-very-very-very-very-very-long-label.com' /* label longer than default maxGeneratedLength but ok for shrink */}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(domain());
+    const arb = domain();
     const value = new NextValue(rawValue, undefined);
 
     // Act

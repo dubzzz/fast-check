@@ -1,7 +1,7 @@
 import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../../src/random/generator/Random';
 import { withConfiguredGlobal } from './GlobalSettingsHelpers';
@@ -12,7 +12,7 @@ import { sizeArb } from './SizeHelpers';
 // > provided by fast-check.
 
 export function assertProduceSameValueGivenSameSeed<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   options: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
     noInitialContext?: boolean;
@@ -62,8 +62,8 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
 // > But some of them are really recommended to build valid arbitraries that can be used.
 
 export function assertProduceCorrectValues<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
-  isCorrect: (v: T, extraParameters: U, arb: NextArbitrary<T>) => void | boolean,
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
+  isCorrect: (v: T, extraParameters: U, arb: Arbitrary<T>) => void | boolean,
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
@@ -96,8 +96,8 @@ export function assertProduceCorrectValues<T, U = never>(
 }
 
 export function assertGenerateEquivalentTo<T, U = never>(
-  arbitraryBuilderA: (extraParameters: U) => NextArbitrary<T>,
-  arbitraryBuilderB: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilderA: (extraParameters: U) => Arbitrary<T>,
+  arbitraryBuilderB: (extraParameters: U) => Arbitrary<T>,
   options: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
     isEqualContext?: (c1: unknown, c2: unknown, extraParameters: U) => void | boolean;
@@ -139,7 +139,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
 // > assertShrinkProducesCorrectValues with option (v, _, arb) => arb.canShrinkWithoutContext(v)
 
 export function assertShrinkProducesSameValueWithoutInitialContext<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   options: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
     extraParameters?: fc.Arbitrary<U>;
@@ -150,7 +150,7 @@ export function assertShrinkProducesSameValueWithoutInitialContext<T, U = never>
 }
 
 export function assertProduceValuesShrinkableWithoutContext<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
@@ -160,7 +160,7 @@ export function assertProduceValuesShrinkableWithoutContext<T, U = never>(
 }
 
 export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   isStrictlySmaller: (vNew: T, vOld: T, extraParameters: U) => void | boolean,
   options: {
     extraParameters?: fc.Arbitrary<U>;
@@ -195,7 +195,7 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
 }
 
 export function assertProduceSomeSpecificValues<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   isSpecificValue: (value: T) => boolean,
   options: {
     extraParameters?: fc.Arbitrary<U>;
@@ -223,7 +223,7 @@ export function assertProduceSomeSpecificValues<T, U = never>(
 }
 
 export function assertGenerateIndependentOfSize<T, U = never>(
-  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   options: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
     isEqualContext?: (c1: unknown, c2: unknown, extraParameters: U) => void | boolean;
@@ -281,10 +281,10 @@ function assertEquality<T, U>(
 }
 
 function assertCorrectness<T, U>(
-  isCorrect: (v: T, extraParameters: U, arb: NextArbitrary<T>) => void | boolean,
+  isCorrect: (v: T, extraParameters: U, arb: Arbitrary<T>) => void | boolean,
   v: T,
   extraParameters: U,
-  arb: NextArbitrary<T>
+  arb: Arbitrary<T>
 ): void {
   try {
     const out = isCorrect(v, extraParameters, arb);

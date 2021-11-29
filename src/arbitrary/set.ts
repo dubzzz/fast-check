@@ -1,6 +1,5 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import {
   MaxLengthUpperBound,
   SizeForArbitrary,
@@ -132,10 +131,7 @@ export interface SetConstraints<T> {
  */
 export function set<T>(arb: Arbitrary<T>, constraints: SetConstraints<T> = {}): Arbitrary<T[]> {
   const { minLength, maxGeneratedLength, maxLength, setBuilder } = buildCompleteSetConstraints(constraints);
-  const nextArb = convertToNext(arb);
-  const arrayArb = convertFromNext(
-    new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength, setBuilder)
-  );
+  const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength, setBuilder);
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }

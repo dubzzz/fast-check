@@ -1,15 +1,6 @@
-import { memo as memoOld } from '../../../src/arbitrary/memo';
-import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { memo } from '../../../src/arbitrary/memo';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
-
-type NextMemo<T> = (maxDepth?: number) => NextArbitrary<T>;
-
-function memo<T>(builder: (maxDepth: number) => NextArbitrary<T>): NextMemo<T> {
-  const memoed = memoOld((d) => convertFromNext(builder(d)));
-  return (maxDepth?: number) => convertToNext(memoed(maxDepth));
-}
 
 describe('memo', () => {
   it('should return the produced instance of arbitrary', () => {

@@ -1,6 +1,5 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /**
  * For mutually recursive types
@@ -31,7 +30,7 @@ export function letrec<T>(builder: (tie: (key: string) => Arbitrary<unknown>) =>
       lazyArbs[key] = new LazyArbitrary(String(key));
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return convertFromNext(lazyArbs[key]!);
+    return lazyArbs[key]!;
   };
   const strictArbs = builder(tie as any);
   for (const key in strictArbs) {
@@ -41,7 +40,7 @@ export function letrec<T>(builder: (tie: (key: string) => Arbitrary<unknown>) =>
     }
     const lazyAtKey: LazyArbitrary<unknown> | undefined = lazyArbs[key];
     const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
-    lazyArb.underlying = convertToNext(strictArbs[key]);
+    lazyArb.underlying = strictArbs[key];
     lazyArbs[key] = lazyArb;
   }
   return strictArbs;
