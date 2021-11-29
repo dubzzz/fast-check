@@ -83,7 +83,7 @@ describe('Property', () => {
     expect(() => property(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, () => {})).toThrowError());
   it('Should use the unbiased arbitrary by default', () => {
     const { instance, generate } = fakeNextArbitrary<number>();
-    generate.mockReturnValue(new NextValue(42, undefined));
+    generate.mockReturnValue(new NextValue(69, undefined));
     const mrng = stubRng.mutable.nocall();
 
     const p = property(instance, () => {});
@@ -101,13 +101,17 @@ describe('Property', () => {
     const p = property(instance, () => {});
     expect(generate).not.toHaveBeenCalled();
 
-    expect(p.generate(mrng, 0).value).toEqual([42]);
+    const runId1 = 0;
+    const expectedBias1 = 2;
+    expect(p.generate(mrng, runId1).value).toEqual([42]);
     expect(generate).toHaveBeenCalledTimes(1);
-    expect(generate).toHaveBeenCalledWith(mrng, 0);
+    expect(generate).toHaveBeenCalledWith(mrng, expectedBias1);
 
-    expect(p.generate(stubRng.mutable.nocall(), 2).value).toEqual([42]);
+    const runId2 = 100;
+    const expectedBias2 = 4;
+    expect(p.generate(stubRng.mutable.nocall(), runId2).value).toEqual([42]);
     expect(generate).toHaveBeenCalledTimes(2);
-    expect(generate).toHaveBeenCalledWith(mrng, 2);
+    expect(generate).toHaveBeenCalledWith(mrng, expectedBias2);
   });
   it('Should always execute beforeEach before the test', () => {
     const prob = { beforeEachCalled: false };
