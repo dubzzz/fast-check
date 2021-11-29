@@ -1,4 +1,4 @@
-import { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import { Arbitrary, assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
 import { tuple } from '../../arbitrary/tuple';
 import {
   AsyncProperty,
@@ -22,6 +22,7 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   }
   const arbs = args.slice(0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => Promise<boolean | void>;
+  arbs.forEach(assertIsArbitrary);
   const mappedArbs = arbs.map((arb): typeof arb => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new AsyncProperty(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }

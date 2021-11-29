@@ -385,3 +385,20 @@ class NoBiasArbitrary<T> extends Arbitrary<T> {
     return this;
   }
 }
+
+/**
+ * Ensure an instance is an isntance of NextArbitrary
+ * @param instance - The instance to be checked
+ * @internal
+ */
+export function assertIsArbitrary(instance: Arbitrary<unknown>): asserts instance is Arbitrary<unknown> {
+  if (
+    typeof instance !== 'object' ||
+    instance === null ||
+    !('generate' in instance) ||
+    !('shrink' in instance) ||
+    !('canShrinkWithoutContext' in instance)
+  ) {
+    throw new Error('Unexpected value received: not an instance of Arbitrary');
+  }
+}
