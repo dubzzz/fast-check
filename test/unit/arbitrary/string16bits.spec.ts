@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { string16bits } from '../../../src/arbitrary/string16bits';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -27,7 +26,7 @@ describe('string16bits (integration)', () => {
     }
   };
 
-  const string16bitsBuilder = (extra: Extra) => convertToNext(string16bits(extra));
+  const string16bitsBuilder = (extra: Extra) => string16bits(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(string16bitsBuilder, { extraParameters });

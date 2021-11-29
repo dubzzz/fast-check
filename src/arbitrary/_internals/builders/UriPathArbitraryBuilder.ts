@@ -1,6 +1,5 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { Size } from '../helpers/MaxLengthFromMinLength';
-import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 import { webSegment } from '../../webSegment';
 import { array } from '../../array';
 import { segmentsToPathMapper, segmentsToPathUnmapper } from '../mappers/SegmentsToPath';
@@ -24,10 +23,8 @@ function sqrtSize(size: Size): [Size, Size] {
 /** @internal */
 export function buildUriPathArbitrary(resolvedSize: Size): Arbitrary<string> {
   const [segmentSize, numSegmentSize] = sqrtSize(resolvedSize);
-  return convertFromNext(
-    convertToNext(array(webSegment({ size: segmentSize }), { size: numSegmentSize })).map(
-      segmentsToPathMapper,
-      segmentsToPathUnmapper
-    )
+  return array(webSegment({ size: segmentSize }), { size: numSegmentSize }).map(
+    segmentsToPathMapper,
+    segmentsToPathUnmapper
   );
 }

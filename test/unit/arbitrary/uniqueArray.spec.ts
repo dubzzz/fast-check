@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { uniqueArray, UniqueArrayConstraints } from '../../../src/arbitrary/uniqueArray';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
@@ -30,7 +29,7 @@ describe('uniqueArray', () => {
     ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
     // Act
-    const arb = uniqueArray(convertFromNext(childInstance));
+    const arb = uniqueArray(childInstance);
 
     // Assert
     expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -45,7 +44,7 @@ describe('uniqueArray', () => {
     expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
     expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
     expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, n.a, <default>) for uniqueArray(set, {maxLength})', () => {
@@ -58,7 +57,7 @@ describe('uniqueArray', () => {
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
-        const arb = uniqueArray(convertFromNext(childInstance), { maxLength });
+        const arb = uniqueArray(childInstance, { maxLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -69,7 +68,7 @@ describe('uniqueArray', () => {
           undefined,
           expect.any(Function)
         );
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -85,7 +84,7 @@ describe('uniqueArray', () => {
         filter.mockReturnValue(instance);
 
         // Act
-        const arb = uniqueArray(convertFromNext(childInstance), { minLength });
+        const arb = uniqueArray(childInstance, { minLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -104,7 +103,7 @@ describe('uniqueArray', () => {
         } else {
           expect(receivedGeneratedMaxLength).toEqual(minLength);
         }
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -121,7 +120,7 @@ describe('uniqueArray', () => {
         filter.mockReturnValue(instance);
 
         // Act
-        const arb = uniqueArray(convertFromNext(childInstance), { minLength, maxLength });
+        const arb = uniqueArray(childInstance, { minLength, maxLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -132,7 +131,7 @@ describe('uniqueArray', () => {
           undefined,
           expect.any(Function)
         );
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -171,7 +170,7 @@ describe('uniqueArray', () => {
           filter.mockReturnValue(instance);
 
           // Act
-          const arb = uniqueArray(convertFromNext(childInstance), constraints);
+          const arb = uniqueArray(childInstance, constraints);
 
           // Assert
           expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -182,7 +181,7 @@ describe('uniqueArray', () => {
             constraints.depthIdentifier,
             expect.any(Function)
           );
-          expect(convertToNext(arb)).toBe(instance);
+          expect(arb).toBe(instance);
         }
       )
     );
@@ -202,9 +201,7 @@ describe('uniqueArray', () => {
           const { instance: childInstance } = fakeNextArbitrary<unknown>();
 
           // Act / Assert
-          expect(() =>
-            uniqueArray(convertFromNext(childInstance), { minLength, maxLength, comparator, selector })
-          ).toThrowError();
+          expect(() => uniqueArray(childInstance, { minLength, maxLength, comparator, selector })).toThrowError();
         }
       )
     );
@@ -282,8 +279,7 @@ describe('uniqueArray (integration)', () => {
       return Object.is(v, Number.NaN) ? -2 : Object.is(v, -0) ? -1 : v;
     }
   );
-  const uniqueArrayBuilder = (extra: Extra) =>
-    convertToNext(uniqueArray(convertFromNext(integerUpTo10000AndNaNOrMinusZero), extra));
+  const uniqueArrayBuilder = (extra: Extra) => uniqueArray(integerUpTo10000AndNaNOrMinusZero, extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(uniqueArrayBuilder, { extraParameters });
@@ -315,7 +311,7 @@ describe('uniqueArray (integration)', () => {
     ${[2, 4, 8] /* not unique for comparator */} | ${{ comparator: (a: number, b: number) => Math.abs(a - b) <= 2 }}
   `('should not be able to generate $source with fc.uniqueArray(arb, $constraints)', ({ source, constraints }) => {
     // Arrange / Act
-    const arb = convertToNext(uniqueArray(convertFromNext(new FakeIntegerArbitrary(0, 1000)), constraints));
+    const arb = uniqueArray(new FakeIntegerArbitrary(0, 1000), constraints);
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -332,7 +328,7 @@ describe('uniqueArray (integration)', () => {
     ${[2, 8]}                | ${{ comparator: (a: number, b: number) => Math.abs(a - b) <= 2 }}
   `('should be able to shrink $rawValue with fc.uniqueArray(arb, $constraints)', ({ rawValue, constraints }) => {
     // Arrange
-    const arb = convertToNext(uniqueArray(convertFromNext(new FakeIntegerArbitrary(0, 1000)), constraints));
+    const arb = uniqueArray(new FakeIntegerArbitrary(0, 1000), constraints);
     const value = new NextValue(rawValue, undefined);
 
     // Act

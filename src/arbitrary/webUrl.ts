@@ -6,7 +6,6 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { webQueryParameters } from './webQueryParameters';
 import { webFragments } from './webFragments';
 import { webAuthority, WebAuthorityConstraints } from './webAuthority';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { partsToUrlMapper, partsToUrlUnmapper } from './_internals/mappers/PartsToUrl';
 import { relativeSizeToSize, resolveSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { buildUriPathArbitrary } from './_internals/builders/UriPathArbitraryBuilder';
@@ -67,15 +66,11 @@ export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
   const schemeArb = constantFrom(...validSchemes);
   const authorityArb = webAuthority(resolvedAuthoritySettings);
   const pathArb = buildUriPathArbitrary(resolvedSize);
-  return convertFromNext(
-    convertToNext(
-      tuple(
-        schemeArb,
-        authorityArb,
-        pathArb,
-        c.withQueryParameters === true ? option(webQueryParameters({ size: resolvedSize })) : constant(null),
-        c.withFragments === true ? option(webFragments({ size: resolvedSize })) : constant(null)
-      )
-    ).map(partsToUrlMapper, partsToUrlUnmapper)
-  );
+  return tuple(
+    schemeArb,
+    authorityArb,
+    pathArb,
+    c.withQueryParameters === true ? option(webQueryParameters({ size: resolvedSize })) : constant(null),
+    c.withFragments === true ? option(webFragments({ size: resolvedSize })) : constant(null)
+  ).map(partsToUrlMapper, partsToUrlUnmapper);
 }

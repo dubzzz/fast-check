@@ -1,9 +1,6 @@
-import { letrec as letrecOld } from '../../../src/arbitrary/letrec';
+import { letrec } from '../../../src/arbitrary/letrec';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
-import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { Stream } from '../../../src/stream/Stream';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
@@ -13,27 +10,6 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
-
-// Temporary rewrapping around letrec
-// should be removed with next major (no more Arbitrary, only NextArbitrary)
-export function letrec<T>(
-  builder: (tie: (key: string) => NextArbitrary<unknown>) => { [K in keyof T]: NextArbitrary<T[K]> }
-): { [K in keyof T]: NextArbitrary<T[K]> } {
-  const outOld = letrecOld((tieOld) => {
-    const tie: (key: string) => NextArbitrary<unknown> = (key) => convertToNext(tieOld(key));
-    const built = builder(tie);
-    const revampedBuilt: { [K in keyof T]: Arbitrary<T[K]> } = Object.create(null);
-    for (const k of Object.keys(built)) {
-      revampedBuilt[k as keyof T] = convertFromNext(built[k as keyof T]);
-    }
-    return revampedBuilt;
-  });
-  const out: { [K in keyof T]: NextArbitrary<T[K]> } = Object.create(null);
-  for (const k of Object.keys(outOld)) {
-    out[k as keyof T] = convertToNext(outOld[k as keyof T]);
-  }
-  return out;
-}
 
 describe('letrec', () => {
   describe('builder', () => {

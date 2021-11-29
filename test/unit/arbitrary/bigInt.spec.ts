@@ -1,14 +1,12 @@
 import * as fc from '../../../lib/fast-check';
 import { bigInt } from '../../../src/arbitrary/bigInt';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as BigIntArbitraryMock from '../../../src/arbitrary/_internals/BigIntArbitrary';
 
 function fakeBigIntArbitrary() {
   const instance = fakeNextArbitrary<bigint>().instance as BigIntArbitraryMock.BigIntArbitrary;
-  instance.defaultTarget = jest.fn();
   return instance;
 }
 
@@ -42,8 +40,8 @@ describe('bigInt', () => {
     expect(BigIntArbitrary.mock.calls[1]).toEqual(BigIntArbitrary.mock.calls[0]); // same arguments
     const argumentsForCall = BigIntArbitrary.mock.calls[0];
     expect(argumentsForCall[0]).toBeLessThan(argumentsForCall[1]); // range should not be restricted to one value
-    expect(convertToNext(arb)).toBe(instance);
-    expect(convertToNext(arbEmpty)).toBe(instance);
+    expect(arb).toBe(instance);
+    expect(arbEmpty).toBe(instance);
   });
 
   it('should instantiate BigIntArbitrary with passed constraints and default missing ones', () =>
@@ -65,7 +63,7 @@ describe('bigInt', () => {
         );
         const argumentsForCall = BigIntArbitrary.mock.calls[0];
         expect(argumentsForCall[0]).toBeLessThanOrEqual(argumentsForCall[1]);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 
@@ -85,8 +83,8 @@ describe('bigInt', () => {
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledTimes(2);
         expect(BigIntArbitrary.mock.calls[1]).toEqual(BigIntArbitrary.mock.calls[0]); // same arguments
-        expect(convertToNext(arb)).toBe(instance);
-        expect(convertToNext(arbConstraints)).toBe(instance);
+        expect(arb).toBe(instance);
+        expect(arbConstraints).toBe(instance);
       })
     ));
 

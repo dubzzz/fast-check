@@ -1,7 +1,6 @@
 import fc from '../../../lib/fast-check';
 
 import { unicodeJsonValue, JsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
@@ -34,7 +33,7 @@ describe('unicodeJsonValue (integration)', () => {
     }
   };
 
-  const unicodeJsonValueBuilder = (extra: Extra) => convertToNext(unicodeJsonValue(extra));
+  const unicodeJsonValueBuilder = (extra: Extra) => unicodeJsonValue(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(unicodeJsonValueBuilder, { extraParameters });

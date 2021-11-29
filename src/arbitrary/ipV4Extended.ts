@@ -2,7 +2,6 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { oneof } from './oneof';
 import { tuple } from './tuple';
 import { buildStringifiedNatArbitrary } from './_internals/builders/StringifiedNatArbitraryBuilder';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /** @internal */
 function dotJoinerMapper(data: string[]): string {
@@ -29,30 +28,20 @@ function dotJoinerUnmapper(value: unknown): string[] {
  */
 export function ipV4Extended(): Arbitrary<string> {
   return oneof(
-    convertFromNext(
-      convertToNext(
-        tuple<string[]>(
-          buildStringifiedNatArbitrary(255),
-          buildStringifiedNatArbitrary(255),
-          buildStringifiedNatArbitrary(255),
-          buildStringifiedNatArbitrary(255)
-        )
-      ).map(dotJoinerMapper, dotJoinerUnmapper)
-    ),
-    convertFromNext(
-      convertToNext(
-        tuple<string[]>(
-          buildStringifiedNatArbitrary(255),
-          buildStringifiedNatArbitrary(255),
-          buildStringifiedNatArbitrary(65535)
-        )
-      ).map(dotJoinerMapper, dotJoinerUnmapper)
-    ),
-    convertFromNext(
-      convertToNext(tuple<string[]>(buildStringifiedNatArbitrary(255), buildStringifiedNatArbitrary(16777215))).map(
-        dotJoinerMapper,
-        dotJoinerUnmapper
-      )
+    tuple<string[]>(
+      buildStringifiedNatArbitrary(255),
+      buildStringifiedNatArbitrary(255),
+      buildStringifiedNatArbitrary(255),
+      buildStringifiedNatArbitrary(255)
+    ).map(dotJoinerMapper, dotJoinerUnmapper),
+    tuple<string[]>(
+      buildStringifiedNatArbitrary(255),
+      buildStringifiedNatArbitrary(255),
+      buildStringifiedNatArbitrary(65535)
+    ).map(dotJoinerMapper, dotJoinerUnmapper),
+    tuple<string[]>(buildStringifiedNatArbitrary(255), buildStringifiedNatArbitrary(16777215)).map(
+      dotJoinerMapper,
+      dotJoinerUnmapper
     ),
     buildStringifiedNatArbitrary(4294967295)
   );

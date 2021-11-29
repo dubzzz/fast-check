@@ -1,7 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { double, DoubleConstraints } from './double';
 import { array } from './array';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
@@ -44,5 +43,5 @@ function fromTypedUnmapper(value: unknown): number[] {
  * @public
  */
 export function float64Array(constraints: Float64ArrayConstraints = {}): Arbitrary<Float64Array> {
-  return convertFromNext(convertToNext(array(double(constraints), constraints)).map(toTypedMapper, fromTypedUnmapper));
+  return array(double(constraints), constraints).map(toTypedMapper, fromTypedUnmapper);
 }

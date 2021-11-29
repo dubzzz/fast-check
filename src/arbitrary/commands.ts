@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext } from '../check/arbitrary/definition/Converters';
 import { AsyncCommand } from '../check/model/command/AsyncCommand';
 import { Command } from '../check/model/command/Command';
 import { ICommand } from '../check/model/command/ICommand';
@@ -55,14 +54,12 @@ function commands<Model extends object, Real, RunResult, CheckAsync extends bool
   const maxCommands = config.maxCommands !== undefined ? config.maxCommands : MaxLengthUpperBound;
   const specifiedMaxCommands = config.maxCommands !== undefined;
   const maxGeneratedCommands = maxGeneratedLengthFromSizeForArbitrary(size, 0, maxCommands, specifiedMaxCommands);
-  return convertFromNext(
-    new CommandsArbitrary(
-      commandArbs,
-      maxGeneratedCommands,
-      maxCommands,
-      config.replayPath != null ? config.replayPath : null,
-      !!config.disableReplayLog
-    )
+  return new CommandsArbitrary(
+    commandArbs,
+    maxGeneratedCommands,
+    maxCommands,
+    config.replayPath != null ? config.replayPath : null,
+    !!config.disableReplayLog
   );
 }
 export { commands };

@@ -4,7 +4,6 @@ import { domain } from './domain';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { adapter, AdapterOutput } from './_internals/AdapterArbitrary';
 
@@ -72,27 +71,21 @@ export interface EmailAddressConstraints {
 export function emailAddress(constraints: EmailAddressConstraints = {}): Arbitrary<string> {
   const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];
   const atextArb = buildLowerAlphaNumericArbitrary(others);
-  const localPartArb = convertFromNext(
-    adapter(
-      convertToNext(
-        // Maximal length for the output of dotMapper is 64,
-        // In other words:
-        // - `stringOf(atextArb, ...)` cannot produce values having more than 64 characters
-        // - `array(...)` cannot produce more than 32 values
-        array(
-          stringOf(atextArb, {
-            minLength: 1,
-            maxLength: 64,
-            size: constraints.size,
-          }),
-          { minLength: 1, maxLength: 32, size: constraints.size }
-        )
-      ),
-      dotAdapter
-    ).map(dotMapper, dotUnmapper)
-  );
+  const localPartArb = adapter(
+    // Maximal length for the output of dotMapper is 64,
+    // In other words:
+    // - `stringOf(atextArb, ...)` cannot produce values having more than 64 characters
+    // - `array(...)` cannot produce more than 32 values
+    array(
+      stringOf(atextArb, {
+        minLength: 1,
+        maxLength: 64,
+        size: constraints.size,
+      }),
+      { minLength: 1, maxLength: 32, size: constraints.size }
+    ),
+    dotAdapter
+  ).map(dotMapper, dotUnmapper);
 
-  return convertFromNext(
-    convertToNext(tuple(localPartArb, domain({ size: constraints.size }))).map(atMapper, atUnmapper)
-  );
+  return tuple(localPartArb, domain({ size: constraints.size })).map(atMapper, atUnmapper);
 }

@@ -1,14 +1,12 @@
 import * as fc from '../../../lib/fast-check';
 import { bigUintN } from '../../../src/arbitrary/bigUintN';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as BigIntArbitraryMock from '../../../src/arbitrary/_internals/BigIntArbitrary';
 
 function fakeBigIntArbitrary() {
   const instance = fakeNextArbitrary<bigint>().instance as BigIntArbitraryMock.BigIntArbitrary;
-  instance.defaultTarget = jest.fn();
   return instance;
 }
 
@@ -40,7 +38,7 @@ describe('bigUintN', () => {
 
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(BigInt(0), BigInt(2) ** BigInt(n) - BigInt(1));
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 
