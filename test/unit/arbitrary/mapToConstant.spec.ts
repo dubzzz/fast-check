@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { mapToConstant } from '../../../src/arbitrary/mapToConstant';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -71,7 +70,7 @@ describe('mapToConstant (integration)', () => {
       entries.push({ num: trimmedConstants.length, build: (index: number) => trimmedConstants[index] });
       trimmedConstants.forEach((c) => alreadySeenConstants.add(c));
     }
-    return convertToNext(mapToConstant(...entries));
+    return mapToConstant(...entries);
   };
 
   it('should produce the same values given the same seed', () => {
@@ -92,11 +91,9 @@ describe('mapToConstant (integration)', () => {
 
   it('should be able to shrink c given hexa-like entries', () => {
     // Arrange
-    const arb = convertToNext(
-      mapToConstant(
-        { num: 10, build: (index) => String.fromCodePoint(index + 48) }, // 0-9
-        { num: 6, build: (index) => String.fromCodePoint(index + 97) } // a-f
-      )
+    const arb = mapToConstant(
+      { num: 10, build: (index) => String.fromCodePoint(index + 48) }, // 0-9
+      { num: 6, build: (index) => String.fromCodePoint(index + 97) } // a-f
     );
     const rawValue = 'c';
     const value = new NextValue(rawValue, undefined);

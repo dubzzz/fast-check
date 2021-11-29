@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { unicodeString } from '../../../src/arbitrary/unicodeString';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -31,7 +30,7 @@ describe('unicodeString (integration)', () => {
     }
   };
 
-  const unicodeStringBuilder = (extra: Extra) => convertToNext(unicodeString(extra));
+  const unicodeStringBuilder = (extra: Extra) => unicodeString(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(unicodeStringBuilder, { extraParameters });

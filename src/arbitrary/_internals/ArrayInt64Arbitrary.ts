@@ -1,8 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
-import { ArbitraryWithContextualShrink } from '../../check/arbitrary/definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../../check/arbitrary/definition/Converters';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import {
   add64,
@@ -20,7 +18,7 @@ import {
 } from './helpers/ArrayInt64';
 
 /** @internal */
-class ArrayInt64Arbitrary extends NextArbitrary<ArrayInt64> {
+class ArrayInt64Arbitrary extends Arbitrary<ArrayInt64> {
   private biasedRanges: { min: ArrayInt64; max: ArrayInt64 }[] | null = null;
 
   constructor(readonly min: ArrayInt64, readonly max: ArrayInt64) {
@@ -98,7 +96,7 @@ class ArrayInt64Arbitrary extends NextArbitrary<ArrayInt64> {
     return this.shrinkArrayInt64(current, context, false);
   }
 
-  defaultTarget(): ArrayInt64 {
+  private defaultTarget(): ArrayInt64 {
     // min <= 0 && max >= 0   => shrink towards zero
     if (!isStrictlyPositive64(this.min) && !isStrictlyNegative64(this.max)) {
       return Zero64;
@@ -168,7 +166,7 @@ class ArrayInt64Arbitrary extends NextArbitrary<ArrayInt64> {
 }
 
 /** @internal */
-export function arrayInt64(min: ArrayInt64, max: ArrayInt64): ArbitraryWithContextualShrink<ArrayInt64> {
+export function arrayInt64(min: ArrayInt64, max: ArrayInt64): Arbitrary<ArrayInt64> {
   const arb = new ArrayInt64Arbitrary(min, max);
-  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
+  return arb;
 }

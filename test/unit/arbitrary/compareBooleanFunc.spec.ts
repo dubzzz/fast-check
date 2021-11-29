@@ -2,7 +2,6 @@ import * as fc from '../../../lib/fast-check';
 import { compareBooleanFunc } from '../../../src/arbitrary/compareBooleanFunc';
 import { compareFunc } from '../../../src/arbitrary/compareFunc';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { hasCloneMethod, cloneIfNeeded } from '../../../src/check/symbols';
 import {
   assertGenerateEquivalentTo,
@@ -12,7 +11,7 @@ import {
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
 
 describe('compareBooleanFunc (integration)', () => {
-  const compareBooleanFuncBuilder = () => convertToNext(compareBooleanFunc());
+  const compareBooleanFuncBuilder = () => compareBooleanFunc();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(compareBooleanFuncBuilder, {
@@ -51,8 +50,8 @@ describe('compareBooleanFunc (integration)', () => {
 
   it('should be equivalent to compareFunc(a, b) < 0', () => {
     assertGenerateEquivalentTo(
-      () => convertToNext(compareBooleanFunc()),
-      () => convertToNext(compareFunc()).map((f) => (a, b) => f(a, b) < 0),
+      () => compareBooleanFunc(),
+      () => compareFunc().map((f) => (a, b) => f(a, b) < 0),
       {
         isEqual: (f, refF, [a, b]) => f(a, b) === refF(a, b),
         extraParameters: fc.tuple(fc.anything(), fc.anything()),

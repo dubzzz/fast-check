@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 /** @internal */
 export function wordsToJoinedStringMapper(words: string[]): string {
@@ -7,7 +7,7 @@ export function wordsToJoinedStringMapper(words: string[]): string {
 }
 
 /** @internal */
-export function wordsToJoinedStringUnmapperFor(wordsArbitrary: NextArbitrary<string>): (value: unknown) => string[] {
+export function wordsToJoinedStringUnmapperFor(wordsArbitrary: Arbitrary<string>): (value: unknown) => string[] {
   return function wordsToJoinedStringUnmapper(value: unknown): string[] {
     if (typeof value !== 'string') {
       throw new Error('Unsupported type');
@@ -33,7 +33,7 @@ export function wordsToSentenceMapper(words: string[]): string {
 }
 
 /** @internal */
-export function wordsToSentenceUnmapperFor(wordsArbitrary: NextArbitrary<string>): (value: unknown) => string[] {
+export function wordsToSentenceUnmapperFor(wordsArbitrary: Arbitrary<string>): (value: unknown) => string[] {
   return function wordsToSentenceUnmapper(value: unknown): string[] {
     if (typeof value !== 'string') {
       throw new Error('Unsupported type');
