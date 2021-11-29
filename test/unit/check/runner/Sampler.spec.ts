@@ -1,10 +1,11 @@
 import * as fc from '../../../../lib/fast-check';
 
 import { sample, statistics } from '../../../../src/check/runner/Sampler';
-import { cloneMethod, Shrinkable } from '../../../../src/fast-check';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 
 import * as stubArb from '../../stubs/arbitraries';
+import { cloneMethod } from '../../../../src/check/symbols';
+import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
+import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {
@@ -68,12 +69,9 @@ describe('Sampler', () => {
           throw new Error('Unexpected call to [cloneMethod]');
         },
       };
-      const arb = new (class extends Arbitrary<typeof cloneable> {
-        generate() {
-          return new Shrinkable(cloneable);
-        }
-      })();
-      sample(arb, { seed: 42 });
+      const { instance, generate } = fakeNextArbitrary();
+      generate.mockReturnValue(new NextValue(cloneable, undefined));
+      sample(instance, { seed: 42 });
     });
   });
   describe('statistics', () => {

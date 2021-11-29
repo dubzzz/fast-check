@@ -1,8 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { func } from '../../../src/arbitrary/func';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols';
 import { Random } from '../../../src/random/generator/Random';
@@ -15,7 +14,7 @@ import { FakeIntegerArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
 
 describe('func (integration)', () => {
-  const funcBuilder = () => convertToNext(func(convertFromNext(new FakeIntegerArbitrary())));
+  const funcBuilder = () => func(new FakeIntegerArbitrary());
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(funcBuilder, {
@@ -97,7 +96,7 @@ describe('func (integration)', () => {
   });
 
   it('should only clone produced values if they implement [fc.cloneMethod]', () => {
-    class CloneableArbitrary extends NextArbitrary<number[]> {
+    class CloneableArbitrary extends Arbitrary<number[]> {
       private instance(value: number, cloneable: boolean) {
         if (!cloneable) return [value, 0];
         return Object.defineProperty([value, 1], cloneMethod, { value: () => this.instance(value, cloneable) });
@@ -117,7 +116,7 @@ describe('func (integration)', () => {
       }
     }
     assertProduceCorrectValues(
-      () => convertToNext(func(convertFromNext(new CloneableArbitrary()))),
+      () => func(new CloneableArbitrary()),
       (f, args) => {
         const out1 = f(...args);
         const out2 = f(...args);

@@ -1,11 +1,11 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { cloneMethod, hasCloneMethod } from '../../check/symbols';
 
 /** @internal */
-export class ConstantArbitrary<T> extends NextArbitrary<T> {
+export class ConstantArbitrary<T> extends Arbitrary<T> {
   constructor(readonly values: T[]) {
     super();
   }

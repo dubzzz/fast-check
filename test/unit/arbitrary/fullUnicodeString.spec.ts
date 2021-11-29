@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { fullUnicodeString } from '../../../src/arbitrary/fullUnicodeString';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -40,7 +39,7 @@ describe('fullUnicodeString (integration)', () => {
     }
   };
 
-  const fullUnicodeStringBuilder = (extra: Extra) => convertToNext(fullUnicodeString(extra));
+  const fullUnicodeStringBuilder = (extra: Extra) => fullUnicodeString(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(fullUnicodeStringBuilder, { extraParameters });
@@ -69,7 +68,7 @@ describe('fullUnicodeString (integration)', () => {
     ${'\u{1f468}\u{1f3fe}\u{200d}' /* accept incomplete graphemes */}
   `('should be able to generate $source with fc.fullUnicodeString()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(fullUnicodeString());
+    const arb = fullUnicodeString();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -83,7 +82,7 @@ describe('fullUnicodeString (integration)', () => {
     ${'abcd' /* too large */}          | ${{ maxLength: 3 }}
   `('should not be able to generate $source with fc.fullUnicodeString($constraints)', ({ source, constraints }) => {
     // Arrange / Act
-    const arb = convertToNext(fullUnicodeString(constraints));
+    const arb = fullUnicodeString(constraints);
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -96,7 +95,7 @@ describe('fullUnicodeString (integration)', () => {
     ${'\u{1f431}'.repeat(50) /* longer than default maxGeneratedLength but ok for shrink */}
   `('should be able to shrink $rawValue with fc.fullUnicodeString()', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(fullUnicodeString());
+    const arb = fullUnicodeString();
     const value = new NextValue(rawValue, undefined);
 
     // Act

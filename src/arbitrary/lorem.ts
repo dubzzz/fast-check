@@ -10,7 +10,6 @@ import {
   wordsToSentenceMapper,
   wordsToSentenceUnmapperFor,
 } from './_internals/mappers/WordsToLorem';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
@@ -243,24 +242,20 @@ export function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
     throw new Error(`lorem has to produce at least one word/sentence`);
   }
   const wordArbitrary = loremWord();
-  const wordArbitraryNext = convertToNext(wordArbitrary);
+  const wordArbitraryNext = wordArbitrary;
   if (mode === 'sentences') {
-    const sentence = convertToNext(array(wordArbitrary, { minLength: 1, size: 'small' })).map(
+    const sentence = array(wordArbitrary, { minLength: 1, size: 'small' }).map(
       wordsToSentenceMapper,
       wordsToSentenceUnmapperFor(wordArbitraryNext)
     );
-    return convertFromNext(
-      convertToNext(array(convertFromNext(sentence), { minLength: 1, maxLength: maxCount, size })).map(
-        sentencesToParagraphMapper,
-        sentencesToParagraphUnmapper
-      )
+    return array(sentence, { minLength: 1, maxLength: maxCount, size }).map(
+      sentencesToParagraphMapper,
+      sentencesToParagraphUnmapper
     );
   } else {
-    return convertFromNext(
-      convertToNext(array(wordArbitrary, { minLength: 1, maxLength: maxCount, size })).map(
-        wordsToJoinedStringMapper,
-        wordsToJoinedStringUnmapperFor(wordArbitraryNext)
-      )
+    return array(wordArbitrary, { minLength: 1, maxLength: maxCount, size }).map(
+      wordsToJoinedStringMapper,
+      wordsToJoinedStringUnmapperFor(wordArbitraryNext)
     );
   }
 }

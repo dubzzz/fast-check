@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
@@ -25,11 +25,8 @@ function toShrinkerNextValue<T>(value: NextValue<T>): NextValue<T> {
 }
 
 /** @internal */
-export class WithShrinkFromOtherArbitrary<T> extends NextArbitrary<T> {
-  constructor(
-    private readonly generatorArbitrary: NextArbitrary<T>,
-    private readonly shrinkerArbitrary: NextArbitrary<T>
-  ) {
+export class WithShrinkFromOtherArbitrary<T> extends Arbitrary<T> {
+  constructor(private readonly generatorArbitrary: Arbitrary<T>, private readonly shrinkerArbitrary: Arbitrary<T>) {
     super();
   }
 

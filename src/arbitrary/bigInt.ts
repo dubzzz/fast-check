@@ -1,5 +1,4 @@
-import { ArbitraryWithContextualShrink } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { BigIntArbitrary } from './_internals/BigIntArbitrary';
 
 /**
@@ -61,7 +60,7 @@ function extractBigIntConstraints(args: [] | [bigint, bigint] | [BigIntConstrain
  * @remarks Since 1.9.0
  * @public
  */
-function bigInt(): ArbitraryWithContextualShrink<bigint>;
+function bigInt(): Arbitrary<bigint>;
 /**
  * For bigint between min (included) and max (included)
  *
@@ -71,7 +70,7 @@ function bigInt(): ArbitraryWithContextualShrink<bigint>;
  * @remarks Since 1.9.0
  * @public
  */
-function bigInt(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint>;
+function bigInt(min: bigint, max: bigint): Arbitrary<bigint>;
 /**
  * For bigint between min (included) and max (included)
  *
@@ -80,13 +79,12 @@ function bigInt(min: bigint, max: bigint): ArbitraryWithContextualShrink<bigint>
  * @remarks Since 2.6.0
  * @public
  */
-function bigInt(constraints: BigIntConstraints): ArbitraryWithContextualShrink<bigint>;
-function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): ArbitraryWithContextualShrink<bigint> {
+function bigInt(constraints: BigIntConstraints): Arbitrary<bigint>;
+function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary<bigint> {
   const constraints = buildCompleteBigIntConstraints(extractBigIntConstraints(args));
   if (constraints.min > constraints.max) {
     throw new Error('fc.bigInt expects max to be greater than or equal to min');
   }
-  const arb = new BigIntArbitrary(constraints.min, constraints.max);
-  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
+  return new BigIntArbitrary(constraints.min, constraints.max);
 }
 export { bigInt };

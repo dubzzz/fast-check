@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { tuple } from './tuple';
 import { buildPaddedNumberArbitrary } from './_internals/builders/PaddedNumberArbitraryBuilder';
 import { paddedEightsToUuidMapper, paddedEightsToUuidUnmapper } from './_internals/mappers/PaddedEightsToUuid';
@@ -19,10 +18,5 @@ export function uuidV(versionNumber: 1 | 2 | 3 | 4 | 5): Arbitrary<string> {
   const offsetSecond = versionNumber * 0x10000000;
   const secondPadded = buildPaddedNumberArbitrary(offsetSecond, offsetSecond + 0x0fffffff);
   const thirdPadded = buildPaddedNumberArbitrary(0x80000000, 0xbfffffff);
-  return convertFromNext(
-    convertToNext(tuple(padded, secondPadded, thirdPadded, padded)).map(
-      paddedEightsToUuidMapper,
-      paddedEightsToUuidUnmapper
-    )
-  );
+  return tuple(padded, secondPadded, thirdPadded, padded).map(paddedEightsToUuidMapper, paddedEightsToUuidUnmapper);
 }

@@ -11,7 +11,6 @@ import {
   is32bits,
 } from './__test-helpers__/FloatingPointHelpers';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from '../../../src/arbitrary/_internals/helpers/FloatHelpers';
-import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 
 import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
@@ -139,22 +138,27 @@ describe('float', () => {
 
   it('should properly convert integer value for index between min and max into its associated float value', () =>
     fc.assert(
-      fc.property(fc.option(floatConstraints(), { nil: undefined }), fc.maxSafeNat(), (ct, mod) => {
-        // Arrange
-        const { instance: mrng } = fakeRandom();
-        const { min, max } = minMaxForConstraints(ct || {});
-        const minIndex = floatToIndex(min);
-        const maxIndex = floatToIndex(max);
-        const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + 1)) + minIndex;
-        spyIntegerWithValue(() => arbitraryGeneratedIndex);
+      fc.property(
+        fc.option(floatConstraints(), { nil: undefined }),
+        fc.maxSafeNat(),
+        fc.option(fc.integer({ min: 2 }), { nil: undefined }),
+        (ct, mod, biasFactor) => {
+          // Arrange
+          const { instance: mrng } = fakeRandom();
+          const { min, max } = minMaxForConstraints(ct || {});
+          const minIndex = floatToIndex(min);
+          const maxIndex = floatToIndex(max);
+          const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + 1)) + minIndex;
+          spyIntegerWithValue(() => arbitraryGeneratedIndex);
 
-        // Act
-        const arb = float(ct);
-        const { value_: f } = arb.generate(mrng);
+          // Act
+          const arb = float(ct);
+          const { value_: f } = arb.generate(mrng, biasFactor);
 
-        // Assert
-        expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
-      })
+          // Assert
+          expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
+        }
+      )
     ));
 
   describe('with NaN', () => {
@@ -190,28 +194,32 @@ describe('float', () => {
 
     it('should properly convert the extra value to NaN', () =>
       fc.assert(
-        fc.property(floatConstraints(withNaNRecordConstraints), (ct) => {
-          // Arrange
-          // Setup mocks for integer
-          const { instance: mrng } = fakeRandom();
-          const arbitraryGenerated = { value: Number.NaN };
-          const integer = spyIntegerWithValue(() => arbitraryGenerated.value);
-          // Call float next to find out the value required for NaN
-          float({ ...ct, noNaN: true });
-          const arb = float(ct);
-          // Extract NaN "index"
-          const { min: minNonNaN } = integer.mock.calls[0][0]!;
-          const { min: minNaN, max: maxNaN } = integer.mock.calls[1][0]!;
-          const indexForNaN = minNonNaN !== minNaN ? minNaN : maxNaN;
-          if (indexForNaN === undefined) throw new Error('No value available for NaN');
-          arbitraryGenerated.value = indexForNaN;
+        fc.property(
+          floatConstraints(withNaNRecordConstraints),
+          fc.option(fc.integer({ min: 2 }), { nil: undefined }),
+          (ct, biasFactor) => {
+            // Arrange
+            // Setup mocks for integer
+            const { instance: mrng } = fakeRandom();
+            const arbitraryGenerated = { value: Number.NaN };
+            const integer = spyIntegerWithValue(() => arbitraryGenerated.value);
+            // Call float next to find out the value required for NaN
+            float({ ...ct, noNaN: true });
+            const arb = float(ct);
+            // Extract NaN "index"
+            const { min: minNonNaN } = integer.mock.calls[0][0]!;
+            const { min: minNaN, max: maxNaN } = integer.mock.calls[1][0]!;
+            const indexForNaN = minNonNaN !== minNaN ? minNaN : maxNaN;
+            if (indexForNaN === undefined) throw new Error('No value available for NaN');
+            arbitraryGenerated.value = indexForNaN;
 
-          // Act
-          const { value_: f } = arb.generate(mrng);
+            // Act
+            const { value_: f } = arb.generate(mrng, biasFactor);
 
-          // Assert
-          expect(f).toBe(Number.NaN);
-        })
+            // Assert
+            expect(f).toBe(Number.NaN);
+          }
+        )
       ));
   });
 
@@ -276,7 +284,7 @@ describe('float (integration)', () => {
     (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
     (!Number.isNaN(fa) && Number.isNaN(fb)); //    Case 3: notNaN < NaN, NaN is one of the extreme values
 
-  const floatBuilder = (extra: Extra) => convertToNext(float(extra));
+  const floatBuilder = (extra: Extra) => float(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(floatBuilder, { extraParameters });
@@ -305,7 +313,7 @@ function spyInteger() {
   const { instance, map } = fakeNextArbitrary<number>();
   const { instance: mappedInstance } = fakeNextArbitrary();
   const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   return integer;
 }
@@ -313,6 +321,6 @@ function spyInteger() {
 function spyIntegerWithValue(value: () => number) {
   const { instance } = fakeNextArbitraryStaticValue<number>(value);
   const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  integer.mockReturnValue(instance);
   return integer;
 }

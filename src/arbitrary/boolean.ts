@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { integer } from './integer';
 
 /** @internal */
@@ -19,11 +18,7 @@ function booleanUnmapper(v: unknown): number {
  * @public
  */
 function boolean(): Arbitrary<boolean> {
-  return convertFromNext(
-    convertToNext(integer({ min: 0, max: 1 }))
-      .map(booleanMapper, booleanUnmapper)
-      .noBias()
-  );
+  return integer({ min: 0, max: 1 }).map(booleanMapper, booleanUnmapper).noBias();
 }
 
 export { boolean };

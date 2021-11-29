@@ -1,7 +1,6 @@
 import { integer } from './integer';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /**
  * Constraints to be applied on {@link float}
@@ -92,9 +91,7 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
     throw new Error('fc.float constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
-    return convertFromNext(
-      convertToNext(integer({ min: minIndex, max: maxIndex })).map(indexToFloat, unmapperFloatToIndex)
-    );
+    return integer({ min: minIndex, max: maxIndex }).map(indexToFloat, unmapperFloatToIndex);
   }
   // In case maxIndex > 0 or in other words max > 0,
   //   values will be [min, ..., +0, ..., max, NaN]
@@ -103,17 +100,15 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
   //   values will be [NaN, min, ..., max] with max <= +0
   const minIndexWithNaN = maxIndex > 0 ? minIndex : minIndex - 1;
   const maxIndexWithNaN = maxIndex > 0 ? maxIndex + 1 : maxIndex;
-  return convertFromNext(
-    convertToNext(integer({ min: minIndexWithNaN, max: maxIndexWithNaN })).map(
-      (index) => {
-        if (index > maxIndex || index < minIndex) return Number.NaN;
-        else return indexToFloat(index);
-      },
-      (value) => {
-        if (typeof value !== 'number') throw new Error('Unsupported type');
-        if (Number.isNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
-        return floatToIndex(value);
-      }
-    )
+  return integer({ min: minIndexWithNaN, max: maxIndexWithNaN }).map(
+    (index) => {
+      if (index > maxIndex || index < minIndex) return Number.NaN;
+      else return indexToFloat(index);
+    },
+    (value) => {
+      if (typeof value !== 'number') throw new Error('Unsupported type');
+      if (Number.isNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
+      return floatToIndex(value);
+    }
   );
 }

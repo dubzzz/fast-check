@@ -1,6 +1,5 @@
 import { clone } from '../../../src/arbitrary/clone';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as CloneArbitraryMock from '../../../src/arbitrary/_internals/CloneArbitrary';
@@ -21,10 +20,10 @@ describe('clone', () => {
     CloneArbitrary.mockImplementation(() => instance as CloneArbitraryMock.CloneArbitrary<unknown>);
 
     // Act
-    const arb = clone(convertFromNext(sourceArbitrary), numValues);
+    const arb = clone(sourceArbitrary, numValues);
 
     // Assert
     expect(CloneArbitrary).toHaveBeenCalledWith(sourceArbitrary, numValues);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 });
