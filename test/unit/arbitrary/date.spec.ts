@@ -8,10 +8,10 @@ import {
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/NextArbitraryAssertions';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
-import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
-const IntegerMock: { integer: (min: number, max: number) => ArbitraryWithShrink<number> } = _IntegerMock;
+const IntegerMock: { integer: (min: number, max: number) => Arbitrary<number> } = _IntegerMock;
 
 function beforeEachHook() {
   jest.resetModules();

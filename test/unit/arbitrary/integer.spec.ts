@@ -7,7 +7,6 @@ import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/Integer
 
 function fakeIntegerArbitrary() {
   const instance = fakeNextArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
-  instance.defaultTarget = jest.fn();
   return instance;
 }
 

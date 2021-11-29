@@ -3,7 +3,7 @@ import { uuidV } from '../../../src/arbitrary/uuidV';
 import { fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
-import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertProduceCorrectValues,
@@ -11,7 +11,7 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
-const IntegerMock: { integer: (ct: { min: number; max: number }) => ArbitraryWithShrink<number> } = _IntegerMock;
+const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
 function beforeEachHook() {
   jest.resetModules();
