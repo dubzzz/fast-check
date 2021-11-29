@@ -1,6 +1,5 @@
 import { Stream } from '../stream/Stream';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { StreamArbitrary } from './_internals/StreamArbitrary';
 
 /**
@@ -14,7 +13,7 @@ import { StreamArbitrary } from './_internals/StreamArbitrary';
  * @public
  */
 function infiniteStream<T>(arb: Arbitrary<T>): Arbitrary<Stream<T>> {
-  return convertFromNext(new StreamArbitrary(convertToNext(arb)));
+  return new StreamArbitrary(arb);
 }
 
 export { infiniteStream };

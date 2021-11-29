@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { set } from '../../../src/arbitrary/set';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
@@ -30,7 +29,7 @@ describe('set', () => {
     ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
     // Act
-    const arb = set(convertFromNext(childInstance));
+    const arb = set(childInstance);
 
     // Assert
     expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), expect.any(Function));
@@ -38,7 +37,7 @@ describe('set', () => {
     expect(receivedMaxLength).toBeGreaterThan(0);
     expect(receivedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
     expect(Number.isInteger(receivedMaxLength)).toBe(true);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should instantiate ArrayArbitrary(arb, 0, maxLength, <default>) for array(set, {maxLength})', () => {
@@ -51,11 +50,11 @@ describe('set', () => {
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
-        const arb = set(convertFromNext(childInstance), { maxLength });
+        const arb = set(childInstance, { maxLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, expect.any(Function));
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -71,7 +70,7 @@ describe('set', () => {
         filter.mockReturnValue(instance);
 
         // Act
-        const arb = set(convertFromNext(childInstance), { minLength });
+        const arb = set(childInstance, { minLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, expect.any(Number), expect.any(Function));
@@ -83,7 +82,7 @@ describe('set', () => {
         } else {
           expect(receivedMaxLength).toEqual(minLength);
         }
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -100,11 +99,11 @@ describe('set', () => {
         filter.mockReturnValue(instance);
 
         // Act
-        const arb = set(convertFromNext(childInstance), { minLength, maxLength });
+        const arb = set(childInstance, { minLength, maxLength });
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength, expect.any(Function));
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     );
   });
@@ -137,7 +136,7 @@ describe('set', () => {
           filter.mockReturnValue(instance);
 
           // Act
-          const arb = set(convertFromNext(childInstance), { ...constraints });
+          const arb = set(childInstance, { ...constraints });
 
           // Assert
           expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -146,7 +145,7 @@ describe('set', () => {
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
             constraints.compare
           );
-          expect(convertToNext(arb)).toBe(instance);
+          expect(arb).toBe(instance);
         }
       )
     );
@@ -165,7 +164,7 @@ describe('set', () => {
           const { instance: childInstance } = fakeNextArbitrary<unknown>();
 
           // Act / Assert
-          expect(() => set(convertFromNext(childInstance), { minLength, maxLength, compare })).toThrowError();
+          expect(() => set(childInstance, { minLength, maxLength, compare })).toThrowError();
         }
       )
     );
@@ -194,7 +193,7 @@ describe('set (integration)', () => {
     expect([...new Set(value)]).toEqual(value);
   };
 
-  const setBuilder = (extra: Extra) => convertToNext(set(convertFromNext(new FakeIntegerArbitrary()), extra));
+  const setBuilder = (extra: Extra) => set(new FakeIntegerArbitrary(), extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(setBuilder, { extraParameters });
@@ -227,7 +226,7 @@ describe('set (integration)', () => {
   `('should be able to shrink $rawValue given constraints minLength:$minLength', ({ rawValue, minLength }) => {
     // Arrange
     const constraints = { minLength };
-    const arb = convertToNext(set(convertFromNext(new FakeIntegerArbitrary(0, 1000)), constraints));
+    const arb = set(new FakeIntegerArbitrary(0, 1000), constraints);
     const value = new NextValue(rawValue, undefined);
 
     // Act

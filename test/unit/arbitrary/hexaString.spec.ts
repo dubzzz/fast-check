@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { hexaString } from '../../../src/arbitrary/hexaString';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -30,7 +29,7 @@ describe('hexaString (integration)', () => {
     }
   };
 
-  const hexaStringBuilder = (extra: Extra) => convertToNext(hexaString(extra));
+  const hexaStringBuilder = (extra: Extra) => hexaString(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(hexaStringBuilder, { extraParameters });

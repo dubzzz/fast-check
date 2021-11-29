@@ -1,7 +1,6 @@
 import fc from '../../../lib/fast-check';
 import { date } from '../../../src/arbitrary/date';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
-import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -9,10 +8,10 @@ import {
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/NextArbitraryAssertions';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
-import { ArbitraryWithShrink } from '../../../src/check/arbitrary/definition/ArbitraryWithShrink';
-const IntegerMock: { integer: (min: number, max: number) => ArbitraryWithShrink<number> } = _IntegerMock;
+const IntegerMock: { integer: (min: number, max: number) => Arbitrary<number> } = _IntegerMock;
 
 function beforeEachHook() {
   jest.resetModules();
@@ -29,14 +28,14 @@ describe('date', () => {
         const { instance, map } = fakeNextArbitrary<number>();
         const { instance: mappedInstance } = fakeNextArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
-        integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+        integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
         // Act
         const arb = date(constraints);
 
         // Assert
-        expect(convertToNext(arb)).toBe(mappedInstance);
+        expect(arb).toBe(mappedInstance);
         expect(integer).toHaveBeenCalledTimes(1);
         expect(map).toHaveBeenCalledTimes(1);
         expect(map).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
@@ -50,7 +49,7 @@ describe('date', () => {
         const { instance, map } = fakeNextArbitrary<number>();
         const { instance: mappedInstance } = fakeNextArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
-        integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+        integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
         // Act
@@ -80,7 +79,7 @@ describe('date', () => {
         const { instance, map } = fakeNextArbitrary<number>();
         const { instance: mappedInstance } = fakeNextArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
-        integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+        integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
         // Act
@@ -110,7 +109,7 @@ describe('date', () => {
         const { instance, map } = fakeNextArbitrary<number>();
         const { instance: mappedInstance } = fakeNextArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
-        integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+        integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
         // Act
@@ -164,7 +163,7 @@ describe('date (integration)', () => {
   const isStrictlySmaller = (d1: Date, d2: Date) =>
     Math.abs(d1.getTime() - new Date(0).getTime()) < Math.abs(d2.getTime() - new Date(0).getTime());
 
-  const dateBuilder = (extra: Extra) => convertToNext(date(extra));
+  const dateBuilder = (extra: Extra) => date(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters });

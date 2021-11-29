@@ -2,7 +2,6 @@ import { fullUnicode } from '../../fullUnicode';
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { frequency } from '../../frequency';
 import { mapToConstant } from '../../mapToConstant';
-import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 
 /** @internal */
 const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
@@ -28,7 +27,7 @@ function percentCharArbUnmapper(value: unknown): string {
 }
 
 /** @internal */
-const percentCharArb = convertFromNext(convertToNext(fullUnicode()).map(percentCharArbMapper, percentCharArbUnmapper));
+const percentCharArb = fullUnicode().map(percentCharArbMapper, percentCharArbUnmapper);
 
 /** @internal */
 export const buildLowerAlphaArbitrary = (others: string[]): Arbitrary<string> =>

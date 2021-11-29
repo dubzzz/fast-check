@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
@@ -10,8 +10,8 @@ import { noUndefinedAsContext, UndefinedContextPlaceholder } from './helpers/NoU
  * valid would mean stream coming from shrink, otherwise empty stream
  * @internal
  */
-export class AlwaysShrinkableArbitrary<Ts> extends NextArbitrary<Ts> {
-  constructor(readonly arb: NextArbitrary<Ts>) {
+export class AlwaysShrinkableArbitrary<Ts> extends Arbitrary<Ts> {
+  constructor(readonly arb: Arbitrary<Ts>) {
     super();
   }
 

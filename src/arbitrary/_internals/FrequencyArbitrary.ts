@@ -1,27 +1,23 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../../check/arbitrary/definition/Converters';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { DepthContext, getDepthContextFor } from './helpers/DepthContext';
 
 /** @internal */
-export class FrequencyArbitrary<T> extends NextArbitrary<T> {
+export class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly cumulatedWeights: number[];
   readonly totalWeight: number;
 
   static fromOld<T>(warbs: _WeightedArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
-    return convertFromNext(
-      FrequencyArbitrary.from(
-        warbs.map((w) => ({ ...w, arbitrary: convertToNext(w.arbitrary) })),
-        constraints,
-        label
-      )
+    return FrequencyArbitrary.from(
+      warbs.map((w) => ({ ...w, arbitrary: w.arbitrary })),
+      constraints,
+      label
     );
   }
 
-  static from<T>(warbs: _WeightedNextArbitrary<T>[], constraints: _Constraints, label: string): NextArbitrary<T> {
+  static from<T>(warbs: _WeightedNextArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
     if (warbs.length === 0) {
       throw new Error(`${label} expects at least one weighted arbitrary`);
     }
@@ -218,7 +214,7 @@ interface _WeightedArbitrary<T> {
 /** @internal */
 interface _WeightedNextArbitrary<T> {
   weight: number;
-  arbitrary: NextArbitrary<T>;
+  arbitrary: Arbitrary<T>;
   // If specified, the arbitrary must accept to shrink fallbackValue.default without any context
   fallbackValue?: { default: T };
 }

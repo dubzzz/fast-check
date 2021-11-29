@@ -1,8 +1,7 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { bigUintN } from '../bigUintN';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
-import { convertToNext } from '../../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import {
@@ -21,9 +20,9 @@ type MixedCaseArbitraryContext = {
 };
 
 /** @internal */
-export class MixedCaseArbitrary extends NextArbitrary<string> {
+export class MixedCaseArbitrary extends Arbitrary<string> {
   constructor(
-    private readonly stringArb: NextArbitrary<string>,
+    private readonly stringArb: Arbitrary<string>,
     private readonly toggleCase: (rawChar: string) => string,
     private readonly untoggleAll: ((toggledString: string) => string) | undefined
   ) {
@@ -53,7 +52,7 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
     const chars = [...rawStringNextValue.value]; // split into valid unicode (keeps surrogate pairs)
     const togglePositions = computeTogglePositions(chars, this.toggleCase);
 
-    const flagsArb = convertToNext(bigUintN(togglePositions.length));
+    const flagsArb = bigUintN(togglePositions.length);
     const flagsNextValue = flagsArb.generate(mrng, undefined); // true => toggle the char, false => keep it as-is
 
     applyFlagsOnChars(chars, flagsNextValue.value, togglePositions, this.toggleCase);
@@ -119,7 +118,7 @@ export class MixedCaseArbitrary extends NextArbitrary<string> {
         makeLazy(() => {
           const chars = [...rawString];
           const togglePositions = computeTogglePositions(chars, this.toggleCase);
-          return convertToNext(bigUintN(togglePositions.length))
+          return bigUintN(togglePositions.length)
             .shrink(flags, contextSafe.flagsContext)
             .map((nFlagsNextValue) => {
               const nChars = chars.slice(); // cloning chars

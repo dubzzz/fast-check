@@ -1,14 +1,12 @@
 import * as fc from '../../../lib/fast-check';
 import { bigUint } from '../../../src/arbitrary/bigUint';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as BigIntArbitraryMock from '../../../src/arbitrary/_internals/BigIntArbitrary';
 
 function fakeBigIntArbitrary() {
   const instance = fakeNextArbitrary<bigint>().instance as BigIntArbitraryMock.BigIntArbitrary;
-  instance.defaultTarget = jest.fn();
   return instance;
 }
 
@@ -43,8 +41,8 @@ describe('bigUint', () => {
     const argumentsForCall = BigIntArbitrary.mock.calls[0];
     expect(argumentsForCall[0]).toBeLessThan(argumentsForCall[1]); // range should not be restricted to one value
     expect(argumentsForCall[0]).toBe(BigInt(0));
-    expect(convertToNext(arb)).toBe(instance);
-    expect(convertToNext(arbEmpty)).toBe(instance);
+    expect(arb).toBe(instance);
+    expect(arbEmpty).toBe(instance);
   });
 
   it('should instantiate BigIntArbitrary(0, max) for bigUint({max})', () =>
@@ -60,7 +58,7 @@ describe('bigUint', () => {
 
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(BigInt(0), max);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 
@@ -77,7 +75,7 @@ describe('bigUint', () => {
 
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(BigInt(0), max);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 
