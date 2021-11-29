@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { string } from '../../../src/arbitrary/string';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -33,7 +32,7 @@ describe('string (integration)', () => {
     }
   };
 
-  const stringBuilder = (extra: Extra) => convertToNext(string(extra));
+  const stringBuilder = (extra: Extra) => string(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(stringBuilder, { extraParameters });
@@ -59,7 +58,7 @@ describe('string (integration)', () => {
     ${'0123456789' /* by default maxLength = maxLengthFromMinLength(0) = 10 */}
   `('should be able to generate $source with fc.string()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(string());
+    const arb = string();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -72,7 +71,7 @@ describe('string (integration)', () => {
     ${'a\u{1f431}b' /* out-of-range character */}
   `('should not be able to generate $source with fc.string()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(string());
+    const arb = string();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -84,7 +83,7 @@ describe('string (integration)', () => {
     ${'Hey!'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(string());
+    const arb = string();
     const value = new NextValue(rawValue, undefined);
 
     // Act

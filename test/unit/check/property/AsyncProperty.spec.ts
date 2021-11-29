@@ -1,5 +1,4 @@
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';
 import { pre } from '../../../../src/check/precondition/Pre';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
@@ -9,7 +8,6 @@ import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
-import { convertFromNext } from '../../../../src/check/arbitrary/definition/Converters';
 import { Stream } from '../../../../src/stream/Stream';
 
 describe('AsyncProperty', () => {
@@ -83,40 +81,32 @@ describe('AsyncProperty', () => {
     ).toThrowError());
 
   it('Should use the unbiased arbitrary by default', () => {
-    const p = asyncProperty(
-      new (class extends Arbitrary<number> {
-        generate(): Shrinkable<number> {
-          return new Shrinkable(69);
-        }
-        withBias(): Arbitrary<number> {
-          throw 'Should not call withBias if not forced to';
-        }
-      })(),
-      async () => {}
-    );
-    expect(p.generate(stubRng.mutable.nocall()).value).toEqual([69]);
+    const { instance, generate } = fakeNextArbitrary<number>();
+    generate.mockReturnValue(new NextValue(42, undefined));
+    const mrng = stubRng.mutable.nocall();
+
+    const p = asyncProperty(instance, async () => {});
+    expect(generate).not.toHaveBeenCalled();
+
+    expect(p.generate(mrng).value).toEqual([69]);
+    expect(generate).toHaveBeenCalledTimes(1);
+    expect(generate).toHaveBeenCalledWith(mrng, undefined);
   });
   it('Should use the biased arbitrary when asked to', () => {
-    const p = asyncProperty(
-      new (class extends Arbitrary<number> {
-        generate(): Shrinkable<number> {
-          return new Shrinkable(69);
-        }
-        withBias(freq: number): Arbitrary<number> {
-          if (typeof freq !== 'number' || freq < 2) {
-            throw new Error(`freq atribute must always be superior or equal to 2, got: ${freq}`);
-          }
-          return new (class extends Arbitrary<number> {
-            generate(): Shrinkable<number> {
-              return new Shrinkable(42);
-            }
-          })();
-        }
-      })(),
-      async () => {}
-    );
-    expect(p.generate(stubRng.mutable.nocall(), 0).value).toEqual([42]);
+    const { instance, generate } = fakeNextArbitrary<number>();
+    generate.mockReturnValue(new NextValue(42, undefined));
+    const mrng = stubRng.mutable.nocall();
+
+    const p = asyncProperty(instance, async () => {});
+    expect(generate).not.toHaveBeenCalled();
+
+    expect(p.generate(mrng, 0).value).toEqual([42]);
+    expect(generate).toHaveBeenCalledTimes(1);
+    expect(generate).toHaveBeenCalledWith(mrng, 0);
+
     expect(p.generate(stubRng.mutable.nocall(), 2).value).toEqual([42]);
+    expect(generate).toHaveBeenCalledTimes(2);
+    expect(generate).toHaveBeenCalledWith(mrng, 2);
   });
   it('Should always execute beforeEach before the test', async () => {
     const prob = { beforeEachCalled: false };
@@ -278,7 +268,7 @@ describe('AsyncProperty', () => {
     const value = Symbol();
 
     // Act
-    const p = asyncProperty(convertFromNext(arb), jest.fn());
+    const p = asyncProperty(arb, jest.fn());
     const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert
@@ -297,7 +287,7 @@ describe('AsyncProperty', () => {
     const value = Symbol();
 
     // Act
-    const p = asyncProperty(convertFromNext(arb), jest.fn());
+    const p = asyncProperty(arb, jest.fn());
     const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert

@@ -17,7 +17,6 @@ import {
 import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 
 import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
-import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 
 import {
@@ -266,7 +265,7 @@ describe('double (integration)', () => {
     (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
     (!Number.isNaN(fa) && Number.isNaN(fb)); //    Case 3: notNaN < NaN, NaN is one of the extreme values
 
-  const doubleBuilder = (extra: Extra) => convertToNext(double(extra));
+  const doubleBuilder = (extra: Extra) => double(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(doubleBuilder, { extraParameters });
@@ -316,7 +315,7 @@ function spyArrayInt64() {
   const { instance, map } = fakeNextArbitrary<ArrayInt64>();
   const { instance: mappedInstance } = fakeNextArbitrary();
   const arrayInt64 = jest.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
-  arrayInt64.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  arrayInt64.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   return arrayInt64;
 }
@@ -324,6 +323,6 @@ function spyArrayInt64() {
 function spyArrayInt64WithValue(value: () => ArrayInt64) {
   const { instance } = fakeNextArbitraryStaticValue<ArrayInt64>(value);
   const integer = jest.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  integer.mockReturnValue(instance);
   return integer;
 }

@@ -11,7 +11,6 @@ import {
   is32bits,
 } from './__test-helpers__/FloatingPointHelpers';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from '../../../src/arbitrary/_internals/helpers/FloatHelpers';
-import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 
 import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
@@ -150,7 +149,7 @@ describe('float', () => {
 
         // Act
         const arb = float(ct);
-        const { value_: f } = arb.generate(mrng);
+        const { value_: f } = arb.generate(mrng, undefined);
 
         // Assert
         expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
@@ -207,7 +206,7 @@ describe('float', () => {
           arbitraryGenerated.value = indexForNaN;
 
           // Act
-          const { value_: f } = arb.generate(mrng);
+          const { value_: f } = arb.generate(mrng, undefined);
 
           // Assert
           expect(f).toBe(Number.NaN);
@@ -276,7 +275,7 @@ describe('float (integration)', () => {
     (Object.is(fa, +0) && Object.is(fb, -0)) || // Case 2: +0 < -0  --> we shrink from -0 to +0
     (!Number.isNaN(fa) && Number.isNaN(fb)); //    Case 3: notNaN < NaN, NaN is one of the extreme values
 
-  const floatBuilder = (extra: Extra) => convertToNext(float(extra));
+  const floatBuilder = (extra: Extra) => float(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(floatBuilder, { extraParameters });
@@ -305,7 +304,7 @@ function spyInteger() {
   const { instance, map } = fakeNextArbitrary<number>();
   const { instance: mappedInstance } = fakeNextArbitrary();
   const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   return integer;
 }
@@ -313,6 +312,6 @@ function spyInteger() {
 function spyIntegerWithValue(value: () => number) {
   const { instance } = fakeNextArbitraryStaticValue<number>(value);
   const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  integer.mockReturnValue(instance);
   return integer;
 }

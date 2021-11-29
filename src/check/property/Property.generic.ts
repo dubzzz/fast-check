@@ -4,8 +4,6 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
 import { NextValue } from '../arbitrary/definition/NextValue';
-import { NextArbitrary } from '../arbitrary/definition/NextArbitrary';
-import { convertToNext } from '../arbitrary/definition/Converters';
 import { Stream } from '../../stream/Stream';
 import {
   noUndefinedAsContext,
@@ -79,7 +77,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   static dummyHook: GlobalPropertyHookFunction = () => {};
   private beforeEachHook: GlobalPropertyHookFunction;
   private afterEachHook: GlobalPropertyHookFunction;
-  private arb: NextArbitrary<Ts>;
+  private arb: Arbitrary<Ts>;
   constructor(rawArb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
     const {
       beforeEach = Property.dummyHook,
@@ -98,7 +96,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
 
     this.beforeEachHook = beforeEach;
     this.afterEachHook = afterEach;
-    this.arb = convertToNext(rawArb);
+    this.arb = rawArb;
   }
 
   isAsync(): false {

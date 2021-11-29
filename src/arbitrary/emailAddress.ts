@@ -4,7 +4,6 @@ import { domain } from './domain';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 
 /** @internal */
 function dotMapper(a: string[]): string {
@@ -42,13 +41,11 @@ function atUnmapper(value: unknown): [string, string] {
 export function emailAddress(): Arbitrary<string> {
   const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];
   const atextArb = buildLowerAlphaNumericArbitrary(others);
-  const localPartArb = convertFromNext(
-    convertToNext(array(stringOf(atextArb, { minLength: 1, maxLength: 10 }), { minLength: 1, maxLength: 5 }))
-      .map(dotMapper, dotUnmapper)
-      // According to RFC 2821:
-      //    The maximum total length of a user name or other local-part is 64 characters.
-      .filter((lp) => lp.length <= 64)
-  );
+  const localPartArb = array(stringOf(atextArb, { minLength: 1, maxLength: 10 }), { minLength: 1, maxLength: 5 })
+    .map(dotMapper, dotUnmapper)
+    // According to RFC 2821:
+    //    The maximum total length of a user name or other local-part is 64 characters.
+    .filter((lp) => lp.length <= 64);
 
-  return convertFromNext(convertToNext(tuple(localPartArb, domain())).map(atMapper, atUnmapper));
+  return tuple(localPartArb, domain()).map(atMapper, atUnmapper);
 }

@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { option, OptionConstraints } from '../../../src/arbitrary/option';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';
 import {
@@ -35,14 +34,14 @@ describe('option', () => {
         (constraints: Partial<OptionConstraints<unknown>>) => {
           // Arrange
           const expectedNil = 'nil' in constraints ? constraints.nil : null;
-          const expectedArb = convertFromNext(fakeNextArbitrary().instance);
+          const expectedArb = fakeNextArbitrary().instance;
           const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
           fromOld.mockReturnValue(expectedArb);
-          const expectedConstantArb = convertFromNext(fakeNextArbitrary().instance);
+          const expectedConstantArb = fakeNextArbitrary().instance;
           const constant = jest.spyOn(ConstantMock, 'constant');
           constant.mockReturnValue(expectedConstantArb);
           const { instance: nextArb } = fakeNextArbitrary();
-          const arb = convertFromNext(nextArb);
+          const arb = nextArb;
 
           // Act
           const out = option(arb, constraints);
@@ -69,14 +68,14 @@ describe('option', () => {
 
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
     // Arrange
-    const expectedArb = convertFromNext(fakeNextArbitrary().instance);
+    const expectedArb = fakeNextArbitrary().instance;
     const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
     fromOld.mockReturnValue(expectedArb);
-    const expectedConstantArb = convertFromNext(fakeNextArbitrary().instance);
+    const expectedConstantArb = fakeNextArbitrary().instance;
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockReturnValue(expectedConstantArb);
     const { instance: nextArb } = fakeNextArbitrary();
-    const arb = convertFromNext(nextArb);
+    const arb = nextArb;
 
     // Act
     const out = option(arb);
@@ -107,8 +106,7 @@ describe('option (integration)', () => {
   const isCorrect = (value: number | null, extra: Extra) =>
     value === null || ((extra.freq === undefined || extra.freq > 0) && typeof value === 'number');
 
-  const optionBuilder = (extra: Extra) =>
-    convertToNext(option(convertFromNext(new FakeIntegerArbitrary()), { ...extra, nil: null }));
+  const optionBuilder = (extra: Extra) => option(new FakeIntegerArbitrary(), { ...extra, nil: null });
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(optionBuilder, { extraParameters });

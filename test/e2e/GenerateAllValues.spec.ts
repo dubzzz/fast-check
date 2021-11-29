@@ -7,14 +7,13 @@ describe(`Generate all values (seed: ${seed})`, () => {
    * Check the ability of arbitraries to generate all the values
    * of their type / range
    */
-  const lookForMissing = <T>(arb: fc.Arbitrary<T>, missing: number): void => {
+  const lookForMissing = <T>(arb: fc.Arbitrary<T>, expectedSize: number): void => {
     const mrng = new fc.Random(prand.xorshift128plus(seed));
-    const alreadySeen: any = {};
-    while (missing > 0) {
-      const g = (arb.generate(mrng).value as any).toString();
-      if (alreadySeen[g]) continue;
-      alreadySeen[g] = true;
-      --missing;
+    const alreadySeen = new Set<T>();
+    while (alreadySeen.size < expectedSize) {
+      const value = arb.generate(mrng, undefined).value;
+      if (alreadySeen.has(value)) continue;
+      alreadySeen.add(value);
     }
   };
   describe('fc.boolean()', () => {
@@ -76,7 +75,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
           ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
         });
         while (++numTries <= 10000) {
-          const { value } = arb.generate(mrng);
+          const { value } = arb.generate(mrng, undefined);
           if (typeof value === typeofLabel && Object.prototype.toString.call(value) === toStringLabel) {
             if (additionalCheck === undefined || additionalCheck(value)) {
               return;

@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { nat } from './nat';
 import {
   indexToMappedConstantMapperFor,
@@ -39,10 +38,8 @@ function computeNumChoices<T>(options: { num: number; build: (idInGroup: number)
  */
 export function mapToConstant<T>(...entries: { num: number; build: (idInGroup: number) => T }[]): Arbitrary<T> {
   const numChoices = computeNumChoices(entries);
-  return convertFromNext(
-    convertToNext(nat({ max: numChoices - 1 })).map(
-      indexToMappedConstantMapperFor(entries),
-      indexToMappedConstantUnmapperFor(entries)
-    )
+  return nat({ max: numChoices - 1 }).map(
+    indexToMappedConstantMapperFor(entries),
+    indexToMappedConstantUnmapperFor(entries)
   );
 }

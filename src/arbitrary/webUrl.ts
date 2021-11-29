@@ -8,7 +8,6 @@ import { webQueryParameters } from './webQueryParameters';
 import { webFragments } from './webFragments';
 import { webAuthority, WebAuthorityConstraints } from './webAuthority';
 import { webSegment } from './webSegment';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { partsToUrlMapper, partsToUrlUnmapper } from './_internals/mappers/PartsToUrl';
 import { segmentsToPathMapper, segmentsToPathUnmapper } from './_internals/mappers/SegmentsToPath';
 
@@ -56,16 +55,12 @@ export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
   const authorityArb = webAuthority(c.authoritySettings);
-  const pathArb = convertFromNext(convertToNext(array(webSegment())).map(segmentsToPathMapper, segmentsToPathUnmapper));
-  return convertFromNext(
-    convertToNext(
-      tuple(
-        schemeArb,
-        authorityArb,
-        pathArb,
-        c.withQueryParameters === true ? option(webQueryParameters()) : constant(null),
-        c.withFragments === true ? option(webFragments()) : constant(null)
-      )
-    ).map(partsToUrlMapper, partsToUrlUnmapper)
-  );
+  const pathArb = array(webSegment()).map(segmentsToPathMapper, segmentsToPathUnmapper);
+  return tuple(
+    schemeArb,
+    authorityArb,
+    pathArb,
+    c.withQueryParameters === true ? option(webQueryParameters()) : constant(null),
+    c.withFragments === true ? option(webFragments()) : constant(null)
+  ).map(partsToUrlMapper, partsToUrlUnmapper);
 }

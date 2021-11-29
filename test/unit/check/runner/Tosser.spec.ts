@@ -14,7 +14,7 @@ const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
   new (class implements IRawProperty<T> {
     constructor(readonly arb: Arbitrary<T>) {}
     isAsync = () => false;
-    generate = (rng: Random) => new NextValue(this.arb.generate(rng).value_, undefined);
+    generate = (rng: Random) => new NextValue(this.arb.generate(rng, undefined).value_, undefined);
     shrink = () => Stream.nil<NextValue<T>>();
     run = () => '';
   })(arb);

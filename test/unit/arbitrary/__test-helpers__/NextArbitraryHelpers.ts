@@ -1,6 +1,6 @@
 import { mocked } from 'ts-jest';
 import { MaybeMocked, MockWithArgs } from 'ts-jest/dist/utils/testing';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
@@ -8,9 +8,7 @@ import { Stream } from '../../../../src/stream/Stream';
 /**
  * Generate a fake Class inheriting from NextArbitrary with all methods being mocked
  */
-export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitrary<T> } & MaybeMocked<
-  NextArbitrary<T>
-> {
+export function fakeNextArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
   const generate = jest.fn();
   const canShrinkWithoutContext = jest.fn() as any as ((value: unknown) => value is T) &
     MockWithArgs<(value: unknown) => value is T>;
@@ -21,7 +19,7 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitr
   const noShrink = jest.fn();
   const noBias = jest.fn();
   mocked;
-  class FakeNextArbitrary extends NextArbitrary<T> {
+  class FakeNextArbitrary extends Arbitrary<T> {
     generate = generate;
     canShrinkWithoutContext = canShrinkWithoutContext;
     shrink = shrink;
@@ -37,7 +35,7 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitr
 /**
  * Generate a fake instance inheriting from NextArbitrary with all methods being mocked
  */
-export function fakeNextArbitrary<T = any>(): { instance: NextArbitrary<T> } & MaybeMocked<NextArbitrary<T>> {
+export function fakeNextArbitrary<T = any>(): { instance: Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
   const { Class, ...mockedMethods } = fakeNextArbitraryClass<T>();
   return { instance: new Class(), ...mockedMethods };
 }
@@ -48,7 +46,7 @@ export function fakeNextArbitrary<T = any>(): { instance: NextArbitrary<T> } & M
 export function fakeNextArbitraryStaticValue<T>(
   value: () => T,
   context: () => unknown = () => undefined
-): { instance: NextArbitrary<T> } {
+): { instance: Arbitrary<T> } {
   const { instance, generate, map } = fakeNextArbitrary<T>();
   generate.mockImplementation(() => new NextValue(value(), context()));
   map.mockImplementation((mapper) => {
@@ -64,7 +62,7 @@ export function fakeNextArbitraryStaticValue<T>(
  * - take bias into account on generate
  * - context less shrink like context full (for first iteration only)
  */
-export class FakeIntegerArbitrary extends NextArbitrary<number> {
+export class FakeIntegerArbitrary extends Arbitrary<number> {
   constructor(readonly offset: number = 0, readonly rangeLength: number = 100) {
     super();
   }

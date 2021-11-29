@@ -1,5 +1,4 @@
-import { ArbitraryWithContextualShrink } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { BigIntArbitrary } from './_internals/BigIntArbitrary';
 
 /**
@@ -25,7 +24,7 @@ function computeDefaultMax(): bigint {
  * @remarks Since 1.9.0
  * @public
  */
-function bigUint(): ArbitraryWithContextualShrink<bigint>;
+function bigUint(): Arbitrary<bigint>;
 /**
  * For positive bigint between 0 (included) and max (included)
  *
@@ -34,7 +33,7 @@ function bigUint(): ArbitraryWithContextualShrink<bigint>;
  * @remarks Since 1.9.0
  * @public
  */
-function bigUint(max: bigint): ArbitraryWithContextualShrink<bigint>;
+function bigUint(max: bigint): Arbitrary<bigint>;
 /**
  * For positive bigint between 0 (included) and max (included)
  *
@@ -43,14 +42,14 @@ function bigUint(max: bigint): ArbitraryWithContextualShrink<bigint>;
  * @remarks Since 2.6.0
  * @public
  */
-function bigUint(constraints: BigUintConstraints): ArbitraryWithContextualShrink<bigint>;
-function bigUint(constraints?: bigint | BigUintConstraints): ArbitraryWithContextualShrink<bigint> {
+function bigUint(constraints: BigUintConstraints): Arbitrary<bigint>;
+function bigUint(constraints?: bigint | BigUintConstraints): Arbitrary<bigint> {
   const requestedMax = typeof constraints === 'object' ? constraints.max : constraints;
   const max = requestedMax !== undefined ? requestedMax : computeDefaultMax();
   if (max < 0) {
     throw new Error('fc.bigUint expects max to be greater than or equal to zero');
   }
   const arb = new BigIntArbitrary(BigInt(0), max);
-  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
+  return arb;
 }
 export { bigUint };

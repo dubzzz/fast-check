@@ -1,5 +1,4 @@
-import { ArbitraryWithContextualShrink } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary';
 
 /**
@@ -7,7 +6,7 @@ import { IntegerArbitrary } from './_internals/IntegerArbitrary';
  * @remarks Since 1.11.0
  * @public
  */
-export function maxSafeInteger(): ArbitraryWithContextualShrink<number> {
+export function maxSafeInteger(): Arbitrary<number> {
   const arb = new IntegerArbitrary(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
-  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
+  return arb;
 }

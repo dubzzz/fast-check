@@ -1,6 +1,5 @@
 import { maxSafeNat } from '../../../src/arbitrary/maxSafeNat';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
@@ -29,6 +28,6 @@ describe('maxSafeInteger', () => {
 
     // Assert
     expect(IntegerArbitrary).toHaveBeenCalledWith(0, Number.MAX_SAFE_INTEGER);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 });

@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { frequency, FrequencyContraints } from '../../../src/arbitrary/frequency';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
-import { convertFromNext } from '../../../src/check/arbitrary/definition/Converters';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 
 function beforeEachHook() {
@@ -26,13 +25,13 @@ describe('frequency', () => {
         ),
         (constraints: Partial<FrequencyContraints>) => {
           // Arrange
-          const expectedArb = convertFromNext(fakeNextArbitrary().instance);
+          const expectedArb = fakeNextArbitrary().instance;
           const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
           fromOld.mockReturnValue(expectedArb);
           const { instance: nextArb1 } = fakeNextArbitrary();
           const { instance: nextArb2 } = fakeNextArbitrary();
-          const arb1 = convertFromNext(nextArb1);
-          const arb2 = convertFromNext(nextArb2);
+          const arb1 = nextArb1;
+          const arb2 = nextArb2;
           const weight1 = 10;
           const weight2 = 3;
 
@@ -59,13 +58,13 @@ describe('frequency', () => {
 
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
     // Arrange
-    const expectedArb = convertFromNext(fakeNextArbitrary().instance);
+    const expectedArb = fakeNextArbitrary().instance;
     const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
     fromOld.mockReturnValue(expectedArb);
     const { instance: nextArb1 } = fakeNextArbitrary();
     const { instance: nextArb2 } = fakeNextArbitrary();
-    const arb1 = convertFromNext(nextArb1);
-    const arb2 = convertFromNext(nextArb2);
+    const arb1 = nextArb1;
+    const arb2 = nextArb2;
     const weight1 = 10;
     const weight2 = 3;
 

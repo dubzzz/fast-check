@@ -1,6 +1,4 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { convertToNext } from '../../check/arbitrary/definition/Converters';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { ICommand } from '../../check/model/command/ICommand';
 import { CommandsIterable } from '../../check/model/commands/CommandsIterable';
@@ -20,11 +18,11 @@ type CommandsArbitraryContext<Model extends object, Real, RunResult, CheckAsync 
 
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends NextArbitrary<
+export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {
-  readonly oneCommandArb: NextArbitrary<CommandWrapper<Model, Real, RunResult, CheckAsync>>;
-  readonly lengthArb: NextArbitrary<number>;
+  readonly oneCommandArb: Arbitrary<CommandWrapper<Model, Real, RunResult, CheckAsync>>;
+  readonly lengthArb: Arbitrary<number>;
   private replayPath: boolean[];
   private replayPathPosition: number;
   constructor(
@@ -34,7 +32,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
     readonly disableReplayLog: boolean
   ) {
     super();
-    this.oneCommandArb = convertToNext(oneof(...commandArbs).map((c) => new CommandWrapper(c)));
+    this.oneCommandArb = oneof(...commandArbs).map((c) => new CommandWrapper(c));
     this.lengthArb = new IntegerArbitrary(0, maxCommands);
     this.replayPath = []; // updated at first shrink
     this.replayPathPosition = 0;

@@ -1,5 +1,4 @@
-import { ArbitraryWithContextualShrink } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { BigIntArbitrary } from './_internals/BigIntArbitrary';
 
 /**
@@ -12,12 +11,12 @@ import { BigIntArbitrary } from './_internals/BigIntArbitrary';
  * @remarks Since 1.9.0
  * @public
  */
-export function bigUintN(n: number): ArbitraryWithContextualShrink<bigint> {
+export function bigUintN(n: number): Arbitrary<bigint> {
   if (n < 0) {
     throw new Error('fc.bigUintN expects requested number of bits to be superior or equal to 0');
   }
   const min = BigInt(0);
   const max = (BigInt(1) << BigInt(n)) - BigInt(1);
   const arb = new BigIntArbitrary(min, max);
-  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
+  return arb;
 }

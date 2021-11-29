@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { emailAddress } from '../../../src/arbitrary/emailAddress';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 
 import {
@@ -47,7 +46,7 @@ describe('emailAddress (integration)', () => {
     expectValidEmailRfc5322(t);
   };
 
-  const emailAddressBuilder = () => convertToNext(emailAddress());
+  const emailAddressBuilder = () => emailAddress();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(emailAddressBuilder);
@@ -70,7 +69,7 @@ describe('emailAddress (integration)', () => {
     ${'me@domain.com'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(emailAddress());
+    const arb = emailAddress();
     const value = new NextValue(rawValue, undefined);
 
     // Act

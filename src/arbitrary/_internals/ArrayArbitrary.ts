@@ -4,8 +4,7 @@ import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
 import { integer } from '../integer';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { buildCompareFilter } from './helpers/BuildCompareFilter';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
-import { convertToNext } from '../../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 
 /** @internal */
@@ -17,12 +16,12 @@ type ArrayArbitraryContext = {
 };
 
 /** @internal */
-export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
-  readonly lengthArb: NextArbitrary<number>;
+export class ArrayArbitrary<T> extends Arbitrary<T[]> {
+  readonly lengthArb: Arbitrary<number>;
   readonly preFilter: (tab: NextValue<T>[]) => NextValue<T>[];
 
   constructor(
-    readonly arb: NextArbitrary<T>,
+    readonly arb: Arbitrary<T>,
     readonly minLength: number,
     readonly maxLength: number,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
@@ -30,7 +29,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     readonly isEqual?: (valueA: T, valueB: T) => boolean
   ) {
     super();
-    this.lengthArb = convertToNext(integer(minLength, maxLength));
+    this.lengthArb = integer(minLength, maxLength);
     this.preFilter = this.isEqual !== undefined ? buildCompareFilter(this.isEqual) : (tab: NextValue<T>[]) => tab;
   }
 
@@ -152,7 +151,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     }
     // We apply bias for both items and length (1 chance over biasFactor²)
     const maxBiasedLength = this.minLength + Math.floor(Math.log(this.maxLength - this.minLength) / Math.log(2));
-    const targetSizeValue = convertToNext(integer(this.minLength, maxBiasedLength)).generate(mrng, undefined);
+    const targetSizeValue = integer(this.minLength, maxBiasedLength).generate(mrng, undefined);
     return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }
 

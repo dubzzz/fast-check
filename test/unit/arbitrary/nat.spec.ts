@@ -1,14 +1,12 @@
 import * as fc from '../../../lib/fast-check';
 import { nat } from '../../../src/arbitrary/nat';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
 
 function fakeIntegerArbitrary() {
   const instance = fakeNextArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
-  instance.defaultTarget = jest.fn();
   return instance;
 }
 
@@ -31,7 +29,7 @@ describe('nat', () => {
 
     // Assert
     expect(IntegerArbitrary).toHaveBeenCalledWith(0, 0x7fffffff);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should instantiate IntegerArbitrary(0, 0x7fffffff) for nat({})', () => {
@@ -45,7 +43,7 @@ describe('nat', () => {
 
     // Assert
     expect(IntegerArbitrary).toHaveBeenCalledWith(0, 0x7fffffff);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should instantiate IntegerArbitrary(0, max) for nat({max})', () =>
@@ -61,7 +59,7 @@ describe('nat', () => {
 
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(0, max);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 
@@ -78,7 +76,7 @@ describe('nat', () => {
 
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(0, max);
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
       })
     ));
 

@@ -1,5 +1,4 @@
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 import { property } from '../../../../src/check/property/Property';
 import { pre } from '../../../../src/check/precondition/Pre';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
@@ -8,7 +7,6 @@ import { configureGlobal, resetConfigureGlobal } from '../../../../src/check/run
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
-import { convertFromNext } from '../../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { Stream } from '../../../../src/stream/Stream';
 
@@ -84,40 +82,32 @@ describe('Property', () => {
   it('Should throw on invalid arbitrary', () =>
     expect(() => property(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, () => {})).toThrowError());
   it('Should use the unbiased arbitrary by default', () => {
-    const p = property(
-      new (class extends Arbitrary<number> {
-        generate(): Shrinkable<number> {
-          return new Shrinkable(69);
-        }
-        withBias(): Arbitrary<number> {
-          throw 'Should not call withBias if not forced to';
-        }
-      })(),
-      () => {}
-    );
-    expect(p.generate(stubRng.mutable.nocall()).value).toEqual([69]);
+    const { instance, generate } = fakeNextArbitrary<number>();
+    generate.mockReturnValue(new NextValue(42, undefined));
+    const mrng = stubRng.mutable.nocall();
+
+    const p = property(instance, () => {});
+    expect(generate).not.toHaveBeenCalled();
+
+    expect(p.generate(mrng).value).toEqual([69]);
+    expect(generate).toHaveBeenCalledTimes(1);
+    expect(generate).toHaveBeenCalledWith(mrng, undefined);
   });
   it('Should use the biased arbitrary when asked to', () => {
-    const p = property(
-      new (class extends Arbitrary<number> {
-        generate(): Shrinkable<number> {
-          return new Shrinkable(69);
-        }
-        withBias(freq: number): Arbitrary<number> {
-          if (typeof freq !== 'number' || freq < 2) {
-            throw new Error(`freq atribute must always be superior or equal to 2, got: ${freq}`);
-          }
-          return new (class extends Arbitrary<number> {
-            generate(): Shrinkable<number> {
-              return new Shrinkable(42);
-            }
-          })();
-        }
-      })(),
-      () => {}
-    );
-    expect(p.generate(stubRng.mutable.nocall(), 0).value).toEqual([42]);
+    const { instance, generate } = fakeNextArbitrary<number>();
+    generate.mockReturnValue(new NextValue(42, undefined));
+    const mrng = stubRng.mutable.nocall();
+
+    const p = property(instance, () => {});
+    expect(generate).not.toHaveBeenCalled();
+
+    expect(p.generate(mrng, 0).value).toEqual([42]);
+    expect(generate).toHaveBeenCalledTimes(1);
+    expect(generate).toHaveBeenCalledWith(mrng, 0);
+
     expect(p.generate(stubRng.mutable.nocall(), 2).value).toEqual([42]);
+    expect(generate).toHaveBeenCalledTimes(2);
+    expect(generate).toHaveBeenCalledWith(mrng, 2);
   });
   it('Should always execute beforeEach before the test', () => {
     const prob = { beforeEachCalled: false };
@@ -250,7 +240,7 @@ describe('Property', () => {
     const value = Symbol();
 
     // Act
-    const p = property(convertFromNext(arb), jest.fn());
+    const p = property(arb, jest.fn());
     const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert
@@ -269,7 +259,7 @@ describe('Property', () => {
     const value = Symbol();
 
     // Act
-    const p = property(convertFromNext(arb), jest.fn());
+    const p = property(arb, jest.fn());
     const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert

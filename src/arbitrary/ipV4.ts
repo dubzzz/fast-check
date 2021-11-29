@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { nat } from './nat';
 import { tuple } from './tuple';
 import { tryParseStringifiedNat } from './_internals/mappers/NatToStringifiedNat';
@@ -27,7 +26,5 @@ function dotJoinerUnmapper(value: unknown): number[] {
  */
 export function ipV4(): Arbitrary<string> {
   // IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
-  return convertFromNext(
-    convertToNext(tuple<number[]>(nat(255), nat(255), nat(255), nat(255))).map(dotJoinerMapper, dotJoinerUnmapper)
-  );
+  return tuple<number[]>(nat(255), nat(255), nat(255), nat(255)).map(dotJoinerMapper, dotJoinerUnmapper);
 }

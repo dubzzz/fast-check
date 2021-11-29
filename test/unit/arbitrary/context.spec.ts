@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { context, ContextValue } from '../../../src/arbitrary/context';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../../src/check/symbols';
 
@@ -19,21 +18,21 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeNextArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => convertFromNext(instance));
+    constant.mockImplementation(() => instance);
 
     // Act
     const arb = context();
 
     // Assert
     expect(constant).toHaveBeenCalledWith(expect.anything());
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 
   it('should pass a cloneable context to constant', () => {
     // Arrange
     const { instance } = fakeNextArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => convertFromNext(instance));
+    constant.mockImplementation(() => instance);
 
     // Act
     context();
@@ -47,7 +46,7 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeNextArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => convertFromNext(instance));
+    constant.mockImplementation(() => instance);
 
     // Act
     context();
@@ -65,7 +64,7 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeNextArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => convertFromNext(instance));
+    constant.mockImplementation(() => instance);
 
     // Act
     context();

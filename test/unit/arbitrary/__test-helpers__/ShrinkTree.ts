@@ -1,18 +1,13 @@
 import * as fc from '../../../../lib/fast-check';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { Shrinkable } from '../../../../src/check/arbitrary/definition/Shrinkable';
 
 const truncatedSignal: any = Symbol();
 
 export type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 
-export function buildShrinkTree<T>(s: Shrinkable<T>): ShrinkTree<T> {
-  return [s.value, [...s.shrink().map((ss) => buildShrinkTree(ss))]];
-}
-
 export function buildNextShrinkTree<T>(
-  arb: NextArbitrary<T>,
+  arb: Arbitrary<T>,
   v: NextValue<T>,
   lengthLimiter: { numItems: number } = { numItems: Number.POSITIVE_INFINITY }
 ): ShrinkTree<T> {
