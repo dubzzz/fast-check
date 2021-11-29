@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { integer } from './integer';
 import { timeToDateMapper, timeToDateUnmapper } from './_internals/mappers/TimeToDate';
 
@@ -18,7 +17,5 @@ export function date(constraints?: { min?: Date; max?: Date }): Arbitrary<Date> 
   if (Number.isNaN(intMin)) throw new Error('fc.date min must be valid instance of Date');
   if (Number.isNaN(intMax)) throw new Error('fc.date max must be valid instance of Date');
   if (intMin > intMax) throw new Error('fc.date max must be greater or equal to min');
-  return convertFromNext(
-    convertToNext(integer({ min: intMin, max: intMax })).map(timeToDateMapper, timeToDateUnmapper)
-  );
+  return integer({ min: intMin, max: intMax }).map(timeToDateMapper, timeToDateUnmapper);
 }

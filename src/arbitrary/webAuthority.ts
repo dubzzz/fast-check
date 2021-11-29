@@ -10,7 +10,6 @@ import { oneof } from './oneof';
 import { option } from './option';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /** @internal */
@@ -102,15 +101,11 @@ export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<s
   const size = c.size;
   const hostnameArbs = [domain({ size })]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
-    .concat(c.withIPv6 === true ? [convertFromNext(convertToNext(ipV6()).map(bracketedMapper, bracketedUnmapper))] : [])
+    .concat(c.withIPv6 === true ? [ipV6().map(bracketedMapper, bracketedUnmapper)] : [])
     .concat(c.withIPv4Extended === true ? [ipV4Extended()] : []);
-  return convertFromNext(
-    convertToNext(
-      tuple(
-        c.withUserInfo === true ? option(hostUserInfo(size)) : constant(null),
-        oneof(...hostnameArbs),
-        c.withPort === true ? option(nat(65535)) : constant(null)
-      )
-    ).map(userHostPortMapper, userHostPortUnmapper)
-  );
+  return tuple(
+    c.withUserInfo === true ? option(hostUserInfo(size)) : constant(null),
+    oneof(...hostnameArbs),
+    c.withPort === true ? option(nat(65535)) : constant(null)
+  ).map(userHostPortMapper, userHostPortUnmapper);
 }

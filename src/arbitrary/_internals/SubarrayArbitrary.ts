@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { makeLazy } from '../../stream/LazyIterableIterator';
@@ -7,9 +7,9 @@ import { isSubarrayOf } from './helpers/IsSubarrayOf';
 import { IntegerArbitrary } from './IntegerArbitrary';
 
 /** @internal */
-export class SubarrayArbitrary<T> extends NextArbitrary<T[]> {
-  readonly lengthArb: NextArbitrary<number>;
-  readonly biasedLengthArb: NextArbitrary<number>;
+export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
+  readonly lengthArb: Arbitrary<number>;
+  readonly biasedLengthArb: Arbitrary<number>;
   constructor(
     readonly originalArray: T[],
     readonly isOrdered: boolean,

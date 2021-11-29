@@ -1,6 +1,5 @@
 import { ipV4Extended } from '../../../src/arbitrary/ipV4Extended';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -33,7 +32,7 @@ describe('ipV4Extended (integration)', () => {
     return chunks[chunks.length - 1] < 256 ** (5 - chunks.length);
   };
 
-  const ipV4ExtendedBuilder = () => convertToNext(ipV4Extended());
+  const ipV4ExtendedBuilder = () => ipV4Extended();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(ipV4ExtendedBuilder);
@@ -60,7 +59,7 @@ describe('ipV4Extended (integration)', () => {
     ${'0xff.0.0.0'}
   `('should be able to generate $source with fc.ipV4Extended()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(ipV4Extended());
+    const arb = ipV4Extended();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -78,7 +77,7 @@ describe('ipV4Extended (integration)', () => {
     ${'-1.0.0.0'}
   `('should not be able to generate $source with fc.ipV4Extended()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(ipV4Extended());
+    const arb = ipV4Extended();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -91,7 +90,7 @@ describe('ipV4Extended (integration)', () => {
     ${'010.0x8.4.04'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(ipV4Extended());
+    const arb = ipV4Extended();
     const value = new NextValue(rawValue, undefined);
 
     // Act

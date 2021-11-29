@@ -1,5 +1,4 @@
-import { ArbitraryWithContextualShrink } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary';
 
 /**
@@ -40,7 +39,7 @@ function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Requi
  * @remarks Since 0.0.1
  * @public
  */
-export function integer(constraints: IntegerConstraints = {}): ArbitraryWithContextualShrink<number> {
+export function integer(constraints: IntegerConstraints = {}): Arbitrary<number> {
   const fullConstraints = buildCompleteIntegerConstraints(constraints);
   if (fullConstraints.min > fullConstraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
@@ -51,6 +50,5 @@ export function integer(constraints: IntegerConstraints = {}): ArbitraryWithCont
   if (!Number.isInteger(fullConstraints.max)) {
     throw new Error('fc.integer maximum value should be an integer');
   }
-  const arb = new IntegerArbitrary(fullConstraints.min, fullConstraints.max);
-  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
+  return new IntegerArbitrary(fullConstraints.min, fullConstraints.max);
 }

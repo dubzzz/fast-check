@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { array } from './array';
 import { ascii } from './ascii';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
@@ -15,7 +14,5 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 export function asciiString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return convertFromNext(
-    convertToNext(array(ascii(), constraints)).map(codePointsToStringMapper, codePointsToStringUnmapper)
-  );
+  return array(ascii(), constraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }

@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import {
   MaxLengthUpperBound,
@@ -45,13 +44,12 @@ export interface ArrayConstraints {
  * @public
  */
 function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitrary<T[]> {
-  const nextArb = convertToNext(arb);
   const size = constraints.size;
   const minLength = constraints.minLength || 0;
   const maxLengthOrUnset = constraints.maxLength;
   const maxLength = maxLengthOrUnset !== undefined ? maxLengthOrUnset : MaxLengthUpperBound;
   const specifiedMaxLength = maxLengthOrUnset !== undefined;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
-  return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength));
+  return new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength);
 }
 export { array };

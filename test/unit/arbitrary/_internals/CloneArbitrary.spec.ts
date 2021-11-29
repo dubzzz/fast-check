@@ -1,6 +1,6 @@
 import fc from '../../../../lib/fast-check';
 import { CloneArbitrary } from '../../../../src/arbitrary/_internals/CloneArbitrary';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Random } from '../../../../src/random/generator/Random';
@@ -227,7 +227,7 @@ describe('CloneArbitrary (integration)', () => {
 
 const expectedFirst = 4;
 
-class FirstArbitrary extends NextArbitrary<number> {
+class FirstArbitrary extends Arbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(expectedFirst, { step: 2 });
   }
@@ -250,7 +250,7 @@ class FirstArbitrary extends NextArbitrary<number> {
   }
 }
 
-class CloneableArbitrary extends NextArbitrary<number[]> {
+class CloneableArbitrary extends Arbitrary<number[]> {
   private instance() {
     return Object.defineProperty([], cloneMethod, { value: () => this.instance() });
   }

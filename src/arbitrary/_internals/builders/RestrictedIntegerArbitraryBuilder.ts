@@ -1,14 +1,13 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 import { integer } from '../../integer';
 import { WithShrinkFromOtherArbitrary } from '../WithShrinkFromOtherArbitrary';
 
 /** @internal */
 export function restrictedIntegerArbitraryBuilder(min: number, maxGenerated: number, max: number): Arbitrary<number> {
-  const generatorArbitrary = convertToNext(integer({ min, max: maxGenerated }));
+  const generatorArbitrary = integer({ min, max: maxGenerated });
   if (maxGenerated === max) {
-    return convertFromNext(generatorArbitrary);
+    return generatorArbitrary;
   }
-  const shrinkerArbitrary = convertToNext(integer({ min, max }));
-  return convertFromNext(new WithShrinkFromOtherArbitrary(generatorArbitrary, shrinkerArbitrary));
+  const shrinkerArbitrary = integer({ min, max });
+  return new WithShrinkFromOtherArbitrary(generatorArbitrary, shrinkerArbitrary);
 }

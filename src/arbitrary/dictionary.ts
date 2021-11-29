@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { tuple } from './tuple';
 import { uniqueArray } from './uniqueArray';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
@@ -47,14 +46,10 @@ export function dictionary<T>(
   valueArb: Arbitrary<T>,
   constraints: DictionaryConstraints = {}
 ): Arbitrary<Record<string, T>> {
-  return convertFromNext(
-    convertToNext(
-      uniqueArray(tuple(keyArb, valueArb), {
-        minLength: constraints.minKeys,
-        maxLength: constraints.maxKeys,
-        size: constraints.size,
-        selector: dictionaryKeyExtractor,
-      })
-    ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
-  );
+  return uniqueArray(tuple(keyArb, valueArb), {
+    minLength: constraints.minKeys,
+    maxLength: constraints.maxKeys,
+    size: constraints.size,
+    selector: dictionaryKeyExtractor,
+  }).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
 }

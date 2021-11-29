@@ -38,8 +38,6 @@ import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
 import { date } from './arbitrary/date';
 import { clone, CloneValue } from './arbitrary/clone';
-import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
-import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary, DictionaryConstraints } from './arbitrary/dictionary';
 import { emailAddress, EmailAddressConstraints } from './arbitrary/emailAddress';
 import { double, DoubleConstraints } from './arbitrary/double';
@@ -145,8 +143,6 @@ import {
   SchedulerConstraints,
 } from './arbitrary/scheduler';
 import { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
-import { ArbitraryWithShrink } from './check/arbitrary/definition/ArbitraryWithShrink';
-import { ArbitraryWithContextualShrink } from './check/arbitrary/definition/ArbitraryWithContextualShrink';
 import { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
 import { RandomType } from './check/runner/configuration/RandomType';
@@ -160,9 +156,8 @@ import { uint32Array } from './arbitrary/uint32Array';
 import { float32Array, Float32ArrayConstraints } from './arbitrary/float32Array';
 import { float64Array, Float64ArrayConstraints } from './arbitrary/float64Array';
 import { sparseArray, SparseArrayConstraints } from './arbitrary/sparseArray';
-import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
-import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
 import { Size, SizeForArbitrary } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
@@ -315,18 +310,11 @@ export {
   SchedulerReportItem,
   // extend the framework
   Arbitrary,
-  NextArbitrary,
-  ArbitraryWithShrink,
-  ArbitraryWithContextualShrink,
-  Shrinkable,
   NextValue,
   cloneMethod,
   cloneIfNeeded,
   hasCloneMethod,
   WithCloneMethod,
-  convertFromNext,
-  convertFromNextWithShrunkOnce,
-  convertToNext,
   toStringMethod,
   hasToStringMethod,
   WithToStringMethod,

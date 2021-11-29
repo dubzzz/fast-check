@@ -8,7 +8,6 @@ import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { resolveSize, relativeSizeToSize, Size, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { adapter, AdapterOutput } from './_internals/AdapterArbitrary';
 
@@ -44,13 +43,12 @@ function subdomainLabel(size: Size) {
   // But RFC 1123 relaxed the constraint:
   //   "The syntax of a legal Internet host name was specified in RFC-952[DNS:4]. One aspect of host name syntax is hereby changed: the
   //    restriction on the first character is relaxed to allow either a letter or a digit. Host software MUST support this more liberal syntax."
-  return convertFromNext(
-    convertToNext(
-      tuple(alphaNumericArb, option(tuple(stringOf(alphaNumericHyphenArb, { size, maxLength: 61 }), alphaNumericArb)))
-    )
-      .map(toSubdomainLabelMapper, toSubdomainLabelUnmapper)
-      .filter(filterInvalidSubdomainLabel)
-  );
+  return tuple(
+    alphaNumericArb,
+    option(tuple(stringOf(alphaNumericHyphenArb, { size, maxLength: 61 }), alphaNumericArb))
+  )
+    .map(toSubdomainLabelMapper, toSubdomainLabelUnmapper)
+    .filter(filterInvalidSubdomainLabel);
 }
 
 /** @internal */
@@ -119,15 +117,13 @@ export function domain(constraints: DomainConstraints = {}): Arbitrary<string> {
   // which is probably not in this list (probability would be low)
   const alphaNumericArb = buildLowerAlphaArbitrary([]);
   const publicSuffixArb = stringOf(alphaNumericArb, { minLength: 2, maxLength: 63, size: resolvedSizeMinusOne });
-  return convertFromNext(
+  return (
     // labels have between 1 and 63 characters
     // domains are made of dot-separated labels and have up to 255 characters so that are made of up-to 128 labels
     adapter(
-      convertToNext(
-        tuple(
-          array(subdomainLabel(resolvedSize), { size: resolvedSizeMinusOne, minLength: 1, maxLength: 127 }),
-          publicSuffixArb
-        )
+      tuple(
+        array(subdomainLabel(resolvedSize), { size: resolvedSizeMinusOne, minLength: 1, maxLength: 127 }),
+        publicSuffixArb
       ),
       labelsAdapter
     ).map(labelsMapper, labelsUnmapper)

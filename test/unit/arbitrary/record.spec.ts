@@ -1,7 +1,6 @@
 import fc from '../../../lib/fast-check';
 import { record, RecordConstraints } from '../../../src/arbitrary/record';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import {
   assertProduceCorrectValues,
@@ -34,20 +33,20 @@ describe('record', () => {
           const recordModel: Record<string | symbol, Arbitrary<any>> = {};
           for (const k of keys) {
             const { instance } = fakeNextArbitrary();
-            recordModel[k] = convertFromNext(instance);
+            recordModel[k] = instance;
           }
           const { instance } = fakeNextArbitrary<any>();
           const buildPartialRecordArbitrary = jest.spyOn(
             PartialRecordArbitraryBuilderMock,
             'buildPartialRecordArbitrary'
           );
-          buildPartialRecordArbitrary.mockReturnValue(convertFromNext(instance));
+          buildPartialRecordArbitrary.mockReturnValue(instance);
 
           // Act
           const arb = constraints !== undefined ? record(recordModel, constraints) : record(recordModel);
 
           // Assert
-          expect(convertToNext(arb)).toBe(instance);
+          expect(arb).toBe(instance);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined);
         }
@@ -61,20 +60,20 @@ describe('record', () => {
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
         for (const k of keys) {
           const { instance } = fakeNextArbitrary();
-          recordModel[k] = convertFromNext(instance);
+          recordModel[k] = instance;
         }
         const { instance } = fakeNextArbitrary<any>();
         const buildPartialRecordArbitrary = jest.spyOn(
           PartialRecordArbitraryBuilderMock,
           'buildPartialRecordArbitrary'
         );
-        buildPartialRecordArbitrary.mockReturnValue(convertFromNext(instance));
+        buildPartialRecordArbitrary.mockReturnValue(instance);
 
         // Act
         const arb = record(recordModel, { withDeletedKeys: true });
 
         // Assert
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, []);
       })
@@ -88,7 +87,7 @@ describe('record', () => {
         const requiredKeys: any[] = [];
         for (const k of keys) {
           const { instance } = fakeNextArbitrary();
-          recordModel[k] = convertFromNext(instance);
+          recordModel[k] = instance;
           if (isRequired(k)) {
             requiredKeys.push(k);
           }
@@ -98,13 +97,13 @@ describe('record', () => {
           PartialRecordArbitraryBuilderMock,
           'buildPartialRecordArbitrary'
         );
-        buildPartialRecordArbitrary.mockReturnValue(convertFromNext(instance));
+        buildPartialRecordArbitrary.mockReturnValue(instance);
 
         // Act
         const arb = record(recordModel, { requiredKeys });
 
         // Assert
-        expect(convertToNext(arb)).toBe(instance);
+        expect(arb).toBe(instance);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, requiredKeys);
       })
@@ -118,7 +117,7 @@ describe('record', () => {
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
         for (const k of keys) {
           const { instance } = fakeNextArbitrary();
-          recordModel[k] = convertFromNext(instance);
+          recordModel[k] = instance;
         }
 
         // Act / Assert
@@ -144,7 +143,7 @@ describe('record', () => {
           const recordModel: Record<string | symbol, Arbitrary<any>> = {};
           for (const k of keys) {
             const { instance } = fakeNextArbitrary();
-            recordModel[k.name] = convertFromNext(instance);
+            recordModel[k.name] = instance;
           }
 
           // Act / Assert
@@ -255,9 +254,9 @@ describe('record (integration)', () => {
     const recordModel: Record<string | symbol, Arbitrary<number>> = {};
     for (const m of metas) {
       const instance = new FakeIntegerArbitrary(m.valueStart, 10);
-      recordModel[m.key] = convertFromNext(instance);
+      recordModel[m.key] = instance;
     }
-    return convertToNext(record(recordModel, constraints));
+    return record(recordModel, constraints);
   };
 
   it('should produce the same values given the same seed', () => {
