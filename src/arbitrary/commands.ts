@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext } from '../check/arbitrary/definition/Converters';
 import { AsyncCommand } from '../check/model/command/AsyncCommand';
 import { Command } from '../check/model/command/Command';
 import { ICommand } from '../check/model/command/ICommand';
@@ -47,13 +46,11 @@ function commands<Model extends object, Real, RunResult, CheckAsync extends bool
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
   const config =
     constraints == null ? {} : typeof constraints === 'number' ? { maxCommands: constraints } : constraints;
-  return convertFromNext(
-    new CommandsArbitrary(
-      commandArbs,
-      config.maxCommands != null ? config.maxCommands : 10,
-      config.replayPath != null ? config.replayPath : null,
-      !!config.disableReplayLog
-    )
+  return new CommandsArbitrary(
+    commandArbs,
+    config.maxCommands != null ? config.maxCommands : 10,
+    config.replayPath != null ? config.replayPath : null,
+    !!config.disableReplayLog
   );
 }
 export { commands };

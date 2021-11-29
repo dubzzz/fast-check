@@ -1,6 +1,5 @@
 import { uint8Array } from '../../../src/arbitrary/uint8Array';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
@@ -10,13 +9,13 @@ describe('uint8Array', () => {
     // Arrange
     const instance = fakeNextArbitrary();
     const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => convertFromNext(instance));
+    builder.mockImplementation(() => instance);
 
     // Act
     const arb = uint8Array();
 
     // Assert
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
     expect(builder).toHaveBeenCalledWith(
       expect.anything(),
       expect.any(Number),
@@ -30,7 +29,7 @@ describe('uint8Array', () => {
     // Arrange
     const instance = fakeNextArbitrary();
     const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => convertFromNext(instance));
+    builder.mockImplementation(() => instance);
 
     // Act
     uint8Array();

@@ -1,8 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { dictionary } from '../../../src/arbitrary/dictionary';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
@@ -35,9 +34,9 @@ describe('dictionary (integration)', () => {
   };
 
   const dictionaryBuilder = (extra: Extra) => {
-    const keyArb = convertFromNext(new FromValuesArbitrary(extra.keys));
-    const valueArb = convertFromNext(new FromValuesArbitrary(extra.values));
-    return convertToNext(dictionary(keyArb, valueArb));
+    const keyArb = new FromValuesArbitrary(extra.keys);
+    const valueArb = new FromValuesArbitrary(extra.values);
+    return dictionary(keyArb, valueArb);
   };
 
   it('should produce the same values given the same seed', () => {
@@ -55,7 +54,7 @@ describe('dictionary (integration)', () => {
 
 // Helpers
 
-class FromValuesArbitrary<T> extends NextArbitrary<T> {
+class FromValuesArbitrary<T> extends Arbitrary<T> {
   constructor(readonly source: T[]) {
     super();
   }

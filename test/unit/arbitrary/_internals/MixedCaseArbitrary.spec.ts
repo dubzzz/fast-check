@@ -9,11 +9,6 @@ import {
 import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCaseArbitrary';
 import { stringOf } from '../../../../src/arbitrary/stringOf';
 import { nat } from '../../../../src/arbitrary/nat';
-import {
-  convertFromNext,
-  convertFromNextWithShrunkOnce,
-  convertToNext,
-} from '../../../../src/check/arbitrary/definition/Converters';
 import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
 import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
@@ -183,14 +178,10 @@ describe('MixedCaseArbitrary (integration)', () => {
 
   const mixedCaseBuilder = (extra: Extra) =>
     new MixedCaseArbitrary(
-      convertToNext(
-        stringOf(
-          convertFromNext(
-            convertToNext(nat(mixedCaseBaseChars.length - 1)).map(
-              (id) => mixedCaseBaseChars[id],
-              (c) => mixedCaseBaseChars.indexOf(c as string)
-            )
-          )
+      stringOf(
+        nat(mixedCaseBaseChars.length - 1).map(
+          (id) => mixedCaseBaseChars[id],
+          (c) => mixedCaseBaseChars.indexOf(c as string)
         )
       ),
       extra.withoutToggle ? (rawChar) => rawChar : (rawChar) => rawChar.toLowerCase(),
@@ -223,7 +214,7 @@ describe('MixedCaseArbitrary (integration)', () => {
 function mockSourceArbitrariesForGenerate(bigIntOutput: bigint, stringOutput: string) {
   const { instance: bigUintNInstance, generate: bigUintNGenerate } = fakeNextArbitrary();
   const bigUintN = jest.spyOn(BigUintNMock, 'bigUintN');
-  bigUintN.mockReturnValue(convertFromNextWithShrunkOnce(bigUintNInstance, undefined));
+  bigUintN.mockReturnValue(bigUintNInstance);
   bigUintNGenerate.mockReturnValueOnce(new NextValue(bigIntOutput, undefined));
   const { instance: stringInstance, generate: stringGenerate } = fakeNextArbitrary();
   stringGenerate.mockReturnValueOnce(new NextValue(stringOutput, undefined));

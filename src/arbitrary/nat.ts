@@ -1,5 +1,4 @@
-import { ArbitraryWithContextualShrink } from '../check/arbitrary/definition/ArbitraryWithContextualShrink';
-import { convertFromNextWithShrunkOnce } from '../check/arbitrary/definition/Converters';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary';
 
 /**
@@ -21,7 +20,7 @@ export interface NatConstraints {
  * @remarks Since 0.0.1
  * @public
  */
-function nat(): ArbitraryWithContextualShrink<number>;
+function nat(): Arbitrary<number>;
 /**
  * For positive integers between 0 (included) and max (included)
  *
@@ -31,7 +30,7 @@ function nat(): ArbitraryWithContextualShrink<number>;
  * @remarks Since 0.0.1
  * @public
  */
-function nat(max: number): ArbitraryWithContextualShrink<number>;
+function nat(max: number): Arbitrary<number>;
 /**
  * For positive integers between 0 (included) and max (included)
  *
@@ -40,8 +39,8 @@ function nat(max: number): ArbitraryWithContextualShrink<number>;
  * @remarks Since 2.6.0
  * @public
  */
-function nat(constraints: NatConstraints): ArbitraryWithContextualShrink<number>;
-function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<number> {
+function nat(constraints: NatConstraints): Arbitrary<number>;
+function nat(arg?: number | NatConstraints): Arbitrary<number> {
   const max = typeof arg === 'number' ? arg : arg && arg.max !== undefined ? arg.max : 0x7fffffff;
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
@@ -49,7 +48,6 @@ function nat(arg?: number | NatConstraints): ArbitraryWithContextualShrink<numbe
   if (!Number.isInteger(max)) {
     throw new Error('fc.nat maximum value should be an integer');
   }
-  const arb = new IntegerArbitrary(0, max);
-  return convertFromNextWithShrunkOnce(arb, arb.defaultTarget());
+  return new IntegerArbitrary(0, max);
 }
 export { nat };

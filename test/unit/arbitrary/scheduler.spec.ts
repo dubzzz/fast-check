@@ -1,6 +1,5 @@
 import { scheduler, Scheduler, schedulerFor } from '../../../src/arbitrary/scheduler';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 
 import * as BuildSchedulerForMock from '../../../src/arbitrary/_internals/helpers/BuildSchedulerFor';
 import * as SchedulerArbitraryMock from '../../../src/arbitrary/_internals/SchedulerArbitrary';
@@ -22,7 +21,7 @@ describe('scheduler', () => {
     const s = scheduler();
 
     // Assert
-    expect(convertToNext(s)).toBe(instance);
+    expect(s).toBe(instance);
     expect(SchedulerArbitrary).toHaveBeenCalledWith(expect.any(Function));
   });
 
@@ -54,7 +53,7 @@ describe('scheduler', () => {
     const s = scheduler({ act });
 
     // Assert
-    expect(convertToNext(s)).toBe(instance);
+    expect(s).toBe(instance);
     expect(SchedulerArbitrary).toHaveBeenCalledWith(act);
   });
 });

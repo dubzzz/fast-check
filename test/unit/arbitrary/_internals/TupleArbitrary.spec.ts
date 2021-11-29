@@ -12,7 +12,7 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from '../__test-helpers__/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
 describe('TupleArbitrary', () => {
@@ -392,7 +392,7 @@ describe('TupleArbitrary (integration)', () => {
 const expectedFirst = 4;
 const expectedSecond = 97;
 
-class FirstArbitrary extends NextArbitrary<number> {
+class FirstArbitrary extends Arbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(expectedFirst, { step: 2 });
   }
@@ -414,7 +414,7 @@ class FirstArbitrary extends NextArbitrary<number> {
     );
   }
 }
-class SecondArbitrary extends NextArbitrary<number> {
+class SecondArbitrary extends Arbitrary<number> {
   generate(_mrng: Random): NextValue<number> {
     return new NextValue(expectedSecond, { step: 2 });
   }
@@ -437,7 +437,7 @@ class SecondArbitrary extends NextArbitrary<number> {
   }
 }
 
-class CloneableArbitrary extends NextArbitrary<number[]> {
+class CloneableArbitrary extends Arbitrary<number[]> {
   private instance() {
     return Object.defineProperty([], cloneMethod, { value: () => this.instance() });
   }

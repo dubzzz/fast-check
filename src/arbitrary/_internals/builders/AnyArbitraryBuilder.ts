@@ -20,7 +20,6 @@ import { uint8ClampedArray } from '../../uint8ClampedArray';
 import { sparseArray } from '../../sparseArray';
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from '../mappers/KeyValuePairsToObject';
 import { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
-import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
 import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
 import { objectToPrototypeLessMapper, objectToPrototypeLessUnmapper } from '../mappers/ObjectToPrototypeLess';
@@ -30,24 +29,24 @@ import { letrec } from '../../letrec';
 function entriesOf<T, U>(keyArb: Arbitrary<T>, valueArb: Arbitrary<U>, maxKeys: number) {
   // TODO - Depending on the situation, the selected compare function might not be appropriate
   // eg.: in the case of Map, NaN is NaN but NaN !== NaN
-  return convertToNext(set(tuple(keyArb, valueArb), { maxLength: maxKeys, compare: (t1, t2) => t1[0] === t2[0] }));
+  return set(tuple(keyArb, valueArb), { maxLength: maxKeys, compare: (t1, t2) => t1[0] === t2[0] });
 }
 
 /** @internal */
 function mapOf<T, U>(ka: Arbitrary<T>, va: Arbitrary<U>, maxKeys: number) {
-  return convertFromNext(entriesOf(ka, va, maxKeys).map(arrayToMapMapper, arrayToMapUnmapper));
+  return entriesOf(ka, va, maxKeys).map(arrayToMapMapper, arrayToMapUnmapper);
 }
 
 /** @internal */
 function dictOf<U>(ka: Arbitrary<string>, va: Arbitrary<U>, maxKeys: number) {
-  return convertFromNext(entriesOf(ka, va, maxKeys).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper));
+  return entriesOf(ka, va, maxKeys).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
 }
 
 /** @internal */
 function setOf<U>(va: Arbitrary<U>, maxKeys: number) {
   // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
   // While the Set does not and consider them to be the same values.
-  return convertFromNext(convertToNext(set(va, { maxLength: maxKeys })).map(arrayToSetMapper, arrayToSetUnmapper));
+  return set(va, { maxLength: maxKeys }).map(arrayToSetMapper, arrayToSetUnmapper);
 }
 
 /** @internal */
@@ -55,7 +54,7 @@ function setOf<U>(va: Arbitrary<U>, maxKeys: number) {
 function prototypeLessOf(objectArb: Arbitrary<object>) {
   // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
   // While the Set does not and consider them to be the same values.
-  return convertFromNext(convertToNext(objectArb).map(objectToPrototypeLessMapper, objectToPrototypeLessUnmapper));
+  return objectArb.map(objectToPrototypeLessMapper, objectToPrototypeLessUnmapper);
 }
 
 /** @internal */

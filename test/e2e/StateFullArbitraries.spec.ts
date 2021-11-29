@@ -12,7 +12,13 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
               return v;
             },
           };
-          return new fc.Shrinkable(v);
+          return new fc.NextValue(v, undefined);
+        }
+        canShrinkWithoutContext(value: unknown): value is any {
+          return false;
+        }
+        shrink(): fc.Stream<fc.NextValue<any>> {
+          return fc.Stream.nil();
         }
       })();
     it('normal property', () => {

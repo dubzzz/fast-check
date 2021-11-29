@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { char } from '../../../src/arbitrary/char';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
@@ -55,7 +54,7 @@ describe('char (integration)', () => {
 
   const isStrictlySmaller = (c1: string, c2: string) => c1.codePointAt(0)! < c2.codePointAt(0)!;
 
-  const charBuilder = () => convertToNext(char());
+  const charBuilder = () => char();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(charBuilder);
@@ -83,7 +82,7 @@ describe('char (integration)', () => {
 function extractArgumentsForBuildCharacter(build: () => void) {
   const { instance } = fakeNextArbitrary();
   const buildCharacterArbitrary = jest.spyOn(CharacterArbitraryBuilderMock, 'buildCharacterArbitrary');
-  buildCharacterArbitrary.mockImplementation(() => convertFromNext(instance));
+  buildCharacterArbitrary.mockImplementation(() => instance);
 
   build();
   const [min, max, mapToCode, unmapFromCode] = buildCharacterArbitrary.mock.calls[0];

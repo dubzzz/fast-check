@@ -1,5 +1,4 @@
 import { fakeNextArbitrary } from '../../__test-helpers__/NextArbitraryHelpers';
-import { convertFromNext, convertToNext } from '../../../../../src/check/arbitrary/definition/Converters';
 import { buildPartialRecordArbitrary } from '../../../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
 
 import * as OptionMock from '../../../../../src/arbitrary/option';
@@ -19,7 +18,7 @@ describe('buildPartialRecordArbitrary', () => {
     const { instance: tupleInstance, map } = fakeNextArbitrary<any[]>();
     const option = jest.spyOn(OptionMock, 'option');
     const tuple = jest.spyOn(TupleMock, 'tuple');
-    tuple.mockReturnValue(convertFromNext(tupleInstance));
+    tuple.mockReturnValue(tupleInstance);
     map.mockReturnValue(mappedInstance);
 
     const mapper = jest.fn();
@@ -39,8 +38,8 @@ describe('buildPartialRecordArbitrary', () => {
     const arbKey1 = fakeNextArbitrary();
     const arbKey2 = fakeNextArbitrary();
     const recordModel = {
-      a: convertFromNext(arbKey1),
-      b: convertFromNext(arbKey2),
+      a: arbKey1,
+      b: arbKey2,
     };
     const requiredKeys: (keyof typeof recordModel)[] = ['a', 'b'];
     const allKeys: (keyof typeof recordModel)[] = ['a', 'b'];
@@ -49,7 +48,7 @@ describe('buildPartialRecordArbitrary', () => {
     const arb = buildPartialRecordArbitrary(recordModel, requiredKeys);
 
     // Assert
-    expect(convertToNext(arb)).toBe(mappedInstance);
+    expect(arb).toBe(mappedInstance);
     expect(option).not.toHaveBeenCalled();
     expect(tuple).toHaveBeenCalledTimes(1);
     expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);
@@ -69,10 +68,10 @@ describe('buildPartialRecordArbitrary', () => {
     const { instance: optionInstance2 } = fakeNextArbitrary();
     const option = jest.spyOn(OptionMock, 'option');
     const tuple = jest.spyOn(TupleMock, 'tuple');
-    const optionInstance1Old = convertFromNext(optionInstance1);
-    const optionInstance2Old = convertFromNext(optionInstance2);
+    const optionInstance1Old = optionInstance1;
+    const optionInstance2Old = optionInstance2;
     option.mockReturnValueOnce(optionInstance1Old).mockReturnValueOnce(optionInstance2Old);
-    tuple.mockReturnValue(convertFromNext(tupleInstance));
+    tuple.mockReturnValue(tupleInstance);
     map.mockReturnValue(mappedInstance);
 
     const mapper = jest.fn();
@@ -93,9 +92,9 @@ describe('buildPartialRecordArbitrary', () => {
     const arbKey2 = fakeNextArbitrary();
     const arbKey3 = fakeNextArbitrary();
     const recordModel = {
-      a: convertFromNext(arbKey1),
-      b: convertFromNext(arbKey2),
-      c: convertFromNext(arbKey3),
+      a: arbKey1,
+      b: arbKey2,
+      c: arbKey3,
     };
     const requiredKeys: (keyof typeof recordModel)[] = ['b'];
     const allKeys: (keyof typeof recordModel)[] = ['a', 'b', 'c'];
@@ -104,7 +103,7 @@ describe('buildPartialRecordArbitrary', () => {
     const arb = buildPartialRecordArbitrary(recordModel, requiredKeys);
 
     // Assert
-    expect(convertToNext(arb)).toBe(mappedInstance);
+    expect(arb).toBe(mappedInstance);
     expect(option).toHaveBeenCalledTimes(2);
     expect(option).toHaveBeenCalledWith(recordModel.a, { nil: expect.any(Symbol) });
     expect(option).toHaveBeenCalledWith(recordModel.c, { nil: expect.any(Symbol) });
@@ -124,7 +123,7 @@ describe('buildPartialRecordArbitrary', () => {
     const { instance: tupleInstance, map } = fakeNextArbitrary<any[]>();
     const option = jest.spyOn(OptionMock, 'option');
     const tuple = jest.spyOn(TupleMock, 'tuple');
-    tuple.mockReturnValue(convertFromNext(tupleInstance));
+    tuple.mockReturnValue(tupleInstance);
     map.mockReturnValue(mappedInstance);
 
     const mapper = jest.fn();
@@ -144,8 +143,8 @@ describe('buildPartialRecordArbitrary', () => {
     const arbKey1 = fakeNextArbitrary();
     const arbKey2 = fakeNextArbitrary();
     const recordModel = {
-      a: convertFromNext(arbKey1),
-      b: convertFromNext(arbKey2),
+      a: arbKey1,
+      b: arbKey2,
     };
     const requiredKeys = undefined;
     const allKeys: (keyof typeof recordModel)[] = ['a', 'b'];
@@ -154,7 +153,7 @@ describe('buildPartialRecordArbitrary', () => {
     const arb = buildPartialRecordArbitrary(recordModel, requiredKeys);
 
     // Assert
-    expect(convertToNext(arb)).toBe(mappedInstance);
+    expect(arb).toBe(mappedInstance);
     expect(option).not.toHaveBeenCalled();
     expect(tuple).toHaveBeenCalledTimes(1);
     expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);

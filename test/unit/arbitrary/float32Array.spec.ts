@@ -1,8 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { float32Array, Float32ArrayConstraints } from '../../../src/arbitrary/float32Array';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
-
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
@@ -52,7 +50,7 @@ describe('float32Array (integration)', () => {
     }
   };
 
-  const float32ArrayBuilder = (extra: Extra) => convertToNext(float32Array(extra));
+  const float32ArrayBuilder = (extra: Extra) => float32Array(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(float32ArrayBuilder, { extraParameters });

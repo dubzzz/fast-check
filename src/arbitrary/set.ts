@@ -1,6 +1,5 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
@@ -41,9 +40,9 @@ export function set<T>(arb: Arbitrary<T>, constraints: SetConstraints<T> = {}): 
     maxLength = maxLengthFromMinLength(minLength),
     compare = (a: T, b: T) => a === b,
   } = constraints;
-
-  const nextArb = convertToNext(arb);
-  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, compare));
-  if (minLength === 0) return arrayArb;
+  const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, compare);
+  if (minLength === 0) {
+    return arrayArb;
+  }
   return arrayArb.filter((tab) => tab.length >= minLength);
 }

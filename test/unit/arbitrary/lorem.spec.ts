@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { lorem, LoremConstraints } from '../../../src/arbitrary/lorem';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -62,7 +61,7 @@ describe('lorem (integration)', () => {
     }
   };
 
-  const loremBuilder = (extra: Extra) => convertToNext(lorem(extra));
+  const loremBuilder = (extra: Extra) => lorem(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(loremBuilder, { extraParameters });

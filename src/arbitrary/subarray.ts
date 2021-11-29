@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext } from '../check/arbitrary/definition/Converters';
 import { SubarrayArbitrary } from './_internals/SubarrayArbitrary';
 
 /**
@@ -33,5 +32,5 @@ export interface SubarrayConstraints {
  */
 export function subarray<T>(originalArray: T[], constraints: SubarrayConstraints = {}): Arbitrary<T[]> {
   const { minLength = 0, maxLength = originalArray.length } = constraints;
-  return convertFromNext(new SubarrayArbitrary(originalArray, true, minLength, maxLength));
+  return new SubarrayArbitrary(originalArray, true, minLength, maxLength);
 }

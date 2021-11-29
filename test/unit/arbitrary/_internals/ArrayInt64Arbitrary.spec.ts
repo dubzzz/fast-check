@@ -1,13 +1,11 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { arrayInt64 as arrayInt64Old } from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
+import { arrayInt64 } from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
-import { convertToNext } from '../../../../src/check/arbitrary/definition/Converters';
 
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { buildNextShrinkTree, renderTree, buildShrinkTree } from '../__test-helpers__/ShrinkTree';
+import { buildNextShrinkTree, renderTree } from '../__test-helpers__/ShrinkTree';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
@@ -354,50 +352,6 @@ describe('arrayInt64', () => {
       `);
     });
   });
-
-  describe('contextualShrinkableFor (old)', () => {
-    it('should shrink, as context-less, strictly positive value for positive range including zero', () => {
-      // Arrange
-      const arbNew = arrayInt64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 10] });
-      const arbOld = arrayInt64Old({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 10] });
-      const sourceValue: ArrayInt64 = { sign: 1, data: [0, 8] };
-
-      // Act
-      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue, undefined));
-      const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
-
-      // Assert
-      expect(treeOld).toEqual(treeNew);
-    });
-
-    it('should shrink, as context-less, strictly positive value for range not including zero', () => {
-      // Arrange
-      const arbNew = arrayInt64({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
-      const arbOld = arrayInt64Old({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
-      const sourceValue: ArrayInt64 = { sign: 1, data: [1, 18] };
-
-      // Act
-      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue, undefined));
-      const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
-
-      // Assert
-      expect(treeOld).toEqual(treeNew);
-    });
-
-    it('should shrink, as context-less, strictly negative value for negative range including zero', () => {
-      // Arrange
-      const arbNew = arrayInt64({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
-      const arbOld = arrayInt64Old({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
-      const sourceValue: ArrayInt64 = { sign: -1, data: [0, 8] };
-
-      // Act
-      const treeNew = buildNextShrinkTree(arbNew, new NextValue(sourceValue, undefined));
-      const treeOld = buildShrinkTree(arbOld.contextualShrinkableFor(sourceValue));
-
-      // Assert
-      expect(treeOld).toEqual(treeNew);
-    });
-  });
 });
 
 describe('arrayInt64 (integration)', () => {
@@ -464,10 +418,6 @@ describe('arrayInt64 (integration)', () => {
 });
 
 // Helpers
-
-function arrayInt64(...args: Parameters<typeof arrayInt64Old>): NextArbitrary<ArrayInt64> {
-  return convertToNext(arrayInt64Old(...args));
-}
 
 function toArrayInt64(b: bigint, withNegativeZero: boolean): ArrayInt64 {
   const posB = b < BigInt(0) ? -b : b;

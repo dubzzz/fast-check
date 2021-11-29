@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary';
 
 /**
@@ -47,5 +46,5 @@ export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseC
   }
   const toggleCase = (constraints && constraints.toggleCase) || defaultToggleCase;
   const untoggleAll = constraints && constraints.untoggleAll;
-  return convertFromNext(new MixedCaseArbitrary(convertToNext(stringArb), toggleCase, untoggleAll));
+  return new MixedCaseArbitrary(stringArb, toggleCase, untoggleAll);
 }

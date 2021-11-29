@@ -1,6 +1,5 @@
 import fc from '../../../lib/fast-check';
 import { webAuthority, WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 
 import {
   assertProduceSameValueGivenSameSeed,
@@ -28,7 +27,7 @@ describe('webAuthority (integration)', () => {
     { requiredKeys: [] }
   );
 
-  const webAuthorityBuilder = (extra: Extra) => convertToNext(webAuthority(extra));
+  const webAuthorityBuilder = (extra: Extra) => webAuthority(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(webAuthorityBuilder, { extraParameters });

@@ -1,16 +1,16 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols';
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 
 /** @internal */
-type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: NextArbitrary<Ts[K]> };
+type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
 /** @internal */
 type ValuesArray<Ts extends unknown[]> = { [K in keyof Ts]: NextValue<Ts[K]> };
 
 /** @internal */
-export class TupleArbitrary<Ts extends unknown[]> extends NextArbitrary<Ts> {
+export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
   constructor(readonly arbs: ArbsArray<Ts>) {
     super();
     for (let idx = 0; idx !== arbs.length; ++idx) {
