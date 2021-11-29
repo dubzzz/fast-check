@@ -28,10 +28,8 @@ describe('frequency', () => {
           const expectedArb = fakeNextArbitrary().instance;
           const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
           fromOld.mockReturnValue(expectedArb);
-          const { instance: nextArb1 } = fakeNextArbitrary();
-          const { instance: nextArb2 } = fakeNextArbitrary();
-          const arb1 = nextArb1;
-          const arb2 = nextArb2;
+          const { instance: arb1 } = fakeNextArbitrary();
+          const { instance: arb2 } = fakeNextArbitrary();
           const weight1 = 10;
           const weight2 = 3;
 
@@ -61,10 +59,8 @@ describe('frequency', () => {
     const expectedArb = fakeNextArbitrary().instance;
     const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
     fromOld.mockReturnValue(expectedArb);
-    const { instance: nextArb1 } = fakeNextArbitrary();
-    const { instance: nextArb2 } = fakeNextArbitrary();
-    const arb1 = nextArb1;
-    const arb2 = nextArb2;
+    const { instance: arb1 } = fakeNextArbitrary();
+    const { instance: arb2 } = fakeNextArbitrary();
     const weight1 = 10;
     const weight2 = 3;
 

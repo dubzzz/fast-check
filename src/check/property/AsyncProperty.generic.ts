@@ -62,8 +62,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
-  private arb: Arbitrary<Ts>;
-  constructor(rawArb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
+  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
     const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
 
     if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
@@ -80,7 +79,6 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
 
     this.beforeEachHook = asyncBeforeEach || beforeEach || AsyncProperty.dummyHook;
     this.afterEachHook = asyncAfterEach || afterEach || AsyncProperty.dummyHook;
-    this.arb = rawArb;
   }
 
   isAsync(): true {

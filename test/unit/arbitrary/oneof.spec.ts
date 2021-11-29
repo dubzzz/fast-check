@@ -8,10 +8,8 @@ describe('oneof', () => {
     const expectedArb = fakeNextArbitrary().instance;
     const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
     fromOld.mockReturnValue(expectedArb);
-    const { instance: nextArb1 } = fakeNextArbitrary();
-    const { instance: nextArb2 } = fakeNextArbitrary();
-    const arb1 = nextArb1;
-    const arb2 = nextArb2;
+    const { instance: arb1 } = fakeNextArbitrary();
+    const { instance: arb2 } = fakeNextArbitrary();
 
     // Act
     const out = oneof(arb1, arb2);
@@ -34,10 +32,8 @@ describe('oneof', () => {
     const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
     fromOld.mockReturnValue(expectedArb);
     const constraints: OneOfConstraints = { maxDepth: 10, depthIdentifier: 'hello' };
-    const { instance: nextArb1 } = fakeNextArbitrary();
-    const { instance: nextArb2 } = fakeNextArbitrary();
-    const arb1 = nextArb1;
-    const arb2 = nextArb2;
+    const { instance: arb1 } = fakeNextArbitrary();
+    const { instance: arb2 } = fakeNextArbitrary();
 
     // Act
     const out = oneof(constraints, arb1, arb2);
@@ -60,10 +56,8 @@ describe('oneof', () => {
     const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
     fromOld.mockReturnValue(expectedArb);
     const constraints: OneOfConstraints = {};
-    const { instance: nextArb1 } = fakeNextArbitrary();
-    const { instance: nextArb2 } = fakeNextArbitrary();
-    const arb1 = nextArb1;
-    const arb2 = nextArb2;
+    const { instance: arb1 } = fakeNextArbitrary();
+    const { instance: arb2 } = fakeNextArbitrary();
 
     // Act
     const out = oneof(constraints, arb1, arb2);

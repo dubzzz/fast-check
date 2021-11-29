@@ -17,6 +17,5 @@ export function bigUintN(n: number): Arbitrary<bigint> {
   }
   const min = BigInt(0);
   const max = (BigInt(1) << BigInt(n)) - BigInt(1);
-  const arb = new BigIntArbitrary(min, max);
-  return arb;
+  return new BigIntArbitrary(min, max);
 }

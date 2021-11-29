@@ -81,7 +81,6 @@ function integer(...args: [] | [number, number] | [IntegerConstraints]): Arbitra
   if (constraints.min > constraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
   }
-  const arb = new IntegerArbitrary(constraints.min, constraints.max);
-  return arb;
+  return new IntegerArbitrary(constraints.min, constraints.max);
 }
 export { integer };

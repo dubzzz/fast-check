@@ -7,6 +7,5 @@ import { IntegerArbitrary } from './_internals/IntegerArbitrary';
  * @public
  */
 export function maxSafeNat(): Arbitrary<number> {
-  const arb = new IntegerArbitrary(0, Number.MAX_SAFE_INTEGER);
-  return arb;
+  return new IntegerArbitrary(0, Number.MAX_SAFE_INTEGER);
 }

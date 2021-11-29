@@ -40,8 +40,7 @@ describe('option', () => {
           const expectedConstantArb = fakeNextArbitrary().instance;
           const constant = jest.spyOn(ConstantMock, 'constant');
           constant.mockReturnValue(expectedConstantArb);
-          const { instance: nextArb } = fakeNextArbitrary();
-          const arb = nextArb;
+          const { instance: arb } = fakeNextArbitrary();
 
           // Act
           const out = option(arb, constraints);
@@ -74,8 +73,7 @@ describe('option', () => {
     const expectedConstantArb = fakeNextArbitrary().instance;
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockReturnValue(expectedConstantArb);
-    const { instance: nextArb } = fakeNextArbitrary();
-    const arb = nextArb;
+    const { instance: arb } = fakeNextArbitrary();
 
     // Act
     const out = option(arb);

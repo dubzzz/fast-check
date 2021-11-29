@@ -10,6 +10,5 @@ import { TupleArbitrary } from './_internals/TupleArbitrary';
  * @public
  */
 export function tuple<Ts extends unknown[]>(...arbs: { [K in keyof Ts]: Arbitrary<Ts[K]> }): Arbitrary<Ts> {
-  const nextArbs = arbs.map((arb) => arb) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
-  return new TupleArbitrary<Ts>(nextArbs);
+  return new TupleArbitrary<Ts>(arbs);
 }

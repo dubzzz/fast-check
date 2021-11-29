@@ -30,10 +30,9 @@ export interface ArrayConstraints {
  * @public
  */
 function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitrary<T[]> {
-  const nextArb = arb;
   const minLength = constraints.minLength || 0;
   const specifiedMaxLength = constraints.maxLength;
   const maxLength = specifiedMaxLength !== undefined ? specifiedMaxLength : maxLengthFromMinLength(minLength);
-  return new ArrayArbitrary<T>(nextArb, minLength, maxLength);
+  return new ArrayArbitrary<T>(arb, minLength, maxLength);
 }
 export { array };

@@ -45,7 +45,6 @@ function nat(arg?: number | NatConstraints): Arbitrary<number> {
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
   }
-  const arb = new IntegerArbitrary(0, max);
-  return arb;
+  return new IntegerArbitrary(0, max);
 }
 export { nat };

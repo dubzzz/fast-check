@@ -49,7 +49,6 @@ function bigUint(constraints?: bigint | BigUintConstraints): Arbitrary<bigint> {
   if (max < 0) {
     throw new Error('fc.bigUint expects max to be greater than or equal to zero');
   }
-  const arb = new BigIntArbitrary(BigInt(0), max);
-  return arb;
+  return new BigIntArbitrary(BigInt(0), max);
 }
 export { bigUint };

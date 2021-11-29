@@ -40,9 +40,9 @@ export function set<T>(arb: Arbitrary<T>, constraints: SetConstraints<T> = {}): 
     maxLength = maxLengthFromMinLength(minLength),
     compare = (a: T, b: T) => a === b,
   } = constraints;
-
-  const nextArb = arb;
-  const arrayArb = new ArrayArbitrary<T>(nextArb, minLength, maxLength, compare);
-  if (minLength === 0) return arrayArb;
+  const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxLength, compare);
+  if (minLength === 0) {
+    return arrayArb;
+  }
   return arrayArb.filter((tab) => tab.length >= minLength);
 }

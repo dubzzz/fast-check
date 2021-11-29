@@ -77,8 +77,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   static dummyHook: GlobalPropertyHookFunction = () => {};
   private beforeEachHook: GlobalPropertyHookFunction;
   private afterEachHook: GlobalPropertyHookFunction;
-  private arb: Arbitrary<Ts>;
-  constructor(rawArb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
+  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
     const {
       beforeEach = Property.dummyHook,
       afterEach = Property.dummyHook,
@@ -96,7 +95,6 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
 
     this.beforeEachHook = beforeEach;
     this.afterEachHook = afterEach;
-    this.arb = rawArb;
   }
 
   isAsync(): false {

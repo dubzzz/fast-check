@@ -85,7 +85,6 @@ function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary
   if (constraints.min > constraints.max) {
     throw new Error('fc.bigInt expects max to be greater than or equal to min');
   }
-  const arb = new BigIntArbitrary(constraints.min, constraints.max);
-  return arb;
+  return new BigIntArbitrary(constraints.min, constraints.max);
 }
 export { bigInt };

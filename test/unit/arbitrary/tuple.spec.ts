@@ -8,16 +8,14 @@ describe('tuple', () => {
     const { instance } = fakeNextArbitrary<unknown[]>();
     const TupleArbitrary = jest.spyOn(TupleArbitraryMock, 'TupleArbitrary');
     TupleArbitrary.mockImplementation(() => instance as any);
-    const { instance: nextArb1 } = fakeNextArbitrary();
-    const { instance: nextArb2 } = fakeNextArbitrary();
-    const arb1 = nextArb1;
-    const arb2 = nextArb2;
+    const { instance: arb1 } = fakeNextArbitrary();
+    const { instance: arb2 } = fakeNextArbitrary();
 
     // Act
     const out = tuple(arb1, arb2);
 
     // Assert
     expect(out).toBe(instance);
-    expect(TupleArbitrary).toHaveBeenCalledWith([nextArb1, nextArb2]);
+    expect(TupleArbitrary).toHaveBeenCalledWith([arb1, arb2]);
   });
 });
