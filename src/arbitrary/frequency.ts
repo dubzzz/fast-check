@@ -122,9 +122,9 @@ function frequency<Ts extends WeightedArbitrary<unknown>[]>(
   const label = 'fc.frequency';
   const constraints = args[0];
   if (isFrequencyContraints(constraints)) {
-    return FrequencyArbitrary.fromOld(args.slice(1) as WeightedArbitrary<FrequencyValue<Ts>>[], constraints, label);
+    return FrequencyArbitrary.from(args.slice(1) as WeightedArbitrary<FrequencyValue<Ts>>[], constraints, label);
   }
 
-  return FrequencyArbitrary.fromOld(args as WeightedArbitrary<FrequencyValue<Ts>>[], {}, label);
+  return FrequencyArbitrary.from(args as WeightedArbitrary<FrequencyValue<Ts>>[], {}, label);
 }
 export { frequency };
