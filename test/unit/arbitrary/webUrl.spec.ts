@@ -8,7 +8,7 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
 
@@ -105,7 +105,7 @@ describe('webUrl (integration)', () => {
       withQueryParameters: true,
       withFragments: true,
     });
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

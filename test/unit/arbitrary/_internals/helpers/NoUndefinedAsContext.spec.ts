@@ -2,12 +2,12 @@ import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
 } from '../../../../../src/arbitrary/_internals/helpers/NoUndefinedAsContext';
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 
 describe('noUndefinedAsContext', () => {
   it('should never alter value if context is not undefined', () => {
     // Arrange
-    const value = new NextValue(1, 'my-context');
+    const value = new Value(1, 'my-context');
 
     // Act
     const out = noUndefinedAsContext(value);
@@ -18,7 +18,7 @@ describe('noUndefinedAsContext', () => {
 
   it('should never alter value if context is not undefined even if cloneable', () => {
     // Arrange
-    const value = new NextValue(1, 'my-context', () => 2);
+    const value = new Value(1, 'my-context', () => 2);
 
     // Act
     const out = noUndefinedAsContext(value);
@@ -30,7 +30,7 @@ describe('noUndefinedAsContext', () => {
 
   it('should create a new value with same underlying but defined context whenever context is undefined', () => {
     // Arrange
-    const value = new NextValue(1, undefined);
+    const value = new Value(1, undefined);
 
     // Act
     const out = noUndefinedAsContext(value);
@@ -44,7 +44,7 @@ describe('noUndefinedAsContext', () => {
 
   it('should create a new value with same underlying but defined context whenever context is undefined even if cloneable', () => {
     // Arrange
-    const value = new NextValue(1, undefined, () => 2);
+    const value = new Value(1, undefined, () => 2);
 
     // Act
     const out = noUndefinedAsContext(value);

@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 
@@ -14,15 +14,15 @@ class CounterArbitrary extends Arbitrary<number> {
   constructor(private value: number) {
     super();
   }
-  generate(_mrng: Random): NextValue<number> {
+  generate(_mrng: Random): Value<number> {
     const last = this.value++ | 0; // keep it in integer range
     this.generatedValues.push(last);
-    return new NextValue(last, undefined);
+    return new Value(last, undefined);
   }
   canShrinkWithoutContext(value: unknown): value is number {
     return false;
   }
-  shrink(_value: number, _context: unknown): Stream<NextValue<number>> {
+  shrink(_value: number, _context: unknown): Stream<Value<number>> {
     return Stream.nil();
   }
 }
@@ -36,13 +36,13 @@ class ForwardArbitrary extends Arbitrary<number> {
   constructor() {
     super();
   }
-  generate(rng: Random): NextValue<number> {
-    return new NextValue(rng.nextInt(), undefined);
+  generate(rng: Random): Value<number> {
+    return new Value(rng.nextInt(), undefined);
   }
   canShrinkWithoutContext(value: unknown): value is number {
     return false;
   }
-  shrink(_value: number, _context: unknown): Stream<NextValue<number>> {
+  shrink(_value: number, _context: unknown): Stream<Value<number>> {
     return Stream.nil();
   }
 }
@@ -56,17 +56,17 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
   constructor(readonly num: number) {
     super();
   }
-  generate(mrng: Random): NextValue<number[]> {
+  generate(mrng: Random): Value<number[]> {
     const out = [];
     for (let idx = 0; idx !== this.num; ++idx) {
       out.push(mrng.nextInt());
     }
-    return new NextValue(out, undefined);
+    return new Value(out, undefined);
   }
   canShrinkWithoutContext(value: unknown): value is number[] {
     return false;
   }
-  shrink(_value: number[], _context: unknown): Stream<NextValue<number[]>> {
+  shrink(_value: number[], _context: unknown): Stream<Value<number[]>> {
     return Stream.nil();
   }
 }
@@ -82,17 +82,17 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
   constructor(public id: T, public noCallOnceCheck: boolean) {
     super();
   }
-  generate(_mrng: Random): NextValue<T> {
+  generate(_mrng: Random): Value<T> {
     if (!this.noCallOnceCheck && this.calledOnce) {
       throw 'Arbitrary has already been called once';
     }
     this.calledOnce = true;
-    return new NextValue(this.id, undefined);
+    return new Value(this.id, undefined);
   }
   canShrinkWithoutContext(value: unknown): value is T {
     return false;
   }
-  shrink(_value: T, _context: unknown): Stream<NextValue<T>> {
+  shrink(_value: T, _context: unknown): Stream<Value<T>> {
     return Stream.nil();
   }
 }

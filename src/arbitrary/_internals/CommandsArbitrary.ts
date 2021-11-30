@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { ICommand } from '../../check/model/command/ICommand';
 import { CommandsIterable } from '../../check/model/commands/CommandsIterable';
 import { CommandWrapper } from '../../check/model/commands/CommandWrapper';
@@ -13,7 +13,7 @@ import { restrictedIntegerArbitraryBuilder } from './builders/RestrictedIntegerA
 // eslint-disable-next-line @typescript-eslint/ban-types
 type CommandsArbitraryContext<Model extends object, Real, RunResult, CheckAsync extends boolean> = {
   shrunkOnce: boolean;
-  items: NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[];
+  items: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[];
 };
 
 /** @internal */
@@ -43,27 +43,24 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
     return this.disableReplayLog ? '' : `replayPath=${JSON.stringify(ReplayPath.stringify(this.replayPath))}`;
   }
 
-  private buildNextValueFor(
-    items: NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[],
-    shrunkOnce: boolean
-  ) {
+  private buildValueFor(items: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[], shrunkOnce: boolean) {
     const commands = items.map((item) => item.value_);
     const context: CommandsArbitraryContext<Model, Real, RunResult, CheckAsync> = { shrunkOnce, items };
-    return new NextValue(new CommandsIterable(commands, () => this.metadataForReplay()), context);
+    return new Value(new CommandsIterable(commands, () => this.metadataForReplay()), context);
   }
 
-  generate(mrng: Random): NextValue<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
+  generate(mrng: Random): Value<CommandsIterable<Model, Real, RunResult, CheckAsync>> {
     // For the moment, we fully ignore the bias on commands...
     const size = this.lengthArb.generate(mrng, undefined);
     const sizeValue = size.value;
-    const items: NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[] = Array(sizeValue);
+    const items: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[] = Array(sizeValue);
     for (let idx = 0; idx !== sizeValue; ++idx) {
       // ...even when generating the commands themselves
       const item = this.oneCommandArb.generate(mrng, undefined);
       items[idx] = item;
     }
     this.replayPathPosition = 0; // reset replay
-    return this.buildNextValueFor(items, false);
+    return this.buildValueFor(items, false);
   }
 
   canShrinkWithoutContext(value: unknown): value is CommandsIterable<Model, Real, RunResult, CheckAsync> {
@@ -72,7 +69,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
   }
 
   /** Filter commands based on the real status of the execution */
-  private filterOnExecution(itemsRaw: NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
+  private filterOnExecution(itemsRaw: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
     const items: typeof itemsRaw = [];
     for (const c of itemsRaw) {
       if (c.value_.hasRan) {
@@ -84,7 +81,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
   }
 
   /** Filter commands based on the internal replay state */
-  private filterOnReplay(itemsRaw: NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
+  private filterOnReplay(itemsRaw: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
     return itemsRaw.filter((c, idx) => {
       const state = this.replayPath[this.replayPathPosition + idx];
       if (state === undefined) throw new Error(`Too short replayPath`);
@@ -94,7 +91,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
   }
 
   /** Filter commands for shrinking purposes */
-  private filterForShrinkImpl(itemsRaw: NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
+  private filterForShrinkImpl(itemsRaw: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]) {
     if (this.replayPathPosition === 0) {
       this.replayPath = this.sourceReplayPath !== null ? ReplayPath.parse(this.sourceReplayPath) : [];
     }
@@ -109,9 +106,9 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
   shrink(
     _value: CommandsIterable<Model, Real, RunResult, CheckAsync>,
     context: unknown
-  ): Stream<NextValue<CommandsIterable<Model, Real, RunResult, CheckAsync>>> {
+  ): Stream<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>> {
     if (context === undefined) {
-      return Stream.nil<NextValue<CommandsIterable<Model, Real, RunResult, CheckAsync>>>();
+      return Stream.nil<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>>();
     }
     const safeContext = context as CommandsArbitraryContext<Model, Real, RunResult, CheckAsync>;
 
@@ -120,12 +117,12 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
 
     const items = this.filterForShrinkImpl(itemsRaw); // filter out commands that have not been executed
     if (items.length === 0) {
-      return Stream.nil<NextValue<CommandsIterable<Model, Real, RunResult, CheckAsync>>>();
+      return Stream.nil<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>>();
     }
 
     // The shrinker of commands have to keep the last item
     // because it is the one causing the failure
-    const rootShrink: Stream<NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]> = shrunkOnce
+    const rootShrink: Stream<Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]> = shrunkOnce
       ? Stream.nil()
       : new Stream([[]][Symbol.iterator]());
 
@@ -135,7 +132,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
     // Indeed calling stream[n].next() would require to call stream[n-1].next() and so on...
     // Instead of that we define stream[n] = rootShrink.join(nextFor[0], ..., nextFor[n])
     // So that calling next on stream[n] will not have to run too many recursions
-    const nextShrinks: IterableIterator<NextValue<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>[] = [];
+    const nextShrinks: IterableIterator<Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>[] = [];
 
     // keep fixed number commands at the beginning
     // remove items in remaining part except the last one
@@ -162,8 +159,8 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
     }
 
     return rootShrink.join(...nextShrinks).map((shrinkables) => {
-      return this.buildNextValueFor(
-        shrinkables.map((c) => new NextValue(c.value_.clone(), c.context)),
+      return this.buildValueFor(
+        shrinkables.map((c) => new Value(c.value_.clone(), c.context)),
         true
       );
     });

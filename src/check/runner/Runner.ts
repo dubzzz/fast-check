@@ -15,13 +15,13 @@ import { pathWalk } from './utils/PathWalker';
 import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 
 /** @internal */
 function runIt<Ts>(
   property: IRawProperty<Ts>,
-  shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
-  sourceValues: SourceValuesIterator<NextValue<Ts>>,
+  shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
+  sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
 ): RunExecution<Ts> {
@@ -36,8 +36,8 @@ function runIt<Ts>(
 /** @internal */
 async function asyncRunIt<Ts>(
   property: IRawProperty<Ts>,
-  shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
-  sourceValues: SourceValuesIterator<NextValue<Ts>>,
+  shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
+  sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
 ): Promise<RunExecution<Ts>> {
@@ -51,10 +51,10 @@ async function asyncRunIt<Ts>(
 
 /** @internal */
 function runnerPathWalker<Ts>(
-  valueProducers: IterableIterator<() => NextValue<Ts>>,
-  shrink: (value: NextValue<Ts>) => Stream<NextValue<Ts>>,
+  valueProducers: IterableIterator<() => Value<Ts>>,
+  shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
   path: string
-): Stream<() => NextValue<Ts>> {
+): Stream<() => Value<Ts>> {
   const pathPoints = path.split(':');
   const pathStream = stream(valueProducers)
     .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
@@ -65,10 +65,10 @@ function runnerPathWalker<Ts>(
 
 /** @internal */
 function buildInitialValues<Ts>(
-  valueProducers: IterableIterator<() => NextValue<Ts>>,
-  shrink: (value: NextValue<Ts>) => Stream<NextValue<Ts>>,
+  valueProducers: IterableIterator<() => Value<Ts>>,
+  shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
   qParams: QualifiedParameters<Ts>
-): Stream<() => NextValue<Ts>> {
+): Stream<() => Value<Ts>> {
   if (qParams.path.length === 0) {
     return stream(valueProducers);
   }

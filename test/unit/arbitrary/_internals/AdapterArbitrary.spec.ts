@@ -1,5 +1,5 @@
 import { adapter, AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { Stream } from '../../../../src/stream/Stream';
@@ -15,7 +15,7 @@ describe('AdapterArbitrary', () => {
           fc.anything(),
           (biasFactor, v, c) => {
             // Arrange
-            const value = new NextValue(v, c);
+            const value = new Value(v, c);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
             generate.mockReturnValueOnce(value);
             const { instance: mrng } = fakeRandom();
@@ -47,7 +47,7 @@ describe('AdapterArbitrary', () => {
           fc.anything(),
           (biasFactor, v, c, vAdapted) => {
             // Arrange
-            const value = new NextValue(v, c);
+            const value = new Value(v, c);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
             generate.mockReturnValueOnce(value);
             const { instance: mrng } = fakeRandom();
@@ -118,9 +118,9 @@ describe('AdapterArbitrary', () => {
           (biasFactor, vA, cA, adaptedA, vAA, cAA, adaptedAA, vAB, cAB, adaptedAB, canShrinkIfAdapted) => {
             // Arrange
             fc.pre(allUniques(vA, vAA, vAB)); // check for adapterFunction
-            const valueA = new NextValue(vA, cA);
-            const valueAA = new NextValue(vAA, cAA);
-            const valueAB = new NextValue(vAB, cAB);
+            const valueA = new Value(vA, cA);
+            const valueAA = new Value(vAA, cAA);
+            const valueAB = new Value(vAB, cAB);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
             generate.mockReturnValueOnce(valueA);
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
@@ -207,11 +207,11 @@ describe('AdapterArbitrary', () => {
           ) => {
             // Arrange
             fc.pre(allUniques(vA, vAA, vAB, vAC, vABC)); // check for adapterFunction
-            const valueA = new NextValue(vA, cA);
-            const valueAA = new NextValue(vAA, cAA);
-            const valueAB = new NextValue(vAB, cAB);
-            const valueAC = new NextValue(vAC, cAC);
-            const valueABC = new NextValue(vABC, cABC);
+            const valueA = new Value(vA, cA);
+            const valueAA = new Value(vAA, cAA);
+            const valueAB = new Value(vAB, cAB);
+            const valueAC = new Value(vAC, cAC);
+            const valueABC = new Value(vABC, cABC);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
             generate.mockReturnValueOnce(valueA);
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB, valueAC)).mockReturnValueOnce(Stream.of(valueABC));
@@ -280,8 +280,8 @@ describe('AdapterArbitrary', () => {
           (toShrinkvalue, vAA, cAA, adaptedAA, vAB, cAB, adaptedAB) => {
             // Arrange
             fc.pre(allUniques(vAA, vAB)); // check for adapterFunction
-            const valueAA = new NextValue(vAA, cAA);
-            const valueAB = new NextValue(vAB, cAB);
+            const valueAA = new Value(vAA, cAA);
+            const valueAB = new Value(vAB, cAB);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
             const adapterFunction = jest

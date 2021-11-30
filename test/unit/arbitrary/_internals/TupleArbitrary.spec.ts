@@ -1,5 +1,5 @@
 import { TupleArbitrary } from '../../../../src/arbitrary/_internals/TupleArbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
@@ -26,9 +26,9 @@ describe('TupleArbitrary', () => {
       const { instance: instanceA, generate: generateA } = fakeNextArbitrary<symbol>();
       const { instance: instanceB, generate: generateB } = fakeNextArbitrary<symbol>();
       const { instance: instanceC, generate: generateC } = fakeNextArbitrary<symbol>();
-      generateA.mockReturnValueOnce(new NextValue(vA, undefined));
-      generateB.mockReturnValueOnce(new NextValue(vB, undefined));
-      generateC.mockReturnValueOnce(new NextValue(vC, undefined));
+      generateA.mockReturnValueOnce(new Value(vA, undefined));
+      generateB.mockReturnValueOnce(new Value(vB, undefined));
+      generateC.mockReturnValueOnce(new Value(vC, undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -46,8 +46,8 @@ describe('TupleArbitrary', () => {
       // Arrange
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
       const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
-      generateA.mockReturnValue(new NextValue([], undefined));
-      generateB.mockReturnValue(new NextValue(Object.defineProperty([], cloneMethod, { value: jest.fn() }), undefined));
+      generateA.mockReturnValue(new Value([], undefined));
+      generateB.mockReturnValue(new Value(Object.defineProperty([], cloneMethod, { value: jest.fn() }), undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -63,8 +63,8 @@ describe('TupleArbitrary', () => {
       // Arrange
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
       const { instance: fakeArbitraryNotCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
-      generateA.mockReturnValue(new NextValue([], undefined));
-      generateB.mockReturnValue(new NextValue([], undefined));
+      generateA.mockReturnValue(new Value([], undefined));
+      generateB.mockReturnValue(new Value([], undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -81,9 +81,9 @@ describe('TupleArbitrary', () => {
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
       const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
       const cloneMethodImpl = jest.fn();
-      generateA.mockReturnValue(new NextValue([], undefined));
+      generateA.mockReturnValue(new Value([], undefined));
       generateB.mockReturnValue(
-        new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
+        new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
       );
       const { instance: mrng } = fakeRandom();
 
@@ -163,24 +163,22 @@ describe('TupleArbitrary', () => {
       const { instance: instanceA, generate: generateA, shrink: shrinkA } = fakeNextArbitrary<symbol>();
       const { instance: instanceB, generate: generateB, shrink: shrinkB } = fakeNextArbitrary<symbol>();
       const { instance: instanceC, generate: generateC, shrink: shrinkC } = fakeNextArbitrary<symbol>();
-      generateA.mockReturnValueOnce(new NextValue(vA, contextA));
-      generateB.mockReturnValueOnce(new NextValue(vB, contextB));
-      generateC.mockReturnValueOnce(new NextValue(vC, contextC));
+      generateA.mockReturnValueOnce(new Value(vA, contextA));
+      generateB.mockReturnValueOnce(new Value(vB, contextB));
+      generateC.mockReturnValueOnce(new Value(vC, contextC));
       const shrinkA1 = Symbol();
       const shrinkA2 = Symbol();
       const shrinkB1 = Symbol();
       const shrinkC1 = Symbol();
       const shrinkC2 = Symbol();
       const shrinkC3 = Symbol();
-      shrinkA.mockReturnValueOnce(
-        Stream.of(new NextValue(shrinkA1 as symbol, undefined), new NextValue(shrinkA2, undefined))
-      );
-      shrinkB.mockReturnValueOnce(Stream.of(new NextValue(shrinkB1 as symbol, undefined)));
+      shrinkA.mockReturnValueOnce(Stream.of(new Value(shrinkA1 as symbol, undefined), new Value(shrinkA2, undefined)));
+      shrinkB.mockReturnValueOnce(Stream.of(new Value(shrinkB1 as symbol, undefined)));
       shrinkC.mockReturnValueOnce(
         Stream.of(
-          new NextValue(shrinkC1 as symbol, undefined),
-          new NextValue(shrinkC2, undefined),
-          new NextValue(shrinkC3, undefined)
+          new Value(shrinkC1 as symbol, undefined),
+          new Value(shrinkC2, undefined),
+          new Value(shrinkC3, undefined)
         )
       );
       const { instance: mrng } = fakeRandom();
@@ -222,25 +220,25 @@ describe('TupleArbitrary', () => {
       const cloneMethodImpl = jest
         .fn()
         .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
-      generateA.mockReturnValue(new NextValue([], undefined));
-      shrinkA.mockReturnValue(Stream.of(new NextValue([], undefined), new NextValue([], undefined)));
+      generateA.mockReturnValue(new Value([], undefined));
+      shrinkA.mockReturnValue(Stream.of(new Value([], undefined), new Value([], undefined)));
       generateB.mockReturnValue(
-        new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
+        new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
       );
       shrinkB.mockReturnValue(
         Stream.of(
-          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
-          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
-          new NextValue(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
+          new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
+          new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
+          new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
         )
       );
-      generateC.mockReturnValue(new NextValue([], undefined));
+      generateC.mockReturnValue(new Value([], undefined));
       shrinkC.mockReturnValue(
         Stream.of(
-          new NextValue([], undefined),
-          new NextValue([], undefined),
-          new NextValue([], undefined),
-          new NextValue([], undefined)
+          new Value([], undefined),
+          new Value([], undefined),
+          new Value([], undefined),
+          new Value([], undefined)
         )
       );
       const { instance: mrng } = fakeRandom();
@@ -393,13 +391,13 @@ const expectedFirst = 4;
 const expectedSecond = 97;
 
 class FirstArbitrary extends Arbitrary<number> {
-  generate(_mrng: Random): NextValue<number> {
-    return new NextValue(expectedFirst, { step: 2 });
+  generate(_mrng: Random): Value<number> {
+    return new Value(expectedFirst, { step: 2 });
   }
   canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+  shrink(value: number, context?: unknown): Stream<Value<number>> {
     if (typeof context !== 'object' || context === null || !('step' in context)) {
       throw new Error('Invalid context for FirstArbitrary');
     }
@@ -409,19 +407,19 @@ class FirstArbitrary extends Arbitrary<number> {
     const currentStep = (context as { step: number }).step;
     const nextStep = currentStep + 1;
     return Stream.of(
-      ...(value - currentStep >= 0 ? [new NextValue(value - currentStep, { step: nextStep })] : []),
-      ...(value - currentStep + 1 >= 0 ? [new NextValue(value - currentStep + 1, { step: nextStep })] : [])
+      ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
+      ...(value - currentStep + 1 >= 0 ? [new Value(value - currentStep + 1, { step: nextStep })] : [])
     );
   }
 }
 class SecondArbitrary extends Arbitrary<number> {
-  generate(_mrng: Random): NextValue<number> {
-    return new NextValue(expectedSecond, { step: 2 });
+  generate(_mrng: Random): Value<number> {
+    return new Value(expectedSecond, { step: 2 });
   }
   canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+  shrink(value: number, context?: unknown): Stream<Value<number>> {
     if (typeof context !== 'object' || context === null || !('step' in context)) {
       throw new Error('Invalid context for SecondArbitrary');
     }
@@ -431,8 +429,8 @@ class SecondArbitrary extends Arbitrary<number> {
     const currentStep = (context as { step: number }).step;
     const nextStep = currentStep + 1;
     return Stream.of(
-      ...(value + currentStep <= 100 ? [new NextValue(value + currentStep, { step: nextStep })] : []),
-      ...(value + currentStep - 1 <= 100 ? [new NextValue(value + currentStep - 1, { step: nextStep })] : [])
+      ...(value + currentStep <= 100 ? [new Value(value + currentStep, { step: nextStep })] : []),
+      ...(value + currentStep - 1 <= 100 ? [new Value(value + currentStep - 1, { step: nextStep })] : [])
     );
   }
 }
@@ -441,13 +439,13 @@ class CloneableArbitrary extends Arbitrary<number[]> {
   private instance() {
     return Object.defineProperty([], cloneMethod, { value: () => this.instance() });
   }
-  generate(_mrng: Random): NextValue<number[]> {
-    return new NextValue(this.instance(), { shrunkOnce: false });
+  generate(_mrng: Random): Value<number[]> {
+    return new Value(this.instance(), { shrunkOnce: false });
   }
   canShrinkWithoutContext(_value: unknown): _value is number[] {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number[], context?: unknown): Stream<NextValue<number[]>> {
+  shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
     if (typeof context !== 'object' || context === null || !('shrunkOnce' in context)) {
       throw new Error('Invalid context for CloneableArbitrary');
     }
@@ -455,6 +453,6 @@ class CloneableArbitrary extends Arbitrary<number[]> {
     if (safeContext.shrunkOnce) {
       return Stream.nil();
     }
-    return Stream.of(new NextValue(this.instance(), { shrunkOnce: true }));
+    return Stream.of(new Value(this.instance(), { shrunkOnce: true }));
   }
 }
