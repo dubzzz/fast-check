@@ -70,5 +70,5 @@ export function option<T, TNil = null>(
     maxDepth: constraints.maxDepth,
     depthIdentifier: constraints.depthIdentifier,
   };
-  return FrequencyArbitrary.fromOld(weightedArbs, frequencyConstraints, 'fc.option');
+  return FrequencyArbitrary.from(weightedArbs, frequencyConstraints, 'fc.option');
 }
