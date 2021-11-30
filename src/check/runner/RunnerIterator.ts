@@ -1,4 +1,4 @@
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunExecution } from './reporter/RunExecution';
@@ -17,11 +17,11 @@ import { SourceValuesIterator } from './SourceValuesIterator';
 export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   runExecution: RunExecution<Ts>;
   private currentIdx: number;
-  private currentValue: NextValue<Ts> | undefined;
-  private nextValues: IterableIterator<NextValue<Ts>>;
+  private currentValue: Value<Ts> | undefined;
+  private nextValues: IterableIterator<Value<Ts>>;
   constructor(
-    readonly sourceValues: SourceValuesIterator<NextValue<Ts>>,
-    readonly shrink: (value: NextValue<Ts>) => IterableIterator<NextValue<Ts>>,
+    readonly sourceValues: SourceValuesIterator<Value<Ts>>,
+    readonly shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
     verbose: VerbosityLevel,
     interruptedAsFailure: boolean
   ) {

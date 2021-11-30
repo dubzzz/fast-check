@@ -7,30 +7,30 @@ import {
 } from './_internals/helpers/MaxLengthFromMinLength';
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
-import { NextValue } from '../check/arbitrary/definition/NextValue';
+import { Value } from '../check/arbitrary/definition/Value';
 import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 import { SameValueSet } from './_internals/helpers/SameValueSet';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
 
 /** @internal */
-function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<NextValue<T>> {
+function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<Value<T>> {
   // Remark: Whenever we don't pass any custom selector U=T
   // so v of type T is simply a U
   if (typeof constraints.comparator === 'function') {
     if (constraints.selector === undefined) {
       const comparator = constraints.comparator;
-      const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) => comparator(nextA.value_, nextB.value_);
+      const isEqualForBuilder = (nextA: Value<T>, nextB: Value<T>) => comparator(nextA.value_, nextB.value_);
       return () => new CustomEqualSet(isEqualForBuilder);
     }
     const comparator = constraints.comparator;
     const selector = constraints.selector;
-    const refinedSelector = (next: NextValue<T>) => selector(next.value_);
-    const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) =>
+    const refinedSelector = (next: Value<T>) => selector(next.value_);
+    const isEqualForBuilder = (nextA: Value<T>, nextB: Value<T>) =>
       comparator(refinedSelector(nextA), refinedSelector(nextB));
     return () => new CustomEqualSet(isEqualForBuilder);
   }
   const selector = constraints.selector || ((v) => v);
-  const refinedSelector = (next: NextValue<T>) => selector(next.value_);
+  const refinedSelector = (next: Value<T>) => selector(next.value_);
   switch (constraints.comparator) {
     case 'IsStrictlyEqual':
       return () => new StrictlyEqualSet(refinedSelector);

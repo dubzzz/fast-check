@@ -1,13 +1,13 @@
-import { NextValue } from '../../../fast-check-default';
+import { Value } from '../../arbitrary/definition/Value';
 import { Stream, stream } from '../../../stream/Stream';
 
 /** @internal */
 export function pathWalk<Ts>(
   path: string,
-  initialValues: IterableIterator<NextValue<Ts>>,
-  shrink: (value: NextValue<Ts>) => Stream<NextValue<Ts>>
-): IterableIterator<NextValue<Ts>> {
-  let values: Stream<NextValue<Ts>> = stream(initialValues);
+  initialValues: IterableIterator<Value<Ts>>,
+  shrink: (value: Value<Ts>) => Stream<Value<Ts>>
+): IterableIterator<Value<Ts>> {
+  let values: Stream<Value<Ts>> = stream(initialValues);
   const segments: number[] = path.split(':').map((text: string) => +text);
   if (segments.length === 0) return values;
   if (!segments.every((v) => !Number.isNaN(v))) {

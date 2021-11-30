@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange';
@@ -11,9 +11,9 @@ export class IntegerArbitrary extends Arbitrary<number> {
     super();
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<number> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<number> {
     const range = this.computeGenerateRange(mrng, biasFactor);
-    return new NextValue(mrng.nextInt(range.min, range.max), undefined);
+    return new Value(mrng.nextInt(range.min, range.max), undefined);
   }
 
   canShrinkWithoutContext(value: unknown): value is number {
@@ -26,7 +26,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
     );
   }
 
-  shrink(current: number, context?: unknown): Stream<NextValue<number>> {
+  shrink(current: number, context?: unknown): Stream<Value<number>> {
     if (!IntegerArbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
@@ -38,7 +38,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
       // Last chance try...
       // context is set to undefined, so that shrink will restart
       // without any assumptions in case our try find yet another bug
-      return Stream.of(new NextValue(context, undefined));
+      return Stream.of(new Value(context, undefined));
     }
     // Normal shrink process
     return shrinkInteger(current, context, false);

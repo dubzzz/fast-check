@@ -1,6 +1,6 @@
 import fc from '../../../lib/fast-check';
 import { domain, DomainConstraints } from '../../../src/arbitrary/domain';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { URL } from 'url';
 
 import {
@@ -94,7 +94,7 @@ describe('domain (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = domain();
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
