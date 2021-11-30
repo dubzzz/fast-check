@@ -27,8 +27,8 @@ describe('frequency', () => {
         (constraints: Partial<FrequencyContraints>) => {
           // Arrange
           const expectedArb = fakeNextArbitrary().instance;
-          const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
-          fromOld.mockReturnValue(expectedArb);
+          const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+          from.mockReturnValue(expectedArb);
           const { instance: arb1 } = fakeNextArbitrary();
           const { instance: arb2 } = fakeNextArbitrary();
           const weight1 = 10;
@@ -42,7 +42,7 @@ describe('frequency', () => {
           );
 
           // Assert
-          expect(fromOld).toHaveBeenCalledWith(
+          expect(from).toHaveBeenCalledWith(
             [
               { arbitrary: arb1, weight: weight1 },
               { arbitrary: arb2, weight: weight2 },
@@ -58,8 +58,8 @@ describe('frequency', () => {
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
     // Arrange
     const expectedArb = fakeNextArbitrary().instance;
-    const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
-    fromOld.mockReturnValue(expectedArb);
+    const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+    from.mockReturnValue(expectedArb);
     const { instance: arb1 } = fakeNextArbitrary();
     const { instance: arb2 } = fakeNextArbitrary();
     const weight1 = 10;
@@ -69,7 +69,7 @@ describe('frequency', () => {
     const out = frequency({ arbitrary: arb1, weight: weight1 }, { arbitrary: arb2, weight: weight2 });
 
     // Assert
-    expect(fromOld).toHaveBeenCalledWith(
+    expect(from).toHaveBeenCalledWith(
       [
         { arbitrary: arb1, weight: weight1 },
         { arbitrary: arb2, weight: weight2 },

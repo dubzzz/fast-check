@@ -36,8 +36,8 @@ describe('option', () => {
           // Arrange
           const expectedNil = 'nil' in constraints ? constraints.nil : null;
           const expectedArb = fakeNextArbitrary().instance;
-          const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
-          fromOld.mockReturnValue(expectedArb);
+          const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+          from.mockReturnValue(expectedArb);
           const expectedConstantArb = fakeNextArbitrary().instance;
           const constant = jest.spyOn(ConstantMock, 'constant');
           constant.mockReturnValue(expectedConstantArb);
@@ -48,7 +48,7 @@ describe('option', () => {
 
           // Assert
           expect(constant).toHaveBeenCalledWith(expectedNil);
-          expect(fromOld).toHaveBeenCalledWith(
+          expect(from).toHaveBeenCalledWith(
             [
               { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: expectedNil } },
               { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! : 5 },
@@ -69,8 +69,8 @@ describe('option', () => {
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
     // Arrange
     const expectedArb = fakeNextArbitrary().instance;
-    const fromOld = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'fromOld');
-    fromOld.mockReturnValue(expectedArb);
+    const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+    from.mockReturnValue(expectedArb);
     const expectedConstantArb = fakeNextArbitrary().instance;
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockReturnValue(expectedConstantArb);
@@ -81,7 +81,7 @@ describe('option', () => {
 
     // Assert
     expect(constant).toHaveBeenCalledWith(null);
-    expect(fromOld).toHaveBeenCalledWith(
+    expect(from).toHaveBeenCalledWith(
       [
         { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: null } },
         { arbitrary: arb, weight: 5 },

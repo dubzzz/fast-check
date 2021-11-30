@@ -242,11 +242,10 @@ export function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
     throw new Error(`lorem has to produce at least one word/sentence`);
   }
   const wordArbitrary = loremWord();
-  const wordArbitraryNext = wordArbitrary;
   if (mode === 'sentences') {
     const sentence = array(wordArbitrary, { minLength: 1, size: 'small' }).map(
       wordsToSentenceMapper,
-      wordsToSentenceUnmapperFor(wordArbitraryNext)
+      wordsToSentenceUnmapperFor(wordArbitrary)
     );
     return array(sentence, { minLength: 1, maxLength: maxCount, size }).map(
       sentencesToParagraphMapper,
@@ -255,7 +254,7 @@ export function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
   } else {
     return array(wordArbitrary, { minLength: 1, maxLength: maxCount, size }).map(
       wordsToJoinedStringMapper,
-      wordsToJoinedStringUnmapperFor(wordArbitraryNext)
+      wordsToJoinedStringUnmapperFor(wordArbitrary)
     );
   }
 }
