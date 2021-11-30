@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Scheduler } from './interfaces/Scheduler';
@@ -26,8 +26,8 @@ export class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData
     super();
   }
 
-  generate(mrng: Random, _biasFactor: number | undefined): NextValue<Scheduler<TMetaData>> {
-    return new NextValue(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())), undefined);
+  generate(mrng: Random, _biasFactor: number | undefined): Value<Scheduler<TMetaData>> {
+    return new Value(new SchedulerImplem<TMetaData>(this.act, buildNextTaskIndex(mrng.clone())), undefined);
   }
 
   canShrinkWithoutContext(value: unknown): value is Scheduler<TMetaData> {
@@ -35,7 +35,7 @@ export class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData
     return false;
   }
 
-  shrink(_value: Scheduler<TMetaData>, _context?: unknown): Stream<NextValue<Scheduler<TMetaData>>> {
+  shrink(_value: Scheduler<TMetaData>, _context?: unknown): Stream<Value<Scheduler<TMetaData>>> {
     // Not supported yet
     return Stream.nil();
   }

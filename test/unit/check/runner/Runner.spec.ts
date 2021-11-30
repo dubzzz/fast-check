@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { char } from '../../../../src/arbitrary/char';
 import { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
@@ -29,7 +29,7 @@ describe('Runner', () => {
     `('Should throw if both reporter and asyncReporter are defined (isAsync: $isAsync)', ({ isAsync }) => {
       const p: IRawProperty<[number]> = {
         isAsync: () => isAsync,
-        generate: () => new NextValue([0], undefined),
+        generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         run: () => null,
       };
@@ -38,7 +38,7 @@ describe('Runner', () => {
     it('Should not throw if reporter is specified on synchronous properties', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
-        generate: () => new NextValue([0], undefined),
+        generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         run: () => null,
       };
@@ -47,7 +47,7 @@ describe('Runner', () => {
     it('Should not throw if reporter is specified on asynchronous properties', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
-        generate: () => new NextValue([0], undefined),
+        generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         run: () => null,
       };
@@ -56,7 +56,7 @@ describe('Runner', () => {
     it('Should throw if asyncReporter is specified on synchronous properties', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
-        generate: () => new NextValue([0], undefined),
+        generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         run: () => null,
       };
@@ -65,7 +65,7 @@ describe('Runner', () => {
     it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
-        generate: () => new NextValue([0], undefined),
+        generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         run: () => null,
       };
@@ -79,7 +79,7 @@ describe('Runner', () => {
         generate: () => {
           expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
           ++numCallsGenerate;
-          return new NextValue([numCallsGenerate] as [number], undefined);
+          return new Value([numCallsGenerate] as [number], undefined);
         },
         shrink: () => Stream.nil(),
         run: (value: [number]) => {
@@ -101,7 +101,7 @@ describe('Runner', () => {
         generate: () => {
           expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
           ++numCallsGenerate;
-          return new NextValue([numCallsGenerate] as [number], undefined);
+          return new Value([numCallsGenerate] as [number], undefined);
         },
         shrink: () => Stream.nil(),
         run: (value: [number]) => {
@@ -122,7 +122,7 @@ describe('Runner', () => {
         isAsync: () => false,
         generate: () => {
           ++numCallsGenerate;
-          return new NextValue<[number]>([0], 'shrink-me');
+          return new Value<[number]>([0], 'shrink-me');
         },
         shrink: (value) => {
           function* g() {
@@ -130,7 +130,7 @@ describe('Runner', () => {
               return;
             }
             for (let i = 0; i !== 1234; ++i) {
-              yield new NextValue<[number]>([0], undefined);
+              yield new Value<[number]>([0], undefined);
             }
           }
           return new Stream(g());
@@ -163,7 +163,7 @@ describe('Runner', () => {
             let numCallsRun = 0;
             const p: IRawProperty<[number]> = {
               isAsync: () => isAsyncProp,
-              generate: () => new NextValue([numCallsGenerate++] as [number], undefined),
+              generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => Stream.nil(),
               run: (value: [number]) => {
                 ++numCallsRun;
@@ -204,7 +204,7 @@ describe('Runner', () => {
             let numPreconditionFailures = 0;
             const p: IRawProperty<[number]> = {
               isAsync: () => isAsyncProp,
-              generate: () => new NextValue([numCallsGenerate++] as [number], undefined),
+              generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => Stream.nil(),
               run: (value: [number]) => {
                 if (value[0] === settings.onlySuccessId) return null;
@@ -230,7 +230,7 @@ describe('Runner', () => {
         isAsync: () => false,
         generate: () => {
           ++numCallsGenerate;
-          return new NextValue([0], undefined);
+          return new Value([0], undefined);
         },
         shrink: () => {
           throw 'Not implemented';
@@ -254,7 +254,7 @@ describe('Runner', () => {
             isAsync: () => false,
             generate: () => {
               ++numCallsGenerate;
-              return new NextValue([0], undefined);
+              return new Value([0], undefined);
             },
             shrink: () => Stream.nil(),
             run: (_value: [number]) => {
@@ -279,7 +279,7 @@ describe('Runner', () => {
             isAsync: () => false,
             generate: () => {
               ++numCallsGenerate;
-              return new NextValue([0], undefined);
+              return new Value([0], undefined);
             },
             shrink: () => Stream.nil(),
             run: (_value: [number]) => {
@@ -301,7 +301,7 @@ describe('Runner', () => {
             const p: IRawProperty<[number]> = {
               isAsync: () => false,
               generate: (rng: Random) => {
-                return new NextValue([rng.nextInt()], undefined);
+                return new Value([rng.nextInt()], undefined);
               },
               shrink: () => Stream.nil(),
               run: (value: [number]) => {
@@ -323,7 +323,7 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          return new NextValue([0], undefined);
+          return new Value([0], undefined);
         },
         shrink: () => {
           throw 'Not implemented';
@@ -340,13 +340,13 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          return new NextValue([0], undefined);
+          return new Value([0], undefined);
         },
         shrink: (value) => {
           if (value.value[0] !== 0) {
             throw 'Not implemented';
           }
-          return Stream.of(new NextValue([42], undefined));
+          return Stream.of(new Value([42], undefined));
         },
         run: (value: [number]) => {
           return value[0] === 42 ? 'failure' : null;
@@ -359,7 +359,7 @@ describe('Runner', () => {
     it('Should not provide list of failures by default (no verbose)', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
-        generate: () => new NextValue([42], undefined),
+        generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
         run: () => 'failure',
       };
@@ -369,10 +369,10 @@ describe('Runner', () => {
     it('Should provide the list of failures in verbose mode', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
-        generate: () => new NextValue([42], undefined),
+        generate: () => new Value([42], undefined),
         shrink: (value) => {
           return value.value[0] === 42
-            ? Stream.of(new NextValue([48], undefined), new NextValue([12], undefined))
+            ? Stream.of(new Value([48], undefined), new Value([12], undefined))
             : Stream.nil();
         },
         run: () => 'failure',
@@ -393,14 +393,14 @@ describe('Runner', () => {
           let remainingBeforeFailure = failurePoints[idx];
           const p: IRawProperty<[number]> = {
             isAsync: () => false,
-            generate: (_mrng: Random) => new NextValue([0], failurePoints.length - 1),
+            generate: (_mrng: Random) => new Value([0], failurePoints.length - 1),
             shrink: (value) => {
               const depth = value.context as number;
               if (depth <= 0) {
                 return Stream.nil();
               }
-              function* g(): IterableIterator<NextValue<[number]>> {
-                while (true) yield new NextValue([0], depth - 1);
+              function* g(): IterableIterator<Value<[number]>> {
+                while (true) yield new Value([0], depth - 1);
               }
               return new Stream(g());
             },
@@ -432,10 +432,10 @@ describe('Runner', () => {
             isAsync: () => true,
             generate: () => {
               ++numCallsGenerate;
-              return new NextValue([1], undefined);
+              return new Value([1], undefined);
             },
             shrink: (value) => {
-              return value.value[0] === 1 ? Stream.of(new NextValue([42], undefined)) : Stream.nil();
+              return value.value[0] === 1 ? Stream.of(new Value([42], undefined)) : Stream.nil();
             },
             run: async (_value: [number]) => {
               await new Promise<void>((resolve) => {
@@ -471,7 +471,7 @@ describe('Runner', () => {
     it('Should not timeout if no timeout defined', async () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
-        generate: () => new NextValue([1], undefined),
+        generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         run: async (_value: [number]) => null,
       };
@@ -482,7 +482,7 @@ describe('Runner', () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
-        generate: () => new NextValue([1], undefined),
+        generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         run: async (_value: [number]) => await wait(0),
       };
@@ -493,7 +493,7 @@ describe('Runner', () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
-        generate: () => new NextValue([1], undefined),
+        generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         run: async (_value: [number]) => await wait(100),
       };
@@ -504,7 +504,7 @@ describe('Runner', () => {
       const neverEnds = () => new Promise<null>(() => {});
       const p: IRawProperty<[number]> = {
         isAsync: () => true,
-        generate: () => new NextValue([1], undefined),
+        generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         run: async (_value: [number]) => await neverEnds(),
       };
@@ -517,19 +517,19 @@ describe('Runner', () => {
     const v2 = { a: 'Hello', b: 21 };
     const failingProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
-      generate: () => new NextValue([v1, v2], undefined),
+      generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
       run: (_v: [any, any]) => 'error in failingProperty',
     };
     const failingComplexProperty: IRawProperty<[any, any, any]> = {
       isAsync: () => false,
-      generate: () => new NextValue([[v1, v2], v2, v1], undefined),
+      generate: () => new Value([[v1, v2], v2, v1], undefined),
       shrink: () => Stream.nil(),
       run: (_v: [any, any, any]) => 'error in failingComplexProperty',
     };
     const successProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
-      generate: () => new NextValue([v1, v2], undefined),
+      generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
       run: (_v: [any, any]) => null,
     };
@@ -571,11 +571,11 @@ describe('Runner', () => {
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
-          return new NextValue([42], undefined);
+          return new Value([42], undefined);
         },
         shrink: (value) => {
           return value.value[0] === 42
-            ? Stream.of(new NextValue([48], undefined), new NextValue([12], undefined))
+            ? Stream.of(new Value([48], undefined), new Value([12], undefined))
             : Stream.nil();
         },
         run: () => 'failure',
@@ -614,7 +614,7 @@ describe('Runner', () => {
       const baseErrorMessage = 'Failed to run property, too many pre-condition failures encountered';
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
-        generate: () => new NextValue([42], undefined),
+        generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
         run: () => new PreconditionFailure(),
       };

@@ -1,6 +1,6 @@
 import { Stream, stream } from '../../stream/Stream';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 import { IRawProperty } from '../property/IRawProperty';
 import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
@@ -33,7 +33,7 @@ function streamSample<Ts>(
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
-  const tossedValues: Stream<() => NextValue<Ts>> = stream(
+  const tossedValues: Stream<() => Value<Ts>> = stream(
     toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
   );
   if (qParams.path.length === 0) {

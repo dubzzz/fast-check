@@ -1,6 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
 /**
@@ -30,7 +30,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    *
    * @remarks Since 0.0.7 (return type changed in 3.0.0)
    */
-  generate(mrng: Random, runId?: number): NextValue<Ts>;
+  generate(mrng: Random, runId?: number): Value<Ts>;
 
   /**
    * Shrink value of type Ts
@@ -39,7 +39,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    *
    * @remarks Since 3.0.0
    */
-  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>>;
+  shrink(value: Value<Ts>): Stream<Value<Ts>>;
 
   /**
    * Check the predicate for v
