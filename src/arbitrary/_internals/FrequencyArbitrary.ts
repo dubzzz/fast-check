@@ -9,15 +9,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly cumulatedWeights: number[];
   readonly totalWeight: number;
 
-  static fromOld<T>(warbs: _WeightedArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
-    return FrequencyArbitrary.from(
-      warbs.map((w) => ({ ...w, arbitrary: w.arbitrary })),
-      constraints,
-      label
-    );
-  }
-
-  static from<T>(warbs: _WeightedNextArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
+  static from<T>(warbs: _WeightedArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
     if (warbs.length === 0) {
       throw new Error(`${label} expects at least one weighted arbitrary`);
     }
@@ -43,7 +35,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
   }
 
   private constructor(
-    readonly warbs: _WeightedNextArbitrary<T>[],
+    readonly warbs: _WeightedArbitrary<T>[],
     readonly constraints: _Constraints,
     readonly context: DepthContext
   ) {
@@ -205,14 +197,6 @@ export type _Constraints = {
 
 /** @internal */
 interface _WeightedArbitrary<T> {
-  weight: number;
-  arbitrary: Arbitrary<T>;
-  // If specified, the arbitrary must accept to shrink fallbackValue.default without any context
-  fallbackValue?: { default: T };
-}
-
-/** @internal */
-interface _WeightedNextArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;
   // If specified, the arbitrary must accept to shrink fallbackValue.default without any context

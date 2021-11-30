@@ -389,7 +389,7 @@ class NoBiasArbitrary<T> extends Arbitrary<T> {
 }
 
 /**
- * Ensure an instance is an isntance of NextArbitrary
+ * Ensure an instance is an isntance of Arbitrary
  * @param instance - The instance to be checked
  * @internal
  */
