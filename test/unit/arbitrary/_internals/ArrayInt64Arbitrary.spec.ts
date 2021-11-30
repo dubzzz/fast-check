@@ -3,7 +3,7 @@ import * as fc from '../../../../lib/fast-check';
 import { arrayInt64 } from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { buildNextShrinkTree, renderTree } from '../__test-helpers__/ShrinkTree';
 import {
@@ -190,7 +190,7 @@ describe('arrayInt64', () => {
     it('should shrink strictly positive value for positive range including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: 1, data: [0, 0] }, { sign: 1, data: [0, 10] });
-      const source = new NextValue({ sign: 1, data: [0, 8] }, undefined); // no context
+      const source = new Value({ sign: 1, data: [0, 8] }, undefined); // no context
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
@@ -245,7 +245,7 @@ describe('arrayInt64', () => {
     it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: 1, data: [1, 10] }, { sign: 1, data: [1, 20] });
-      const source = new NextValue({ sign: 1, data: [1, 18] }, undefined); // no context
+      const source = new Value({ sign: 1, data: [1, 18] }, undefined); // no context
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
@@ -300,7 +300,7 @@ describe('arrayInt64', () => {
     it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
       const arb = arrayInt64({ sign: -1, data: [0, 10] }, { sign: 1, data: [0, 0] });
-      const source = new NextValue({ sign: -1, data: [0, 8] }, undefined); // no context
+      const source = new Value({ sign: -1, data: [0, 8] }, undefined); // no context
 
       // Act
       const tree = buildNextShrinkTree(arb, source);

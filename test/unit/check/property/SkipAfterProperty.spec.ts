@@ -2,7 +2,7 @@ import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterPrope
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 
 const startTimeMs = 200;
 const timeLimitMs = 100;
@@ -62,7 +62,7 @@ describe('SkipAfterProperty', () => {
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
-    p.shrink(new NextValue(Symbol('value'), Symbol('context')));
+    p.shrink(new Value(Symbol('value'), Symbol('context')));
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(1);

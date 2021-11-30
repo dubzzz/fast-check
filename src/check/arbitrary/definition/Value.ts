@@ -1,13 +1,13 @@
 import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
 
 /**
- * A `NextValue<T, TShrink = T>` holds an internal value of type `T`
+ * A `Value<T, TShrink = T>` holds an internal value of type `T`
  * and its associated context
  *
- * @remarks Since 2.15.0
+ * @remarks Since 3.0.0 (previously called `NextValue` in 2.15.0)
  * @public
  */
-export class NextValue<T> {
+export class Value<T> {
   /**
    * State storing the result of hasCloneMethod
    * If `true` the value will be cloned each time it gets accessed

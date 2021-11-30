@@ -2,7 +2,7 @@ import fc from '../../../../lib/fast-check';
 import prand from 'pure-rand';
 
 import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { MaxLengthUpperBound } from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 import { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/CustomSet';
 import { Stream } from '../../../../src/stream/Stream';
@@ -37,7 +37,7 @@ describe('ArrayArbitrary', () => {
             const { acceptedValues, instance, generate } = prepareSetBuilderData(generatedValues, false);
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
-            generateInteger.mockReturnValue(new NextValue(acceptedValues.size, integerContext));
+            generateInteger.mockReturnValue(new Value(acceptedValues.size, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
@@ -75,7 +75,7 @@ describe('ArrayArbitrary', () => {
             const { acceptedValues, instance, generate, setBuilder } = prepareSetBuilderData(generatedValues, false);
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
-            generateInteger.mockReturnValue(new NextValue(acceptedValues.size, integerContext));
+            generateInteger.mockReturnValue(new Value(acceptedValues.size, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
@@ -119,7 +119,7 @@ describe('ArrayArbitrary', () => {
             );
             const { minLength, maxLength } = extractLengths(seed, aLength, aLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
-            generateInteger.mockReturnValue(new NextValue(minLength, integerContext));
+            generateInteger.mockReturnValue(new Value(minLength, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
@@ -163,12 +163,12 @@ describe('ArrayArbitrary', () => {
       // Arrange
       const { instance, generate } = fakeNextArbitrary<string[]>();
       generate
-        .mockReturnValueOnce(new NextValue(['a'], undefined))
-        .mockReturnValueOnce(new NextValue(Object.defineProperty(['b'], cloneMethod, { value: jest.fn() }), undefined))
-        .mockReturnValueOnce(new NextValue(['c'], undefined))
-        .mockReturnValueOnce(new NextValue(['d'], undefined));
+        .mockReturnValueOnce(new Value(['a'], undefined))
+        .mockReturnValueOnce(new Value(Object.defineProperty(['b'], cloneMethod, { value: jest.fn() }), undefined))
+        .mockReturnValueOnce(new Value(['c'], undefined))
+        .mockReturnValueOnce(new Value(['d'], undefined));
       const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
-      generateInteger.mockReturnValue(new NextValue(4, undefined));
+      generateInteger.mockReturnValue(new Value(4, undefined));
       const integer = jest.spyOn(IntegerMock, 'integer');
       integer.mockReturnValue(integerInstance);
       const { instance: mrng } = fakeRandom();
@@ -189,14 +189,14 @@ describe('ArrayArbitrary', () => {
       const cloneMethodImpl = jest.fn();
       const { instance, generate } = fakeNextArbitrary<string[]>();
       generate
-        .mockReturnValueOnce(new NextValue(['a'], undefined))
+        .mockReturnValueOnce(new Value(['a'], undefined))
         .mockReturnValueOnce(
-          new NextValue(Object.defineProperty(['b'], cloneMethod, { value: cloneMethodImpl }), undefined)
+          new Value(Object.defineProperty(['b'], cloneMethod, { value: cloneMethodImpl }), undefined)
         )
-        .mockReturnValueOnce(new NextValue(['c'], undefined))
-        .mockReturnValueOnce(new NextValue(['d'], undefined));
+        .mockReturnValueOnce(new Value(['c'], undefined))
+        .mockReturnValueOnce(new Value(['d'], undefined));
       const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
-      generateInteger.mockReturnValue(new NextValue(4, undefined));
+      generateInteger.mockReturnValue(new Value(4, undefined));
       const integer = jest.spyOn(IntegerMock, 'integer');
       integer.mockReturnValue(integerInstance);
       const { instance: mrng } = fakeRandom();
@@ -233,7 +233,7 @@ describe('ArrayArbitrary', () => {
             fc.pre(value.length < minLength || value.length > maxLength);
             const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
             const data: any[] = [];
-            const customSet: CustomSet<NextValue<any>> = {
+            const customSet: CustomSet<Value<any>> = {
               size: () => data.length,
               getData: () => data,
               tryAdd: (vTest) => {
@@ -283,7 +283,7 @@ describe('ArrayArbitrary', () => {
             const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
             canShrinkWithoutContext.mockImplementation((vTest) => value.find((v) => Object.is(v[0], vTest))![1]);
             const data: any[] = [];
-            const customSet: CustomSet<NextValue<any>> = {
+            const customSet: CustomSet<Value<any>> = {
               size: () => data.length,
               getData: () => data,
               tryAdd: (vTest) => {
@@ -331,7 +331,7 @@ describe('ArrayArbitrary', () => {
             const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
             canShrinkWithoutContext.mockReturnValue(true);
             const data: any[] = [];
-            const customSet: CustomSet<NextValue<any>> = {
+            const customSet: CustomSet<Value<any>> = {
               size: () => data.length,
               getData: () => data,
               tryAdd: (vTest) => {
@@ -374,7 +374,7 @@ describe('ArrayArbitrary', () => {
             const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
             canShrinkWithoutContext.mockReturnValue(true);
             const data: any[] = [];
-            const customSet: CustomSet<NextValue<any>> = {
+            const customSet: CustomSet<Value<any>> = {
               size: () => data.length,
               getData: () => data,
               tryAdd: (vTest) => {
@@ -417,7 +417,7 @@ describe('ArrayArbitrary', () => {
             const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
             canShrinkWithoutContext.mockReturnValue(true);
             const data: any[] = [];
-            const customSet: CustomSet<NextValue<any>> = {
+            const customSet: CustomSet<Value<any>> = {
               size: () => data.length,
               getData: () => data,
               tryAdd: (vTest) => {
@@ -487,10 +487,10 @@ describe('ArrayArbitrary (integration)', () => {
 // Helpers
 
 function prepareSetBuilderData(generatedValues: [value: any, context: any, rejected?: boolean][], acceptAll: boolean) {
-  const acceptedValues = new Set<NextValue<any>>();
+  const acceptedValues = new Set<Value<any>>();
   const { instance, generate } = fakeNextArbitrary();
   for (const v of generatedValues) {
-    const value = new NextValue(v[0], v[1]);
+    const value = new Value(v[0], v[1]);
     const rejected = v[2];
     if (!rejected || acceptAll) {
       acceptedValues.add(value);
@@ -498,7 +498,7 @@ function prepareSetBuilderData(generatedValues: [value: any, context: any, rejec
     generate.mockReturnValueOnce(value);
   }
   const data: any[] = [];
-  const customSet: CustomSet<NextValue<any>> = {
+  const customSet: CustomSet<Value<any>> = {
     size: () => data.length,
     getData: () => data,
     tryAdd: (value) => {
@@ -525,13 +525,13 @@ class CloneableArbitrary extends Arbitrary<number[]> {
   private instance() {
     return Object.defineProperty([], cloneMethod, { value: () => this.instance() });
   }
-  generate(_mrng: Random): NextValue<number[]> {
-    return new NextValue(this.instance(), { shrunkOnce: false });
+  generate(_mrng: Random): Value<number[]> {
+    return new Value(this.instance(), { shrunkOnce: false });
   }
   canShrinkWithoutContext(_value: unknown): _value is number[] {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number[], context?: unknown): Stream<NextValue<number[]>> {
+  shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
     if (typeof context !== 'object' || context === null || !('shrunkOnce' in context)) {
       throw new Error('Invalid context for CloneableArbitrary');
     }
@@ -539,6 +539,6 @@ class CloneableArbitrary extends Arbitrary<number[]> {
     if (safeContext.shrunkOnce) {
       return Stream.nil();
     }
-    return Stream.of(new NextValue(this.instance(), { shrunkOnce: true }));
+    return Stream.of(new Value(this.instance(), { shrunkOnce: true }));
   }
 }
