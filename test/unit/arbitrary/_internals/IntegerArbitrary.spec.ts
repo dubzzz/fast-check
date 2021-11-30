@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -197,7 +197,7 @@ describe('IntegerArbitrary', () => {
         fc.property(fc.maxSafeNat(), fc.maxSafeNat(), fc.maxSafeNat(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
-          const expectedShrinks = Stream.nil<NextValue<number>>();
+          const expectedShrinks = Stream.nil<Value<number>>();
           const shrinkInteger = jest.spyOn(ShrinkIntegerMock, 'shrinkInteger');
           shrinkInteger.mockReturnValueOnce(expectedShrinks);
 
@@ -268,8 +268,8 @@ describe('IntegerArbitrary (integration)', () => {
             const arbNegate = new IntegerArbitrary(max !== 0 ? -max : 0, min !== 0 ? -min : min); // !==0 to avoid -0
 
             // Act
-            const source = new NextValue(mid, undefined);
-            const sourceNegate = new NextValue(mid !== 0 ? -mid : 0, undefined); // !==0 to avoid -0
+            const source = new Value(mid, undefined);
+            const sourceNegate = new Value(mid !== 0 ? -mid : 0, undefined); // !==0 to avoid -0
             const tree = buildNextShrinkTree(arb, source);
             const treeNegate = buildNextShrinkTree(arbNegate, sourceNegate);
             const flat: number[] = [];
@@ -302,8 +302,8 @@ describe('IntegerArbitrary (integration)', () => {
             const arbOffset = new IntegerArbitrary(min + offset, max + offset);
 
             // Act
-            const source = new NextValue(mid, undefined);
-            const sourceOffset = new NextValue(mid + offset, undefined);
+            const source = new Value(mid, undefined);
+            const sourceOffset = new Value(mid + offset, undefined);
             const tree = buildNextShrinkTree(arb, source);
             const treeOffset = buildNextShrinkTree(arbOffset, sourceOffset);
             const flat: number[] = [];
@@ -322,7 +322,7 @@ describe('IntegerArbitrary (integration)', () => {
     it('should shrink strictly positive value for positive range including zero', () => {
       // Arrange
       const arb = new IntegerArbitrary(0, 10);
-      const source = new NextValue(8, undefined);
+      const source = new Value(8, undefined);
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
@@ -386,7 +386,7 @@ describe('IntegerArbitrary (integration)', () => {
     it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
       const arb = new IntegerArbitrary(10, 20);
-      const source = new NextValue(18, undefined);
+      const source = new Value(18, undefined);
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
@@ -441,7 +441,7 @@ describe('IntegerArbitrary (integration)', () => {
     it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
       const arb = new IntegerArbitrary(-10, 0);
-      const source = new NextValue(-8, undefined);
+      const source = new Value(-8, undefined);
 
       // Act
       const tree = buildNextShrinkTree(arb, source);

@@ -2,7 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { func } from '../../../src/arbitrary/func';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
@@ -101,18 +101,18 @@ describe('func (integration)', () => {
         if (!cloneable) return [value, 0];
         return Object.defineProperty([value, 1], cloneMethod, { value: () => this.instance(value, cloneable) });
       }
-      generate(mrng: Random): NextValue<number[]> {
-        return new NextValue(this.instance(mrng.nextInt(), mrng.nextBoolean()), { shrunkOnce: false });
+      generate(mrng: Random): Value<number[]> {
+        return new Value(this.instance(mrng.nextInt(), mrng.nextBoolean()), { shrunkOnce: false });
       }
       canShrinkWithoutContext(_value: unknown): _value is number[] {
         throw new Error('No call expected in that scenario');
       }
-      shrink(value: number[], context?: unknown): Stream<NextValue<number[]>> {
+      shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
         const safeContext = context as { shrunkOnce: boolean };
         if (safeContext.shrunkOnce) {
           return Stream.nil();
         }
-        return Stream.of(new NextValue(this.instance(0, value[1] === 1), { shrunkOnce: true }));
+        return Stream.of(new Value(this.instance(0, value[1] === 1), { shrunkOnce: true }));
       }
     }
     assertProduceCorrectValues(

@@ -2,7 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { stringOf } from '../../../src/arbitrary/stringOf';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
@@ -49,7 +49,7 @@ describe('stringOf (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue, patterns }) => {
     // Arrange
     const arb = stringOf(new PatternsArbitrary(patterns));
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
@@ -66,18 +66,18 @@ class PatternsArbitrary extends Arbitrary<string> {
   constructor(readonly patterns: string[]) {
     super();
   }
-  generate(mrng: Random): NextValue<string> {
-    return new NextValue(this.patterns[mrng.nextInt(0, this.patterns.length - 1)], undefined);
+  generate(mrng: Random): Value<string> {
+    return new Value(this.patterns[mrng.nextInt(0, this.patterns.length - 1)], undefined);
   }
   canShrinkWithoutContext(value: unknown): value is string {
     if (typeof value !== 'string') return false;
     return this.patterns.includes(value);
   }
-  shrink(value: string): Stream<NextValue<string>> {
+  shrink(value: string): Stream<Value<string>> {
     const patternIndex = this.patterns.indexOf(value);
     if (patternIndex <= 0) {
       return Stream.nil();
     }
-    return Stream.of(new NextValue(this.patterns[0], undefined));
+    return Stream.of(new Value(this.patterns[0], undefined));
   }
 }

@@ -1,4 +1,4 @@
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
@@ -14,7 +14,7 @@ describe('TimeoutProperty', () => {
     const { instance: decoratedProperty, generate } = fakeProperty(true);
     const { instance: mrng } = fakeRandom();
     const expectedRunId = 42;
-    const expectedOut = new NextValue(Symbol('value'), Symbol('context'));
+    const expectedOut = new Value(Symbol('value'), Symbol('context'));
     generate.mockReturnValueOnce(expectedOut);
 
     // Act

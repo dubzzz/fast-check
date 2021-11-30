@@ -11,7 +11,7 @@ import { stringOf } from '../../../../src/arbitrary/stringOf';
 import { nat } from '../../../../src/arbitrary/nat';
 import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
 import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 function beforeEachHook() {
@@ -215,8 +215,8 @@ function mockSourceArbitrariesForGenerate(bigIntOutput: bigint, stringOutput: st
   const { instance: bigUintNInstance, generate: bigUintNGenerate } = fakeNextArbitrary();
   const bigUintN = jest.spyOn(BigUintNMock, 'bigUintN');
   bigUintN.mockReturnValue(bigUintNInstance);
-  bigUintNGenerate.mockReturnValueOnce(new NextValue(bigIntOutput, undefined));
+  bigUintNGenerate.mockReturnValueOnce(new Value(bigIntOutput, undefined));
   const { instance: stringInstance, generate: stringGenerate } = fakeNextArbitrary();
-  stringGenerate.mockReturnValueOnce(new NextValue(stringOutput, undefined));
+  stringGenerate.mockReturnValueOnce(new Value(stringOutput, undefined));
   return { bigUintN, stringInstance };
 }

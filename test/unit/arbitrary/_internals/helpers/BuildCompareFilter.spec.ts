@@ -1,6 +1,6 @@
 import * as fc from '../../../../../lib/fast-check';
 import { buildCompareFilter } from '../../../../../src/arbitrary/_internals/helpers/BuildCompareFilter';
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 
 describe('buildCompareFilter', () => {
   it('should filter array from duplicated values', () =>
@@ -8,7 +8,7 @@ describe('buildCompareFilter', () => {
       fc.property(fc.array(fc.nat()), (tab) => {
         // Arrange
         const filter = buildCompareFilter<number>((a, b) => a === b);
-        const adaptedTab = tab.map((v) => new NextValue(v, undefined));
+        const adaptedTab = tab.map((v) => new Value(v, undefined));
 
         // Act
         const filteredTab = filter(adaptedTab);
