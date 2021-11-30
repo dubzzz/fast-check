@@ -1,6 +1,6 @@
 import { ipV4Extended } from '../../../src/arbitrary/ipV4Extended';
 
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -91,7 +91,7 @@ describe('ipV4Extended (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = ipV4Extended();
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

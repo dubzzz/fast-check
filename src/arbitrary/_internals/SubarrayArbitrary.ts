@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Stream } from '../../stream/Stream';
@@ -35,7 +35,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
         : this.lengthArb;
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<T[]> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {
     const lengthArb =
       biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? this.biasedLengthArb : this.lengthArb;
     const size = lengthArb.generate(mrng, undefined);
@@ -52,7 +52,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       ids.sort((a, b) => a - b);
     }
 
-    return new NextValue(
+    return new Value(
       ids.map((i) => this.originalArray[i]),
       size.context
     );
@@ -68,16 +68,16 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     return isSubarrayOf(this.originalArray, value);
   }
 
-  shrink(value: T[], context: unknown): Stream<NextValue<T[]>> {
+  shrink(value: T[], context: unknown): Stream<Value<T[]>> {
     // shrinking one by one is not the most comprehensive
     // but allows a reasonable number of entries in the shrink
     if (value.length === 0) {
-      return Stream.nil<NextValue<T[]>>();
+      return Stream.nil<Value<T[]>>();
     }
     return this.lengthArb
       .shrink(value.length, context)
       .map((newSize) => {
-        return new NextValue(
+        return new Value(
           value.slice(value.length - newSize.value), // array of length newSize.value
           newSize.context // integer context for value newSize.value (the length)
         );
@@ -87,9 +87,9 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
           ? makeLazy(() =>
               this.shrink(value.slice(1), undefined)
                 .filter((newValue) => this.minLength <= newValue.value.length + 1)
-                .map((newValue) => new NextValue([value[0]].concat(newValue.value), undefined))
+                .map((newValue) => new Value([value[0]].concat(newValue.value), undefined))
             )
-          : Stream.nil<NextValue<T[]>>()
+          : Stream.nil<Value<T[]>>()
       );
   }
 }

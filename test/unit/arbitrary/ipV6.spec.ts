@@ -1,6 +1,6 @@
 import { ipV6 } from '../../../src/arbitrary/ipV6';
 
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -149,7 +149,7 @@ describe('ipV6 (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = ipV6();
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 import { BigIntArbitrary } from '../../../../src/arbitrary/_internals/BigIntArbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -200,7 +200,7 @@ describe('BigIntArbitrary', () => {
         fc.property(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => Number(v1 - v2));
-          const expectedShrinks = Stream.nil<NextValue<bigint>>();
+          const expectedShrinks = Stream.nil<Value<bigint>>();
           const shrinkBigInt = jest.spyOn(ShrinkBigIntMock, 'shrinkBigInt');
           shrinkBigInt.mockReturnValueOnce(expectedShrinks);
 
@@ -276,8 +276,8 @@ describe('BigIntArbitrary (integration)', () => {
             const arbNegate = new BigIntArbitrary(-max, -min);
 
             // Act
-            const source = new NextValue(mid, undefined);
-            const sourceNegate = new NextValue(-mid, undefined);
+            const source = new Value(mid, undefined);
+            const sourceNegate = new Value(-mid, undefined);
             const tree = buildNextShrinkTree(arb, source);
             const treeNegate = buildNextShrinkTree(arbNegate, sourceNegate);
             const flat: bigint[] = [];
@@ -310,8 +310,8 @@ describe('BigIntArbitrary (integration)', () => {
             const arbOffset = new BigIntArbitrary(min + offset, max + offset);
 
             // Act
-            const source = new NextValue(mid, undefined);
-            const sourceOffset = new NextValue(mid + offset, undefined);
+            const source = new Value(mid, undefined);
+            const sourceOffset = new Value(mid + offset, undefined);
             const tree = buildNextShrinkTree(arb, source);
             const treeOffset = buildNextShrinkTree(arbOffset, sourceOffset);
             const flat: bigint[] = [];
@@ -330,7 +330,7 @@ describe('BigIntArbitrary (integration)', () => {
     it('should shrink strictly positive value for positive range including zero', () => {
       // Arrange
       const arb = new BigIntArbitrary(BigInt(0), BigInt(10));
-      const source = new NextValue(BigInt(8), undefined);
+      const source = new Value(BigInt(8), undefined);
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
@@ -394,7 +394,7 @@ describe('BigIntArbitrary (integration)', () => {
     it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
       const arb = new BigIntArbitrary(BigInt(10), BigInt(20));
-      const source = new NextValue(BigInt(18), undefined);
+      const source = new Value(BigInt(18), undefined);
 
       // Act
       const tree = buildNextShrinkTree(arb, source);
@@ -449,7 +449,7 @@ describe('BigIntArbitrary (integration)', () => {
     it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
       const arb = new BigIntArbitrary(BigInt(-10), BigInt(0));
-      const source = new NextValue(BigInt(-8), undefined);
+      const source = new Value(BigInt(-8), undefined);
 
       // Act
       const tree = buildNextShrinkTree(arb, source);

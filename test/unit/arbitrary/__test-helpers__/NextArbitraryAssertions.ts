@@ -2,7 +2,7 @@ import * as prand from 'pure-rand';
 import * as fc from '../../../../lib/fast-check';
 
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../../src/random/generator/Random';
 
 // Minimal requirements
@@ -35,11 +35,11 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
         const arb = arbitraryBuilder(extraParameters);
 
         // Act / Assert
-        let g1: NextValue<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
-        let g2: NextValue<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
+        let g1: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
+        let g2: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
         if (noInitialContext) {
           const originalG2 = g2!;
-          g2 = new NextValue(originalG2.value_, undefined, () => originalG2.value);
+          g2 = new Value(originalG2.value_, undefined, () => originalG2.value);
         }
         while (g1 !== null && g2 !== null) {
           assertEquality(isEqual, g1.value, g2.value, extraParameters);
@@ -80,7 +80,7 @@ export function assertProduceCorrectValues<T, U = never>(
         const arb = arbitraryBuilder(extraParameters);
 
         // Act / Assert
-        let g: NextValue<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
+        let g: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
         while (g !== null) {
           assertCorrectness(isCorrect, g.value, extraParameters, arb);
           const pos = shrinkPath.next().value;

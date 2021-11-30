@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 
@@ -9,7 +9,7 @@ export class LazyArbitrary<T> extends Arbitrary<T> {
   constructor(readonly name: string) {
     super();
   }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<T> {
     if (!this.underlying) {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }
@@ -21,7 +21,7 @@ export class LazyArbitrary<T> extends Arbitrary<T> {
     }
     return this.underlying.canShrinkWithoutContext(value);
   }
-  shrink(value: T, context?: unknown): Stream<NextValue<T>> {
+  shrink(value: T, context?: unknown): Stream<Value<T>> {
     if (!this.underlying) {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }

@@ -1,7 +1,7 @@
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod } from '../../../../../src/check/symbols';
 
-describe('NextValue', () => {
+describe('Value', () => {
   describe('cloneable values', () => {
     it('should not clone cloneable values on first access', () => {
       // Arrange
@@ -9,7 +9,7 @@ describe('NextValue', () => {
       const instance = { [cloneMethod]: clone };
 
       // Act
-      const nextValue = new NextValue(instance, undefined);
+      const nextValue = new Value(instance, undefined);
       const value = nextValue.value;
 
       // Assert
@@ -23,7 +23,7 @@ describe('NextValue', () => {
       const instance = { [cloneMethod]: clone };
 
       // Act
-      const nextValue = new NextValue(instance, undefined);
+      const nextValue = new Value(instance, undefined);
       const value = nextValue.value;
       const value2 = nextValue.value;
 
@@ -40,7 +40,7 @@ describe('NextValue', () => {
       const instance = { [cloneMethod]: clone };
 
       // Act
-      const nextValue = new NextValue(instance, null, cloneOverride);
+      const nextValue = new Value(instance, null, cloneOverride);
       nextValue.value;
       nextValue.value;
 
