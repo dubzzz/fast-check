@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 
@@ -10,12 +10,12 @@ export type AdapterOutput<T> = { adapted: boolean; value: T };
 const AdaptedValue = Symbol('adapted-value');
 
 /** @internal */
-function toAdapterNextValue<T>(rawValue: NextValue<T>, adapter: (value: T) => AdapterOutput<T>): NextValue<T> {
+function toAdapterValue<T>(rawValue: Value<T>, adapter: (value: T) => AdapterOutput<T>): Value<T> {
   const adapted = adapter(rawValue.value_);
   if (!adapted.adapted) {
     return rawValue; // No need to adapt it
   }
-  return new NextValue(adapted.value, AdaptedValue);
+  return new Value(adapted.value, AdaptedValue);
 }
 
 /**
@@ -24,26 +24,26 @@ function toAdapterNextValue<T>(rawValue: NextValue<T>, adapter: (value: T) => Ad
  * if they don't fit the requirements
  */
 class AdapterArbitrary<T> extends Arbitrary<T> {
-  private readonly adaptNextValue: (rawValue: NextValue<T>) => NextValue<T>;
+  private readonly adaptValue: (rawValue: Value<T>) => Value<T>;
   constructor(private readonly sourceArb: Arbitrary<T>, private readonly adapter: (value: T) => AdapterOutput<T>) {
     super();
-    this.adaptNextValue = (rawValue) => toAdapterNextValue(rawValue, adapter);
+    this.adaptValue = (rawValue) => toAdapterValue(rawValue, adapter);
   }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<T> {
     const rawValue = this.sourceArb.generate(mrng, biasFactor);
-    return this.adaptNextValue(rawValue);
+    return this.adaptValue(rawValue);
   }
   canShrinkWithoutContext(value: unknown): value is T {
     return this.sourceArb.canShrinkWithoutContext(value) && !this.adapter(value).adapted;
   }
-  shrink(value: T, context: unknown): Stream<NextValue<T>> {
+  shrink(value: T, context: unknown): Stream<Value<T>> {
     if (context === AdaptedValue) {
       if (!this.sourceArb.canShrinkWithoutContext(value)) {
         return Stream.nil();
       }
-      return this.sourceArb.shrink(value, undefined).map(this.adaptNextValue);
+      return this.sourceArb.shrink(value, undefined).map(this.adaptValue);
     }
-    return this.sourceArb.shrink(value, context).map(this.adaptNextValue);
+    return this.sourceArb.shrink(value, context).map(this.adaptValue);
   }
 }
 

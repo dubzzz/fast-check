@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { fullUnicodeString } from '../../../src/arbitrary/fullUnicodeString';
 
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -96,7 +96,7 @@ describe('fullUnicodeString (integration)', () => {
   `('should be able to shrink $rawValue with fc.fullUnicodeString()', ({ rawValue }) => {
     // Arrange
     const arb = fullUnicodeString();
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

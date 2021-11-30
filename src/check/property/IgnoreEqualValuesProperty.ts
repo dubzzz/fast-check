@@ -2,7 +2,7 @@ import { IRawProperty } from './IRawProperty';
 import { Random } from '../../random/generator/Random';
 import { stringify } from '../../utils/stringify';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 import { Stream } from '../../stream/Stream';
 
 /** @internal */
@@ -47,11 +47,11 @@ export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements I
     return this.property.isAsync();
   }
 
-  generate(mrng: Random, runId?: number): NextValue<Ts> {
+  generate(mrng: Random, runId?: number): Value<Ts> {
     return this.property.generate(mrng, runId);
   }
 
-  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
+  shrink(value: Value<Ts>): Stream<Value<Ts>> {
     return this.property.shrink(value);
   }
 

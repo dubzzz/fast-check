@@ -1,6 +1,6 @@
 import { MaybeMocked, MockWithArgs } from '../../__test-helpers__/Mocked';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
 
@@ -47,7 +47,7 @@ export function fakeNextArbitraryStaticValue<T>(
   context: () => unknown = () => undefined
 ): { instance: Arbitrary<T> } {
   const { instance, generate, map } = fakeNextArbitrary<T>();
-  generate.mockImplementation(() => new NextValue(value(), context()));
+  generate.mockImplementation(() => new Value(value(), context()));
   map.mockImplementation((mapper) => {
     return fakeNextArbitraryStaticValue(() => mapper(value())).instance;
   });
@@ -65,13 +65,13 @@ export class FakeIntegerArbitrary extends Arbitrary<number> {
   constructor(readonly offset: number = 0, readonly rangeLength: number = 100) {
     super();
   }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<number> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<number> {
     const minRange = Math.floor(this.rangeLength / 10);
     const maxRange = this.rangeLength;
     // Worst case: 0-minRange
     // No bias   : 0-maxRange
     const maxLimit = biasFactor !== undefined ? Math.max(minRange, maxRange - biasFactor) : maxRange;
-    return new NextValue(mrng.nextInt(0, maxLimit) + this.offset, { step: 2 });
+    return new Value(mrng.nextInt(0, maxLimit) + this.offset, { step: 2 });
   }
   canShrinkWithoutContext(value: unknown): value is number {
     return (
@@ -81,12 +81,12 @@ export class FakeIntegerArbitrary extends Arbitrary<number> {
       Number.isInteger(value)
     );
   }
-  shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+  shrink(value: number, context?: unknown): Stream<Value<number>> {
     const currentStep = context !== undefined ? (context as { step: number }).step : 2;
     const nextStep = currentStep + 1;
     return Stream.of(
-      ...(value - currentStep >= this.offset ? [new NextValue(value - currentStep, { step: nextStep })] : []),
-      ...(value - currentStep + 1 >= this.offset ? [new NextValue(value - currentStep + 1, { step: nextStep })] : [])
+      ...(value - currentStep >= this.offset ? [new Value(value - currentStep, { step: nextStep })] : []),
+      ...(value - currentStep + 1 >= this.offset ? [new Value(value - currentStep + 1, { step: nextStep })] : [])
     );
   }
 }

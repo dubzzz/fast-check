@@ -1,6 +1,6 @@
 import fc from '../../../lib/fast-check';
 import { mapToConstant } from '../../../src/arbitrary/mapToConstant';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -96,7 +96,7 @@ describe('mapToConstant (integration)', () => {
       { num: 6, build: (index) => String.fromCodePoint(index + 97) } // a-f
     );
     const rawValue = 'c';
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value)).join('\n');

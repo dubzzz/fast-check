@@ -2,10 +2,10 @@ import { RandomGenerator, skipN } from 'pure-rand';
 
 import { Random } from '../../random/generator/Random';
 import { IRawProperty } from '../property/IRawProperty';
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 
 /** @internal */
-function lazyGenerate<Ts>(generator: IRawProperty<Ts>, rng: RandomGenerator, idx: number): () => NextValue<Ts> {
+function lazyGenerate<Ts>(generator: IRawProperty<Ts>, rng: RandomGenerator, idx: number): () => Value<Ts> {
   return () => generator.generate(new Random(rng), idx);
 }
 
@@ -15,8 +15,8 @@ export function* toss<Ts>(
   seed: number,
   random: (seed: number) => RandomGenerator,
   examples: Ts[]
-): IterableIterator<() => NextValue<Ts>> {
-  yield* examples.map((e) => () => new NextValue(e, undefined));
+): IterableIterator<() => Value<Ts>> {
+  yield* examples.map((e) => () => new Value(e, undefined));
   let idx = 0;
   let rng = random(seed);
   for (;;) {

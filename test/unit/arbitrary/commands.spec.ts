@@ -5,7 +5,7 @@ import prand from 'pure-rand';
 import { Command } from '../../../src/check/model/command/Command';
 import { Random } from '../../../src/random/generator/Random';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../src/stream/Stream';
 import { tuple } from '../../../src/arbitrary/tuple';
 import { nat } from '../../../src/arbitrary/nat';
@@ -141,12 +141,12 @@ describe('commands (integration)', () => {
       disableReplayLog: true,
     });
     const manyArbsIncludingCommandsOne = tuple(nat(16), commandsArb, nat(16));
-    const assertCommandsNotStarted = (value: NextValue<[number, Iterable<Cmd>, number]>) => {
+    const assertCommandsNotStarted = (value: Value<[number, Iterable<Cmd>, number]>) => {
       // Check the commands have never been executed
       // by checking the toString of the iterable is empty
       expect(String(value.value_[1])).toEqual('');
     };
-    const startCommands = (value: NextValue<[number, Iterable<Cmd>, number]>) => {
+    const startCommands = (value: Value<[number, Iterable<Cmd>, number]>) => {
       // Iterate over all the generated commands to run them all
       let ranOneCommand = false;
       for (const cmd of value.value_[1]) {
@@ -168,7 +168,7 @@ describe('commands (integration)', () => {
           // Generate the first Value
           const it = shrinkPath[Symbol.iterator]();
           const mrng = new Random(prand.xorshift128plus(seed));
-          let currentValue: NextValue<[number, Iterable<Cmd>, number]> | null = manyArbsIncludingCommandsOne.generate(
+          let currentValue: Value<[number, Iterable<Cmd>, number]> | null = manyArbsIncludingCommandsOne.generate(
             mrng,
             biasFactor
           );
@@ -206,7 +206,7 @@ describe('commands (integration)', () => {
           // Generate the first Value
           const it = shrinkPath[Symbol.iterator]();
           const mrng = new Random(prand.xorshift128plus(seed));
-          let currentValue: NextValue<Iterable<Cmd>> | null = commandsArb.generate(mrng, biasFactor);
+          let currentValue: Value<Iterable<Cmd>> | null = commandsArb.generate(mrng, biasFactor);
 
           // Run all commands of first Value
           simulateCommands(currentValue.value_);
@@ -251,7 +251,7 @@ describe('commands (integration)', () => {
             new FakeConstant(new FailureCommand(logOnCheck)),
             nat().map((v) => new SuccessIdCommand(v)),
           ]);
-          const refValue: NextValue<Iterable<Cmd>> = refArbitrary.generate(new Random(rng), biasFactor);
+          const refValue: Value<Iterable<Cmd>> = refArbitrary.generate(new Random(rng), biasFactor);
           simulateCommands(refValue.value_);
 
           // trigger computation of replayPath
@@ -276,7 +276,7 @@ describe('commands (integration)', () => {
             ],
             { replayPath }
           );
-          const noExecValue: NextValue<Iterable<Cmd>> = noExecArbitrary.generate(new Random(rng), biasFactor);
+          const noExecValue: Value<Iterable<Cmd>> = noExecArbitrary.generate(new Random(rng), biasFactor);
 
           // check shrink values are identical
           const noExecShrinks = [
@@ -298,13 +298,13 @@ class FakeConstant extends Arbitrary<Cmd> {
   constructor(private readonly cmd: Cmd) {
     super();
   }
-  generate(): NextValue<Cmd> {
-    return new NextValue(this.cmd, undefined);
+  generate(): Value<Cmd> {
+    return new Value(this.cmd, undefined);
   }
   canShrinkWithoutContext(value: unknown): value is Cmd {
     return false;
   }
-  shrink(): Stream<NextValue<Cmd>> {
+  shrink(): Stream<Value<Cmd>> {
     return Stream.nil();
   }
 }

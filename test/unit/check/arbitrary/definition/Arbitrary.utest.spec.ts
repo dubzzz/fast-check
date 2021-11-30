@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../../src/stream/Stream';
 import * as stubRng from '../../../stubs/generators';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
@@ -15,10 +15,10 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choice1 = new NextValue(1, Symbol());
-      const choice2 = new NextValue(2, Symbol());
-      const choice3 = new NextValue(3, Symbol());
-      const choice4 = new NextValue(4, Symbol());
+      const choice1 = new Value(1, Symbol());
+      const choice2 = new Value(2, Symbol());
+      const choice3 = new Value(3, Symbol());
+      const choice4 = new Value(4, Symbol());
       generate
         .mockReturnValueOnce(choice1)
         .mockReturnValueOnce(choice2)
@@ -35,7 +35,7 @@ describe('NextArbitrary', () => {
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
 
       // Assert
-      expect(g).toBe(choice3); // just returning the first NextValue that fits
+      expect(g).toBe(choice3); // just returning the first Value that fits
       expect(generate).toHaveBeenNthCalledWith(3, mrngNoCall, expectedBiasFactor); // same Random not cloned
     });
 
@@ -46,11 +46,11 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       const valueToShrink = 5;
       const contextToShrink = Symbol();
-      const choice1 = new NextValue(1, Symbol());
-      const choice2 = new NextValue(2, Symbol());
-      const choice3 = new NextValue(3, Symbol());
-      const choice4 = new NextValue(4, Symbol());
-      const choice5 = new NextValue(6, Symbol());
+      const choice1 = new Value(1, Symbol());
+      const choice2 = new Value(2, Symbol());
+      const choice3 = new Value(3, Symbol());
+      const choice4 = new Value(4, Symbol());
+      const choice5 = new Value(6, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3, choice4, choice5));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -114,7 +114,7 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choice = new NextValue(1, Symbol());
+      const choice = new Value(1, Symbol());
       generate.mockReturnValueOnce(choice);
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -137,7 +137,7 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choice = new NextValue({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
+      const choice = new Value({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
       generate.mockReturnValueOnce(choice);
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -151,7 +151,7 @@ describe('NextArbitrary', () => {
 
       // Assert
       expect(g.value.stringValue).toBe(String(choice.value.source)); // value has been mapped
-      expect(g.hasToBeCloned).toBe(true); // clone has been preserved on NextValue
+      expect(g.hasToBeCloned).toBe(true); // clone has been preserved on Value
       expect(hasCloneMethod(g.value)).toBe(true); // clone has been preserved on the instance
       expect(generate).toHaveBeenCalledWith(mrngNoCall, expectedBiasFactor);
     });
@@ -162,7 +162,7 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choice = new NextValue({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
+      const choice = new Value({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
       const mappedClone = jest.fn();
       const mapped = { source: 42, [cloneMethod]: mappedClone };
       generate.mockReturnValueOnce(choice);
@@ -180,7 +180,7 @@ describe('NextArbitrary', () => {
       expect(g.value_).toBe(mapped); // value has been mapped
       expect(g.value_.source).toBe(mapped.source); // value has been mapped and value not altered
       expect(g.value_[cloneMethod]).toBe(mapped[cloneMethod]); // value has been mapped and clone method has been preserved
-      expect(g.hasToBeCloned).toBe(true); // clone has been preserved on NextValue
+      expect(g.hasToBeCloned).toBe(true); // clone has been preserved on Value
       expect(hasCloneMethod(g.value_)).toBe(true); // clone has been preserved on the instance
       expect(generate).toHaveBeenCalledWith(mrngNoCall, expectedBiasFactor);
     });
@@ -191,11 +191,11 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const source = new NextValue(69, Symbol());
+      const source = new Value(69, Symbol());
       generate.mockReturnValueOnce(source);
-      const choice1 = new NextValue(1, Symbol());
-      const choice2 = new NextValue(2, Symbol());
-      const choice3 = new NextValue(3, Symbol());
+      const choice1 = new Value(1, Symbol());
+      const choice2 = new Value(2, Symbol());
+      const choice3 = new Value(3, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -219,14 +219,14 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const source = new NextValue(69, Symbol());
+      const source = new Value(69, Symbol());
       generate.mockReturnValueOnce(source);
-      const choice1 = new NextValue(1, Symbol());
-      const choice2 = new NextValue(2, Symbol());
-      const choice3 = new NextValue(3, Symbol());
+      const choice1 = new Value(1, Symbol());
+      const choice2 = new Value(2, Symbol());
+      const choice3 = new Value(3, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3));
-      const choice21 = new NextValue(21, Symbol());
-      const choice22 = new NextValue(22, Symbol());
+      const choice21 = new Value(21, Symbol());
+      const choice22 = new Value(22, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice21, choice22));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -253,10 +253,10 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const source = new NextValue({ source: 1, [cloneMethod]: () => source.value_ }, Symbol());
+      const source = new Value({ source: 1, [cloneMethod]: () => source.value_ }, Symbol());
       generate.mockReturnValueOnce(source);
-      const choice1 = new NextValue({ source: 2, [cloneMethod]: () => choice1.value_ }, Symbol());
-      const choice2 = new NextValue({ source: 2, [cloneMethod]: () => choice2.value_ }, Symbol());
+      const choice1 = new Value({ source: 2, [cloneMethod]: () => choice1.value_ }, Symbol());
+      const choice2 = new Value({ source: 2, [cloneMethod]: () => choice2.value_ }, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice1, choice2));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -272,7 +272,7 @@ describe('NextArbitrary', () => {
 
       // Assert
       expect(shrinksValues).toHaveLength(2);
-      expect(shrinksValues[0].hasToBeCloned).toBe(true); // clone has been preserved on NextValue
+      expect(shrinksValues[0].hasToBeCloned).toBe(true); // clone has been preserved on Value
       expect(shrinksValues[1].hasToBeCloned).toBe(true);
       expect(hasCloneMethod(shrinksValues[0].value)).toBe(true); // clone has been preserved on the instance
       expect(hasCloneMethod(shrinksValues[1].value)).toBe(true);
@@ -381,9 +381,9 @@ describe('NextArbitrary', () => {
     it('should return a mapped version of the stream produced by the source arbitrary for the unmapped value when provided an unmapper function', () => {
       // Arrange
       const expectedStreamValuesFromSource = Stream.of(
-        new NextValue('titi', undefined),
-        new NextValue('toto', undefined),
-        new NextValue('tutu', undefined)
+        new Value('titi', undefined),
+        new Value('toto', undefined),
+        new Value('tutu', undefined)
       );
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();
@@ -417,12 +417,12 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choiceRoot = new NextValue(1, Symbol());
+      const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
       const generateChained = jest.fn();
       const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
-      const choiceChained = new NextValue(50, Symbol());
+      const choiceChained = new Value(50, Symbol());
       generateChained.mockReturnValueOnce(choiceChained);
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -454,26 +454,26 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choiceRoot = new NextValue(1, Symbol());
+      const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
-      const shrinkRoot1 = new NextValue(10, Symbol());
-      const shrinkRoot2 = new NextValue(11, Symbol());
-      const shrinkRoot3 = new NextValue(15, Symbol());
+      const shrinkRoot1 = new Value(10, Symbol());
+      const shrinkRoot2 = new Value(11, Symbol());
+      const shrinkRoot3 = new Value(15, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2, shrinkRoot3));
       const generateChained = jest.fn();
       const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
-      const choiceChained = new NextValue(50, Symbol());
-      const choiceShrink1Chained = new NextValue(58, Symbol()); // chain will be called for each sub-shrink of root
-      const choiceShrink2Chained = new NextValue(57, Symbol());
-      const choiceShrink3Chained = new NextValue(16, Symbol());
+      const choiceChained = new Value(50, Symbol());
+      const choiceShrink1Chained = new Value(58, Symbol()); // chain will be called for each sub-shrink of root
+      const choiceShrink2Chained = new Value(57, Symbol());
+      const choiceShrink3Chained = new Value(16, Symbol());
       generateChained
         .mockReturnValueOnce(choiceChained)
         .mockReturnValueOnce(choiceShrink1Chained)
         .mockReturnValueOnce(choiceShrink2Chained)
         .mockReturnValueOnce(choiceShrink3Chained);
-      const shrinkChained1 = new NextValue(25, Symbol());
-      const shrinkChained2 = new NextValue(51, Symbol());
+      const shrinkChained1 = new Value(25, Symbol());
+      const shrinkChained2 = new Value(51, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained1, shrinkChained2));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -514,29 +514,29 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choiceRoot = new NextValue(1, Symbol());
+      const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
-      const shrinkRoot1 = new NextValue(10, Symbol());
-      const shrinkRoot2 = new NextValue(11, Symbol()); // will not be iterated (getNthOrLast(0))
-      const shrinkRoot3 = new NextValue(15, Symbol()); // will not be iterated (getNthOrLast(0))
+      const shrinkRoot1 = new Value(10, Symbol());
+      const shrinkRoot2 = new Value(11, Symbol()); // will not be iterated (getNthOrLast(0))
+      const shrinkRoot3 = new Value(15, Symbol()); // will not be iterated (getNthOrLast(0))
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2, shrinkRoot3));
-      const shrinkRoot11 = new NextValue(310, Symbol());
+      const shrinkRoot11 = new Value(310, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot11));
       const generateChained = jest.fn();
       const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
-      const choiceChained = new NextValue(50, Symbol());
-      const choiceShrink1Chained = new NextValue(58, Symbol()); // chain will be called for each iterated sub-shrink of root (->10)
-      const choiceShrink2Chained = new NextValue(57, Symbol()); // ->310 - 11 and 15 will not be retrieved (getNthOrLast(0))
+      const choiceChained = new Value(50, Symbol());
+      const choiceShrink1Chained = new Value(58, Symbol()); // chain will be called for each iterated sub-shrink of root (->10)
+      const choiceShrink2Chained = new Value(57, Symbol()); // ->310 - 11 and 15 will not be retrieved (getNthOrLast(0))
       generateChained
         .mockReturnValueOnce(choiceChained)
         .mockReturnValueOnce(choiceShrink1Chained)
         .mockReturnValueOnce(choiceShrink2Chained);
-      const shrinkChained1 = new NextValue(25, Symbol());
-      const shrinkChained2 = new NextValue(51, Symbol());
+      const shrinkChained1 = new Value(25, Symbol());
+      const shrinkChained2 = new Value(51, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained1, shrinkChained2));
-      const shrinkChained11 = new NextValue(125, Symbol());
-      const shrinkChained12 = new NextValue(151, Symbol());
+      const shrinkChained11 = new Value(125, Symbol());
+      const shrinkChained12 = new Value(151, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained11, shrinkChained12));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -577,26 +577,26 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choiceRoot = new NextValue(1, Symbol());
+      const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
-      const shrinkRoot1 = new NextValue(10, Symbol());
-      const shrinkRoot2 = new NextValue(11, Symbol());
+      const shrinkRoot1 = new Value(10, Symbol());
+      const shrinkRoot2 = new Value(11, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2));
       const generateChained = jest.fn();
       const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
       const shrinkChained = jest.fn();
-      const choiceChained = new NextValue(50, Symbol());
-      const choiceShrink1Chained = new NextValue(58, Symbol());
-      const choiceShrink2Chained = new NextValue(57, Symbol());
+      const choiceChained = new Value(50, Symbol());
+      const choiceShrink1Chained = new Value(58, Symbol());
+      const choiceShrink2Chained = new Value(57, Symbol());
       generateChained
         .mockReturnValueOnce(choiceChained)
         .mockReturnValueOnce(choiceShrink1Chained)
         .mockReturnValueOnce(choiceShrink2Chained);
-      const shrinkChained1 = new NextValue(25, Symbol());
-      const shrinkChained2 = new NextValue(51, Symbol());
+      const shrinkChained1 = new Value(25, Symbol());
+      const shrinkChained2 = new Value(51, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained1, shrinkChained2));
-      const shrinkChained11 = new NextValue(125, Symbol());
-      const shrinkChained12 = new NextValue(151, Symbol());
+      const shrinkChained11 = new Value(125, Symbol());
+      const shrinkChained12 = new Value(151, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained11, shrinkChained12));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -664,13 +664,13 @@ describe('NextArbitrary', () => {
   });
 
   describe('noShrink', () => {
-    it('should simply return the original instance of NextValue on generate', () => {
+    it('should simply return the original instance of Value on generate', () => {
       // Arrange
       const expectedBiasFactor = 48;
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
       const shrink = jest.fn();
-      const choice = new NextValue(1, Symbol());
+      const choice = new Value(1, Symbol());
       generate.mockReturnValueOnce(choice);
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
@@ -691,7 +691,7 @@ describe('NextArbitrary', () => {
       // Arrange
       const shrink = jest.fn();
       class MyNextArbitrary extends Arbitrary<any> {
-        generate(): NextValue<any> {
+        generate(): Value<any> {
           throw new Error('Not implemented.');
         }
         canShrinkWithoutContext(value: unknown): value is any {
@@ -713,13 +713,13 @@ describe('NextArbitrary', () => {
     it('should return itself when called twice', () => {
       // Arrange
       class MyNextArbitrary extends Arbitrary<any> {
-        generate(): NextValue<any> {
+        generate(): Value<any> {
           throw new Error('Not implemented.');
         }
         canShrinkWithoutContext(value: unknown): value is any {
           throw new Error('Not implemented.');
         }
-        shrink(): Stream<NextValue<any>> {
+        shrink(): Stream<Value<any>> {
           throw new Error('Not implemented.');
         }
       }
@@ -743,7 +743,7 @@ describe('NextArbitrary', () => {
         canShrinkWithoutContext(value: unknown): value is any {
           throw new Error('Not implemented.');
         }
-        shrink(): Stream<NextValue<any>> {
+        shrink(): Stream<Value<any>> {
           throw new Error('Not implemented.');
         }
       }
@@ -761,13 +761,13 @@ describe('NextArbitrary', () => {
     it('should return itself when called twice', () => {
       // Arrange
       class MyNextArbitrary extends Arbitrary<any> {
-        generate(): NextValue<any> {
+        generate(): Value<any> {
           throw new Error('Not implemented.');
         }
         canShrinkWithoutContext(value: unknown): value is any {
           throw new Error('Not implemented.');
         }
-        shrink(): Stream<NextValue<any>> {
+        shrink(): Stream<Value<any>> {
           throw new Error('Not implemented.');
         }
       }

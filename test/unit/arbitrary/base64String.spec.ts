@@ -9,7 +9,7 @@ import {
 
 import * as ArrayMock from '../../../src/arbitrary/array';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers';
 
@@ -198,7 +198,7 @@ describe('base64String (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = base64String();
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

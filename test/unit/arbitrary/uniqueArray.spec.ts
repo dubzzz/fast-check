@@ -10,7 +10,7 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
@@ -329,7 +329,7 @@ describe('uniqueArray (integration)', () => {
   `('should be able to shrink $rawValue with fc.uniqueArray(arb, $constraints)', ({ rawValue, constraints }) => {
     // Arrange
     const arb = uniqueArray(new FakeIntegerArbitrary(0, 1000), constraints);
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

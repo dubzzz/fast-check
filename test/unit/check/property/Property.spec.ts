@@ -7,7 +7,7 @@ import { configureGlobal, resetConfigureGlobal } from '../../../../src/check/run
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../src/stream/Stream';
 
 describe('Property', () => {
@@ -83,7 +83,7 @@ describe('Property', () => {
     expect(() => property(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, () => {})).toThrowError());
   it('Should use the unbiased arbitrary by default', () => {
     const { instance, generate } = fakeNextArbitrary<number>();
-    generate.mockReturnValue(new NextValue(69, undefined));
+    generate.mockReturnValue(new Value(69, undefined));
     const mrng = stubRng.mutable.nocall();
 
     const p = property(instance, () => {});
@@ -95,7 +95,7 @@ describe('Property', () => {
   });
   it('Should use the biased arbitrary when asked to', () => {
     const { instance, generate } = fakeNextArbitrary<number>();
-    generate.mockReturnValue(new NextValue(42, undefined));
+    generate.mockReturnValue(new Value(42, undefined));
     const mrng = stubRng.mutable.nocall();
 
     const p = property(instance, () => {});
@@ -245,7 +245,7 @@ describe('Property', () => {
 
     // Act
     const p = property(arb, jest.fn());
-    const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
+    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
@@ -259,12 +259,12 @@ describe('Property', () => {
     canShrinkWithoutContext.mockReturnValue(true);
     const s1 = Symbol();
     const s2 = Symbol();
-    shrink.mockReturnValue(Stream.of(new NextValue<symbol>(s1, undefined), new NextValue(s2, undefined)));
+    shrink.mockReturnValue(Stream.of(new Value<symbol>(s1, undefined), new Value(s2, undefined)));
     const value = Symbol();
 
     // Act
     const p = property(arb, jest.fn());
-    const shrinks = p.shrink(new NextValue([value], undefined)); // context=undefined in the case of user defined values
+    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
