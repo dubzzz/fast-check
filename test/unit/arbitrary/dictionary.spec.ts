@@ -2,7 +2,7 @@ import * as fc from '../../../lib/fast-check';
 import { dictionary } from '../../../src/arbitrary/dictionary';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
@@ -58,15 +58,15 @@ class FromValuesArbitrary<T> extends Arbitrary<T> {
   constructor(readonly source: T[]) {
     super();
   }
-  generate(mrng: Random, _biasFactor: number): NextValue<T> {
+  generate(mrng: Random, _biasFactor: number): Value<T> {
     const index = mrng.nextInt(0, this.source.length - 1);
-    return new NextValue(this.source[index], undefined);
+    return new Value(this.source[index], undefined);
   }
   canShrinkWithoutContext(value: unknown): value is T {
     // includes might mix 0 and -0
     return this.source.includes(value as any);
   }
-  shrink(_value: T, _context?: unknown): Stream<NextValue<T>> {
+  shrink(_value: T, _context?: unknown): Stream<Value<T>> {
     return Stream.nil();
   }
 }

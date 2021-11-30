@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { string } from '../../../src/arbitrary/string';
 
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -84,7 +84,7 @@ describe('string (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = string();
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

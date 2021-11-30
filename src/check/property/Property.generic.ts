@@ -3,7 +3,7 @@ import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 import { Stream } from '../../stream/Stream';
 import {
   noUndefinedAsContext,
@@ -101,12 +101,12 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     return false;
   }
 
-  generate(mrng: Random, runId?: number): NextValue<Ts> {
+  generate(mrng: Random, runId?: number): Value<Ts> {
     const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
     return noUndefinedAsContext(value);
   }
 
-  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
+  shrink(value: Value<Ts>): Stream<Value<Ts>> {
     if (value.context === undefined && !this.arb.canShrinkWithoutContext(value.value_)) {
       // `undefined` can only be coming from values derived from examples provided by the user
       // context set to `undefined` are automatically replaced by `UndefinedContextPlaceholder` in generate

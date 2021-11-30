@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { cloneMethod } from '../../check/symbols';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
@@ -16,7 +16,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
     super();
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<Stream<T>> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<Stream<T>> {
     const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
     const enrichedProducer = () => {
       const seenValues: T[] = [];
@@ -36,7 +36,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
         [cloneMethod]: { value: enrichedProducer, enumerable: true },
       });
     };
-    return new NextValue(enrichedProducer(), undefined);
+    return new Value(enrichedProducer(), undefined);
   }
 
   canShrinkWithoutContext(value: unknown): value is Stream<T> {
@@ -45,7 +45,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
     return false;
   }
 
-  shrink(_value: Stream<T>, _context?: unknown): Stream<NextValue<Stream<T>>> {
+  shrink(_value: Stream<T>, _context?: unknown): Stream<Value<Stream<T>>> {
     // Not supported yet, even if context was provided
     return Stream.nil();
   }

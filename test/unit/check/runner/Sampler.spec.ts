@@ -5,7 +5,7 @@ import { sample, statistics } from '../../../../src/check/runner/Sampler';
 import * as stubArb from '../../stubs/arbitraries';
 import { cloneMethod } from '../../../../src/check/symbols';
 import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {
@@ -70,7 +70,7 @@ describe('Sampler', () => {
         },
       };
       const { instance, generate } = fakeNextArbitrary();
-      generate.mockReturnValue(new NextValue(cloneable, undefined));
+      generate.mockReturnValue(new Value(cloneable, undefined));
       sample(instance, { seed: 42 });
     });
   });

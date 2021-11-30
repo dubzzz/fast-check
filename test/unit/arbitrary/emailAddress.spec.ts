@@ -1,6 +1,6 @@
 import fc from '../../../lib/fast-check';
 import { emailAddress } from '../../../src/arbitrary/emailAddress';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 
 import {
   assertProduceSameValueGivenSameSeed,
@@ -70,7 +70,7 @@ describe('emailAddress (integration)', () => {
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = emailAddress();
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

@@ -1,7 +1,7 @@
 import { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
-import { NextValue } from './NextValue';
+import { Value } from './Value';
 
 /**
  * Abstract class able to generate values on type `T`
@@ -22,7 +22,7 @@ export abstract class Arbitrary<T> {
    *
    * @remarks Since 0.0.1 (return type changed in 3.0.0)
    */
-  abstract generate(mrng: Random, biasFactor: number | undefined): NextValue<T>;
+  abstract generate(mrng: Random, biasFactor: number | undefined): Value<T>;
 
   /**
    * Check if a given value could be pass to `shrink` without providing any context.
@@ -53,7 +53,7 @@ export abstract class Arbitrary<T> {
    *
    * @remarks Since 3.0.0
    */
-  abstract shrink(value: T, context: unknown | undefined): Stream<NextValue<T>>;
+  abstract shrink(value: T, context: unknown | undefined): Stream<Value<T>>;
 
   /**
    * Create another arbitrary by filtering values against `predicate`
@@ -188,7 +188,7 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
   constructor(readonly arb: Arbitrary<T>, readonly chainer: (t: T) => Arbitrary<U>) {
     super();
   }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<U> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const clonedMrng = mrng.clone();
     const src = this.arb.generate(mrng, biasFactor);
     return this.valueChainer(src, mrng, clonedMrng, biasFactor);
@@ -197,14 +197,14 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
     // TODO Need unchainer
     return false;
   }
-  shrink(value: U, context?: unknown): Stream<NextValue<U>> {
+  shrink(value: U, context?: unknown): Stream<Value<U>> {
     if (this.isSafeContext(context)) {
       return (
         !context.stoppedForOriginal
           ? this.arb
               .shrink(context.originalValue, context.originalContext)
               .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng, context.originalBias))
-          : Stream.nil<NextValue<U>>()
+          : Stream.nil<Value<U>>()
       ).join(
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
           const newContext: ChainArbitraryContext<T, U> = {
@@ -212,7 +212,7 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
             chainedContext: dst.context,
             stoppedForOriginal: true,
           };
-          return new NextValue(dst.value_, newContext);
+          return new Value(dst.value_, newContext);
         })
       );
     }
@@ -220,11 +220,11 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
     return Stream.nil();
   }
   private valueChainer(
-    v: NextValue<T>,
+    v: Value<T>,
     generateMrng: Random,
     clonedMrng: Random,
     biasFactor: number | undefined
-  ): NextValue<U> {
+  ): Value<U> {
     const chainedArbitrary = this.chainer(v.value_);
     const dst = chainedArbitrary.generate(generateMrng, biasFactor);
     const context: ChainArbitraryContext<T, U> = {
@@ -236,7 +236,7 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
       chainedContext: dst.context,
       clonedMrng,
     };
-    return new NextValue(dst.value_, context);
+    return new Value(dst.value_, context);
   }
   private isSafeContext(context: unknown): context is ChainArbitraryContext<T, U> {
     return (
@@ -261,12 +261,12 @@ type MapArbitraryContext<T> = {
 
 /** @internal */
 class MapArbitrary<T, U> extends Arbitrary<U> {
-  readonly bindValueMapper: (v: NextValue<T>) => NextValue<U>;
+  readonly bindValueMapper: (v: Value<T>) => Value<U>;
   constructor(readonly arb: Arbitrary<T>, readonly mapper: (t: T) => U, readonly unmapper?: (possiblyU: unknown) => T) {
     super();
     this.bindValueMapper = this.valueMapper.bind(this);
   }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<U> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const g = this.arb.generate(mrng, biasFactor);
     return this.valueMapper(g);
   }
@@ -281,7 +281,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     }
     return false;
   }
-  shrink(value: U, context?: unknown): Stream<NextValue<U>> {
+  shrink(value: U, context?: unknown): Stream<Value<U>> {
     if (this.isSafeContext(context)) {
       return this.arb.shrink(context.originalValue, context.originalContext).map(this.bindValueMapper);
     }
@@ -294,7 +294,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     }
     return Stream.nil();
   }
-  private mapperWithCloneIfNeeded(v: NextValue<T>): [U, T] {
+  private mapperWithCloneIfNeeded(v: Value<T>): [U, T] {
     const sourceValue = v.value;
     const mappedValue = this.mapper(sourceValue);
     if (
@@ -308,10 +308,10 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     }
     return [mappedValue, sourceValue];
   }
-  private valueMapper(v: NextValue<T>): NextValue<U> {
+  private valueMapper(v: Value<T>): Value<U> {
     const [mappedValue, sourceValue] = this.mapperWithCloneIfNeeded(v);
     const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
-    return new NextValue(mappedValue, context);
+    return new Value(mappedValue, context);
   }
   private isSafeContext(context: unknown): context is MapArbitraryContext<T> {
     return (
@@ -325,12 +325,12 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
 
 /** @internal */
 class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
-  readonly bindRefinementOnValue: (v: NextValue<T>) => v is NextValue<U>;
+  readonly bindRefinementOnValue: (v: Value<T>) => v is Value<U>;
   constructor(readonly arb: Arbitrary<T>, readonly refinement: (t: T) => t is U) {
     super();
     this.bindRefinementOnValue = this.refinementOnValue.bind(this);
   }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<U> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const g = this.arb.generate(mrng, biasFactor);
@@ -342,10 +342,10 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
   canShrinkWithoutContext(value: unknown): value is U {
     return this.arb.canShrinkWithoutContext(value) && this.refinement(value);
   }
-  shrink(value: U, context?: unknown): Stream<NextValue<U>> {
+  shrink(value: U, context?: unknown): Stream<Value<U>> {
     return this.arb.shrink(value, context).filter(this.bindRefinementOnValue);
   }
-  private refinementOnValue(v: NextValue<T>): v is NextValue<U> {
+  private refinementOnValue(v: Value<T>): v is Value<U> {
     return this.refinement(v.value);
   }
 }
@@ -355,13 +355,13 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
     super();
   }
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<T> {
     return this.arb.generate(mrng, biasFactor);
   }
   canShrinkWithoutContext(value: unknown): value is T {
     return this.arb.canShrinkWithoutContext(value);
   }
-  shrink(_value: T, _context?: unknown): Stream<NextValue<T>> {
+  shrink(_value: T, _context?: unknown): Stream<Value<T>> {
     return Stream.nil();
   }
   noShrink() {
@@ -374,13 +374,13 @@ class NoBiasArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
     super();
   }
-  generate(mrng: Random, _biasFactor: number | undefined): NextValue<T> {
+  generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
     return this.arb.generate(mrng, undefined);
   }
   canShrinkWithoutContext(value: unknown): value is T {
     return this.arb.canShrinkWithoutContext(value);
   }
-  shrink(value: T, context?: unknown): Stream<NextValue<T>> {
+  shrink(value: T, context?: unknown): Stream<Value<T>> {
     return this.arb.shrink(value, context);
   }
   noBias() {
