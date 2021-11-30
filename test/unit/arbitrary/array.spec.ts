@@ -12,7 +12,7 @@ import {
   assertShrinkProducesStrictlySmallerValue,
 } from './__test-helpers__/NextArbitraryAssertions';
 import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
-import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
@@ -178,7 +178,7 @@ describe('array (integration)', () => {
     // Arrange
     const constraints = { minLength };
     const arb = array(new FakeIntegerArbitrary(0, 1000), constraints);
-    const value = new NextValue(rawValue, undefined);
+    const value = new Value(rawValue, undefined);
 
     // Act
     const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');

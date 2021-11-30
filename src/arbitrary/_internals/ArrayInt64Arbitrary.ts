@@ -1,7 +1,7 @@
 import { Random } from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import {
   add64,
   ArrayInt64,
@@ -25,14 +25,14 @@ class ArrayInt64Arbitrary extends Arbitrary<ArrayInt64> {
     super();
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<ArrayInt64> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<ArrayInt64> {
     const range = this.computeGenerateRange(mrng, biasFactor);
     const uncheckedValue = mrng.nextArrayInt(range.min, range.max);
     if (uncheckedValue.data.length === 1) {
       // either 1 or 2, never 0 or >2
       uncheckedValue.data.unshift(0); // prepend a zero
     }
-    return new NextValue(uncheckedValue as ArrayInt64, undefined);
+    return new Value(uncheckedValue as ArrayInt64, undefined);
   }
   private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: ArrayInt64; max: ArrayInt64 } {
     if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
@@ -60,25 +60,21 @@ class ArrayInt64Arbitrary extends Arbitrary<ArrayInt64> {
     );
   }
 
-  private shrinkArrayInt64(
-    value: ArrayInt64,
-    target: ArrayInt64,
-    tryTargetAsap?: boolean
-  ): Stream<NextValue<ArrayInt64>> {
+  private shrinkArrayInt64(value: ArrayInt64, target: ArrayInt64, tryTargetAsap?: boolean): Stream<Value<ArrayInt64>> {
     const realGap = substract64(value, target);
-    function* shrinkGen(): IterableIterator<NextValue<ArrayInt64>> {
+    function* shrinkGen(): IterableIterator<Value<ArrayInt64>> {
       let previous: ArrayInt64 | undefined = tryTargetAsap ? undefined : target;
       const gap = tryTargetAsap ? realGap : halve64(realGap);
       for (let toremove = gap; !isZero64(toremove); toremove = halve64(toremove)) {
         const next = substract64(value, toremove);
-        yield new NextValue(next, previous); // previous indicates the last passing value
+        yield new Value(next, previous); // previous indicates the last passing value
         previous = next;
       }
     }
     return stream(shrinkGen());
   }
 
-  shrink(current: ArrayInt64, context?: unknown): Stream<NextValue<ArrayInt64>> {
+  shrink(current: ArrayInt64, context?: unknown): Stream<Value<ArrayInt64>> {
     if (!ArrayInt64Arbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
@@ -90,7 +86,7 @@ class ArrayInt64Arbitrary extends Arbitrary<ArrayInt64> {
       // Last chance try...
       // context is set to undefined, so that shrink will restart
       // without any assumptions in case our try find yet another bug
-      return Stream.of(new NextValue(context, undefined));
+      return Stream.of(new Value(context, undefined));
     }
     // Normal shrink process
     return this.shrinkArrayInt64(current, context, false);

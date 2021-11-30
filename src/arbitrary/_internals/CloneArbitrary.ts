@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { cloneMethod } from '../../check/symbols';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
@@ -10,8 +10,8 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     super();
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<T[]> {
-    const items: NextValue<T>[] = [];
+  generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {
+    const items: Value<T>[] = [];
     if (this.numValues <= 0) {
       return this.wrapper(items);
     }
@@ -41,7 +41,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     return this.arb.canShrinkWithoutContext(value[0]);
   }
 
-  shrink(value: T[], context?: unknown): Stream<NextValue<T[]>> {
+  shrink(value: T[], context?: unknown): Stream<Value<T[]>> {
     if (value.length === 0) {
       return Stream.nil();
     }
@@ -50,7 +50,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     );
   }
 
-  private *shrinkImpl(value: T[], contexts: unknown[]): IterableIterator<NextValue<T>[]> {
+  private *shrinkImpl(value: T[], contexts: unknown[]): IterableIterator<Value<T>[]> {
     const its = value.map((v, idx) => this.arb.shrink(v, contexts[idx])[Symbol.iterator]());
     let cur = its.map((it) => it.next());
     while (!cur[0].done) {
@@ -59,7 +59,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     }
   }
 
-  private static makeItCloneable<T>(vs: T[], shrinkables: NextValue<T>[]) {
+  private static makeItCloneable<T>(vs: T[], shrinkables: Value<T>[]) {
     (vs as any)[cloneMethod] = () => {
       const cloned = [];
       for (let idx = 0; idx !== shrinkables.length; ++idx) {
@@ -71,7 +71,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     return vs;
   }
 
-  private wrapper(items: NextValue<T>[]): NextValue<T[]> {
+  private wrapper(items: Value<T>[]): Value<T[]> {
     let cloneable = false;
     const vs: T[] = [];
     const contexts: unknown[] = [];
@@ -84,6 +84,6 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     if (cloneable) {
       CloneArbitrary.makeItCloneable(vs, items);
     }
-    return new NextValue(vs, contexts);
+    return new Value(vs, contexts);
   }
 }

@@ -1,6 +1,6 @@
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 
-import { NextValue } from '../../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
 import { Random } from '../../../../../src/random/generator/Random';
 import { Stream } from '../../../../../src/stream/Stream';
@@ -15,21 +15,21 @@ describe('Arbitrary', () => {
     it('should produce the right shrinking tree', () => {
       // Arrange
       class MyArbitrary extends Arbitrary<number> {
-        generate(_mrng: Random): NextValue<number> {
-          return new NextValue(10, { step: 2 });
+        generate(_mrng: Random): Value<number> {
+          return new Value(10, { step: 2 });
         }
         canShrinkWithoutContext(value: unknown): value is number {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+        shrink(value: number, context?: unknown): Stream<Value<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
           }
           const currentStep = (context as { step: number }).step;
           const nextStep = currentStep + 1;
           return Stream.of(
-            ...(value - currentStep >= 0 ? [new NextValue(value - currentStep, { step: nextStep })] : []),
-            ...(value - 1 >= 0 ? [new NextValue(value - 1, { step: nextStep })] : [])
+            ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
+            ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : [])
           );
         }
       }
@@ -106,17 +106,17 @@ describe('Arbitrary', () => {
           const complexInstance = { value, [cloneMethod]: () => this.create(value) };
           return complexInstance;
         }
-        generate(_mrng: Random): NextValue<MyArbitraryOutput> {
-          return new NextValue(this.create(10), undefined);
+        generate(_mrng: Random): Value<MyArbitraryOutput> {
+          return new Value(this.create(10), undefined);
         }
         canShrinkWithoutContext(value: unknown): value is MyArbitraryOutput {
           throw new Error('No call expected in current scenario');
         }
-        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<NextValue<MyArbitraryOutput>> {
+        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<Value<MyArbitraryOutput>> {
           const value = v.value;
           return Stream.of(
-            ...(value - 2 >= 0 ? [new NextValue(this.create(value - 2), undefined)] : []),
-            ...(value - 1 >= 0 ? [new NextValue(this.create(value - 1), undefined)] : [])
+            ...(value - 2 >= 0 ? [new Value(this.create(value - 2), undefined)] : []),
+            ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : [])
           );
         }
       }
@@ -148,17 +148,17 @@ describe('Arbitrary', () => {
           const complexInstance = { value, counter: 0, [cloneMethod]: () => this.create(value) };
           return complexInstance;
         }
-        generate(_mrng: Random): NextValue<MyArbitraryOutput> {
-          return new NextValue(this.create(10), undefined);
+        generate(_mrng: Random): Value<MyArbitraryOutput> {
+          return new Value(this.create(10), undefined);
         }
         canShrinkWithoutContext(value: unknown): value is MyArbitraryOutput {
           throw new Error('No call expected in current scenario');
         }
-        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<NextValue<MyArbitraryOutput>> {
+        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<Value<MyArbitraryOutput>> {
           const value = v.value;
           return Stream.of(
-            ...(value - 2 >= 0 ? [new NextValue(this.create(value - 2), undefined)] : []),
-            ...(value - 1 >= 0 ? [new NextValue(this.create(value - 1), undefined)] : [])
+            ...(value - 2 >= 0 ? [new Value(this.create(value - 2), undefined)] : []),
+            ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : [])
           );
         }
       }
@@ -187,13 +187,13 @@ describe('Arbitrary', () => {
     it('should produce the right shrinking tree', () => {
       // Arrange
       class MyArbitrary extends Arbitrary<number> {
-        generate(_mrng: Random): NextValue<number> {
-          return new NextValue(5, { step: 2 });
+        generate(_mrng: Random): Value<number> {
+          return new Value(5, { step: 2 });
         }
         canShrinkWithoutContext(value: unknown): value is number {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+        shrink(value: number, context?: unknown): Stream<Value<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
           }
@@ -202,15 +202,15 @@ describe('Arbitrary', () => {
             return Stream.nil();
           }
           const nextStep = currentStep + 1;
-          return Stream.of(new NextValue(value - currentStep, { step: nextStep }));
+          return Stream.of(new Value(value - currentStep, { step: nextStep }));
         }
       }
       class MyChainedArbitrary extends Arbitrary<number[]> {
         constructor(readonly size: number, readonly value: number) {
           super();
         }
-        generate(_mrng: Random): NextValue<number[]> {
-          return new NextValue(Array(this.size).fill(this.value), {
+        generate(_mrng: Random): Value<number[]> {
+          return new Value(Array(this.size).fill(this.value), {
             size: this.size,
             value: this.value,
           });
@@ -218,7 +218,7 @@ describe('Arbitrary', () => {
         canShrinkWithoutContext(value: unknown): value is number[] {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number[], context?: unknown): Stream<NextValue<number[]>> {
+        shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
           if (typeof context !== 'object' || context === null || !('size' in context) || !('value' in context)) {
             throw new Error('Invalid context for MyChainedArbitrary');
           }
@@ -228,9 +228,9 @@ describe('Arbitrary', () => {
           }
           return Stream.of(
             ...(currentContext.value === value[0]
-              ? [new NextValue(Array(currentContext.size).fill(0), currentContext)]
+              ? [new Value(Array(currentContext.size).fill(0), currentContext)]
               : []),
-            ...(value.length > 1 ? [new NextValue([value[0]], currentContext)] : [])
+            ...(value.length > 1 ? [new Value([value[0]], currentContext)] : [])
           );
         }
       }
@@ -263,22 +263,22 @@ describe('Arbitrary', () => {
     it('should produce the right shrinking tree', () => {
       // Arrange
       class MyArbitrary extends Arbitrary<number> {
-        generate(_mrng: Random): NextValue<number> {
-          return new NextValue(10, { step: 3 });
+        generate(_mrng: Random): Value<number> {
+          return new Value(10, { step: 3 });
         }
         canShrinkWithoutContext(value: unknown): value is number {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number, context?: unknown): Stream<NextValue<number>> {
+        shrink(value: number, context?: unknown): Stream<Value<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
           }
           const currentStep = (context as { step: number }).step;
           const nextStep = currentStep + 1;
           return Stream.of(
-            ...(value - currentStep >= 0 ? [new NextValue(value - currentStep, { step: nextStep })] : []),
-            ...(value - 2 >= 0 ? [new NextValue(value - 2, { step: nextStep })] : []),
-            ...(value - 1 >= 0 ? [new NextValue(value - 1, { step: nextStep })] : [])
+            ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
+            ...(value - 2 >= 0 ? [new Value(value - 2, { step: nextStep })] : []),
+            ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : [])
           );
         }
       }

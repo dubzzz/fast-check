@@ -150,7 +150,7 @@ import { float32Array, Float32ArrayConstraints } from './arbitrary/float32Array'
 import { float64Array, Float64ArrayConstraints } from './arbitrary/float64Array';
 import { sparseArray, SparseArrayConstraints } from './arbitrary/sparseArray';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
-import { NextValue } from './check/arbitrary/definition/NextValue';
+import { Value } from './check/arbitrary/definition/Value';
 import { Size, SizeForArbitrary } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
@@ -303,7 +303,7 @@ export {
   SchedulerReportItem,
   // extend the framework
   Arbitrary,
-  NextValue,
+  Value,
   cloneMethod,
   cloneIfNeeded,
   hasCloneMethod,

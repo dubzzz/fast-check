@@ -1,6 +1,6 @@
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
 import { IRawProperty } from '../../../../src/check/property/IRawProperty';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../src/stream/Stream';
 
 // Mocks
@@ -16,7 +16,7 @@ jest.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
 function buildProperty(asyncProp: boolean) {
   return {
     isAsync: () => asyncProp,
-    generate: () => new NextValue({}, undefined),
+    generate: () => new Value({}, undefined),
     shrink: () => Stream.nil(),
     run: () => null,
   } as IRawProperty<any>;
