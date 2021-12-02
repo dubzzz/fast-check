@@ -1,5 +1,5 @@
 import { scheduler, Scheduler, schedulerFor } from '../../../src/arbitrary/scheduler';
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as BuildSchedulerForMock from '../../../src/arbitrary/_internals/helpers/BuildSchedulerFor';
 import * as SchedulerArbitraryMock from '../../../src/arbitrary/_internals/SchedulerArbitrary';
@@ -13,7 +13,7 @@ beforeEach(beforeEachHook);
 describe('scheduler', () => {
   it('should instantiate a SchedulerArbitrary with defaulted act (if not provided)', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary<Scheduler<unknown>>();
+    const { instance } = fakeArbitrary<Scheduler<unknown>>();
     const SchedulerArbitrary = jest.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
 
@@ -27,7 +27,7 @@ describe('scheduler', () => {
 
   it('should pass a defaulted act that calls the received function', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary<Scheduler<unknown>>();
+    const { instance } = fakeArbitrary<Scheduler<unknown>>();
     const SchedulerArbitrary = jest.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
     const outF = new Promise<unknown>(() => {});
@@ -44,7 +44,7 @@ describe('scheduler', () => {
   });
   it('should instantiate a SchedulerArbitrary with received act', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary<Scheduler<unknown>>();
+    const { instance } = fakeArbitrary<Scheduler<unknown>>();
     const SchedulerArbitrary = jest.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
     const act = () => Promise.resolve();

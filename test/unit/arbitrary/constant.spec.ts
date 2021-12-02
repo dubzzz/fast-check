@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { constant } from '../../../src/arbitrary/constant';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { cloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary';
@@ -18,7 +18,7 @@ describe('constant', () => {
     fc.assert(
       fc.property(fc.anything(), (c) => {
         // Arrange
-        const { instance } = fakeNextArbitrary();
+        const { instance } = fakeArbitrary();
         const ConstantArbitrary = jest.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');
         ConstantArbitrary.mockImplementation(() => instance as ConstantArbitraryMock.ConstantArbitrary<unknown>);
 

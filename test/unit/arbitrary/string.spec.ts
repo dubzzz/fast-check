@@ -7,8 +7,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+} from './__test-helpers__/ArbitraryAssertions';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('string (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };
@@ -89,7 +89,7 @@ describe('string (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

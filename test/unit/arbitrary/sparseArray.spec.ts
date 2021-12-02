@@ -2,11 +2,7 @@
 import * as fc from '../../../lib/fast-check';
 import { sparseArray, SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
 
-import {
-  FakeIntegerArbitrary,
-  fakeNextArbitrary,
-  fakeNextArbitraryStaticValue,
-} from './__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 
 import * as RestrictedIntegerArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/RestrictedIntegerArbitraryBuilder';
 import * as SetMock from '../../../src/arbitrary/set';
@@ -15,9 +11,9 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { MaxLengthUpperBound } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 function beforeEachHook() {
@@ -38,11 +34,11 @@ describe('sparseArray', () => {
         fc.pre(!isLimitNoTrailingCase(ct));
         const set = jest.spyOn(SetMock, 'set');
         const tuple = jest.spyOn(TupleMock, 'tuple');
-        const { instance: setInstance } = fakeNextArbitraryStaticValue(() => []);
-        const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
+        const { instance: setInstance } = fakeArbitraryStaticValue(() => []);
+        const { instance: tupleInstance } = fakeArbitraryStaticValue(() => []);
         set.mockReturnValueOnce(setInstance);
         tuple.mockReturnValueOnce(tupleInstance);
-        const { instance: arb } = fakeNextArbitrary();
+        const { instance: arb } = fakeArbitrary();
 
         // Act
         sparseArray(arb, ct);
@@ -68,11 +64,11 @@ describe('sparseArray', () => {
           RestrictedIntegerArbitraryBuilderMock,
           'restrictedIntegerArbitraryBuilder'
         ); // called to build indexes
-        const { instance: setInstance } = fakeNextArbitraryStaticValue(() => []);
-        const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
+        const { instance: setInstance } = fakeArbitraryStaticValue(() => []);
+        const { instance: tupleInstance } = fakeArbitraryStaticValue(() => []);
         set.mockReturnValueOnce(setInstance);
         tuple.mockReturnValueOnce(tupleInstance);
-        const { instance: arb } = fakeNextArbitrary();
+        const { instance: arb } = fakeArbitrary();
 
         // Act
         sparseArray(arb, ct);
@@ -123,7 +119,7 @@ describe('sparseArray', () => {
           // Arrange
           fc.pre(a !== b);
           const ct = { ...draftCt, minNumElements: a > b ? a : b, maxLength: a > b ? b : a };
-          const { instance: arb } = fakeNextArbitrary();
+          const { instance: arb } = fakeArbitrary();
 
           // Act / Assert
           expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
@@ -142,7 +138,7 @@ describe('sparseArray', () => {
           // Arrange
           fc.pre(a !== b);
           const ct = { ...draftCt, minNumElements: a > b ? a : b, maxNumElements: a > b ? b : a };
-          const { instance: arb } = fakeNextArbitrary();
+          const { instance: arb } = fakeArbitrary();
 
           // Act / Assert
           expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
@@ -234,7 +230,7 @@ describe('sparseArray (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

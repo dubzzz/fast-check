@@ -1,6 +1,6 @@
 import { clone } from '../../../src/arbitrary/clone';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CloneArbitraryMock from '../../../src/arbitrary/_internals/CloneArbitrary';
 
@@ -14,8 +14,8 @@ describe('clone', () => {
   it('should instantiate CloneArbitrary(arb, numValues) for clone(arb, numValues)', () => {
     // Arrange
     const numValues = 10;
-    const { instance: sourceArbitrary } = fakeNextArbitrary();
-    const { instance } = fakeNextArbitrary();
+    const { instance: sourceArbitrary } = fakeArbitrary();
+    const { instance } = fakeArbitrary();
     const CloneArbitrary = jest.spyOn(CloneArbitraryMock, 'CloneArbitrary');
     CloneArbitrary.mockImplementation(() => instance as CloneArbitraryMock.CloneArbitrary<unknown>);
 

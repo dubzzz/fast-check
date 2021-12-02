@@ -16,7 +16,7 @@ import {
 } from './__test-helpers__/FloatingPointHelpers';
 import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 
-import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 
 import {
@@ -25,7 +25,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 import * as ArrayInt64ArbitraryMock from '../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 
@@ -321,8 +321,8 @@ function minMaxForConstraints(ct: DoubleConstraints) {
 }
 
 function spyArrayInt64() {
-  const { instance, map } = fakeNextArbitrary<ArrayInt64>();
-  const { instance: mappedInstance } = fakeNextArbitrary();
+  const { instance, map } = fakeArbitrary<ArrayInt64>();
+  const { instance: mappedInstance } = fakeArbitrary();
   const arrayInt64 = jest.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
   arrayInt64.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
@@ -330,7 +330,7 @@ function spyArrayInt64() {
 }
 
 function spyArrayInt64WithValue(value: () => ArrayInt64) {
-  const { instance } = fakeNextArbitraryStaticValue<ArrayInt64>(value);
+  const { instance } = fakeArbitraryStaticValue<ArrayInt64>(value);
   const integer = jest.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
   integer.mockReturnValue(instance);
   return integer;

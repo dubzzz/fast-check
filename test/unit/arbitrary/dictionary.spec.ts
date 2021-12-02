@@ -9,7 +9,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 describe('dictionary (integration)', () => {
   type Extra = { keys: string[]; values: unknown[]; constraints?: DictionaryConstraints };

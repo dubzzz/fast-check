@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { falsy } from '../../../src/arbitrary/falsy';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as ConstantFromMock from '../../../src/arbitrary/constantFrom';
 
@@ -15,7 +15,7 @@ beforeEach(beforeEachHook);
 describe('falsy', () => {
   it('should re-use constantFrom to build the falsy', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary();
+    const { instance } = fakeArbitrary();
     const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
@@ -29,7 +29,7 @@ describe('falsy', () => {
 
   it('should only produce falsy values', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary();
+    const { instance } = fakeArbitrary();
     const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
@@ -47,7 +47,7 @@ describe('falsy', () => {
 
   it('should only produce falsy values even with withBigInt', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary();
+    const { instance } = fakeArbitrary();
     const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
