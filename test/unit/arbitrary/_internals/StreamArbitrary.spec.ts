@@ -6,8 +6,8 @@ import { Stream } from '../../../../src/stream/Stream';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/NextArbitraryAssertions';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+} from '../__test-helpers__/ArbitraryAssertions';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 import * as StringifyMock from '../../../../src/utils/stringify';
@@ -24,7 +24,7 @@ describe('StreamArbitrary', () => {
     it('should produce a cloneable instance of Stream', () => {
       // Arrange
       const biasFactor = 48;
-      const { instance: sourceArb } = fakeNextArbitrary();
+      const { instance: sourceArb } = fakeArbitrary();
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -40,7 +40,7 @@ describe('StreamArbitrary', () => {
     it('should not call generate before we pull from the Stream but decide bias', () => {
       // Arrange
       const biasFactor = 48;
-      const { instance: sourceArb, generate } = fakeNextArbitrary();
+      const { instance: sourceArb, generate } = fakeArbitrary();
       const { instance: mrng, nextInt } = fakeRandom();
 
       // Act
@@ -56,7 +56,7 @@ describe('StreamArbitrary', () => {
     it('should not check bias again for cloned instances', () => {
       // Arrange
       const biasFactor = 48;
-      const { instance: sourceArb } = fakeNextArbitrary();
+      const { instance: sourceArb } = fakeArbitrary();
       const { instance: mrng, nextInt } = fakeRandom();
 
       // Act
@@ -77,7 +77,7 @@ describe('StreamArbitrary', () => {
       const biasFactor = 48;
       let index = 0;
       const expectedValues = [...Array(numValuesToPull)].map(() => Symbol());
-      const { instance: sourceArb, generate } = fakeNextArbitrary();
+      const { instance: sourceArb, generate } = fakeArbitrary();
       generate.mockImplementation(() => new Value(expectedValues[index++], undefined));
       const { instance: mrng, clone, nextInt } = fakeRandom();
       nextInt.mockReturnValueOnce(1); // for bias
@@ -102,7 +102,7 @@ describe('StreamArbitrary', () => {
       const numValuesToPullS1 = 5;
       const numValuesToPullS2 = 3;
       const biasFactor = 48;
-      const { instance: sourceArb, generate } = fakeNextArbitrary();
+      const { instance: sourceArb, generate } = fakeArbitrary();
       generate.mockImplementation(() => new Value(Symbol(), undefined));
       const { instance: mrng, clone, nextInt } = fakeRandom();
       nextInt.mockReturnValueOnce(1); // for bias
@@ -147,7 +147,7 @@ describe('StreamArbitrary', () => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
-          const { instance: sourceArb, generate } = fakeNextArbitrary<number>();
+          const { instance: sourceArb, generate } = fakeArbitrary<number>();
           generate.mockImplementation(() => new Value(expectedValues[index++], undefined));
           const { instance: mrng, clone, nextInt } = fakeRandom();
           nextInt.mockReturnValueOnce(2); // for no bias
@@ -177,7 +177,7 @@ describe('StreamArbitrary', () => {
       // Arrange
       const biasFactor = 48;
       let index = 0;
-      const { instance: sourceArb, generate } = fakeNextArbitrary<number>();
+      const { instance: sourceArb, generate } = fakeArbitrary<number>();
       generate.mockImplementation(() => new Value(index++, undefined));
       const { instance: mrng, clone, nextInt } = fakeRandom();
       nextInt.mockReturnValueOnce(2); // for no bias
@@ -217,7 +217,7 @@ describe('StreamArbitrary', () => {
       ${new Stream(infiniteG())}   | ${'infinite stream'}
     `('should return false for any Stream whatever the size ($description)', ({ data }) => {
       // Arrange
-      const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
+      const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
 
       // Act
       const arb = new StreamArbitrary(sourceArb);
@@ -230,7 +230,7 @@ describe('StreamArbitrary', () => {
 
     it('should return false even for its own values', () => {
       // Arrange
-      const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
+      const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -247,7 +247,7 @@ describe('StreamArbitrary', () => {
   describe('shrink', () => {
     it('should always shrink to nil', () => {
       // Arrange
-      const { instance: sourceArb, generate, shrink } = fakeNextArbitrary<number>();
+      const { instance: sourceArb, generate, shrink } = fakeArbitrary<number>();
       generate.mockReturnValue(new Value(0, undefined));
       const { instance: mrng } = fakeRandom();
 

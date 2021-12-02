@@ -1,4 +1,4 @@
-import { fakeNextArbitrary } from '../../__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
 import { buildPartialRecordArbitrary } from '../../../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
 
 import * as OptionMock from '../../../../../src/arbitrary/option';
@@ -14,8 +14,8 @@ beforeEach(beforeEachHook);
 describe('buildPartialRecordArbitrary', () => {
   it('should never wrap arbitraries linked to required keys and forward all keys to mappers', () => {
     // Arrange
-    const { instance: mappedInstance } = fakeNextArbitrary<any>();
-    const { instance: tupleInstance, map } = fakeNextArbitrary<any[]>();
+    const { instance: mappedInstance } = fakeArbitrary<any>();
+    const { instance: tupleInstance, map } = fakeArbitrary<any[]>();
     const option = jest.spyOn(OptionMock, 'option');
     const tuple = jest.spyOn(TupleMock, 'tuple');
     tuple.mockReturnValue(tupleInstance);
@@ -35,8 +35,8 @@ describe('buildPartialRecordArbitrary', () => {
     );
     buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
 
-    const arbKey1 = fakeNextArbitrary();
-    const arbKey2 = fakeNextArbitrary();
+    const arbKey1 = fakeArbitrary();
+    const arbKey2 = fakeArbitrary();
     const recordModel = {
       a: arbKey1,
       b: arbKey2,
@@ -62,10 +62,10 @@ describe('buildPartialRecordArbitrary', () => {
 
   it('should wrap arbitraries not linked to required keys into option and forward all keys to mappers', () => {
     // Arrange
-    const { instance: mappedInstance } = fakeNextArbitrary<any>();
-    const { instance: tupleInstance, map } = fakeNextArbitrary<any[]>();
-    const { instance: optionInstance1 } = fakeNextArbitrary();
-    const { instance: optionInstance2 } = fakeNextArbitrary();
+    const { instance: mappedInstance } = fakeArbitrary<any>();
+    const { instance: tupleInstance, map } = fakeArbitrary<any[]>();
+    const { instance: optionInstance1 } = fakeArbitrary();
+    const { instance: optionInstance2 } = fakeArbitrary();
     const option = jest.spyOn(OptionMock, 'option');
     const tuple = jest.spyOn(TupleMock, 'tuple');
     const optionInstance1Old = optionInstance1;
@@ -88,9 +88,9 @@ describe('buildPartialRecordArbitrary', () => {
     );
     buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
 
-    const arbKey1 = fakeNextArbitrary();
-    const arbKey2 = fakeNextArbitrary();
-    const arbKey3 = fakeNextArbitrary();
+    const arbKey1 = fakeArbitrary();
+    const arbKey2 = fakeArbitrary();
+    const arbKey3 = fakeArbitrary();
     const recordModel = {
       a: arbKey1,
       b: arbKey2,
@@ -119,8 +119,8 @@ describe('buildPartialRecordArbitrary', () => {
 
   it('should not wrap any arbitrary when required keys is not specified (all required) and forward all keys to mappers', () => {
     // Arrange
-    const { instance: mappedInstance } = fakeNextArbitrary<any>();
-    const { instance: tupleInstance, map } = fakeNextArbitrary<any[]>();
+    const { instance: mappedInstance } = fakeArbitrary<any>();
+    const { instance: tupleInstance, map } = fakeArbitrary<any[]>();
     const option = jest.spyOn(OptionMock, 'option');
     const tuple = jest.spyOn(TupleMock, 'tuple');
     tuple.mockReturnValue(tupleInstance);
@@ -140,8 +140,8 @@ describe('buildPartialRecordArbitrary', () => {
     );
     buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
 
-    const arbKey1 = fakeNextArbitrary();
-    const arbKey2 = fakeNextArbitrary();
+    const arbKey1 = fakeArbitrary();
+    const arbKey2 = fakeArbitrary();
     const recordModel = {
       a: arbKey1,
       b: arbKey2,

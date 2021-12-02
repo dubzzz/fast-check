@@ -9,8 +9,8 @@ import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
-import { FakeIntegerArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+} from './__test-helpers__/ArbitraryAssertions';
+import { FakeIntegerArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
 
 describe('func (integration)', () => {
