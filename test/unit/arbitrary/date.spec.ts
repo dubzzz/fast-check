@@ -1,13 +1,13 @@
 import fc from '../../../lib/fast-check';
 import { date } from '../../../src/arbitrary/date';
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
@@ -25,8 +25,8 @@ describe('date', () => {
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
-        const { instance, map } = fakeNextArbitrary<number>();
-        const { instance: mappedInstance } = fakeNextArbitrary<Date>();
+        const { instance, map } = fakeArbitrary<number>();
+        const { instance: mappedInstance } = fakeArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
@@ -46,8 +46,8 @@ describe('date', () => {
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
-        const { instance, map } = fakeNextArbitrary<number>();
-        const { instance: mappedInstance } = fakeNextArbitrary<Date>();
+        const { instance, map } = fakeArbitrary<number>();
+        const { instance: mappedInstance } = fakeArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
@@ -76,8 +76,8 @@ describe('date', () => {
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
-        const { instance, map } = fakeNextArbitrary<number>();
-        const { instance: mappedInstance } = fakeNextArbitrary<Date>();
+        const { instance, map } = fakeArbitrary<number>();
+        const { instance: mappedInstance } = fakeArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
@@ -106,8 +106,8 @@ describe('date', () => {
     fc.assert(
       fc.property(constraintsArb(), fc.maxSafeNat(), (constraints, mod) => {
         // Arrange
-        const { instance, map } = fakeNextArbitrary<number>();
-        const { instance: mappedInstance } = fakeNextArbitrary<Date>();
+        const { instance, map } = fakeArbitrary<number>();
+        const { instance: mappedInstance } = fakeArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);

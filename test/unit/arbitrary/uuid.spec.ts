@@ -1,6 +1,6 @@
 import fc from '../../../lib/fast-check';
 import { uuid } from '../../../src/arbitrary/uuid';
-import { fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
@@ -10,7 +10,7 @@ import {
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
 function beforeEachHook() {
@@ -26,7 +26,7 @@ describe('uuid', () => {
     const { instance: mrng } = fakeRandom();
     const integer = jest.spyOn(IntegerMock, 'integer');
     integer.mockImplementation(({ min }) => {
-      const { instance } = fakeNextArbitraryStaticValue(() => min);
+      const { instance } = fakeArbitraryStaticValue(() => min);
       return instance;
     });
 
@@ -43,7 +43,7 @@ describe('uuid', () => {
     const { instance: mrng } = fakeRandom();
     const integer = jest.spyOn(IntegerMock, 'integer');
     integer.mockImplementation(({ max }) => {
-      const { instance } = fakeNextArbitraryStaticValue(() => max);
+      const { instance } = fakeArbitraryStaticValue(() => max);
       return instance;
     });
 

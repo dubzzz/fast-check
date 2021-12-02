@@ -6,7 +6,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 describe('asciiString (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number };

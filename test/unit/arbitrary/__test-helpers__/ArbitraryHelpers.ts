@@ -6,9 +6,9 @@ import { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
 
 /**
- * Generate a fake Class inheriting from NextArbitrary with all methods being mocked
+ * Generate a fake Class inheriting from Arbitrary with all methods being mocked
  */
-export function fakeNextArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
+export function fakeArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
   const generate = jest.fn();
   const canShrinkWithoutContext = jest.fn() as any as ((value: unknown) => value is T) &
     MockWithArgs<(value: unknown) => value is T>;
@@ -19,7 +19,7 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => Arbitrary<
   const noShrink = jest.fn();
   const noBias = jest.fn();
   mocked;
-  class FakeNextArbitrary extends Arbitrary<T> {
+  class FakeArbitrary extends Arbitrary<T> {
     generate = generate;
     canShrinkWithoutContext = canShrinkWithoutContext;
     shrink = shrink;
@@ -29,28 +29,28 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => Arbitrary<
     noShrink = noShrink;
     noBias = noBias;
   }
-  return { Class: FakeNextArbitrary, generate, canShrinkWithoutContext, shrink, filter, map, chain, noShrink, noBias };
+  return { Class: FakeArbitrary, generate, canShrinkWithoutContext, shrink, filter, map, chain, noShrink, noBias };
 }
 
 /**
- * Generate a fake instance inheriting from NextArbitrary with all methods being mocked
+ * Generate a fake instance inheriting from Arbitrary with all methods being mocked
  */
-export function fakeNextArbitrary<T = any>(): { instance: Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
-  const { Class, ...mockedMethods } = fakeNextArbitraryClass<T>();
+export function fakeArbitrary<T = any>(): { instance: Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
+  const { Class, ...mockedMethods } = fakeArbitraryClass<T>();
   return { instance: new Class(), ...mockedMethods };
 }
 
 /**
- * Generate a fake instance inheriting from NextArbitrary but always producing the same value
+ * Generate a fake instance inheriting from Arbitrary but always producing the same value
  */
-export function fakeNextArbitraryStaticValue<T>(
+export function fakeArbitraryStaticValue<T>(
   value: () => T,
   context: () => unknown = () => undefined
 ): { instance: Arbitrary<T> } {
-  const { instance, generate, map } = fakeNextArbitrary<T>();
+  const { instance, generate, map } = fakeArbitrary<T>();
   generate.mockImplementation(() => new Value(value(), context()));
   map.mockImplementation((mapper) => {
-    return fakeNextArbitraryStaticValue(() => mapper(value())).instance;
+    return fakeArbitraryStaticValue(() => mapper(value())).instance;
   });
   return { instance };
 }

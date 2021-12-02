@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { array } from '../../../src/arbitrary/array';
 
-import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
 import {
@@ -10,10 +10,10 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -25,8 +25,8 @@ beforeEach(beforeEachHook);
 describe('array', () => {
   it('should instantiate ArrayArbitrary(arb, 0, ?) for array(arb)', () => {
     // Arrange
-    const { instance: childInstance } = fakeNextArbitrary<unknown>();
-    const { instance } = fakeNextArbitrary<unknown[]>();
+    const { instance: childInstance } = fakeArbitrary<unknown>();
+    const { instance } = fakeArbitrary<unknown[]>();
     const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
     ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
@@ -46,8 +46,8 @@ describe('array', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
         // Arrange
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance } = fakeNextArbitrary<unknown[]>();
+        const { instance: childInstance } = fakeArbitrary<unknown>();
+        const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
@@ -65,8 +65,8 @@ describe('array', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (minLength) => {
         // Arrange
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance } = fakeNextArbitrary<unknown[]>();
+        const { instance: childInstance } = fakeArbitrary<unknown>();
+        const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
@@ -93,8 +93,8 @@ describe('array', () => {
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
         // Arrange
         const [minLength, maxLength] = aLength < bLength ? [aLength, bLength] : [bLength, aLength];
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance } = fakeNextArbitrary<unknown[]>();
+        const { instance: childInstance } = fakeArbitrary<unknown>();
+        const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
@@ -114,7 +114,7 @@ describe('array', () => {
         // Arrange
         fc.pre(aLength !== bLength);
         const [minLength, maxLength] = aLength < bLength ? [bLength, aLength] : [aLength, bLength];
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
+        const { instance: childInstance } = fakeArbitrary<unknown>();
 
         // Act / Assert
         expect(() => array(childInstance, { minLength, maxLength })).toThrowError();
@@ -181,7 +181,7 @@ describe('array (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

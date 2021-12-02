@@ -7,9 +7,9 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -78,7 +78,7 @@ describe('webUrl (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

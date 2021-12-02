@@ -7,8 +7,8 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/NextArbitraryAssertions';
-import { buildNextShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
+} from '../__test-helpers__/ArbitraryAssertions';
+import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
 describe('ConstantArbitrary', () => {
   describe('generate', () => {
@@ -241,8 +241,8 @@ describe('ConstantArbitrary (integration)', () => {
 
     // Act
     const g = arb.generate(mrng, undefined);
-    const treeA = buildNextShrinkTree(arb, g);
-    const treeB = buildNextShrinkTree(arb, g);
+    const treeA = buildShrinkTree(arb, g);
+    const treeB = buildShrinkTree(arb, g);
 
     // Assert
     walkTree(treeA, (cloneable) => {
