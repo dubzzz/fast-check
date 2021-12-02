@@ -11,9 +11,9 @@ import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary'
 import { Random } from '../../../../src/random/generator/Random';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer';
-import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { buildNextShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
+import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 
 function beforeEachHook() {
@@ -37,7 +37,7 @@ describe('ArrayArbitrary', () => {
             // Arrange
             const { acceptedValues, instance, generate } = prepareSetBuilderData(generatedValues, false);
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
-            const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
+            const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(acceptedValues.size, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
@@ -75,7 +75,7 @@ describe('ArrayArbitrary', () => {
             // Arrange
             const { acceptedValues, instance, generate, setBuilder } = prepareSetBuilderData(generatedValues, false);
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
-            const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
+            const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(acceptedValues.size, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
@@ -119,7 +119,7 @@ describe('ArrayArbitrary', () => {
               !withSetBuilder
             );
             const { minLength, maxLength } = extractLengths(seed, aLength, aLength, acceptedValues);
-            const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
+            const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(minLength, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
@@ -185,7 +185,7 @@ describe('ArrayArbitrary', () => {
               }
             );
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
-            const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
+            const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(minLength, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
@@ -217,13 +217,13 @@ describe('ArrayArbitrary', () => {
 
     it('should produce a cloneable instance if provided one cloneable underlying', () => {
       // Arrange
-      const { instance, generate } = fakeNextArbitrary<string[]>();
+      const { instance, generate } = fakeArbitrary<string[]>();
       generate
         .mockReturnValueOnce(new Value(['a'], undefined))
         .mockReturnValueOnce(new Value(Object.defineProperty(['b'], cloneMethod, { value: jest.fn() }), undefined))
         .mockReturnValueOnce(new Value(['c'], undefined))
         .mockReturnValueOnce(new Value(['d'], undefined));
-      const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
+      const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
       generateInteger.mockReturnValue(new Value(4, undefined));
       const integer = jest.spyOn(IntegerMock, 'integer');
       integer.mockReturnValue(integerInstance);
@@ -243,7 +243,7 @@ describe('ArrayArbitrary', () => {
     it('should not clone cloneable on generate', () => {
       // Arrange
       const cloneMethodImpl = jest.fn();
-      const { instance, generate } = fakeNextArbitrary<string[]>();
+      const { instance, generate } = fakeArbitrary<string[]>();
       generate
         .mockReturnValueOnce(new Value(['a'], undefined))
         .mockReturnValueOnce(
@@ -251,7 +251,7 @@ describe('ArrayArbitrary', () => {
         )
         .mockReturnValueOnce(new Value(['c'], undefined))
         .mockReturnValueOnce(new Value(['d'], undefined));
-      const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
+      const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
       generateInteger.mockReturnValue(new Value(4, undefined));
       const integer = jest.spyOn(IntegerMock, 'integer');
       integer.mockReturnValue(integerInstance);
@@ -287,7 +287,7 @@ describe('ArrayArbitrary', () => {
             // Arrange
             const [minLength, maxGeneratedLength, maxLength] = [aLength, bLength, cLength].sort((a, b) => a - b);
             fc.pre(value.length < minLength || value.length > maxLength);
-            const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
+            const { instance, canShrinkWithoutContext } = fakeArbitrary();
             const data: any[] = [];
             const customSet: CustomSet<Value<any>> = {
               size: () => data.length,
@@ -337,7 +337,7 @@ describe('ArrayArbitrary', () => {
             fc.pre(value.some((v) => !v[1]));
             const minLength = Math.min(Math.max(0, value.length - offsetMin), maxGeneratedLength);
             const maxLength = Math.max(Math.min(MaxLengthUpperBound, value.length + offsetMax), maxGeneratedLength);
-            const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
+            const { instance, canShrinkWithoutContext } = fakeArbitrary();
             canShrinkWithoutContext.mockImplementation((vTest) => value.find((v) => Object.is(v[0], vTest))![1]);
             const data: any[] = [];
             const customSet: CustomSet<Value<any>> = {
@@ -386,7 +386,7 @@ describe('ArrayArbitrary', () => {
             fc.pre(value.some((v) => !v[1]));
             const minLength = Math.min(Math.max(0, value.length - offsetMin), maxGeneratedLength);
             const maxLength = Math.max(Math.min(MaxLengthUpperBound, value.length + offsetMax), maxGeneratedLength);
-            const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
+            const { instance, canShrinkWithoutContext } = fakeArbitrary();
             canShrinkWithoutContext.mockReturnValue(true);
             const data: any[] = [];
             const customSet: CustomSet<Value<any>> = {
@@ -429,7 +429,7 @@ describe('ArrayArbitrary', () => {
             fc.pre(value.length !== Object.keys(value).length);
             const minLength = Math.min(Math.max(0, value.length - offsetMin), maxGeneratedLength);
             const maxLength = Math.max(Math.min(MaxLengthUpperBound, value.length + offsetMax), maxGeneratedLength);
-            const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
+            const { instance, canShrinkWithoutContext } = fakeArbitrary();
             canShrinkWithoutContext.mockReturnValue(true);
             const data: any[] = [];
             const customSet: CustomSet<Value<any>> = {
@@ -473,7 +473,7 @@ describe('ArrayArbitrary', () => {
             // Arrange
             const minLength = Math.min(Math.max(0, value.length - offsetMin), maxGeneratedLength);
             const maxLength = Math.max(Math.min(MaxLengthUpperBound, value.length + offsetMax), maxGeneratedLength);
-            const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
+            const { instance, canShrinkWithoutContext } = fakeArbitrary();
             canShrinkWithoutContext.mockReturnValue(true);
             const data: any[] = [];
             const customSet: CustomSet<Value<any>> = {
@@ -521,8 +521,8 @@ describe('ArrayArbitrary (integration)', () => {
       // walking through the tree when >3 takes much longer
       g = arb.generate(mrng, undefined);
     }
-    const treeA = buildNextShrinkTree(arb, g);
-    const treeB = buildNextShrinkTree(arb, g);
+    const treeA = buildShrinkTree(arb, g);
+    const treeB = buildShrinkTree(arb, g);
 
     // Assert
     walkTree(treeA, (cloneable) => {
@@ -552,7 +552,7 @@ function prepareSetBuilderData(
   onGenerateHook?: () => void
 ) {
   const acceptedValues = new Set<Value<any>>();
-  const { instance, generate } = fakeNextArbitrary();
+  const { instance, generate } = fakeArbitrary();
   for (const v of generatedValues) {
     const value = new Value(v[0], v[1]);
     const rejected = v[2];

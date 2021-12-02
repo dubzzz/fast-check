@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { context, ContextValue } from '../../../src/arbitrary/context';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantMock from '../../../src/arbitrary/constant';
@@ -16,7 +16,7 @@ beforeEach(beforeEachHook);
 describe('context', () => {
   it('should re-use constant to build the context', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary();
+    const { instance } = fakeArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
@@ -30,7 +30,7 @@ describe('context', () => {
 
   it('should pass a cloneable context to constant', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary();
+    const { instance } = fakeArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
@@ -44,7 +44,7 @@ describe('context', () => {
 
   it('should not reset its own logs on clone', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary();
+    const { instance } = fakeArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
@@ -62,7 +62,7 @@ describe('context', () => {
 
   it('should produce a clone without any logs', () => {
     // Arrange
-    const { instance } = fakeNextArbitrary();
+    const { instance } = fakeArbitrary();
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 

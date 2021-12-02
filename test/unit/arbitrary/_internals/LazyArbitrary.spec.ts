@@ -1,7 +1,7 @@
 import { LazyArbitrary } from '../../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../src/stream/Stream';
-import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 describe('LazyArbitrary', () => {
@@ -10,7 +10,7 @@ describe('LazyArbitrary', () => {
       // Arrange
       const value = new Value(Symbol(), Symbol());
       const { instance: mrng } = fakeRandom();
-      const { instance: underlying, generate } = fakeNextArbitrary();
+      const { instance: underlying, generate } = fakeArbitrary();
       generate.mockReturnValue(value);
       const lazy = new LazyArbitrary('id007');
       lazy.underlying = underlying;
@@ -43,7 +43,7 @@ describe('LazyArbitrary', () => {
     `('should call underlying on canShrinkWithoutContext ($returnValue)', ({ returnValue }) => {
       // Arrange
       const value = Symbol();
-      const { instance: underlying, canShrinkWithoutContext } = fakeNextArbitrary();
+      const { instance: underlying, canShrinkWithoutContext } = fakeArbitrary();
       canShrinkWithoutContext.mockReturnValue(returnValue);
       const lazy = new LazyArbitrary('id007');
       lazy.underlying = underlying;
@@ -73,7 +73,7 @@ describe('LazyArbitrary', () => {
       const value = Symbol();
       const context = Symbol();
       const streamOutput = Stream.of(new Value(1, undefined));
-      const { instance: underlying, shrink } = fakeNextArbitrary();
+      const { instance: underlying, shrink } = fakeArbitrary();
       shrink.mockReturnValue(streamOutput);
       const lazy = new LazyArbitrary('id007');
       lazy.underlying = underlying;

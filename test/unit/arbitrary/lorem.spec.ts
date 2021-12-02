@@ -5,7 +5,7 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 describe('lorem', () => {
   it('should reject any negative or zero maxCount whatever the mode', () =>

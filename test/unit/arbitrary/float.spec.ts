@@ -12,7 +12,7 @@ import {
 } from './__test-helpers__/FloatingPointHelpers';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from '../../../src/arbitrary/_internals/helpers/FloatHelpers';
 
-import { fakeNextArbitrary, fakeNextArbitraryStaticValue } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 
 import {
@@ -21,7 +21,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
 
@@ -310,8 +310,8 @@ describe('float (integration)', () => {
 // Helpers
 
 function spyInteger() {
-  const { instance, map } = fakeNextArbitrary<number>();
-  const { instance: mappedInstance } = fakeNextArbitrary();
+  const { instance, map } = fakeArbitrary<number>();
+  const { instance: mappedInstance } = fakeArbitrary();
   const integer = jest.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
@@ -319,7 +319,7 @@ function spyInteger() {
 }
 
 function spyIntegerWithValue(value: () => number) {
-  const { instance } = fakeNextArbitraryStaticValue<number>(value);
+  const { instance } = fakeArbitraryStaticValue<number>(value);
   const integer = jest.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   return integer;

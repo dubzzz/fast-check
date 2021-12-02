@@ -1,6 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { option, OptionConstraints } from '../../../src/arbitrary/option';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';
 import {
@@ -8,7 +8,7 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
@@ -35,13 +35,13 @@ describe('option', () => {
         (constraints: Partial<OptionConstraints<unknown>>) => {
           // Arrange
           const expectedNil = 'nil' in constraints ? constraints.nil : null;
-          const expectedArb = fakeNextArbitrary().instance;
+          const expectedArb = fakeArbitrary().instance;
           const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
           from.mockReturnValue(expectedArb);
-          const expectedConstantArb = fakeNextArbitrary().instance;
+          const expectedConstantArb = fakeArbitrary().instance;
           const constant = jest.spyOn(ConstantMock, 'constant');
           constant.mockReturnValue(expectedConstantArb);
-          const { instance: arb } = fakeNextArbitrary();
+          const { instance: arb } = fakeArbitrary();
 
           // Act
           const out = option(arb, constraints);
@@ -68,13 +68,13 @@ describe('option', () => {
 
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
     // Arrange
-    const expectedArb = fakeNextArbitrary().instance;
+    const expectedArb = fakeArbitrary().instance;
     const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
     from.mockReturnValue(expectedArb);
-    const expectedConstantArb = fakeNextArbitrary().instance;
+    const expectedConstantArb = fakeArbitrary().instance;
     const constant = jest.spyOn(ConstantMock, 'constant');
     constant.mockReturnValue(expectedConstantArb);
-    const { instance: arb } = fakeNextArbitrary();
+    const { instance: arb } = fakeArbitrary();
 
     // Act
     const out = option(arb);

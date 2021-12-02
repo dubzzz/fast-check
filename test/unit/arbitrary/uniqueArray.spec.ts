@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { uniqueArray, UniqueArrayConstraints } from '../../../src/arbitrary/uniqueArray';
 
-import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
 import {
@@ -9,9 +9,9 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -23,8 +23,8 @@ beforeEach(beforeEachHook);
 describe('uniqueArray', () => {
   it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb)', () => {
     // Arrange
-    const { instance: childInstance } = fakeNextArbitrary<unknown>();
-    const { instance } = fakeNextArbitrary<unknown[]>();
+    const { instance: childInstance } = fakeArbitrary<unknown>();
+    const { instance } = fakeArbitrary<unknown[]>();
     const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
     ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
@@ -51,8 +51,8 @@ describe('uniqueArray', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
         // Arrange
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance } = fakeNextArbitrary<unknown[]>();
+        const { instance: childInstance } = fakeArbitrary<unknown>();
+        const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
@@ -77,8 +77,8 @@ describe('uniqueArray', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (minLength) => {
         // Arrange
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance, filter } = fakeNextArbitrary<unknown[]>();
+        const { instance: childInstance } = fakeArbitrary<unknown>();
+        const { instance, filter } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
         filter.mockReturnValue(instance);
@@ -113,8 +113,8 @@ describe('uniqueArray', () => {
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
         // Arrange
         const [minLength, maxLength] = aLength < bLength ? [aLength, bLength] : [bLength, aLength];
-        const { instance: childInstance } = fakeNextArbitrary<unknown>();
-        const { instance, filter } = fakeNextArbitrary<unknown[]>();
+        const { instance: childInstance } = fakeArbitrary<unknown>();
+        const { instance, filter } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
         filter.mockReturnValue(instance);
@@ -163,8 +163,8 @@ describe('uniqueArray', () => {
           ),
         (constraints) => {
           // Arrange
-          const { instance: childInstance } = fakeNextArbitrary<unknown>();
-          const { instance, filter } = fakeNextArbitrary<unknown[]>();
+          const { instance: childInstance } = fakeArbitrary<unknown>();
+          const { instance, filter } = fakeArbitrary<unknown[]>();
           const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
           ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
           filter.mockReturnValue(instance);
@@ -198,7 +198,7 @@ describe('uniqueArray', () => {
           // Arrange
           fc.pre(aLength !== bLength);
           const [minLength, maxLength] = aLength < bLength ? [bLength, aLength] : [aLength, bLength];
-          const { instance: childInstance } = fakeNextArbitrary<unknown>();
+          const { instance: childInstance } = fakeArbitrary<unknown>();
 
           // Act / Assert
           expect(() => uniqueArray(childInstance, { minLength, maxLength, comparator, selector })).toThrowError();
@@ -332,7 +332,7 @@ describe('uniqueArray (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

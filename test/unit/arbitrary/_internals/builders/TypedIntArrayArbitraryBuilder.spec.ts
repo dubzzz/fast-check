@@ -1,11 +1,7 @@
 import * as fc from '../../../../../lib/fast-check';
 import { typedIntArrayArbitraryArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
 
-import {
-  FakeIntegerArbitrary,
-  fakeNextArbitrary,
-  fakeNextArbitraryStaticValue,
-} from '../../__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '../../__test-helpers__/ArbitraryHelpers';
 
 import * as ArrayMock from '../../../../../src/arbitrary/array';
 import {
@@ -13,7 +9,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../__test-helpers__/NextArbitraryAssertions';
+} from '../../__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -31,11 +27,11 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         ({ defaultMin, defaultMax, TypedArrayClass }, arrayConstraints) => {
           // Arrange
           const array = jest.spyOn(ArrayMock, 'array');
-          const { instance: arrayInstance } = fakeNextArbitraryStaticValue<unknown[]>(() => []);
+          const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints };
           const arbitraryBuilder = jest.fn();
-          const { instance: arbitraryInstance } = fakeNextArbitrary<number>();
+          const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
           // Act
@@ -62,14 +58,14 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         (arrayConstraints, integerConstraints) => {
           // Arrange
           const array = jest.spyOn(ArrayMock, 'array');
-          const { instance: arrayInstance } = fakeNextArbitraryStaticValue<unknown[]>(() => []);
+          const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints, ...integerConstraints };
           const defaultMin = -128;
           const defaultMax = 127;
           const TypedArrayClass = Int8Array;
           const arbitraryBuilder = jest.fn();
-          const { instance: arbitraryInstance } = fakeNextArbitrary<number>();
+          const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
           // Act
@@ -100,14 +96,14 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         (arrayConstraints, integerConstraints) => {
           // Arrange
           const array = jest.spyOn(ArrayMock, 'array');
-          const { instance: arrayInstance } = fakeNextArbitraryStaticValue<unknown[]>(() => []);
+          const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints, ...integerConstraints };
           const defaultMin = -128;
           const defaultMax = 127;
           const TypedArrayClass = Int8Array;
           const arbitraryBuilder = jest.fn();
-          const { instance: arbitraryInstance } = fakeNextArbitrary<number>();
+          const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
           // Act / Assert

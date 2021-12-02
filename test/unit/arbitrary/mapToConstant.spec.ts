@@ -6,8 +6,8 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+} from './__test-helpers__/ArbitraryAssertions';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('mapToConstant', () => {
   it('should reject any inputs containing at least one strictly negative entry', () =>
@@ -99,7 +99,7 @@ describe('mapToConstant (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value)).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value)).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

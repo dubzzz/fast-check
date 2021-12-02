@@ -6,7 +6,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 import { Stream } from '../../../../../src/stream/Stream';
 
 import * as stubRng from '../../../stubs/generators';
-import { buildNextShrinkTree, renderTree, walkTree } from '../../../arbitrary/__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree, walkTree } from '../../../arbitrary/__test-helpers__/ShrinkTree';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
@@ -37,7 +37,7 @@ describe('Arbitrary', () => {
 
       // Act
       const g = arb.generate(mrngNoCall, undefined);
-      const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
+      const renderedTree = renderTree(buildShrinkTree(arb, g)).join('\n');
 
       // Assert
       expect(renderedTree).toMatchInlineSnapshot(`
@@ -125,8 +125,8 @@ describe('Arbitrary', () => {
 
       // Act
       const g = arb.generate(mrngNoCall, undefined);
-      const shrinkTree = buildNextShrinkTree(arb, g);
-      const shrinkTreeB = buildNextShrinkTree(arb, g);
+      const shrinkTree = buildShrinkTree(arb, g);
+      const shrinkTreeB = buildShrinkTree(arb, g);
 
       // Assert
       const visit = (instance: { counter: number }) => {
@@ -167,8 +167,8 @@ describe('Arbitrary', () => {
 
       // Act
       const g = arb.generate(mrngNoCall, undefined);
-      const shrinkTree = buildNextShrinkTree(arb, g);
-      const shrinkTreeB = buildNextShrinkTree(arb, g);
+      const shrinkTree = buildShrinkTree(arb, g);
+      const shrinkTreeB = buildShrinkTree(arb, g);
 
       // Assert
       const visit = (instance: { counter: number }) => {
@@ -238,7 +238,7 @@ describe('Arbitrary', () => {
 
       // Act
       const g = arb.generate(mrngNoCall, undefined);
-      const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
+      const renderedTree = renderTree(buildShrinkTree(arb, g)).join('\n');
 
       // Assert
       expect(renderedTree).toMatchInlineSnapshot(`
@@ -286,7 +286,7 @@ describe('Arbitrary', () => {
 
       // Act
       const g = arb.generate(mrngNoCall, undefined);
-      const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
+      const renderedTree = renderTree(buildShrinkTree(arb, g)).join('\n');
 
       // Assert
       expect(renderedTree).toMatchInlineSnapshot(`

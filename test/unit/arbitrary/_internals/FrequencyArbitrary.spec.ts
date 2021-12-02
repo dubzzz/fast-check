@@ -2,13 +2,13 @@ import * as fc from '../../../../lib/fast-check';
 import { FrequencyArbitrary, _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
-} from '../__test-helpers__/NextArbitraryAssertions';
+} from '../__test-helpers__/ArbitraryAssertions';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 import { Stream } from '../../../../src/stream/Stream';
 import { sizeArb } from '../__test-helpers__/SizeHelpers';
@@ -35,7 +35,7 @@ const frequencyValidInputsArb = fc
 const fromValidInputs = (metas: { weight: number; arbitraryValue: number }[]) =>
   metas.map((meta) => {
     const expectedContext = Symbol();
-    const arbitraryMeta = fakeNextArbitrary<number>();
+    const arbitraryMeta = fakeArbitrary<number>();
     arbitraryMeta.generate.mockReturnValue(new Value(meta.arbitraryValue, expectedContext));
     return {
       weight: meta.weight,
@@ -122,7 +122,7 @@ describe('FrequencyArbitrary', () => {
     it('should reject calls without weight', () => {
       // Arrange / Act / Assert
       expect(() =>
-        FrequencyArbitrary.from([{ arbitrary: fakeNextArbitrary(), weight: undefined! }], {}, 'test')
+        FrequencyArbitrary.from([{ arbitrary: fakeArbitrary(), weight: undefined! }], {}, 'test')
       ).toThrowError(/expects weights to be integer values/);
     });
 
@@ -143,7 +143,7 @@ describe('FrequencyArbitrary', () => {
             // Arrange
             const weightedArbs = [...headingWeights, negativeWeight, ...traillingWeights].map((weight) => ({
               weight,
-              arbitrary: fakeNextArbitrary(),
+              arbitrary: fakeArbitrary(),
             }));
 
             // Act / Assert
@@ -158,7 +158,7 @@ describe('FrequencyArbitrary', () => {
           // Arrange
           const weightedArbs = [...Array(numEntries)].map(() => ({
             weight: 0,
-            arbitrary: fakeNextArbitrary(),
+            arbitrary: fakeArbitrary(),
           }));
 
           // Act / Assert
@@ -178,7 +178,7 @@ describe('FrequencyArbitrary', () => {
             // Arrange
             const weightedArbs = [...headingWeights, positiveWeight, ...traillingWeights].map((weight) => ({
               weight,
-              arbitrary: fakeNextArbitrary(),
+              arbitrary: fakeArbitrary(),
             }));
 
             // Act / Assert
