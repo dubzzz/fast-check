@@ -6,7 +6,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth';
 import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKeys';
 

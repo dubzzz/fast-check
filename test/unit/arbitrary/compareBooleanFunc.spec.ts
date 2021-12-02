@@ -7,7 +7,7 @@ import {
   assertGenerateEquivalentTo,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
 
 describe('compareBooleanFunc (integration)', () => {

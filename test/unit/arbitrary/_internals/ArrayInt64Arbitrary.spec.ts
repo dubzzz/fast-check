@@ -5,14 +5,14 @@ import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayIn
 
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { buildNextShrinkTree, renderTree } from '../__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree } from '../__test-helpers__/ShrinkTree';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from '../__test-helpers__/NextArbitraryAssertions';
+} from '../__test-helpers__/ArbitraryAssertions';
 
 describe('arrayInt64', () => {
   if (typeof BigInt === 'undefined') {
@@ -193,7 +193,7 @@ describe('arrayInt64', () => {
       const source = new Value({ sign: 1, data: [0, 8] }, undefined); // no context
 
       // Act
-      const tree = buildNextShrinkTree(arb, source);
+      const tree = buildShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
@@ -248,7 +248,7 @@ describe('arrayInt64', () => {
       const source = new Value({ sign: 1, data: [1, 18] }, undefined); // no context
 
       // Act
-      const tree = buildNextShrinkTree(arb, source);
+      const tree = buildShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
@@ -303,7 +303,7 @@ describe('arrayInt64', () => {
       const source = new Value({ sign: -1, data: [0, 8] }, undefined); // no context
 
       // Act
-      const tree = buildNextShrinkTree(arb, source);
+      const tree = buildShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
