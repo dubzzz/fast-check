@@ -11,7 +11,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceSomeSpecificValues,
   assertProduceValuesShrinkableWithoutContext,
-} from '../../__test-helpers__/NextArbitraryAssertions';
+} from '../../__test-helpers__/ArbitraryAssertions';
 import { computeObjectDepth } from '../../__test-helpers__/ComputeObjectDepth';
 import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKeys';
 import { sizeArb } from '../../__test-helpers__/SizeHelpers';

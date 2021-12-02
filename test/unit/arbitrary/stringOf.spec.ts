@@ -8,8 +8,8 @@ import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+} from './__test-helpers__/ArbitraryAssertions';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('stringOf (integration)', () => {
   type Extra = { minLength?: number; maxLength?: number; patterns: string[] };
@@ -70,7 +70,7 @@ describe('stringOf (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

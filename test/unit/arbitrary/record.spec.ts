@@ -1,13 +1,13 @@
 import fc from '../../../lib/fast-check';
 import { record, RecordConstraints } from '../../../src/arbitrary/record';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
 
@@ -32,10 +32,10 @@ describe('record', () => {
           // Arrange
           const recordModel: Record<string | symbol, Arbitrary<any>> = {};
           for (const k of keys) {
-            const { instance } = fakeNextArbitrary();
+            const { instance } = fakeArbitrary();
             recordModel[k] = instance;
           }
-          const { instance } = fakeNextArbitrary<any>();
+          const { instance } = fakeArbitrary<any>();
           const buildPartialRecordArbitrary = jest.spyOn(
             PartialRecordArbitraryBuilderMock,
             'buildPartialRecordArbitrary'
@@ -59,10 +59,10 @@ describe('record', () => {
         // Arrange
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
         for (const k of keys) {
-          const { instance } = fakeNextArbitrary();
+          const { instance } = fakeArbitrary();
           recordModel[k] = instance;
         }
-        const { instance } = fakeNextArbitrary<any>();
+        const { instance } = fakeArbitrary<any>();
         const buildPartialRecordArbitrary = jest.spyOn(
           PartialRecordArbitraryBuilderMock,
           'buildPartialRecordArbitrary'
@@ -86,13 +86,13 @@ describe('record', () => {
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
         const requiredKeys: any[] = [];
         for (const k of keys) {
-          const { instance } = fakeNextArbitrary();
+          const { instance } = fakeArbitrary();
           recordModel[k] = instance;
           if (isRequired(k)) {
             requiredKeys.push(k);
           }
         }
-        const { instance } = fakeNextArbitrary<any>();
+        const { instance } = fakeArbitrary<any>();
         const buildPartialRecordArbitrary = jest.spyOn(
           PartialRecordArbitraryBuilderMock,
           'buildPartialRecordArbitrary'
@@ -116,7 +116,7 @@ describe('record', () => {
         fc.pre(!keys.includes(requiredKey));
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
         for (const k of keys) {
-          const { instance } = fakeNextArbitrary();
+          const { instance } = fakeArbitrary();
           recordModel[k] = instance;
         }
 
@@ -142,7 +142,7 @@ describe('record', () => {
           // Arrange
           const recordModel: Record<string | symbol, Arbitrary<any>> = {};
           for (const k of keys) {
-            const { instance } = fakeNextArbitrary();
+            const { instance } = fakeArbitrary();
             recordModel[k.name] = instance;
           }
 

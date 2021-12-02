@@ -1,12 +1,12 @@
 import * as fc from '../../../lib/fast-check';
 import { bigUintN } from '../../../src/arbitrary/bigUintN';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as BigIntArbitraryMock from '../../../src/arbitrary/_internals/BigIntArbitrary';
 
 function fakeBigIntArbitrary() {
-  const instance = fakeNextArbitrary<bigint>().instance as BigIntArbitraryMock.BigIntArbitrary;
+  const instance = fakeArbitrary<bigint>().instance as BigIntArbitraryMock.BigIntArbitrary;
   return instance;
 }
 
