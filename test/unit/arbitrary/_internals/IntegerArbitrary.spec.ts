@@ -8,8 +8,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
+} from '../__test-helpers__/ArbitraryAssertions';
+import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
 import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange';
 import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers/ShrinkInteger';
@@ -270,8 +270,8 @@ describe('IntegerArbitrary (integration)', () => {
             // Act
             const source = new Value(mid, undefined);
             const sourceNegate = new Value(mid !== 0 ? -mid : 0, undefined); // !==0 to avoid -0
-            const tree = buildNextShrinkTree(arb, source);
-            const treeNegate = buildNextShrinkTree(arbNegate, sourceNegate);
+            const tree = buildShrinkTree(arb, source);
+            const treeNegate = buildShrinkTree(arbNegate, sourceNegate);
             const flat: number[] = [];
             const flatNegate: number[] = [];
             walkTree(tree, (v) => flat.push(v));
@@ -304,8 +304,8 @@ describe('IntegerArbitrary (integration)', () => {
             // Act
             const source = new Value(mid, undefined);
             const sourceOffset = new Value(mid + offset, undefined);
-            const tree = buildNextShrinkTree(arb, source);
-            const treeOffset = buildNextShrinkTree(arbOffset, sourceOffset);
+            const tree = buildShrinkTree(arb, source);
+            const treeOffset = buildShrinkTree(arbOffset, sourceOffset);
             const flat: number[] = [];
             const flatOffset: number[] = [];
             walkTree(tree, (v) => flat.push(v));
@@ -325,7 +325,7 @@ describe('IntegerArbitrary (integration)', () => {
       const source = new Value(8, undefined);
 
       // Act
-      const tree = buildNextShrinkTree(arb, source);
+      const tree = buildShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
@@ -389,7 +389,7 @@ describe('IntegerArbitrary (integration)', () => {
       const source = new Value(18, undefined);
 
       // Act
-      const tree = buildNextShrinkTree(arb, source);
+      const tree = buildShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert
@@ -444,7 +444,7 @@ describe('IntegerArbitrary (integration)', () => {
       const source = new Value(-8, undefined);
 
       // Act
-      const tree = buildNextShrinkTree(arb, source);
+      const tree = buildShrinkTree(arb, source);
       const renderedTree = renderTree(tree).join('\n');
 
       // Assert

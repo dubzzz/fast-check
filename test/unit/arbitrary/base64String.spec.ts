@@ -5,12 +5,12 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 import * as ArrayMock from '../../../src/arbitrary/array';
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
@@ -65,7 +65,7 @@ describe('base64String', () => {
           // Arrange
           const constraints = { minLength: withMin ? min : undefined, maxLength: withMax ? min + gap : undefined };
           const array = jest.spyOn(ArrayMock, 'array');
-          const { instance: arrayInstance, map } = fakeNextArbitrary();
+          const { instance: arrayInstance, map } = fakeArbitrary();
           array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map
 
@@ -118,7 +118,7 @@ describe('base64String', () => {
             size,
           };
           const array = jest.spyOn(ArrayMock, 'array');
-          const { instance: arrayInstance, map } = fakeNextArbitrary();
+          const { instance: arrayInstance, map } = fakeArbitrary();
           array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map
 
@@ -201,7 +201,7 @@ describe('base64String (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);
