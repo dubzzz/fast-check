@@ -1,7 +1,7 @@
 import * as fc from '../../../lib/fast-check';
 import { base64 } from '../../../src/arbitrary/base64';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
 import {
@@ -10,7 +10,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -94,7 +94,7 @@ describe('base64 (integration)', () => {
 // Helpers
 
 function extractArgumentsForBuildCharacter(build: () => void) {
-  const { instance } = fakeNextArbitrary();
+  const { instance } = fakeArbitrary();
   const buildCharacterArbitrary = jest.spyOn(CharacterArbitraryBuilderMock, 'buildCharacterArbitrary');
   buildCharacterArbitrary.mockImplementation(() => instance);
 

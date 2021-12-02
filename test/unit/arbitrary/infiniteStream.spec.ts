@@ -1,6 +1,6 @@
 import { infiniteStream } from '../../../src/arbitrary/infiniteStream';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as StreamArbitraryMock from '../../../src/arbitrary/_internals/StreamArbitrary';
 
@@ -13,8 +13,8 @@ beforeEach(beforeEachHook);
 describe('infiniteStream', () => {
   it('should instantiate StreamArbitrary(arb, numValues) for infiniteStream(arb)', () => {
     // Arrange
-    const { instance: sourceArbitrary } = fakeNextArbitrary();
-    const { instance } = fakeNextArbitrary();
+    const { instance: sourceArbitrary } = fakeArbitrary();
+    const { instance } = fakeArbitrary();
     const StreamArbitrary = jest.spyOn(StreamArbitraryMock, 'StreamArbitrary');
     StreamArbitrary.mockImplementation(() => instance as StreamArbitraryMock.StreamArbitrary<unknown>);
 

@@ -1,6 +1,6 @@
 import { TupleArbitrary } from '../../../../src/arbitrary/_internals/TupleArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
@@ -10,8 +10,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/NextArbitraryAssertions';
-import { buildNextShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
+} from '../__test-helpers__/ArbitraryAssertions';
+import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
@@ -23,9 +23,9 @@ describe('TupleArbitrary', () => {
       const vA = Symbol();
       const vB = Symbol();
       const vC = Symbol();
-      const { instance: instanceA, generate: generateA } = fakeNextArbitrary<symbol>();
-      const { instance: instanceB, generate: generateB } = fakeNextArbitrary<symbol>();
-      const { instance: instanceC, generate: generateC } = fakeNextArbitrary<symbol>();
+      const { instance: instanceA, generate: generateA } = fakeArbitrary<symbol>();
+      const { instance: instanceB, generate: generateB } = fakeArbitrary<symbol>();
+      const { instance: instanceC, generate: generateC } = fakeArbitrary<symbol>();
       generateA.mockReturnValueOnce(new Value(vA, undefined));
       generateB.mockReturnValueOnce(new Value(vB, undefined));
       generateC.mockReturnValueOnce(new Value(vC, undefined));
@@ -44,8 +44,8 @@ describe('TupleArbitrary', () => {
 
     it('should produce a cloneable instance if provided one cloneable underlying', () => {
       // Arrange
-      const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
-      const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
+      const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeArbitrary<string[]>();
+      const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeArbitrary<string[]>();
       generateA.mockReturnValue(new Value([], undefined));
       generateB.mockReturnValue(new Value(Object.defineProperty([], cloneMethod, { value: jest.fn() }), undefined));
       const { instance: mrng } = fakeRandom();
@@ -61,8 +61,8 @@ describe('TupleArbitrary', () => {
 
     it('should not produce a cloneable instance if no cloneable underlyings', () => {
       // Arrange
-      const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
-      const { instance: fakeArbitraryNotCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
+      const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeArbitrary<string[]>();
+      const { instance: fakeArbitraryNotCloneableB, generate: generateB } = fakeArbitrary<string[]>();
       generateA.mockReturnValue(new Value([], undefined));
       generateB.mockReturnValue(new Value([], undefined));
       const { instance: mrng } = fakeRandom();
@@ -78,8 +78,8 @@ describe('TupleArbitrary', () => {
 
     it('should not clone cloneable on generate', () => {
       // Arrange
-      const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeNextArbitrary<string[]>();
-      const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeNextArbitrary<string[]>();
+      const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeArbitrary<string[]>();
+      const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeArbitrary<string[]>();
       const cloneMethodImpl = jest.fn();
       generateA.mockReturnValue(new Value([], undefined));
       generateB.mockReturnValue(
@@ -111,9 +111,9 @@ describe('TupleArbitrary', () => {
         const vA = Symbol();
         const vB = Symbol();
         const vC = Symbol();
-        const { instance: instanceA, canShrinkWithoutContext: canShrinkWithoutContextA } = fakeNextArbitrary<symbol>();
-        const { instance: instanceB, canShrinkWithoutContext: canShrinkWithoutContextB } = fakeNextArbitrary<symbol>();
-        const { instance: instanceC, canShrinkWithoutContext: canShrinkWithoutContextC } = fakeNextArbitrary<symbol>();
+        const { instance: instanceA, canShrinkWithoutContext: canShrinkWithoutContextA } = fakeArbitrary<symbol>();
+        const { instance: instanceB, canShrinkWithoutContext: canShrinkWithoutContextB } = fakeArbitrary<symbol>();
+        const { instance: instanceC, canShrinkWithoutContext: canShrinkWithoutContextC } = fakeArbitrary<symbol>();
         canShrinkWithoutContextA.mockReturnValueOnce(canA);
         canShrinkWithoutContextB.mockReturnValueOnce(canB);
         canShrinkWithoutContextC.mockReturnValueOnce(canC);
@@ -134,9 +134,9 @@ describe('TupleArbitrary', () => {
 
     it('should not call underlyings on canShrinkWithoutContext if size is invalid', () => {
       // Arrange
-      const { instance: instanceA, canShrinkWithoutContext: canShrinkWithoutContextA } = fakeNextArbitrary<symbol>();
-      const { instance: instanceB, canShrinkWithoutContext: canShrinkWithoutContextB } = fakeNextArbitrary<symbol>();
-      const { instance: instanceC, canShrinkWithoutContext: canShrinkWithoutContextC } = fakeNextArbitrary<symbol>();
+      const { instance: instanceA, canShrinkWithoutContext: canShrinkWithoutContextA } = fakeArbitrary<symbol>();
+      const { instance: instanceB, canShrinkWithoutContext: canShrinkWithoutContextB } = fakeArbitrary<symbol>();
+      const { instance: instanceC, canShrinkWithoutContext: canShrinkWithoutContextC } = fakeArbitrary<symbol>();
 
       // Act
       const arb = new TupleArbitrary([instanceA, instanceB, instanceC]);
@@ -160,9 +160,9 @@ describe('TupleArbitrary', () => {
       const contextA = Symbol();
       const contextB = Symbol();
       const contextC = Symbol();
-      const { instance: instanceA, generate: generateA, shrink: shrinkA } = fakeNextArbitrary<symbol>();
-      const { instance: instanceB, generate: generateB, shrink: shrinkB } = fakeNextArbitrary<symbol>();
-      const { instance: instanceC, generate: generateC, shrink: shrinkC } = fakeNextArbitrary<symbol>();
+      const { instance: instanceA, generate: generateA, shrink: shrinkA } = fakeArbitrary<symbol>();
+      const { instance: instanceB, generate: generateB, shrink: shrinkB } = fakeArbitrary<symbol>();
+      const { instance: instanceC, generate: generateC, shrink: shrinkC } = fakeArbitrary<symbol>();
       generateA.mockReturnValueOnce(new Value(vA, contextA));
       generateB.mockReturnValueOnce(new Value(vB, contextB));
       generateC.mockReturnValueOnce(new Value(vC, contextC));
@@ -205,18 +205,10 @@ describe('TupleArbitrary', () => {
 
     it('should clone cloneable on shrink', () => {
       // Arrange
-      const {
-        instance: fakeArbitraryNotCloneableA,
-        generate: generateA,
-        shrink: shrinkA,
-      } = fakeNextArbitrary<string[]>();
-      const { instance: fakeArbitraryCloneableB, generate: generateB, shrink: shrinkB } = fakeNextArbitrary<string[]>();
+      const { instance: fakeArbitraryNotCloneableA, generate: generateA, shrink: shrinkA } = fakeArbitrary<string[]>();
+      const { instance: fakeArbitraryCloneableB, generate: generateB, shrink: shrinkB } = fakeArbitrary<string[]>();
 
-      const {
-        instance: fakeArbitraryNotCloneableC,
-        generate: generateC,
-        shrink: shrinkC,
-      } = fakeNextArbitrary<string[]>();
+      const { instance: fakeArbitraryNotCloneableC, generate: generateC, shrink: shrinkC } = fakeArbitrary<string[]>();
       const cloneMethodImpl = jest
         .fn()
         .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
@@ -293,7 +285,7 @@ describe('TupleArbitrary (integration)', () => {
 
     // Act
     const g = arb.generate(mrng, undefined);
-    const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, g)).join('\n');
 
     // Assert
     expect(g.hasToBeCloned).toBe(false);
@@ -370,8 +362,8 @@ describe('TupleArbitrary (integration)', () => {
 
     // Act
     const g = arb.generate(mrng, undefined);
-    const treeA = buildNextShrinkTree(arb, g);
-    const treeB = buildNextShrinkTree(arb, g);
+    const treeA = buildShrinkTree(arb, g);
+    const treeB = buildShrinkTree(arb, g);
 
     // Assert
     walkTree(treeA, ([_first, cloneable, _second]) => {
