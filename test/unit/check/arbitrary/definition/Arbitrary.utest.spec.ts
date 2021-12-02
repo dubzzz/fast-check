@@ -7,7 +7,7 @@ import { Random } from '../../../../../src/random/generator/Random';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
-describe('NextArbitrary', () => {
+describe('Arbitrary', () => {
   describe('filter', () => {
     it('should filter the values produced by the original arbitrary on generate', () => {
       // Arrange
@@ -24,14 +24,14 @@ describe('NextArbitrary', () => {
         .mockReturnValueOnce(choice2)
         .mockReturnValueOnce(choice3)
         .mockReturnValueOnce(choice4);
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().filter((v) => v % 3 === 0);
+      const arb = new MyArbitrary().filter((v) => v % 3 === 0);
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
 
       // Assert
@@ -52,14 +52,14 @@ describe('NextArbitrary', () => {
       const choice4 = new Value(4, Symbol());
       const choice5 = new Value(6, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3, choice4, choice5));
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().filter((v) => v % 3 === 0);
+      const arb = new MyArbitrary().filter((v) => v % 3 === 0);
       const shrinks = arb.shrink(valueToShrink, contextToShrink);
 
       // Assert
@@ -82,7 +82,7 @@ describe('NextArbitrary', () => {
         const canShrinkWithoutContext = jest.fn();
         const shrink = jest.fn();
         const predicate = jest.fn();
-        class MyNextArbitrary extends Arbitrary<any> {
+        class MyArbitrary extends Arbitrary<any> {
           generate = generate;
           canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
           shrink = shrink;
@@ -91,7 +91,7 @@ describe('NextArbitrary', () => {
         predicate.mockReturnValueOnce(predicateOutput);
 
         // Act
-        const arb = new MyNextArbitrary().filter(predicate);
+        const arb = new MyArbitrary().filter(predicate);
         const out = arb.canShrinkWithoutContext(requestedValue);
 
         // Assert
@@ -116,14 +116,14 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       const choice = new Value(1, Symbol());
       generate.mockReturnValueOnce(choice);
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map((v) => String(v));
+      const arb = new MyArbitrary().map((v) => String(v));
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
 
       // Assert
@@ -139,14 +139,14 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       const choice = new Value({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
       generate.mockReturnValueOnce(choice);
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map((v) => ({ stringValue: String(v.source) }));
+      const arb = new MyArbitrary().map((v) => ({ stringValue: String(v.source) }));
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
 
       // Assert
@@ -166,14 +166,14 @@ describe('NextArbitrary', () => {
       const mappedClone = jest.fn();
       const mapped = { source: 42, [cloneMethod]: mappedClone };
       generate.mockReturnValueOnce(choice);
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map((_v) => mapped); // mapped already comes with clone capacities
+      const arb = new MyArbitrary().map((_v) => mapped); // mapped already comes with clone capacities
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
 
       // Assert
@@ -197,14 +197,14 @@ describe('NextArbitrary', () => {
       const choice2 = new Value(2, Symbol());
       const choice3 = new Value(3, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3));
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map((v) => String(v));
+      const arb = new MyArbitrary().map((v) => String(v));
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
       const shrinks = arb.shrink(g.value, g.context);
 
@@ -228,14 +228,14 @@ describe('NextArbitrary', () => {
       const choice21 = new Value(21, Symbol());
       const choice22 = new Value(22, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice21, choice22));
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map((v) => String(v));
+      const arb = new MyArbitrary().map((v) => String(v));
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
       const shrinksGen1 = arb.shrink(g.value, g.context);
       const mappedChoice2 = shrinksGen1.getNthOrLast(1)!;
@@ -258,14 +258,14 @@ describe('NextArbitrary', () => {
       const choice1 = new Value({ source: 2, [cloneMethod]: () => choice1.value_ }, Symbol());
       const choice2 = new Value({ source: 2, [cloneMethod]: () => choice2.value_ }, Symbol());
       shrink.mockReturnValueOnce(Stream.of(choice1, choice2));
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map((v) => ({ stringValue: String(v.source) }));
+      const arb = new MyArbitrary().map((v) => ({ stringValue: String(v.source) }));
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
       const shrinks = arb.shrink(g.value, g.context);
       const shrinksValues = [...shrinks];
@@ -283,14 +283,14 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map(() => '');
+      const arb = new MyArbitrary().map(() => '');
       const out = arb.canShrinkWithoutContext('');
 
       // Assert
@@ -303,14 +303,14 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map(() => '');
+      const arb = new MyArbitrary().map(() => '');
       const shrinks = arb.shrink('', undefined);
 
       // Assert
@@ -333,14 +333,14 @@ describe('NextArbitrary', () => {
         const originalValue = Symbol();
         const unmapperOutput = Symbol();
         const unmapper = jest.fn().mockReturnValue(unmapperOutput);
-        class MyNextArbitrary extends Arbitrary<any> {
+        class MyArbitrary extends Arbitrary<any> {
           generate = generate;
           canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
           shrink = shrink;
         }
 
         // Act
-        const arb = new MyNextArbitrary().map(() => Symbol(), unmapper);
+        const arb = new MyArbitrary().map(() => Symbol(), unmapper);
         const out = arb.canShrinkWithoutContext(originalValue);
 
         // Assert
@@ -361,14 +361,14 @@ describe('NextArbitrary', () => {
       const unmapper = jest.fn().mockImplementation(() => {
         throw new Error('Unable to unmap such value');
       });
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map(() => Symbol(), unmapper);
+      const arb = new MyArbitrary().map(() => Symbol(), unmapper);
       const out = arb.canShrinkWithoutContext(originalValue);
 
       // Assert
@@ -391,14 +391,14 @@ describe('NextArbitrary', () => {
       const originalValue = Symbol();
       const unmapperOutput = 'tata';
       const unmapper = jest.fn().mockReturnValue('tata');
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().map((tag) => Symbol.for(tag), unmapper);
+      const arb = new MyArbitrary().map((tag) => Symbol.for(tag), unmapper);
       const shrinks = [...arb.shrink(originalValue, undefined)];
 
       // Assert
@@ -424,21 +424,21 @@ describe('NextArbitrary', () => {
       const shrinkChained = jest.fn();
       const choiceChained = new Value(50, Symbol());
       generateChained.mockReturnValueOnce(choiceChained);
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
-      class MyNextChainedArbitrary extends Arbitrary<any> {
+      class MyChainedArbitrary extends Arbitrary<any> {
         generate = generateChained;
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
       const chainer = jest.fn();
-      chainer.mockReturnValueOnce(new MyNextChainedArbitrary());
+      chainer.mockReturnValueOnce(new MyChainedArbitrary());
 
       // Act
-      const arb = new MyNextArbitrary().chain(chainer);
+      const arb = new MyArbitrary().chain(chainer);
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
 
       // Assert
@@ -475,21 +475,21 @@ describe('NextArbitrary', () => {
       const shrinkChained1 = new Value(25, Symbol());
       const shrinkChained2 = new Value(51, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained1, shrinkChained2));
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
-      class MyNextChainedArbitrary extends Arbitrary<any> {
+      class MyChainedArbitrary extends Arbitrary<any> {
         generate = generateChained;
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
       const chainer = jest.fn();
-      chainer.mockReturnValue(new MyNextChainedArbitrary());
+      chainer.mockReturnValue(new MyChainedArbitrary());
 
       // Act
-      const arb = new MyNextArbitrary().chain(chainer);
+      const arb = new MyArbitrary().chain(chainer);
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
       const shrinks = arb.shrink(g.value, g.context);
 
@@ -538,21 +538,21 @@ describe('NextArbitrary', () => {
       const shrinkChained11 = new Value(125, Symbol());
       const shrinkChained12 = new Value(151, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained11, shrinkChained12));
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
-      class MyNextChainedArbitrary extends Arbitrary<any> {
+      class MyChainedArbitrary extends Arbitrary<any> {
         generate = generateChained;
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
       const chainer = jest.fn();
-      chainer.mockReturnValue(new MyNextChainedArbitrary());
+      chainer.mockReturnValue(new MyChainedArbitrary());
 
       // Act
-      const arb = new MyNextArbitrary().chain(chainer);
+      const arb = new MyArbitrary().chain(chainer);
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
       const firstShrunkValue = arb.shrink(g.value, g.context).getNthOrLast(0)!;
       const shrinks = arb.shrink(firstShrunkValue.value, firstShrunkValue.context);
@@ -598,21 +598,21 @@ describe('NextArbitrary', () => {
       const shrinkChained11 = new Value(125, Symbol());
       const shrinkChained12 = new Value(151, Symbol());
       shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained11, shrinkChained12));
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
-      class MyNextChainedArbitrary extends Arbitrary<any> {
+      class MyChainedArbitrary extends Arbitrary<any> {
         generate = generateChained;
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
       const chainer = jest.fn();
-      chainer.mockReturnValue(new MyNextChainedArbitrary());
+      chainer.mockReturnValue(new MyChainedArbitrary());
 
       // Act
-      const arb = new MyNextArbitrary().chain(chainer);
+      const arb = new MyArbitrary().chain(chainer);
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
       const shrunkValue = arb.shrink(g.value, g.context).getNthOrLast(2)!; // source will be exhausted it only declares two shrunk values
       const shrinks = arb.shrink(shrunkValue.value, shrunkValue.context);
@@ -627,14 +627,14 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().chain(() => new MyNextArbitrary());
+      const arb = new MyArbitrary().chain(() => new MyArbitrary());
       const out = arb.canShrinkWithoutContext('');
 
       // Assert
@@ -647,14 +647,14 @@ describe('NextArbitrary', () => {
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();
       const shrink = jest.fn();
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().chain(() => new MyNextArbitrary());
+      const arb = new MyArbitrary().chain(() => new MyArbitrary());
       const shrinks = arb.shrink('', undefined);
 
       // Assert
@@ -672,14 +672,14 @@ describe('NextArbitrary', () => {
       const shrink = jest.fn();
       const choice = new Value(1, Symbol());
       generate.mockReturnValueOnce(choice);
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
         shrink = shrink;
       }
 
       // Act
-      const arb = new MyNextArbitrary().noShrink();
+      const arb = new MyArbitrary().noShrink();
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
 
       // Assert
@@ -690,7 +690,7 @@ describe('NextArbitrary', () => {
     it('should override default shrink with function returning an empty Stream', () => {
       // Arrange
       const shrink = jest.fn();
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate(): Value<any> {
           throw new Error('Not implemented.');
         }
@@ -699,7 +699,7 @@ describe('NextArbitrary', () => {
         }
         shrink = shrink;
       }
-      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
+      const fakeArbitrary: Arbitrary<any> = new MyArbitrary();
       const noShrinkArbitrary = fakeArbitrary.noShrink();
 
       // Act
@@ -712,7 +712,7 @@ describe('NextArbitrary', () => {
 
     it('should return itself when called twice', () => {
       // Arrange
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate(): Value<any> {
           throw new Error('Not implemented.');
         }
@@ -723,7 +723,7 @@ describe('NextArbitrary', () => {
           throw new Error('Not implemented.');
         }
       }
-      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
+      const fakeArbitrary: Arbitrary<any> = new MyArbitrary();
 
       // Act
       const firstNoShrink = fakeArbitrary.noShrink();
@@ -738,7 +738,7 @@ describe('NextArbitrary', () => {
     it('should override passed bias with undefined', () => {
       // Arrange
       const generate = jest.fn();
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext(value: unknown): value is any {
           throw new Error('Not implemented.');
@@ -747,7 +747,7 @@ describe('NextArbitrary', () => {
           throw new Error('Not implemented.');
         }
       }
-      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
+      const fakeArbitrary: Arbitrary<any> = new MyArbitrary();
       const noBiasArbitrary = fakeArbitrary.noBias();
 
       // Act
@@ -760,7 +760,7 @@ describe('NextArbitrary', () => {
 
     it('should return itself when called twice', () => {
       // Arrange
-      class MyNextArbitrary extends Arbitrary<any> {
+      class MyArbitrary extends Arbitrary<any> {
         generate(): Value<any> {
           throw new Error('Not implemented.');
         }
@@ -771,7 +771,7 @@ describe('NextArbitrary', () => {
           throw new Error('Not implemented.');
         }
       }
-      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
+      const fakeArbitrary: Arbitrary<any> = new MyArbitrary();
 
       // Act
       const firstNoBias = fakeArbitrary.noBias();
