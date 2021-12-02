@@ -11,10 +11,10 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/NextArbitraryAssertions';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+} from '../__test-helpers__/ArbitraryAssertions';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { buildNextShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
 describe('CloneArbitrary', () => {
   describe('generate', () => {
@@ -27,7 +27,7 @@ describe('CloneArbitrary', () => {
       const { instance: mrngClone1 } = fakeRandom();
       const { instance: mrngClone2 } = fakeRandom();
       clone.mockReturnValueOnce(mrngClone1).mockReturnValueOnce(mrngClone2);
-      const { instance: sourceArb, generate } = fakeNextArbitrary<symbol>();
+      const { instance: sourceArb, generate } = fakeArbitrary<symbol>();
       generate.mockReturnValue(new Value(producedValue, undefined));
 
       // Act
@@ -50,7 +50,7 @@ describe('CloneArbitrary', () => {
       // Arrange
       const numValues = 1;
       const { instance: mrng } = fakeRandom();
-      const { instance: sourceArb, generate } = fakeNextArbitrary<unknown>();
+      const { instance: sourceArb, generate } = fakeArbitrary<unknown>();
       if (cloneable) generate.mockReturnValue(new Value({ [cloneMethod]: jest.fn() }, undefined));
       else generate.mockReturnValue(new Value({ m: jest.fn() }, undefined));
 
@@ -70,7 +70,7 @@ describe('CloneArbitrary', () => {
         fc.property(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (numValues, numRequestedValues) => {
           // Arrange
           fc.pre(numValues !== numRequestedValues);
-          const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
+          const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
 
           // Act
           const arb = new CloneArbitrary(sourceArb, numValues);
@@ -84,7 +84,7 @@ describe('CloneArbitrary', () => {
 
     it('should return false if values are not equal regarding Object.is', () => {
       // Arrange
-      const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
+      const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
 
       // Act
       const arb = new CloneArbitrary(sourceArb, 2);
@@ -104,7 +104,7 @@ describe('CloneArbitrary', () => {
       ({ canShrinkWithoutContextValue }) => {
         // Arrange
         const value = {};
-        const { instance: sourceArb, canShrinkWithoutContext } = fakeNextArbitrary();
+        const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
         canShrinkWithoutContext.mockReturnValue(canShrinkWithoutContextValue);
 
         // Act
@@ -126,7 +126,7 @@ describe('CloneArbitrary', () => {
       const s1 = Symbol();
       const s2 = Symbol();
       const numValues = 3;
-      const { instance: sourceArb, shrink } = fakeNextArbitrary<symbol>();
+      const { instance: sourceArb, shrink } = fakeArbitrary<symbol>();
       shrink
         .mockReturnValueOnce(Stream.of<Value<symbol>>(new Value(s1, undefined), new Value(s2, undefined)))
         .mockReturnValueOnce(Stream.of<Value<symbol>>(new Value(s1, undefined), new Value(s2, undefined)))
@@ -187,7 +187,7 @@ describe('CloneArbitrary (integration)', () => {
 
     // Act
     const g = arb.generate(mrng, undefined);
-    const renderedTree = renderTree(buildNextShrinkTree(arb, g)).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, g)).join('\n');
 
     // Assert
     expect(renderedTree).toMatchInlineSnapshot(`
@@ -208,8 +208,8 @@ describe('CloneArbitrary (integration)', () => {
 
     // Act
     const g = arb.generate(mrng, undefined);
-    const treeA = buildNextShrinkTree(arb, g);
-    const treeB = buildNextShrinkTree(arb, g);
+    const treeA = buildShrinkTree(arb, g);
+    const treeB = buildShrinkTree(arb, g);
 
     // Assert
     walkTree(treeA, ([_first, cloneable, _second]) => {

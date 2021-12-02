@@ -7,7 +7,7 @@ import { configureGlobal, resetConfigureGlobal } from '../../../../src/check/run
 import * as stubArb from '../../stubs/arbitraries';
 import * as stubRng from '../../stubs/generators';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
 import { Stream } from '../../../../src/stream/Stream';
 
 describe('AsyncProperty', () => {
@@ -81,7 +81,7 @@ describe('AsyncProperty', () => {
     ).toThrowError());
 
   it('Should use the unbiased arbitrary by default', () => {
-    const { instance, generate } = fakeNextArbitrary<number>();
+    const { instance, generate } = fakeArbitrary<number>();
     generate.mockReturnValue(new Value(69, undefined));
     const mrng = stubRng.mutable.nocall();
 
@@ -93,7 +93,7 @@ describe('AsyncProperty', () => {
     expect(generate).toHaveBeenCalledWith(mrng, undefined);
   });
   it('Should use the biased arbitrary when asked to', () => {
-    const { instance, generate } = fakeNextArbitrary<number>();
+    const { instance, generate } = fakeArbitrary<number>();
     generate.mockReturnValue(new Value(42, undefined));
     const mrng = stubRng.mutable.nocall();
 
@@ -267,7 +267,7 @@ describe('AsyncProperty', () => {
   });
   it('should not call shrink on the arbitrary if no context and not unhandled value', () => {
     // Arrange
-    const { instance: arb, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
+    const { instance: arb, shrink, canShrinkWithoutContext } = fakeArbitrary();
     canShrinkWithoutContext.mockReturnValue(false);
     const value = Symbol();
 
@@ -283,7 +283,7 @@ describe('AsyncProperty', () => {
   });
   it('should call shrink on the arbitrary if no context but properly handled value', () => {
     // Arrange
-    const { instance: arb, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
+    const { instance: arb, shrink, canShrinkWithoutContext } = fakeArbitrary();
     canShrinkWithoutContext.mockReturnValue(true);
     const s1 = Symbol();
     const s2 = Symbol();

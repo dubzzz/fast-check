@@ -1,12 +1,12 @@
 import * as fc from '../../../lib/fast-check';
 import { integer } from '../../../src/arbitrary/integer';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
 
 function fakeIntegerArbitrary() {
-  const instance = fakeNextArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
+  const instance = fakeArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
   return instance;
 }
 
