@@ -14,7 +14,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Replay after failure](#replay-after-failure)
 - [Replay after failure for commands](#replay-after-failure-for-commands)
 - [Add custom examples next to generated ones](#add-custom-examples-next-to-generated-ones)
-- [Simplify user deinable corner cases](#simplify-user-definable-corner-cases)
+- [Simplify user definable corner cases](#simplify-user-definable-corner-cases)
 - [Combine with other faker or random generator libraries](#combine-with-other-faker-or-random-generator-libraries)
 - [Setup global settings](#setup-global-settings)
 - [Avoid tests to reach the timeout of your test runner](#avoid-tests-to-reach-the-timeout-of-your-test-runner)
@@ -554,7 +554,7 @@ fc.assert(
 
 Please keep in mind that property based testing frameworks are fully able to find corner-cases with no help at all.
 
-## Simplify user deinable corner cases
+## Simplify user definable corner cases
 
 Sometimes, you may discover a bug even before you took time to write a test for it.
 But, from time to time, the corner cases you might not be that easy to troubleshoot and a smaller case would clearly help you in your investigation.
