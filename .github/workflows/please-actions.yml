@@ -7,7 +7,7 @@ on:
 
 jobs:
   please_deploy:
-    name: 'Deploy the bundle of the current PR to Netlify'
+    name: 'Please deploy'
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && github.event.comment.body == 'please deploy'
     steps:
