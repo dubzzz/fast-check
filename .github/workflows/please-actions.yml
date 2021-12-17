@@ -18,9 +18,10 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            const core = require('@actions/core');
             const script = require('./.github/actions/reaction-to-comment.cjs');
             const options = { action: 'deploy', reaction: 'rocket', requireAdmin: true };
-            await script({ github, context, options });
+            await script({ github, context, core, options });
       - name: Checkout Pull Request
         run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
         env:
