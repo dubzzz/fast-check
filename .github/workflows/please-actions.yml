@@ -11,9 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && github.event.comment.body == 'please deploy'
     steps:
-      - uses: actions/checkout@v2.4.0
       - name: Check comment
-        id: check_comment
         uses: actions/github-script@v5
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -34,6 +32,7 @@ jobs:
               comment_id: comment.id,
               content: 'rocket',
             });
+      - uses: actions/checkout@v2.4.0
       - name: Checkout Pull Request
         run: hub pr checkout "${{github.event.issue.number}}"
         env:
@@ -61,3 +60,50 @@ jobs:
         env:
           NETLIFY_SITE_ID: ${{secrets.NETLIFY_APP_ID}}
           NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
+
+  please_merge:
+    name: "Please merge"
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request && github.event.comment.body == 'please merge'
+    steps:
+      - name: Check comment
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const script = require('./.github/actions/reaction-to-comment.cjs');
+            // Check admin rights
+            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({
+              ...context.repo,
+              username: context.actor,
+            });
+            if (levelResponse.data.permission !== 'admin') {
+              core.setFailed('"please merge" can only be executed by an admin user');
+            }
+            // Add reaction to the comment
+            const comment = context.payload.comment;
+            await github.rest.reactions.createForIssueComment({
+              ...context.repo,
+              comment_id: comment.id,
+              content: '+1',
+            });
+      - uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
+      - name: Checkout Pull Request
+        run: hub pr checkout "${{github.event.issue.number}}"
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Configure GIT
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Merge BASE_REF into current PR
+        run: |
+          export BASE_REF=$(hub api repos/gopigment/monorepo/pulls/${{github.event.issue.number}} | jq ".base.ref" --raw-output)
+          echo "BASE_REF is: ${BASE_REF}"
+          git pull --no-rebase origin "${BASE_REF}"
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Push
+        run: git push
