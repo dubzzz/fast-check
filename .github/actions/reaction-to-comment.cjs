@@ -6,12 +6,11 @@ async function isAdmin(context, octokit) {
     });
     return response.data.permission === 'admin';
   } catch (err) {
-    core.setFailed(`Unable get details for current user, failed with: ${err}`);
-    return false;
+    throw new Error(`Unable get details for current user, failed with: ${err}`);
   }
 }
 
-module.exports = async ({ github, context, core, options }) => {
+module.exports = async ({ github, context, options }) => {
   try {
     const {
       action, // Name of the action / required
@@ -21,8 +20,7 @@ module.exports = async ({ github, context, core, options }) => {
 
     const comment = context.payload.comment;
     if (comment === undefined || !('body' in comment)) {
-      core.setFailed(`Unable to access the body of the comment`);
-      return;
+      throw new Error(`Unable to access the body of the comment`);
     }
     const commentBody = context.payload.comment.body;
 
@@ -34,17 +32,16 @@ module.exports = async ({ github, context, core, options }) => {
     const actionFound = requestsFromComment.find((request) => request === action) !== undefined;
     const adminRequirementsFulfilled = requireAdmin ? await isAdmin(context, github) : true;
 
-    core.info(`requestToBot: ${requestToBot}`);
-    core.info(`actionFound: ${actionFound} (request included: ${requestsFromComment.join(', ')})`);
-    core.info(`adminRequirementsFulfilled: ${adminRequirementsFulfilled}`);
+    console.info(`requestToBot: ${requestToBot}`);
+    console.info(`actionFound: ${actionFound} (request included: ${requestsFromComment.join(', ')})`);
+    console.info(`adminRequirementsFulfilled: ${adminRequirementsFulfilled}`);
 
     const acceptedAction = requestToBot && actionFound && adminRequirementsFulfilled;
     if (!acceptedAction) {
-      core.setFailed(`Invalid command for: "@github-actions ${action}"`);
-      return;
+      throw new Error(`Invalid command for: "@github-actions ${action}"`);
     }
-    core.setOutput('valid_comment', acceptedAction);
-    core.setOutput('pull_number', context.issue.number);
+    console.log('valid_comment: ' + acceptedAction);
+    console.log('pull_number: ' + context.issue.number);
 
     try {
       await github.reactions.createForIssueComment({
@@ -53,9 +50,9 @@ module.exports = async ({ github, context, core, options }) => {
         content: reaction,
       });
     } catch (err) {
-      core.info(`Failed to add a reaction, got error: ${err}`);
+      console.info(`Failed to add a reaction, got error: ${err}`);
     }
   } catch (err) {
-    core.setFailed(`Failed with error: ${err}`);
+    throw new Error(`Failed with error: ${err}`);
   }
 };
