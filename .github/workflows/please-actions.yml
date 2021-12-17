@@ -18,7 +18,6 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const script = require('./.github/actions/reaction-to-comment.cjs');
             // Check admin rights
             const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({
               ...context.repo,
