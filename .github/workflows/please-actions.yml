@@ -19,10 +19,23 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const script = require('./.github/actions/reaction-to-comment.cjs');
-            const options = { action: 'deploy', reaction: 'rocket', requireAdmin: true };
-            await script({ github, context, options });
+            // Check admin rights
+            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({
+              ...context.repo,
+              username: context.actor,
+            });
+            if (levelResponse.data.permission !== 'admin') {
+              core.setFailed('"please deploy" can only be executed by an admin user');
+            }
+            // Add reaction to the comment
+            const comment = context.payload.comment;
+            await github.rest.reactions.createForIssueComment({
+              ...context.repo,
+              comment_id: comment.id,
+              content: 'rocket',
+            });
       - name: Checkout Pull Request
-        run: hub pr checkout "${{steps.check_comment.outputs.pull_number}}"
+        run: hub pr checkout "${{github.event.issue.number}}"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Using Node v16.x
