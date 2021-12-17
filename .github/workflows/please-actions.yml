@@ -17,20 +17,13 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             // Check admin rights
-            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({
-              ...context.repo,
-              username: context.actor,
-            });
+            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({ ...context.repo, username: context.actor });
             if (levelResponse.data.permission !== 'admin') {
               core.setFailed('"please deploy" can only be executed by an admin user');
             }
             // Add reaction to the comment
             const comment = context.payload.comment;
-            await github.rest.reactions.createForIssueComment({
-              ...context.repo,
-              comment_id: comment.id,
-              content: 'rocket',
-            });
+            await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: 'rocket' });
       - uses: actions/checkout@v2.4.0
       - name: Checkout Pull Request
         run: hub pr checkout "${{github.event.issue.number}}"
@@ -70,22 +63,14 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const script = require('./.github/actions/reaction-to-comment.cjs');
             // Check admin rights
-            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({
-              ...context.repo,
-              username: context.actor,
-            });
+            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({ ...context.repo, username: context.actor });
             if (levelResponse.data.permission !== 'admin') {
               core.setFailed('"please merge" can only be executed by an admin user');
             }
             // Add reaction to the comment
             const comment = context.payload.comment;
-            await github.rest.reactions.createForIssueComment({
-              ...context.repo,
-              comment_id: comment.id,
-              content: '+1',
-            });
+            await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: '+1' });
       - uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
@@ -106,3 +91,21 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Push
         run: git push
+
+  please_debug:
+    name: "Please debug"
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request && github.event.comment.body == 'please debug'
+    steps:
+      - name: Check comment
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            // Add reaction to the comment
+            const comment = context.payload.comment;
+            await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: '+1' });
+      - name: Dump context accessible from github-script
+        uses: actions/github-script@v5
+        with:
+          script: console.log(JSON.stringify(context, undefined, 2));
