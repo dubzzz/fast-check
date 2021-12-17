@@ -63,7 +63,7 @@ jobs:
           script: |
             const comment = context.payload.comment;
             if (comment.author_association !== "OWNER" && comment.author_association !== "COLLABORATOR") {
-              console.error('"please deploy" can only be executed by an admin user');
+              console.error('"please merge" can only be executed by an admin user');
               throw new Error('Operation canceled');
             }
             await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: '+1' });
