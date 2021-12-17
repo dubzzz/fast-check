@@ -16,13 +16,11 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            // Check admin rights
-            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({ ...context.repo, username: context.actor });
-            if (levelResponse.data.permission !== 'admin') {
-              core.setFailed('"please deploy" can only be executed by an admin user');
-            }
-            // Add reaction to the comment
             const comment = context.payload.comment;
+            if (comment.author_association !== "OWNER" && comment.author_association !== "COLLABORATOR") {
+              console.error('"please deploy" can only be executed by an admin user');
+              throw new Error('Operation canceled');
+            }
             await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: 'rocket' });
       - uses: actions/checkout@v2.4.0
       - name: Checkout Pull Request
@@ -63,13 +61,11 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            // Check admin rights
-            const levelResponse = await github.rest.repos.getCollaboratorPermissionLevel({ ...context.repo, username: context.actor });
-            if (levelResponse.data.permission !== 'admin') {
-              core.setFailed('"please merge" can only be executed by an admin user');
-            }
-            // Add reaction to the comment
             const comment = context.payload.comment;
+            if (comment.author_association !== "OWNER" && comment.author_association !== "COLLABORATOR") {
+              console.error('"please merge" can only be executed by an admin user');
+              throw new Error('Operation canceled');
+            }
             await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: '+1' });
       - uses: actions/checkout@v2.4.0
         with:
@@ -102,7 +98,6 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            // Add reaction to the comment
             const comment = context.payload.comment;
             await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: '+1' });
       - name: Dump context accessible from github-script
