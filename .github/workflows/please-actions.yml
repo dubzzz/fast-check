@@ -1,5 +1,4 @@
-name: Request Deploy Netlify
-# @github-actions deploy
+name: Please Actions
 
 on:
   issue_comment:
@@ -7,10 +6,10 @@ on:
       - created
 
 jobs:
-  deploy_netlify:
-    name: 'Deploy to Netlify'
+  please_deploy:
+    name: 'Deploy the bundle of the current PR to Netlify'
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '@github-actions') && contains(github.event.comment.body, 'deploy')
+    if: github.event.issue.pull_request && github.event.comment.body == 'please deploy'
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Check comment
