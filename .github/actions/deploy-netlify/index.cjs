@@ -42,13 +42,19 @@ async function run() {
     return;
   }
   // Website Draft URL: https://xxxxxxx.netlify.app
-  const netlifyUrlLine = netlifyLog.split('\n').find((line) => line.startsWith('Website Draft URL: '));
+  const netlifyUrlLine = netlifyLog.split('\n').find((line) => line.includes('Website Draft URL: '));
   if (!netlifyUrlLine) {
-    core.setFailed(`deploy-netlify failed to find the deployment url in:\n\n${netlifyLog}`);
+    core.setFailed(`deploy-netlify failed to find the deployment line in:\n\n${netlifyLog}`);
     return;
   }
-  const netlifyUrl = netlifyUrlLine.substring('Website Draft URL: '.length);
+  const netlifyUrlRegex = /Website Draft URL:\s+(https:\/\/[^\s]*)/;
+  const m = netlifyUrlRegex.exec(netlifyUrlLine);
+  if (!m) {
+    core.setFailed(`deploy-netlify failed to find the deployment url in:\n${netlifyUrlLine}`);
+    return;
+  }
 
+  const netlifyUrl = m[1];
   const packageUrl = `${netlifyUrl}/fast-check.tgz`;
   const octokit = github.getOctokit(token);
   const body =
