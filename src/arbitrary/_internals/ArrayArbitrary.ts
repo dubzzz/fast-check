@@ -3,10 +3,10 @@ import { Stream } from '../../stream/Stream';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
 import { integer } from '../integer';
 import { makeLazy } from '../../stream/LazyIterableIterator';
-import { buildCompareFilter } from './helpers/BuildCompareFilter';
 import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../../check/arbitrary/definition/Converters';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { CustomSetBuilder } from './interfaces/CustomSet';
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -27,11 +27,11 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     readonly maxLength: number,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
-    readonly isEqual?: (valueA: T, valueB: T) => boolean
+    readonly setBuilder?: CustomSetBuilder<NextValue<T>>
   ) {
     super();
     this.lengthArb = convertToNext(integer(minLength, maxLength));
-    this.preFilter = this.isEqual !== undefined ? buildCompareFilter(this.isEqual) : (tab: NextValue<T>[]) => tab;
+    this.preFilter = setBuilder !== undefined ? (tab) => setBuilder.from(tab).toArray() : (tab) => tab;
   }
 
   private static makeItCloneable<T>(vs: T[], shrinkables: NextValue<T>[]) {
@@ -46,37 +46,28 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return vs;
   }
 
-  private static canAppendItem<T>(
-    items: NextValue<T>[],
-    newItem: NextValue<T>,
-    isEqual: (valueA: T, valueB: T) => boolean
-  ): boolean {
-    for (let idx = 0; idx !== items.length; ++idx) {
-      if (isEqual(items[idx].value_, newItem.value_)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private generateNItemsNoDuplicates(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
+  private generateNItemsNoDuplicates(
+    setBuilder: CustomSetBuilder<NextValue<T>>,
+    N: number,
+    mrng: Random,
+    biasFactorItems: number | undefined
+  ): NextValue<T>[] {
     let numSkippedInRow = 0;
-    const items: NextValue<T>[] = [];
+    const set = setBuilder.nil();
     // Try to append into items up to the target size
-    // In the case of a set we may reject some items as they are already part of the set
+    // We may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
     // we accept a max of maxLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
-    while (items.length < N && numSkippedInRow < this.maxLength) {
+    while (set.size() < N && numSkippedInRow < this.maxLength) {
       const current = this.arb.generate(mrng, biasFactorItems);
-      if (this.isEqual === undefined || ArrayArbitrary.canAppendItem(items, current, this.isEqual)) {
+      if (!set.tryAdd(current)) {
         numSkippedInRow = 0;
-        items.push(current);
       } else {
         numSkippedInRow += 1;
       }
     }
-    return items;
+    return set.toArray();
   }
 
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
@@ -125,8 +116,8 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     const biasMeta = this.applyBias(mrng, biasFactor);
     const targetSize = biasMeta.size;
     const items =
-      this.isEqual !== undefined
-        ? this.generateNItemsNoDuplicates(targetSize, mrng, biasMeta.biasFactorItems)
+      this.setBuilder !== undefined
+        ? this.generateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasMeta.biasFactorItems)
         : this.generateNItems(targetSize, mrng, biasMeta.biasFactorItems);
     return this.wrapper(items, false, undefined, 0);
   }
