@@ -144,7 +144,7 @@ describe('set', () => {
             childInstance,
             constraints.minLength !== undefined ? constraints.minLength : expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
-            constraints.compare
+            expect.any(Function)
           );
           expect(convertToNext(arb)).toBe(instance);
         }
@@ -165,7 +165,7 @@ describe('set', () => {
         const arb = set(convertFromNext(childInstance), compare);
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), compare);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), expect.any(Function));
         const receivedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedMaxLength).toBeGreaterThan(0);
         expect(receivedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
@@ -207,7 +207,7 @@ describe('set', () => {
         const arb = set(convertFromNext(childInstance), maxLength, compare);
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, compare);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, expect.any(Function));
         expect(convertToNext(arb)).toBe(instance);
       })
     );
@@ -253,7 +253,7 @@ describe('set', () => {
           const arb = set(convertFromNext(childInstance), minLength, maxLength, compare);
 
           // Assert
-          expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength, compare);
+          expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength, expect.any(Function));
           expect(convertToNext(arb)).toBe(instance);
         }
       )

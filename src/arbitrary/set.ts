@@ -2,16 +2,23 @@ import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
+import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
+import { NextValue } from '../check/arbitrary/definition/NextValue';
 
 /**
  * Build fully set SetConstraints from a partial data
  * @internal
  */
-function buildCompleteSetConstraints<T>(constraints: SetConstraints<T>): Required<SetConstraints<T>> {
+function buildCompleteSetConstraints<T>(
+  constraints: SetConstraints<T>
+): Required<Omit<SetConstraints<T>, 'compare'>> & { setBuilder: CustomSetBuilder<NextValue<T>> } {
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
   const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
   const compare = constraints.compare !== undefined ? constraints.compare : (a: T, b: T) => a === b;
-  return { minLength, maxLength, compare };
+  const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) => compare(nextA.value_, nextB.value_);
+  const setBuilder = () => new CustomEqualSet(isEqualForBuilder);
+  return { minLength, maxLength, setBuilder };
 }
 
 /**
@@ -186,10 +193,10 @@ function set<T>(
 
   const minLength = constraints.minLength;
   const maxLength = constraints.maxLength;
-  const compare = constraints.compare;
+  const setBuilder = constraints.setBuilder;
 
   const nextArb = convertToNext(arb);
-  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, compare));
+  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, setBuilder));
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }
