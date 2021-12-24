@@ -70,7 +70,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // generated to be smaller than the minimal accepted one.
     while (s.size() < N && numSkippedInRow < this.maxLength) {
       const current = this.arb.generate(mrng, biasFactorItems);
-      if (!s.tryAdd(current)) {
+      if (s.tryAdd(current)) {
         numSkippedInRow = 0;
       } else {
         numSkippedInRow += 1;
