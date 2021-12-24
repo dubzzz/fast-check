@@ -4,8 +4,8 @@ import { CustomEqualSet } from '../../../../../src/arbitrary/_internals/helpers/
 describe('CustomEqualSet', () => {
   it('should discard equivalent items', () => {
     // Arrange
-    const compare = (a: { label: string; size: number }, b: { label: string; size: number }) => a.label === b.label;
-    const s = new CustomEqualSet(compare);
+    const isEqual = (a: { label: string; size: number }, b: { label: string; size: number }) => a.label === b.label;
+    const s = new CustomEqualSet(isEqual);
 
     // Arrange / Act
     expect(s.tryAdd({ label: 'toto', size: 5 })).toBe(true);
@@ -21,10 +21,10 @@ describe('CustomEqualSet', () => {
 
   it('should increase the size whenever tryAdd returns true', () => {
     fc.assert(
-      fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.compareBooleanFunc(), (rawItems, compare) => {
+      fc.property(fc.array(fc.anything(), { minLength: 1 }), isEqualFuncArb(), (rawItems, isEqual) => {
         // Arrange
         let expectedSize = 0;
-        const s = new CustomEqualSet(compare);
+        const s = new CustomEqualSet(isEqual);
 
         // Act / Assert
         for (const item of rawItems) {
@@ -39,9 +39,9 @@ describe('CustomEqualSet', () => {
 
   it('should never have two equivalent items in the Set', () => {
     fc.assert(
-      fc.property(fc.array(fc.anything(), { minLength: 2 }), fc.compareBooleanFunc(), (rawItems, compare) => {
+      fc.property(fc.array(fc.anything(), { minLength: 2 }), isEqualFuncArb(), (rawItems, isEqual) => {
         // Arrange
-        const s = new CustomEqualSet(compare);
+        const s = new CustomEqualSet(isEqual);
 
         // Act
         for (const item of rawItems) {
@@ -52,7 +52,7 @@ describe('CustomEqualSet', () => {
         // Assert
         for (let i = 0; i !== data.length; ++i) {
           for (let j = i + 1; j !== data.length; ++j) {
-            expect(compare(data[i], data[j])).toBe(false);
+            expect(isEqual(data[i], data[j])).toBe(false);
           }
         }
       })
@@ -61,9 +61,9 @@ describe('CustomEqualSet', () => {
 
   it('should preserve add order', () => {
     fc.assert(
-      fc.property(fc.array(fc.anything(), { minLength: 2 }), fc.compareBooleanFunc(), (rawItems, compare) => {
+      fc.property(fc.array(fc.anything(), { minLength: 2 }), isEqualFuncArb(), (rawItems, isEqual) => {
         // Arrange
-        const s = new CustomEqualSet(compare);
+        const s = new CustomEqualSet(isEqual);
 
         // Act
         for (const item of rawItems) {
@@ -73,8 +73,8 @@ describe('CustomEqualSet', () => {
 
         // Assert
         for (let i = 1; i < data.length; ++i) {
-          const indexPrevious = rawItems.findIndex((item) => compare(item, data[i - 1]));
-          const indexCurrent = rawItems.findIndex((item) => compare(item, data[i]));
+          const indexPrevious = rawItems.findIndex((item) => isEqual(item, data[i - 1]));
+          const indexCurrent = rawItems.findIndex((item) => isEqual(item, data[i]));
           expect(indexPrevious).not.toBe(-1);
           expect(indexCurrent).not.toBe(-1);
           expect(indexPrevious).toBeLessThan(indexCurrent);
@@ -83,3 +83,9 @@ describe('CustomEqualSet', () => {
     );
   });
 });
+
+// Helpers
+
+function isEqualFuncArb() {
+  return fc.compareFunc().map((f) => (a: unknown, b: unknown) => f(a, b) === 0);
+}
