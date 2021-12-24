@@ -72,7 +72,7 @@ describe('CustomEqualSet', () => {
         const data = s.getData();
 
         // Assert
-        for (let i = 1; i <= data.length; ++i) {
+        for (let i = 1; i < data.length; ++i) {
           const indexPrevious = rawItems.findIndex((item) => compare(item, data[i - 1]));
           const indexCurrent = rawItems.findIndex((item) => compare(item, data[i]));
           expect(indexPrevious).not.toBe(-1);
