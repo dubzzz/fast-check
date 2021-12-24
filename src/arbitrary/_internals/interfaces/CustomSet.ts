@@ -1,3 +1,7 @@
+/**
+ * The interface for CustomSet
+ * @internal
+ */
 export interface CustomSet<T> {
   /**
    * Try to add the value, returns true if it did, false otherwise
@@ -9,19 +13,15 @@ export interface CustomSet<T> {
    */
   size(): number;
   /**
-   * Copy the Set into an Array
+   * Returns the underlying array containing the data
+   * In general avoid re-using the CustomSet once you accessed it:
+   * the array could be a copy or the underlying itself depending on the implementation
    */
-  toArray(): T[];
+  getData(): T[];
 }
 
-export interface CustomSetBuilder<T> {
-  /**
-   * Create an empty instance of CustomSet
-   */
-  nil(): CustomSet<T>;
-  /**
-   * Create an instance of CustomSet based on an iterable possibly containing duplicated values
-   * @param iterable - The iterable to be copied
-   */
-  from(iterable: Iterable<T>): CustomSet<T>;
-}
+/**
+ * Create an empty instance of CustomSet
+ * @internal
+ */
+export type CustomSetBuilder<T> = () => CustomSet<T>;

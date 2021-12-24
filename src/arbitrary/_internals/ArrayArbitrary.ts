@@ -19,7 +19,6 @@ type ArrayArbitraryContext = {
 /** @internal */
 export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   readonly lengthArb: NextArbitrary<number>;
-  readonly preFilter: (tab: NextValue<T>[]) => NextValue<T>[];
 
   constructor(
     readonly arb: NextArbitrary<T>,
@@ -31,7 +30,17 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   ) {
     super();
     this.lengthArb = convertToNext(integer(minLength, maxLength));
-    this.preFilter = setBuilder !== undefined ? (tab) => setBuilder.from(tab).toArray() : (tab) => tab;
+  }
+
+  private preFilter(tab: NextValue<T>[]): NextValue<T>[] {
+    if (this.setBuilder === undefined) {
+      return tab;
+    }
+    const s = this.setBuilder();
+    for (let index = 0; index !== tab.length; ++index) {
+      s.tryAdd(tab[index]);
+    }
+    return s.getData();
   }
 
   private static makeItCloneable<T>(vs: T[], shrinkables: NextValue<T>[]) {
@@ -53,21 +62,21 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     biasFactorItems: number | undefined
   ): NextValue<T>[] {
     let numSkippedInRow = 0;
-    const set = setBuilder.nil();
+    const s = setBuilder();
     // Try to append into items up to the target size
     // We may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
     // we accept a max of maxLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
-    while (set.size() < N && numSkippedInRow < this.maxLength) {
+    while (s.size() < N && numSkippedInRow < this.maxLength) {
       const current = this.arb.generate(mrng, biasFactorItems);
-      if (!set.tryAdd(current)) {
+      if (!s.tryAdd(current)) {
         numSkippedInRow = 0;
       } else {
         numSkippedInRow += 1;
       }
     }
-    return set.toArray();
+    return s.getData();
   }
 
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {

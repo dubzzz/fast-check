@@ -3,7 +3,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
-import { CustomEqualSetBuilder } from './_internals/helpers/CustomEqualSet';
+import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
 
 /**
@@ -16,9 +16,8 @@ function buildCompleteSetConstraints<T>(
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
   const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
   const compare = constraints.compare !== undefined ? constraints.compare : (a: T, b: T) => a === b;
-  const setBuilder = new CustomEqualSetBuilder((nextA: NextValue<T>, nextB: NextValue<T>) =>
-    compare(nextA.value_, nextB.value_)
-  );
+  const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) => compare(nextA.value_, nextB.value_);
+  const setBuilder = () => new CustomEqualSet(isEqualForBuilder);
   return { minLength, maxLength, setBuilder };
 }
 
