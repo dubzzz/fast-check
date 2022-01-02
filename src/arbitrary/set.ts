@@ -6,6 +6,8 @@ import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
 import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
+import { SameValueSet } from './_internals/helpers/SameValueSet';
+import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
 
 /** @internal */
 function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<NextValue<T>> {
@@ -17,6 +19,10 @@ function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<Ne
   const selector = compare.selector || ((v) => v);
   const refinedSelector = (next: NextValue<T>) => selector(next.value_);
   switch (compare.type) {
+    case 'SameValue':
+      return () => new SameValueSet(refinedSelector);
+    case 'SameValueZero':
+      return () => new SameValueZeroSet(refinedSelector);
     case 'IsStrictlyEqual':
     case undefined:
       return () => new StrictlyEqualSet(refinedSelector);
@@ -79,10 +85,13 @@ function extractSetConstraints<T>(
  */
 export type SetConstraintsSelector<T> = {
   /**
-   * The operator to be used to compare the values
+   * The operator to be used to compare the values:
+   * - IsStrictlyEqual behaves like `===` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal}
+   * - SameValue behaves like `Object.is` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue}
+   * - SameValueZero behaves like `Set` or `Map` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero}
    * @remarks Since 2.21.0
    */
-  type?: 'IsStrictlyEqual';
+  type?: 'IsStrictlyEqual' | 'SameValue' | 'SameValueZero';
   /**
    * How we should project the values before comparing them together
    * @remarks Since 2.21.0
