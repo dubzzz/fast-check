@@ -80,7 +80,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
       - name: Merge BASE_REF into current PR
         run: |
-          export BASE_REF=$(hub api repos/gopigment/monorepo/pulls/${{github.event.issue.number}} | jq ".base.ref" --raw-output)
+          export BASE_REF=$(hub api repos/dubzzz/fast-check/pulls/${{github.event.issue.number}} | jq ".base.ref" --raw-output)
           echo "BASE_REF is: ${BASE_REF}"
           git pull --no-rebase origin "${BASE_REF}"
         env:
