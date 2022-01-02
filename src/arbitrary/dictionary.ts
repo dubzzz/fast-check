@@ -15,7 +15,7 @@ import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_i
  */
 export function dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<Record<string, T>> {
   return convertFromNext(
-    convertToNext(set(tuple(keyArb, valueArb), { compare: (t1, t2) => t1[0] === t2[0] })).map(
+    convertToNext(set(tuple(keyArb, valueArb), { compare: { selector: (t) => t[0] } })).map(
       keyValuePairsToObjectMapper,
       keyValuePairsToObjectUnmapper
     )
