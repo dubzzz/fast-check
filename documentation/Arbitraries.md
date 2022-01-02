@@ -2449,8 +2449,10 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 - `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
 - `compare?` — default: `{type: 'IsStrictlyEqual', selector: v => v}` equivalent to `(a, b) => a === b` — _custom compare operator used to distinguish duplicates in order to remove them from the resulting array. it can either be an object `{type,selector}` or a function returning `true` whenever items are equivalent (function-based is less optimized for large arrays)_
   - `type` can be one of:
-    - `IsStrictlyEqual` rely on `===` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal))
-  - `selector` defines how you want to project the values before comparing them together
+    - `IsStrictlyEqual` to rely on `===` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal))
+    - `SameValue` to rely on `Object.is` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue))
+    - `SameValueZero` to rely on the same logic as the one of `Set` or `Map` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero))
+  - `selector` to define how to project values before comparing them together
 
 *&#8195;Usages*
 
