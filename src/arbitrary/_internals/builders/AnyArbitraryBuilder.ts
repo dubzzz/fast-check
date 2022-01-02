@@ -30,7 +30,7 @@ import { letrec } from '../../letrec';
 function entriesOf<T, U>(keyArb: Arbitrary<T>, valueArb: Arbitrary<U>, maxKeys: number) {
   // TODO - Depending on the situation, the selected compare function might not be appropriate
   // eg.: in the case of Map, NaN is NaN but NaN !== NaN
-  return convertToNext(set(tuple(keyArb, valueArb), { maxLength: maxKeys, compare: (t1, t2) => t1[0] === t2[0] }));
+  return convertToNext(set(tuple(keyArb, valueArb), { maxLength: maxKeys, compare: { selector: (t) => t[0] } }));
 }
 
 /** @internal */

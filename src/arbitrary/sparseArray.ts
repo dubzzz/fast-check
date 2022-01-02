@@ -83,7 +83,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       set(tuple(nat(maxIndexAuthorized), arb), {
         minLength: minNumElements,
         maxLength: resultedMaxNumElements,
-        compare: (itemA, itemB) => itemA[0] === itemB[0],
+        compare: { selector: (item) => item[0] },
       })
     ).map(
       (items) => {
