@@ -89,8 +89,7 @@ jobs:
             const repo = context.payload.repository.name;
             const pull_number = context.payload.issue.number;
             const prDetails = await github.rest.pulls.get({ owner, repo, pull_number });
-            console.log(JSON.stringify(prDetails, undefined, 2));
-            const baseRef = prDetails.base.ref;
+            const baseRef = prDetails.data.base.ref;
             const { stdout } = await execFile("git", ["pull", "--no-rebase", "origin", baseRef]);
             const body = "Merge of `" + baseRef + "` resulted into:\n\n```txt\n" + stdout + "\n```\n\nWill try to push!";
             await github.rest.issues.createComment({ issue_number: pull_number, owner, repo, body });
