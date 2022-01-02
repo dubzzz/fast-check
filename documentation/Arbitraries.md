@@ -2447,7 +2447,10 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
-- `compare?` — default: `(a, b) => a === b` — _custom compare function used to distinguish duplicates in order to remove them from the resulting array_
+- `compare?` — default: `{type: 'IsStrictlyEqual', selector: v => v}` equivalent to `(a, b) => a === b` — _custom compare operator used to distinguish duplicates in order to remove them from the resulting array. it can either be an object `{type,selector}` or a function returning `true` whenever items are equivalent (function-based is less optimized for large arrays)_
+  - `type` can be one of:
+    - `IsStrictlyEqual` rely on `===` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal))
+  - `selector` defines how you want to project the values before comparing them together
 
 *&#8195;Usages*
 
@@ -2461,18 +2464,29 @@ fc.set(fc.nat(99), {maxLength: 3})
 fc.set(fc.nat(99), {minLength: 5, maxLength: 7})
 // Examples of generated values: [4,3,29,1,48,25], [53,44,67,56,49,42], [69,6,47,13,20,3,58], [5,35,70,0,6,27], [3,5,0,70,6,20]…
 
-fc.set(fc.hexaString(), {compare: (s1, s2) => s1.length === s2.length})
+fc.set(fc.hexaString(), {compare: {selector: s => s.length}})
 // Note: Resulting arrays will never contain two strings with the same number of characters
+// Examples of generated values:
+// • []
+// • ["9c06b50b60","030fcd41f","1f89","84d8c","7cb","3","e9b9af","c5ee4a9","","eb301204"]
+// • ["f296eb0"]
+// • ["","a76be85","8"]
+// • ["d3","912966f8","82b07f","822","0d714","","2ff2623190","137c99f","eee7"]
+// • …
+
+fc.set(fc.hexaString(), {compare: (s1, s2) => s1.length === s2.length})
+// Note: Same behaviour as the one above BUT less optimized in terms of runtime (function-based compare
+// has poor performances for large arrays)
 // Examples of generated values: ["20",""], [], ["447","","893c89edb1","b31a5"], ["79429d9",""], ["0","c20ea408b9","1f1574","117d"]…
 
-fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: (s1, s2) => s1.length === s2.length})
+fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: {selector: s => s.length}})
 // Note: Resulting arrays will never contain two strings with the same number of characters and it will contain between 5 and 10 strings
 // Examples of generated values:
-// • ["","18028609c9","8b9e4d","bd945ddc","7262","63636"]
-// • ["7e","59ae73fd9","d200d","d504","","4d18e69a","fb2"]
-// • ["65655ac0b","c20","02f6","42ff080184","80","f04e066",""]
-// • ["320","","1e","1","2ce0","5fb80","41265c649c"]
-// • ["","b","cb03601","e3","052844fe0a","c410","82cfcb523"]
+// • ["0d4","1cef","20d51","74","bb8afd3e0b","916c7c4"]
+// • ["fd0d3c99f9","95b0","f42","f","0cc997"]
+// • ["835f9","692caf3d1","46f08be","","8","ab46","22"]
+// • ["","a31e3f74c","1ae0b","3c17","782","a","eb","cb724e","68c79c08db"]
+// • ["c2f3c9621f","","32352ef","6e","91b0ef","11c","5f6c34d88","8509","8","21131"]
 // • …
 ```
 </details>

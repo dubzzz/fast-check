@@ -9,13 +9,18 @@ import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 
 /** @internal */
 function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<NextValue<T>> {
-  if (constraints.compare !== undefined) {
-    const compare = constraints.compare;
+  const compare: NonNullable<typeof constraints.compare> = constraints.compare || {};
+  if (typeof compare === 'function') {
     const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) => compare(nextA.value_, nextB.value_);
     return () => new CustomEqualSet(isEqualForBuilder);
   }
-  const basicExtractor = (next: NextValue<T>) => next.value_;
-  return () => new StrictlyEqualSet(basicExtractor);
+  const selector = compare.selector || ((v) => v);
+  const refinedSelector = (next: NextValue<T>) => selector(next.value_);
+  switch (compare.type) {
+    case 'IsStrictlyEqual':
+    case undefined:
+      return () => new StrictlyEqualSet(refinedSelector);
+  }
 }
 
 /**
@@ -68,6 +73,24 @@ function extractSetConstraints<T>(
 }
 
 /**
+ * Type used to define a constraints to compare values together based on a selector approach
+ * @remarks Since 2.21.0
+ * @public
+ */
+export type SetConstraintsSelector<T> = {
+  /**
+   * The operator to be used to compare the values
+   * @remarks Since 2.21.0
+   */
+  type?: 'IsStrictlyEqual';
+  /**
+   * How we should project the values before comparing them together
+   * @remarks Since 2.21.0
+   */
+  selector?: (v: T) => unknown;
+};
+
+/**
  * Constraints to be applied on {@link set}
  * @remarks Since 2.4.0
  * @public
@@ -84,10 +107,21 @@ export interface SetConstraints<T> {
    */
   maxLength?: number;
   /**
-   * Compare function - Return true when the two values are equals
+   * Compare operator - It can either be:
+   * - a selector based definition consisting into projecting the value (if needed) onto a relevant
+   *   value (see selector) and comparing all those values together based on a selected comparison
+   *   operator (see type)
+   * - a compare function returning true whenever the two values are equal (not recommended for
+   *   large arrays as this approach is more costly in terms of computation and does not scale)
+   *
+   * It defaults to:
+   * - type = "IsStrictlyEqual"
+   * - selector = v =&gt; v
+   * Which is equivalent (except performances) to: compare = (a, b) =&gt; a === b
+   *
    * @remarks Since 2.4.0
    */
-  compare?: (a: T, b: T) => boolean;
+  compare?: ((a: T, b: T) => boolean) | SetConstraintsSelector<T>;
 }
 
 /**
