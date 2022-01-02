@@ -42,7 +42,11 @@ async function run() {
     return;
   }
   // Website Draft URL: https://xxxxxxx.netlify.app
-  const netlifyUrlLine = netlifyLog.split('\n').find((line) => line.includes('Website Draft URL: '));
+  const ansiModifiersRegex = /\u001b\[\d\dm/gu;
+  const netlifyUrlLine = netlifyLog
+    .split('\n')
+    .map((line) => line.replace(ansiModifiersRegex, ''))
+    .find((line) => line.includes('Website Draft URL: '));
   if (!netlifyUrlLine) {
     core.setFailed(`deploy-netlify failed to find the deployment line in:\n\n${netlifyLog}`);
     return;
