@@ -116,8 +116,8 @@ export interface SetConstraints<T> {
    *
    * It defaults to:
    * - type = "IsStrictlyEqual"
-   * - selector = v => v
-   * Which is equivalent (except performances) to: compare = (a, b) => a === b
+   * - selector = v =&gt; v
+   * Which is equivalent (except performances) to: compare = (a, b) =&gt; a === b
    *
    * @remarks Since 2.4.0
    */
