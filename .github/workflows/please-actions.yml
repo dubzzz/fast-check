@@ -103,4 +103,4 @@ jobs:
       - name: Dump context accessible from github-script
         uses: actions/github-script@v5
         with:
-          script: console.log(JSON.stringify(context, undefined, 2));
+          script: console.log(JSON.stringify(context, undefined, 3));
