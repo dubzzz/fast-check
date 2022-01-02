@@ -5,7 +5,7 @@ import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLen
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
-import { StrictyEqualSet } from './_internals/helpers/StrictlyEqualSet';
+import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 
 /** @internal */
 function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<NextValue<T>> {
@@ -15,7 +15,7 @@ function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<Ne
     return () => new CustomEqualSet(isEqualForBuilder);
   }
   const basicExtractor = (next: NextValue<T>) => next.value_;
-  return () => new StrictyEqualSet(basicExtractor);
+  return () => new StrictlyEqualSet(basicExtractor);
 }
 
 /**

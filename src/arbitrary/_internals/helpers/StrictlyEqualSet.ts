@@ -7,8 +7,8 @@ import { CustomSet } from '../interfaces/CustomSet';
  * And coming with the ability to select a sub-value from the received one.
  * @internal
  */
-export class StrictyEqualSet<T, U> implements CustomSet<T> {
-  // Warning: Map uses SameValueZero equality
+export class StrictlyEqualSet<T, U> implements CustomSet<T> {
+  // Warning: Set uses SameValueZero equality
   // SameValueZero means:
   // - NaN equals NaN   => unexpected for ===
   // - 0   equals -0    => OK
