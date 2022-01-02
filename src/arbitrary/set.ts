@@ -5,6 +5,18 @@ import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLen
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
+import { StrictyEqualSet } from './_internals/helpers/StrictlyEqualSet';
+
+/** @internal */
+function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<NextValue<T>> {
+  if (constraints.compare !== undefined) {
+    const compare = constraints.compare;
+    const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) => compare(nextA.value_, nextB.value_);
+    return () => new CustomEqualSet(isEqualForBuilder);
+  }
+  const basicExtractor = (next: NextValue<T>) => next.value_;
+  return () => new StrictyEqualSet(basicExtractor);
+}
 
 /**
  * Build fully set SetConstraints from a partial data
@@ -15,9 +27,7 @@ function buildCompleteSetConstraints<T>(
 ): Required<Omit<SetConstraints<T>, 'compare'>> & { setBuilder: CustomSetBuilder<NextValue<T>> } {
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
   const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
-  const compare = constraints.compare !== undefined ? constraints.compare : (a: T, b: T) => a === b;
-  const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) => compare(nextA.value_, nextB.value_);
-  const setBuilder = () => new CustomEqualSet(isEqualForBuilder);
+  const setBuilder = buildSetBuilder(constraints);
   return { minLength, maxLength, setBuilder };
 }
 
