@@ -2474,6 +2474,11 @@ fc.set(fc.hexaString(), {compare: {selector: s => s.length}})
 // • ["d3","912966f8","82b07f","822","0d714","","2ff2623190","137c99f","eee7"]
 // • …
 
+fc.set(fc.hexaString(), {compare: (s1, s2) => s1.length === s2.length})
+// Note: Same behaviour as the one above BUT less optimized in terms of runtime (function-based compare
+// has poor performances for large arrays)
+// Examples of generated values: ["20",""], [], ["447","","893c89edb1","b31a5"], ["79429d9",""], ["0","c20ea408b9","1f1574","117d"]…
+
 fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: {selector: s => s.length}})
 // Note: Resulting arrays will never contain two strings with the same number of characters and it will contain between 5 and 10 strings
 // Examples of generated values:
