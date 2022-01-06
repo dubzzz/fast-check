@@ -37,7 +37,7 @@ jobs:
               try {
                 [,title, pr] = prExtractor.exec(titleAndPR.join(' '));
               } catch (err) {
-                console.error(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
+                console.error(`⚠️⚠️⚠️ Failed to extract PR/title from: ${JSON.stringify(lineDiff)} ⚠️⚠️⚠️`);
                 break;
               }
               switch (type) {
@@ -87,7 +87,7 @@ jobs:
                   maintenanceSection.push({ type: "Move", pr, title });
                   break;
                 default:
-                  console.error(`Unhandled type: ${type}`);
+                  console.error(`⚠️⚠️⚠️ Unhandled type: ${type} ⚠️⚠️⚠️`);
                   break;
               }
             }
@@ -95,9 +95,13 @@ jobs:
                          "_What happened?_\n" +
                          "[[Code](https://github.com/dubzzz/fast-check/tree/v" + nextVersion +")][[Diff](https://github.com/dubzzz/fast-check/compare/" + lastTag + "...v" + nextVersion + ")]\n\n" +
                          "## Features\n\n" +
-                         newFeaturesSection.map(line => `- ${line}`).join('\n') + "\n\n" +
+                         newFeaturesSection
+                           .reverse()
+                           .map(line => `- ${line}`)
+                           .join('\n') + "\n\n" +
                          "## Fixes\n\n" +
                          maintenanceSection
+                           .reverse()
                            .sort((a, b) => a.type.localeCompare(b.type))
                            .map(({type, title, pr}) => `- ([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${type}: ${title}`)
                            .join('\n') + "\n\n";
