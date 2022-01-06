@@ -99,7 +99,7 @@ jobs:
                          "## Fixes\n\n" +
                          maintenanceSection
                            .sort((a, b) => a.type.localeCompare(b.type))
-                           .map(({type, line, pr}) => `- ([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${type}: ${title}`)
+                           .map(({type, title, pr}) => `- ([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${type}: ${title}`)
                            .join('\n') + "\n\n";
             console.log(body);
         env:
