@@ -1,0 +1,98 @@
+name: Generate Changelog
+
+on:
+  workflow_dispatch:
+    inputs:
+      nextVersion:
+        description: 'Next version (eg.: 2.20.0)'
+        required: true
+        type: string
+
+jobs:
+  generate_changelog:
+    name: "Generate Changelog"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
+      - name: Generate Changelog
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const util = require('util');
+            const execFile = util.promisify(require('child_process').execFile);
+            const nextVersion = process.env.NEXT_VERSION;
+            const { stdout: lastTagOutput } = await execFile("git", ["describe", "--tags", "--abbrev=0"]);
+            const lastTag = lastTagOutput.trim()
+            const { stdout: diffOutput } = await execFile("git", ["--no-pager", "log", `${lastTag}..HEAD`, "--format=\"%s\""]);
+            const diffOutputLines = diffOutput.split('\n').map(line => line.trim()).filter(line => line.length !== 0);
+            let newFeaturesSection = [];
+            let maintenanceSection = [];
+            for (const lineDiff of diffOutputLines) {
+              const [type, titleAndPR] = lineDiff.split(' ', 2);
+              const prExtractor =  /^(.*) \(#(\d+)\)$/;
+              const [,title, pr] = prExtractor.exec(titleAndPR);
+              switch (type) {
+                case "⚡️":
+                case ":zap:":
+                case "✨":
+                case ":sparkles:":
+                  newFeaturesSection.push(`([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${title}`);
+                  break;
+                case "🐛":
+                case ":bug:":
+                  maintenanceSection.push({ type: "Bug", pr, title });
+                  break;
+                case "📝":
+                case ":memo:":
+                  maintenanceSection.push({ type: "Doc", pr, title });
+                  break;
+                case "✏️":
+                case ":pencil2:":
+                  maintenanceSection.push({ type: "Typo", pr, title });
+                  break;
+                case "✅":
+                case ":white_check_mark:":
+                  maintenanceSection.push({ type: "Test", pr, title });
+                  break;
+                case "⬆️":
+                case ":arrow_up:":
+                  break;
+                case "♻️":
+                case ":recycle:":
+                  maintenanceSection.push({ type: "Refactor", pr, title });
+                  break;
+                case "💚":
+                case ":green_heart:":
+                case "👷":
+                case ":construction_worker:":
+                case "🔧":
+                case ":wrench:":
+                  maintenanceSection.push({ type: "CI", pr, title });
+                  break;
+                case "🔨":
+                case ":hammer:":
+                  maintenanceSection.push({ type: "Script", pr, title });
+                  break;
+                case "🚚":
+                case ":truck:":
+                  maintenanceSection.push({ type: "Move", pr, title });
+                  break;
+                default:
+                  throw new Error(`Unhandled type: ${type}`);
+              }
+            }
+            const body = "# " + nextVersion + "\n\n" +
+                         "_What happened?_\n" +
+                         "[[Code](https://github.com/dubzzz/fast-check/tree/v" + nextVersion +")][[Diff](https://github.com/dubzzz/fast-check/compare/" + lastTag + "...v" + nextVersion + ")]\n\n" +
+                         "## Features\n\n" +
+                         newFeaturesSection.map(line => `- ${line}`).join('\n') + "\n\n" +
+                         "## Fixes\n\n" +
+                         maintenanceSection
+                           .sort((a, b) => a.type.localeCompare(b.type))
+                           .map(({type, line, pr}) => `- ([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${type}: ${title}`)
+                           .join('\n') + "\n\n";
+            console.log(body);
+        env:
+          NEXT_VERSION: ${{github.event.inputs.nextVersion}}
