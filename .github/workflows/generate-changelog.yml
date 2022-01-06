@@ -25,7 +25,7 @@ jobs:
             const nextVersion = process.env.NEXT_VERSION;
             const { stdout: lastTagOutput } = await execFile("git", ["describe", "--tags", "--abbrev=0"]);
             const lastTag = lastTagOutput.trim()
-            const { stdout: diffOutput } = await execFile("git", ["--no-pager", "log", `${lastTag}..HEAD`, "--format=\"%s\""]);
+            const { stdout: diffOutput } = await execFile("git", ["--no-pager", "log", `${lastTag}..HEAD`, "--format=%s"]);
             const diffOutputLines = diffOutput.split('\n').map(line => line.trim()).filter(line => line.length !== 0);
             let newFeaturesSection = [];
             let maintenanceSection = [];
