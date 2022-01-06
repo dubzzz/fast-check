@@ -37,7 +37,8 @@ jobs:
               try {
                 [,title, pr] = prExtractor.exec(titleAndPR.join(' '));
               } catch (err) {
-                throw new Error(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
+                console.error(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
+                break;
               }
               switch (type) {
                 case "⚡️":
@@ -86,7 +87,8 @@ jobs:
                   maintenanceSection.push({ type: "Move", pr, title });
                   break;
                 default:
-                  throw new Error(`Unhandled type: ${type}`);
+                  console.error(`Unhandled type: ${type}`);
+                  break;
               }
             }
             const body = "# " + nextVersion + "\n\n" +
