@@ -30,12 +30,12 @@ jobs:
             let newFeaturesSection = [];
             let maintenanceSection = [];
             for (const lineDiff of diffOutputLines) {
-              const [type, titleAndPR] = lineDiff.split(' ', 2);
+              const [type, ...titleAndPR] = lineDiff.split(' ');
               const prExtractor =  /^(.*) \(#(\d+)\)$/;
               try {
-                const [,title, pr] = prExtractor.exec(titleAndPR);
+                const [,title, pr] = prExtractor.exec(titleAndPR.join(' '));
               } catch (err) {
-                throw new Error(`Failed to extract PR/title from: ${JSON.stringify(titleAndPR)}`);
+                throw new Error(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
               }
               switch (type) {
                 case "⚡️":
