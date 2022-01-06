@@ -32,7 +32,11 @@ jobs:
             for (const lineDiff of diffOutputLines) {
               const [type, titleAndPR] = lineDiff.split(' ', 2);
               const prExtractor =  /^(.*) \(#(\d+)\)$/;
-              const [,title, pr] = prExtractor.exec(titleAndPR);
+              try {
+                const [,title, pr] = prExtractor.exec(titleAndPR);
+              } catch (err) {
+                throw new Error(`Failed to extract PR/title from: ${JSON.stringify(titleAndPR)}`);
+              }
               switch (type) {
                 case "⚡️":
                 case ":zap:":
