@@ -7,6 +7,10 @@ on:
         description: 'Next version (eg.: 2.20.0)'
         required: true
         type: string
+      shortDescription:
+        description: 'Short description'
+        required: true
+        type: string
 
 jobs:
   generate_changelog:
@@ -22,89 +26,13 @@ jobs:
           script: |
             const util = require('util');
             const execFile = util.promisify(require('child_process').execFile);
+            const {stdout} = await execFile('ls', ['-l']);
+            console.log("ls -l:");
+            console.log(stdout);
             const nextVersion = process.env.NEXT_VERSION;
-            const { stdout: lastTagOutput } = await execFile("git", ["describe", "--tags", "--abbrev=0"]);
-            const lastTag = lastTagOutput.trim()
-            const { stdout: diffOutput } = await execFile("git", ["--no-pager", "log", `${lastTag}..HEAD`, "--format=%s"]);
-            const diffOutputLines = diffOutput.split('\n').map(line => line.trim()).filter(line => line.length !== 0);
-            let newFeaturesSection = [];
-            let maintenanceSection = [];
-            for (const lineDiff of diffOutputLines) {
-              const [type, ...titleAndPR] = lineDiff.split(' ');
-              const prExtractor =  /^(.*) \(#(\d+)\)$/;
-              let title;
-              let pr;
-              try {
-                [,title, pr] = prExtractor.exec(titleAndPR.join(' '));
-              } catch (err) {
-                console.error(`⚠️⚠️⚠️ Failed to extract PR/title from: ${JSON.stringify(lineDiff)} ⚠️⚠️⚠️`);
-                break;
-              }
-              switch (type) {
-                case "⚡️":
-                case ":zap:":
-                case "✨":
-                case ":sparkles:":
-                  newFeaturesSection.push(`([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${title}`);
-                  break;
-                case "🐛":
-                case ":bug:":
-                  maintenanceSection.push({ type: "Bug", pr, title });
-                  break;
-                case "📝":
-                case ":memo:":
-                  maintenanceSection.push({ type: "Doc", pr, title });
-                  break;
-                case "✏️":
-                case ":pencil2:":
-                  maintenanceSection.push({ type: "Typo", pr, title });
-                  break;
-                case "✅":
-                case ":white_check_mark:":
-                  maintenanceSection.push({ type: "Test", pr, title });
-                  break;
-                case "⬆️":
-                case ":arrow_up:":
-                  break;
-                case "♻️":
-                case ":recycle:":
-                  maintenanceSection.push({ type: "Refactor", pr, title });
-                  break;
-                case "💚":
-                case ":green_heart:":
-                case "👷":
-                case ":construction_worker:":
-                case "🔧":
-                case ":wrench:":
-                  maintenanceSection.push({ type: "CI", pr, title });
-                  break;
-                case "🔨":
-                case ":hammer:":
-                  maintenanceSection.push({ type: "Script", pr, title });
-                  break;
-                case "🚚":
-                case ":truck:":
-                  maintenanceSection.push({ type: "Move", pr, title });
-                  break;
-                default:
-                  console.error(`⚠️⚠️⚠️ Unhandled type: ${type} ⚠️⚠️⚠️`);
-                  break;
-              }
-            }
-            const body = "# " + nextVersion + "\n\n" +
-                         "_What happened?_\n" +
-                         "[[Code](https://github.com/dubzzz/fast-check/tree/v" + nextVersion +")][[Diff](https://github.com/dubzzz/fast-check/compare/" + lastTag + "...v" + nextVersion + ")]\n\n" +
-                         "## Features\n\n" +
-                         newFeaturesSection
-                           .reverse()
-                           .map(line => `- ${line}`)
-                           .join('\n') + "\n\n" +
-                         "## Fixes\n\n" +
-                         maintenanceSection
-                           .reverse()
-                           .sort((a, b) => a.type.localeCompare(b.type))
-                           .map(({type, title, pr}) => `- ([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${type}: ${title}`)
-                           .join('\n') + "\n\n";
-            console.log(body);
+            const shortDescription = process.env.SHORT_DESCRIPTION;
+            const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');
+            await run({nextVersion, shortDescription});
         env:
           NEXT_VERSION: ${{github.event.inputs.nextVersion}}
+          SHORT_DESCRIPTION: ${{github.event.inputs.shortDescription}}
