@@ -1,5 +1,7 @@
 // @ts-check
-const { readFile, writeFile } = require('fs/promises');
+const {
+  promises: { readFile, writeFile },
+} = require('fs');
 const util = require('util');
 const execFile = util.promisify(require('child_process').execFile);
 
