@@ -31,13 +31,14 @@ jobs:
             const nextVersion = process.env.NEXT_VERSION;
             const shortDescription = process.env.SHORT_DESCRIPTION;
             const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');
-            const {branchName, content, errors} = await run({nextVersion, shortDescription});
+            const {branchName, commitName, content, errors} = await run({nextVersion, shortDescription});
             const owner = context.payload.repository.owner.login;
             const repo = context.payload.repository.name;
-            const title = `🔖 Update CHANGELOG for ${nextVersion}`;
+            const title = commitName;
             const head = branchName;
             const base = 'main';
-            const body = errors.length !== 0 ? `Got the following errors:\n${errors.map(e => `- ${e}`).join('\n')}` : '';
+            const bodyErrors = errors.length !== 0 ? `Got the following errors:\n${errors.map(e => `- ${e}`).join('\n')}` : '';
+            const body = `Resulting CHANGELOG at: https://github.com/dubzzz/fast-check/blob/${branchName}/CHANGELOG.md\n\n${bodyErrors}`
             await github.rest.pulls.create({owner, repo, title, head, base, body});
         env:
           NEXT_VERSION: ${{github.event.inputs.nextVersion}}
