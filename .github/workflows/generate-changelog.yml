@@ -35,9 +35,10 @@ jobs:
             const owner = context.payload.repository.owner.login;
             const repo = context.payload.repository.name;
             const title = `🔖 Update CHANGELOG for ${nextVersion}`;
+            const head = branchName;
             const base = 'main';
             const body = errors.length !== 0 ? `Got the following errors:\n${errors.map(e => `- ${e}`).join('\n')}` : '';
-            await github.rest.pulls.create({owner, repo, title, base, body});
+            await github.rest.pulls.create({owner, repo, title, head, base, body});
         env:
           NEXT_VERSION: ${{github.event.inputs.nextVersion}}
           SHORT_DESCRIPTION: ${{github.event.inputs.shortDescription}}
