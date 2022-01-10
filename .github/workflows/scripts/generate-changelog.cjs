@@ -108,7 +108,7 @@ async function extractAndParseDiff(fromIdentifier) {
 
 /**
  * @param {{nextVersion:string, shortDescription:string}} configuration
- * @returns {Promise<{branchName:string, errors:string[]}>}
+ * @returns {Promise<{branchName:string, commitName:string, errors:string[]}>}
  */
 async function run({ nextVersion, shortDescription }) {
   // Extract metas for changelog
@@ -149,13 +149,14 @@ async function run({ nextVersion, shortDescription }) {
 
   // Create another branch and commit on it
   const branchName = `changelog-${nextVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}`;
+  const commitName = `🔖 Update CHANGELOG.md for ${nextVersion}`;
   await execFile('git', ['checkout', '-b', branchName]);
   await execFile('git', ['add', changelogFilename]);
-  await execFile('git', ['commit', '-m', 'Update CHANGELOG.md']);
+  await execFile('git', ['commit', '-m', commitName]);
   await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
 
   // Return useful details
-  return { branchName, errors };
+  return { branchName, commitName, errors };
 }
 
 exports.run = run;
