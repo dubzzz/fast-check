@@ -148,7 +148,7 @@ async function run({ nextVersion, shortDescription }) {
   await writeFile(changelogFilename, `${body}\n\n${nextVersion.endsWith('.0') ? `---\n\n` : ''}${previousContent}`);
 
   // Create another branch and commit on it
-  const branchName = `changelog-${nextVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}}`;
+  const branchName = `changelog-${nextVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}`;
   await execFile('git', ['checkout', '-b', branchName]);
   await execFile('git', ['add', changelogFilename]);
   await execFile('git', ['commit', '-m', 'Update CHANGELOG.md']);
