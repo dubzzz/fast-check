@@ -20,19 +20,24 @@ jobs:
       - uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
+      - name: Configure GIT
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
       - name: Generate Changelog
         uses: actions/github-script@v5
         with:
           script: |
-            const util = require('util');
-            const execFile = util.promisify(require('child_process').execFile);
-            const {stdout} = await execFile('ls', ['-l']);
-            console.log("ls -l:");
-            console.log(stdout);
             const nextVersion = process.env.NEXT_VERSION;
             const shortDescription = process.env.SHORT_DESCRIPTION;
             const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');
-            await run({nextVersion, shortDescription});
+            const {branchName, content, errors} = await run({nextVersion, shortDescription});
+            const owner = context.payload.repository.owner.login;
+            const repo = context.payload.repository.name;
+            const title = `🔖 Update CHANGELOG for ${nextVersion}`;
+            const base = 'main';
+            const body = errors.length !== 0 ? `Got the following errors:\n${errors.map(e => `- ${e}`).join('\n')}` : '';
+            await github.rest.pulls.create({owner, repo, title, base, body});
         env:
           NEXT_VERSION: ${{github.event.inputs.nextVersion}}
           SHORT_DESCRIPTION: ${{github.event.inputs.shortDescription}}

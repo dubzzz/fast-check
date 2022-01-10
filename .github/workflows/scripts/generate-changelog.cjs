@@ -1,4 +1,5 @@
 // @ts-check
+const { readFile, writeFile } = require('fs/promises');
 const util = require('util');
 const execFile = util.promisify(require('child_process').execFile);
 
@@ -23,7 +24,7 @@ async function extractLastTag() {
 /**
  * Extract and parse the logs of git to get lines for the changelog
  * @param {string} fromIdentifier
- * @returns {Promise<{newFeaturesSection:string[], maintenanceSection:{type:string,pr:string,title:string}[]}>}
+ * @returns {Promise<{newFeaturesSection:string[], maintenanceSection:{type:string,pr:string,title:string}[], errors: string[]}>}
  */
 async function extractAndParseDiff(fromIdentifier) {
   // Extract raw diff log
@@ -34,8 +35,9 @@ async function extractAndParseDiff(fromIdentifier) {
     .filter((line) => line.length !== 0);
 
   // Parse raw diff log
-  let newFeaturesSection = [];
-  let maintenanceSection = [];
+  const newFeaturesSection = [];
+  const maintenanceSection = [];
+  const errors = [];
   for (const lineDiff of diffOutputLines) {
     const [type, ...titleAndPR] = lineDiff.split(' ');
     const prExtractor = /^(.*) \(#(\d+)\)$/;
@@ -44,7 +46,7 @@ async function extractAndParseDiff(fromIdentifier) {
     try {
       [, title, pr] = prExtractor.exec(titleAndPR.join(' '));
     } catch (err) {
-      console.error(`⚠️⚠️⚠️ Failed to extract PR/title from: ${JSON.stringify(lineDiff)} ⚠️⚠️⚠️`);
+      errors.push(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
       break;
     }
     switch (type) {
@@ -94,22 +96,22 @@ async function extractAndParseDiff(fromIdentifier) {
         maintenanceSection.push({ type: 'Move', pr, title });
         break;
       default:
-        console.error(`⚠️⚠️⚠️ Unhandled type: ${type} ⚠️⚠️⚠️`);
+        errors.push(`Unhandled type: ${type}`);
         break;
     }
   }
 
-  return { newFeaturesSection, maintenanceSection };
+  return { newFeaturesSection, maintenanceSection, errors };
 }
 
 /**
  * @param {{nextVersion:string, shortDescription:string}} configuration
- * @returns {Promise<void>}
+ * @returns {Promise<{branchName:string, errors:string[]}>}
  */
 async function run({ nextVersion, shortDescription }) {
   // Extract metas for changelog
   const lastTag = await extractLastTag();
-  const { newFeaturesSection, maintenanceSection } = await extractAndParseDiff(lastTag);
+  const { newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(lastTag);
 
   // Build changelog message
   const codeUrl = `https://github.com/dubzzz/fast-check/tree/v${nextVersion}`;
@@ -131,7 +133,27 @@ async function run({ nextVersion, shortDescription }) {
     `${newFeaturesBlock}\n\n` +
     '## Fixes\n\n' +
     `${maintenanceBlock}`;
-  console.log(body);
+
+  // Report in console
+  console.log(`Changelog is:\n\n${body}\n\n---`);
+  if (errors.length > 0) {
+    console.log(`Got errors:\n${errors.join('\n')}`);
+  }
+
+  // Update changelog
+  const changelogFilename = './CHANGELOG.md';
+  const previousContent = await readFile(changelogFilename);
+  await writeFile(changelogFilename, `${body}\n\n${nextVersion.endsWith('.0') ? `---\n\n` : ''}${previousContent}`);
+
+  // Create another branch and commit on it
+  const branchName = `changelog-${nextVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}}`;
+  await execFile('git', ['checkout', '-b', branchName]);
+  await execFile('git', ['add', changelogFilename]);
+  await execFile('git', ['commit', '-m', 'Update CHANGELOG.md']);
+  await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
+
+  // Return useful details
+  return { branchName, errors };
 }
 
 exports.run = run;
