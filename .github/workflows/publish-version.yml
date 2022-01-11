@@ -28,5 +28,7 @@ jobs:
         git config --local user.email "github@dubien.org"
     - name: Bump version
       run: npm version ${{github.event.inputs.version}}
+    - name: Push main
+      run: git push origin main
     - name: Push tag
-      run: git push origin main --follow-tags
+      run: git push origin $(git describe --tags)
