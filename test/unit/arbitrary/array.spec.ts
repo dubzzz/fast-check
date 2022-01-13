@@ -24,7 +24,7 @@ function beforeEachHook() {
 beforeEach(beforeEachHook);
 
 describe('array', () => {
-  it('should instantiate ArrayArbitrary(arb, 0, ?) for array(arb)', () => {
+  it('should instantiate ArrayArbitrary(arb, 0, ?, ?) for array(arb)', () => {
     // Arrange
     const { instance: childInstance } = fakeNextArbitrary<unknown>();
     const { instance } = fakeNextArbitrary<unknown[]>();
@@ -35,15 +35,17 @@ describe('array', () => {
     const arb = array(convertFromNext(childInstance));
 
     // Assert
-    expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number));
-    const receivedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
-    expect(receivedMaxLength).toBeGreaterThan(0);
-    expect(receivedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
-    expect(Number.isInteger(receivedMaxLength)).toBe(true);
+    expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), expect.any(Number));
+    const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
+    expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
+    expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
+    expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
+    const receivedMaxLength = ArrayArbitrary.mock.calls[0][3]; // Starting at v3, maxLength will be 0x7fffffff in such case
+    expect(receivedMaxLength).toBe(receivedGeneratedMaxLength);
     expect(convertToNext(arb)).toBe(instance);
   });
 
-  it('should instantiate ArrayArbitrary(arb, 0, maxLength) for array(arb, {maxLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength) for array(arb, {maxLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
         // Arrange
@@ -56,13 +58,13 @@ describe('array', () => {
         const arb = array(convertFromNext(childInstance), { maxLength });
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength);
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, ?) for array(arb, {minLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, ?) for array(arb, {minLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (minLength) => {
         // Arrange
@@ -75,21 +77,23 @@ describe('array', () => {
         const arb = array(convertFromNext(childInstance), { minLength });
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, expect.any(Number));
-        const receivedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, expect.any(Number), expect.any(Number));
+        const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         if (minLength !== 2 ** 31 - 1) {
-          expect(receivedMaxLength).toBeGreaterThan(minLength);
-          expect(receivedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
-          expect(Number.isInteger(receivedMaxLength)).toBe(true);
+          expect(receivedGeneratedMaxLength).toBeGreaterThan(minLength);
+          expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
+          expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
         } else {
-          expect(receivedMaxLength).toEqual(minLength);
+          expect(receivedGeneratedMaxLength).toEqual(minLength);
         }
+        const receivedMaxLength = ArrayArbitrary.mock.calls[0][3]; // Starting at v3, maxLength will be 0x7fffffff in such case
+        expect(receivedMaxLength).toBe(receivedGeneratedMaxLength);
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, maxLength) for array(arb, {minLength,maxLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength) for array(arb, {minLength,maxLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
         // Arrange
@@ -103,13 +107,13 @@ describe('array', () => {
         const arb = array(convertFromNext(childInstance), { minLength, maxLength });
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength, maxLength);
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, 0, maxLength) for array(arb, maxLength)', () => {
+  it('[legacy] should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength) for array(arb, maxLength)', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
         // Arrange
@@ -122,13 +126,13 @@ describe('array', () => {
         const arb = array(convertFromNext(childInstance), maxLength);
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength);
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, minLength, maxLength) for array(arb, minLength, maxLength)', () => {
+  it('[legacy] should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength) for array(arb, minLength, maxLength)', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
         // Arrange
@@ -142,7 +146,7 @@ describe('array', () => {
         const arb = array(convertFromNext(childInstance), minLength, maxLength);
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength, maxLength);
         expect(convertToNext(arb)).toBe(instance);
       })
     );

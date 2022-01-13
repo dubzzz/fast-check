@@ -70,17 +70,24 @@ function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints): Arbitrary<T
 function array<T>(arb: Arbitrary<T>, ...args: [] | [number] | [number, number] | [ArrayConstraints]): Arbitrary<T[]> {
   const nextArb = convertToNext(arb);
   // fc.array(arb)
-  if (args[0] === undefined) return convertFromNext(new ArrayArbitrary<T>(nextArb, 0, maxLengthFromMinLength(0)));
+  if (args[0] === undefined) {
+    const maxLength = maxLengthFromMinLength(0);
+    return convertFromNext(new ArrayArbitrary<T>(nextArb, 0, maxLength, maxLength));
+  }
   // fc.array(arb, constraints)
   if (typeof args[0] === 'object') {
     const minLength = args[0].minLength || 0;
     const specifiedMaxLength = args[0].maxLength;
     const maxLength = specifiedMaxLength !== undefined ? specifiedMaxLength : maxLengthFromMinLength(minLength);
-    return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength));
+    return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, maxLength));
   }
   // fc.array(arb, minLength, maxLength)
-  if (args[1] !== undefined) return convertFromNext(new ArrayArbitrary<T>(nextArb, args[0], args[1]));
+  if (args[1] !== undefined) {
+    const maxLength = args[1];
+    return convertFromNext(new ArrayArbitrary<T>(nextArb, args[0], maxLength, maxLength));
+  }
   // fc.array(arb, maxLength)
-  return convertFromNext(new ArrayArbitrary<T>(nextArb, 0, args[0]));
+  const maxLength = args[0];
+  return convertFromNext(new ArrayArbitrary<T>(nextArb, 0, maxLength, maxLength));
 }
 export { array };
