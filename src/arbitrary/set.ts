@@ -249,7 +249,7 @@ function set<T>(
   const setBuilder = constraints.setBuilder;
 
   const nextArb = convertToNext(arb);
-  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, setBuilder));
+  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, maxLength, setBuilder));
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }
