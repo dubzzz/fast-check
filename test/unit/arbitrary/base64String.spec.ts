@@ -147,6 +147,21 @@ describe('base64String (integration)', () => {
   // For instance: 'abcde' will be mapped to 'abcd', with default shrink it will try to shrink from 'abcde'. With context-less one it will start from 'abcd'.
 
   it.each`
+    source                                                                    | constraints
+    ${'0123ABC==' /* invalid base 64 */}                                      | ${{}}
+    ${'AB==' /* not large enough */}                                          | ${{ minLength: 5 }}
+    ${'0123AB==' /* too large */}                                             | ${{ maxLength: 7 }}
+    ${'01230123012301230123AB==' /* TODO(size) - too large for the moment */} | ${{}}
+  `('should not be able to generate $source with fc.base64String($constraints)', ({ source, constraints }) => {
+    // Arrange / Act
+    const arb = convertToNext(base64String(constraints));
+    const out = arb.canShrinkWithoutContext(source);
+
+    // Assert
+    expect(out).toBe(false);
+  });
+
+  it.each`
     rawValue
     ${'ABCD'}
     ${'0123AB=='}

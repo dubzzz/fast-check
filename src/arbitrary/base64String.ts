@@ -77,6 +77,7 @@ function base64String(...args: StringFullConstraintsDefinition): Arbitrary<strin
   const unscaledMaxLength = constraints.maxLength;
 
   // base64 length is always a multiple of 4
+  // TODO(size) - No constraints on maxLength expected for array, if it has not been specified by the caller
   const minLength = unscaledMinLength + 3 - ((unscaledMinLength + 3) % 4);
   const maxLength = unscaledMaxLength - (unscaledMaxLength % 4);
 

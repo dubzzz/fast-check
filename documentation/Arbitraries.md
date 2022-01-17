@@ -50,6 +50,8 @@ fc.assert(
   - [More](#more)
 - [Others](#others)
 - [Going further?](#going-further)
+  - [Size explained](#size-explained)
+  - [Various links](#various-links)
 
 ## Boolean
 
@@ -675,7 +677,7 @@ fc.fullUnicode()
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 
 *&#8195;Usages*
 
@@ -757,7 +759,7 @@ fc.base64String({minLength: 4, maxLength: 12})
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 
 *&#8195;Usages*
 
@@ -796,7 +798,7 @@ fc.string({minLength: 4, maxLength: 6})
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 
 *&#8195;Usages*
 
@@ -835,7 +837,7 @@ fc.asciiString({minLength: 4, maxLength: 6})
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 
 *&#8195;Usages*
 
@@ -876,7 +878,7 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 
 *&#8195;Usages*
 
@@ -915,7 +917,7 @@ fc.string16bits({minLength: 4, maxLength: 6})
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 
 _Be aware that the length is considered in terms of the number of glyphs in the string and not the number of UTF-16 characters. As a consequence `generatedString.length` might be greater than the asked maximal length but `[...generatedString].length` will not and always be in the required range_
 
@@ -1621,7 +1623,7 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 - `min?` — default: `-128` — _minimal value (included)_
 - `max?` — default: `127` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1663,7 +1665,7 @@ fc.int8Array({min: 0, minLength: 1})
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1705,7 +1707,7 @@ fc.uint8Array({max: 42, minLength: 1})
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1747,7 +1749,7 @@ fc.uint8ClampedArray({max: 42, minLength: 1})
 - `min?` — default: `-32768` — _minimal value (included)_
 - `max?` — default: `32767` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1789,7 +1791,7 @@ fc.int16Array({min: 0, minLength: 1})
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `65535` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1831,7 +1833,7 @@ fc.uint16Array({max: 42, minLength: 1})
 - `min?` — default: `-0x80000000` — _minimal value (included)_
 - `max?` — default: `0x7fffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1873,7 +1875,7 @@ fc.int32Array({min: 0, minLength: 1})
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `0xffffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1917,7 +1919,7 @@ fc.uint32Array({max: 42, minLength: 1})
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -1961,7 +1963,7 @@ fc.float32Array({minLength: 1})
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -2386,7 +2388,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -2446,7 +2448,7 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `compare?` — default: `{type: 'IsStrictlyEqual', selector: v => v}` equivalent to `(a, b) => a === b` — _custom compare operator used to distinguish duplicates in order to remove them from the resulting array. it can either be an object `{type,selector}` or a function returning `true` whenever items are equivalent (function-based is less optimized for large arrays)_
   - `type` can be one of:
     - `IsStrictlyEqual` to rely on `===` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal))
@@ -3708,6 +3710,16 @@ Refer to [Race conditions detection](./RaceConditions.md) or [Detect race condit
 </details>
 
 ## Going further?
+
+### Size explained
+
+Whenever fast-check is called on an array-like arbitrary such as `fc.array` or `fc.string`, it is able to generate entries properly even if it does not receive any upper bound for the maximal length of the generated values.
+
+First, it sets `maxLength` to `0x7fffffff` — _the maximal allowed size for an array in JavaScript_.
+
+Then it sets an internal parameter called `maxGeneratedLength` to `2 * minLength + 10`. In other words, it does not generate entities having up to `0x7fffffff` but between entities having between `minLength` and `maxGeneratedLength` elements.
+
+### Various links
 
 - [API Reference](https://dubzzz.github.io/fast-check/)
 - [Advanced arbitraries (guide)](./AdvancedArbitraries.md)
