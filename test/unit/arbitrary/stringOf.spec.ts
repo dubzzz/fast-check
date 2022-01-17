@@ -45,6 +45,24 @@ describe('stringOf (integration)', () => {
   // so also many possible ways to shrink it.
 
   it.each`
+    source                                                         | patterns        | constraints
+    ${'.__..' /* not from patterns */}                             | ${['..', '__']} | ${{}}
+    ${'__..' /* not large enough */}                               | ${['..', '__']} | ${{ minLength: 3 }}
+    ${'__..__..' /* too large */}                                  | ${['..', '__']} | ${{ maxLength: 3 }}
+    ${'..'.repeat(11) /* TODO(size) - too large for the moment */} | ${['..', '__']} | ${{}}
+  `(
+    'should not be able to generate $source with fc.stringOf(arb($patterns), $constraints)',
+    ({ source, patterns, constraints }) => {
+      // Arrange / Act
+      const arb = convertToNext(stringOf(convertFromNext(new PatternsArbitrary(patterns)), constraints));
+      const out = arb.canShrinkWithoutContext(source);
+
+      // Assert
+      expect(out).toBe(false);
+    }
+  );
+
+  it.each`
     rawValue         | patterns
     ${'CccABbBbCcc'} | ${['A', 'Bb', 'Ccc']}
     ${'_._.____...'} | ${['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..']}

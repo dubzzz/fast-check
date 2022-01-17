@@ -63,6 +63,10 @@ function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
 export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstraints = {}): Arbitrary<T[]> {
   const {
     minNumElements = 0,
+    // TODO(size) - While from a generate point of view we want some limits using maxLengthFromMinLength
+    // makes us unable to shrink user inputs we could have potentially generated as we restrict our array
+    // to a smaller one (for generate reasons). Ideally maxLength should only be specified when there is
+    // a real need for them. For any other case, we should try not to pass them.
     maxNumElements = maxLengthFromMinLength(minNumElements),
     maxLength = Math.min(maxLengthFromMinLength(maxNumElements), 4294967295),
     noTrailingHole,

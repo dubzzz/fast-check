@@ -67,7 +67,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // Try to append into items up to the target size
     // We may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
-    // we accept a max of maxLength consecutive failures. This circuit breaker may cause
+    // we accept a max of maxGeneratedLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
     while (s.size() < N && numSkippedInRow < this.maxGeneratedLength) {
       const current = this.arb.generate(mrng, biasFactorItems);

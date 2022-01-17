@@ -77,12 +77,13 @@ describe('fullUnicodeString (integration)', () => {
   });
 
   it.each`
-    source
-    ${'a\uD83Db' /* invalid string */}
-    ${'\u{1f431}\u{1f431}\u{1f431}\u{1f431}\u{1f431}\u{1f431}\u{1f431}\u{1f431}\u{1f431}\u{1f431}\u{1f431}' /* by default maxLength = maxLengthFromMinLength(0) = 10 */}
-  `('should not be able to generate $source with fc.fullUnicodeString()', ({ source }) => {
+    source                             | constraints
+    ${'a\uD83Db' /* invalid string */} | ${{}}
+    ${'ab' /* not large enough */}     | ${{ minLength: 3 }}
+    ${'abcd' /* too large */}          | ${{ maxLength: 3 }}
+  `('should not be able to generate $source with fc.fullUnicodeString($constraints)', ({ source, constraints }) => {
     // Arrange / Act
-    const arb = convertToNext(fullUnicodeString());
+    const arb = convertToNext(fullUnicodeString(constraints));
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -92,7 +93,8 @@ describe('fullUnicodeString (integration)', () => {
   it.each`
     rawValue
     ${'Hey \u{1f431}!'}
-  `('should be able to shrink $rawValue', ({ rawValue }) => {
+    ${'\u{1f431}'.repeat(50) /* longer than default maxGeneratedLength but ok for shrink */}
+  `('should be able to shrink $rawValue with fc.fullUnicodeString()', ({ rawValue }) => {
     // Arrange
     const arb = convertToNext(fullUnicodeString());
     const value = new NextValue(rawValue, undefined);

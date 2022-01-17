@@ -24,7 +24,7 @@ function beforeEachHook() {
 beforeEach(beforeEachHook);
 
 describe('array', () => {
-  it('should instantiate ArrayArbitrary(arb, 0, ?, ?) for array(arb)', () => {
+  it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff) for array(arb)', () => {
     // Arrange
     const { instance: childInstance } = fakeNextArbitrary<unknown>();
     const { instance } = fakeNextArbitrary<unknown[]>();
@@ -35,13 +35,11 @@ describe('array', () => {
     const arb = array(convertFromNext(childInstance));
 
     // Assert
-    expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), expect.any(Number));
+    expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), 0x7fffffff);
     const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
     expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
     expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
     expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
-    const receivedMaxLength = ArrayArbitrary.mock.calls[0][3]; // Starting at v3, maxLength will be 0x7fffffff in such case
-    expect(receivedMaxLength).toBe(receivedGeneratedMaxLength);
     expect(convertToNext(arb)).toBe(instance);
   });
 
@@ -64,7 +62,7 @@ describe('array', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, ?, ?) for array(arb, {minLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff) for array(arb, {minLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (minLength) => {
         // Arrange
@@ -77,7 +75,7 @@ describe('array', () => {
         const arb = array(convertFromNext(childInstance), { minLength });
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, expect.any(Number), expect.any(Number));
+        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, expect.any(Number), 0x7fffffff);
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         if (minLength !== 2 ** 31 - 1) {
           expect(receivedGeneratedMaxLength).toBeGreaterThan(minLength);
@@ -86,8 +84,6 @@ describe('array', () => {
         } else {
           expect(receivedGeneratedMaxLength).toEqual(minLength);
         }
-        const receivedMaxLength = ArrayArbitrary.mock.calls[0][3]; // Starting at v3, maxLength will be 0x7fffffff in such case
-        expect(receivedMaxLength).toBe(receivedGeneratedMaxLength);
         expect(convertToNext(arb)).toBe(instance);
       })
     );

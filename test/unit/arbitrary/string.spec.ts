@@ -67,12 +67,13 @@ describe('string (integration)', () => {
   });
 
   it.each`
-    source
-    ${'01234567890' /* by default maxLength = maxLengthFromMinLength(0) = 10 */}
-    ${'a\u{1f431}b' /* out-of-range character */}
-  `('should not be able to generate $source with fc.string()', ({ source }) => {
+    source                                        | constraints
+    ${'a\u{1f431}b' /* out-of-range character */} | ${{}}
+    ${'ab' /* not large enough */}                | ${{ minLength: 3 }}
+    ${'abcd' /* too large */}                     | ${{ maxLength: 3 }}
+  `('should not be able to generate $source with fc.string($constraints)', ({ source, constraints }) => {
     // Arrange / Act
-    const arb = convertToNext(string());
+    const arb = convertToNext(string(constraints));
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -82,7 +83,8 @@ describe('string (integration)', () => {
   it.each`
     rawValue
     ${'Hey!'}
-  `('should be able to shrink $rawValue', ({ rawValue }) => {
+    ${'0'.repeat(50) /* longer than default maxGeneratedLength but ok for shrink */}
+  `('should be able to shrink $rawValue with fc.string()', ({ rawValue }) => {
     // Arrange
     const arb = convertToNext(string());
     const value = new NextValue(rawValue, undefined);

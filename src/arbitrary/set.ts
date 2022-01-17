@@ -1,7 +1,7 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
-import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import { MaxLengthUpperBound, maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
@@ -29,17 +29,24 @@ function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<Ne
   }
 }
 
+/** @internal */
+type CompleteSetConstraints<T> = Required<Omit<SetConstraints<T>, 'compare'>> & {
+  setBuilder: CustomSetBuilder<NextValue<T>>;
+  maxGeneratedLength: number;
+};
+
 /**
  * Build fully set SetConstraints from a partial data
  * @internal
  */
-function buildCompleteSetConstraints<T>(
-  constraints: SetConstraints<T>
-): Required<Omit<SetConstraints<T>, 'compare'>> & { setBuilder: CustomSetBuilder<NextValue<T>> } {
+function buildCompleteSetConstraints<T>(constraints: SetConstraints<T>): CompleteSetConstraints<T> {
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
-  const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
+  const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
+  // TODO(size) - Make use of the (future) size argument to decide whether or not to apply maxLengthFromMinLength or take maxLength
+  const maxGeneratedLength =
+    constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
   const setBuilder = buildSetBuilder(constraints);
-  return { minLength, maxLength, setBuilder };
+  return { minLength, maxGeneratedLength, maxLength, setBuilder };
 }
 
 /**
@@ -246,10 +253,13 @@ function set<T>(
 
   const minLength = constraints.minLength;
   const maxLength = constraints.maxLength;
+  const maxGeneratedLength = constraints.maxGeneratedLength;
   const setBuilder = constraints.setBuilder;
 
   const nextArb = convertToNext(arb);
-  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, maxLength, setBuilder));
+  const arrayArb = convertFromNext(
+    new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength, setBuilder)
+  );
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }

@@ -24,6 +24,8 @@ export function patternsToStringUnmapperFor(
     }
 
     const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
+    // TODO(size) - No constraints on maxLength means that any length above minLength (included)
+    // is acceptable for value
     const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
     if (value.length === 0) {
       if (minLength > 0) {
