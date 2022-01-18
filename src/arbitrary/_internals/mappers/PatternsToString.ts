@@ -51,8 +51,6 @@ export function patternsToStringUnmapperFor(
             }
             return newChunks; // we found a full match
           }
-          // Pushed in case we need to try for next indices
-          stack.push({ endIndexChunks: last.endIndexChunks, nextStartIndex: index + 1, chunks: last.chunks });
           // Pushed to go deeper in the tree
           stack.push({ endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
           break;
