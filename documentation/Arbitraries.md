@@ -2590,7 +2590,7 @@ fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 - `arb` — _arbitrary instance responsible to generate values_
 - `minNumElements?` — default: `0` — _minimal number of elements (included)_
 - `maxNumElements?` — default: `2 * minNumElements + 10` — _maximal number of elements (included)_
-- `maxLength?` — default: min(`2 * maxNumElements + 10`, `4294967295`) — _maximal length (included) - length includes elements but also holes for sparse arrays_
+- `maxLength?` — default: `2 * maxNumElements + 10` — _maximal length (included) - length includes elements but also holes for sparse arrays_
 - `noTrailingHole?` — default: `false` — _when enabled, all generated arrays will either be the empty array or end by a non-hole_
 
 *&#8195;Usages*

@@ -68,7 +68,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
     // to a smaller one (for generate reasons). Ideally maxLength should only be specified when there is
     // a real need for them. For any other case, we should try not to pass them.
     maxNumElements = maxLengthFromMinLength(minNumElements),
-    maxLength = Math.min(maxLengthFromMinLength(maxNumElements), 4294967295),
+    maxLength = maxLengthFromMinLength(maxNumElements),
     noTrailingHole,
   } = constraints;
 
