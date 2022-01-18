@@ -58,6 +58,10 @@ async function extractAndParseDiff(fromIdentifier) {
       case ':sparkles:':
         newFeaturesSection.push(buildPrLine(pr, title));
         break;
+      case '🔥':
+      case ':fire:':
+        maintenanceSection.push({ type: 'Clean', pr, title });
+        break;
       case '🐛':
       case ':bug:':
         maintenanceSection.push({ type: 'Bug', pr, title });
