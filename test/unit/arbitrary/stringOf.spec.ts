@@ -45,11 +45,10 @@ describe('stringOf (integration)', () => {
   // so also many possible ways to shrink it.
 
   it.each`
-    source                                                         | patterns        | constraints
-    ${'.__..' /* not from patterns */}                             | ${['..', '__']} | ${{}}
-    ${'__..' /* not large enough */}                               | ${['..', '__']} | ${{ minLength: 3 }}
-    ${'__..__..' /* too large */}                                  | ${['..', '__']} | ${{ maxLength: 3 }}
-    ${'..'.repeat(11) /* TODO(size) - too large for the moment */} | ${['..', '__']} | ${{}}
+    source                             | patterns        | constraints
+    ${'.__..' /* not from patterns */} | ${['..', '__']} | ${{}}
+    ${'__..' /* not large enough */}   | ${['..', '__']} | ${{ minLength: 3 }}
+    ${'__..__..' /* too large */}      | ${['..', '__']} | ${{ maxLength: 3 }}
   `(
     'should not be able to generate $source with fc.stringOf(arb($patterns), $constraints)',
     ({ source, patterns, constraints }) => {
@@ -63,9 +62,10 @@ describe('stringOf (integration)', () => {
   );
 
   it.each`
-    rawValue         | patterns
-    ${'CccABbBbCcc'} | ${['A', 'Bb', 'Ccc']}
-    ${'_._.____...'} | ${['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..']}
+    rawValue                                                                          | patterns
+    ${'CccABbBbCcc'}                                                                  | ${['A', 'Bb', 'Ccc']}
+    ${'_._.____...'}                                                                  | ${['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..']}
+    ${'..'.repeat(50) /* longer than default maxGeneratedLength but ok for shrink */} | ${['..', '__']}
   `('should be able to shrink $rawValue', ({ rawValue, patterns }) => {
     // Arrange
     const arb = convertToNext(stringOf(convertFromNext(new PatternsArbitrary(patterns))));
