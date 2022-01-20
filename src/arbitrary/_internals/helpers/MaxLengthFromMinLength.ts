@@ -86,5 +86,5 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   if (resultingSize === 'max') {
     return maxLength;
   }
-  return maxLengthFromMinLength(minLength, resultingSize), maxLength;
+  return maxLengthFromMinLength(minLength, resultingSize);
 }
