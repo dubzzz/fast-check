@@ -959,7 +959,7 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 
 - `charArb` — _arbitrary able to generate random strings (possibly multiple characters)_
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 
 *&#8195;Usages*
 
