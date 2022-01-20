@@ -1,5 +1,5 @@
 import { NextArbitrary } from '../../../check/arbitrary/definition/NextArbitrary';
-import { maxLengthFromMinLength } from '../helpers/MaxLengthFromMinLength';
+import { DefaultSize, maxLengthFromMinLength } from '../helpers/MaxLengthFromMinLength';
 import { StringSharedConstraints } from '../helpers/StringConstraintsExtractor';
 
 /** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
@@ -26,7 +26,8 @@ export function patternsToStringUnmapperFor(
     const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
     // TODO(size) - No constraints on maxLength means that any length above minLength (included)
     // is acceptable for value
-    const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
+    const maxLength =
+      constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength, DefaultSize);
     if (value.length === 0) {
       if (minLength > 0) {
         throw new Error('Unable to unmap received string');

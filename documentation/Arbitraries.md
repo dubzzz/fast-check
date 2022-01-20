@@ -2380,7 +2380,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 *&#8195;Signatures*
 
 - `fc.array(arb)`
-- `fc.array(arb, {minLength?, maxLength?})`
+- `fc.array(arb, {minLength?, maxLength?, size?})`
 - _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -2389,6 +2389,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2422,6 +2423,11 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 // • [20,668325235,1112668370,7,8,847065979]
 // • [19,3,15,16,117940422,25]
 // • …
+
+fc.array(fc.nat(), {maxLength: 20, size: 'max'})
+// Note: By specifying size to max, we enforce the fact that we want generated values to have
+// between 0 and 20 items. In other words, we want to use the full range of specified lengths.
+// Examples of generated values:
 ```
 </details>
 
@@ -3713,11 +3719,20 @@ Refer to [Race conditions detection](./RaceConditions.md) or [Detect race condit
 
 ### Size explained
 
-Whenever fast-check is called on an array-like arbitrary such as `fc.array` or `fc.string`, it is able to generate entries properly even if it does not receive any upper bound for the maximal length of the generated values.
+Since version 2.22.0, there is a distinction between constraints required by specifications and what will really be generated. When dealing with array-like arbitraries such as `fc.array` or `fc.string`, defining a constraint like `maxLength` can be seen as if you wrote "my algorithm is not supposed to handle arrays having more than X elements". It does not ask fast-check to generate arrays with X elements, but tells it that it could if needed or asked to.
 
-First, it sets `maxLength` to `0x7fffffff` — _the maximal allowed size for an array in JavaScript_.
+What really drives fast-check into generating large arrays is called `size`. At the level of an arbitrary it can be set to:
+- Relative size: `"-4"`, `"-3"`, `"-2"`, `"-1"`, `"="`, `"+1"`, `"+2"`, `"+3"` or `"+4"` — _offset the global setting `baseSize` by the passed offset_
+- Explicit size: `"xsmall"`, `"small"`, `"medium"`, `"large"` or `"xlarge"` — _use an explicit size_
+- Exact value: `"max"` — _generate entities having up-to `maxLength` items_
+- Automatic size: `undefined` — _if `maxLength` has not been specified or if the global setting `defaultSizeToMaxWhenMaxSpecified` is `false` (in v2 it defaults to `true` for backward compatibilty reasons) then `"="`, otherwise `"max"`_
 
-Then it sets an internal parameter called `maxGeneratedLength` to `2 * minLength + 10`. In other words, it does not generate entities having up to `0x7fffffff` but between entities having between `minLength` and `maxGeneratedLength` elements.
+Here is a quick overview of how we use the `size` parameter associated to a minimal length to compute the maximal length for the generated values:
+- `xsmall` — `min + (0.1 * min + 1)`
+- `small` (default) — `min + (1 * min + 10)`
+- `medium` — `min + (10 * min + 100)`
+- `large` — `min + (100 * min + 1000)`
+- `xlarge` — `min + (1000 * min + 10000)`
 
 ### Various links
 

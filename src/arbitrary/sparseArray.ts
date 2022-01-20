@@ -4,7 +4,7 @@ import { integer } from './integer';
 import { nat } from './nat';
 import { set } from './set';
 import { tuple } from './tuple';
-import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import { DefaultSize, maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link sparseArray}
@@ -67,8 +67,8 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
     // makes us unable to shrink user inputs we could have potentially generated as we restrict our array
     // to a smaller one (for generate reasons). Ideally maxLength should only be specified when there is
     // a real need for them. For any other case, we should try not to pass them.
-    maxNumElements = maxLengthFromMinLength(minNumElements),
-    maxLength = maxLengthFromMinLength(maxNumElements),
+    maxNumElements = maxLengthFromMinLength(minNumElements, DefaultSize),
+    maxLength = maxLengthFromMinLength(maxNumElements, DefaultSize),
     noTrailingHole,
   } = constraints;
 
