@@ -1,3 +1,4 @@
+import { assert } from 'console';
 import fc from '../../../../../lib/fast-check';
 import {
   DefaultSize,
@@ -159,7 +160,11 @@ const isSmallerSize = (sa: Size, sb: Size) => allSizeOrdered.indexOf(sa) < allSi
 const allSizeForArbitrary = [...allSizeOrdered, 'max'] as const; // WARNING/ it does not include undefined
 const sizeForArbitraryArb = fc.constantFrom<SizeForArbitrary>(...allSizeForArbitrary);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// Type check that helpers are covering all the possibilities
+
 const failIfMissingSize: Size extends typeof allSizeOrdered[number] ? true : never = true;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const failIfMissingSizeForArbitrary: SizeForArbitrary extends typeof allSizeForArbitrary[number] ? true : never = true;
+const failIfMissingSizeForArbitrary: NonNullable<SizeForArbitrary> extends typeof allSizeForArbitrary[number]
+  ? true
+  : never = true;
+assert(failIfMissingSize); // just not to appear unused
+assert(failIfMissingSizeForArbitrary); // just not to appear unused
