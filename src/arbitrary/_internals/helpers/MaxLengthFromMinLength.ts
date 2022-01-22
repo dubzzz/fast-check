@@ -22,12 +22,24 @@ export const MaxLengthUpperBound = 0x7fffffff;
  */
 export type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 
+/** @internal */
+const orderedSize = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
+
+/**
+ * @remarks Since 2.22.0
+ * @public
+ */
+export type RelativeSize = '-4' | '-3' | '-2' | '-1' | '=' | '+1' | '+2' | '+3' | '+4';
+
+/** @internal */
+const orderedRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'] as const;
+
 /**
  * Superset of {@link Size} to override the default defined for size
  * @remarks Since 2.22.0
  * @public
  */
-export type SizeForArbitrary = Size | 'max' | undefined;
+export type SizeForArbitrary = RelativeSize | Size | 'max' | undefined;
 
 /**
  * The default size used by fast-check
@@ -57,6 +69,27 @@ export function maxLengthFromMinLength(minLength: number, size: Size): number {
 }
 
 /**
+ * Transform a RelativeSize|Size into a Size
+ * @internal
+ */
+export function relativeSizeToSize(size: Size | RelativeSize, defaultSize: Size): Size {
+  const sizeInRelative = orderedRelativeSize.indexOf(size as RelativeSize);
+  if (sizeInRelative === -1) {
+    return size as Size;
+  }
+  const defaultSizeInSize = orderedSize.indexOf(defaultSize);
+  if (defaultSizeInSize === -1) {
+    throw new Error(`Unable to offset size based on the unknown defaulted one: ${defaultSize}`);
+  }
+  const resultingSizeInSize = defaultSizeInSize + sizeInRelative - 4;
+  return resultingSizeInSize < 0
+    ? orderedSize[0]
+    : resultingSizeInSize >= orderedSize.length
+    ? orderedSize[orderedSize.length - 1]
+    : orderedSize[resultingSizeInSize];
+}
+
+/**
  * Compute `maxGeneratedLength` based on `minLength`, `maxLength` and `size`
  * @param size - Size defined by the caller on the arbitrary
  * @param minLength - Considered minimal length
@@ -80,11 +113,12 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   // - Otherwise (size=undefined), we default it to:
   //   - If caller specified a maxLength and asked for defaultSizeToMaxWhenMaxSpecified, then 'max'
   //   - Otherwise, defaultSize
-  const resultingSize =
+  const definedSize =
     size !== undefined ? size : specifiedMaxLength && defaultSizeToMaxWhenMaxSpecified ? 'max' : defaultSize;
 
-  if (resultingSize === 'max') {
+  if (definedSize === 'max') {
     return maxLength;
   }
-  return maxLengthFromMinLength(minLength, resultingSize);
+  const finalSize = relativeSizeToSize(definedSize, defaultSize);
+  return maxLengthFromMinLength(minLength, finalSize);
 }
