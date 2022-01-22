@@ -1,7 +1,11 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
-import { MaxLengthUpperBound, maxLengthFromMinLength, DefaultSize } from './_internals/helpers/MaxLengthFromMinLength';
+import {
+  MaxLengthUpperBound,
+  SizeForArbitrary,
+  maxGeneratedLengthFromSizeForArbitrary,
+} from './_internals/helpers/MaxLengthFromMinLength';
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
@@ -30,7 +34,7 @@ function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<Ne
 }
 
 /** @internal */
-type CompleteSetConstraints<T> = Required<Omit<SetConstraints<T>, 'compare'>> & {
+type CompleteSetConstraints<T> = Required<Omit<SetConstraints<T>, 'compare' | 'size'>> & {
   setBuilder: CustomSetBuilder<NextValue<T>>;
   maxGeneratedLength: number;
 };
@@ -42,9 +46,12 @@ type CompleteSetConstraints<T> = Required<Omit<SetConstraints<T>, 'compare'>> & 
 function buildCompleteSetConstraints<T>(constraints: SetConstraints<T>): CompleteSetConstraints<T> {
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
   const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
-  // TODO(size) - Make use of the (future) size argument to decide whether or not to apply maxLengthFromMinLength or take maxLength
-  const maxGeneratedLength =
-    constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength, DefaultSize);
+  const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(
+    constraints.size,
+    minLength,
+    maxLength,
+    constraints.maxLength !== undefined
+  );
   const setBuilder = buildSetBuilder(constraints);
   return { minLength, maxGeneratedLength, maxLength, setBuilder };
 }
@@ -138,6 +145,16 @@ export interface SetConstraints<T> {
    * @remarks Since 2.4.0
    */
   compare?: ((a: T, b: T) => boolean) | SetConstraintsSelector<T>;
+  /**
+   * Define how large the generated values should be (at max)
+   *
+   * When used in conjonction with `maxLength`, `size` will be used to define
+   * the upper bound of the generated array size while `maxLength` will be used
+   * to define and document the general maximal length allowed for this case.
+   *
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
 }
 
 /**
