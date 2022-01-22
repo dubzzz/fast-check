@@ -1,3 +1,5 @@
+import { SizeForArbitrary } from './MaxLengthFromMinLength';
+
 /**
  * Constraints to be applied on arbitraries for strings
  * @remarks Since 2.4.0
@@ -14,6 +16,11 @@ export interface StringSharedConstraints {
    * @remarks Since 2.4.0
    */
   maxLength?: number;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
 }
 
 /** @internal */

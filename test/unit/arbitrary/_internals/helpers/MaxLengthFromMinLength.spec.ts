@@ -1,15 +1,12 @@
-import { assert } from 'console';
 import fc from '../../../../../lib/fast-check';
 import {
   DefaultSize,
   maxGeneratedLengthFromSizeForArbitrary,
   maxLengthFromMinLength,
   MaxLengthUpperBound,
-  RelativeSize,
   relativeSizeToSize,
-  Size,
-  SizeForArbitrary,
 } from '../../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import { sizeArb, isSmallerSize, relativeSizeArb, sizeForArbitraryArb } from '../../__test-helpers__/SizeHelpers';
 
 describe('maxLengthFromMinLength', () => {
   it('should result into higher or equal maxLength given higher size', () => {
@@ -227,26 +224,3 @@ describe('relativeSizeToSize', () => {
     expect(relativeSizeToSize(relativeSize, 'xlarge')).toBe('xlarge');
   });
 });
-
-// Helpers
-
-const allSizeOrdered = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
-const sizeArb = fc.constantFrom<Size>(...allSizeOrdered);
-const isSmallerSize = (sa: Size, sb: Size) => allSizeOrdered.indexOf(sa) < allSizeOrdered.indexOf(sb);
-
-const allRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'] as const;
-const relativeSizeArb = fc.constantFrom<RelativeSize>(...allRelativeSize);
-
-const allSizeForArbitrary = [...allSizeOrdered, ...allRelativeSize, 'max'] as const; // WARNING: it does not include undefined
-const sizeForArbitraryArb = fc.constantFrom<SizeForArbitrary>(...allSizeForArbitrary);
-
-// Type check that helpers are covering all the possibilities
-
-const failIfMissingSize: Size extends typeof allSizeOrdered[number] ? true : never = true;
-const failIfMissingRelativeSize: RelativeSize extends typeof allRelativeSize[number] ? true : never = true;
-const failIfMissingSizeForArbitrary: NonNullable<SizeForArbitrary> extends typeof allSizeForArbitrary[number]
-  ? true
-  : never = true;
-assert(failIfMissingSize); // just not to appear unused
-assert(failIfMissingRelativeSize); // just not to appear unused
-assert(failIfMissingSizeForArbitrary); // just not to appear unused
