@@ -42,7 +42,7 @@ import { clone, CloneValue } from './arbitrary/clone';
 import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
-import { dictionary } from './arbitrary/dictionary';
+import { dictionary, DictionaryConstraints } from './arbitrary/dictionary';
 import { emailAddress } from './arbitrary/emailAddress';
 import { double, DoubleConstraints } from './arbitrary/double';
 import { float, FloatConstraints } from './arbitrary/float';
@@ -364,6 +364,7 @@ export {
   BigIntConstraints,
   BigUintConstraints,
   CommandsContraints,
+  DictionaryConstraints,
   DoubleConstraints,
   DoubleNextConstraints,
   FalsyContraints,

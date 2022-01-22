@@ -2705,11 +2705,15 @@ fc.infiniteStream(fc.nat(9))
 *&#8195;Signatures*
 
 - `fc.dictionary(keyArb, valueArb)`
+- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?})`
 
 *&#8195;with:*
 
 - `keyArb` — _arbitrary instance responsible to generate keys_
 - `valueArb` — _arbitrary instance responsible to generate values_
+- `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
+- `maxKeys?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of keys in the generated instances (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2730,6 +2734,16 @@ fc.dictionary(fc.string(), fc.nat())
 // • {}
 // • {"Fb+6vZ=< ":589373246,"8}r":17}
 // • {"4":57689789,"d":2049278068,".b3n,":1846889886,":E":887324279,"*9\\$WNce":108003991}
+// • …
+
+fc.dictionary(fc.string(), fc.nat(), {minKeys: 2})
+// Note: Generate instances with at least 2 keys
+// Examples of generated values:
+// • {"T<M3<":620901509,"DaM\"":1958316323}
+// • {"Tc\"":2147483642,"bIKoG7_j":2147483643,"A\\`~@<Y":258879863}
+// • {"| !C":2029887034,"{!uI}":2147483644,"$}?":1412302943,"":823604874,"\"@%D5\";\"J-":153893444,"[q":1165972584,"A$":26,"+":22,"7\"~":29,"{<$ 3A0":22}
+// • {"%":1708431354,"\"9":1897938290,"I}J?ki>_\\1":892495069,"m":2,"/n":7,"df`":1149626585,"$7\"A{>y":190005547,"":1891531363,"\"!yS#":1190061756," ~Zt;x":2147483641,"\"{W":2073394934,"odV8&u":5,"C!":5}
+// • {"":860828778,"$.x~\"|5!X$":2147483626,"{XNUt3<g#":28,"hr%":10,"#!":1561530792,"4}U%n":776916316}
 // • …
 ```
 </details>
