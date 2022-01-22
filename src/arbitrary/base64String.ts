@@ -2,7 +2,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { array } from './array';
 import { base64 } from './base64';
-import { DefaultSize, maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength';
 import {
   extractStringConstraints,
   StringFullConstraintsDefinition,
@@ -11,15 +11,6 @@ import {
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { stringToBase64Mapper, stringToBase64Unmapper } from './_internals/mappers/StringToBase64';
 export { StringSharedConstraints } from './_internals/helpers/StringConstraintsExtractor';
-
-/** @internal */
-function extractMinMaxConstraints(args: StringFullConstraintsDefinition) {
-  const constraints = extractStringConstraints(args);
-  const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
-  const maxLength =
-    constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength, DefaultSize);
-  return { minLength, maxLength };
-}
 
 /**
  * For base64 strings
@@ -73,21 +64,19 @@ function base64String(minLength: number, maxLength: number): Arbitrary<string>;
  */
 function base64String(constraints: StringSharedConstraints): Arbitrary<string>;
 function base64String(...args: StringFullConstraintsDefinition): Arbitrary<string> {
-  const constraints = extractMinMaxConstraints(args);
-  const unscaledMinLength = constraints.minLength;
-  const unscaledMaxLength = constraints.maxLength;
+  const constraints = extractStringConstraints(args);
+  const { minLength: unscaledMinLength = 0, maxLength: unscaledMaxLength = MaxLengthUpperBound, size } = constraints;
 
-  // base64 length is always a multiple of 4
-  // TODO(size) - No constraints on maxLength expected for array, if it has not been specified by the caller
   const minLength = unscaledMinLength + 3 - ((unscaledMinLength + 3) % 4);
   const maxLength = unscaledMaxLength - (unscaledMaxLength % 4);
+  const requestedSize = constraints.maxLength === undefined && size === undefined ? '=' : size;
 
   if (minLength > maxLength) throw new Error('Minimal length should be inferior or equal to maximal length');
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');
   if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
 
   return convertFromNext(
-    convertToNext(array(base64(), { minLength, maxLength }))
+    convertToNext(array(base64(), { minLength, maxLength, size: requestedSize }))
       .map(codePointsToStringMapper, codePointsToStringUnmapper)
       .map(stringToBase64Mapper, stringToBase64Unmapper)
   );

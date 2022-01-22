@@ -1071,25 +1071,34 @@ Execution summary:
 `;
 
 exports[`NoRegression base64String 1`] = `
-"Property failed after 4 tests
-{ seed: 42, path: \\"3:2:2\\", endOnFailure: true }
+"Property failed after 3 tests
+{ seed: 42, path: \\"2:3:5:5\\", endOnFailure: true }
 Counterexample: [\\"AA==\\"]
-Shrunk 2 time(s)
+Shrunk 3 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [\\"\\"]
-[32m√[0m [\\"a3Jo\\"]
-[32m√[0m [\\"\\"]
-[31m×[0m [\\"Fp==\\"]
+[32m√[0m [\\"a3JoU8IU\\"]
+[31m×[0m [\\"6W9rFx==\\"]
 . [32m√[0m [\\"\\"]
-. [32m√[0m [\\"\\"]
-. [31m×[0m [\\"Ap==\\"]
+. [32m√[0m [\\"rFx=\\"]
+. [32m√[0m [\\"9rFx\\"]
+. [31m×[0m [\\"AW9rFx==\\"]
+. . [32m√[0m [\\"rFx=\\"]
+. . [32m√[0m [\\"9rFx\\"]
 . . [32m√[0m [\\"\\"]
-. . [32m√[0m [\\"\\"]
-. . [31m×[0m [\\"AA==\\"]
+. . [32m√[0m [\\"ArFx\\"]
+. . [32m√[0m [\\"9rFx\\"]
+. . [31m×[0m [\\"AA9rFx==\\"]
+. . . [32m√[0m [\\"rFx=\\"]
+. . . [32m√[0m [\\"9rFx\\"]
 . . . [32m√[0m [\\"\\"]
-. . . [32m√[0m [\\"\\"]"
+. . . [32m√[0m [\\"ArFx\\"]
+. . . [32m√[0m [\\"9rFx\\"]
+. . . [31m×[0m [\\"AA==\\"]
+. . . . [32m√[0m [\\"\\"]
+. . . . [32m√[0m [\\"\\"]"
 `;
 
 exports[`NoRegression clone 1`] = `

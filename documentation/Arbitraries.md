@@ -670,7 +670,7 @@ fc.fullUnicode()
 *&#8195;Signatures*
 
 - `fc.hexaString()`
-- `fc.hexaString({minLength?, maxLength?})`
+- `fc.hexaString({minLength?, maxLength?, size?})`
 - _`fc.hexaString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.hexaString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -678,6 +678,7 @@ fc.fullUnicode()
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -711,14 +712,15 @@ fc.hexaString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.base64String()`
-- `fc.base64String({minLength?, maxLength?})`
+- `fc.base64String({minLength?, maxLength?, size?})`
 - _`fc.base64String(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.base64String(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included if multiple of 4)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included if multiple of 4)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 _When using `minLength` and `maxLength` make sure that they are compatible together. For instance: asking for `minLength=2` and `maxLength=3` is impossible for base64 strings as produced by the framework_
 
@@ -726,7 +728,7 @@ _When using `minLength` and `maxLength` make sure that they are compatible toget
 
 ```js
 fc.base64String()
-// Examples of generated values: "rgk=", "BI==", "D/Ev", "xB==", "VF=="…
+// Examples of generated values: "rgk=", "BI==", "RD/Evefg", "xBE=", "FoRD"…
 
 fc.base64String({maxLength: 8})
 // Note: Any base64 string containing up to 8 (included) characters
@@ -734,7 +736,7 @@ fc.base64String({maxLength: 8})
 
 fc.base64String({minLength: 8})
 // Note: Any base64 string containing at least 8 (included) characters
-// Examples of generated values: "ES8A9c87", "7BPvpeDlf2BE", "7WXEBForaL==", "YycWxDA+KMsIEQg0B6MC9ME=", "CFx/rD9F6AI="…
+// Examples of generated values: "ES8A9c87", "7BPvpeDlf2BE", "7WXEBForaLaj2H8mGc==", "YycWxDA+KMsIEQg0B6M=", "CFx/rD9F6AI="…
 
 fc.base64String({minLength: 4, maxLength: 12})
 // Note: Any base64 string containing between 4 (included) and 12 (included) characters
@@ -752,7 +754,7 @@ fc.base64String({minLength: 4, maxLength: 12})
 *&#8195;Signatures*
 
 - `fc.string()`
-- `fc.string({minLength?, maxLength?})`
+- `fc.string({minLength?, maxLength?, size?})`
 - _`fc.string(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.string(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -760,6 +762,7 @@ fc.base64String({minLength: 4, maxLength: 12})
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -791,7 +794,7 @@ fc.string({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.asciiString()`
-- `fc.asciiString({minLength?, maxLength?})`
+- `fc.asciiString({minLength?, maxLength?, size?})`
 - _`fc.asciiString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.asciiString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -799,6 +802,7 @@ fc.string({minLength: 4, maxLength: 6})
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -830,7 +834,7 @@ fc.asciiString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.unicodeString()`
-- `fc.unicodeString({minLength?, maxLength?})`
+- `fc.unicodeString({minLength?, maxLength?, size?})`
 - _`fc.unicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.unicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -838,6 +842,7 @@ fc.asciiString({minLength: 4, maxLength: 6})
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -871,7 +876,7 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.string16bits()`
-- `fc.string16bits({minLength?, maxLength?})`
+- `fc.string16bits({minLength?, maxLength?, size?})`
 - _`fc.string16bits(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.string16bits(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -879,6 +884,7 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -910,7 +916,7 @@ fc.string16bits({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.fullUnicodeString()`
-- `fc.fullUnicodeString({minLength?, maxLength?})`
+- `fc.fullUnicodeString({minLength?, maxLength?, size?})`
 - _`fc.fullUnicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.fullUnicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -918,6 +924,7 @@ fc.string16bits({minLength: 4, maxLength: 6})
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 _Be aware that the length is considered in terms of the number of glyphs in the string and not the number of UTF-16 characters. As a consequence `generatedString.length` might be greater than the asked maximal length but `[...generatedString].length` will not and always be in the required range_
 
@@ -951,7 +958,7 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.stringOf(charArb)`
-- `fc.stringOf(charArb, {minLength?, maxLength?})`
+- `fc.stringOf(charArb, {minLength?, maxLength?, size?})`
 - _`fc.stringOf(charArb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.stringOf(charArb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -960,6 +967,7 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 - `charArb` — _arbitrary able to generate random strings (possibly multiple characters)_
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
