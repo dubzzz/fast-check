@@ -22,11 +22,17 @@ export const MaxLengthUpperBound = 0x7fffffff;
  */
 export type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 
+/** @internal */
+const orderedSize = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
+
 /**
  * @remarks Since 2.22.0
  * @public
  */
 export type RelativeSize = '-4' | '-3' | '-2' | '-1' | '=' | '+1' | '+2' | '+3' | '+4';
+
+/** @internal */
+const orderedRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'] as const;
 
 /**
  * Superset of {@link Size} to override the default defined for size
@@ -62,12 +68,6 @@ export function maxLengthFromMinLength(minLength: number, size: Size): number {
   }
 }
 
-/** @internal */
-const orderedSize = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
-
-/** @internal */
-const orderedRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'] as const;
-
 /**
  * Transform a RelativeSize|Size into a Size
  * @internal
@@ -78,8 +78,8 @@ export function relativeSizeToSize(size: Size | RelativeSize, defaultSize: Size)
     return size as Size;
   }
   const defaultSizeInSize = orderedSize.indexOf(defaultSize);
-  if (defaultSizeInSize) {
-    throw new Error(`Unable to offseted size based on the unknown defaulted one: ${defaultSize}`);
+  if (defaultSizeInSize === -1) {
+    throw new Error(`Unable to offset size based on the unknown defaulted one: ${defaultSize}`);
   }
   const resultingSizeInSize = defaultSizeInSize + sizeInRelative - 4;
   return resultingSizeInSize < 0
