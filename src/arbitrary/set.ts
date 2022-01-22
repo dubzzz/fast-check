@@ -1,7 +1,7 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
-import { MaxLengthUpperBound, maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import { MaxLengthUpperBound, maxLengthFromMinLength, DefaultSize } from './_internals/helpers/MaxLengthFromMinLength';
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
@@ -44,7 +44,7 @@ function buildCompleteSetConstraints<T>(constraints: SetConstraints<T>): Complet
   const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
   // TODO(size) - Make use of the (future) size argument to decide whether or not to apply maxLengthFromMinLength or take maxLength
   const maxGeneratedLength =
-    constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
+    constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength, DefaultSize);
   const setBuilder = buildSetBuilder(constraints);
   return { minLength, maxGeneratedLength, maxLength, setBuilder };
 }

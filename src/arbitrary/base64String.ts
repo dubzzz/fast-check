@@ -2,7 +2,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { array } from './array';
 import { base64 } from './base64';
-import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import { DefaultSize, maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 import {
   extractStringConstraints,
   StringFullConstraintsDefinition,
@@ -16,7 +16,8 @@ export { StringSharedConstraints } from './_internals/helpers/StringConstraintsE
 function extractMinMaxConstraints(args: StringFullConstraintsDefinition) {
   const constraints = extractStringConstraints(args);
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
-  const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength);
+  const maxLength =
+    constraints.maxLength !== undefined ? constraints.maxLength : maxLengthFromMinLength(minLength, DefaultSize);
   return { minLength, maxLength };
 }
 

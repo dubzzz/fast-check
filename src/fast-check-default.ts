@@ -164,6 +164,7 @@ import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
 import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
 import { PureRandom } from './random/generator/PureRandom';
+import { Size, SizeForArbitrary } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -403,6 +404,8 @@ export {
   // arbitrary types (mostly when produced values are difficult to formalize)
   Memo,
   // run configuration
+  Size,
+  SizeForArbitrary,
   GlobalParameters,
   GlobalAsyncPropertyHookFunction,
   GlobalPropertyHookFunction,

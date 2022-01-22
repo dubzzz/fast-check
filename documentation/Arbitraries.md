@@ -2380,7 +2380,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 *&#8195;Signatures*
 
 - `fc.array(arb)`
-- `fc.array(arb, {minLength?, maxLength?})`
+- `fc.array(arb, {minLength?, maxLength?, size?})`
 - _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -2389,6 +2389,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2421,6 +2422,17 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 // • [1396368269,227325306,1918884399,1141338513,1861390920,1771550203,750875810]
 // • [20,668325235,1112668370,7,8,847065979]
 // • [19,3,15,16,117940422,25]
+// • …
+
+fc.array(fc.nat(), {maxLength: 50, size: 'max'})
+// Note: By specifying size to max, we enforce the fact that we want generated values to have
+// between 0 and 50 items. In other words, we want to use the full range of specified lengths.
+// Examples of generated values:
+// • [4,26,725992281,7,1186699848]
+// • [1503239805,742382696,478977019,1206184056,992934701,1081616342,1979615602,100017132,1937766941,1785237624,89742033,1144227677,1828223609,1661385382,1964114158,526345403,1355567259,101888470,985865568,1687809116,147253818,1849736419,89389898,137520571,1171150892,127470621,827241914,1255338411]
+// • [1396368269,227325306,1918884399,1141338513,1861390920,1771550203,750875810,981796650,1210223397,1985219249,1479511918,479227607,1642390464,1556279791,979433247,1634278654,2044481643,1849523874,1519384141,987434773,1605111061,2138565492,1265703106,806958408,907237474,1655276397,1704888094,1830702455,1909917028,1307794976,1257188319,571159719]
+// • [20]
+// • [19,3,15]
 // • …
 ```
 </details>
@@ -3713,11 +3725,20 @@ Refer to [Race conditions detection](./RaceConditions.md) or [Detect race condit
 
 ### Size explained
 
-Whenever fast-check is called on an array-like arbitrary such as `fc.array` or `fc.string`, it is able to generate entries properly even if it does not receive any upper bound for the maximal length of the generated values.
+Since version 2.22.0, there is a distinction between constraints required by specifications and what will really be generated. When dealing with array-like arbitraries such as `fc.array` or `fc.string`, defining a constraint like `maxLength` can be seen as if you wrote "my algorithm is not supposed to handle arrays having more than X elements". It does not ask fast-check to generate arrays with X elements, but tells it that it could if needed or asked to.
 
-First, it sets `maxLength` to `0x7fffffff` — _the maximal allowed size for an array in JavaScript_.
+What really drives fast-check into generating large arrays is called `size`. At the level of an arbitrary it can be set to:
+- Relative size: `"-4"`, `"-3"`, `"-2"`, `"-1"`, `"="`, `"+1"`, `"+2"`, `"+3"` or `"+4"` — _offset the global setting `baseSize` by the passed offset_
+- Explicit size: `"xsmall"`, `"small"`, `"medium"`, `"large"` or `"xlarge"` — _use an explicit size_
+- Exact value: `"max"` — _generate entities having up-to `maxLength` items_
+- Automatic size: `undefined` — _if `maxLength` has not been specified or if the global setting `defaultSizeToMaxWhenMaxSpecified` is `false` (in v2 it defaults to `true` for backward compatibilty reasons) then `"="`, otherwise `"max"`_
 
-Then it sets an internal parameter called `maxGeneratedLength` to `2 * minLength + 10`. In other words, it does not generate entities having up to `0x7fffffff` but between entities having between `minLength` and `maxGeneratedLength` elements.
+Here is a quick overview of how we use the `size` parameter associated to a minimal length to compute the maximal length for the generated values:
+- `xsmall` — `min + (0.1 * min + 1)`
+- `small` (default) — `min + (1 * min + 10)`
+- `medium` — `min + (10 * min + 100)`
+- `large` — `min + (100 * min + 1000)`
+- `xlarge` — `min + (1000 * min + 10000)`
 
 ### Various links
 
