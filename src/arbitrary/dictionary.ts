@@ -2,7 +2,36 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { set } from './set';
 import { tuple } from './tuple';
+import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject';
+
+/** @internal */
+function dictionaryKeyExtractor(entry: [string, unknown]): string {
+  return entry[0];
+}
+
+/**
+ * Constraints to be applied on {@link dictionary}
+ * @remarks Since 2.22.0
+ * @public
+ */
+export interface DictionaryConstraints {
+  /**
+   * Lower bound for the number of keys defined into the generated instance
+   * @remarks Since 2.22.0
+   */
+  minKeys?: number;
+  /**
+   * Lower bound for the number of keys defined into the generated instance
+   * @remarks Since 2.22.0
+   */
+  maxKeys?: number;
+  /**
+   * Define how large the generated values should be (at max)   *
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
+}
 
 /**
  * For dictionaries with keys produced by `keyArb` and values from `valueArb`
@@ -13,11 +42,19 @@ import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_i
  * @remarks Since 1.0.0
  * @public
  */
-export function dictionary<T>(keyArb: Arbitrary<string>, valueArb: Arbitrary<T>): Arbitrary<Record<string, T>> {
+export function dictionary<T>(
+  keyArb: Arbitrary<string>,
+  valueArb: Arbitrary<T>,
+  constraints: DictionaryConstraints = {}
+): Arbitrary<Record<string, T>> {
   return convertFromNext(
-    convertToNext(set(tuple(keyArb, valueArb), { compare: { selector: (t) => t[0] } })).map(
-      keyValuePairsToObjectMapper,
-      keyValuePairsToObjectUnmapper
-    )
+    convertToNext(
+      set(tuple(keyArb, valueArb), {
+        minLength: constraints.minKeys,
+        maxLength: constraints.maxKeys,
+        size: constraints.size,
+        compare: { selector: dictionaryKeyExtractor },
+      })
+    ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
   );
 }

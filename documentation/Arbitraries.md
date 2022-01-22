@@ -2704,11 +2704,15 @@ fc.infiniteStream(fc.nat(9))
 *&#8195;Signatures*
 
 - `fc.dictionary(keyArb, valueArb)`
+- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?})`
 
 *&#8195;with:*
 
 - `keyArb` — _arbitrary instance responsible to generate keys_
 - `valueArb` — _arbitrary instance responsible to generate values_
+- `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
+- `maxKeys?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of keys in the generated instances (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2730,6 +2734,9 @@ fc.dictionary(fc.string(), fc.nat())
 // • {"Fb+6vZ=< ":589373246,"8}r":17}
 // • {"4":57689789,"d":2049278068,".b3n,":1846889886,":E":887324279,"*9\\$WNce":108003991}
 // • …
+
+fc.dictionary(fc.string(), fc.nat(), {minKeys: 2})
+// Note: Generate instances with at least 2 keys
 ```
 </details>
 
