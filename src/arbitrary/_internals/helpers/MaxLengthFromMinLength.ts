@@ -83,7 +83,7 @@ export function relativeSizeToSize(size: Size | RelativeSize, defaultSize: Size)
   }
   const resultingSizeInSize = defaultSizeInSize + sizeInRelative - 4;
   return resultingSizeInSize < 0
-    ? orderedSize[resultingSizeInSize]
+    ? orderedSize[0]
     : resultingSizeInSize >= orderedSize.length
     ? orderedSize[orderedSize.length - 1]
     : orderedSize[resultingSizeInSize];
