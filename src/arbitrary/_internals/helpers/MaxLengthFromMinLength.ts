@@ -64,15 +64,9 @@ export function maxLengthFromMinLength(minLength: number, size: Size): number {
 
 /** @internal */
 const orderedSize = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mustContainAllSize: Size extends typeof orderedSize[number] ? true : never = true;
 
 /** @internal */
 const orderedRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'] as const;
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mustContainAllRelativeSize: RelativeSize extends typeof orderedRelativeSize[number] ? true : never = true;
 
 /**
  * Transform a RelativeSize|Size into a Size

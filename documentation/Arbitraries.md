@@ -2425,8 +2425,29 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 // • …
 
 fc.array(fc.nat(), {maxLength: 50, size: 'max'})
-// Note: By specifying size to max, we enforce the fact that we want generated values to have
-// between 0 and 50 items. In other words, we want to use the full range of specified lengths.
+// Note: By specifying size to "max", we enforce the fact that we want generated values to have between
+// 0 and 50 items. In other words, we want to use the full range of specified lengths.
+// Note: If not defined, by default, the size is "=" except if there is a maxLength provided and the
+// global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true (the default in v2). In such
+// case it will automatically be defaulted to "max".
+// Examples of generated values:
+// • [4,26,725992281,7,1186699848]
+// • [1503239805,742382696,478977019,1206184056,992934701,1081616342,1979615602,100017132,1937766941,1785237624,89742033,1144227677,1828223609,1661385382,1964114158,526345403,1355567259,101888470,985865568,1687809116,147253818,1849736419,89389898,137520571,1171150892,127470621,827241914,1255338411]
+// • [1396368269,227325306,1918884399,1141338513,1861390920,1771550203,750875810,981796650,1210223397,1985219249,1479511918,479227607,1642390464,1556279791,979433247,1634278654,2044481643,1849523874,1519384141,987434773,1605111061,2138565492,1265703106,806958408,907237474,1655276397,1704888094,1830702455,1909917028,1307794976,1257188319,571159719]
+// • [20]
+// • [19,3,15]
+// • …
+
+fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
+// Note: From a specification point of view, the algorithm is supposed to handle up to 100,000 items.
+// But, even if I want to test the algorithm on large entries I don't want to spned hours in it (it may
+// not scale linearly...). By setting size to "+1" I tell fast-check that I want values larger than usual
+// ones (~10x factor). If I wanted even larger ones I could have used "+2" (~100x factor), "+3" (~1000x factor)
+// or "+4" (~10000x factor). On the opposite, if I wanted smaller arrays I could have used "-1" (~10x smaller)...
+// Note: Size could also have been set explicitely to "=" to say: "I want the size used by default no matter the
+// specified maxLength". If not defined, by default, the size is "=" except if there is a maxLength provided
+// and the global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true (the default in v2). In such
+// case it will automatically be defaulted to "max".
 // Examples of generated values:
 // • [4,26,725992281,7,1186699848]
 // • [1503239805,742382696,478977019,1206184056,992934701,1081616342,1979615602,100017132,1937766941,1785237624,89742033,1144227677,1828223609,1661385382,1964114158,526345403,1355567259,101888470,985865568,1687809116,147253818,1849736419,89389898,137520571,1171150892,127470621,827241914,1255338411]
