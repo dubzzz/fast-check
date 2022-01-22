@@ -2837,7 +2837,7 @@ fc.record({
 *&#8195;Signatures*
 
 - `fc.object()`
-- `fc.object({key?, depthFactor?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
+- `fc.object({key?, depthFactor?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -2845,6 +2845,7 @@ fc.record({
 - `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
 - `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
@@ -3145,7 +3146,7 @@ fc.unicodeJsonObject({depthFactor: 0.1})
 *&#8195;Signatures*
 
 - `fc.anything()`
-- `fc.anything({key?, depthFactor?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
+- `fc.anything({key?, depthFactor?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -3153,6 +3154,7 @@ fc.unicodeJsonObject({depthFactor: 0.1})
 - `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
 - `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_

@@ -25,33 +25,42 @@ import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
 import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
 import { objectToPrototypeLessMapper, objectToPrototypeLessUnmapper } from '../mappers/ObjectToPrototypeLess';
 import { letrec } from '../../letrec';
+import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 
 /** @internal */
-function entriesOf<T, U>(keyArb: Arbitrary<T>, valueArb: Arbitrary<U>, maxKeys: number) {
+function entriesOf<T, U>(
+  keyArb: Arbitrary<T>,
+  valueArb: Arbitrary<U>,
+  maxKeys: number,
+  size: SizeForArbitrary | undefined
+) {
   return convertToNext(
     set(tuple(keyArb, valueArb), {
       maxLength: maxKeys,
+      size,
       compare: { type: 'SameValueZero', selector: (t) => t[0] },
     })
   );
 }
 
 /** @internal */
-function mapOf<T, U>(ka: Arbitrary<T>, va: Arbitrary<U>, maxKeys: number) {
-  return convertFromNext(entriesOf(ka, va, maxKeys).map(arrayToMapMapper, arrayToMapUnmapper));
+function mapOf<T, U>(ka: Arbitrary<T>, va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
+  return convertFromNext(entriesOf(ka, va, maxKeys, size).map(arrayToMapMapper, arrayToMapUnmapper));
 }
 
 /** @internal */
-function dictOf<U>(ka: Arbitrary<string>, va: Arbitrary<U>, maxKeys: number) {
-  return convertFromNext(entriesOf(ka, va, maxKeys).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper));
+function dictOf<U>(ka: Arbitrary<string>, va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
+  return convertFromNext(
+    entriesOf(ka, va, maxKeys, size).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
+  );
 }
 
 /** @internal */
-function setOf<U>(va: Arbitrary<U>, maxKeys: number) {
+function setOf<U>(va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
   // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
   // While the Set does not and consider them to be the same values.
   return convertFromNext(
-    convertToNext(set(va, { maxLength: maxKeys, compare: { type: 'SameValueZero' } })).map(
+    convertToNext(set(va, { maxLength: maxKeys, size, compare: { type: 'SameValueZero' } })).map(
       arrayToSetMapper,
       arrayToSetUnmapper
     )
@@ -87,6 +96,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
   const depthFactor = constraints.depthFactor;
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
+  const size = constraints.size;
   const baseArb = oneof(...arbitrariesForBase);
 
   return letrec((tie) => ({
@@ -113,22 +123,22 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
         )
       : constraints.key,
     // base[] | anything[]
-    arrayBase: oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys }))),
-    array: oneof(tie('arrayBase'), array(tie('anything'), { maxLength: maxKeys })),
+    arrayBase: oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys, size }))),
+    array: oneof(tie('arrayBase'), array(tie('anything'), { maxLength: maxKeys, size })),
     // Set<base> | Set<anything>
-    setBase: oneof(...arbitrariesForBase.map((arb) => setOf(arb, maxKeys))),
-    set: oneof(tie('setBase'), setOf(tie('anything'), maxKeys)),
+    setBase: oneof(...arbitrariesForBase.map((arb) => setOf(arb, maxKeys, size))),
+    set: oneof(tie('setBase'), setOf(tie('anything'), maxKeys, size)),
     // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
-    mapBase: oneof(...arbitrariesForBase.map((arb) => mapOf(tie('keys') as Arbitrary<string>, arb, maxKeys))),
+    mapBase: oneof(...arbitrariesForBase.map((arb) => mapOf(tie('keys') as Arbitrary<string>, arb, maxKeys, size))),
     map: oneof(
       tie('mapBase'),
       oneof(
-        mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys),
-        mapOf(tie('anything'), tie('anything'), maxKeys)
+        mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
+        mapOf(tie('anything'), tie('anything'), maxKeys, size)
       )
     ),
     // {[key:string]: base} | {[key:string]: anything}
-    objectBase: oneof(...arbitrariesForBase.map((arb) => dictOf(tie('keys') as Arbitrary<string>, arb, maxKeys))),
-    object: oneof(tie('objectBase'), dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys)),
+    objectBase: oneof(...arbitrariesForBase.map((arb) => dictOf(tie('keys') as Arbitrary<string>, arb, maxKeys, size))),
+    object: oneof(tie('objectBase'), dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size)),
   })).anything;
 }
