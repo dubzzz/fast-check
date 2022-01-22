@@ -237,7 +237,7 @@ const isSmallerSize = (sa: Size, sb: Size) => allSizeOrdered.indexOf(sa) < allSi
 const allRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'] as const;
 const relativeSizeArb = fc.constantFrom<RelativeSize>(...allRelativeSize);
 
-const allSizeForArbitrary = [...allSizeOrdered, ...allRelativeSize, 'max'] as const; // WARNING/ it does not include undefined
+const allSizeForArbitrary = [...allSizeOrdered, ...allRelativeSize, 'max'] as const; // WARNING: it does not include undefined
 const sizeForArbitraryArb = fc.constantFrom<SizeForArbitrary>(...allSizeForArbitrary);
 
 // Type check that helpers are covering all the possibilities
