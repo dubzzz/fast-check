@@ -2470,7 +2470,7 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
 *&#8195;Signatures*
 
 - `fc.set(arb)`
-- `fc.set(arb, {minLength?, maxLength?, compare?})`
+- `fc.set(arb, {minLength?, maxLength?, compare?, size?})`
 - _`fc.set(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
@@ -2488,6 +2488,7 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
     - `SameValue` to rely on `Object.is` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue))
     - `SameValueZero` to rely on the same logic as the one of `Set` or `Map` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero))
   - `selector` to define how to project values before comparing them together
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
