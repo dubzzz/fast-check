@@ -16,7 +16,7 @@ describe('dictionary (integration)', () => {
   type Extra = { keys: string[]; values: unknown[]; constraints?: DictionaryConstraints };
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     {
-      keys: fc.set(fc.string(), { minLength: 1 }),
+      keys: fc.set(fc.string(), { minLength: 35 }), // enough keys to respect constraints
       values: fc.set(fc.anything(), { minLength: 1 }),
       constraints: fc
         .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
@@ -37,6 +37,14 @@ describe('dictionary (integration)', () => {
     for (const v of Object.values(value)) {
       if (Number.isNaN(v)) expect(extra.values.includes(v)).toBe(true);
       else expect(extra.values).toContain(v); // exact same value (not a copy)
+    }
+    if (extra.constraints !== undefined) {
+      if (extra.constraints.minKeys !== undefined) {
+        expect(Object.keys(value).length).toBeGreaterThanOrEqual(extra.constraints.minKeys);
+      }
+      if (extra.constraints.maxKeys !== undefined) {
+        expect(Object.keys(value).length).toBeLessThanOrEqual(extra.constraints.maxKeys);
+      }
     }
   };
 
