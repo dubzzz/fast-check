@@ -1,3 +1,5 @@
+import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalParameters';
+
 /**
  * Shared upper bound for max length of array-like entities handled within fast-check
  *
@@ -103,10 +105,7 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   maxLength: number,
   specifiedMaxLength: boolean
 ): number {
-  // TODO(size) - Rely on a global setting to get back the default size
-  // and the "must use maxLength whenever provided by the user"
-  const defaultSize = DefaultSize;
-  const defaultSizeToMaxWhenMaxSpecified = true;
+  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified = true } = readConfigureGlobal() || {};
 
   // Resulting size is:
   // - If size has been defined, we use it,
