@@ -8,6 +8,9 @@ import {
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails';
+import { appendFileSync, existsSync, writeFileSync } from 'fs';
+import { __fc_allTime_start, __fc_generateTime, __fc_runTime } from '../../property/TimerProperty';
+import { performance } from 'perf_hooks';
 
 /** @internal */
 function formatHints(hints: string[]): string {
@@ -234,13 +237,29 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 
 /** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
-  if (!out.failed) return;
+  if (!out.failed) {
+    const filename = './fc-performance.log';
+    const filecontent = `${(global as any)[__fc_generateTime]};${(global as any)[__fc_runTime]};${
+      performance.now() - (global as any)[__fc_allTime_start]
+    };sync;\n`;
+    if (existsSync(filename)) appendFileSync(filename, filecontent);
+    else writeFileSync(filename, 'generate(ms);run(ms);all(ms)\n' + filecontent);
+    return;
+  }
   throw new Error(defaultReportMessage(out));
 }
 
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
-  if (!out.failed) return;
+  if (!out.failed) {
+    const filename = './fc-performance.log';
+    const filecontent = `${(global as any)[__fc_generateTime]};${(global as any)[__fc_runTime]};${
+      performance.now() - (global as any)[__fc_allTime_start]
+    };async;\n`;
+    if (existsSync(filename)) appendFileSync(filename, filecontent);
+    else writeFileSync(filename, 'generate(ms);run(ms);all(ms)\n' + filecontent);
+    return;
+  }
   throw new Error(await asyncDefaultReportMessage(out));
 }
 

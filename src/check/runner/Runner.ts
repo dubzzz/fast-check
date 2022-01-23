@@ -17,6 +17,8 @@ import { IAsyncProperty } from '../property/AsyncProperty';
 import { IProperty } from '../property/Property';
 import { INextRawProperty } from '../property/INextRawProperty';
 import { NextValue } from '../arbitrary/definition/NextValue';
+import { __fc_allTime_start, __fc_generateTime, __fc_runTime } from '../property/TimerProperty';
+import { performance } from 'perf_hooks';
 
 /** @internal */
 function runIt<Ts>(
@@ -117,6 +119,9 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails
  */
 function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
 function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
+  (global as any)[__fc_generateTime] = 0;
+  (global as any)[__fc_runTime] = 0;
+  (global as any)[__fc_allTime_start] = performance.now();
   if (rawProperty == null || rawProperty.generate == null)
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)

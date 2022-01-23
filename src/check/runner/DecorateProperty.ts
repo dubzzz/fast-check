@@ -6,6 +6,7 @@ import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty';
 import { convertToNextProperty } from '../property/ConvertersProperty';
 import { INextRawProperty } from '../property/INextRawProperty';
+import { TimerProperty } from '../property/TimerProperty';
 
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
@@ -37,5 +38,5 @@ export function decorateProperty<Ts>(
   if (qParams.ignoreEqualValues) {
     prop = new IgnoreEqualValuesProperty(prop, false);
   }
-  return prop;
+  return new TimerProperty(prop);
 }
