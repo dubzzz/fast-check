@@ -1,3 +1,4 @@
+/* eslint-disable no-sparse-arrays */
 import * as fc from '../../../lib/fast-check';
 import { sparseArray, SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
 
@@ -16,6 +17,8 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
 } from './__test-helpers__/NextArbitraryAssertions';
+import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
+import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -184,6 +187,43 @@ describe('sparseArray (integration)', () => {
     // - the key-value pairs will most of the time not be in the same ordered as the build order,
     //   thus it will lead to a different shrink order
     assertProduceValuesShrinkableWithoutContext(sparseArrayBuilder, { extraParameters });
+  });
+
+  it.each`
+    source                                                                         | constraints
+    ${['1'] /* unsupported value */}                                               | ${{}}
+    ${[1, , , , ,] /* ending by a hole not allowed */}                             | ${{ noTrailingHole: true }}
+    ${[, , , , , 3, , , , , , , , , , 6] /* not enough non-holey items */}         | ${{ minNumElements: 3 }}
+    ${[, , , , , 3, 4, , , 5, , , , , , 6] /* too many non-holey items */}         | ${{ maxNumElements: 3 }}
+    ${[, , , 4] /* too long (length is 4) */}                                      | ${{ maxLength: 3 }}
+    ${Object.assign(Array(200), { 1: 7 }) /* TODO(size) - too long */}             | ${{}}
+    ${[...Array(50)].map((_, i) => i) /* TODO(size) - too many non-holey items */} | ${{}}
+  `('should not be able to generate $source with fc.sparseArray(..., $constraints)', ({ source, constraints }) => {
+    // Arrange / Act
+    const arb = convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), constraints));
+    const out = arb.canShrinkWithoutContext(source);
+
+    // Assert
+    expect(out).toBe(false);
+  });
+
+  it.each`
+    rawValue                                | constraints
+    ${[1, , , , ,]}                         | ${{ noTrailingHole: false }}
+    ${[, , , , , 3, , , , , , , , , , 6]}   | ${{ minNumElements: 2 }}
+    ${[, , , , , 3, 4, , , 5, , , , , , 6]} | ${{ maxNumElements: 4 }}
+    ${[, , , 4]}                            | ${{ maxLength: 4 }}
+  `('should be able to shrink $rawValue with fc.sparseArray(..., $constraints)', ({ rawValue, constraints }) => {
+    // Arrange
+    const arb = convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), constraints));
+    const value = new NextValue(rawValue, undefined);
+
+    // Act
+    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+
+    // Assert
+    expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);
+    expect(renderedTree).toMatchSnapshot();
   });
 });
 
