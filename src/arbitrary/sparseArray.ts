@@ -100,6 +100,9 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
         if (!Array.isArray(value)) {
           throw new Error('Not supported entry type');
         }
+        if (noTrailingHole && value.length !== 0 && !(value.length - 1 in value)) {
+          throw new Error('No trailing hole');
+        }
         return Object.entries(value as T[]).map((entry): [number, T] => [Number(entry[0]), entry[1]]);
       }
     )
