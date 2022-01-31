@@ -9,7 +9,7 @@ import {
   fakeNextArbitraryStaticValue,
 } from './__test-helpers__/NextArbitraryHelpers';
 
-import * as NatMock from '../../../src/arbitrary/nat';
+import * as RestrictedIntegerArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/RestrictedIntegerArbitraryBuilder';
 import * as SetMock from '../../../src/arbitrary/set';
 import * as TupleMock from '../../../src/arbitrary/tuple';
 import {
@@ -19,6 +19,7 @@ import {
 } from './__test-helpers__/NextArbitraryAssertions';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { MaxLengthUpperBound } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -57,14 +58,17 @@ describe('sparseArray', () => {
     );
   });
 
-  it('should always pass a not too large maxLength to set given the length we expect at the end', () => {
+  it('should always pass a not too large maxLength or with a size to set given the length we expect at the end', () => {
     fc.assert(
       fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
         const set = jest.spyOn(SetMock, 'set');
         const tuple = jest.spyOn(TupleMock, 'tuple');
-        const nat = jest.spyOn(NatMock, 'nat'); // called to build indexes
+        const restrictedIntegerArbitraryBuilder = jest.spyOn(
+          RestrictedIntegerArbitraryBuilderMock,
+          'restrictedIntegerArbitraryBuilder'
+        ); // called to build indexes
         const { instance: setInstance } = fakeNextArbitraryStaticValue(() => []);
         const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
         set.mockReturnValueOnce(convertFromNext(setInstance));
@@ -75,9 +79,12 @@ describe('sparseArray', () => {
         sparseArray(convertFromNext(arb), ct);
 
         // Assert
-        expect(nat).toHaveBeenCalledTimes(1);
+        expect(restrictedIntegerArbitraryBuilder).toHaveBeenCalled(); // at least once
         expect(set).toHaveBeenCalledTimes(1);
-        const maxRequestedIndexes = nat.mock.calls[0][0] as number;
+        // First call is to configure items coming with data
+        const maxGeneratedIndexes = restrictedIntegerArbitraryBuilder.mock.calls[0][1]; // ie maxGenerated
+        const maxRequestedIndexes = restrictedIntegerArbitraryBuilder.mock.calls[0][2]; // ie max
+        expect(maxGeneratedIndexes).toBeLessThanOrEqual(maxRequestedIndexes);
         const maxRequestedLength = set.mock.calls[0][1].maxLength!;
         if (ct !== undefined && ct.noTrailingHole) {
           // maxRequestedIndexes is the maximal index we may have for the current instance (+1 is the length)
@@ -92,6 +99,16 @@ describe('sparseArray', () => {
           const maxElementsToGenerateForArray = maxRequestedLength - 1;
           const maxResultingArrayLength = maxRequestedIndexes;
           expect(maxElementsToGenerateForArray).toBeLessThanOrEqual(maxResultingArrayLength);
+        }
+        // Second call is only to handle the length computation in case we allow trailing holes
+        const resultedMinNumElements = ct !== undefined ? ct.minNumElements || 0 : 0;
+        const resultedMaxLength = ct !== undefined && ct.maxLength !== undefined ? ct.maxLength : MaxLengthUpperBound;
+        if (ct === undefined || (!ct.noTrailingHole && resultedMaxLength > resultedMinNumElements)) {
+          expect(restrictedIntegerArbitraryBuilder).toHaveBeenCalledTimes(2);
+          const [min, maxGenerated, max] = restrictedIntegerArbitraryBuilder.mock.calls[1];
+          expect(min).toBe(resultedMinNumElements);
+          expect(maxGenerated).toBe(maxGeneratedIndexes + 1);
+          expect(max).toBe(maxRequestedIndexes + 1);
         }
       })
     );
@@ -190,14 +207,12 @@ describe('sparseArray (integration)', () => {
   });
 
   it.each`
-    source                                                                         | constraints
-    ${['1'] /* unsupported value */}                                               | ${{}}
-    ${[1, , , , ,] /* ending by a hole not allowed */}                             | ${{ noTrailingHole: true }}
-    ${[, , , , , 3, , , , , , , , , , 6] /* not enough non-holey items */}         | ${{ minNumElements: 3 }}
-    ${[, , , , , 3, 4, , , 5, , , , , , 6] /* too many non-holey items */}         | ${{ maxNumElements: 3 }}
-    ${[, , , 4] /* too long (length is 4) */}                                      | ${{ maxLength: 3 }}
-    ${Object.assign(Array(200), { 1: 7 }) /* TODO(size) - too long */}             | ${{}}
-    ${[...Array(50)].map((_, i) => i) /* TODO(size) - too many non-holey items */} | ${{}}
+    source                                                                 | constraints
+    ${['1'] /* unsupported value */}                                       | ${{}}
+    ${[1, , , , ,] /* ending by a hole not allowed */}                     | ${{ noTrailingHole: true }}
+    ${[, , , , , 3, , , , , , , , , , 6] /* not enough non-holey items */} | ${{ minNumElements: 3 }}
+    ${[, , , , , 3, 4, , , 5, , , , , , 6] /* too many non-holey items */} | ${{ maxNumElements: 3 }}
+    ${[, , , 4] /* too long (length is 4) */}                              | ${{ maxLength: 3 }}
   `('should not be able to generate $source with fc.sparseArray(..., $constraints)', ({ source, constraints }) => {
     // Arrange / Act
     const arb = convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), constraints));
@@ -208,11 +223,13 @@ describe('sparseArray (integration)', () => {
   });
 
   it.each`
-    rawValue                                | constraints
-    ${[1, , , , ,]}                         | ${{ noTrailingHole: false }}
-    ${[, , , , , 3, , , , , , , , , , 6]}   | ${{ minNumElements: 2 }}
-    ${[, , , , , 3, 4, , , 5, , , , , , 6]} | ${{ maxNumElements: 4 }}
-    ${[, , , 4]}                            | ${{ maxLength: 4 }}
+    rawValue                                                                                                          | constraints
+    ${[1, , , , ,]}                                                                                                   | ${{ noTrailingHole: false }}
+    ${[, , , , , 3, , , , , , , , , , 6]}                                                                             | ${{ minNumElements: 2 }}
+    ${[, , , , , 3, 4, , , 5, , , , , , 6]}                                                                           | ${{ maxNumElements: 4 }}
+    ${[, , , 4]}                                                                                                      | ${{ maxLength: 4 }}
+    ${Object.assign(Array(200), { 1: 7 }) /* length longer than default maxGeneratedLength but ok for shrink */}      | ${{}}
+    ${[...Array(50)].map((_, i) => i) /* non-holey items higher than default maxGeneratedLength but ok for shrink */} | ${{}}
   `('should be able to shrink $rawValue with fc.sparseArray(..., $constraints)', ({ rawValue, constraints }) => {
     // Arrange
     const arb = convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), constraints));
