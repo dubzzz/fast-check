@@ -98,15 +98,14 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   }
 
   const resultedMaxNumElements = Math.min(maxNumElements, maxLength);
-  const resultedSize =
-    constraints.maxNumElements !== undefined || constraints.maxLength !== undefined || size !== undefined ? size : '=';
+  const resultedSizeMaxNumElements = constraints.maxNumElements !== undefined || size !== undefined ? size : '=';
 
   const maxGeneratedIndexAuthorized = Math.max(maxGeneratedLength - 1, 0); // just preventing special case for maxGeneratedLength=0
   const maxIndexAuthorized = Math.max(maxLength - 1, 0); // just preventing special case for maxLength=0
   const sparseArrayNoTrailingHole = convertFromNext(
     convertToNext(
       set(tuple(restrictedIntegerArbitraryBuilder(0, maxGeneratedIndexAuthorized, maxIndexAuthorized), arb), {
-        size: resultedSize,
+        size: resultedSizeMaxNumElements,
         minLength: minNumElements,
         maxLength: resultedMaxNumElements,
         compare: { selector: (item) => item[0] },
