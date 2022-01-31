@@ -2676,7 +2676,7 @@ fc.sparseArray(fc.nat())
 // • …
 
 fc.sparseArray(fc.nat(), {size: '+1'})
-// Note: By specifying a size higher than the currently configured one, I'm asking for larger arrays in terms of number of
+// Note: By specifying a size higher than the currently configured one, we ask for larger arrays in terms of number of
 // elements (see minNumElements and maxNumElements) but also in terms of length (see maxLength).
 // Examples of generated values:
 // • Object.assign(Array(1030),{6:23,173:21,1029:245254457})
