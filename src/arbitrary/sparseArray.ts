@@ -72,8 +72,8 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   const {
     size,
     minNumElements = 0,
-    maxNumElements = MaxLengthUpperBound,
     maxLength = MaxLengthUpperBound,
+    maxNumElements = maxLength, // cap maxNumElements to maxLength
     noTrailingHole,
   } = constraints;
 
