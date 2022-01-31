@@ -1957,6 +1957,11 @@ ansi-styles@^6.0.0, ansi-styles@^6.1.0:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.1.0.tgz#87313c102b8118abd57371afab34618bf7350ed3"
   integrity sha512-VbqNsoz55SYGczauuup0MFUyXNQviSpFTj1RQtFzmQLk18qbVSpTFFGMT293rmDaQuKCT6InmbuEyUne4mTuxQ==
 
+ansi2html@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/ansi2html/-/ansi2html-0.0.1.tgz#bb8800461b440af00b91bf3d7366a5e0b8473ba8"
+  integrity sha1-u4gARhtECvALkb89c2al4LhHO6g=
+
 any-observable@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/any-observable/-/any-observable-0.3.0.tgz#af933475e5806a67d0d7df090dd5e8bef65d119b"
@@ -2909,12 +2914,12 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cron-parser@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-4.1.0.tgz#8355502f5ca7f8badca03426959a4915765330d5"
-  integrity sha512-9AIKixzWHV1nn+EF8bR9/0Q9E2xhv8UW9l7/nX8LN7pzYYi1HPr7kLTUxsyimaoqwjn8S15HwXmza6Ebt6BWJw==
+cron-parser@^4.1.0, cron-parser@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-4.2.1.tgz#b43205d05ccd5c93b097dae64f3bd811f5993af3"
+  integrity sha512-5sJBwDYyCp+0vU5b7POl8zLWfgV5fOHxlc45FWoWdHecGC7MQHCjx0CHivCMRnGFovghKhhyYM+Zm9DcY5qcHg==
   dependencies:
-    luxon "^1.26.0"
+    luxon "^1.28.0"
 
 cross-spawn@^7.0.0, cross-spawn@^7.0.3:
   version "7.0.3"
@@ -5314,7 +5319,7 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-luxon@^1.26.0:
+luxon@^1.28.0:
   version "1.28.0"
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.0.tgz#e7f96daad3938c06a62de0fb027115d251251fbf"
   integrity sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==
@@ -5678,10 +5683,10 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-netlify-cli@^8.13.2:
-  version "8.13.2"
-  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-8.13.2.tgz#da04ae34ae9a875c2632d76e0f1f2f8105f3673b"
-  integrity sha512-gE/fX5Jyr9J2Bhq3NF6S7NokzKrYfaJne3IxozLQBMG/No0dnBfTo560lvC0RTZptGpRolEy1dktlfkeuC0+xw==
+netlify-cli@^8.15.1:
+  version "8.15.1"
+  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-8.15.1.tgz#1a67f1b059a26ca18016a6bf30d48df28cc18410"
+  integrity sha512-g+fwWaWVieNkgUyjwphW54mw+2lLUTRXBnVxOMp+eY+ZRXcTjvh1nix5P0g3tRVwPaOSIGz8ZE8jfCedm35eaQ==
   dependencies:
     "@netlify/build" "^26.2.0"
     "@netlify/config" "^17.0.6"
@@ -5695,6 +5700,7 @@ netlify-cli@^8.13.2:
     "@sindresorhus/slugify" "^1.1.0"
     ansi-escapes "^5.0.0"
     ansi-styles "^5.0.0"
+    ansi2html "^0.0.1"
     ascii-table "0.0.9"
     backoff "^2.5.0"
     better-opn "^3.0.0"
@@ -5709,6 +5715,7 @@ netlify-cli@^8.13.2:
     content-type "^1.0.4"
     cookie "^0.4.0"
     copy-template-dir "^1.4.0"
+    cron-parser "^4.2.1"
     debug "^4.1.1"
     decache "^4.6.0"
     del "^6.0.0"
@@ -5752,7 +5759,7 @@ netlify-cli@^8.13.2:
     multiparty "^4.2.1"
     netlify "^10.1.2"
     netlify-headers-parser "^6.0.1"
-    netlify-onegraph-internal "0.0.15"
+    netlify-onegraph-internal "0.0.16"
     netlify-redirect-parser "^13.0.1"
     netlify-redirector "^0.2.1"
     node-fetch "^2.6.0"
@@ -5800,10 +5807,10 @@ netlify-headers-parser@^6.0.1:
     path-exists "^4.0.0"
     toml "^3.0.0"
 
-netlify-onegraph-internal@0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/netlify-onegraph-internal/-/netlify-onegraph-internal-0.0.15.tgz#18df658616b44f53322ace463a3b1a32bf999503"
-  integrity sha512-PlUro29zk/D+9/8NLQOx8Qw58KWvZo/42uR+7YMqSx9pMtgvtqKWqpAGGf0iCy4eAwe/XLT/eCQR6k/dIBbZHw==
+netlify-onegraph-internal@0.0.16:
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/netlify-onegraph-internal/-/netlify-onegraph-internal-0.0.16.tgz#9e98b40b8cbfd312c8829a093e147d29f35dfde1"
+  integrity sha512-reQ/C7ztbYCDMXqFLSw0rBwOi866sqdBjagUs6Ug6LXDkCIGHBTjMX0iwNhEn7+/WzV4f1lJj66NhdjF5Q4/aQ==
   dependencies:
     graphql "16.0.0"
     node-fetch "^2.6.0"
