@@ -7,6 +7,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
+  assertGenerateIndependentOfSize,
 } from './__test-helpers__/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
@@ -68,6 +69,10 @@ describe('ipV6 (integration)', () => {
 
   it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(ipV6Builder);
+  });
+
+  it('should be independent of global settings overriding defaults on size', () => {
+    assertGenerateIndependentOfSize(ipV6Builder);
   });
 
   it.each`
