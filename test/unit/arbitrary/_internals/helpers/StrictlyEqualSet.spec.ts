@@ -115,7 +115,6 @@ describe('StrictyEqualSet', () => {
               expect(indexCurrent).toBe(-1);
               // Expect at least 2 NaN in source
               expect(rawItems.filter((item) => Number.isNaN(item)).length).toBeGreaterThanOrEqual(2);
-              continue;
             } else {
               // One of the items before current must be a NaN
               expect(rawItems.slice(0, indexCurrent).some((item) => Number.isNaN(item))).toBe(true);
