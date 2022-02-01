@@ -109,9 +109,27 @@ describe('StrictyEqualSet', () => {
         for (let i = 1; i < data.length; ++i) {
           const indexPrevious = rawItems.findIndex((item) => isStrictlyEqual(item, data[i - 1]));
           const indexCurrent = rawItems.findIndex((item) => isStrictlyEqual(item, data[i]));
-          expect(indexPrevious).not.toBe(-1);
-          expect(indexCurrent).not.toBe(-1);
-          expect(indexPrevious).toBeLessThan(indexCurrent);
+          if (Number.isNaN(data[i - 1])) {
+            expect(indexPrevious).toBe(-1);
+            if (Number.isNaN(data[i])) {
+              expect(indexCurrent).toBe(-1);
+              // Expect at least 2 NaN in source
+              expect(rawItems.filter((item) => Number.isNaN(item)).length).toBeGreaterThanOrEqual(2);
+              continue;
+            } else {
+              // One of the items before current must be a NaN
+              expect(rawItems.slice(0, indexCurrent).some((item) => Number.isNaN(item))).toBe(true);
+            }
+          } else if (Number.isNaN(data[i])) {
+            expect(indexPrevious).not.toBe(-1);
+            expect(indexCurrent).toBe(-1);
+            // One of the items after previous must be a NaN
+            expect(rawItems.slice(indexPrevious + 1).some((item) => Number.isNaN(item))).toBe(true);
+          } else {
+            expect(indexPrevious).not.toBe(-1);
+            expect(indexCurrent).not.toBe(-1);
+            expect(indexPrevious).toBeLessThan(indexCurrent);
+          }
         }
       })
     );
