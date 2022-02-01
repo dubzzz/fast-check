@@ -24,6 +24,7 @@ function toShrinkerNextValue<T>(value: NextValue<T>): NextValue<T> {
   return new NextValue(value.value_, { shrinkerContext: value.context });
 }
 
+/** @internal */
 export class WithShrinkFromOtherArbitrary<T> extends NextArbitrary<T> {
   constructor(
     private readonly generatorArbitrary: NextArbitrary<T>,
