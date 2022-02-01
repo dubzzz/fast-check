@@ -1,6 +1,7 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../../../check/arbitrary/definition/Converters';
 import { array } from '../../array';
+import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 
 /** @internal */
 type TypedIntArrayBuilderConstraints<TValue> = {
@@ -8,6 +9,7 @@ type TypedIntArrayBuilderConstraints<TValue> = {
   maxLength?: number;
   min?: TValue;
   max?: TValue;
+  size?: SizeForArbitrary;
 };
 
 /** @internal */
@@ -68,4 +70,9 @@ export type IntArrayConstraints = {
    * @remarks Since 2.9.0
    */
   max?: number;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
 };

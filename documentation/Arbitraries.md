@@ -1624,7 +1624,7 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 *&#8195;Signatures*
 
 - `fc.int8Array()`
-- `fc.int8Array({min?, max?, minLength?, maxLength?})`
+- `fc.int8Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1632,6 +1632,7 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 - `max?` — default: `127` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1666,7 +1667,7 @@ fc.int8Array({min: 0, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint8Array()`
-- `fc.uint8Array({min?, max?, minLength?, maxLength?})`
+- `fc.uint8Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1674,6 +1675,7 @@ fc.int8Array({min: 0, minLength: 1})
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1708,7 +1710,7 @@ fc.uint8Array({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint8ClampedArray()`
-- `fc.uint8ClampedArray({min?, max?, minLength?, maxLength?})`
+- `fc.uint8ClampedArray({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1716,6 +1718,7 @@ fc.uint8Array({max: 42, minLength: 1})
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1750,7 +1753,7 @@ fc.uint8ClampedArray({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.int16Array()`
-- `fc.int16Array({min?, max?, minLength?, maxLength?})`
+- `fc.int16Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1758,6 +1761,7 @@ fc.uint8ClampedArray({max: 42, minLength: 1})
 - `max?` — default: `32767` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1792,7 +1796,7 @@ fc.int16Array({min: 0, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint16Array()`
-- `fc.uint16Array({min?, max?, minLength?, maxLength?})`
+- `fc.uint16Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1800,6 +1804,7 @@ fc.int16Array({min: 0, minLength: 1})
 - `max?` — default: `65535` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1834,7 +1839,7 @@ fc.uint16Array({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.int32Array()`
-- `fc.int32Array({min?, max?, minLength?, maxLength?})`
+- `fc.int32Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1842,6 +1847,7 @@ fc.uint16Array({max: 42, minLength: 1})
 - `max?` — default: `0x7fffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1876,7 +1882,7 @@ fc.int32Array({min: 0, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint32Array()`
-- `fc.uint32Array({min?, max?, minLength?, maxLength?})`
+- `fc.uint32Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1884,6 +1890,7 @@ fc.int32Array({min: 0, minLength: 1})
 - `max?` — default: `0xffffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1918,7 +1925,7 @@ fc.uint32Array({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.float32Array()`
-- `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+- `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1928,6 +1935,7 @@ fc.uint32Array({max: 42, minLength: 1})
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1962,7 +1970,7 @@ fc.float32Array({minLength: 1})
 *&#8195;Signatures*
 
 - `fc.float64Array()`
-- `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+- `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1972,6 +1980,7 @@ fc.float32Array({minLength: 1})
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
