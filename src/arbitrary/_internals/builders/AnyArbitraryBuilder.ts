@@ -113,7 +113,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withBigInt ? [bigInt()] : []),
       ...(constraints.withDate ? [date()] : []),
       ...(constraints.withTypedArray ? [typedArray()] : []),
-      ...(constraints.withSparseArray ? [sparseArray(tie('anything'), { maxNumElements: maxKeys })] : [])
+      ...(constraints.withSparseArray ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size })] : [])
     ),
     // String keys
     keys: constraints.withObjectString
