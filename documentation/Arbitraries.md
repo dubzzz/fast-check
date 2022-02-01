@@ -1105,7 +1105,7 @@ fc.unicodeJson({depthFactor: 0.1})
 *&#8195;Signatures*
 
 - `fc.lorem()`
-- `fc.lorem({maxCount?, mode?})`
+- `fc.lorem({maxCount?, mode?, size?})`
 - _`fc.lorem(maxWordsCount)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.lorem(maxCount, sentenceMode)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -1115,6 +1115,7 @@ fc.unicodeJson({depthFactor: 0.1})
 - `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
 - `maxWordsCount?` — _maximal number of words to produce_
 - `sentenceMode?` — default: `false` — _enable sentence mode_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 _Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
 
