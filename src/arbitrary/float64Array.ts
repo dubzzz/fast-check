@@ -3,6 +3,7 @@ import { DoubleNextConstraints } from './_next/doubleNext';
 import { double } from './double';
 import { array } from './array';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link float64Array}
@@ -20,6 +21,11 @@ export type Float64ArrayConstraints = {
    * @remarks Since 2.9.0
    */
   maxLength?: number;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
 } & DoubleNextConstraints;
 
 /** @internal */
