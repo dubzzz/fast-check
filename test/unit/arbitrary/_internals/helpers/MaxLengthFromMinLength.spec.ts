@@ -6,6 +6,7 @@ import {
   MaxLengthUpperBound,
   relativeSizeToSize,
 } from '../../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import { configureGlobal, readConfigureGlobal } from '../../../../../src/check/runner/configuration/GlobalParameters';
 import { sizeArb, isSmallerSize, relativeSizeArb, sizeForArbitraryArb } from '../../__test-helpers__/SizeHelpers';
 
 describe('maxLengthFromMinLength', () => {
@@ -58,7 +59,7 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
-          const expectedLength = maxLengthFromMinLength(minLength, size);
+          const expectedLength = Math.min(maxLengthFromMinLength(minLength, size), maxLength);
 
           // Assert
           expect(computedLength).toBe(expectedLength);
@@ -172,6 +173,36 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Assert
           expect(computedLength).toBe(expectedLength);
+        }
+      )
+    );
+  });
+
+  it('should always return a length being between minLength and maxLength', () => {
+    fc.assert(
+      fc.property(
+        fc.record({ baseSize: sizeArb, defaultSizeToMaxWhenMaxSpecified: fc.boolean() }, { requiredKeys: [] }),
+        fc.option(sizeForArbitraryArb, { nil: undefined }),
+        fc.integer({ min: 0, max: MaxLengthUpperBound }),
+        fc.integer({ min: 0, max: MaxLengthUpperBound }),
+        fc.boolean(),
+        (config, size, lengthA, lengthB, specifiedMaxLength) => {
+          // Arrange
+          const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
+
+          // Act
+          let computedLength: number;
+          const previousConfiguration = readConfigureGlobal();
+          try {
+            configureGlobal(config);
+            computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
+          } finally {
+            configureGlobal(previousConfiguration || {});
+          }
+
+          // Assert
+          expect(computedLength).toBeGreaterThanOrEqual(minLength);
+          expect(computedLength).toBeLessThanOrEqual(maxLength);
         }
       )
     );

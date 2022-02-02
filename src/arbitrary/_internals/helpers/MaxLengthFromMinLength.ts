@@ -56,15 +56,15 @@ export const DefaultSize: Size = 'small';
 export function maxLengthFromMinLength(minLength: number, size: Size): number {
   switch (size) {
     case 'xsmall':
-      return Math.min(Math.floor(1.1 * minLength) + 1, 0x7fffffff); // min + (0.1 * min + 1)
+      return Math.floor(1.1 * minLength) + 1; // min + (0.1 * min + 1)
     case 'small':
-      return Math.min(2 * minLength + 10, 0x7fffffff); // min + (1 * min + 10)
+      return 2 * minLength + 10; // min + (1 * min + 10)
     case 'medium':
-      return Math.min(11 * minLength + 100, 0x7fffffff); // min + (10 * min + 100)
+      return 11 * minLength + 100; // min + (10 * min + 100)
     case 'large':
-      return Math.min(101 * minLength + 1000, 0x7fffffff); // min + (100 * min + 1000)
+      return 101 * minLength + 1000; // min + (100 * min + 1000)
     case 'xlarge':
-      return Math.min(1001 * minLength + 10000, 0x7fffffff); // min + (1000 * min + 10000)
+      return 1001 * minLength + 10000; // min + (1000 * min + 10000)
     default:
       throw new Error(`Unable to compute lengths based on received size: ${size}`);
   }
@@ -119,5 +119,5 @@ export function maxGeneratedLengthFromSizeForArbitrary(
     return maxLength;
   }
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
-  return maxLengthFromMinLength(minLength, finalSize);
+  return Math.min(maxLengthFromMinLength(minLength, finalSize), maxLength);
 }
