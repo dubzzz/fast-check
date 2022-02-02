@@ -6,8 +6,14 @@ import {
   MaxLengthUpperBound,
   relativeSizeToSize,
 } from '../../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import { configureGlobal, readConfigureGlobal } from '../../../../../src/check/runner/configuration/GlobalParameters';
-import { sizeArb, isSmallerSize, relativeSizeArb, sizeForArbitraryArb } from '../../__test-helpers__/SizeHelpers';
+import { withConfiguredGlobal } from '../../__test-helpers__/GlobalSettingsHelpers';
+import {
+  sizeArb,
+  isSmallerSize,
+  relativeSizeArb,
+  sizeForArbitraryArb,
+  sizeRelatedGlobalConfigArb,
+} from '../../__test-helpers__/SizeHelpers';
 
 describe('maxLengthFromMinLength', () => {
   it('should result into higher or equal maxLength given higher size', () => {
@@ -49,16 +55,19 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
   it('should only consider the received size when set to Size', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         sizeArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.boolean(),
-        (size, lengthA, lengthB, specifiedMaxLength) => {
+        (config, size, lengthA, lengthB, specifiedMaxLength) => {
           // Arrange
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
-          const computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+          );
           const expectedLength = Math.min(maxLengthFromMinLength(minLength, size), maxLength);
 
           // Assert
@@ -71,17 +80,21 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
   it('should behave as its equivalent Size taking into account global settings when receiving a RelativeSize', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         relativeSizeArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.boolean(),
-        (size, lengthA, lengthB, specifiedMaxLength) => {
+        (config, size, lengthA, lengthB, specifiedMaxLength) => {
           // Arrange
-          const equivalentSize = relativeSizeToSize(size, DefaultSize);
+          const { baseSize: defaultSize = DefaultSize } = config;
+          const equivalentSize = relativeSizeToSize(size, defaultSize);
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
-          const computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+          );
           const expectedLength = maxGeneratedLengthFromSizeForArbitrary(
             equivalentSize,
             minLength,
@@ -99,16 +112,19 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
   it('should only consider the received maxLength when set to "max"', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.boolean(),
-        (lengthA, lengthB, specifiedMaxLength) => {
+        (config, lengthA, lengthB, specifiedMaxLength) => {
           // Arrange
           const size = 'max';
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
-          const computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+          );
 
           // Assert
           expect(computedLength).toBe(maxLength);
@@ -120,16 +136,21 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
   it('should ignore specifiedMaxLength whenever size specified', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         sizeForArbitraryArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
-        (size, lengthA, lengthB) => {
+        (config, size, lengthA, lengthB) => {
           // Arrange
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
-          const computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false);
-          const expectedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, true);
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false)
+          );
+          const expectedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, true)
+          );
 
           // Assert
           expect(computedLength).toBe(expectedLength);
@@ -138,18 +159,26 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should fallback to "max" whenever no size specified but maxLength specified', () => {
+  it('should fallback to "max" whenever no size specified but maxLength specified when defaultSizeToMaxWhenMaxSpecified true or unset', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
-        (lengthA, lengthB) => {
+        (config, lengthA, lengthB) => {
           // Arrange
+          fc.pre(
+            config.defaultSizeToMaxWhenMaxSpecified === true || config.defaultSizeToMaxWhenMaxSpecified === undefined
+          );
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
-          const computedLength = maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, true);
-          const expectedLength = maxGeneratedLengthFromSizeForArbitrary('max', minLength, maxLength, true);
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, true)
+          );
+          const expectedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary('max', minLength, maxLength, true)
+          );
 
           // Assert
           expect(computedLength).toBe(expectedLength);
@@ -158,18 +187,22 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should fallback to DefaultSize whenever no size specified and no maxLength specified', () => {
+  it('should fallback to baseSize (or default) whenever no size specified and no maxLength specified', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
-        (lengthA, lengthB) => {
+        (config, lengthA, lengthB) => {
           // Arrange
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
+          const { baseSize: defaultSize = DefaultSize } = config;
 
           // Act
-          const computedLength = maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, false);
-          const expectedLength = maxGeneratedLengthFromSizeForArbitrary(DefaultSize, minLength, maxLength, false);
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, false)
+          );
+          const expectedLength = maxGeneratedLengthFromSizeForArbitrary(defaultSize, minLength, maxLength, false);
 
           // Assert
           expect(computedLength).toBe(expectedLength);
@@ -181,7 +214,7 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
   it('should always return a length being between minLength and maxLength', () => {
     fc.assert(
       fc.property(
-        fc.record({ baseSize: sizeArb, defaultSizeToMaxWhenMaxSpecified: fc.boolean() }, { requiredKeys: [] }),
+        sizeRelatedGlobalConfigArb,
         fc.option(sizeForArbitraryArb, { nil: undefined }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -191,14 +224,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
-          let computedLength: number;
-          const previousConfiguration = readConfigureGlobal();
-          try {
-            configureGlobal(config);
-            computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
-          } finally {
-            configureGlobal(previousConfiguration || {});
-          }
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+          );
 
           // Assert
           expect(computedLength).toBeGreaterThanOrEqual(minLength);

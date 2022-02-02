@@ -3,8 +3,8 @@ import * as fc from '../../../../lib/fast-check';
 
 import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
-import { configureGlobal, readConfigureGlobal } from '../../../../src/check/runner/configuration/GlobalParameters';
 import { Random } from '../../../../src/random/generator/Random';
+import { withConfiguredGlobal } from './GlobalSettingsHelpers';
 import { sizeArb } from './SizeHelpers';
 
 // Minimal requirements
@@ -239,15 +239,7 @@ export function assertGenerateIndependentOfSize<T, U = never>(
   } = options;
   assertGenerateEquivalentTo(
     (extra) => arbitraryBuilder(extra.requested),
-    (extra) => {
-      const previousGlobal = readConfigureGlobal();
-      try {
-        configureGlobal(extra.global);
-        return arbitraryBuilder(extra.requested);
-      } finally {
-        configureGlobal(previousGlobal || {});
-      }
-    },
+    (extra) => withConfiguredGlobal(extra.global, () => arbitraryBuilder(extra.requested)),
     {
       extraParameters: fc.record({
         requested: extraParameters,
