@@ -121,3 +121,11 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
   return Math.min(maxLengthFromMinLength(minLength, finalSize), maxLength);
 }
+
+export function resolveSize(size: Exclude<SizeForArbitrary, 'max'> | undefined): Size {
+  const { baseSize: defaultSize = DefaultSize } = readConfigureGlobal() || {};
+  if (size === undefined) {
+    return defaultSize;
+  }
+  return relativeSizeToSize(size, defaultSize);
+}

@@ -11,11 +11,12 @@ import { option } from './option';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /** @internal */
-function hostUserInfo(): Arbitrary<string> {
+function hostUserInfo(size: SizeForArbitrary): Arbitrary<string> {
   const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':'];
-  return stringOf(buildAlphaNumericPercentArbitrary(others));
+  return stringOf(buildAlphaNumericPercentArbitrary(others), { size });
 }
 
 /** @internal */
@@ -79,6 +80,11 @@ export interface WebAuthorityConstraints {
    * @remarks Since 1.14.0
    */
   withPort?: boolean;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.22.0
+   */
+  size?: Exclude<SizeForArbitrary, 'max'>;
 }
 
 /**
@@ -93,14 +99,15 @@ export interface WebAuthorityConstraints {
  */
 export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<string> {
   const c = constraints || {};
-  const hostnameArbs = [domain()]
+  const size = c.size;
+  const hostnameArbs = [domain({ size })]
     .concat(c.withIPv4 === true ? [ipV4()] : [])
     .concat(c.withIPv6 === true ? [convertFromNext(convertToNext(ipV6()).map(bracketedMapper, bracketedUnmapper))] : [])
     .concat(c.withIPv4Extended === true ? [ipV4Extended()] : []);
   return convertFromNext(
     convertToNext(
       tuple(
-        c.withUserInfo === true ? option(hostUserInfo()) : constant(null),
+        c.withUserInfo === true ? option(hostUserInfo(size)) : constant(null),
         oneof(...hostnameArbs),
         c.withPort === true ? option(nat(65535)) : constant(null)
       )
