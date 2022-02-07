@@ -1,5 +1,5 @@
 import fc from '../../../lib/fast-check';
-import { emailAddress } from '../../../src/arbitrary/emailAddress';
+import { emailAddress, EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
 import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 
@@ -10,6 +10,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -41,6 +42,12 @@ describe('emailAddress (integration)', () => {
     expect(t).toMatch(rfc5322);
   };
 
+  type Extra = EmailAddressConstraints;
+  const extraParameters: fc.Arbitrary<Extra> = fc.record(
+    { size: fc.oneof(sizeArb, relativeSizeArb) },
+    { requiredKeys: [] }
+  );
+
   const isCorrect = (t: string) => {
     expectValidEmailRfc1123(t);
     expectValidEmailRfc2821(t);
@@ -50,19 +57,19 @@ describe('emailAddress (integration)', () => {
   const emailAddressBuilder = () => convertToNext(emailAddress());
 
   it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(emailAddressBuilder);
+    assertProduceSameValueGivenSameSeed(emailAddressBuilder, { extraParameters });
   });
 
   it('should only produce correct values', () => {
-    assertProduceCorrectValues(emailAddressBuilder, isCorrect);
+    assertProduceCorrectValues(emailAddressBuilder, isCorrect, { extraParameters });
   });
 
   it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(emailAddressBuilder);
+    assertProduceValuesShrinkableWithoutContext(emailAddressBuilder, { extraParameters });
   });
 
   it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(emailAddressBuilder);
+    assertShrinkProducesSameValueWithoutInitialContext(emailAddressBuilder, { extraParameters });
   });
 
   it.each`
