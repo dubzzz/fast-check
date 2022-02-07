@@ -59,7 +59,7 @@ describe('domain (integration)', () => {
     assertProduceCorrectValues(domainBuilder, isCorrect, { extraParameters });
   });
 
-  it('should only produce correct values regarding new URL', () => {
+  it('should only produce correct values regarding `new URL`', () => {
     assertProduceCorrectValues(domainBuilder, isCorrectForURL, { extraParameters });
   });
 
