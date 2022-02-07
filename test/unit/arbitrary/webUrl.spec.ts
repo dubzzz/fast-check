@@ -11,6 +11,7 @@ import {
 } from './__test-helpers__/NextArbitraryAssertions';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -31,11 +32,13 @@ describe('webUrl (integration)', () => {
           withIPv4Extended: fc.boolean(),
           withUserInfo: fc.boolean(),
           withPort: fc.boolean(),
+          size: fc.oneof(sizeArb, relativeSizeArb),
         },
         { requiredKeys: [] }
       ),
       withQueryParameters: fc.boolean(),
       withFragments: fc.boolean(),
+      size: fc.oneof(sizeArb, relativeSizeArb),
     },
     { requiredKeys: [] }
   );
