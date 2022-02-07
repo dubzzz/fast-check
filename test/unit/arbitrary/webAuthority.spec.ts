@@ -9,7 +9,7 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
-import { sizeArb } from './__test-helpers__/SizeHelpers';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -27,7 +27,7 @@ describe('webAuthority (integration)', () => {
       withIPv6: fc.boolean(),
       withPort: fc.boolean(),
       withUserInfo: fc.boolean(),
-      size: sizeArb,
+      size: fc.oneof(sizeArb, relativeSizeArb),
     },
     { requiredKeys: [] }
   );

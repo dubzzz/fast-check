@@ -11,7 +11,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/NextArbitraryAssertions';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { sizeArb } from './__test-helpers__/SizeHelpers';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -41,7 +41,10 @@ describe('domain (integration)', () => {
   };
 
   type Extra = DomainConstraints;
-  const extraParameters: fc.Arbitrary<Extra> = fc.record({ size: sizeArb }, { requiredKeys: [] });
+  const extraParameters: fc.Arbitrary<Extra> = fc.record(
+    { size: fc.oneof(sizeArb, relativeSizeArb) },
+    { requiredKeys: [] }
+  );
 
   const isCorrect = isValidDomainWithExtension;
 
