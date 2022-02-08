@@ -1276,7 +1276,7 @@ fc.uuidV(5)
 
 ```js
 fc.domain()
-// Examples of generated values: "j6ib52zarmf.fb", "00.al4", "35b10n-w.7xe2.do8", "0.h6a4sfyde.cy5", "c.ce"…
+// Examples of generated values: "j6ib52zarmf.dec", "00.wk", "35b10n-w.7xe2.xai", "0.h6a4sfyde.ju", "c.cb"…
 ```
 </details>
 
@@ -1306,17 +1306,17 @@ fc.domain()
 
 ```js
 fc.webAuthority()
-// Examples of generated values: "qj5h7-5.d6je1ud1x.q5", "5w6.cf", "qtabs87.4j6.ka", "vyd-xdhj.vu94x4.mqj", "5sr6j0ayq2et.a.cou"…
+// Examples of generated values: "qj5h7-5.d6je1ud1x.ay", "5w6.mn", "qtabs87.4j6.zce", "vyd-xdhj.vu94x4.nl", "5sr6j0ayq2et.a.eur"…
 
 fc.webAuthority({
   withIPv4: true,
 })
-// Examples of generated values: "227.252.4.231", "6.1.143.3", "nlefeaoklaq7.o3", "168w.b7d", "6.3.255.158"…
+// Examples of generated values: "227.252.4.231", "6.1.143.3", "nlefeaoklaq7.ijm", "168w.uvr", "6.3.255.158"…
 
 fc.webAuthority({
   withIPv4Extended: true,
 })
-// Examples of generated values: "4dfi9d-5.qe5.ba", "0xa", "0xefebe5f3", "6abqd.eit", "0345.077777767"…
+// Examples of generated values: "4dfi9d-5.qe5.odw", "0xa", "0xefebe5f3", "6abqd.nf", "0345.077777767"…
 
 fc.webAuthority({
   withIPv4: true,
@@ -1414,35 +1414,23 @@ fc.webSegment()
 
 ```js
 fc.webUrl()
-// Examples of generated values:
-// • "https://lo.bfe/re"
-// • "https://4.y/WG!Je;%F2%B4%B3%B3/5/-L1x:t"
-// • "https://710n-lu1.s.f//d*"
-// • "https://a9c.ecf/R8/'ddz/%31gg/N-z2%F4%8F%BF%BA/f%F0%A9%8E%907S"
-// • "https://6uzbj4.c/%F2%91%B6%81DM/qg/=Oq&U/k@b%28c;mm/"
-// • …
+// Examples of generated values: "https://lo.vu/@", "https://4.kcl", "https://710n-lu1.s.zl", "https://a9c.nus/.q%F0%9B%A6%A1rkoLYs", "https://6uzbj4.dp/;"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
 })
-// Examples of generated values:
-// • "ftps://ld0fa.1k.g5/e//ZC"
-// • "ftps://5ana.x02y.ebj/%F2%9D%86%96;x%F1%8D%9D%BE.g-"
-// • "ftp://f.d.k-h/g//*e"
-// • "ftp://d3mhpf.ho8/&ur9m:tp;f/!da_v'n*l/x/_6W0/Fy_/mUlC+Rxdy/'bnFN)p5$/E-=4Y/&KiRJ9/lAG,am!&"
-// • "ftps://4.e/5d6o%F2%B0%A2%81Plm:N//bg/m_/SI%F3%B9%8B%A34V;c&e/%F3%A3%9F%B7~c/./i/@/gbecsP"
-// • …
+// Examples of generated values: "ftps://ld0fa.1k.ve/3Ne", "ftps://5ana.x02y.sv", "ftp://f.d.nl/1", "ftp://d3mhpf.xtb", "ftps://4.cn"…
 
 fc.webUrl({
   withFragments: true,
   withQueryParameters: true,
 })
 // Examples of generated values:
-// • "https://6teotdbx.b/m/6=-XX%F2%9F%95%8B?e%F4%8F%BF%BBa%E4%B0%8E,#c%F2%80%91%ABcf$vTL%F0%9D%BF%9C"
-// • "http://ntgafkj31t.8x7x09flrvhg.s/)OuP4B/T2/C55P!5/v.q7D%F4%80%A7%A2)P/yi/q*1%F2%95%95%9Ec/R9$7wq/=e#x-pbQ9"
-// • "http://e4.17v9z34.mwk/FM7aA:P?d?:b5e;c(#:"
-// • "http://8.opf/%F2%99%99%90e0r6*smC+/ig%F0%96%85%B240/o/iocko1P-/zZw4F?&#dfaF"
-// • "https://qc.ieele4.f7/JR652%F3%97%8C%85XKm/?%E4%9E%B7.6'#:Za,;?fdf"
+// • "https://6teotdbx.wnc?c=#%F4%8F%BF%BBa%E4%B0%8E"
+// • "http://ntgafkj31t.8x7x09flrvhg.yd?,$#FVSy"
+// • "http://e4.17v9z34.xh/?e#;cbd?:b"
+// • "http://8.jef?o#GD"
+// • "https://qc.ieele4.fcg?P%F1%81%9C%A5N+0DN%F3%97%8C%85fX"
 // • …
 ```
 </details>
@@ -1465,11 +1453,11 @@ fc.webUrl({
 ```js
 fc.emailAddress()
 // Examples of generated values:
-// • "e0f7||'5tqsh61k_opz+r*%^'k&wscdddsv{'*=f{1e2@azcddep.dk"
-// • "8d{cdrddb5a^}dc|g}#bacd0bfn0bdfoa}fbslf7f''#xe2-_aj?.&*9bi6-@du5h8ii.sf5vf2yd9khk.geb"
-// • "|bi9r}1|9lm^biw8i3.$~doz=|dlrlnl}~gfu+px0pr-{%*mh&*8efxj4`b6y}m@mada.bl"
-// • "/22{9=mp&2?e#w-b%-'=%itdenn?8#_c1g_3c#=#0e~/_j^n&*@sflar.e5a"
-// • "z*3y`3kteb}4~6|&&xepg{@7t-ze.m.fn"
+// • "e0f7||'5tqsh61k_opz+r*%^'k&wscdddsv{'*=f{1e2@azcddep.brd"
+// • "8d{cdrddb5a^}dc|g}#bacd0bfn0bdfoa}fbslf7f''#xe2-_aj?.&*9bi6-@du5h8ii.sf5vf2yd9khk.ub"
+// • "|bi9r}1|9lm^biw8i3.$~doz=|dlrlnl}~gfu+px0pr-{%*mh&*8efxj4`b6y}m@mada.bbv"
+// • "/22{9=mp&2?e#w-b%-'=%itdenn?8#_c1g_3c#=#0e~/_j^n&*@sflar.xk"
+// • "z*3y`3kteb}4~6|&&xepg{@7t-ze.m.iat"
 // • …
 ```
 </details>

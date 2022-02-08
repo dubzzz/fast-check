@@ -37,7 +37,7 @@ describe('domain (integration)', () => {
 
   const isValidDomainWithExtension = (t: string) => {
     const subdomains = t.split('.');
-    return isValidDomain(t) && subdomains.length >= 2;
+    return isValidDomain(t) && subdomains.length >= 2 && /^[a-z]{2,}$/.test(subdomains[subdomains.length - 1]);
   };
 
   type Extra = DomainConstraints;
@@ -76,7 +76,7 @@ describe('domain (integration)', () => {
 
   it.each`
     source
-    ${'very-very-very-very-very-very-very-very-very-very-very-long-domain.com' /* label too long >63 */}
+    ${'very-very-very-very-very-very-very-very-very-very-very-long-label.com' /* label too long >63 */}
     ${`${'a.'.repeat(128)}com` /* domain too long >255 */}
   `('should not be able to generate $source with fc.domain()', ({ source }) => {
     // Arrange / Act
@@ -91,7 +91,7 @@ describe('domain (integration)', () => {
     rawValue
     ${'domain.com'}
     ${'a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.fr'}
-    ${'very-very-very-very-very-very-very-very-very-long-domain.very-long-extension' /* longer than default maxGeneratedLength but ok for shrink */}
+    ${'very-very-very-very-very-very-very-very-very-long-label.com' /* label longer than default maxGeneratedLength but ok for shrink */}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = convertToNext(domain());
