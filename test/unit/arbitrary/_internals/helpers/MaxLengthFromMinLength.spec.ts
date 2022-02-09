@@ -114,7 +114,7 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     fc.assert(
       fc.property(
         sizeRelatedGlobalConfigArb,
-        sizeForArbitraryArb,
+        fc.oneof(sizeArb, relativeSizeArb),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         (config, size, lengthA, lengthB) => {
