@@ -22,26 +22,27 @@ beforeEach(beforeEachHook);
 
 describe('webUrl (integration)', () => {
   type Extra = WebUrlConstraints;
-  const extraParameters: fc.Arbitrary<Extra> = fc.record(
-    {
-      validSchemes: fc.constant(['ftp']),
-      authoritySettings: fc.record(
-        {
-          withIPv4: fc.boolean(),
-          withIPv6: fc.boolean(),
-          withIPv4Extended: fc.boolean(),
-          withUserInfo: fc.boolean(),
-          withPort: fc.boolean(),
-          size: fc.oneof(sizeArb, relativeSizeArb),
-        },
-        { requiredKeys: [] }
-      ),
-      withQueryParameters: fc.boolean(),
-      withFragments: fc.boolean(),
-      size: fc.oneof(sizeArb, relativeSizeArb),
-    },
-    { requiredKeys: [] }
-  );
+  const extraParametersBuilder: (onlySmall?: boolean) => fc.Arbitrary<Extra> = (onlySmall?: boolean) =>
+    fc.record(
+      {
+        validSchemes: fc.constant(['ftp']),
+        authoritySettings: fc.record(
+          {
+            withIPv4: fc.boolean(),
+            withIPv6: fc.boolean(),
+            withIPv4Extended: fc.boolean(),
+            withUserInfo: fc.boolean(),
+            withPort: fc.boolean(),
+            size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+          },
+          { requiredKeys: [] }
+        ),
+        withQueryParameters: fc.boolean(),
+        withFragments: fc.boolean(),
+        size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+      },
+      { requiredKeys: [] }
+    );
 
   const isCorrect = (t: string) => {
     // Valid url given the specs defined by WHATWG URL Standard: https://url.spec.whatwg.org/
@@ -52,19 +53,21 @@ describe('webUrl (integration)', () => {
   const webUrlBuilder = (extra: Extra) => convertToNext(webUrl(extra));
 
   it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters });
+    assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters: extraParametersBuilder() });
   });
 
   it('should only produce correct values', () => {
-    assertProduceCorrectValues(webUrlBuilder, isCorrect);
+    assertProduceCorrectValues(webUrlBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
   });
 
   it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(webUrlBuilder, { extraParameters });
+    assertProduceValuesShrinkableWithoutContext(webUrlBuilder, { extraParameters: extraParametersBuilder(true) });
   });
 
   it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, { extraParameters });
+    assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, {
+      extraParameters: extraParametersBuilder(true),
+    });
   });
 
   it.each`
