@@ -16,6 +16,11 @@ export const relativeSizeArb = fc.constantFrom<RelativeSize>(...allRelativeSize)
 const allSizeForArbitrary = [...allSizeOrdered, ...allRelativeSize, 'max'] as const; // WARNING: it does not include undefined
 export const sizeForArbitraryArb = fc.constantFrom<SizeForArbitrary>(...allSizeForArbitrary);
 
+export const sizeRelatedGlobalConfigArb = fc.record(
+  { baseSize: sizeArb, defaultSizeToMaxWhenMaxSpecified: fc.boolean() },
+  { requiredKeys: [] }
+);
+
 // Type check that helpers are covering all the possibilities
 
 const failIfMissingSize: Size extends typeof allSizeOrdered[number] ? true : never = true;
