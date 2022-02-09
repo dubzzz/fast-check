@@ -5,6 +5,7 @@ import {
   maxLengthFromMinLength,
   MaxLengthUpperBound,
   relativeSizeToSize,
+  resolveSize,
 } from '../../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 import { configureGlobal, readConfigureGlobal } from '../../../../../src/check/runner/configuration/GlobalParameters';
 import { sizeArb, isSmallerSize, relativeSizeArb, sizeForArbitraryArb } from '../../__test-helpers__/SizeHelpers';
@@ -88,6 +89,28 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
             maxLength,
             specifiedMaxLength
           );
+
+          // Assert
+          expect(computedLength).toBe(expectedLength);
+        }
+      )
+    );
+  });
+
+  it('should behave as its resolved Size when in unspecified max mode', () => {
+    fc.assert(
+      fc.property(
+        sizeForArbitraryArb,
+        fc.integer({ min: 0, max: MaxLengthUpperBound }),
+        fc.integer({ min: 0, max: MaxLengthUpperBound }),
+        (size, lengthA, lengthB) => {
+          // Arrange
+          const resolvedSize = resolveSize(size);
+          const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
+
+          // Act
+          const computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false);
+          const expectedLength = maxGeneratedLengthFromSizeForArbitrary(resolvedSize, minLength, maxLength, false);
 
           // Assert
           expect(computedLength).toBe(expectedLength);

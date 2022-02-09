@@ -122,6 +122,10 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   return Math.min(maxLengthFromMinLength(minLength, finalSize), maxLength);
 }
 
+/**
+ * Resolve the size that should be used given the current context
+ * @param size - Size defined by the caller on the arbitrary
+ */
 export function resolveSize(size: Exclude<SizeForArbitrary, 'max'> | undefined): Size {
   const { baseSize: defaultSize = DefaultSize } = readConfigureGlobal() || {};
   if (size === undefined) {
