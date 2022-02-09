@@ -1,4 +1,3 @@
-import { array } from './array';
 import { constantFrom } from './constantFrom';
 import { constant } from './constant';
 import { option } from './option';
@@ -7,27 +6,10 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { webQueryParameters } from './webQueryParameters';
 import { webFragments } from './webFragments';
 import { webAuthority, WebAuthorityConstraints } from './webAuthority';
-import { webSegment } from './webSegment';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { partsToUrlMapper, partsToUrlUnmapper } from './_internals/mappers/PartsToUrl';
-import { segmentsToPathMapper, segmentsToPathUnmapper } from './_internals/mappers/SegmentsToPath';
-import { relativeSizeToSize, resolveSize, Size, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-
-/** @internal */
-function sqrtSize(size: Size): [Size, Size] {
-  switch (size) {
-    case 'xsmall':
-      return ['xsmall', 'xsmall']; // 1 = 1 x 1
-    case 'small':
-      return ['small', 'xsmall']; // 10 = 10 x 1
-    case 'medium':
-      return ['small', 'small']; // 100 = 10 x 10
-    case 'large':
-      return ['medium', 'small']; // 1000 = 100 x 10
-    case 'xlarge':
-      return ['medium', 'medium']; // 1000 = 100 x 10
-  }
-}
+import { relativeSizeToSize, resolveSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { buildUriPathArbitrary } from './_internals/builders/UriPathArbitraryBuilder';
 
 /**
  * Constraints to be applied on {@link webUrl}
@@ -76,7 +58,6 @@ export interface WebUrlConstraints {
 export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
   const c = constraints || {};
   const resolvedSize = resolveSize(c.size);
-  const [segmentSize, numSegmentSize] = sqrtSize(resolvedSize);
   const resolvedAuthoritySettingsSize =
     c.authoritySettings !== undefined && c.authoritySettings.size !== undefined
       ? relativeSizeToSize(c.authoritySettings.size, resolvedSize)
@@ -85,12 +66,7 @@ export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
   const authorityArb = webAuthority(resolvedAuthoritySettings);
-  const pathArb = convertFromNext(
-    convertToNext(array(webSegment({ size: segmentSize }), { size: numSegmentSize })).map(
-      segmentsToPathMapper,
-      segmentsToPathUnmapper
-    )
-  );
+  const pathArb = buildUriPathArbitrary(resolvedSize);
   return convertFromNext(
     convertToNext(
       tuple(
