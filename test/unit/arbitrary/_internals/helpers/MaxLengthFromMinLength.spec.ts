@@ -113,17 +113,22 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
   it('should behave as its resolved Size when in unspecified max mode', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         sizeForArbitraryArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
-        (size, lengthA, lengthB) => {
+        (config, size, lengthA, lengthB) => {
           // Arrange
-          const resolvedSize = resolveSize(size);
+          const resolvedSize = withConfiguredGlobal(config, () => resolveSize(size));
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
-          const computedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false);
-          const expectedLength = maxGeneratedLengthFromSizeForArbitrary(resolvedSize, minLength, maxLength, false);
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false)
+          );
+          const expectedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(resolvedSize, minLength, maxLength, false)
+          );
 
           // Assert
           expect(computedLength).toBe(expectedLength);
