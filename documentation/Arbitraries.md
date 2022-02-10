@@ -1284,11 +1284,11 @@ fc.domain()
 // Examples of generated values: "j6ib52zarmf.dec", "00.wk", "35b10n-w.7xe2.xai", "0.h6a4sfyde.ju", "c.cb"…
 
 fc.domain({size: '-1'})
-// Note: Generate smaller domain name, as default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Note: Generate smaller domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
 // Examples of generated values: "ec.ob", "1nl.0it.oxt", "za.kjs", "3tu.d.bl", "rn.d0.kfx"…
 
 fc.domain({size: '+1'})
-// Note: Generate larger domain name, as default size is 'small' (if unchanged), it is equivalent to 'medium'
+// Note: Generate larger domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'medium'
 // Examples of generated values:
 // • "e3lmceoiktylhwob3i097i07lbqe.g.ew2a5jzl4dm7y4.fx8-cc9.a8mp77soh3743x58n3bx85s-a8bkfnda8-bbnke3gjrr7ui57nqt.ez-ns69b5k6g8ugc1t7zvwsf0dzq1wywm7okkc1w6pt2.w.b5q7l242x-fcosehdxghwp1js5oykwo14t-7y5x.7gftao9au5u-ynym-yq027d9kc.iyxwwefae"
 // • "1n2983iaqbaqqez.j5exoz885-r97uinqna5rb0u35junfiav5p6q3xrw-ceribgdz.xdyncrdcuyzcbs"
@@ -1471,7 +1471,7 @@ fc.webUrl({
 // • …
 
 fc.webUrl({size: '-1'})
-// Note: Generate smaller urls compared to default, as default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Note: Generate smaller urls compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
 // Examples of generated values: "http://d.ue", "https://h.lp/%F3%A0%B4%9E", "http://64.e.tod/%F0%9F%AA%B3", "https://b.uq.xl", "https://g26.ben"…
 ```
 </details>
@@ -1507,7 +1507,7 @@ fc.emailAddress()
 // • …
 
 fc.emailAddress({size: '-1'})
-// Note: Generate smaller email addresses compared to default, as default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Note: Generate smaller email addresses compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
 // Examples of generated values: "hn@s1v.i9.ws", "%@xo.s.iaw", "n@vq.mz", "kg.kg@5a.cz", "_.7@nr.i.hx"…
 ```
 </details>
