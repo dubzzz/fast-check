@@ -1271,12 +1271,31 @@ fc.uuidV(5)
 *&#8195;Signatures*
 
 - `fc.domain()`
+- `fc.domain({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
 ```js
 fc.domain()
 // Examples of generated values: "j6ib52zarmf.dec", "00.wk", "35b10n-w.7xe2.xai", "0.h6a4sfyde.ju", "c.cb"…
+
+fc.domain({size: '-1'})
+// Note: Generate smaller domain name, as default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "ec.ob", "1nl.0it.oxt", "za.kjs", "3tu.d.bl", "rn.d0.kfx"…
+
+fc.domain({size: '+1'})
+// Note: Generate larger domain name, as default size is 'small' (if unchanged), it is equivalent to 'medium'
+// Examples of generated values:
+// • "e3lmceoiktylhwob3i097i07lbqe.g.ew2a5jzl4dm7y4.fx8-cc9.a8mp77soh3743x58n3bx85s-a8bkfnda8-bbnke3gjrr7ui57nqt.ez-ns69b5k6g8ugc1t7zvwsf0dzq1wywm7okkc1w6pt2.w.b5q7l242x-fcosehdxghwp1js5oykwo14t-7y5x.7gftao9au5u-ynym-yq027d9kc.iyxwwefae"
+// • "1n2983iaqbaqqez.j5exoz885-r97uinqna5rb0u35junfiav5p6q3xrw-ceribgdz.xdyncrdcuyzcbs"
+// • "z72rbhb9tjfoqq4whcj589.r94hzbjrbnrt2r8s0b3zu83fa0ysem2dbaf0quiow7d.7o-riknfagqdyaf-4dqibda.p.dn.5f.bs62gc.c.eg23f3h9n257004x7gt2xz1lb1nzfw5xz8yl0r4ddazujmdl-9bv6-kohtr.ye"
+// • "3twerafs1lktsebj9o0p2g6p2adbdu63vwsr7kw57-lkbeb3p7ef1383xqmej69.80h5rjtsk4n2c82ecntzsy1tt0-1udt3fsc2rdctnnu68w6x3re1yk9gp.6.6ah5085en0kni5y25swn0aoahmhknzf00.15czrzh4wu00hes7p4860s6ui8-htm5x4b-cquy9rbal6.4.fv"
+// • "rq42wt9mq67kg30r5iz55yh9.5g4zvgp29o.mrgob7gvx4r85rpwosrgr1dpw6dlvn6--pneig1.7co96i0-5d0zaw7thxb30jt9eyq6c67v7o0tnz4xhc8twkiyy46h.7tpqwpzihjluq4h4d0hwtcikxiyackva3xkk78.98b2cnk7yr-1kdxkq4vlikoly658f6d1j8ddrzo95.q739viaqbdk2u3etgcclbe4u7-kqnoe2i.ire"
+// • …
 ```
 </details>
 
@@ -1300,6 +1319,8 @@ fc.domain()
 - `withIPv4Extended?` — default: `false` — _enable ip v4 extended_
 - `withIPv6?` — default: `false` — _enable ip v6_
 - `withPort?` — default: `false` — _enable port_
+- `withUserInfo?` — default: `false` — _enable user info_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 
 *&#8195;Usages*
@@ -1340,6 +1361,11 @@ fc.webAuthority({
 *&#8195;Signatures*
 
 - `fc.webFragments()`
+- `fc.webFragments({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1361,6 +1387,11 @@ fc.webFragments()
 *&#8195;Signatures*
 
 - `fc.webQueryParameters()`
+- `fc.webQueryParameters({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1380,6 +1411,11 @@ fc.webQueryParameters()
 *&#8195;Signatures*
 
 - `fc.webSegment()`
+- `fc.webSegment({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1401,7 +1437,7 @@ fc.webSegment()
 *&#8195;Signatures*
 
 - `fc.webUrl()`
-- `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?})`
+- `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?, size?})`
 
 *&#8195;with:*
 
@@ -1409,6 +1445,7 @@ fc.webSegment()
 - `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
 - `withFragments?` — default: `false` — _enable fragments_
 - `withQueryParameters?` — default: `false` — _enable query parameters_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1432,6 +1469,10 @@ fc.webUrl({
 // • "http://8.jef?o#GD"
 // • "https://qc.ieele4.fcg?P%F1%81%9C%A5N+0DN%F3%97%8C%85fX"
 // • …
+
+fc.webUrl({size: '-1'})
+// Note: Generate smaller urls compared to default, as default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "http://d.ue", "https://h.lp/%F3%A0%B4%9E", "http://64.e.tod/%F0%9F%AA%B3", "https://b.uq.xl", "https://g26.ben"…
 ```
 </details>
 
@@ -1447,6 +1488,11 @@ fc.webUrl({
 *&#8195;Signatures*
 
 - `fc.emailAddress()`
+- `fc.emailAddress({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1459,6 +1505,10 @@ fc.emailAddress()
 // • "/22{9=mp&2?e#w-b%-'=%itdenn?8#_c1g_3c#=#0e~/_j^n&*@sflar.xk"
 // • "z*3y`3kteb}4~6|&&xepg{@7t-ze.m.iat"
 // • …
+
+fc.emailAddress({size: '-1'})
+// Note: Generate smaller email addresses compared to default, as default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "hn@s1v.i9.ws", "%@xo.s.iaw", "n@vq.mz", "kg.kg@5a.cz", "_.7@nr.i.hx"…
 ```
 </details>
 
