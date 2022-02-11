@@ -3,9 +3,20 @@ import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 
+/** @internal */
 export type AdapterOutput<T> = { adapted: boolean; value: T };
 
+/** @internal */
 const AdaptedValue = Symbol('adapted-value');
+
+/** @internal */
+function toAdapterNextValue<T>(rawValue: NextValue<T>, adapter: (value: T) => AdapterOutput<T>): NextValue<T> {
+  const adapted = adapter(rawValue.value_);
+  if (!adapted.adapted) {
+    return rawValue; // No need to adapt it
+  }
+  return new NextValue(adapted.value, AdaptedValue);
+}
 
 /**
  * @internal
@@ -13,25 +24,26 @@ const AdaptedValue = Symbol('adapted-value');
  * if they don't fit the requirements
  */
 class AdapterArbitrary<T> extends NextArbitrary<T> {
+  private readonly adaptNextValue: (rawValue: NextValue<T>) => NextValue<T>;
   constructor(private readonly sourceArb: NextArbitrary<T>, private readonly adapter: (value: T) => AdapterOutput<T>) {
     super();
+    this.adaptNextValue = (rawValue) => toAdapterNextValue(rawValue, adapter);
   }
   generate(mrng: Random, biasFactor: number | undefined): NextValue<T> {
     const rawValue = this.sourceArb.generate(mrng, biasFactor);
-    const adapted = this.adapter(rawValue.value_);
-    if (!adapted.adapted) {
-      return rawValue; // No need to adapt it
-    }
-    return new NextValue(adapted.value, AdaptedValue);
+    return this.adaptNextValue(rawValue);
   }
   canShrinkWithoutContext(value: unknown): value is T {
     return this.sourceArb.canShrinkWithoutContext(value) && !this.adapter(value).adapted;
   }
   shrink(value: T, context: unknown): Stream<NextValue<T>> {
     if (context === AdaptedValue) {
-      return this.sourceArb.shrink(value, undefined);
+      if (!this.sourceArb.canShrinkWithoutContext(value)) {
+        return Stream.nil();
+      }
+      return this.sourceArb.shrink(value, undefined).map(this.adaptNextValue);
     }
-    return this.sourceArb.shrink(value, context);
+    return this.sourceArb.shrink(value, context).map(this.adaptNextValue);
   }
 }
 
