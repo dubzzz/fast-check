@@ -117,7 +117,7 @@ describe('AdapterArbitrary', () => {
           fc.boolean(),
           (biasFactor, vA, cA, adaptedA, vAA, cAA, adaptedAA, vAB, cAB, adaptedAB, canShrinkIfAdapted) => {
             // Arrange
-            fc.pre(allUniques(vA, vAA, vAB, adaptedA.value, adaptedAA.value, adaptedAB.value));
+            fc.pre(allUniques(vA, vAA, vAB)); // check for adapterFunction
             const valueA = new NextValue(vA, cA);
             const valueAA = new NextValue(vAA, cAA);
             const valueAB = new NextValue(vAB, cAB);
@@ -206,20 +206,7 @@ describe('AdapterArbitrary', () => {
             canShrinkIfAdapted
           ) => {
             // Arrange
-            fc.pre(
-              allUniques(
-                vA,
-                vAA,
-                vAB,
-                vAC,
-                vABC,
-                adaptedA.value,
-                adaptedAA.value,
-                adaptedAB.value,
-                adaptedAC.value,
-                adaptedABC.value
-              )
-            );
+            fc.pre(allUniques(vA, vAA, vAB, vAC, vABC)); // check for adapterFunction
             const valueA = new NextValue(vA, cA);
             const valueAA = new NextValue(vAA, cAA);
             const valueAB = new NextValue(vAB, cAB);
@@ -284,7 +271,7 @@ describe('AdapterArbitrary', () => {
           fc.record({ adapted: fc.boolean(), value: fc.anything() }),
           (toShrinkvalue, vAA, cAA, adaptedAA, vAB, cAB, adaptedAB) => {
             // Arrange
-            fc.pre(allUniques(vAA, vAB, adaptedAA.value, adaptedAB.value));
+            fc.pre(allUniques(vAA, vAB)); // check for adapterFunction
             const valueAA = new NextValue(vAA, cAA);
             const valueAB = new NextValue(vAB, cAB);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
