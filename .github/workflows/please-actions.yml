@@ -12,7 +12,7 @@ jobs:
     if: github.event.issue.pull_request && github.event.comment.body == 'please deploy'
     steps:
       - name: Check comment
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -57,7 +57,7 @@ jobs:
     if: github.event.issue.pull_request && github.event.comment.body == 'please merge'
     steps:
       - name: Check comment
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -79,7 +79,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Merge BASE_REF into current PR
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -104,14 +104,14 @@ jobs:
     if: github.event.issue.pull_request && github.event.comment.body == 'please debug'
     steps:
       - name: Check comment
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const comment = context.payload.comment;
             await github.rest.reactions.createForIssueComment({ ...context.repo, comment_id: comment.id, content: '+1' });
       - name: Dump context accessible from github-script
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: console.log(JSON.stringify(context, undefined, 2));
       - name: Dump GitHub context
