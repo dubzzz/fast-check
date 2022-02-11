@@ -117,9 +117,7 @@ describe('AdapterArbitrary', () => {
           fc.boolean(),
           (biasFactor, vA, cA, adaptedA, vAA, cAA, adaptedAA, vAB, cAB, adaptedAB, canShrinkIfAdapted) => {
             // Arrange
-            fc.pre([vAA, vAB].findIndex((v) => v === vA) === -1);
-            fc.pre([vA, vAB].findIndex((v) => v === vAA) === -1);
-            fc.pre([vA, vAA].findIndex((v) => v === vAB) === -1);
+            fc.pre(allUniques(vA, vAA, vAB, adaptedA.value, adaptedAA.value, adaptedAB.value));
             const valueA = new NextValue(vA, cA);
             const valueAA = new NextValue(vAA, cAA);
             const valueAB = new NextValue(vAB, cAB);
@@ -208,11 +206,20 @@ describe('AdapterArbitrary', () => {
             canShrinkIfAdapted
           ) => {
             // Arrange
-            fc.pre([vAA, vAB, vAC, vABC].findIndex((v) => v === vA) === -1);
-            fc.pre([vA, vAB, vAC, vABC].findIndex((v) => v === vAA) === -1);
-            fc.pre([vA, vAA, vAC, vABC].findIndex((v) => v === vAB) === -1);
-            fc.pre([vA, vAA, vAB, vABC].findIndex((v) => v === vAC) === -1);
-            fc.pre([vA, vAA, vAB, vAC].findIndex((v) => v === vABC) === -1);
+            fc.pre(
+              allUniques(
+                vA,
+                vAA,
+                vAB,
+                vAC,
+                vABC,
+                adaptedA.value,
+                adaptedAA.value,
+                adaptedAB.value,
+                adaptedAC.value,
+                adaptedABC.value
+              )
+            );
             const valueA = new NextValue(vA, cA);
             const valueAA = new NextValue(vAA, cAA);
             const valueAB = new NextValue(vAB, cAB);
@@ -221,7 +228,8 @@ describe('AdapterArbitrary', () => {
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
             generate.mockReturnValueOnce(valueA);
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB, valueAC)).mockReturnValueOnce(Stream.of(valueABC));
-            canShrinkWithoutContext.mockImplementation((v) => v === valueA || canShrinkIfAdapted);
+            if (adaptedA.adapted) canShrinkWithoutContext.mockReturnValueOnce(true);
+            canShrinkWithoutContext.mockReturnValueOnce(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();
             const adapterFunction = jest
               .fn<AdapterOutput<any>, [any]>()
@@ -239,12 +247,9 @@ describe('AdapterArbitrary', () => {
             expect(generate).toHaveBeenCalledWith(mrng, biasFactor);
             if (adaptedA.adapted) {
               expect(shrink).toHaveBeenCalledWith(adaptedA.value, undefined);
-              expect(canShrinkWithoutContext).toHaveBeenCalledWith(adaptedA.value);
             } else {
               expect(shrink).toHaveBeenCalledWith(vA, cA);
-              expect(canShrinkWithoutContext).not.toHaveBeenCalledWith(adaptedA.value);
             }
-            expect(canShrinkWithoutContext).not.toHaveBeenCalledWith(vA);
             if (!adaptedAB.adapted || canShrinkIfAdapted) {
               expect(shrinks).toHaveLength(1);
               if (adaptedABC.adapted) {
@@ -257,13 +262,9 @@ describe('AdapterArbitrary', () => {
                 expect(canShrinkWithoutContext).toHaveBeenCalledWith(adaptedAB.value);
               } else {
                 expect(shrink).toHaveBeenCalledWith(vAB, cAB);
-                expect(canShrinkWithoutContext).not.toHaveBeenCalledWith(adaptedAB.value);
               }
-              expect(canShrinkWithoutContext).not.toHaveBeenCalledWith(vAB);
             } else {
               expect(shrinks).toHaveLength(0);
-              expect(shrink).not.toHaveBeenCalledWith(adaptedAB.value, undefined);
-              expect(shrink).not.toHaveBeenCalledWith(vAB, cAB);
               expect(canShrinkWithoutContext).toHaveBeenCalledWith(adaptedAB.value);
             }
           }
@@ -283,7 +284,7 @@ describe('AdapterArbitrary', () => {
           fc.record({ adapted: fc.boolean(), value: fc.anything() }),
           (toShrinkvalue, vAA, cAA, adaptedAA, vAB, cAB, adaptedAB) => {
             // Arrange
-            fc.pre(vAA !== vAB);
+            fc.pre(allUniques(vAA, vAB, adaptedAA.value, adaptedAB.value));
             const valueAA = new NextValue(vAA, cAA);
             const valueAB = new NextValue(vAB, cAB);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeNextArbitrary();
@@ -317,3 +318,14 @@ describe('AdapterArbitrary', () => {
     });
   });
 });
+
+// Helpers
+
+function allUniques(...values: any[]): boolean {
+  for (let i = 0; i !== values.length; ++i) {
+    for (let j = 0; j !== values.length; ++j) {
+      if (i !== j && values[i] === values[j]) return false;
+    }
+  }
+  return true;
+}
