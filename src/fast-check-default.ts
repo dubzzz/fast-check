@@ -43,14 +43,14 @@ import { dedup, DedupValue } from './arbitrary/dedup';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Shrinkable } from './check/arbitrary/definition/Shrinkable';
 import { dictionary, DictionaryConstraints } from './arbitrary/dictionary';
-import { emailAddress } from './arbitrary/emailAddress';
+import { emailAddress, EmailAddressConstraints } from './arbitrary/emailAddress';
 import { double, DoubleConstraints } from './arbitrary/double';
 import { float, FloatConstraints } from './arbitrary/float';
 import { frequency, WeightedArbitrary, FrequencyValue, FrequencyContraints } from './arbitrary/frequency';
 import { compareBooleanFunc } from './arbitrary/compareBooleanFunc';
 import { compareFunc } from './arbitrary/compareFunc';
 import { func } from './arbitrary/func';
-import { domain } from './arbitrary/domain';
+import { domain, DomainConstraints } from './arbitrary/domain';
 import { integer, IntegerConstraints } from './arbitrary/integer';
 import { maxSafeInteger } from './arbitrary/maxSafeInteger';
 import { maxSafeNat } from './arbitrary/maxSafeNat';
@@ -91,9 +91,9 @@ import { tuple } from './arbitrary/tuple';
 import { uuid } from './arbitrary/uuid';
 import { uuidV } from './arbitrary/uuidV';
 import { webAuthority, WebAuthorityConstraints } from './arbitrary/webAuthority';
-import { webFragments } from './arbitrary/webFragments';
-import { webQueryParameters } from './arbitrary/webQueryParameters';
-import { webSegment } from './arbitrary/webSegment';
+import { webFragments, WebFragmentsConstraints } from './arbitrary/webFragments';
+import { webQueryParameters, WebQueryParametersConstraints } from './arbitrary/webQueryParameters';
+import { webSegment, WebSegmentConstraints } from './arbitrary/webSegment';
 import { webUrl, WebUrlConstraints } from './arbitrary/webUrl';
 
 import { AsyncCommand } from './check/model/command/AsyncCommand';
@@ -365,8 +365,10 @@ export {
   BigUintConstraints,
   CommandsContraints,
   DictionaryConstraints,
+  DomainConstraints,
   DoubleConstraints,
   DoubleNextConstraints,
+  EmailAddressConstraints,
   FalsyContraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
@@ -391,6 +393,9 @@ export {
   SubarrayConstraints,
   ShuffledSubarrayConstraints,
   WebAuthorityConstraints,
+  WebFragmentsConstraints,
+  WebQueryParametersConstraints,
+  WebSegmentConstraints,
   WebUrlConstraints,
   WeightedArbitrary,
   // produced values
