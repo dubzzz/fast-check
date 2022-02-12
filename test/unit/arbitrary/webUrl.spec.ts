@@ -1,6 +1,6 @@
 import fc from '../../../lib/fast-check';
 import { webUrl, WebUrlConstraints } from '../../../src/arbitrary/webUrl';
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { URL } from 'url';
 
 import {
@@ -11,6 +11,14 @@ import {
 } from './__test-helpers__/NextArbitraryAssertions';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
+
+import * as UriPathArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/UriPathArbitraryBuilder';
+import * as WebAuthorityMock from '../../../src/arbitrary/webAuthority';
+import * as WebFragmentsMock from '../../../src/arbitrary/webFragments';
+import * as WebQueryParametersMock from '../../../src/arbitrary/webQueryParameters';
+import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
+import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -19,26 +27,47 @@ function beforeEachHook() {
 }
 beforeEach(beforeEachHook);
 
+describe('webUrl', () => {
+  it('should always use the same size value for all its sub-arbitraries (except webAuthority when using its own)', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
+        // Arrange
+        const { instance } = fakeNextArbitrary();
+        const instanceOld = convertFromNext(instance);
+        const buildUriPathArbitrary = jest.spyOn(UriPathArbitraryBuilderMock, 'buildUriPathArbitrary');
+        buildUriPathArbitrary.mockReturnValue(instanceOld);
+        const webAuthority = jest.spyOn(WebAuthorityMock, 'webAuthority');
+        webAuthority.mockReturnValue(instanceOld);
+        const webFragments = jest.spyOn(WebFragmentsMock, 'webFragments');
+        webFragments.mockReturnValue(instanceOld);
+        const webQueryParameters = jest.spyOn(WebQueryParametersMock, 'webQueryParameters');
+        webQueryParameters.mockReturnValue(instanceOld);
+
+        // Act
+        withConfiguredGlobal(config, () => webUrl(constraints));
+
+        // Assert
+        expect(buildUriPathArbitrary).toHaveBeenCalledTimes(1); // always used
+        expect(webAuthority).toHaveBeenCalledTimes(1); // always used
+        const resolvedSizeForPath = buildUriPathArbitrary.mock.calls[0][0];
+        if (constraints.authoritySettings === undefined || constraints.authoritySettings === undefined) {
+          expect(webAuthority.mock.calls[0][0]!.size).toBe(resolvedSizeForPath);
+        }
+        if (constraints.withFragments) {
+          expect(webFragments.mock.calls[0][0]!.size).toBe(resolvedSizeForPath);
+        }
+        if (constraints.withQueryParameters) {
+          expect(webQueryParameters.mock.calls[0][0]!.size).toBe(resolvedSizeForPath);
+        }
+      })
+    );
+  });
+});
+
 describe('webUrl (integration)', () => {
   type Extra = WebUrlConstraints;
-  const extraParameters: fc.Arbitrary<Extra> = fc.record(
-    {
-      validSchemes: fc.constant(['ftp']),
-      authoritySettings: fc.record(
-        {
-          withIPv4: fc.boolean(),
-          withIPv6: fc.boolean(),
-          withIPv4Extended: fc.boolean(),
-          withUserInfo: fc.boolean(),
-          withPort: fc.boolean(),
-        },
-        { requiredKeys: [] }
-      ),
-      withQueryParameters: fc.boolean(),
-      withFragments: fc.boolean(),
-    },
-    { requiredKeys: [] }
-  );
+
+  const extraParametersBuilder = webUrlConstraintsBuilder;
 
   const isCorrect = (t: string) => {
     // Valid url given the specs defined by WHATWG URL Standard: https://url.spec.whatwg.org/
@@ -49,19 +78,21 @@ describe('webUrl (integration)', () => {
   const webUrlBuilder = (extra: Extra) => convertToNext(webUrl(extra));
 
   it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters });
+    assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters: extraParametersBuilder() });
   });
 
   it('should only produce correct values', () => {
-    assertProduceCorrectValues(webUrlBuilder, isCorrect);
+    assertProduceCorrectValues(webUrlBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
   });
 
   it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(webUrlBuilder, { extraParameters });
+    assertProduceValuesShrinkableWithoutContext(webUrlBuilder, { extraParameters: extraParametersBuilder(true) });
   });
 
   it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, { extraParameters });
+    assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, {
+      extraParameters: extraParametersBuilder(true),
+    });
   });
 
   it.each`
@@ -88,3 +119,28 @@ describe('webUrl (integration)', () => {
     expect(renderedTree).toMatchSnapshot();
   });
 });
+
+// Helpers
+
+function webUrlConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebUrlConstraints> {
+  return fc.record(
+    {
+      validSchemes: fc.constant(['ftp']),
+      authoritySettings: fc.record(
+        {
+          withIPv4: fc.boolean(),
+          withIPv6: fc.boolean(),
+          withIPv4Extended: fc.boolean(),
+          withUserInfo: fc.boolean(),
+          withPort: fc.boolean(),
+          size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+        },
+        { requiredKeys: [] }
+      ),
+      withQueryParameters: fc.boolean(),
+      withFragments: fc.boolean(),
+      size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+    },
+    { requiredKeys: [] }
+  );
+}
