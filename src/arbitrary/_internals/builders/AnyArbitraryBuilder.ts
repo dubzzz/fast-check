@@ -76,17 +76,17 @@ function prototypeLessOf(objectArb: Arbitrary<object>) {
 }
 
 /** @internal */
-function typedArray() {
+function typedArray(constraints: { maxLength: number; size: SizeForArbitrary }) {
   return oneof(
-    int8Array(),
-    uint8Array(),
-    uint8ClampedArray(),
-    int16Array(),
-    uint16Array(),
-    int32Array(),
-    uint32Array(),
-    float32Array(),
-    float64Array()
+    int8Array(constraints),
+    uint8Array(constraints),
+    uint8ClampedArray(constraints),
+    int16Array(constraints),
+    uint16Array(constraints),
+    int32Array(constraints),
+    uint32Array(constraints),
+    float32Array(constraints),
+    float64Array(constraints)
   );
 }
 
@@ -112,7 +112,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
       ...(constraints.withBigInt ? [bigInt()] : []),
       ...(constraints.withDate ? [date()] : []),
-      ...(constraints.withTypedArray ? [typedArray()] : []),
+      ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
       ...(constraints.withSparseArray ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size })] : [])
     ),
     // String keys
