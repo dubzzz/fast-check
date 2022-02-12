@@ -1271,17 +1271,30 @@ fc.uuidV(5)
 *&#8195;Signatures*
 
 - `fc.domain()`
+- `fc.domain({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
 ```js
 fc.domain()
+// Examples of generated values: "j6ib52zarmf.dec", "00.wk", "35b10n-w.7xe2.xai", "0.h6a4sfyde.ju", "c.cb"…
+
+fc.domain({size: '-1'})
+// Note: Generate smaller domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "ec.ob", "1nl.0it.oxt", "za.kjs", "3tu.d.bl", "rn.d0.kfx"…
+
+fc.domain({size: '+1'})
+// Note: Generate larger domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'medium'
 // Examples of generated values:
-// • "j6ib52zarm-s0pkuvhqm1mv0scq9ta1k7is18a6npwo09.8oylufs6xjggc-g5wx6pp7-n.ezkcany"
-// • "00cwuvaxlmcydtgdl2y5gq52nb-gochrfw7luhm3eak87xjmn34l4h-a.lynftw-jcilddpshg-fjbdvglnrklnjfv.1p9hkvkxac9odexa6220t2i2f5gtplj91iv3hcdf55tnysx2.syxfs0gon3vrv7r-n09qd-tvzkfj4vx-90is8a7857j77s04kkfuixb9fnuf.sm4qu34yox0j0l3g8rvkbi56h4.vlnwjdnlb"
-// • "35b10n-lu6vxe25muuwxcou2vg-ooho0ba-7fr9s-s2r9dzi-oph9tnb6ucc70l.l.amrqhh-q3yiac3zh83ktm-qz72oob.0x1dq7qgla1xttwxa4skn5o4ms6l6neuxm2wsoo4vsa14dixmyb290pvm3wek.hfju.fjxjzd"
-// • "0.h6a4sfyd67h8o-fyelfolcucqbzhhi.bbwz"
-// • "c.mrjkuzbj8blh-hr4bkyh4tb8x8d26fv5p10--k.7.z4.vl1mr8sc1z4sxu01uabesv6n217ct7a-lqpc3kd65ktx7yc9pl4t.axunkpjjhm"
+// • "e3lmceoiktylhwob3i097i07lbqe.g.ew2a5jzl4dm7y4.fx8-cc9.a8mp77soh3743x58n3bx85s-a8bkfnda8-bbnke3gjrr7ui57nqt.ez-ns69b5k6g8ugc1t7zvwsf0dzq1wywm7okkc1w6pt2.w.b5q7l242x-fcosehdxghwp1js5oykwo14t-7y5x.7gftao9au5u-ynym-yq027d9kc.iyxwwefae"
+// • "1n2983iaqbaqqez.j5exoz885-r97uinqna5rb0u35junfiav5p6q3xrw-ceribgdz.xdyncrdcuyzcbs"
+// • "z72rbhb9tjfoqq4whcj589.r94hzbjrbnrt2r8s0b3zu83fa0ysem2dbaf0quiow7d.7o-riknfagqdyaf-4dqibda.p.dn.5f.bs62gc.c.eg23f3h9n257004x7gt2xz1lb1nzfw5xz8yl0r4ddazujmdl-9bv6-kohtr.ye"
+// • "3twerafs1lktsebj9o0p2g6p2adbdu63vwsr7kw57-lkbeb3p7ef1383xqmej69.80h5rjtsk4n2c82ecntzsy1tt0-1udt3fsc2rdctnnu68w6x3re1yk9gp.6.6ah5085en0kni5y25swn0aoahmhknzf00.15czrzh4wu00hes7p4860s6ui8-htm5x4b-cquy9rbal6.4.fv"
+// • "rq42wt9mq67kg30r5iz55yh9.5g4zvgp29o.mrgob7gvx4r85rpwosrgr1dpw6dlvn6--pneig1.7co96i0-5d0zaw7thxb30jt9eyq6c67v7o0tnz4xhc8twkiyy46h.7tpqwpzihjluq4h4d0hwtcikxiyackva3xkk78.98b2cnk7yr-1kdxkq4vlikoly658f6d1j8ddrzo95.q739viaqbdk2u3etgcclbe4u7-kqnoe2i.ire"
 // • …
 ```
 </details>
@@ -1298,7 +1311,7 @@ fc.domain()
 *&#8195;Signatures*
 
 - `fc.webAuthority()`
-- `fc.webAuthority({withIPv4?, withIPv4Extended?, withIPv6?, withPort?})`
+- `fc.webAuthority({withIPv4?, withIPv4Extended?, withIPv6?, withPort?, withUserInfo?, size?})`
 
 *&#8195;with:*
 
@@ -1306,41 +1319,25 @@ fc.domain()
 - `withIPv4Extended?` — default: `false` — _enable ip v4 extended_
 - `withIPv6?` — default: `false` — _enable ip v6_
 - `withPort?` — default: `false` — _enable port_
+- `withUserInfo?` — default: `false` — _enable user info_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 
 *&#8195;Usages*
 
 ```js
 fc.webAuthority()
-// Examples of generated values:
-// • "qj5h7-5r4y6je1ud1a1fn2c82rugm5wlz9i191.0yuxnw1is1bgv5fk.lugkf3a-tqfd5qsghdv1e4f60126hb1hidj-d2nfa7.9z61dxxd7nf24.uz1h0fenwlozjjf0xfjhnoe4y6i1zxtszhay3h42bs1dl-ey6pgqayubhpzq.lzzvhweuqy"
-// • "5w6.mndtkwo"
-// • "qtabs88iidqfzfey5b8qmced.x.mc55c6.dcw"
-// • "vyd-xdhck5bu94xerf71iq4q6v13j1osnd-v5izrmp3-rw1.izhob"
-// • "5sr6j0ayq2eli26sdlgqhtwqrm2t8ytuzbzlqs2t4qoo5s0azspwub.wbvdc"
-// • …
+// Examples of generated values: "qj5h7-5.d6je1ud1x.ay", "5w6.mn", "qtabs87.4j6.zce", "vyd-xdhj.vu94x4.nl", "5sr6j0ayq2et.a.eur"…
 
 fc.webAuthority({
   withIPv4: true,
 })
-// Examples of generated values:
-// • "227.252.4.231"
-// • "6.1.143.3"
-// • "nlefeaoklaqquxvi7-epnuaz516se0f39.ddal91.yvtf"
-// • "1n.qe--bdd.5gpdpkz536c3gin7evv4i7x.roykrcngj"
-// • "6.3.255.158"
-// • …
+// Examples of generated values: "227.252.4.231", "6.1.143.3", "nlefeaoklaq7.ijm", "168w.uvr", "6.3.255.158"…
 
 fc.webAuthority({
   withIPv4Extended: true,
 })
-// Examples of generated values:
-// • "4dfi9d-6k09abpb8cq9n408e95eoo0kc3ccdyav.4.6z6vnw4zd2cpl-xv0v7b5h2v4ra791jq5ewdh31uazxv9d7bfk9lcwrgp7ef1.b2rb5j-b.ahkhfwtv568kod23qp8f1ks46m9.vvc"
-// • "0xa"
-// • "0xefebe5f3"
-// • "6abqd.eitf7h7ryad.rsqnyyq"
-// • "0345.077777767"
-// • …
+// Examples of generated values: "4dfi9d-5.qe5.odw", "0xa", "0xefebe5f3", "6abqd.nf", "0345.077777767"…
 
 fc.webAuthority({
   withIPv4: true,
@@ -1364,6 +1361,11 @@ fc.webAuthority({
 *&#8195;Signatures*
 
 - `fc.webFragments()`
+- `fc.webFragments({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1385,6 +1387,11 @@ fc.webFragments()
 *&#8195;Signatures*
 
 - `fc.webQueryParameters()`
+- `fc.webQueryParameters({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1404,6 +1411,11 @@ fc.webQueryParameters()
 *&#8195;Signatures*
 
 - `fc.webSegment()`
+- `fc.webSegment({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1425,7 +1437,7 @@ fc.webSegment()
 *&#8195;Signatures*
 
 - `fc.webUrl()`
-- `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?})`
+- `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?, size?})`
 
 *&#8195;with:*
 
@@ -1433,41 +1445,34 @@ fc.webSegment()
 - `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
 - `withFragments?` — default: `false` — _enable fragments_
 - `withQueryParameters?` — default: `false` — _enable query parameters_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
 ```js
 fc.webUrl()
-// Examples of generated values:
-// • "https://lb52zarm-s0pkuvg.qmv0scq9ta1k7b.ga6npwo0mhe1q.1fs6xjggc-g5wx6pp7-j7hz3te8r-br-54np53ybfy.bz"
-// • "https://4.7tdcg5n-obeffk7jn44axya-ceph-efc-f269vxed-at65-d9ddt8p7xsc3f.bstvvevsn//lY:./$pd%F4%89%87%89_Up/rBm)@pY/I!%F0%B4%85%B1ily/U/"
-// • "https://710n-lu6vxe25muuwxcou2vg-ooho0by.ar9s-s2r9dzi-oph9tnb6ucl.rzy/8g,%F4%8F%BF%AD=/,kLacg/=bI*Y%F1%90%B4%B1"
-// • "https://a9c-0.58hxfb.wzha/zf/%F2%B0%A8%9Aj$/mEM%F3%BD%B5%95l%F0%93%A9%AA-xV"
-// • "https://6uzbj8blh-hr4bkyh4tb8x8d26fv5p10--8dtgi0kt.aeeau//m7:f"
-// • …
+// Examples of generated values: "https://lo.vu/@", "https://4.kcl", "https://710n-lu1.s.zl", "https://a9c.nus/.q%F0%9B%A6%A1rkoLYs", "https://6uzbj4.dp/;"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
 })
-// Examples of generated values:
-// • "ftps://ld0fa.xn//5Hi_/3e%F2%B0%9E%A7ot/C9by:U)xN1/z/CHeC(/7p;l3A*91"
-// • "ftps://5an-v0m02mtwarjrov9wqg9.ymiexrru/G.K://2%F3%AA%83%B2zxOxe/4Z&%F4%8F%96%B6Cm%F1%A4%A6%8E%F3%9B%99%A2q/g/:&H+rH2)',"
-// • "ftp://f.ellpx/vxj3!B7g~@"
-// • "ftp://d3mhpc7vc8dvto3owf6.zb/m://p;fCqw=Pd/n*lA7_6W/+Fy_$"
-// • "ftps://4.4.5ae8f8.8.ele/7l/"
-// • …
+// Examples of generated values: "ftps://ld0fa.1k.ve/3Ne", "ftps://5ana.x02y.sv", "ftp://f.d.nl/1", "ftp://d3mhpf.xtb", "ftps://4.cn"…
 
 fc.webUrl({
   withFragments: true,
   withQueryParameters: true,
 })
 // Examples of generated values:
-// • "https://6teotdbg91olcdvqg4ag52gkm8sr4as1spvz-nhbmr4a26sf52bzkkk8u.6kwwftr726ju3bhgq1avtwyk6r5bdin2z48r5zq6.9pju0ee3g6x9nhyie7d3ltygys064g6exna7.xzde?w/2%F1%95%AE%A2ohWXU#xkE"
-// • "http://ntgafkj317vprx7x09flrvhkp1ejaxfg0fdrfc95.3pedp8hpyt-gq27kxjcluf9.tzlycwp/@Iq*1%F2%95%95%9Ece1?_*.G!5DY#pb"
-// • "http://e4.17v9z3bzcn6qf4wji93pr-vlt5yx2va6y1nldenbo527jkaevf.xw/A5w&ZuAW?f"
-// • "http://8.jmt.7obzakjfdip8f7-csuqjgp01eho0t8s6xuj3hqvekb7qf6q3i-d62.tjly5zq6lpbfnfddj7v50w04y07.8ir9322gginyti1omijbhrm0w2f.pw?I#:e/L*;f!%31/"
-// • "https://q7q52eele4de4whhd65j1o.tsqntvwx33f0g2a8a6oxjrbxfrpir63nqqah1ajor4p7.xed/%F2%A9%BD%93~l%F2%BA%B0%80,!/4b/cfGA%F1%8B%9A%8A/F452V:7_/V%F3%A8%99%BBDS%F3%AB%9A%99./5/%F2%A1%BE%AE~RZF0+2#h=t"
+// • "https://6teotdbx.wnc?c=#%F4%8F%BF%BBa%E4%B0%8E"
+// • "http://ntgafkj31t.8x7x09flrvhg.yd?,$#FVSy"
+// • "http://e4.17v9z34.xh/?e#;cbd?:b"
+// • "http://8.jef?o#GD"
+// • "https://qc.ieele4.fcg?P%F1%81%9C%A5N+0DN%F3%97%8C%85fX"
 // • …
+
+fc.webUrl({size: '-1'})
+// Note: Generate smaller urls compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "http://d.ue", "https://h.lp/%F3%A0%B4%9E", "http://64.e.tod/%F0%9F%AA%B3", "https://b.uq.xl", "https://g26.ben"…
 ```
 </details>
 
@@ -1483,18 +1488,27 @@ fc.webUrl({
 *&#8195;Signatures*
 
 - `fc.emailAddress()`
+- `fc.emailAddress({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
 ```js
 fc.emailAddress()
 // Examples of generated values:
-// • "e0f7||'5tq.h61k.opz+r*%^'k.w.cdddsv{'*@ynw1is1bgv5f3uma.8f.sexzzfzwci"
-// • "8d{cdr@sai9dcs9nubac3xbf7ubdfsatfbz4j4f5e4jeu45a7xd68r.pebpcbb"
-// • "|bi9r}1|.l.^biw8i39.~doz=|dlr@6rzgr91b2xy0wzhozfxspqtmlcjd5s8ox5oh-sn6xlh9b7v25zd9y2i.m0bwcr4bzzziyys8zngvysdhljtl-vp71we0.z66v.wqyli81h78ina879qnk.rbnj"
-// • "/22{9=.p&2.e#w-b%-'.%itdenn@55f7rf.5bec7cewavfdf7dtfvqd1gw81ug7ffyagl0mddo7.f.xwncyczdyd"
-// • "z*3y`3kt.b}4~6|&&xe.g.dfz=pp/@8bfcqosaswexc5dkacafemvn66d68gdr6aa5fvd8dt7t1bq.bm7qb.al"
+// • "e0f7||'5tqsh61k_opz+r*%^'k&wscdddsv{'*=f{1e2@azcddep.brd"
+// • "8d{cdrddb5a^}dc|g}#bacd0bfn0bdfoa}fbslf7f''#xe2-_aj?.&*9bi6-@du5h8ii.sf5vf2yd9khk.ub"
+// • "|bi9r}1|9lm^biw8i3.$~doz=|dlrlnl}~gfu+px0pr-{%*mh&*8efxj4`b6y}m@mada.bbv"
+// • "/22{9=mp&2?e#w-b%-'=%itdenn?8#_c1g_3c#=#0e~/_j^n&*@sflar.xk"
+// • "z*3y`3kteb}4~6|&&xepg{@7t-ze.m.iat"
 // • …
+
+fc.emailAddress({size: '-1'})
+// Note: Generate smaller email addresses compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "hn@s1v.i9.ws", "%@xo.s.iaw", "n@vq.mz", "kg.kg@5a.cz", "_.7@nr.i.hx"…
 ```
 </details>
 

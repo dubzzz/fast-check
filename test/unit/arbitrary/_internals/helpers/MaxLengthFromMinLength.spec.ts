@@ -5,6 +5,7 @@ import {
   maxLengthFromMinLength,
   MaxLengthUpperBound,
   relativeSizeToSize,
+  resolveSize,
 } from '../../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 import { withConfiguredGlobal } from '../../__test-helpers__/GlobalSettingsHelpers';
 import {
@@ -100,6 +101,33 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
             minLength,
             maxLength,
             specifiedMaxLength
+          );
+
+          // Assert
+          expect(computedLength).toBe(expectedLength);
+        }
+      )
+    );
+  });
+
+  it('should behave as its resolved Size when in unspecified max mode', () => {
+    fc.assert(
+      fc.property(
+        sizeRelatedGlobalConfigArb,
+        fc.oneof(sizeArb, relativeSizeArb),
+        fc.integer({ min: 0, max: MaxLengthUpperBound }),
+        fc.integer({ min: 0, max: MaxLengthUpperBound }),
+        (config, size, lengthA, lengthB) => {
+          // Arrange
+          const resolvedSize = withConfiguredGlobal(config, () => resolveSize(size));
+          const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
+
+          // Act
+          const computedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false)
+          );
+          const expectedLength = withConfiguredGlobal(config, () =>
+            maxGeneratedLengthFromSizeForArbitrary(resolvedSize, minLength, maxLength, false)
           );
 
           // Assert
