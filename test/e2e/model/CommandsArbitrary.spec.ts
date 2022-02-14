@@ -23,7 +23,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
               fc.constant(new OddCommand()),
               fc.nat().map((n) => new CheckLessThanCommand(n + 1)),
             ],
-            { disableReplayLog: true, maxCommands: 1000 }
+            { disableReplayLog: true, size: '+2' }
           ),
           (cmds) => {
             const setup = () => ({
