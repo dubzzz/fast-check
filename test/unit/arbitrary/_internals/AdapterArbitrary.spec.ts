@@ -128,7 +128,7 @@ describe('AdapterArbitrary', () => {
             const { instance: mrng } = fakeRandom();
             const adapterFunction = jest
               .fn<AdapterOutput<any>, [any]>()
-              .mockImplementation((v) => (v === vA ? adaptedA : v === vAA ? adaptedAA : adaptedAB));
+              .mockImplementation((v) => (Object.is(v, vA) ? adaptedA : Object.is(v, vAA) ? adaptedAA : adaptedAB));
 
             // Act
             const arb = adapter(instance, adapterFunction);
@@ -221,7 +221,15 @@ describe('AdapterArbitrary', () => {
             const adapterFunction = jest
               .fn<AdapterOutput<any>, [any]>()
               .mockImplementation((v) =>
-                v === vA ? adaptedA : v === vAA ? adaptedAA : v === vAB ? adaptedAB : v === vAC ? adaptedAC : adaptedABC
+                Object.is(v, vA)
+                  ? adaptedA
+                  : Object.is(v, vAA)
+                  ? adaptedAA
+                  : Object.is(v, vAB)
+                  ? adaptedAB
+                  : Object.is(v, vAC)
+                  ? adaptedAC
+                  : adaptedABC
               );
 
             // Act
@@ -278,7 +286,7 @@ describe('AdapterArbitrary', () => {
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
             const adapterFunction = jest
               .fn<AdapterOutput<any>, [any]>()
-              .mockImplementation((v) => (v === vAA ? adaptedAA : adaptedAB));
+              .mockImplementation((v) => (Object.is(v, vAA) ? adaptedAA : adaptedAB));
 
             // Act
             const arb = adapter(instance, adapterFunction);
@@ -311,7 +319,7 @@ describe('AdapterArbitrary', () => {
 function allUniques(...values: any[]): boolean {
   for (let i = 0; i !== values.length; ++i) {
     for (let j = 0; j !== values.length; ++j) {
-      if (i !== j && values[i] === values[j]) return false;
+      if (i !== j && Object.is(values[i], values[j])) return false;
     }
   }
   return true;
