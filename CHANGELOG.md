@@ -1,3 +1,45 @@
+# 2.22.0
+
+_Introduce the notion of `size` to avoid having to specify `maxLength` not being real constraints_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.22.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.21.0...v2.22.0)]
+
+## Features
+
+- ([PR#2652](https://github.com/dubzzz/fast-check/pull/2652)) Stop defaulting `maxLength` when not provided on arrays
+- ([PR#2664](https://github.com/dubzzz/fast-check/pull/2664)) Support shrink of any length with `stringOf`
+- ([PR#2666](https://github.com/dubzzz/fast-check/pull/2666)) Introduce the notion of `size`
+- ([PR#2668](https://github.com/dubzzz/fast-check/pull/2668)) Introduce the notion of relative `size`
+- ([PR#2669](https://github.com/dubzzz/fast-check/pull/2669)) Add ability to configure a base size
+- ([PR#2670](https://github.com/dubzzz/fast-check/pull/2670)) Add built-in support for `size` to `set`
+- ([PR#2671](https://github.com/dubzzz/fast-check/pull/2671)) Add ability to configure constraints on `dictionary`
+- ([PR#2673](https://github.com/dubzzz/fast-check/pull/2673)) Add support for size onto object arbitraries
+- ([PR#2672](https://github.com/dubzzz/fast-check/pull/2672)) Add support for size onto string arbitraries
+- ([PR#2690](https://github.com/dubzzz/fast-check/pull/2690)) Add support for `size` onto `sparseArray`
+- ([PR#2699](https://github.com/dubzzz/fast-check/pull/2699)) Forward size of `anything` to underlying `sparseArray`
+- ([PR#2701](https://github.com/dubzzz/fast-check/pull/2701)) Make ipV6 independent of size global settings
+- ([PR#2700](https://github.com/dubzzz/fast-check/pull/2700)) Add support for size on typed arrays
+- ([PR#2703](https://github.com/dubzzz/fast-check/pull/2703)) Add support for `size` onto `lorem`
+- ([PR#2712](https://github.com/dubzzz/fast-check/pull/2712)) Add support for sized webUrl and related
+- ([PR#2728](https://github.com/dubzzz/fast-check/pull/2728)) Add support for `size` on `commands`
+
+## Fixes
+
+- ([PR#2674](https://github.com/dubzzz/fast-check/pull/2674)) Bug: `fc.object` not applying constraint `maxKeys` at root
+- ([PR#2675](https://github.com/dubzzz/fast-check/pull/2675)) Bug: Don't shrink array with trailing hole when not supporting it
+- ([PR#2709](https://github.com/dubzzz/fast-check/pull/2709)) Bug: Cap the max generated length with max length
+- ([PR#2725](https://github.com/dubzzz/fast-check/pull/2725)) Bug: Pass length related constraints to internals in `anything`
+- ([PR#2727](https://github.com/dubzzz/fast-check/pull/2727)) Bug: Pass size to any key and default value in `anything`
+- ([PR#2639](https://github.com/dubzzz/fast-check/pull/2639)) CI: Properly define the tag when publishing versions
+- ([PR#2661](https://github.com/dubzzz/fast-check/pull/2661)) CI: Support fire emoji in changelog
+- ([PR#2660](https://github.com/dubzzz/fast-check/pull/2660)) Clean: Remove redundant computation in `sparseArray`
+- ([PR#2649](https://github.com/dubzzz/fast-check/pull/2649)) Refactor: Split maxLength into two facets inside the internal for arrays
+- ([PR#2676](https://github.com/dubzzz/fast-check/pull/2676)) Test: Add more tests around shrinker of `sparseArray`
+- ([PR#2702](https://github.com/dubzzz/fast-check/pull/2702)) Test: More stable test on StrictlyEqualSet
+- ([PR#2710](https://github.com/dubzzz/fast-check/pull/2710)) Test: Add more tests on size related helpers
+- ([PR#2729](https://github.com/dubzzz/fast-check/pull/2729)) Test: Stabilize tests of `adapter` by switching to `Object.is`
+
+---
+
 # 2.21.0
 
 _More performant arbitrary for arrays of unique values_
