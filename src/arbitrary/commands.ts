@@ -5,6 +5,10 @@ import { Command } from '../check/model/command/Command';
 import { ICommand } from '../check/model/command/ICommand';
 import { CommandsContraints } from '../check/model/commands/CommandsContraints';
 import { CommandsArbitrary } from './_internals/CommandsArbitrary';
+import {
+  maxGeneratedLengthFromSizeForArbitrary,
+  MaxLengthUpperBound,
+} from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}
@@ -89,10 +93,15 @@ function commands<Model extends object, Real, RunResult, CheckAsync extends bool
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
   const config =
     constraints == null ? {} : typeof constraints === 'number' ? { maxCommands: constraints } : constraints;
+  const size = config.size;
+  const maxCommands = config.maxCommands !== undefined ? config.maxCommands : MaxLengthUpperBound;
+  const specifiedMaxCommands = config.maxCommands !== undefined;
+  const maxGeneratedCommands = maxGeneratedLengthFromSizeForArbitrary(size, 0, maxCommands, specifiedMaxCommands);
   return convertFromNext(
     new CommandsArbitrary(
       commandArbs,
-      config.maxCommands != null ? config.maxCommands : 10,
+      maxGeneratedCommands,
+      maxCommands,
       config.replayPath != null ? config.replayPath : null,
       !!config.disableReplayLog
     )

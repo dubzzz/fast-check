@@ -10,7 +10,7 @@ import { Random } from '../../random/generator/Random';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Stream } from '../../stream/Stream';
 import { oneof } from '../oneof';
-import { IntegerArbitrary } from './IntegerArbitrary';
+import { restrictedIntegerArbitraryBuilder } from './builders/RestrictedIntegerArbitraryBuilder';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type CommandsArbitraryContext<Model extends object, Real, RunResult, CheckAsync extends boolean> = {
@@ -29,13 +29,14 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
   private replayPathPosition: number;
   constructor(
     commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
+    maxGeneratedCommands: number,
     maxCommands: number,
     readonly sourceReplayPath: string | null,
     readonly disableReplayLog: boolean
   ) {
     super();
     this.oneCommandArb = convertToNext(oneof(...commandArbs).map((c) => new CommandWrapper(c)));
-    this.lengthArb = new IntegerArbitrary(0, maxCommands);
+    this.lengthArb = convertToNext(restrictedIntegerArbitraryBuilder(0, maxGeneratedCommands, maxCommands));
     this.replayPath = []; // updated at first shrink
     this.replayPathPosition = 0;
   }
