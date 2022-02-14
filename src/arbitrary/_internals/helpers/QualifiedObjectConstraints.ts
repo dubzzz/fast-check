@@ -124,13 +124,13 @@ export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withB
   Pick<ObjectConstraints, 'size'>;
 
 /** @internal */
-function defaultValues(): Arbitrary<unknown>[] {
+function defaultValues(constraints: { size: SizeForArbitrary }): Arbitrary<unknown>[] {
   return [
     boolean(),
     maxSafeInteger(),
     double({ next: true }),
-    string(),
-    oneof(string(), constant(null), constant(undefined)),
+    string(constraints),
+    oneof(string(constraints), constant(null), constant(undefined)),
   ];
 }
 
@@ -152,10 +152,11 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
   function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
     return optionalValue !== undefined ? optionalValue : defaultValue;
   }
+  const valueConstraints = { size: settings.size };
   return {
-    key: orDefault(settings.key, string()),
+    key: orDefault(settings.key, string(valueConstraints)),
     values: boxArbitrariesIfNeeded(
-      orDefault(settings.values, defaultValues()),
+      orDefault(settings.values, defaultValues(valueConstraints)),
       orDefault(settings.withBoxedValues, false)
     ),
     depthFactor: orDefault(settings.depthFactor, 0),
