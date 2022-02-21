@@ -7,5 +7,5 @@ module.exports = {
   testMatch: ['<rootDir>/test/**/*.spec.ts'],
   setupFiles: [],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  transform: { '^.+\\.(t|j)sx?$': ['@swc/jest'] },
+  transform: { '^.+\\.(t|j)sx?$': ['esbuild-jest'] },
 };
