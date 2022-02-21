@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest';
 import { MaybeMocked, MockWithArgs } from 'ts-jest/dist/utils/testing';
 import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
@@ -20,7 +19,6 @@ export function fakeNextArbitraryClass<T = any>(): { Class: new () => NextArbitr
   const chain = jest.fn();
   const noShrink = jest.fn();
   const noBias = jest.fn();
-  mocked;
   class FakeNextArbitrary extends NextArbitrary<T> {
     generate = generate;
     canShrinkWithoutContext = canShrinkWithoutContext;
