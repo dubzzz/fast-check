@@ -164,7 +164,10 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
  * @remarks Since 0.0.7
  * @public
  */
-function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
+function assert<Ts>(
+  property: IRawProperty<Ts> & Exclude<IRawProperty<Ts>, IAsyncProperty<Ts> | IProperty<Ts>>,
+  params?: Parameters<Ts>
+): Promise<void> | void;
 /**
  * Run the property, throw in case of failure
  *
