@@ -154,7 +154,22 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
  * Run the property, throw in case of failure
  *
  * It can be called directly from describe/it blocks of Mocha.
- * It does not return anything in case of success.
+ * No meaningful results are produced in case of success.
+ *
+ * WARNING: Returns a promise to be awaited if the property is asynchronous
+ *
+ * @param property - Synchronous or asynchronous property to be checked
+ * @param params - Optional parameters to customize the execution
+ *
+ * @remarks Since 0.0.7
+ * @public
+ */
+function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
+/**
+ * Run the property, throw in case of failure
+ *
+ * It can be called directly from describe/it blocks of Mocha.
+ * No meaningful results are produced in case of success.
  *
  * WARNING: Has to be awaited
  *
@@ -169,7 +184,7 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
  * Run the property, throw in case of failure
  *
  * It can be called directly from describe/it blocks of Mocha.
- * It does not return anything in case of success.
+ * No meaningful results are produced in case of success.
  *
  * @param property - Synchronous property to be checked
  * @param params - Optional parameters to customize the execution
@@ -178,21 +193,6 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
  * @public
  */
 function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
-/**
- * Run the property, throw in case of failure
- *
- * It can be called directly from describe/it blocks of Mocha.
- * It does not return anything in case of success.
- *
- * WARNING: Has to be awaited if the property is asynchronous
- *
- * @param property - Property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @remarks Since 0.0.7
- * @public
- */
-function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(asyncReportRunDetails);
