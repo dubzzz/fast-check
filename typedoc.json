@@ -1,6 +1,7 @@
 {
-    "out": "docs",
-    "theme": "default",
-    "name": "API Reference | fast-check | Property based testing framework",
-    "readme": "none"
-  }
+  "out": "docs",
+  "name": "API Reference | fast-check | Property based testing framework",
+  "readme": "none",
+  "theme": "default",
+  "customCss": "documentation/css/typedoc.css"
+}
