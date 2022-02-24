@@ -25,7 +25,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
       - name: Install dependencies
@@ -47,7 +47,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: ${{matrix.node-version}}
       - name: Install dependencies
@@ -84,7 +84,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: ${{matrix.node-version}}
       - name: Install dependencies
@@ -106,7 +106,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
       - name: Check package score using skypack
@@ -121,7 +121,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
       - name: Install dependencies
@@ -149,7 +149,7 @@ jobs:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
       - name: Install dependencies
@@ -174,7 +174,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
       - name: Download production package
@@ -209,7 +209,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
       - name: Download production package
@@ -251,7 +251,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
       - name: Download production package
@@ -263,7 +263,7 @@ jobs:
         with:
           path: 'test/legacy/node-8'
       - name: Using Node v8.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '8.x'
       - name: Test test/legacy/node-8/
@@ -385,7 +385,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Using Node v16.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
