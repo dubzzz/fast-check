@@ -157,13 +157,7 @@ expectType<fc.Arbitrary<{ name: string }[]>>()(
 );
 expectType<fc.Arbitrary<{ name: string }[]>>()(
   fc.uniqueArray(fc.record({ name: fc.string() }), {
-    comparator: (itemA, itemB) => itemA.toto === itemB.toto,
-    selector: (item) => ({ toto: item.name }),
-  }),
-  'arrays of unique values using a custom comparison function and a selector'
-);
-expectType<fc.Arbitrary<{ name: string }[]>>()(
-  fc.uniqueArray(fc.record({ name: fc.string() }), {
+    // Ideally we should not need to explicitely type `itemA`, but so far it is needed
     comparator: (itemA: { toto: string }, itemB) => itemA.toto === itemB.toto,
     selector: (item) => ({ toto: item.name }),
   }),
