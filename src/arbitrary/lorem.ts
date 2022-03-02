@@ -11,6 +11,7 @@ import {
   wordsToSentenceUnmapperFor,
 } from './_internals/mappers/WordsToLorem';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
+import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link lorem}
@@ -38,6 +39,11 @@ export interface LoremConstraints {
    * @remarks Since 2.5.0
    */
   mode?: 'words' | 'sentences';
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
 }
 
 /**
@@ -268,6 +274,7 @@ function lorem(constraints: LoremConstraints): Arbitrary<string>;
 function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]): Arbitrary<string> {
   const maxWordsCount = typeof args[0] === 'object' ? args[0].maxCount : args[0];
   const sentencesMode = typeof args[0] === 'object' ? args[0].mode === 'sentences' : args[1];
+  const size = typeof args[0] === 'object' ? args[0].size : undefined;
   const maxCount = maxWordsCount !== undefined ? maxWordsCount : 5;
   if (maxCount < 1) {
     throw new Error(`lorem has to produce at least one word/sentence`);
@@ -275,19 +282,19 @@ function lorem(...args: [] | [number] | [number, boolean] | [LoremConstraints]):
   const wordArbitrary = loremWord();
   const wordArbitraryNext = convertToNext(wordArbitrary);
   if (sentencesMode) {
-    const sentence = convertToNext(array(wordArbitrary, { minLength: 1 })).map(
+    const sentence = convertToNext(array(wordArbitrary, { minLength: 1, size: 'small' })).map(
       wordsToSentenceMapper,
       wordsToSentenceUnmapperFor(wordArbitraryNext)
     );
     return convertFromNext(
-      convertToNext(array(convertFromNext(sentence), { minLength: 1, maxLength: maxCount })).map(
+      convertToNext(array(convertFromNext(sentence), { minLength: 1, maxLength: maxCount, size })).map(
         sentencesToParagraphMapper,
         sentencesToParagraphUnmapper
       )
     );
   } else {
     return convertFromNext(
-      convertToNext(array(wordArbitrary, { minLength: 1, maxLength: maxCount })).map(
+      convertToNext(array(wordArbitrary, { minLength: 1, maxLength: maxCount, size })).map(
         wordsToJoinedStringMapper,
         wordsToJoinedStringUnmapperFor(wordArbitraryNext)
       )

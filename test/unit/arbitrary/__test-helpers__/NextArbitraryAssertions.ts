@@ -4,6 +4,8 @@ import * as fc from '../../../../lib/fast-check';
 import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../../src/random/generator/Random';
+import { withConfiguredGlobal } from './GlobalSettingsHelpers';
+import { sizeArb } from './SizeHelpers';
 
 // Minimal requirements
 // > The following assertions are supposed to be fulfilled by any of the arbitraries
@@ -218,6 +220,36 @@ export function assertProduceSomeSpecificValues<T, U = never>(
     // no-op
   }
   expect(foundOne).toBe(true);
+}
+
+export function assertGenerateIndependentOfSize<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => NextArbitrary<T>,
+  options: {
+    isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
+    isEqualContext?: (c1: unknown, c2: unknown, extraParameters: U) => void | boolean;
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {}
+): void {
+  const {
+    extraParameters = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
+    isEqual,
+    isEqualContext,
+    assertParameters,
+  } = options;
+  assertGenerateEquivalentTo(
+    (extra) => arbitraryBuilder(extra.requested),
+    (extra) => withConfiguredGlobal(extra.global, () => arbitraryBuilder(extra.requested)),
+    {
+      extraParameters: fc.record({
+        requested: extraParameters,
+        global: fc.record({ defaultSizeToMaxWhenMaxSpecified: fc.boolean(), baseSize: sizeArb }, { requiredKeys: [] }),
+      }),
+      isEqual: isEqual !== undefined ? (a, b, extra) => isEqual(a, b, extra.requested) : undefined,
+      isEqualContext: isEqualContext !== undefined ? (a, b, extra) => isEqualContext(a, b, extra.requested) : undefined,
+      assertParameters,
+    }
+  );
 }
 
 // Various helpers

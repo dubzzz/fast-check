@@ -1,3 +1,83 @@
+# 2.22.0
+
+_Introduce the notion of `size` to avoid having to specify `maxLength` not being real constraints_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.22.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.21.0...v2.22.0)]
+
+## Features
+
+- ([PR#2652](https://github.com/dubzzz/fast-check/pull/2652)) Stop defaulting `maxLength` when not provided on arrays
+- ([PR#2664](https://github.com/dubzzz/fast-check/pull/2664)) Support shrink of any length with `stringOf`
+- ([PR#2666](https://github.com/dubzzz/fast-check/pull/2666)) Introduce the notion of `size`
+- ([PR#2668](https://github.com/dubzzz/fast-check/pull/2668)) Introduce the notion of relative `size`
+- ([PR#2669](https://github.com/dubzzz/fast-check/pull/2669)) Add ability to configure a base size
+- ([PR#2670](https://github.com/dubzzz/fast-check/pull/2670)) Add built-in support for `size` to `set`
+- ([PR#2671](https://github.com/dubzzz/fast-check/pull/2671)) Add ability to configure constraints on `dictionary`
+- ([PR#2673](https://github.com/dubzzz/fast-check/pull/2673)) Add support for size onto object arbitraries
+- ([PR#2672](https://github.com/dubzzz/fast-check/pull/2672)) Add support for size onto string arbitraries
+- ([PR#2690](https://github.com/dubzzz/fast-check/pull/2690)) Add support for `size` onto `sparseArray`
+- ([PR#2699](https://github.com/dubzzz/fast-check/pull/2699)) Forward size of `anything` to underlying `sparseArray`
+- ([PR#2701](https://github.com/dubzzz/fast-check/pull/2701)) Make ipV6 independent of size global settings
+- ([PR#2700](https://github.com/dubzzz/fast-check/pull/2700)) Add support for size on typed arrays
+- ([PR#2703](https://github.com/dubzzz/fast-check/pull/2703)) Add support for `size` onto `lorem`
+- ([PR#2712](https://github.com/dubzzz/fast-check/pull/2712)) Add support for sized webUrl and related
+- ([PR#2728](https://github.com/dubzzz/fast-check/pull/2728)) Add support for `size` on `commands`
+
+## Fixes
+
+- ([PR#2674](https://github.com/dubzzz/fast-check/pull/2674)) Bug: `fc.object` not applying constraint `maxKeys` at root
+- ([PR#2675](https://github.com/dubzzz/fast-check/pull/2675)) Bug: Don't shrink array with trailing hole when not supporting it
+- ([PR#2709](https://github.com/dubzzz/fast-check/pull/2709)) Bug: Cap the max generated length with max length
+- ([PR#2725](https://github.com/dubzzz/fast-check/pull/2725)) Bug: Pass length related constraints to internals in `anything`
+- ([PR#2727](https://github.com/dubzzz/fast-check/pull/2727)) Bug: Pass size to any key and default value in `anything`
+- ([PR#2639](https://github.com/dubzzz/fast-check/pull/2639)) CI: Properly define the tag when publishing versions
+- ([PR#2661](https://github.com/dubzzz/fast-check/pull/2661)) CI: Support fire emoji in changelog
+- ([PR#2660](https://github.com/dubzzz/fast-check/pull/2660)) Clean: Remove redundant computation in `sparseArray`
+- ([PR#2649](https://github.com/dubzzz/fast-check/pull/2649)) Refactor: Split maxLength into two facets inside the internal for arrays
+- ([PR#2676](https://github.com/dubzzz/fast-check/pull/2676)) Test: Add more tests around shrinker of `sparseArray`
+- ([PR#2702](https://github.com/dubzzz/fast-check/pull/2702)) Test: More stable test on StrictlyEqualSet
+- ([PR#2710](https://github.com/dubzzz/fast-check/pull/2710)) Test: Add more tests on size related helpers
+- ([PR#2729](https://github.com/dubzzz/fast-check/pull/2729)) Test: Stabilize tests of `adapter` by switching to `Object.is`
+
+---
+
+# 2.21.0
+
+_More performant arbitrary for arrays of unique values_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.21.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.20.0...v2.21.0)]
+
+## Features
+
+- ([PR#2600](https://github.com/dubzzz/fast-check/pull/2600)) Improve performance of `set`
+- ([PR#2601](https://github.com/dubzzz/fast-check/pull/2601)) Selector-based compare for `set`
+- ([PR#2602](https://github.com/dubzzz/fast-check/pull/2602)) Add types of operators for set
+- ([PR#2603](https://github.com/dubzzz/fast-check/pull/2603)) Switch to optimized compare of set internally
+- ([PR#2617](https://github.com/dubzzz/fast-check/pull/2617)) Use relevant comparator to build `anything`
+
+## Fixes
+
+- ([PR#2594](https://github.com/dubzzz/fast-check/pull/2594)) CI: More verbose "please debug"
+- ([PR#2595](https://github.com/dubzzz/fast-check/pull/2595)) CI: More generic "please merge"
+- ([PR#2597](https://github.com/dubzzz/fast-check/pull/2597)) CI: Rewrite "please merge" with JavaScript
+- ([PR#2598](https://github.com/dubzzz/fast-check/pull/2598)) CI: Wrong ref retrieval in "please merge"
+- ([PR#2599](https://github.com/dubzzz/fast-check/pull/2599)) CI: Nicer log in "please merge"
+- ([PR#2618](https://github.com/dubzzz/fast-check/pull/2618)) CI: Attempt to generate changelog from GitHub Actions
+- ([PR#2619](https://github.com/dubzzz/fast-check/pull/2619)) CI: Verbose fails when generating changelogs
+- ([PR#2620](https://github.com/dubzzz/fast-check/pull/2620)) CI: Attempt to fix action building changelog
+- ([PR#2621](https://github.com/dubzzz/fast-check/pull/2621)) CI: Do not quote changes for changelog computation
+- ([PR#2622](https://github.com/dubzzz/fast-check/pull/2622)) CI: Do not scope variables inside try/catch for changelog
+- ([PR#2623](https://github.com/dubzzz/fast-check/pull/2623)) CI: Report errors in logs instead of throwing when computing changelog
+- ([PR#2624](https://github.com/dubzzz/fast-check/pull/2624)) CI: Fix typo when building maintenance changelog
+- ([PR#2625](https://github.com/dubzzz/fast-check/pull/2625)) CI: Last little changes to adapt auto changelog script
+- ([PR#2626](https://github.com/dubzzz/fast-check/pull/2626)) CI: Add a publish version GitHub Action
+- ([PR#2629](https://github.com/dubzzz/fast-check/pull/2629)) CI: Extract the script generating changelog
+- ([PR#2630](https://github.com/dubzzz/fast-check/pull/2630)) CI: Create PRs with updated CHANGELOG.md from action
+- ([PR#2631](https://github.com/dubzzz/fast-check/pull/2631)) CI: Import from fs and not fs/promises for action
+- ([PR#2632](https://github.com/dubzzz/fast-check/pull/2632)) CI: Fill head with the name of the newly created branch
+- ([PR#2634](https://github.com/dubzzz/fast-check/pull/2634)) CI: Better naming for branches generated by actions
+- ([PR#2636](https://github.com/dubzzz/fast-check/pull/2636)) CI: Some refinements for commit name of actions
+
+---
+
 # 2.20.0
 
 _Some refinements on object-related arbitraries_

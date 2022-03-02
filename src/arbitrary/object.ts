@@ -11,7 +11,10 @@ export { ObjectConstraints };
 
 /** @internal */
 function objectInternal(constraints: QualifiedObjectConstraints): Arbitrary<Record<string, unknown>> {
-  return dictionary(constraints.key, anyArbitraryBuilder(constraints));
+  return dictionary(constraints.key, anyArbitraryBuilder(constraints), {
+    maxKeys: constraints.maxKeys,
+    size: constraints.size,
+  });
 }
 
 /**

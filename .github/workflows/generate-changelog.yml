@@ -1,0 +1,45 @@
+name: Generate Changelog
+
+on:
+  workflow_dispatch:
+    inputs:
+      nextVersion:
+        description: 'Next version (eg.: 2.20.0)'
+        required: true
+        type: string
+      shortDescription:
+        description: 'Short description'
+        required: true
+        type: string
+
+jobs:
+  generate_changelog:
+    name: "Generate Changelog"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Configure GIT
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Generate Changelog
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const nextVersion = process.env.NEXT_VERSION;
+            const shortDescription = process.env.SHORT_DESCRIPTION;
+            const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');
+            const {branchName, commitName, content, errors} = await run({nextVersion, shortDescription});
+            const owner = context.payload.repository.owner.login;
+            const repo = context.payload.repository.name;
+            const title = commitName;
+            const head = branchName;
+            const base = 'main';
+            const bodyErrors = errors.length !== 0 ? `Got the following errors:\n${errors.map(e => `- ${e}`).join('\n')}` : '';
+            const body = `Resulting CHANGELOG at: https://github.com/dubzzz/fast-check/blob/${branchName}/CHANGELOG.md\n\n${bodyErrors}`
+            await github.rest.pulls.create({owner, repo, title, head, base, body});
+        env:
+          NEXT_VERSION: ${{github.event.inputs.nextVersion}}
+          SHORT_DESCRIPTION: ${{github.event.inputs.shortDescription}}

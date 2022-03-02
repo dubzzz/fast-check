@@ -1,7 +1,12 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { NextArbitrary } from '../check/arbitrary/definition/NextArbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
-import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import {
+  MaxLengthUpperBound,
+  SizeForArbitrary,
+  maxGeneratedLengthFromSizeForArbitrary,
+} from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link array}
@@ -19,6 +24,29 @@ export interface ArrayConstraints {
    * @remarks Since 2.4.0
    */
   maxLength?: number;
+  /**
+   * Define how large the generated values should be (at max)
+   *
+   * When used in conjonction with `maxLength`, `size` will be used to define
+   * the upper bound of the generated array size while `maxLength` will be used
+   * to define and document the general maximal length allowed for this case.
+   *
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
+}
+
+/** @internal */
+function createArrayArbitrary<T>(
+  nextArb: NextArbitrary<T>,
+  size: SizeForArbitrary | undefined,
+  minLength: number,
+  maxLengthOrUnset: number | undefined
+): Arbitrary<T[]> {
+  const maxLength = maxLengthOrUnset !== undefined ? maxLengthOrUnset : MaxLengthUpperBound;
+  const specifiedMaxLength = maxLengthOrUnset !== undefined;
+  const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
+  return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength));
 }
 
 /**
@@ -70,17 +98,18 @@ function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints): Arbitrary<T
 function array<T>(arb: Arbitrary<T>, ...args: [] | [number] | [number, number] | [ArrayConstraints]): Arbitrary<T[]> {
   const nextArb = convertToNext(arb);
   // fc.array(arb)
-  if (args[0] === undefined) return convertFromNext(new ArrayArbitrary<T>(nextArb, 0, maxLengthFromMinLength(0)));
+  if (args[0] === undefined) {
+    return createArrayArbitrary(nextArb, undefined, 0, undefined); // no size, no maxLength
+  }
   // fc.array(arb, constraints)
   if (typeof args[0] === 'object') {
-    const minLength = args[0].minLength || 0;
-    const specifiedMaxLength = args[0].maxLength;
-    const maxLength = specifiedMaxLength !== undefined ? specifiedMaxLength : maxLengthFromMinLength(minLength);
-    return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength));
+    return createArrayArbitrary(nextArb, args[0].size, args[0].minLength || 0, args[0].maxLength);
   }
   // fc.array(arb, minLength, maxLength)
-  if (args[1] !== undefined) return convertFromNext(new ArrayArbitrary<T>(nextArb, args[0], args[1]));
+  if (args[1] !== undefined) {
+    return createArrayArbitrary(nextArb, undefined, args[0], args[1]); // no size
+  }
   // fc.array(arb, maxLength)
-  return convertFromNext(new ArrayArbitrary<T>(nextArb, 0, args[0]));
+  return createArrayArbitrary(nextArb, undefined, 0, args[0]); // no size
 }
 export { array };

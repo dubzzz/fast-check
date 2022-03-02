@@ -1,5 +1,5 @@
 import * as fc from '../../../lib/fast-check';
-import { dictionary } from '../../../src/arbitrary/dictionary';
+import { dictionary, DictionaryConstraints } from '../../../src/arbitrary/dictionary';
 
 import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
@@ -13,11 +13,17 @@ import {
 } from './__test-helpers__/NextArbitraryAssertions';
 
 describe('dictionary (integration)', () => {
-  type Extra = { keys: string[]; values: unknown[] };
+  type Extra = { keys: string[]; values: unknown[]; constraints?: DictionaryConstraints };
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     {
-      keys: fc.set(fc.string(), { minLength: 1 }),
+      keys: fc.set(fc.string(), { minLength: 35 }), // enough keys to respect constraints
       values: fc.set(fc.anything(), { minLength: 1 }),
+      constraints: fc
+        .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
+        .map(([min, gap, withMin, withMax]) => ({
+          minKeys: withMin ? min : undefined,
+          maxKeys: withMax ? min + gap : undefined,
+        })),
     },
     { requiredKeys: ['keys', 'values'] }
   );
@@ -32,12 +38,21 @@ describe('dictionary (integration)', () => {
       if (Number.isNaN(v)) expect(extra.values.includes(v)).toBe(true);
       else expect(extra.values).toContain(v); // exact same value (not a copy)
     }
+    if (extra.constraints !== undefined) {
+      if (extra.constraints.minKeys !== undefined) {
+        expect(Object.keys(value).length).toBeGreaterThanOrEqual(extra.constraints.minKeys);
+      }
+      if (extra.constraints.maxKeys !== undefined) {
+        expect(Object.keys(value).length).toBeLessThanOrEqual(extra.constraints.maxKeys);
+      }
+    }
   };
 
   const dictionaryBuilder = (extra: Extra) => {
     const keyArb = convertFromNext(new FromValuesArbitrary(extra.keys));
     const valueArb = convertFromNext(new FromValuesArbitrary(extra.values));
-    return convertToNext(dictionary(keyArb, valueArb));
+    const constraints = extra.constraints;
+    return convertToNext(dictionary(keyArb, valueArb, constraints));
   };
 
   it('should produce the same values given the same seed', () => {

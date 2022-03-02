@@ -12,6 +12,7 @@ import * as ArrayMock from '../../../src/arbitrary/array';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -101,6 +102,35 @@ describe('base64String', () => {
         }
       )
     ));
+
+  it('should always forward constraints on size to the underlying arbitrary when provided', () =>
+    fc.assert(
+      fc.property(
+        fc.nat({ max: 5 }),
+        fc.integer({ min: 3, max: 30 }),
+        fc.boolean(),
+        fc.boolean(),
+        sizeForArbitraryArb,
+        (min, gap, withMin, withMax, size) => {
+          // Arrange
+          const constraints = {
+            minLength: withMin ? min : undefined,
+            maxLength: withMax ? min + gap : undefined,
+            size,
+          };
+          const array = jest.spyOn(ArrayMock, 'array');
+          const { instance: arrayInstance, map } = fakeNextArbitrary();
+          array.mockReturnValue(convertFromNext(arrayInstance));
+          map.mockReturnValue(arrayInstance); // fake map
+
+          // Act
+          base64String(constraints);
+
+          // Assert
+          expect(array).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ size }));
+        }
+      )
+    ));
 });
 
 describe('base64String (integration)', () => {
@@ -147,9 +177,25 @@ describe('base64String (integration)', () => {
   // For instance: 'abcde' will be mapped to 'abcd', with default shrink it will try to shrink from 'abcde'. With context-less one it will start from 'abcd'.
 
   it.each`
+    source                               | constraints
+    ${'0123ABC==' /* invalid base 64 */} | ${{}}
+    ${'AB==' /* not large enough */}     | ${{ minLength: 5 }}
+    ${'0123AB==' /* too large */}        | ${{ maxLength: 7 }}
+  `('should not be able to generate $source with fc.base64String($constraints)', ({ source, constraints }) => {
+    // Arrange / Act
+    const arb = convertToNext(base64String(constraints));
+    const out = arb.canShrinkWithoutContext(source);
+
+    // Assert
+    expect(out).toBe(false);
+  });
+
+  it.each`
     rawValue
     ${'ABCD'}
     ${'0123AB=='}
+    ${'01230123012301230123AB=='}
+    ${'ABCD'.repeat(50)}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = convertToNext(base64String());

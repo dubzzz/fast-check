@@ -50,6 +50,8 @@ fc.assert(
   - [More](#more)
 - [Others](#others)
 - [Going further?](#going-further)
+  - [Size explained](#size-explained)
+  - [Various links](#various-links)
 
 ## Boolean
 
@@ -668,14 +670,15 @@ fc.fullUnicode()
 *&#8195;Signatures*
 
 - `fc.hexaString()`
-- `fc.hexaString({minLength?, maxLength?})`
+- `fc.hexaString({minLength?, maxLength?, size?})`
 - _`fc.hexaString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.hexaString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -709,14 +712,15 @@ fc.hexaString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.base64String()`
-- `fc.base64String({minLength?, maxLength?})`
+- `fc.base64String({minLength?, maxLength?, size?})`
 - _`fc.base64String(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.base64String(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included if multiple of 4)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included if multiple of 4)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 _When using `minLength` and `maxLength` make sure that they are compatible together. For instance: asking for `minLength=2` and `maxLength=3` is impossible for base64 strings as produced by the framework_
 
@@ -724,7 +728,7 @@ _When using `minLength` and `maxLength` make sure that they are compatible toget
 
 ```js
 fc.base64String()
-// Examples of generated values: "rgk=", "BI==", "D/Ev", "xB==", "VF=="…
+// Examples of generated values: "rgk=", "BI==", "RD/Evefg", "xBE=", "FoRD"…
 
 fc.base64String({maxLength: 8})
 // Note: Any base64 string containing up to 8 (included) characters
@@ -732,7 +736,7 @@ fc.base64String({maxLength: 8})
 
 fc.base64String({minLength: 8})
 // Note: Any base64 string containing at least 8 (included) characters
-// Examples of generated values: "ES8A9c87", "7BPvpeDlf2BE", "7WXEBForaL==", "YycWxDA+KMsIEQg0B6MC9ME=", "CFx/rD9F6AI="…
+// Examples of generated values: "ES8A9c87", "7BPvpeDlf2BE", "7WXEBForaLaj2H8mGc==", "YycWxDA+KMsIEQg0B6M=", "CFx/rD9F6AI="…
 
 fc.base64String({minLength: 4, maxLength: 12})
 // Note: Any base64 string containing between 4 (included) and 12 (included) characters
@@ -750,14 +754,15 @@ fc.base64String({minLength: 4, maxLength: 12})
 *&#8195;Signatures*
 
 - `fc.string()`
-- `fc.string({minLength?, maxLength?})`
+- `fc.string({minLength?, maxLength?, size?})`
 - _`fc.string(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.string(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -789,14 +794,15 @@ fc.string({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.asciiString()`
-- `fc.asciiString({minLength?, maxLength?})`
+- `fc.asciiString({minLength?, maxLength?, size?})`
 - _`fc.asciiString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.asciiString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -828,14 +834,15 @@ fc.asciiString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.unicodeString()`
-- `fc.unicodeString({minLength?, maxLength?})`
+- `fc.unicodeString({minLength?, maxLength?, size?})`
 - _`fc.unicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.unicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -869,14 +876,15 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.string16bits()`
-- `fc.string16bits({minLength?, maxLength?})`
+- `fc.string16bits({minLength?, maxLength?, size?})`
 - _`fc.string16bits(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.string16bits(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -908,14 +916,15 @@ fc.string16bits({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.fullUnicodeString()`
-- `fc.fullUnicodeString({minLength?, maxLength?})`
+- `fc.fullUnicodeString({minLength?, maxLength?, size?})`
 - _`fc.fullUnicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.fullUnicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 _Be aware that the length is considered in terms of the number of glyphs in the string and not the number of UTF-16 characters. As a consequence `generatedString.length` might be greater than the asked maximal length but `[...generatedString].length` will not and always be in the required range_
 
@@ -949,7 +958,7 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 *&#8195;Signatures*
 
 - `fc.stringOf(charArb)`
-- `fc.stringOf(charArb, {minLength?, maxLength?})`
+- `fc.stringOf(charArb, {minLength?, maxLength?, size?})`
 - _`fc.stringOf(charArb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.stringOf(charArb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -957,7 +966,8 @@ fc.fullUnicodeString({minLength: 4, maxLength: 6})
 
 - `charArb` — _arbitrary able to generate random strings (possibly multiple characters)_
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal number of characters (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1095,7 +1105,7 @@ fc.unicodeJson({depthFactor: 0.1})
 *&#8195;Signatures*
 
 - `fc.lorem()`
-- `fc.lorem({maxCount?, mode?})`
+- `fc.lorem({maxCount?, mode?, size?})`
 - _`fc.lorem(maxWordsCount)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.lorem(maxCount, sentenceMode)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -1105,6 +1115,7 @@ fc.unicodeJson({depthFactor: 0.1})
 - `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
 - `maxWordsCount?` — _maximal number of words to produce_
 - `sentenceMode?` — default: `false` — _enable sentence mode_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 _Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
 
@@ -1260,17 +1271,30 @@ fc.uuidV(5)
 *&#8195;Signatures*
 
 - `fc.domain()`
+- `fc.domain({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
 ```js
 fc.domain()
+// Examples of generated values: "j6ib52zarmf.dec", "00.wk", "35b10n-w.7xe2.xai", "0.h6a4sfyde.ju", "c.cb"…
+
+fc.domain({size: '-1'})
+// Note: Generate smaller domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "ec.ob", "1nl.0it.oxt", "za.kjs", "3tu.d.bl", "rn.d0.kfx"…
+
+fc.domain({size: '+1'})
+// Note: Generate larger domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'medium'
 // Examples of generated values:
-// • "j6ib52zarm-s0pkuvhqm1mv0scq9ta1k7is18a6npwo09.8oylufs6xjggc-g5wx6pp7-n.ezkcany"
-// • "00cwuvaxlmcydtgdl2y5gq52nb-gochrfw7luhm3eak87xjmn34l4h-a.lynftw-jcilddpshg-fjbdvglnrklnjfv.1p9hkvkxac9odexa6220t2i2f5gtplj91iv3hcdf55tnysx2.syxfs0gon3vrv7r-n09qd-tvzkfj4vx-90is8a7857j77s04kkfuixb9fnuf.sm4qu34yox0j0l3g8rvkbi56h4.vlnwjdnlb"
-// • "35b10n-lu6vxe25muuwxcou2vg-ooho0ba-7fr9s-s2r9dzi-oph9tnb6ucc70l.l.amrqhh-q3yiac3zh83ktm-qz72oob.0x1dq7qgla1xttwxa4skn5o4ms6l6neuxm2wsoo4vsa14dixmyb290pvm3wek.hfju.fjxjzd"
-// • "0.h6a4sfyd67h8o-fyelfolcucqbzhhi.bbwz"
-// • "c.mrjkuzbj8blh-hr4bkyh4tb8x8d26fv5p10--k.7.z4.vl1mr8sc1z4sxu01uabesv6n217ct7a-lqpc3kd65ktx7yc9pl4t.axunkpjjhm"
+// • "e3lmceoiktylhwob3i097i07lbqe.g.ew2a5jzl4dm7y4.fx8-cc9.a8mp77soh3743x58n3bx85s-a8bkfnda8-bbnke3gjrr7ui57nqt.ez-ns69b5k6g8ugc1t7zvwsf0dzq1wywm7okkc1w6pt2.w.b5q7l242x-fcosehdxghwp1js5oykwo14t-7y5x.7gftao9au5u-ynym-yq027d9kc.iyxwwefae"
+// • "1n2983iaqbaqqez.j5exoz885-r97uinqna5rb0u35junfiav5p6q3xrw-ceribgdz.xdyncrdcuyzcbs"
+// • "z72rbhb9tjfoqq4whcj589.r94hzbjrbnrt2r8s0b3zu83fa0ysem2dbaf0quiow7d.7o-riknfagqdyaf-4dqibda.p.dn.5f.bs62gc.c.eg23f3h9n257004x7gt2xz1lb1nzfw5xz8yl0r4ddazujmdl-9bv6-kohtr.ye"
+// • "3twerafs1lktsebj9o0p2g6p2adbdu63vwsr7kw57-lkbeb3p7ef1383xqmej69.80h5rjtsk4n2c82ecntzsy1tt0-1udt3fsc2rdctnnu68w6x3re1yk9gp.6.6ah5085en0kni5y25swn0aoahmhknzf00.15czrzh4wu00hes7p4860s6ui8-htm5x4b-cquy9rbal6.4.fv"
+// • "rq42wt9mq67kg30r5iz55yh9.5g4zvgp29o.mrgob7gvx4r85rpwosrgr1dpw6dlvn6--pneig1.7co96i0-5d0zaw7thxb30jt9eyq6c67v7o0tnz4xhc8twkiyy46h.7tpqwpzihjluq4h4d0hwtcikxiyackva3xkk78.98b2cnk7yr-1kdxkq4vlikoly658f6d1j8ddrzo95.q739viaqbdk2u3etgcclbe4u7-kqnoe2i.ire"
 // • …
 ```
 </details>
@@ -1287,7 +1311,7 @@ fc.domain()
 *&#8195;Signatures*
 
 - `fc.webAuthority()`
-- `fc.webAuthority({withIPv4?, withIPv4Extended?, withIPv6?, withPort?})`
+- `fc.webAuthority({withIPv4?, withIPv4Extended?, withIPv6?, withPort?, withUserInfo?, size?})`
 
 *&#8195;with:*
 
@@ -1295,41 +1319,25 @@ fc.domain()
 - `withIPv4Extended?` — default: `false` — _enable ip v4 extended_
 - `withIPv6?` — default: `false` — _enable ip v6_
 - `withPort?` — default: `false` — _enable port_
+- `withUserInfo?` — default: `false` — _enable user info_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 
 *&#8195;Usages*
 
 ```js
 fc.webAuthority()
-// Examples of generated values:
-// • "qj5h7-5r4y6je1ud1a1fn2c82rugm5wlz9i191.0yuxnw1is1bgv5fk.lugkf3a-tqfd5qsghdv1e4f60126hb1hidj-d2nfa7.9z61dxxd7nf24.uz1h0fenwlozjjf0xfjhnoe4y6i1zxtszhay3h42bs1dl-ey6pgqayubhpzq.lzzvhweuqy"
-// • "5w6.mndtkwo"
-// • "qtabs88iidqfzfey5b8qmced.x.mc55c6.dcw"
-// • "vyd-xdhck5bu94xerf71iq4q6v13j1osnd-v5izrmp3-rw1.izhob"
-// • "5sr6j0ayq2eli26sdlgqhtwqrm2t8ytuzbzlqs2t4qoo5s0azspwub.wbvdc"
-// • …
+// Examples of generated values: "qj5h7-5.d6je1ud1x.ay", "5w6.mn", "qtabs87.4j6.zce", "vyd-xdhj.vu94x4.nl", "5sr6j0ayq2et.a.eur"…
 
 fc.webAuthority({
   withIPv4: true,
 })
-// Examples of generated values:
-// • "227.252.4.231"
-// • "6.1.143.3"
-// • "nlefeaoklaqquxvi7-epnuaz516se0f39.ddal91.yvtf"
-// • "1n.qe--bdd.5gpdpkz536c3gin7evv4i7x.roykrcngj"
-// • "6.3.255.158"
-// • …
+// Examples of generated values: "227.252.4.231", "6.1.143.3", "nlefeaoklaq7.ijm", "168w.uvr", "6.3.255.158"…
 
 fc.webAuthority({
   withIPv4Extended: true,
 })
-// Examples of generated values:
-// • "4dfi9d-6k09abpb8cq9n408e95eoo0kc3ccdyav.4.6z6vnw4zd2cpl-xv0v7b5h2v4ra791jq5ewdh31uazxv9d7bfk9lcwrgp7ef1.b2rb5j-b.ahkhfwtv568kod23qp8f1ks46m9.vvc"
-// • "0xa"
-// • "0xefebe5f3"
-// • "6abqd.eitf7h7ryad.rsqnyyq"
-// • "0345.077777767"
-// • …
+// Examples of generated values: "4dfi9d-5.qe5.odw", "0xa", "0xefebe5f3", "6abqd.nf", "0345.077777767"…
 
 fc.webAuthority({
   withIPv4: true,
@@ -1353,6 +1361,11 @@ fc.webAuthority({
 *&#8195;Signatures*
 
 - `fc.webFragments()`
+- `fc.webFragments({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1374,6 +1387,11 @@ fc.webFragments()
 *&#8195;Signatures*
 
 - `fc.webQueryParameters()`
+- `fc.webQueryParameters({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1393,6 +1411,11 @@ fc.webQueryParameters()
 *&#8195;Signatures*
 
 - `fc.webSegment()`
+- `fc.webSegment({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1414,7 +1437,7 @@ fc.webSegment()
 *&#8195;Signatures*
 
 - `fc.webUrl()`
-- `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?})`
+- `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?, size?})`
 
 *&#8195;with:*
 
@@ -1422,41 +1445,34 @@ fc.webSegment()
 - `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
 - `withFragments?` — default: `false` — _enable fragments_
 - `withQueryParameters?` — default: `false` — _enable query parameters_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
 ```js
 fc.webUrl()
-// Examples of generated values:
-// • "https://lb52zarm-s0pkuvg.qmv0scq9ta1k7b.ga6npwo0mhe1q.1fs6xjggc-g5wx6pp7-j7hz3te8r-br-54np53ybfy.bz"
-// • "https://4.7tdcg5n-obeffk7jn44axya-ceph-efc-f269vxed-at65-d9ddt8p7xsc3f.bstvvevsn//lY:./$pd%F4%89%87%89_Up/rBm)@pY/I!%F0%B4%85%B1ily/U/"
-// • "https://710n-lu6vxe25muuwxcou2vg-ooho0by.ar9s-s2r9dzi-oph9tnb6ucl.rzy/8g,%F4%8F%BF%AD=/,kLacg/=bI*Y%F1%90%B4%B1"
-// • "https://a9c-0.58hxfb.wzha/zf/%F2%B0%A8%9Aj$/mEM%F3%BD%B5%95l%F0%93%A9%AA-xV"
-// • "https://6uzbj8blh-hr4bkyh4tb8x8d26fv5p10--8dtgi0kt.aeeau//m7:f"
-// • …
+// Examples of generated values: "https://lo.vu/@", "https://4.kcl", "https://710n-lu1.s.zl", "https://a9c.nus/.q%F0%9B%A6%A1rkoLYs", "https://6uzbj4.dp/;"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
 })
-// Examples of generated values:
-// • "ftps://ld0fa.xn//5Hi_/3e%F2%B0%9E%A7ot/C9by:U)xN1/z/CHeC(/7p;l3A*91"
-// • "ftps://5an-v0m02mtwarjrov9wqg9.ymiexrru/G.K://2%F3%AA%83%B2zxOxe/4Z&%F4%8F%96%B6Cm%F1%A4%A6%8E%F3%9B%99%A2q/g/:&H+rH2)',"
-// • "ftp://f.ellpx/vxj3!B7g~@"
-// • "ftp://d3mhpc7vc8dvto3owf6.zb/m://p;fCqw=Pd/n*lA7_6W/+Fy_$"
-// • "ftps://4.4.5ae8f8.8.ele/7l/"
-// • …
+// Examples of generated values: "ftps://ld0fa.1k.ve/3Ne", "ftps://5ana.x02y.sv", "ftp://f.d.nl/1", "ftp://d3mhpf.xtb", "ftps://4.cn"…
 
 fc.webUrl({
   withFragments: true,
   withQueryParameters: true,
 })
 // Examples of generated values:
-// • "https://6teotdbg91olcdvqg4ag52gkm8sr4as1spvz-nhbmr4a26sf52bzkkk8u.6kwwftr726ju3bhgq1avtwyk6r5bdin2z48r5zq6.9pju0ee3g6x9nhyie7d3ltygys064g6exna7.xzde?w/2%F1%95%AE%A2ohWXU#xkE"
-// • "http://ntgafkj317vprx7x09flrvhkp1ejaxfg0fdrfc95.3pedp8hpyt-gq27kxjcluf9.tzlycwp/@Iq*1%F2%95%95%9Ece1?_*.G!5DY#pb"
-// • "http://e4.17v9z3bzcn6qf4wji93pr-vlt5yx2va6y1nldenbo527jkaevf.xw/A5w&ZuAW?f"
-// • "http://8.jmt.7obzakjfdip8f7-csuqjgp01eho0t8s6xuj3hqvekb7qf6q3i-d62.tjly5zq6lpbfnfddj7v50w04y07.8ir9322gginyti1omijbhrm0w2f.pw?I#:e/L*;f!%31/"
-// • "https://q7q52eele4de4whhd65j1o.tsqntvwx33f0g2a8a6oxjrbxfrpir63nqqah1ajor4p7.xed/%F2%A9%BD%93~l%F2%BA%B0%80,!/4b/cfGA%F1%8B%9A%8A/F452V:7_/V%F3%A8%99%BBDS%F3%AB%9A%99./5/%F2%A1%BE%AE~RZF0+2#h=t"
+// • "https://6teotdbx.wnc?c=#%F4%8F%BF%BBa%E4%B0%8E"
+// • "http://ntgafkj31t.8x7x09flrvhg.yd?,$#FVSy"
+// • "http://e4.17v9z34.xh/?e#;cbd?:b"
+// • "http://8.jef?o#GD"
+// • "https://qc.ieele4.fcg?P%F1%81%9C%A5N+0DN%F3%97%8C%85fX"
 // • …
+
+fc.webUrl({size: '-1'})
+// Note: Generate smaller urls compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "http://d.ue", "https://h.lp/%F3%A0%B4%9E", "http://64.e.tod/%F0%9F%AA%B3", "https://b.uq.xl", "https://g26.ben"…
 ```
 </details>
 
@@ -1472,18 +1488,27 @@ fc.webUrl({
 *&#8195;Signatures*
 
 - `fc.emailAddress()`
+- `fc.emailAddress({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
 ```js
 fc.emailAddress()
 // Examples of generated values:
-// • "e0f7||'5tq.h61k.opz+r*%^'k.w.cdddsv{'*@ynw1is1bgv5f3uma.8f.sexzzfzwci"
-// • "8d{cdr@sai9dcs9nubac3xbf7ubdfsatfbz4j4f5e4jeu45a7xd68r.pebpcbb"
-// • "|bi9r}1|.l.^biw8i39.~doz=|dlr@6rzgr91b2xy0wzhozfxspqtmlcjd5s8ox5oh-sn6xlh9b7v25zd9y2i.m0bwcr4bzzziyys8zngvysdhljtl-vp71we0.z66v.wqyli81h78ina879qnk.rbnj"
-// • "/22{9=.p&2.e#w-b%-'.%itdenn@55f7rf.5bec7cewavfdf7dtfvqd1gw81ug7ffyagl0mddo7.f.xwncyczdyd"
-// • "z*3y`3kt.b}4~6|&&xe.g.dfz=pp/@8bfcqosaswexc5dkacafemvn66d68gdr6aa5fvd8dt7t1bq.bm7qb.al"
+// • "e0f7||'5tqsh61k_opz+r*%^'k&wscdddsv{'*=f{1e2@azcddep.brd"
+// • "8d{cdrddb5a^}dc|g}#bacd0bfn0bdfoa}fbslf7f''#xe2-_aj?.&*9bi6-@du5h8ii.sf5vf2yd9khk.ub"
+// • "|bi9r}1|9lm^biw8i3.$~doz=|dlrlnl}~gfu+px0pr-{%*mh&*8efxj4`b6y}m@mada.bbv"
+// • "/22{9=mp&2?e#w-b%-'=%itdenn?8#_c1g_3c#=#0e~/_j^n&*@sflar.xk"
+// • "z*3y`3kteb}4~6|&&xepg{@7t-ze.m.iat"
 // • …
+
+fc.emailAddress({size: '-1'})
+// Note: Generate smaller email addresses compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
+// Examples of generated values: "hn@s1v.i9.ws", "%@xo.s.iaw", "n@vq.mz", "kg.kg@5a.cz", "_.7@nr.i.hx"…
 ```
 </details>
 
@@ -1614,14 +1639,15 @@ fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T2
 *&#8195;Signatures*
 
 - `fc.int8Array()`
-- `fc.int8Array({min?, max?, minLength?, maxLength?})`
+- `fc.int8Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
 - `min?` — default: `-128` — _minimal value (included)_
 - `max?` — default: `127` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1656,14 +1682,15 @@ fc.int8Array({min: 0, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint8Array()`
-- `fc.uint8Array({min?, max?, minLength?, maxLength?})`
+- `fc.uint8Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1698,14 +1725,15 @@ fc.uint8Array({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint8ClampedArray()`
-- `fc.uint8ClampedArray({min?, max?, minLength?, maxLength?})`
+- `fc.uint8ClampedArray({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1740,14 +1768,15 @@ fc.uint8ClampedArray({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.int16Array()`
-- `fc.int16Array({min?, max?, minLength?, maxLength?})`
+- `fc.int16Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
 - `min?` — default: `-32768` — _minimal value (included)_
 - `max?` — default: `32767` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1782,14 +1811,15 @@ fc.int16Array({min: 0, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint16Array()`
-- `fc.uint16Array({min?, max?, minLength?, maxLength?})`
+- `fc.uint16Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `65535` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1824,14 +1854,15 @@ fc.uint16Array({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.int32Array()`
-- `fc.int32Array({min?, max?, minLength?, maxLength?})`
+- `fc.int32Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
 - `min?` — default: `-0x80000000` — _minimal value (included)_
 - `max?` — default: `0x7fffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1866,14 +1897,15 @@ fc.int32Array({min: 0, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.uint32Array()`
-- `fc.uint32Array({min?, max?, minLength?, maxLength?})`
+- `fc.uint32Array({min?, max?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `0xffffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1908,7 +1940,7 @@ fc.uint32Array({max: 42, minLength: 1})
 *&#8195;Signatures*
 
 - `fc.float32Array()`
-- `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+- `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1917,7 +1949,8 @@ fc.uint32Array({max: 42, minLength: 1})
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -1952,7 +1985,7 @@ fc.float32Array({minLength: 1})
 *&#8195;Signatures*
 
 - `fc.float64Array()`
-- `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?})`
+- `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?, size?})`
 
 *&#8195;with:*
 
@@ -1961,7 +1994,8 @@ fc.float32Array({minLength: 1})
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2378,7 +2412,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 *&#8195;Signatures*
 
 - `fc.array(arb)`
-- `fc.array(arb, {minLength?, maxLength?})`
+- `fc.array(arb, {minLength?, maxLength?, size?})`
 - _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -2386,7 +2420,8 @@ fc.genericTuple([fc.nat(), fc.string()])
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2420,6 +2455,38 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 // • [20,668325235,1112668370,7,8,847065979]
 // • [19,3,15,16,117940422,25]
 // • …
+
+fc.array(fc.nat(), {maxLength: 50, size: 'max'})
+// Note: By specifying size to "max", we enforce the fact that we want generated values to have between
+// 0 and 50 items. In other words, we want to use the full range of specified lengths.
+// Note: If not defined, by default, the size is "=" except if there is a maxLength provided and the
+// global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true (the default in v2). In such
+// case it will automatically be defaulted to "max".
+// Examples of generated values:
+// • [4,26,725992281,7,1186699848]
+// • [1503239805,742382696,478977019,1206184056,992934701,1081616342,1979615602,100017132,1937766941,1785237624,89742033,1144227677,1828223609,1661385382,1964114158,526345403,1355567259,101888470,985865568,1687809116,147253818,1849736419,89389898,137520571,1171150892,127470621,827241914,1255338411]
+// • [1396368269,227325306,1918884399,1141338513,1861390920,1771550203,750875810,981796650,1210223397,1985219249,1479511918,479227607,1642390464,1556279791,979433247,1634278654,2044481643,1849523874,1519384141,987434773,1605111061,2138565492,1265703106,806958408,907237474,1655276397,1704888094,1830702455,1909917028,1307794976,1257188319,571159719]
+// • [20]
+// • [19,3,15]
+// • …
+
+fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
+// Note: From a specification point of view, the algorithm is supposed to handle up to 100,000 items.
+// But, even if I want to test the algorithm on large entries I don't want to spend hours in it (it may
+// not scale linearly...). By setting size to "+1" I tell fast-check that I want values larger than usual
+// ones (~10x factor). If I wanted even larger ones I could have used "+2" (~100x factor), "+3" (~1000x factor)
+// or "+4" (~10000x factor). On the opposite, if I wanted smaller arrays I could have used "-1" (~10x smaller)...
+// Note: Size could also have been set explicitely to "=" to say: "I want the size used by default no matter the
+// specified maxLength". If not defined, by default, the size is "=" except if there is a maxLength provided
+// and the global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true (the default in v2). In such
+// case it will automatically be defaulted to "max".
+// Examples of generated values:
+// • [2013730136,353952753,1490777806,634915573,1978586276,205766418,1175483977,32404726,52946578,1069691063,626810743,719356509,1263272304,1824194201,1899370697,1015020872,1705828766,1764355915,1972277951,1015470108,2117817188,449185274,666877613,1210503432,1201056411,777517406,772222564,821394475,850614998,717040931,2031665271,1786858369,1041895508,1725564736,1214876488,1554660788,1241812368]
+// • [11,2147483643,1549284389]
+// • [131262217]
+// • [29,1410245876,741880759,944485652,27,15,870882976,20,184434798,2147483622,344218127,27,409824723,2147483642,329043996,927489807,2035126132,11,2039439877,5,493467004,124950538,26,405637559,2147483620,471069585,931537132,667497301,1621370022,1798147982,10,251298872,867523191,1446431080,1609229900,2147483639,1618986483,1213793840,2147483618,23,2147483639,717045226,928729912,16,2147483637,2147483626,14977076,340466387,13,2042862990,2147483618,2147483631,2147483628,2147483627,18,11,2147483626,2147483640,2147483647,275841729,21,2090499420,983160949,188709474,18,30,1192240225,0,2147483635,22952275,825333491,1138859947,2147483624,5,26,689872800,17,1697943758,384986459,2147483628,1947943844,218900368,12]
+// • [1558059373,1486409544,138880328,1775525007,1289633061,2110277820,2132428886,243113350,370748226,1289875763,1926931276,777271555,200391383,382812004,767046802,1658449850,471365442,258979782,1763577358,875799138,1041944829,769854926,874760332,442170309,91717126,113325162,88812665,1097842037,804561500,1870859458,853896552,50228752,492015973,149076083,2093833652,220810263,257405203]
+// • …
 ```
 </details>
 
@@ -2435,7 +2502,7 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 *&#8195;Signatures*
 
 - `fc.set(arb)`
-- `fc.set(arb, {minLength?, maxLength?, compare?})`
+- `fc.set(arb, {minLength?, maxLength?, compare?, size?})`
 - _`fc.set(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
@@ -2446,13 +2513,14 @@ fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `compare?` — default: `{type: 'IsStrictlyEqual', selector: v => v}` equivalent to `(a, b) => a === b` — _custom compare operator used to distinguish duplicates in order to remove them from the resulting array. it can either be an object `{type,selector}` or a function returning `true` whenever items are equivalent (function-based is less optimized for large arrays)_
   - `type` can be one of:
     - `IsStrictlyEqual` to rely on `===` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal))
     - `SameValue` to rely on `Object.is` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue))
     - `SameValueZero` to rely on the same logic as the one of `Set` or `Map` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero))
   - `selector` to define how to project values before comparing them together
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2581,14 +2649,15 @@ fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 *&#8195;Signatures*
 
 - `fc.sparseArray(arb)`
-- `fc.sparseArray(arb, {maxLength?, minNumElements?, maxNumElements?, noTrailingHole?})`
+- `fc.sparseArray(arb, {maxLength?, minNumElements?, maxNumElements?, size?, noTrailingHole?})`
 
 *&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minNumElements?` — default: `0` — _minimal number of elements (included)_
-- `maxNumElements?` — default: `2 * minNumElements + 10` — _maximal number of elements (included)_
-- `maxLength?` — default: min(`2 * maxNumElements + 10`, `4294967295`) — _maximal length (included) - length includes elements but also holes for sparse arrays_
+- `maxNumElements?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of elements (included) - when not specified, the algorithm generating random values will consider it equal to `maxGeneratedLengthFromSizeForArbitrary(minNumElements, size)` but the shrinking one will use `0x7fffffff`_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included) - length includes elements but also holes for sparse arrays - when not specified, the algorithm generating random values will consider it equal to `maxGeneratedLengthFromSizeForArbitrary(maxNumElements used by generate, size)` but the shrinking one will use `0x7fffffff`_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `noTrailingHole?` — default: `false` — _when enabled, all generated arrays will either be the empty array or end by a non-hole_
 
 *&#8195;Usages*
@@ -2628,6 +2697,17 @@ fc.sparseArray(fc.nat())
 // • [791160306,,2147483632,1071842921,29,,,,444714173,,,,,,,,,,,,,,,,3,,,,,1935118950]
 // • [273021873,,,,,,,,,1700974328,,1016859405,1953708154,,1993296911,,1530566650,,,,,651418517,,187425710,783209689,,,,2043763242]
 // • [,,,,,,,,,,,661680466,,227120261,,,,,,,,,,,1637939285]
+// • …
+
+fc.sparseArray(fc.nat(), {size: '+1'})
+// Note: By specifying a size higher than the currently configured one, we ask for larger arrays in terms of number of
+// elements (see minNumElements and maxNumElements) but also in terms of length (see maxLength).
+// Examples of generated values:
+// • Object.assign(Array(1030),{6:23,173:21,1029:245254457})
+// • Object.assign(Array(1199),{3:6,6:668263032,7:1787798462,32:502062992,102:600391750,166:20,273:1057836355,384:1802990240,623:709780132,655:1078130226,841:2147483632,920:10,1015:862158711,1157:2147483644,1173:5,1198:1643619536})
+// • Object.assign(Array(1191),{64:1831228621,76:1817271240,103:1921971101,126:1151598222,136:509449625,164:2063169310,167:9966971,180:716310497,183:1391462004,267:1244974369,280:907777027,299:914009386,301:1501506463,306:1485504152,330:450412034,349:1091620465,374:488501875,375:293512875,395:83583365,413:547212156,444:2095112818,459:1656090255,500:2091997175,529:639981495,537:99145273,598:1910525476,606:1155542565,608:667117961,617:1776601619,630:1706777334,637:1641310106,665:1981801593,731:1076709770,754:318485053,756:112106916,758:1067570843,767:1777935574,768:992467967,770:453767451,784:583294476,798:1943597138,806:175982967,815:1574347535,817:1381685022,824:721401545,862:95257528,864:375028203,909:881794603,918:338522106,936:1896261182,938:615938023,960:548232086,978:58068928,982:1843395911,1003:1376820042,1008:507090629,1028:1962031277,1047:387323122,1124:1139870126,1133:236136183,1134:367536700,1139:1889874465,1155:1705599240,1157:429945468,1178:1579280378,1190:500187115})
+// • Object.assign(Array(1200),{0:410562142,1:7,2:112946363,3:23,4:17,5:2147483646,6:348775181,7:2,8:957372836,9:2147483643,10:0,35:2147483642,78:1442184813,90:2147483639,117:481546958,130:281316978,139:1354078375,167:28,178:461591681,182:1349441172,186:22,250:1174761236,277:2147483625,296:9,307:16,342:9,346:1080318260,366:1884425340,425:275477999,431:2147483622,444:2,452:1662365833,455:1053746216,461:14,475:0,483:26,501:638926135,530:2147483620,621:1268124692,649:11,663:1891585551,664:1024794525,688:2147483619,697:27,708:1,713:1941436426,715:1805586088,719:1561513881,744:0,752:2147483642,780:2147483631,784:1395048031,806:1,807:16,816:79188245,837:26,846:2147483636,847:1,855:13,873:809885548,887:833559649,927:2147483633,991:29,1041:1968909467,1044:1360402673,1052:3,1054:325367005,1060:1257804707,1084:2024901486,1087:2147483646,1109:1739477681,1113:8,1123:483827998,1133:17,1173:2147483617,1190:897758518,1191:2147483642,1192:11,1193:2,1194:1,1195:16,1196:29,1197:0,1198:8,1199:2128860591})
+// • Object.assign(Array(1171),{104:1638804142,117:602011150,129:313752679,185:1448469803,222:768117918,263:1554819660,277:1288756625,359:2059980427,440:1867105842,454:2061521669,462:1801440074,469:135779881,508:856264357,522:2113002129,530:1762964315,536:2038762560,588:789315360,614:1151676895,652:542336121,667:467837917,669:1190486377,690:1072930284,718:601332128,772:569548857,781:999860594,802:1900067120,823:1944768495,826:1474566472,830:1950423455,839:1964123632,848:1866472223,852:937790976,877:1266959932,889:1249315120,896:578387423,939:521841256,950:486372919,986:1983847533,1009:1183067405,1027:2519446,1059:423431392,1081:50338564,1086:1927133080,1149:1141117415,1160:1555762662,1170:1465608282})
 // • …
 ```
 </details>
@@ -2669,11 +2749,15 @@ fc.infiniteStream(fc.nat(9))
 *&#8195;Signatures*
 
 - `fc.dictionary(keyArb, valueArb)`
+- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?})`
 
 *&#8195;with:*
 
 - `keyArb` — _arbitrary instance responsible to generate keys_
 - `valueArb` — _arbitrary instance responsible to generate values_
+- `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
+- `maxKeys?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of keys in the generated instances (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
 *&#8195;Usages*
 
@@ -2694,6 +2778,16 @@ fc.dictionary(fc.string(), fc.nat())
 // • {}
 // • {"Fb+6vZ=< ":589373246,"8}r":17}
 // • {"4":57689789,"d":2049278068,".b3n,":1846889886,":E":887324279,"*9\\$WNce":108003991}
+// • …
+
+fc.dictionary(fc.string(), fc.nat(), {minKeys: 2})
+// Note: Generate instances with at least 2 keys
+// Examples of generated values:
+// • {"T<M3<":620901509,"DaM\"":1958316323}
+// • {"Tc\"":2147483642,"bIKoG7_j":2147483643,"A\\`~@<Y":258879863}
+// • {"| !C":2029887034,"{!uI}":2147483644,"$}?":1412302943,"":823604874,"\"@%D5\";\"J-":153893444,"[q":1165972584,"A$":26,"+":22,"7\"~":29,"{<$ 3A0":22}
+// • {"%":1708431354,"\"9":1897938290,"I}J?ki>_\\1":892495069,"m":2,"/n":7,"df`":1149626585,"$7\"A{>y":190005547,"":1891531363,"\"!yS#":1190061756," ~Zt;x":2147483641,"\"{W":2073394934,"odV8&u":5,"C!":5}
+// • {"":860828778,"$.x~\"|5!X$":2147483626,"{XNUt3<g#":28,"hr%":10,"#!":1561530792,"4}U%n":776916316}
 // • …
 ```
 </details>
@@ -2787,7 +2881,7 @@ fc.record({
 *&#8195;Signatures*
 
 - `fc.object()`
-- `fc.object({key?, depthFactor?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
+- `fc.object({key?, depthFactor?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -2795,6 +2889,7 @@ fc.record({
 - `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
 - `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
@@ -2810,11 +2905,11 @@ fc.record({
 ```js
 fc.object()
 // Examples of generated values:
-// • {"A%":{"KFfpp":"kCR;AFy","R>Ep":"kV(z"},"6@'":[-2.207823197850501e+192,3.1613705103044707e-192,-2.3367076093283915e-31,-3707010.362578603,-7.412739576630256e-130],"HA8":":V:Cm"}
-// • {"M{]xTH":{"#n;+\"uJ":-1.7073676461288806e-156,"IBJPt8j*3":"_Vb","&qBA~d":1.3686986067416212e+150},"G_?":[],"":{";PqWCv^qK4":[-590225360151775],"k,m <":[true,true],"a4=+p)r8E":8.91780974835176e+286,"r@8v":{},"Y3":{"rTy":null}},"j":{},"N":{"b=L8erH.W0":{"\"":"","zV":null,"b]yOC":"coWmiiL","[Ufcn'\\":-6441427503517816,"u.*Gz,W_":5761619189052005}},"?27Gmq!O":false,"zb#:cJCZ{g":[{},"OGk ~\"P",{"saSK:":true,"T6":false,"Tug'Ak=)f":true,"Y3H/) J{":true," 0^":false},"nrb",null],"2@1-M3:l%q":{"xnNe>/Y/":[-6874463638710630],"..^w%a^^t":null,"%J)H":[-4.3116841601448e+271],"":[-2.080916153335585e+156]}," Z]ycMNhu2":[{"v":false,"?<t9CF9{N":true,"q!p2":false,"#":false,"Ronq2(":false},3.058122441672037e-115]}
-// • {"NLpz":true,"\"`guwWV":[{"OjJ U%NIw":null},{"5":-4444658659744845,"5Vyp~\"X-":5222451871432333,"_]Z":5105405761309303,"f*J5crt2@":1810721905015265,"?\\":-6022619223608399},[true,true],[],{}],"qH ":"6iFv`}D","_tK<DY,rJO":"~~]\\ni","6@M^c. ":7122338718932239,"d#`\"4ce6":{"DjT>_><\\N":5243276801299219,"f1jCD":-8658073716259630,"":-739209854622888},";a#":["H",null,undefined,undefined,undefined],"m\"E":["+KF1 6h"," :#`Y","A",">_}","[JQ"]}
+// • {"A%":{"KFfpp":"kCR;AFy","R>Ep":"kV(z"},"6@'":[-2.207823197850501e+192,3.1613705103044707e-192,-2.3367076093283915e-31,-3707010.362578603,-7.412739576630256e-130],"HA8":":V:Cm","":{"#Oi)'":["Ft=u'*k","[=`","mFY","`6p","UDE:m"],"3WU}|qld?u":5.934983938592864e+306,"G|&A":[4.260662847878278e+231,false],"~":{"3Bl)y03zf6":false,"wz#f:bi":"{9uos0","'_Y%":null}}}
 // • {}
-// • {"qrhd)uEl(b":{},"]fr _{^D":{"1/H-'WwF":{},"(K|5r6O":"tDi'?MuF"},"H":-2.5249124239541926e+105}
+// • {"NLpz":true,"\"`guwWV":[{"OjJ U%NIw":null},{"5":-4444658659744845,"5Vyp~\"X-":5222451871432333,"_]Z":5105405761309303,"f*J5crt2@":1810721905015265,"?\\":-6022619223608399},[true,true],[],{}],"qH ":"6iFv`}D","_tK<DY,rJO":"~~]\\ni","6@M^c. ":7122338718932239}
+// • {"Q[qz":3420299706657221,"vM5":undefined,"I=1ttlDa^~":[false]}
+// • {"^":[false],"U,C":{}}
 // • …
 
 fc.object({
@@ -2822,10 +2917,10 @@ fc.object({
 })
 // Note: Keys in ['a', 'b', 'c']
 // Examples of generated values:
-// • {"c":{"c":-4373543690275593,"a":-8390683989876872}}
-// • {"b":"h\""}
-// • {"b":"aDA:0O%&","c":"ml> Vxr|#Z"}
-// • {"a":undefined,"c":{"c":[-2744422.7404951486,-1.8345110504699604e+58,2.569399430912511e+151,1.2315038477032108e+257],"a":{"a":2.0093861895976855e-171},"b":[true,false,false,true,false]},"b":{"c":-7208713713650586,"a":17}}
+// • {"c":{"c":-4373543690275593,"a":-8390683989876872},"a":8212406850863225,"b":{"a":"I}4(os","b":"CT{$"}}
+// • {"b":"h\"","c":{}}
+// • {"b":"aDA:0O%&"}
+// • {"a":undefined,"c":{"c":[-2744422.7404951486,-1.8345110504699604e+58,2.569399430912511e+151,1.2315038477032108e+257],"a":{"a":2.0093861895976855e-171},"b":[true,false,false,true,false]}}
 // • {}
 // • …
 
@@ -2833,22 +2928,22 @@ fc.object({
   maxDepth: 0,
 })
 // Examples of generated values:
-// • {"^lx)`P":undefined,"X<":false,"e{{Og>-":8.650252904812954e+203,"/@#y1B2":3.2384309296015956e+137,"ULm U|p<#0":8.075505555083874e+136,"I#!.^":"","S8":" %E"}
-// • {"s!?U&|m":-1.0485154233556375e+169," !":1.4341461931946127e-41}
-// • {":WEs/srS+":-1.4306206862420248e-230,"lb(<%.BW9":-1.12096281696434e+147,"":-2808744269250452,"=Pfn":3774914358605209,"Wvd=pRw}Q":"o};9PoD","N":1.9219429100542987e+297}
-// • {"WW!oe%r(1":2650041073451851,"FiY":-1.6208386987872436e+84,"a$aR@~l":"fE*qB<GE:'","snhE":-19848761391.284126,"er <4QOmI<":undefined,":kN3b~6T:#":false}
-// • {"y.\"_x":false}
+// • {"^lx)`P":undefined}
+// • {"s!?U&|m":-1.0485154233556375e+169," !":1.4341461931946127e-41,"":">bQM?p[+^"}
+// • {":WEs/srS+":-1.4306206862420248e-230,"lb(<%.BW9":-1.12096281696434e+147}
+// • {}
+// • {"m \"]?Y]":"%d.","":">7,FIjW","pBl_JL":true,"4LDzA":null,"YJa,v":undefined}
 // • …
 
 fc.object({
   maxDepth: 1,
 })
 // Examples of generated values:
-// • {"^lx)`P":[8028483004798607,"e{{Og>-",8.650252904812954e+203,4.9593414298533554e-110,""],"B2T_v8UL":["<#0cVm","I#!.^","{sS8U7 %E!","U"],"*=":[1.2209036140815505e+27,"Bv'W{LK"],"#zWizXp":[],"Q":[true],"l,yb3jK.Tr":{"BQ0r":";G","s":null,"":undefined,"l@l]WFW":null},"YaIV[oS<":[-0.00012452262210966197,-9.483743119430094e-141,"HX",1.305154276862804e-174]}
-// • {"s!?U&|m":false," !":{}}
-// • {":WEs/srS+":{"lb(<%.BW9":-1.12096281696434e+147,"":-2808744269250452},"":[undefined],"nX>QxWv":{"w}QPY":"9P","D":null},"tI[r7":{"*HxK?ok[":-6343525974464806," \\BMAD7?":5530437688841405},"l@n/>|.":"%|>H4JG)JX","hy]tN{L3@V":{}}
-// • {"WW!oe%r(1":[true,false,false,false,false],"8a$aR@~l":[],"*qB<GE":["hE\"}6",true]," <4QOmI":{"":false,"3b~6":false,"#Hs":false,"V7Sy8YR":false},"4;%":null,"}}V5gIZ5v":["B3\"Hr.Vp","/JOM2sXiL"]}
-// • {"y.\"_x":{"o&s":2.5774375427541795e-152,"} ?11wrc":Number.NaN}}
+// • {"^lx)`P":[8028483004798607,"e{{Og>-",8.650252904812954e+203,4.9593414298533554e-110,""]}
+// • {"s!?U&|m":false," !":{},"":[undefined,7106256565355609]}
+// • {":WEs/srS+":{"lb(<%.BW9":-1.12096281696434e+147,"":-2808744269250452},"":[undefined]}
+// • {}
+// • {"m \"]?Y]":[true,false,true],">7,FIjW":{"pBl_JL":false,".4LDzA$\\":false,"":true,",v=k":false},"tG":{},">qe":{"*sgIA@(qc":"J4",".bXH4zA":"Vo(SR",">ScnM":"vI.$2FT"},"":{":4x,oklLgX":-456336219368486}}
 // • …
 
 
@@ -2863,11 +2958,11 @@ fc.object({
   withTypedArray: true,
 })
 // Examples of generated values:
-// • {"xvT&":Int32Array.from([-17,2147483621,-2147483644,1556900347,2071464596,-1393559138,-1727276306,-2147483618]),"u#qsXXTvp":-50616070339577782226631178415259058882613774486766356322822085931554199999723n,"-U{3":"t<?]J"}
-// • {"Rsv1:ZP":Int32Array.from([168230707,-730230161,-1469484660,-1063102817,-1909954805,1585343329,-1514159647,-125465986]),"&fXK":new Boolean(true),"4C`-+":new Set([new Map([]),new Set([new Boolean(true),true,new String("b")]),false,{},{"new Number(2.5e-323)":new String("\"M6|"),"}o}Z":new String("Wn##m="),"/x98o":new String("")}])}
-// • {"p?EZci9K7":Object.assign(Object.create(null),{"Je":new String("vBJ>``Y$x"),"?ErP@8f!\"":new String(""),"":new String("%=o2Y7C0'")}),"":new Number(5.637087698537716e+284),"b(0#":Object.assign(Object.create(null),{"Q]s0xIyk<+":"(vi`]/Q.I",")Ie":null,"{`qiQ5Ix2f":null,".":undefined})}
-// • {"};;j/k&2T":{"new Date(\"+220664-08-31T16:38:43.894Z\")":-2289144276660280,"cXLsbV S":1138144113824397},"teD^Ev":"[new Number(-1.5364199974582094e+205),new Number(5.180815866347032e+247),new Number(3.636439525223476e-281)]","!#(o3t":{"1vv":undefined,"wH{;tJ":null},"k{Xkv":{},"":new Set([]),"}":{"false":{"2995845410082023":true,"kV}Hc*yU,.":true,";Wznpcq":false,"&CH+'X":false}},"6W,~y/":new Date("-211027-11-03T15:54:15.338Z"),"ndQOiBz":{}}
-// • {"RrAs^,;_'d":new Set([]),"cx:<rwea":"new Date(\"+020332-01-16T05:46:46.152Z\")","":Object.assign(Object.create(null),{"L'jRbo{j":-31976587169846070239654687470021029877524367311417431076643014306029456266120n,"';}PmFHH![":Float64Array.from([-8.018908485009337e+30,8.496864005059645e+201,-3.9194568152035106e+268,-3.086464372465133e+126,3.7461513350649476e+307,1.8080540145972749e-16,-3.302613637232917e-16,2.919782715590315e-98,5.497279242648775e-209]),"<!a}uk":Object.assign(Object.create(null),{"h!+#q":new Number(-2.201858778700874e-229),"-1.2569260788236659e-20":new Number(-7.614430918991341e-292),"fY*":new Number(-5.6031793388037794e+178),"=v{~S":new Number(1.0861583449836279e-82)}),"3ine":[new Boolean(false),false]})}
+// • {}
+// • {"Rsv1:ZP":Int32Array.from([])}
+// • {"p?EZci9K7":Object.assign(Object.create(null),{"Je":new String("vBJ>``Y$x"),"?ErP@8f!\"":new String(""),"":new String("%=o2Y7C0'")}),"":new Number(5.637087698537716e+284),"b(0#":Object.assign(Object.create(null),{"Q]s0xIyk<+":"(vi`]/Q.I",")Ie":null,"{`qiQ5Ix2f":null,".":undefined}),"tt4":{"O_x]!n3;xi":false,"@0`@T@G'fF":true},"Xdm,fK2":new Date("-067158-04-13T10:08:18.282Z")}
+// • {"RrAs^,;_'d":new Set([]),"cx:<rwea":"new Date(\"+020332-01-16T05:46:46.152Z\")","":Object.assign(Object.create(null),{"L'jRbo{j":-31976587169846070239654687470021029877524367311417431076643014306029456266120n,"';}PmFHH![":Float64Array.from([-8.018908485009337e+30,8.496864005059645e+201]),"i{":new Map([["zeo]{&<",new Number(7523941058027217)],["false",new Number(8.864807830809682e+58)]]),"h!+#q":{"q'":new Boolean(false),"Y*l+|&=v{":""}}),"~M3in":Uint16Array.from([3752]),"mWvMsR":new Map([["",undefined],["new String(\"\")",undefined]])}
+// • {"zL{":new Map([["s+uk@$\"","HV"]])}
 // • …
 
 fc.object({
@@ -2876,11 +2971,11 @@ fc.object({
 })
 // Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
 // Examples of generated values:
-// • {"#$!":[-6284333281935340],"rfzf":{"\"!`":-1.909234660360722e+235},"{}a~":[]}
-// • {"eE:":[-8.95172863816096e-249,-3.288461904004645e+282],"4s{$4":{"{/$^Sz":"*4"},"|y)-$J":false,"Ai%":[3.538086683290918e-47],"[":[true,true,false,false],"X5BF[d6&'I":[],"H9 :My":[],"[waR\\H":[{"L4xCzK":4132248318901977,"0[x5DB":true,"y":{"Ykx#K!":["","j=Mg%",""],"D lxo>e1":{"":-3.2491742827673436e+204,"m}-tBgvv4\"":-2.6247571723139775e+205,",{*":2.9035310672004322e+206,"~":-1.710487457996338e-260},"\\_k":{"V)sp>=C":" x6","Swj":"(","#<VDu[":"gL","^1b_":"(+m"}},"vw'bGz":[-1.120167166012887e-197]},{"jvn":false,"v|(:db":true,"":true},"d3S ",{"yluHsgJ}s":undefined,"(h$)2]Pk4}":"OK ","nq":undefined,"+y^*.ov9,":undefined}]}
-// • {"0":[2.6703788454731695e+117,-1.6285761065806155e+41,-4.520334174621359e-56,1.492553358044542e+214],"{1Z\\sxWae_":[2565154082148461,8302012241278541,-1390788262228714],"[#.'O/ly;Y":{",cx`iZ":7119745345023617,"j":457026501372385,"=Y":-8910772974540265,"().1Dd^":3683425995195221},"":{",0T":839214944033725,"n8cu]":-2390850956257159,"vkg%(B{5Vv":2876244094548489},"ehE>h-C":[{"#b$Yu6:^O[":[{"x7FG&:":"sWH(=2\\5}","QEb9T":undefined,"{M=x1 ":"_m2"},[true],"5Wo",[null,"",""],{"vcg\"nZ%?ne":{"FiVp:W;":-3.096943297573584e+46,"e3/YX,+4z,":-3.499884681652477e-94,";u":1.1081655059865526e+222,"'@O":-1.9771446652696e-98},"c,0QZ|":[],"":{"B%l{POF":2.517622513383714e+185,"_E236z":-9.365880577754715e-216,"J<SO3":2.892270139519411e-20},"1j":[";4W$z'G-/R",{"IY:y=vzGR":-1.5331683125242364e+82,"a1":-7.368585047763132e-67,"<[/":2.5398091144876033e+88},{},["xp%4","c)WYY","\"35woC","f","&7"],{"(Qf(GZ":"&IM$<]I","d:`":"Y^bL:Od%t","-pVb":"JD!HJAj8\"e","oLQ/h-k,":"aeFafS*}","":"g\"'cJ]-)RS"}]}],"D":{":t_xR,nU":3.7663289884259713e+99,"0C0E7{^":-3.1206201241376693e-93,"":6.04818821701892e+142},"S5":[],"A|.~EX\"(0":"gx"},[{}],{},"3fs0mb9"],"PyTK-2-ecs":{"x":4735433617528581,"@_":{".Csd=UQ":{"MB%}47!\"":9.366687842298366e-178,"F\"`-zN":2.3420168472347057e-241,"uM":4.6277351388165825e-156,"|{":-1.0109916072104198e+114},"~7h&Ap":">_~!","'qs&gG<n":["Q","g5lDpx\\T","4B&v\\j",undefined,"`L[a:ka"],"ti\\q6Iz.w":-2031288555963222},">":[undefined]},"Y\"Qx4&[:d":{},"Q":{"Yc":{"0":"fs[ ","":"c2g T1c>cu","X5(Swxt":"m["},"^D+1-#+V":{"3f&ZRS":false,"Ob":false},"N":["#{",[""],4.228004803697316e-259]},"-U-scsErAG":{"":true,"~":false,"un()":true,"\\_Kj^":true}}
-// • {"M\\ ":{"2F2SCMM>4R":"E","ahq=S|5pS":undefined,"N5<VQ":undefined},"\"|z!":{"p":undefined},"^jk":[-6.76864040582647e-62]}
-// • {"% ":[{},[]],"":{"/":[[]]},"aSC0":[-1.2027554126668666e+206,-2.2823599405296565e+32]}
+// • {"#$!":[-6284333281935340],"rfzf":{"\"!`":-1.909234660360722e+235}}
+// • {"eE:":[-8.95172863816096e-249,-3.288461904004645e+282],"4s{$4":{"{/$^Sz":"*4"},"|y)-$J":false,"Ai%":[3.538086683290918e-47]}
+// • {"0":[2.6703788454731695e+117,-1.6285761065806155e+41,-4.520334174621359e-56,1.492553358044542e+214],"{1Z\\sxWae_":[2565154082148461,8302012241278541,-1390788262228714],"[#.'O/ly;Y":{",cx`iZ":7119745345023617,"j":457026501372385,"=Y":-8910772974540265,"().1Dd^":3683425995195221},"":{",0T":839214944033725,"n8cu]":-2390850956257159,"vkg%(B{5Vv":2876244094548489},"ehE>h-C":[{"#b$Yu6:^O[":[{"x7FG&:":"sWH(=2\\5}","QEb9T":undefined,"{M=x1 ":"_m2"},[true],"5Wo",[null,"",""],{"vcg\"nZ%?ne":{"FiVp:W;":-3.096943297573584e+46,"e3/YX,+4z,":-3.499884681652477e-94,";u":1.1081655059865526e+222,"'@O":-1.9771446652696e-98},"c,0QZ|":[],"":{"B%l{POF":2.517622513383714e+185,"_E236z":-9.365880577754715e-216,"J<SO3":2.892270139519411e-20},"1j":[";4W$z'G-/R",{"IY:y=vzGR":-1.5331683125242364e+82,"a1":-7.368585047763132e-67,"<[/":2.5398091144876033e+88},{},["xp%4","c)WYY","\"35woC","f","&7"],{"(Qf(GZ":"&IM$<]I","d:`":"Y^bL:Od%t","-pVb":"JD!HJAj8\"e","oLQ/h-k,":"aeFafS*}","":"g\"'cJ]-)RS"}]}],"D":{":t_xR,nU":3.7663289884259713e+99,"0C0E7{^":-3.1206201241376693e-93,"":6.04818821701892e+142},"S5":[],"A|.~EX\"(0":"gx"},[{}],{},"3fs0mb9"]}
+// • {"M\\ ":{"2F2SCMM>4R":"E","ahq=S|5pS":undefined,"N5<VQ":undefined}}
+// • {}
 // • …
 ```
 </details>
@@ -3095,7 +3190,7 @@ fc.unicodeJsonObject({depthFactor: 0.1})
 *&#8195;Signatures*
 
 - `fc.anything()`
-- `fc.anything({key?, depthFactor?, maxDepth?, maxKeys?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
+- `fc.anything({key?, depthFactor?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
 *&#8195;with:*
 
@@ -3103,6 +3198,7 @@ fc.unicodeJsonObject({depthFactor: 0.1})
 - `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
 - `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
@@ -3643,14 +3739,15 @@ fc.context()
 *&#8195;Signatures*
 
 - `fc.commands(commandArbs)`
-- `fc.commands(commandArbs, { disableReplayLog?, maxCommands?, replayPath? })`
+- `fc.commands(commandArbs, {disableReplayLog?, maxCommands?, size?, replayPath?})`
 - _`fc.commands(commandArbs, maxCommands)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
 - `commandArbs` — _array of arbitraries responsible to generate commands_
 - `disableReplayLog?` — _disable the display of details regarding the replay for commands_
-- `maxCommands?` — _maximal number of commands to generate (included)_
+- `maxCommands?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of commands to generate (included)_
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `replayPath?` — _only used when replaying commands_
 
 *&#8195;Usages*
@@ -3708,6 +3805,25 @@ Refer to [Race conditions detection](./RaceConditions.md) or [Detect race condit
 </details>
 
 ## Going further?
+
+### Size explained
+
+Since version 2.22.0, there is a distinction between constraints required by specifications and what will really be generated. When dealing with array-like arbitraries such as `fc.array` or `fc.string`, defining a constraint like `maxLength` can be seen as if you wrote "my algorithm is not supposed to handle arrays having more than X elements". It does not ask fast-check to generate arrays with X elements, but tells it that it could if needed or asked to.
+
+What really drives fast-check into generating large arrays is called `size`. At the level of an arbitrary it can be set to:
+- Relative size: `"-4"`, `"-3"`, `"-2"`, `"-1"`, `"="`, `"+1"`, `"+2"`, `"+3"` or `"+4"` — _offset the global setting `baseSize` by the passed offset_
+- Explicit size: `"xsmall"`, `"small"`, `"medium"`, `"large"` or `"xlarge"` — _use an explicit size_
+- Exact value: `"max"` — _generate entities having up-to `maxLength` items_
+- Automatic size: `undefined` — _if `maxLength` has not been specified or if the global setting `defaultSizeToMaxWhenMaxSpecified` is `false` (in v2 it defaults to `true` for backward compatibilty reasons) then `"="`, otherwise `"max"`_
+
+Here is a quick overview of how we use the `size` parameter associated to a minimal length to compute the maximal length for the generated values:
+- `xsmall` — `min + (0.1 * min + 1)`
+- `small` (default) — `min + (1 * min + 10)`
+- `medium` — `min + (10 * min + 100)`
+- `large` — `min + (100 * min + 1000)`
+- `xlarge` — `min + (1000 * min + 10000)`
+
+### Various links
 
 - [API Reference](https://dubzzz.github.io/fast-check/)
 - [Advanced arbitraries (guide)](./AdvancedArbitraries.md)

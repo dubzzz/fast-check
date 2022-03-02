@@ -23,13 +23,14 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   constructor(
     readonly arb: NextArbitrary<T>,
     readonly minLength: number,
+    readonly maxGeneratedLength: number,
     readonly maxLength: number,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
     readonly setBuilder?: CustomSetBuilder<NextValue<T>>
   ) {
     super();
-    this.lengthArb = convertToNext(integer(minLength, maxLength));
+    this.lengthArb = convertToNext(integer(minLength, maxGeneratedLength));
   }
 
   private preFilter(tab: NextValue<T>[]): NextValue<T>[] {
@@ -66,9 +67,9 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // Try to append into items up to the target size
     // We may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
-    // we accept a max of maxLength consecutive failures. This circuit breaker may cause
+    // we accept a max of maxGeneratedLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
-    while (s.size() < N && numSkippedInRow < this.maxLength) {
+    while (s.size() < N && numSkippedInRow < this.maxGeneratedLength) {
       const current = this.arb.generate(mrng, biasFactorItems);
       if (s.tryAdd(current)) {
         numSkippedInRow = 0;
@@ -137,7 +138,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       return { size: this.lengthArb.generate(mrng, undefined).value };
     }
     // We directly forward bias to items whenever no bias applicable onto length
-    if (this.minLength === this.maxLength) {
+    if (this.minLength === this.maxGeneratedLength) {
       // We only apply bias on items
       return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
     }
@@ -146,12 +147,13 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       return { size: this.lengthArb.generate(mrng, undefined).value };
     }
     // We apply bias (1 chance over biasFactor)
-    if (mrng.nextInt(1, biasFactor) !== 1 || this.minLength === this.maxLength) {
+    if (mrng.nextInt(1, biasFactor) !== 1 || this.minLength === this.maxGeneratedLength) {
       // We only apply bias on items ((biasFactor-1) chances over biasFactor²)
       return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
     }
     // We apply bias for both items and length (1 chance over biasFactor²)
-    const maxBiasedLength = this.minLength + Math.floor(Math.log(this.maxLength - this.minLength) / Math.log(2));
+    const maxBiasedLength =
+      this.minLength + Math.floor(Math.log(this.maxGeneratedLength - this.minLength) / Math.log(2));
     const targetSizeValue = convertToNext(integer(this.minLength, maxBiasedLength)).generate(mrng, undefined);
     return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }

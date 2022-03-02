@@ -6,6 +6,7 @@ import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';
 import { boxedArbitraryBuilder } from '../builders/BoxedArbitraryBuilder';
+import { SizeForArbitrary } from './MaxLengthFromMinLength';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -31,6 +32,11 @@ export interface ObjectConstraints {
    * @remarks Since 1.13.0
    */
   maxKeys?: number;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
   /**
    * Arbitrary for keys
    *
@@ -114,16 +120,17 @@ export interface ObjectConstraints {
  * Internal wrapper around an `ObjectConstraints`, it adds all the missing pieces in the configuration
  * @internal
  */
-export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues'>>;
+export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues' | 'size'>> &
+  Pick<ObjectConstraints, 'size'>;
 
 /** @internal */
-function defaultValues(): Arbitrary<unknown>[] {
+function defaultValues(constraints: { size: SizeForArbitrary }): Arbitrary<unknown>[] {
   return [
     boolean(),
     maxSafeInteger(),
     double({ next: true }),
-    string(),
-    oneof(string(), constant(null), constant(undefined)),
+    string(constraints),
+    oneof(string(constraints), constant(null), constant(undefined)),
   ];
 }
 
@@ -145,15 +152,17 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
   function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
     return optionalValue !== undefined ? optionalValue : defaultValue;
   }
+  const valueConstraints = { size: settings.size };
   return {
-    key: orDefault(settings.key, string()),
+    key: orDefault(settings.key, string(valueConstraints)),
     values: boxArbitrariesIfNeeded(
-      orDefault(settings.values, defaultValues()),
+      orDefault(settings.values, defaultValues(valueConstraints)),
       orDefault(settings.withBoxedValues, false)
     ),
     depthFactor: orDefault(settings.depthFactor, 0),
     maxDepth: orDefault(settings.maxDepth, 2),
     maxKeys: orDefault(settings.maxKeys, 5),
+    size: settings.size,
     withSet: orDefault(settings.withSet, false),
     withMap: orDefault(settings.withMap, false),
     withObjectString: orDefault(settings.withObjectString, false),

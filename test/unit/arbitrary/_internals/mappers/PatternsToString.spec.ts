@@ -7,22 +7,24 @@ const MorseCode = ['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..'
 
 describe('patternsToStringUnmapperFor', () => {
   it.each`
-    sourceChunks                      | source            | constraints                       | expectedChunks
-    ${['a']}                          | ${'a'}            | ${{}}                             | ${['a']}
-    ${['abc']}                        | ${'abc'}          | ${{}}                             | ${['abc']}
-    ${['a']}                          | ${'aaa'}          | ${{}}                             | ${['a', 'a', 'a']}
-    ${['a', 'b', 'c']}                | ${'abc'}          | ${{}}                             | ${['a', 'b', 'c']}
-    ${['a', 'b', 'c', 'abc']}         | ${'abc'}          | ${{}}                             | ${['a', 'b', 'c'] /* starts by a: the shortest fit */}
-    ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 2, maxLength: 3 }} | ${['ab', 'aaa'] /* starts by ab: the shortest fit */}
-    ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 3 }}               | ${['ab', 'a', 'a', 'a']}
-    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 1 }}               | ${['aaaaa']}
-    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 4 }}               | ${['aaaaa']}
-    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 5 }}               | ${['a', 'a', 'a', 'a', 'a'] /* starts by a: the shortest fit */}
-    ${['a', 'aa']}                    | ${'aaaaaaaaaaa'}  | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
-    ${['a', 'aa']}                    | ${'aaaaaaaaaaaa'} | ${{ minLength: 0 }}               | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa', 'aa'] /* maxLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
-    ${MorseCode}                      | ${'...___...'}    | ${{}}                             | ${['.', '.', '.', '_', '_', '_', '.', '.', '.']}
-    ${MorseCode}                      | ${'...___...'}    | ${{ maxLength: 3 }}               | ${['..', '.__', '_...']}
-    ${['\uD83D', '\uDC34', 'a', 'b']} | ${'a\u{1f434}b'}  | ${{}}                             | ${['a', '\uD83D', '\uDC34', 'b']}
+    sourceChunks                      | source            | constraints                        | expectedChunks
+    ${['a']}                          | ${'a'}            | ${{}}                              | ${['a']}
+    ${['abc']}                        | ${'abc'}          | ${{}}                              | ${['abc']}
+    ${['a']}                          | ${'aaa'}          | ${{}}                              | ${['a', 'a', 'a']}
+    ${['a', 'b', 'c']}                | ${'abc'}          | ${{}}                              | ${['a', 'b', 'c']}
+    ${['a', 'b', 'c', 'abc']}         | ${'abc'}          | ${{}}                              | ${['a', 'b', 'c'] /* starts by a: the shortest fit */}
+    ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 2, maxLength: 3 }}  | ${['ab', 'aaa'] /* starts by ab: the shortest fit */}
+    ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 3 }}                | ${['ab', 'a', 'a', 'a']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 1 }}                | ${['aaaaa']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 4 }}                | ${['aaaaa']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 5 }}                | ${['a', 'a', 'a', 'a', 'a'] /* starts by a: the shortest fit */}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaa'}  | ${{ minLength: 0, maxLength: 10 }} | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa']}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaa'}  | ${{ minLength: 0 }}                | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'] /* ignore maxGeneratedLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaaa'} | ${{ minLength: 0, maxLength: 10 }} | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa', 'aa']}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaaa'} | ${{ minLength: 0 }}                | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'] /* ignore maxGeneratedLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
+    ${MorseCode}                      | ${'...___...'}    | ${{}}                              | ${['.', '.', '.', '_', '_', '_', '.', '.', '.']}
+    ${MorseCode}                      | ${'...___...'}    | ${{ maxLength: 3 }}                | ${['..', '.__', '_...']}
+    ${['\uD83D', '\uDC34', 'a', 'b']} | ${'a\u{1f434}b'}  | ${{}}                              | ${['a', '\uD83D', '\uDC34', 'b']}
   `(
     'should properly split $source into chunks ($constraints)',
     ({ sourceChunks, source, constraints, expectedChunks }) => {

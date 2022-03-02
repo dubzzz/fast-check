@@ -23,6 +23,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
 - [Supported targets from node to deno](#supported-targets-from-node-to-deno)
 - [Override default toString for a given instance](#override-default-toString-for-a-given-instance)
+- [Larger entries by default](#larger-entries-by-default)
 
 ## Filter invalid combinations using pre-conditions
 
@@ -196,7 +197,7 @@ const allCommands = [
 ];
 // run everything
 fc.assert(
-  fc.property(fc.commands(allCommands, { maxCommands: 100 }), cmds => {
+  fc.property(fc.commands(allCommands, { size: '+1' }), cmds => {
     const s = () => ({ model: { num: 0 }, real: new List() });
     fc.modelRun(s, cmds);
   })
@@ -892,3 +893,17 @@ Object.defineProperties(
 Please note that:
 1. `fc.asyncToStringMethod` will only be used in the context of asynchronous properties
 2. While `fc.asyncToStringMethod` is marked as asynchronous it should not be too long. More precisely it should resolve barely instantly.
+
+## Larger entries by default
+
+By default all arbitraries have their size defaulted to `"small"`. In other words, it means that whenever you ask the framework to generate array-like entities they will have a _small_ number of items. By _small_, we mean that when you ask for `fc.array(fc.nat())`, you will only see arrays having between `0` and `10` elements.
+
+There are two main ways to change this upper bound:
+- at instantiation level by passing an explicit size, like in: `fc.array(fc.nat(), {size: '+1'})`
+- at global level
+
+At global level, there are two main options:
+- `baseSize` — defaulted to `"small"` — define what should be the default size when nothing has been specified at instantiation level
+- `defaultSizeToMaxWhenMaxSpecified` — defaulted to `true` — when set to `true`, any arbitrary being instantiated with an upper bound (such as `maxLength`) and no size will see it's size defaulted to `max` / when set to `false`, if not defined the size will be defaulted to `baseSize` (see above)
+
+You may want to read more about ways to configure global settings at [Setup global settings](#setup-global-settings).

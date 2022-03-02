@@ -1,10 +1,13 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
-import { integer } from './integer';
-import { nat } from './nat';
 import { set } from './set';
 import { tuple } from './tuple';
-import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder';
+import {
+  maxGeneratedLengthFromSizeForArbitrary,
+  MaxLengthUpperBound,
+  SizeForArbitrary,
+} from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link sparseArray}
@@ -32,6 +35,11 @@ export interface SparseArrayConstraints {
    * @remarks Since 2.13.0
    */
   noTrailingHole?: boolean;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.22.0
+   */
+  size?: SizeForArbitrary;
 }
 
 /** @internal */
@@ -62,11 +70,25 @@ function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
  */
 export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstraints = {}): Arbitrary<T[]> {
   const {
+    size,
     minNumElements = 0,
-    maxNumElements = maxLengthFromMinLength(minNumElements),
-    maxLength = Math.min(maxLengthFromMinLength(maxNumElements), 4294967295),
+    maxLength = MaxLengthUpperBound,
+    maxNumElements = maxLength, // cap maxNumElements to maxLength
     noTrailingHole,
   } = constraints;
+
+  const maxGeneratedNumElements = maxGeneratedLengthFromSizeForArbitrary(
+    size,
+    minNumElements,
+    maxNumElements,
+    constraints.maxNumElements !== undefined
+  );
+  const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(
+    size,
+    maxGeneratedNumElements,
+    maxLength,
+    constraints.maxLength !== undefined
+  );
 
   if (minNumElements > maxLength) {
     throw new Error(`The minimal number of non-hole elements cannot be higher than the maximal length of the array`);
@@ -76,11 +98,14 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   }
 
   const resultedMaxNumElements = Math.min(maxNumElements, maxLength);
+  const resultedSizeMaxNumElements = constraints.maxNumElements !== undefined || size !== undefined ? size : '=';
 
+  const maxGeneratedIndexAuthorized = Math.max(maxGeneratedLength - 1, 0); // just preventing special case for maxGeneratedLength=0
   const maxIndexAuthorized = Math.max(maxLength - 1, 0); // just preventing special case for maxLength=0
   const sparseArrayNoTrailingHole = convertFromNext(
     convertToNext(
-      set(tuple(nat(maxIndexAuthorized), arb), {
+      set(tuple(restrictedIntegerArbitraryBuilder(0, maxGeneratedIndexAuthorized, maxIndexAuthorized), arb), {
+        size: resultedSizeMaxNumElements,
         minLength: minNumElements,
         maxLength: resultedMaxNumElements,
         compare: { selector: (item) => item[0] },
@@ -96,6 +121,9 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
         if (!Array.isArray(value)) {
           throw new Error('Not supported entry type');
         }
+        if (noTrailingHole && value.length !== 0 && !(value.length - 1 in value)) {
+          throw new Error('No trailing hole');
+        }
         return Object.entries(value as T[]).map((entry): [number, T] => [Number(entry[0]), entry[1]]);
       }
     )
@@ -106,7 +134,9 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   }
 
   return convertFromNext(
-    convertToNext(tuple(sparseArrayNoTrailingHole, integer({ min: minNumElements, max: maxLength }))).map(
+    convertToNext(
+      tuple(sparseArrayNoTrailingHole, restrictedIntegerArbitraryBuilder(minNumElements, maxGeneratedLength, maxLength))
+    ).map(
       (data) => {
         const sparse = data[0];
         const targetLength = data[1];
