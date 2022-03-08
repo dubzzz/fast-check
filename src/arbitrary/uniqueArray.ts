@@ -1,7 +1,11 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
-import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
+import {
+  maxGeneratedLengthFromSizeForArbitrary,
+  MaxLengthUpperBound,
+  SizeForArbitrary,
+} from './_internals/helpers/MaxLengthFromMinLength';
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
 import { NextValue } from '../check/arbitrary/definition/NextValue';
@@ -41,27 +45,32 @@ function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T,
 
 /**
  * Shared constraints to be applied on {@link uniqueArray}
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export type UniqueArraySharedConstraints = {
   /**
    * Lower bound of the generated array size
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   minLength?: number;
   /**
    * Upper bound of the generated array size
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   maxLength?: number;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 2.23.0
+   */
+  size?: SizeForArbitrary;
 };
 
 /**
  * Constraints implying known and optimized comparison function
  * to be applied on {@link uniqueArray}
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export type UniqueArrayConstraintsRecommended<T, U> = UniqueArraySharedConstraints & {
@@ -71,12 +80,12 @@ export type UniqueArrayConstraintsRecommended<T, U> = UniqueArraySharedConstrain
    * - SameValue behaves like `Object.is` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue}
    * - SameValueZero behaves like `Set` or `Map` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero}
    * - Fully custom comparison function: it implies performance costs for large arrays
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   comparator?: 'IsStrictlyEqual' | 'SameValue' | 'SameValueZero';
   /**
    * How we should project the values before comparing them together
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   selector?: (v: T) => U;
 };
@@ -87,18 +96,18 @@ export type UniqueArrayConstraintsRecommended<T, U> = UniqueArraySharedConstrain
  *
  * WARNING - Imply an extra performance custom whenever you want to geenrate large arrays
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export type UniqueArrayConstraintsCustomCompare<T> = UniqueArraySharedConstraints & {
   /**
    * The operator to be used to compare the values after having applied the selector (if any)
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   comparator: (a: T, b: T) => boolean;
   /**
    * How we should project the values before comparing them together
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   selector?: undefined;
 };
@@ -109,18 +118,18 @@ export type UniqueArrayConstraintsCustomCompare<T> = UniqueArraySharedConstraint
  *
  * WARNING - Imply an extra performance custom whenever you want to geenrate large arrays
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export type UniqueArrayConstraintsCustomCompareSelect<T, U> = UniqueArraySharedConstraints & {
   /**
    * The operator to be used to compare the values after having applied the selector (if any)
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   comparator: (a: U, b: U) => boolean;
   /**
    * How we should project the values before comparing them together
-   * @remarks Since 2.21.0
+   * @remarks Since 2.23.0
    */
   selector: (v: T) => U;
 };
@@ -129,7 +138,7 @@ export type UniqueArrayConstraintsCustomCompareSelect<T, U> = UniqueArraySharedC
  * Constraints implying known and optimized comparison function
  * to be applied on {@link uniqueArray}
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export type UniqueArrayConstraints<T, U> =
@@ -143,7 +152,7 @@ export type UniqueArrayConstraints<T, U> =
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export function uniqueArray<T, U>(
@@ -156,7 +165,7 @@ export function uniqueArray<T, U>(
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export function uniqueArray<T>(arb: Arbitrary<T>, constraints: UniqueArrayConstraintsCustomCompare<T>): Arbitrary<T[]>;
@@ -166,7 +175,7 @@ export function uniqueArray<T>(arb: Arbitrary<T>, constraints: UniqueArrayConstr
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export function uniqueArray<T, U>(
@@ -179,16 +188,25 @@ export function uniqueArray<T, U>(
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances
  *
- * @remarks Since 2.21.0
+ * @remarks Since 2.23.0
  * @public
  */
 export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayConstraints<T, U>): Arbitrary<T[]>;
 export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayConstraints<T, U> = {}): Arbitrary<T[]> {
-  const { minLength = 0, maxLength = maxLengthFromMinLength(minLength) } = constraints;
+  const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
+  const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
+  const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(
+    constraints.size,
+    minLength,
+    maxLength,
+    constraints.maxLength !== undefined
+  );
   const setBuilder = buildUniqueArraySetBuilder(constraints);
 
   const nextArb = convertToNext(arb);
-  const arrayArb = convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxLength, setBuilder));
+  const arrayArb = convertFromNext(
+    new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength, setBuilder)
+  );
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }
