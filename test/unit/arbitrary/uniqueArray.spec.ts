@@ -187,7 +187,7 @@ describe('uniqueArray', () => {
 });
 
 describe('uniqueArray (integration)', () => {
-  type Extra = UniqueArrayConstraints<number, number>;
+  type Extra = UniqueArrayConstraints<unknown, unknown>;
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(
       fc.nat({ max: 5 }),
@@ -200,10 +200,14 @@ describe('uniqueArray (integration)', () => {
         { nil: undefined }
       )
     )
-    .map(([min, gap, withMin, withMax, _selector, comparator]) => ({
+    .map(([min, gap, withMin, withMax, selector, comparator]) => ({
       minLength: withMin ? min : undefined,
       maxLength: withMax ? min + gap : undefined,
-      selector: undefined,
+      // We only apply selector/comparator in case the minimal number of items requested
+      // is lower or equal to 1. Above this value there are chances that we will never be
+      // able to fulfill the constraints because of selector or comparator (eg.: making
+      // all the value equal together).
+      selector: withMin && min > 1 ? undefined : selector,
       comparator: withMin && min > 1 ? undefined : comparator,
     }));
 
@@ -219,8 +223,9 @@ describe('uniqueArray (integration)', () => {
     }
     if (extra.selector !== undefined || extra.comparator !== undefined) {
       const selector = extra.selector || ((a) => a);
-      const comparator = typeof extra.comparator === 'function' ? extra.comparator : (a: number, b: number) => a === b;
-      const alreadySeen: number[] = [];
+      const comparator =
+        typeof extra.comparator === 'function' ? extra.comparator : (a: unknown, b: unknown) => a === b;
+      const alreadySeen: unknown[] = [];
       for (const v of value) {
         const selected = selector(v);
         const matchingEntry = alreadySeen.some((e) => comparator(e, selected));
