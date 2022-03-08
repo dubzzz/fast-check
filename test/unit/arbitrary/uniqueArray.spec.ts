@@ -195,10 +195,7 @@ describe('uniqueArray (integration)', () => {
       fc.boolean(),
       fc.boolean(),
       fc.option(fc.func(fc.integer()), { nil: undefined }),
-      fc.option(
-        fc.compareFunc().map((f) => (a: unknown, b: unknown) => f(a, b) === 0),
-        { nil: undefined }
-      )
+      fc.option(comparatorArbitrary(), { nil: undefined })
     )
     .map(([min, gap, withMin, withMax, selector, comparator]) => ({
       minLength: withMin ? min : undefined,
