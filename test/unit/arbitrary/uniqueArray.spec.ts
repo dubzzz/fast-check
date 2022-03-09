@@ -197,16 +197,31 @@ describe('uniqueArray (integration)', () => {
       fc.option(fc.func(fc.integer()), { nil: undefined }),
       fc.option(comparatorArbitrary(), { nil: undefined })
     )
-    .map(([min, gap, withMin, withMax, selector, comparator]) => ({
-      minLength: withMin ? min : undefined,
-      maxLength: withMax ? min + gap : undefined,
-      // We only apply selector/comparator in case the minimal number of items requested
-      // is lower or equal to 1. Above this value there are chances that we will never be
-      // able to fulfill the constraints because of selector or comparator (eg.: making
-      // all the value equal together).
-      selector: withMin && min > 1 ? undefined : selector,
-      comparator: withMin && min > 1 ? undefined : comparator,
-    }));
+    .map(([min, gap, withMin, withMax, selector, comparator]) => {
+      // We only apply selector/comparator in case the minimal number of items requested can be reached with the selector/comparator.
+      // eg.: selector = v => 0, means that we will have at most 1 value in the array, never more, so it cannot be used with min > 1
+      const requestedMin = withMin ? min : 0;
+      let selectorEnabled = requestedMin === 0 || selector === undefined;
+      let comparatorEnabled = requestedMin === 0 || comparator === undefined;
+      const sampleSize = 50;
+      const sampledSelectedValues = new Set<unknown>();
+      const resolvedSelector = resolveSelectorFunction(selector);
+      const resolvedComparator = resolveComparatorFunction(comparator);
+      for (let v = 0; v !== sampleSize && (!selectorEnabled || !comparatorEnabled); ++v) {
+        const selected = resolvedSelector(v);
+        sampledSelectedValues.add(selected);
+        selectorEnabled = selectorEnabled || sampledSelectedValues.size >= requestedMin;
+        if (!comparatorEnabled && comparator !== undefined) {
+          comparatorEnabled = comparatorEnabled || [...sampledSelectedValues].every((s) => !resolvedComparator(s, v));
+        }
+      }
+      return {
+        minLength: withMin ? min : undefined,
+        maxLength: withMax ? min + gap : undefined,
+        selector: selectorEnabled ? selector : undefined,
+        comparator: comparatorEnabled ? comparator : undefined,
+      };
+    });
 
   const isCorrect = (value: number[], extra: Extra) => {
     if (extra.minLength !== undefined) {
@@ -219,13 +234,12 @@ describe('uniqueArray (integration)', () => {
       expect(typeof v).toBe('number');
     }
     if (extra.selector !== undefined || extra.comparator !== undefined) {
-      const selector = extra.selector || ((a) => a);
-      const comparator =
-        typeof extra.comparator === 'function' ? extra.comparator : (a: unknown, b: unknown) => a === b;
+      const resolvedSelector = resolveSelectorFunction(extra.selector);
+      const resolvedComparator = resolveComparatorFunction(extra.comparator);
       const alreadySeen: unknown[] = [];
       for (const v of value) {
-        const selected = selector(v);
-        const matchingEntry = alreadySeen.some((e) => comparator(e, selected));
+        const selected = resolvedSelector(v);
+        const matchingEntry = alreadySeen.some((e) => resolvedComparator(e, selected));
         expect(matchingEntry).toBe(false);
         alreadySeen.push(selected);
       }
@@ -298,7 +312,7 @@ describe('uniqueArray (integration)', () => {
 
 // Helpers
 
-type ComparatorType = UniqueArrayConstraints<unknown, unknown>['comparator'];
+type ComparatorType<T = unknown, U = unknown> = UniqueArrayConstraints<T, U>['comparator'];
 
 function comparatorArbitrary(): fc.Arbitrary<ComparatorType> {
   return fc.oneof(
@@ -307,8 +321,34 @@ function comparatorArbitrary(): fc.Arbitrary<ComparatorType> {
   );
 }
 
-type SelectorType = UniqueArrayConstraints<unknown, unknown>['selector'];
+function resolveComparatorFunction<T, U>(
+  comparator: ComparatorType<T, U> | undefined
+): (a: unknown, b: unknown) => boolean {
+  if (comparator === undefined) {
+    return (a, b) => Object.is(a, b);
+  }
+  if (typeof comparator === 'function') {
+    return comparator as (a: unknown, b: unknown) => boolean;
+  }
+  switch (comparator) {
+    case 'IsStrictlyEqual':
+      return (a, b) => a === b;
+    case 'SameValue':
+      return (a, b) => Object.is(a, b);
+    case 'SameValueZero':
+      return (a, b) => (a === 0 && b === 0) || Object.is(a, b);
+  }
+}
+
+type SelectorType<T = unknown, U = unknown> = UniqueArrayConstraints<T, U>['selector'];
 
 function selectorArbitrary(): fc.Arbitrary<SelectorType> {
   return fc.func(fc.anything());
+}
+
+function resolveSelectorFunction<T, U>(selector: SelectorType<T, U> | undefined): (a: unknown) => unknown {
+  if (selector === undefined) {
+    return (a) => a;
+  }
+  return selector as (a: unknown) => unknown;
 }
