@@ -56,6 +56,8 @@ async function extractAndParseDiff(fromIdentifier) {
       case ':zap:':
       case '✨':
       case ':sparkles:':
+      case '🗑️':
+      case ':wastebasket:':
         newFeaturesSection.push(buildPrLine(pr, title));
         break;
       case '🔥':
