@@ -1,7 +1,7 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
-import { set } from './set';
 import { tuple } from './tuple';
+import { uniqueArray } from './uniqueArray';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
@@ -104,11 +104,11 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
   const maxIndexAuthorized = Math.max(maxLength - 1, 0); // just preventing special case for maxLength=0
   const sparseArrayNoTrailingHole = convertFromNext(
     convertToNext(
-      set(tuple(restrictedIntegerArbitraryBuilder(0, maxGeneratedIndexAuthorized, maxIndexAuthorized), arb), {
+      uniqueArray(tuple(restrictedIntegerArbitraryBuilder(0, maxGeneratedIndexAuthorized, maxIndexAuthorized), arb), {
         size: resultedSizeMaxNumElements,
         minLength: minNumElements,
         maxLength: resultedMaxNumElements,
-        compare: { selector: (item) => item[0] },
+        selector: (item) => item[0],
       })
     ).map(
       (items) => {

@@ -162,6 +162,9 @@ export interface SetConstraints<T> {
  *
  * @param arb - Arbitrary used to generate the values inside the array
  *
+ * @deprecated
+ * Prefer `fc.uniqueArray(arb, {comparator: 'IsStrictlyEqual'})` instead.
+ *
  * @remarks Since 0.0.11
  * @public
  */
@@ -250,6 +253,9 @@ function set<T>(
  *
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances
+ *
+ * @deprecated
+ * Prefer `fc.uniqueArray(arb, ...)` instead.
  *
  * @remarks Since 2.4.0
  * @public

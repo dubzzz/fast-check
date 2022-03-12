@@ -1,7 +1,7 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
-import { set } from './set';
 import { tuple } from './tuple';
+import { uniqueArray } from './uniqueArray';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject';
 
@@ -49,11 +49,11 @@ export function dictionary<T>(
 ): Arbitrary<Record<string, T>> {
   return convertFromNext(
     convertToNext(
-      set(tuple(keyArb, valueArb), {
+      uniqueArray(tuple(keyArb, valueArb), {
         minLength: constraints.minKeys,
         maxLength: constraints.maxKeys,
         size: constraints.size,
-        compare: { selector: dictionaryKeyExtractor },
+        selector: dictionaryKeyExtractor,
       })
     ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
   );

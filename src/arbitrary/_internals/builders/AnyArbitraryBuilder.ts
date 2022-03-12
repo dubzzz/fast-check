@@ -4,7 +4,6 @@ import { stringify } from '../../../utils/stringify';
 import { array } from '../../array';
 import { frequency } from '../../frequency';
 import { oneof } from '../../oneof';
-import { set } from '../../set';
 import { tuple } from '../../tuple';
 import { bigInt } from '../../bigInt';
 import { date } from '../../date';
@@ -26,6 +25,7 @@ import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
 import { objectToPrototypeLessMapper, objectToPrototypeLessUnmapper } from '../mappers/ObjectToPrototypeLess';
 import { letrec } from '../../letrec';
 import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
+import { uniqueArray } from '../../uniqueArray';
 
 /** @internal */
 function entriesOf<T, U>(
@@ -35,10 +35,11 @@ function entriesOf<T, U>(
   size: SizeForArbitrary | undefined
 ) {
   return convertToNext(
-    set(tuple(keyArb, valueArb), {
+    uniqueArray(tuple(keyArb, valueArb), {
       maxLength: maxKeys,
       size,
-      compare: { type: 'SameValueZero', selector: (t) => t[0] },
+      comparator: 'SameValueZero',
+      selector: (t) => t[0],
     })
   );
 }
@@ -60,7 +61,7 @@ function setOf<U>(va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | un
   // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
   // While the Set does not and consider them to be the same values.
   return convertFromNext(
-    convertToNext(set(va, { maxLength: maxKeys, size, compare: { type: 'SameValueZero' } })).map(
+    convertToNext(uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero' })).map(
       arrayToSetMapper,
       arrayToSetUnmapper
     )
