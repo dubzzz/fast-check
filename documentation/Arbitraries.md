@@ -2531,18 +2531,18 @@ fc.uniqueArray(fc.nat(99))
 
 fc.uniqueArray(
   fc.record({
-    id: fc.uuidV(4),
-    name: fc.string()
+    id: fc.nat(),
+    name: fc.constantFrom("Anna", "Paul"),
   }),
   { selector: entry => entry.id }
 )
 // Note: Resulting arrays will never contain two entries having the same id
 // Examples of generated values:
-// • [{"id":"a8b9380b-8834-498b-b1a4-a741d80a8238","name":"1ga10B9|tl"},{"id":"0d215ae9-5dfe-4603-b241-59f4856927dd","name":"DQNH|h}("},{"id":"5488e988-6d87-49a1-8c07-1ed2731768b6","name":"XH(r"}]
+// • [{"id":1882378367,"name":"Paul"},{"id":45488570,"name":"Paul"},{"id":2147483645,"name":"Anna"},{"id":1221182843,"name":"Paul"}]
+// • [{"id":2005739200,"name":"Anna"},{"id":1864243668,"name":"Anna"},{"id":475283529,"name":"Paul"},{"id":337619666,"name":"Paul"},{"id":1035242675,"name":"Paul"},{"id":1055074819,"name":"Paul"},{"id":1103318469,"name":"Anna"},{"id":1509365027,"name":"Paul"}]
+// • [{"id":7,"name":"Anna"},{"id":720182288,"name":"Paul"}]
 // • []
-// • [{"id":"155311ce-61c6-45f2-8bb6-4585d3518936","name":"-mbzCI8{7"},{"id":"45a08330-e680-4dd3-9143-edf2ff01ab7f","name":" v[%"}]
-// • [{"id":"ffffffe7-47c3-4d1e-b709-92b200000010","name":""}]
-// • [{"id":"00000000-ffe9-4fff-b0f4-aa2b00000007","name":""},{"id":"65e4c84b-0010-4000-8000-0007064595a6","name":"5<Bq"}]
+// • [{"id":15,"name":"Anna"},{"id":5,"name":"Paul"},{"id":2147483644,"name":"Anna"}]
 // • …
 
 fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN))
