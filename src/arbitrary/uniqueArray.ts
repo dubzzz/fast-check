@@ -80,11 +80,14 @@ export type UniqueArrayConstraintsRecommended<T, U> = UniqueArraySharedConstrain
    * - SameValue behaves like `Object.is` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue}
    * - SameValueZero behaves like `Set` or `Map` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero}
    * - Fully custom comparison function: it implies performance costs for large arrays
+   *
+   * @defaultValue 'IsStrictlyEqual'
    * @remarks Since 2.23.0
    */
   comparator?: 'IsStrictlyEqual' | 'SameValue' | 'SameValueZero';
   /**
    * How we should project the values before comparing them together
+   * @defaultValue (v => v)
    * @remarks Since 2.23.0
    */
   selector?: (v: T) => U;
@@ -94,7 +97,7 @@ export type UniqueArrayConstraintsRecommended<T, U> = UniqueArraySharedConstrain
  * Constraints implying a fully custom comparison function
  * to be applied on {@link uniqueArray}
  *
- * WARNING - Imply an extra performance custom whenever you want to geenrate large arrays
+ * WARNING - Imply an extra performance cost whenever you want to generate large arrays
  *
  * @remarks Since 2.23.0
  * @public
@@ -116,7 +119,7 @@ export type UniqueArrayConstraintsCustomCompare<T> = UniqueArraySharedConstraint
  * Constraints implying fully custom comparison function and selector
  * to be applied on {@link uniqueArray}
  *
- * WARNING - Imply an extra performance custom whenever you want to geenrate large arrays
+ * WARNING - Imply an extra performance cost whenever you want to generate large arrays
  *
  * @remarks Since 2.23.0
  * @public
@@ -137,6 +140,8 @@ export type UniqueArrayConstraintsCustomCompareSelect<T, U> = UniqueArraySharedC
 /**
  * Constraints implying known and optimized comparison function
  * to be applied on {@link uniqueArray}
+ *
+ * The defaults relies on the defaults specified by {@link UniqueArrayConstraintsRecommended}
  *
  * @remarks Since 2.23.0
  * @public
