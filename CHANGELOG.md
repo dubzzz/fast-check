@@ -1,3 +1,19 @@
+# 2.23.0
+
+_Just checking what changed so far_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.23.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.22.0...v2.23.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#2750](https://github.com/dubzzz/fast-check/pull/2750)) Doc: Reorder assert overloads to render better documentation
+- ([PR#2766](https://github.com/dubzzz/fast-check/pull/2766)) Test: Add some tests onto `ArrayArbitrary`
+
+---
+
 # 2.22.0
 
 _Introduce the notion of `size` to avoid having to specify `maxLength` not being real constraints_
