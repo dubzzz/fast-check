@@ -251,7 +251,7 @@ describe('uniqueArray (integration)', () => {
   };
 
   const integerUpTo10000AndNaNOrMinusZero = new FakeIntegerArbitrary(-2, 10000).map(
-    (v) => (v === -2 ? Number.NaN : v === -1 ? -0 : 0),
+    (v) => (v === -2 ? Number.NaN : v === -1 ? -0 : v),
     (v) => {
       if (typeof v !== 'number' || v === -1 || v === -2) throw new Error('');
       return Object.is(v, Number.NaN) ? -2 : Object.is(v, -0) ? -1 : v;
