@@ -10,8 +10,8 @@ import {
 } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as RestrictedIntegerArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/RestrictedIntegerArbitraryBuilder';
-import * as SetMock from '../../../src/arbitrary/set';
 import * as TupleMock from '../../../src/arbitrary/tuple';
+import * as UniqueMock from '../../../src/arbitrary/uniqueArray';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
@@ -37,20 +37,20 @@ describe('sparseArray', () => {
       fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
-        const set = jest.spyOn(SetMock, 'set');
         const tuple = jest.spyOn(TupleMock, 'tuple');
-        const { instance: setInstance } = fakeNextArbitraryStaticValue(() => []);
+        const uniqueArray = jest.spyOn(UniqueMock, 'uniqueArray');
         const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
-        set.mockReturnValueOnce(convertFromNext(setInstance));
+        const { instance: uniqueInstance } = fakeNextArbitraryStaticValue(() => []);
         tuple.mockReturnValueOnce(convertFromNext(tupleInstance));
+        uniqueArray.mockReturnValueOnce(convertFromNext(uniqueInstance));
         const { instance: arb } = fakeNextArbitrary();
 
         // Act
         sparseArray(convertFromNext(arb), ct);
 
         // Assert
-        expect(set).toHaveBeenCalledTimes(1);
-        expect(set).toHaveBeenCalledWith(
+        expect(uniqueArray).toHaveBeenCalledTimes(1);
+        expect(uniqueArray).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({ minLength: expect.any(Number), maxLength: expect.any(Number) })
         );
@@ -63,16 +63,16 @@ describe('sparseArray', () => {
       fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
-        const set = jest.spyOn(SetMock, 'set');
         const tuple = jest.spyOn(TupleMock, 'tuple');
+        const uniqueArray = jest.spyOn(UniqueMock, 'uniqueArray');
         const restrictedIntegerArbitraryBuilder = jest.spyOn(
           RestrictedIntegerArbitraryBuilderMock,
           'restrictedIntegerArbitraryBuilder'
         ); // called to build indexes
-        const { instance: setInstance } = fakeNextArbitraryStaticValue(() => []);
         const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
-        set.mockReturnValueOnce(convertFromNext(setInstance));
+        const { instance: uniqueArrayInstance } = fakeNextArbitraryStaticValue(() => []);
         tuple.mockReturnValueOnce(convertFromNext(tupleInstance));
+        uniqueArray.mockReturnValueOnce(convertFromNext(uniqueArrayInstance));
         const { instance: arb } = fakeNextArbitrary();
 
         // Act
@@ -80,12 +80,12 @@ describe('sparseArray', () => {
 
         // Assert
         expect(restrictedIntegerArbitraryBuilder).toHaveBeenCalled(); // at least once
-        expect(set).toHaveBeenCalledTimes(1);
+        expect(uniqueArray).toHaveBeenCalledTimes(1);
         // First call is to configure items coming with data
         const maxGeneratedIndexes = restrictedIntegerArbitraryBuilder.mock.calls[0][1]; // ie maxGenerated
         const maxRequestedIndexes = restrictedIntegerArbitraryBuilder.mock.calls[0][2]; // ie max
         expect(maxGeneratedIndexes).toBeLessThanOrEqual(maxRequestedIndexes);
-        const maxRequestedLength = set.mock.calls[0][1].maxLength!;
+        const maxRequestedLength = uniqueArray.mock.calls[0][1].maxLength!;
         if (ct !== undefined && ct.noTrailingHole) {
           // maxRequestedIndexes is the maximal index we may have for the current instance (+1 is the length)
           // maxRequestedLength is the maximal number of elements we ask to the set

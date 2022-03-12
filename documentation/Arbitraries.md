@@ -2600,8 +2600,8 @@ fc.uniqueArray(
 
 *&#8195;Signatures*
 
-- `fc.set(arb)`
-- `fc.set(arb, {minLength?, maxLength?, compare?, size?})`
+- _`fc.set(arb)`_ — _deprecated since v2.23.0, prefer `fc.uniqueArray`_
+- _`fc.set(arb, {minLength?, maxLength?, compare?, size?})`_ — _deprecated since v2.23.0, prefer `fc.uniqueArray`_
 - _`fc.set(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
