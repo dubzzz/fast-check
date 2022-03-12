@@ -205,14 +205,20 @@ describe('uniqueArray (integration)', () => {
       let comparatorEnabled = requestedMin === 0 || comparator === undefined;
       const sampleSize = 50;
       const sampledSelectedValues = new Set<unknown>();
+      const sampledSelectedAndComparedValues: unknown[] = [];
       const resolvedSelector = resolveSelectorFunction(selector);
       const resolvedComparator = resolveComparatorFunction(comparator);
       for (let v = 0; v !== sampleSize && (!selectorEnabled || !comparatorEnabled); ++v) {
-        const selected = resolvedSelector(v);
+        const selected = resolvedSelector(v); // either v (integer in 0..sampleSize) or an integer (by construct of selector)
         sampledSelectedValues.add(selected);
         selectorEnabled = selectorEnabled || sampledSelectedValues.size >= requestedMin;
         if (!comparatorEnabled && comparator !== undefined) {
-          comparatorEnabled = comparatorEnabled || [...sampledSelectedValues].every((s) => !resolvedComparator(s, v));
+          if (sampledSelectedAndComparedValues.every((p) => !resolvedComparator(p, selected))) {
+            // Selected is "different" from all the other known values
+            sampledSelectedAndComparedValues.push(selected);
+            comparatorEnabled = comparatorEnabled || sampledSelectedAndComparedValues.length >= requestedMin;
+            selectorEnabled = selectorEnabled || comparatorEnabled; // comparator enabled unlocks selector too
+          }
         }
       }
       return {
@@ -233,23 +239,26 @@ describe('uniqueArray (integration)', () => {
     for (const v of value) {
       expect(typeof v).toBe('number');
     }
-    if (extra.selector !== undefined || extra.comparator !== undefined) {
-      const resolvedSelector = resolveSelectorFunction(extra.selector);
-      const resolvedComparator = resolveComparatorFunction(extra.comparator);
-      const alreadySeen: unknown[] = [];
-      for (const v of value) {
-        const selected = resolvedSelector(v);
-        const matchingEntry = alreadySeen.some((e) => resolvedComparator(e, selected));
-        expect(matchingEntry).toBe(false);
-        alreadySeen.push(selected);
-      }
-    } else {
-      expect([...new Set(value)]).toEqual(value);
+    const resolvedSelector = resolveSelectorFunction(extra.selector);
+    const resolvedComparator = resolveComparatorFunction(extra.comparator);
+    const alreadySeen: unknown[] = [];
+    for (const v of value) {
+      const selected = resolvedSelector(v);
+      const matchingEntry = alreadySeen.some((e) => resolvedComparator(e, selected));
+      expect(matchingEntry).toBe(false);
+      alreadySeen.push(selected);
     }
   };
 
+  const integerUpTo10000AndNaNOrMinusZero = new FakeIntegerArbitrary(-2, 10000).map(
+    (v) => (v === -2 ? Number.NaN : v === -1 ? -0 : v),
+    (v) => {
+      if (typeof v !== 'number' || v === -1 || v === -2) throw new Error('');
+      return Object.is(v, Number.NaN) ? -2 : Object.is(v, -0) ? -1 : v;
+    }
+  );
   const uniqueArrayBuilder = (extra: Extra) =>
-    convertToNext(uniqueArray(convertFromNext(new FakeIntegerArbitrary(0, 10000)), extra));
+    convertToNext(uniqueArray(convertFromNext(integerUpTo10000AndNaNOrMinusZero), extra));
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(uniqueArrayBuilder, { extraParameters });
