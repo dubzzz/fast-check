@@ -46,6 +46,10 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
+      - uses: actions/cache@v2.1.7
+        with:
+          path: .jest-cache
+          key: ${{runner.os}}-${{matrix.node-version}}-jest-test
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@v3
         with:
@@ -54,6 +58,8 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build the library (dev version)
         run: |
+            npx jest --showConfig
+            pwd
             yarn prebuild
             yarn build
       - name: Unit tests
@@ -83,6 +89,10 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
+      - uses: actions/cache@v2.1.7
+        with:
+          path: .jest-cache
+          key: ${{runner.os}}-${{matrix.node-version}}-jest-test-e2e
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@v3
         with:
