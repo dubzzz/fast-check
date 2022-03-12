@@ -75,6 +75,14 @@ import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './arbitrary/record';
 import { set, SetConstraints, SetConstraintsSelector } from './arbitrary/set';
+import {
+  uniqueArray,
+  UniqueArrayConstraints,
+  UniqueArraySharedConstraints,
+  UniqueArrayConstraintsRecommended,
+  UniqueArrayConstraintsCustomCompare,
+  UniqueArrayConstraintsCustomCompareSelect,
+} from './arbitrary/uniqueArray';
 import { infiniteStream } from './arbitrary/infiniteStream';
 import { asciiString } from './arbitrary/asciiString';
 import { base64String } from './arbitrary/base64String';
@@ -276,6 +284,7 @@ export {
   sparseArray,
   infiniteStream,
   set,
+  uniqueArray,
   tuple,
   genericTuple,
   record,
@@ -388,6 +397,11 @@ export {
   SchedulerConstraints,
   SetConstraints,
   SetConstraintsSelector,
+  UniqueArrayConstraints,
+  UniqueArraySharedConstraints,
+  UniqueArrayConstraintsRecommended,
+  UniqueArrayConstraintsCustomCompare,
+  UniqueArrayConstraintsCustomCompareSelect,
   SparseArrayConstraints,
   StringSharedConstraints,
   SubarrayConstraints,

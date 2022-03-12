@@ -141,6 +141,53 @@ expectType<fc.Arbitrary<number | string>>()(
 expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(fc.constantFrom(...([1, 2, 'hello'] as const)), '"as const" prevent extra simplification of "constantFrom"');
 // prettier-ignore-end
 
+// uniqueArray arbitrary
+expectType<fc.Arbitrary<string[]>>()(fc.uniqueArray(fc.string()), 'simple arrays of unique values');
+expectType<fc.Arbitrary<{ name: string }[]>>()(
+  fc.uniqueArray(fc.record({ name: fc.string() }), {
+    selector: (item) => item.name,
+  }),
+  'arrays of unique values based on a selector'
+);
+expectType<fc.Arbitrary<{ name: string }[]>>()(
+  fc.uniqueArray(fc.record({ name: fc.string() }), {
+    comparator: (itemA, itemB) => itemA.name === itemB.name,
+  }),
+  'arrays of unique values using a custom comparison function'
+);
+expectType<fc.Arbitrary<{ name: string }[]>>()(
+  fc.uniqueArray(fc.record({ name: fc.string() }), {
+    // Ideally we should not need to explicitely type `itemA`, but so far it is needed
+    comparator: (itemA: { toto: string }, itemB) => itemA.toto === itemB.toto,
+    selector: (item) => ({ toto: item.name }),
+  }),
+  'arrays of unique values using a custom comparison function and a complex selector (need an explicit typing)'
+);
+declare const constraintsUniqueArray1: fc.UniqueArrayConstraints<{ name: string }, { toto: string }>;
+expectType<fc.Arbitrary<{ name: string }[]>>()(
+  fc.uniqueArray(fc.record({ name: fc.string() }), constraintsUniqueArray1),
+  'arrays of unique values accept the aggregated type as input'
+);
+
+fc.uniqueArray(fc.record({ name: fc.string() }), {
+  // @ts-expect-error - Custom comparison function is not compatible with default selector
+  comparator: (itemA, itemB) => itemA.toto === itemB.toto,
+});
+// @ts-expect-error - Custom comparison function is not compatible with default selector even if explicitely specifying a wrong type
+fc.uniqueArray(fc.record({ name: fc.string() }), {
+  comparator: (itemA: { toto: string }, itemB: { toto: string }) => itemA.toto === itemB.toto,
+});
+fc.uniqueArray(fc.record({ name: fc.string() }), {
+  // @ts-expect-error - Custom comparison function is not compatible with provided selector
+  comparator: (itemA, itemB) => itemA.toto === itemB.toto,
+  selector: (item) => item.name,
+});
+fc.uniqueArray(fc.record({ name: fc.string() }), {
+  comparator: (itemA: { toto: string }, itemB: { toto: string }) => itemA.toto === itemB.toto,
+  // @ts-expect-error - Custom comparison function is not compatible with provided selector even if explicitely specifying a wrong type
+  selector: (item) => item.name,
+});
+
 // record arbitrary
 const mySymbol1 = Symbol('symbol1');
 const mySymbol2 = Symbol('symbol2');
