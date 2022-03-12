@@ -50,7 +50,7 @@ jobs:
       - name: Cache for Jest
         uses: actions/cache@v2.1.7
         with:
-          path: .jest-cache
+          path: /tmp/jest_rt
           key: ${{runner.os}}-${{matrix.node-version}}-jest-test
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@v3
@@ -93,7 +93,7 @@ jobs:
       - name: Cache for Jest
         uses: actions/cache@v2.1.7
         with:
-          path: .jest-cache
+          path: /tmp/jest_rt
           key: ${{runner.os}}-${{matrix.node-version}}-jest-test-e2e
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@v3
