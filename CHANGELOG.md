@@ -1,3 +1,24 @@
+# 2.23.0
+
+_Introduce `fc.uniqueArray` as a replacement for `fc.set`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.23.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.22.0...v2.23.0)]
+
+## Features
+
+- ([PR#2616](https://github.com/dubzzz/fast-check/pull/2616)) Add new arbitrary called `uniqueArray`
+- ([PR#2784](https://github.com/dubzzz/fast-check/pull/2784)) Mark `fc.set` as deprecated
+
+## Fixes
+
+- ([PR#2786](https://github.com/dubzzz/fast-check/pull/2786)) CI: Stop creating the tags via action
+- ([PR#2787](https://github.com/dubzzz/fast-check/pull/2787)) CI: Preserve Jest's cache accross runs
+- ([PR#2750](https://github.com/dubzzz/fast-check/pull/2750)) Doc: Reorder assert overloads to render better documentation
+- ([PR#2785](https://github.com/dubzzz/fast-check/pull/2785)) Script: Mark changes for "deprecated" as feature
+- ([PR#2766](https://github.com/dubzzz/fast-check/pull/2766)) Test: Add some tests onto `ArrayArbitrary`
+- ([PR#2783](https://github.com/dubzzz/fast-check/pull/2783)) Test: Better coverage for `selector` and `comparator` in `uniqueArray`
+
+---
+
 # 2.22.0
 
 _Introduce the notion of `size` to avoid having to specify `maxLength` not being real constraints_
