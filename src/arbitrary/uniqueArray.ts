@@ -87,7 +87,7 @@ export type UniqueArrayConstraintsRecommended<T, U> = UniqueArraySharedConstrain
   comparator?: 'SameValue' | 'SameValueZero' | 'IsStrictlyEqual';
   /**
    * How we should project the values before comparing them together
-   * @defaultValue (v => v)
+   * @defaultValue (v =&gt; v)
    * @remarks Since 2.23.0
    */
   selector?: (v: T) => U;
