@@ -2516,7 +2516,7 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `selector?` — default: `v => v` — _project the generated value in order to compare it_
-- `comparator?` — default: `SameValue` — _compare two projected values and returs `true` if the to projected values should be considered equal_
+- `comparator?` — default: `SameValue` — _compare two projected values and returns `true` whenever the projected values should be considered equal. Possible values for `comparator` are:_
   - `SameValue` to rely on `Object.is` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue))
   - `SameValueZero` to rely on the same logic as the one of `Set` or `Map` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero))
   - `IsStrictlyEqual` to rely on `===` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal))
