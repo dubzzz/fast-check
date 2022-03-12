@@ -42,11 +42,13 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v2.1.7
+      - name: Cache for node_modules
+        uses: actions/cache@v2.1.7
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
-      - uses: actions/cache@v2.1.7
+      - name: Cache for Jest
+        uses: actions/cache@v2.1.7
         with:
           path: .jest-cache
           key: ${{runner.os}}-${{matrix.node-version}}-jest-test
@@ -58,8 +60,6 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build the library (dev version)
         run: |
-            npx jest --showConfig
-            pwd
             yarn prebuild
             yarn build
       - name: Unit tests
@@ -85,11 +85,13 @@ jobs:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v2.1.7
+      - name: Cache for node_modules
+        uses: actions/cache@v2.1.7
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
-      - uses: actions/cache@v2.1.7
+      - name: Cache for Jest
+        uses: actions/cache@v2.1.7
         with:
           path: .jest-cache
           key: ${{runner.os}}-${{matrix.node-version}}-jest-test-e2e
