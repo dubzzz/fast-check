@@ -33,13 +33,13 @@ function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T,
   const selector = constraints.selector || ((v) => v);
   const refinedSelector = (next: NextValue<T>) => selector(next.value_);
   switch (constraints.comparator) {
-    case 'SameValue':
-      return () => new SameValueSet(refinedSelector);
+    case 'IsStrictlyEqual':
+      return () => new StrictlyEqualSet(refinedSelector);
     case 'SameValueZero':
       return () => new SameValueZeroSet(refinedSelector);
-    case 'IsStrictlyEqual':
+    case 'SameValue':
     case undefined:
-      return () => new StrictlyEqualSet(refinedSelector);
+      return () => new SameValueSet(refinedSelector);
   }
 }
 
@@ -76,15 +76,15 @@ export type UniqueArraySharedConstraints = {
 export type UniqueArrayConstraintsRecommended<T, U> = UniqueArraySharedConstraints & {
   /**
    * The operator to be used to compare the values after having applied the selector (if any):
-   * - IsStrictlyEqual behaves like `===` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal}
    * - SameValue behaves like `Object.is` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue}
    * - SameValueZero behaves like `Set` or `Map` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero}
+   * - IsStrictlyEqual behaves like `===` — {@link https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal}
    * - Fully custom comparison function: it implies performance costs for large arrays
    *
-   * @defaultValue 'IsStrictlyEqual'
+   * @defaultValue 'SameValue'
    * @remarks Since 2.23.0
    */
-  comparator?: 'IsStrictlyEqual' | 'SameValue' | 'SameValueZero';
+  comparator?: 'SameValue' | 'SameValueZero' | 'IsStrictlyEqual';
   /**
    * How we should project the values before comparing them together
    * @defaultValue (v => v)
