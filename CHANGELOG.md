@@ -1,3 +1,18 @@
+# 2.24.0
+
+_Trying stuff_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.24.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.23.0...v2.24.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#2789](https://github.com/dubzzz/fast-check/pull/2789)) Script: Generate changelog also bumps the npm version
+
+---
+
 # 2.23.0
 
 _Introduce `fc.uniqueArray` as a replacement for `fc.set`_
