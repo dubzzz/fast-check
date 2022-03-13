@@ -159,6 +159,7 @@ async function run({ nextVersion, shortDescription }) {
   await execFile('git', ['checkout', '-b', branchName]);
   await execFile('git', ['add', changelogFilename]);
   await execFile('git', ['commit', '-m', commitName]);
+  await execFile('npm', ['version', '--no-git-tag-version', nextVersion]);
   await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
 
   // Return useful details
