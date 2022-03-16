@@ -215,7 +215,6 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
   async waitFor<T>(unscheduledTask: Promise<T>): Promise<T> {
     let taskResolved = false;
-    let triggerAwaiter: ReturnType<typeof setTimeout> | null = null;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterPromise: Promise<void> | null = null;
@@ -225,6 +224,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       }
     };
     const launchAwaiter = async () => {
+      if (awaiterPromise !== null) {
+        return;
+      }
       awaiterPromise = awaiter();
       await awaiterPromise;
       awaiterPromise = null;
@@ -234,26 +236,14 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         // Awaiter is currently running, there is no need to relaunch it
         return;
       }
-      if (triggerAwaiter !== null) {
-        // Let's clear timeout for the previously scheduled (and potentially already executed) awaiter
-        clearTimeout(triggerAwaiter);
-      }
       // Schedule the next awaiter
-      triggerAwaiter = setTimeout(launchAwaiter, 0);
+      Promise.resolve().then(launchAwaiter);
     };
     this.scheduledWatchers.push(handleNotified);
-
-    // Simulate `handleNotified` is the number of waiting tasks is not zero
-    if (this.count() !== 0) {
-      handleNotified();
-    }
 
     // Define the wrapping task and its resolution strategy
     const handleResolvedUnscheduled = () => {
       taskResolved = true;
-      if (triggerAwaiter !== null) {
-        clearTimeout(triggerAwaiter);
-      }
       const handleNotifiedIndex = this.scheduledWatchers.indexOf(handleNotified);
       if (handleNotifiedIndex !== -1) {
         this.scheduledWatchers.splice(handleNotifiedIndex, 1);
@@ -271,6 +261,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         }
       )
       .finally(() => awaiterPromise);
+
+    // Simulate `handleNotified` is the number of waiting tasks is not zero
+    // Must be called after unscheduledTask.then otherwise, a promise could be released while
+    // we already have the value for unscheduledTask ready
+    if (this.scheduledTasks.length > 0) {
+      handleNotified();
+    }
 
     return rewrappedTask;
   }
