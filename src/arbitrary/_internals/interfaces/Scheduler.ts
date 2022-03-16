@@ -59,6 +59,20 @@ export interface Scheduler<TMetaData = unknown> {
   waitAll: () => Promise<void>;
 
   /**
+   * Wait as many scheduled tasks as need to resolve the received Promise
+   *
+   * Some tests frameworks like `supertest` are not triggering calls to subsequent queries in a synchronous way,
+   * or wait an explicit call to `then` to trigger them (either synchronously or asynchronously). As a consequence,
+   * `waitAll` cannot wait for them out-of-the-box.
+   *
+   * This helper is responsible to wait as many scheduled tasks as needed (but the bare minimal) to get
+   * `unscheduledTask` resolved. Once resolved it returns its output either success or failure.
+   *
+   * @remarks Since 2.24.0
+   */
+  waitFor: <T>(unscheduledTask: Promise<T>) => Promise<T>;
+
+  /**
    * Produce an array containing all the scheduled tasks so far with their execution status.
    * If the task has been executed, it includes a string representation of the associated output or error produced by the task if any.
    *

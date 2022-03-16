@@ -36,6 +36,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   private readonly sourceTaskSelector: TaskSelector<TMetaData>;
   private readonly scheduledTasks: ScheduledTask<TMetaData>[];
   private readonly triggeredTasks: TriggeredTask<TMetaData>[];
+  private readonly scheduledWatchers: (() => void)[];
 
   constructor(
     readonly act: (f: () => Promise<void>) => Promise<unknown>,
@@ -45,6 +46,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     this.sourceTaskSelector = taskSelector.clone();
     this.scheduledTasks = [];
     this.triggeredTasks = [];
+    this.scheduledWatchers = [];
   }
 
   private static buildLog<TMetaData>(reportItem: SchedulerReportItem<TMetaData>) {
@@ -107,6 +109,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       label,
       metadata,
     });
+    for (let index = 0; index !== this.scheduledWatchers.length; ++index) {
+      this.scheduledWatchers[index]();
+    }
     return scheduledPromise;
   }
 
@@ -206,6 +211,68 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     while (this.scheduledTasks.length > 0) {
       await this.waitOne();
     }
+  }
+
+  async waitFor<T>(unscheduledTask: Promise<T>): Promise<T> {
+    let taskResolved = false;
+    let triggerAwaiter: ReturnType<typeof setTimeout> | null = null;
+
+    // Define the lazy watchers: triggered whenever something new has been scheduled
+    let awaiterPromise: Promise<void> | null = null;
+    const awaiter = async () => {
+      while (!taskResolved && this.scheduledTasks.length > 0) {
+        await this.waitOne();
+      }
+    };
+    const launchAwaiter = async () => {
+      awaiterPromise = awaiter();
+      await awaiterPromise;
+      awaiterPromise = null;
+    };
+    const handleNotified = () => {
+      if (awaiterPromise !== null) {
+        // Awaiter is currently running, there is no need to relaunch it
+        return;
+      }
+      if (triggerAwaiter !== null) {
+        // Let's clear timeout for the previously scheduled (and potentially already executed) awaiter
+        clearTimeout(triggerAwaiter);
+      }
+      // Schedule the next awaiter
+      triggerAwaiter = setTimeout(launchAwaiter, 0);
+    };
+    this.scheduledWatchers.push(handleNotified);
+
+    // Simulate `handleNotified` is the number of waiting tasks is not zero
+    if (this.count() !== 0) {
+      handleNotified();
+    }
+
+    // Define the wrapping task and its resolution strategy
+    const handleResolvedUnscheduled = () => {
+      taskResolved = true;
+      if (triggerAwaiter !== null) {
+        clearTimeout(triggerAwaiter);
+      }
+      const handleNotifiedIndex = this.scheduledWatchers.indexOf(handleNotified);
+      if (handleNotifiedIndex !== -1) {
+        this.scheduledWatchers.splice(handleNotifiedIndex, 1);
+      }
+    };
+    const rewrappedTask = unscheduledTask
+      .then(
+        (ret) => {
+          handleResolvedUnscheduled();
+          return ret;
+        },
+        (err) => {
+          handleResolvedUnscheduled();
+          throw err;
+        }
+      )
+      .finally(() => awaiterPromise);
+
+    return rewrappedTask;
   }
 
   report(): SchedulerReportItem<TMetaData>[] {
