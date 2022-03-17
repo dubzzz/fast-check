@@ -218,6 +218,7 @@ jobs:
           - '3.2'
           # Other release channels for TypeScript
           - 'rc'
+          - 'next'
     steps:
       - uses: actions/checkout@v3
       - name: Using Node v16.x
@@ -250,6 +251,11 @@ jobs:
         run: |
           cd test/type
           npx -p typescript@${{matrix.ts-version}} tsc
+      - name: Test test/type/ with --moduleResolution nodenext
+        if: matrix.ts-version == 'next'
+        run: |
+          cd test/type
+          npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
       - name: Test test/type/ with --exactOptionalPropertyTypes
         if: matrix.ts-version != '3.2' && matrix.ts-version != '3.4' && matrix.ts-version != '3.9'
         run: |
