@@ -7,6 +7,7 @@
   "exports": {
     ".": {
       "require": "./lib/fast-check.js",
+      "types": "./lib/types/fast-check.d.ts",
       "default": "./lib/esm/fast-check.js"
     }
   },
