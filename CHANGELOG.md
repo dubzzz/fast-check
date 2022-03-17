@@ -1,3 +1,19 @@
+# 2.23.1
+
+_Add missing "types" to "exports"_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.23.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.23.0...v2.23.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#2803](https://github.com/dubzzz/fast-check/pull/2803)) Bug: Add `"types"` to `"exports"`
+- ([PR#2793](https://github.com/dubzzz/fast-check/pull/2793)) Clean: Remove unused test on array
+- ([PR#2789](https://github.com/dubzzz/fast-check/pull/2789)) Script: Generate changelog also bumps the npm version
+- ([PR#2791](https://github.com/dubzzz/fast-check/pull/2791)) Script: Properly change package.json when generating changelog
+
 # 2.23.0
 
 _Introduce `fc.uniqueArray` as a replacement for `fc.set`_
