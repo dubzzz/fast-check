@@ -3,10 +3,6 @@
 _Add missing "types" to "exports"_
 [[Code](https://github.com/dubzzz/fast-check/tree/v2.23.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.23.0...v2.23.1)]
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#2803](https://github.com/dubzzz/fast-check/pull/2803)) Bug: Add `"types"` to `"exports"`
