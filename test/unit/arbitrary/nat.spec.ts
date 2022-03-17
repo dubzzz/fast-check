@@ -92,7 +92,7 @@ describe('nat', () => {
 
   it('should throw when maximum value is not an integer', () => {
     fc.assert(
-      fc.property(fc.double({ next: true }), (max) => {
+      fc.property(fc.double(), (max) => {
         // Arrange
         fc.pre(!Number.isInteger(max));
 

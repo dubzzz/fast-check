@@ -131,10 +131,7 @@ describe('integer', () => {
   it('should throw when minimum value or maximum value is not an integer', () => {
     fc.assert(
       fc.property(
-        fc.oneof(
-          fc.tuple(fc.maxSafeInteger(), fc.double({ next: true })),
-          fc.tuple(fc.double({ next: true }), fc.double({ next: true }))
-        ),
+        fc.oneof(fc.tuple(fc.maxSafeInteger(), fc.double()), fc.tuple(fc.double(), fc.double())),
         ([a, b]) => {
           // Arrange
           fc.pre(!Number.isInteger(a) || !Number.isInteger(b));
