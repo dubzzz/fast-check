@@ -3,12 +3,9 @@
 _Add missing "types" to "exports" for all dependencies_
 [[Code](https://github.com/dubzzz/fast-check/tree/v2.23.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.23.1...v2.23.2)]
 
-## Features
-
-
-
 ## Fixes
 
+- ([PR#2806](https://github.com/dubzzz/fast-check/pull/2806)) Bug: Bump `pure-rand` for `moduleResolution` fix
 - ([PR#2805](https://github.com/dubzzz/fast-check/pull/2805)) Test: Run fast-check against `--moduleResolution nodenext`
 
 # 2.23.1
