@@ -3291,9 +3291,9 @@ fc.string().map(s => `[${s.length}] -> ${s}`)
 *&#8195;Usages*
 
 ```js
-fc.nat().chain(min => fc.tuple(fc.constant(min), fc.integer(min, 0xffffffff)))
+fc.nat().chain(min => fc.tuple(fc.constant(min), fc.integer({min, max: 0xffffffff})))
 // Note: Produce a valid range
-// Examples of generated values: [2147483631,2602190685], [722484778,1844243122], [52754604,4294967287], [231714704,420820067], [3983528,3983548]…
+// Examples of generated values: [18,41], [251380276,4294967271], [903576661,1386263072], [1532947910,1532947934], [1301381459,1832484226]…
 ```
 </details>
 
