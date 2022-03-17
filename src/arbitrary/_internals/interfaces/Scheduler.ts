@@ -62,11 +62,15 @@ export interface Scheduler<TMetaData = unknown> {
    * Wait as many scheduled tasks as need to resolve the received Promise
    *
    * Some tests frameworks like `supertest` are not triggering calls to subsequent queries in a synchronous way,
-   * or wait an explicit call to `then` to trigger them (either synchronously or asynchronously). As a consequence,
-   * `waitAll` cannot wait for them out-of-the-box.
+   * some are waiting an explicit call to `then` to trigger them (either synchronously or asynchronously)...
+   * As a consequence, none of `waitOne` or `waitAll` cannot wait for them out-of-the-box.
    *
    * This helper is responsible to wait as many scheduled tasks as needed (but the bare minimal) to get
    * `unscheduledTask` resolved. Once resolved it returns its output either success or failure.
+   *
+   * Be aware that while this helper will wait eveything to be ready for `unscheduledTask` to resolve,
+   * having uncontrolled tasks triggering stuff required for `unscheduledTask` might be a source a uncontrollable
+   * and not reproducible randomness as those triggers cannot be handled and scheduled by fast-check.
    *
    * @remarks Since 2.24.0
    */
