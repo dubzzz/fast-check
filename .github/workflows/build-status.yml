@@ -256,6 +256,11 @@ jobs:
           cd test/type
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
           npx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
+      - name: Test test/type/ with --moduleResolution nodenext
+        if: matrix.ts-version == 'next'
+        run: |
+          cd test/type
+          npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
