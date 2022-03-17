@@ -251,17 +251,17 @@ jobs:
         run: |
           cd test/type
           npx -p typescript@${{matrix.ts-version}} tsc
+      - name: Test test/type/ with --moduleResolution nodenext
+        if: matrix.ts-version == 'next'
+        run: |
+          cd test/type
+          npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
       - name: Test test/type/ with --exactOptionalPropertyTypes
         if: matrix.ts-version != '3.2' && matrix.ts-version != '3.4' && matrix.ts-version != '3.9'
         run: |
           cd test/type
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
           npx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
-      - name: Test test/type/ with --moduleResolution nodenext
-        if: matrix.ts-version == 'next'
-        run: |
-          cd test/type
-          npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
