@@ -467,6 +467,61 @@ describe('SchedulerImplem', () => {
       expect(nextTaskIndex).toHaveBeenCalledTimes(2);
       expect(s.count()).toBe(1); // Still one pending scheduled task (only p1 has been released before the one we waited for)
     });
+
+    it('should not release multiple scheduled tasks at the same time even if called via multiple waitFor', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const p2 = buildUnresolved();
+      const p3 = buildUnresolved();
+      const p4 = buildUnresolved();
+      const nextTaskIndex = jest
+        .fn()
+        .mockReturnValueOnce(1) // releasing p2 in [p1,p2,p3,p4]
+        .mockReturnValueOnce(2) // releasing p4 in [p1,p3,p4]
+        .mockReturnValueOnce(0); // releasing p1 in [p1,p4]
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      const sp1 = s.schedule(p1.p);
+      const sp2 = s.schedule(p2.p);
+      s.schedule(p3.p);
+      s.schedule(p4.p);
+      const awaitedTask1 = sp1.then(() => Symbol());
+      const awaitedTask2 = sp2.then(() => Symbol());
+
+      // Assert
+      let waitForEnded1 = false;
+      let waitForEnded2 = false;
+      s.waitFor(awaitedTask1).finally(() => (waitForEnded1 = true));
+      s.waitFor(awaitedTask2).finally(() => (waitForEnded2 = true));
+      await delay();
+      expect(waitForEnded1).toBe(false);
+      expect(waitForEnded2).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(1);
+
+      // p2 released, let's resolve it
+      p2.resolve();
+      await delay();
+      expect(waitForEnded1).toBe(false);
+      expect(waitForEnded2).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+
+      // p4 released, let's resolve it
+      p4.resolve();
+      await delay();
+      expect(waitForEnded1).toBe(false);
+      expect(waitForEnded2).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(3);
+
+      // p2 released, let's resolve it
+      p2.resolve();
+      await delay();
+      expect(waitForEnded1).toBe(true);
+      expect(waitForEnded2).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(3); // no other call received
+      expect(s.count()).toBe(1); // Still one pending scheduled task for p3
+    });
   });
 
   describe('schedule', () => {
