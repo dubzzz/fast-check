@@ -223,21 +223,15 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         await this.waitOne();
       }
     };
-    const launchAwaiter = async () => {
-      if (awaiterPromise !== null) {
-        return;
-      }
-      awaiterPromise = awaiter();
-      await awaiterPromise;
-      awaiterPromise = null;
-    };
     const handleNotified = () => {
       if (awaiterPromise !== null) {
         // Awaiter is currently running, there is no need to relaunch it
         return;
       }
       // Schedule the next awaiter
-      Promise.resolve().then(launchAwaiter);
+      awaiterPromise = Promise.resolve()
+        .then(awaiter)
+        .finally(() => (awaiterPromise = null));
     };
     this.scheduledWatchers.push(handleNotified);
 
