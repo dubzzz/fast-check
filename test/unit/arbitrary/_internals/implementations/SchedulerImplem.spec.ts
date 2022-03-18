@@ -514,8 +514,8 @@ describe('SchedulerImplem', () => {
       expect(waitForEnded2).toBe(true);
       expect(nextTaskIndex).toHaveBeenCalledTimes(3);
 
-      // p2 released, let's resolve it
-      p2.resolve();
+      // p1 released, let's resolve it
+      p1.resolve();
       await delay();
       expect(waitForEnded1).toBe(true);
       expect(waitForEnded2).toBe(true);
