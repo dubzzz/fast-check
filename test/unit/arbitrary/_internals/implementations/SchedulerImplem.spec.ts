@@ -522,6 +522,117 @@ describe('SchedulerImplem', () => {
       expect(nextTaskIndex).toHaveBeenCalledTimes(3); // no other call received
       expect(s.count()).toBe(1); // Still one pending scheduled task for p3
     });
+
+    it('should end whenever possible while never launching multiple tasks at the same time', async () => {
+      const schedulingTypeArb = fc.constantFrom(...(['none', 'init'] as const));
+      const dependenciesArbFor = (currentItem: number) =>
+        fc.uniqueArray(fc.nat({ max: currentItem - 2 }), { maxLength: currentItem - 1 });
+      const buildAndAddScheduled = (
+        s: SchedulerImplem<unknown>,
+        unscheduled: Promise<unknown>,
+        allPs: Promise<unknown>[],
+        dependencies: number[],
+        schedulingType: 'none' | 'init'
+      ) => {
+        const label = `p${allPs.length + 1}:${JSON.stringify(dependencies)}`;
+        const deps = dependencies.map((id) => allPs[id]);
+        let self: Promise<unknown>;
+        if (schedulingType === 'init') {
+          if (deps.length === 0) {
+            self = s.schedule(unscheduled, label);
+          } else {
+            self = Promise.all(deps).then(() => s.schedule(unscheduled, label));
+          }
+        } else {
+          self = deps.length !== 0 ? Promise.all([...deps, unscheduled]) : unscheduled;
+        }
+        allPs.push(self);
+      };
+      await fc.assert(
+        fc.asyncProperty(
+          fc.scheduler(),
+          fc.infiniteStream(fc.nat()),
+          schedulingTypeArb,
+          fc.tuple(schedulingTypeArb, dependenciesArbFor(2)),
+          fc.tuple(schedulingTypeArb, dependenciesArbFor(3)),
+          fc.tuple(schedulingTypeArb, dependenciesArbFor(4)),
+          fc.tuple(schedulingTypeArb, dependenciesArbFor(5)),
+          dependenciesArbFor(6),
+          dependenciesArbFor(6),
+          dependenciesArbFor(6),
+          async (
+            wrappingScheduler,
+            nextTaskIndexSeed,
+            schedulingType1,
+            [schedulingType2, dependencies2],
+            [schedulingType3, dependencies3],
+            [schedulingType4, dependencies4],
+            [schedulingType5, dependencies5],
+            finalDependenciesA,
+            finalDependenciesB,
+            finalDependenciesC
+          ) => {
+            // Arrange
+            const p1 = buildUnresolved();
+            const p2 = buildUnresolved();
+            const p3 = buildUnresolved();
+            const p4 = buildUnresolved();
+            const p5 = buildUnresolved();
+            const pAwaitedA = buildUnresolved();
+            const pAwaitedB = buildUnresolved();
+            const pAwaitedC = buildUnresolved();
+            let tasksAtTheSameTime = false;
+            let alreadyRunningTask = false;
+            const taskSelector: TaskSelector<unknown> = {
+              clone: jest.fn(),
+              nextTaskIndex: (scheduledTasks) => {
+                tasksAtTheSameTime = tasksAtTheSameTime || alreadyRunningTask;
+                alreadyRunningTask = true;
+                const selectedId = nextTaskIndexSeed.next().value % scheduledTasks.length;
+                scheduledTasks[selectedId].scheduled.then(() => (alreadyRunningTask = false));
+                return selectedId;
+              },
+            };
+            const s = new SchedulerImplem((f) => f(), taskSelector);
+            const allPs: Promise<unknown>[] = [];
+            buildAndAddScheduled(s, p1.p, allPs, [], schedulingType1);
+            buildAndAddScheduled(s, p2.p, allPs, dependencies2, schedulingType2);
+            buildAndAddScheduled(s, p3.p, allPs, dependencies3, schedulingType3);
+            buildAndAddScheduled(s, p4.p, allPs, dependencies4, schedulingType4);
+            buildAndAddScheduled(s, p5.p, allPs, dependencies5, schedulingType5);
+            const awaitedTaskA = Promise.all([...finalDependenciesA.map((id) => allPs[id]), pAwaitedA.p]);
+            let resolvedA = false;
+            s.waitFor(awaitedTaskA).then(() => (resolvedA = true));
+            const awaitedTaskB = Promise.all([...finalDependenciesB.map((id) => allPs[id]), pAwaitedB.p]);
+            let resolvedB = false;
+            s.waitFor(awaitedTaskB).then(() => (resolvedB = true));
+            const awaitedTaskC = Promise.all([...finalDependenciesC.map((id) => allPs[id]), pAwaitedC.p]);
+            let resolvedC = false;
+            s.waitFor(awaitedTaskC).then(() => (resolvedC = true));
+
+            // Act
+            wrappingScheduler.schedule(Promise.resolve('Resolve p1')).then(p1.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve p2')).then(p2.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve p3')).then(p3.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve p4')).then(p4.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve p5')).then(p5.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedA')).then(pAwaitedA.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedB')).then(pAwaitedB.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedC')).then(pAwaitedC.resolve);
+            while (wrappingScheduler.count() > 0) {
+              await wrappingScheduler.waitOne();
+              await delay();
+            }
+
+            // Assert
+            expect(resolvedA).toBe(true);
+            expect(resolvedB).toBe(true);
+            expect(resolvedC).toBe(true);
+            expect(tasksAtTheSameTime).toBe(false);
+          }
+        )
+      );
+    });
   });
 
   describe('schedule', () => {
