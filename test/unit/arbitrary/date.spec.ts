@@ -8,10 +8,8 @@ import {
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/NextArbitraryAssertions';
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
-import * as _IntegerMock from '../../../src/arbitrary/integer';
-const IntegerMock: { integer: (min: number, max: number) => Arbitrary<number> } = _IntegerMock;
+import * as IntegerMock from '../../../src/arbitrary/integer';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -54,7 +52,7 @@ describe('date', () => {
 
         // Act
         date(constraints);
-        const [rangeMin] = integer.mock.calls[0];
+        const { min: rangeMin } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
         const minDate = mapper(rangeMin) as Date;
 
@@ -84,7 +82,7 @@ describe('date', () => {
 
         // Act
         date(constraints);
-        const [, rangeMax] = integer.mock.calls[0];
+        const { max: rangeMax } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
         const maxDate = mapper(rangeMax) as Date;
 
@@ -114,7 +112,7 @@ describe('date', () => {
 
         // Act
         date(constraints);
-        const [rangeMin, rangeMax] = integer.mock.calls[0];
+        const { min: rangeMin, max: rangeMax } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
         const d = mapper(rangeMin + (mod % (rangeMax - rangeMin + 1))) as Date;
 

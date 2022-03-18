@@ -76,7 +76,7 @@ describe('computeNextFlags', () => {
 
   it('should preserve the position of existing flags', () => {
     fc.assert(
-      fc.property(fc.bigUint(), fc.integer(1, 100), (flags, nextSize) => {
+      fc.property(fc.bigUint(), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         for (let idx = 0, mask = BigInt(1); idx !== nextSize; ++idx, mask <<= BigInt(1)) {
           if (flags & mask) expect(!!(nextFlags & mask)).toBe(true);

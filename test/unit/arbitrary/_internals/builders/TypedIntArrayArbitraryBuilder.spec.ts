@@ -209,26 +209,28 @@ function validArrayConstraintsArb() {
 }
 
 function validIntegerConstraintsArb(min: number, max: number) {
-  return fc.record({ min: fc.integer(min, max), max: fc.integer(min, max) }, { withDeletedKeys: true }).map((ct) => {
-    if (ct.min !== undefined && ct.max !== undefined && ct.min > ct.max) {
-      return { min: ct.max, max: ct.min };
-    }
-    return ct;
-  });
+  return fc
+    .record({ min: fc.integer({ min, max }), max: fc.integer({ min, max }) }, { withDeletedKeys: true })
+    .map((ct) => {
+      if (ct.min !== undefined && ct.max !== undefined && ct.min > ct.max) {
+        return { min: ct.max, max: ct.min };
+      }
+      return ct;
+    });
 }
 
 function invalidIntegerConstraintsArb(min: number, max: number) {
   return fc.oneof(
     // min > max
     fc
-      .record({ min: fc.integer(min, max), max: fc.integer(min, max) })
+      .record({ min: fc.integer({ min, max }), max: fc.integer({ min, max }) })
       .filter(({ min, max }) => min !== max)
       .map((ct) => (ct.min < ct.max ? { min: ct.max, max: ct.min } : ct)),
     // min < lowest
-    fc.record({ min: fc.integer(Number.MIN_SAFE_INTEGER, min - 1) }),
-    fc.record({ min: fc.integer(Number.MIN_SAFE_INTEGER, min - 1), max: fc.integer(min, max) }),
+    fc.record({ min: fc.integer({ min: Number.MIN_SAFE_INTEGER, max: min - 1 }) }),
+    fc.record({ min: fc.integer({ min: Number.MIN_SAFE_INTEGER, max: min - 1 }), max: fc.integer({ min, max }) }),
     // max > highest
-    fc.record({ min: fc.integer(min, max), max: fc.integer(max + 1, Number.MAX_SAFE_INTEGER) }),
-    fc.record({ max: fc.integer(max + 1, Number.MAX_SAFE_INTEGER) })
+    fc.record({ min: fc.integer({ min, max }), max: fc.integer({ min: max + 1, max: Number.MAX_SAFE_INTEGER }) }),
+    fc.record({ max: fc.integer({ min: max + 1, max: Number.MAX_SAFE_INTEGER }) })
   );
 }
