@@ -109,8 +109,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       label,
       metadata,
     });
-    for (let index = 0; index !== this.scheduledWatchers.length; ++index) {
-      this.scheduledWatchers[index]();
+    if (this.scheduledWatchers.length !== 0) {
+      this.scheduledWatchers[0]();
     }
     return scheduledPromise;
   }
@@ -233,7 +233,6 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         .then(awaiter)
         .finally(() => (awaiterPromise = null));
     };
-    this.scheduledWatchers.push(handleNotified);
 
     // Define the wrapping task and its resolution strategy
     const handleResolvedUnscheduled = () => {
@@ -243,25 +242,40 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         this.scheduledWatchers.splice(handleNotifiedIndex, 1);
       }
     };
-    const rewrappedTask = unscheduledTask
-      .then(
-        (ret) => {
-          handleResolvedUnscheduled();
+    const rewrappedTask = unscheduledTask.then(
+      (ret) => {
+        handleResolvedUnscheduled();
+        if (awaiterPromise === null) {
           return ret;
-        },
-        (err) => {
-          handleResolvedUnscheduled();
+        }
+        return awaiterPromise.then(() => {
+          if (this.scheduledWatchers.length !== 0) {
+            this.scheduledWatchers[0]();
+          }
+          return ret;
+        });
+      },
+      (err) => {
+        handleResolvedUnscheduled();
+        if (awaiterPromise === null) {
           throw err;
         }
-      )
-      .finally(() => awaiterPromise);
+        return awaiterPromise.then(() => {
+          if (this.scheduledWatchers.length !== 0) {
+            this.scheduledWatchers[0]();
+          }
+          throw err;
+        });
+      }
+    );
 
     // Simulate `handleNotified` is the number of waiting tasks is not zero
     // Must be called after unscheduledTask.then otherwise, a promise could be released while
     // we already have the value for unscheduledTask ready
-    if (this.scheduledTasks.length > 0) {
+    if (this.scheduledTasks.length > 0 && this.scheduledWatchers.length === 0) {
       handleNotified();
     }
+    this.scheduledWatchers.push(handleNotified);
 
     return rewrappedTask;
   }
