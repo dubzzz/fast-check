@@ -15,9 +15,16 @@ function beforeEachHook() {
 beforeEach(beforeEachHook);
 
 const buildUnresolved = () => {
+  let resolved = false;
   let resolve = () => {};
-  const p = new Promise<void>((r) => (resolve = r));
-  return { p, resolve };
+  const p = new Promise<void>(
+    (r) =>
+      (resolve = () => {
+        resolved = true;
+        r();
+      })
+  );
+  return { p, resolve, hasBeenResolved: () => resolved };
 };
 const delay = () => new Promise((r) => setTimeout(r, 0));
 
@@ -578,18 +585,30 @@ describe('SchedulerImplem', () => {
             const p3 = buildUnresolved();
             const p4 = buildUnresolved();
             const p5 = buildUnresolved();
+            const rawAllPs = [p1, p2, p3, p4, p5];
             const pAwaitedA = buildUnresolved();
             const pAwaitedB = buildUnresolved();
             const pAwaitedC = buildUnresolved();
-            let tasksAtTheSameTime = false;
-            let alreadyRunningTask = false;
+            let unknownTaskReleased = false;
+            let multipleTasksReleasedAtTheSameTime: string | undefined = undefined;
+            let alreadyRunningPx: typeof p1 | undefined = undefined;
             const taskSelector: TaskSelector<unknown> = {
               clone: jest.fn(),
               nextTaskIndex: (scheduledTasks) => {
-                tasksAtTheSameTime = tasksAtTheSameTime || alreadyRunningTask;
-                alreadyRunningTask = true;
                 const selectedId = nextTaskIndexSeed.next().value % scheduledTasks.length;
-                scheduledTasks[selectedId].scheduled.then(() => (alreadyRunningTask = false));
+                const selectedPx = rawAllPs.find((p) => p.p === scheduledTasks[selectedId].original);
+
+                if (
+                  multipleTasksReleasedAtTheSameTime === undefined &&
+                  alreadyRunningPx !== undefined &&
+                  !alreadyRunningPx.hasBeenResolved()
+                ) {
+                  const oldPx = `p${rawAllPs.indexOf(alreadyRunningPx) + 1}`;
+                  const newPx = `p${rawAllPs.indexOf(selectedPx!) + 1}`;
+                  multipleTasksReleasedAtTheSameTime = `${oldPx} already running when selecting ${newPx}`;
+                }
+                alreadyRunningPx = selectedPx;
+                unknownTaskReleased = unknownTaskReleased || alreadyRunningPx === undefined;
                 return selectedId;
               },
             };
@@ -628,9 +647,11 @@ describe('SchedulerImplem', () => {
             expect(resolvedA).toBe(true);
             expect(resolvedB).toBe(true);
             expect(resolvedC).toBe(true);
-            expect(tasksAtTheSameTime).toBe(false);
+            expect(multipleTasksReleasedAtTheSameTime).toBe(undefined);
+            expect(unknownTaskReleased).toBe(false);
           }
-        )
+        ),
+        { seed: -250492327, path: '74:20:20', endOnFailure: true }
       );
     });
   });
