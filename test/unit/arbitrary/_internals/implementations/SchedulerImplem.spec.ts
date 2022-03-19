@@ -567,6 +567,7 @@ describe('SchedulerImplem', () => {
           dependenciesArbFor(6),
           dependenciesArbFor(6),
           dependenciesArbFor(6),
+          fc.context(),
           async (
             wrappingScheduler,
             nextTaskIndexSeed,
@@ -577,7 +578,8 @@ describe('SchedulerImplem', () => {
             [schedulingType5, dependencies5],
             finalDependenciesA,
             finalDependenciesB,
-            finalDependenciesC
+            finalDependenciesC,
+            ctx
           ) => {
             // Arrange
             const p1 = buildUnresolved();
@@ -597,6 +599,8 @@ describe('SchedulerImplem', () => {
               nextTaskIndex: (scheduledTasks) => {
                 const selectedId = nextTaskIndexSeed.next().value % scheduledTasks.length;
                 const selectedPx = rawAllPs.find((p) => p.p === scheduledTasks[selectedId].original);
+                const newPx = `p${rawAllPs.indexOf(selectedPx!) + 1}`;
+                ctx.log(`Releasing ${newPx}`);
 
                 if (
                   multipleTasksReleasedAtTheSameTime === undefined &&
@@ -604,8 +608,7 @@ describe('SchedulerImplem', () => {
                   !alreadyRunningPx.hasBeenResolved()
                 ) {
                   const oldPx = `p${rawAllPs.indexOf(alreadyRunningPx) + 1}`;
-                  const newPx = `p${rawAllPs.indexOf(selectedPx!) + 1}`;
-                  multipleTasksReleasedAtTheSameTime = `${oldPx} already running when selecting ${newPx}`;
+                  multipleTasksReleasedAtTheSameTime = `${oldPx} already running when releasing ${newPx}`;
                 }
                 alreadyRunningPx = selectedPx;
                 unknownTaskReleased = unknownTaskReleased || alreadyRunningPx === undefined;
@@ -621,23 +624,56 @@ describe('SchedulerImplem', () => {
             buildAndAddScheduled(s, p5.p, allPs, dependencies5, schedulingType5);
             const awaitedTaskA = Promise.all([...finalDependenciesA.map((id) => allPs[id]), pAwaitedA.p]);
             let resolvedA = false;
-            s.waitFor(awaitedTaskA).then(() => (resolvedA = true));
+            s.waitFor(awaitedTaskA).then(() => {
+              ctx.log(`A ended`);
+              resolvedA = true;
+            });
             const awaitedTaskB = Promise.all([...finalDependenciesB.map((id) => allPs[id]), pAwaitedB.p]);
             let resolvedB = false;
-            s.waitFor(awaitedTaskB).then(() => (resolvedB = true));
+            s.waitFor(awaitedTaskB).then(() => {
+              ctx.log(`B ended`);
+              resolvedB = true;
+            });
             const awaitedTaskC = Promise.all([...finalDependenciesC.map((id) => allPs[id]), pAwaitedC.p]);
             let resolvedC = false;
-            s.waitFor(awaitedTaskC).then(() => (resolvedC = true));
+            s.waitFor(awaitedTaskC).then(() => {
+              ctx.log(`C ended`);
+              resolvedC = true;
+            });
 
             // Act
-            wrappingScheduler.schedule(Promise.resolve('Resolve p1')).then(p1.resolve);
-            wrappingScheduler.schedule(Promise.resolve('Resolve p2')).then(p2.resolve);
-            wrappingScheduler.schedule(Promise.resolve('Resolve p3')).then(p3.resolve);
-            wrappingScheduler.schedule(Promise.resolve('Resolve p4')).then(p4.resolve);
-            wrappingScheduler.schedule(Promise.resolve('Resolve p5')).then(p5.resolve);
-            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedA')).then(pAwaitedA.resolve);
-            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedB')).then(pAwaitedB.resolve);
-            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedC')).then(pAwaitedC.resolve);
+            wrappingScheduler.schedule(Promise.resolve('Resolve p1')).then(() => {
+              ctx.log(`p1 resolved`);
+              p1.resolve();
+            });
+            wrappingScheduler.schedule(Promise.resolve('Resolve p2')).then(() => {
+              ctx.log(`p2 resolved`);
+              p2.resolve();
+            });
+            wrappingScheduler.schedule(Promise.resolve('Resolve p3')).then(() => {
+              ctx.log(`p3 resolved`);
+              p3.resolve();
+            });
+            wrappingScheduler.schedule(Promise.resolve('Resolve p4')).then(() => {
+              ctx.log(`p4 resolved`);
+              p4.resolve();
+            });
+            wrappingScheduler.schedule(Promise.resolve('Resolve p5')).then(() => {
+              ctx.log(`p5 resolved`);
+              p5.resolve();
+            });
+            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedA')).then(() => {
+              ctx.log(`pAwaitedA resolved`);
+              pAwaitedA.resolve();
+            });
+            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedB')).then(() => {
+              ctx.log(`pAwaitedB resolved`);
+              pAwaitedB.resolve();
+            });
+            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedC')).then(() => {
+              ctx.log(`pAwaitedC resolved`);
+              pAwaitedC.resolve();
+            });
             while (wrappingScheduler.count() > 0) {
               await wrappingScheduler.waitOne();
               await delay();
