@@ -680,10 +680,13 @@ describe('SchedulerImplem', () => {
             await delay();
 
             // Assert
+            // All awaited tasks should have resolved
             expect(resolvedA).toBe(true);
             expect(resolvedB).toBe(true);
             expect(resolvedC).toBe(true);
+            // Only one scheduled task awaited by the scheduler at a given point in time
             expect(multipleTasksReleasedAtTheSameTime).toBe(undefined);
+            // Only known tasks could be scheduled
             expect(unknownTaskReleased).toBe(false);
           }
         )
