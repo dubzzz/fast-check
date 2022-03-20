@@ -676,8 +676,8 @@ describe('SchedulerImplem', () => {
             });
             while (wrappingScheduler.count() > 0) {
               await wrappingScheduler.waitOne();
-              await delay();
             }
+            await delay();
 
             // Assert
             expect(resolvedA).toBe(true);
