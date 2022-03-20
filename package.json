@@ -1,12 +1,13 @@
 {
   "name": "fast-check",
-  "version": "2.23.0",
+  "version": "2.23.2",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "commonjs",
   "main": "lib/fast-check.js",
   "exports": {
     ".": {
       "require": "./lib/fast-check.js",
+      "types": "./lib/types/fast-check.d.ts",
       "default": "./lib/esm/fast-check.js"
     }
   },
@@ -58,7 +59,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^5.0.0"
+    "pure-rand": "^5.0.1"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.9.10",
@@ -74,7 +75,7 @@
     "jest": "^26.1.0",
     "jscodeshift": "^0.13.0",
     "mkdirp": "^1.0.4",
-    "prettier": "2.5.1",
+    "prettier": "2.6.0",
     "replace-in-file": "^6.0.0",
     "source-map-support": "^0.5.19",
     "ts-jest": "^26.2.0",

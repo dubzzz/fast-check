@@ -1,3 +1,25 @@
+# 2.23.2
+
+_Add missing "types" to "exports" for all dependencies_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.23.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.23.1...v2.23.2)]
+
+## Fixes
+
+- ([PR#2806](https://github.com/dubzzz/fast-check/pull/2806)) Bug: Bump `pure-rand` for `moduleResolution` fix
+- ([PR#2805](https://github.com/dubzzz/fast-check/pull/2805)) Test: Run fast-check against `--moduleResolution nodenext`
+
+# 2.23.1
+
+_Add missing "types" to "exports"_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.23.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.23.0...v2.23.1)]
+
+## Fixes
+
+- ([PR#2803](https://github.com/dubzzz/fast-check/pull/2803)) Bug: Add `"types"` to `"exports"`
+- ([PR#2793](https://github.com/dubzzz/fast-check/pull/2793)) Clean: Remove unused test on array
+- ([PR#2789](https://github.com/dubzzz/fast-check/pull/2789)) Script: Generate changelog also bumps the npm version
+- ([PR#2791](https://github.com/dubzzz/fast-check/pull/2791)) Script: Properly change package.json when generating changelog
+
 # 2.23.0
 
 _Introduce `fc.uniqueArray` as a replacement for `fc.set`_
