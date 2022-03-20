@@ -600,7 +600,7 @@ describe('SchedulerImplem', () => {
                 const selectedId = nextTaskIndexSeed.next().value % scheduledTasks.length;
                 const selectedPx = rawAllPs.find((p) => p.p === scheduledTasks[selectedId].original);
                 const newPx = `p${rawAllPs.indexOf(selectedPx!) + 1}`;
-                ctx.log(`Releasing ${newPx}`);
+                ctx.log(`Releasing ${newPx}${selectedPx!.hasBeenResolved() ? ' (resolved)' : ''}`);
 
                 if (
                   multipleTasksReleasedAtTheSameTime === undefined &&
@@ -686,8 +686,7 @@ describe('SchedulerImplem', () => {
             expect(multipleTasksReleasedAtTheSameTime).toBe(undefined);
             expect(unknownTaskReleased).toBe(false);
           }
-        ),
-        { seed: -250492327, path: '74:20:20', endOnFailure: true }
+        )
       );
     });
   });

@@ -224,46 +224,42 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       }
     };
     const handleNotified = () => {
-      if (awaiterPromise !== null) {
-        // Awaiter is currently running, there is no need to relaunch it
-        return;
-      }
       // Schedule the next awaiter
-      awaiterPromise = Promise.resolve()
+      awaiterPromise = (awaiterPromise !== null ? awaiterPromise : Promise.resolve())
         .then(awaiter)
         .finally(() => (awaiterPromise = null));
     };
 
     // Define the wrapping task and its resolution strategy
-    const handleResolvedUnscheduled = () => {
-      taskResolved = true;
+    const clearAndReplaceWatcher = () => {
       const handleNotifiedIndex = this.scheduledWatchers.indexOf(handleNotified);
       if (handleNotifiedIndex !== -1) {
         this.scheduledWatchers.splice(handleNotifiedIndex, 1);
       }
+      if (handleNotifiedIndex === 0 && this.scheduledWatchers.length !== 0) {
+        this.scheduledWatchers[0]();
+      }
     };
     const rewrappedTask = unscheduledTask.then(
       (ret) => {
-        handleResolvedUnscheduled();
+        taskResolved = true;
         if (awaiterPromise === null) {
+          clearAndReplaceWatcher();
           return ret;
         }
         return awaiterPromise.then(() => {
-          if (this.scheduledWatchers.length !== 0) {
-            this.scheduledWatchers[0]();
-          }
+          clearAndReplaceWatcher();
           return ret;
         });
       },
       (err) => {
-        handleResolvedUnscheduled();
+        taskResolved = true;
         if (awaiterPromise === null) {
+          clearAndReplaceWatcher();
           throw err;
         }
         return awaiterPromise.then(() => {
-          if (this.scheduledWatchers.length !== 0) {
-            this.scheduledWatchers[0]();
-          }
+          clearAndReplaceWatcher();
           throw err;
         });
       }
