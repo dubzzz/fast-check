@@ -222,12 +222,15 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       while (!taskResolved && this.scheduledTasks.length > 0) {
         await this.waitOne();
       }
+      awaiterPromise = null;
     };
     const handleNotified = () => {
-      // Schedule the next awaiter
-      awaiterPromise = (awaiterPromise !== null ? awaiterPromise : Promise.resolve())
-        .then(awaiter)
-        .finally(() => (awaiterPromise = null));
+      if (awaiterPromise !== null) {
+        // Awaiter is currently running, there is no need to relaunch it
+        return;
+      }
+      // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
+      awaiterPromise = Promise.resolve().then(awaiter);
     };
 
     // Define the wrapping task and its resolution strategy
