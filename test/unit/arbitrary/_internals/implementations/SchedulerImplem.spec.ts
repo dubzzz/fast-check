@@ -555,30 +555,58 @@ describe('SchedulerImplem', () => {
         }
         allPs.push(self);
       };
+      const scheduleResolution = (
+        wrappingScheduler: fc.Scheduler<unknown>,
+        p: ReturnType<typeof buildUnresolved>,
+        pName: string,
+        directResolved: boolean,
+        ctx: fc.ContextValue
+      ): void => {
+        if (directResolved) {
+          ctx.log(`${pName} resolved (direct)`);
+          p.resolve();
+          return;
+        }
+        wrappingScheduler.schedule(Promise.resolve(`Resolve ${pName}`)).then(() => {
+          ctx.log(`${pName} resolved`);
+          p.resolve();
+        });
+      };
       await fc.assert(
         fc.asyncProperty(
+          // Scheduler not being tested itself, it will be used to schedule when task will resolve
           fc.scheduler(),
+          // Stream of positive integers used to tell which task should be selected by `nextTaskIndex`
+          // whenever asked for the next task to be scheduled
           fc.infiniteStream(fc.nat()),
-          schedulingTypeArb,
-          fc.tuple(schedulingTypeArb, dependenciesArbFor(2)),
-          fc.tuple(schedulingTypeArb, dependenciesArbFor(3)),
-          fc.tuple(schedulingTypeArb, dependenciesArbFor(4)),
-          fc.tuple(schedulingTypeArb, dependenciesArbFor(5)),
-          dependenciesArbFor(6),
-          dependenciesArbFor(6),
-          dependenciesArbFor(6),
+          // Define the tree of pre-requisite tasks:
+          // - type of scheduling: should they be scheduled within the Schduler under test?
+          // - when should they resolved: on init or when `fc.scheduler` decides it?
+          // - what are the dependencies needed for this task?
+          fc.tuple(schedulingTypeArb, fc.boolean()),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(2)),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(3)),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(4)),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(5)),
+          fc.tuple(fc.boolean(), dependenciesArbFor(6)),
+          fc.tuple(fc.boolean(), dependenciesArbFor(6)),
+          fc.tuple(fc.boolean(), dependenciesArbFor(6)),
+          // Extra boolean values used to add some delays between resolved Promises and next ones
+          fc.infiniteStream(fc.boolean()),
+          // Logger for easier troubleshooting
           fc.context(),
           async (
             wrappingScheduler,
             nextTaskIndexSeed,
-            schedulingType1,
-            [schedulingType2, dependencies2],
-            [schedulingType3, dependencies3],
-            [schedulingType4, dependencies4],
-            [schedulingType5, dependencies5],
-            finalDependenciesA,
-            finalDependenciesB,
-            finalDependenciesC,
+            [schedulingType1, directResolve1],
+            [schedulingType2, directResolve2, dependencies2],
+            [schedulingType3, directResolve3, dependencies3],
+            [schedulingType4, directResolve4, dependencies4],
+            [schedulingType5, directResolve5, dependencies5],
+            [directResolveA, finalDependenciesA],
+            [directResolveB, finalDependenciesB],
+            [directResolveC, finalDependenciesC],
+            addExtraDelays,
             ctx
           ) => {
             // Arrange
@@ -642,41 +670,24 @@ describe('SchedulerImplem', () => {
             });
 
             // Act
-            wrappingScheduler.schedule(Promise.resolve('Resolve p1')).then(() => {
-              ctx.log(`p1 resolved`);
-              p1.resolve();
-            });
-            wrappingScheduler.schedule(Promise.resolve('Resolve p2')).then(() => {
-              ctx.log(`p2 resolved`);
-              p2.resolve();
-            });
-            wrappingScheduler.schedule(Promise.resolve('Resolve p3')).then(() => {
-              ctx.log(`p3 resolved`);
-              p3.resolve();
-            });
-            wrappingScheduler.schedule(Promise.resolve('Resolve p4')).then(() => {
-              ctx.log(`p4 resolved`);
-              p4.resolve();
-            });
-            wrappingScheduler.schedule(Promise.resolve('Resolve p5')).then(() => {
-              ctx.log(`p5 resolved`);
-              p5.resolve();
-            });
-            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedA')).then(() => {
-              ctx.log(`pAwaitedA resolved`);
-              pAwaitedA.resolve();
-            });
-            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedB')).then(() => {
-              ctx.log(`pAwaitedB resolved`);
-              pAwaitedB.resolve();
-            });
-            wrappingScheduler.schedule(Promise.resolve('Resolve pAwaitedC')).then(() => {
-              ctx.log(`pAwaitedC resolved`);
-              pAwaitedC.resolve();
-            });
+            scheduleResolution(wrappingScheduler, p1, 'p1', directResolve1, ctx);
+            scheduleResolution(wrappingScheduler, p2, 'p2', directResolve2, ctx);
+            scheduleResolution(wrappingScheduler, p3, 'p3', directResolve3, ctx);
+            scheduleResolution(wrappingScheduler, p4, 'p4', directResolve4, ctx);
+            scheduleResolution(wrappingScheduler, p5, 'p5', directResolve5, ctx);
+            scheduleResolution(wrappingScheduler, pAwaitedA, 'pAwaitedA', directResolveA, ctx);
+            scheduleResolution(wrappingScheduler, pAwaitedB, 'pAwaitedB', directResolveB, ctx);
+            scheduleResolution(wrappingScheduler, pAwaitedC, 'pAwaitedC', directResolveC, ctx);
+
             while (wrappingScheduler.count() > 0) {
+              // Extra delays based on timeouts of 0ms can potentially trigger unwanted bugs: let's try to add some before waitOne.
+              if (addExtraDelays.next().value) {
+                await delay();
+              }
               await wrappingScheduler.waitOne();
             }
+            // Extra delay done after all the scheduling as wrappingScheduler only schedules triggers to resolve tasks
+            // and never waits for their associated Promises to really resolve.
             await delay();
 
             // Assert
