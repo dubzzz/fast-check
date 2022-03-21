@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
@@ -43,12 +43,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Cache for node_modules
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Cache for Jest
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: /tmp/jest_rt
           key: ${{runner.os}}-${{matrix.node-version}}-jest-test
@@ -86,12 +86,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Cache for node_modules
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Cache for Jest
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: /tmp/jest_rt
           key: ${{runner.os}}-${{matrix.node-version}}-jest-test-e2e
@@ -128,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
@@ -156,7 +156,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
