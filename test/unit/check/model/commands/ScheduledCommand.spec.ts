@@ -10,6 +10,7 @@ function buildFakeScheduler(): Scheduler {
     count: jest.fn(),
     waitOne: jest.fn(),
     waitAll: jest.fn(),
+    waitFor: jest.fn(),
     schedule: jest.fn(),
     scheduleFunction: jest.fn(),
     scheduleSequence: (sequenceBuilders: SchedulerSequenceItem[]) => {

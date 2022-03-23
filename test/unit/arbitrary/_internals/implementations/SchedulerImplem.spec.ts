@@ -14,6 +14,20 @@ function beforeEachHook() {
 }
 beforeEach(beforeEachHook);
 
+const buildUnresolved = () => {
+  let resolved = false;
+  let resolve = () => {};
+  const p = new Promise<void>(
+    (r) =>
+      (resolve = () => {
+        resolved = true;
+        r();
+      })
+  );
+  return { p, resolve, hasBeenResolved: () => resolved };
+};
+const delay = () => new Promise((r) => setTimeout(r, 0));
+
 describe('SchedulerImplem', () => {
   describe('waitOne', () => {
     it('should throw when there is no scheduled promise in the pipe', async () => {
@@ -55,12 +69,6 @@ describe('SchedulerImplem', () => {
 
     it('should wait the end of act before resolving waitOne', async () => {
       // Arrange
-      const buildUnresolved = () => {
-        let resolve = () => {};
-        const p = new Promise<void>((r) => (resolve = r));
-        return { p, resolve };
-      };
-      const delay = () => new Promise((r) => setTimeout(r, 0));
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
       const act = jest.fn().mockImplementation(async (f) => {
@@ -159,6 +167,542 @@ describe('SchedulerImplem', () => {
           expect(locked).toBe(false);
         })
       ));
+  });
+
+  describe('waitFor', () => {
+    it('should not release any of the scheduled promises if the task has already been resolved', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const p2 = buildUnresolved();
+      const nextTaskIndex = jest.fn();
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const awaitedTaskValue = Symbol();
+      const awaitedTask = Promise.resolve(awaitedTaskValue);
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      s.schedule(p1.p);
+      s.schedule(p2.p);
+
+      // Assert
+      const value = await s.waitFor(awaitedTask);
+      expect(value).toBe(awaitedTaskValue);
+      expect(nextTaskIndex).not.toHaveBeenCalled();
+      expect(s.count()).toBe(2); // Still two pending scheduled tasks (none released yet)
+    });
+
+    it('should stop releasing scheduled promises as soon as the task resolves', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const p2 = buildUnresolved();
+      const p3 = buildUnresolved();
+      const nextTaskIndexParams: unknown[] = [];
+      const nextTaskIndex = jest
+        .fn()
+        .mockImplementationOnce((scheduledTasks) => {
+          nextTaskIndexParams.push([...scheduledTasks]); // need to clone it as it will be altered
+          return 1;
+        })
+        .mockImplementationOnce((scheduledTasks) => {
+          nextTaskIndexParams.push([...scheduledTasks]);
+          return 0;
+        });
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      const sp1 = s.schedule(p1.p);
+      s.schedule(p2.p);
+      s.schedule(p3.p);
+      const awaitedTask = sp1.then(() => Symbol());
+
+      // Assert
+      let waitForEnded = false;
+      s.waitFor(awaitedTask).finally(() => (waitForEnded = true));
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(1);
+      expect(nextTaskIndexParams[0]).toEqual([
+        expect.objectContaining({ original: p1.p, taskId: 1 }),
+        expect.objectContaining({ original: p2.p, taskId: 2 }),
+        expect.objectContaining({ original: p3.p, taskId: 3 }),
+      ]);
+
+      // nextTaskIndex returned 1, so p2 scheduled
+      p2.resolve();
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+      expect(nextTaskIndexParams[1]).toEqual([
+        expect.objectContaining({ original: p1.p, taskId: 1 }),
+        expect.objectContaining({ original: p3.p, taskId: 3 }),
+      ]);
+
+      // nextTaskIndex returned 1, so p1 scheduled
+      // We do not wait for p3 as it is not needed for the computation of awaitedTask
+      p1.resolve();
+      await delay();
+      expect(waitForEnded).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2); // no other call received
+      expect(s.count()).toBe(1); // Still one pending scheduled task
+    });
+
+    it('should wait any released scheduled task to end even if the one we waited for resolved on its own', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const pAwaited = buildUnresolved();
+      const nextTaskIndex = jest.fn().mockReturnValueOnce(0);
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      s.schedule(p1.p);
+
+      // Assert
+      let waitForEnded = false;
+      s.waitFor(pAwaited.p).finally(() => (waitForEnded = true));
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // not called synchronously
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(1);
+
+      // Let's resolve waiated task
+      pAwaited.resolve();
+      await delay();
+      expect(waitForEnded).toBe(false); // should not be visible yet as we need to wait the running one
+
+      // Let's resolve running one
+      p1.resolve();
+      await delay();
+      expect(waitForEnded).toBe(true);
+      expect(s.count()).toBe(0); // No pending scheduled task
+    });
+
+    it('should wait and release scheduled tasks coming after the call to waitFor', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const nextTaskIndex = jest.fn().mockReturnValueOnce(0);
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      let resolveAwaitedTask: () => void;
+      const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+
+      // Assert
+      let waitForEnded = false;
+      s.waitFor(awaitedTask).finally(() => (waitForEnded = true));
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // nothing scheduled yet
+
+      // Schedule p1 a requirement for our resulting task
+      s.schedule(p1.p).then(() => resolveAwaitedTask());
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // no synchronous trigger
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(1);
+
+      // Releasing p1 should release the main task
+      p1.resolve();
+      await delay();
+      expect(waitForEnded).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(1);
+      expect(s.count()).toBe(0); // No more pending scheduled task, all have been released
+    });
+
+    it('should accept multiple tasks to be scheduled together after the call to waitFor', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const p2 = buildUnresolved();
+      const nextTaskIndexParams: unknown[] = [];
+      const nextTaskIndex = jest.fn().mockImplementation((scheduledTasks) => {
+        nextTaskIndexParams.push([...scheduledTasks]); // We need to clone it as it will be altered after the call
+        return 0;
+      });
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      let resolveAwaitedTask: () => void;
+      const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+
+      // Assert
+      let waitForEnded = false;
+      s.waitFor(awaitedTask).finally(() => (waitForEnded = true));
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // nothing scheduled yet
+
+      // Schedule p1 and p2, requirements for our resulting task
+      Promise.all([s.schedule(p1.p), s.schedule(p2.p)]).then(() => resolveAwaitedTask());
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // no synchronous trigger
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(1);
+      expect(nextTaskIndexParams[0]).toEqual([
+        expect.objectContaining({ original: p1.p }),
+        expect.objectContaining({ original: p2.p }),
+      ]);
+
+      // Releasing p1 should trigger the call to schedule p2 (main not released yet)
+      p1.resolve();
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+      expect(nextTaskIndexParams[1]).toEqual([expect.objectContaining({ original: p2.p })]);
+
+      // Both p1 and p2 have been released so main has also been released
+      p2.resolve();
+      await delay();
+      expect(waitForEnded).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+      expect(s.count()).toBe(0); // No more pending scheduled task, all have been released
+    });
+
+    it('should accept multiple tasks to be scheduled together even if coming from distinct immediately resolved promises after the call to waitFor', async () => {
+      // Arrange
+      const p1 = Promise.resolve(1);
+      const p2 = Promise.resolve(2);
+      const nextTaskIndexParams: unknown[] = [];
+      const nextTaskIndex = jest.fn().mockImplementation((scheduledTasks) => {
+        nextTaskIndexParams.push([...scheduledTasks]); // We need to clone it as it will be altered after the call
+        return 0;
+      });
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      let resolveAwaitedTask: () => void;
+      const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+
+      // Assert
+      let waitForEnded = false;
+      s.waitFor(awaitedTask).finally(() => (waitForEnded = true));
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // nothing scheduled yet
+
+      // Schedule p1 and p2 in a very close futur, requirements for our resulting task
+      const delayedP1Scheduling = Promise.resolve().then(() => s.schedule(p1));
+      const delayedP2Scheduling = Promise.resolve().then(() => s.schedule(p2));
+      Promise.all([delayedP1Scheduling, delayedP2Scheduling]).then(() => resolveAwaitedTask());
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // no synchronous trigger
+      await delay();
+      expect(waitForEnded).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+      expect(nextTaskIndexParams[0]).toEqual([
+        expect.objectContaining({ original: p1 }),
+        expect.objectContaining({ original: p2 }),
+      ]);
+      expect(nextTaskIndexParams[1]).toEqual([expect.objectContaining({ original: p2 })]);
+      expect(s.count()).toBe(0); // No more pending scheduled task, all have been released
+    });
+
+    it('should consider separately tasks scheduled via different timeouts after the call to waitFor', async () => {
+      // Arrange
+      const p1 = Promise.resolve(1);
+      const p2 = Promise.resolve(2);
+      const nextTaskIndexParams: unknown[] = [];
+      const nextTaskIndex = jest.fn().mockImplementation((scheduledTasks) => {
+        nextTaskIndexParams.push([...scheduledTasks]); // We need to clone it as it will be altered after the call
+        return 0;
+      });
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      let resolveAwaitedTask: () => void;
+      const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+
+      // Assert
+      let waitForEnded = false;
+      s.waitFor(awaitedTask).finally(() => (waitForEnded = true));
+      await delay();
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // nothing scheduled yet
+
+      // Schedule p1 and p2 in a very close futur, requirements for our resulting task
+      const delayedP1Scheduling = delay().then(() => s.schedule(p1));
+      const delayedP2Scheduling = delay().then(() => s.schedule(p2));
+      Promise.all([delayedP1Scheduling, delayedP2Scheduling]).then(() => resolveAwaitedTask());
+      expect(waitForEnded).toBe(false);
+      expect(nextTaskIndex).not.toHaveBeenCalled(); // no synchronous trigger
+      await delay();
+      expect(waitForEnded).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+      expect(nextTaskIndexParams[0]).toEqual([expect.objectContaining({ original: p1 })]);
+      expect(nextTaskIndexParams[1]).toEqual([expect.objectContaining({ original: p2 })]);
+      expect(s.count()).toBe(0); // No more pending scheduled task, all have been released
+    });
+
+    it('should forward exception thrown by the awaited task', async () => {
+      // Arrange
+      const nextTaskIndex = jest.fn();
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const awaitedTaskValue = new Error('thrown by awaited');
+      const awaitedTask = Promise.reject(awaitedTaskValue);
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+
+      // Assert
+      await expect(() => s.waitFor(awaitedTask)).rejects.toThrow(awaitedTaskValue);
+    });
+
+    it('should be able to wait for a task being itself a scheduled one (no priority to release it first)', async () => {
+      // Arrange
+      const p1 = Promise.resolve(1);
+      const p2 = Promise.resolve(2);
+      const nextTaskIndex = jest.fn().mockReturnValueOnce(0).mockReturnValueOnce(1);
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const awaitedTaskValue = Symbol();
+      const awaitedTask = Promise.resolve(awaitedTaskValue);
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      s.schedule(p1);
+      s.schedule(p2);
+
+      // Assert
+      const value = await s.waitFor(s.schedule(awaitedTask));
+      expect(value).toBe(awaitedTaskValue);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+      expect(s.count()).toBe(1); // Still one pending scheduled task (only p1 has been released before the one we waited for)
+    });
+
+    it('should not release multiple scheduled tasks at the same time even if called via multiple waitFor', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const p2 = buildUnresolved();
+      const p3 = buildUnresolved();
+      const p4 = buildUnresolved();
+      const nextTaskIndex = jest
+        .fn()
+        .mockReturnValueOnce(1) // releasing p2 in [p1,p2,p3,p4]
+        .mockReturnValueOnce(2) // releasing p4 in [p1,p3,p4]
+        .mockReturnValueOnce(0); // releasing p1 in [p1,p4]
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      const sp1 = s.schedule(p1.p);
+      const sp2 = s.schedule(p2.p);
+      s.schedule(p3.p);
+      s.schedule(p4.p);
+      const awaitedTask1 = sp1.then(() => Symbol());
+      const awaitedTask2 = sp2.then(() => Symbol());
+
+      // Assert
+      let waitForEnded1 = false;
+      let waitForEnded2 = false;
+      s.waitFor(awaitedTask1).finally(() => (waitForEnded1 = true));
+      s.waitFor(awaitedTask2).finally(() => (waitForEnded2 = true));
+      await delay();
+      expect(waitForEnded1).toBe(false);
+      expect(waitForEnded2).toBe(false);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(1);
+
+      // p2 released, let's resolve it
+      p2.resolve();
+      await delay();
+      expect(waitForEnded1).toBe(false);
+      expect(waitForEnded2).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(2);
+
+      // p4 released, let's resolve it
+      p4.resolve();
+      await delay();
+      expect(waitForEnded1).toBe(false);
+      expect(waitForEnded2).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(3);
+
+      // p1 released, let's resolve it
+      p1.resolve();
+      await delay();
+      expect(waitForEnded1).toBe(true);
+      expect(waitForEnded2).toBe(true);
+      expect(nextTaskIndex).toHaveBeenCalledTimes(3); // no other call received
+      expect(s.count()).toBe(1); // Still one pending scheduled task for p3
+    });
+
+    it('should end whenever possible while never launching multiple tasks at the same time', async () => {
+      const schedulingTypeArb = fc.constantFrom(...(['none', 'init'] as const));
+      const dependenciesArbFor = (currentItem: number) =>
+        fc.uniqueArray(fc.nat({ max: currentItem - 2 }), { maxLength: currentItem - 1 });
+      const buildAndAddScheduled = (
+        s: SchedulerImplem<unknown>,
+        unscheduled: Promise<unknown>,
+        allPs: Promise<unknown>[],
+        dependencies: number[],
+        schedulingType: 'none' | 'init'
+      ) => {
+        const label = `p${allPs.length + 1}:${JSON.stringify(dependencies)}`;
+        const deps = dependencies.map((id) => allPs[id]);
+        let self: Promise<unknown>;
+        if (schedulingType === 'init') {
+          if (deps.length === 0) {
+            self = s.schedule(unscheduled, label);
+          } else {
+            self = Promise.all(deps).then(() => s.schedule(unscheduled, label));
+          }
+        } else {
+          self = deps.length !== 0 ? Promise.all([...deps, unscheduled]) : unscheduled;
+        }
+        allPs.push(self);
+      };
+      const scheduleResolution = (
+        wrappingScheduler: fc.Scheduler<unknown>,
+        p: ReturnType<typeof buildUnresolved>,
+        pName: string,
+        directResolved: boolean,
+        ctx: fc.ContextValue
+      ): void => {
+        if (directResolved) {
+          ctx.log(`${pName} resolved (direct)`);
+          p.resolve();
+          return;
+        }
+        wrappingScheduler.schedule(Promise.resolve(`Resolve ${pName}`)).then(() => {
+          ctx.log(`${pName} resolved`);
+          p.resolve();
+        });
+      };
+      await fc.assert(
+        fc.asyncProperty(
+          // Scheduler not being tested itself, it will be used to schedule when task will resolve
+          fc.scheduler(),
+          // Stream of positive integers used to tell which task should be selected by `nextTaskIndex`
+          // whenever asked for the next task to be scheduled
+          fc.infiniteStream(fc.nat()),
+          // Define the tree of pre-requisite tasks:
+          // - type of scheduling: should they be scheduled within the Schduler under test?
+          // - when should they resolved: on init or when `fc.scheduler` decides it?
+          // - what are the dependencies needed for this task?
+          fc.tuple(schedulingTypeArb, fc.boolean()),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(2)),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(3)),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(4)),
+          fc.tuple(schedulingTypeArb, fc.boolean(), dependenciesArbFor(5)),
+          fc.tuple(fc.boolean(), dependenciesArbFor(6)),
+          fc.tuple(fc.boolean(), dependenciesArbFor(6)),
+          fc.tuple(fc.boolean(), dependenciesArbFor(6)),
+          // Extra boolean values used to add some delays between resolved Promises and next ones
+          fc.infiniteStream(fc.boolean()),
+          // Logger for easier troubleshooting
+          fc.context(),
+          async (
+            wrappingScheduler,
+            nextTaskIndexSeed,
+            [schedulingType1, directResolve1],
+            [schedulingType2, directResolve2, dependencies2],
+            [schedulingType3, directResolve3, dependencies3],
+            [schedulingType4, directResolve4, dependencies4],
+            [schedulingType5, directResolve5, dependencies5],
+            [directResolveA, finalDependenciesA],
+            [directResolveB, finalDependenciesB],
+            [directResolveC, finalDependenciesC],
+            addExtraDelays,
+            ctx
+          ) => {
+            // Arrange
+            const p1 = buildUnresolved();
+            const p2 = buildUnresolved();
+            const p3 = buildUnresolved();
+            const p4 = buildUnresolved();
+            const p5 = buildUnresolved();
+            const rawAllPs = [p1, p2, p3, p4, p5];
+            const pAwaitedA = buildUnresolved();
+            const pAwaitedB = buildUnresolved();
+            const pAwaitedC = buildUnresolved();
+            let unknownTaskReleased = false;
+            let multipleTasksReleasedAtTheSameTime: string | undefined = undefined;
+            let alreadyRunningPx: typeof p1 | undefined = undefined;
+            const taskSelector: TaskSelector<unknown> = {
+              clone: jest.fn(),
+              nextTaskIndex: (scheduledTasks) => {
+                const selectedId = nextTaskIndexSeed.next().value % scheduledTasks.length;
+                const selectedPx = rawAllPs.find((p) => p.p === scheduledTasks[selectedId].original);
+                const newPx = `p${rawAllPs.indexOf(selectedPx!) + 1}`;
+                ctx.log(`Releasing ${newPx}${selectedPx!.hasBeenResolved() ? ' (resolved)' : ''}`);
+
+                if (
+                  multipleTasksReleasedAtTheSameTime === undefined &&
+                  alreadyRunningPx !== undefined &&
+                  !alreadyRunningPx.hasBeenResolved()
+                ) {
+                  const oldPx = `p${rawAllPs.indexOf(alreadyRunningPx) + 1}`;
+                  multipleTasksReleasedAtTheSameTime = `${oldPx} already running when releasing ${newPx}`;
+                }
+                alreadyRunningPx = selectedPx;
+                unknownTaskReleased = unknownTaskReleased || alreadyRunningPx === undefined;
+                return selectedId;
+              },
+            };
+            const s = new SchedulerImplem((f) => f(), taskSelector);
+            const allPs: Promise<unknown>[] = [];
+            buildAndAddScheduled(s, p1.p, allPs, [], schedulingType1);
+            buildAndAddScheduled(s, p2.p, allPs, dependencies2, schedulingType2);
+            buildAndAddScheduled(s, p3.p, allPs, dependencies3, schedulingType3);
+            buildAndAddScheduled(s, p4.p, allPs, dependencies4, schedulingType4);
+            buildAndAddScheduled(s, p5.p, allPs, dependencies5, schedulingType5);
+            const awaitedTaskA = Promise.all([...finalDependenciesA.map((id) => allPs[id]), pAwaitedA.p]);
+            let resolvedA = false;
+            s.waitFor(awaitedTaskA).then(() => {
+              ctx.log(`A ended`);
+              resolvedA = true;
+            });
+            const awaitedTaskB = Promise.all([...finalDependenciesB.map((id) => allPs[id]), pAwaitedB.p]);
+            let resolvedB = false;
+            s.waitFor(awaitedTaskB).then(() => {
+              ctx.log(`B ended`);
+              resolvedB = true;
+            });
+            const awaitedTaskC = Promise.all([...finalDependenciesC.map((id) => allPs[id]), pAwaitedC.p]);
+            let resolvedC = false;
+            s.waitFor(awaitedTaskC).then(() => {
+              ctx.log(`C ended`);
+              resolvedC = true;
+            });
+
+            // Act
+            scheduleResolution(wrappingScheduler, p1, 'p1', directResolve1, ctx);
+            scheduleResolution(wrappingScheduler, p2, 'p2', directResolve2, ctx);
+            scheduleResolution(wrappingScheduler, p3, 'p3', directResolve3, ctx);
+            scheduleResolution(wrappingScheduler, p4, 'p4', directResolve4, ctx);
+            scheduleResolution(wrappingScheduler, p5, 'p5', directResolve5, ctx);
+            scheduleResolution(wrappingScheduler, pAwaitedA, 'pAwaitedA', directResolveA, ctx);
+            scheduleResolution(wrappingScheduler, pAwaitedB, 'pAwaitedB', directResolveB, ctx);
+            scheduleResolution(wrappingScheduler, pAwaitedC, 'pAwaitedC', directResolveC, ctx);
+
+            while (wrappingScheduler.count() > 0) {
+              // Extra delays based on timeouts of 0ms can potentially trigger unwanted bugs: let's try to add some before waitOne.
+              if (addExtraDelays.next().value) {
+                await delay();
+              }
+              await wrappingScheduler.waitOne();
+            }
+            // Extra delay done after all the scheduling as wrappingScheduler only schedules triggers to resolve tasks
+            // and never waits for their associated Promises to really resolve.
+            await delay();
+
+            // Assert
+            // All awaited tasks should have resolved
+            expect(resolvedA).toBe(true);
+            expect(resolvedB).toBe(true);
+            expect(resolvedC).toBe(true);
+            // Only one scheduled task awaited by the scheduler at a given point in time
+            expect(multipleTasksReleasedAtTheSameTime).toBe(undefined);
+            // Only known tasks could be scheduled
+            expect(unknownTaskReleased).toBe(false);
+          }
+        )
+      );
+    });
   });
 
   describe('schedule', () => {
