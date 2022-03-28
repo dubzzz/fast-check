@@ -2507,8 +2507,8 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
 
 *&#8195;Signatures*
 
-- `fc.set(arb)`
-- `fc.set(arb, {minLength?, maxLength?, selector?, comparator?, size?})`
+- `fc.uniqueArray(arb)`
+- `fc.uniqueArray(arb, {minLength?, maxLength?, selector?, comparator?, size?})`
 
 *&#8195;with:*
 
