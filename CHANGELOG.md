@@ -1,3 +1,20 @@
+# 2.24.0
+
+_Add a way to wait only for minimal stuff with `fc.scheduler`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.24.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.23.2...v2.24.0)]
+
+## Features
+
+- ([PR#2807](https://github.com/dubzzz/fast-check/pull/2807)) Add ability to wait until the end of a given task from `fc.scheduler`
+
+## Fixes
+
+- ([PR#2826](https://github.com/dubzzz/fast-check/pull/2826)) Bug: Narrow return type of readConfigureGlobal
+- ([PR#2819](https://github.com/dubzzz/fast-check/pull/2819)) Doc: Corrected uniqueArray signatures
+- ([PR#2813](https://github.com/dubzzz/fast-check/pull/2813)) Doc: Add examples based on supertest
+
+---
+
 # 2.23.2
 
 _Add missing "types" to "exports" for all dependencies_
