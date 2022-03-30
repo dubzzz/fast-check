@@ -115,7 +115,7 @@ export function configureGlobal(parameters: GlobalParameters): void {
  * @remarks Since 1.18.0
  * @public
  */
-export function readConfigureGlobal(): GlobalParameters | undefined {
+export function readConfigureGlobal(): GlobalParameters {
   return globalParameters;
 }
 
