@@ -195,7 +195,7 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     // to encounter thousands of instances of the current arbitrary.
     const depthBenefit = Math.floor(Math.pow(1 + depthFactor, this.context.depth)) - 1;
     // -0 has to be converted into 0 thus we call ||0
-    return -Math.min((this.totalWeight / this.warbs.length) * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
+    return -Math.min((this.totalWeight / this.warbs[0].weight) * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
   }
 }
 
