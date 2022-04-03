@@ -13,7 +13,7 @@
     "express": "^4.17.3",
     "fast-check": "*",
     "lodash": "^4.17.21",
-    "pure-rand": "^5.0.0",
+    "pure-rand": "^5.0.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "supertest": "^6.2.2"
