@@ -188,14 +188,14 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
   /** Compute the benefit for the current depth */
   private computeNegDepthBenefit(): number {
     const depthFactor = this.constraints.depthFactor;
-    if (depthFactor === undefined || depthFactor <= 0) {
+    if (depthFactor === undefined || depthFactor <= 0 || this.warbs[0].weight === 0) {
       return 0;
     }
     // We use a pow-based biased benefit as the deeper we go the more chance we have
     // to encounter thousands of instances of the current arbitrary.
     const depthBenefit = Math.floor(Math.pow(1 + depthFactor, this.context.depth)) - 1;
     // -0 has to be converted into 0 thus we call ||0
-    return -Math.min(this.warbs[0].weight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
+    return -Math.min(this.totalWeight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
   }
 }
 
