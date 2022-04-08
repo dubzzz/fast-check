@@ -190,7 +190,7 @@ jobs:
         with:
           node-version: '16.x'
       - name: Download production package
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: bundle
       - name: Install dependencies but use current build for fast-check
@@ -226,7 +226,7 @@ jobs:
         with:
           node-version: '16.x'
       - name: Download production package
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: bundle
       - name: Install dependencies but use current build for fast-check
@@ -273,7 +273,7 @@ jobs:
         with:
           node-version: '16.x'
       - name: Download production package
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: bundle
       - name: Install dependencies but use current build for fast-check
@@ -320,7 +320,7 @@ jobs:
       shell: bash -l {0}
       run: nvm install ${{matrix.node-version}}
     - name: Download production package
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: bundle
     - name: Install dependencies but use current build for fast-check (node-extension-cjs)
@@ -376,7 +376,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Download documentation
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: docs
           path: docs/
@@ -408,7 +408,7 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Download production package
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: bundle
       - name: Publish package
