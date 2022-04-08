@@ -145,7 +145,7 @@ jobs:
       - name: Generate documentation
         run: yarn docs-ci
       - name: Upload documentation
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: docs
           path: docs/
@@ -173,7 +173,7 @@ jobs:
           yarn pack
           mv fast-check-*.tgz fast-check.tgz
       - name: Upload production package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: bundle
           path: fast-check.tgz
