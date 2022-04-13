@@ -108,37 +108,56 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should be able to generate xlarge simple recursive structures without reaching out-of-memory', () => {
-    // Arrange
-    const initialGlobal = fc.readConfigureGlobal();
-    fc.configureGlobal({ ...initialGlobal, baseSize: 'xlarge' });
-    try {
-      const arb = fc.letrec((tie) => ({
-        self: fc.oneof({ depthFactor: 0.1 }, fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
-      })).self;
+  it.each([
+    ['xsmall', 1],
+    ['small', 1 / 2],
+    ['medium', 1 / 4],
+    ['large', 1 / 8],
+    ['xlarge', 1 / 16],
+  ] as const)(
+    'Should be able to generate %s simple recursive structures without reaching out-of-memory',
+    (baseSize: fc.Size, depthFactor: number) => {
+      // Arrange
+      const initialGlobal = fc.readConfigureGlobal();
+      fc.configureGlobal({ ...initialGlobal, baseSize });
+      try {
+        const arb = fc.letrec((tie) => ({
+          self: fc.oneof({ depthFactor }, fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
+        })).self;
 
-      // Act / Assert
-      expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
-    } finally {
-      fc.configureGlobal(initialGlobal);
+        // Act / Assert
+        expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+      } finally {
+        fc.configureGlobal(initialGlobal);
+      }
     }
-  });
+  );
 
-  it('Should be able to generate xlarge array-based recursive structures without reaching out-of-memory', () => {
-    // Arrange
-    const initialGlobal = fc.readConfigureGlobal();
-    fc.configureGlobal({ ...initialGlobal, baseSize: 'xlarge' });
-    try {
-      const arb = fc.letrec((tie) => ({
-        self: fc.oneof({ depthFactor: 0.1 }, fc.nat(), fc.array(tie('self'))),
-      })).self;
+  it.each([
+    ['xsmall', 1],
+    ['small', 1 / 2],
+    ['medium', 1 / 4],
+    ['large', 1 / 8],
+    ['xlarge', 1 / 16],
+  ] as const)(
+    'Should be able to generate %s array-based recursive structures without reaching out-of-memory',
+    (baseSize: fc.Size, depthFactor: number) => {
+      // Arrange
+      const initialGlobal = fc.readConfigureGlobal();
+      fc.configureGlobal({ ...initialGlobal, baseSize });
+      try {
+        const depthIdentifier = `array-based-recursive-structure-${baseSize}`;
+        const arb = fc.letrec((tie) => ({
+          self: fc.oneof({ depthFactor, depthIdentifier }, fc.nat(), fc.array(tie('self'), { depthIdentifier })),
+        })).self;
 
-      // Act / Assert
-      expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
-    } finally {
-      fc.configureGlobal(initialGlobal);
+        // Act / Assert
+        expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+      } finally {
+        fc.configureGlobal(initialGlobal);
+      }
     }
-  });
+  );
 });
 
 // Helpers
