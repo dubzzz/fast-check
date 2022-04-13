@@ -40,6 +40,20 @@ export interface SparseArrayConstraints {
    * @remarks Since 2.22.0
    */
   size?: SizeForArbitrary;
+  /**
+   * When receiving a depth identifier, the arbitrary will impact the depthFactor
+   * attached to it to avoid going too deep if it already generated lots of items.
+   *
+   * In other words, if the number of generated values within the collection is large
+   * then the generated items will tend to be less deep to avoid creating structures a lot
+   * larger than expected.
+   *
+   * For the moment, the depth is not taken into account to compute the number of items to
+   * define for a precise generate call of the array. Just applied onto eligible items.
+   *
+   * @remarks Since 2.25.0
+   */
+  depthIdentifier?: string;
 }
 
 /** @internal */
@@ -75,6 +89,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
     maxLength = MaxLengthUpperBound,
     maxNumElements = maxLength, // cap maxNumElements to maxLength
     noTrailingHole,
+    depthIdentifier,
   } = constraints;
 
   const maxGeneratedNumElements = maxGeneratedLengthFromSizeForArbitrary(
@@ -109,6 +124,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
         minLength: minNumElements,
         maxLength: resultedMaxNumElements,
         selector: (item) => item[0],
+        depthIdentifier,
       })
     ).map(
       (items) => {

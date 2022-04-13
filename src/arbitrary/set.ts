@@ -34,9 +34,10 @@ function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<Ne
 }
 
 /** @internal */
-type CompleteSetConstraints<T> = Required<Omit<SetConstraints<T>, 'compare' | 'size'>> & {
+type CompleteSetConstraints<T> = Required<Omit<SetConstraints<T>, 'compare' | 'size' | 'depthIdentifier'>> & {
   setBuilder: CustomSetBuilder<NextValue<T>>;
   maxGeneratedLength: number;
+  depthIdentifier: string | undefined;
 };
 
 /**
@@ -52,8 +53,9 @@ function buildCompleteSetConstraints<T>(constraints: SetConstraints<T>): Complet
     maxLength,
     constraints.maxLength !== undefined
   );
+  const depthIdentifier = constraints.depthIdentifier;
   const setBuilder = buildSetBuilder(constraints);
-  return { minLength, maxGeneratedLength, maxLength, setBuilder };
+  return { minLength, maxGeneratedLength, maxLength, depthIdentifier, setBuilder };
 }
 
 /**
@@ -155,6 +157,20 @@ export interface SetConstraints<T> {
    * @remarks Since 2.22.0
    */
   size?: SizeForArbitrary;
+  /**
+   * When receiving a depth identifier, the arbitrary will impact the depthFactor
+   * attached to it to avoid going too deep if it already generated lots of items.
+   *
+   * In other words, if the number of generated values within the collection is large
+   * then the generated items will tend to be less deep to avoid creating structures a lot
+   * larger than expected.
+   *
+   * For the moment, the depth is not taken into account to compute the number of items to
+   * define for a precise generate call of the array. Just applied onto eligible items.
+   *
+   * @remarks Since 2.25.0
+   */
+  depthIdentifier?: string;
 }
 
 /**
@@ -277,11 +293,12 @@ function set<T>(
   const minLength = constraints.minLength;
   const maxLength = constraints.maxLength;
   const maxGeneratedLength = constraints.maxGeneratedLength;
+  const depthIdentifier = constraints.depthIdentifier;
   const setBuilder = constraints.setBuilder;
 
   const nextArb = convertToNext(arb);
   const arrayArb = convertFromNext(
-    new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength, setBuilder)
+    new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength, depthIdentifier, setBuilder)
   );
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);

@@ -7,6 +7,7 @@ import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../../check/arbitrary/definition/Converters';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { CustomSetBuilder } from './interfaces/CustomSet';
+import { DepthContext, getDepthContextFor } from './helpers/DepthContext';
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -19,18 +20,21 @@ type ArrayArbitraryContext = {
 /** @internal */
 export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   readonly lengthArb: NextArbitrary<number>;
+  readonly depthContext: DepthContext;
 
   constructor(
     readonly arb: NextArbitrary<T>,
     readonly minLength: number,
     readonly maxGeneratedLength: number,
     readonly maxLength: number,
+    depthIdentifier: string | undefined,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
     readonly setBuilder?: CustomSetBuilder<NextValue<T>>
   ) {
     super();
     this.lengthArb = convertToNext(integer(minLength, maxGeneratedLength));
+    this.depthContext = getDepthContextFor(depthIdentifier);
   }
 
   private preFilter(tab: NextValue<T>[]): NextValue<T>[] {
@@ -56,6 +60,16 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return vs;
   }
 
+  private safeGenerate(mrng: Random, biasFactorItems: number | undefined, targetSize: number): NextValue<T> {
+    const depthImpact = Math.max(0, targetSize - 1);
+    this.depthContext.depth += depthImpact; // increase depth
+    try {
+      return this.arb.generate(mrng, biasFactorItems);
+    } finally {
+      this.depthContext.depth -= depthImpact; // decrease depth (reset depth)
+    }
+  }
+
   private generateNItemsNoDuplicates(
     setBuilder: CustomSetBuilder<NextValue<T>>,
     N: number,
@@ -70,7 +84,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // we accept a max of maxGeneratedLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
     while (s.size() < N && numSkippedInRow < this.maxGeneratedLength) {
-      const current = this.arb.generate(mrng, biasFactorItems);
+      const current = this.safeGenerate(mrng, biasFactorItems, this.maxGeneratedLength);
       if (s.tryAdd(current)) {
         numSkippedInRow = 0;
       } else {
@@ -83,7 +97,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
     const items: NextValue<T>[] = [];
     for (let index = 0; index !== N; ++index) {
-      const current = this.arb.generate(mrng, biasFactorItems);
+      const current = this.safeGenerate(mrng, biasFactorItems, N);
       items.push(current);
     }
     return items;

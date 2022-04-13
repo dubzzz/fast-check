@@ -34,6 +34,20 @@ export interface ArrayConstraints {
    * @remarks Since 2.22.0
    */
   size?: SizeForArbitrary;
+  /**
+   * When receiving a depth identifier, the arbitrary will impact the depthFactor
+   * attached to it to avoid going too deep if it already generated lots of items.
+   *
+   * In other words, if the number of generated values within the collection is large
+   * then the generated items will tend to be less deep to avoid creating structures a lot
+   * larger than expected.
+   *
+   * For the moment, the depth is not taken into account to compute the number of items to
+   * define for a precise generate call of the array. Just applied onto eligible items.
+   *
+   * @remarks Since 2.25.0
+   */
+  depthIdentifier?: string;
 }
 
 /** @internal */
@@ -41,12 +55,13 @@ function createArrayArbitrary<T>(
   nextArb: NextArbitrary<T>,
   size: SizeForArbitrary | undefined,
   minLength: number,
-  maxLengthOrUnset: number | undefined
+  maxLengthOrUnset: number | undefined,
+  depthIdentifier: string | undefined
 ): Arbitrary<T[]> {
   const maxLength = maxLengthOrUnset !== undefined ? maxLengthOrUnset : MaxLengthUpperBound;
   const specifiedMaxLength = maxLengthOrUnset !== undefined;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
-  return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength));
+  return convertFromNext(new ArrayArbitrary<T>(nextArb, minLength, maxGeneratedLength, maxLength, depthIdentifier));
 }
 
 /**
@@ -99,17 +114,23 @@ function array<T>(arb: Arbitrary<T>, ...args: [] | [number] | [number, number] |
   const nextArb = convertToNext(arb);
   // fc.array(arb)
   if (args[0] === undefined) {
-    return createArrayArbitrary(nextArb, undefined, 0, undefined); // no size, no maxLength
+    return createArrayArbitrary(nextArb, undefined, 0, undefined, undefined); // no size, no maxLength, no depthIdentifier
   }
   // fc.array(arb, constraints)
   if (typeof args[0] === 'object') {
-    return createArrayArbitrary(nextArb, args[0].size, args[0].minLength || 0, args[0].maxLength);
+    return createArrayArbitrary(
+      nextArb,
+      args[0].size,
+      args[0].minLength || 0,
+      args[0].maxLength,
+      args[0].depthIdentifier
+    );
   }
   // fc.array(arb, minLength, maxLength)
   if (args[1] !== undefined) {
-    return createArrayArbitrary(nextArb, undefined, args[0], args[1]); // no size
+    return createArrayArbitrary(nextArb, undefined, args[0], args[1], undefined); // no size, no depthIdentifier
   }
   // fc.array(arb, maxLength)
-  return createArrayArbitrary(nextArb, undefined, 0, args[0]); // no size
+  return createArrayArbitrary(nextArb, undefined, 0, args[0], undefined); // no size, no depthIdentifier
 }
 export { array };

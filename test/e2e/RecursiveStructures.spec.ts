@@ -107,6 +107,38 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     expect(out.failed).toBe(true);
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
+
+  it('Should be able to generate xlarge simple recursive structures without reaching out-of-memory', () => {
+    // Arrange
+    const initialGlobal = fc.readConfigureGlobal();
+    fc.configureGlobal({ ...initialGlobal, baseSize: 'xlarge' });
+    try {
+      const arb = fc.letrec((tie) => ({
+        self: fc.oneof(fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
+      })).self;
+
+      // Act / Assert
+      expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+    } finally {
+      fc.configureGlobal(initialGlobal);
+    }
+  });
+
+  it('Should be able to generate xlarge array-based recursive structures without reaching out-of-memory', () => {
+    // Arrange
+    const initialGlobal = fc.readConfigureGlobal();
+    fc.configureGlobal({ ...initialGlobal, baseSize: 'xlarge' });
+    try {
+      const arb = fc.letrec((tie) => ({
+        self: fc.oneof(fc.nat(), fc.array(tie('self'))),
+      })).self;
+
+      // Act / Assert
+      expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+    } finally {
+      fc.configureGlobal(initialGlobal);
+    }
+  });
 });
 
 // Helpers
