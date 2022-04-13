@@ -101,8 +101,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
   const baseArb = oneof(
     ...arbitrariesForBase,
     ...(constraints.withBigInt ? [bigInt()] : []),
-    ...(constraints.withDate ? [date()] : []),
-    ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : [])
+    ...(constraints.withDate ? [date()] : [])
   );
 
   return letrec((tie) => ({
@@ -116,6 +115,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withObjectString ? [tie('anything').map((o) => stringify(o))] : []),
       // eslint-disable-next-line @typescript-eslint/ban-types
       ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
+      ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
       ...(constraints.withSparseArray ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size })] : [])
     ),
     // String keys

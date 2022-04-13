@@ -3064,10 +3064,10 @@ fc.object({
 })
 // Examples of generated values:
 // • {}
-// • {"Rsv1:ZP":new Set([new Set([new Boolean(false),new Number(2365100488813409),new Date("+043124-04-14T17:24:27.036Z")]),-39525751681945693558656526770006884307352749268835951055594126375817438580468n,Object.assign(Object.create(null),{"+`mk\\{iy":new Number(5.633648542058632e-81)})])}
-// • {"p?EZci9K7":new Boolean(true),"#5JexvBJ>":[new Boolean(true)],"h?ErP@8":new Set([Object.create(null),new Map([["o2Y7C0'u",new Number(59858875208629)],["b(0#",null],["\\dQ",-57279770216862072964705268852862691625478717228303233552650950585523927603997n]]),Object.assign(Object.create(null),{"i`":undefined,"IY+)IeR')":null})]),"iQ5Ix2f":new Set([]),".":{"":[new Number(-4978985661425083),null,56951428802955987681848498602503428608885525439593207634501495580222435576872n,"oi@0`"],"@G'f":new Date("6753-06-17T23:12:38.428Z"),",fK22nXa":new Set([2.5945752927675387e+49,new Number(5.044227359075029e-116),8078417665267733])}}
-// • {"RrAs^,;_'d":[Object.assign(Object.create(null),{":<rw":new Boolean(false),"81n!c4^KL'":-30462856386635151099826865251705870508376108422500859409496900456039379864108n,"8~":"\\[","}PmF":null}),new Map([["new String(\"Q%*-ci{}iy\")","@zeo]{&"]]),Object.assign(Object.create(null),{"ukv":new Number(8.864807830809682e+58),"h!+#q":new Boolean(true),"-1.2569260788236659e-20":undefined})],",fY*":"new Set([Int8Array.from([6,3,-37]),new Boolean(true),\"ineIR\"])",">mWvMsR":new Map([]),"g@":new Set([new Map([[1.172647974805476e+74,new String("NlbM")],[Uint32Array.from([4160448074,1895163446,2300863407,2425983891,262025371]),"Kx(="],[new Boolean(true),Uint8ClampedArray.from([3,86,150])]]),Object.assign(Object.create(null),{"":-1060654205087092,"|Z|XqSIa@":Int16Array.from([24721,28568,-11911]),"null":-5842690610088316999323914344657172705075233473877149198598449158490460347210n})]),"elN":Uint8ClampedArray.from([39,172,15,0])}
-// • {"zL{":Object.create(null)}
+// • {"Rsv1:ZP":[new String("K"),Uint32Array.from([633324001,2022017662,3426034973]),Object.assign(Object.create(null),{"Kk":2923297417873177,"C`-":19505173548517319155205197499507953276741196830895146254090781762455999677566n,";=9|i":new Number(-1.984939832786464e-30),"nbH4":new Number(2.3757795026530672e-15),"":new String("Vd1k<")})]}
+// • {"p?EZci9K7":{"#5JexvBJ>":Object.assign(Object.create(null),{"":new Number(1284911286245549)}),"rP@8f!\"":null},"%=o2Y7C0'":[1.5343098691860774e-161,Object.assign(Object.create(null),{":,t+\\dQ]s0":new String("yk<+zg"),"i`":undefined,"IY+)IeR')":true,"Q5Ix2fA)I":false,"t4hp":new String("J7O_")}),new Number(-4.346883509275466e-256),new Set([new Boolean(true),4447609665931757])],"":Object.assign(Object.create(null),{"@G'f":"6.186618547845854e-65",",fK22nXa":[new Number(493370621937789),"op",new String("%kz`?")],"J]%Z":new Set([]),"v+'q":Float32Array.from([-9.748349622344785e-25]),"4xRf}c":Object.assign(Object.create(null),{"1":new Number(-2.909672459622621e-251),"Dnp":"IXc,Z)","wHMf,0.?)":8761439299775023469675885963930955556662167065012894693558113018141174779997n,"gN+(JV":true})}),"|\\-|M\"i":7547847335851485,"oFy0":Int32Array.from([-2104321722,1021045793])}
+// • {"RrAs^,;_'d":new String("2cx:"),"rwe":"1n!c","^KL'jR":Object.assign(Object.create(null),{",=QAr":new Set([]),"\"';}PmFHH![\"":new Map([[null,undefined],[new Number(3121187726934787),"iy2S@z"]]),"]{&<":[]}),"ukv":Object.assign(Object.create(null),{"0h!+#":"\"*hPq'Hw\"","Y*l+|&=v{":new Map([[-1.7744826883712946e+52,"neIRu>m"],[new String("Ms"),new Number(-1773232336651419)],[-951530175583534,23764432056584146154023907889068027393405248345613652147679702680601065346692n]]),"NlbM":"2587700481451595","Sl,\"wKx":[new String("2l[!!jS")]}),"$Vh*.'":23070997946542854925041841413770434503170031373116973887592161799115254060253n}
+// • {"zL{":[]}
 // • …
 
 fc.object({
@@ -3356,11 +3356,11 @@ fc.anything({
   withSparseArray: true,
 })
 // Examples of generated values:
-// • [new Map([["new String(\"U\")",new String("z@")],[" tN","#\\Pz"],["!",1.63e-322],["i8}5z!~!$",undefined]])]
-// • Object.assign(Object.create(null),{" ir":"new Date(\"1969-12-31T23:59:59.955Z\")","4#":Float64Array.from([6.86591232972609e+40]),"_qy'(;Z q":{},"JPx":new Set(["o{Z"]),"5[":29n})
-// • false
-// • {}
-// • [,,,,,,,,"new String(\"+l\")",{"(S7S.^:*Z":Float64Array.from([-9.036424638038113e-48]),"+7Yt>lKK\\u":9987460509467217117443347173001745625849248916408725499984480713498137880770n,"1d`r;%J{":new String("5>`{"),"p":2.9729621178286504e+303,"V6bV]":new String("End+")},,,,,,undefined,,"\"KRXAz:h\""]
+// • {"$2U":new Map([[new Boolean(true),new Number(-1.6072112720590742e+253)]])}
+// • [Uint32Array.from([3281742357,1338023626,3836558467,3268059952,4294967271]),{"~U;f@8":new Number(8.122454607691793e-132)},new Date("1969-12-31T23:59:59.995Z"),[,,-1.6e-322,,,,,,new Date("1970-01-01T00:00:00.043Z")],Object.assign(Object.create(null),{"o{Z":"5[","Tgl":"OSm+8lX<9"})]
+// • []
+// • 73n
+// • "\"-60n\""
 // • …
 
 fc.anything({
