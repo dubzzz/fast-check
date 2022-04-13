@@ -114,7 +114,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     fc.configureGlobal({ ...initialGlobal, baseSize: 'xlarge' });
     try {
       const arb = fc.letrec((tie) => ({
-        self: fc.oneof(fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
+        self: fc.oneof({ depthFactor: 0.1 }, fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
       })).self;
 
       // Act / Assert
@@ -130,7 +130,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     fc.configureGlobal({ ...initialGlobal, baseSize: 'xlarge' });
     try {
       const arb = fc.letrec((tie) => ({
-        self: fc.oneof(fc.nat(), fc.array(tie('self'))),
+        self: fc.oneof({ depthFactor: 0.1 }, fc.nat(), fc.array(tie('self'))),
       })).self;
 
       // Act / Assert
