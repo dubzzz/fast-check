@@ -98,7 +98,11 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
   const size = constraints.size;
-  const baseArb = oneof(...arbitrariesForBase);
+  const baseArb = oneof(
+    ...arbitrariesForBase,
+    ...(constraints.withBigInt ? [bigInt()] : []),
+    ...(constraints.withDate ? [date()] : [])
+  );
 
   return letrec((tie) => ({
     anything: oneof(
@@ -111,8 +115,6 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withObjectString ? [tie('anything').map((o) => stringify(o))] : []),
       // eslint-disable-next-line @typescript-eslint/ban-types
       ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
-      ...(constraints.withBigInt ? [bigInt()] : []),
-      ...(constraints.withDate ? [date()] : []),
       ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
       ...(constraints.withSparseArray ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size })] : [])
     ),
@@ -123,23 +125,16 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
           { arbitrary: tie('anything').map((o) => stringify(o)), weight: 1 }
         )
       : constraints.key,
-    // base[] | anything[]
-    arrayBase: oneof(...arbitrariesForBase.map((arb) => array(arb, { maxLength: maxKeys, size }))),
-    array: oneof(tie('arrayBase'), array(tie('anything'), { maxLength: maxKeys, size })),
-    // Set<base> | Set<anything>
-    setBase: oneof(...arbitrariesForBase.map((arb) => setOf(arb, maxKeys, size))),
-    set: oneof(tie('setBase'), setOf(tie('anything'), maxKeys, size)),
-    // Map<key, base> | (Map<key, anything> | Map<anything, anything>)
-    mapBase: oneof(...arbitrariesForBase.map((arb) => mapOf(tie('keys') as Arbitrary<string>, arb, maxKeys, size))),
+    // anything[]
+    array: array(tie('anything'), { maxLength: maxKeys, size }),
+    // Set<anything>
+    set: setOf(tie('anything'), maxKeys, size),
+    // Map<key, anything> | Map<anything, anything>
     map: oneof(
-      tie('mapBase'),
-      oneof(
-        mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
-        mapOf(tie('anything'), tie('anything'), maxKeys, size)
-      )
+      mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
+      mapOf(tie('anything'), tie('anything'), maxKeys, size)
     ),
-    // {[key:string]: base} | {[key:string]: anything}
-    objectBase: oneof(...arbitrariesForBase.map((arb) => dictOf(tie('keys') as Arbitrary<string>, arb, maxKeys, size))),
-    object: oneof(tie('objectBase'), dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size)),
+    // {[key:string]: anything}
+    object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
   })).anything;
 }
