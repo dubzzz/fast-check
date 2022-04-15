@@ -18,6 +18,14 @@ type ArrayArbitraryContext = {
 };
 
 /** @internal */
+function biasedMaxLength(minLength: number, maxLength: number): number {
+  if (minLength === maxLength) {
+    return minLength;
+  }
+  return minLength + Math.floor(Math.log(maxLength - minLength) / Math.log(2));
+}
+
+/** @internal */
 export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   readonly lengthArb: NextArbitrary<number>;
   readonly depthContext: DepthContext;
@@ -61,7 +69,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
   }
 
   private safeGenerate(mrng: Random, biasFactorItems: number | undefined, targetSize: number): NextValue<T> {
-    const depthImpact = Math.max(0, targetSize - 1);
+    const depthImpact = Math.max(0, targetSize - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
     this.depthContext.depth += depthImpact; // increase depth
     try {
       return this.arb.generate(mrng, biasFactorItems);
@@ -166,8 +174,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
       return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
     }
     // We apply bias for both items and length (1 chance over biasFactor²)
-    const maxBiasedLength =
-      this.minLength + Math.floor(Math.log(this.maxGeneratedLength - this.minLength) / Math.log(2));
+    const maxBiasedLength = biasedMaxLength(this.minLength, this.maxGeneratedLength);
     const targetSizeValue = convertToNext(integer(this.minLength, maxBiasedLength)).generate(mrng, undefined);
     return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }
