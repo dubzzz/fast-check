@@ -614,11 +614,11 @@ The minimal requirement that needs to be fulfilled by the wrapped library is to 
 
 Here are some examples of how external faker libraries can be wrapped within fast-check.
 
-With [faker](https://www.npmjs.com/package/faker) - seed based faker:
+With [faker](https://www.npmjs.com/package/@faker-js/faker) - seed based faker:
 
 ```js
 const fc = require('fast-check');
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 const fakerToArb = (fakerGen) => {
   return fc.integer()
