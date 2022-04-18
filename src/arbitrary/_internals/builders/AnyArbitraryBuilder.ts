@@ -32,8 +32,7 @@ function entriesOf<T, U>(
   keyArb: Arbitrary<T>,
   valueArb: Arbitrary<U>,
   maxKeys: number,
-  size: SizeForArbitrary | undefined,
-  depthIdentifier: string
+  size: SizeForArbitrary | undefined
 ) {
   return convertToNext(
     uniqueArray(tuple(keyArb, valueArb), {
@@ -41,41 +40,28 @@ function entriesOf<T, U>(
       size,
       comparator: 'SameValueZero',
       selector: (t) => t[0],
-      depthIdentifier,
     })
   );
 }
 
 /** @internal */
-function mapOf<T, U>(
-  ka: Arbitrary<T>,
-  va: Arbitrary<U>,
-  maxKeys: number,
-  size: SizeForArbitrary | undefined,
-  depthIdentifier: string
-) {
-  return convertFromNext(entriesOf(ka, va, maxKeys, size, depthIdentifier).map(arrayToMapMapper, arrayToMapUnmapper));
+function mapOf<T, U>(ka: Arbitrary<T>, va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
+  return convertFromNext(entriesOf(ka, va, maxKeys, size).map(arrayToMapMapper, arrayToMapUnmapper));
 }
 
 /** @internal */
-function dictOf<U>(
-  ka: Arbitrary<string>,
-  va: Arbitrary<U>,
-  maxKeys: number,
-  size: SizeForArbitrary | undefined,
-  depthIdentifier: string
-) {
+function dictOf<U>(ka: Arbitrary<string>, va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
   return convertFromNext(
-    entriesOf(ka, va, maxKeys, size, depthIdentifier).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
+    entriesOf(ka, va, maxKeys, size).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
   );
 }
 
 /** @internal */
-function setOf<U>(va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined, depthIdentifier: string) {
+function setOf<U>(va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
   // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
   // While the Set does not and consider them to be the same values.
   return convertFromNext(
-    convertToNext(uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero', depthIdentifier })).map(
+    convertToNext(uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero' })).map(
       arrayToSetMapper,
       arrayToSetUnmapper
     )
@@ -109,7 +95,6 @@ function typedArray(constraints: { maxLength: number; size: SizeForArbitrary }) 
 export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Arbitrary<unknown> {
   const arbitrariesForBase = constraints.values;
   const depthFactor = constraints.depthFactor;
-  const depthIdentifier = 'anyArbitraryBuilder';
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
   const size = constraints.size;
@@ -121,7 +106,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
 
   return letrec((tie) => ({
     anything: oneof(
-      { maxDepth, depthFactor, depthIdentifier },
+      { maxDepth, depthFactor },
       baseArb, // Final recursion case
       tie('array'),
       tie('object'),
@@ -131,9 +116,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       // eslint-disable-next-line @typescript-eslint/ban-types
       ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
       ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
-      ...(constraints.withSparseArray
-        ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size, depthIdentifier })]
-        : [])
+      ...(constraints.withSparseArray ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size })] : [])
     ),
     // String keys
     keys: constraints.withObjectString
@@ -143,15 +126,15 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
         )
       : constraints.key,
     // anything[]
-    array: array(tie('anything'), { maxLength: maxKeys, size, depthIdentifier }),
+    array: array(tie('anything'), { maxLength: maxKeys, size }),
     // Set<anything>
-    set: setOf(tie('anything'), maxKeys, size, depthIdentifier),
+    set: setOf(tie('anything'), maxKeys, size),
     // Map<key, anything> | Map<anything, anything>
     map: oneof(
-      mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
-      mapOf(tie('anything'), tie('anything'), maxKeys, size, depthIdentifier)
+      mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
+      mapOf(tie('anything'), tie('anything'), maxKeys, size)
     ),
     // {[key:string]: anything}
-    object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
+    object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
   })).anything;
 }
