@@ -22,7 +22,7 @@ function beforeEachHook() {
 beforeEach(beforeEachHook);
 
 describe('uniqueArray', () => {
-  it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, <default>) for uniqueArray(arb)', () => {
+  it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb)', () => {
     // Arrange
     const { instance: childInstance } = fakeNextArbitrary<unknown>();
     const { instance } = fakeNextArbitrary<unknown[]>();
@@ -33,7 +33,14 @@ describe('uniqueArray', () => {
     const arb = uniqueArray(convertFromNext(childInstance));
 
     // Assert
-    expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), 0x7fffffff, expect.any(Function));
+    expect(ArrayArbitrary).toHaveBeenCalledWith(
+      childInstance,
+      0,
+      expect.any(Number),
+      0x7fffffff,
+      undefined,
+      expect.any(Function)
+    );
     const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
     expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
     expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
@@ -41,7 +48,7 @@ describe('uniqueArray', () => {
     expect(convertToNext(arb)).toBe(instance);
   });
 
-  it('should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, <default>) for uniqueArray(set, {maxLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, n.a, <default>) for uniqueArray(set, {maxLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
         // Arrange
@@ -54,13 +61,20 @@ describe('uniqueArray', () => {
         const arb = uniqueArray(convertFromNext(childInstance), { maxLength });
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, expect.any(Function));
+        expect(ArrayArbitrary).toHaveBeenCalledWith(
+          childInstance,
+          0,
+          maxLength,
+          maxLength,
+          undefined,
+          expect.any(Function)
+        );
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff <default>) for uniqueArray(arb, {minLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb, {minLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (minLength) => {
         // Arrange
@@ -79,6 +93,7 @@ describe('uniqueArray', () => {
           minLength,
           expect.any(Number),
           0x7fffffff,
+          undefined,
           expect.any(Function)
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
@@ -94,7 +109,7 @@ describe('uniqueArray', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, <default>) for uniqueArray(arb, {minLength,maxLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, n.a, <default>) for uniqueArray(arb, {minLength,maxLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
         // Arrange
@@ -114,6 +129,7 @@ describe('uniqueArray', () => {
           minLength,
           maxLength,
           maxLength,
+          undefined,
           expect.any(Function)
         );
         expect(convertToNext(arb)).toBe(instance);
@@ -125,18 +141,26 @@ describe('uniqueArray', () => {
     fc.assert(
       fc.property(
         fc
-          .record({
-            minLength: fc.nat({ max: 2 ** 31 - 1 }),
-            maxLength: fc.nat({ max: 2 ** 31 - 1 }),
-            comparator: comparatorArbitrary(),
-            selector: selectorArbitrary(),
-          })
+          .record(
+            {
+              minLength: fc.nat({ max: 2 ** 31 - 1 }),
+              maxLength: fc.nat({ max: 2 ** 31 - 1 }),
+              comparator: comparatorArbitrary(),
+              selector: selectorArbitrary(),
+              depthIdentifier: fc.string(),
+            },
+            { requiredKeys: [] }
+          )
           .map((constraints) =>
             constraints.minLength !== undefined &&
             constraints.maxLength !== undefined &&
             constraints.minLength > constraints.maxLength
-              ? { ...constraints, minLength: constraints.maxLength, maxLength: constraints.minLength }
-              : { ...constraints }
+              ? ({
+                  ...constraints,
+                  minLength: constraints.maxLength,
+                  maxLength: constraints.minLength,
+                } as UniqueArrayConstraints<unknown, unknown>)
+              : ({ ...constraints } as UniqueArrayConstraints<unknown, unknown>)
           ),
         (constraints) => {
           // Arrange
@@ -147,7 +171,7 @@ describe('uniqueArray', () => {
           filter.mockReturnValue(instance);
 
           // Act
-          const arb = uniqueArray(convertFromNext(childInstance), { ...constraints });
+          const arb = uniqueArray(convertFromNext(childInstance), constraints);
 
           // Assert
           expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -155,6 +179,7 @@ describe('uniqueArray', () => {
             constraints.minLength !== undefined ? constraints.minLength : expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
+            constraints.depthIdentifier,
             expect.any(Function)
           );
           expect(convertToNext(arb)).toBe(instance);

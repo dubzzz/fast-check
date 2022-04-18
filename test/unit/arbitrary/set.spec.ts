@@ -22,7 +22,7 @@ function beforeEachHook() {
 beforeEach(beforeEachHook);
 
 describe('set', () => {
-  it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, <default>) for set(arb)', () => {
+  it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a, <default>) for set(arb)', () => {
     // Arrange
     const { instance: childInstance } = fakeNextArbitrary<unknown>();
     const { instance } = fakeNextArbitrary<unknown[]>();
@@ -33,7 +33,14 @@ describe('set', () => {
     const arb = set(convertFromNext(childInstance));
 
     // Assert
-    expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), 0x7fffffff, expect.any(Function));
+    expect(ArrayArbitrary).toHaveBeenCalledWith(
+      childInstance,
+      0,
+      expect.any(Number),
+      0x7fffffff,
+      undefined,
+      expect.any(Function)
+    );
     const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
     expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
     expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
@@ -41,7 +48,7 @@ describe('set', () => {
     expect(convertToNext(arb)).toBe(instance);
   });
 
-  it('should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, <default>) for array(set, {maxLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, n.a, <default>) for array(set, {maxLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
         // Arrange
@@ -54,13 +61,20 @@ describe('set', () => {
         const arb = set(convertFromNext(childInstance), { maxLength });
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, expect.any(Function));
+        expect(ArrayArbitrary).toHaveBeenCalledWith(
+          childInstance,
+          0,
+          maxLength,
+          maxLength,
+          undefined,
+          expect.any(Function)
+        );
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff <default>) for set(arb, {minLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff, n.a, <default>) for set(arb, {minLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (minLength) => {
         // Arrange
@@ -79,6 +93,7 @@ describe('set', () => {
           minLength,
           expect.any(Number),
           0x7fffffff,
+          undefined,
           expect.any(Function)
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
@@ -94,7 +109,7 @@ describe('set', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, <default>) for set(arb, {minLength,maxLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, n.a, <default>) for set(arb, {minLength,maxLength})', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
         // Arrange
@@ -114,6 +129,7 @@ describe('set', () => {
           minLength,
           maxLength,
           maxLength,
+          undefined,
           expect.any(Function)
         );
         expect(convertToNext(arb)).toBe(instance);
@@ -157,6 +173,7 @@ describe('set', () => {
             constraints.minLength !== undefined ? constraints.minLength : expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
+            undefined,
             expect.any(Function)
           );
           expect(convertToNext(arb)).toBe(instance);
@@ -165,7 +182,7 @@ describe('set', () => {
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, compare) for set(arb, compare)', () => {
+  it('[legacy] should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a, compare) for set(arb, compare)', () => {
     fc.assert(
       fc.property(equalityCompare(), (compare) => {
         // Arrange
@@ -183,6 +200,7 @@ describe('set', () => {
           0,
           expect.any(Number),
           0x7fffffff,
+          undefined,
           expect.any(Function)
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
@@ -194,7 +212,7 @@ describe('set', () => {
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, 0, maxLength, <default>) for set(arb, maxLength)', () => {
+  it('[legacy] should instantiate ArrayArbitrary(arb, 0, maxLength, n.a, <default>) for set(arb, maxLength)', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
         // Arrange
@@ -207,13 +225,20 @@ describe('set', () => {
         const arb = set(convertFromNext(childInstance), maxLength);
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, expect.any(Function));
+        expect(ArrayArbitrary).toHaveBeenCalledWith(
+          childInstance,
+          0,
+          maxLength,
+          maxLength,
+          undefined,
+          expect.any(Function)
+        );
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, compare) for set(arb, maxLength, compare)', () => {
+  it('[legacy] should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, n.a, compare) for set(arb, maxLength, compare)', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), equalityCompare(), (maxLength, compare) => {
         // Arrange
@@ -226,13 +251,20 @@ describe('set', () => {
         const arb = set(convertFromNext(childInstance), maxLength, compare);
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, expect.any(Function));
+        expect(ArrayArbitrary).toHaveBeenCalledWith(
+          childInstance,
+          0,
+          maxLength,
+          maxLength,
+          undefined,
+          expect.any(Function)
+        );
         expect(convertToNext(arb)).toBe(instance);
       })
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, <default>) for set(arb, minLength, maxLength)', () => {
+  it('[legacy] should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, n.a, <default>) for set(arb, minLength, maxLength)', () => {
     fc.assert(
       fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
         // Arrange
@@ -252,6 +284,7 @@ describe('set', () => {
           minLength,
           maxLength,
           maxLength,
+          undefined,
           expect.any(Function)
         );
         expect(convertToNext(arb)).toBe(instance);
@@ -259,7 +292,7 @@ describe('set', () => {
     );
   });
 
-  it('[legacy] should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, compare) for set(arb, minLength, maxLength, compare)', () => {
+  it('[legacy] should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, n.a, compare) for set(arb, minLength, maxLength, compare)', () => {
     fc.assert(
       fc.property(
         fc.nat({ max: 2 ** 31 - 1 }),
@@ -283,6 +316,7 @@ describe('set', () => {
             minLength,
             maxLength,
             maxLength,
+            undefined,
             expect.any(Function)
           );
           expect(convertToNext(arb)).toBe(instance);
