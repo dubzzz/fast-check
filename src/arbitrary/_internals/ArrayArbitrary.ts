@@ -68,16 +68,6 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return vs;
   }
 
-  private safeGenerate(mrng: Random, biasFactorItems: number | undefined, targetSize: number): NextValue<T> {
-    const depthImpact = Math.max(0, targetSize - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
-    this.depthContext.depth += depthImpact; // increase depth
-    try {
-      return this.arb.generate(mrng, biasFactorItems);
-    } finally {
-      this.depthContext.depth -= depthImpact; // decrease depth (reset depth)
-    }
-  }
-
   private generateNItemsNoDuplicates(
     setBuilder: CustomSetBuilder<NextValue<T>>,
     N: number,
@@ -92,7 +82,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     // we accept a max of maxGeneratedLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
     while (s.size() < N && numSkippedInRow < this.maxGeneratedLength) {
-      const current = this.safeGenerate(mrng, biasFactorItems, this.maxGeneratedLength);
+      const current = this.arb.generate(mrng, biasFactorItems);
       if (s.tryAdd(current)) {
         numSkippedInRow = 0;
       } else {
@@ -102,13 +92,38 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     return s.getData();
   }
 
+  private safeGenerateNItemsNoDuplicates(
+    setBuilder: CustomSetBuilder<NextValue<T>>,
+    N: number,
+    mrng: Random,
+    biasFactorItems: number | undefined
+  ): NextValue<T>[] {
+    const depthImpact = Math.max(0, N - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
+    this.depthContext.depth += depthImpact; // increase depth
+    try {
+      return this.generateNItemsNoDuplicates(setBuilder, N, mrng, biasFactorItems);
+    } finally {
+      this.depthContext.depth -= depthImpact; // decrease depth (reset depth)
+    }
+  }
+
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
     const items: NextValue<T>[] = [];
     for (let index = 0; index !== N; ++index) {
-      const current = this.safeGenerate(mrng, biasFactorItems, N);
+      const current = this.arb.generate(mrng, biasFactorItems);
       items.push(current);
     }
     return items;
+  }
+
+  private safeGenerateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): NextValue<T>[] {
+    const depthImpact = Math.max(0, N - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
+    this.depthContext.depth += depthImpact; // increase depth
+    try {
+      return this.generateNItems(N, mrng, biasFactorItems);
+    } finally {
+      this.depthContext.depth -= depthImpact; // decrease depth (reset depth)
+    }
   }
 
   private wrapper(
@@ -149,8 +164,8 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     const targetSize = biasMeta.size;
     const items =
       this.setBuilder !== undefined
-        ? this.generateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasMeta.biasFactorItems)
-        : this.generateNItems(targetSize, mrng, biasMeta.biasFactorItems);
+        ? this.safeGenerateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasMeta.biasFactorItems)
+        : this.safeGenerateNItems(targetSize, mrng, biasMeta.biasFactorItems);
     return this.wrapper(items, false, undefined, 0);
   }
 
