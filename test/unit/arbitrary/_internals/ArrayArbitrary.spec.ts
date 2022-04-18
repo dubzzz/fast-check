@@ -15,6 +15,7 @@ import * as IntegerMock from '../../../../src/arbitrary/integer';
 import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { buildNextShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
+import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -155,6 +156,60 @@ describe('ArrayArbitrary', () => {
             expect(generate.mock.calls.length).toBeGreaterThanOrEqual(minLength);
             for (const call of generate.mock.calls) {
               expect(call).toEqual([mrng, biasFactor]); // but bias all sub-values
+            }
+          }
+        )
+      );
+    });
+
+    it('should impact depth factor the same way for any child and reset it at the end', () => {
+      fc.assert(
+        fc.property(
+          fc.array(fc.tuple(fc.anything(), fc.anything(), fc.boolean())),
+          fc.nat(),
+          fc.nat(MaxLengthUpperBound),
+          fc.nat(MaxLengthUpperBound),
+          fc.anything(),
+          fc.integer({ min: 2 }),
+          fc.boolean(),
+          (generatedValues, seed, aLength, bLength, integerContext, biasFactor, withSetBuilder) => {
+            // Arrange
+            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const depthContext = { depth: 0 };
+            getDepthContextFor.mockReturnValue(depthContext);
+            const seenDepths = new Set<number>();
+            const { acceptedValues, instance, generate, setBuilder } = prepareSetBuilderData(
+              generatedValues,
+              !withSetBuilder,
+              () => {
+                seenDepths.add(depthContext.depth);
+              }
+            );
+            const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
+            const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
+            generateInteger.mockReturnValue(new NextValue(minLength, integerContext));
+            const integer = jest.spyOn(IntegerMock, 'integer');
+            integer.mockImplementation(() => convertFromNextWithShrunkOnce(integerInstance, undefined));
+            const { instance: mrng } = fakeRandom();
+
+            // Act
+            const arb = new ArrayArbitrary(
+              instance,
+              minLength,
+              maxGeneratedLength,
+              maxLength,
+              undefined,
+              withSetBuilder ? setBuilder : undefined
+            );
+            arb.generate(mrng, biasFactor);
+
+            // Assert
+            expect(getDepthContextFor).toHaveBeenCalledTimes(1); // only array calls it in the test
+            expect(depthContext.depth).toBe(0); // properly reset
+            if (generate.mock.calls.length !== 0) {
+              expect([...seenDepths]).toHaveLength(1); // always called with same depth
+            } else {
+              expect([...seenDepths]).toHaveLength(0); // never called on items
             }
           }
         )
@@ -490,7 +545,11 @@ describe('ArrayArbitrary (integration)', () => {
 
 // Helpers
 
-function prepareSetBuilderData(generatedValues: [value: any, context: any, rejected?: boolean][], acceptAll: boolean) {
+function prepareSetBuilderData(
+  generatedValues: [value: any, context: any, rejected?: boolean][],
+  acceptAll: boolean,
+  onGenerateHook?: () => void
+) {
   const acceptedValues = new Set<NextValue<any>>();
   const { instance, generate } = fakeNextArbitrary();
   for (const v of generatedValues) {
@@ -499,7 +558,12 @@ function prepareSetBuilderData(generatedValues: [value: any, context: any, rejec
     if (!rejected || acceptAll) {
       acceptedValues.add(value);
     }
-    generate.mockReturnValueOnce(value);
+    generate.mockImplementationOnce(() => {
+      if (onGenerateHook !== undefined) {
+        onGenerateHook();
+      }
+      return value;
+    });
   }
   const data: any[] = [];
   const customSet: CustomSet<NextValue<any>> = {
