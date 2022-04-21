@@ -39,7 +39,7 @@ export function jsonConstraintsBuilder(
   stringArbitrary: Arbitrary<string>,
   constraints: JsonSharedConstraints
 ): ObjectConstraints {
-  const { depthFactor = 0.1, maxDepth } = constraints;
+  const { depthFactor, maxDepth } = constraints;
   const key = stringArbitrary;
   const values = [
     boolean(), // any boolean
