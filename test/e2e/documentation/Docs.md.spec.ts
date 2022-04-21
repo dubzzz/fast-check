@@ -126,11 +126,13 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const generatedValues = (function (fc): string[] {
         const numRuns = 5 * TargetNumExamples;
-        const seed = snippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-        const indexArbitraryPart = snippet.indexOf(CommentForArbitraryIndicator);
-
-        const preparationPart = indexArbitraryPart !== -1 ? snippet.substring(0, indexArbitraryPart) : '';
-        const arbitraryPart = indexArbitraryPart !== -1 ? snippet.substring(indexArbitraryPart) : snippet;
+        const lastIndexCommentForStatistics = snippet.lastIndexOf(CommentForStatistics);
+        const refinedSnippet =
+          lastIndexCommentForStatistics !== -1 ? snippet.substring(lastIndexCommentForStatistics) : snippet;
+        const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
+        const indexArbitraryPart = refinedSnippet.indexOf(CommentForArbitraryIndicator);
+        const preparationPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(0, indexArbitraryPart) : '';
+        const arbitraryPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(indexArbitraryPart) : refinedSnippet;
         const evalCode = `${preparationPart}\nfc.sample(${arbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
         try {
           return eval(evalCode);
@@ -165,26 +167,35 @@ function refreshContent(originalContent: string): { content: string; numExecuted
 
       ++numExecutedSnippets;
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const computedStatitics = (function (fc): string[] {
-        const lines: string[] = [];
-        const sourceConsoleLog = console.log;
-        console.log = (line) => lines.push(line);
-        const seed = snippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-        const evalCode = `fc.configureGlobal({seed: ${seed}, numRuns: 10000});${snippet}`;
-        try {
-          eval(snippet);
-          return lines;
-        } catch (err) {
-          throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
-        } finally {
-          console.log = sourceConsoleLog;
-        }
-      })(fc);
-      return `${snippet}\n${computedStatitics
-        .slice(0, TargetNumExamples)
-        .map((line) => `// ${line}`)
-        .join('\n')}${computedStatitics.length > TargetNumExamples ? '\n// …' : ''}`;
+      const computedStatitics = (size: fc.Size) =>
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        (function (fc): string[] {
+          const lines: string[] = [];
+          const sourceConsoleLog = console.log;
+          console.log = (line) => lines.push(line);
+          const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
+          const refinedSnippet =
+            lastIndexCommentForGeneratedValues !== -1 ? snippet.substring(lastIndexCommentForGeneratedValues) : snippet;
+          const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
+          const evalCode = `fc.configureGlobal({seed: ${seed}, numRuns: 10000, baseSize: ${JSON.stringify(
+            size
+          )}});${refinedSnippet}`;
+          try {
+            eval(evalCode);
+            return lines;
+          } catch (err) {
+            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
+          } finally {
+            console.log = sourceConsoleLog;
+          }
+        })(fc);
+      const formatForSize = (size: fc.Size) =>
+        `// For size = "${size}":\n${computedStatitics(size)
+          .slice(0, TargetNumExamples)
+          .map((line) => `// • ${line}`)
+          .join('\n')}${computedStatitics.length > TargetNumExamples ? '\n// • …' : ''}`;
+      const sizes = ['xsmall', 'small', 'medium'] as const;
+      return `${snippet}\n${sizes.map((size) => formatForSize(size)).join('\n')}`;
     });
 
     return addJsCodeBlock(updatedStatisticsSnippets.join(''));
