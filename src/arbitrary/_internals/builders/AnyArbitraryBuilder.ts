@@ -26,13 +26,15 @@ import { objectToPrototypeLessMapper, objectToPrototypeLessUnmapper } from '../m
 import { letrec } from '../../letrec';
 import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 import { uniqueArray } from '../../uniqueArray';
+import { createDepthIdentifier, DepthIdentifier } from '../helpers/DepthContext';
 
 /** @internal */
 function entriesOf<T, U>(
   keyArb: Arbitrary<T>,
   valueArb: Arbitrary<U>,
   maxKeys: number,
-  size: SizeForArbitrary | undefined
+  size: SizeForArbitrary | undefined,
+  depthIdentifier: DepthIdentifier
 ) {
   return convertToNext(
     uniqueArray(tuple(keyArb, valueArb), {
@@ -40,28 +42,46 @@ function entriesOf<T, U>(
       size,
       comparator: 'SameValueZero',
       selector: (t) => t[0],
+      depthIdentifier,
     })
   );
 }
 
 /** @internal */
-function mapOf<T, U>(ka: Arbitrary<T>, va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
-  return convertFromNext(entriesOf(ka, va, maxKeys, size).map(arrayToMapMapper, arrayToMapUnmapper));
+function mapOf<T, U>(
+  ka: Arbitrary<T>,
+  va: Arbitrary<U>,
+  maxKeys: number,
+  size: SizeForArbitrary | undefined,
+  depthIdentifier: DepthIdentifier
+) {
+  return convertFromNext(entriesOf(ka, va, maxKeys, size, depthIdentifier).map(arrayToMapMapper, arrayToMapUnmapper));
 }
 
 /** @internal */
-function dictOf<U>(ka: Arbitrary<string>, va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
+function dictOf<U>(
+  ka: Arbitrary<string>,
+  va: Arbitrary<U>,
+  maxKeys: number,
+  size: SizeForArbitrary | undefined,
+  depthIdentifier: DepthIdentifier
+) {
   return convertFromNext(
-    entriesOf(ka, va, maxKeys, size).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
+    entriesOf(ka, va, maxKeys, size, depthIdentifier).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper)
   );
 }
 
 /** @internal */
-function setOf<U>(va: Arbitrary<U>, maxKeys: number, size: SizeForArbitrary | undefined) {
+function setOf<U>(
+  va: Arbitrary<U>,
+  maxKeys: number,
+  size: SizeForArbitrary | undefined,
+  depthIdentifier: DepthIdentifier
+) {
   // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
   // While the Set does not and consider them to be the same values.
   return convertFromNext(
-    convertToNext(uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero' })).map(
+    convertToNext(uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero', depthIdentifier })).map(
       arrayToSetMapper,
       arrayToSetUnmapper
     )
@@ -95,6 +115,7 @@ function typedArray(constraints: { maxLength: number; size: SizeForArbitrary }) 
 export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Arbitrary<unknown> {
   const arbitrariesForBase = constraints.values;
   const depthFactor = constraints.depthFactor;
+  const depthIdentifier = createDepthIdentifier();
   const maxDepth = constraints.maxDepth;
   const maxKeys = constraints.maxKeys;
   const size = constraints.size;
@@ -106,7 +127,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
 
   return letrec((tie) => ({
     anything: oneof(
-      { maxDepth, depthFactor },
+      { maxDepth, depthFactor, depthIdentifier },
       baseArb, // Final recursion case
       tie('array'),
       tie('object'),
@@ -116,7 +137,9 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       // eslint-disable-next-line @typescript-eslint/ban-types
       ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
       ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
-      ...(constraints.withSparseArray ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size })] : [])
+      ...(constraints.withSparseArray
+        ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size, depthIdentifier })]
+        : [])
     ),
     // String keys
     keys: constraints.withObjectString
@@ -126,15 +149,15 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
         )
       : constraints.key,
     // anything[]
-    array: array(tie('anything'), { maxLength: maxKeys, size }),
+    array: array(tie('anything'), { maxLength: maxKeys, size, depthIdentifier }),
     // Set<anything>
-    set: setOf(tie('anything'), maxKeys, size),
+    set: setOf(tie('anything'), maxKeys, size, depthIdentifier),
     // Map<key, anything> | Map<anything, anything>
     map: oneof(
-      mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
-      mapOf(tie('anything'), tie('anything'), maxKeys, size)
+      mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
+      mapOf(tie('anything'), tie('anything'), maxKeys, size, depthIdentifier)
     ),
     // {[key:string]: anything}
-    object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size),
+    object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
   })).anything;
 }
