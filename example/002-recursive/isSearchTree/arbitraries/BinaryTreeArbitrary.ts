@@ -22,7 +22,7 @@ export const binaryTreeWithoutMaxDepth = (): fc.Arbitrary<Tree<number>> => {
       right: fc.constant(null),
     }),
     node: fc.record({ value: fc.integer(), left: tie('tree'), right: tie('tree') }),
-    tree: fc.oneof({ depthFactor: 0.5 }, tie('leaf'), tie('node')),
+    tree: fc.oneof({ depthFactor: 'small' }, tie('leaf'), tie('node')),
   }));
   return tree as fc.Arbitrary<Tree<number>>;
 };

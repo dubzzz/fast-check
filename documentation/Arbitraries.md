@@ -1013,7 +1013,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -1040,8 +1040,8 @@ fc.json({maxDepth: 1})
 // • "[1.73e-322]"
 // • …
 
-fc.json({depthFactor: 0.1})
-// Examples of generated values: "[]", "-1.2e-322", "\"W!oe%r(\"", "{}", "[false,\"?Y]}I%d\",2.7395116183994342e+35]"…
+fc.json({depthFactor: 'medium'})
+// Examples of generated values: "[false,2.7321203973068163e+275,false,false,null]", "{}", "[]", "-1.8e-322", "true"…
 ```
 </details>
 
@@ -1063,7 +1063,7 @@ fc.json({depthFactor: 0.1})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -1084,13 +1084,13 @@ fc.unicodeJson({maxDepth: 0})
 fc.unicodeJson({maxDepth: 1})
 // Examples of generated values: "false", "true", "\"㬻켔㣃Ꚗ⧅ޔ\"", "[\"⩡傒胀녠鯑\",null,null,\"犨녎짨\",null]", "-2.787348602876926e-78"…
 
-fc.unicodeJson({depthFactor: 0.1})
+fc.unicodeJson({depthFactor: 'medium'})
 // Examples of generated values:
-// • "true"
-// • "[{\"ﰈ矂䵑\":\"鬗쮠嫁\",\"ꚓᎾ麷梒쨼䰻㝚堊ﲽ\":false,\"\":-2.032086846640786e-16}]"
-// • "[[null,null,-6.73497623395787e+186]]"
-// • "false"
-// • "{}"
+// • "{\"苚뎃쮞불힓蹎❄袁㸩軜\":null,\"\":[-4.7767678646449e+49,-15.593117037815318,true,null]}"
+// • "{\"飭\":true,\"휺荃䫐음䉷ꙅ낱Ḯ嶑\":false,\"㴃蛧暪䴿城뛛黔䟧\":true}"
+// • "{\"뀷\":{\"෶ⴜ窼\":7.0988102855079e+190,\"㶬障妞儲ྍ䡥\":true,\"큔忭뜨ꀻ\":-3.186509771171342e+286},\"\":null}"
+// • "{\"䖇셧ࢼꗀ䃳곤팂\":\"聮쵛뜒쫔貦醻鴚免\",\"䏒댳剱怉⮆녞\":true,\"睩ﳰ첃쉵\":null,\"ퟪ\":true}"
+// • "[true]"
 // • …
 ```
 </details>
@@ -2140,7 +2140,7 @@ fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 - `arb` — _arbitrary that will be called to generate normal values_
 - `freq?` — default: `5` — _probability to build the nil value is of 1 / freq_
 - `nil?` — default: `null` — _nil value_
-- `depthFactor?` — default: `0` — _this factor will be used to increase the probability to generate nil values as we go deeper in a recursive structure_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _this factor will be used to increase the probability to generate nil values as we go deeper in a recursive structure_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, only nil could be produced_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
@@ -2182,7 +2182,7 @@ fc.option(fc.string(), { nil: undefined })
 
 - `...arbitraries` — _arbitraries that could be used to generate a value_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary. It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
-- `depthFactor?` — default: `0` — _this factor will be used to increase the probability to generate instances of the first passed arbitrary_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _this factor will be used to increase the probability to generate instances of the first passed arbitrary_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
@@ -2220,7 +2220,7 @@ fc.oneof(fc.char(), fc.boolean(), fc.nat())
 
 - `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary (if and only if its weight is strictly greater than 0). It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
-- `depthFactor?` — default: `0` — _this factor will be used to increase the probability to generate instances of the first passed arbitrary if its weight is not zero_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _this factor will be used to increase the probability to generate instances of the first passed arbitrary if its weight is not zero_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value even if its weight is zero_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
@@ -2493,7 +2493,7 @@ fc.letrec((tie) => ({
   self: fc.record({
     value: fc.nat(),
     children: fc.oneof(
-      { depthFactor: 0.5, depthIdentifier: 'id:self' },
+      { depthFactor: 'small', depthIdentifier: 'id:self' },
       fc.constant([]),
       fc.array(tie('self'), { depthIdentifier: 'id:self' })
     ),
@@ -2505,11 +2505,11 @@ fc.letrec((tie) => ({
 // Note: For the moment, `fc.array` cannot stop the recursion alone and need to be combined with `fc.oneof` or any other
 // helper being able to fallback to base cases with an higher probability as we go deeper in the recursion.
 // Examples of generated values:
-// • {"value":1447079203,"children":[]}
-// • {"value":10,"children":[{"value":7,"children":[]},{"value":1057540117,"children":[]},{"value":23,"children":[]},{"value":2147483637,"children":[]},{"value":1986203100,"children":[]}]}
-// • {"value":1,"children":[{"value":575042990,"children":[{"value":1894139063,"children":[]},{"value":352857385,"children":[]},{"value":1903697278,"children":[]},{"value":922269867,"children":[]},{"value":917330116,"children":[]},{"value":801736466,"children":[]},{"value":1148297865,"children":[]},{"value":2132703902,"children":[]},{"value":385147958,"children":[]},{"value":1021892827,"children":[]}]},{"value":976800995,"children":[{"value":900619543,"children":[]},{"value":844470369,"children":[]},{"value":155445977,"children":[]}]},{"value":1477773363,"children":[]}]}
-// • {"value":25,"children":[]}
-// • {"value":1962836578,"children":[{"value":1815598021,"children":[]}]}
+// • {"value":424778306,"children":[]}
+// • {"value":27,"children":[{"value":314632820,"children":[]},{"value":494880843,"children":[]},{"value":241922623,"children":[]},{"value":1909847367,"children":[]},{"value":955571083,"children":[]},{"value":96082336,"children":[]},{"value":56407905,"children":[]},{"value":1286754465,"children":[]},{"value":188039153,"children":[]},{"value":853104761,"children":[]}]}
+// • {"value":7,"children":[]}
+// • {"value":2147483619,"children":[]}
+// • {"value":15,"children":[{"value":1009275606,"children":[]},{"value":2147483630,"children":[{"value":1715614519,"children":[]}]}]}
 // • …
 ```
 </details>
@@ -3012,7 +3012,7 @@ fc.record({
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
@@ -3092,16 +3092,16 @@ fc.object({
 // • …
 
 fc.object({
-  depthFactor: 0.1,
+  depthFactor: 'medium',
   maxDepth: 1000,
 })
 // Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
 // Examples of generated values:
-// • {"#$!":[[-9.659747334739587e-110],{"k\"!`1":null,"+":[]},[{"":[]},[1.0555217528630498e+260,[],2.10145070050725e-68],{"*K!B56)k":1.7238260377637445e+296,"":[-1.453265193336188e+159,"lc;",true,2717180447126721],"^ji8a(RLk:":false},6.051647936668976e+72],[-4.2966099035421346e-92],[false,-2.557632531089398e-66]],"CFZaJe":[undefined]}
-// • {"eE:":[[{"u'4s{$4":{"`?{/$^Sz":true,"|y)-$J":false},"Ai%":[[[{"5p[P<":[],"X5BF[d6&'I":[-4.447497077591872e+27,false,[[]],{}],"[waR\\H":[[false,[true,false,6789588778525917,"DBr*",false],2.6381314792921957e-23,["!-jd-iH","%v^D lxo>",1.1820262988293646e-235,6.279994976457497e-199,-4415986702117909],null],{},false]},[-5.531151013615685e+111,true,{"B\\_k6CU,S":">=C$ x66","wjz":["Du[",5967631330850793]}]]],-5.4166112845197825e-210]},"m+vw'bG"],[{"Y<RX}kDn":-6575384764727873},-6402631443958135,[false,[null,3205785911400815,[[740183519778143]]],[")^(","]Pk4}+aOK ","fF+y^*.ov"],3.0739318817560877e+175],":shJ&[v:s"]],"YVe1`":[{}],"prHyOM":{"":[{"Q2FH":[-4868083945887084],"^":["hq=4s+`9Rk","=]a\"k",[6264891220961473,[],false],-4585343528361222,true]},{"[":null,"?.?":true,"%c<So":2900157900152457,"I|_I*~|j":7278237198968405},[{"`":["5g:fCS)_V"],"UyFj8y<cN":{"rmPGG":false,"+.":[false],"K":[{"b7TzTH8":-891344229961676,"@7mg$o2`":-1.0617661805165056e+212,"QBhj~d":" o2z/oZg"},null],"Pf^U/q":-4309405892483806}}],{"^|{4fY,hg5":"","{":["od.>",undefined,"",[-7959633537957650]],"%KpN)D$H":{"a":[false,true,null,-1.9437000348500585e-107],"c4\\ '53":null},"J":-1.4595087919522817e-82,"9J$.":4140446975608453}],"Uus":undefined,"y^":-2.5141358816406088e+166,"xUP$ke\\":{"$#":{},"<9j/s":[{">t":false,"1keP*pPl,|":["i6Vq0h3",null,3053305551308271,-9.257396480966598e-172],"":"yu","09$K&joi9":false,"2GBgn>hZQA":undefined},4.025937102241588e+88],"=(F":[true,7536643750474195,{}]}},"@":[]}
-// • {"{1Z\\sxWae_":[],"":"","7y":{},".'O":{},";Y\\,S'":{}}
-// • {"M\\ ":{}}
-// • {}
+// • {"H}":{},"\"4":7.51486698322086e-143}
+// • {"K":"cP<5:","(y":{"!\"2a":false},"":[]}
+// • {"NfXclS":{"*.":{"o4N|>MDG":7458703095627481,"b":"Cx3B*-QdHW","wYEu!8":"D=7)-L","":"}","k>9{qw":false}},"vrVE":{"i":[undefined,1.237338509432483e+204,"FW@CfU",true],"Or9yi %'":{}}}
+// • {"% z ~!":"!{"}
+// • {">YTN<Tt":[3.316119065425791e+124,-6.009495338790559e-73,false,{"2:kmC'N":3396245325125853,"LPe-Q":-8910689082764321,"jv8n\"_W":"Osr^"," TXOY<F=":-4902908240765127},-1447230144388831],".ukU /mQ":[],"<%5@@+x":{"M;}8WKVV":[528792066348845,"~>;w",-2.6638104561102424e-298,undefined],"":{"wgqhJ":"","#J":-7.776404213211904e+59,"2UlO<:{@/A":-3.8659798319369648e+118},"y?K]":false,"wN7":-3746080234030558,"=E;Z}":{"7t~":undefined,"TPg":false}},"+_<gIOw*":{"c(\"W\"ix{":{"f":[-4287841385681851,true],"|?^J{t":[false]},";7lx|M[d{":{"Va}f736rIp":false,"D,Rs{T8z]U":"%-Ow9?Bwq","-jg2.":{";6}5k1V":1.9899206199566474e+31,"OI{|t#BO#":-6.570063170292448e+180}},"Hr{K~T_m":8816324934080293,"B-UcH1Pb,r":"#]","=]~%1g{*J":"}1"},"q":[{"z?":-1.8205425210980173e+106,"WRoj)Z2":5206806417710909,"r":1.620779895969762e-295,"}":{"J^":4956365471714205,"^46W^Ot":3.4019210297511264e+286,"":null},"x2~YIet%m(":-6.1986318794196805e-236},{"1j=nq^":{"G]M\"pdJ~u":3.326873656686956e-32,"k|mt0>X|":3145035031064139,"\\m_!<)":false},"Qv4ww[Xh%":-7.243171074275621e+204,"n-zBG`":true},"g",[undefined,["!)",["I`%p"],-5227075756125009,false],"Si|&O[A,"],[]]}
 // • …
 ```
 </details>
@@ -3125,7 +3125,7 @@ fc.object({
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `0.1` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3162,7 +3162,7 @@ fc.jsonValue({maxDepth: 1})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3183,13 +3183,13 @@ fc.jsonObject({maxDepth: 1})
 // • {"fS7":"iH0r ~?oNf"}
 // • …
 
-fc.jsonObject({depthFactor: 0.1})
+fc.jsonObject({depthFactor: 'medium'})
 // Examples of generated values:
-// • 2.6e-322
-// • [null,"v!56",9.04706953546473e+137,"en.Z-KP}"]
-// • -1e-322
-// • {"z&Nhzz%":[-5.3192112419002805e-31,"KPc","|sD.+@+",null],"$L":[-4.139701243454471e-167]}
-// • {"L|hZ":"]~(nJA4","Kl":-6653836332.612048,";X)NU(bv":null,"":1.1551959384329293e+176}
+// • [-7.209286477974479e+237,-2e-322,false]
+// • {}
+// • [-1.7951460662085145e-266,1.3320100209363255e-134,"u9>PT^l[j"]
+// • null
+// • [false,6.765567584302464e+206,null,true]
 // • …
 ```
 </details>
@@ -3213,7 +3213,7 @@ fc.jsonObject({depthFactor: 0.1})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `0.1` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3256,7 +3256,7 @@ fc.unicodeJsonValue({maxDepth: 1})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3283,14 +3283,8 @@ fc.unicodeJsonObject({maxDepth: 1})
 // • ["凛瞸㾡끴疘쥱潅䀱",null]
 // • …
 
-fc.unicodeJsonObject({depthFactor: 0.1})
-// Examples of generated values:
-// • "荽醮郺旽粈㈾"
-// • [{"訌諄붥좕杽റ솆薠":"嬞⥨萳퐋Ї鏺","᪤퟿䧂콂":-3.1968066710437204e-71,"쒖ꊦ퍪掎":null,"㞃ﾼॏ鼟所蛂癶ஒ䍛䵮":5.019276820129658e+122,"佰㠋":false},[]]
-// • false
-// • {}
-// • {"腌ꊖ璄諰晜ᩝ鬬ᅗ":null,"⤇瑃若꽂ꥑ讧霵ꎽ":"ᑙ㊆辧눴Ó","鐘莵嗒줹":"꡷獺ㆴ㰍ᨬ춇菒켙者","销ꈼ䭈묤︻":-3.7583877362857114e+279}
-// • …
+fc.unicodeJsonObject({depthFactor: 'medium'})
+// Examples of generated values: "㄃$", {"":false,"鳁꫌ᒏ뻌":"!'᫭","柎":false}, -3e-323, null, "뀮(\"- $"…
 ```
 </details>
 
@@ -3309,7 +3303,7 @@ fc.unicodeJsonObject({depthFactor: 0.1})
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthFactor?` — default: `0` — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
@@ -3385,16 +3379,16 @@ fc.anything({
 // • …
 
 fc.anything({
-  depthFactor: 0.1,
+  depthFactor: 'medium',
   maxDepth: 1000,
 })
 // Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
 // Examples of generated values:
-// • "<M3<BDD"
-// • [[[-110560703978116,-4135563583433119,"_","N/|A\\",""],{"":true},{},{"HEu`\\SZn":true,"./i3W\"FSui":-5033652632686285,"1]'O_2G!}k":2.0897751972426306e+257,"a#d49\"GU":-5861219495259182}],[undefined,{"G}$I#}":"~L=O","R9?Fb^":"M>|w","6bD'":"os","s.s|J":{"":{"7^":[-1486179414402945],"p":false,"fT>S;h":undefined,"*i":[-2468034424525772],"g1nha":{",yvI9a%":undefined,"o9":8.108192475126723e-268}},")t,Lg.;D":{},"mF^":"NAa)E"}},{"$yif|%":[true,3.2570109080410608e+156,true,-3757999164837927,-1.2988535168196527e+176],"KRtVz":7.851356955999629e+66,"laz&zH":4.0283696875728125e+77}],0.00005003620097881509,[[[true,{"7T%\\":false},{"!":"5a$~I\\h;bm"}],{"":{}},{"ZV ":{"2":null,"#p'p7cl%T1":false,"U":8.372982918432618e+285}},-3174973144746793],[-6533361343232096,[[],[]],[]]]]
-// • [{"ngSe":-2077051464454645},[false,-4038212482942537,{"l5zuK":false},{},{"L=S'XnP":{"Yi={mK\"":false,"ApbF(EjC":"_DY5yf","":1.0050964903872983e+34}}]]
-// • true
-// • -1.0395574284395397e-83
+// • false
+// • []
+// • [-19,[[[-6069954512283748,{"HF8)l{u%m[":"DdNT\"qc;,w"},-1.4394655333560392e+83,-4163528520419875]]]]
+// • {"D-05":-6.023782229754641e+227,"zr]VYk!\\":5341259003422833,"c2y*ND6":[],"}1AVB3":2.0245417757156957e-273,"1}`i;ZjPJ":4.446599275504927e-163}
+// • "2vcT"
 // • …
 ```
 </details>
@@ -3592,7 +3586,7 @@ const { tree } = fc.letrec(tie => ({
   //   As a consequence to avoid your data-structures to be too deep, it is highly recommended to add the constraint `depthFactor`
   //   onto your usages of `option`, `oneof` and `frequency` and to put the arbitrary without recursion first.
   // In version 3.x, `depthFactor` and `withCrossShrink` will be enabled by default.
-  tree: fc.oneof({depthFactor: 0.5, withCrossShrink: true}, tie('leaf'), tie('node')),
+  tree: fc.oneof({depthFactor: 'small', withCrossShrink: true}, tie('leaf'), tie('node')),
   node: fc.record({
     left: tie('tree'),
     right: tie('tree'),
@@ -3602,11 +3596,11 @@ const { tree } = fc.letrec(tie => ({
 // Use the arbitrary:
 tree
 // Examples of generated values:
-// • {"left":5,"right":214707493}
-// • {"left":{"left":29,"right":1113327548},"right":{"left":693255074,"right":7}}
-// • 2
-// • 1879186405
-// • 2147483618
+// • 27
+// • {"left":{"left":{"left":1843411184,"right":764752372},"right":335246526},"right":{"left":1030366244,"right":2147483617}}
+// • {"left":{"left":892431995,"right":8},"right":{"left":1,"right":{"left":{"left":2113259047,"right":6},"right":2147483625}}}
+// • 2147483641
+// • {"left":{"left":2147483632,"right":1737313089},"right":{"left":{"left":15,"right":{"left":1512608453,"right":24}},"right":{"left":1592991095,"right":2147483633}}}
 // • …
 
 fc.letrec(tie => ({
@@ -3968,6 +3962,28 @@ Here is a quick overview of how we use the `size` parameter associated to a mini
 - `medium` — `min + (10 * min + 100)`
 - `large` — `min + (100 * min + 1000)`
 - `xlarge` — `min + (1000 * min + 10000)`
+
+### Depth factor explained
+
+Since version 2.25.0, there is a tied link between [size](#size-explained) and depth factor.
+
+Depth factor has been introduced in version 2.14.0. It was initially a numeric floating point value between `0`
+and `+infinity`. It was used to reduce the risk of generating infinite structures when relying on recursive arbitraries:
+the higher the depth factor, the higher the chance to build not very deep instances.
+
+Then size came in 2.22.0 and with it an idea: make it simple for users to configure complex things. While depth factor
+was pretty cool, selecting the right value was not trivial from a user point of view. So size has been leverage for both:
+number of items defined within an iterable structure and depth. Except very complex and ad-hoc cases, we expect size to
+be the only kind of configuration used to setup depth factors.
+
+Depth factor derived from size works exactly the same way as size, it can rely on Relative Size but also Explicit Size.
+
+Here is how a size translates into depth factors:
+- `xsmall` — `1`
+- `small` (default) — `1 / 2`
+- `medium` — `1 / 4`
+- `large` — `1 / 8`
+- `xlarge` — `1 / 16`
 
 ### Various links
 

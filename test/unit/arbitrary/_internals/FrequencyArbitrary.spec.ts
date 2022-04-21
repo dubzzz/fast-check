@@ -11,6 +11,7 @@ import {
 } from '../__test-helpers__/NextArbitraryAssertions';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 import { Stream } from '../../../../src/stream/Stream';
+import { sizeArb } from '../__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -55,7 +56,7 @@ const frequencyConstraintsArbFor = (keys: {
     {
       ...(!forbidden.includes('depthIdentifier') ? { depthIdentifier: fc.string() } : {}),
       ...(!forbidden.includes('depthFactor')
-        ? { depthFactor: fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }) }
+        ? { depthFactor: fc.oneof(fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }), sizeArb) }
         : {}),
       ...(!forbidden.includes('maxDepth') ? { maxDepth: fc.nat() } : {}),
       ...(!forbidden.includes('withCrossShrink') ? { withCrossShrink: fc.boolean() } : {}),
@@ -722,7 +723,7 @@ describe('FrequencyArbitrary (integration)', () => {
       constraints: fc.record(
         {
           withCrossShrink: fc.boolean(),
-          depthFactor: fc.double({ min: 0, max: Number.MAX_VALUE, noNaN: true }),
+          depthFactor: fc.oneof(fc.double({ min: 0, max: Number.MAX_VALUE, noNaN: true }), sizeArb),
           maxDepth: fc.nat(),
         },
         { requiredKeys: [] }

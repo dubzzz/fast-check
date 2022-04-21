@@ -6,7 +6,7 @@ import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';
 import { boxedArbitraryBuilder } from '../builders/BoxedArbitraryBuilder';
-import { SizeForArbitrary } from './MaxLengthFromMinLength';
+import { DepthFactorSizeForArbitrary, SizeForArbitrary } from './MaxLengthFromMinLength';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -17,11 +17,9 @@ export interface ObjectConstraints {
    * Limit the depth of the object by increasing the probability to generate simple values (defined via values)
    * as we go deeper in the object.
    *
-   * Example of values: 0.1 (small impact as depth increases), 0.5, 1 (huge impact as depth increases).
-   *
    * @remarks Since 2.20.0
    */
-  depthFactor?: number;
+  depthFactor?: DepthFactorSizeForArbitrary;
   /**
    * Maximal depth allowed
    * @remarks Since 0.0.7
@@ -120,8 +118,8 @@ export interface ObjectConstraints {
  * Internal wrapper around an `ObjectConstraints`, it adds all the missing pieces in the configuration
  * @internal
  */
-export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues' | 'size'>> &
-  Pick<ObjectConstraints, 'size'>;
+export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues' | 'depthFactor' | 'size'>> &
+  Pick<ObjectConstraints, 'depthFactor' | 'size'>;
 
 /** @internal */
 function defaultValues(constraints: { size: SizeForArbitrary }): Arbitrary<unknown>[] {
@@ -159,7 +157,7 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
       orDefault(settings.values, defaultValues(valueConstraints)),
       orDefault(settings.withBoxedValues, false)
     ),
-    depthFactor: orDefault(settings.depthFactor, 0),
+    depthFactor: settings.depthFactor,
     maxDepth: orDefault(settings.maxDepth, 2),
     maxKeys: orDefault(settings.maxKeys, 5),
     size: settings.size,

@@ -10,6 +10,7 @@ import {
 } from './__test-helpers__/NextArbitraryAssertions';
 import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth';
 import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKeys';
+import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 describe('unicodeJsonValue (integration)', () => {
   type Extra = JsonSharedConstraints | undefined;
@@ -17,7 +18,7 @@ describe('unicodeJsonValue (integration)', () => {
     fc
       .record(
         {
-          depthFactor: fc.double({ min: 0, max: 10 }),
+          depthFactor: fc.oneof(fc.double({ min: 0, max: 10 }), sizeArb),
           maxDepth: fc.nat({ max: 5 }),
         },
         { requiredKeys: [] }

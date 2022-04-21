@@ -44,6 +44,23 @@ const orderedRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'
 export type SizeForArbitrary = RelativeSize | Size | 'max' | undefined;
 
 /**
+ * Superset of {@link Size} to override the default defined for depth factor.
+ * It can either be based on a numeric value manually selected by the user (not recommended)
+ * or rely on presets based on size (recommended).
+ *
+ * This size will be used to infer a depth factor, used as follow within recursive structures:
+ * While going deeper, depth factor will increase the probability to generate small instances.
+ *
+ * When used with {@link Size}, the larger the size the deeper the structure.
+ * When used with numeric values, the smaller the number (floating point number &gt;= 0),
+ * the deeper the structure. 0 meaning "depth has no impact".
+ *
+ * @remarks Since 2.25.0
+ * @public
+ */
+export type DepthFactorSizeForArbitrary = RelativeSize | Size | number | undefined;
+
+/**
  * The default size used by fast-check
  * @internal
  */
@@ -120,6 +137,38 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   }
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
   return Math.min(maxLengthFromMinLength(minLength, finalSize), maxLength);
+}
+
+/**
+ * Compute `depthFactor` based on `size`
+ * @param size - Size or depthFactor defined by the caller on the arbitrary
+ * @internal
+ */
+export function depthFactorFromSizeForArbitrary(depthFactorOrSize: DepthFactorSizeForArbitrary): number {
+  if (typeof depthFactorOrSize === 'number') {
+    return depthFactorOrSize;
+  }
+  const { baseSize } = readConfigureGlobal() || {};
+  if (depthFactorOrSize === undefined && baseSize === undefined) {
+    // This early return is mostly there for legacy reasons in the context of v2
+    // it will be dropped with the release of v3
+    return 0;
+  }
+  const defaultSize = baseSize !== undefined ? baseSize : DefaultSize;
+  const definedSize = depthFactorOrSize !== undefined ? depthFactorOrSize : defaultSize;
+  const finalSize = relativeSizeToSize(definedSize, defaultSize);
+  switch (finalSize) {
+    case 'xsmall':
+      return 1;
+    case 'small':
+      return 0.5; // = 1/2
+    case 'medium':
+      return 0.25; // = 1/4
+    case 'large':
+      return 0.125; // = 1/8
+    case 'xlarge':
+      return 0.0625; // = 1/16
+  }
 }
 
 /**

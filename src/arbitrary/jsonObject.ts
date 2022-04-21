@@ -51,11 +51,6 @@ function jsonObject(maxDepth: number): Arbitrary<JsonValue>;
  */
 function jsonObject(constraints: JsonSharedConstraints): Arbitrary<JsonValue>;
 function jsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<JsonValue> {
-  return typeof constraints === 'number'
-    ? jsonValue({ maxDepth: constraints, depthFactor: 0 })
-    : jsonValue({
-        ...constraints,
-        depthFactor: constraints !== undefined && constraints.depthFactor !== undefined ? constraints.depthFactor : 0,
-      });
+  return typeof constraints === 'number' ? jsonValue({ maxDepth: constraints }) : jsonValue(constraints);
 }
 export { jsonObject };

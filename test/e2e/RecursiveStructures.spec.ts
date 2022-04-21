@@ -11,7 +11,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
       data: fc.frequency(
-        { withCrossShrink: true, depthFactor: 0.5 },
+        { withCrossShrink: true, depthFactor: 'small' },
         { arbitrary: fc.constant([0]), weight: 1 },
         { arbitrary: fc.tuple(tie('data'), tie('data')), weight: 1 }
       ),
@@ -29,7 +29,11 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
-      data: fc.oneof({ withCrossShrink: true, depthFactor: 0.5 }, fc.constant([0]), fc.tuple(tie('data'), tie('data'))),
+      data: fc.oneof(
+        { withCrossShrink: true, depthFactor: 'small' },
+        fc.constant([0]),
+        fc.tuple(tie('data'), tie('data'))
+      ),
     })).data;
 
     // Act
@@ -44,7 +48,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
-      data: fc.option(fc.tuple(tie('data'), tie('data')), { nil: [0], depthFactor: 0.5 }),
+      data: fc.option(fc.tuple(tie('data'), tie('data')), { nil: [0], depthFactor: 'small' }),
     })).data;
 
     // Act
@@ -97,7 +101,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     const failingLength = 2;
     const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
       if (n <= 1) return fc.constant([0]);
-      else return fc.option(fc.tuple(dataArb(), dataArb()), { nil: [0], depthFactor: 0.5 });
+      else return fc.option(fc.tuple(dataArb(), dataArb()), { nil: [0], depthFactor: 'small' });
     });
 
     // Act
@@ -108,21 +112,22 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it.each([
-    ['xsmall', 1],
-    ['small', 1 / 2],
-    ['medium', 1 / 4],
-    ['large', 1 / 8],
-    ['xlarge', 1 / 16],
-  ] as const)(
-    'Should be able to generate %s simple recursive structures without reaching out-of-memory',
-    (baseSize: fc.Size, depthFactor: number) => {
+  it.each`
+    baseSize
+    ${'xsmall'}
+    ${'small'}
+    ${'medium'}
+    ${'large'}
+    ${'xlarge'}
+  `(
+    'Should be able to generate $baseSize simple recursive structures without reaching out-of-memory',
+    ({ baseSize }) => {
       // Arrange
       const initialGlobal = fc.readConfigureGlobal();
       fc.configureGlobal({ ...initialGlobal, baseSize });
       try {
         const arb = fc.letrec((tie) => ({
-          self: fc.oneof({ depthFactor }, fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
+          self: fc.oneof(fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
         })).self;
 
         // Act / Assert
@@ -133,22 +138,23 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     }
   );
 
-  it.each([
-    ['xsmall', 1],
-    ['small', 1 / 2],
-    ['medium', 1 / 4],
-    ['large', 1 / 8],
-    ['xlarge', 1 / 16],
-  ] as const)(
-    'Should be able to generate %s array-based recursive structures without reaching out-of-memory',
-    (baseSize: fc.Size, depthFactor: number) => {
+  it.each`
+    baseSize
+    ${'xsmall'}
+    ${'small'}
+    ${'medium'}
+    ${'large'}
+    ${'xlarge'}
+  `(
+    'Should be able to generate $baseSize array-based recursive structures without reaching out-of-memory',
+    ({ baseSize }) => {
       // Arrange
       const initialGlobal = fc.readConfigureGlobal();
       fc.configureGlobal({ ...initialGlobal, baseSize });
       try {
         const depthIdentifier = fc.createDepthIdentifier();
         const arb = fc.letrec((tie) => ({
-          self: fc.oneof({ depthFactor, depthIdentifier }, fc.nat(), fc.array(tie('self'), { depthIdentifier })),
+          self: fc.oneof({ depthIdentifier }, fc.nat(), fc.array(tie('self'), { depthIdentifier })),
         })).self;
 
         // Act / Assert
