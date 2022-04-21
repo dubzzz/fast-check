@@ -1,4 +1,7 @@
-/** @internal */
+/**
+ * Internal symbol used to declare an opaque type for DepthIdentifier
+ * @public
+ */
 declare const depthIdentifierSymbol: unique symbol;
 
 /**
