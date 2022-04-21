@@ -52,7 +52,7 @@ export type SizeForArbitrary = RelativeSize | Size | 'max' | undefined;
  * While going deeper, depth factor will increase the probability to generate small instances.
  *
  * When used with {@link Size}, the larger the size the deeper the structure.
- * When used with numeric values, the smaller the number (floating point number >= 0),
+ * When used with numeric values, the smaller the number (floating point number &gt;= 0),
  * the deeper the structure. 0 meaning "depth has no impact".
  *
  * @remarks Since 2.25.0
