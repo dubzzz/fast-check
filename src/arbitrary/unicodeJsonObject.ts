@@ -51,11 +51,6 @@ function unicodeJsonObject(maxDepth: number): Arbitrary<JsonValue>;
  */
 function unicodeJsonObject(constraints: JsonSharedConstraints): Arbitrary<JsonValue>;
 function unicodeJsonObject(constraints?: number | JsonSharedConstraints): Arbitrary<JsonValue> {
-  return typeof constraints === 'number'
-    ? unicodeJsonValue({ maxDepth: constraints, depthFactor: 0 })
-    : unicodeJsonValue({
-        ...constraints,
-        depthFactor: constraints !== undefined && constraints.depthFactor !== undefined ? constraints.depthFactor : 0,
-      });
+  return typeof constraints === 'number' ? unicodeJsonValue({ maxDepth: constraints }) : unicodeJsonValue(constraints);
 }
 export { unicodeJsonObject };

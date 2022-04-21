@@ -8,7 +8,7 @@ import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Co
  * @example
  * ```typescript
  * const { tree } = fc.letrec(tie => ({
- *   tree: fc.oneof({depthFactor: 0.5}, tie('leaf'), tie('node')),
+ *   tree: fc.oneof({depthFactor: 'small'}, tie('leaf'), tie('node')),
  *   node: fc.tuple(tie('tree'), tie('tree')),
  *   leaf: fc.nat()
  * }));

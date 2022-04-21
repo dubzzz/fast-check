@@ -15,6 +15,7 @@ import {
 } from '../../__test-helpers__/NextArbitraryAssertions';
 import { computeObjectDepth } from '../../__test-helpers__/ComputeObjectDepth';
 import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKeys';
+import { sizeArb } from '../../__test-helpers__/SizeHelpers';
 
 describe('anyArbitraryBuilder (integration)', () => {
   it('should be able to produce Set (when asked to)', () => {
@@ -90,7 +91,7 @@ describe('anyArbitraryBuilder (integration)', () => {
   type Extra = ObjectConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     {
-      depthFactor: fc.double({ min: 0, max: 10 }),
+      depthFactor: fc.oneof(fc.double({ min: 0, max: 10 }), sizeArb),
       maxDepth: fc.nat({ max: 5 }),
       maxKeys: fc.nat({ max: 10 }),
       withBigInt: fc.boolean(),

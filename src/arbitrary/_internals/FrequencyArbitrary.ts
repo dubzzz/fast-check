@@ -5,6 +5,7 @@ import { convertFromNext, convertToNext } from '../../check/arbitrary/definition
 import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
+import { depthFactorFromSizeForArbitrary, DepthFactorSizeForArbitrary } from './helpers/MaxLengthFromMinLength';
 
 /** @internal */
 export class FrequencyArbitrary<T> extends NextArbitrary<T> {
@@ -43,12 +44,18 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
     if (totalWeight <= 0) {
       throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
-    return new FrequencyArbitrary(warbs, constraints, getDepthContextFor(constraints.depthIdentifier));
+    const sanitizedConstraints: _SanitizedConstraints = {
+      depthFactor: depthFactorFromSizeForArbitrary(constraints.depthFactor),
+      depthIdentifier: constraints.depthIdentifier,
+      maxDepth: constraints.maxDepth,
+      withCrossShrink: constraints.withCrossShrink,
+    };
+    return new FrequencyArbitrary(warbs, sanitizedConstraints, getDepthContextFor(constraints.depthIdentifier));
   }
 
   private constructor(
     readonly warbs: _WeightedNextArbitrary<T>[],
-    readonly constraints: _Constraints,
+    readonly constraints: _SanitizedConstraints,
     readonly context: DepthContext
   ) {
     super();
@@ -202,9 +209,17 @@ export class FrequencyArbitrary<T> extends NextArbitrary<T> {
 /** @internal */
 export type _Constraints = {
   withCrossShrink?: boolean;
-  depthFactor?: number;
+  depthFactor?: DepthFactorSizeForArbitrary;
   maxDepth?: number;
   depthIdentifier?: DepthIdentifier | string;
+};
+
+/** @internal */
+export type _SanitizedConstraints = {
+  withCrossShrink: boolean | undefined;
+  depthFactor: number | undefined;
+  maxDepth: number | undefined;
+  depthIdentifier: DepthIdentifier | string | undefined;
 };
 
 /** @internal */

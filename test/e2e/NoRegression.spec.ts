@@ -633,7 +633,7 @@ describe(`NoRegression`, () => {
       fc.assert(
         fc.property(
           fc.letrec((tie) => ({
-            tree: fc.oneof({ withCrossShrink: true, depthFactor: 0.5 }, tie('leaf'), tie('node')),
+            tree: fc.oneof({ withCrossShrink: true, depthFactor: 'small' }, tie('leaf'), tie('node')),
             node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
             leaf: fc.nat(21),
           })).tree,

@@ -1022,7 +1022,7 @@ describe('SchedulerImplem', () => {
               self: fc.record({
                 name: fc.hexaString({ minLength: 4, maxLength: 4 }).noBias(),
                 children: fc.oneof(
-                  { depthFactor: 0.5 },
+                  { depthFactor: 'small' },
                   fc.constant<ExecutionPlan[]>([]),
                   fc.array(tie('self') as fc.Arbitrary<ExecutionPlan>)
                 ),

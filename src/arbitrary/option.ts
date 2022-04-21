@@ -2,6 +2,7 @@ import { constant } from './constant';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
 import { DepthIdentifier } from './_internals/helpers/DepthContext';
+import { DepthFactorSizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link option}
@@ -23,11 +24,9 @@ export interface OptionConstraints<TNil = null> {
    * While going deeper and deeper within a recursive structure (see {@link letrec}),
    * this factor will be used to increase the probability to generate nil.
    *
-   * Example of values: 0.1 (small impact as depth increases), 0.5, 1 (huge impact as depth increases).
-   *
    * @remarks Since 2.14.0
    */
-  depthFactor?: number;
+  depthFactor?: DepthFactorSizeForArbitrary;
   /**
    * Maximal authorized depth. Once this depth has been reached only nil will be used.
    *

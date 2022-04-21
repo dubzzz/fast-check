@@ -3,6 +3,7 @@ import { frequency, FrequencyContraints } from '../../../src/arbitrary/frequency
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 import { convertFromNext } from '../../../src/check/arbitrary/definition/Converters';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
+import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -19,7 +20,7 @@ describe('frequency', () => {
           {
             withCrossShrink: fc.boolean(),
             depthIdentifier: fc.string(),
-            depthFactor: fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }),
+            depthFactor: fc.oneof(fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }), sizeArb),
             maxDepth: fc.nat(),
           },
           { requiredKeys: [] }

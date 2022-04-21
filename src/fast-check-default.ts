@@ -172,7 +172,11 @@ import { NextArbitrary } from './check/arbitrary/definition/NextArbitrary';
 import { NextValue } from './check/arbitrary/definition/NextValue';
 import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
 import { PureRandom } from './random/generator/PureRandom';
-import { Size, SizeForArbitrary } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import {
+  Size,
+  SizeForArbitrary,
+  DepthFactorSizeForArbitrary,
+} from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
 import {
   createDepthIdentifier,
   DepthContext,
@@ -434,6 +438,7 @@ export {
   // run configuration
   Size,
   SizeForArbitrary,
+  DepthFactorSizeForArbitrary,
   GlobalParameters,
   GlobalAsyncPropertyHookFunction,
   GlobalPropertyHookFunction,

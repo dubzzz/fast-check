@@ -1,6 +1,7 @@
 import fc from '../../../../../lib/fast-check';
 import {
   DefaultSize,
+  depthFactorFromSizeForArbitrary,
   maxGeneratedLengthFromSizeForArbitrary,
   maxLengthFromMinLength,
   MaxLengthUpperBound,
@@ -261,6 +262,50 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
           expect(computedLength).toBeLessThanOrEqual(maxLength);
         }
       )
+    );
+  });
+});
+
+describe('depthFactorFromSizeForArbitrary', () => {
+  it('should only consider the received depthFactor when set to a numeric value', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, fc.double({ next: true, min: 0 }), (config, size) => {
+        // Arrange / Act
+        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary(size));
+
+        // Assert
+        expect(computedDepthFactor).toBe(size);
+      })
+    );
+  });
+
+  it('should only consider the received size when set to Size', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, sizeArb, (config, size) => {
+        // Arrange / Act
+        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary(size));
+        const expectedDepthFactor = { xsmall: 1, small: 1 / 2, medium: 1 / 4, large: 1 / 8, xlarge: 1 / 16 }[size];
+
+        // Assert
+        expect(computedDepthFactor).toBe(expectedDepthFactor);
+      })
+    );
+  });
+
+  it('should behave as its equivalent Size taking into account global settings when receiving a RelativeSize', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, relativeSizeArb, (config, size) => {
+        // Arrange
+        const { baseSize: defaultSize = DefaultSize } = config;
+        const equivalentSize = relativeSizeToSize(size, defaultSize);
+
+        // Act
+        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary(size));
+        const expectedDepthFactor = depthFactorFromSizeForArbitrary(equivalentSize);
+
+        // Assert
+        expect(computedDepthFactor).toBe(expectedDepthFactor);
+      })
     );
   });
 });

@@ -1,6 +1,7 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
 import { DepthIdentifier } from './_internals/helpers/DepthContext';
+import { DepthFactorSizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Infer the type of the Arbitrary produced by {@link oneof}
@@ -34,11 +35,9 @@ export type OneOfConstraints = {
    * this factor will be used to increase the probability to generate instances
    * of the first passed arbitrary.
    *
-   * Example of values: 0.1 (small impact as depth increases), 0.5, 1 (huge impact as depth increases).
-   *
    * @remarks Since 2.14.0
    */
-  depthFactor?: number;
+  depthFactor?: DepthFactorSizeForArbitrary;
   /**
    * Maximal authorized depth.
    * Once this depth has been reached only the first arbitrary will be used.

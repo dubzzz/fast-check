@@ -10,6 +10,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/NextArbitraryAssertions';
+import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -25,7 +26,7 @@ describe('option', () => {
         fc.record(
           {
             depthIdentifier: fc.string(),
-            depthFactor: fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }),
+            depthFactor: fc.oneof(fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }), sizeArb),
             maxDepth: fc.nat(),
             freq: fc.nat(),
             nil: fc.anything(),
