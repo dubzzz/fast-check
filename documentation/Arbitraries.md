@@ -2418,7 +2418,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 *&#8195;Signatures*
 
 - `fc.array(arb)`
-- `fc.array(arb, {minLength?, maxLength?, size?})`
+- `fc.array(arb, {minLength?, maxLength?, size?, depthIdentifier?})`
 - _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
@@ -2428,6 +2428,7 @@ fc.genericTuple([fc.nat(), fc.string()])
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
+- `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
 *&#8195;Usages*
 
@@ -2493,6 +2494,29 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
 // • [29,1410245876,741880759,944485652,27,15,870882976,20,184434798,2147483622,344218127,27,409824723,2147483642,329043996,927489807,2035126132,11,2039439877,5,493467004,124950538,26,405637559,2147483620,471069585,931537132,667497301,1621370022,1798147982,10,251298872,867523191,1446431080,1609229900,2147483639,1618986483,1213793840,2147483618,23,2147483639,717045226,928729912,16,2147483637,2147483626,14977076,340466387,13,2042862990,2147483618,2147483631,2147483628,2147483627,18,11,2147483626,2147483640,2147483647,275841729,21,2090499420,983160949,188709474,18,30,1192240225,0,2147483635,22952275,825333491,1138859947,2147483624,5,26,689872800,17,1697943758,384986459,2147483628,1947943844,218900368,12]
 // • [1558059373,1486409544,138880328,1775525007,1289633061,2110277820,2132428886,243113350,370748226,1289875763,1926931276,777271555,200391383,382812004,767046802,1658449850,471365442,258979782,1763577358,875799138,1041944829,769854926,874760332,442170309,91717126,113325162,88812665,1097842037,804561500,1870859458,853896552,50228752,492015973,149076083,2093833652,220810263,257405203]
 // • …
+
+fc.letrec((tie) => ({
+  self: fc.record({
+    value: fc.nat(),
+    children: fc.oneof(
+      { depthFactor: 0.5, depthIdentifier: 'id:self' },
+      fc.constant([]),
+      fc.array(tie('self'), { depthIdentifier: 'id:self' })
+    ),
+  }),
+})).self
+// Note: We define a recursive tree structure with children defaulting to the empty array with an higher probability
+// as we go deeper (thanks to `fc.oneof`) and also as we tend to generate lots of items (thanks to `depthIdentifier`
+// passed to `fc.array` and being the same value as the one passed to `fc.oneof`).
+// Note: For the moment, `fc.array` cannot stop the recursion alone and need to be combined with `fc.oneof` or any other
+// helper being able to fallback to base cases with an higher probability as we go deeper in the recursion.
+// Examples of generated values:
+// • {"value":1447079203,"children":[]}
+// • {"value":10,"children":[{"value":7,"children":[]},{"value":1057540117,"children":[]},{"value":23,"children":[]},{"value":2147483637,"children":[]},{"value":1986203100,"children":[]}]}
+// • {"value":1,"children":[{"value":575042990,"children":[{"value":1894139063,"children":[]},{"value":352857385,"children":[]},{"value":1903697278,"children":[]},{"value":922269867,"children":[]},{"value":917330116,"children":[]},{"value":801736466,"children":[]},{"value":1148297865,"children":[]},{"value":2132703902,"children":[]},{"value":385147958,"children":[]},{"value":1021892827,"children":[]}]},{"value":976800995,"children":[{"value":900619543,"children":[]},{"value":844470369,"children":[]},{"value":155445977,"children":[]}]},{"value":1477773363,"children":[]}]}
+// • {"value":25,"children":[]}
+// • {"value":1962836578,"children":[{"value":1815598021,"children":[]}]}
+// • …
 ```
 </details>
 
@@ -2514,7 +2538,7 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
 *&#8195;Signatures*
 
 - `fc.uniqueArray(arb)`
-- `fc.uniqueArray(arb, {minLength?, maxLength?, selector?, comparator?, size?})`
+- `fc.uniqueArray(arb, {minLength?, maxLength?, selector?, comparator?, size?, depthIdentifier?})`
 
 *&#8195;with:*
 
@@ -2528,6 +2552,7 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
   - `IsStrictlyEqual` to rely on `===` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal))
   - Fully custom function having the signature: `(selectedValueA, seletedValueB) => aIsEqualToB`
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
+- `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
 *&#8195;Usages*
 
@@ -2607,7 +2632,7 @@ fc.uniqueArray(
 *&#8195;Signatures*
 
 - _`fc.set(arb)`_ — _deprecated since v2.23.0, prefer `fc.uniqueArray`_
-- _`fc.set(arb, {minLength?, maxLength?, compare?, size?})`_ — _deprecated since v2.23.0, prefer `fc.uniqueArray`_
+- _`fc.set(arb, {minLength?, maxLength?, compare?, size?, depthIdentifier?})`_ — _deprecated since v2.23.0, prefer `fc.uniqueArray`_
 - _`fc.set(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
@@ -2626,6 +2651,7 @@ fc.uniqueArray(
     - `SameValueZero` to rely on the same logic as the one of `Set` or `Map` to compare items ([more details](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero))
   - `selector` to define how to project values before comparing them together
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
+- `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
 *&#8195;Usages*
 
@@ -2754,7 +2780,7 @@ fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 *&#8195;Signatures*
 
 - `fc.sparseArray(arb)`
-- `fc.sparseArray(arb, {maxLength?, minNumElements?, maxNumElements?, size?, noTrailingHole?})`
+- `fc.sparseArray(arb, {maxLength?, minNumElements?, maxNumElements?, size?, noTrailingHole?, depthIdentifier?})`
 
 *&#8195;with:*
 
@@ -2764,6 +2790,7 @@ fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included) - length includes elements but also holes for sparse arrays - when not specified, the algorithm generating random values will consider it equal to `maxGeneratedLengthFromSizeForArbitrary(maxNumElements used by generate, size)` but the shrinking one will use `0x7fffffff`_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `noTrailingHole?` — default: `false` — _when enabled, all generated arrays will either be the empty array or end by a non-hole_
+- `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
 *&#8195;Usages*
 
