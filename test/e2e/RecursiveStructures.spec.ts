@@ -146,7 +146,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
       const initialGlobal = fc.readConfigureGlobal();
       fc.configureGlobal({ ...initialGlobal, baseSize });
       try {
-        const depthIdentifier = `array-based-recursive-structure-${baseSize}`;
+        const depthIdentifier = fc.createDepthIdentifier();
         const arb = fc.letrec((tie) => ({
           self: fc.oneof({ depthFactor, depthIdentifier }, fc.nat(), fc.array(tie('self'), { depthIdentifier })),
         })).self;

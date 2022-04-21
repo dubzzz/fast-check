@@ -1,5 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
+import { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /**
  * Infer the type of the Arbitrary produced by {@link oneof}
@@ -53,7 +54,7 @@ export type OneOfConstraints = {
    *
    * @remarks Since 2.14.0
    */
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 };
 
 /**

@@ -12,6 +12,7 @@ import { NextValue } from '../check/arbitrary/definition/NextValue';
 import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 import { SameValueSet } from './_internals/helpers/SameValueSet';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
+import { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /** @internal */
 function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<NextValue<T>> {
@@ -37,7 +38,7 @@ function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<Ne
 type CompleteSetConstraints<T> = Required<Omit<SetConstraints<T>, 'compare' | 'size' | 'depthIdentifier'>> & {
   setBuilder: CustomSetBuilder<NextValue<T>>;
   maxGeneratedLength: number;
-  depthIdentifier: string | undefined;
+  depthIdentifier: DepthIdentifier | string | undefined;
 };
 
 /**
@@ -170,7 +171,7 @@ export interface SetConstraints<T> {
    *
    * @remarks Since 2.25.0
    */
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 }
 
 /**

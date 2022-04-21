@@ -3,6 +3,7 @@ import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Co
 import { tuple } from './tuple';
 import { uniqueArray } from './uniqueArray';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder';
+import { DepthIdentifier } from './_internals/helpers/DepthContext';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
   MaxLengthUpperBound,
@@ -53,7 +54,7 @@ export interface SparseArrayConstraints {
    *
    * @remarks Since 2.25.0
    */
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 }
 
 /** @internal */

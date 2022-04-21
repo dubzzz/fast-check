@@ -173,6 +173,12 @@ import { NextValue } from './check/arbitrary/definition/NextValue';
 import { convertFromNext, convertFromNextWithShrunkOnce, convertToNext } from './check/arbitrary/definition/Converters';
 import { PureRandom } from './random/generator/PureRandom';
 import { Size, SizeForArbitrary } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import {
+  createDepthIdentifier,
+  DepthContext,
+  DepthIdentifier,
+  getDepthContextFor,
+} from './arbitrary/_internals/helpers/DepthContext';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -362,6 +368,8 @@ export {
   asyncToStringMethod,
   hasAsyncToStringMethod,
   WithAsyncToStringMethod,
+  DepthContext,
+  getDepthContextFor,
   // print values
   stringify,
   asyncStringify,
@@ -449,6 +457,8 @@ export {
   Random,
   Stream,
   stream,
+  DepthIdentifier,
+  createDepthIdentifier,
   // depreciated
   Context,
   FalsyType,

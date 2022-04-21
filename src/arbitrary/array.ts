@@ -7,6 +7,7 @@ import {
   SizeForArbitrary,
   maxGeneratedLengthFromSizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength';
+import { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /**
  * Constraints to be applied on {@link array}
@@ -47,7 +48,7 @@ export interface ArrayConstraints {
    *
    * @remarks Since 2.25.0
    */
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 }
 
 /** @internal */
@@ -56,7 +57,7 @@ function createArrayArbitrary<T>(
   size: SizeForArbitrary | undefined,
   minLength: number,
   maxLengthOrUnset: number | undefined,
-  depthIdentifier: string | undefined
+  depthIdentifier: DepthIdentifier | string | undefined
 ): Arbitrary<T[]> {
   const maxLength = maxLengthOrUnset !== undefined ? maxLengthOrUnset : MaxLengthUpperBound;
   const specifiedMaxLength = maxLengthOrUnset !== undefined;

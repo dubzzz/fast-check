@@ -3632,6 +3632,26 @@ fc.letrec(tie => ({
 // • {"value":13,"left":null,"right":{"value":23,"left":null,"right":null}}
 // • …
 
+// Setup the depth identifier shared across all nodes:
+const depthIdentifier = fc.createDepthIdentifier();
+// Use the arbitrary:
+fc.letrec(tie => ({
+  node: fc.record({
+    value: fc.nat(),
+    left: fc.option(tie('node'), {maxDepth: 1, depthIdentifier}),
+    right: fc.option(tie('node'), {maxDepth: 1, depthIdentifier}),
+  })
+})).node
+// Note: Calling `createDepthIdentifier` is another way to pass a value for `depthIdentifier`. Compared to the string-based
+// version, demo-ed in the snippet above, it has the benefit to never collide with other identifiers manually specified.
+// Examples of generated values:
+// • {"value":1174690793,"left":{"value":16,"left":null,"right":null},"right":{"value":27,"left":null,"right":null}}
+// • {"value":2147483618,"left":{"value":139704885,"left":null,"right":null},"right":{"value":1378176410,"left":null,"right":null}}
+// • {"value":1655727852,"left":{"value":17,"left":null,"right":null},"right":{"value":904507089,"left":null,"right":null}}
+// • {"value":1136122085,"left":{"value":1247629324,"left":null,"right":null},"right":{"value":12,"left":null,"right":null}}
+// • {"value":10,"left":{"value":4,"left":null,"right":null},"right":{"value":1054043111,"left":null,"right":null}}
+// • …
+
 fc.letrec(tie => ({
   node: fc.record({
     value: fc.nat(),

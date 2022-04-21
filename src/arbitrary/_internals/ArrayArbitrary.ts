@@ -7,7 +7,7 @@ import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { convertToNext } from '../../check/arbitrary/definition/Converters';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { CustomSetBuilder } from './interfaces/CustomSet';
-import { DepthContext, getDepthContextFor } from './helpers/DepthContext';
+import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -35,7 +35,7 @@ export class ArrayArbitrary<T> extends NextArbitrary<T[]> {
     readonly minLength: number,
     readonly maxGeneratedLength: number,
     readonly maxLength: number,
-    depthIdentifier: string | undefined,
+    depthIdentifier: DepthIdentifier | string | undefined,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
     readonly setBuilder?: CustomSetBuilder<NextValue<T>>
