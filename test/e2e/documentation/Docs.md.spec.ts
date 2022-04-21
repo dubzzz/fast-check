@@ -167,26 +167,27 @@ function refreshContent(originalContent: string): { content: string; numExecuted
 
       ++numExecutedSnippets;
 
-      const computedStatitics = (size: fc.Size) =>
+      const computedStatitics = (baseSize: fc.Size) =>
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         (function (fc): string[] {
-          const lines: string[] = [];
-          const sourceConsoleLog = console.log;
-          console.log = (line) => lines.push(line);
           const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
           const refinedSnippet =
             lastIndexCommentForGeneratedValues !== -1 ? snippet.substring(lastIndexCommentForGeneratedValues) : snippet;
           const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-          const evalCode = `fc.configureGlobal({seed: ${seed}, numRuns: 10000, baseSize: ${JSON.stringify(
-            size
-          )}});${refinedSnippet}`;
+          const evalCode = refinedSnippet;
+          const originalConsoleLog = console.log;
+          const originalGlobal = fc.readConfigureGlobal();
           try {
+            const lines: string[] = [];
+            console.log = (line) => lines.push(line);
+            fc.configureGlobal({ seed, numRuns: 10000, baseSize });
             eval(evalCode);
             return lines;
           } catch (err) {
             throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
           } finally {
-            console.log = sourceConsoleLog;
+            console.log = originalConsoleLog;
+            fc.configureGlobal(originalGlobal);
           }
         })(fc);
       const formatForSize = (size: fc.Size) =>
