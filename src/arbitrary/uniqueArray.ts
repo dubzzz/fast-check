@@ -12,6 +12,7 @@ import { NextValue } from '../check/arbitrary/definition/NextValue';
 import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 import { SameValueSet } from './_internals/helpers/SameValueSet';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
+import { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /** @internal */
 function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<NextValue<T>> {
@@ -77,7 +78,7 @@ export type UniqueArraySharedConstraints = {
    *
    * @remarks Since 2.25.0
    */
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 };
 
 /**

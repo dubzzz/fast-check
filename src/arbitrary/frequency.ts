@@ -1,5 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
+import { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /**
  * Conjonction of a weight and an arbitrary used by {@link frequency}
@@ -79,7 +80,7 @@ export type FrequencyContraints = {
    *
    * @remarks Since 2.14.0
    */
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 };
 
 /** @internal */

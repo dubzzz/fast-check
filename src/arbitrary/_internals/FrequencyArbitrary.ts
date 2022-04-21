@@ -4,7 +4,7 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { convertFromNext, convertToNext } from '../../check/arbitrary/definition/Converters';
 import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
-import { DepthContext, getDepthContextFor } from './helpers/DepthContext';
+import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
 
 /** @internal */
 export class FrequencyArbitrary<T> extends NextArbitrary<T> {
@@ -204,7 +204,7 @@ export type _Constraints = {
   withCrossShrink?: boolean;
   depthFactor?: number;
   maxDepth?: number;
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 };
 
 /** @internal */

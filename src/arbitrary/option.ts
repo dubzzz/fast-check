@@ -1,6 +1,7 @@
 import { constant } from './constant';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
+import { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /**
  * Constraints to be applied on {@link option}
@@ -41,7 +42,7 @@ export interface OptionConstraints<TNil = null> {
    *
    * @remarks Since 2.14.0
    */
-  depthIdentifier?: string;
+  depthIdentifier?: DepthIdentifier | string;
 }
 
 /** @internal */
