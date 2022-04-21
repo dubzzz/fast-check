@@ -12,6 +12,7 @@ const JsBlockStart = '```js';
 const JsBlockEnd = '```';
 const CommentForGeneratedValues = '// Examples of generated values:';
 const CommentForArbitraryIndicator = '// Use the arbitrary:';
+const CommentForStatistics = '// Computed statistics for 10k generated values:';
 
 describe('Docs.md', () => {
   it('Should check code snippets validity and fix generated values', () => {
@@ -106,11 +107,10 @@ function refreshContent(originalContent: string): { content: string; numExecuted
   const refinedBlocks = extractedBlocks.map((block) => {
     if (!isJsCodeBlock(block)) return block;
 
-    // Remove list of examples
-    const cleanedBlock = trimJsCodeBlock(block).replace(
-      new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'),
-      CommentForGeneratedValues
-    );
+    // Remove list of examples and statistics
+    const cleanedBlock = trimJsCodeBlock(block)
+      .replace(new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'), CommentForGeneratedValues)
+      .replace(new RegExp(`${CommentForStatistics}[^\n]*(\n//.*)*`, 'mg'), CommentForStatistics);
 
     // Extract code snippets
     const snippets = cleanedBlock
@@ -153,7 +153,41 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       }
     });
 
-    return addJsCodeBlock(updatedSnippets.join(''));
+    // Extract statistics snippets
+    const statisticsSnippets = updatedSnippets
+      .join('')
+      .split(`\n${CommentForStatistics}`)
+      .map((snippet, index, all) => (index !== all.length - 1 ? `${snippet}\n${CommentForStatistics}` : snippet));
+
+    // Execute statistics
+    const updatedStatisticsSnippets = statisticsSnippets.map((snippet) => {
+      if (!snippet.endsWith(CommentForStatistics)) return snippet;
+
+      ++numExecutedSnippets;
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const computedStatitics = (function (fc): string[] {
+        const lines: string[] = [];
+        const sourceConsoleLog = console.log;
+        console.log = (line) => lines.push(line);
+        const seed = snippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
+        const evalCode = `fc.configureGlobal({seed: ${seed}, numRuns: 10000});${snippet}`;
+        try {
+          eval(snippet);
+          return lines;
+        } catch (err) {
+          throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
+        } finally {
+          console.log = sourceConsoleLog;
+        }
+      })(fc);
+      return `${snippet}\n${computedStatitics
+        .slice(0, TargetNumExamples)
+        .map((line) => `// ${line}`)
+        .join('\n')}${computedStatitics.length > TargetNumExamples ? '\n// …' : ''}`;
+    });
+
+    return addJsCodeBlock(updatedStatisticsSnippets.join(''));
   });
 
   return { content: refinedBlocks.join(''), numExecutedSnippets };
