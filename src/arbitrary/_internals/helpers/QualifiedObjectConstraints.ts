@@ -118,8 +118,8 @@ export interface ObjectConstraints {
  * Internal wrapper around an `ObjectConstraints`, it adds all the missing pieces in the configuration
  * @internal
  */
-export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues' | 'depthFactor' | 'size'>> &
-  Pick<ObjectConstraints, 'depthFactor' | 'size'>;
+export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues' | 'size'>> &
+  Pick<ObjectConstraints, 'size'>;
 
 /** @internal */
 function defaultValues(constraints: { size: SizeForArbitrary }): Arbitrary<unknown>[] {
@@ -157,7 +157,7 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
       orDefault(settings.values, defaultValues(valueConstraints)),
       orDefault(settings.withBoxedValues, false)
     ),
-    depthFactor: settings.depthFactor,
+    depthFactor: orDefault(settings.depthFactor, '='), // forcing usage of size for depth for v2 (will be the default in v3)
     maxDepth: orDefault(settings.maxDepth, 2),
     maxKeys: orDefault(settings.maxKeys, 5),
     size: settings.size,

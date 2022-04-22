@@ -1013,7 +1013,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -1063,7 +1063,7 @@ fc.json({depthFactor: 'medium'})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -3012,7 +3012,7 @@ fc.record({
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
@@ -3125,7 +3125,7 @@ fc.object({
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3162,7 +3162,7 @@ fc.jsonValue({maxDepth: 1})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3245,7 +3245,7 @@ fc.statistics(
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3288,7 +3288,7 @@ fc.unicodeJsonValue({maxDepth: 1})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3335,7 +3335,7 @@ fc.unicodeJsonObject({depthFactor: 'medium'})
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
@@ -4091,6 +4091,13 @@ Here is how a size translates into depth factors:
 - `medium` — `1 / 4`
 - `large` — `1 / 8`
 - `xlarge` — `1 / 16`
+
+In the context of fast-check@v2, the condition to leverage an automatic defaulting of the depth factor is to:
+- either define it to `=` for each arbitrary not defaulting it automatically (only `option`, `oneof` and `frequency` do not default it to avoid breaking existing code)
+- or to configure a `baseSize` in the global settings
+
+If none of these conditions is fulfilled the depth factor will be defaulted to `0` as it was the case befoer we introduced it.
+Otherwise, depth factor will be defaulted automatically for you.
 
 ### Various links
 
