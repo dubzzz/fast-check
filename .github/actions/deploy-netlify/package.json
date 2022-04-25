@@ -5,6 +5,6 @@
   "dependencies": {
     "@actions/core": "^1.7.0",
     "@actions/github": "^5.0.1",
-    "netlify-cli": "^9.16.7"
+    "netlify-cli": "^10.0.0"
   }
 }
