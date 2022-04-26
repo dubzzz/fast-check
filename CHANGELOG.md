@@ -1,3 +1,30 @@
+# 2.25.0
+
+_Connect depth factor onto the notion of size_
+[[Code](https://github.com/dubzzz/fast-check/tree/v2.25.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.24.0...v2.25.0)]
+
+## Features
+
+- ([PR#2828](https://github.com/dubzzz/fast-check/pull/2828)) Adopt better way to bias oneof with depth
+- ([PR#2848](https://github.com/dubzzz/fast-check/pull/2848)) Make generated objects (able to be) deeper
+- ([PR#2866](https://github.com/dubzzz/fast-check/pull/2866)) Better support for recursive structures implying arrays
+- ([PR#2882](https://github.com/dubzzz/fast-check/pull/2882)) Simpler way to create unique identifier for depths
+- ([PR#2883](https://github.com/dubzzz/fast-check/pull/2883)) Avoid instances of `anything` to be to large
+- ([PR#2884](https://github.com/dubzzz/fast-check/pull/2884)) Extend `size` to defaulting of `depthFactor`
+- ([PR#2887](https://github.com/dubzzz/fast-check/pull/2887)) Default depth factor of objects to `=` when not set
+
+## Fixes
+
+- ([PR#2890](https://github.com/dubzzz/fast-check/pull/2890)) CI: Configure Renovate
+- ([PR#2901](https://github.com/dubzzz/fast-check/pull/2901)) CI: Drop dependabot
+- ([PR#2903](https://github.com/dubzzz/fast-check/pull/2903)) CI: Attempt to fix renovate
+- ([PR#2907](https://github.com/dubzzz/fast-check/pull/2907)) CI: Stop pinning dependencies with renovate
+- ([PR#2870](https://github.com/dubzzz/fast-check/pull/2870)) Doc: Replace faker with the new official fork of faker
+- ([PR#2885](https://github.com/dubzzz/fast-check/pull/2885)) Doc: Add ability to show statistics in generated doc
+- ([PR#2886](https://github.com/dubzzz/fast-check/pull/2886)) Doc: Show some statistics inside the documentation
+
+---
+
 # 2.24.0
 
 _Add a way to wait only for minimal stuff with `fc.scheduler`_
