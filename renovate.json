@@ -3,5 +3,5 @@
     "config:base"
   ],
   "labels": ["dependencies"],
-  "commitMessagePrefix": "⬆️ ",
+  "commitMessagePrefix": "⬆️ "
 }
