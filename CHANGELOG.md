@@ -9,7 +9,7 @@ _Connect depth factor onto the notion of size_
 - ([PR#2848](https://github.com/dubzzz/fast-check/pull/2848)) Make generated objects (able to be) deeper
 - ([PR#2866](https://github.com/dubzzz/fast-check/pull/2866)) Better support for recursive structures implying arrays
 - ([PR#2882](https://github.com/dubzzz/fast-check/pull/2882)) Simpler way to create unique identifier for depths
-- ([PR#2883](https://github.com/dubzzz/fast-check/pull/2883)) Avoid instances of `anything` to be to large
+- ([PR#2883](https://github.com/dubzzz/fast-check/pull/2883)) Avoid instances of `anything` to be too large
 - ([PR#2884](https://github.com/dubzzz/fast-check/pull/2884)) Extend `size` to defaulting of `depthFactor`
 - ([PR#2887](https://github.com/dubzzz/fast-check/pull/2887)) Default depth factor of objects to `=` when not set
 
