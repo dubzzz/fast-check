@@ -3,5 +3,13 @@
     "config:base"
   ],
   "labels": ["dependencies"],
-  "commitMessagePrefix": "⬆️ "
+  "commitMessagePrefix": "⬆️ ",
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "rangeStrategy": "replace"
+    }
+  ]
 }
