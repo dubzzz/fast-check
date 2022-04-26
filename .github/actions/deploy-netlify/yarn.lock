@@ -2,14 +2,14 @@
 # yarn lockfile v1
 
 
-"@actions/core@^1.7.0":
+"@actions/core@1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.7.0.tgz#f179a5a0bf5c1102d89b8cf1712825e763feaee4"
   integrity sha512-7fPSS7yKOhTpgLMbw7lBLc1QJWvJBBAgyTX2PEhagWcKK8t0H8AKCoPMfnrHqIm5cRYH4QFPqD1/ruhuUE7YcQ==
   dependencies:
     "@actions/http-client" "^1.0.11"
 
-"@actions/github@^5.0.1":
+"@actions/github@5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@actions/github/-/github-5.0.1.tgz#5fdbe371d9a592038668be95d12421361585fba1"
   integrity sha512-JZGyPM9ektb8NVTTI/2gfJ9DL7Rk98tQ7OVyTlgTuaQroariRBsOnzjy0I2EarX4xUZpK88YyO503fhmjFdyAg==
@@ -4944,7 +4944,7 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-netlify-cli@^10.0.0:
+netlify-cli@10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-10.0.0.tgz#f3af07cb088861b3008a54f4353b0c0614778793"
   integrity sha512-QnVlIiu+BK2MeSGK5GvcKlRLt4ofyyjowwcvhq43iiK78nn+5eVcI6BNugOlxiFxlxxYY/qTcYHf4zyrDKfEsA==
