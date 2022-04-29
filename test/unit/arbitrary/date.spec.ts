@@ -54,7 +54,7 @@ describe('date', () => {
         date(constraints);
         const { min: rangeMin } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
-        const minDate = mapper(rangeMin) as Date;
+        const minDate = mapper(rangeMin!) as Date;
 
         // Assert
         if (constraints.min !== undefined) {
@@ -84,7 +84,7 @@ describe('date', () => {
         date(constraints);
         const { max: rangeMax } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
-        const maxDate = mapper(rangeMax) as Date;
+        const maxDate = mapper(rangeMax!) as Date;
 
         // Assert
         if (constraints.max !== undefined) {
@@ -114,7 +114,7 @@ describe('date', () => {
         date(constraints);
         const { min: rangeMin, max: rangeMax } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
-        const d = mapper(rangeMin + (mod % (rangeMax - rangeMin + 1))) as Date;
+        const d = mapper(rangeMin! + (mod % (rangeMax! - rangeMin! + 1))) as Date;
 
         // Assert
         expect(d.getTime()).not.toBe(Number.NaN);
