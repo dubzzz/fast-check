@@ -3,20 +3,20 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { maxLengthFromMinLength } from './_internals/helpers/MaxLengthFromMinLength';
 import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
-import { NextValue } from '../check/arbitrary/definition/NextValue';
+import { Value } from '../check/arbitrary/definition/Value';
 import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 import { SameValueSet } from './_internals/helpers/SameValueSet';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
 
 /** @internal */
-function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<NextValue<T>> {
+function buildSetBuilder<T>(constraints: SetConstraints<T>): CustomSetBuilder<Value<T>> {
   const compare: NonNullable<typeof constraints.compare> = constraints.compare || {};
   if (typeof compare === 'function') {
-    const isEqualForBuilder = (nextA: NextValue<T>, nextB: NextValue<T>) => compare(nextA.value_, nextB.value_);
+    const isEqualForBuilder = (nextA: Value<T>, nextB: Value<T>) => compare(nextA.value_, nextB.value_);
     return () => new CustomEqualSet(isEqualForBuilder);
   }
   const selector = compare.selector || ((v) => v);
-  const refinedSelector = (next: NextValue<T>) => selector(next.value_);
+  const refinedSelector = (next: Value<T>) => selector(next.value_);
   switch (compare.type) {
     case 'SameValue':
       return () => new SameValueSet(refinedSelector);
