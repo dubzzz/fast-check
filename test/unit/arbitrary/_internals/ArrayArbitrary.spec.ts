@@ -324,9 +324,10 @@ describe('ArrayArbitrary', () => {
     it('should reject any array with at least one entry rejected by the sub-arbitrary', () => {
       fc.assert(
         fc.property(
-          fc.set(fc.tuple(fc.anything(), fc.boolean()), {
+          fc.uniqueArray(fc.tuple(fc.anything(), fc.boolean()), {
             minLength: 1,
-            compare: { selector: (v) => v[0], type: 'SameValue' },
+            selector: (v) => v[0],
+            comparator: 'SameValue',
           }),
           fc.boolean(),
           fc.nat(MaxLengthUpperBound),
@@ -373,9 +374,10 @@ describe('ArrayArbitrary', () => {
     it('should reject any array not matching requirements for set constraints', () => {
       fc.assert(
         fc.property(
-          fc.set(fc.tuple(fc.anything(), fc.boolean()), {
+          fc.uniqueArray(fc.tuple(fc.anything(), fc.boolean()), {
             minLength: 1,
-            compare: { selector: (v) => v[0], type: 'SameValue' },
+            selector: (v) => v[0],
+            comparator: 'SameValue',
           }),
           fc.nat(MaxLengthUpperBound),
           fc.nat(MaxLengthUpperBound),

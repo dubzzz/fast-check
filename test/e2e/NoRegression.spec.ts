@@ -317,6 +317,14 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('uniqueArray', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('tuple', () => {
     expect(() =>
       fc.assert(

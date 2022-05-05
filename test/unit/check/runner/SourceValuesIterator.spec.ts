@@ -54,7 +54,7 @@ describe('SourceValuesIterator', () => {
   describe('Not enough skipped values', () => {
     it('Should return the first eligible askedValues values if infinite source', () =>
       fc.assert(
-        fc.property(fc.nat(100), fc.set(fc.nat(100)), (askedValues, skippedValues) => {
+        fc.property(fc.nat(100), fc.uniqueArray(fc.nat(100)), (askedValues, skippedValues) => {
           const svIt = new SourceValuesIterator(source(), askedValues, skippedValues.length);
           const svValues = simulateSkips(svIt, skippedValues);
 
@@ -72,7 +72,7 @@ describe('SourceValuesIterator', () => {
         fc.property(
           fc.nat(100),
           fc.nat(100),
-          fc.set(fc.nat(100)),
+          fc.uniqueArray(fc.nat(100)),
           (askedValues, additionalValuesInSource, skippedValues) => {
             const initialValues = sourceN(askedValues + additionalValuesInSource + skippedValues.length);
             const svIt = new SourceValuesIterator(initialValues, askedValues, skippedValues.length);
@@ -93,7 +93,7 @@ describe('SourceValuesIterator', () => {
         fc.property(
           fc.nat(100),
           fc.nat(100),
-          fc.set(fc.nat(100)),
+          fc.uniqueArray(fc.nat(100)),
           (sourceValues, additionalAskedValues, skippedValues) => {
             const askedValues = sourceValues + additionalAskedValues;
             const svIt = new SourceValuesIterator(sourceN(sourceValues), askedValues, skippedValues.length);
@@ -115,7 +115,7 @@ describe('SourceValuesIterator', () => {
     it('Should stop as soon as it passes maxSkips skipped values', () =>
       fc.assert(
         fc.property(
-          fc.set(fc.nat(100), { minLength: 1, maxLength: 20 }),
+          fc.uniqueArray(fc.nat(100), { minLength: 1, maxLength: 20 }),
           fc.integer(1, 100),
           (skippedValues, missingValues) => {
             const lastSkip = skippedValues.reduce((prev, cur) => (prev > cur ? prev : cur), 0);
