@@ -1,4 +1,4 @@
-import { MaybeMocked } from 'ts-jest/dist/utils/testing';
+import { MaybeMocked } from './Mocked';
 import { Random } from '../../../../src/random/generator/Random';
 
 export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
