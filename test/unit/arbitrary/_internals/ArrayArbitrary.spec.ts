@@ -50,7 +50,7 @@ describe('ArrayArbitrary', () => {
             expect(g.hasToBeCloned).toBe(false);
             expect(g.value).toEqual([...acceptedValues].map((v) => v.value));
             expect(integer).toHaveBeenCalledTimes(1);
-            expect(integer).toHaveBeenCalledWith(minLength, maxGeneratedLength);
+            expect(integer).toHaveBeenCalledWith({ min: minLength, max: maxGeneratedLength });
             expect(generateInteger).toHaveBeenCalledTimes(1);
             expect(generateInteger).toHaveBeenCalledWith(mrng, undefined);
             expect(generate).toHaveBeenCalledTimes(acceptedValues.size);
@@ -90,7 +90,7 @@ describe('ArrayArbitrary', () => {
             // The generator is allowed to stop whenever it considers at already tried to many times (maxGeneratedLength times)
             expect(g.value).toEqual([...acceptedValues].map((v) => v.value).slice(0, g.value.length));
             expect(integer).toHaveBeenCalledTimes(1);
-            expect(integer).toHaveBeenCalledWith(minLength, maxGeneratedLength);
+            expect(integer).toHaveBeenCalledWith({ min: minLength, max: maxGeneratedLength });
             expect(generateInteger).toHaveBeenCalledTimes(1);
             expect(generateInteger).toHaveBeenCalledWith(mrng, undefined);
             expect(setBuilder).toHaveBeenCalledTimes(1);
@@ -146,7 +146,7 @@ describe('ArrayArbitrary', () => {
               );
             }
             expect(integer).toHaveBeenCalledTimes(1);
-            expect(integer).toHaveBeenCalledWith(minLength, minLength);
+            expect(integer).toHaveBeenCalledWith({ min: minLength, max: minLength });
             expect(generateInteger).toHaveBeenCalledTimes(1);
             expect(generateInteger).toHaveBeenCalledWith(mrng, undefined); // no need to bias it
             expect(setBuilder).toHaveBeenCalledTimes(withSetBuilder ? 1 : 0);
