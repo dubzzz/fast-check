@@ -3,7 +3,7 @@ import {
   convertFromNextWithShrunkOnce,
   convertToNext,
 } from '../../../../../src/check/arbitrary/definition/Converters';
-import { mocked } from '../../../arbitrary/__test-helpers__/Mocked';
+import { mocked } from '../../../__test-helpers__/Mocked';
 
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { NextArbitrary } from '../../../../../src/check/arbitrary/definition/NextArbitrary';

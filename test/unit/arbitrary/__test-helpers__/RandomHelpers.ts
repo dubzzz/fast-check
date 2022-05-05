@@ -1,4 +1,4 @@
-import { MaybeMocked } from './Mocked';
+import { MaybeMocked } from '../../__test-helpers__/Mocked';
 import { Random } from '../../../../src/random/generator/Random';
 
 export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {

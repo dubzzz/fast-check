@@ -1,4 +1,4 @@
-import { MaybeMocked, MockWithArgs } from './Mocked';
+import { MaybeMocked, MockWithArgs } from '../../__test-helpers__/Mocked';
 import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { Random } from '../../../../src/random/generator/Random';

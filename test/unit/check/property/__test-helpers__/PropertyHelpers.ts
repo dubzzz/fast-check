@@ -1,4 +1,4 @@
-import { MaybeMocked } from '../../../arbitrary/__test-helpers__/Mocked';
+import { MaybeMocked } from '../../../__test-helpers__/Mocked';
 import { INextRawProperty } from '../../../../../src/check/property/INextRawProperty';
 
 /**
