@@ -51,8 +51,9 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Typecheck
         run: |
-            yarn prebuild
-            yarn typecheck
+          yarn prebuild
+          yarn build:publish-types
+          yarn typecheck
   test:
     name: 'Test'
     runs-on: ubuntu-latest
