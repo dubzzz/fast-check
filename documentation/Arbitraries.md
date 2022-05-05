@@ -3139,6 +3139,72 @@ fc.jsonValue({maxDepth: 0})
 
 fc.jsonValue({maxDepth: 1})
 // Examples of generated values: [], -1.2e-322, "W!oe%r(", {}, [false,"?Y]}I%d",2.7395116183994342e+35]…
+
+fc.statistics(
+  fc.jsonValue(),
+  v => {
+    function size(n) {
+      if (Array.isArray(n))
+        return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === "object" && n)
+        return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
+    while (next(lower) <= s) { lower = next(lower); }
+    return `${lower} to ${next(lower) -1} items`;
+  }
+)
+// Note: In version 2.x, the depth of objects-like arbitraries is by default limited to 2.
+// It will not be the case anymore starting at version 3.x. In 3.x, the default maximal depth
+// will be unset meaning it can theoretically reach infinity. 'theoretically' as depth factor
+// will prevent that from occuring.
+// Computed statistics for 10k generated values:
+// For size = "xsmall":
+// • 1 to 4 items....73.30%
+// • 5 to 9 items....26.42%
+// • 10 to 49 items...0.28%
+// For size = "small":
+// • 1 to 4 items....66.73%
+// • 5 to 9 items....31.79%
+// • 10 to 49 items...1.48%
+// For size = "medium":
+// • 1 to 4 items....66.91%
+// • 5 to 9 items....31.75%
+// • 10 to 49 items...1.34%
+
+fc.statistics(
+  fc.jsonValue({maxDepth: 2}),
+  v => {
+    function size(n) {
+      if (Array.isArray(n))
+        return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === "object" && n)
+        return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
+    while (next(lower) <= s) { lower = next(lower); }
+    return `${lower} to ${next(lower) -1} items`;
+  }
+)
+// Computed statistics for 10k generated values:
+// For size = "xsmall":
+// • 1 to 4 items....73.34%
+// • 5 to 9 items....26.32%
+// • 10 to 49 items...0.34%
+// For size = "small":
+// • 1 to 4 items....66.98%
+// • 5 to 9 items....31.53%
+// • 10 to 49 items...1.49%
+// For size = "medium":
+// • 1 to 4 items....66.94%
+// • 5 to 9 items....31.55%
+// • 10 to 49 items...1.51%
 ```
 </details>
 
