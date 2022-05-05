@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
+    "@babel/plugin-transform-modules-commonjs": "^7.17.9",
     "@babel/preset-typescript": "^7.16.7",
     "@microsoft/api-extractor": "^7.9.10",
     "@types/jest": "^26.0.4",
