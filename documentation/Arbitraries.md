@@ -1,7 +1,6 @@
 # [:house:](../README.md) Arbitraries
 
 Property based testing frameworks rely on two main building blocks:
-
 - [Runners](./Runners.md) — _they are responsible for running, executing and checking that properties stay true whatever the generated value_
 - Arbitraries — _they are responsible for the random *but deterministic* generation of values, they may also offer shrinking capabilities_
 
@@ -59,21 +58,20 @@ fc.assert(
 <details>
 <summary><b>boolean</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#boolean">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Boolean values, either `true` or `false`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.boolean()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.boolean();
+fc.boolean()
 // Examples of generated values: true, false…
 ```
-
 </details>
 
 ## Numeric
@@ -83,131 +81,127 @@ fc.boolean();
 <details>
 <summary><b>integer</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#integer">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Signed integer values
 >
 > Generate any possible integer in the specified range.
 > Both the lower bound and upper bound of the range are included in the set of possible values.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.integer()`
 - `fc.integer({min?, max?})`
 - `fc.integer(min, max)`
 - _`fc.integer(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `-2147483648` — _lower bound of the range (included)_
 - `max?` — default: `2147483647` — _upper bound of the range (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.integer();
+fc.integer()
 // Note: All possible integers between `-2147483648` (included) and `2147483647` (included)
 // Examples of generated values: 1502944448, 888414599, 1123740386, -440217435, 19…
 
-fc.integer(1000);
+fc.integer(1000)
 // Note: All possible integers between `-2147483648` (included) and `1000` (included)
 // Examples of generated values: -1057705109, -8, -1089721660, -1878447823, -741474720…
 
-fc.integer(-99, 99);
+fc.integer(-99, 99)
 // Note: All possible integers between `-99` (included) and `99` (included)
 // Examples of generated values: 6, -1, -96, 91, 5…
 
-fc.integer({ min: -99, max: 99 });
+fc.integer({min: -99, max: 99})
 // Note: All possible integers between `-99` (included) and `99` (included)
 // Examples of generated values: 6, 98, 8, 5, 0…
 
-fc.integer({ min: 65536 });
+fc.integer({min: 65536})
 // Note: All possible integers between `65536` (included) and `2147483647` (included)
 // Examples of generated values: 65552, 2147483636, 65548, 1836480947, 1490866554…
 ```
-
 </details>
 
 <details>
 <summary><b>nat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#nat">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Positive integer values (including zero)
 >
 > Generate any possible positive integer between zero and the upper bound.
 > Both zero and the upper bound are included in the set of possible values.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.nat()`
 - `fc.nat({max?})`
 - `fc.nat(max)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `max?` — default: `2147483647` — _upper bound of the range (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.nat();
+fc.nat()
 // Note: All possible integers between `0` (included) and `2147483647` (included)
 // Examples of generated values: 2147483640, 1747563639, 2, 2075457316, 2146229148…
 
-fc.nat(1000);
+fc.nat(1000)
 // Note: All possible integers between `0` (included) and `1000` (included)
 // Examples of generated values: 299, 997, 225, 750, 4…
 
-fc.nat({ max: 1000 });
+fc.nat({max: 1000})
 // Note: All possible integers between `0` (included) and `1000` (included)
 // Examples of generated values: 0, 833, 995, 496, 1…
 ```
-
 </details>
 
 <details>
 <summary><b>maxSafeInteger</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafeinteger">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > All the range of signed integer values
 >
 > Generate any possible integer ie. from `Number.MIN_SAFE_INTEGER` (included) to `Number.MAX_SAFE_INTEGER` (included).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.maxSafeInteger()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.maxSafeInteger();
+fc.maxSafeInteger()
 // Examples of generated values: -44, 7332126275469769, 32, -8631085038818688, 417563055004249…
 ```
-
 </details>
 
 <details>
 <summary><b>maxSafeNat</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maxsafenat">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > All the range of positive integer values (including zero)
 >
 > Generate any possible positive integer ie. from `0` (included) to `Number.MAX_SAFE_INTEGER` (included).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.maxSafeNat()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.maxSafeNat();
+fc.maxSafeNat()
 // Examples of generated values: 9007199254740981, 5859827138257099, 41, 5028419509524314, 9007199254740974…
 ```
-
 </details>
 
 ### Floating point
@@ -215,7 +209,7 @@ fc.maxSafeNat();
 <details>
 <summary><b>float</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Floating point values with 32-bit precision
 >
@@ -224,7 +218,7 @@ _&#8195;Description_
 >
 > Next version: Always generate valid 32-bit floating point values.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.float()`
 - `fc.float({next: true, min?, max?, noDefaultInfinity?, noNaN?})`
@@ -232,9 +226,9 @@ _&#8195;Signatures_
 - `fc.float(min, max)`
 - _`fc.float(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
-_When `next` is `true`..._
+*When `next` is `true`...*
 
 - `next` — _use the new version of float_
 - `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
@@ -242,61 +236,60 @@ _When `next` is `true`..._
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 
-_Otherwise..._
+*Otherwise...*
 
 - `min?` — default: `0.0` — _lower bound of the range (included)_
 - `max?` — default: `1.0` — _upper bound of the range (excluded)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
 // New behaviour...
 
-fc.float({ next: true });
+fc.float({next: true})
 // Note: All possible 32-bit floating point values (including -∞, +∞ and NaN but also -0)
 // Examples of generated values: -4.979507809409578e+32, -1.6702151959801674e+28, 1.9627621397599177e+28, 350.84765625, 3.363116314379561e-44…
 
-fc.float({ next: true, min: 0 });
+fc.float({next: true, min: 0})
 // Note: All possible positive 32-bit floating point values (including +∞ and NaN)
 // Examples of generated values: 2.802596928649634e-45, 2.1029948291590276e+24, 9.80908925027372e-45, 2.2572006841955642e+36, 2.1019476964872256e-44…
 
-fc.float({ next: true, noDefaultInfinity: true, noNaN: true });
+fc.float({next: true, noDefaultInfinity: true, noNaN: true})
 // Note: All possible finite 32-bit floating point values
 // Examples of generated values: 4.0637655465419695e-44, 1.4038274882832713e-11, -2.8106043967884853e-14, -2.2420775429197073e-44, 3.053702712160785e+32…
 
-fc.float({ next: true, noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER });
+fc.float({next: true, noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER})
 // Note: Same as fc.float({next: true}), noDefaultInfinity just tells that defaults for min and max
 // should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
 // Examples of generated values: -3.4028222494407124e+38, -5.1506072030609065e-26, -3.4028190042551758e+38, 3.4028183957828877e+38, 2.382207389352189e-44…
 
 // Legacy mode...
 
-fc.float();
+fc.float()
 // Note: All possible 32-bit floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.8121654987335205, 0.2905852794647217, 0.5317489504814148, 0.8747345805168152, 0.2262873649597168…
 
-fc.float({ max: 100 });
+fc.float({max: 100})
 // Note: All possible 32-bit floating point values between `0.0` (included) and `100.0` (excluded)
 // Examples of generated values: 0.00007748603820800781, 99.99992251396179, 60.498785972595215, 99.99995827674866, 24.220764636993408…
 
-fc.float({ min: -100, max: 100 });
+fc.float({min: -100, max: 100})
 // Note: All possible 32-bit floating point values between `-100.0` (included) and `100.0` (excluded)
 // Examples of generated values: 99.99995231628418, -99.9998927116394, 81.314218044281, -100, -99.99988079071045…
 ```
-
 </details>
 
 <details>
 <summary><b>double</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#double">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Floating point values
 >
 > Generate any floating point value taken into the specified range.
 > The lower bound is included into the range of possible values while the upper one is not.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.double()`
 - `fc.double({next: true, min?, max?, noDefaultInfinity?, noNaN?})`
@@ -304,9 +297,9 @@ _&#8195;Signatures_
 - `fc.double(min, max)`
 - _`fc.double(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
-_When `next` is `true`..._
+*When `next` is `true`...*
 
 - `next` — _use the new version of float_
 - `min?` — default: `-∞` and `-Number.MAX_VALUE` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
@@ -314,79 +307,77 @@ _When `next` is `true`..._
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 
-_Otherwise..._
+*Otherwise...*
 
 - `min?` — default: `0.0` — _lower bound of the range (included)_
 - `max?` — default: `1.0` — _upper bound of the range (excluded)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
 // New behaviour...
 
-fc.double({ next: true });
+fc.double({next: true})
 // Note: All possible floating point values (including -∞, +∞ and NaN but also -0)
 // Examples of generated values: 2.37e-322, 8.585001320826223e-158, -2.5e-323, 5.895761138020238e+302, -3.7859248062812417e-171…
 
-fc.double({ next: true, min: 0 });
+fc.double({next: true, min: 0})
 // Note: All possible positive floating point values (including +∞ and NaN)
 // Examples of generated values: 1.7976931348623093e+308, 2.8e-322, 3.0427667746799623e-174, 1.2e-322, 1.3e-322…
 
-fc.double({ next: true, noDefaultInfinity: true, noNaN: true });
+fc.double({next: true, noDefaultInfinity: true, noNaN: true})
 // Note: All possible finite floating point values
 // Examples of generated values: 7.708517430762217e-92, 8.177542674298762e-87, 5.4e-323, 1.7976931348623071e+308, 4.3922193704082206e+39…
 
-fc.double({ next: true, noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER });
+fc.double({next: true, noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER})
 // Note: Same as fc.double({next: true}), noDefaultInfinity just tells that defaults for min and max
 // should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
 // Examples of generated values: 1.7976931348623157e+308, -1.7976931348623061e+308, -2.4e-322, 1.14e-322, 1.7976931348623055e+308…
 
 // Legacy mode...
 
-fc.double();
+fc.double()
 // Note: All possible floating point values between `0.0` (included) and `1.0` (excluded)
 // Examples of generated values: 0.3956174850463876, 0.2384091532256838, 0.7450366348797337, 0.4402490407228471, 3.278255483740722e-7…
 
-fc.double({ max: 100 });
+fc.double({max: 100})
 // Note: All possible floating point values between `0.0` (included) and `100.0` (excluded)
 // Examples of generated values: 78.93341183662397, 0.000004502756623114834, 98.5225079632713, 10.198144676861675, 99.99998476502925…
 
-fc.double({ min: -100, max: 100 });
+fc.double({min: -100, max: 100})
 // Note: All possible floating point values between `-100.0` (included) and `100.0` (excluded)
 // Examples of generated values: -99.99996125698067, 37.98004388809261, 1.4435261487965079, 99.99994039535542, -99.9999523162838…
 ```
-
 </details>
 
 ### BigInt
-
 _if supported by your JavaScript interpreter_
 
 <details>
 <summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > N-bit signed `bigint` values
 >
 > Generate any possible `bigint` between <code>-2<sup>n-1</sup></code> (included) and <code>2<sup>n-1</sup>-1</code> (included).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.bigIntN(n)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `n` — _maximal number of bits of the generated `bigint`_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.bigIntN(2);
+fc.bigIntN(2)
 // Note: All possible bigint values between `-2n` (included) and `1n` (included)
 // Examples of generated values: -1n, -2n, 0n, 1n…
 
-fc.bigIntN(128);
+fc.bigIntN(128)
 // Note: All possible bigint values between `-(2n**127n)` (included) and `(2n**127n)-1n` (included)
 // Examples of generated values:
 // • 118965438702305362498464591014723682065n
@@ -396,34 +387,33 @@ fc.bigIntN(128);
 // • -18663446021429702481819240863645317485n
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>bigInt</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigint">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Signed `bigint` values
 >
 > Generate any bigint value taken into the specified range.
 > Both lower bound and upper bound are included into the range of possible values.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.bigInt()`
 - `fc.bigInt({min?, max?})`
 - `fc.bigInt(min, max)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — _lower bound of the range (included)_
 - `max?` — _upper bound of the range (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.bigInt();
+fc.bigInt()
 // Examples of generated values:
 // • -55267127471484960134228883170671517601140668833043648279881539595328866477336n
 // • -320877373404846693351482506498287829328651053618510591877443861350691412062n
@@ -432,15 +422,15 @@ fc.bigInt();
 // • -27488731055093319143645334041335559432506843454739800192508819981052054802083n
 // • …
 
-fc.bigInt({ min: 0n, max: 12345678901234567890n });
+fc.bigInt({min: 0n, max: 12345678901234567890n})
 // Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
 // Examples of generated values: 8n, 11376877730870697597n, 1349784798053983117n, 12345678901234567877n, 9n…
 
-fc.bigInt({ min: -3000n, max: 100n });
+fc.bigInt({min: -3000n, max: 100n})
 // Note: All possible bigint values between `-3000n` (included) and `100n` (included)
 // Examples of generated values: -1169n, -2n, 3n, 0n, -2680n…
 
-fc.bigInt({ min: 1n << 64n });
+fc.bigInt({min: 1n << 64n})
 // Note: Any possible bigint value greater or equal to `1n << 64n`
 // Examples of generated values:
 // • 32214219993684643449722944918025059692370181015953432795318507902966520589940n
@@ -450,34 +440,33 @@ fc.bigInt({ min: 1n << 64n });
 // • 18446744073709551637n
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>bigIntN</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigintn">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > N-bit positive `bigint` values (including zero)
 >
 > Generate any possible positive `bigint` between <code>0</code> (included) and <code>2<sup>n</sup>-1</code> (included).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.bigUintN(n)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `n` — _maximal number of bits of the generated `bigint`_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.bigUintN(2);
+fc.bigUintN(2)
 // Note: All possible bigint values between `0n` (included) and `3n` (included)
 // Examples of generated values: 0n, 2n, 1n, 3n…
 
-fc.bigUintN(128);
+fc.bigUintN(128)
 // Note: All possible bigint values between `0n` (included) and `(2n**128n)-1n` (included)
 // Examples of generated values:
 // • 86341151263089925165504430453367665188n
@@ -487,32 +476,31 @@ fc.bigUintN(128);
 // • 111395503858026070299201611333616927272n
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>bigUint</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#biguint">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Positive `bigint` values (including zero)
 >
 > Generate any positive bigint value taken up to upper bound included.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.bigUint()`
 - `fc.bigUint({max?})`
 - `fc.bigUint(max)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `max?` — _upper bound of the range (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.bigUint();
+fc.bigUint()
 // Examples of generated values:
 // • 98415346800826680180868623901081769911550846942931679526483139707297824018492n
 // • 81847654831253862250960947754551199482417759415227376695916153744999991292122n
@@ -521,11 +509,10 @@ fc.bigUint();
 // • 24n
 // • …
 
-fc.bigUint({ max: 12345678901234567890n });
+fc.bigUint({max: 12345678901234567890n})
 // Note: All possible bigint values between `0n` (included) and `12345678901234567890n` (included)
 // Examples of generated values: 2140173898915155879n, 4446193883774321594n, 12345678901234567890n, 12345678901234567882n, 19n…
 ```
-
 </details>
 
 ## String
@@ -535,146 +522,140 @@ fc.bigUint({ max: 12345678901234567890n });
 <details>
 <summary><b>hexa</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexa">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One lowercase hexadecimal character — ie.: _one character in `0123456789abcdef`_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.hexa()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.hexa();
+fc.hexa()
 // Examples of generated values: "3", "e", "2", "d", "1"…
 ```
-
 </details>
 
 <details>
 <summary><b>base64</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One base64 character — _ie.: one character in `A-Z`, `a-z`, `0-9`, `+` or `/`_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.base64()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.base64();
+fc.base64()
 // Examples of generated values: "U", "M", "z", "b", "4"…
 ```
-
 </details>
 
 <details>
 <summary><b>char</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One printable character — _ie.: one character between `0x20` (included) and `0x7e` (included), corresponding to printable characters (see https://www.ascii-code.com/)_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.char()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.char();
+fc.char()
 // Examples of generated values: "#", "&", "}", "A", "J"…
 ```
-
 </details>
 
 <details>
 <summary><b>ascii</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ascii">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One ascii character — _ie.: one character between `0x00` (included) and `0x7f` (included)_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.ascii()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.ascii();
+fc.ascii()
 // Examples of generated values: "5", "\u001a", "7", "}", "A"…
 ```
-
 </details>
 
 <details>
 <summary><b>unicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicode">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One unicode character from BMP-plan — _ie.: one character between `0x0000` (included) and `0xffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`)_
 >
 > Generate any character of UCS-2 which is a subset of UTF-16 (restricted to BMP plan).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.unicode()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.unicode();
+fc.unicode()
 // Examples of generated values: "", "熇", "ዢ", "⢥", "\""…
 ```
-
 </details>
 
 <details>
 <summary><b>char16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#char16bits">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One unicode character from BMP-plan (including part of surrogate pair) — _ie.: one character between `0x0000` (included) and `0xffff` (included)_
 >
-> Generate any 16 bits character. Be aware the values within `0xd800` and `0xdfff` which constitutes the surrogate pair characters are also generated meaning that some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding.\_
+> Generate any 16 bits character. Be aware the values within `0xd800` and `0xdfff` which constitutes the surrogate pair characters are also generated meaning that some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding._
 
-_&#8195;Signatures_
+
+*&#8195;Signatures*
 
 - `fc.char16bits()`
-  _&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.char16bits();
+fc.char16bits()
 // Examples of generated values: "￻", "훺", ")", "", "￰"…
 ```
-
 </details>
 
 <details>
 <summary><b>fullUnicode</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicode">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One unicode character — _ie.: one character between `0x0000` (included) and `0x10ffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`)_
 >
 > Its length can be greater than one as it potentially contains multiple UTF-16 characters for a single glyph (eg.: `"\u{1f434}".length === 2`).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.fullUnicode()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.fullUnicode();
+fc.fullUnicode()
 // Examples of generated values: "񗣺", "󡏒", "񖘬", "󁸻", "񄴑"…
 ```
-
 </details>
 
 ### Multiple characters
@@ -682,61 +663,60 @@ fc.fullUnicode();
 <details>
 <summary><b>hexaString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#hexastring">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Hexadecimal string containing characters produced by `fc.hexa()`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.hexaString()`
 - `fc.hexaString({minLength?, maxLength?, size?})`
 - _`fc.hexaString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.hexaString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.hexaString();
+fc.hexaString()
 // Examples of generated values: "3c4", "bf2", "f", "a9cb", "02e25e"…
 
-fc.hexaString({ maxLength: 3 });
+fc.hexaString({maxLength: 3})
 // Note: Any hexadecimal string containing up to 3 (included) characters
 // Examples of generated values: "", "c", "0", "1", "c0"…
 
-fc.hexaString({ minLength: 3 });
+fc.hexaString({minLength: 3})
 // Note: Any hexadecimal string containing at least 3 (included) characters
 // Examples of generated values: "132", "c63baf", "064133", "1e412e", "0e479d13"…
 
-fc.hexaString({ minLength: 4, maxLength: 6 });
+fc.hexaString({minLength: 4, maxLength: 6})
 // Note: Any hexadecimal string containing between 4 (included) and 6 (included) characters
 // Examples of generated values: "c3108", "f911e", "db35", "00fa", "09a7ba"…
 ```
-
 </details>
 
 <details>
 <summary><b>base64String</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#base64string">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Base64 string containing characters produced by `fc.base64()`
 >
 > Provide valid base64 strings: length always multiple of 4 padded with '=' characters
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.base64String()`
 - `fc.base64String({minLength?, maxLength?, size?})`
 - _`fc.base64String(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.base64String(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included if multiple of 4)_
@@ -744,208 +724,203 @@ _&#8195;with:_
 
 _When using `minLength` and `maxLength` make sure that they are compatible together. For instance: asking for `minLength=2` and `maxLength=3` is impossible for base64 strings as produced by the framework_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.base64String();
+fc.base64String()
 // Examples of generated values: "rgk=", "BI==", "RD/Evefg", "xBE=", "FoRD"…
 
-fc.base64String({ maxLength: 8 });
+fc.base64String({maxLength: 8})
 // Note: Any base64 string containing up to 8 (included) characters
 // Examples of generated values: "", "YycWxD==", "CF==", "udGFHc==", "xBk="…
 
-fc.base64String({ minLength: 8 });
+fc.base64String({minLength: 8})
 // Note: Any base64 string containing at least 8 (included) characters
 // Examples of generated values: "ES8A9c87", "7BPvpeDlf2BE", "7WXEBForaLaj2H8mGc==", "YycWxDA+KMsIEQg0B6M=", "CFx/rD9F6AI="…
 
-fc.base64String({ minLength: 4, maxLength: 12 });
+fc.base64String({minLength: 4, maxLength: 12})
 // Note: Any base64 string containing between 4 (included) and 12 (included) characters
 // Examples of generated values: "rUs8bJfAngr=", "uFDtEE==", "rB+EZD==", "B4DP", "C379"…
 ```
-
 </details>
 
 <details>
 <summary><b>string</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > String containing characters produced by `fc.char()`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.string()`
 - `fc.string({minLength?, maxLength?, size?})`
 - _`fc.string(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.string(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.string();
+fc.string()
 // Examples of generated values: ".A%", "aM{]xTH&)", "^NLpz5/y", "", "eqr"…
 
-fc.string({ maxLength: 3 });
+fc.string({maxLength: 3})
 // Note: Any string containing up to 3 (included) characters
 // Examples of generated values: "", "~*2", "{Z", "[!", "jlZ"…
 
-fc.string({ minLength: 3 });
+fc.string({minLength: 3})
 // Note: Any string containing at least 3 (included) characters
 // Examples of generated values: "W=*$Fm V4Yf4<qC", "JeT[$", "~*2[s\\,qgwio", "nDL?K[,", "{Z:gG\")"…
 
-fc.string({ minLength: 4, maxLength: 6 });
+fc.string({minLength: 4, maxLength: 6})
 // Note: Any string containing between 4 (included) and 6 (included) characters
 // Examples of generated values: "x<H+`", "!z$#", "%0b $", "}%[~z", "z&x~"…
 ```
-
 </details>
 
 <details>
 <summary><b>asciiString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#asciistring">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > ASCII string containing characters produced by `fc.ascii()`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.asciiString()`
 - `fc.asciiString({minLength?, maxLength?, size?})`
 - _`fc.asciiString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.asciiString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.asciiString();
+fc.asciiString()
 // Examples of generated values: "2u1\u001aWQ", "", "*y", "\bT\u0013.\u0017|h&>", "si3\u0016`kA\u0017\u0004"…
 
-fc.asciiString({ maxLength: 3 });
+fc.asciiString({maxLength: 3})
 // Note: Any ascii string containing up to 3 (included) characters
 // Examples of generated values: "", "vC", "", "'\u0010*", "%"…
 
-fc.asciiString({ minLength: 3 });
+fc.asciiString({minLength: 3})
 // Note: Any ascii string containing at least 3 (included) characters
 // Examples of generated values: " \"\"!\u001a)\u001a\u001e\u001dFF", "vCkn&}{", "\u001c\u0006p", "'\u0010*6ua\u0017JEpG\u000bg<#\u0007", "%f\"\u001fBO"…
 
-fc.asciiString({ minLength: 4, maxLength: 6 });
+fc.asciiString({minLength: 4, maxLength: 6})
 // Note: Any ascii string containing between 4 (included) and 6 (included) characters
 // Examples of generated values: "0(0E\"", "!.Qj?-", "V\u0002\u0014z\fT", "!#!\"", "\u0007U\u0006t#"…
 ```
-
 </details>
 
 <details>
 <summary><b>unicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodestring">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Unicode string containing characters produced by `fc.unicode()`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.unicodeString()`
 - `fc.unicodeString({minLength?, maxLength?, size?})`
 - _`fc.unicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.unicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.unicodeString();
+fc.unicodeString()
 // Examples of generated values: "", "ॗﰗ騈)￻,揖￵ᛦ￸", "㚗", "娇\u001eᨫ㽹矌", "┛䅯퉳"…
 
-fc.unicodeString({ maxLength: 3 });
+fc.unicodeString({maxLength: 3})
 // Note: Any unicode (from BMP-plan) string containing up to 3 (included) characters
 // Examples of generated values: "-", "", "⇾燏", "*❚", "ሖꧾㆳ"…
 
-fc.unicodeString({ minLength: 3 });
+fc.unicodeString({minLength: 3})
 // Note: Any unicode (from BMP-plan) string containing at least 3 (included) characters
 // Examples of generated values: "-(*臑憚.ḙ葢￸獲戽+(⑆", "杮಴⿆뎶蝐母쪀㩑ᶔ䰚搞慢䲉欐", "⇾燏ᅙ秱뵴ꇺ꿵玽鄧돟鐎䕝ᑿ", "*❚\"%*", " 嬵ߍ�섁"…
 
-fc.unicodeString({ minLength: 4, maxLength: 6 });
+fc.unicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode (from BMP-plan) string containing between 4 (included) and 6 (included) characters
 // Examples of generated values: "紫ᡔ楬莼媛", "ኮ࿅!릭", "ū/￶$ﭙ+", "'ָ/㳏", "랂巻ᗽ"…
 ```
-
 </details>
 
 <details>
 <summary><b>string16bits</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#string16bits">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > String containing characters produced by `fc.char16bits()`
 >
 > Be aware that the generated string might appear invalid regarding the unicode standard as it might contain incomplete pairs of surrogate
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.string16bits()`
 - `fc.string16bits({minLength?, maxLength?, size?})`
 - _`fc.string16bits(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.string16bits(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.string16bits();
+fc.string16bits()
 // Examples of generated values: "埫쒠爤", "#\udb48", "૑ᚃ⵿⫄㖯孞℠", "⤱黁醙", "⦕끅Ȩ鋑\uda43"…
 
-fc.string16bits({ maxLength: 3 });
+fc.string16bits({maxLength: 3})
 // Note: Any string (not really legal ones sometimes) containing up to 3 (included) characters
 // Examples of generated values: "", "￱", "ऻ㨖ẗ", "ﾮ뾝꜆", "㓱"…
 
-fc.string16bits({ minLength: 3 });
+fc.string16bits({minLength: 3})
 // Note: Any string (not really legal ones sometimes) containing at least 3 (included) characters
 // Examples of generated values: "徵 씒", "￱!婏숯", "ऻ㨖ẗ倄쾁伅周쀫", "䯘趲䴜", "&/꫿鐫"…
 
-fc.string16bits({ minLength: 4, maxLength: 6 });
+fc.string16bits({minLength: 4, maxLength: 6})
 // Note: Any string (not really legal ones sometimes) containing between 4 (included) and 6 (included) characters
 // Examples of generated values: "孢\udbcd퉭⻵", "↩㄁\ude77䟾鏹撜", "軫쒍#驆䥖", "旲'+￲\ud870", "䵬ଛ쩀蛩‮৶"…
 ```
-
 </details>
 
 <details>
 <summary><b>fullUnicodeString</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#fullunicodestring">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Unicode string containing characters produced by `fc.fullUnicode()`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.fullUnicodeString()`
 - `fc.fullUnicodeString({minLength?, maxLength?, size?})`
 - _`fc.fullUnicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.fullUnicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
@@ -953,71 +928,69 @@ _&#8195;with:_
 
 _Be aware that the length is considered in terms of the number of glyphs in the string and not the number of UTF-16 characters. As a consequence `generatedString.length` might be greater than the asked maximal length but `[...generatedString].length` will not and always be in the required range_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.fullUnicodeString();
+fc.fullUnicodeString()
 // Examples of generated values: "𾪖򘔼򭐂񿈋𰥞", "񫪥񫹚򻰌􏿮", "󘅽󘺂򦀵򈄓񧟵", "󥐫򱡭􌺛愋Ꚁ𻧗ᨘ񀄮􍹣", "򈼴.򯃗􏿻'()􋇶/\""…
 
-fc.fullUnicodeString({ maxLength: 3 });
+fc.fullUnicodeString({maxLength: 3})
 // Note: Any unicode string containing up to 3 (included) code-points
 // Examples of generated values: "🷣", "𪇍򱲆", "", "󟙀", "򒎧"…
 
-fc.fullUnicodeString({ minLength: 3 });
+fc.fullUnicodeString({minLength: 3})
 // Note: Any unicode string containing at least 3 (included) code-points
 // Examples of generated values: "🷣󸯜򎪳񖶌󪊀򳘟𙂄󟠷󄏧𰷡", "𪇍򱲆𖰌󣉄𵨡𻥕𰆏򦇘󜁳򁿳򎗯􈤘񖇅󑃙񡳏", "򞭽𜔱򠹉", "󔌧򞡺􏿮񞊙􂣐", "𞄊􊪆󧁴𦳫󇗋𨖸񉵊򫧏𞩻󓖞򼦃𘅏񀔾"…
 
-fc.fullUnicodeString({ minLength: 4, maxLength: 6 });
+fc.fullUnicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode string containing between 4 (included) and 6 (included) code-points
 // Examples of generated values: "񅈡򅰻񱅜򾐬񲆗񃯹", "𕩴𦿗񙷦-򽺺", ",􏿶 !𼻃񚸺", "-,񟟺񼐹", "􏿼𬑪12"…
 ```
-
 </details>
 
 <details>
 <summary><b>stringOf</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#stringof">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > String containing characters produced by the passed character generator
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.stringOf(charArb)`
 - `fc.stringOf(charArb, {minLength?, maxLength?, size?})`
 - _`fc.stringOf(charArb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.stringOf(charArb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `charArb` — _arbitrary able to generate random strings (possibly multiple characters)_
 - `minLength?` — default: `0` — _minimal number of characters (included)_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of characters (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.stringOf(fc.hexa());
+fc.stringOf(fc.hexa())
 // Examples of generated values: "6c2be", "5acc", "d2535", "bdbb078e3", "407d300602"…
 
-fc.stringOf(fc.char(), { maxLength: 3 });
+fc.stringOf(fc.char(), {maxLength: 3})
 // Note: Any string containing up to 3 (included) characters extracted from `fc.char()`
 // Examples of generated values: "$", "KU", ")H", "", "Z"…
 
-fc.stringOf(fc.char(), { minLength: 4, maxLength: 6 });
+fc.stringOf(fc.char(), {minLength: 4, maxLength: 6})
 // Note: Any string containing between 4 (included) and 6 (included) characters extracted from `fc.char()`
 // Examples of generated values: "*jlRI", "}<6Fm", "4P\"x ", "Q\"2R", "ZgIk"…
 
-fc.stringOf(fc.constantFrom('a', 'b'), { maxLength: 5 });
+fc.stringOf(fc.constantFrom('a', 'b'), {maxLength: 5})
 // Note: Any string containing between 0 (included) and 5 (included) characters extracted from `fc.constantFrom('a', 'b')`
 // Examples of generated values: "bbb", "b", "", "ab", "baa"…
 
-fc.stringOf(fc.constantFrom('Hello', 'World'), { minLength: 1, maxLength: 3 });
+fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 // Note: It might produce strings like "WorldWorldWorld" or "WorldHelloWorld"…
 // Examples of generated values: "WorldWorldHello", "World", "HelloHello", "Hello", "WorldHello"…
 ```
-
 </details>
 
 ### More specific strings
@@ -1025,28 +998,28 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), { minLength: 1, maxLength: 3 });
 <details>
 <summary><b>json</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#json">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
 >
 > The generated values can be parsed by `JSON.parse`.
 > All the string values (from keys to values) are generated using `fc.string()`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.json()`
 - `fc.json({depthFactor?, maxDepth?})`
 - _`fc.json(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.json();
+fc.json()
 // Examples of generated values:
 // • "{\"\":-2.2052192979331875e-140,\"xj)R+qu\\\"2\":null,\">4q'AU\":true}"
 // • "null"
@@ -1055,10 +1028,10 @@ fc.json();
 // • "{\"1Cu*#{v\":[null,\"d*J8hB]$\",\"X1=H\"],\"sfH\\\" ^\":[false,false,\"qn4Rq\"]}"
 // • …
 
-fc.json({ maxDepth: 0 });
+fc.json({maxDepth: 0})
 // Examples of generated values: "null", "2.393389240281231e+175", "false", "true", "\"E\""…
 
-fc.json({ maxDepth: 1 });
+fc.json({maxDepth: 1})
 // Examples of generated values:
 // • "{\"mTZw9f!~2\":\"N'!U6\",\"9=\":-3.6221384866363086e-275,\"\":\"cq\"}"
 // • "{\"UzMWL`G@{_\":null,\"znC\":\"nY\"}"
@@ -1067,37 +1040,36 @@ fc.json({ maxDepth: 1 });
 // • "[1.73e-322]"
 // • …
 
-fc.json({ depthFactor: 'medium' });
+fc.json({depthFactor: 'medium'})
 // Examples of generated values: "[false,2.7321203973068163e+275,false,false,null]", "{}", "[]", "-1.8e-322", "true"…
 ```
-
 </details>
 
 <details>
 <summary><b>unicodeJson</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejson">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
 >
 > The generated values can be parsed by `JSON.parse`.
 > All the string values (from keys to values) are generated using `fc.unicodeString()`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.unicodeJson()`
 - `fc.unicodeJson({depthFactor?, maxDepth?})`
 - _`fc.unicodeJson(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.unicodeJson();
+fc.unicodeJson()
 // Examples of generated values:
 // • "[[-3.8889674402925734e+155]]"
 // • "{\"￺\":\"%￿㷹\",\"￱螽렲$￶\":{\")\\\"⻜￺￲￲\":false,\"糐馺骩㊙廒ͣ砡땉㙐瓬\":-1.1e-322,\"▘㴉䨢\":4.615868404720035e+294}}"
@@ -1106,13 +1078,13 @@ fc.unicodeJson();
 // • "{\"迵끀꧋좡ꏶ塣\":false,\"뒓䬹Ⱝ䧎﹥ï飸\":true,\"婠꠨旞荫㹢ފ漀\":null,\"콆쳑Ｈ᜞紽ѳ㑓\":null,\"ㅜޞ욵ꤣ漓ꉶ瀞뿱끮\":-2.747809153946476e-271}"
 // • …
 
-fc.unicodeJson({ maxDepth: 0 });
+fc.unicodeJson({maxDepth: 0})
 // Examples of generated values: "false", "\"켔Ꚗޔ넡+/\"", "null", "\"倣\"", "4.1604273853370814e+265"…
 
-fc.unicodeJson({ maxDepth: 1 });
+fc.unicodeJson({maxDepth: 1})
 // Examples of generated values: "false", "true", "\"㬻켔㣃Ꚗ⧅ޔ\"", "[\"⩡傒胀녠鯑\",null,null,\"犨녎짨\",null]", "-2.787348602876926e-78"…
 
-fc.unicodeJson({ depthFactor: 'medium' });
+fc.unicodeJson({depthFactor: 'medium'})
 // Examples of generated values:
 // • "{\"苚뎃쮞불힓蹎❄袁㸩軜\":null,\"\":[-4.7767678646449e+49,-15.593117037815318,true,null]}"
 // • "{\"飭\":true,\"휺荃䫐음䉷ꙅ낱Ḯ嶑\":false,\"㴃蛧暪䴿城뛛黔䟧\":true}"
@@ -1121,26 +1093,25 @@ fc.unicodeJson({ depthFactor: 'medium' });
 // • "[true]"
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>lorem</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#lorem">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Lorem ipsum values
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.lorem()`
 - `fc.lorem({maxCount?, mode?, size?})`
 - _`fc.lorem(maxWordsCount)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.lorem(maxCount, sentenceMode)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
-- `maxCount?` — default: `5` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words\_
+- `maxCount?` — default: `5` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
 - `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
 - `maxWordsCount?` — _maximal number of words to produce_
 - `sentenceMode?` — default: `false` — _enable sentence mode_
@@ -1148,16 +1119,16 @@ _&#8195;with:_
 
 _Except if you specified `sentenceMode=true`, `fc.lorem` defaults to words mode_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.lorem();
+fc.lorem()
 // Examples of generated values: "arcu fusce", "dolor mi dignissim", "felis lacus", "ligula nec curae sed enim", "tincidunt vivamus massa"…
 
-fc.lorem({ maxCount: 3 });
+fc.lorem({maxCount: 3})
 // Examples of generated values: "praesent libero sodales", "mi adipiscing", "ut duis vitae", "mi elementum gravida", "non"…
 
-fc.lorem({ maxCount: 3, mode: 'sentences' });
+fc.lorem({maxCount: 3, mode: "sentences"})
 // Examples of generated values:
 // • "Sed faucibus, sit praesent. Justo id, nisl fusce tempor sit convallis. Non consectetur in scelerisque mauris morbi sollicitudin augue, nulla mauris leo."
 // • "Tempus. Tristique."
@@ -1166,84 +1137,80 @@ fc.lorem({ maxCount: 3, mode: 'sentences' });
 // • "Rhoncus in hendrerit faucibus sed sapien et."
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>ipV4</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > IP v4 addresses
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.ipV4()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.ipV4();
+fc.ipV4()
 // Examples of generated values: "7.149.25.7", "7.7.6.6", "254.21.210.1", "98.5.251.31", "221.2.9.255"…
 ```
-
 </details>
 
 <details>
 <summary><b>ipV4Extended</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4extended">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > IP v4 addresses including all the formats supported by WhatWG standard (for instance: 0x6f.9)
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.ipV4Extended()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.ipV4Extended();
+fc.ipV4Extended()
 // Examples of generated values: "160.0372.0x3", "5.031355510", "0x92df1683", "0x85b09ec1", "0x45.0103.03236"…
 ```
-
 </details>
 
 <details>
 <summary><b>ipV6</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv6">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > IP v6 addresses
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.ipV6()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.ipV6();
+fc.ipV6()
 // Examples of generated values: "5998:7144:3dc:ff:b:5ae5:3::", "::c1e0:b3a:3:5.249.0.0", "59::9:150.144.165.251", "d::fa8f", "::f3:be0:0c2a:e:252.1.4.153"…
 ```
-
 </details>
 
 <details>
 <summary><b>uuid</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuid">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > UUID values including versions 1 to 5
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.uuid()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.uuid();
+fc.uuid()
 // Examples of generated values:
 // • "0000000f-ca95-1bc1-9399-f11900000017"
 // • "00000017-0016-1000-8000-001c00000016"
@@ -1252,28 +1219,27 @@ fc.uuid();
 // • "c2156fdd-0018-1000-bd96-0109ffffffef"
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>uuidV</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuidv">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > UUID values for a specific UUID version (only 1 to 5) only digits in 0-9a-f
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.uuidV(version)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `version` — _version of the uuid to produce: 1, 2, 3, 4 or 5_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.uuidV(3);
+fc.uuidV(3)
 // Examples of generated values:
 // • "05cfea14-bcac-3b1b-8d87-f0d2ffffffe8"
 // • "7f4a63cc-0010-3000-bfff-ffeeffffffeb"
@@ -1282,7 +1248,7 @@ fc.uuidV(3);
 // • "4339edf8-0000-3000-92e8-dd5800000000"
 // • …
 
-fc.uuidV(5);
+fc.uuidV(5)
 // Examples of generated values:
 // • "d9951cc0-000f-5000-886d-743b90c0903c"
 // • "b4f42187-7bd2-5385-8000-000794a930da"
@@ -1291,38 +1257,37 @@ fc.uuidV(5);
 // • "00000002-0008-5000-8000-000b1bc90950"
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>domain</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#domain">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Domain name values with extension
 >
 > Following RFC 1034, RFC 1123 and WHATWG URL Standard
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.domain()`
 - `fc.domain({size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.domain();
+fc.domain()
 // Examples of generated values: "j6ib52zarmf.dec", "00.wk", "35b10n-w.7xe2.xai", "0.h6a4sfyde.ju", "c.cb"…
 
-fc.domain({ size: '-1' });
+fc.domain({size: '-1'})
 // Note: Generate smaller domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
 // Examples of generated values: "ec.ob", "1nl.0it.oxt", "za.kjs", "3tu.d.bl", "rn.d0.kfx"…
 
-fc.domain({ size: '+1' });
+fc.domain({size: '+1'})
 // Note: Generate larger domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'medium'
 // Examples of generated values:
 // • "e3lmceoiktylhwob3i097i07lbqe.g.ew2a5jzl4dm7y4.fx8-cc9.a8mp77soh3743x58n3bx85s-a8bkfnda8-bbnke3gjrr7ui57nqt.ez-ns69b5k6g8ugc1t7zvwsf0dzq1wywm7okkc1w6pt2.w.b5q7l242x-fcosehdxghwp1js5oykwo14t-7y5x.7gftao9au5u-ynym-yq027d9kc.iyxwwefae"
@@ -1332,46 +1297,46 @@ fc.domain({ size: '+1' });
 // • "rq42wt9mq67kg30r5iz55yh9.5g4zvgp29o.mrgob7gvx4r85rpwosrgr1dpw6dlvn6--pneig1.7co96i0-5d0zaw7thxb30jt9eyq6c67v7o0tnz4xhc8twkiyy46h.7tpqwpzihjluq4h4d0hwtcikxiyackva3xkk78.98b2cnk7yr-1kdxkq4vlikoly658f6d1j8ddrzo95.q739viaqbdk2u3etgcclbe4u7-kqnoe2i.ire"
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>webAuthority</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webauthority">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Web authority values
 >
 > Following RFC 3986
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.webAuthority()`
 - `fc.webAuthority({withIPv4?, withIPv4Extended?, withIPv6?, withPort?, withUserInfo?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
-- `withIPv4?` — default: `false` — \_enable ip v4
+- `withIPv4?` — default: `false` — _enable ip v4
 - `withIPv4Extended?` — default: `false` — _enable ip v4 extended_
 - `withIPv6?` — default: `false` — _enable ip v6_
 - `withPort?` — default: `false` — _enable port_
 - `withUserInfo?` — default: `false` — _enable user info_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+
+*&#8195;Usages*
 
 ```js
-fc.webAuthority();
+fc.webAuthority()
 // Examples of generated values: "qj5h7-5.d6je1ud1x.ay", "5w6.mn", "qtabs87.4j6.zce", "vyd-xdhj.vu94x4.nl", "5sr6j0ayq2et.a.eur"…
 
 fc.webAuthority({
   withIPv4: true,
-});
+})
 // Examples of generated values: "227.252.4.231", "6.1.143.3", "nlefeaoklaq7.ijm", "168w.uvr", "6.3.255.158"…
 
 fc.webAuthority({
   withIPv4Extended: true,
-});
+})
 // Examples of generated values: "4dfi9d-5.qe5.odw", "0xa", "0xefebe5f3", "6abqd.nf", "0345.077777767"…
 
 fc.webAuthority({
@@ -1379,106 +1344,102 @@ fc.webAuthority({
   withIPv4Extended: true,
   withIPv6: true,
   withPort: true,
-});
+})
 // Examples of generated values: "0352.0x89bbdd:3", "154.0372.0xbd3d", "[4522:29:b:fc75:83e:964c:108::]:12037", "250.102.83.229:13", "025:13850"…
 ```
-
 </details>
 
 <details>
 <summary><b>webFragments</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webfragments">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Fragments to build an URI
 >
 > Fragment is the optional part right after the # in an URI
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.webFragments()`
 - `fc.webFragments({size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.webFragments();
+fc.webFragments()
 // Examples of generated values: "hip", "wc", "K/z=)RtC", "E7y", "%F0%B5%81%85:w,+"…
 ```
-
 </details>
 
 <details>
 <summary><b>webQueryParameters</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webqueryparameters">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Query parameters to build an URI
 >
 > Query parameters part is the optional part right after the ? in an URI
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.webQueryParameters()`
 - `fc.webQueryParameters({size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.webQueryParameters();
+fc.webQueryParameters()
 // Examples of generated values: "52mi", "L3ns-", "X%F3%AB%BA%8AksM", "bSO", "@"…
 ```
-
 </details>
 
 <details>
 <summary><b>webSegment</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#websegment">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Web URL path segment
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.webSegment()`
 - `fc.webSegment({size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.webSegment();
+fc.webSegment()
 // Examples of generated values: "==:", "097", "6", "BgyH", "vn0qo*"…
 ```
-
 </details>
 
 <details>
 <summary><b>webUrl</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#weburl">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Web URL values
 >
 > Following the specs specified by RFC 3986 and WHATWG URL Standard
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.webUrl()`
 - `fc.webUrl({authoritySettings?, validSchemes?, withFragments?, withQueryParameters?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `authoritySettings?` — default: `{}` — _[constraints](https://dubzzz.github.io/fast-check/interfaces/webauthorityconstraints.html) on the web authority_
 - `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
@@ -1486,21 +1447,21 @@ _&#8195;with:_
 - `withQueryParameters?` — default: `false` — _enable query parameters_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.webUrl();
+fc.webUrl()
 // Examples of generated values: "https://lo.vu/@", "https://4.kcl", "https://710n-lu1.s.zl", "https://a9c.nus/.q%F0%9B%A6%A1rkoLYs", "https://6uzbj4.dp/;"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
-});
+})
 // Examples of generated values: "ftps://ld0fa.1k.ve/3Ne", "ftps://5ana.x02y.sv", "ftp://f.d.nl/1", "ftp://d3mhpf.xtb", "ftps://4.cn"…
 
 fc.webUrl({
   withFragments: true,
   withQueryParameters: true,
-});
+})
 // Examples of generated values:
 // • "https://6teotdbx.wnc?c=#%F4%8F%BF%BBa%E4%B0%8E"
 // • "http://ntgafkj31t.8x7x09flrvhg.yd?,$#FVSy"
@@ -1509,35 +1470,34 @@ fc.webUrl({
 // • "https://qc.ieele4.fcg?P%F1%81%9C%A5N+0DN%F3%97%8C%85fX"
 // • …
 
-fc.webUrl({ size: '-1' });
+fc.webUrl({size: '-1'})
 // Note: Generate smaller urls compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
 // Examples of generated values: "http://d.ue", "https://h.lp/%F3%A0%B4%9E", "http://64.e.tod/%F0%9F%AA%B3", "https://b.uq.xl", "https://g26.ben"…
 ```
-
 </details>
 
 <details>
 <summary><b>emailAddress</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#emailaddress">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Email adresses
 >
 > Following RFC 1123 and RFC 5322
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.emailAddress()`
 - `fc.emailAddress({size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.emailAddress();
+fc.emailAddress()
 // Examples of generated values:
 // • "e0f7||'5tqsh61k_opz+r*%^'k&wscdddsv{'*=f{1e2@azcddep.brd"
 // • "8d{cdrddb5a^}dc|g}#bacd0bfn0bdfoa}fbslf7f''#xe2-_aj?.&*9bi6-@du5h8ii.sf5vf2yd9khk.ub"
@@ -1546,45 +1506,47 @@ fc.emailAddress();
 // • "z*3y`3kteb}4~6|&&xepg{@7t-ze.m.iat"
 // • …
 
-fc.emailAddress({ size: '-1' });
+fc.emailAddress({size: '-1'})
 // Note: Generate smaller email addresses compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
 // Examples of generated values: "hn@s1v.i9.ws", "%@xo.s.iaw", "n@vq.mz", "kg.kg@5a.cz", "_.7@nr.i.hx"…
 ```
-
 </details>
 
 <details>
 <summary><b>mixedCase</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#mixedcase">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Switch the case of characters generated by an underlying arbitrary
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.mixedCase(stringArb)`
 - `fc.mixedCase(stringArb, { toggleCase?, untoggleAll? })`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `stringArb` — _arbitrary producing random strings_
 - `toggleCase?` — default: _try `toUpperCase` on the received code-point, if no effect try `toLowerCase`_ — _custom toggle case function that will be called on some of the code-points to toggle the character_
 - `untoggleAll?` — default: `undefined` — _transform a string containing possibly toggled items to its untoggled version, when provided it makes it possible to shrink user-definable values, otherwise user-definable values will not be shrinkable BUT values generated by the framework will be shrinkable_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.mixedCase(fc.hexaString());
+fc.mixedCase(fc.hexaString())
 // Examples of generated values: "", "7E", "Dfc", "0De05933ef", "c"…
 
-fc.mixedCase(fc.constant('hello world'));
+fc.mixedCase(fc.constant('hello world'))
 // Examples of generated values: "HELlo WoRlD", "HeLLo WOrLD", "heLlo WoRLd", "hEllo wORLd", "hELLO woRLd"…
 
-fc.mixedCase(fc.constant('hello world'), {
-  toggleCase: (rawChar) => `UP(${rawChar})`,
-  // untoggleAll is optional, we use it in this example to show how to use all the options together
-  untoggleAll: (toggledString) => toggleString.replace(/UP\((.)\)/g, '$1'),
-});
+fc.mixedCase(
+  fc.constant('hello world'),
+  {
+    toggleCase: (rawChar) => `UP(${rawChar})`,
+    // untoggleAll is optional, we use it in this example to show how to use all the options together
+    untoggleAll: (toggledString) => toggleString.replace(/UP\((.)\)/g, '$1'),
+  }
+)
 // Examples of generated values:
 // • "UP(h)eUP(l)UP(l)o woUP(r)lUP(d)"
 // • "UP(h)elUP(l)UP(o) world"
@@ -1593,12 +1555,14 @@ fc.mixedCase(fc.constant('hello world'), {
 // • "UP(h)UP(e)lloUP( )wUP(o)rUP(l)UP(d)"
 // • …
 
-fc.mixedCase(fc.constant('🐱🐢🐱🐢🐱🐢'), {
-  toggleCase: (rawChar) => (rawChar === '🐱' ? '🐯' : '🐇'),
-});
+fc.mixedCase(
+  fc.constant('🐱🐢🐱🐢🐱🐢'),
+  {
+    toggleCase: (rawChar) => rawChar === '🐱' ? '🐯' : '🐇',
+  }
+)
 // Examples of generated values: "🐯🐢🐯🐢🐯🐢", "🐯🐇🐯🐇🐯🐢", "🐯🐢🐯🐇🐯🐢", "🐱🐇🐯🐇🐯🐢", "🐱🐇🐯🐇🐯🐇"…
 ```
-
 </details>
 
 ## Date
@@ -1606,26 +1570,26 @@ fc.mixedCase(fc.constant('🐱🐢🐱🐢🐱🐢'), {
 <details>
 <summary><b>date</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#date">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Date values
 >
 > Generate any possible dates in the specified range. Both the lower bound and upper bound of the range are included in the set of possible values.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.date()`
 - `fc.date({ min?, max? })`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `new Date(-8640000000000000)` — _lower bound of the range (included)_
 - `max?` — default: `new Date(8640000000000000)` — _upper bound of the range (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.date();
+fc.date()
 // Examples of generated values:
 // • new Date("1969-12-31T23:59:59.993Z")
 // • new Date("1970-01-01T00:00:00.017Z")
@@ -1634,7 +1598,7 @@ fc.date();
 // • new Date("-091653-05-18T10:16:24.518Z")
 // • …
 
-fc.date({ min: new Date('2000-01-01T00:00:00.000Z') });
+fc.date({ min: new Date("2000-01-01T00:00:00.000Z") })
 // Examples of generated values:
 // • new Date("+275760-09-12T23:59:59.959Z")
 // • new Date("+275760-09-12T23:59:59.949Z")
@@ -1643,7 +1607,7 @@ fc.date({ min: new Date('2000-01-01T00:00:00.000Z') });
 // • new Date("+258781-01-23T17:20:22.591Z")
 // • …
 
-fc.date({ max: new Date('2000-01-01T00:00:00.000Z') });
+fc.date({ max: new Date("2000-01-01T00:00:00.000Z") })
 // Examples of generated values:
 // • new Date("-271821-04-20T00:00:00.011Z")
 // • new Date("-271821-04-20T00:00:00.001Z")
@@ -1652,7 +1616,7 @@ fc.date({ max: new Date('2000-01-01T00:00:00.000Z') });
 // • new Date("-135742-01-31T09:23:17.695Z")
 // • …
 
-fc.date({ min: new Date('2000-01-01T00:00:00.000Z'), max: new Date('2000-12-31T23:59:59.999Z') });
+fc.date({ min: new Date("2000-01-01T00:00:00.000Z"), max: new Date("2000-12-31T23:59:59.999Z") })
 // Examples of generated values:
 // • new Date("2000-06-25T11:59:12.750Z")
 // • new Date("2000-12-31T23:59:59.993Z")
@@ -1661,7 +1625,6 @@ fc.date({ min: new Date('2000-01-01T00:00:00.000Z'), max: new Date('2000-12-31T2
 // • new Date("2000-07-08T09:22:33.042Z")
 // • …
 ```
-
 </details>
 
 ## Typed Array
@@ -1669,16 +1632,16 @@ fc.date({ min: new Date('2000-01-01T00:00:00.000Z'), max: new Date('2000-12-31T2
 <details>
 <summary><b>int8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int8array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Int8Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.int8Array()`
 - `fc.int8Array({min?, max?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `-128` — _minimal value (included)_
 - `max?` — default: `127` — _maximal value (included)_
@@ -1686,10 +1649,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.int8Array();
+fc.int8Array()
 // Examples of generated values:
 // • Int8Array.from([5,-2,49,5,-6,-74,-48,-2,122,4])
 // • Int8Array.from([85,-55])
@@ -1698,7 +1661,7 @@ fc.int8Array();
 // • Int8Array.from([-1,2])
 // • …
 
-fc.int8Array({ min: 0, minLength: 1 });
+fc.int8Array({min: 0, minLength: 1})
 // Examples of generated values:
 // • Int8Array.from([99,92,51,12,0,31])
 // • Int8Array.from([77,6,12,68,33,85,15,88,115,115,111])
@@ -1707,22 +1670,21 @@ fc.int8Array({ min: 0, minLength: 1 });
 // • Int8Array.from([10,6,116,107,75,56,74,79,123])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>uint8Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Uint8Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.uint8Array()`
 - `fc.uint8Array({min?, max?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
@@ -1730,10 +1692,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.uint8Array();
+fc.uint8Array()
 // Examples of generated values:
 // • Uint8Array.from([3,248,4])
 // • Uint8Array.from([203,79,114])
@@ -1742,7 +1704,7 @@ fc.uint8Array();
 // • Uint8Array.from([0,2,254,2,69,254])
 // • …
 
-fc.uint8Array({ max: 42, minLength: 1 });
+fc.uint8Array({max: 42, minLength: 1})
 // Examples of generated values:
 // • Uint8Array.from([16,1])
 // • Uint8Array.from([12,28,2,26,4,38,3])
@@ -1751,22 +1713,21 @@ fc.uint8Array({ max: 42, minLength: 1 });
 // • Uint8Array.from([4,12])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>uint8ClampedArray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint8clampedarray">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Uint8ClampedArray_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.uint8ClampedArray()`
 - `fc.uint8ClampedArray({min?, max?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
@@ -1774,10 +1735,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.uint8ClampedArray();
+fc.uint8ClampedArray()
 // Examples of generated values:
 // • Uint8ClampedArray.from([150,60,2,11,94])
 // • Uint8ClampedArray.from([165,90,12,252])
@@ -1786,7 +1747,7 @@ fc.uint8ClampedArray();
 // • Uint8ClampedArray.from([52,4,215,253,7,4,4,246,4,2])
 // • …
 
-fc.uint8ClampedArray({ max: 42, minLength: 1 });
+fc.uint8ClampedArray({max: 42, minLength: 1})
 // Examples of generated values:
 // • Uint8ClampedArray.from([40,11,6,19,35,37,25])
 // • Uint8ClampedArray.from([34,22,2,4,39,27,19,37,25])
@@ -1795,22 +1756,21 @@ fc.uint8ClampedArray({ max: 42, minLength: 1 });
 // • Uint8ClampedArray.from([17,35,21])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>int16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int16array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Int16Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.int16Array()`
 - `fc.int16Array({min?, max?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `-32768` — _minimal value (included)_
 - `max?` — default: `32767` — _maximal value (included)_
@@ -1818,10 +1778,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.int16Array();
+fc.int16Array()
 // Examples of generated values:
 // • Int16Array.from([32761,-15,19460])
 // • Int16Array.from([-7989,4687,24946])
@@ -1830,7 +1790,7 @@ fc.int16Array();
 // • Int16Array.from([1,7,-32762,-11,21829,-32762])
 // • …
 
-fc.int16Array({ min: 0, minLength: 1 });
+fc.int16Array({min: 0, minLength: 1})
 // Examples of generated values:
 // • Int16Array.from([8,12886,11,10845,32410])
 // • Int16Array.from([24045,28817])
@@ -1839,22 +1799,21 @@ fc.int16Array({ min: 0, minLength: 1 });
 // • Int16Array.from([11936])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>uint16Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint16array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Uint16Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.uint16Array()`
 - `fc.uint16Array({min?, max?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `65535` — _maximal value (included)_
@@ -1862,10 +1821,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.uint16Array();
+fc.uint16Array()
 // Examples of generated values:
 // • Uint16Array.from([40338,3413,32529,37241,31799,27569])
 // • Uint16Array.from([])
@@ -1874,7 +1833,7 @@ fc.uint16Array();
 // • Uint16Array.from([26963,18761,50835,51189,22592,18891,8353,62454,6243])
 // • …
 
-fc.uint16Array({ max: 42, minLength: 1 });
+fc.uint16Array({max: 42, minLength: 1})
 // Examples of generated values:
 // • Uint16Array.from([27,8,29,3,39,34,13,14])
 // • Uint16Array.from([3,37,4,3,4,16,40,20,0,21])
@@ -1883,22 +1842,21 @@ fc.uint16Array({ max: 42, minLength: 1 });
 // • Uint16Array.from([19,5,40])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>int32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#int32array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Int32Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.int32Array()`
 - `fc.int32Array({min?, max?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `-0x80000000` — _minimal value (included)_
 - `max?` — default: `0x7fffffff` — _maximal value (included)_
@@ -1906,10 +1864,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.int32Array();
+fc.int32Array()
 // Examples of generated values:
 // • Int32Array.from([2147483619,-7,841665540])
 // • Int32Array.from([-754622261,809800271,-1634737806])
@@ -1918,7 +1876,7 @@ fc.int32Array();
 // • Int32Array.from([1,29,-2147483626,-17,-1705126587,-2147483642])
 // • …
 
-fc.int32Array({ min: 0, minLength: 1 });
+fc.int32Array({min: 0, minLength: 1})
 // Examples of generated values:
 // • Int32Array.from([30,1812443734,26,662645341,620592794])
 // • Int32Array.from([536894957,149319825])
@@ -1927,22 +1885,21 @@ fc.int32Array({ min: 0, minLength: 1 });
 // • Int32Array.from([946187936])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>uint32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uint32array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Uint32Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.uint32Array()`
 - `fc.uint32Array({min?, max?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `0xffffffff` — _maximal value (included)_
@@ -1950,10 +1907,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.uint32Array();
+fc.uint32Array()
 // Examples of generated values:
 // • Uint32Array.from([2729221522,2511211861,3996745489,4234383737,1407876151,483945393])
 // • Uint32Array.from([])
@@ -1962,7 +1919,7 @@ fc.uint32Array();
 // • Uint32Array.from([995846483,1424836937,374064787,802080757,2308659264,165366219,2215846049,310244342,1942755427])
 // • …
 
-fc.uint32Array({ max: 42, minLength: 1 });
+fc.uint32Array({max: 42, minLength: 1})
 // Examples of generated values:
 // • Uint32Array.from([27,8,29,3,39,34,13,14])
 // • Uint32Array.from([3,37,4,3,4,16,40,20,0,21])
@@ -1971,22 +1928,21 @@ fc.uint32Array({ max: 42, minLength: 1 });
 // • Uint32Array.from([19,5,40])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>float32Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float32array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Float32Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.float32Array()`
 - `fc.float32Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `-∞` and `-3.4028234663852886e+38` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
 - `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
@@ -1996,10 +1952,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.float32Array();
+fc.float32Array()
 // Examples of generated values:
 // • Float32Array.from([2.838487790382467e+22,1.1814616040137283e-28,-1.2447510050843058e-39])
 // • Float32Array.from([-7.006492321624085e-45,-9.633964538574219])
@@ -2008,7 +1964,7 @@ fc.float32Array();
 // • Float32Array.from([-267187306496,-4202965385667936000,2.647066979020766e-20,66189066240,0.00006144169310573488])
 // • …
 
-fc.float32Array({ minLength: 1 });
+fc.float32Array({minLength: 1})
 // Examples of generated values:
 // • Float32Array.from([-503561310315741200])
 // • Float32Array.from([-3.4028220466166163e+38,-1.961817850054744e-44])
@@ -2017,22 +1973,21 @@ fc.float32Array({ minLength: 1 });
 // • Float32Array.from([-5.605193857299268e-45,3.4028181929587916e+38,2.5736176825164795e-23])
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>float64Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#float64array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _Float64Array_
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.float64Array()`
 - `fc.float64Array({min?, max?, noDefaultInfinity?, noNaN?, minLength?, maxLength?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `min?` — default: `-∞` and `-Number.MAX_VALUE` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
 - `max?` — default: `+∞` and `Number.MAX_VALUE` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
@@ -2042,10 +1997,10 @@ _&#8195;with:_
 - `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.float64Array();
+fc.float64Array()
 // Examples of generated values:
 // • Float64Array.from([1.616891650937421e+175,-2.6304053149712647e-306,-4.243132822801271e-219])
 // • Float64Array.from([2.5e-323,-54826743.81511721])
@@ -2054,7 +2009,7 @@ fc.float64Array();
 // • Float64Array.from([-2.5297510012561425e+91,1.4452619284617389e-161,1.238133303287883e-38,-1.4441430640880058e+187,-9.20327913781559e+267])
 // • …
 
-fc.float64Array({ minLength: 1 });
+fc.float64Array({minLength: 1})
 // Examples of generated values:
 // • Float64Array.from([-3.0129659915228672e+141])
 // • Float64Array.from([-1.7976931348623157e+308,1.14e-322])
@@ -2063,7 +2018,6 @@ fc.float64Array({ minLength: 1 });
 // • Float64Array.from([-8.4e-323,1.7976931348623131e+308,1.1447746735519345e-185])
 // • …
 ```
-
 </details>
 
 ## Combinators
@@ -2073,80 +2027,78 @@ fc.float64Array({ minLength: 1 });
 <details>
 <summary><b>constant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#constant">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Always produce the same value
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.constant(value)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `value` — _value that will be produced by the arbitrary_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.constant(1);
+fc.constant(1)
 // Examples of generated values: 1…
 
-fc.constant({});
+fc.constant({})
 // Examples of generated values: {}…
 ```
-
 </details>
 
 <details>
 <summary><b>constantFrom</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#constantfrom">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > One of the values specified as argument
 >
 > Randomly chooses among the provided values. It considers the first value as the default value so that in case of failure it will shrink to it. It expects a minimum of one value and throws whether it receives no value as parameters. It can easily be used on arrays with `fc.constantFrom(...myArray)`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.constantFrom(...values)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `...values` — _all the values that could possibly be generated by the arbitrary_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.constantFrom(1, 2, 3);
+fc.constantFrom(1, 2, 3)
 // Examples of generated values: 1, 3, 2…
 
-fc.constantFrom(1, 'string', {});
+fc.constantFrom(1, 'string', {})
 // Examples of generated values: "string", {}, 1…
 ```
-
 </details>
 
 <details>
 <summary><b>clonedConstant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#clonedconstant">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Always produce the same value (as `fc.constant`)
 >
 > If it exists, the method `[fc.cloneMethod]` will be cloned to clone the instance so that it will be unique for each run
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - _`fc.clonedConstant(value)`_ — _deprecated since v2.15.0, prefer `fc.constant`_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `value` — _value that will be produced by the arbitrary_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.clonedConstant(1);
+fc.clonedConstant(1)
 // Examples of generated values: 1…
 
 // Setup helpers:
@@ -2155,7 +2107,7 @@ function buildCloneable(objectInstance) {
   // But we will get another instance of objectInstance for each run
   // ie. objectInstanceRunA !== objectInstanceRunB while having isEqual(objectInstanceRunA, objectInstanceRunB)
   const withCloneMethod = () => {
-    const clone = { ...objectInstance };
+    const clone = {...objectInstance};
     Object.defineProperty(objectInstance, fc.cloneMethod, {
       value: withCloneMethod,
       enumerable: false,
@@ -2165,26 +2117,25 @@ function buildCloneable(objectInstance) {
   return withCloneMethod();
 }
 // Use the arbitrary:
-fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }));
+fc.clonedConstant(buildCloneable({ keyA: 1, keyB: 2 }))
 // Examples of generated values: {"keyA":1,"keyB":2}…
 ```
-
 </details>
 
 <details>
 <summary><b>option</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#option">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Randomly chooses between producing a value using the underlying arbitrary or returning nil
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.option(arb)`
 - `fc.option(arb, {freq?, nil?, depthFactor?, maxDepth?, depthIdentifier?})`
 - _`fc.option(arb, freq)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary that will be called to generate normal values_
 - `freq?` — default: `5` — _probability to build the nil value is of 1 / freq_
@@ -2193,42 +2144,41 @@ _&#8195;with:_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, only nil could be produced_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.option(fc.nat());
+fc.option(fc.nat())
 // Examples of generated values: null, 773390791, 2147483625, 25, 2039519833…
 
-fc.option(fc.nat(), { freq: 2 });
+fc.option(fc.nat(), { freq: 2 })
 // Examples of generated values: 214938453, 2147483645, 2130844098, 748471782, null…
 
-fc.option(fc.nat(), { freq: 2, nil: Number.NaN });
+fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 // Examples of generated values: 2147483617, Number.NaN, 259062763, 13, 23…
 
-fc.option(fc.string(), { nil: undefined });
+fc.option(fc.string(), { nil: undefined })
 // Examples of generated values: "^_|\"T.5rB", "&&", "OqA3D$", undefined, "}"…
 
 // fc.option fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
 ```
-
 </details>
 
 <details>
 <summary><b>oneof</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#oneof">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate one value based on one of the passed arbitraries
 >
 > Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.oneof(...arbitraries)`
 - `fc.oneof({withCrossShrink?, maxDepth?, depthIdentifier?}, ...arbitraries)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `...arbitraries` — _arbitraries that could be used to generate a value_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary. It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
@@ -2236,25 +2186,24 @@ _&#8195;with:_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.oneof(fc.char(), fc.boolean());
+fc.oneof(fc.char(), fc.boolean())
 // Examples of generated values: "&", false, true, "@", "2"…
 
-fc.oneof(fc.char(), fc.boolean(), fc.nat());
+fc.oneof(fc.char(), fc.boolean(), fc.nat())
 // Examples of generated values: true, 234471686, 485911805, false, "\\"…
 
 // fc.oneof fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
 ```
-
 </details>
 
 <details>
 <summary><b>frequency</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#frequency">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate one value based on one of the passed arbitraries
 >
@@ -2262,12 +2211,12 @@ _&#8195;Description_
 >
 > **Warning:** In the upcomping major releases of fast-check the first arbitrary specified on `frequency` will have a privileged position. Constraints like `withCrossShrink` tend to favor it over others and will probably be enabled by default.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.frequency(...{ arbitrary, weight })`
 - `fc.frequency({withCrossShrink?, maxDepth?, depthIdentifier?}, ...{ arbitrary, weight })`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary (if and only if its weight is strictly greater than 0). It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
@@ -2275,17 +2224,20 @@ _&#8195;with:_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value even if its weight is zero_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.frequency({ arbitrary: fc.char(), weight: 2 }, { arbitrary: fc.boolean(), weight: 1 });
+fc.frequency(
+  { arbitrary: fc.char(), weight: 2 },
+  { arbitrary: fc.boolean(), weight: 1 }
+)
 // Examples of generated values: true, "&", "8", false, "["…
 
 fc.frequency(
   { withCrossShrink: true },
   { arbitrary: fc.boolean(), weight: 2 },
   { arbitrary: fc.array(fc.boolean()), weight: 1 }
-);
+)
 // Note: In case of failure on an array of boolean values the shrinker will first try to check
 // if a failure can also be triggered with a simple boolean (the first arbitrary specified)
 // if not it will carry on the classical shrinking strategy defined for arrays of boolean.
@@ -2294,63 +2246,61 @@ fc.frequency(
 // fc.frequency fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
 ```
-
 </details>
 
 <details>
 <summary><b>mapToConstant</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#maptoconstant">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Map indexes to values
 >
 > Generates non-contiguous ranges of values by mapping integer values to constant.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.mapToConstant(...{ num, build })`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `...{ num, build }` — _describe how to map integer values to their final values. For each entry, the entry defines `num` corresponding to the number of integer values it covers and `build`, a method that will produce a value given an integer in the range `0` (included) to `num - 1` (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
 fc.mapToConstant(
-  { num: 26, build: (v) => String.fromCharCode(v + 0x61) },
-  { num: 10, build: (v) => String.fromCharCode(v + 0x30) }
-);
+  { num: 26, build: v => String.fromCharCode(v + 0x61) },
+  { num: 10, build: v => String.fromCharCode(v + 0x30) },
+)
 // Examples of generated values: "9", "4", "b", "d", "7"…
 ```
-
 </details>
 
 <details>
 <summary><b>clone</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#clone">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Multiple identical values (they might not equal in terms of `===` or `==`)
 >
 > Generate tuple containing multiple instances of the same value - values are independent from each others.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.clone(arb, numValues)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `numValues` — _number of clones (including itself)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.clone(fc.nat(), 2);
+fc.clone(fc.nat(), 2)
 // Examples of generated values: [25,25], [2147483629,2147483629], [13,13], [815456380,815456380], [2147483643,2147483643]…
 
-fc.clone(fc.nat(), 3);
+fc.clone(fc.nat(), 3)
 // Examples of generated values:
 // • [1395148595,1395148595,1395148595]
 // • [7,7,7]
@@ -2359,34 +2309,33 @@ fc.clone(fc.nat(), 3);
 // • [2147483640,2147483640,2147483640]
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>dedup</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dedup">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Multiple identical values (they might not equal in terms of `===` or `==`)
 >
 > Generate tuple containing multiple instances of the same value - values are independent from each others.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - _`fc.dedup(arb, numValues)`_ — _deprecated, prefer `fc.clone` instead_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `numValues` — _number of clones (including itself)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.dedup(fc.nat(), 2);
+fc.dedup(fc.nat(), 2)
 // Examples of generated values: [25,25], [2147483629,2147483629], [13,13], [815456380,815456380], [2147483643,2147483643]…
 
-fc.dedup(fc.nat(), 3);
+fc.dedup(fc.nat(), 3)
 // Examples of generated values:
 // • [1395148595,1395148595,1395148595]
 // • [7,7,7]
@@ -2395,7 +2344,6 @@ fc.dedup(fc.nat(), 3);
 // • [2147483640,2147483640,2147483640]
 // • …
 ```
-
 </details>
 
 ### Array
@@ -2403,74 +2351,72 @@ fc.dedup(fc.nat(), 3);
 <details>
 <summary><b>tuple</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#tuple">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _tuples_ - or more precisely arrays - by aggregating the values generated by its underlying arbitraries.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.tuple(...arbitraries)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `...arbitraries` — _arbitraries that should be used to generate the values of our tuple_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.tuple(fc.nat());
+fc.tuple(fc.nat())
 // Examples of generated values: [2147483621], [28], [2147483641], [242661188], [263784372]…
 
-fc.tuple(fc.nat(), fc.string());
+fc.tuple(fc.nat(), fc.string())
 // Examples of generated values: [2147483619,"6*xn_VkQ"], [12,"!Z}%Y"], [468194571,"*_J"], [14,"2&0"], [5,"&S"]…
 ```
-
 </details>
 
 <details>
 <summary><b>genericTuple</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#generictuple">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate _tuples_ - or more precisely arrays - by aggregating the values generated by its underlying arbitraries.
 >
 > Note: This arbitrary is mostly there for typings related needs. Most of the time, `fc.tuple` will do the job.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.genericTuple(arbitraries)` — _deprecated since v2.14.0_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arbitraries` — _arbitraries that should be used to generate the values of our tuple_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.genericTuple([fc.nat()]);
+fc.genericTuple([fc.nat()])
 // Examples of generated values: [1322560433], [472890492], [1878169203], [1642558158], [343133589]…
 
-fc.genericTuple([fc.nat(), fc.string()]);
+fc.genericTuple([fc.nat(), fc.string()])
 // Examples of generated values: [498298066,"xx]ZF."], [1035210183,"x{Y"], [2147483646,"kAw19&5T"], [2147483640,"ZY{&DB+5-Y"], [21,"RN6Cb1a:"]…
 ```
-
 </details>
 
 <details>
 <summary><b>array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#array">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Array of random length containing values generated by `arb`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.array(arb)`
 - `fc.array(arb, {minLength?, maxLength?, size?, depthIdentifier?})`
 - _`fc.array(arb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.array(arb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
@@ -2478,10 +2424,10 @@ _&#8195;with:_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.array(fc.nat());
+fc.array(fc.nat())
 // Examples of generated values:
 // • []
 // • [1044253015,881466391,1911917064,3,2147483643,11,1097098198,2147483640,292366054,2147483642]
@@ -2490,7 +2436,7 @@ fc.array(fc.nat());
 // • [505677510,559592731,1931700591,729662778,1771367027]
 // • …
 
-fc.array(fc.nat(), { minLength: 3 });
+fc.array(fc.nat(), {minLength: 3})
 // Examples of generated values:
 // • [758331231,398217079,312666176,53143294,521680871,1862921771,1710362589,983796605,1814936084]
 // • [1097867707,1901779976,13,49685271,2147483645,973337534,1612556434,2147483620]
@@ -2499,10 +2445,10 @@ fc.array(fc.nat(), { minLength: 3 });
 // • [2147483640,4,12]
 // • …
 
-fc.array(fc.nat(), { maxLength: 3 });
+fc.array(fc.nat(), {maxLength: 3})
 // Examples of generated values: [], [1097867707], [15,156619197,2147483622], [1360904164,1953451342,1651990695], [1771169783]…
 
-fc.array(fc.nat(), { minLength: 5, maxLength: 7 });
+fc.array(fc.nat(), {minLength: 5, maxLength: 7})
 // Examples of generated values:
 // • [4,26,725992281,7,1186699848,180356277]
 // • [1503239805,742382696,478977019,1206184056,992934701,1081616342]
@@ -2511,7 +2457,7 @@ fc.array(fc.nat(), { minLength: 5, maxLength: 7 });
 // • [19,3,15,16,117940422,25]
 // • …
 
-fc.array(fc.nat(), { maxLength: 50, size: 'max' });
+fc.array(fc.nat(), {maxLength: 50, size: 'max'})
 // Note: By specifying size to "max", we enforce the fact that we want generated values to have between
 // 0 and 50 items. In other words, we want to use the full range of specified lengths.
 // Note: If not defined, by default, the size is "=" except if there is a maxLength provided and the
@@ -2525,7 +2471,7 @@ fc.array(fc.nat(), { maxLength: 50, size: 'max' });
 // • [19,3,15]
 // • …
 
-fc.array(fc.nat(), { maxLength: 100000, size: '+1' });
+fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
 // Note: From a specification point of view, the algorithm is supposed to handle up to 100,000 items.
 // But, even if I want to test the algorithm on large entries I don't want to spend hours in it (it may
 // not scale linearly...). By setting size to "+1" I tell fast-check that I want values larger than usual
@@ -2552,7 +2498,7 @@ fc.letrec((tie) => ({
       fc.array(tie('self'), { depthIdentifier: 'id:self' })
     ),
   }),
-})).self;
+})).self
 // Note: We define a recursive tree structure with children defaulting to the empty array with an higher probability
 // as we go deeper (thanks to `fc.oneof`) and also as we tend to generate lots of items (thanks to `depthIdentifier`
 // passed to `fc.array` and being the same value as the one passed to `fc.oneof`).
@@ -2566,13 +2512,12 @@ fc.letrec((tie) => ({
 // • {"value":15,"children":[{"value":1009275606,"children":[]},{"value":2147483630,"children":[{"value":1715614519,"children":[]}]}]}
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>uniqueArray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uniqueArray">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Array of random length containing unique values generated by `arb`
 >
@@ -2584,12 +2529,12 @@ _&#8195;Description_
 > For performance reasons, we highly discourage the use of a fully custom `comparator` and recommend to rely on a custom `selector` function whenever possible.
 > Such custom `comparator` — outside of provided ones — cannot be properly optimized and thus includes a potentially huge performance penalty mostly impacted large arrays.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.uniqueArray(arb)`
 - `fc.uniqueArray(arb, {minLength?, maxLength?, selector?, comparator?, size?, depthIdentifier?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
@@ -2603,19 +2548,19 @@ _&#8195;with:_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.uniqueArray(fc.nat(99));
+fc.uniqueArray(fc.nat(99))
 // Examples of generated values: [10,9,90,39,48,7,55,69], [22,9], [39,5,73,64,83,55,2,86,16,12], [43,31,79,16], [21,88,36,31,94,12,9,65,97]…
 
 fc.uniqueArray(
   fc.record({
     id: fc.nat(),
-    name: fc.constantFrom('Anna', 'Paul'),
+    name: fc.constantFrom("Anna", "Paul"),
   }),
-  { selector: (entry) => entry.id }
-);
+  { selector: entry => entry.id }
+)
 // Note: Resulting arrays will never contain two entries having the same id
 // Examples of generated values:
 // • [{"id":1882378367,"name":"Paul"},{"id":45488570,"name":"Paul"},{"id":2147483645,"name":"Anna"},{"id":1221182843,"name":"Paul"}]
@@ -2625,17 +2570,23 @@ fc.uniqueArray(
 // • [{"id":15,"name":"Anna"},{"id":5,"name":"Paul"},{"id":2147483644,"name":"Anna"}]
 // • …
 
-fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN));
+fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN))
 // Note: By default `uniqueArray` is using `SameValue` algorithm
 // so 0 is different from -0 and NaN equals NaN...
 // Examples of generated values: [0], [Number.NaN,0,1,-1,-0], [1,-0,0,Number.NaN,-1], [Number.NaN,-0,-1,1,0], [1,0,Number.NaN]…
 
-fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN), { comparator: 'SameValueZero' });
+fc.uniqueArray(
+  fc.constantFrom(-1, -0, 0, 1, Number.NaN),
+  {comparator: 'SameValueZero'}
+)
 // Note: ...but it could be overriden by `SameValueZero`
 // so 0 equals -0 and NaN is equals NaN...
 // Examples of generated values: [Number.NaN,0,-1,1], [], [-1,-0,Number.NaN,1], [-0,-1], [Number.NaN,0,1]…
 
-fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN), { comparator: 'IsStrictlyEqual' });
+fc.uniqueArray(
+  fc.constantFrom(-1, -0, 0, 1, Number.NaN),
+  {comparator: 'IsStrictlyEqual'}
+)
 // Note: ...or it could be overriden by `IsStrictlyEqual`
 // so 0 equals -0 and NaN is different from NaN...
 // Examples of generated values:
@@ -2646,7 +2597,10 @@ fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN), { comparator: 'IsStric
 // • [-0,1,-1,Number.NaN,Number.NaN,Number.NaN,Number.NaN,Number.NaN,Number.NaN,Number.NaN]
 // • …
 
-fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN), { comparator: (a, b) => Math.abs(a) === Math.abs(b) });
+fc.uniqueArray(
+  fc.constantFrom(-1, -0, 0, 1, Number.NaN),
+  {comparator: (a,b) => Math.abs(a) === Math.abs(b)}
+)
 // Note: ...or overriden by a fully custom comparator function
 // With the function defined in this example we will never have 1 and -1 toegther, or 0 and -0 together
 // but we will be able to have many times NaN as NaN !== NaN.
@@ -2658,19 +2612,18 @@ fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN), { comparator: (a, b) =
 // • [Number.NaN,-1,0,Number.NaN,Number.NaN,Number.NaN,Number.NaN,Number.NaN]
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>set</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#set">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Array of random length containing unique values generated by `arb`
 >
 > All the values in the set are unique given the provided `compare` function.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - _`fc.set(arb)`_ — _deprecated since v2.23.0, prefer `fc.uniqueArray`_
 - _`fc.set(arb, {minLength?, maxLength?, compare?, size?, depthIdentifier?})`_ — _deprecated since v2.23.0, prefer `fc.uniqueArray`_
@@ -2680,7 +2633,7 @@ _&#8195;Signatures_
 - _`fc.set(arb, maxLength, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 - _`fc.set(arb, minLength, maxLength, compare)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minLength?` — default: `0` — _minimal length (included)_
@@ -2694,19 +2647,19 @@ _&#8195;with:_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.set(fc.nat(99));
+fc.set(fc.nat(99))
 // Examples of generated values: [], [15,91,64,4,96,0,98,95,2,94], [79], [23,39,93,87,85,4,21], [58,31,39,26,75]…
 
-fc.set(fc.nat(99), { maxLength: 3 });
+fc.set(fc.nat(99), {maxLength: 3})
 // Examples of generated values: [], [55], [2,97,98], [12,90,43], [31]…
 
-fc.set(fc.nat(99), { minLength: 5, maxLength: 7 });
+fc.set(fc.nat(99), {minLength: 5, maxLength: 7})
 // Examples of generated values: [4,3,29,1,48,25], [53,44,67,56,49,42], [69,6,47,13,20,3,58], [5,35,70,0,6,27], [3,5,0,70,6,20]…
 
-fc.set(fc.hexaString(), { compare: { selector: (s) => s.length } });
+fc.set(fc.hexaString(), {compare: {selector: s => s.length}})
 // Note: Resulting arrays will never contain two strings with the same number of characters
 // Examples of generated values:
 // • []
@@ -2716,12 +2669,12 @@ fc.set(fc.hexaString(), { compare: { selector: (s) => s.length } });
 // • ["d3","912966f8","82b07f","822","0d714","","2ff2623190","137c99f","eee7"]
 // • …
 
-fc.set(fc.hexaString(), { compare: (s1, s2) => s1.length === s2.length });
+fc.set(fc.hexaString(), {compare: (s1, s2) => s1.length === s2.length})
 // Note: Same behaviour as the one above BUT less optimized in terms of runtime (function-based compare
 // has poor performances for large arrays)
 // Examples of generated values: ["20",""], [], ["447","","893c89edb1","b31a5"], ["79429d9",""], ["0","c20ea408b9","1f1574","117d"]…
 
-fc.set(fc.hexaString(), { minLength: 5, maxLength: 10, compare: { selector: (s) => s.length } });
+fc.set(fc.hexaString(), {minLength: 5, maxLength: 10, compare: {selector: s => s.length}})
 // Note: Resulting arrays will never contain two strings with the same number of characters and it will contain between 5 and 10 strings
 // Examples of generated values:
 // • ["0d4","1cef","20d51","74","bb8afd3e0b","916c7c4"]
@@ -2731,102 +2684,99 @@ fc.set(fc.hexaString(), { minLength: 5, maxLength: 10, compare: { selector: (s) 
 // • ["c2f3c9621f","","32352ef","6e","91b0ef","11c","5f6c34d88","8509","8","21131"]
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>subarray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#subarray">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate values corresponding to any possible sub-array of an original array
 >
 > Values of the resulting subarray are ordered the same way they were in the original array.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.subarray(originalArray)`
 - `fc.subarray(originalArray, {minLength?, maxLength?})`
 - _`fc.subarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `originalArray` — _the array from which we want to extract sub-arrays_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `originalArray.length` — _maximal length (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.subarray([1, 42, 48, 69, 75, 92]);
+fc.subarray([1, 42, 48, 69, 75, 92])
 // Examples of generated values: [48,69,75,92], [75,92], [], [48,75], [1,42,48,75,92]…
 
-fc.subarray([1, 42, 48, 69, 75, 92], { minLength: 5 });
+fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 5})
 // Examples of generated values: [1,42,69,75,92], [1,42,48,69,75], [1,42,48,69,92], [1,42,48,69,75,92], [42,48,69,75,92]…
 
-fc.subarray([1, 42, 48, 69, 75, 92], { maxLength: 5 });
+fc.subarray([1, 42, 48, 69, 75, 92], {maxLength: 5})
 // Examples of generated values: [1,69,75,92], [42,48,69,75], [42], [69], [42,48,92]…
 
-fc.subarray([1, 42, 48, 69, 75, 92], { minLength: 2, maxLength: 3 });
+fc.subarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 // Examples of generated values: [42,75], [42,69], [1,75,92], [48,92], [42,48,92]…
 ```
-
 </details>
 
 <details>
 <summary><b>shuffledSubarray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#shuffledsubarray">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate values corresponding to any possible sub-array of an original array
 >
 > Values of the resulting subarray are ordered randomly.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.shuffledSubarray(originalArray)`
 - `fc.shuffledSubarray(originalArray, {minLength?, maxLength?})`
 - _`fc.shuffledSubarray(originalArray, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `originalArray` — _the array from which we want to extract sub-arrays_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `originalArray.length` — _maximal length (included)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.shuffledSubarray([1, 42, 48, 69, 75, 92]);
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92])
 // Examples of generated values: [75], [75,48], [92], [75,92], [1,75]…
 
-fc.shuffledSubarray([1, 42, 48, 69, 75, 92], { minLength: 5 });
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 5})
 // Examples of generated values: [42,92,1,69,48], [48,1,42,75,69,92], [92,1,75,42,48,69], [92,1,42,48,69], [92,1,69,42,75,48]…
 
-fc.shuffledSubarray([1, 42, 48, 69, 75, 92], { maxLength: 5 });
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {maxLength: 5})
 // Examples of generated values: [], [48,1,42], [92,1,75], [92], [92,1,69,42,75]…
 
-fc.shuffledSubarray([1, 42, 48, 69, 75, 92], { minLength: 2, maxLength: 3 });
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], {minLength: 2, maxLength: 3})
 // Examples of generated values: [69,1], [92,1], [69,92], [69,42,1], [75,1]…
 ```
-
 </details>
 
 <details>
 <summary><b>sparseArray</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#sparsearray">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Sparse array of random length containing values generated by `arb`.
->
+> 
 > By default, the generated array may end by a hole (see `noTrailingHole`).
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.sparseArray(arb)`
 - `fc.sparseArray(arb, {maxLength?, minNumElements?, maxNumElements?, size?, noTrailingHole?, depthIdentifier?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 - `minNumElements?` — default: `0` — _minimal number of elements (included)_
@@ -2836,10 +2786,10 @@ _&#8195;with:_
 - `noTrailingHole?` — default: `false` — _when enabled, all generated arrays will either be the empty array or end by a non-hole_
 - `depthIdentifier?` — default: `undefined` — _when specified, the array will impact the depth attached to the identifier to avoid going too deep if it already generated lots of items for current level_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.sparseArray(fc.nat(), { maxLength: 20 });
+fc.sparseArray(fc.nat(), {maxLength: 20})
 // Examples of generated values:
 // • [,,,925226031,,,,,,,,,,1586792878]
 // • [1711696119,,,,,1046941565,398052668,,,,,,1397870591,,,572805240,1214320037,1229050246,,,]
@@ -2848,7 +2798,7 @@ fc.sparseArray(fc.nat(), { maxLength: 20 });
 // • [11,15,1308253671,,,,,2147483637,,,,,,,,1336335293,,,,,]
 // • …
 
-fc.sparseArray(fc.nat(), { maxLength: 20, minNumElements: 1, maxNumElements: 3 });
+fc.sparseArray(fc.nat(), {maxLength: 20, minNumElements: 1, maxNumElements: 3})
 // Examples of generated values:
 // • [,,,,,,,,,,,,,,263508609]
 // • [,,,,,,,,,,,,,,,,,,1014930196]
@@ -2857,7 +2807,7 @@ fc.sparseArray(fc.nat(), { maxLength: 20, minNumElements: 1, maxNumElements: 3 }
 // • [,,21,,,30,,,,,,,,,,,7]
 // • …
 
-fc.sparseArray(fc.nat(), { maxLength: 20, noTrailingHole: true });
+fc.sparseArray(fc.nat(), {maxLength: 20, noTrailingHole: true})
 // Examples of generated values:
 // • [,,,1241501051,269051095,392920841,,,,,,1786812914,876995905]
 // • [,,,748833099]
@@ -2866,7 +2816,7 @@ fc.sparseArray(fc.nat(), { maxLength: 20, noTrailingHole: true });
 // • []
 // • …
 
-fc.sparseArray(fc.nat());
+fc.sparseArray(fc.nat())
 // Examples of generated values:
 // • [,,,,,,,,,,,,,,,,,,,,,,,,,2104277073]
 // • [,,,,,,,,,,,,,,,,,,,,,,535782498,,,,794213966]
@@ -2875,7 +2825,7 @@ fc.sparseArray(fc.nat());
 // • [,,,,,,,,,,,661680466,,227120261,,,,,,,,,,,1637939285]
 // • …
 
-fc.sparseArray(fc.nat(), { size: '+1' });
+fc.sparseArray(fc.nat(), {size: '+1'})
 // Note: By specifying a size higher than the currently configured one, we ask for larger arrays in terms of number of
 // elements (see minNumElements and maxNumElements) but also in terms of length (see maxLength).
 // Examples of generated values:
@@ -2886,33 +2836,31 @@ fc.sparseArray(fc.nat(), { size: '+1' });
 // • Object.assign(Array(1171),{104:1638804142,117:602011150,129:313752679,185:1448469803,222:768117918,263:1554819660,277:1288756625,359:2059980427,440:1867105842,454:2061521669,462:1801440074,469:135779881,508:856264357,522:2113002129,530:1762964315,536:2038762560,588:789315360,614:1151676895,652:542336121,667:467837917,669:1190486377,690:1072930284,718:601332128,772:569548857,781:999860594,802:1900067120,823:1944768495,826:1474566472,830:1950423455,839:1964123632,848:1866472223,852:937790976,877:1266959932,889:1249315120,896:578387423,939:521841256,950:486372919,986:1983847533,1009:1183067405,1027:2519446,1059:423431392,1081:50338564,1086:1927133080,1149:1141117415,1160:1555762662,1170:1465608282})
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>infiniteStream</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#infinitestream">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate infinite `Stream` of values generated by `arb`.
 >
 > The `Stream` structure provided by fast-check implements `IterableIterator<T>` and comes with useful helpers to manipulate it.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.infiniteStream(arb)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary instance responsible to generate values_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.infiniteStream(fc.nat(9));
+fc.infiniteStream(fc.nat(9))
 // Examples of generated values: Stream(…)…
 ```
-
 </details>
 
 ### Object
@@ -2920,16 +2868,16 @@ fc.infiniteStream(fc.nat(9));
 <details>
 <summary><b>dictionary</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#dictionary">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate dictionaries containing keys generated using `keyArb` and values generated by `valueArb`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.dictionary(keyArb, valueArb)`
 - `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `keyArb` — _arbitrary instance responsible to generate keys_
 - `valueArb` — _arbitrary instance responsible to generate values_
@@ -2937,10 +2885,10 @@ _&#8195;with:_
 - `maxKeys?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of keys in the generated instances (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.dictionary(fc.string(), fc.string());
+fc.dictionary(fc.string(), fc.string())
 // Examples of generated values:
 // • {"+":"iM#O7X(G58"}
 // • {"y":"rm<45]&THs","KTzJY!":"%","":"<2Khdb","q+& ":""}
@@ -2949,7 +2897,7 @@ fc.dictionary(fc.string(), fc.string());
 // • {"vT`":"~yWotB,m@1","LRwi":",kU~9",",qZ8":"ckz-r^?@","zQP=-!BC":";:S","dA+b<f-\"3T":"[if y\\"}
 // • …
 
-fc.dictionary(fc.string(), fc.nat());
+fc.dictionary(fc.string(), fc.nat())
 // Examples of generated values:
 // • {"":1389984732,"Yp$g&t^dp]":1638300335,"+":438403284,"41ST4G":1593876328,"sZ=":474921142,"wjFpf":912590676,"tFK(!":547671001,"Ot=":1404889232}
 // • {"BS9-o":1729454479,"OQYWH":1003935961,"a{6S(OQ?\"":1204427717,"n6wY":452693617,"L":1919551662,"KlqB{{":360825924,"":1745761795,"#h#S$":1570990143,"G%":1211363041,"=.":158635507}
@@ -2958,7 +2906,7 @@ fc.dictionary(fc.string(), fc.nat());
 // • {"4":57689789,"d":2049278068,".b3n,":1846889886,":E":887324279,"*9\\$WNce":108003991}
 // • …
 
-fc.dictionary(fc.string(), fc.nat(), { minKeys: 2 });
+fc.dictionary(fc.string(), fc.nat(), {minKeys: 2})
 // Note: Generate instances with at least 2 keys
 // Examples of generated values:
 // • {"T<M3<":620901509,"DaM\"":1958316323}
@@ -2968,37 +2916,36 @@ fc.dictionary(fc.string(), fc.nat(), { minKeys: 2 });
 // • {"":860828778,"$.x~\"|5!X$":2147483626,"{XNUt3<g#":28,"hr%":10,"#!":1561530792,"4}U%n":776916316}
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>record</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#record">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate records using the incoming arbitraries to generate its values
 >
 > It comes very useful when dealing with settings.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.record(recordModel)`
 - `fc.record(recordModel, {requiredKeys?})`
 - `fc.record(recordModel, {withDeletedKeys?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `recordModel` — _structure of the resulting instance_
 - `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted, remark: cannot be used with `withDeletedKeys`_
 - `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys. `withDeletedKeys: true` is equivalent to `requiredKeys: []`, thus the two options cannot be used at the same time_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
 fc.record({
   id: fc.uuidV(4),
-  age: fc.nat(99),
-});
+  age: fc.nat(99)
+})
 // Examples of generated values:
 // • {"id":"a7ccc7eb-f854-442c-8000-00132dd1a2df","age":0}
 // • {"id":"ffffffee-faae-46b1-af49-0fc500000001","age":1}
@@ -3007,13 +2954,10 @@ fc.record({
 // • {"id":"1f27c491-000b-4000-96bd-ae4367d1570e","age":93}
 // • …
 
-fc.record(
-  {
-    id: fc.uuidV(4),
-    age: fc.nat(99),
-  },
-  { requiredKeys: [] }
-);
+fc.record({
+  id: fc.uuidV(4),
+  age: fc.nat(99)
+}, { requiredKeys: [] })
 // Note: Both id and age will be optional values
 // Examples of generated values:
 // • {"id":"00000000-ffea-4fff-8000-0010220687cc","age":6}
@@ -3023,15 +2967,12 @@ fc.record(
 // • {"id":"00000007-217b-48d8-925a-dd0e0000000c","age":3}
 // • …
 
-fc.record(
-  {
-    id: fc.uuidV(4),
-    name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
-    age: fc.nat(99),
-    birthday: fc.date({ min: new Date('1970-01-01T00:00:00.000Z'), max: new Date('2100-12-31T23:59:59.999Z') }),
-  },
-  { requiredKeys: ['id'] }
-);
+fc.record({
+  id: fc.uuidV(4),
+  name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
+  age: fc.nat(99),
+  birthday: fc.date({min: new Date("1970-01-01T00:00:00.000Z"), max: new Date("2100-12-31T23:59:59.999Z")})
+}, { requiredKeys:['id'] })
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
 // • {"id":"00000010-e2be-4b98-8d3a-944affffffe2","age":4,"birthday":new Date("2100-12-31T23:59:59.959Z")}
@@ -3041,13 +2982,10 @@ fc.record(
 // • {"id":"00000018-ffee-4fff-8a22-b8770000001b","age":93}
 // • …
 
-fc.record(
-  {
-    id: fc.uuidV(4),
-    age: fc.nat(99),
-  },
-  { withDeletedKeys: true }
-);
+fc.record({
+  id: fc.uuidV(4),
+  age: fc.nat(99)
+}, { withDeletedKeys: true })
 // Note: Both id and age will be optional values
 // Examples of generated values:
 // • {"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
@@ -3057,22 +2995,21 @@ fc.record(
 // • {"id":"00000006-0007-4000-8397-86ea00000004"}
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>object</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#object">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate objects (key/values)
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.object()`
 - `fc.object({key?, depthFactor?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
@@ -3089,10 +3026,10 @@ _&#8195;with:_
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.object();
+fc.object()
 // Examples of generated values:
 // • {"A%":{"/$KFfpp":-4187493920938036,";":"yGR","EpEkV(":true,"@'J-;wLY":7.773167704715093e-258},"(ffE?H":"bT:",":Cm":{"#":212440652433081,")'":"","WFt=u'":true,"[=`":"FY<","6p!UDE:m":"WU}|qld"},"u4ri-":{"&Ah9yY!,M.":undefined,"V":[null,undefined,5669800404242669,false]}}
 // • {}
@@ -3103,7 +3040,7 @@ fc.object();
 
 fc.object({
   key: fc.constantFrom('a', 'b', 'c'),
-});
+})
 // Note: Keys in ['a', 'b', 'c']
 // Examples of generated values:
 // • {"c":{"a":undefined},"b":{"b":"rI}4(","a":"","c":"Cceu+)"},"a":-1847783524257149}
@@ -3115,7 +3052,7 @@ fc.object({
 
 fc.object({
   maxDepth: 0,
-});
+})
 // Examples of generated values:
 // • {"^lx)`P":undefined}
 // • {"s!?U&|m":-1.0485154233556375e+169," !":1.4341461931946127e-41,"":">bQM?p[+^"}
@@ -3126,7 +3063,7 @@ fc.object({
 
 fc.object({
   maxDepth: 1,
-});
+})
 // Examples of generated values:
 // • {"^lx)`P":[-0.00029931903965333046,false,"{{Og>-Jg21",true,""]}
 // • {"s!?U&|m":false," !":{"7P4>bQM?p[":4203343495210831,">":2.0906852232169096e+42},"`":{"+LGy":2.5529776970484772e-129,"%-aE*3":true,"Rp8-Eo":"haz","P30=(JIie8":-7.998009365281407e+224}}
@@ -3134,6 +3071,7 @@ fc.object({
 // • {}
 // • {"m \"]?Y]":[true,null,">7,FIjW",1.1547540562130815e+110],"":false,"_JL4W.4":1895816035044233,"\\3":5.098016612215807e+266,"=k":{"8":2201154146612185,"G$x4ri>qe,":"lh*sgIA","(qcCJ4\".b":5058630183075029,"ASVo(SR$>":-4844644956269543}}
 // • …
+
 
 fc.object({
   withBigInt: true,
@@ -3144,7 +3082,7 @@ fc.object({
   withObjectString: true,
   withSet: true,
   withTypedArray: true,
-});
+})
 // Examples of generated values:
 // • {}
 // • {"Rsv1:ZP":[new Boolean(true),new String("&ZTIJ#Q"),true]}
@@ -3156,7 +3094,7 @@ fc.object({
 fc.object({
   depthFactor: 'medium',
   maxDepth: 1000,
-});
+})
 // Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
 // Examples of generated values:
 // • {"H}":{},"\"4":7.51486698322086e-143}
@@ -3166,13 +3104,12 @@ fc.object({
 // • {">YTN<Tt":[3.316119065425791e+124,-6.009495338790559e-73,false,{"2:kmC'N":3396245325125853,"LPe-Q":-8910689082764321,"jv8n\"_W":"Osr^"," TXOY<F=":-4902908240765127},-1447230144388831],".ukU /mQ":[],"<%5@@+x":{"M;}8WKVV":[528792066348845,"~>;w",-2.6638104561102424e-298,undefined],"":{"wgqhJ":"","#J":-7.776404213211904e+59,"2UlO<:{@/A":-3.8659798319369648e+118},"y?K]":false,"wN7":-3746080234030558,"=E;Z}":{"7t~":undefined,"TPg":false}},"+_<gIOw*":{"c(\"W\"ix{":{"f":[-4287841385681851,true],"|?^J{t":[false]},";7lx|M[d{":{"Va}f736rIp":false,"D,Rs{T8z]U":"%-Ow9?Bwq","-jg2.":{";6}5k1V":1.9899206199566474e+31,"OI{|t#BO#":-6.570063170292448e+180}},"Hr{K~T_m":8816324934080293,"B-UcH1Pb,r":"#]","=]~%1g{*J":"}1"},"q":[{"z?":-1.8205425210980173e+106,"WRoj)Z2":5206806417710909,"r":1.620779895969762e-295,"}":{"J^":4956365471714205,"^46W^Ot":3.4019210297511264e+286,"":null},"x2~YIet%m(":-6.1986318794196805e-236},{"1j=nq^":{"G]M\"pdJ~u":3.326873656686956e-32,"k|mt0>X|":3145035031064139,"\\m_!<)":false},"Qv4ww[Xh%":-7.243171074275621e+204,"n-zBG`":true},"g",[undefined,["!)",["I`%p"],-5227075756125009,false],"Si|&O[A,"],[]]}
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>jsonValue</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#jsonvalue">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate any value eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_.
 >
@@ -3181,42 +3118,45 @@ _&#8195;Description_
 >
 > Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.jsonValue()`
 - `fc.jsonValue({depthFactor?, maxDepth?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.jsonValue();
+fc.jsonValue()
 // Examples of generated values: {}, {"3O":[null,null,null],"lU ;Wao@":{"\"~~!":"}|#ux"}}, "y^-", "#5", {"&$l":"E","i":[null]}…
 
-fc.jsonValue({ maxDepth: 0 });
+fc.jsonValue({maxDepth: 0})
 // Examples of generated values: 7.890307626412925e-165, null, 2.57e-322, -1.7976931348623153e+308, false…
 
-fc.jsonValue({ maxDepth: 1 });
+fc.jsonValue({maxDepth: 1})
 // Examples of generated values: [], -1.2e-322, "W!oe%r(", {}, [false,"?Y]}I%d",2.7395116183994342e+35]…
 
-fc.statistics(fc.jsonValue(), (v) => {
-  function size(n) {
-    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
-    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-    return 1;
+fc.statistics(
+  fc.jsonValue(),
+  v => {
+    function size(n) {
+      if (Array.isArray(n))
+        return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === "object" && n)
+        return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
+    while (next(lower) <= s) { lower = next(lower); }
+    return `${lower} to ${next(lower) -1} items`;
   }
-  const s = size(v);
-  let lower = 1;
-  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-  while (next(lower) <= s) {
-    lower = next(lower);
-  }
-  return `${lower} to ${next(lower) - 1} items`;
-});
+)
 // Note: In version 2.x, the depth of objects-like arbitraries is by default limited to 2.
 // It will not be the case anymore starting at version 3.x. In 3.x, the default maximal depth
 // will be unset meaning it can theoretically reach infinity. 'theoretically' as depth factor
@@ -3235,20 +3175,23 @@ fc.statistics(fc.jsonValue(), (v) => {
 // • 5 to 9 items....31.75%
 // • 10 to 49 items...1.34%
 
-fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
-  function size(n) {
-    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
-    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-    return 1;
+fc.statistics(
+  fc.jsonValue({maxDepth: 2}),
+  v => {
+    function size(n) {
+      if (Array.isArray(n))
+        return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === "object" && n)
+        return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
+    while (next(lower) <= s) { lower = next(lower); }
+    return `${lower} to ${next(lower) -1} items`;
   }
-  const s = size(v);
-  let lower = 1;
-  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-  while (next(lower) <= s) {
-    lower = next(lower);
-  }
-  return `${lower} to ${next(lower) - 1} items`;
-});
+)
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items....73.34%
@@ -3263,13 +3206,12 @@ fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
 // • 5 to 9 items....31.55%
 // • 10 to 49 items...1.51%
 ```
-
 </details>
 
 <details>
 <summary><b>jsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#jsonobject">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate any object eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_.
 >
@@ -3278,27 +3220,27 @@ _&#8195;Description_
 >
 > Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.jsonObject()` — _deprecated, prefer `fc.jsonValue` instead_
 - `fc.jsonObject({depthFactor?, maxDepth?})` — _deprecated, prefer `fc.jsonValue` instead_
 - _`fc.jsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.jsonObject();
+fc.jsonObject()
 // Examples of generated values: true, {"z":["Zw"]}, [], false, -1.7976931348623033e+308…
 
-fc.jsonObject({ maxDepth: 0 });
+fc.jsonObject({maxDepth: 0})
 // Examples of generated values: null, "", 4.4e-323, true, false…
 
-fc.jsonObject({ maxDepth: 1 });
+fc.jsonObject({maxDepth: 1})
 // Examples of generated values:
 // • true
 // • {"C{X%3]Q$U":"$","D(]?*(9d'":"Fm19PeBSc","!s'%s":true,"/='zds[1f":null,"\"#ctQ":3.667237923224054e+176}
@@ -3307,7 +3249,7 @@ fc.jsonObject({ maxDepth: 1 });
 // • {"fS7":"iH0r ~?oNf"}
 // • …
 
-fc.jsonObject({ depthFactor: 'medium' });
+fc.jsonObject({depthFactor: 'medium'})
 // Examples of generated values:
 // • [-7.209286477974479e+237,-2e-322,false]
 // • {}
@@ -3316,20 +3258,23 @@ fc.jsonObject({ depthFactor: 'medium' });
 // • [false,6.765567584302464e+206,null,true]
 // • …
 
-fc.statistics(fc.jsonObject({ maxDepth: 10000 }), (v) => {
-  function size(n) {
-    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
-    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-    return 1;
+fc.statistics(
+  fc.jsonObject({maxDepth: 10000}),
+  v => {
+    function size(n) {
+      if (Array.isArray(n))
+        return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === "object" && n)
+        return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
+    while (next(lower) <= s) { lower = next(lower); }
+    return `${lower} to ${next(lower) -1} items`;
   }
-  const s = size(v);
-  let lower = 1;
-  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-  while (next(lower) <= s) {
-    lower = next(lower);
-  }
-  return `${lower} to ${next(lower) - 1} items`;
-});
+)
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items....69.69%
@@ -3345,13 +3290,12 @@ fc.statistics(fc.jsonObject({ maxDepth: 10000 }), (v) => {
 // • 5 to 9 items....12.53%
 // • 50 to 99 items...0.03%
 ```
-
 </details>
 
 <details>
 <summary><b>unicodeJsonValue</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonvalue">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate any value eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_
 >
@@ -3360,20 +3304,20 @@ _&#8195;Description_
 >
 > Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.unicodeJsonValue()`
 - `fc.unicodeJsonValue({depthFactor?, maxDepth?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.unicodeJsonValue();
+fc.unicodeJsonValue()
 // Examples of generated values:
 // • [[null]]
 // • "펯氅䧲㽸"
@@ -3382,19 +3326,18 @@ fc.unicodeJsonValue();
 // • [null,null,"퍿|댞浱犇괤ώ枖硂ഋ","㣶꛱裏奲펿㩁ꊊ％⁣",true]
 // • …
 
-fc.unicodeJsonValue({ maxDepth: 0 });
+fc.unicodeJsonValue({maxDepth: 0})
 // Examples of generated values: -1.7976931348623047e+308, true, "힮褣", "", 1.128781208000642e+83…
 
-fc.unicodeJsonValue({ maxDepth: 1 });
+fc.unicodeJsonValue({maxDepth: 1})
 // Examples of generated values: true, [null], ["褣䛳"], false, {}…
 ```
-
 </details>
 
 <details>
 <summary><b>unicodeJsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonobject">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate any object eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_
 >
@@ -3403,21 +3346,21 @@ _&#8195;Description_
 >
 > Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.unicodeJsonObject()` — _deprecated, prefer `fc.unicodeJsonValue` instead_
 - `fc.unicodeJsonObject({depthFactor?, maxDepth?})` — _deprecated, prefer `fc.unicodeJsonValue` instead_
 - _`fc.unicodeJsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.unicodeJsonObject();
+fc.unicodeJsonObject()
 // Examples of generated values:
 // • null
 // • [null,-4.295089174387055e-293,-2.6704522931006526e-132,null,true]
@@ -3426,10 +3369,10 @@ fc.unicodeJsonObject();
 // • [{"ᴿ렷浻灰썻鞘١⓼":"ᚄ秈搉糛힘ﯨ⯞","":-8.037747235177182e-192,"䐀⥌㚃뚹퐒孵ᱚ鼊鴓ᚔ":null},null]
 // • …
 
-fc.unicodeJsonObject({ maxDepth: 0 });
+fc.unicodeJsonObject({maxDepth: 0})
 // Examples of generated values: 1.7976931348623131e+308, false, "꙰ꁺ蜱", "⛙", -9.43140467271473e+139…
 
-fc.unicodeJsonObject({ maxDepth: 1 });
+fc.unicodeJsonObject({maxDepth: 1})
 // Examples of generated values:
 // • false
 // • {"觽竑减":1.7976931348623051e+308,"癤&嬩￸ ":false}
@@ -3438,25 +3381,24 @@ fc.unicodeJsonObject({ maxDepth: 1 });
 // • ["凛瞸㾡끴疘쥱潅䀱",null]
 // • …
 
-fc.unicodeJsonObject({ depthFactor: 'medium' });
+fc.unicodeJsonObject({depthFactor: 'medium'})
 // Examples of generated values: "㄃$", {"":false,"鳁꫌ᒏ뻌":"!'᫭","柎":false}, -3e-323, null, "뀮(\"- $"…
 ```
-
 </details>
 
 <details>
 <summary><b>anything</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#anything">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate any kind of entities
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.anything()`
 - `fc.anything({key?, depthFactor?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, values?})`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
 - `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
@@ -3474,10 +3416,10 @@ _&#8195;with:_
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.anything();
+fc.anything()
 // Examples of generated values:
 // • {"0sv'Tmhu":-1.3887208152149362e-162,"s":true,"%)`-S9;[":"","GhNB:":"!66","L%.2Jag":2.1916039785634694e+262}
 // • 43
@@ -3488,7 +3430,7 @@ fc.anything();
 
 fc.anything({
   key: fc.constantFrom('a', 'b', 'c'),
-});
+})
 // Note: Generated objects will come with keys in ['a', 'b', 'c']
 // Examples of generated values:
 // • {"a":[2.455340534985444e+159,undefined,",3kWU",true]}
@@ -3500,13 +3442,13 @@ fc.anything({
 
 fc.anything({
   maxDepth: 0,
-});
+})
 // Note: Only root values
 // Examples of generated values: undefined, false, "H<EO!&", -718042952162017, -1.9263249085363102e-246…
 
 fc.anything({
   maxDepth: 1,
-});
+})
 // Examples of generated values:
 // • -9007199254740952
 // • 1068292005279453
@@ -3525,7 +3467,7 @@ fc.anything({
   withSet: true,
   withTypedArray: true,
   withSparseArray: true,
-});
+})
 // Examples of generated values:
 // • {"$2U":new Map([[new Boolean(true),new Number(-1.6072112720590742e+253)]])}
 // • [new Number(-7340448526666366),new Date("+101296-01-12T18:14:38.996Z"),45537367055854732942122861729418908327985837390729150814414733194634917325090n,7.246839255814512e+218,"@"]
@@ -3537,7 +3479,7 @@ fc.anything({
 fc.anything({
   depthFactor: 'medium',
   maxDepth: 1000,
-});
+})
 // Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
 // Examples of generated values:
 // • false
@@ -3547,7 +3489,6 @@ fc.anything({
 // • "2vcT"
 // • …
 ```
-
 </details>
 
 ### Function
@@ -3555,20 +3496,20 @@ fc.anything({
 <details>
 <summary><b>compareBooleanFunc</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#comparebooleanfunc">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate a comparison function taking two parameters `a` and `b` and producing a boolean value.
 >
 > `true` means that `a < b`, `false` that `a = b` or `a > b`
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.compareBooleanFunc()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.compareBooleanFunc();
+fc.compareBooleanFunc()
 // Examples of generated values:
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
@@ -3607,26 +3548,25 @@ fc.compareBooleanFunc();
 //   }
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>compareFunc</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#comparefunc">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate a comparison function taking two parameters `a` and `b` and producing an integer value.
 >
 > Output is zero when `a` and `b` are considered to be equivalent. Output is strictly inferior to zero means that `a` should be considered strictly inferior to `b` (similar for strictly superior to zero)
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.compareFunc()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.compareFunc();
+fc.compareFunc()
 // Examples of generated values:
 // • function(a, b) {
 //     // With hash and stringify coming from fast-check
@@ -3665,28 +3605,27 @@ fc.compareFunc();
 //   }
 // • …
 ```
-
 </details>
 
 <details>
 <summary><b>func</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#func">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate a function producing values using an underlying arbitrary
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.func(arb)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `arb` — _arbitrary responsible to produce the values_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.func(fc.nat());
+fc.func(fc.nat())
 // Examples of generated values:
 // • function(...args) {
 //     // With hash and stringify coming from fast-check
@@ -3715,7 +3654,6 @@ fc.func(fc.nat());
 //   }
 // • …
 ```
-
 </details>
 
 ### Recursive structures
@@ -3723,38 +3661,38 @@ fc.func(fc.nat());
 <details>
 <summary><b>letrec</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#letrec">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate recursive structures
 >
 > Prefer `fc.letrec` over `fc.memo`. Most of the features offered by `fc.memo` can now be implemented with `fc.letrec`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.letrec(builder)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `builder` — _builder function defining how to build the recursive structure, it answers to the signature `(tie) => `object with key corresponding to the name of the arbitrary and with vaue the arbitrary itself. The `tie` function given to builder should be used as a placeholder to handle the recursion. It takes as input the name of the arbitrary to use in the recursion._
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
 // Setup the tree structure:
-const { tree } = fc.letrec((tie) => ({
+const { tree } = fc.letrec(tie => ({
   // Warning: In version 2.x and before, there is no automatic control over the depth of the generated data-structures.
   //   As a consequence to avoid your data-structures to be too deep, it is highly recommended to add the constraint `depthFactor`
   //   onto your usages of `option`, `oneof` and `frequency` and to put the arbitrary without recursion first.
   // In version 3.x, `depthFactor` and `withCrossShrink` will be enabled by default.
-  tree: fc.oneof({ depthFactor: 'small', withCrossShrink: true }, tie('leaf'), tie('node')),
+  tree: fc.oneof({depthFactor: 'small', withCrossShrink: true}, tie('leaf'), tie('node')),
   node: fc.record({
     left: tie('tree'),
     right: tie('tree'),
   }),
-  leaf: fc.nat(),
+  leaf: fc.nat()
 }));
 // Use the arbitrary:
-tree;
+tree
 // Examples of generated values:
 // • 27
 // • {"left":{"left":{"left":1843411184,"right":764752372},"right":335246526},"right":{"left":1030366244,"right":2147483617}}
@@ -3763,13 +3701,13 @@ tree;
 // • {"left":{"left":2147483632,"right":1737313089},"right":{"left":{"left":15,"right":{"left":1512608453,"right":24}},"right":{"left":1592991095,"right":2147483633}}}
 // • …
 
-fc.letrec((tie) => ({
+fc.letrec(tie => ({
   node: fc.record({
     value: fc.nat(),
-    left: fc.option(tie('node'), { maxDepth: 1, depthIdentifier: 'tree' }),
-    right: fc.option(tie('node'), { maxDepth: 1, depthIdentifier: 'tree' }),
-  }),
-})).node;
+    left: fc.option(tie('node'), {maxDepth: 1, depthIdentifier: 'tree'}),
+    right: fc.option(tie('node'), {maxDepth: 1, depthIdentifier: 'tree'}),
+  })
+})).node
 // Note: You can limit the depth of the generated structrures by using the constraint `maxDepth` (see `option`, `oneof` and `frequency`).
 //   On the example above we need to specify `depthIdentifier` to share the depth between left and right branches...
 // Examples of generated values:
@@ -3783,13 +3721,13 @@ fc.letrec((tie) => ({
 // Setup the depth identifier shared across all nodes:
 const depthIdentifier = fc.createDepthIdentifier();
 // Use the arbitrary:
-fc.letrec((tie) => ({
+fc.letrec(tie => ({
   node: fc.record({
     value: fc.nat(),
-    left: fc.option(tie('node'), { maxDepth: 1, depthIdentifier }),
-    right: fc.option(tie('node'), { maxDepth: 1, depthIdentifier }),
-  }),
-})).node;
+    left: fc.option(tie('node'), {maxDepth: 1, depthIdentifier}),
+    right: fc.option(tie('node'), {maxDepth: 1, depthIdentifier}),
+  })
+})).node
 // Note: Calling `createDepthIdentifier` is another way to pass a value for `depthIdentifier`. Compared to the string-based
 // version, demo-ed in the snippet above, it has the benefit to never collide with other identifiers manually specified.
 // Examples of generated values:
@@ -3800,13 +3738,13 @@ fc.letrec((tie) => ({
 // • {"value":10,"left":{"value":4,"left":null,"right":null},"right":{"value":1054043111,"left":null,"right":null}}
 // • …
 
-fc.letrec((tie) => ({
+fc.letrec(tie => ({
   node: fc.record({
     value: fc.nat(),
-    left: fc.option(tie('node'), { maxDepth: 1 }),
-    right: fc.option(tie('node'), { maxDepth: 1 }),
-  }),
-})).node;
+    left: fc.option(tie('node'), {maxDepth: 1}),
+    right: fc.option(tie('node'), {maxDepth: 1}),
+  })
+})).node
 // ...If we don't specify it, the maximal number of right in a given path will be limited to 1, but may include intermediate left.
 //    Thus the resulting trees might be deeper than 1.
 // Examples of generated values:
@@ -3817,11 +3755,11 @@ fc.letrec((tie) => ({
 // • {"value":2147483622,"left":{"value":1241600186,"left":null,"right":{"value":92657426,"left":null,"right":null}},"right":null}
 // • …
 
-fc.letrec((tie) => ({
-  tree: fc.frequency({ maxDepth: 2 }, { arbitrary: tie('leaf'), weight: 0 }, { arbitrary: tie('node'), weight: 1 }),
+fc.letrec(tie => ({
+  tree: fc.frequency({maxDepth: 2}, {arbitrary: tie('leaf'), weight: 0}, {arbitrary: tie('node'), weight: 1}),
   node: fc.record({ left: tie('tree'), right: tie('tree') }),
-  leaf: fc.nat(),
-})).tree;
+  leaf: fc.nat()
+})).tree
 // Note: Exact depth of 2: not more not less.
 // Note: If you use multiple `option`, `oneof` or `frequency` to define such recursive structure
 //   you may want to specify a `depthIdentifier` so that they share the exact same depth.
@@ -3835,27 +3773,25 @@ fc.letrec((tie) => ({
 // • …
 
 fc.statistics(
-  fc.letrec((tie) => ({
+  fc.letrec(tie => ({
     node: fc.record({
       value: fc.nat(),
       left: fc.option(tie('node')),
       right: fc.option(tie('node')),
-    }),
+    })
   })).node,
-  (v) => {
+  v => {
     function size(n) {
       if (n === null) return 0;
       else return 1 + size(n.left) + size(n.right);
     }
     const s = size(v);
     let lower = 1;
-    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-    while (next(lower) <= s) {
-      lower = next(lower);
-    }
-    return `${lower} to ${next(lower) - 1} items`;
+    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
+    while (next(lower) <= s) { lower = next(lower); }
+    return `${lower} to ${next(lower) -1} items`;
   }
-);
+)
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 5 to 9 items....44.67%
@@ -3874,30 +3810,28 @@ fc.statistics(
 // • 5 to 9 items.......0.10%
 
 fc.statistics(
-  fc.letrec((tie) => ({
+  fc.letrec(tie => ({
     node: fc.record({
       value: fc.nat(),
       children: fc.oneof(
-        { depthIdentifier: 'node' },
+        {depthIdentifier: 'node'},
         fc.constant([]),
-        fc.array(tie('node'), { depthIdentifier: 'node' })
+        fc.array(tie('node'), {depthIdentifier: 'node'})
       ),
-    }),
+    })
   })).node,
-  (v) => {
+  v => {
     function size(n) {
       if (n === null) return 0;
       else return 1 + n.children.reduce((acc, child) => acc + size(child), 0);
     }
     const s = size(v);
     let lower = 1;
-    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-    while (next(lower) <= s) {
-      lower = next(lower);
-    }
-    return `${lower} to ${next(lower) - 1} items`;
+    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
+    while (next(lower) <= s) { lower = next(lower); }
+    return `${lower} to ${next(lower) -1} items`;
   }
-);
+)
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
@@ -3913,42 +3847,41 @@ fc.statistics(
 // • 100 to 499 items...6.21%
 // • 5 to 9 items.......0.12%
 ```
-
 </details>
 
 <details>
 <summary><b>memo</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#memo">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate recursive structures
 >
 > ⚠️ Initially `fc.memo` has been designed to offer a higher control over the generated depth. Unfortunately it came with a cost: the arbitrary itself is costly to build.
 > Most of the features offered by `fc.memo` can now be done using `fc.letrec` coupled with `fc.option`, `fc.oneof` or `fc.frequency`.
-> Whenever possible\*, we recommend using `fc.letrec` instead of `fc.memo`.
+> Whenever possible*, we recommend using `fc.letrec` instead of `fc.memo`.
 >
-> \*But sometimes it is not possible and `fc.memo` will be the way to go.
+> *But sometimes it is not possible and `fc.memo` will be the way to go.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.memo(builder)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `builder` — _builder function defining how to build the recursive structure. It receives as input the remaining depth and has to return an arbitrary (potentially another `memo` or itself)_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
 // Setup the tree structure:
-const tree = fc.memo((n) => fc.oneof(node(n), node(n), leaf())); // double the probability of nodes compared to leaves
-const node = fc.memo((n) => {
+const tree = fc.memo(n => fc.oneof(node(n), node(n), leaf())); // double the probability of nodes compared to leaves
+const node = fc.memo(n => {
   if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
   return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
 });
 const leaf = fc.nat;
 // Use the arbitrary:
-tree(2);
+tree(2)
 // Note: Only produce trees having a maximal depth of 2
 // Examples of generated values:
 // • {"left":{"left":23,"right":2},"right":{"left":210148030,"right":283093342}}
@@ -3958,7 +3891,6 @@ tree(2);
 // • {"left":{"left":13,"right":2147483635},"right":{"left":1861062539,"right":20}}
 // • …
 ```
-
 </details>
 
 ### More
@@ -3966,97 +3898,95 @@ tree(2);
 <details>
 <summary><b>.filter</b> - [<a href="https://dubzzz.github.io/fast-check/classes/arbitrary.html#filter">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Filter an existing arbitrary
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `.filter(predicate)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `predicate` — _only keeps values such as `predicate(value) === true`_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.integer().filter((n) => n % 2 === 0);
+fc.integer().filter(n => n % 2 === 0)
 // Note: Only produce even integer values
 // Examples of generated values: -757498916, -70006654, 1709734166, 1038114938, 1991604420…
 
-fc.integer().filter((n) => n % 2 !== 0);
+fc.integer().filter(n => n % 2 !== 0)
 // Note: Only produce odd integer values
 // Examples of generated values: -5, 220007129, -144485771, -17, 194205091…
 
-fc.string().filter((s) => s[0] < s[1]);
+fc.string().filter(s => s[0] < s[1])
 // Note: Only produce strings with `s[0] < s[1]`
 // Examples of generated values: "dp]dA+GK", "Sa{6S(", ",hsLWj#=y", "]b", "cd+M."…
 ```
-
 </details>
 
 <details>
 <summary><b>.map</b> - [<a href="https://dubzzz.github.io/fast-check/classes/arbitrary.html#map">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Map an existing arbitrary
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `.map(mapper)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `mapper` — _transform the produced value into another one_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.nat(1024).map((n) => n * n);
+fc.nat(1024).map(n => n * n)
 // Note: Produce only square values
 // Examples of generated values: 680625, 441, 422500, 88209, 81…
 
-fc.nat().map((n) => String(n));
+fc.nat().map(n => String(n))
 // Note: Change the type of the produced value from number to string
 // Examples of generated values: "2076933868", "2147483636", "1971335630", "260497460", "9"…
 
-fc.tuple(fc.integer(), fc.integer()).map((t) => (t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]]));
+fc.tuple(fc.integer(), fc.integer())
+  .map(t => t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]])
 // Note: Generate a range [min, max]
 // Examples of generated values: [-2147483620,1211945858], [-1079425464,-233690526], [-2147483633,-2], [1592081894,2147483645], [6,25]…
 
-fc.string().map((s) => `[${s.length}] -> ${s}`);
+fc.string().map(s => `[${s.length}] -> ${s}`)
 // Examples of generated values: "[8] -> 40M;<f/D", "[2] -> 7a", "[2] -> %:", "[2] -> \\$", "[9] -> 0LFg6!aMF"…
 ```
-
 </details>
 
 <details>
 <summary><b>.chain</b> - [<a href="https://dubzzz.github.io/fast-check/classes/arbitrary.html#chain">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Flat-Map an existing arbitrary
 >
 > ⚠️ Be aware that the shrinker of such construct might not be able to shrink as much as possible (more details [here](https://github.com/dubzzz/fast-check/issues/650#issuecomment-648397230))
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `.chain(fmapper)`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `fmapper` — _produce an arbitrary based on a generated value_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.nat().chain((min) => fc.tuple(fc.constant(min), fc.integer(min, 0xffffffff)));
+fc.nat().chain(min => fc.tuple(fc.constant(min), fc.integer(min, 0xffffffff)))
 // Note: Produce a valid range
 // Examples of generated values: [2147483631,2602190685], [722484778,1844243122], [52754604,4294967287], [231714704,420820067], [3983528,3983548]…
 ```
-
 </details>
 
 ## Others
@@ -4064,71 +3994,68 @@ fc.nat().chain((min) => fc.tuple(fc.constant(min), fc.integer(min, 0xffffffff)))
 <details>
 <summary><b>falsy</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#falsy">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Falsy values
 >
 > Generate falsy values ie. one of: `false`, `null`, `undefined`, `0`, `''`, `Number.NaN` or `0n`.
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.falsy()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.falsy();
+fc.falsy()
 // Examples of generated values: null, false, 0, Number.NaN, ""…
 
-fc.falsy({ withBigInt: true });
+fc.falsy({ withBigInt: true })
 // Examples of generated values: 0, false, Number.NaN, undefined, ""…
 ```
-
 </details>
 
 <details>
 <summary><b>context</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#context">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Generate an [instance of `ContextValue`](https://dubzzz.github.io/fast-check/interfaces/contextvalue.html) for each predicate run
 >
 > `ContextValue` can be used to log stuff within the run itself. In case of failure, the logs will be attached in the counterexample and visible in the stack trace
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.context()`
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
-fc.context();
+fc.context()
 // The produced value - let's call it ctx - can be used as a logger that will be specific to this run (and only this run).
 // It can be called as follow: ctx.log('My log')
 ```
-
 </details>
 
 <details>
 <summary><b>commands</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#commands">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Iterables of commands
 >
 > Model based testing approach extends the power of property based testing to state machines.
 > It relies on commands or operations that a user can run on the system. Those commands define:
->
 > - pre-condition — confirm whether or not the command can be executed given the current context
 > - execution — update a simplified context or _model_ while updating and checking the _real_ system
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.commands(commandArbs)`
 - `fc.commands(commandArbs, {disableReplayLog?, maxCommands?, size?, replayPath?})`
 - _`fc.commands(commandArbs, maxCommands)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `commandArbs` — _array of arbitraries responsible to generate commands_
 - `disableReplayLog?` — _disable the display of details regarding the replay for commands_
@@ -4136,7 +4063,7 @@ _&#8195;with:_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `replayPath?` — _only used when replaying commands_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 ```js
 type Model = { /* stuff */ };
@@ -4167,29 +4094,27 @@ fc.assert(
 ```
 
 Refer to [Model based testing or UI test](./Tips.md#model-based-testing-or-ui-test) for more details.
-
 </details>
 
 <details>
 <summary><b>scheduler</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#scheduler">api</a>]</summary><br/>
 
-_&#8195;Description_
+*&#8195;Description*
 
 > Scheduler for asynchronous tasks
 
-_&#8195;Signatures_
+*&#8195;Signatures*
 
 - `fc.scheduler()`
 - `fc.scheduler({ act? })`
 
-_&#8195;with:_
+*&#8195;with:*
 
 - `act` — _ensure that all scheduled tasks will be executed in the right context_
 
-_&#8195;Usages_
+*&#8195;Usages*
 
 Refer to [Race conditions detection](./RaceConditions.md) or [Detect race conditions (quick overview)](./Tips.md#detect-race-conditions) for more details.
-
 </details>
 
 ## Going further?
@@ -4199,14 +4124,12 @@ Refer to [Race conditions detection](./RaceConditions.md) or [Detect race condit
 Since version 2.22.0, there is a distinction between constraints required by specifications and what will really be generated. When dealing with array-like arbitraries such as `fc.array` or `fc.string`, defining a constraint like `maxLength` can be seen as if you wrote "my algorithm is not supposed to handle arrays having more than X elements". It does not ask fast-check to generate arrays with X elements, but tells it that it could if needed or asked to.
 
 What really drives fast-check into generating large arrays is called `size`. At the level of an arbitrary it can be set to:
-
 - Relative size: `"-4"`, `"-3"`, `"-2"`, `"-1"`, `"="`, `"+1"`, `"+2"`, `"+3"` or `"+4"` — _offset the global setting `baseSize` by the passed offset_
 - Explicit size: `"xsmall"`, `"small"`, `"medium"`, `"large"` or `"xlarge"` — _use an explicit size_
 - Exact value: `"max"` — _generate entities having up-to `maxLength` items_
 - Automatic size: `undefined` — _if `maxLength` has not been specified or if the global setting `defaultSizeToMaxWhenMaxSpecified` is `false` (in v2 it defaults to `true` for backward compatibilty reasons) then `"="`, otherwise `"max"`_
 
 Here is a quick overview of how we use the `size` parameter associated to a minimal length to compute the maximal length for the generated values:
-
 - `xsmall` — `min + (0.1 * min + 1)`
 - `small` (default) — `min + (1 * min + 10)`
 - `medium` — `min + (10 * min + 100)`
@@ -4229,7 +4152,6 @@ be the only kind of configuration used to setup depth factors.
 Depth factor derived from size works exactly the same way as size, it can rely on Relative Size but also Explicit Size.
 
 Here is how a size translates into depth factors:
-
 - `xsmall` — `1`
 - `small` (default) — `1 / 2`
 - `medium` — `1 / 4`
@@ -4237,7 +4159,6 @@ Here is how a size translates into depth factors:
 - `xlarge` — `1 / 16`
 
 In the context of fast-check@v2, the condition to leverage an automatic defaulting of the depth factor is to:
-
 - either define it to `=` for each arbitrary not defaulting it automatically (only `option`, `oneof` and `frequency` do not default it to avoid breaking existing code)
 - or to configure a `baseSize` in the global settings
 
