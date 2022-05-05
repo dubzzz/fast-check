@@ -50,7 +50,9 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Typecheck
-        run: yarn typecheck
+        run: |
+            yarn prebuild
+            yarn typecheck
   test:
     name: 'Test'
     runs-on: ubuntu-latest
