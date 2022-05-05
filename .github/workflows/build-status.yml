@@ -49,11 +49,12 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: yarn --frozen-lockfile
-      - name: Typecheck
+      - name: Build the library (dev version)
         run: |
           yarn prebuild
-          yarn build:publish-types
-          yarn typecheck
+          yarn build
+      - name: Typecheck
+        run: yarn typecheck
   test:
     name: 'Test'
     runs-on: ubuntu-latest
