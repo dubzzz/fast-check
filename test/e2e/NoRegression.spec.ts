@@ -293,10 +293,10 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('set', () => {
+  it('uniqueArray', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.set(fc.nat()), (v) => testFunc(v)),
+        fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
