@@ -35,7 +35,7 @@ jobs:
       - name: Check lint
         run: yarn lint:check
   typecheck:
-    name: 'Type check'
+    name: 'Typecheck'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
