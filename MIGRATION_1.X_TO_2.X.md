@@ -39,22 +39,22 @@ In the previous major, `fc.constantFrom` was not typing tuples properly and refu
 As an example, the following was not compiling:
 
 ```ts
-fc.constantFrom(false, null, undefined, 0)
+fc.constantFrom(false, null, undefined, 0);
 ```
 
 It required the user to explicitely specify the type:
 
 ```ts
 /// In version 1.x.x
-fc.constantFrom<boolean | null | number>(false, null, 0)
+fc.constantFrom<boolean | null | number>(false, null, 0);
 
 /// In version 2.x.x
-fc.constantFrom(false, null, 0)
+fc.constantFrom(false, null, 0);
 // or with an explicit typing
-fc.constantFrom<(boolean | null | number)[]>(false, null, 0)
+fc.constantFrom<(boolean | null | number)[]>(false, null, 0);
 ```
 
-If you explicitely typed some calls, `fc.constantFrom<T>` should be updated into `fc.constantFrom` - *without any generic* - or `fc.constantFrom<T[]>`.
+If you explicitely typed some calls, `fc.constantFrom<T>` should be updated into `fc.constantFrom` - _without any generic_ - or `fc.constantFrom<T[]>`.
 
 Associated Pull Requests: [#747](https://github.com/dubzzz/fast-check/pull/747)
 
@@ -68,7 +68,7 @@ Associated Pull Requests: [#755](https://github.com/dubzzz/fast-check/pull/755)
 
 ## No more browser build
 
-In the previous major, fast-check was building a specific bundle for browsers. This bundle was easily *fetch-able* from CDNs like unpkg.
+In the previous major, fast-check was building a specific bundle for browsers. This bundle was easily _fetch-able_ from CDNs like unpkg.
 
 Example of bundled version of fast-check: https://unpkg.com/browse/fast-check@1.22.1/lib/bundle.js
 
@@ -80,14 +80,14 @@ If the browsers you are targeting are compatible with esm-modules, you can impor
 
 ```html
 <script type="module">
-  import fc from "https://cdn.skypack.dev/fast-check";
+  import fc from 'https://cdn.skypack.dev/fast-check';
   // code...
 </script>
 ```
 
 ### Locally build the bundled version
 
-Alternatively, you can easily build the `lib/bundle.js` file that was provided by fast-check by running the following command-line - *here we assume that you declared fast-check as a dependency of your project in the `package.json`*.
+Alternatively, you can easily build the `lib/bundle.js` file that was provided by fast-check by running the following command-line - _here we assume that you declared fast-check as a dependency of your project in the `package.json`_.
 
 ```bash
 npx -p browserify browserify node_modules/fast-check/lib/fast-check.js --s fastcheck > node_modules/fast-check/lib/bundle.js
@@ -107,7 +107,7 @@ Associated Pull Requests: [#756](https://github.com/dubzzz/fast-check/pull/756)
 
 Support for versions of ES standard below 2017 has been removed.
 
-If you are still using - *and not transpiling towards your target* - a version of Node or of the browser that does not support ES2017, you can either keep using fast-check 1.x.x or have a look into [babel](https://github.com/babel/babel) and related projects such as [babelify](https://github.com/babel/babelify).
+If you are still using - _and not transpiling towards your target_ - a version of Node or of the browser that does not support ES2017, you can either keep using fast-check 1.x.x or have a look into [babel](https://github.com/babel/babel) and related projects such as [babelify](https://github.com/babel/babelify).
 
 Associated Pull Requests: [#748](https://github.com/dubzzz/fast-check/pull/748)
 

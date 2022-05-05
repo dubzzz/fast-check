@@ -28,6 +28,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 ## Filter invalid combinations using pre-conditions
 
 Filtering invalid combinations of generated entries can be done in two ways in fast-check:
+
 - at arbitrary level using `.filter(...)`
 - at property level using `fc.pre(expectedToBeTrue)`
 
@@ -37,23 +38,21 @@ This part describes the usage of `fc.pre(...)`. More details on `.filter(...)` i
 
 ```js
 fc.assert(
-  fc.property(
-    fc.nat(), fc.nat(),
-    (a, b) => {
-      // runs not having a < b will be disgarded
-      fc.pre(a < b);
-      // ... your code
-      // ... and possibly other preconditions using fc.pre(...)
-    }
-  )
-)
+  fc.property(fc.nat(), fc.nat(), (a, b) => {
+    // runs not having a < b will be disgarded
+    fc.pre(a < b);
+    // ... your code
+    // ... and possibly other preconditions using fc.pre(...)
+  })
+);
 ```
 
-Whenever it encounters a failing precondition, the framework generates another value and forgets about this run - *neither failed nor succeeded*.
+Whenever it encounters a failing precondition, the framework generates another value and forgets about this run - _neither failed nor succeeded_.
 
 The advantage of `fc.pre(...)` over `.filter(...)` is that runs having too many rejected values will be marked as faulty. When used in combination of `fc.check(...)` it can help to design new filtered arbitraries as the number of skipped values will be computed and available in the output.
 
 However when your arbitrary is safe enough, switching to `.filter(...)` might be considered for two reasons:
+
 - easier to share the arbitrary across multiple tests
 - higher performances - contrary to `fc.pre`, `fc.filter` is not exception-based making it faster
 
@@ -153,6 +152,7 @@ type Model = { num: number };
 ```
 
 Then we have to define a command for each of the available operations on our list. Commands come with two methods:
+
 - `check(m: Readonly<Model>): boolean`: true if the command can be executed given the current state
 - `run(m: Model, r: RealSystem): void`: execute the command on the system and update the model accordingly. Check for potential problems or inconsistencies between the model and the real system - throws in such case.
 
@@ -162,7 +162,7 @@ class PushCommand implements fc.Command<Model, List> {
   check = (m: Readonly<Model>) => true;
   run(m: Model, r: List): void {
     r.push(this.value); // impact the system
-    ++m.num;            // impact the model
+    ++m.num; // impact the model
   }
   toString = () => `push(${this.value})`;
 }
@@ -191,13 +191,13 @@ Now that all or commands are ready we can run everything:
 ```typescript
 // define the possible commands and their inputs
 const allCommands = [
-  fc.integer().map(v => new PushCommand(v)),
+  fc.integer().map((v) => new PushCommand(v)),
   fc.constant(new PopCommand()),
-  fc.constant(new SizeCommand())
+  fc.constant(new SizeCommand()),
 ];
 // run everything
 fc.assert(
-  fc.property(fc.commands(allCommands, { size: '+1' }), cmds => {
+  fc.property(fc.commands(allCommands, { size: '+1' }), (cmds) => {
     const s = () => ({ model: { num: 0 }, real: new List() });
     fc.modelRun(s, cmds);
   })
@@ -221,7 +221,7 @@ Here is a very simple React-based example that you can play with on [CodeSandbox
 ```jsx
 /* Component */
 
-import { getUserProfile } from './api.js'
+import { getUserProfile } from './api.js';
 function UserPageProfile(props) {
   const { userId } = props;
   const [userData, setUserData] = React.useState(null);
@@ -249,19 +249,17 @@ function UserPageProfile(props) {
 
 test('should not display data related to another user', () =>
   fc.assert(
-    fc.asyncProperty(
-      fc.uuid(), fc.uuid(), fc.scheduler(),
-      async (uid1, uid2, s) => {
+    fc
+      .asyncProperty(fc.uuid(), fc.uuid(), fc.scheduler(), async (uid1, uid2, s) => {
         // Arrange
-        getUserProfile.mockImplementation(
-          s.scheduleFunction(async (userId) => ({ id: userId, name: userId })));
+        getUserProfile.mockImplementation(s.scheduleFunction(async (userId) => ({ id: userId, name: userId })));
 
         // Act
         const { rerender, queryByTestId } = render(<UserProfilePage userId={uid1} />);
         s.scheduleSequence([
           async () => {
             rerender(<UserProfilePage userId={uid2} />);
-          }
+          },
         ]);
         while (s.count() !== 0) {
           await act(async () => {
@@ -286,7 +284,7 @@ Here is what an error can look like in case we only asked for a scheduler:
  Property failed after 1 tests
  { seed: -22040264, path: "0", endOnFailure: true }
  Counterexample: [schedulerFor()`
- -> [task${1}] promise resolved with value "A"     
+ -> [task${1}] promise resolved with value "A"
  -> [task${3}] promise resolved with value "C"
  -> [task${2}] promise resolved with value "B"`]
  Shrunk 0 time(s)
@@ -300,14 +298,18 @@ If you want to add this example in your set of custom examples you have to use `
 ```js
 test('should run with custom scheduler then generated ones', () =>
   fc.assert(
-    fc.property(fc.scheduler(), (s) => {/* Test */}),
+    fc.property(fc.scheduler(), (s) => {
+      /* Test */
+    }),
     {
       examples: [
-        [fc.schedulerFor()`
+        [
+          fc.schedulerFor()`
  -> [task${1}] promise resolved with value "A"     
  -> [task${3}] promise resolved with value "C"
- -> [task${2}] promise resolved with value "B"`]
-      ]
+ -> [task${2}] promise resolved with value "B"`,
+        ],
+      ],
     }
   ));
 ```
@@ -315,6 +317,7 @@ test('should run with custom scheduler then generated ones', () =>
 ## Opt for verbose failures
 
 By default, the failures reported by `fast-check` feature most relevant data:
+
 - seed
 - path towards the minimal counterexample
 - number of tries before the first failure
@@ -324,14 +327,13 @@ By default, the failures reported by `fast-check` feature most relevant data:
 `fast-check` comes with a verbose mode, which can help users while trying to dig into a failure.
 
 For instance, let's suppose the following property failed:
+
 ```js
-fc.assert(
-    fc.property(
-        fc.string(), fc.string(), fc.string(),
-        (a,b,c) => contains(a+b+c, b)));
+fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => contains(a + b + c, b)));
 ```
 
 The output will look something like:
+
 ```
 Error: Property failed after 1 tests (seed: 1527423434693, path: 0:0:0): ["","",""]
 Shrunk 1 time(s)
@@ -341,15 +343,16 @@ Hint: Enable verbose mode in order to have the list of all failing values encoun
 ```
 
 In order to enable the `verbose` mode, we just need to give a second parameter to `fc.assert` as follow:
+
 ```js
 fc.assert(
-    fc.property(
-        fc.string(), fc.string(), fc.string(),
-        (a,b,c) => contains(a+b+c, b)),
-    {verbose: true});
+  fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => contains(a + b + c, b)),
+  { verbose: true }
+);
 ```
 
 Verbose logs give more details on the error as they will contain all the counterexamples encountered while shrinking the inputs. The example above results in:
+
 ```
 Error: Property failed after 1 tests (seed: 1527423434693, path: 0:0:0): ["","",""]
 Shrunk 2 time(s)
@@ -364,6 +367,7 @@ Encountered failures were:
 With that output, we notice that our `contains` implementation seems to fail when the `pattern` we are looking for is the beginning of the string we are looking in.
 
 Verbosity can be set to produce even more verbose logs by setting `verbose` flag to:
+
 - `0`: `None` - default, equivalent to `false`
 - `1`: `Verbose` - equivalent to `true`
 - `2`: `VeryVerbose` - logs all the produced values in case of failure
@@ -403,8 +407,8 @@ The following code constructs an array containing the first 10 values that would
 
 ```typescript
 fc.sample(
-    fc.anything(), // arbitrary or property to extract the values from
-    10             // number of values to extract
+  fc.anything(), // arbitrary or property to extract the values from
+  10 // number of values to extract
 );
 ```
 
@@ -414,9 +418,9 @@ For that purpose I can use `fc.statistics` as follow:
 
 ```typescript
 fc.statistics(
-    fc.nat(),    // arbitrary or property to extract the values from
-    n => n % 2 === 0 ? 'Even number' : 'Odd number', // classifier
-    10000        // number of values to extract
+  fc.nat(), // arbitrary or property to extract the values from
+  (n) => (n % 2 === 0 ? 'Even number' : 'Odd number'), // classifier
+  10000 // number of values to extract
 );
 // Possible output (console.log):
 // Odd number...50.30%
@@ -441,26 +445,15 @@ In order to replay the failure on the counterexample - `[0]`, you have to change
 
 ```typescript
 // Original code
-fc.assert(
-  fc.property(
-    fc.nat(),
-    checkEverythingIsOk
-  )
-);
+fc.assert(fc.property(fc.nat(), checkEverythingIsOk));
 
 // Replay code: straight to the minimal counterexample
 // Only replay the minimal counterexample
-fc.assert(
-  fc.property(
-    fc.nat(),
-    checkEverythingIsOk
-  ),
-  {
-    seed: 1525890375951,
-    path: "0:0",
-    endOnFailure: true
-  }
-);
+fc.assert(fc.property(fc.nat(), checkEverythingIsOk), {
+  seed: 1525890375951,
+  path: '0:0',
+  endOnFailure: true,
+});
 ```
 
 **NOTE:** Replaying `fc.commands` requires passing an additional flag called `replayPath` when building this arbitrary (see below).
@@ -520,37 +513,23 @@ The value stored into `replayPath` encodes the history of what was really execut
 Sometimes it might be useful to run your test on some custom examples you think useful: either because they caused your code to fail in the past or because you explicitly want to confirm it succeeds on this specific example.
 
 Whatever the reason, the framework provides you the ability to set a custom list of examples into the settings of `fc.assert`.
-Those examples will be executed first followed by the values generated by the framework. It does not impact the number of values that will be tested against your property - *meaning that if you add 5 custom examples, you remove 5 generated values from the run*.
+Those examples will be executed first followed by the values generated by the framework. It does not impact the number of values that will be tested against your property - _meaning that if you add 5 custom examples, you remove 5 generated values from the run_.
 
 The syntax is the following:
 
 ```typescript
 // For a one parameter property
-fc.assert(
-  fc.property(
-    fc.nat(),
-    myCheckFunction
-  ),
-  {
-    examples: [
-      [0], // first example I want to test
-      [Number.MAX_SAFE_INTEGER]
-    ]
-  }
-)
+fc.assert(fc.property(fc.nat(), myCheckFunction), {
+  examples: [
+    [0], // first example I want to test
+    [Number.MAX_SAFE_INTEGER],
+  ],
+});
 
 // For a multiple parameters property
-fc.assert(
-  fc.property(
-    fc.string(), fc.string(), fc.string(),
-    myCheckFunction
-  ),
-  {
-    examples: [
-      ['', '', '']
-    ]
-  }
-)
+fc.assert(fc.property(fc.string(), fc.string(), fc.string(), myCheckFunction), {
+  examples: [['', '', '']],
+});
 ```
 
 Please keep in mind that property based testing frameworks are fully able to find corner-cases with no help at all.
@@ -565,16 +544,12 @@ Since version 2.19.0, fast-check comes with a built-in way to shrink automatical
 Once you have a property that fails with your case (possibly just something like: should not crash), you just have to pass the corner case within `examples` and let fast-check reduce it to something simpler to troubleshoot.
 
 ```typescript
-fc.assert(
-  fc.property(
-    fc.array(fc.string()),
-    myCheckFunction
-  ),
-  { examples: [
+fc.assert(fc.property(fc.array(fc.string()), myCheckFunction), {
+  examples: [
     // the user definable corner case
-    [ ['__', 'proto', '__'] ]
-  ]}
-)
+    [['__', 'proto', '__']],
+  ],
+});
 ```
 
 Please note that currently if you want fast-check to shrink values for you, you have to give `map` a way to unmap the values.
@@ -588,8 +563,8 @@ fc.assert(
   fc.property(
     fc.convertFromNext(
       fc.convertToNext(fc.array(fc.string())).map(
-        arr => arr.join(','),
-        raw => {
+        (arr) => arr.join(','),
+        (raw) => {
           // unmapper is supposed to handle not supported values by throwing
           if (typeof raw !== 'string') throw new Error('Unsupported');
           // remaning is supported
@@ -599,11 +574,13 @@ fc.assert(
     ),
     myCheckFunction
   ),
-  { examples: [
-    // the user definable corner case
-    [ '__,proto,__' ]
-  ]}
-)
+  {
+    examples: [
+      // the user definable corner case
+      ['__,proto,__'],
+    ],
+  }
+);
 ```
 
 ## Combine with other faker or random generator libraries
@@ -621,28 +598,30 @@ const fc = require('fast-check');
 const { faker } = require('@faker-js/faker');
 
 const fakerToArb = (fakerGen) => {
-  return fc.integer()
-    .noBias()   // same probability to generate each of the allowed integers
+  return fc
+    .integer()
+    .noBias() // same probability to generate each of the allowed integers
     .noShrink() // shrink on a seed makes no sense
-    .map(seed => {
-      faker.seed(seed);  // seed the generator
+    .map((seed) => {
+      faker.seed(seed); // seed the generator
       return fakerGen(); // call it
     });
 };
 
 const streetAddressArb = fakerToArb(faker.address.streetAddress);
-const customArb = fakerToArb(() => faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}"));
+const customArb = fakerToArb(() => faker.fake('{{name.lastName}}, {{name.firstName}} {{name.suffix}}'));
 ```
 
 With [lorem-ipsum](https://www.npmjs.com/package/lorem-ipsum) - random generator based faker:
 
 ```js
 const fc = require('fast-check');
-const { loremIpsum } = require("lorem-ipsum");
+const { loremIpsum } = require('lorem-ipsum');
 
-const loremArb = fc.infiniteStream(fc.double().noBias())
+const loremArb = fc
+  .infiniteStream(fc.double().noBias())
   .noShrink()
-  .map(s => {
+  .map((s) => {
     const rng = () => s.next().value; // prng like Math.random but controlled by fast-check
     return loremIpsum({ random: rng });
   });
@@ -656,56 +635,54 @@ All the runners provided by fast-check come with an optional parameter to custom
 
 ```typescript
 test('test #1', () => {
-  fc.assert(
-    myProp1,
-    { numRuns: 10 }
-  )
-})
+  fc.assert(myProp1, { numRuns: 10 });
+});
 test('test #2', () => {
   fc.assert(
     myProp2,
     { numRuns: 10 } // duplicated
-  )
-})
+  );
+});
 ```
 
 Starting at version `1.18.0`, the code above can be changed into:
 
 ```typescript
-fc.configureGlobal({ numRuns: 10 }) // see below for the recommended way (Jest/Mocha)
+fc.configureGlobal({ numRuns: 10 }); // see below for the recommended way (Jest/Mocha)
 test('test #1', () => {
-  fc.assert(myProp1)
-})
+  fc.assert(myProp1);
+});
 test('test #2', () => {
-  fc.assert(myProp2)
-})
+  fc.assert(myProp2);
+});
 ```
 
 **With Mocha**
 
-*Create a new setup file that will be executed before executing the test code itself - use `--file=mocha.setup.js` option to reference this file*
+_Create a new setup file that will be executed before executing the test code itself - use `--file=mocha.setup.js` option to reference this file_
 
 ```js
 // mocha.setup.js
-const fc = require("fast-check");
+const fc = require('fast-check');
 fc.configureGlobal({ numRuns: 10 });
 ```
 
 **With Jest**
 
-*Edit the configuration of Jest to add your own setup file - usually the configuration is defined in jest.config.js*
+_Edit the configuration of Jest to add your own setup file - usually the configuration is defined in jest.config.js_
+
 ```js
 // jest.config.js
 module.exports = {
-  setupFiles: ["./jest.setup.js"]
+  setupFiles: ['./jest.setup.js'],
 };
 ```
 
-*Create a new setup file that will be executed before executing the test code itself*
+_Create a new setup file that will be executed before executing the test code itself_
 
 ```js
 // jest.setup.js
-const fc = require("fast-check");
+const fc = require('fast-check');
 fc.configureGlobal({ numRuns: 10 });
 ```
 
@@ -714,6 +691,7 @@ fc.configureGlobal({ numRuns: 10 });
 Most of the time, test runners like Jest, Mocha or even Jasmine come with default timeouts. Whenever one test takes longer than this time limit, the test runner might stop it immediately. Unfortunately whenever fast-check gets stopped at the middle of a run, it cannot give back the seed nor the path that were used during this test.
 
 Here are some possible reasons why you may encounter timeouts with property based testing:
+
 - (1) an entry generated by fast-check took longer than expected
 - (2) shrinking process takes longer than expected - the main target of shrinking process is to report the user with the very minimal failing case, in order to achieve that it has to try many sub-inputs
 
@@ -722,8 +700,8 @@ In order to prevent your tests from timing out in your CI, you may [setup global
 ```js
 fc.configureGlobal({
   interruptAfterTimeLimit: 4000, // Default timeout in Jest 5000ms
-  markInterruptAsFailure: true,  // When set to true, timeout during initial cases (1) will be marked as an error
-                                 // When set to false, timeout during initial cases (1) will not be considered as a failure
+  markInterruptAsFailure: true, // When set to true, timeout during initial cases (1) will be marked as an error
+  // When set to false, timeout during initial cases (1) will not be considered as a failure
 });
 ```
 
@@ -764,17 +742,17 @@ const throwIfFailed = (out) => {
   if (out.failed) {
     throw new Error(fc.defaultReportMessage(out));
   }
-}
+};
 const myCustomAssert = (property, parameters) => {
   const out = fc.check(property, parameters);
 
   if (property.isAsync()) {
-    return out.then(runDetails => {
-      throwIfFailed(runDetails)
+    return out.then((runDetails) => {
+      throwIfFailed(runDetails);
     });
   }
   throwIfFailed(out);
-}
+};
 ```
 
 ## Create a CodeSandbox link on error
@@ -836,24 +814,28 @@ The npm package [jsverify-to-fast-check](https://www.npmjs.com/package/jsverify-
 Here are some alternatives ways to import fast-check into your project.
 
 Node with CommonJS:
+
 ```js
 const fc = require('fast-check');
 ```
 
 Node with ES Modules:
+
 ```js
 import fc from 'fast-check';
 ```
 
 Deno:
+
 ```js
-import fc from "https://cdn.skypack.dev/fast-check";
+import fc from 'https://cdn.skypack.dev/fast-check';
 ```
 
 Web Browser:
+
 ```html
 <script type="module">
-  import fc from "https://cdn.skypack.dev/fast-check";
+  import fc from 'https://cdn.skypack.dev/fast-check';
   // code...
 </script>
 ```
@@ -870,10 +852,7 @@ By default `fast-check` will serialize the generated values using it's internal 
 Most of the time you may only need to define `fc.toStringMethod`. `fc.toStringMethod` is the serializer method that will be used by `fast-check` to serialize your instance whatever the context: asynchronous or synchronous properties.
 
 ```ts
-Object.defineProperties(
-  myInstanceWithoutCustomToString,
-  { [fc.toStringMethod]: { value: () => 'my-value' } }
-);
+Object.defineProperties(myInstanceWithoutCustomToString, { [fc.toStringMethod]: { value: () => 'my-value' } });
 // here your instance defines a custom serializer that will be used by fast-check
 // whenever needed
 ```
@@ -881,16 +860,18 @@ Object.defineProperties(
 But when working with asynchronous values, you may need an async code to get back the value. For instance:
 
 ```ts
-Object.defineProperties(
-  myPromisePossiblyResolved,
-  { [fc.asyncToStringMethod]: { value: async () => {
-    const resolved = await myPromisePossiblyResolved;
-    return `My value: ${resolved}`;
-  } } }
-);
+Object.defineProperties(myPromisePossiblyResolved, {
+  [fc.asyncToStringMethod]: {
+    value: async () => {
+      const resolved = await myPromisePossiblyResolved;
+      return `My value: ${resolved}`;
+    },
+  },
+});
 ```
 
 Please note that:
+
 1. `fc.asyncToStringMethod` will only be used in the context of asynchronous properties
 2. While `fc.asyncToStringMethod` is marked as asynchronous it should not be too long. More precisely it should resolve barely instantly.
 
@@ -899,10 +880,12 @@ Please note that:
 By default all arbitraries have their size defaulted to `"small"`. In other words, it means that whenever you ask the framework to generate array-like entities they will have a _small_ number of items. By _small_, we mean that when you ask for `fc.array(fc.nat())`, you will only see arrays having between `0` and `10` elements.
 
 There are two main ways to change this upper bound:
+
 - at instantiation level by passing an explicit size, like in: `fc.array(fc.nat(), {size: '+1'})`
 - at global level
 
 At global level, there are two main options:
+
 - `baseSize` — defaulted to `"small"` — define what should be the default size when nothing has been specified at instantiation level
 - `defaultSizeToMaxWhenMaxSpecified` — defaulted to `true` — when set to `true`, any arbitrary being instantiated with an upper bound (such as `maxLength`) and no size will see it's size defaulted to `max` / when set to `false`, if not defined the size will be defaulted to `baseSize` (see above)
 

@@ -19,21 +19,22 @@ By doing this it can highlight potential race conditions in your code. Please re
 ## Overview of the API
 
 `fc.scheduler<TMetadata=unknown>()` is just an `Arbitrary` providing a `Scheduler` instance. The generated scheduler has the following interface:
+
 - `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
 - `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
 - `scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetadata>[]): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
 - `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler.
 - `waitOne: () => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks.
-- `waitAll: () => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - *see CodeSandbox example on userProfile*.
+- `waitAll: () => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - _see CodeSandbox example on userProfile_.
 - `waitFor: <T>(unscheduledTask: Promise<T>) => Promise<T>` - Wait as many scheduled tasks as need to resolve the received task. Contrary to `waitOne` or `waitAll` it can be used to wait for calls not yet scheduled when calling it (some test solutions like supertest use such trick not to run any query before the user really calls then on the request itself). Be aware that while this helper will wait eveything to be ready for `unscheduledTask` to resolve, having uncontrolled tasks triggering stuff required for `unscheduledTask` might make replay of failures harder as such asynchronous triggers stay out-of-control for fast-check.
 - `report: () => SchedulerReportItem<TMetaData>[]` - Produce an array containing all the scheduled tasks so far with their execution status. If the task has been executed, it includes a string representation of the associated output or error produced by the task if any. Tasks will be returned in the order they get executed by the scheduler.
 
 With:
+
 ```ts
 type SchedulerSequenceItem<TMetadata> =
-    { builder: () => Promise<any>; label: string; metadata?: TMetadata } |
-    (() => Promise<any>)
-;
+  | { builder: () => Promise<any>; label: string; metadata?: TMetadata }
+  | (() => Promise<any>);
 ```
 
 You can also define an hardcoded scheduler by using `fc.schedulerFor(ordering: number[])` - _should be passed through `fc.constant` if you want to use it as an arbitrary_. For instance: `fc.schedulerFor([1,3,2])` means that the first scheduled promise will resolve first, the third one second and at the end we will resolve the second one that have been scheduled.
@@ -72,16 +73,16 @@ For instance, `Promise.all` and `Promise.race` are examples of such algorithms.
 shortTask.then(() => {
   // not impacted by the scheduler
   // as it is directly using the original promise
-})
+});
 
-const scheduledShortTask = s.schedule(shortTask)
-const scheduledLongTask = s.schedule(longTask)
+const scheduledShortTask = s.schedule(shortTask);
+const scheduledLongTask = s.schedule(longTask);
 
 // Even if in practice, shortTask is quicker than longTask
 // If the scheduler selected longTask to end first,
 // it will wait longTask to end, then once ended it will resolve scheduledLongTask,
 // while scheduledShortTask will still be pending until scheduled.
-await s.waitOne()
+await s.waitOne();
 ```
 
 ### `scheduleFunction`
@@ -112,21 +113,20 @@ WARNING: `scheduleFunction` is only postponing the resolution of the function. T
 // - s             : Scheduler
 // - getUserDetails: (uid: string) => Promise - API call to get details for a User
 
-
-const getUserDetailsScheduled = s.scheduleFunction(getUserDetails)
+const getUserDetailsScheduled = s.scheduleFunction(getUserDetails);
 
 getUserDetailsScheduled('user-001')
-// What happened under the hood?
-// - A call to getUserDetails('user-001') has been triggered
-// - The promise returned by the call to getUserDetails('user-001') has been registered to the scheduler
+  // What happened under the hood?
+  // - A call to getUserDetails('user-001') has been triggered
+  // - The promise returned by the call to getUserDetails('user-001') has been registered to the scheduler
   .then((dataUser001) => {
     // This block will only be executed when the scheduler
     // will schedule this Promise
-  })
+  });
 
 // Unlock one of the scheduled Promise registered on s
 // Not necessarily the first one that resolves
-await s.waitOne()
+await s.waitOne();
 ```
 
 ### `scheduleSequence`
@@ -164,16 +164,14 @@ const otherUserId2 = '003';
 
 // render profile for user {initialUserId}
 // Note: api calls to get back details for one user are also scheduled
-const { rerender } = render(
-  <UserProfilePage userId={initialUserId} />
-)
+const { rerender } = render(<UserProfilePage userId={initialUserId} />);
 
 s.scheduleSequence([
   async () => rerender(<UserProfilePage userId={otherUserId1} />),
   async () => rerender(<UserProfilePage userId={otherUserId2} />),
-])
+]);
 
-await s.waitAll()
+await s.waitAll();
 // expect to see profile for user otherUserId2
 ```
 
@@ -185,12 +183,11 @@ In some tests, we want to try cases where we launch multiple concurrent queries 
 
 ```ts
 const scheduleCall = <T>(s: Scheduler, f: () => Promise<T>) => {
-  s.schedule(Promise.resolve("Start the call"))
-    .then(() => f());
-}
+  s.schedule(Promise.resolve('Start the call')).then(() => f());
+};
 
 // Calling doStuff will be part of the task scheduled in s
-scheduleCall(s, () => doStuff())
+scheduleCall(s, () => doStuff());
 ```
 
 **Scheduling a call to a mocked server**
@@ -200,30 +197,34 @@ Contrary the behaviour of `scheduleFunction`, real calls to servers are not imme
 Let's imagine you are building a TODO-list app. Your users can add a TODO only if no other TODO has the same label. If you use the built-in `scheduleFunction` to test it, the mocked-server will always receive the calls in the same order as the one they were done.
 
 ```ts
-const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(s: Scheduler, f: (...args: TArgs) => Promise<TOut>) => {
+const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
+  s: Scheduler,
+  f: (...args: TArgs) => Promise<TOut>
+) => {
   return (...args: TArgs) => {
-    return s.schedule(Promise.resolve("Server received the call"))
-      .then(() => f(...args));
-  }
-}
+    return s.schedule(Promise.resolve('Server received the call')).then(() => f(...args));
+  };
+};
 
-const newAddTodo = scheduleMockedServerFunction(s, (label) => mockedApi.addTodo(label))
+const newAddTodo = scheduleMockedServerFunction(s, (label) => mockedApi.addTodo(label));
 // With newAddTodo = s.scheduleFunction((label) => mockedApi.addTodo(label))
 // The mockedApi would have received todo-1 first, followed by todo-2
 // When each of those calls resolve would have been the responsibility of s
 // In the contrary, with scheduleMockedServerFunction, the mockedApi might receive todo-2 first.
-newAddTodo('todo-1') // .then
-newAddTodo('todo-2') // .then
+newAddTodo('todo-1'); // .then
+newAddTodo('todo-2'); // .then
 
 // or...
 
-const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(s: Scheduler, f: (...args: TArgs) => Promise<TOut>) => {
+const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
+  s: Scheduler,
+  f: (...args: TArgs) => Promise<TOut>
+) => {
   const scheduledF = s.scheduleFunction(f);
   return (...args: TArgs) => {
-    return s.schedule(Promise.resolve("Server received the call"))
-      .then(() => scheduledF(...args));
-  }
-}
+    return s.schedule(Promise.resolve('Server received the call')).then(() => scheduledF(...args));
+  };
+};
 ```
 
 **Scheduling timers like setTimeout or setInterval**

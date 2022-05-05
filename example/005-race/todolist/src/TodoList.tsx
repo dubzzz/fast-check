@@ -23,9 +23,11 @@ export default function TodoList(props: Props) {
   const { fetchAllTodos, addTodo, toggleTodo, removeTodo } = props;
 
   const [inputValue, setInputValue] = useState('');
-  const [allTodos, setAllTodos] = useState([] as ((TodoItem | DraftTodoItem) & {
-    loading: boolean;
-  })[]);
+  const [allTodos, setAllTodos] = useState(
+    [] as ((TodoItem | DraftTodoItem) & {
+      loading: boolean;
+    })[]
+  );
 
   useEffect(() => {
     const runQuery = async () => {
@@ -34,13 +36,13 @@ export default function TodoList(props: Props) {
         // Ignore errors
         return;
       }
-      setAllTodos(allTodos => {
+      setAllTodos((allTodos) => {
         // The call to fetch all the todos might be related to outdated data
         // We want to preserve all our todos that are not in the result of the query
-        const knownTodosInQuery = new Set<string | undefined>(query.response.map(todo => todo.id));
+        const knownTodosInQuery = new Set<string | undefined>(query.response.map((todo) => todo.id));
         return [
-          ...query.response.map(todo => ({ ...todo, loading: false })),
-          ...allTodos.filter(todo => !knownTodosInQuery.has(todo.id))
+          ...query.response.map((todo) => ({ ...todo, loading: false })),
+          ...allTodos.filter((todo) => !knownTodosInQuery.has(todo.id)),
         ];
       });
     };
@@ -55,19 +57,19 @@ export default function TodoList(props: Props) {
       id: undefined,
       label: inputValue,
       checked: false,
-      loading: true
+      loading: true,
     };
-    setAllTodos(allTodos => [...allTodos, draftTodo]);
+    setAllTodos((allTodos) => [...allTodos, draftTodo]);
 
     const query = await addTodo(inputValue);
     if (query.status === 'error') {
       // Remove draft todo on error
-      setAllTodos(allTodos => allTodos.filter(todo => todo !== draftTodo));
+      setAllTodos((allTodos) => allTodos.filter((todo) => todo !== draftTodo));
       return;
     }
     // Replace draft todo by the final version
-    setAllTodos(allTodos =>
-      allTodos.map(todo => {
+    setAllTodos((allTodos) =>
+      allTodos.map((todo) => {
         return todo !== draftTodo ? todo : { ...query.response, loading: false };
       })
     );
@@ -75,31 +77,31 @@ export default function TodoList(props: Props) {
 
   const toggleById = async (id: string) => {
     // Temporary toggle the todo (serevr might still reject the toggle)
-    setAllTodos(allTodos =>
-      allTodos.map(todo => (todo.id !== id ? todo : { ...todo, checked: !todo.checked, loading: true }))
+    setAllTodos((allTodos) =>
+      allTodos.map((todo) => (todo.id !== id ? todo : { ...todo, checked: !todo.checked, loading: true }))
     );
 
     const query = await toggleTodo(id);
     if (query.status === 'error') {
-      const toggledTodo = allTodos.find(todo => todo.id === id);
+      const toggledTodo = allTodos.find((todo) => todo.id === id);
       if (toggledTodo) {
-        setAllTodos(allTodos => allTodos.map(todo => (todo.id !== id ? todo : toggledTodo)));
+        setAllTodos((allTodos) => allTodos.map((todo) => (todo.id !== id ? todo : toggledTodo)));
       }
       return;
     }
 
-    setAllTodos(allTodos => allTodos.map(todo => (todo.id !== id ? todo : { ...query.response, loading: false })));
+    setAllTodos((allTodos) => allTodos.map((todo) => (todo.id !== id ? todo : { ...query.response, loading: false })));
   };
 
   const deleteById = async (id: string) => {
     // Temporary delete the todo (serevr might still reject the delete)
-    setAllTodos(allTodos => allTodos.filter(todo => todo.id !== id));
+    setAllTodos((allTodos) => allTodos.filter((todo) => todo.id !== id));
 
     const query = await removeTodo(id);
     if (query.status === 'error') {
-      const deletedTodo = allTodos.find(todo => todo.id === id);
+      const deletedTodo = allTodos.find((todo) => todo.id === id);
       if (deletedTodo) {
-        setAllTodos(allTodos => [...allTodos, deletedTodo]);
+        setAllTodos((allTodos) => [...allTodos, deletedTodo]);
       }
       return;
     }
@@ -112,7 +114,7 @@ export default function TodoList(props: Props) {
         data-testid="todo-new-item-input"
         type="text"
         value={inputValue}
-        onChange={evt => setInputValue(evt.target.value)}
+        onChange={(evt) => setInputValue(evt.target.value)}
       />
       <button data-testid="todo-new-item-button" onClick={addCurrentTodo}>
         Add

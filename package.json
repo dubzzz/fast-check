@@ -40,8 +40,8 @@
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.cjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
     "docs:serve": "npx serve docs/",
-    "format": "prettier --write \"**/*.{js,ts}\"",
-    "format:check": "prettier --list-different \"**/*.{js,ts}\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --list-different .",
     "lint": "eslint \"**/*.{js,ts}\" --fix",
     "lint:check": "eslint \"**/*.{js,ts}\""
   },

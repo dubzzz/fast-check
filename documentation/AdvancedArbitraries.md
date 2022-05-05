@@ -1,6 +1,6 @@
 # [:house:](../README.md) Advanced arbitraries
 
-:warning: Before diving into the topic of *advanced arbitraries*, it is highly recommended to have in mind the [built-in arbitraries coming with fast-check](./Arbitraries.md).
+:warning: Before diving into the topic of _advanced arbitraries_, it is highly recommended to have in mind the [built-in arbitraries coming with fast-check](./Arbitraries.md).
 
 This documentation covers the definition of new arbitraries. It can be an arbitrary derived from some existing ones or a totally new one.
 
@@ -34,8 +34,7 @@ Additionaly it comes with `noShrink()` which derives an existing `Arbitrary<T>` 
 `filter(predicate: (t: T) => boolean): Arbitrary<T>` can be used to filter undesirable values from the generated ones. It can be used as some kind of pre-requisite for the parameters required for your algorithm. For instance, you might need to generate two ordered integer values. One approach can be to use filter as follow:
 
 ```typescript
-const minMax = fc.tuple(fc.integer(), fc.integer())
-                    .filter(t => t[0] < t[1]);
+const minMax = fc.tuple(fc.integer(), fc.integer()).filter((t) => t[0] < t[1]);
 ```
 
 But be aware that using `filter` may highly impact the time required to generate a valid entry. In the previous example, half of the generated tuples will be rejected. It can nontheless be a very useful and powerful tool to derive your arbitraries quickly and easily.
@@ -47,16 +46,14 @@ But be aware that using `filter` may highly impact the time required to generate
 For instance the previous example could have been refactored as follow:
 
 ```typescript
-const minMax = fc.tuple(fc.integer(), fc.integer())
-                    .map(t => t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]]);
+const minMax = fc.tuple(fc.integer(), fc.integer()).map((t) => (t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]]));
 ```
-
 
 Another example would be to derive `fc.integer()` and `fc.array()` to build `fc.char()` and `fc.string()`:
 
 ```typescript
 const char = () => fc.integer(0x20, 0x7e).map(String.fromCharCode);
-const string = () => fc.array(fc.char()).map(arr => arr.join(''));
+const string = () => fc.array(fc.char()).map((arr) => arr.join(''));
 ```
 
 Most of the [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/main/src/check/arbitrary) use this trick to define themselves.
@@ -71,15 +68,25 @@ For example you can create arbitraries based on generated values:
 
 ```typescript
 // generate an array of strings, all having the same length.
-const RandomFixedLengthStringArb: Arbitrary<string[]> =
-    fc.nat(100)
-      .chain(length => fc.array(fc.string(length, length)));
+const RandomFixedLengthStringArb: Arbitrary<string[]> = fc
+  .nat(100)
+  .chain((length) => fc.array(fc.string(length, length)));
 
 // generate an array of 2-element arrays containing integer pairs
-const BoundedPairsArb: Arbitrary<[number, number][]> = fc.nat().chain(bound => fc.array(fc.integer().map((leftBound: number): [number, number] => [leftBound, leftBound+bound])));
+const BoundedPairsArb: Arbitrary<[number, number][]> = fc
+  .nat()
+  .chain((bound) =>
+    fc.array(fc.integer().map((leftBound: number): [number, number] => [leftBound, leftBound + bound]))
+  );
 
 // generate a random sized substring of a string
-const StringAndSubstringArb: Arbitrary<[string, string]> = fc.string(3,100).chain(fulltext => fc.tuple(fc.nat(fulltext.length-1), fc.nat(fulltext.length-1)).map(indexes => [fulltext, fulltext.slice(indexes[0], indexes[1]) ]))
+const StringAndSubstringArb: Arbitrary<[string, string]> = fc
+  .string(3, 100)
+  .chain((fulltext) =>
+    fc
+      .tuple(fc.nat(fulltext.length - 1), fc.nat(fulltext.length - 1))
+      .map((indexes) => [fulltext, fulltext.slice(indexes[0], indexes[1])])
+  );
 ```
 
 ### Remove the shrinker
@@ -101,6 +108,7 @@ In general, whatever the version of fast-check you are using, it is highly recom
 In such case, even if extending the [class `Arbitrary`](https://github.com/dubzzz/fast-check/blob/c96b3f49317fa588fca852b5671827fdb2fe8d11/src/check/arbitrary/definition/Arbitrary.ts#L13) still works fine, it is highly recommended to extend the [class `NextArbitrary`](https://github.com/dubzzz/fast-check/blob/c96b3f49317fa588fca852b5671827fdb2fe8d11/src/check/arbitrary/definition/NextArbitrary.ts#L12).
 
 An instance of `NextArbitrary` must define three methods:
+
 - `generate(mrng: Random, biasFactor: number | undefined): NextValue<T>`: Given a random generator and possibly a bias (≥2), it must generate a single value along with its context (if applicable). The context is an opaque value that should only be accessed by the class that produced it. This opaque value can be helpful to guide the shrinker and give it more context on the value, how it has been produced...
 - `shrink(value: T, context: unknown | undefined): Stream<NextValue<T>>`: Given a value and possibly a context (produced by `generate` or `shrink` of the very same instance), it has to produce a Stream of smaller values. Please note that the function always has to be called with a context except if `canShrinkWithoutContext` tells the caller that it can be called context-less for this precise value.
 - `canShrinkWithoutContext(value: unknown): value is T`: Given a value it can tells the caller whether or not `shrink` can be called on it without passing a context. If the returned value is `false` then it means that this value should not be passed to `shrink` without its context.
@@ -125,16 +133,19 @@ It takes a random number generator and it generates a value and the whole shrink
 Property based testing framework must be able to discover any kind of issues even very rare ones happening on some small values. For instance your algorithm might use magic numbers such as `-1`, `0` or others. Or fail when the input has duplicated values...
 
 A common way to deal with those issues is:
-- Solution A: only generate small values - *Issue: it fails to build large ones*
-- Solution B: generate larger and larger entries - *Issue: what if the failing case requires both large and small values*
+
+- Solution A: only generate small values - _Issue: it fails to build large ones_
+- Solution B: generate larger and larger entries - _Issue: what if the failing case requires both large and small values_
 
 The choice made by fast-check is to bias the arbitrary 1 time over `freq`.
 
 For `fc.integer`:
+
 - 1 over `freq`: arbitrary between smaller values
 - remaining: the full range arbitrary
 
 For `fc.array`:
+
 - 1 over `freq`:
   - 1 over `freq`: small array with biased values
   - remaining: full range array with biased values
@@ -146,8 +157,8 @@ A basic way to implement a property based testing framework is to define arbitra
 
 ```typescript
 interface DummyArbitrary<Ts> {
-    generate(mrng: Random): Ts;
-    shrink(prev: Ts): Stream<Ts>;
+  generate(mrng: Random): Ts;
+  shrink(prev: Ts): Stream<Ts>;
 }
 ```
 
@@ -164,17 +175,14 @@ Any generated value having a key for `fc.cloneMethod` would be handled a bit dif
 Cloneable values can be seen as stateful values that would be altered as soon as we use them inside the predicate. For this precise reason they have to be recreated if they need to be used inside other runs of the predicate.
 
 Example of usages:
+
 - `fc.context`: is a stateful instance that gathers all the logs for a given predicate execution. In order to provide only the logs linked to the run itself it has to be cloned between all the runs
 - stream structure
 
 Example of a stream arbitrary:
 
 ```typescript
-const streamInt = fc.nat()
-    .map(seed => {
-        return Object.assign(
-            new SeededRandomStream(seed),
-            { [fc.cloneMethod]: () => new SeededRandomStream(seed) }
-        );
-    });
+const streamInt = fc.nat().map((seed) => {
+  return Object.assign(new SeededRandomStream(seed), { [fc.cloneMethod]: () => new SeededRandomStream(seed) });
+});
 ```

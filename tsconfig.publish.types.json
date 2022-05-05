@@ -1,10 +1,10 @@
 {
-    "extends": "./tsconfig.publish.json",
-    "compilerOptions": {
-        "declaration": true,
-        "emitDeclarationOnly": true,
-        "incremental": false,
-        "removeComments": false,
-        "outDir": "lib/types"
-    }
+  "extends": "./tsconfig.publish.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "incremental": false,
+    "removeComments": false,
+    "outDir": "lib/types"
+  }
 }
