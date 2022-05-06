@@ -1009,7 +1009,6 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 
 - `fc.json()`
 - `fc.json({depthFactor?, maxDepth?})`
-- _`fc.json(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -1059,7 +1058,6 @@ fc.json({depthFactor: 'medium'})
 
 - `fc.unicodeJson()`
 - `fc.unicodeJson({depthFactor?, maxDepth?})`
-- _`fc.unicodeJson(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -3204,90 +3202,6 @@ fc.statistics(
 </details>
 
 <details>
-<summary><b>jsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#jsonobject">api</a>]</summary><br/>
-
-*&#8195;Description*
-
-> Generate any object eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_.
->
-> As `JSON.parse` preserves `-0`, `jsonObject` can also have `-0` as a value.
-> `jsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
->
-> Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
-
-*&#8195;Signatures*
-
-- `fc.jsonObject()` — _deprecated, prefer `fc.jsonValue` instead_
-- `fc.jsonObject({depthFactor?, maxDepth?})` — _deprecated, prefer `fc.jsonValue` instead_
-- _`fc.jsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-
-*&#8195;with:*
-
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
-- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
-
-*&#8195;Usages*
-
-```js
-fc.jsonObject()
-// Examples of generated values: true, {"z":["Zw"]}, [], false, -1.7976931348623033e+308…
-
-fc.jsonObject({maxDepth: 0})
-// Examples of generated values: null, "", 4.4e-323, true, false…
-
-fc.jsonObject({maxDepth: 1})
-// Examples of generated values:
-// • true
-// • {"C{X%3]Q$U":"$","D(]?*(9d'":"Fm19PeBSc","!s'%s":true,"/='zds[1f":null,"\"#ctQ":3.667237923224054e+176}
-// • "M}7xc\" _"
-// • {"":"G  ","JWsn":false,"9%Gp.m0":1205948.4747851335,"E(":null,"p7*8>":true}
-// • {"fS7":"iH0r ~?oNf"}
-// • …
-
-fc.jsonObject({depthFactor: 'medium'})
-// Examples of generated values:
-// • [-7.209286477974479e+237,-2e-322,false]
-// • {}
-// • [-1.7951460662085145e-266,1.3320100209363255e-134,"u9>PT^l[j"]
-// • null
-// • [false,6.765567584302464e+206,null,true]
-// • …
-
-fc.statistics(
-  fc.jsonObject({maxDepth: 10000}),
-  v => {
-    function size(n) {
-      if (Array.isArray(n))
-        return 1 + n.reduce((acc, child) => acc + size(child), 0);
-      if (typeof n === "object" && n)
-        return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-      return 1;
-    }
-    const s = size(v);
-    let lower = 1;
-    const next = n => String(n)[0] === '1' ? n * 5 : n * 2;
-    while (next(lower) <= s) { lower = next(lower); }
-    return `${lower} to ${next(lower) -1} items`;
-  }
-)
-// Computed statistics for 10k generated values:
-// For size = "xsmall":
-// • 1 to 4 items....69.69%
-// • 5 to 9 items....27.38%
-// • 10 to 49 items...2.93%
-// For size = "small":
-// • 1 to 4 items....59.37%
-// • 5 to 9 items....27.73%
-// • 10 to 49 items..12.90%
-// For size = "medium":
-// • 1 to 4 items....55.20%
-// • 10 to 49 items..32.24%
-// • 5 to 9 items....12.53%
-// • 50 to 99 items...0.03%
-```
-</details>
-
-<details>
 <summary><b>unicodeJsonValue</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonvalue">api</a>]</summary><br/>
 
 *&#8195;Description*
@@ -3326,58 +3240,6 @@ fc.unicodeJsonValue({maxDepth: 0})
 
 fc.unicodeJsonValue({maxDepth: 1})
 // Examples of generated values: true, [null], ["褣䛳"], false, {}…
-```
-</details>
-
-<details>
-<summary><b>unicodeJsonObject</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejsonobject">api</a>]</summary><br/>
-
-*&#8195;Description*
-
-> Generate any object eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_
->
-> As `JSON.parse` preserves `-0`, `unicodeJsonObject` can also have `-0` as a value.
-> `unicodeJsonObject` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
->
-> Please note that: `JSON.parse(JSON.stringify(value))` is not the identity as `-0` are transformed into `0` by `JSON.stringify`.
-
-*&#8195;Signatures*
-
-- `fc.unicodeJsonObject()` — _deprecated, prefer `fc.unicodeJsonValue` instead_
-- `fc.unicodeJsonObject({depthFactor?, maxDepth?})` — _deprecated, prefer `fc.unicodeJsonValue` instead_
-- _`fc.unicodeJsonObject(maxDepth)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-
-*&#8195;with:*
-
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
-- `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
-
-*&#8195;Usages*
-
-```js
-fc.unicodeJsonObject()
-// Examples of generated values:
-// • null
-// • [null,-4.295089174387055e-293,-2.6704522931006526e-132,null,true]
-// • 3.4453237274410463e+71
-// • [["䓂-￳",""]]
-// • [{"ᴿ렷浻灰썻鞘١⓼":"ᚄ秈搉糛힘ﯨ⯞","":-8.037747235177182e-192,"䐀⥌㚃뚹퐒孵ᱚ鼊鴓ᚔ":null},null]
-// • …
-
-fc.unicodeJsonObject({maxDepth: 0})
-// Examples of generated values: 1.7976931348623131e+308, false, "꙰ꁺ蜱", "⛙", -9.43140467271473e+139…
-
-fc.unicodeJsonObject({maxDepth: 1})
-// Examples of generated values:
-// • false
-// • {"觽竑减":1.7976931348623051e+308,"癤&嬩￸ ":false}
-// • {"ꁺ척蜱젿됻⫄":6.0080802185466595e-276,"":true,"웤鯁":false}
-// • [null]
-// • ["凛瞸㾡끴疘쥱潅䀱",null]
-// • …
-
-fc.unicodeJsonObject({depthFactor: 'medium'})
-// Examples of generated values: "㄃$", {"":false,"鳁꫌ᒏ뻌":"!'᫭","柎":false}, -3e-323, null, "뀮(\"- $"…
 ```
 </details>
 

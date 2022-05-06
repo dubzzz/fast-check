@@ -9,40 +9,12 @@ export { JsonSharedConstraints };
  *
  * Keys and string values rely on {@link unicode}
  *
- * @remarks Since 0.0.7
- * @public
- */
-function unicodeJson(): Arbitrary<string>;
-/**
- * For any JSON strings with unicode support and a maximal depth
- *
- * Keys and string values rely on {@link unicode}
- *
- * @param maxDepth - Maximal depth of the generated objects
- *
- * @deprecated
- * Superceded by `fc.unicodeJson({maxDepth})` - see {@link https://github.com/dubzzz/fast-check/issues/992 | #992}.
- * Ease the migration with {@link https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures | our codemod script}.
+ * @param constraints - Constraints to be applied onto the generated instance (since 2.5.0)
  *
  * @remarks Since 0.0.7
  * @public
  */
-function unicodeJson(maxDepth: number): Arbitrary<string>;
-/**
- * For any JSON strings with unicode support
- *
- * Keys and string values rely on {@link unicode}
- *
- * @param constraints - Constraints to be applied onto the generated instance
- *
- * @remarks Since 2.5.0
- * @public
- */
-function unicodeJson(constraints: JsonSharedConstraints): Arbitrary<string>;
-function unicodeJson(constraints?: number | JsonSharedConstraints): Arbitrary<string> {
-  // Rq: Explicit 'as any' as 'number | JsonConstraints' cannot be passed to 'unicodeJsonValue(number)'
-  //     and cannot be passed to 'unicodeJsonValue(JsonConstraints)' (both are too strict)
-  const arb = constraints != null ? unicodeJsonValue(constraints as any) : unicodeJsonValue();
+export function unicodeJson(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
+  const arb = unicodeJsonValue(constraints);
   return arb.map(JSON.stringify);
 }
-export { unicodeJson };
