@@ -4,7 +4,7 @@ This directory gathers multiple examples of properties you might come with when 
 
 Try online with [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
 
-*Teach yourself property based through examples*
+_Teach yourself property based through examples_
 
 ## Examples by category
 

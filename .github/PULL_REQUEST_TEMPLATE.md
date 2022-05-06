@@ -4,6 +4,7 @@
 <!-- ... -->
 
 <!-- Type of PR: [ ] unchecked / [ ] checked -->
+
 **_Category:_**
 
 - [ ] ✨ Introduce new features
@@ -13,8 +14,8 @@
 - [ ] 🏷️ Add or update types
 - [ ] ⚡️ Improve performance
 - [ ] _Other(s):_ ...
-<!-- Don't forget to add the gitmoji icon in the name of the PR -->
-<!-- See: https://gitmoji.dev/                                  -->
+  <!-- Don't forget to add the gitmoji icon in the name of the PR -->
+  <!-- See: https://gitmoji.dev/                                  -->
 
 <!-- Fixing bugs, adding features... may impact existing ones           -->
 <!-- in order to track potential issues that could be related to your PR -->
@@ -26,6 +27,7 @@
 <!-- Shrink values:    Can your change impact any of the existing generators in terms of shrink values, if so which ones? when? -->
 <!-- Performance:      Can it require some typings changes on user side? Please give more details -->
 <!-- Typings:          Is there a potential performance impact? In which cases? -->
+
 - [ ] Generated values
 - [ ] Shrink values
 - [ ] Performance

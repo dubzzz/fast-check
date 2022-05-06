@@ -1,7 +1,8 @@
 bundle/
 coverage/
-dist/
 docs/
+documentation/Arbitraries.md
+dist/
 lib/
 lib-*/
 *.generated.ts

@@ -27,7 +27,7 @@ Property based testing framework for JavaScript/TypeScript
 
 Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
 
-Property based testing frameworks check the truthfulness of properties. A property is a statement like: *for all (x, y, ...) such that precondition(x, y, ...) holds predicate(x, y, ...) is true*.
+Property based testing frameworks check the truthfulness of properties. A property is a statement like: _for all (x, y, ...) such that precondition(x, y, ...) holds predicate(x, y, ...) is true_.
 
 Install the module with: `yarn add fast-check --dev` or `npm install fast-check --save-dev`
 
@@ -43,14 +43,16 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 describe('properties', () => {
   // string text always contains itself
   it('should always contain itself', () => {
-    fc.assert(fc.property(fc.string(), text => contains(text, text)));
+    fc.assert(fc.property(fc.string(), (text) => contains(text, text)));
   });
   // string a + b + c always contains b, whatever the values of a, b and c
   it('should always contain its substrings', () => {
-    fc.assert(fc.property(fc.string(), fc.string(), fc.string(), (a,b,c) => {
-      // Alternatively: no return statement and direct usage of expect or assert
-      return contains(a+b+c, b);
-    }));
+    fc.assert(
+      fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+        // Alternatively: no return statement and direct usage of expect or assert
+        return contains(a + b + c, b);
+      })
+    );
   });
 });
 ```
@@ -71,6 +73,7 @@ Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-che
 More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/main/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
+
 - [🏁 Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md)
 - [🐣 Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md)
 - [🔧 Custom arbitraries](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md)
@@ -84,19 +87,19 @@ Useful documentations:
 
 fast-check has initially been designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
-- **Types:** strong and up-to-date types - *thanks to TypeScript*
-- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-values)\] - *some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker*
-- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-arbitraries)\] - *able to bind the output of an arbitrary as input of another one while keeping the shrink working*
-- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - *filtering invalid entries can be done directly inside the check function if needed*
-- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md#combinors-of-arbitraries-t)\] - *surprisingly some frameworks don't*
-- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#biased-arbitraries)\] - *by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually*
-- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#opt-for-verbose-failures)\] - *easier troubleshooting with verbose mode enabled*
-- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#replay-after-failure)\] - *no need to replay the whole sequence, you get directly the counterexample*
-- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#add-custom-examples-next-to-generated-ones)\] - *no need to duplicate the code to play the property on custom examples*
-- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#log-within-a-predicate)\] - *simplify your troubleshoot with fc.context and its logging feature*
-- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - *use the power of property based testing to test UI, APIs or state machines*
-- **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#detect-race-conditions)\] - *shuffle the way your promises and async calls resolve using the power of property based testing to detect races*
-- **Unique:** simplify user definable corner cases \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#simplify-user-definable-corner-cases)\] - *simplify bug resolution by asking fast-check if it can find an even simpler corner case*
+- **Types:** strong and up-to-date types - _thanks to TypeScript_
+- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-values)\] - _some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker_
+- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-arbitraries)\] - _able to bind the output of an arbitrary as input of another one while keeping the shrink working_
+- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - _filtering invalid entries can be done directly inside the check function if needed_
+- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md#combinors-of-arbitraries-t)\] - _surprisingly some frameworks don't_
+- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#biased-arbitraries)\] - _by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually_
+- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#opt-for-verbose-failures)\] - _easier troubleshooting with verbose mode enabled_
+- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#replay-after-failure)\] - _no need to replay the whole sequence, you get directly the counterexample_
+- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#add-custom-examples-next-to-generated-ones)\] - _no need to duplicate the code to play the property on custom examples_
+- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#log-within-a-predicate)\] - _simplify your troubleshoot with fc.context and its logging feature_
+- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - _use the power of property based testing to test UI, APIs or state machines_
+- **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#detect-race-conditions)\] - _shuffle the way your promises and async calls resolve using the power of property based testing to detect races_
+- **Unique:** simplify user definable corner cases \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#simplify-user-definable-corner-cases)\] - _simplify bug resolution by asking fast-check if it can find an even simpler corner case_
 
 For more details, refer to the documentation in the links above.
 
@@ -105,14 +108,13 @@ For more details, refer to the documentation in the links above.
 Here are the minimal requirements to use fast-check properly without any polyfills:
 
 | fast-check | node                | ECMAScript version | _TypeScript (optional)_ |
-|------------|---------------------|--------------------|-------------------------|
+| ---------- | ------------------- | ------------------ | ----------------------- |
 | **2.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥3.2                    |
 | **1.x**    | ≥0.12<sup>(1)</sup> | ES3                | ≥3.0                    |
 
 (1) Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
 
 **ReScript bindings**
-
 
 Bindings to use fast-check in [ReScript](https://rescript-lang.org) are available in package [rescript-fast-check](https://www.npmjs.com/rescript-fast-check). They are maintained by [@TheSpyder](https://github.com/TheSpyder) as an external project.
 
@@ -137,9 +139,10 @@ fast-check has been able to find some unexpected behaviour among famous npm pack
 **Issue detected:** enabling the `bracket` setting when exporting arrays containing null values produces an invalid output for the parser \[[more](https://github.com/sindresorhus/query-string/pull/138)\]
 
 **Code example:**
+
 ```js
-m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar&bar[]=b"
-m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
+m.stringify({ bar: ['a', null, 'b'] }, { arrayFormat: 'bracket' }); //=> "bar[]=a&bar&bar[]=b"
+m.parse('bar[]=a&bar&bar[]=b', { arrayFormat: 'bracket' }); //=> {bar: [null, 'b']}
 ```
 
 **[MORE: Issues detected thanks to fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**

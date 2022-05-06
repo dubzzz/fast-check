@@ -26,10 +26,10 @@ If you have one, please provide a minimal repository reproducing the issue on Gi
 
 ## Your environment
 
-| Packages / Softwares  | Version(s) |
-| --------------------- | ---------- |
-| fast-check            |            |
-| node                  |            |
-| TypeScript*           |            |
+| Packages / Softwares | Version(s) |
+| -------------------- | ---------- |
+| fast-check           |            |
+| node                 |            |
+| TypeScript\*         |            |
 
-*Only for TypeScript's users
+\*Only for TypeScript's users

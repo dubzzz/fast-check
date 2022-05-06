@@ -1,10 +1,8 @@
 {
-    "scripts": {
-    },
-    "dependencies": {
-      "fast-check": "*"
-    },
-    "license": "MIT",
-    "private": true
-  }
-  
+  "scripts": {},
+  "dependencies": {
+    "fast-check": "*"
+  },
+  "license": "MIT",
+  "private": true
+}

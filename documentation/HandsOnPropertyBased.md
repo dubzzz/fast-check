@@ -103,6 +103,7 @@ npm install --save-dev fast-check
 ```
 
 The algorithm under test is an integer sorting algorithm. Basically here are some of the properties we might come with:
+
 - for any array of integers `data`: `data` and sort(`data`) should contain the same items (same number of each too)
 - for any array of integers `data`: two consecutive items of sort(`data`) should be ordered
 
@@ -113,9 +114,9 @@ import * as fc from 'fast-check';
 import { sort } from '../src/sort';
 
 test('should contain the same items', () => {
-  const count = (tab, element) => tab.filter(v => v === element).length;
+  const count = (tab, element) => tab.filter((v) => v === element).length;
   fc.assert(
-    fc.property(fc.array(fc.integer()), data => {
+    fc.property(fc.array(fc.integer()), (data) => {
       const sorted = sort(data);
       expect(sorted.length).toEqual(data.length);
       for (const item of data) {
@@ -127,7 +128,7 @@ test('should contain the same items', () => {
 
 test('should produce ordered array', () => {
   fc.assert(
-    fc.property(fc.array(fc.integer()), data => {
+    fc.property(fc.array(fc.integer()), (data) => {
       const sorted = sort(data);
       for (let idx = 1; idx < sorted.length; ++idx) {
         expect(sorted[idx - 1]).toBeLessThanOrEqual(sorted[idx]);
@@ -153,6 +154,7 @@ If you want to experiment shrinking you might change the `sort` implementation a
 Framework should find a counterexample for the second property.
 
 Then you can play with settings of `fc.assert` like:
+
 - `{ verbose: true }`: show all the counterexamples encountered along the shrinking path
 - `{ seed: <seed> }`: replay the exact same set of tests
 - `{ seed: <seed>, path: <path> }`: start directly at the entry corresponding to the given `seed` and `path`

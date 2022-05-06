@@ -41,7 +41,7 @@ export default function AutocompleteField(props: Props) {
       <input
         type="text"
         value={query}
-        onChange={evt => {
+        onChange={(evt) => {
           const value = (evt.target as any).value;
           lastQueryRef.current = value;
           setQuery(value);
@@ -52,8 +52,8 @@ export default function AutocompleteField(props: Props) {
           // FIXED BUG: We don't filter the results we receive
           // As we want to display results as soon as possible, even if our searchResults
           // are related to a past query we want to use them to provide the user with some hints
-          .filter(r => (props.enableBugUnfilteredResults ? true : r.startsWith(query)))
-          .map(r => (
+          .filter((r) => (props.enableBugUnfilteredResults ? true : r.startsWith(query)))
+          .map((r) => (
             <li key={r}>{r}</li>
           ))}
       </ul>

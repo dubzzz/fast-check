@@ -1,6 +1,5 @@
 {
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "fast-check": "*"
   },
