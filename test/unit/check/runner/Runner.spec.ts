@@ -229,7 +229,7 @@ describe('Runner', () => {
     });
     it('Should call the property 100 times by default (except on error)', () =>
       fc.assert(
-        fc.property(fc.integer(1, 100), fc.integer(), (num, seed) => {
+        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), (num, seed) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: IRawProperty<[number]> = {
@@ -394,7 +394,7 @@ describe('Runner', () => {
       ));
     it('Should wait on async properties to complete', async () =>
       fc.assert(
-        fc.asyncProperty(fc.integer(1, 100), fc.integer(), async (num, seed) => {
+        fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;

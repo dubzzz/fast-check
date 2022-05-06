@@ -11,7 +11,7 @@ export function buildCharacterArbitrary(
   unmapFromCode: (v: number) => number
 ): Arbitrary<string> {
   return convertFromNext(
-    convertToNext(integer(min, max)).map(
+    convertToNext(integer({ min, max })).map(
       (n) => indexToCharStringMapper(mapToCode(n)),
       (c) => unmapFromCode(indexToCharStringUnmapper(c))
     )

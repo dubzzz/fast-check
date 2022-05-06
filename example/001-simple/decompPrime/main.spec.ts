@@ -17,7 +17,7 @@ describe('decompPrime', () => {
 
   it('should be able to decompose a product of two numbers', () => {
     fc.assert(
-      fc.property(fc.integer(2, MAX_INPUT), fc.integer(2, MAX_INPUT), (a, b) => {
+      fc.property(fc.integer({ min: 2, max: MAX_INPUT }), fc.integer({ min: 2, max: MAX_INPUT }), (a, b) => {
         const n = a * b;
         const factors = decompPrime(n);
         return factors.length >= 2;
@@ -27,7 +27,7 @@ describe('decompPrime', () => {
 
   it('should compute the same factors as to the concatenation of the one of a and b for a times b', () => {
     fc.assert(
-      fc.property(fc.integer(2, MAX_INPUT), fc.integer(2, MAX_INPUT), (a, b) => {
+      fc.property(fc.integer({ min: 2, max: MAX_INPUT }), fc.integer({ min: 2, max: MAX_INPUT }), (a, b) => {
         const factorsA = decompPrime(a);
         const factorsB = decompPrime(b);
         const factorsAB = decompPrime(a * b);

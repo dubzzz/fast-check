@@ -29,7 +29,7 @@ describe('toRoman', () => {
 
   it('should start negative romans with a minus sign', () => {
     fc.assert(
-      fc.property(fc.integer(-MaxRoman, -1), (n) => {
+      fc.property(fc.integer({ min: -MaxRoman, max: -1 }), (n) => {
         expect(toRoman(n)[0]).toBe('-');
       })
     );
@@ -100,5 +100,5 @@ describe('fromRoman', () => {
 
 // Helpers
 
-const romanNumberArb = fc.integer(-MaxRoman, MaxRoman);
-const posRomanNumberArb = fc.integer(1, MaxRoman);
+const romanNumberArb = fc.integer({ min: -MaxRoman, max: MaxRoman });
+const posRomanNumberArb = fc.integer({ min: 1, max: MaxRoman });
