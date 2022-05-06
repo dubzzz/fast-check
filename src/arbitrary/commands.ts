@@ -17,7 +17,7 @@ import {
  * It should shrink more efficiently than {@link array} for {@link AsyncCommand} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
- * @param constraints - Contraints to be applied when generating the commands (since 1.11.0)
+ * @param constraints - Constraints to be applied when generating the commands (since 1.11.0)
  *
  * @remarks Since 1.5.0
  * @public
@@ -34,7 +34,7 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * It should shrink more efficiently than {@link array} for {@link Command} arrays.
  *
  * @param commandArbs - Arbitraries responsible to build commands
- * @param constraints - Contraints to be applied when generating the commands (since 1.11.0)
+ * @param constraints - Constraints to be applied when generating the commands (since 1.11.0)
  *
  * @remarks Since 1.5.0
  * @public
