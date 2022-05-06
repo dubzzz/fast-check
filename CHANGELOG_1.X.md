@@ -73,9 +73,9 @@ _Fix `constantFrom` not compatible with older versions of node_
 ## Fixes
 
 - ([PR#583](https://github.com/dubzzz/fast-check/pull/583)) Bug: `constantFrom` not compatible with old browsers
-- ([PR#569](https://github.com/dubzzz/fast-check/pull/569)) Clean: Prebuild to cjs extension 
+- ([PR#569](https://github.com/dubzzz/fast-check/pull/569)) Clean: Prebuild to cjs extension
 - ([PR#568](https://github.com/dubzzz/fast-check/pull/568)) Doc: Broken links
-- ([PR#575](https://github.com/dubzzz/fast-check/pull/575)) Doc: Invalid code in example of the README 
+- ([PR#575](https://github.com/dubzzz/fast-check/pull/575)) Doc: Invalid code in example of the README
 - ([PR#578](https://github.com/dubzzz/fast-check/pull/578)) Doc: Schedule native timers
 - ([PR#576](https://github.com/dubzzz/fast-check/pull/576)) Example: Fibonacci example
 - ([PR#577](https://github.com/dubzzz/fast-check/pull/577)) Example: Fix decompPrime example for CodeSandbox
@@ -114,7 +114,7 @@ _Better typings for `filter` and `oneof` plus support for null prototypes_
 
 ## Features
 
-- ([PR#548](https://github.com/dubzzz/fast-check/pull/548)) Stringify should distinguish `{}` from `Object.create(null)` 
+- ([PR#548](https://github.com/dubzzz/fast-check/pull/548)) Stringify should distinguish `{}` from `Object.create(null)`
 - ([PR#552](https://github.com/dubzzz/fast-check/pull/552)) Add ability to generate objects without prototype
 - ([PR#555](https://github.com/dubzzz/fast-check/pull/555)) Support type guards while filtering :warning:
 - ([PR#556](https://github.com/dubzzz/fast-check/pull/556)) Better typings for oneof and frequency :warning:
@@ -414,7 +414,7 @@ _Add auto-skip after time limit option for runners_
 
 - ([PR#354](https://github.com/dubzzz/fast-check/pull/354)) Doc: Add examples of issues discovered using fast-check
 - ([PR#353](https://github.com/dubzzz/fast-check/pull/353)) Doc: Better logo
-- ([PR#351](https://github.com/dubzzz/fast-check/pull/351)) Size: Add dependency to tslib - *should reduce size of the bundle*
+- ([PR#351](https://github.com/dubzzz/fast-check/pull/351)) Size: Add dependency to tslib - _should reduce size of the bundle_
 - ([PR#349](https://github.com/dubzzz/fast-check/pull/349)) Test: No regression snapshot tests
 
 ---
@@ -494,7 +494,7 @@ _Lighter bundle_
 ## Fixes
 
 - ([PR#327](https://github.com/dubzzz/fast-check/pull/327)) Doc: Ability to copy-paste snippets in HandsOnPropertyBased.md
-- ([PR#334](https://github.com/dubzzz/fast-check/pull/334)) Size: Reduce the size of the bundle - *Potential issue if your code directly references TupleArbitrary<T1...>, it should be replaced by Arbitrary<[T1,...]>*
+- ([PR#334](https://github.com/dubzzz/fast-check/pull/334)) Size: Reduce the size of the bundle - _Potential issue if your code directly references TupleArbitrary<T1...>, it should be replaced by Arbitrary<[T1,...]>_
 
 # 1.12.0
 
@@ -711,7 +711,7 @@ _Switch to another PRNG for better performances, better fc.commands_
 
 ## Fixes
 
-- ([PR#220](https://github.com/dubzzz/fast-check/pull/220)) Switch to another PRNG as default random - *more performances*
+- ([PR#220](https://github.com/dubzzz/fast-check/pull/220)) Switch to another PRNG as default random - _more performances_
 - ([PR#217](https://github.com/dubzzz/fast-check/pull/217)) Better typings for `fc.record`
 
 ---
@@ -787,7 +787,6 @@ _Addition of `subarray` and `shuffledSubarray` arbitraries_
 - ([PR#157](https://github.com/dubzzz/fast-check/pull/157)) Model based testing and commands
 - ([PR#158](https://github.com/dubzzz/fast-check/pull/158)) Characters shrink towards printable ascii
 
-
 ## Fixes
 
 - ([PR#170](https://github.com/dubzzz/fast-check/pull/170)) Fix: `fullUnicode` and `fullUnicodeString` were failing on old releases of node
@@ -842,7 +841,7 @@ _Reduce package footprint and less restrictive API for `oneof`/`frequency`_
 
 ## Fixes
 
-- ([PR#135](https://github.com/dubzzz/fast-check/pull/135)) Do not force explicitly one parameter in `oneof`/`frequency` 
+- ([PR#135](https://github.com/dubzzz/fast-check/pull/135)) Do not force explicitly one parameter in `oneof`/`frequency`
 - ([PR#134](https://github.com/dubzzz/fast-check/pull/134)) Doc: Typos in README
 - ([PR#132](https://github.com/dubzzz/fast-check/pull/132)) Add missing exports for `jsonObject` and `unicodeJsonObject`
 - ([PR#131](https://github.com/dubzzz/fast-check/pull/131)) Reduce package size

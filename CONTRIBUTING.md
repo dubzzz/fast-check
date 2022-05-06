@@ -57,6 +57,7 @@ It ensures that the pull request follow the code style of the project and do not
 If you plan to update your PR with either a fix for the tests or change following code reviews please directly commit your new commit in your branch, PR will get updated automatically.
 
 Before your fix:
+
 ```
 --*---> main    on dubzzz/fast-check
    \
@@ -64,6 +65,7 @@ Before your fix:
 ```
 
 After your fix:
+
 ```
 --*--->        main    on dubzzz/fast-check
    \
@@ -78,21 +80,21 @@ Ideally to resync your branch with main prefer a merge of main branch into your 
 
 #### Adding a new arbitrary
 
-✔️ *Create a feature request*
+✔️ _Create a feature request_
 
 Before adding any new arbitrary into fast-check please make sure to fill a `Feature request` to justify the need for such arbitrary.
 
-✔️ *Code the arbitrary*
+✔️ _Code the arbitrary_
 
 All the arbitraries defined by fast-check are available in `src/arbitrary`.
 Create a new file for the new one if it does not fit into the existing ones.
 
-✔️ *Test the arbitrary*
+✔️ _Test the arbitrary_
 
 Most of the newly added arbitraries will just be a combination of existing ones (mostly mapping from one entry to another).
 We expect a quite minimal amount of tests to be added as most of the logic depends on the built-in blocks.
 
-- *Unit-test* &amp; *Integration* - in `test/unit/arbitrary`
+- _Unit-test_ &amp; _Integration_ - in `test/unit/arbitrary`
 
 ```js
 import * as fc from '../../../lib/fast-check';
@@ -171,7 +173,7 @@ The `legacy` spec is responsible to check that most of the arbitraries provided 
 
 The `type` spec is responsible to check that the typings are correct but they also ensure that they will not break with future changes or upcoming releases of TypeScript.
 
-✔️ *Document the arbitrary*
+✔️ _Document the arbitrary_
 
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @internal */` tag to hide internals - otherwise they would get published into the generated documentation
 

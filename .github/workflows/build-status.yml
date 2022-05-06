@@ -2,7 +2,7 @@ name: Build Status
 
 on:
   push:
-    branches: 
+    branches:
       - main
       - 'next-*_*_*'
       - 'fix-v*'
@@ -81,15 +81,15 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build the library (dev version)
         run: |
-            yarn prebuild
-            yarn build
+          yarn prebuild
+          yarn build
       - name: Unit tests
         shell: bash -l {0}
         run: |
-            export EXPECT_DEFAULT_SEED="true"
-            export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
-            echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-            yarn test
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn test
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -124,15 +124,15 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build the library (dev version)
         run: |
-            yarn prebuild
-            yarn build
+          yarn prebuild
+          yarn build
       - name: End-to-end tests
         shell: bash -l {0}
         run: |
-            export EXPECT_DEFAULT_SEED="true"
-            export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
-            echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-            yarn e2e
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn e2e
   test_package_quality:
     name: 'Test package quality'
     runs-on: ubuntu-latest
@@ -340,59 +340,59 @@ jobs:
           - '13.7'
           - '13'
     steps:
-    - uses: actions/checkout@v3
-    - name: Using Node v${{matrix.node-version}}
-      shell: bash -l {0}
-      run: nvm install ${{matrix.node-version}}
-    - name: Download production package
-      uses: actions/download-artifact@v3
-      with:
-        name: bundle
-    - name: Install dependencies but use current build for fast-check (node-extension-cjs)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/node-extension-cjs'
-    - name: Install dependencies but use current build for fast-check (node-extension-mjs)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/node-extension-mjs'
-    - name: Install dependencies but use current build for fast-check (node-with-import)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/node-with-import'
-    - name: Install dependencies but use current build for fast-check (node-with-require)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/node-with-require'
-    - name: Install dependencies but use current build for fast-check (rollup-with-import)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/rollup-with-import'
-    - name: Install dependencies but use current build for fast-check (rollup-with-require)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/rollup-with-require'
-    - name: Install dependencies but use current build for fast-check (webpack-with-import)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/webpack-with-import'
-    - name: Install dependencies but use current build for fast-check (webpack-with-require)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/webpack-with-require'
-    - name: Install dependencies but use current build for fast-check (esbuild-with-import)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/esbuild-with-import'
-    - name: Install dependencies but use current build for fast-check (esbuild-with-require)
-      uses: ./.github/actions/install-deps-with-current-fc
-      with:
-        path: 'test/esm/esbuild-with-require'
-    - name: Check compatibility
-      run: |
-        cd test/esm
-        node --version
-        sh run.sh
+      - uses: actions/checkout@v3
+      - name: Using Node v${{matrix.node-version}}
+        shell: bash -l {0}
+        run: nvm install ${{matrix.node-version}}
+      - name: Download production package
+        uses: actions/download-artifact@v3
+        with:
+          name: bundle
+      - name: Install dependencies but use current build for fast-check (node-extension-cjs)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/node-extension-cjs'
+      - name: Install dependencies but use current build for fast-check (node-extension-mjs)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/node-extension-mjs'
+      - name: Install dependencies but use current build for fast-check (node-with-import)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/node-with-import'
+      - name: Install dependencies but use current build for fast-check (node-with-require)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/node-with-require'
+      - name: Install dependencies but use current build for fast-check (rollup-with-import)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/rollup-with-import'
+      - name: Install dependencies but use current build for fast-check (rollup-with-require)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/rollup-with-require'
+      - name: Install dependencies but use current build for fast-check (webpack-with-import)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/webpack-with-import'
+      - name: Install dependencies but use current build for fast-check (webpack-with-require)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/webpack-with-require'
+      - name: Install dependencies but use current build for fast-check (esbuild-with-import)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/esbuild-with-import'
+      - name: Install dependencies but use current build for fast-check (esbuild-with-require)
+        uses: ./.github/actions/install-deps-with-current-fc
+        with:
+          path: 'test/esm/esbuild-with-require'
+      - name: Check compatibility
+        run: |
+          cd test/esm
+          node --version
+          sh run.sh
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
@@ -413,7 +413,7 @@ jobs:
           clean: true
   publish_package:
     name: 'Publish package'
-    needs: 
+    needs:
       - production_package
       - documentation
       - format_lint

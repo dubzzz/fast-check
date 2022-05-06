@@ -25,22 +25,22 @@ You can see generators as follow:
 
 ```ts
 type Generator<T> = {
-    generate(mrng: Random): T;
-}
+  generate(mrng: Random): T;
+};
 ```
 
 In the signature above `mrng` is a mutable random generator. It is a simple wrapper around `pure-rand` that provides a usable random instance. The class `Random` can be implemented as follow:
 
 ```js
 class Random {
-    constructor(rng) {
-        this.rng = rng;
-    }
-    next(min, max) {
-        const g = prand.uniformIntDistribution(min, max, this.rng);
-        this.rng = g[1];
-        return g[0];
-    }
+  constructor(rng) {
+    this.rng = rng;
+  }
+  next(min, max) {
+    const g = prand.uniformIntDistribution(min, max, this.rng);
+    this.rng = g[1];
+    return g[0];
+  }
 }
 
 // Can be used as follow:
@@ -59,12 +59,12 @@ Let's build our first generator: the one responsible to build random integers.
 // const miniFc = {}
 
 miniFc.integer = (min, max) => {
-    return {
-        generate(mrng) {
-            return mrng.next(min, max);
-        }
-    };
-}
+  return {
+    generate(mrng) {
+      return mrng.next(min, max);
+    },
+  };
+};
 // It can be used as follow:
 // > miniFc.integer(0, 50).generate(mrng)
 ```
@@ -88,54 +88,48 @@ It can be implemented as follow:
 
 ```js
 function map(g, mapper) {
-    return {
-        generate(mrng) {
-            const value = g.generate(mrng);
-            return mapper(value);
-        }
-    };
+  return {
+    generate(mrng) {
+      const value = g.generate(mrng);
+      return mapper(value);
+    },
+  };
 }
 ```
 
 Now that we have `map` we can implement some of our missing generators:
 
 ```js
-miniFc.boolean = () => map(
-    miniFc.integer(0, 1),
-    Boolean
-)
+miniFc.boolean = () => map(miniFc.integer(0, 1), Boolean);
 
-miniFc.character = () => map(
-    miniFc.integer(0, 25),
-    n => String.fromCharCode(97 + n)
-)
+miniFc.character = () => map(miniFc.integer(0, 25), (n) => String.fromCharCode(97 + n));
 ```
 
 In order to build others, we first need to implement a generator for tuples and a generator for arrays:
 
 ```js
 miniFc.tuple = (...itemGenerators) => {
-    return {
-        generate(mrng) {
-            return itemGenerators.map(g => g.generate(mrng));
-        }
-    };
-}
+  return {
+    generate(mrng) {
+      return itemGenerators.map((g) => g.generate(mrng));
+    },
+  };
+};
 // It can be used as follow:
 // > miniFc.tuple(miniFc.integer(0, 50), miniFc.boolean()).generate(mrng)
 
 miniFc.array = (itemGenerator) => {
-    return {
-        generate(mrng) {
-            const size = mrng.next(0, 10);
-            const content = [];
-            for (let index = 0 ; index !== size ; ++index) {
-                content.push(itemGenerator.generate(mrng));
-            }
-            return content;
-        }
-    };
-}
+  return {
+    generate(mrng) {
+      const size = mrng.next(0, 10);
+      const content = [];
+      for (let index = 0; index !== size; ++index) {
+        content.push(itemGenerator.generate(mrng));
+      }
+      return content;
+    },
+  };
+};
 // It can be used as follow:
 // > miniFc.array(miniFc.character()).generate(mrng)
 ```
@@ -143,20 +137,10 @@ miniFc.array = (itemGenerator) => {
 Now we can build our last generators:
 
 ```js
-miniFc.string = () => map(
-    miniFc.array(miniFc.character()),
-    characters => characters.join('')
-)
+miniFc.string = () => map(miniFc.array(miniFc.character()), (characters) => characters.join(''));
 
-miniFc.dictionary = (valueGenerator) => map(
-    miniFc.array(
-        miniFc.tuple(
-            miniFc.string(),
-            valueGenerator
-        )
-    ),
-    Object.fromEntries
-)
+miniFc.dictionary = (valueGenerator) =>
+  map(miniFc.array(miniFc.tuple(miniFc.string(), valueGenerator)), Object.fromEntries);
 ```
 
 ## Runner
@@ -169,39 +153,38 @@ But first let define what is a property. We will define it as a super generator 
 
 ```ts
 type Property<T> = {
-    generate(mrng: Random): T;
-    run(valueUnderTest: T): boolean;
-}
+  generate(mrng: Random): T;
+  run(valueUnderTest: T): boolean;
+};
 ```
 
 Properties will be created using the following helper:
 
 ```js
 miniFc.property = (generator, predicate) => {
-    return {
-        generate(mrng) {
-            return generator.generate(mrng);
-        },
-        run(valueUnderTest) {
-            return predicate(valueUnderTest);
-        }
-    }
-}
+  return {
+    generate(mrng) {
+      return generator.generate(mrng);
+    },
+    run(valueUnderTest) {
+      return predicate(valueUnderTest);
+    },
+  };
+};
 ```
 
 Now, let's consider a simple example to understand how we want to use our minimal version of fast-check. The code under test will be an implementation of `isSubstring` with obviously a bug into it in order to check that our framework can find it. As a user we would like to be able to write:
 
 ```js
 const isSubstring = (pattern, text) => {
-    return text.indexOf(pattern) > 0;
-}
+  return text.indexOf(pattern) > 0;
+};
 
 miniFc.assert(
-    miniFc.property(
-        miniFc.tuple(miniFc.string(), miniFc.string(), miniFc.string()),
-        ([a, b, c]) => isSubstring(b, a + b + c)
-    )
-)
+  miniFc.property(miniFc.tuple(miniFc.string(), miniFc.string(), miniFc.string()), ([a, b, c]) =>
+    isSubstring(b, a + b + c)
+  )
+);
 ```
 
 In terms of typings we have the following signature to fulfill:
@@ -215,36 +198,39 @@ By default, in most of the frameworks, runners run the property a hundred times 
 A basic implementation for the runner can be written as follow:
 
 ```js
-miniFc.assert = property => {
-    for (let runId = 0 ; runId !== 100 ; ++runId) {
-        const seed = runId;
-        const mrng = new Random(prand.xoroshiro128plus(seed));
-        const valueUnderTest = property.generate(mrng);
-        if (!property.run(valueUnderTest)) {
-            throw new Error(`Property failed after ${runId + 1} runs with value ${JSON.stringify(valueUnderTest)}`);
-        }
+miniFc.assert = (property) => {
+  for (let runId = 0; runId !== 100; ++runId) {
+    const seed = runId;
+    const mrng = new Random(prand.xoroshiro128plus(seed));
+    const valueUnderTest = property.generate(mrng);
+    if (!property.run(valueUnderTest)) {
+      throw new Error(`Property failed after ${runId + 1} runs with value ${JSON.stringify(valueUnderTest)}`);
     }
-}
+  }
+};
 ```
 
 Additionally in property based testing, seed is supposed not to be fixed except if specified on call-site. Implementation above can be updated as follow:
 
 ```js
 miniFc.assert = (property, { seed = Date.now() } = {}) => {
-    let rng = prand.xoroshiro128plus(seed);
-    for (let runId = 0 ; runId !== 100 ; ++runId) {
-        const valueUnderTest = property.generate(new Random(rng));
-        if (!property.run(valueUnderTest)) {
-            throw new Error(`Property failed after ${runId + 1} runs with value ${JSON.stringify(valueUnderTest)} (seed: ${seed})`);
-        }
-        rng = rng.jump();
+  let rng = prand.xoroshiro128plus(seed);
+  for (let runId = 0; runId !== 100; ++runId) {
+    const valueUnderTest = property.generate(new Random(rng));
+    if (!property.run(valueUnderTest)) {
+      throw new Error(
+        `Property failed after ${runId + 1} runs with value ${JSON.stringify(valueUnderTest)} (seed: ${seed})`
+      );
     }
-}
+    rng = rng.jump();
+  }
+};
 ```
 
 In previous section, we did not cover the reason why we opted for pure random generators. In property based we want properties to be reproducible no matter the seed, no matter the hardware and no matter the time... But we also want to have independent runs for each iteration in the loop.
 
 For instance, in the implementation defined above, we call generate with the following instances of `Random`:
+
 - `runId = 0` - Call with `new Random(prand.xoroshiro128plus(seed))`
 - `runId = 1` - Call with `new Random(prand.xoroshiro128plus(seed)).jump()`
 - `runId = 2` - Call with `new Random(prand.xoroshiro128plus(seed)).jump().jump()`
@@ -276,35 +262,36 @@ First we need to adapt the `Generator` type.
 
 ```ts
 type Generator<T> = {
-    generate(mrng: Random): T;
-    shrink(value: T): IterableIterator<T>;
-}
+  generate(mrng: Random): T;
+  shrink(value: T): IterableIterator<T>;
+};
 ```
 
 As you can see in the snippet above, we added a method called `shrink` onto our `Generator` type. This method takes a value - _that have been generated by this `Generator`_ and builds a stream of potential shrinks for this value.
 
 In other words, if I take back our generator of integers, I'd expect the following:
+
 ```js
 const arb = miniFc.integer(0, 100);
-abr.shrink(64) // potential output: 32, 16, 8, 4, 2, 1, 0
+abr.shrink(64); // potential output: 32, 16, 8, 4, 2, 1, 0
 ```
 
 For integers, the implementation will use a classical technique used in programming: dichotomy. Given the technique we want to use we can adapt the code for `integers` as follow:
 
 ```js
 miniFc.integer = (min, max) => {
-    return {
-        generate(mrng) {
-            return mrng.next(min, max);
-        },
-        *shrink(value) {
-            while (value !== min) {
-                value = min + Math.floor((value - min) / 2);
-                yield value;
-            }
-        }
-    }
-}
+  return {
+    generate(mrng) {
+      return mrng.next(min, max);
+    },
+    *shrink(value) {
+      while (value !== min) {
+        value = min + Math.floor((value - min) / 2);
+        yield value;
+      }
+    },
+  };
+};
 // You can check the output by calling:
 // > [...miniFc.integer(0, 100).shrink(64)]
 // > [...miniFc.integer(0, 100).shrink(48)]
@@ -320,26 +307,27 @@ While it does not cover all the possible smaller combinations it should be good 
 
 ```js
 miniFc.tuple = (...itemGenerators) => {
-    return {
-        generate(mrng) {
-            return itemGenerators.map(g => g.generate(mrng));
-        },
-        *shrink(value) {
-            for (let index = 0 ; index !== itemGenerators.length ; ++index) {
-                const currentGenerator = itemGenerators[index];
-                const currentValue = value[index];
-                for (const shrunkValue of currentGenerator.shrink(currentValue)) {
-                    yield [...value.slice(0, index), shrunkValue, ...value.slice(index + 1)];
-                }
-            }
+  return {
+    generate(mrng) {
+      return itemGenerators.map((g) => g.generate(mrng));
+    },
+    *shrink(value) {
+      for (let index = 0; index !== itemGenerators.length; ++index) {
+        const currentGenerator = itemGenerators[index];
+        const currentValue = value[index];
+        for (const shrunkValue of currentGenerator.shrink(currentValue)) {
+          yield [...value.slice(0, index), shrunkValue, ...value.slice(index + 1)];
         }
-    }
-}
+      }
+    },
+  };
+};
 // You can check the output by calling:
 // > [...miniFc.tuple(miniFc.integer(0, 100), miniFc.integer(0, 100), miniFc.integer(0, 100)).shrink([4, 3, 4])]
 ```
 
 Concerning arrays, the algorithm needs to shrink on two dimensions:
+
 - the size of the array
 - the content of the array
 
@@ -354,6 +342,7 @@ Shrinking strategy on arrays is divided into three different steps.
 3. We keep the first item as is and apply recursively 1. and 2. on the tail of the array.
 
 Let's apply this logic onto our example `[4, 1, 2, 1, 3]`:
+
 - `[2, 1, 3]` (due to 1.)
 - `[1, 2, 1, 3]` (due to 1.)
 - `[2, 1, 2, 1, 3]` (due to 2.)
@@ -368,37 +357,37 @@ We can adapt our implementation of array to support shrinking as follow:
 
 ```js
 miniFc.array = (itemGenerator) => {
-    return {
-        generate(mrng) {
-            const size = mrng.next(0, 10);
-            const content = [];
-            for (let index = 0 ; index !== size ; ++index) {
-                content.push(itemGenerator.generate(mrng));
-            }
-            return content;
-        },
-        *shrink(value) {
-            // No shrink on empty arrays
-            if (value.length === 0) {
-                return;
-            }
-            // Step 1. Shrink on size first by keeping last items
-            let removedSize = Math.floor(value.length / 2);
-            while (removedSize > 0) {
-                yield value.slice(removedSize);
-                removedSize = Math.floor(removedSize / 2);
-            }
-            // Step 2. Shrink the first item alone
-            for (const shrunkItemValue of itemGenerator.shrink(value[0])) {
-                yield [shrunkItemValue, ...value.slice(1)];
-            }
-            // Step 3. Keep first item untouched
-            for (const shrunkValue of this.shrink(value.slice(1))) {
-                yield [value[0], ...shrunkValue];
-            }
-        }
-    }
-}
+  return {
+    generate(mrng) {
+      const size = mrng.next(0, 10);
+      const content = [];
+      for (let index = 0; index !== size; ++index) {
+        content.push(itemGenerator.generate(mrng));
+      }
+      return content;
+    },
+    *shrink(value) {
+      // No shrink on empty arrays
+      if (value.length === 0) {
+        return;
+      }
+      // Step 1. Shrink on size first by keeping last items
+      let removedSize = Math.floor(value.length / 2);
+      while (removedSize > 0) {
+        yield value.slice(removedSize);
+        removedSize = Math.floor(removedSize / 2);
+      }
+      // Step 2. Shrink the first item alone
+      for (const shrunkItemValue of itemGenerator.shrink(value[0])) {
+        yield [shrunkItemValue, ...value.slice(1)];
+      }
+      // Step 3. Keep first item untouched
+      for (const shrunkValue of this.shrink(value.slice(1))) {
+        yield [value[0], ...shrunkValue];
+      }
+    },
+  };
+};
 // You can check the output by calling:
 // > [...miniFc.array(miniFc.integer(0, 100)).shrink([4, 1, 2, 1, 3])]
 ```
@@ -406,16 +395,15 @@ miniFc.array = (itemGenerator) => {
 Now that all our root generators have been covered let's adapt the generators based on them. When defined those derived generators we introduced a `map` function to help us in our task.
 
 Generator for characters has been defined as follow:
+
 ```js
-miniFc.character = () => map(
-    miniFc.integer(0, 25),
-    n => String.fromCharCode(97 + n)
-)
+miniFc.character = () => map(miniFc.integer(0, 25), (n) => String.fromCharCode(97 + n));
 ```
 
 As it generates `string` (of a single character), shrinker will consume `string` and produce smaller `string`. But how can `map` know how to convert the `string` received as input of the shrinker to passe it the shrinker of mapped generator (or `miniFc.integer(0, 25)` in our case)?
 
 Actually if we wanted to define the shrinker function for `miniFc.character` we would have written something like:
+
 ```js
 const shrinker = (character) => {
     const derivedGenerator = miniFc.integer(0, 25);
@@ -427,6 +415,7 @@ const shrinker = (character) => {
 ```
 
 In other words, it means that mapping a generator to derive it requires the user to declare two helper functions:
+
 - one to map - _eg.: from integer to character in our example_
 - another one to unmap - _eg.: from character to integer in our example_
 
@@ -434,42 +423,37 @@ With that in mind, `map` can be changed into:
 
 ```js
 const map = (g, mapper, unmapper) => {
-    return {
-        generate(mrng) {
-            return mapper(g.generate(mrng));
-        },
-        *shrink(value) {
-            for (const shrunkValue of g.shrink(unmapper(value))) {
-                yield mapper(shrunkValue);
-            }
-        }
-    };
+  return {
+    generate(mrng) {
+      return mapper(g.generate(mrng));
+    },
+    *shrink(value) {
+      for (const shrunkValue of g.shrink(unmapper(value))) {
+        yield mapper(shrunkValue);
+      }
+    },
+  };
 };
 ```
 
 And all our derived generators can be adapted to add support for shrink:
 
 ```js
-miniFc.boolean = () => map(
-    miniFc.integer(0, 1),
-    Boolean,
-    b => b ? 1 : 0,
-)
-miniFc.character = () => map(
+miniFc.boolean = () => map(miniFc.integer(0, 1), Boolean, (b) => (b ? 1 : 0));
+miniFc.character = () =>
+  map(
     miniFc.integer(0, 25),
-    n => String.fromCharCode(97 + n),
-    c => c.codePointAt(0) - 97,
-)
-miniFc.string = () => map(
+    (n) => String.fromCharCode(97 + n),
+    (c) => c.codePointAt(0) - 97
+  );
+miniFc.string = () =>
+  map(
     miniFc.array(miniFc.character()),
-    characters => characters.join(''),
-    s => s.split('')
-)
-miniFc.dictionary = (valueGenerator) => map(
-    miniFc.array(miniFc.tuple(miniFc.string(), valueGenerator)),
-    Object.fromEntries,
-    Object.entries,
-)
+    (characters) => characters.join(''),
+    (s) => s.split('')
+  );
+miniFc.dictionary = (valueGenerator) =>
+  map(miniFc.array(miniFc.tuple(miniFc.string(), valueGenerator)), Object.fromEntries, Object.entries);
 
 // > [...miniFc.boolean().shrink(true)]
 // > [...miniFc.character().shrink("h")]
@@ -496,43 +480,45 @@ In terms of code, we can adapt our `miniFc.assert` as follow:
 
 ```js
 miniFc.property = (generator, predicate) => {
-    return {
-        generate(mrng) {
-            return generator.generate(mrng);
-        },
-        shrink(value) {
-            return generator.shrink(value);
-        },
-        run(valueUnderTest) {
-            return predicate(valueUnderTest);
-        }
-    }
-}
+  return {
+    generate(mrng) {
+      return generator.generate(mrng);
+    },
+    shrink(value) {
+      return generator.shrink(value);
+    },
+    run(valueUnderTest) {
+      return predicate(valueUnderTest);
+    },
+  };
+};
 
 function executeAndShrink(valueUnderTest, property) {
-    if (!property.run(valueUnderTest)) {
-        for (const shrunkValue of property.shrink(valueUnderTest)) {
-            const shrunkResults = executeAndShrink(shrunkValue, property);
-            if (shrunkResults.failed) {
-                return shrunkResults;
-            }
-        }
-        return { failed: true, value: valueUnderTest };
+  if (!property.run(valueUnderTest)) {
+    for (const shrunkValue of property.shrink(valueUnderTest)) {
+      const shrunkResults = executeAndShrink(shrunkValue, property);
+      if (shrunkResults.failed) {
+        return shrunkResults;
+      }
     }
-    return { failed: false };
+    return { failed: true, value: valueUnderTest };
+  }
+  return { failed: false };
 }
 
 miniFc.assert = (property, { seed = Date.now() } = {}) => {
-    let rng = prand.xoroshiro128plus(seed);
-    for (let runId = 0 ; runId !== 100 ; ++runId) {
-        const valueUnderTest = property.generate(new Random(rng));
-        const testResults = executeAndShrink(valueUnderTest, property);
-        if (testResults.failed) {
-            throw new Error(`Property failed after ${runId + 1} runs with value ${JSON.stringify(testResults.value)} (seed: ${seed})`);
-        }
-        rng = rng.jump();
+  let rng = prand.xoroshiro128plus(seed);
+  for (let runId = 0; runId !== 100; ++runId) {
+    const valueUnderTest = property.generate(new Random(rng));
+    const testResults = executeAndShrink(valueUnderTest, property);
+    if (testResults.failed) {
+      throw new Error(
+        `Property failed after ${runId + 1} runs with value ${JSON.stringify(testResults.value)} (seed: ${seed})`
+      );
     }
-}
+    rng = rng.jump();
+  }
+};
 ```
 
 Here we are, our home-made property based framework is now able to generate values, run tests and find failures, and in case of failure to shrink it towards something smaller to help our users.
@@ -549,10 +535,7 @@ While our current shape for `Generator` seems to be able to deal with many kind 
 Indeed, if you think a little bit about implementing `oneof` with current design while preserving shrinking capabilities you may struggle a bit. `oneof` could be used as follow by users:
 
 ```js
-miniFc.oneof(
-    miniFc.string(),
-    miniFc.boolean(),
-) // produces either a string or a boolean
+miniFc.oneof(miniFc.string(), miniFc.boolean()); // produces either a string or a boolean
 ```
 
 First, `oneof` would be at the same level as `integer`, `tuple` and `array` but it would not be enough.
@@ -567,12 +550,12 @@ So fast-check introduced the notion of `Shrinkable` and `Arbitrary`. An `Arbitra
 
 ```ts
 type Arbitrary<T> = {
-    generate(mrng: Random): Shrinkable<T>;
-}
+  generate(mrng: Random): Shrinkable<T>;
+};
 type Shrinkable<T> = {
-    value: T;
-    shrink(): IterableIterator<Shrinkable<T>>;
-}
+  value: T;
+  shrink(): IterableIterator<Shrinkable<T>>;
+};
 ```
 
 ## Bias
@@ -594,24 +577,19 @@ With our fresh new framework we could write it that way:
 const compare = (a, b) => false;
 
 miniFc.assert(
-    miniFc.property(
-        miniFc.tuple(
-            miniFc.integer(-0x80000000, 0x7fffffff),
-            miniFc.integer(-0x80000000, 0x7fffffff),
-        ),
-        ([a, b]) => compare(a, b) === (a === b),
-    )
-)
+  miniFc.property(
+    miniFc.tuple(miniFc.integer(-0x80000000, 0x7fffffff), miniFc.integer(-0x80000000, 0x7fffffff)),
+    ([a, b]) => compare(a, b) === (a === b)
+  )
+);
 ```
 
 Unfortunately, our framework might not find any bug - _disclaimer: **fast-check** will find the bug_.
 
 Let's zoom on the arbitrary we just defined:
+
 ```js
-miniFc.tuple(
-    miniFc.integer(-0x80000000, 0x7fffffff),
-    miniFc.integer(-0x80000000, 0x7fffffff),
-)
+miniFc.tuple(miniFc.integer(-0x80000000, 0x7fffffff), miniFc.integer(-0x80000000, 0x7fffffff));
 ```
 
 Given this arbitrary we have 2<sup>32</sup> equiprobable possible choices for `a` and 2<sup>32</sup> for `b`. The probability to generate `[a, b]` such that `a === b` would be 1 over 2<sup>32</sup> which is obviously very close to zero.
@@ -631,12 +609,7 @@ As a consequence when using **jsverify** with its default configuration of size 
 ```js
 const jsc = require('jsverify'); // 0.8.4
 
-jsc.assert(
-    jsc.forall(
-        jsc.integer(),
-        n => Math.abs(n) <= 50
-    )
-)
+jsc.assert(jsc.forall(jsc.integer(), (n) => Math.abs(n) <= 50));
 // As a consequence, the property:
 // > all integers are smaller or equal to 50 in absolute value
 // is true for the framework. Users have to explicitely ask for large values.
@@ -647,24 +620,16 @@ But let's say we know about this issue, so we artificially increase the size for
 ```js
 const jsc = require('jsverify'); // 0.8.4
 
-jsc.assert(
-    jsc.forall(
-        jsc.integer(-0x80000000, 0x7fffffff),
-        n => Math.abs(n) > 50
-    )
-)
+jsc.assert(jsc.forall(jsc.integer(-0x80000000, 0x7fffffff), (n) => Math.abs(n) > 50));
 // We generate values from -0x80000000 to 0x7fffffff
 // The probability to generate one value such that abs(n) <= 50
 // is: 101 / 2**32 which is close to zero
 
 // Same issue if we use size option...
 jsc.assert(
-    jsc.forall(
-        jsc.integer(),
-        n => Math.abs(n) > 50
-    ),
-    { size: 0x7fffffff }
-)
+  jsc.forall(jsc.integer(), (n) => Math.abs(n) > 50),
+  { size: 0x7fffffff }
+);
 ```
 
 The last issue with this approach is that you cannot really say that one arbitrary should be large while another should not. The size apply to all the arbitaries.
@@ -680,6 +645,7 @@ The observation is the following: smallest values have most of the time the bene
 As a consequence the approach is the following: the more we play runs, the more we increase the size of the generated values. During the first runs we try with very small values because they will most of the time execute quickly and may find specific corner cases (think about bugs due to `-1`, `0` or `1`). And at the end we generate values covering the full range of allowed values;
 
 For example, when you ask for arrays - _of size 0 to 10_ - containing only natural numbers - _between 0 to 2147483647_ - here is what you may have with such approach:
+
 - run 1/100: arrays having `0` to `floor(10 / 100) = 0` items of values between `0` and `floor(2147483647 / 100) = 21474836`
 - run 2/100: arrays having `0` to `floor(2 * 10 / 100) = 0` items of values between `0` and `floor(2 * 2147483647 / 100)`
 - ...
@@ -693,28 +659,28 @@ What if our bug only occurs when we have a small array containing very large val
 const fc = require('fast-check');
 
 fc.assert(
-    fc.property(
-        fc.array(
-            fc.record({
-                x: fc.integer(),
-                y: fc.integer(),
-            })
-        ),
-        points => {
-            expect(
-                sortWith(
-                    sortWith([...points], (a, b) => a.y - b.y),
-                    (a,b) => a.x - b.x
-                )
-            ).toEqual(
-                sortWith([...points], (a, b) => {
-                    if (a.x === b.x) return a.y - b.y;
-                    else return a.x - b.x;
-                })
-            )
-        }
-    )
-)
+  fc.property(
+    fc.array(
+      fc.record({
+        x: fc.integer(),
+        y: fc.integer(),
+      })
+    ),
+    (points) => {
+      expect(
+        sortWith(
+          sortWith([...points], (a, b) => a.y - b.y),
+          (a, b) => a.x - b.x
+        )
+      ).toEqual(
+        sortWith([...points], (a, b) => {
+          if (a.x === b.x) return a.y - b.y;
+          else return a.x - b.x;
+        })
+      );
+    }
+  )
+);
 // In other words when a sort is stable it means that if two items
 // are considered equivalent regarding the comparison operator
 // they we stay respectively in the same order.
@@ -733,10 +699,12 @@ The approach implemented in fast-check is pretty close to the one of **RapidChec
 The choice is to bias the arbitrary 1 time over `freq` - _where `freq` is a value specified into the call to generate (a bit like `size` was passed to generate in **jsverify** instead that this time the value increases over the runs)_.
 
 For `fc.integer`:
+
 - 1 over `freq`: smaller values
 - remaining: the full range of values
 
 For `fc.array`:
+
 - 1 over `freq`:
   - 1 over `freq`: small array with smaller values
   - remaining: full range array with smaller values
@@ -751,6 +719,7 @@ For instance, you should never alter the array produced by the generator of arra
 But purity comes with one major drawback in that case: How can I do arbitraries that need to know what happens to the generated value in order to shrink properly?
 
 In fast-check there are at least two arbitraries that has those needs:
+
 - `fc.context` - it allows users to log stuff during the execution of the test, in other words the generated value is a context and you alter it during the execution
 - `fc.commands` - it allows users to use fast-check for model based testing
 

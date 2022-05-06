@@ -31,6 +31,7 @@ _Bundled for web-browsers and node_
 [[Code](https://github.com/dubzzz/fast-check/tree/v0.0.11)][[Diff](https://github.com/dubzzz/fast-check/compare/v0.0.10...v0.0.11)]
 
 ## Features:
+
 - Add bundle for web-browsers
 - Add code examples in the source code
 - Add minimal length parameter on all strings arbitraries
@@ -39,6 +40,7 @@ _Bundled for web-browsers and node_
 - Add timeout parameter on asychronous properties
 
 ## Fixes:
+
 - Fix: unicode character generators
 
 # 0.0.10

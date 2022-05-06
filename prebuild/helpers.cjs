@@ -3,17 +3,14 @@
 /**
  * @param num {number}
  */
-const iota = num => [...Array(num)].map((v, idx) => idx);
+const iota = (num) => [...Array(num)].map((v, idx) => idx);
 
 /**
  * @param num {number}
  * @param fn {(v: number) => string}
  * @param ch {string}
  */
-const joiner = (num, fn, ch) =>
-  iota(num)
-    .map(fn)
-    .join(ch);
+const joiner = (num, fn, ch) => iota(num).map(fn).join(ch);
 
 /**
  * @param num {number}
@@ -25,19 +22,19 @@ const commas = (num, fn) => joiner(num, fn, ',');
  * arb0,arb1,...
  * @param num {number}
  */
-const arbCommas = num => commas(num, v => `arb${v}`);
+const arbCommas = (num) => commas(num, (v) => `arb${v}`);
 
 /**
  * T0,T1,...
  * @param num {number}
  */
-const txCommas = num => commas(num, v => `T${v}`);
+const txCommas = (num) => commas(num, (v) => `T${v}`);
 
 /**
  * T0|T1|...
  * @param num {number}
  */
-const txXor = num => joiner(num, v => `T${v}`, '|');
+const txXor = (num) => joiner(num, (v) => `T${v}`, '|');
 
 exports.iota = iota;
 exports.joiner = joiner;

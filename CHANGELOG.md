@@ -432,7 +432,7 @@ _New logo, new way to define fully custom arbitraries using `NextArbitrary`_
 - ([PR#1760](https://github.com/dubzzz/fast-check/pull/1760)) Clean: Remove duplicated tests for letrec
 - ([PR#1892](https://github.com/dubzzz/fast-check/pull/1892)) Clean: Remove unneeded map in record for required keys
 - ([PR#1917](https://github.com/dubzzz/fast-check/pull/1917)) Clean: Remove unneeded checks in map for context-less shrink
-- ([PR#1664](https://github.com/dubzzz/fast-check/pull/1664)) Doc: Only mark relevant titles as H* in the Readme
+- ([PR#1664](https://github.com/dubzzz/fast-check/pull/1664)) Doc: Only mark relevant titles as H\* in the Readme
 - ([PR#1665](https://github.com/dubzzz/fast-check/pull/1665)) Doc: Move back to H2 for titles in the Readme
 - ([PR#1697](https://github.com/dubzzz/fast-check/pull/1697)) Doc: Fic grammar
 - ([PR#1883](https://github.com/dubzzz/fast-check/pull/1883)) Doc: Rework PR template
@@ -516,7 +516,7 @@ _Easier recursive strcutures and ability discard already seen runs_
 
 - ([PR#1581](https://github.com/dubzzz/fast-check/pull/1581)) Reject invalid weights on `fc.frequency`
 - ([PR#1598](https://github.com/dubzzz/fast-check/pull/1598)) Add `withCrossShrink` constraint on `fc.frequency`
-- ([PR#1586](https://github.com/dubzzz/fast-check/pull/1586))  Add a way to ignore already covered cases
+- ([PR#1586](https://github.com/dubzzz/fast-check/pull/1586)) Add a way to ignore already covered cases
 - ([PR#1601](https://github.com/dubzzz/fast-check/pull/1601)) Add `maxDepth` constraint on `fc.frequency`
 - ([PR#1602](https://github.com/dubzzz/fast-check/pull/1602)) Stricter checks on args of `fc.frequency`
 - ([PR#1603](https://github.com/dubzzz/fast-check/pull/1603)) Add `depthFactor` constraint on `fc.frequency`
@@ -911,7 +911,7 @@ _Towards a uniform way to constrain arbitraries - step 1: array-like arbitraries
 - ([PR#975](https://github.com/dubzzz/fast-check/pull/975)) Doc: Add runkit code example
 - ([PR#992](https://github.com/dubzzz/fast-check/pull/992)) Doc: Add automatic simplification of min and max in codemod for [#992](https://github.com/dubzzz/fast-check/issues/992)
 - ([PR#993](https://github.com/dubzzz/fast-check/pull/993)) Fix: Do not depreciate overloads for array-like (yet)
-- ([PR#1012](https://github.com/dubzzz/fast-check/pull/1012)) Fix: Adopt a safer signature recognition on array and set 
+- ([PR#1012](https://github.com/dubzzz/fast-check/pull/1012)) Fix: Adopt a safer signature recognition on array and set
 - ([PR#1014](https://github.com/dubzzz/fast-check/pull/1014)) Test: Ensure old non-unified syntaxes still work
 - ([PR#991](https://github.com/dubzzz/fast-check/pull/991)) Tool: Fix .prettierignore
 - ([PR#976](https://github.com/dubzzz/fast-check/pull/976)) Typo: Use WebUrlConstraints instead of an inlined typing for webUrl
@@ -1028,6 +1028,7 @@ _Hybrid and full support for both ES Modules and CommonJS_
 [[Code](https://github.com/dubzzz/fast-check/tree/v2.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v1.26.0...v2.0.0)]
 
 This new major of fast-check is:
+
 - **lighter**: 906kB with 385 files to 505kB with 287 files
 - **faster**: takes between -15% (sync) to -40% (async) less time to run properties ([more](https://github.com/dubzzz/fast-check/pull/748))
 - **es-module** compatible: can be executed with `type:module`
@@ -1044,7 +1045,7 @@ This new major of fast-check is:
 - ([PR#752](https://github.com/dubzzz/fast-check/pull/752)) Support ES Modules and CommonJS
 - ([PR#756](https://github.com/dubzzz/fast-check/pull/756)) Drop browser build
 
-*You may refer to our migration guide in case of issue: https://github.com/dubzzz/fast-check/blob/main/MIGRATION_1.X_TO_2.X.md*
+_You may refer to our migration guide in case of issue: https://github.com/dubzzz/fast-check/blob/main/MIGRATION_1.X_TO_2.X.md_
 
 ## Fixes
 

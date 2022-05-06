@@ -14,7 +14,7 @@ on:
 
 jobs:
   generate_changelog:
-    name: "Generate Changelog"
+    name: 'Generate Changelog'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

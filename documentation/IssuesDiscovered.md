@@ -2,7 +2,7 @@
 
 ## [trekhleb/javascript-algorithms](https://github.com/trekhleb/javascript-algorithms/)
 
-**Statistics:** ~40000⭐ - *Jan 2019*
+**Statistics:** ~40000⭐ - _Jan 2019_
 
 **Issue detected:** counting sort algorithm was really badly handling negative integer values \[[more](https://github.com/trekhleb/javascript-algorithms/pull/100)\]
 
@@ -13,8 +13,8 @@
 **Code example:**
 
 ```js
-knuthMorrisPratt("", "")   //=> -1
-knuthMorrisPratt("a", "a") //=> 0
+knuthMorrisPratt('', ''); //=> -1
+knuthMorrisPratt('a', 'a'); //=> 0
 ```
 
 **Issue detected:** integer overflows and rounding issues in the implementation of rabin karp \[[more](https://github.com/trekhleb/javascript-algorithms/pull/102)\]\[[+](https://github.com/trekhleb/javascript-algorithms/pull/110)\]
@@ -37,13 +37,13 @@ rabinKarp("\u0000耀\u0000","耀\u0000")) //=> -1
 **Code example:**
 
 ```js
-longestCommonSubstr('𐌵𐌵**ABC', '𐌵𐌵--ABC') //=> "𐌵𐌵"
+longestCommonSubstr('𐌵𐌵**ABC', '𐌵𐌵--ABC'); //=> "𐌵𐌵"
 // expected to be "ABC"
 ```
 
 ## [facebook/jest](https://github.com/facebook/jest/)
 
-**Statistics:** ~25000⭐ ~4m/wk downloads📈 - *May 2019*
+**Statistics:** ~25000⭐ ~4m/wk downloads📈 - _May 2019_
 
 **Issue detected:** `toStrictEqual` fails to distinguish 0 from 5e-324 \[[more](https://github.com/facebook/jest/issues/7941)\]
 
@@ -52,6 +52,7 @@ longestCommonSubstr('𐌵𐌵**ABC', '𐌵𐌵--ABC') //=> "𐌵𐌵"
 **Issue detected:** `toEqual` not symmetric for Set \[[more](https://github.com/facebook/jest/issues/7975)\]
 
 **Code example:**
+
 ```js
 const s1 = new Set([false, true]);
 const s2 = new Set([new Boolean(true), new Boolean(true)]);
@@ -62,7 +63,7 @@ expect(s2).not.toEqual(s1); // failure
 
 ## [nodeca/js-yaml](https://github.com/nodeca/js-yaml/)
 
-**Statistics:** ~3000⭐ ~13m/wk downloads📈 - *Jan 2019*
+**Statistics:** ~3000⭐ ~13m/wk downloads📈 - _Jan 2019_
 
 **Issue detected:** enabling `!!int: binary` style when dumping negative integers produces invalid content \[[more](https://github.com/nodeca/js-yaml/pull/398)\]
 
@@ -70,51 +71,55 @@ expect(s2).not.toEqual(s1); // failure
 
 ## [sindresorhus/query-string](https://github.com/sindresorhus/query-string)
 
-**Statistics:** ~3000⭐ ~5m/wk downloads📈 - *Jan 2019*
+**Statistics:** ~3000⭐ ~5m/wk downloads📈 - _Jan 2019_
 
 **Issue detected:** enabling the `bracket` setting when exporting arrays containing null values produces an invalid output for the parser \[[more](https://github.com/sindresorhus/query-string/pull/138)\]
 
 **Code example:**
+
 ```js
-m.stringify({bar: ['a', null, 'b']}, {arrayFormat: 'bracket'}) //=> "bar[]=a&bar&bar[]=b"
-m.parse('bar[]=a&bar&bar[]=b', {arrayFormat: 'bracket'})       //=> {bar: [null, 'b']}
+m.stringify({ bar: ['a', null, 'b'] }, { arrayFormat: 'bracket' }); //=> "bar[]=a&bar&bar[]=b"
+m.parse('bar[]=a&bar&bar[]=b', { arrayFormat: 'bracket' }); //=> {bar: [null, 'b']}
 ```
 
 ## [stevemao/left-pad](https://github.com/stevemao/left-pad)
 
-**Statistics:** ~1000⭐ ~2m/wk downloads📈 - *Jan 2019*
+**Statistics:** ~1000⭐ ~2m/wk downloads📈 - _Jan 2019_
 
 **Issue detected:** unicode characters outside of the BMP plan are not handled consistently \[[more](https://github.com/stevemao/left-pad/issues/58)\]
 
 **Code example:**
+
 ```js
-leftPad('a\u{1f431}b', 4, 'x') //=> 'a\u{1f431}b'  -- in: 3 code points, out: 3 code points
-leftPad('abc', 4, '\u{1f431}') //=> '\u{1f431}abc' -- in: 3 code points, out: 4 code points
+leftPad('a\u{1f431}b', 4, 'x'); //=> 'a\u{1f431}b'  -- in: 3 code points, out: 3 code points
+leftPad('abc', 4, '\u{1f431}'); //=> '\u{1f431}abc' -- in: 3 code points, out: 4 code points
 ```
 
 ## [eemeli/yaml](https://github.com/eemeli/yaml)
 
-**Statistics:** ~100⭐ ~60k/wk downloads📈 - *Jan 2019*
+**Statistics:** ~100⭐ ~60k/wk downloads📈 - _Jan 2019_
 
 **Issue detected:** unability to parse string values starting by `:,` \[[more](https://github.com/eemeli/yaml/issues/56)\]
 
 **Code example:**
+
 ```js
-YAML.stringify([[':,']]) //=> '- - :,\n'
-YAML.parse('- - :,\n')   //=> YAMLSyntaxError: Document is not valid YAML (bad indentation?)
+YAML.stringify([[':,']]); //=> '- - :,\n'
+YAML.parse('- - :,\n'); //=> YAMLSyntaxError: Document is not valid YAML (bad indentation?)
 ```
 
 **Issue detected:** some extra spaces added or removed during the parsing \[[more](https://github.com/eemeli/yaml/issues/57)\]
 
 **Code example:**
+
 ```js
-YAML.parse(YAML.stringify([{k: `!""""""""""""""""""""""""""""""""""#"\\ '`}]))
+YAML.parse(YAML.stringify([{ k: `!""""""""""""""""""""""""""""""""""#"\\ '` }]));
 //=> [{k: `!""""""""""""""""""""""""""""""""""#"\\'`}]
 ```
 
 ## [blakeembrey/javascript-stringify](https://github.com/blakeembrey/javascript-stringify/)
 
-**Statistics:** ~50⭐ ~250k/wk downloads📈 - *Feb 2019*
+**Statistics:** ~50⭐ ~250k/wk downloads📈 - _Feb 2019_
 
 **Issue detected:** `-0` was not stringified correctly \[[more](https://github.com/blakeembrey/javascript-stringify/pull/20)\]
 
