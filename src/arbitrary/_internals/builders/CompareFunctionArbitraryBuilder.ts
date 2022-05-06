@@ -10,7 +10,7 @@ import { tuple } from '../../tuple';
 export function buildCompareFunctionArbitrary<T, TOut>(
   cmp: (hA: number, hB: number) => TOut
 ): Arbitrary<(a: T, b: T) => TOut> {
-  return tuple(integer().noShrink(), integer(1, 0xffffffff).noShrink()).map(([seed, hashEnvSize]) => {
+  return tuple(integer().noShrink(), integer({ min: 1, max: 0xffffffff }).noShrink()).map(([seed, hashEnvSize]) => {
     const producer = () => {
       const recorded: { [key: string]: TOut } = {};
       const f = (a: T, b: T) => {

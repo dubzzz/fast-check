@@ -15,7 +15,12 @@ describe(`OneOfArbitrary (seed: ${seed})`, () => {
     it('Should shrink on the underlying arbitrary', () => {
       const out = fc.check(
         fc.property(
-          fc.oneof(fc.integer(-10, -1), fc.integer(0, 9), fc.integer(10, 19), fc.integer(20, 29)),
+          fc.oneof(
+            fc.integer({ min: -10, max: -1 }),
+            fc.integer({ min: 0, max: 9 }),
+            fc.integer({ min: 10, max: 19 }),
+            fc.integer({ min: 20, max: 29 })
+          ),
           (v: number) => v < 14 || v >= 20
         ),
         { seed: seed }
