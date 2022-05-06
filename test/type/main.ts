@@ -379,7 +379,9 @@ expectType<fc.Arbitrary<[number]>>()(fc.clone(fc.nat(), 1), '"clone" 1-time');
 expectType<fc.Arbitrary<[number, number]>>()(fc.clone(fc.nat(), 2), '"clone" 2-times');
 expectType<fc.Arbitrary<[number, number, number]>>()(fc.clone(fc.nat(), 3), '"clone" 3-times');
 expectType<fc.Arbitrary<[number, number, number, number]>>()(fc.clone(fc.nat(), 4), '"clone" 4-times');
-expectType<fc.Arbitrary<number[]>>()(fc.clone(fc.nat(), 5), '"clone" 5-times or above'); // TODO Typings should be improved: handle any number of values
+expectType<fc.Arbitrary<[number, number, number, number, number]>>()(fc.clone(fc.nat(), 5), '"clone" 5-times');
+const nTimesClone: number = 2;
+expectType<fc.Arbitrary<number[]>>()(fc.clone(fc.nat(), nTimesClone), '"clone" with non-precise number of times');
 
 // func arbitrary
 expectType<fc.Arbitrary<() => number>>()(fc.func(fc.nat()), '"func" producing "nat"');
