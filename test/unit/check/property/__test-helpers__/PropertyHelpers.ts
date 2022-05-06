@@ -1,12 +1,12 @@
 import { MaybeMocked } from '../../../__test-helpers__/Mocked';
-import { INextRawProperty } from '../../../../../src/check/property/INextRawProperty';
+import { IRawProperty } from '../../../../../src/check/property/IRawProperty';
 
 /**
- * Generate a fake instance inheriting from INextRawProperty with all methods being mocked
+ * Generate a fake instance inheriting from IRawProperty with all methods being mocked
  */
-export function fakeNextProperty<T = unknown, TIsAsync extends boolean = boolean>(
+export function fakeProperty<T = unknown, TIsAsync extends boolean = boolean>(
   isAsyncResponse?: TIsAsync
-): { instance: INextRawProperty<T, TIsAsync> } & MaybeMocked<INextRawProperty<T, TIsAsync>> {
+): { instance: IRawProperty<T, TIsAsync> } & MaybeMocked<IRawProperty<T, TIsAsync>> {
   const isAsync = jest.fn();
   if (isAsyncResponse !== undefined) {
     isAsync.mockReturnValue(isAsyncResponse);
@@ -14,7 +14,7 @@ export function fakeNextProperty<T = unknown, TIsAsync extends boolean = boolean
   const generate = jest.fn();
   const shrink = jest.fn();
   const run = jest.fn();
-  class MyProperty implements INextRawProperty<unknown, boolean> {
+  class MyProperty implements IRawProperty<unknown, boolean> {
     isAsync = isAsync;
     generate = generate;
     shrink = shrink;
