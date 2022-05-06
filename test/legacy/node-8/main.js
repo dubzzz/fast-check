@@ -63,8 +63,8 @@ testArbitrary(fc.lorem());
 testArbitrary(fc.uuid());
 testArbitrary(fc.frequency({ weight: 1, arbitrary: fc.nat() }, { weight: 2, arbitrary: fc.double() }));
 testArbitrary(fc.maxSafeInteger());
-testArbitrary(fc.float({ next: true, noNaN: true })); // NaN is not properly recognize with assert.deepEqual
-testArbitrary(fc.double({ next: true, noNaN: true }));
+testArbitrary(fc.float({ noNaN: true })); // NaN is not properly recognize with assert.deepEqual
+testArbitrary(fc.double({ noNaN: true }));
 testArbitrary(fc.emailAddress());
 testArbitrary(fc.webUrl());
 testArbitrary(fc.int8Array());
