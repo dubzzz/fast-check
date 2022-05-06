@@ -25,6 +25,7 @@
     "@types/react": "^17.0.43",
     "@types/supertest": "^2.0.12",
     "jest": "^28.0.0",
+    "jest-environment-jsdom": "^28.1.0",
     "ts-jest": "^28.0.0",
     "typescript": "^4.6.3"
   },
@@ -43,6 +44,7 @@
     },
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
-    ]
+    ],
+    "testEnvironment": "jsdom"
   }
 }
