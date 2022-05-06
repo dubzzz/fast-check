@@ -4,7 +4,7 @@ import { seed } from './seed';
 describe(`WithProvidedExamples (seed: ${seed})`, () => {
   it('should fail on one of the provided examples', () => {
     const out = fc.check(
-      fc.property(fc.integer(1, 100), fc.integer(1, 100), (x, y) => x < y),
+      fc.property(fc.integer({ min: 1, max: 100 }), fc.integer({ min: 1, max: 100 }), (x, y) => x < y),
       {
         examples: [
           [1, 2],
@@ -20,7 +20,7 @@ describe(`WithProvidedExamples (seed: ${seed})`, () => {
   });
   it('should fail on one of the provided examples and shrink it', () => {
     const out = fc.check(
-      fc.property(fc.integer(1, 100), fc.integer(1, 100), (x, y) => x < y),
+      fc.property(fc.integer({ min: 1, max: 100 }), fc.integer({ min: 1, max: 100 }), (x, y) => x < y),
       {
         examples: [
           [1, 2],

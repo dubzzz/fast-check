@@ -88,6 +88,8 @@ describe('TimeoutProperty', () => {
   it('should clear all started timeouts on success', async () => {
     // Arrange
     jest.useFakeTimers();
+    jest.spyOn(global, 'setTimeout');
+    jest.spyOn(global, 'clearTimeout');
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockResolvedValueOnce(null);
 
@@ -103,6 +105,8 @@ describe('TimeoutProperty', () => {
   it('should clear all started timeouts on failure', async () => {
     // Arrange
     jest.useFakeTimers();
+    jest.spyOn(global, 'setTimeout');
+    jest.spyOn(global, 'clearTimeout');
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockResolvedValueOnce('plop');
 

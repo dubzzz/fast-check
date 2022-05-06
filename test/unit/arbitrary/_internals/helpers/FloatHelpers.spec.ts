@@ -149,7 +149,7 @@ describe('indexToFloat', () => {
 
   it('should only produce 32-bit floating point numbers (excluding NaN)', () => {
     fc.assert(
-      fc.property(fc.integer(-2139095041, 2139095040), (index) => {
+      fc.property(fc.integer({ min: -2139095041, max: 2139095040 }), (index) => {
         // Arrange / Act
         const f = indexToFloat(index);
 
@@ -173,7 +173,7 @@ describe('indexToFloat', () => {
 
   it('should be reversed by floatToIndex', () => {
     fc.assert(
-      fc.property(fc.integer(-2139095041, 2139095040), (index) => {
+      fc.property(fc.integer({ min: -2139095041, max: 2139095040 }), (index) => {
         // The test below checks that indexToFloat(floatToIndex) is identity
         // It does not confirm that floatToIndex(indexToFloat)) is identity
         expect(floatToIndex(indexToFloat(index))).toBe(index);
