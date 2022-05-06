@@ -269,7 +269,7 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 describe('depthFactorFromSizeForArbitrary', () => {
   it('should only consider the received depthFactor when set to a numeric value', () => {
     fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, fc.double({ next: true, min: 0 }), (config, size) => {
+      fc.property(sizeRelatedGlobalConfigArb, fc.double({ min: 0 }), (config, size) => {
         // Arrange / Act
         const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary(size));
 
