@@ -15,12 +15,10 @@
         "target": "es2017",
         "outDir": "lib/",
     },
-    "include": [
-        "src/**/*"
-    ],
     "exclude": [
         "example",
-        "node_modules",
-        "**/*.spec.ts"
+        "test/esm",
+        "test/legacy",
+        "test/type"
     ]
 }

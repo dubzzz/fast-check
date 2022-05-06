@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Examples of usage of fast-check",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@testing-library/dom": "^8.12.0",

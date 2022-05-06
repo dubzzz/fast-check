@@ -34,6 +34,27 @@ jobs:
         run: yarn format:check
       - name: Check lint
         run: yarn lint:check
+  typecheck:
+    name: 'Typecheck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build the library (dev version)
+        run: |
+          yarn prebuild
+          yarn build
+      - name: Typecheck
+        run: yarn typecheck
   test:
     name: 'Test'
     runs-on: ubuntu-latest
@@ -197,6 +218,10 @@ jobs:
         uses: ./.github/actions/install-deps-with-current-fc
         with:
           path: 'example'
+      - name: Typecheck example/
+        run: |
+          cd example
+          yarn typecheck
       - name: Test example/
         run: |
           cd example
@@ -392,6 +417,7 @@ jobs:
       - production_package
       - documentation
       - format_lint
+      - typecheck
       - test
       - test_e2e
       - test_cjs_esm
