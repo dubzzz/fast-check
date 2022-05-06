@@ -92,8 +92,6 @@ fc.boolean()
 
 - `fc.integer()`
 - `fc.integer({min?, max?})`
-- `fc.integer(min, max)`
-- _`fc.integer(max)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 *&#8195;with:*
 
@@ -106,14 +104,6 @@ fc.boolean()
 fc.integer()
 // Note: All possible integers between `-2147483648` (included) and `2147483647` (included)
 // Examples of generated values: 1502944448, 888414599, 1123740386, -440217435, 19…
-
-fc.integer(1000)
-// Note: All possible integers between `-2147483648` (included) and `1000` (included)
-// Examples of generated values: -1057705109, -8, -1089721660, -1878447823, -741474720…
-
-fc.integer(-99, 99)
-// Note: All possible integers between `-99` (included) and `99` (included)
-// Examples of generated values: 6, -1, -96, 91, 5…
 
 fc.integer({min: -99, max: 99})
 // Note: All possible integers between `-99` (included) and `99` (included)
@@ -3649,9 +3639,9 @@ fc.string().map(s => `[${s.length}] -> ${s}`)
 *&#8195;Usages*
 
 ```js
-fc.nat().chain(min => fc.tuple(fc.constant(min), fc.integer(min, 0xffffffff)))
+fc.nat().chain(min => fc.tuple(fc.constant(min), fc.integer({min, max: 0xffffffff})))
 // Note: Produce a valid range
-// Examples of generated values: [2147483631,2602190685], [722484778,1844243122], [52754604,4294967287], [231714704,420820067], [3983528,3983548]…
+// Examples of generated values: [18,41], [251380276,4294967271], [903576661,1386263072], [1532947910,1532947934], [1301381459,1832484226]…
 ```
 </details>
 
