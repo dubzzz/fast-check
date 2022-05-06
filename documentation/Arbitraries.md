@@ -251,6 +251,14 @@ fc.float({noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POS
 // Note: Same as fc.float(), noDefaultInfinity just tells that defaults for min and max
 // should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
 // Examples of generated values: 3.4028190042551758e+38, 76771269105680380, -3.402820018375656e+38, -3.5032461608120427e-44, -3.5804397670816536e-16…
+
+fc.integer({ min: 0, max: (1 << 24) - 1 })
+  .map((v) => v / (1 << 24))
+  .noBias()
+// Note: `fc.float` does not uniformly distribute the generated values in the requested range.
+// If you really want a uniform distribution of 32-bit floating point numbers in range 0 (included)
+// and 1 (excluded), you may want to use the arbitrary defined right above.
+// Examples of generated values: 0.4440097212791443, 0.10951411724090576, 0.9122394323348999, 0.2517799735069275, 0.8096938133239746…
 ```
 </details>
 
@@ -297,6 +305,14 @@ fc.double({noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.PO
 // Note: Same as fc.double(), noDefaultInfinity just tells that defaults for min and max
 // should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
 // Examples of generated values: -2.57e-322, 7.4e-323, 1.4e-322, -1.7976931348623055e+308, -2.131202798475727e-213…
+
+fc.tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
+  .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53))
+  .noBias()
+// Note: `fc.double` does not uniformly distribute the generated values in the requested range.
+// If you really want a uniform distribution of 64-bit floating point numbers in range 0 (included)
+// and 1 (excluded), you may want to use the arbitrary defined right above.
+// Examples of generated values: 0.9216838857781072, 0.010859774545431855, 0.2629468413267495, 0.7832272629526738, 0.3333448204689443…
 ```
 </details>
 
