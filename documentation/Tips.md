@@ -619,7 +619,14 @@ const fc = require('fast-check');
 const { loremIpsum } = require('lorem-ipsum');
 
 const loremArb = fc
-  .infiniteStream(fc.double().noBias())
+  .infiniteStream(
+    // Arbitrary generating 32-bit floating point numbers
+    // between 0 (included) and 1 (excluded) (uniform distribution)
+    fc
+      .integer({ min: 0, max: (1 << 24) - 1 })
+      .map((v) => v / (1 << 24))
+      .noBias()
+  )
   .noShrink()
   .map((s) => {
     const rng = () => s.next().value; // prng like Math.random but controlled by fast-check
