@@ -10,7 +10,7 @@ describe('TimeoutProperty', () => {
 
   it('should forward calls to generate', () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
     const { instance: decoratedProperty, generate } = fakeNextProperty(true);
     const { instance: mrng } = fakeRandom();
     const expectedRunId = 42;
@@ -29,7 +29,7 @@ describe('TimeoutProperty', () => {
 
   it('should forward inputs to run', async () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     const expectedRunInput = { anything: Symbol('something') };
 
@@ -46,7 +46,7 @@ describe('TimeoutProperty', () => {
 
   it('should not timeout if it succeeds in time', async () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
@@ -66,7 +66,7 @@ describe('TimeoutProperty', () => {
 
   it('should not timeout if it fails in time', async () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
@@ -87,7 +87,9 @@ describe('TimeoutProperty', () => {
 
   it('should clear all started timeouts on success', async () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
+    jest.spyOn(global, 'setTimeout');
+    jest.spyOn(global, 'clearTimeout');
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockResolvedValueOnce(null);
 
@@ -102,7 +104,9 @@ describe('TimeoutProperty', () => {
 
   it('should clear all started timeouts on failure', async () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
+    jest.spyOn(global, 'setTimeout');
+    jest.spyOn(global, 'clearTimeout');
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockResolvedValueOnce('plop');
 
@@ -117,7 +121,7 @@ describe('TimeoutProperty', () => {
 
   it('should timeout if it takes to long', async () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
@@ -136,7 +140,7 @@ describe('TimeoutProperty', () => {
 
   it('Should timeout if it never ends', async () => {
     // Arrange
-    jest.useFakeTimers({ legacyFakeTimers: true } as any);
+    jest.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeNextProperty(true);
     run.mockReturnValueOnce(new Promise(() => {}));
 
