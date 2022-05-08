@@ -1,6 +1,6 @@
 import { boolean } from '../../../src/arbitrary/boolean';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
 
@@ -54,9 +54,9 @@ describe('boolean', () => {
 // Helpers
 
 function prepare() {
-  const { instance, map } = fakeNextArbitrary<number>();
-  const { instance: mappedInstance, noBias } = fakeNextArbitrary<boolean>();
-  const { instance: unbiasedInstance } = fakeNextArbitrary<boolean>();
+  const { instance, map } = fakeArbitrary<number>();
+  const { instance: mappedInstance, noBias } = fakeArbitrary<boolean>();
+  const { instance: unbiasedInstance } = fakeArbitrary<boolean>();
   const integer = jest.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);

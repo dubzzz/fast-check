@@ -1,6 +1,6 @@
 import fc from '../../../../../lib/fast-check';
 import { patternsToStringUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/PatternsToString';
-import { fakeNextArbitrary } from '../../__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
 
 // prettier-ignore
 const MorseCode = ['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..'];
@@ -30,7 +30,7 @@ describe('patternsToStringUnmapperFor', () => {
     ({ sourceChunks, source, constraints, expectedChunks }) => {
       // Arrange
       const sourceChunksSet = new Set(sourceChunks);
-      const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+      const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
       canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
 
       // Act
@@ -50,7 +50,7 @@ describe('patternsToStringUnmapperFor', () => {
   `('should throw when string cannot be split into chunks ($constraints)', ({ sourceChunks, source, constraints }) => {
     // Arrange
     const sourceChunksSet = new Set(sourceChunks);
-    const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+    const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
 
     // Act / Assert
@@ -68,7 +68,7 @@ describe('patternsToStringUnmapperFor', () => {
         (sourceChunks, sourceMods) => {
           // Arrange
           const sourceChunksSet = new Set(sourceChunks);
-          const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+          const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
           canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
           const source = sourceMods.map((mod) => sourceChunks[mod % sourceChunks.length]).join('');
 
@@ -97,7 +97,7 @@ describe('patternsToStringUnmapperFor', () => {
         (sourceChunks, sourceMods, constraintsMinOffset, constraintsMaxOffset) => {
           // Arrange
           const sourceChunksSet = new Set(sourceChunks);
-          const { instance, canShrinkWithoutContext } = fakeNextArbitrary<string>();
+          const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
           canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
           const source = sourceMods.map((mod) => sourceChunks[mod % sourceChunks.length]).join('');
           const constraints = {

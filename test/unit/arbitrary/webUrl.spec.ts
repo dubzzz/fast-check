@@ -7,9 +7,9 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildNextShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
 
 import * as UriPathArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/UriPathArbitraryBuilder';
@@ -17,7 +17,7 @@ import * as WebAuthorityMock from '../../../src/arbitrary/webAuthority';
 import * as WebFragmentsMock from '../../../src/arbitrary/webFragments';
 import * as WebQueryParametersMock from '../../../src/arbitrary/webQueryParameters';
 import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -31,7 +31,7 @@ describe('webUrl', () => {
     fc.assert(
       fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
         // Arrange
-        const { instance } = fakeNextArbitrary();
+        const { instance } = fakeArbitrary();
         const buildUriPathArbitrary = jest.spyOn(UriPathArbitraryBuilderMock, 'buildUriPathArbitrary');
         buildUriPathArbitrary.mockReturnValue(instance);
         const webAuthority = jest.spyOn(WebAuthorityMock, 'webAuthority');
@@ -108,7 +108,7 @@ describe('webUrl (integration)', () => {
     const value = new Value(rawValue, undefined);
 
     // Act
-    const renderedTree = renderTree(buildNextShrinkTree(arb, value, { numItems: 100 })).join('\n');
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
 
     // Assert
     expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);

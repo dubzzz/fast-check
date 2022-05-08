@@ -2,21 +2,21 @@ import { letrec } from '../../../src/arbitrary/letrec';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../src/stream/Stream';
-import { FakeIntegerArbitrary, fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertGenerateEquivalentTo,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 
 describe('letrec', () => {
   describe('builder', () => {
     it('should be able to construct independant arbitraries', () => {
       // Arrange
-      const { instance: expectedArb1 } = fakeNextArbitrary();
-      const { instance: expectedArb2 } = fakeNextArbitrary();
+      const { instance: expectedArb1 } = fakeArbitrary();
+      const { instance: expectedArb2 } = fakeArbitrary();
 
       // Act
       const { arb1, arb2 } = letrec((_tie) => ({
@@ -31,7 +31,7 @@ describe('letrec', () => {
 
     it('should not produce LazyArbitrary for no-tie constructs', () => {
       // Arrange
-      const { instance: expectedArb } = fakeNextArbitrary();
+      const { instance: expectedArb } = fakeArbitrary();
 
       // Act
       const { arb } = letrec((_tie) => ({
@@ -46,7 +46,7 @@ describe('letrec', () => {
     it('should not produce LazyArbitrary for indirect tie constructs', () => {
       // Arrange / Act
       const { arb } = letrec((tie) => {
-        const { instance: expectedArb, generate } = fakeNextArbitrary();
+        const { instance: expectedArb, generate } = fakeArbitrary();
         generate.mockImplementation((...args) => tie('arb').generate(...args));
         return {
           // arb is an arbitrary wrapping the tie value (as fc.array)
@@ -82,7 +82,7 @@ describe('letrec', () => {
 
     it('should apply tie correctly', () => {
       // Arrange
-      const { instance: expectedArb } = fakeNextArbitrary();
+      const { instance: expectedArb } = fakeArbitrary();
 
       // Act
       const { arb1, arb2, arb3 } = letrec((tie) => ({
@@ -102,7 +102,7 @@ describe('letrec', () => {
 
     it('should apply tie the same way for a reversed declaration', () => {
       // Arrange
-      const { instance: expectedArb } = fakeNextArbitrary();
+      const { instance: expectedArb } = fakeArbitrary();
 
       // Act
       const { arb1, arb2, arb3 } = letrec((tie) => ({
@@ -128,13 +128,13 @@ describe('letrec', () => {
     it('should be able to delay calls to tie to generate', () => {
       // Arrange
       const biasFactor = 69;
-      const { instance: simpleArb, generate } = fakeNextArbitrary();
+      const { instance: simpleArb, generate } = fakeArbitrary();
       generate.mockReturnValueOnce(new Value(null, undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
       const { arb1 } = letrec((tie) => {
-        const { instance: simpleArb2, generate: generate2 } = fakeNextArbitrary();
+        const { instance: simpleArb2, generate: generate2 } = fakeArbitrary();
         generate2.mockImplementation((...args) => tie('arb2').generate(...args));
         return {
           arb1: simpleArb2,
@@ -167,7 +167,7 @@ describe('letrec', () => {
       // Arrange
       const biasFactor = 42;
       const { arb1 } = letrec((tie) => {
-        const { instance: simpleArb, generate } = fakeNextArbitrary();
+        const { instance: simpleArb, generate } = fakeArbitrary();
         generate.mockImplementation((...args) => tie('missing').generate(...args));
         return {
           arb1: simpleArb,
@@ -184,7 +184,7 @@ describe('letrec', () => {
     it('should accept "reserved" keys as output of builder', () => {
       // Arrange
       const biasFactor = 42;
-      const { instance: simpleArb, generate } = fakeNextArbitrary();
+      const { instance: simpleArb, generate } = fakeArbitrary();
       generate.mockReturnValueOnce(new Value(null, undefined));
       const { tie } = letrec((tie) => ({
         tie: tie('__proto__'),
@@ -216,7 +216,7 @@ describe('letrec', () => {
     it('should accept builders producing objects based on Object.create(null)', () => {
       // Arrange
       const biasFactor = 42;
-      const { instance: simpleArb, generate } = fakeNextArbitrary();
+      const { instance: simpleArb, generate } = fakeArbitrary();
       generate.mockReturnValueOnce(new Value(null, undefined));
       const { a } = letrec((tie) =>
         Object.assign(Object.create(null), {
@@ -244,7 +244,7 @@ describe('letrec', () => {
     `('should call canShrinkWithoutContext on the targets', ({ expectedStatus }) => {
       // Arrange
       const expectedValue = Symbol();
-      const { instance: simpleArb, canShrinkWithoutContext } = fakeNextArbitrary();
+      const { instance: simpleArb, canShrinkWithoutContext } = fakeArbitrary();
       canShrinkWithoutContext.mockReturnValueOnce(expectedStatus);
       const { arb1 } = letrec((tie) => {
         return {
@@ -282,7 +282,7 @@ describe('letrec', () => {
       const expectedValue = Symbol();
       const expectedContext = Symbol();
       const expectedStream = Stream.of(new Value(Symbol(), undefined));
-      const { instance: simpleArb, shrink } = fakeNextArbitrary();
+      const { instance: simpleArb, shrink } = fakeArbitrary();
       shrink.mockReturnValueOnce(expectedStream);
       const { arb1 } = letrec((tie) => {
         return {

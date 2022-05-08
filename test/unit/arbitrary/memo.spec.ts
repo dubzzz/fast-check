@@ -1,11 +1,11 @@
 import { memo } from '../../../src/arbitrary/memo';
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 
 describe('memo', () => {
   it('should return the produced instance of arbitrary', () => {
     // Arrange
-    const { instance: expectedArb } = fakeNextArbitrary();
+    const { instance: expectedArb } = fakeArbitrary();
     const builder = memo(() => expectedArb);
 
     // Act
@@ -17,7 +17,7 @@ describe('memo', () => {
 
   it('should cache arbitraries associated to each depth', () => {
     // Arrange
-    const builder = memo(() => fakeNextArbitrary().instance);
+    const builder = memo(() => fakeArbitrary().instance);
 
     // Act
     const arb = builder();
@@ -31,7 +31,7 @@ describe('memo', () => {
 
   it('should instantiate new arbitraries for each depth', () => {
     // Arrange
-    const builder = memo(() => fakeNextArbitrary().instance);
+    const builder = memo(() => fakeArbitrary().instance);
 
     // Act
     const b10 = builder(10);
@@ -43,7 +43,7 @@ describe('memo', () => {
 
   it('should consider no depth as depth 10', () => {
     // Arrange
-    const builder = memo(() => fakeNextArbitrary().instance);
+    const builder = memo(() => fakeArbitrary().instance);
 
     // Act
     const bDefault = builder();
@@ -55,7 +55,7 @@ describe('memo', () => {
 
   it('should automatically decrease depth for self recursive', () => {
     // Arrange
-    const { instance: expectedArb } = fakeNextArbitrary();
+    const { instance: expectedArb } = fakeArbitrary();
     const memoFun = jest.fn();
     const builder = memo(memoFun);
     memoFun.mockImplementation((n) => (n <= 6 ? expectedArb : builder()));
@@ -69,7 +69,7 @@ describe('memo', () => {
 
   it('should automatically interleave decrease depth for mutually recursive', () => {
     // Arrange
-    const { instance: expectedArb } = fakeNextArbitrary();
+    const { instance: expectedArb } = fakeArbitrary();
     const memoFunA = jest.fn();
     const memoFunB = jest.fn();
     const builderA = memo(memoFunA);
@@ -87,7 +87,7 @@ describe('memo', () => {
 
   it('should be able to override decrease depth', () => {
     // Arrange
-    const { instance: expectedArb } = fakeNextArbitrary();
+    const { instance: expectedArb } = fakeArbitrary();
     const memoFun = jest.fn();
     const builder = memo(memoFun);
     memoFun.mockImplementation((n) => (n <= 0 ? expectedArb : builder(n - 3)));
@@ -102,12 +102,12 @@ describe('memo', () => {
   it('should be able to delay calls to sub-builders', () => {
     // Arrange
     const expectedBiasedFactor = 42;
-    const { instance: simpleArb, generate } = fakeNextArbitrary();
+    const { instance: simpleArb, generate } = fakeArbitrary();
     const { instance: mrng } = fakeRandom();
 
     // Act
     const builderA = memo(() => {
-      const { instance: arbA, generate: generateA } = fakeNextArbitrary();
+      const { instance: arbA, generate: generateA } = fakeArbitrary();
       generateA.mockImplementation((mrng, biasedFactor) => builderB().generate(mrng, biasedFactor));
       return arbA;
     });

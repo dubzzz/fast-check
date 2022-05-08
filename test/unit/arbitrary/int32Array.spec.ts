@@ -1,13 +1,13 @@
 import { int32Array } from '../../../src/arbitrary/int32Array';
 
-import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
 
 describe('int32Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder for Int32Array', () => {
     // Arrange
-    const instance = fakeNextArbitrary();
+    const instance = fakeArbitrary();
     const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(() => instance);
 
@@ -27,7 +27,7 @@ describe('int32Array', () => {
 
   it('should call typedIntArrayArbitraryArbitraryBuilder with extreme values for min and max', () => {
     // Arrange
-    const instance = fakeNextArbitrary();
+    const instance = fakeArbitrary();
     const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(() => instance);
 

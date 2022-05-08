@@ -4,7 +4,7 @@ import { sample, statistics } from '../../../../src/check/runner/Sampler';
 
 import * as stubArb from '../../stubs/arbitraries';
 import { cloneMethod } from '../../../../src/check/symbols';
-import { fakeNextArbitrary } from '../../arbitrary/__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 
 const MAX_NUM_RUNS = 1000;
@@ -69,7 +69,7 @@ describe('Sampler', () => {
           throw new Error('Unexpected call to [cloneMethod]');
         },
       };
-      const { instance, generate } = fakeNextArbitrary();
+      const { instance, generate } = fakeArbitrary();
       generate.mockReturnValue(new Value(cloneable, undefined));
       sample(instance, { seed: 42 });
     });

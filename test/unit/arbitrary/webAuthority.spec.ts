@@ -7,7 +7,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/NextArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {

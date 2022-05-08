@@ -5,12 +5,12 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/NextArbitraryAssertions';
+} from '../__test-helpers__/ArbitraryAssertions';
 import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCaseArbitrary';
 import { stringOf } from '../../../../src/arbitrary/stringOf';
 import { nat } from '../../../../src/arbitrary/nat';
 import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
-import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
@@ -111,7 +111,7 @@ describe('MixedCaseArbitrary (integration)', () => {
       fc.assert(
         fc.property(fc.string(), fc.boolean(), fc.func(fc.string()), (rawValue, isShrinkable, toggleCase) => {
           // Arrange
-          const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
+          const { instance, canShrinkWithoutContext } = fakeArbitrary();
           canShrinkWithoutContext.mockReturnValueOnce(isShrinkable);
 
           // Act
@@ -135,7 +135,7 @@ describe('MixedCaseArbitrary (integration)', () => {
           fc.func(fc.string()),
           (rawValue, untoggledValue, isShrinkable, toggleCase) => {
             // Arrange
-            const { instance, canShrinkWithoutContext } = fakeNextArbitrary();
+            const { instance, canShrinkWithoutContext } = fakeArbitrary();
             canShrinkWithoutContext.mockReturnValueOnce(isShrinkable);
             const untoggleAll = jest.fn();
             untoggleAll.mockReturnValue(untoggledValue);
@@ -212,11 +212,11 @@ describe('MixedCaseArbitrary (integration)', () => {
 // Helpers
 
 function mockSourceArbitrariesForGenerate(bigIntOutput: bigint, stringOutput: string) {
-  const { instance: bigUintNInstance, generate: bigUintNGenerate } = fakeNextArbitrary();
+  const { instance: bigUintNInstance, generate: bigUintNGenerate } = fakeArbitrary();
   const bigUintN = jest.spyOn(BigUintNMock, 'bigUintN');
   bigUintN.mockReturnValue(bigUintNInstance);
   bigUintNGenerate.mockReturnValueOnce(new Value(bigIntOutput, undefined));
-  const { instance: stringInstance, generate: stringGenerate } = fakeNextArbitrary();
+  const { instance: stringInstance, generate: stringGenerate } = fakeArbitrary();
   stringGenerate.mockReturnValueOnce(new Value(stringOutput, undefined));
   return { bigUintN, stringInstance };
 }

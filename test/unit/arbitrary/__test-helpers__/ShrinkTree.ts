@@ -6,7 +6,7 @@ const truncatedSignal: any = Symbol();
 
 export type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 
-export function buildNextShrinkTree<T>(
+export function buildShrinkTree<T>(
   arb: Arbitrary<T>,
   v: Value<T>,
   lengthLimiter: { numItems: number } = { numItems: Number.POSITIVE_INFINITY }
@@ -20,7 +20,7 @@ export function buildNextShrinkTree<T>(
       shrinks.push([truncatedSignal, []]);
       break;
     }
-    shrinks.push(buildNextShrinkTree(arb, nv, lengthLimiter));
+    shrinks.push(buildShrinkTree(arb, nv, lengthLimiter));
   }
   return [value, shrinks];
 }
