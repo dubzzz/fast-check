@@ -1,5 +1,6 @@
 import { LazyArbitrary } from '../../../../src/arbitrary/_internals/LazyArbitrary';
-import { NextValue, Stream } from '../../../../src/fast-check-default';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
+import { Stream } from '../../../../src/stream/Stream';
 import { fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
@@ -7,7 +8,7 @@ describe('LazyArbitrary', () => {
   describe('generate', () => {
     it('should call underlying on generate', () => {
       // Arrange
-      const value = new NextValue(Symbol(), Symbol());
+      const value = new Value(Symbol(), Symbol());
       const { instance: mrng } = fakeRandom();
       const { instance: underlying, generate } = fakeNextArbitrary();
       generate.mockReturnValue(value);
@@ -71,7 +72,7 @@ describe('LazyArbitrary', () => {
       // Arrange
       const value = Symbol();
       const context = Symbol();
-      const streamOutput = Stream.of(new NextValue(1, undefined));
+      const streamOutput = Stream.of(new Value(1, undefined));
       const { instance: underlying, shrink } = fakeNextArbitrary();
       shrink.mockReturnValue(streamOutput);
       const lazy = new LazyArbitrary('id007');

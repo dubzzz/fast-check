@@ -1,5 +1,5 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { NextValue } from '../../check/arbitrary/definition/NextValue';
+import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { noUndefinedAsContext, UndefinedContextPlaceholder } from './helpers/NoUndefinedAsContext';
@@ -15,7 +15,7 @@ export class AlwaysShrinkableArbitrary<Ts> extends Arbitrary<Ts> {
     super();
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): NextValue<Ts> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
     const value = this.arb.generate(mrng, biasFactor);
     return noUndefinedAsContext(value);
   }
@@ -24,7 +24,7 @@ export class AlwaysShrinkableArbitrary<Ts> extends Arbitrary<Ts> {
     return true;
   }
 
-  shrink(value: Ts, context: unknown): Stream<NextValue<Ts>> {
+  shrink(value: Ts, context: unknown): Stream<Value<Ts>> {
     if (context === undefined && !this.arb.canShrinkWithoutContext(value)) {
       // This arbitrary will never produce any context being `undefined`
       // neither during `generate` nor during `shrink`

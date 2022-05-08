@@ -1,6 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { NextValue } from '../arbitrary/definition/NextValue';
+import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty } from './IRawProperty';
 
@@ -20,11 +20,11 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
     return this.property.isAsync();
   }
 
-  generate(mrng: Random, runId?: number): NextValue<Ts> {
+  generate(mrng: Random, runId?: number): Value<Ts> {
     return this.property.generate(mrng, runId);
   }
 
-  shrink(value: NextValue<Ts>): Stream<NextValue<Ts>> {
+  shrink(value: Value<Ts>): Stream<Value<Ts>> {
     return this.property.shrink(value);
   }
 

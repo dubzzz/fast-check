@@ -1,6 +1,6 @@
 import * as fc from '../../../../lib/fast-check';
 import { FrequencyArbitrary, _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
-import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
+import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { FakeIntegerArbitrary, fakeNextArbitrary } from '../__test-helpers__/NextArbitraryHelpers';
 import {
@@ -36,7 +36,7 @@ const fromValidInputs = (metas: { weight: number; arbitraryValue: number }[]) =>
   metas.map((meta) => {
     const expectedContext = Symbol();
     const arbitraryMeta = fakeNextArbitrary<number>();
-    arbitraryMeta.generate.mockReturnValue(new NextValue(meta.arbitraryValue, expectedContext));
+    arbitraryMeta.generate.mockReturnValue(new Value(meta.arbitraryValue, expectedContext));
     return {
       weight: meta.weight,
       arbitraryMeta,
@@ -295,7 +295,7 @@ describe('FrequencyArbitrary', () => {
               arbitraryMeta.generate.mockImplementation(() => {
                 calledOnce = true;
                 expect(depthContext).toEqual({ depth: initialDepth + 1 });
-                return new NextValue(expectedValue, undefined);
+                return new Value(expectedValue, undefined);
               });
             }
 
@@ -524,7 +524,7 @@ describe('FrequencyArbitrary', () => {
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
             selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
-              Stream.of(new NextValue(1, undefined), new NextValue(42, undefined))
+              Stream.of(new Value(1, undefined), new Value(42, undefined))
             );
 
             // Act
@@ -567,7 +567,7 @@ describe('FrequencyArbitrary', () => {
             clone.mockReturnValue(anotherMrng);
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
             selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
-              Stream.of(new NextValue(1, undefined), new NextValue(42, undefined))
+              Stream.of(new Value(1, undefined), new Value(42, undefined))
             );
 
             // Act
@@ -601,9 +601,7 @@ describe('FrequencyArbitrary', () => {
 
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockReturnValue(0);
-            warbs[0].arbitraryMeta.shrink.mockReturnValue(
-              Stream.of(new NextValue(1, undefined), new NextValue(42, undefined))
-            );
+            warbs[0].arbitraryMeta.shrink.mockReturnValue(Stream.of(new Value(1, undefined), new Value(42, undefined)));
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, { ...constraints, withCrossShrink: true }, 'test');
@@ -639,7 +637,7 @@ describe('FrequencyArbitrary', () => {
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(
-                Stream.of(new NextValue(42, undefined), new NextValue(index, undefined))
+                Stream.of(new Value(42, undefined), new Value(index, undefined))
               );
             }
 
@@ -676,7 +674,7 @@ describe('FrequencyArbitrary', () => {
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(
-                Stream.of(new NextValue(42, undefined), new NextValue(index, undefined))
+                Stream.of(new Value(42, undefined), new Value(index, undefined))
               );
             }
             warbs[0].fallbackValue = { default: 48 };
