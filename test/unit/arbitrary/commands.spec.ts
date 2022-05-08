@@ -4,8 +4,7 @@ import { commands } from '../../../src/arbitrary/commands';
 import prand from 'pure-rand';
 import { Command } from '../../../src/check/model/command/Command';
 import { Random } from '../../../src/random/generator/Random';
-import { NextArbitrary } from '../../../src/check/arbitrary/definition/NextArbitrary';
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import { Stream } from '../../../src/stream/Stream';
 import { tuple } from '../../../src/arbitrary/tuple';
@@ -39,13 +38,11 @@ describe('commands (integration)', () => {
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
-        const commandsArb = convertToNext(
-          commands([
-            convertFromNext(new FakeConstant(new SuccessCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new SkippedCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new FailureCommand(logOnCheck))),
-          ])
-        );
+        const commandsArb = commands([
+          new FakeConstant(new SuccessCommand(logOnCheck)),
+          new FakeConstant(new SkippedCommand(logOnCheck)),
+          new FakeConstant(new FailureCommand(logOnCheck)),
+        ]);
         const baseCommands = commandsArb.generate(mrng, biasFactor);
 
         // Assert
@@ -61,13 +58,11 @@ describe('commands (integration)', () => {
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
-        const commandsArb = convertToNext(
-          commands([
-            convertFromNext(new FakeConstant(new SuccessCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new SkippedCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new FailureCommand(logOnCheck))),
-          ])
-        );
+        const commandsArb = commands([
+          new FakeConstant(new SuccessCommand(logOnCheck)),
+          new FakeConstant(new SkippedCommand(logOnCheck)),
+          new FakeConstant(new FailureCommand(logOnCheck)),
+        ]);
         const baseCommands = commandsArb.generate(mrng, biasFactor);
         simulateCommands(baseCommands.value);
 
@@ -90,13 +85,11 @@ describe('commands (integration)', () => {
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
-        const commandsArb = convertToNext(
-          commands([
-            convertFromNext(new FakeConstant(new SuccessCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new SkippedCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new FailureCommand(logOnCheck))),
-          ])
-        );
+        const commandsArb = commands([
+          new FakeConstant(new SuccessCommand(logOnCheck)),
+          new FakeConstant(new SkippedCommand(logOnCheck)),
+          new FakeConstant(new FailureCommand(logOnCheck)),
+        ]);
         const baseCommands = commandsArb.generate(mrng, biasFactor);
         simulateCommands(baseCommands.value);
         fc.pre(logOnCheck.data[logOnCheck.data.length - 1] === 'failure');
@@ -123,13 +116,11 @@ describe('commands (integration)', () => {
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
-        const commandsArb = convertToNext(
-          commands([
-            convertFromNext(new FakeConstant(new SuccessCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new SkippedCommand(logOnCheck))),
-            convertFromNext(new FakeConstant(new FailureCommand(logOnCheck))),
-          ])
-        );
+        const commandsArb = commands([
+          new FakeConstant(new SuccessCommand(logOnCheck)),
+          new FakeConstant(new SkippedCommand(logOnCheck)),
+          new FakeConstant(new FailureCommand(logOnCheck)),
+        ]);
         const baseCommands = commandsArb.generate(mrng, biasFactor);
         simulateCommands(baseCommands.value);
 
@@ -146,10 +137,10 @@ describe('commands (integration)', () => {
   });
 
   it('should provide commands which have never run', () => {
-    const commandsArb = commands([convertFromNext(new FakeConstant(new SuccessCommand({ data: [] })))], {
+    const commandsArb = commands([new FakeConstant(new SuccessCommand({ data: [] }))], {
       disableReplayLog: true,
     });
-    const manyArbsIncludingCommandsOne = convertToNext(tuple(nat(16), commandsArb, nat(16)));
+    const manyArbsIncludingCommandsOne = tuple(nat(16), commandsArb, nat(16));
     const assertCommandsNotStarted = (value: NextValue<[number, Iterable<Cmd>, number]>) => {
       // Check the commands have never been executed
       // by checking the toString of the iterable is empty
@@ -205,7 +196,7 @@ describe('commands (integration)', () => {
   });
 
   it('should shrink to smaller values', () => {
-    const commandsArb = convertToNext(commands([nat(3).map((id) => new SuccessIdCommand(id))]));
+    const commandsArb = commands([nat(3).map((id) => new SuccessIdCommand(id))]);
     fc.assert(
       fc.property(
         fc.integer().noShrink(),
@@ -254,14 +245,12 @@ describe('commands (integration)', () => {
 
           // generate scenario and simulate execution
           const rng = prand.xorshift128plus(seed);
-          const refArbitrary = convertToNext(
-            commands([
-              convertFromNext(new FakeConstant(new SuccessCommand(logOnCheck))),
-              convertFromNext(new FakeConstant(new SkippedCommand(logOnCheck))),
-              convertFromNext(new FakeConstant(new FailureCommand(logOnCheck))),
-              nat().map((v) => new SuccessIdCommand(v)),
-            ])
-          );
+          const refArbitrary = commands([
+            new FakeConstant(new SuccessCommand(logOnCheck)),
+            new FakeConstant(new SkippedCommand(logOnCheck)),
+            new FakeConstant(new FailureCommand(logOnCheck)),
+            nat().map((v) => new SuccessIdCommand(v)),
+          ]);
           const refValue: NextValue<Iterable<Cmd>> = refArbitrary.generate(new Random(rng), biasFactor);
           simulateCommands(refValue.value_);
 
@@ -278,16 +267,14 @@ describe('commands (integration)', () => {
           const replayPath = /\/\*replayPath=['"](.*)['"]\*\//.exec(refValue.value_.toString())![1];
 
           // generate scenario but do not simulate execution
-          const noExecArbitrary = convertToNext(
-            commands(
-              [
-                convertFromNext(new FakeConstant(new SuccessCommand(logOnCheck))),
-                convertFromNext(new FakeConstant(new SkippedCommand(logOnCheck))),
-                convertFromNext(new FakeConstant(new FailureCommand(logOnCheck))),
-                nat().map((v) => new SuccessIdCommand(v)),
-              ],
-              { replayPath }
-            )
+          const noExecArbitrary = commands(
+            [
+              new FakeConstant(new SuccessCommand(logOnCheck)),
+              new FakeConstant(new SkippedCommand(logOnCheck)),
+              new FakeConstant(new FailureCommand(logOnCheck)),
+              nat().map((v) => new SuccessIdCommand(v)),
+            ],
+            { replayPath }
           );
           const noExecValue: NextValue<Iterable<Cmd>> = noExecArbitrary.generate(new Random(rng), biasFactor);
 
@@ -307,7 +294,7 @@ describe('commands (integration)', () => {
 
 // Helpers
 
-class FakeConstant extends NextArbitrary<Cmd> {
+class FakeConstant extends Arbitrary<Cmd> {
   constructor(private readonly cmd: Cmd) {
     super();
   }

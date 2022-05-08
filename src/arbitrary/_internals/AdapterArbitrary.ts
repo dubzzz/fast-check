@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
@@ -23,9 +23,9 @@ function toAdapterNextValue<T>(rawValue: NextValue<T>, adapter: (value: T) => Ad
  * Adapt an existing Arbitrary by truncating its generating values
  * if they don't fit the requirements
  */
-class AdapterArbitrary<T> extends NextArbitrary<T> {
+class AdapterArbitrary<T> extends Arbitrary<T> {
   private readonly adaptNextValue: (rawValue: NextValue<T>) => NextValue<T>;
-  constructor(private readonly sourceArb: NextArbitrary<T>, private readonly adapter: (value: T) => AdapterOutput<T>) {
+  constructor(private readonly sourceArb: Arbitrary<T>, private readonly adapter: (value: T) => AdapterOutput<T>) {
     super();
     this.adaptNextValue = (rawValue) => toAdapterNextValue(rawValue, adapter);
   }
@@ -48,6 +48,6 @@ class AdapterArbitrary<T> extends NextArbitrary<T> {
 }
 
 /** @internal */
-export function adapter<T>(sourceArb: NextArbitrary<T>, adapter: (value: T) => AdapterOutput<T>): NextArbitrary<T> {
+export function adapter<T>(sourceArb: Arbitrary<T>, adapter: (value: T) => AdapterOutput<T>): Arbitrary<T> {
   return new AdapterArbitrary(sourceArb, adapter);
 }

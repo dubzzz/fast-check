@@ -5,10 +5,9 @@ import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitr
 import { NextValue } from '../../../../src/check/arbitrary/definition/NextValue';
 import { MaxLengthUpperBound } from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 import { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/CustomSet';
-import { convertFromNextWithShrunkOnce } from '../../../../src/check/arbitrary/definition/Converters';
 import { Stream } from '../../../../src/stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
-import { NextArbitrary } from '../../../../src/check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Random } from '../../../../src/random/generator/Random';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer';
@@ -41,7 +40,7 @@ describe('ArrayArbitrary', () => {
             const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
             generateInteger.mockReturnValue(new NextValue(acceptedValues.size, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
-            integer.mockImplementation(() => convertFromNextWithShrunkOnce(integerInstance, undefined));
+            integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
             // Act
@@ -79,7 +78,7 @@ describe('ArrayArbitrary', () => {
             const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
             generateInteger.mockReturnValue(new NextValue(acceptedValues.size, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
-            integer.mockImplementation(() => convertFromNextWithShrunkOnce(integerInstance, undefined));
+            integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
             // Act
@@ -123,7 +122,7 @@ describe('ArrayArbitrary', () => {
             const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
             generateInteger.mockReturnValue(new NextValue(minLength, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
-            integer.mockImplementation(() => convertFromNextWithShrunkOnce(integerInstance, undefined));
+            integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
             // Act
@@ -189,7 +188,7 @@ describe('ArrayArbitrary', () => {
             const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
             generateInteger.mockReturnValue(new NextValue(minLength, integerContext));
             const integer = jest.spyOn(IntegerMock, 'integer');
-            integer.mockImplementation(() => convertFromNextWithShrunkOnce(integerInstance, undefined));
+            integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
             // Act
@@ -227,7 +226,7 @@ describe('ArrayArbitrary', () => {
       const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
       generateInteger.mockReturnValue(new NextValue(4, undefined));
       const integer = jest.spyOn(IntegerMock, 'integer');
-      integer.mockImplementation(() => convertFromNextWithShrunkOnce(integerInstance, undefined));
+      integer.mockReturnValue(integerInstance);
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -255,7 +254,7 @@ describe('ArrayArbitrary', () => {
       const { instance: integerInstance, generate: generateInteger } = fakeNextArbitrary();
       generateInteger.mockReturnValue(new NextValue(4, undefined));
       const integer = jest.spyOn(IntegerMock, 'integer');
-      integer.mockImplementation(() => convertFromNextWithShrunkOnce(integerInstance, undefined));
+      integer.mockReturnValue(integerInstance);
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -591,7 +590,7 @@ function extractLengths(minLengthSeed: number, aLength: number, bLength: number,
   return { minLength, maxGeneratedLength, maxLength };
 }
 
-class CloneableArbitrary extends NextArbitrary<number[]> {
+class CloneableArbitrary extends Arbitrary<number[]> {
   private instance() {
     return Object.defineProperty([], cloneMethod, { value: () => this.instance() });
   }

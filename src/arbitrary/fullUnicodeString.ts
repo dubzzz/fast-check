@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { array } from './array';
 import { fullUnicode } from './fullUnicode';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
@@ -15,7 +14,5 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 export function fullUnicodeString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return convertFromNext(
-    convertToNext(array(fullUnicode(), constraints)).map(codePointsToStringMapper, codePointsToStringUnmapper)
-  );
+  return array(fullUnicode(), constraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }

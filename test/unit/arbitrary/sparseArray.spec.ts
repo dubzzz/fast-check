@@ -2,7 +2,6 @@
 import * as fc from '../../../lib/fast-check';
 import { sparseArray, SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   FakeIntegerArbitrary,
   fakeNextArbitrary,
@@ -41,12 +40,12 @@ describe('sparseArray', () => {
         const uniqueArray = jest.spyOn(UniqueMock, 'uniqueArray');
         const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
         const { instance: uniqueInstance } = fakeNextArbitraryStaticValue(() => []);
-        tuple.mockReturnValueOnce(convertFromNext(tupleInstance));
-        uniqueArray.mockReturnValueOnce(convertFromNext(uniqueInstance));
+        tuple.mockReturnValueOnce(tupleInstance);
+        uniqueArray.mockReturnValueOnce(uniqueInstance);
         const { instance: arb } = fakeNextArbitrary();
 
         // Act
-        sparseArray(convertFromNext(arb), ct);
+        sparseArray(arb, ct);
 
         // Assert
         expect(uniqueArray).toHaveBeenCalledTimes(1);
@@ -71,12 +70,12 @@ describe('sparseArray', () => {
         ); // called to build indexes
         const { instance: tupleInstance } = fakeNextArbitraryStaticValue(() => []);
         const { instance: uniqueArrayInstance } = fakeNextArbitraryStaticValue(() => []);
-        tuple.mockReturnValueOnce(convertFromNext(tupleInstance));
-        uniqueArray.mockReturnValueOnce(convertFromNext(uniqueArrayInstance));
+        tuple.mockReturnValueOnce(tupleInstance);
+        uniqueArray.mockReturnValueOnce(uniqueArrayInstance);
         const { instance: arb } = fakeNextArbitrary();
 
         // Act
-        sparseArray(convertFromNext(arb), ct);
+        sparseArray(arb, ct);
 
         // Assert
         expect(restrictedIntegerArbitraryBuilder).toHaveBeenCalled(); // at least once
@@ -127,7 +126,7 @@ describe('sparseArray', () => {
           const { instance: arb } = fakeNextArbitrary();
 
           // Act / Assert
-          expect(() => sparseArray(convertFromNext(arb), ct)).toThrowError(/non-hole/);
+          expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
         }
       )
     );
@@ -146,7 +145,7 @@ describe('sparseArray', () => {
           const { instance: arb } = fakeNextArbitrary();
 
           // Act / Assert
-          expect(() => sparseArray(convertFromNext(arb), ct)).toThrowError(/non-hole/);
+          expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
         }
       )
     );
@@ -187,8 +186,7 @@ describe('sparseArray (integration)', () => {
     return true;
   };
 
-  const sparseArrayBuilder = (extra: Extra) =>
-    convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), extra));
+  const sparseArrayBuilder = (extra: Extra) => sparseArray(new FakeIntegerArbitrary(), extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(sparseArrayBuilder, { extraParameters, isEqual });
@@ -215,7 +213,7 @@ describe('sparseArray (integration)', () => {
     ${[, , , 4] /* too long (length is 4) */}                              | ${{ maxLength: 3 }}
   `('should not be able to generate $source with fc.sparseArray(..., $constraints)', ({ source, constraints }) => {
     // Arrange / Act
-    const arb = convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), constraints));
+    const arb = sparseArray(new FakeIntegerArbitrary(), constraints);
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -232,7 +230,7 @@ describe('sparseArray (integration)', () => {
     ${[...Array(50)].map((_, i) => i) /* non-holey items higher than default maxGeneratedLength but ok for shrink */} | ${{}}
   `('should be able to shrink $rawValue with fc.sparseArray(..., $constraints)', ({ rawValue, constraints }) => {
     // Arrange
-    const arb = convertToNext(sparseArray(convertFromNext(new FakeIntegerArbitrary()), constraints));
+    const arb = sparseArray(new FakeIntegerArbitrary(), constraints);
     const value = new NextValue(rawValue, undefined);
 
     // Act

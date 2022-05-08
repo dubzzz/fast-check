@@ -1,6 +1,5 @@
 import { boolean } from '../../../src/arbitrary/boolean';
 
-import { convertFromNextWithShrunkOnce, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
@@ -20,7 +19,7 @@ describe('boolean', () => {
     const arb = boolean();
 
     // Assert
-    expect(convertToNext(arb)).toBe(unbiasedInstance);
+    expect(arb).toBe(unbiasedInstance);
     expect(integer).toHaveBeenCalledTimes(1);
     expect(integer).toHaveBeenCalledWith({ min: 0, max: 1 });
   });
@@ -59,7 +58,7 @@ function prepare() {
   const { instance: mappedInstance, noBias } = fakeNextArbitrary<boolean>();
   const { instance: unbiasedInstance } = fakeNextArbitrary<boolean>();
   const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockImplementation(() => convertFromNextWithShrunkOnce(instance, undefined));
+  integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   noBias.mockReturnValue(unbiasedInstance);
   return { map, integer, unbiasedInstance };

@@ -1,6 +1,5 @@
 import { int32Array } from '../../../src/arbitrary/int32Array';
 
-import { convertFromNext, convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
@@ -10,13 +9,13 @@ describe('int32Array', () => {
     // Arrange
     const instance = fakeNextArbitrary();
     const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => convertFromNext(instance));
+    builder.mockImplementation(() => instance);
 
     // Act
     const arb = int32Array();
 
     // Assert
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
     expect(builder).toHaveBeenCalledWith(
       expect.anything(),
       expect.any(Number),
@@ -30,7 +29,7 @@ describe('int32Array', () => {
     // Arrange
     const instance = fakeNextArbitrary();
     const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => convertFromNext(instance));
+    builder.mockImplementation(() => instance);
 
     // Act
     int32Array();

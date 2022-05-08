@@ -29,8 +29,8 @@ const maxDepthForArrays = 40000;
 const maxShrinksToAsk = 100;
 
 describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
-  const iterateOverShrunkValues = <T>(s: fc.Shrinkable<T>) => {
-    const it = s.shrink().take(maxShrinksToAsk)[Symbol.iterator]();
+  const iterateOverShrunkValues = <T>(arb: fc.Arbitrary<T>, v: fc.NextValue<T>) => {
+    const it = arb.shrink(v.value_, v.context).take(maxShrinksToAsk)[Symbol.iterator]();
     let cur = it.next();
     while (!cur.done) {
       cur = it.next();
@@ -43,17 +43,17 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
     class InfiniteShrinkingDepth extends fc.Arbitrary<number> {
-      private static buildInfiniteShrinkable(n: number): fc.Shrinkable<number> {
-        function* g() {
-          yield n - 1;
-        }
-        if (n <= -maxDepthForArrays) {
-          return new fc.Shrinkable(n);
-        }
-        return new fc.Shrinkable(n, () => fc.stream(g()).map(InfiniteShrinkingDepth.buildInfiniteShrinkable));
+      generate(_mrng: fc.Random): fc.NextValue<number> {
+        return new fc.NextValue(0, undefined);
       }
-      generate(_mrng: fc.Random): fc.Shrinkable<number> {
-        return InfiniteShrinkingDepth.buildInfiniteShrinkable(0);
+      canShrinkWithoutContext(value: unknown): value is number {
+        return false;
+      }
+      shrink(value: number): fc.Stream<fc.NextValue<number>> {
+        if (value <= -maxDepthForArrays) {
+          return fc.Stream.nil();
+        }
+        return fc.Stream.of(new fc.NextValue(value - 1, undefined));
       }
     }
 
@@ -72,14 +72,14 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.array(fc.boolean(), { maxLength: maxDepthForArrays });
-    let s: fc.Shrinkable<boolean[]> | null = null;
-    while (s === null) {
-      const tempShrinkable = arb.generate(mrng);
+    let value: fc.NextValue<boolean[]> | null = null;
+    while (value === null) {
+      const tempShrinkable = arb.generate(mrng, undefined);
       if (tempShrinkable.value.length >= callStackSize) {
-        s = tempShrinkable;
+        value = tempShrinkable;
       }
     }
-    expect(() => iterateOverShrunkValues(s!)).not.toThrow();
+    expect(() => iterateOverShrunkValues(arb, value!)).not.toThrow();
   });
 
   it('should not run into stack overflow while calling shrink on very large shuffled sub-arrays', () => {
@@ -89,14 +89,14 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.shuffledSubarray([...Array(maxDepthForArrays)].map((_, i) => i));
-    let s: fc.Shrinkable<number[]> | null = null;
-    while (s === null) {
-      const tempShrinkable = arb.generate(mrng);
+    let value: fc.NextValue<number[]> | null = null;
+    while (value === null) {
+      const tempShrinkable = arb.generate(mrng, undefined);
       if (tempShrinkable.value.length >= callStackSize) {
-        s = tempShrinkable;
+        value = tempShrinkable;
       }
     }
-    expect(() => iterateOverShrunkValues(s!)).not.toThrow();
+    expect(() => iterateOverShrunkValues(arb, value!)).not.toThrow();
   });
 
   it('should not run into stack overflow while calling shrink on very large arrays of commands', () => {
@@ -112,15 +112,15 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.commands([fc.boolean().map((b) => new AnyCommand(b))], { maxCommands: maxDepthForArrays });
-    let s: fc.Shrinkable<Iterable<fc.Command<Record<string, unknown>, unknown>>> | null = null;
-    while (s === null) {
-      const tempShrinkable = arb.generate(mrng);
+    let value: fc.NextValue<Iterable<fc.Command<Record<string, unknown>, unknown>>> | null = null;
+    while (value === null) {
+      const tempShrinkable = arb.generate(mrng, undefined);
       const cmds = [...tempShrinkable.value];
       if (cmds.length >= callStackSize) {
         fc.modelRun(() => ({ model: {}, real: {} }), cmds);
-        s = tempShrinkable;
+        value = tempShrinkable;
       }
     }
-    expect(() => iterateOverShrunkValues(s!)).not.toThrow();
+    expect(() => iterateOverShrunkValues(arb, value!)).not.toThrow();
   });
 });

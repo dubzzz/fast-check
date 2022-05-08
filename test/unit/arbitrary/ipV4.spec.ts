@@ -1,6 +1,5 @@
 import { ipV4 } from '../../../src/arbitrary/ipV4';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { NextValue } from '../../../src/check/arbitrary/definition/NextValue';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -20,7 +19,7 @@ describe('ipV4 (integration)', () => {
     }
   };
 
-  const ipV4Builder = () => convertToNext(ipV4());
+  const ipV4Builder = () => ipV4();
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(ipV4Builder);
@@ -44,7 +43,7 @@ describe('ipV4 (integration)', () => {
     ${'255.255.255.255'}
   `('should be able to generate $source with fc.ipV4()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(ipV4());
+    const arb = ipV4();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -59,7 +58,7 @@ describe('ipV4 (integration)', () => {
     ${'-1.0.0.0'}
   `('should not be able to generate $source with fc.ipV4()', ({ source }) => {
     // Arrange / Act
-    const arb = convertToNext(ipV4());
+    const arb = ipV4();
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -72,7 +71,7 @@ describe('ipV4 (integration)', () => {
     ${'8.8.4.4'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
-    const arb = convertToNext(ipV4());
+    const arb = ipV4();
     const value = new NextValue(rawValue, undefined);
 
     // Act

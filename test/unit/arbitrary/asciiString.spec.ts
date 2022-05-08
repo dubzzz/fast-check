@@ -1,7 +1,6 @@
 import * as fc from '../../../lib/fast-check';
 import { asciiString } from '../../../src/arbitrary/asciiString';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -31,7 +30,7 @@ describe('asciiString (integration)', () => {
     }
   };
 
-  const asciiStringBuilder = (extra: Extra) => convertToNext(asciiString(extra));
+  const asciiStringBuilder = (extra: Extra) => asciiString(extra);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(asciiStringBuilder, { extraParameters });

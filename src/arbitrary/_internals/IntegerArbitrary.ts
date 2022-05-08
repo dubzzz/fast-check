@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { NextValue } from '../../check/arbitrary/definition/NextValue';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
@@ -6,7 +6,7 @@ import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange';
 import { shrinkInteger } from './helpers/ShrinkInteger';
 
 /** @internal */
-export class IntegerArbitrary extends NextArbitrary<number> {
+export class IntegerArbitrary extends Arbitrary<number> {
   constructor(readonly min: number, readonly max: number) {
     super();
   }
@@ -44,7 +44,7 @@ export class IntegerArbitrary extends NextArbitrary<number> {
     return shrinkInteger(current, context, false);
   }
 
-  defaultTarget(): number {
+  private defaultTarget(): number {
     // min <= 0 && max >= 0   => shrink towards zero
     if (this.min <= 0 && this.max >= 0) {
       return 0;

@@ -1,5 +1,4 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { convertFromNext, convertToNext } from '../check/arbitrary/definition/Converters';
 import { CloneArbitrary } from './_internals/CloneArbitrary';
 
 /**
@@ -24,6 +23,6 @@ export type CloneValue<T, N extends number, Rest extends T[] = []> = [number] ex
  */
 function clone<T, N extends number>(arb: Arbitrary<T>, numValues: N): Arbitrary<CloneValue<T, N>>;
 function clone<T>(arb: Arbitrary<T>, numValues: number): Arbitrary<T[]> {
-  return convertFromNext(new CloneArbitrary(convertToNext(arb), numValues));
+  return new CloneArbitrary(arb, numValues);
 }
 export { clone };

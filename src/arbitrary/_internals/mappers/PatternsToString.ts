@@ -1,4 +1,4 @@
-import { NextArbitrary } from '../../../check/arbitrary/definition/NextArbitrary';
+import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { MaxLengthUpperBound } from '../helpers/MaxLengthFromMinLength';
 import { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
 
@@ -9,7 +9,7 @@ export function patternsToStringMapper(tab: string[]): string {
 
 /** @internal */
 export function patternsToStringUnmapperFor(
-  patternsArb: NextArbitrary<string>,
+  patternsArb: Arbitrary<string>,
   constraints: StringSharedConstraints
 ): (value: unknown) => string[] {
   return function patternsToStringUnmapper(value: unknown): string[] {

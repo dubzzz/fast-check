@@ -1,13 +1,11 @@
 import { maxSafeInteger } from '../../../src/arbitrary/maxSafeInteger';
 
-import { convertToNext } from '../../../src/check/arbitrary/definition/Converters';
 import { fakeNextArbitrary } from './__test-helpers__/NextArbitraryHelpers';
 
 import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
 
 function fakeIntegerArbitrary() {
   const instance = fakeNextArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
-  instance.defaultTarget = jest.fn();
   return instance;
 }
 
@@ -29,6 +27,6 @@ describe('maxSafeInteger', () => {
 
     // Assert
     expect(IntegerArbitrary).toHaveBeenCalledWith(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
-    expect(convertToNext(arb)).toBe(instance);
+    expect(arb).toBe(instance);
   });
 });
