@@ -30,7 +30,7 @@ const maxShrinksToAsk = 100;
 
 describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
   const iterateOverShrunkValues = <T>(arb: fc.Arbitrary<T>, v: fc.NextValue<T>) => {
-    const it = arb.shrink(v.value, v.context).take(maxShrinksToAsk)[Symbol.iterator]();
+    const it = arb.shrink(v.value_, v.context).take(maxShrinksToAsk)[Symbol.iterator]();
     let cur = it.next();
     while (!cur.done) {
       cur = it.next();
