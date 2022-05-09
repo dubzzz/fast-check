@@ -58,7 +58,7 @@ describe('lorem (integration)', () => {
         expect(value).not.toContain(',');
         expect(value.split(' ').length).toBeGreaterThanOrEqual(1);
         if (extra.maxCount !== undefined) {
-          expect(value.split(' ').length).toBeLessThanOrEqual(maxCount);
+          expect(value.split(' ').length).toBeLessThanOrEqual(extra.maxCount);
         }
         break;
     }
