@@ -15,7 +15,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
     });
     it('Should be usable to build deep tree instances', () => {
       const { tree } = fc.letrec((tie) => ({
-        tree: fc.frequency({ arbitrary: tie('node'), weight: 45 }, { arbitrary: tie('leaf'), weight: 55 }),
+        tree: fc.oneof(tie('leaf'), tie('node')),
         node: fc.tuple(tie('tree'), tie('tree')),
         leaf: fc.nat(),
       }));

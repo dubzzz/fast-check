@@ -11,7 +11,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
       data: fc.frequency(
-        { withCrossShrink: true, depthFactor: 'small' },
+        { withCrossShrink: true },
         { arbitrary: fc.constant([0]), weight: 1 },
         { arbitrary: fc.tuple(tie('data'), tie('data')), weight: 1 }
       ),
@@ -29,11 +29,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
-      data: fc.oneof(
-        { withCrossShrink: true, depthFactor: 'small' },
-        fc.constant([0]),
-        fc.tuple(tie('data'), tie('data'))
-      ),
+      data: fc.oneof({ withCrossShrink: true }, fc.constant([0]), fc.tuple(tie('data'), tie('data'))),
     })).data;
 
     // Act
@@ -48,7 +44,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
-      data: fc.option(fc.tuple(tie('data'), tie('data')), { nil: [0], depthFactor: 'small' }),
+      data: fc.option(fc.tuple(tie('data'), tie('data')), { nil: [0] }),
     })).data;
 
     // Act
