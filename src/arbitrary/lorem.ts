@@ -23,8 +23,6 @@ export interface LoremConstraints {
    * - maximal number of words in case mode is 'words'
    * - maximal number of sentences in case mode is 'sentences'
    *
-   * @defaultValue 5
-   *
    * @remarks Since 2.5.0
    */
   maxCount?: number;
@@ -237,8 +235,8 @@ function loremWord() {
  * @public
  */
 export function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
-  const { maxCount = 5, mode = 'words', size } = constraints;
-  if (maxCount < 1) {
+  const { maxCount, mode = 'words', size } = constraints;
+  if (maxCount !== undefined && maxCount < 1) {
     throw new Error(`lorem has to produce at least one word/sentence`);
   }
   const wordArbitrary = loremWord();

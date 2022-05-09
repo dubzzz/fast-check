@@ -1063,7 +1063,7 @@ fc.unicodeJson({depthFactor: 'medium'})
 
 *&#8195;with:*
 
-- `maxCount?` — default: `5` — if `sentenceMode` is `true`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
+- `maxCount?` — default: `0x7fffffff` [more](#size-explained) — if `mode` is `"words"`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words_
 - `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 
@@ -1071,7 +1071,13 @@ fc.unicodeJson({depthFactor: 'medium'})
 
 ```js
 fc.lorem()
-// Examples of generated values: "arcu fusce", "dolor mi dignissim", "felis lacus", "ligula nec curae sed enim", "tincidunt vivamus massa"…
+// Examples of generated values:
+// • "arcu fusce lorem fermentum in consectetur enim praesent convallis pede"
+// • "dolor mi dignissim cubilia"
+// • "felis lacus suscipit ipsum"
+// • "ligula nec curae sed enim est"
+// • "tincidunt vivamus massa tempus in et iaculis amet placerat at"
+// • …
 
 fc.lorem({maxCount: 3})
 // Examples of generated values: "praesent libero sodales", "mi adipiscing", "ut duis vitae", "mi elementum gravida", "non"…
