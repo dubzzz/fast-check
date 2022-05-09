@@ -59,7 +59,11 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
         { seed: seed }
       );
       expect(out.failed).toBe(true);
-      expect(out.counterexample).toStrictEqual([{ '': {} }]);
+      // Here we can potentially have things like:
+      // { '': {} } or { '': [ {  '': {} } ] } or ...
+      // For the moment, there is no certainty to shrink to { '': {} }
+      // as we don't have any fallbacking strategy to shrink an array onto an object.
+      expect(out.counterexample).toStrictEqual([{ '': expect.anything() }]);
     });
   });
 });

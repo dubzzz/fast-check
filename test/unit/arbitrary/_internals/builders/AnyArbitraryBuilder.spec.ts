@@ -88,23 +88,35 @@ describe('anyArbitraryBuilder (integration)', () => {
   });
 
   type Extra = ObjectConstraints;
-  const extraParameters: fc.Arbitrary<Extra> = fc.record(
-    {
-      depthFactor: fc.oneof(fc.double({ min: 0, max: 10 }), sizeArb),
-      maxDepth: fc.nat({ max: 5 }),
-      maxKeys: fc.nat({ max: 10 }),
-      withBigInt: fc.boolean(),
-      withBoxedValues: fc.boolean(),
-      withDate: fc.boolean(),
-      withMap: fc.boolean(),
-      withNullPrototype: fc.boolean(),
-      withObjectString: fc.boolean(),
-      withSet: fc.boolean(),
-      withSparseArray: fc.boolean(),
-      withTypedArray: fc.boolean(),
-    },
-    { requiredKeys: [] }
-  );
+  const extraParameters: fc.Arbitrary<Extra> = fc
+    .record(
+      {
+        depthFactor: fc.oneof(fc.double({ min: 0, max: 10 }), sizeArb),
+        maxDepth: fc.nat({ max: 5 }),
+        maxKeys: fc.nat({ max: 10 }),
+        withBigInt: fc.boolean(),
+        withBoxedValues: fc.boolean(),
+        withDate: fc.boolean(),
+        withMap: fc.boolean(),
+        withNullPrototype: fc.boolean(),
+        withObjectString: fc.boolean(),
+        withSet: fc.boolean(),
+        withSparseArray: fc.boolean(),
+        withTypedArray: fc.boolean(),
+      },
+      { requiredKeys: [] }
+    )
+    .filter((params) => {
+      if (params.depthFactor === undefined || params.depthFactor >= 0.5) {
+        return true; // 0.5 is equivalent to small, the default
+      }
+      if (params.maxDepth !== undefined) {
+        return true;
+      }
+      // No maxDepth and a depthFactor relatively small can potentially lead to very very large
+      // and deep structures. We want to avoid those cases in this test.
+      return false;
+    });
 
   const isCorrect = (v: unknown, extra: Extra) => {
     if (extra.maxDepth !== undefined) {

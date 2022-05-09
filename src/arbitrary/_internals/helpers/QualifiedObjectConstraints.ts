@@ -114,12 +114,17 @@ export interface ObjectConstraints {
   withSparseArray?: boolean;
 }
 
+/** @internal */
+type ObjectConstraintsOptionalValues = 'depthFactor' | 'maxDepth' | 'maxKeys' | 'size';
+
 /**
  * Internal wrapper around an `ObjectConstraints`, it adds all the missing pieces in the configuration
  * @internal
  */
-export type QualifiedObjectConstraints = Required<Omit<ObjectConstraints, 'withBoxedValues' | 'depthFactor' | 'size'>> &
-  Pick<ObjectConstraints, 'depthFactor' | 'size'>;
+export type QualifiedObjectConstraints = Required<
+  Omit<ObjectConstraints, 'withBoxedValues' | ObjectConstraintsOptionalValues>
+> &
+  Pick<ObjectConstraints, ObjectConstraintsOptionalValues>;
 
 /** @internal */
 function defaultValues(constraints: { size: SizeForArbitrary }): Arbitrary<unknown>[] {
@@ -158,8 +163,8 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
       orDefault(settings.withBoxedValues, false)
     ),
     depthFactor: settings.depthFactor,
-    maxDepth: orDefault(settings.maxDepth, 2),
-    maxKeys: orDefault(settings.maxKeys, 5),
+    maxDepth: settings.maxDepth,
+    maxKeys: settings.maxKeys,
     size: settings.size,
     withSet: orDefault(settings.withSet, false),
     withMap: orDefault(settings.withMap, false),
