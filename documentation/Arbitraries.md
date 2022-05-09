@@ -3052,7 +3052,7 @@ fc.unicodeJsonValue({maxDepth: 1})
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
 - `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `undefined` — _maximal depth for generated objects (Map and Set included into objects)_
-- `maxKeys?` — default: `undefined` — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `maxKeys?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
