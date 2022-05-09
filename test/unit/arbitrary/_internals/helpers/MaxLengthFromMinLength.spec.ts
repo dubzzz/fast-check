@@ -308,6 +308,18 @@ describe('depthFactorFromSizeForArbitrary', () => {
       })
     );
   });
+
+  it('should always return 0 if size is max whatever the global configuration', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, (config) => {
+        // Arrange / Act
+        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary('max'));
+
+        // Assert
+        expect(computedDepthFactor).toBe(0);
+      })
+    );
+  });
 });
 
 describe('relativeSizeToSize', () => {

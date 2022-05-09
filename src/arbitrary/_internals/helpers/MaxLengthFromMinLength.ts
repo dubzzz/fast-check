@@ -55,10 +55,12 @@ export type SizeForArbitrary = RelativeSize | Size | 'max' | undefined;
  * When used with numeric values, the smaller the number (floating point number &gt;= 0),
  * the deeper the structure. 0 meaning "depth has no impact".
  *
+ * Using `max` or `0` is fully equivalent.
+ *
  * @remarks Since 2.25.0
  * @public
  */
-export type DepthFactorSizeForArbitrary = RelativeSize | Size | number | undefined;
+export type DepthFactorSizeForArbitrary = RelativeSize | Size | 'max' | number | undefined;
 
 /**
  * The default size used by fast-check
@@ -147,6 +149,9 @@ export function maxGeneratedLengthFromSizeForArbitrary(
 export function depthFactorFromSizeForArbitrary(depthFactorOrSize: DepthFactorSizeForArbitrary): number {
   if (typeof depthFactorOrSize === 'number') {
     return depthFactorOrSize;
+  }
+  if (depthFactorOrSize === 'max') {
+    return 0;
   }
   const { baseSize: defaultSize = DefaultSize } = readConfigureGlobal() || {};
   const definedSize = depthFactorOrSize !== undefined ? depthFactorOrSize : defaultSize;
