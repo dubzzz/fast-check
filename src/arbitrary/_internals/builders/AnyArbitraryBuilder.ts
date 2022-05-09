@@ -28,23 +28,6 @@ import { uniqueArray } from '../../uniqueArray';
 import { createDepthIdentifier, DepthIdentifier } from '../helpers/DepthContext';
 
 /** @internal */
-function entriesOf<T, U>(
-  keyArb: Arbitrary<T>,
-  valueArb: Arbitrary<U>,
-  maxKeys: number,
-  size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier
-) {
-  return uniqueArray(tuple(keyArb, valueArb), {
-    maxLength: maxKeys,
-    size,
-    comparator: 'SameValueZero',
-    selector: (t) => t[0],
-    depthIdentifier,
-  });
-}
-
-/** @internal */
 function mapOf<T, U>(
   ka: Arbitrary<T>,
   va: Arbitrary<U>,
@@ -52,7 +35,13 @@ function mapOf<T, U>(
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier
 ) {
-  return entriesOf(ka, va, maxKeys, size, depthIdentifier).map(arrayToMapMapper, arrayToMapUnmapper);
+  return uniqueArray(tuple(ka, va), {
+    maxLength: maxKeys,
+    size,
+    comparator: 'SameValueZero',
+    selector: (t) => t[0],
+    depthIdentifier,
+  }).map(arrayToMapMapper, arrayToMapUnmapper);
 }
 
 /** @internal */
@@ -63,10 +52,12 @@ function dictOf<U>(
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier
 ) {
-  return entriesOf(ka, va, maxKeys, size, depthIdentifier).map(
-    keyValuePairsToObjectMapper,
-    keyValuePairsToObjectUnmapper
-  );
+  return uniqueArray(tuple(ka, va), {
+    maxLength: maxKeys,
+    size,
+    selector: (t) => t[0],
+    depthIdentifier,
+  }).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
 }
 
 /** @internal */
@@ -76,8 +67,6 @@ function setOf<U>(
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier
 ) {
-  // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
-  // While the Set does not and consider them to be the same values.
   return uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero', depthIdentifier }).map(
     arrayToSetMapper,
     arrayToSetUnmapper
@@ -87,8 +76,6 @@ function setOf<U>(
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types
 function prototypeLessOf(objectArb: Arbitrary<object>) {
-  // TODO - The default compare function provided by the set is not appropriate (today) as it distintish NaN from NaN
-  // While the Set does not and consider them to be the same values.
   return objectArb.map(objectToPrototypeLessMapper, objectToPrototypeLessUnmapper);
 }
 
