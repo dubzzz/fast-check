@@ -968,7 +968,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -1017,7 +1017,7 @@ fc.json({depthFactor: 'medium'})
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — _maximal depth of generated objects_
 
 *&#8195;Usages*
@@ -2776,7 +2776,7 @@ fc.record({
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
@@ -2889,7 +2889,7 @@ fc.object({
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -2991,7 +2991,7 @@ fc.statistics(
 
 *&#8195;with:*
 
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
@@ -3029,7 +3029,7 @@ fc.unicodeJsonValue({maxDepth: 1})
 *&#8195;with:*
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthFactor?` — default: `=` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _factor to increase the probability to generate leaf values as we go deeper in the structure, numeric value >=0 (eg.: 0.1)_
 - `maxDepth?` — default: `2` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `5` — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
@@ -3502,7 +3502,7 @@ fc.statistics(
 
 ```js
 // Setup the tree structure:
-const tree = fc.memo(n => fc.oneof(node(n), node(n), leaf())); // double the probability of nodes compared to leaves
+const tree = fc.memo(n => fc.oneof(leaf(), node(n)));
 const node = fc.memo(n => {
   if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
   return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
@@ -3512,11 +3512,11 @@ const leaf = fc.nat;
 tree(2)
 // Note: Only produce trees having a maximal depth of 2
 // Examples of generated values:
-// • {"left":{"left":23,"right":2},"right":{"left":210148030,"right":283093342}}
-// • 1883170510
-// • 4879206
-// • {"left":{"left":2147483622,"right":2147483643},"right":{"left":1297112406,"right":883126194}}
-// • {"left":{"left":13,"right":2147483635},"right":{"left":1861062539,"right":20}}
+// • {"left":{"left":1034146857,"right":26},"right":{"left":739853254,"right":2147483623}}
+// • {"left":{"left":19,"right":2147483639},"right":{"left":1503072025,"right":2147483633}}
+// • {"left":1,"right":{"left":2147483626,"right":12}}
+// • {"left":2147483619,"right":{"left":279104538,"right":3}}
+// • 1978324282
 // • …
 ```
 </details>
@@ -3772,11 +3772,11 @@ and `+infinity`. It was used to reduce the risk of generating infinite structure
 the higher the depth factor, the higher the chance to build not very deep instances.
 
 Then size came in 2.22.0 and with it an idea: make it simple for users to configure complex things. While depth factor
-was pretty cool, selecting the right value was not trivial from a user point of view. So size has been leverage for both:
+was pretty cool, selecting the right value was not trivial from a user point of view. So size has been leveraged for both:
 number of items defined within an iterable structure and depth. Except very complex and ad-hoc cases, we expect size to
 be the only kind of configuration used to setup depth factors.
 
-Depth factor derived from size works exactly the same way as size, it can rely on Relative Size but also Explicit Size.
+Depth factor derived from size works exactly the same way as size, it can rely on Relative Size but also Explicit Size. By default when not explicitely set it will be defaulted to `=` and will ignore `defaultSizeToMaxWhenMaxSpecified` which has been added for length-based sizes.
 
 Here is how a size translates into depth factors:
 - `xsmall` — `1`

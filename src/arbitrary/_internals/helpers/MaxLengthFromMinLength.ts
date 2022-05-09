@@ -148,13 +148,7 @@ export function depthFactorFromSizeForArbitrary(depthFactorOrSize: DepthFactorSi
   if (typeof depthFactorOrSize === 'number') {
     return depthFactorOrSize;
   }
-  const { baseSize } = readConfigureGlobal() || {};
-  if (depthFactorOrSize === undefined && baseSize === undefined) {
-    // This early return is mostly there for legacy reasons in the context of v2
-    // it will be dropped with the release of v3
-    return 0;
-  }
-  const defaultSize = baseSize !== undefined ? baseSize : DefaultSize;
+  const { baseSize: defaultSize = DefaultSize } = readConfigureGlobal() || {};
   const definedSize = depthFactorOrSize !== undefined ? depthFactorOrSize : defaultSize;
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
   switch (finalSize) {
