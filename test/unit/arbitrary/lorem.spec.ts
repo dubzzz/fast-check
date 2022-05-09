@@ -32,14 +32,13 @@ describe('lorem (integration)', () => {
   );
 
   const isCorrect = (value: string, extra: Extra) => {
-    const maxCount = extra.maxCount !== undefined ? extra.maxCount : 5;
     switch (extra.mode) {
       case 'sentences': {
         expect(value).toContain('.');
         expect(value[value.length - 1]).toEqual('.');
         const sentences = value
           // we remove the trailing dot at the end of the generated string
-          .substr(0, value.length - 1)
+          .substring(0, value.length - 1)
           .split('.')
           // we remove the leading space for sentences with index greater than 0
           .map((s, i) => (i === 0 ? s : s.substring(1)));
@@ -48,7 +47,9 @@ describe('lorem (integration)', () => {
           expect(s).toMatch(/^[A-Z](, | )?([a-z]+(, | )?)*$/);
         }
         expect(sentences.length).toBeGreaterThanOrEqual(1);
-        expect(sentences.length).toBeLessThanOrEqual(maxCount);
+        if (extra.maxCount !== undefined) {
+          expect(sentences.length).toBeLessThanOrEqual(extra.maxCount);
+        }
         break;
       }
       case 'words':
@@ -56,7 +57,9 @@ describe('lorem (integration)', () => {
         expect(value).not.toContain('.');
         expect(value).not.toContain(',');
         expect(value.split(' ').length).toBeGreaterThanOrEqual(1);
-        expect(value.split(' ').length).toBeLessThanOrEqual(maxCount);
+        if (extra.maxCount !== undefined) {
+          expect(value.split(' ').length).toBeLessThanOrEqual(extra.maxCount);
+        }
         break;
     }
   };

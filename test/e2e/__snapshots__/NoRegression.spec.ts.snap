@@ -2610,17 +2610,21 @@ Execution summary:
 `;
 
 exports[`NoRegression lorem 1`] = `
-"Property failed after 1 tests
-{ seed: 42, path: \\"0:1\\", endOnFailure: true }
-Counterexample: [\\"ullamcorper morbi\\"]
-Shrunk 1 time(s)
+"Property failed after 2 tests
+{ seed: 42, path: \\"1:1:0:0:0\\", endOnFailure: true }
+Counterexample: [\\"ullamcorper leo\\"]
+Shrunk 4 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[31m×[0m [\\"tristique ullamcorper morbi\\"]
-. [32m√[0m [\\"morbi\\"]
-. [31m×[0m [\\"ullamcorper morbi\\"]
-. . [32m√[0m [\\"morbi\\"]"
+[32m√[0m [\\"tristique\\"]
+[31m×[0m [\\"quam gravida nulla non blandit proin congue lobortis in ullamcorper leo\\"]
+. [32m√[0m [\\"leo\\"]
+. [31m×[0m [\\"proin congue lobortis in ullamcorper leo\\"]
+. . [31m×[0m [\\"lobortis in ullamcorper leo\\"]
+. . . [31m×[0m [\\"in ullamcorper leo\\"]
+. . . . [31m×[0m [\\"ullamcorper leo\\"]
+. . . . . [32m√[0m [\\"leo\\"]"
 `;
 
 exports[`NoRegression mapToConstant 1`] = `
