@@ -33,7 +33,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
       throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
     const sanitizedConstraints: _SanitizedConstraints = {
-      depthFactor: depthFactorFromSizeForArbitrary(constraints.depthFactor),
+      depthFactor: depthFactorFromSizeForArbitrary(constraints.depthFactor, constraints.maxDepth !== undefined),
       depthIdentifier: constraints.depthIdentifier,
       maxDepth: constraints.maxDepth,
       withCrossShrink: constraints.withCrossShrink,
