@@ -12,78 +12,7 @@ function beforeEachHook() {
 beforeEach(beforeEachHook);
 
 describe('oneof', () => {
-  it('should call FrequencyArbitrary.from with empty constraints if no constraints have been passed', () => {
-    // Arrange
-    const expectedArb = fakeArbitrary().instance;
-    const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
-    from.mockReturnValue(expectedArb);
-    const { instance: arb1 } = fakeArbitrary();
-    const { instance: arb2 } = fakeArbitrary();
-
-    // Act
-    const out = oneof(arb1, arb2);
-
-    // Assert
-    expect(from).toHaveBeenCalledWith(
-      [
-        { arbitrary: arb1, weight: 1 },
-        { arbitrary: arb2, weight: 1 },
-      ],
-      {}, // empty constraints
-      'fc.oneof'
-    );
-    expect(out).toBe(expectedArb);
-  });
-
-  it('should pass received constraints to FrequencyArbitrary.from', () => {
-    // Arrange
-    const expectedArb = fakeArbitrary().instance;
-    const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
-    from.mockReturnValue(expectedArb);
-    const constraints: OneOfConstraints = { maxDepth: 10, depthIdentifier: 'hello' };
-    const { instance: arb1 } = fakeArbitrary();
-    const { instance: arb2 } = fakeArbitrary();
-
-    // Act
-    const out = oneof(constraints, arb1, arb2);
-
-    // Assert
-    expect(from).toHaveBeenCalledWith(
-      [
-        { arbitrary: arb1, weight: 1 },
-        { arbitrary: arb2, weight: 1 },
-      ],
-      constraints,
-      'fc.oneof'
-    );
-    expect(out).toBe(expectedArb);
-  });
-
-  it('should pass received constraints to FrequencyArbitrary.from even if empty', () => {
-    // Arrange
-    const expectedArb = fakeArbitrary().instance;
-    const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
-    from.mockReturnValue(expectedArb);
-    const constraints: OneOfConstraints = {};
-    const { instance: arb1 } = fakeArbitrary();
-    const { instance: arb2 } = fakeArbitrary();
-
-    // Act
-    const out = oneof(constraints, arb1, arb2);
-
-    // Assert
-    expect(from).toHaveBeenCalledWith(
-      [
-        { arbitrary: arb1, weight: 1 },
-        { arbitrary: arb2, weight: 1 },
-      ],
-      constraints,
-      'fc.oneof'
-    );
-    expect(out).toBe(expectedArb);
-  });
-
-  it('should call FrequencyArbitrary.from with the right parameters when called with constraints and weighted', () => {
+  it('should adapt received MaybeWeightedArbitrary for FrequencyArbitrary.from when called with constraints', () => {
     fc.assert(
       fc.property(
         fc.record(
@@ -95,24 +24,32 @@ describe('oneof', () => {
           },
           { requiredKeys: [] }
         ),
-        (constraints: Partial<OneOfConstraints>) => {
+        fc.option(fc.nat()),
+        fc.option(fc.nat()),
+        fc.option(fc.nat()),
+        (constraints: Partial<OneOfConstraints>, weight1, weight2, weight3) => {
           // Arrange
           const expectedArb = fakeArbitrary().instance;
           const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
           from.mockReturnValue(expectedArb);
           const { instance: arb1 } = fakeArbitrary();
           const { instance: arb2 } = fakeArbitrary();
-          const weight1 = 10;
-          const weight2 = 3;
+          const { instance: arb3 } = fakeArbitrary();
 
           // Act
-          const out = oneof(constraints, { arbitrary: arb1, weight: weight1 }, { arbitrary: arb2, weight: weight2 });
+          const out = oneof(
+            constraints,
+            weight1 !== null ? { arbitrary: arb1, weight: weight1 } : arb1,
+            weight2 !== null ? { arbitrary: arb2, weight: weight2 } : arb2,
+            weight3 !== null ? { arbitrary: arb3, weight: weight3 } : arb3
+          );
 
           // Assert
           expect(from).toHaveBeenCalledWith(
             [
-              { arbitrary: arb1, weight: weight1 },
-              { arbitrary: arb2, weight: weight2 },
+              { arbitrary: arb1, weight: weight1 !== null ? weight1 : 1 },
+              { arbitrary: arb2, weight: weight2 !== null ? weight2 : 1 },
+              { arbitrary: arb3, weight: weight3 !== null ? weight3 : 1 },
             ],
             constraints,
             'fc.oneof'
@@ -123,28 +60,36 @@ describe('oneof', () => {
     );
   });
 
-  it('should call FrequencyArbitrary.from with the right parameters when called without constraints and weighted', () => {
-    // Arrange
-    const expectedArb = fakeArbitrary().instance;
-    const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
-    from.mockReturnValue(expectedArb);
-    const { instance: arb1 } = fakeArbitrary();
-    const { instance: arb2 } = fakeArbitrary();
-    const weight1 = 10;
-    const weight2 = 3;
+  it('should adapt received MaybeWeightedArbitrary for FrequencyArbitrary.from when called without constraints', () => {
+    fc.assert(
+      fc.property(fc.option(fc.nat()), fc.option(fc.nat()), fc.option(fc.nat()), (weight1, weight2, weight3) => {
+        // Arrange
+        const expectedArb = fakeArbitrary().instance;
+        const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+        from.mockReturnValue(expectedArb);
+        const { instance: arb1 } = fakeArbitrary();
+        const { instance: arb2 } = fakeArbitrary();
+        const { instance: arb3 } = fakeArbitrary();
 
-    // Act
-    const out = oneof({ arbitrary: arb1, weight: weight1 }, { arbitrary: arb2, weight: weight2 });
+        // Act
+        const out = oneof(
+          weight1 !== null ? { arbitrary: arb1, weight: weight1 } : arb1,
+          weight2 !== null ? { arbitrary: arb2, weight: weight2 } : arb2,
+          weight3 !== null ? { arbitrary: arb3, weight: weight3 } : arb3
+        );
 
-    // Assert
-    expect(from).toHaveBeenCalledWith(
-      [
-        { arbitrary: arb1, weight: weight1 },
-        { arbitrary: arb2, weight: weight2 },
-      ],
-      {},
-      'fc.oneof'
+        // Assert
+        expect(from).toHaveBeenCalledWith(
+          [
+            { arbitrary: arb1, weight: weight1 !== null ? weight1 : 1 },
+            { arbitrary: arb2, weight: weight2 !== null ? weight2 : 1 },
+            { arbitrary: arb3, weight: weight3 !== null ? weight3 : 1 },
+          ],
+          {}, // empty constraints
+          'fc.oneof'
+        );
+        expect(out).toBe(expectedArb);
+      })
     );
-    expect(out).toBe(expectedArb);
   });
 });
