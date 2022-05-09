@@ -12,6 +12,8 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
+import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -22,34 +24,8 @@ beforeEach(beforeEachHook);
 
 describe('uniqueArray', () => {
   it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb)', () => {
-    // Arrange
-    const { instance: childInstance } = fakeArbitrary<unknown>();
-    const { instance } = fakeArbitrary<unknown[]>();
-    const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-    ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
-
-    // Act
-    const arb = uniqueArray(childInstance);
-
-    // Assert
-    expect(ArrayArbitrary).toHaveBeenCalledWith(
-      childInstance,
-      0,
-      expect.any(Number),
-      0x7fffffff,
-      undefined,
-      expect.any(Function)
-    );
-    const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
-    expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
-    expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
-    expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
-    expect(arb).toBe(instance);
-  });
-
-  it('should instantiate ArrayArbitrary(arb, 0, maxLength, maxLength, n.a, <default>) for uniqueArray(set, {maxLength})', () => {
     fc.assert(
-      fc.property(fc.nat({ max: 2 ** 31 - 1 }), (maxLength) => {
+      fc.property(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -57,17 +33,61 @@ describe('uniqueArray', () => {
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
-        const arb = uniqueArray(childInstance, { maxLength });
+        const arb = withConfiguredGlobal(config, () => uniqueArray(childInstance));
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(
           childInstance,
           0,
-          maxLength,
+          expect.any(Number),
+          0x7fffffff,
+          undefined,
+          expect.any(Function)
+        );
+        const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
+        expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
+        expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
+        expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
+        expect(arb).toBe(instance);
+      })
+    );
+  });
+
+  it('should instantiate ArrayArbitrary(arb, 0, ?, maxLength, n.a, <default>) for uniqueArray(set, {maxLength})', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, maxLength) => {
+        // Arrange
+        const { instance: childInstance } = fakeArbitrary<unknown>();
+        const { instance } = fakeArbitrary<unknown[]>();
+        const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+
+        // Act
+        const arb = withConfiguredGlobal(config, () => uniqueArray(childInstance, { maxLength }));
+
+        // Assert
+        expect(ArrayArbitrary).toHaveBeenCalledWith(
+          childInstance,
+          0,
+          expect.any(Number),
           maxLength,
           undefined,
           expect.any(Function)
         );
+        const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
+        expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(0);
+        expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(maxLength);
+        expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
+        if (config.defaultSizeToMaxWhenMaxSpecified) {
+          expect(ArrayArbitrary).toHaveBeenCalledWith(
+            childInstance,
+            0,
+            maxLength,
+            maxLength,
+            undefined,
+            expect.any(Function)
+          );
+        }
         expect(arb).toBe(instance);
       })
     );
@@ -75,7 +95,7 @@ describe('uniqueArray', () => {
 
   it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb, {minLength})', () => {
     fc.assert(
-      fc.property(fc.nat({ max: 2 ** 31 - 1 }), (minLength) => {
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, minLength) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance, filter } = fakeArbitrary<unknown[]>();
@@ -84,7 +104,7 @@ describe('uniqueArray', () => {
         filter.mockReturnValue(instance);
 
         // Act
-        const arb = uniqueArray(childInstance, { minLength });
+        const arb = withConfiguredGlobal(config, () => uniqueArray(childInstance, { minLength }));
 
         // Assert
         expect(ArrayArbitrary).toHaveBeenCalledWith(
@@ -108,37 +128,57 @@ describe('uniqueArray', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, maxLength, maxLength, n.a, <default>) for uniqueArray(arb, {minLength,maxLength})', () => {
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, n.a, <default>) for uniqueArray(arb, {minLength,maxLength})', () => {
     fc.assert(
-      fc.property(fc.nat({ max: 2 ** 31 - 1 }), fc.nat({ max: 2 ** 31 - 1 }), (aLength, bLength) => {
-        // Arrange
-        const [minLength, maxLength] = aLength < bLength ? [aLength, bLength] : [bLength, aLength];
-        const { instance: childInstance } = fakeArbitrary<unknown>();
-        const { instance, filter } = fakeArbitrary<unknown[]>();
-        const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
-        filter.mockReturnValue(instance);
+      fc.property(
+        sizeRelatedGlobalConfigArb,
+        fc.nat({ max: 2 ** 31 - 1 }),
+        fc.nat({ max: 2 ** 31 - 1 }),
+        (config, aLength, bLength) => {
+          // Arrange
+          const [minLength, maxLength] = aLength < bLength ? [aLength, bLength] : [bLength, aLength];
+          const { instance: childInstance } = fakeArbitrary<unknown>();
+          const { instance, filter } = fakeArbitrary<unknown[]>();
+          const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+          ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+          filter.mockReturnValue(instance);
 
-        // Act
-        const arb = uniqueArray(childInstance, { minLength, maxLength });
+          // Act
+          const arb = withConfiguredGlobal(config, () => uniqueArray(childInstance, { minLength, maxLength }));
 
-        // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(
-          childInstance,
-          minLength,
-          maxLength,
-          maxLength,
-          undefined,
-          expect.any(Function)
-        );
-        expect(arb).toBe(instance);
-      })
+          // Assert
+          expect(ArrayArbitrary).toHaveBeenCalledWith(
+            childInstance,
+            minLength,
+            expect.any(Number),
+            maxLength,
+            undefined,
+            expect.any(Function)
+          );
+          const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
+          expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
+          expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(maxLength);
+          expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
+          if (config.defaultSizeToMaxWhenMaxSpecified) {
+            expect(ArrayArbitrary).toHaveBeenCalledWith(
+              childInstance,
+              minLength,
+              maxLength,
+              maxLength,
+              undefined,
+              expect.any(Function)
+            );
+          }
+          expect(arb).toBe(instance);
+        }
+      )
     );
   });
 
   it('should accept custom comparator or selector or both at the same time or none', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         fc
           .record(
             {
@@ -161,7 +201,7 @@ describe('uniqueArray', () => {
                 } as UniqueArrayConstraints<unknown, unknown>)
               : ({ ...constraints } as UniqueArrayConstraints<unknown, unknown>)
           ),
-        (constraints) => {
+        (config, constraints) => {
           // Arrange
           const { instance: childInstance } = fakeArbitrary<unknown>();
           const { instance, filter } = fakeArbitrary<unknown[]>();
@@ -170,13 +210,13 @@ describe('uniqueArray', () => {
           filter.mockReturnValue(instance);
 
           // Act
-          const arb = uniqueArray(childInstance, constraints);
+          const arb = withConfiguredGlobal(config, () => uniqueArray(childInstance, constraints));
 
           // Assert
           expect(ArrayArbitrary).toHaveBeenCalledWith(
             childInstance,
             constraints.minLength !== undefined ? constraints.minLength : expect.any(Number),
-            constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
+            expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
             constraints.depthIdentifier,
             expect.any(Function)
@@ -190,18 +230,23 @@ describe('uniqueArray', () => {
   it('should throw when minimum length is greater than maximum one', () => {
     fc.assert(
       fc.property(
+        sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.option(comparatorArbitrary(), { nil: undefined }),
         fc.option(selectorArbitrary(), { nil: undefined }),
-        (aLength, bLength, comparator, selector) => {
+        (config, aLength, bLength, comparator, selector) => {
           // Arrange
           fc.pre(aLength !== bLength);
           const [minLength, maxLength] = aLength < bLength ? [bLength, aLength] : [aLength, bLength];
           const { instance: childInstance } = fakeArbitrary<unknown>();
 
           // Act / Assert
-          expect(() => uniqueArray(childInstance, { minLength, maxLength, comparator, selector })).toThrowError();
+          expect(() =>
+            withConfiguredGlobal(config, () =>
+              uniqueArray(childInstance, { minLength, maxLength, comparator, selector })
+            )
+          ).toThrowError();
         }
       )
     );
