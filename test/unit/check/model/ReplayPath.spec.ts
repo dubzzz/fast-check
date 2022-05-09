@@ -2,7 +2,7 @@ import * as fc from '../../../../lib/fast-check';
 
 import { ReplayPath } from '../../../../src/check/model/ReplayPath';
 
-const biasedBoolean = fc.frequency(
+const biasedBoolean = fc.oneof(
   { weight: 1000, arbitrary: fc.constant(true) },
   { weight: 1, arbitrary: fc.constant(false) }
 );

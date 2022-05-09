@@ -65,7 +65,7 @@ import { anything } from './arbitrary/anything';
 import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
 import { jsonValue, JsonValue } from './arbitrary/jsonValue';
 import { unicodeJson } from './arbitrary/unicodeJson';
-import { oneof, OneOfValue, OneOfConstraints } from './arbitrary/oneof';
+import { oneof, OneOfValue, OneOfConstraints, MaybeWeightedArbitrary } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './arbitrary/record';
 import {
@@ -378,6 +378,7 @@ export {
   WebQueryParametersConstraints,
   WebSegmentConstraints,
   WebUrlConstraints,
+  MaybeWeightedArbitrary,
   WeightedArbitrary,
   // produced values
   CloneValue,

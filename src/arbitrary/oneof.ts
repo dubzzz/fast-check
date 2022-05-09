@@ -9,7 +9,7 @@ import { DepthFactorSizeForArbitrary } from './_internals/helpers/MaxLengthFromM
  * @remarks Since 3.0.0
  * @public
  */
-type MaybeWeightedArbitrary<T> = Arbitrary<T> | WeightedArbitrary<T>;
+export type MaybeWeightedArbitrary<T> = Arbitrary<T> | WeightedArbitrary<T>;
 
 /**
  * Infer the type of the Arbitrary produced by {@link oneof}
