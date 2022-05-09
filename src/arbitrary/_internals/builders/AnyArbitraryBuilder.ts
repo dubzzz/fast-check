@@ -31,7 +31,7 @@ import { createDepthIdentifier, DepthIdentifier } from '../helpers/DepthContext'
 function mapOf<T, U>(
   ka: Arbitrary<T>,
   va: Arbitrary<U>,
-  maxKeys: number,
+  maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier
 ) {
@@ -48,7 +48,7 @@ function mapOf<T, U>(
 function dictOf<U>(
   ka: Arbitrary<string>,
   va: Arbitrary<U>,
-  maxKeys: number,
+  maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier
 ) {
@@ -63,7 +63,7 @@ function dictOf<U>(
 /** @internal */
 function setOf<U>(
   va: Arbitrary<U>,
-  maxKeys: number,
+  maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier
 ) {
@@ -80,7 +80,7 @@ function prototypeLessOf(objectArb: Arbitrary<object>) {
 }
 
 /** @internal */
-function typedArray(constraints: { maxLength: number; size: SizeForArbitrary }) {
+function typedArray(constraints: { maxLength: number | undefined; size: SizeForArbitrary }) {
   return oneof(
     int8Array(constraints),
     uint8Array(constraints),

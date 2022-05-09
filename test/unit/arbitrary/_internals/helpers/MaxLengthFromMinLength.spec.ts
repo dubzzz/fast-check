@@ -194,11 +194,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
         sizeRelatedGlobalConfigArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
-        (config, lengthA, lengthB) => {
+        (incompleteConfig, lengthA, lengthB) => {
           // Arrange
-          fc.pre(
-            config.defaultSizeToMaxWhenMaxSpecified === true || config.defaultSizeToMaxWhenMaxSpecified === undefined
-          );
+          const config = { ...incompleteConfig, defaultSizeToMaxWhenMaxSpecified: true };
           const [minLength, maxLength] = lengthA < lengthB ? [lengthA, lengthB] : [lengthB, lengthA];
 
           // Act
