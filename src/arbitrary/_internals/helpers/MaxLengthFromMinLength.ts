@@ -144,17 +144,26 @@ export function maxGeneratedLengthFromSizeForArbitrary(
 /**
  * Compute `depthFactor` based on `size`
  * @param size - Size or depthFactor defined by the caller on the arbitrary
+ * @param specifiedMaxDepth - Whether or not the caller specified a max depth
  * @internal
  */
-export function depthFactorFromSizeForArbitrary(depthFactorOrSize: DepthFactorSizeForArbitrary): number {
+export function depthFactorFromSizeForArbitrary(
+  depthFactorOrSize: DepthFactorSizeForArbitrary,
+  specifiedMaxDepth: boolean
+): number {
   if (typeof depthFactorOrSize === 'number') {
     return depthFactorOrSize;
   }
-  if (depthFactorOrSize === 'max') {
+  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified } = readConfigureGlobal() || {};
+  const definedSize =
+    depthFactorOrSize !== undefined
+      ? depthFactorOrSize
+      : specifiedMaxDepth && defaultSizeToMaxWhenMaxSpecified
+      ? 'max'
+      : defaultSize;
+  if (definedSize === 'max') {
     return 0;
   }
-  const { baseSize: defaultSize = DefaultSize } = readConfigureGlobal() || {};
-  const definedSize = depthFactorOrSize !== undefined ? depthFactorOrSize : defaultSize;
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
   switch (finalSize) {
     case 'xsmall':

@@ -894,6 +894,6 @@ There are two main ways to change this upper bound:
 At global level, there are two main options:
 
 - `baseSize` — defaulted to `"small"` — define what should be the default size when nothing has been specified at instantiation level
-- `defaultSizeToMaxWhenMaxSpecified` — when set to `true`, any arbitrary being instantiated with an upper bound (such as `maxLength`) and no size will see it's size defaulted to `max` / when set to `false`, if not defined the size will be defaulted to `baseSize` (see above)
+- `defaultSizeToMaxWhenMaxSpecified` — when set to `true`, any arbitrary being instantiated with an upper bound (such as `maxLength` or `maxDepth`) and no size will see it's size defaulted to `max` / when set to `false`, if not defined the size will be defaulted to `baseSize` (see above)
 
 You may want to read more about ways to configure global settings at [Setup global settings](#setup-global-settings).

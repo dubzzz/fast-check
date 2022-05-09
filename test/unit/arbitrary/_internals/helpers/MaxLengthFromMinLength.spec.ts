@@ -267,21 +267,30 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 describe('depthFactorFromSizeForArbitrary', () => {
   it('should only consider the received depthFactor when set to a numeric value', () => {
     fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, fc.double({ min: 0 }), (config, size) => {
-        // Arrange / Act
-        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary(size));
+      fc.property(
+        sizeRelatedGlobalConfigArb,
+        fc.double({ min: 0 }),
+        fc.boolean(),
+        (config, size, specifiedMaxDepth) => {
+          // Arrange / Act
+          const computedDepthFactor = withConfiguredGlobal(config, () =>
+            depthFactorFromSizeForArbitrary(size, specifiedMaxDepth)
+          );
 
-        // Assert
-        expect(computedDepthFactor).toBe(size);
-      })
+          // Assert
+          expect(computedDepthFactor).toBe(size);
+        }
+      )
     );
   });
 
   it('should only consider the received size when set to Size', () => {
     fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, sizeArb, (config, size) => {
+      fc.property(sizeRelatedGlobalConfigArb, sizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
         // Arrange / Act
-        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary(size));
+        const computedDepthFactor = withConfiguredGlobal(config, () =>
+          depthFactorFromSizeForArbitrary(size, specifiedMaxDepth)
+        );
         const expectedDepthFactor = { xsmall: 1, small: 1 / 2, medium: 1 / 4, large: 1 / 8, xlarge: 1 / 16 }[size];
 
         // Assert
@@ -292,14 +301,16 @@ describe('depthFactorFromSizeForArbitrary', () => {
 
   it('should behave as its equivalent Size taking into account global settings when receiving a RelativeSize', () => {
     fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, relativeSizeArb, (config, size) => {
+      fc.property(sizeRelatedGlobalConfigArb, relativeSizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
         // Arrange
         const { baseSize: defaultSize = DefaultSize } = config;
         const equivalentSize = relativeSizeToSize(size, defaultSize);
 
         // Act
-        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary(size));
-        const expectedDepthFactor = depthFactorFromSizeForArbitrary(equivalentSize);
+        const computedDepthFactor = withConfiguredGlobal(config, () =>
+          depthFactorFromSizeForArbitrary(size, specifiedMaxDepth)
+        );
+        const expectedDepthFactor = depthFactorFromSizeForArbitrary(equivalentSize, false);
 
         // Assert
         expect(computedDepthFactor).toBe(expectedDepthFactor);
@@ -309,9 +320,25 @@ describe('depthFactorFromSizeForArbitrary', () => {
 
   it('should always return 0 if size is max whatever the global configuration', () => {
     fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, fc.boolean(), (config, specifiedMaxDepth) => {
+        // Arrange / Act
+        const computedDepthFactor = withConfiguredGlobal(config, () =>
+          depthFactorFromSizeForArbitrary('max', specifiedMaxDepth)
+        );
+
+        // Assert
+        expect(computedDepthFactor).toBe(0);
+      })
+    );
+  });
+
+  it('should always return 0 if both specifiedMaxDepth and defaultSizeToMaxWhenMaxSpecified are true and size unset', () => {
+    fc.assert(
       fc.property(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange / Act
-        const computedDepthFactor = withConfiguredGlobal(config, () => depthFactorFromSizeForArbitrary('max'));
+        const computedDepthFactor = withConfiguredGlobal({ ...config, defaultSizeToMaxWhenMaxSpecified: true }, () =>
+          depthFactorFromSizeForArbitrary(undefined, true)
+        );
 
         // Assert
         expect(computedDepthFactor).toBe(0);

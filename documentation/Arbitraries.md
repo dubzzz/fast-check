@@ -3797,7 +3797,7 @@ was pretty cool, selecting the right value was not trivial from a user point of 
 number of items defined within an iterable structure and depth. Except very complex and ad-hoc cases, we expect size to
 be the only kind of configuration used to setup depth factors.
 
-Depth factor derived from size works exactly the same way as size, it can rely on Relative Size but also Explicit Size. By default when not explicitely set it will be defaulted to `=` and will ignore `defaultSizeToMaxWhenMaxSpecified` which has been added for length-based sizes.
+Depth factor derived from size works exactly the same way as size, it can rely on Relative Size but also Explicit Size. As for length, if not specified the size will either be defaulted to `"="` or to `"max"` depending on the flag `defaultSizeToMaxWhenMaxSpecified` and on the fact that the user specified a maximal depth or not. The only case defaulting to `"max"` is: user specified a maximal depth onto the instance but not size and `defaultSizeToMaxWhenMaxSpecified` is set to `true`. Any other setup will fallback to `"="`.
 
 Here is how a size translates into depth factors:
 - `xsmall` — `1`

@@ -76,7 +76,8 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
   baseSize?: Size;
   /**
    * When set to `true` and if the size has not been defined for this precise instance,
-   * it will automatically default to `"max"` if the user specified a upper bound for the range.
+   * it will automatically default to `"max"` if the user specified a upper bound for the range
+   * (applies to length and to depth).
    *
    * When `false`, the size will be defaulted to `baseSize` even if the user specified
    * a upper bound for the range.
