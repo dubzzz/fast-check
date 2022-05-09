@@ -71,7 +71,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
-    const arb = fc.array(fc.boolean(), { maxLength: maxDepthForArrays });
+    const arb = fc.array(fc.boolean(), { maxLength: maxDepthForArrays, size: 'max' });
     let value: fc.Value<boolean[]> | null = null;
     while (value === null) {
       const tempShrinkable = arb.generate(mrng, undefined);
@@ -111,7 +111,10 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     }
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
-    const arb = fc.commands([fc.boolean().map((b) => new AnyCommand(b))], { maxCommands: maxDepthForArrays });
+    const arb = fc.commands([fc.boolean().map((b) => new AnyCommand(b))], {
+      maxCommands: maxDepthForArrays,
+      size: 'max',
+    });
     let value: fc.Value<Iterable<fc.Command<Record<string, unknown>, unknown>>> | null = null;
     while (value === null) {
       const tempShrinkable = arb.generate(mrng, undefined);

@@ -81,7 +81,6 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
    * When `false`, the size will be defaulted to `baseSize` even if the user specified
    * a upper bound for the range.
    *
-   * @defaultValue `true` - for backward compatibility reasons
    * @remarks Since 2.22.0
    */
   defaultSizeToMaxWhenMaxSpecified?: boolean;

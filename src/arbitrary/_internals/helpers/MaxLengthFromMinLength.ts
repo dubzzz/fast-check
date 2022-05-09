@@ -124,7 +124,7 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   maxLength: number,
   specifiedMaxLength: boolean
 ): number {
-  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified = true } = readConfigureGlobal() || {};
+  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified } = readConfigureGlobal() || {};
 
   // Resulting size is:
   // - If size has been defined, we use it,

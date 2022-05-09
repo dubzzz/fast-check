@@ -1465,11 +1465,11 @@ fc.webUrl({size: '-1'})
 ```js
 fc.emailAddress()
 // Examples of generated values:
-// • "e0f7||'5tqsh61k_opz+r*%^'k&wscdddsv{'*=f{1e2@azcddep.brd"
-// • "8d{cdrddb5a^}dc|g}#bacd0bfn0bdfoa}fbslf7f''#xe2-_aj?.&*9bi6-@du5h8ii.sf5vf2yd9khk.ub"
-// • "|bi9r}1|9lm^biw8i3.$~doz=|dlrlnl}~gfu+px0pr-{%*mh&*8efxj4`b6y}m@mada.bbv"
-// • "/22{9=mp&2?e#w-b%-'=%itdenn?8#_c1g_3c#=#0e~/_j^n&*@sflar.xk"
-// • "z*3y`3kteb}4~6|&&xepg{@7t-ze.m.iat"
+// • "e0f7||'5tqsh.1k_opz+.*%^'k&w.cdd@5-ewc55fq.cs"
+// • "8d{cdrdd.55^.?acy@zncuc.hbilc193lx8.stp"
+// • "|bi9r}.|9lm^.iw8i39$~doz.|dlr.nl}~gfu+.x0pr-{%*mh&*.efx.4`@v.au"
+// • "/2.{9=mp&2?e#w-.%-'=%itden.?8#_c1g_3c.=#0e~/_j^n&*.9@8y3l33b6.y7o558ir45.ra"
+// • "z*3y`3.teb.4~6|&&xep.{dfz=pp/mmx.-n^%smik'z.%.4+c._.g-csml66'@gc.bq"
 // • …
 
 fc.emailAddress({size: '-1'})
@@ -2317,8 +2317,8 @@ fc.array(fc.nat(), {maxLength: 50, size: 'max'})
 // Note: By specifying size to "max", we enforce the fact that we want generated values to have between
 // 0 and 50 items. In other words, we want to use the full range of specified lengths.
 // Note: If not defined, by default, the size is "=" except if there is a maxLength provided and the
-// global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true (the default in v2). In such
-// case it will automatically be defaulted to "max".
+// global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true. In such case it will
+// automatically be defaulted to "max".
 // Examples of generated values:
 // • [4,26,725992281,7,1186699848]
 // • [1503239805,742382696,478977019,1206184056,992934701,1081616342,1979615602,100017132,1937766941,1785237624,89742033,1144227677,1828223609,1661385382,1964114158,526345403,1355567259,101888470,985865568,1687809116,147253818,1849736419,89389898,137520571,1171150892,127470621,827241914,1255338411]
@@ -2335,8 +2335,8 @@ fc.array(fc.nat(), {maxLength: 100000, size: '+1'})
 // or "+4" (~10000x factor). On the opposite, if I wanted smaller arrays I could have used "-1" (~10x smaller)...
 // Note: Size could also have been set explicitely to "=" to say: "I want the size used by default no matter the
 // specified maxLength". If not defined, by default, the size is "=" except if there is a maxLength provided
-// and the global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true (the default in v2). In such
-// case it will automatically be defaulted to "max".
+// and the global setting defaultSizeToMaxWhenMaxSpecified explicitely set to true. In such case it will
+// automatically be defaulted to "max".
 // Examples of generated values:
 // • [2013730136,353952753,1490777806,634915573,1978586276,205766418,1175483977,32404726,52946578,1069691063,626810743,719356509,1263272304,1824194201,1899370697,1015020872,1705828766,1764355915,1972277951,1015470108,2117817188,449185274,666877613,1210503432,1201056411,777517406,772222564,821394475,850614998,717040931,2031665271,1786858369,1041895508,1725564736,1214876488,1554660788,1241812368]
 // • [11,2147483643,1549284389]
@@ -2581,13 +2581,7 @@ fc.sparseArray(fc.nat(), {maxLength: 20})
 // • …
 
 fc.sparseArray(fc.nat(), {maxLength: 20, minNumElements: 1, maxNumElements: 3})
-// Examples of generated values:
-// • [,,,,,,,,,,,,,,263508609]
-// • [,,,,,,,,,,,,,,,,,,1014930196]
-// • [,170533977,,,]
-// • [,,,,,,133210559,,,1882833716,,,,,,,]
-// • [,,21,,,30,,,,,,,,,,,7]
-// • …
+// Examples of generated values: [,,,,,,,,,,263508609,,,,], [,,1014930196,,,,,,,,,,,,], [,,170533977], [,,,,,1882833716,,,,,133210559], [,,,21,,30,,,7,,,,,,]…
 
 fc.sparseArray(fc.nat(), {maxLength: 20, noTrailingHole: true})
 // Examples of generated values:
@@ -3781,7 +3775,7 @@ What really drives fast-check into generating large arrays is called `size`. At 
 - Relative size: `"-4"`, `"-3"`, `"-2"`, `"-1"`, `"="`, `"+1"`, `"+2"`, `"+3"` or `"+4"` — _offset the global setting `baseSize` by the passed offset_
 - Explicit size: `"xsmall"`, `"small"`, `"medium"`, `"large"` or `"xlarge"` — _use an explicit size_
 - Exact value: `"max"` — _generate entities having up-to `maxLength` items_
-- Automatic size: `undefined` — _if `maxLength` has not been specified or if the global setting `defaultSizeToMaxWhenMaxSpecified` is `false` (in v2 it defaults to `true` for backward compatibilty reasons) then `"="`, otherwise `"max"`_
+- Automatic size: `undefined` — _if `maxLength` has not been specified or if the global setting `defaultSizeToMaxWhenMaxSpecified` is `false` then `"="`, otherwise `"max"`_
 
 Here is a quick overview of how we use the `size` parameter associated to a minimal length to compute the maximal length for the generated values:
 - `xsmall` — `min + (0.1 * min + 1)`
