@@ -10,9 +10,9 @@
     "sourceMap": true,
     "strict": true,
     "stripInternal": true,
-    "lib": ["es2017", "es2019.Symbol"],
+    "lib": ["es2020"],
     "module": "commonjs",
-    "target": "es2017",
+    "target": "es2020",
     "outDir": "lib/"
   },
   "exclude": ["example", "test/esm", "test/legacy", "test/type"]
