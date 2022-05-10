@@ -9,6 +9,7 @@ import * as stubRng from '../../stubs/generators';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../src/stream/Stream';
+import { PropertyFailure } from '../../../../src/check/property/IRawProperty';
 
 describe('Property', () => {
   afterEach(() => resetConfigureGlobal());
@@ -24,15 +25,21 @@ describe('Property', () => {
       throw 'predicate throws';
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
-    expect(out).toEqual('predicate throws');
+    expect(out).toEqual({
+      error: 'predicate throws', // the original error is a string in this test
+      errorMessage: 'predicate throws', // the original error results in this message
+    });
   });
   it('Should fail if predicate throws an Error', () => {
+    let originalError: Error | null = null;
     const p = property(stubArb.single(8), (_arg: number) => {
-      throw new Error('predicate throws');
+      originalError = new Error('predicate throws');
+      throw originalError;
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
-    expect(out).toContain('predicate throws');
-    expect(out).toContain('\n\nStack trace:');
+    expect((out as PropertyFailure).errorMessage).toContain('predicate throws');
+    expect((out as PropertyFailure).errorMessage).toContain('\n\nStack trace:');
+    expect((out as PropertyFailure).error).toBe(originalError);
   });
   it('Should forward failure of runs with failing precondition', async () => {
     let doNotResetThisValue = false;
