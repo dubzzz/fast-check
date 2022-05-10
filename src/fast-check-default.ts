@@ -169,6 +169,8 @@ import {
   DepthIdentifier,
   getDepthContextFor,
 } from './arbitrary/_internals/helpers/DepthContext';
+import { bigInt64Array, BigIntArrayConstraints } from './arbitrary/bigint64Array';
+import { bigUint64Array } from './arbitrary/bigUint64Array';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -302,6 +304,8 @@ export {
   uint32Array,
   float32Array,
   float64Array,
+  bigInt64Array,
+  bigUint64Array,
   // model-based
   AsyncCommand,
   Command,
@@ -342,6 +346,7 @@ export {
   // constraints
   ArrayConstraints,
   BigIntConstraints,
+  BigIntArrayConstraints,
   BigUintConstraints,
   CommandsContraints,
   DictionaryConstraints,

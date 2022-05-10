@@ -87,6 +87,22 @@ describe(`NoRegression BigInt`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('bigInt64Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigInt64Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigUint64Array', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.bigUint64Array(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('mixedCase', () => {
     expect(() =>
       fc.assert(

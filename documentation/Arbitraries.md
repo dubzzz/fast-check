@@ -1986,6 +1986,86 @@ fc.float64Array({minLength: 1})
 ```
 </details>
 
+<details>
+<summary><b>bigInt64Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#bigint64array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _BigInt64Array_
+*&#8195;Signatures*
+
+- `fc.bigInt64Array()`
+- `fc.bigInt64Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `-18446744073709551616n` — _minimal value (included)_
+- `max?` — default: `18446744073709551615n` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.bigInt64Array()
+// Examples of generated values:
+// • BigInt64Array.from([])
+// • BigInt64Array.from([261046639958563863n,-6080192404504359375n,902185302458188139n,2n,2053225257167946985n,-7967669394303055214n,4n,1254323512008315037n,1n,7110891745827452647n])
+// • BigInt64Array.from([-6957934639143108427n])
+// • BigInt64Array.from([138892539229939837n,-5569182339069139079n,7551539153162619027n,-4409915619989000954n,2974537368641030273n,7957574444333139590n,902241274070211327n])
+// • BigInt64Array.from([2403432482803509615n,-1615408582938872540n,-252504742196412139n,-5081653217134951274n,-5047295533354911165n])
+// • …
+fc.bigInt64Array({min: 0n, minLength: 1})
+// Examples of generated values:
+// • BigInt64Array.from([8654120722530923742n])
+// • BigInt64Array.from([6745952275216610487n,-2375435733543768792n,-1696355864086572932n,8164906864358836052n,6084753448433432539n,6058448049739424598n,-7310625676421857352n,-2071155559489282739n,2050905675506918402n,1282798519662713392n,-8160466898218302584n])
+// • BigInt64Array.from([-5976446605182568618n,-3064433202226822997n,8818581634134490353n,8793538098510089081n,-2204189902534827199n])
+// • BigInt64Array.from([11n,-1536189088064306904n,13n])
+// • BigInt64Array.from([8822077762452070390n,13n,10n,15n,19n,490559173968400317n,5n,-8560628243083124957n,8226999531026713666n,1292985386092030812n,-7n])
+// • …
+```
+</details>
+
+<details>
+<summary><b>bigUint64Array</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#biguint64array">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Generate _BigUint64Array_
+*&#8195;Signatures*
+
+- `fc.bigUint64Array()`
+- `fc.bigUint64Array({min?, max?, minLength?, maxLength?})`
+
+*&#8195;with:*
+
+- `min?` — default: `0n` — _minimal value (included)_
+- `max?` — default: `36893488147419103231n` — _maximal value (included)_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+
+*&#8195;Usages*
+
+```js
+fc.bigUint64Array()
+// Examples of generated values:
+// • BigUint64Array.from([10046572723247820604n])
+// • BigUint64Array.from([18207092104642831328n,8603036268352817403n,14514726284200834283n])
+// • BigUint64Array.from([])
+// • BigUint64Array.from([13089675644232288138n,5846199774487112808n,17453545966787280612n,12179581294636554911n,15226112594925681980n,18057081173235866264n])
+// • BigUint64Array.from([7817643551273844914n,1345384668549962402n,16761766758507099072n,1245561841686151218n,9834875738533456596n,14779237340064441931n,12018577684340220415n,3119474065072751894n])
+// • …
+fc.bigUint64Array({max: 42n, minLength: 1})
+// Examples of generated values:
+// • BigUint64Array.from([40n,2n,14n,2n,40n])
+// • BigUint64Array.from([42n,28n,0n,0n,22n,1n,2n,37n,4n,2n,3n])
+// • BigUint64Array.from([23n,3n,12n,1n])
+// • BigUint64Array.from([21n])
+// • BigUint64Array.from([32n,34n,14n,0n,16n,10n])
+// • …
+```
+</details>
+
 ## Combinators
 
 ### Simple
