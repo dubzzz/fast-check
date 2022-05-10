@@ -1,6 +1,6 @@
 import { fullUnicode } from '../../fullUnicode';
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { frequency } from '../../frequency';
+import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
 
 /** @internal */
@@ -43,4 +43,4 @@ export const buildAlphaNumericArbitrary = (others: string[]): Arbitrary<string> 
 
 /** @internal */
 export const buildAlphaNumericPercentArbitrary = (others: string[]): Arbitrary<string> =>
-  frequency({ weight: 10, arbitrary: buildAlphaNumericArbitrary(others) }, { weight: 1, arbitrary: percentCharArb });
+  oneof({ weight: 10, arbitrary: buildAlphaNumericArbitrary(others) }, { weight: 1, arbitrary: percentCharArb });

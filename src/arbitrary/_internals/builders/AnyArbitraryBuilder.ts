@@ -2,7 +2,6 @@ import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 import { stringify } from '../../../utils/stringify';
 import { array } from '../../array';
-import { frequency } from '../../frequency';
 import { oneof } from '../../oneof';
 import { tuple } from '../../tuple';
 import { bigInt } from '../../bigInt';
@@ -126,7 +125,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
     ),
     // String keys
     keys: constraints.withObjectString
-      ? frequency(
+      ? oneof(
           { arbitrary: constraints.key, weight: 10 },
           { arbitrary: tie('anything').map((o) => stringify(o)), weight: 1 }
         )

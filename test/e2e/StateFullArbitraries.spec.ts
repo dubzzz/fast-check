@@ -76,20 +76,6 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1].size()).toEqual(1);
     });
-    it('fc.frequency', () => {
-      let nonClonedDetected = false;
-      const status = fc.check(
-        fc.property(fc.integer(), fc.frequency({ weight: 1, arbitrary: fc.context() }), fc.integer(), (a, ctx, b) => {
-          nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
-          ctx.log('logging stuff');
-          return a < b;
-        }),
-        { seed }
-      );
-      expect(status.failed).toBe(true);
-      expect(nonClonedDetected).toBe(false);
-      expect(status.counterexample![1].size()).toEqual(1);
-    });
     it('fc.option', () => {
       let nonClonedDetected = false;
       const status = fc.check(

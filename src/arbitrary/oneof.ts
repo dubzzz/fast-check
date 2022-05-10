@@ -1,8 +1,27 @@
 import { Arbitrary, isArbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { WeightedArbitrary } from './frequency';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
 import { DepthIdentifier } from './_internals/helpers/DepthContext';
 import { DepthFactorSizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+
+/**
+ * Conjonction of a weight and an arbitrary used by {@link oneof}
+ * in order to generate values
+ *
+ * @remarks Since 1.18.0
+ * @public
+ */
+export interface WeightedArbitrary<T> {
+  /**
+   * Weight to be applied when selecting which arbitrary should be used
+   * @remarks Since 0.0.7
+   */
+  weight: number;
+  /**
+   * Instance of Arbitrary
+   * @remarks Since 0.0.7
+   */
+  arbitrary: Arbitrary<T>;
+}
 
 /**
  * Either an `Arbitrary<T>` or a `WeightedArbitrary<T>`
