@@ -168,7 +168,8 @@ describe('Runner', () => {
               run: (value: [number]) => {
                 ++numCallsRun;
                 const successId = successIds.indexOf(value[0]);
-                if (successId !== -1) return successId === failAtId ? 'failed' : null;
+                if (successId !== -1)
+                  return successId === failAtId ? { error: new Error(), errorMessage: 'failed' } : null;
                 return new PreconditionFailure();
               },
             };
@@ -258,7 +259,7 @@ describe('Runner', () => {
             },
             shrink: () => Stream.nil(),
             run: (_value: [number]) => {
-              return ++numCallsRun < num ? null : 'error';
+              return ++numCallsRun < num ? null : { error: new Error(), errorMessage: 'error' };
             },
           };
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
@@ -329,7 +330,7 @@ describe('Runner', () => {
           throw 'Not implemented';
         },
         run: (_value: [number]) => {
-          return 'failure';
+          return { error: new Error(), errorMessage: 'failure' };
         },
       };
       const out = check(p, { endOnFailure: true }) as RunDetails<[number]>;
@@ -349,7 +350,7 @@ describe('Runner', () => {
           return Stream.of(new Value([42], undefined));
         },
         run: (value: [number]) => {
-          return value[0] === 42 ? 'failure' : null;
+          return value[0] === 42 ? { error: new Error(), errorMessage: 'failure' } : null;
         },
       };
       const out = check(p, { path: '0:0', endOnFailure: true }) as RunDetails<[number]>;
@@ -361,7 +362,7 @@ describe('Runner', () => {
         isAsync: () => false,
         generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
-        run: () => 'failure',
+        run: () => ({ error: new Error(), errorMessage: 'failure' }),
       };
       const out = check(p) as RunDetails<[number]>;
       expect(out.failures).toHaveLength(0);
@@ -375,7 +376,7 @@ describe('Runner', () => {
             ? Stream.of(new Value([48], undefined), new Value([12], undefined))
             : Stream.nil();
         },
-        run: () => 'failure',
+        run: () => ({ error: new Error(), errorMessage: 'failure' }),
       };
       const out = check(p, { verbose: true }) as RunDetails<[number]>;
       expect(out.failures).not.toHaveLength(0);
@@ -407,7 +408,7 @@ describe('Runner', () => {
             run: (_value: [number]) => {
               if (--remainingBeforeFailure >= 0) return null;
               remainingBeforeFailure = failurePoints[++idx];
-              return 'failure';
+              return { error: new Error(), errorMessage: 'failure' };
             },
           };
           const expectedFailurePath = failurePoints.join(':');
@@ -441,7 +442,7 @@ describe('Runner', () => {
               await new Promise<void>((resolve) => {
                 waitingResolve.push(resolve);
               });
-              return ++numCallsRun < num ? null : 'error';
+              return ++numCallsRun < num ? null : { error: new Error(), errorMessage: 'error' };
             },
           };
           const checker = check(p, { seed: seed }) as Promise<RunDetails<[number]>>;
@@ -519,13 +520,13 @@ describe('Runner', () => {
       isAsync: () => false,
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
-      run: (_v: [any, any]) => 'error in failingProperty',
+      run: (_v: [any, any]) => ({ error: new Error(), errorMessage: 'error in failingProperty' }),
     };
     const failingComplexProperty: IRawProperty<[any, any, any]> = {
       isAsync: () => false,
       generate: () => new Value([[v1, v2], v2, v1], undefined),
       shrink: () => Stream.nil(),
-      run: (_v: [any, any, any]) => 'error in failingComplexProperty',
+      run: (_v: [any, any, any]) => ({ error: new Error(), errorMessage: 'error in failingComplexProperty' }),
     };
     const successProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
@@ -578,7 +579,7 @@ describe('Runner', () => {
             ? Stream.of(new Value([48], undefined), new Value([12], undefined))
             : Stream.nil();
         },
-        run: () => 'failure',
+        run: () => ({ error: new Error(), errorMessage: 'failure' }),
       };
       it('Should throw with base message by default (no verbose)', () => {
         expect(() => rAssert(p)).toThrowError(baseErrorMessage);

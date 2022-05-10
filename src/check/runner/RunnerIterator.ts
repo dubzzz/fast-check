@@ -1,5 +1,6 @@
 import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
+import { PropertyFailure } from '../property/IRawProperty';
 import { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunExecution } from './reporter/RunExecution';
 import { SourceValuesIterator } from './SourceValuesIterator';
@@ -41,14 +42,14 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     ++this.currentIdx;
     return { done: false, value: nextValue.value.value_ };
   }
-  handleResult(result: PreconditionFailure | string | null): void {
+  handleResult(result: PreconditionFailure | PropertyFailure | null): void {
     // WARNING: This function has to be called after a call to next
     //          Otherwise it will not be able to execute with the right currentShrinkable (or crash)
     // As a consequence: currentShrinkable is always defined in the code below
-    if (result != null && typeof result === 'string') {
+    if (result != null && typeof result === 'object' && !PreconditionFailure.isFailure(result)) {
       // failed run
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result);
+      this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result.errorMessage);
       this.currentIdx = -1;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.nextValues = this.shrink(this.currentValue!);

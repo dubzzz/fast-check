@@ -6,7 +6,7 @@ import {
   AsyncPropertyHookFunction,
 } from './check/property/AsyncProperty';
 import { property, IProperty, IPropertyWithHooks, PropertyHookFunction } from './check/property/Property';
-import { IRawProperty } from './check/property/IRawProperty';
+import { IRawProperty, PropertyFailure } from './check/property/IRawProperty';
 import { Parameters } from './check/runner/configuration/Parameters';
 import {
   RunDetails,
@@ -221,6 +221,7 @@ export {
   IAsyncPropertyWithHooks,
   AsyncPropertyHookFunction,
   PropertyHookFunction,
+  PropertyFailure,
   // pre-built arbitraries
   boolean,
   falsy,
