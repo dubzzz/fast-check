@@ -14,7 +14,7 @@ export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitr
   return typedIntArrayArbitraryArbitraryBuilder<BigUint64Array, bigint>(
     constraints,
     BigInt(0),
-    BigInt('36893488147419103231'),
+    BigInt('18446744073709551615'),
     BigUint64Array,
     bigInt
   );
