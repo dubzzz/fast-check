@@ -10,9 +10,7 @@ import {
  * @remarks Since 3.0.0
  * @public
  */
-export function bigUint64Array(
-  constraints: BigIntArrayConstraints = {}
-): Arbitrary<ReturnType<typeof BigUint64Array.from>> {
+export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigUint64Array> {
   return typedIntArrayArbitraryArbitraryBuilder<BigUint64Array, bigint>(
     constraints,
     BigInt(0),
