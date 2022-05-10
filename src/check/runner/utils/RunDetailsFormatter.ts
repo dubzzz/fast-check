@@ -234,14 +234,10 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 
 /** @internal */
 function buildErrorWithOriginalContext<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
-  const error = new Error(errorMessage);
-  if (out.errorInstance !== null && typeof out.errorInstance === 'object') {
-    const errorInstance = out.errorInstance;
-    for (const key in errorInstance) {
-      if (!(key in error)) {
-        Object.assign(error, { [key]: (errorInstance as any)[key] });
-      }
-    }
+  const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
+  const error = new ErrorWithCause(errorMessage, { cause: out.errorInstance });
+  if (!('cause' in error)) {
+    Object.assign(error, { cause: out.errorInstance });
   }
   return error;
 }
