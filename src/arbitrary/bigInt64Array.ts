@@ -10,7 +10,9 @@ import {
  * @remarks Since 3.0.0
  * @public
  */
-export function bigInt64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigInt64Array> {
+export function bigInt64Array(
+  constraints: BigIntArrayConstraints = {}
+): Arbitrary<ReturnType<typeof BigInt64Array.from>> {
   return typedIntArrayArbitraryArbitraryBuilder<BigInt64Array, bigint>(
     constraints,
     BigInt('-9223372036854775808'),
