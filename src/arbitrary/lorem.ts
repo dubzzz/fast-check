@@ -1,7 +1,7 @@
 import { array } from './array';
 import { constant } from './constant';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { frequency } from './frequency';
+import { MaybeWeightedArbitrary, oneof } from './oneof';
 import {
   sentencesToParagraphMapper,
   sentencesToParagraphUnmapper,
@@ -44,10 +44,10 @@ export interface LoremConstraints {
 }
 
 /**
- * Helper function responsible to build the entries for frequency
+ * Helper function responsible to build the entries for oneof
  * @internal
  */
-const h = (v: string, w: number) => {
+const h = (v: string, w: number): MaybeWeightedArbitrary<string> => {
   return { arbitrary: constant(v), weight: w };
 };
 
@@ -72,7 +72,7 @@ const h = (v: string, w: number) => {
  * @internal
  */
 function loremWord() {
-  return frequency(
+  return oneof(
     h('non', 6),
     h('adipiscing', 5),
     h('ligula', 5),

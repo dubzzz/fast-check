@@ -2093,18 +2093,20 @@ fc.option(fc.string(), { nil: undefined })
 > Generate one value based on one of the passed arbitraries
 >
 > Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight: `weight(instance) / sumOf(weights)` (for depth=0). For higher depths, the probability to select the first arbitrary will increase as we go deeper in the tree so the formula is not applicable as-is. It preserves the shrinking capabilities of the underlying arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries) except if called with `withCrossShrink`.
+>
+> **Warning:** The first arbitrary specified on `oneof` will have a privileged position. Constraints like `withCrossShrink` or `depthFactor` tend to favor it over others.
 
 *&#8195;Signatures*
 
 - `fc.oneof(...arbitraries)`
-- `fc.oneof({withCrossShrink?, maxDepth?, depthIdentifier?}, ...arbitraries)`
+- `fc.oneof({withCrossShrink?, maxDepth?, depthFactor?, depthIdentifier?}, ...arbitraries)`
 
 *&#8195;with:*
 
 - `...arbitraries` — _arbitraries that could be used to generate a value. The received instances can either be raw instances of arbitraries (meaning weight is 1) or objects containing the arbitrary and its associated weight (integer value ≥0)_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary. It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _this factor will be used to increase the probability to generate instances of the first passed arbitrary_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value_
+- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _this factor will be used to increase the probability to generate instances of the first passed arbitrary_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
 *&#8195;Usages*
@@ -2134,54 +2136,6 @@ fc.oneof(
 // Examples of generated values: true, "F", "o", "+", "\""…
 
 // fc.oneof fits very well with recursive stuctures built using fc.letrec.
-// Examples of such recursive structures are available with fc.letrec.
-```
-</details>
-
-<details>
-<summary><b>frequency</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#frequency">api</a>]</summary><br/>
-
-*&#8195;Description*
-
-> Generate one value based on one of the passed arbitraries
->
-> Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight, the higher it is the more it will be probable. It preserves the shrinking capabilities of the underlying arbitrary.
->
-> **Warning:** In the upcomping major releases of fast-check the first arbitrary specified on `frequency` will have a privileged position. Constraints like `withCrossShrink` tend to favor it over others and will probably be enabled by default.
-
-*&#8195;Signatures*
-
-- `fc.frequency(...{ arbitrary, weight })`
-- `fc.frequency({withCrossShrink?, maxDepth?, depthIdentifier?}, ...{ arbitrary, weight })`
-
-*&#8195;with:*
-
-- `...{ arbitrary, weight }` — _arbitraries that could be used to generate a value along their weight (the higher the weight, the higher the probability to select this arbitrary will be)_
-- `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary (if and only if its weight is strictly greater than 0). It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
-- `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _this factor will be used to increase the probability to generate instances of the first passed arbitrary if its weight is not zero_
-- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value even if its weight is zero_
-- `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
-
-*&#8195;Usages*
-
-```js
-fc.frequency(
-  { arbitrary: fc.char(), weight: 2 },
-  { arbitrary: fc.boolean(), weight: 1 }
-)
-// Examples of generated values: true, "&", "8", false, "["…
-
-fc.frequency(
-  { withCrossShrink: true },
-  { arbitrary: fc.boolean(), weight: 2 },
-  { arbitrary: fc.array(fc.boolean()), weight: 1 }
-)
-// Note: In case of failure on an array of boolean values the shrinker will first try to check
-// if a failure can also be triggered with a simple boolean (the first arbitrary specified)
-// if not it will carry on the classical shrinking strategy defined for arrays of boolean.
-// Examples of generated values: true, [true,false], [true,false,false], [false,true,true], [false]…
-
-// fc.frequency fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
 ```
 </details>

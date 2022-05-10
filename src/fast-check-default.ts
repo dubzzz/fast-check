@@ -42,7 +42,6 @@ import { dictionary, DictionaryConstraints } from './arbitrary/dictionary';
 import { emailAddress, EmailAddressConstraints } from './arbitrary/emailAddress';
 import { double, DoubleConstraints } from './arbitrary/double';
 import { float, FloatConstraints } from './arbitrary/float';
-import { frequency, WeightedArbitrary, FrequencyValue, FrequencyContraints } from './arbitrary/frequency';
 import { compareBooleanFunc } from './arbitrary/compareBooleanFunc';
 import { compareFunc } from './arbitrary/compareFunc';
 import { func } from './arbitrary/func';
@@ -65,7 +64,7 @@ import { anything } from './arbitrary/anything';
 import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
 import { jsonValue, JsonValue } from './arbitrary/jsonValue';
 import { unicodeJson } from './arbitrary/unicodeJson';
-import { oneof, OneOfValue, OneOfConstraints, MaybeWeightedArbitrary } from './arbitrary/oneof';
+import { oneof, OneOfValue, OneOfConstraints, MaybeWeightedArbitrary, WeightedArbitrary } from './arbitrary/oneof';
 import { option, OptionConstraints } from './arbitrary/option';
 import { record, RecordConstraints, RecordValue } from './arbitrary/record';
 import {
@@ -256,7 +255,6 @@ export {
   mapToConstant,
   option,
   oneof,
-  frequency,
   clone,
   shuffledSubarray,
   subarray,
@@ -352,7 +350,6 @@ export {
   Float32ArrayConstraints,
   Float64ArrayConstraints,
   FloatConstraints,
-  FrequencyContraints,
   IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,
@@ -384,7 +381,6 @@ export {
   CloneValue,
   ContextValue,
   FalsyValue,
-  FrequencyValue,
   JsonValue,
   OneOfValue,
   RecordValue,
