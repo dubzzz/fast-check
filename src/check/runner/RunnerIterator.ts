@@ -49,7 +49,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     if (result != null && typeof result === 'object' && !PreconditionFailure.isFailure(result)) {
       // failed run
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result.errorMessage);
+      this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result);
       this.currentIdx = -1;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.nextValues = this.shrink(this.currentValue!);
