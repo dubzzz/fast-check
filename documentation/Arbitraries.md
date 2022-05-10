@@ -2092,7 +2092,7 @@ fc.option(fc.string(), { nil: undefined })
 
 > Generate one value based on one of the passed arbitraries
 >
-> Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. All arbitraries are equally probable and shrink is still working for the selected arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries).
+> Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight: `weight(instance) / sumOf(weights)` (for depth=0). For higher depths, the probability to select the first arbitrary will increase as we go deeper in the tree so the formula is not applicable as-is. It preserves the shrinking capabilities of the underlying arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries) except if called with `withCrossShrink`.
 
 *&#8195;Signatures*
 
@@ -2101,7 +2101,7 @@ fc.option(fc.string(), { nil: undefined })
 
 *&#8195;with:*
 
-- `...arbitraries` — _arbitraries that could be used to generate a value_
+- `...arbitraries` — _arbitraries that could be used to generate a value. The received instances can either be raw instances of arbitraries (meaning weight is 1) or objects containing the arbitrary and its associated weight (integer value ≥0)_
 - `withCrossShrink?` — default: `false` — _in case of failure the shrinker will try to check if a failure can be found by using the first specified arbitrary. It may be pretty useful for recursive structures as it can easily help reducing their depth in case of failure_
 - `depthFactor?` — default: `undefined` [more](#depth-factor-explained) — _this factor will be used to increase the probability to generate instances of the first passed arbitrary_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _when reaching maxDepth, the first arbitrary will be used to generate the value_
@@ -2111,10 +2111,27 @@ fc.option(fc.string(), { nil: undefined })
 
 ```js
 fc.oneof(fc.char(), fc.boolean())
+// Note: Equivalent to:
+//       fc.oneof(
+//         { arbitrary: fc.char(), weight: 1 },
+//         { arbitrary: fc.boolean(), weight: 1 },
+//       )
 // Examples of generated values: "&", false, true, "@", "2"…
 
 fc.oneof(fc.char(), fc.boolean(), fc.nat())
+// Note: Equivalent to:
+//       fc.oneof(
+//         { arbitrary: fc.char(), weight: 1 },
+//         { arbitrary: fc.boolean(), weight: 1 },
+//         { arbitrary: fc.nat(), weight: 1 },
+//       )
 // Examples of generated values: true, 234471686, 485911805, false, "\\"…
+
+fc.oneof(
+  { arbitrary: fc.char(), weight: 5 },
+  { arbitrary: fc.boolean(), weight: 2 }
+)
+// Examples of generated values: true, "F", "o", "+", "\""…
 
 // fc.oneof fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.

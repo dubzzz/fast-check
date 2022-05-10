@@ -1646,7 +1646,7 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [Float64Array.from([8.584968169854397e-278])]"
 `;
 
-exports[`NoRegression frequency 1`] = `
+exports[`NoRegression oneof[weighted] 1`] = `
 "Property failed after 24 tests
 { seed: 42, path: \\"23:1:0:0:0:0:5:8:4:0:0:0:1:0\\", endOnFailure: true }
 Counterexample: [57429880]

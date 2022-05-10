@@ -204,13 +204,10 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('frequency', () => {
+  it('oneof[weighted]', () => {
     expect(() =>
       fc.assert(
-        fc.property(
-          fc.frequency<any>({ weight: 1, arbitrary: fc.nat() }, { weight: 5, arbitrary: fc.char() }),
-          testFunc
-        ),
+        fc.property(fc.oneof<any>({ weight: 1, arbitrary: fc.nat() }, { weight: 5, arbitrary: fc.char() }), testFunc),
         settings
       )
     ).toThrowErrorMatchingSnapshot();
