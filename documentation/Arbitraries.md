@@ -3302,7 +3302,7 @@ fc.func(fc.nat())
 const { tree } = fc.letrec(tie => ({
   // Warning: In version 2.x and before, there is no automatic control over the depth of the generated data-structures.
   //   As a consequence to avoid your data-structures to be too deep, it is highly recommended to add the constraint `depthFactor`
-  //   onto your usages of `option`, `oneof` and `frequency` and to put the arbitrary without recursion first.
+  //   onto your usages of `option` and `oneof` and to put the arbitrary without recursion first.
   // In version 3.x, `depthFactor` and `withCrossShrink` will be enabled by default.
   tree: fc.oneof({depthFactor: 'small', withCrossShrink: true}, tie('leaf'), tie('node')),
   node: fc.record({
@@ -3328,7 +3328,7 @@ fc.letrec(tie => ({
     right: fc.option(tie('node'), {maxDepth: 1, depthIdentifier: 'tree'}),
   })
 })).node
-// Note: You can limit the depth of the generated structrures by using the constraint `maxDepth` (see `option`, `oneof` and `frequency`).
+// Note: You can limit the depth of the generated structrures by using the constraint `maxDepth` (see `option` and `oneof`).
 //   On the example above we need to specify `depthIdentifier` to share the depth between left and right branches...
 // Examples of generated values:
 // • {"value":1667728700,"left":{"value":22,"left":null,"right":null},"right":{"value":202444547,"left":null,"right":null}}
@@ -3376,20 +3376,20 @@ fc.letrec(tie => ({
 // • …
 
 fc.letrec(tie => ({
-  tree: fc.frequency({maxDepth: 2}, {arbitrary: tie('leaf'), weight: 0}, {arbitrary: tie('node'), weight: 1}),
+  tree: fc.oneof({maxDepth: 2}, {arbitrary: tie('leaf'), weight: 0}, {arbitrary: tie('node'), weight: 1}),
   node: fc.record({ left: tie('tree'), right: tie('tree') }),
   leaf: fc.nat()
 })).tree
 // Note: Exact depth of 2: not more not less.
-// Note: If you use multiple `option`, `oneof` or `frequency` to define such recursive structure
+// Note: If you use multiple `option` or `oneof` to define such recursive structure
 //   you may want to specify a `depthIdentifier` so that they share the exact same depth.
 //   See examples above for more details.
 // Examples of generated values:
-// • {"left":{"left":2146012257,"right":5},"right":{"left":4,"right":92286720}}
-// • {"left":{"left":17,"right":105221773},"right":{"left":10,"right":1282731170}}
-// • {"left":{"left":289678323,"right":1527632810},"right":{"left":1031855048,"right":861569963}}
-// • {"left":{"left":1001661803,"right":2147483623},"right":{"left":2147483617,"right":729999584}}
-// • {"left":{"left":1517743480,"right":1007350543},"right":{"left":12,"right":2147483643}}
+// • {"left":{"left":517441885,"right":1213144115},"right":{"left":25,"right":782270564}}
+// • {"left":{"left":1192072964,"right":2147483622},"right":{"left":21,"right":20}}
+// • {"left":{"left":415810012,"right":609661118},"right":{"left":7,"right":28}}
+// • {"left":{"left":687315350,"right":633465371},"right":{"left":1404418498,"right":18}}
+// • {"left":{"left":1167552932,"right":16},"right":{"left":22,"right":742062962}}
 // • …
 
 fc.statistics(
@@ -3477,7 +3477,7 @@ fc.statistics(
 > Generate recursive structures
 >
 > ⚠️ Initially `fc.memo` has been designed to offer a higher control over the generated depth. Unfortunately it came with a cost: the arbitrary itself is costly to build.
-> Most of the features offered by `fc.memo` can now be done using `fc.letrec` coupled with `fc.option`, `fc.oneof` or `fc.frequency`.
+> Most of the features offered by `fc.memo` can now be done using `fc.letrec` coupled with `fc.option` or `fc.oneof`.
 > Whenever possible*, we recommend using `fc.letrec` instead of `fc.memo`.
 >
 > *But sometimes it is not possible and `fc.memo` will be the way to go.
@@ -3778,7 +3778,7 @@ Here is how a size translates into depth factors:
 - `xlarge` — `1 / 16`
 
 In the context of fast-check@v2, the condition to leverage an automatic defaulting of the depth factor is to:
-- either define it to `=` for each arbitrary not defaulting it automatically (only `option`, `oneof` and `frequency` do not default it to avoid breaking existing code)
+- either define it to `=` for each arbitrary not defaulting it automatically (only `option` and `oneof` do not default it to avoid breaking existing code)
 - or to configure a `baseSize` in the global settings
 
 If none of these conditions is fulfilled the depth factor will be defaulted to `0` as it was the case befoer we introduced it.
