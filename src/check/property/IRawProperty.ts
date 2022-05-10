@@ -3,6 +3,18 @@ import { Stream } from '../../stream/Stream';
 import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
+export type InterceptedError = {
+  /**
+   * The original error that has been intercepted.
+   * Possibly not an instance Error as users can throw anything.
+   */
+  error: unknown;
+  /**
+   * The error message extracted from the error
+   */
+  errorMessage: string;
+};
+
 /**
  * Property
  *
@@ -49,8 +61,8 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   run(
     v: Ts
   ):
-    | (IsAsync extends true ? Promise<PreconditionFailure | string | null> : never)
-    | (IsAsync extends false ? PreconditionFailure | string | null : never);
+    | (IsAsync extends true ? Promise<PreconditionFailure | InterceptedError | null> : never)
+    | (IsAsync extends false ? PreconditionFailure | InterceptedError | null : never);
 }
 
 /**

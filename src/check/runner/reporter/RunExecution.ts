@@ -3,6 +3,7 @@ import { ExecutionStatus } from './ExecutionStatus';
 import { ExecutionTree } from './ExecutionTree';
 import { RunDetails } from './RunDetails';
 import { QualifiedParameters } from '../configuration/QualifiedParameters';
+import { InterceptedError } from '../../property/IRawProperty';
 
 /**
  * Report the status of a run
@@ -16,7 +17,7 @@ export class RunExecution<Ts> {
   currentLevelExecutionTrees: ExecutionTree<Ts>[];
   pathToFailure?: string;
   value?: Ts;
-  failure: string | null;
+  failure: InterceptedError | null;
   numSkips: number;
   numSuccesses: number;
   interrupted: boolean;
@@ -36,7 +37,7 @@ export class RunExecution<Ts> {
     return currentTree;
   }
 
-  fail(value: Ts, id: number, message: string): void {
+  fail(value: Ts, id: number, error: InterceptedError): void {
     if (this.verbosity >= VerbosityLevel.Verbose) {
       const currentTree = this.appendExecutionTree(ExecutionStatus.Failure, value);
       this.currentLevelExecutionTrees = currentTree.children;
@@ -44,7 +45,7 @@ export class RunExecution<Ts> {
     if (this.pathToFailure == null) this.pathToFailure = `${id}`;
     else this.pathToFailure += `:${id}`;
     this.value = value;
-    this.failure = message;
+    this.failure = error;
   }
   skip(value: Ts): void {
     if (this.verbosity >= VerbosityLevel.VeryVerbose) {
@@ -115,7 +116,9 @@ export class RunExecution<Ts> {
         // Rq: Same as this.value
         // =>  this.failure !== undefined
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        error: this.failure!,
+        error: this.failure!.errorMessage,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        errorInstance: this.failure!.error,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity,
@@ -147,6 +150,7 @@ export class RunExecution<Ts> {
       counterexample: null,
       counterexamplePath: null,
       error: null,
+      errorInstance: null,
       failures: [],
       executionSummary: this.rootExecutionTrees,
       verbose: this.verbosity,

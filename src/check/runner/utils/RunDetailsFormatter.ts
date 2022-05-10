@@ -233,15 +233,29 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 }
 
 /** @internal */
+function buildErrorWithOriginalContext<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
+  const error = new Error(errorMessage);
+  if (out.errorInstance !== null && typeof out.errorInstance === 'object') {
+    const errorInstance = out.errorInstance;
+    for (const key in errorInstance) {
+      if (!(key in error)) {
+        Object.assign(error, { [key]: (errorInstance as any)[key] });
+      }
+    }
+  }
+  return error;
+}
+
+/** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
   if (!out.failed) return;
-  throw new Error(defaultReportMessage(out));
+  throw buildErrorWithOriginalContext<Ts>(defaultReportMessage(out), out);
 }
 
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
   if (!out.failed) return;
-  throw new Error(await asyncDefaultReportMessage(out));
+  throw buildErrorWithOriginalContext<Ts>(await asyncDefaultReportMessage(out), out);
 }
 
 /**
