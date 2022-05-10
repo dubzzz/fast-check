@@ -4,6 +4,25 @@ import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
 /**
+ * Represent failures of the property
+ * @remarks Since 3.0.0
+ * @public
+ */
+export type PropertyFailure = {
+  /**
+   * The original error that has been intercepted.
+   * Possibly not an instance Error as users can throw anything.
+   * @remarks Since 3.0.0
+   */
+  error: unknown;
+  /**
+   * The error message extracted from the error
+   * @remarks Since 3.0.0
+   */
+  errorMessage: string;
+};
+
+/**
  * Property
  *
  * A property is the combination of:
@@ -49,8 +68,8 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   run(
     v: Ts
   ):
-    | (IsAsync extends true ? Promise<PreconditionFailure | string | null> : never)
-    | (IsAsync extends false ? PreconditionFailure | string | null : never);
+    | (IsAsync extends true ? Promise<PreconditionFailure | PropertyFailure | null> : never)
+    | (IsAsync extends false ? PreconditionFailure | PropertyFailure | null : never);
 }
 
 /**

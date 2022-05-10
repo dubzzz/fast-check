@@ -66,12 +66,13 @@ describe('TimeoutProperty', () => {
 
   it('should not timeout if it fails in time', async () => {
     // Arrange
+    const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
     jest.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         // underlying property is not supposed to throw (reject)
-        setTimeout(() => resolve('plop'), 10);
+        setTimeout(() => resolve(errorFromUnderlying), 10);
       })
     );
 
@@ -82,7 +83,7 @@ describe('TimeoutProperty', () => {
     await runPromise;
 
     // Assert
-    expect(await runPromise).toBe('plop');
+    expect(await runPromise).toBe(errorFromUnderlying);
   });
 
   it('should clear all started timeouts on success', async () => {
@@ -104,11 +105,12 @@ describe('TimeoutProperty', () => {
 
   it('should clear all started timeouts on failure', async () => {
     // Arrange
+    const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
     jest.useFakeTimers();
     jest.spyOn(global, 'setTimeout');
     jest.spyOn(global, 'clearTimeout');
     const { instance: decoratedProperty, run } = fakeProperty(true);
-    run.mockResolvedValueOnce('plop');
+    run.mockResolvedValueOnce(errorFromUnderlying);
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
@@ -135,7 +137,10 @@ describe('TimeoutProperty', () => {
     jest.advanceTimersByTime(10);
 
     // Assert
-    expect(await runPromise).toEqual(`Property timeout: exceeded limit of 10 milliseconds`);
+    expect(await runPromise).toEqual({
+      error: undefined,
+      errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
+    });
   });
 
   it('Should timeout if it never ends', async () => {
@@ -150,6 +155,9 @@ describe('TimeoutProperty', () => {
     jest.advanceTimersByTime(10);
 
     // Assert
-    expect(await runPromise).toEqual(`Property timeout: exceeded limit of 10 milliseconds`);
+    expect(await runPromise).toEqual({
+      error: undefined,
+      errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
+    });
   });
 });

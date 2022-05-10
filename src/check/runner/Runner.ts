@@ -1,6 +1,6 @@
 import { Stream, stream } from '../../stream/Stream';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IRawProperty } from '../property/IRawProperty';
+import { PropertyFailure, IRawProperty } from '../property/IRawProperty';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
@@ -27,7 +27,7 @@ function runIt<Ts>(
 ): RunExecution<Ts> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    const out = property.run(v) as PreconditionFailure | string | null;
+    const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
     runner.handleResult(out);
   }
   return runner.runExecution;

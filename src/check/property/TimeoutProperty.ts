@@ -2,14 +2,14 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IRawProperty } from './IRawProperty';
+import { PropertyFailure, IRawProperty } from './IRawProperty';
 
 /** @internal */
 const timeoutAfter = (timeMs: number) => {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
-  const promise = new Promise<string>((resolve) => {
+  const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = setTimeout(() => {
-      resolve(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
+      resolve({ error: undefined, errorMessage: `Property timeout: exceeded limit of ${timeMs} milliseconds` });
     }, timeMs);
   });
   return {
@@ -36,7 +36,7 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
     return this.property.shrink(value);
   }
 
-  async run(v: Ts): Promise<string | PreconditionFailure | null> {
+  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
     const t = timeoutAfter(this.timeMs);
     const propRun = Promise.race([this.property.run(v), t.promise]);
     propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur

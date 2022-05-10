@@ -1,7 +1,7 @@
 import { Random } from '../../random/generator/Random';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IRawProperty, runIdToFrequency } from './IRawProperty';
+import { PropertyFailure, IRawProperty, runIdToFrequency } from './IRawProperty';
 import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
 import { Value } from '../arbitrary/definition/Value';
 import { Stream } from '../../stream/Stream';
@@ -116,17 +116,21 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  run(v: Ts): PreconditionFailure | string | null {
+  run(v: Ts): PreconditionFailure | PropertyFailure | null {
     this.beforeEachHook();
     try {
       const output = this.predicate(v);
-      return output == null || output === true ? null : 'Property failed by returning false';
+      return output == null || output === true
+        ? null
+        : { error: undefined, errorMessage: 'Property failed by returning false' };
     } catch (err) {
       // precondition failure considered as success for the first version
       if (PreconditionFailure.isFailure(err)) return err;
-      // exception as string in case of real failure
-      if (err instanceof Error && err.stack) return `${err}\n\nStack trace: ${err.stack}`;
-      return `${err}`;
+      // exception as PropertyFailure in case of real failure
+      if (err instanceof Error && err.stack) {
+        return { error: err, errorMessage: `${err}\n\nStack trace: ${err.stack}` };
+      }
+      return { error: err, errorMessage: `${err}` };
     } finally {
       this.afterEachHook();
     }
