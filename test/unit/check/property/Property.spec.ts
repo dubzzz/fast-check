@@ -10,6 +10,7 @@ import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../src/stream/Stream';
 import { PropertyFailure } from '../../../../src/check/property/IRawProperty';
+import fc from '../../../../lib/fast-check';
 
 describe('Property', () => {
   afterEach(() => resetConfigureGlobal());
@@ -20,26 +21,53 @@ describe('Property', () => {
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
   });
-  it('Should fail if predicate throws', () => {
-    const p = property(stubArb.single(8), (_arg: number) => {
-      throw 'predicate throws';
-    });
-    const out = p.run(p.generate(stubRng.mutable.nocall()).value);
-    expect(out).toEqual({
-      error: 'predicate throws', // the original error is a string in this test
-      errorMessage: 'predicate throws', // the original error results in this message
-    });
-  });
   it('Should fail if predicate throws an Error', () => {
+    // Arrange
     let originalError: Error | null = null;
     const p = property(stubArb.single(8), (_arg: number) => {
       originalError = new Error('predicate throws');
       throw originalError;
     });
+
+    // Act
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+
+    // Assert
     expect((out as PropertyFailure).errorMessage).toContain('predicate throws');
     expect((out as PropertyFailure).errorMessage).toContain('\n\nStack trace:');
     expect((out as PropertyFailure).error).toBe(originalError);
+  });
+  it('Should fail if predicate throws a raw string', () => {
+    // Arrange
+    const p = property(stubArb.single(8), (_arg: number) => {
+      throw 'predicate throws';
+    });
+
+    // Act
+    const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+
+    // Assert
+    expect(out).toEqual({
+      error: 'predicate throws', // the original error is a string in this test
+      errorMessage: 'predicate throws', // the original error results in this message
+    });
+  });
+  it('Should fail if predicate throws anything', () => {
+    fc.assert(
+      fc.property(fc.anything(), (stuff) => {
+        // Arrange
+        fc.pre(stuff === null || typeof stuff !== 'object' || !('toString' in stuff));
+        const p = property(stubArb.single(8), (_arg: number) => {
+          throw stuff;
+        });
+
+        // Act
+        const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+
+        // Assert
+        expect(out).toEqual({ error: stuff, errorMessage: expect.any(String) });
+      })
+    );
   });
   it('Should forward failure of runs with failing precondition', async () => {
     let doNotResetThisValue = false;

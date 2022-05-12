@@ -114,7 +114,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       if (err instanceof Error && err.stack) {
         return { error: err, errorMessage: `${err}\n\nStack trace: ${err.stack}` };
       }
-      return { error: err, errorMessage: `${err}` };
+      return { error: err, errorMessage: String(err) };
     } finally {
       await this.afterEachHook();
     }
