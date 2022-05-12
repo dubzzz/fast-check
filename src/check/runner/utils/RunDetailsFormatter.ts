@@ -233,15 +233,25 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 }
 
 /** @internal */
+function buildErrorWithOriginalContext<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
+  const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
+  const error = new ErrorWithCause(errorMessage, { cause: out.errorInstance });
+  if (!('cause' in error)) {
+    Object.assign(error, { cause: out.errorInstance });
+  }
+  return error;
+}
+
+/** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
   if (!out.failed) return;
-  throw new Error(defaultReportMessage(out));
+  throw buildErrorWithOriginalContext<Ts>(defaultReportMessage(out), out);
 }
 
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
   if (!out.failed) return;
-  throw new Error(await asyncDefaultReportMessage(out));
+  throw buildErrorWithOriginalContext<Ts>(await asyncDefaultReportMessage(out), out);
 }
 
 /**
