@@ -15,7 +15,8 @@ describe('RunExecution', () => {
           fc.record({
             value: fc.integer(),
             failureId: fc.nat(1000),
-            message: fc.fullUnicodeString(),
+            error: fc.fullUnicodeString().map((message) => new Error(message)),
+            message: fc.fullUnicodeString(), // Why they are most of the time linked, let's check as if they were independant
           }),
           { minLength: 1 }
         ),
@@ -26,7 +27,7 @@ describe('RunExecution', () => {
             run.success(idx);
           }
           for (const f of failuresDesc) {
-            run.fail(f.value, f.failureId, f.message);
+            run.fail(f.value, f.failureId, { error: f.error, errorMessage: f.message });
           }
           // Assert the value
           const lastFailure = failuresDesc[failuresDesc.length - 1];
@@ -35,13 +36,14 @@ describe('RunExecution', () => {
           expect(details.interrupted).toBe(false);
           expect(details.counterexamplePath).not.toBe(null);
           expect(details.counterexamplePath!.length > 0).toBe(true);
-          expect(details.seed).toEqual(seed);
-          expect(details.numRuns).toEqual(failuresDesc[0].failureId + 1);
-          expect(details.numSkips).toEqual(0);
-          expect(details.numShrinks).toEqual(failuresDesc.length - 1);
+          expect(details.seed).toBe(seed);
+          expect(details.numRuns).toBe(failuresDesc[0].failureId + 1);
+          expect(details.numSkips).toBe(0);
+          expect(details.numShrinks).toBe(failuresDesc.length - 1);
           expect(details.counterexample).toEqual(lastFailure.value);
-          expect(details.error).toEqual(lastFailure.message);
-          expect(details.verbose).toEqual(verbosityLevel);
+          expect(details.error).toBe(lastFailure.message);
+          expect(details.errorInstance).toBe(lastFailure.error);
+          expect(details.verbose).toBe(verbosityLevel);
           expect(details.failures).toEqual(
             verbosityLevel >= VerbosityLevel.Verbose ? failuresDesc.map((f) => f.value) : []
           );
@@ -61,7 +63,7 @@ describe('RunExecution', () => {
           run.success(idx);
         }
         for (const failureId of path) {
-          run.fail(42, failureId, 'Failed');
+          run.fail(42, failureId, { error: new Error('Failed'), errorMessage: 'Failed' });
         }
         // Assert the value
         expect(run.toRunDetails(seed, '', 10000, QualifiedParameters.read({})).counterexamplePath).toEqual(
@@ -82,7 +84,7 @@ describe('RunExecution', () => {
             run.success(idx);
           }
           for (const failureId of addedPath) {
-            run.fail(42, failureId, 'Failed');
+            run.fail(42, failureId, { error: new Error('Failed'), errorMessage: 'Failed' });
           }
           // Build the expected path
           const joinedPath = [...offsetPath, ...addedPath.slice(1)];
@@ -116,7 +118,10 @@ describe('RunExecution', () => {
                 run.success(executionStatuses[idx].value);
                 break;
               case ExecutionStatus.Failure:
-                run.fail(executionStatuses[idx].value, idx, 'no message');
+                run.fail(executionStatuses[idx].value, idx, {
+                  error: new Error('no message'),
+                  errorMessage: 'no message',
+                });
                 break;
               case ExecutionStatus.Skipped:
                 run.skip(executionStatuses[idx].value);
