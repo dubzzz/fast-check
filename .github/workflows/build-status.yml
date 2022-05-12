@@ -203,7 +203,9 @@ jobs:
         with:
           name: bundle
       - name: Extract pre-bundled lib
-        run: tar -xvf fast-check.tgz package/lib
+        run: |
+          tar -xvf fast-check.tgz package/lib
+          mv package/lib lib
       - uses: actions/cache@v3
         with:
           path: '**/node_modules'
