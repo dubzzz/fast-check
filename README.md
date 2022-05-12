@@ -116,11 +116,9 @@ Here are the minimal requirements to use fast-check properly without any polyfil
 <details>
 <summary>More details...</summary>
 
-(1) Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
-
-(2) Require either lib or target ≥ ES2020 or `@types/node` to be installed.
-
-(3) Require either lib or target ≥ ES2015 or `@types/node` to be installed.
+1. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
+2. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
+3. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
 
 </details>
 
