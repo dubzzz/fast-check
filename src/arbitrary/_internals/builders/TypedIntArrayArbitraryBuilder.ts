@@ -73,3 +73,38 @@ export type IntArrayConstraints = {
    */
   size?: SizeForArbitrary;
 };
+
+/**
+ * Constraints to be applied on typed arrays for big int values
+ * @remarks Since 3.0.0
+ * @public
+ */
+export type BigIntArrayConstraints = {
+  /**
+   * Lower bound of the generated array size
+   * @remarks Since 3.0.0
+   */
+  minLength?: number;
+  /**
+   * Upper bound of the generated array size
+   * @remarks Since 3.0.0
+   */
+  maxLength?: number;
+  /**
+   * Lower bound for the generated int (included)
+   * @defaultValue smallest possible value for this type
+   * @remarks Since 3.0.0
+   */
+  min?: bigint;
+  /**
+   * Upper bound for the generated int (included)
+   * @defaultValue highest possible value for this type
+   * @remarks Since 3.0.0
+   */
+  max?: bigint;
+  /**
+   * Define how large the generated values should be (at max)
+   * @remarks Since 3.0.0
+   */
+  size?: SizeForArbitrary;
+};

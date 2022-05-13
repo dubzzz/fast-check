@@ -109,13 +109,20 @@ Here are the minimal requirements to use fast-check properly without any polyfil
 
 | fast-check | node                | ECMAScript version | _TypeScript (optional)_ |
 | ---------- | ------------------- | ------------------ | ----------------------- |
-| **3.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥4.1                    |
-| **2.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥3.2                    |
-| **1.x**    | ≥0.12<sup>(1)</sup> | ES3                | ≥3.0                    |
+| **3.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥4.1<sup>(2)</sup>      |
+| **2.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥3.2<sup>(3)</sup>      |
+| **1.x**    | ≥0.12<sup>(1)</sup> | ES3                | ≥3.0<sup>(3)</sup>      |
 
-(1) Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
+<details>
+<summary>More details...</summary>
 
-**ReScript bindings**
+1. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
+2. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
+3. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
+
+</details>
+
+### ReScript bindings
 
 Bindings to use fast-check in [ReScript](https://rescript-lang.org) are available in package [rescript-fast-check](https://www.npmjs.com/rescript-fast-check). They are maintained by [@TheSpyder](https://github.com/TheSpyder) as an external project.
 
