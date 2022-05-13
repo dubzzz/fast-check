@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
     "declaration": true,
     "importHelpers": false,
     "incremental": true,
@@ -10,9 +12,6 @@
     "sourceMap": true,
     "strict": true,
     "stripInternal": true,
-    "lib": ["es2017", "es2019.Symbol"],
-    "module": "commonjs",
-    "target": "es2017",
     "outDir": "lib/"
   },
   "exclude": ["example", "test/esm", "test/legacy", "test/type"]

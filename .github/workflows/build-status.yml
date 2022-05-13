@@ -192,6 +192,32 @@ jobs:
           path: fast-check.tgz
           if-no-files-found: error
           retention-days: 1
+  test_es_version:
+    name: 'Test ES Version'
+    needs: production_package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download production package
+        uses: actions/download-artifact@v3
+        with:
+          name: bundle
+      - name: Extract pre-bundled lib
+        run: |
+          tar -xvf fast-check.tgz package/lib
+          mv package/lib lib
+      - uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Check ES Version
+        run: yarn test:es
   test_example:
     name: 'Test example'
     needs: production_package
@@ -403,6 +429,7 @@ jobs:
       - test_cjs_esm
       - test_example
       - test_node_8
+      - test_es_version
       - test_package_quality
       - test_types
     if: startsWith(github.ref, 'refs/tags/v')
