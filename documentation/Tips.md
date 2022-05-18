@@ -17,7 +17,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Simplify user definable corner cases](#simplify-user-definable-corner-cases)
 - [Combine with other faker or random generator libraries](#combine-with-other-faker-or-random-generator-libraries)
 - [Setup global settings](#setup-global-settings)
-- [Avoid tests to reach the timeout of your test runner](#avoid-tests-reaching-the-timeout-of-your-test-runner)
+- [Avoid tests reaching the timeout of your test runner](#avoid-tests-reaching-the-timeout-of-your-test-runner)
 - [Customize the reported error](#customize-the-reported-error)
 - [Create a CodeSandbox link on error](#create-a-codesandbox-link-on-error)
 - [Migrate from jsverify to fast-check](#migrate-from-jsverify-to-fast-check)
