@@ -17,7 +17,10 @@ export type LetrecValue<T> = {
  * @remarks Since 3.0.0
  * @public
  */
-export type LetrecTypedTie<T> = <K extends keyof T>(key: K) => Arbitrary<T[K]>;
+export interface LetrecTypedTie<T> {
+  <K extends keyof T>(key: K): Arbitrary<T[K]>;
+  (key: string): Arbitrary<unknown>;
+}
 /**
  * Strongly typed type for the `builder` function passed to {@link letrec}.
  * You may want also want to use its loosely typed version {@link LetrecLooselyTypedBuilder}.
