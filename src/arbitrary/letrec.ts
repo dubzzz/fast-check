@@ -47,9 +47,30 @@ export type LetrecLooselyTypedTie = (key: string) => Arbitrary<unknown>;
  */
 export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => LetrecValue<T>;
 
+/**
+ * For mutually recursive types
+ *
+ * @example
+ * ```typescript
+ * type Leaf = number;
+ * type Node = [Tree, Tree];
+ * type Tree = Node | Leaf;
+ * const { tree } = fc.letrec<{ tree: Tree, node: Node, leaf: Leaf }>(tie => ({
+ *   tree: fc.oneof({depthFactor: 'small'}, tie('leaf'), tie('node')),
+ *   node: fc.tuple(tie('tree'), tie('tree')),
+ *   leaf: fc.nat()
+ * }));
+ * // tree is 50% of node, 50% of leaf
+ * // the ratio goes in favor of leaves as we go deeper in the tree (thanks to depthFactor)
+ * ```
+ *
+ * @param builder - Arbitraries builder based on themselves (through `tie`)
+ *
+ * @remarks Since 1.16.0
+ * @public
+ */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function letrec<T>(builder: T extends {} ? LetrecTypedBuilder<T> : never): LetrecValue<T>;
-export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>;
 /**
  * For mutually recursive types
  *
@@ -69,6 +90,7 @@ export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>
  * @remarks Since 1.16.0
  * @public
  */
+export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>;
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = Object.create(null);
