@@ -379,11 +379,13 @@ expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
   })),
   'Invalid recursion "letrec"'
 ); // TODO Typings should be improved: referencing an undefined key should failed
-fc.letrec<{ a: number; b: unknown }>((tie) => ({
-  a: fc.nat(),
-  // @ts-expect-error - reject builders implying 'invalid recursion' when type declared
-  b: tie('c'),
-}));
+expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
+  fc.letrec<{ a: number; b: unknown }>((tie) => ({
+    a: fc.nat(),
+    b: tie('c'),
+  })),
+  'Invalid recursion "letrec" with types manually defined'
+); // TODO Even when fully typed we accept undeclared keys from being used on tie (see why PR-2968)
 expectType<{ a: fc.Arbitrary<number> }>()(
   fc.letrec<{ a: number }>((tie) => ({
     a: fc.nat(),
@@ -391,12 +393,6 @@ expectType<{ a: fc.Arbitrary<number> }>()(
   })),
   'Accept additional keys within "letrec" but do not expose them outside'
 );
-fc.letrec<{ a: number }>((tie) => ({
-  a: fc.nat(),
-  b: fc.nat(),
-  // @ts-expect-error - reject builders implying 'usages of shadowed keys' when type declared
-  c: tie('b'),
-}));
 fc.letrec<{ a: string }>((tie) => ({
   // @ts-expect-error - reject builders implying 'wrongly typed keys' when type declared
   a: fc.nat(),
