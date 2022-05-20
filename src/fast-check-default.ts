@@ -53,7 +53,14 @@ import { nat, NatConstraints } from './arbitrary/nat';
 import { ipV4 } from './arbitrary/ipV4';
 import { ipV4Extended } from './arbitrary/ipV4Extended';
 import { ipV6 } from './arbitrary/ipV6';
-import { letrec } from './arbitrary/letrec';
+import {
+  letrec,
+  LetrecValue,
+  LetrecLooselyTypedBuilder,
+  LetrecLooselyTypedTie,
+  LetrecTypedBuilder,
+  LetrecTypedTie,
+} from './arbitrary/letrec';
 import { lorem, LoremConstraints } from './arbitrary/lorem';
 import { mapToConstant } from './arbitrary/mapToConstant';
 import { memo, Memo } from './arbitrary/memo';
@@ -383,11 +390,16 @@ export {
   WebUrlConstraints,
   MaybeWeightedArbitrary,
   WeightedArbitrary,
+  LetrecTypedTie,
+  LetrecTypedBuilder,
+  LetrecLooselyTypedTie,
+  LetrecLooselyTypedBuilder,
   // produced values
   CloneValue,
   ContextValue,
   FalsyValue,
   JsonValue,
+  LetrecValue,
   OneOfValue,
   RecordValue,
   // arbitrary types (mostly when produced values are difficult to formalize)

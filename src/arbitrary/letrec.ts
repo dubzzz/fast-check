@@ -2,6 +2,52 @@ import { LazyArbitrary } from './_internals/LazyArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 
 /**
+ * Type of the value produced by {@link letrec}
+ * @remarks Since 3.0.0
+ * @public
+ */
+export type LetrecValue<T> = {
+  [K in keyof T]: Arbitrary<T[K]>;
+};
+
+/**
+ * Strongly typed type for the `tie` function passed by {@link letrec} to the `builder` function we pass to it.
+ * You may want also want to use its loosely typed version {@link LetrecLooselyTypedTie}.
+ *
+ * @remarks Since 3.0.0
+ * @public
+ */
+export type LetrecTypedTie<T> = <K extends keyof T>(key: K) => Arbitrary<T[K]>;
+/**
+ * Strongly typed type for the `builder` function passed to {@link letrec}.
+ * You may want also want to use its loosely typed version {@link LetrecLooselyTypedBuilder}.
+ *
+ * @remarks Since 3.0.0
+ * @public
+ */
+export type LetrecTypedBuilder<T> = (tie: LetrecTypedTie<T>) => LetrecValue<T>;
+
+/**
+ * Loosely typed type for the `tie` function passed by {@link letrec} to the `builder` function we pass to it.
+ * You may want also want to use its strongly typed version {@link LetrecTypedTie}.
+ *
+ * @remarks Since 3.0.0
+ * @public
+ */
+export type LetrecLooselyTypedTie = (key: string) => Arbitrary<unknown>;
+/**
+ * Loosely typed type for the `builder` function passed to {@link letrec}.
+ * You may want also want to use its strongly typed version {@link LetrecTypedBuilder}.
+ *
+ * @remarks Since 3.0.0
+ * @public
+ */
+export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => LetrecValue<T>;
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function letrec<T>(builder: T extends {} ? LetrecTypedBuilder<T> : never): LetrecValue<T>;
+export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>;
+/**
  * For mutually recursive types
  *
  * @example
@@ -20,9 +66,8 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
  * @remarks Since 1.16.0
  * @public
  */
-export function letrec<T>(builder: (tie: (key: string) => Arbitrary<unknown>) => { [K in keyof T]: Arbitrary<T[K]> }): {
-  [K in keyof T]: Arbitrary<T[K]>;
-} {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = Object.create(null);
   const tie = (key: keyof T): Arbitrary<any> => {
     if (!Object.prototype.hasOwnProperty.call(lazyArbs, key)) {
