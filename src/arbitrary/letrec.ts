@@ -70,7 +70,7 @@ export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => Letre
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function letrec<T>(builder: T extends {} ? LetrecTypedBuilder<T> : never): LetrecValue<T>;
+export function letrec<T>(builder: T extends Record<string, unknown> ? LetrecTypedBuilder<T> : never): LetrecValue<T>;
 /**
  * For mutually recursive types
  *
