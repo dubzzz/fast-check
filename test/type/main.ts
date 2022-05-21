@@ -340,12 +340,23 @@ expectType<{}>()(
   fc.letrec((tie) => ({})),
   'Empty "letrec"'
 );
+expectType<{}>()(
+  fc.letrec<{}>((tie) => ({})),
+  'Empty "letrec" with types manually defined'
+);
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>()(
   fc.letrec((tie) => ({
     a: fc.nat(),
     b: fc.string(),
   })),
   'No recursion "letrec"'
+);
+expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>()(
+  fc.letrec<{ a: number; b: string }>((tie) => ({
+    a: fc.nat(),
+    b: fc.string(),
+  })),
+  'No recursion "letrec" with types manually defined'
 );
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
   fc.letrec((tie) => ({
@@ -354,6 +365,13 @@ expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
   })),
   'Recursive "letrec"'
 ); // TODO Typings should be improved: b type might be infered from a
+expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<number> }>()(
+  fc.letrec<{ a: number; b: number }>((tie) => ({
+    a: fc.nat(),
+    b: tie('a'),
+  })),
+  'Recursive "letrec" with types manually defined'
+);
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
   fc.letrec((tie) => ({
     a: fc.nat(),
@@ -361,6 +379,24 @@ expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
   })),
   'Invalid recursion "letrec"'
 ); // TODO Typings should be improved: referencing an undefined key should failed
+expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
+  fc.letrec<{ a: number; b: unknown }>((tie) => ({
+    a: fc.nat(),
+    b: tie('c'),
+  })),
+  'Invalid recursion "letrec" with types manually defined'
+); // TODO Even when fully typed we accept undeclared keys from being used on tie (see why PR-2968)
+expectType<{ a: fc.Arbitrary<number> }>()(
+  fc.letrec<{ a: number }>((tie) => ({
+    a: fc.nat(),
+    b: fc.nat(),
+  })),
+  'Accept additional keys within "letrec" but do not expose them outside'
+);
+fc.letrec<{ a: string }>((tie) => ({
+  // @ts-expect-error - reject builders implying 'wrongly typed keys' when type declared
+  a: fc.nat(),
+}));
 
 // clone arbitrary
 expectType<fc.Arbitrary<[]>>()(fc.clone(fc.nat(), 0), '"clone" 0-time');
