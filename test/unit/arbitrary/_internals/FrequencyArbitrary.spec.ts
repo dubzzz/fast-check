@@ -55,8 +55,8 @@ const frequencyConstraintsArbFor = (keys: {
   return fc.record(
     {
       ...(!forbidden.includes('depthIdentifier') ? { depthIdentifier: fc.string() } : {}),
-      ...(!forbidden.includes('depthFactor')
-        ? { depthFactor: fc.oneof(fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }), sizeArb) }
+      ...(!forbidden.includes('depthSize')
+        ? { depthSize: fc.oneof(fc.double({ min: 0, max: 100, noNaN: true }), sizeArb) }
         : {}),
       ...(!forbidden.includes('maxDepth') ? { maxDepth: fc.nat() } : {}),
       ...(!forbidden.includes('withCrossShrink') ? { withCrossShrink: fc.boolean() } : {}),
@@ -310,11 +310,11 @@ describe('FrequencyArbitrary', () => {
         )
       ));
 
-    it('should ask ranges containing negative values as we go deeper in the structure if depthFactor and first arbitrary has weight >0', () =>
+    it('should ask ranges containing negative values as we go deeper in the structure if depthSize and first arbitrary has weight >0', () =>
       fc.assert(
         fc.property(
           frequencyValidInputsArb,
-          frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthFactor'] }),
+          frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthSize'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (validInputs, constraints, biasFactor) => {
             // Arrange
@@ -355,7 +355,7 @@ describe('FrequencyArbitrary', () => {
       fc.assert(
         fc.property(
           frequencyValidInputsArb,
-          frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthFactor'] }),
+          frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthSize'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (validInputs, constraints, biasFactor) => {
             // Arrange
@@ -721,7 +721,7 @@ describe('FrequencyArbitrary (integration)', () => {
       constraints: fc.record(
         {
           withCrossShrink: fc.boolean(),
-          depthFactor: fc.oneof(fc.double({ min: 0, max: Number.MAX_VALUE, noNaN: true }), sizeArb),
+          depthSize: fc.oneof(fc.double({ min: 0, max: Number.MAX_VALUE, noNaN: true }), sizeArb),
           maxDepth: fc.nat(),
         },
         { requiredKeys: [] }

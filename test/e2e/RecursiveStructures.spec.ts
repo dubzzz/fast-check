@@ -57,7 +57,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     const failingLength = 2;
     const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
       if (n <= 1) return fc.constant([0]);
-      else return fc.option(fc.tuple(dataArb(), dataArb()), { nil: [0], depthFactor: 'small' });
+      else return fc.option(fc.tuple(dataArb(), dataArb()), { nil: [0], depthSize: 'small' });
     });
 
     // Act

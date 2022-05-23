@@ -2388,7 +2388,7 @@ Execution summary:
 . . [32m√[0m [[\\"[\\"]]"
 `;
 
-exports[`NoRegression letrec (oneof:depthFactor) 1`] = `
+exports[`NoRegression letrec (oneof:depthSize) 1`] = `
 "Property failed after 37 tests
 { seed: 42, path: \\"36:1:0:0:6:4:4:4:4\\", endOnFailure: true }
 Counterexample: [{\\"a\\":0,\\"b\\":0,\\"c\\":{\\"a\\":{\\"a\\":11,\\"b\\":0,\\"c\\":0},\\"b\\":0,\\"c\\":0}}]

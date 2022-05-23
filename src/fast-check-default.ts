@@ -164,11 +164,7 @@ import { float64Array, Float64ArrayConstraints } from './arbitrary/float64Array'
 import { sparseArray, SparseArrayConstraints } from './arbitrary/sparseArray';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Value } from './check/arbitrary/definition/Value';
-import {
-  Size,
-  SizeForArbitrary,
-  DepthFactorSizeForArbitrary,
-} from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import { Size, SizeForArbitrary, DepthSize } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
 import {
   createDepthIdentifier,
   DepthContext,
@@ -407,7 +403,7 @@ export {
   // run configuration
   Size,
   SizeForArbitrary,
-  DepthFactorSizeForArbitrary,
+  DepthSize,
   GlobalParameters,
   GlobalAsyncPropertyHookFunction,
   GlobalPropertyHookFunction,

@@ -25,7 +25,7 @@ describe('option', () => {
         fc.record(
           {
             depthIdentifier: fc.string(),
-            depthFactor: fc.oneof(fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }), sizeArb),
+            depthSize: fc.oneof(fc.double({ min: 0, noNaN: true }), sizeArb),
             maxDepth: fc.nat(),
             freq: fc.nat(),
             nil: fc.anything(),
@@ -55,7 +55,7 @@ describe('option', () => {
             ],
             {
               withCrossShrink: true,
-              depthFactor: constraints.depthFactor,
+              depthSize: constraints.depthSize,
               maxDepth: constraints.maxDepth,
               depthIdentifier: constraints.depthIdentifier,
             },
@@ -88,7 +88,7 @@ describe('option', () => {
       ],
       {
         withCrossShrink: true,
-        depthFactor: undefined,
+        depthSize: undefined,
         maxDepth: undefined,
         depthIdentifier: undefined,
       },

@@ -161,7 +161,7 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it('should impact depth factor the same way for any child and reset it at the end', () => {
+    it('should bias depth the same way for any child and reset it at the end', () => {
       fc.assert(
         fc.property(
           fc.array(fc.tuple(fc.anything(), fc.anything(), fc.boolean())),

@@ -56,12 +56,12 @@ export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => Letre
  * type Node = [Tree, Tree];
  * type Tree = Node | Leaf;
  * const { tree } = fc.letrec<{ tree: Tree, node: Node, leaf: Leaf }>(tie => ({
- *   tree: fc.oneof({depthFactor: 'small'}, tie('leaf'), tie('node')),
+ *   tree: fc.oneof({depthSize: 'small'}, tie('leaf'), tie('node')),
  *   node: fc.tuple(tie('tree'), tie('tree')),
  *   leaf: fc.nat()
  * }));
  * // tree is 50% of node, 50% of leaf
- * // the ratio goes in favor of leaves as we go deeper in the tree (thanks to depthFactor)
+ * // the ratio goes in favor of leaves as we go deeper in the tree (thanks to depthSize)
  * ```
  *
  * @param builder - Arbitraries builder based on themselves (through `tie`)
@@ -76,12 +76,12 @@ export function letrec<T>(builder: T extends Record<string, unknown> ? LetrecTyp
  * @example
  * ```typescript
  * const { tree } = fc.letrec(tie => ({
- *   tree: fc.oneof({depthFactor: 'small'}, tie('leaf'), tie('node')),
+ *   tree: fc.oneof({depthSize: 'small'}, tie('leaf'), tie('node')),
  *   node: fc.tuple(tie('tree'), tie('tree')),
  *   leaf: fc.nat()
  * }));
  * // tree is 50% of node, 50% of leaf
- * // the ratio goes in favor of leaves as we go deeper in the tree (thanks to depthFactor)
+ * // the ratio goes in favor of leaves as we go deeper in the tree (thanks to depthSize)
  * ```
  *
  * @param builder - Arbitraries builder based on themselves (through `tie`)

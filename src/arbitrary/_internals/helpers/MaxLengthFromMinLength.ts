@@ -44,23 +44,24 @@ const orderedRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'
 export type SizeForArbitrary = RelativeSize | Size | 'max' | undefined;
 
 /**
- * Superset of {@link Size} to override the default defined for depth factor.
+ * Superset of {@link Size} to override the default defined for size.
  * It can either be based on a numeric value manually selected by the user (not recommended)
  * or rely on presets based on size (recommended).
  *
- * This size will be used to infer a depth factor, used as follow within recursive structures:
- * While going deeper, depth factor will increase the probability to generate small instances.
+ * This size will be used to infer a bias to limit the depth, used as follow within recursive structures:
+ * While going deeper, the bias on depth will increase the probability to generate small instances.
  *
  * When used with {@link Size}, the larger the size the deeper the structure.
- * When used with numeric values, the smaller the number (floating point number &gt;= 0),
- * the deeper the structure. 0 meaning "depth has no impact".
+ * When used with numeric values, the larger the number (floating point number &gt;= 0),
+ * the deeper the structure. `+0` means extremelly biased depth meaning barely impossible to generate
+ * deep structures, while `Number.POSITIVE_INFINITY` means "depth has no impact".
  *
- * Using `max` or `0` is fully equivalent.
+ * Using `max` or `Number.POSITIVE_INFINITY` is fully equivalent.
  *
  * @remarks Since 2.25.0
  * @public
  */
-export type DepthFactorSizeForArbitrary = RelativeSize | Size | 'max' | number | undefined;
+export type DepthSize = RelativeSize | Size | 'max' | number | undefined;
 
 /**
  * The default size used by fast-check
@@ -142,27 +143,24 @@ export function maxGeneratedLengthFromSizeForArbitrary(
 }
 
 /**
- * Compute `depthFactor` based on `size`
- * @param size - Size or depthFactor defined by the caller on the arbitrary
+ * Compute `depthSize` based on `size`
+ * @param size - Size or depthSize defined by the caller on the arbitrary
  * @param specifiedMaxDepth - Whether or not the caller specified a max depth
  * @internal
  */
-export function depthFactorFromSizeForArbitrary(
-  depthFactorOrSize: DepthFactorSizeForArbitrary,
-  specifiedMaxDepth: boolean
-): number {
-  if (typeof depthFactorOrSize === 'number') {
-    return depthFactorOrSize;
+export function depthBiasFromSizeForArbitrary(depthSizeOrSize: DepthSize, specifiedMaxDepth: boolean): number {
+  if (typeof depthSizeOrSize === 'number') {
+    return 1 / depthSizeOrSize;
   }
   const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified } = readConfigureGlobal() || {};
   const definedSize =
-    depthFactorOrSize !== undefined
-      ? depthFactorOrSize
+    depthSizeOrSize !== undefined
+      ? depthSizeOrSize
       : specifiedMaxDepth && defaultSizeToMaxWhenMaxSpecified
       ? 'max'
       : defaultSize;
   if (definedSize === 'max') {
-    return 0;
+    return 0; // 1 / +infinity
   }
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
   switch (finalSize) {
