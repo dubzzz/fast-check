@@ -63,6 +63,8 @@ async function extractAndParseDiff(fromIdentifier) {
       case ':sparkles:':
       case '🗑️':
       case ':wastebasket:':
+      case '🏷️':
+      case ':label:':
         newFeaturesSection.push(buildPrLine(pr, title));
         break;
       case '🔥':
@@ -109,7 +111,7 @@ async function extractAndParseDiff(fromIdentifier) {
         maintenanceSection.push({ type: 'Move', pr, title });
         break;
       default:
-        errors.push(`Unhandled type: ${type}`);
+        errors.push(`Unhandled type: ${type} on PR-${pr} with title ${title}`);
         break;
     }
   }
