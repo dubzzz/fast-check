@@ -19,7 +19,7 @@ describe('oneof', () => {
           {
             withCrossShrink: fc.boolean(),
             depthIdentifier: fc.string(),
-            depthFactor: fc.oneof(fc.double({ min: 0.01, noDefaultInfinity: true, noNaN: true }), sizeArb),
+            depthSize: fc.oneof(fc.double({ min: 0, noNaN: true }), sizeArb),
             maxDepth: fc.nat(),
           },
           { requiredKeys: [] }

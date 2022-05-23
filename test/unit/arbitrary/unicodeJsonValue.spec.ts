@@ -17,12 +17,12 @@ describe('unicodeJsonValue (integration)', () => {
     fc
       .record(
         {
-          depthFactor: fc.oneof(fc.double({ min: 0, max: 10 }), sizeArb),
+          depthSize: fc.oneof(fc.double({ min: 0.1, noNaN: true }), sizeArb),
           maxDepth: fc.nat({ max: 5 }),
         },
         { requiredKeys: [] }
       )
-      .filter((ct) => ct.depthFactor === undefined || ct.depthFactor >= 0.1 || ct.maxDepth !== undefined),
+      .filter((ct) => ct.depthSize === undefined || ct.depthSize <= 10 || ct.maxDepth !== undefined),
     { nil: undefined }
   );
 

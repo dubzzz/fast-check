@@ -6,7 +6,7 @@ import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';
 import { boxedArbitraryBuilder } from '../builders/BoxedArbitraryBuilder';
-import { DepthFactorSizeForArbitrary, SizeForArbitrary } from './MaxLengthFromMinLength';
+import { DepthSize, SizeForArbitrary } from './MaxLengthFromMinLength';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -19,7 +19,7 @@ export interface ObjectConstraints {
    *
    * @remarks Since 2.20.0
    */
-  depthFactor?: DepthFactorSizeForArbitrary;
+  depthSize?: DepthSize;
   /**
    * Maximal depth allowed
    * @remarks Since 0.0.7
@@ -115,7 +115,7 @@ export interface ObjectConstraints {
 }
 
 /** @internal */
-type ObjectConstraintsOptionalValues = 'depthFactor' | 'maxDepth' | 'maxKeys' | 'size';
+type ObjectConstraintsOptionalValues = 'depthSize' | 'maxDepth' | 'maxKeys' | 'size';
 
 /**
  * Internal wrapper around an `ObjectConstraints`, it adds all the missing pieces in the configuration
@@ -162,7 +162,7 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
       orDefault(settings.values, defaultValues(valueConstraints)),
       orDefault(settings.withBoxedValues, false)
     ),
-    depthFactor: settings.depthFactor,
+    depthSize: settings.depthSize,
     maxDepth: settings.maxDepth,
     maxKeys: settings.maxKeys,
     size: settings.size,

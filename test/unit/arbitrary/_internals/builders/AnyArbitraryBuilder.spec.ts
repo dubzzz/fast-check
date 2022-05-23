@@ -91,7 +91,7 @@ describe('anyArbitraryBuilder (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc
     .record(
       {
-        depthFactor: fc.oneof(fc.double({ min: 0, max: 10 }), sizeArb),
+        depthSize: fc.oneof(fc.double({ min: 0.1, noNaN: true }), sizeArb),
         maxDepth: fc.nat({ max: 5 }),
         maxKeys: fc.nat({ max: 10 }),
         withBigInt: fc.boolean(),
@@ -107,13 +107,13 @@ describe('anyArbitraryBuilder (integration)', () => {
       { requiredKeys: [] }
     )
     .filter((params) => {
-      if (params.depthFactor === undefined || params.depthFactor >= 0.5) {
+      if (params.depthSize === undefined || params.depthSize <= 2) {
         return true; // 0.5 is equivalent to small, the default
       }
       if (params.maxDepth !== undefined) {
         return true;
       }
-      // No maxDepth and a depthFactor relatively small can potentially lead to very very large
+      // No maxDepth and a depthSize relatively small can potentially lead to very very large
       // and deep structures. We want to avoid those cases in this test.
       return false;
     });

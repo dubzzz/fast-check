@@ -2,7 +2,7 @@ import { constant } from './constant';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
 import { DepthIdentifier } from './_internals/helpers/DepthContext';
-import { DepthFactorSizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link option}
@@ -26,7 +26,7 @@ export interface OptionConstraints<TNil = null> {
    *
    * @remarks Since 2.14.0
    */
-  depthFactor?: DepthFactorSizeForArbitrary;
+  depthSize?: DepthSize;
   /**
    * Maximal authorized depth. Once this depth has been reached only nil will be used.
    *
@@ -66,7 +66,7 @@ export function option<T, TNil = null>(
   ];
   const frequencyConstraints: FrequencyContraints = {
     withCrossShrink: true,
-    depthFactor: constraints.depthFactor,
+    depthSize: constraints.depthSize,
     maxDepth: constraints.maxDepth,
     depthIdentifier: constraints.depthIdentifier,
   };

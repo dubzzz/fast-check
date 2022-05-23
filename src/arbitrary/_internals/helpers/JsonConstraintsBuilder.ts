@@ -2,7 +2,7 @@ import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
-import { DepthFactorSizeForArbitrary } from './MaxLengthFromMinLength';
+import { DepthSize } from './MaxLengthFromMinLength';
 import { ObjectConstraints } from './QualifiedObjectConstraints';
 
 /**
@@ -22,7 +22,7 @@ export interface JsonSharedConstraints {
    *
    * @remarks Since 2.20.0
    */
-  depthFactor?: DepthFactorSizeForArbitrary;
+  depthSize?: DepthSize;
   /**
    * Maximal depth allowed
    * @remarks Since 2.5.0
@@ -39,7 +39,7 @@ export function jsonConstraintsBuilder(
   stringArbitrary: Arbitrary<string>,
   constraints: JsonSharedConstraints
 ): ObjectConstraints {
-  const { depthFactor, maxDepth } = constraints;
+  const { depthSize, maxDepth } = constraints;
   const key = stringArbitrary;
   const values = [
     boolean(), // any boolean
@@ -47,7 +47,7 @@ export function jsonConstraintsBuilder(
     stringArbitrary, // any string
     constant(null),
   ];
-  return { key, values, depthFactor, maxDepth };
+  return { key, values, depthSize, maxDepth };
 }
 
 /**

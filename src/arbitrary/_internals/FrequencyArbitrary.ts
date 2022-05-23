@@ -3,7 +3,7 @@ import { Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
-import { depthFactorFromSizeForArbitrary, DepthFactorSizeForArbitrary } from './helpers/MaxLengthFromMinLength';
+import { depthBiasFromSizeForArbitrary, DepthSize } from './helpers/MaxLengthFromMinLength';
 
 /** @internal */
 export class FrequencyArbitrary<T> extends Arbitrary<T> {
@@ -33,7 +33,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
       throw new Error(`${label} expects the sum of weights to be strictly superior to 0`);
     }
     const sanitizedConstraints: _SanitizedConstraints = {
-      depthFactor: depthFactorFromSizeForArbitrary(constraints.depthFactor, constraints.maxDepth !== undefined),
+      depthBias: depthBiasFromSizeForArbitrary(constraints.depthSize, constraints.maxDepth !== undefined),
       depthIdentifier: constraints.depthIdentifier,
       maxDepth: constraints.maxDepth,
       withCrossShrink: constraints.withCrossShrink,
@@ -182,13 +182,13 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
 
   /** Compute the benefit for the current depth */
   private computeNegDepthBenefit(): number {
-    const depthFactor = this.constraints.depthFactor;
-    if (depthFactor === undefined || depthFactor <= 0 || this.warbs[0].weight === 0) {
+    const depthBias = this.constraints.depthBias;
+    if (depthBias <= 0 || this.warbs[0].weight === 0) {
       return 0;
     }
     // We use a pow-based biased benefit as the deeper we go the more chance we have
     // to encounter thousands of instances of the current arbitrary.
-    const depthBenefit = Math.floor(Math.pow(1 + depthFactor, this.context.depth)) - 1;
+    const depthBenefit = Math.floor(Math.pow(1 + depthBias, this.context.depth)) - 1;
     // -0 has to be converted into 0 thus we call ||0
     return -Math.min(this.totalWeight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
   }
@@ -197,15 +197,15 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
 /** @internal */
 export type _Constraints = {
   withCrossShrink?: boolean;
-  depthFactor?: DepthFactorSizeForArbitrary;
+  depthSize?: DepthSize;
   maxDepth?: number;
   depthIdentifier?: DepthIdentifier | string;
 };
 
 /** @internal */
-export type _SanitizedConstraints = {
+type _SanitizedConstraints = {
   withCrossShrink: boolean | undefined;
-  depthFactor: number | undefined;
+  depthBias: number;
   maxDepth: number | undefined;
   depthIdentifier: DepthIdentifier | string | undefined;
 };

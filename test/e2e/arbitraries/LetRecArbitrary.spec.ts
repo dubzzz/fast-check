@@ -16,12 +16,12 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
     it('Should be usable to build deep tree instances', () => {
       const { tree } = fc.letrec((tie) => ({
         tree: fc.oneof(
-          // Depth factor is 'max' for this test as we want to go as deep as possible.
-          // While using non-maxed depth factor does not prevent such structure from being generated,
+          // `depthSize` is set to 'max' for this test as we want to go as deep as possible.
+          // While using non-maxed `depthSize` does not prevent such structure from being generated,
           // it may highly reduce their probability to be generated. So for the sake of this test,
           // we want to manually handle the depth via setting manually our weight so that the structure
           // will not explode and go too deep.
-          { depthFactor: 'max' },
+          { depthSize: 'max' },
           { arbitrary: tie('node'), weight: 45 },
           { arbitrary: tie('leaf'), weight: 55 }
         ),

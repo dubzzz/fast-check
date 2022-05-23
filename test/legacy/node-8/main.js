@@ -92,7 +92,7 @@ testArbitrary(
 testArbitrary(
   fc.letrec(function (tie) {
     return {
-      tree: fc.oneof({ depthFactor: 'small' }, tie('leaf'), tie('node')),
+      tree: fc.oneof({ depthSize: 'small' }, tie('leaf'), tie('node')),
       node: fc.tuple(tie('tree'), tie('tree')),
       leaf: fc.nat(),
     };

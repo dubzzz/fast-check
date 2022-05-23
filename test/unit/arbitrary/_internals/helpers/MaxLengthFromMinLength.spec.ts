@@ -1,7 +1,7 @@
 import fc from '../../../../../lib/fast-check';
 import {
   DefaultSize,
-  depthFactorFromSizeForArbitrary,
+  depthBiasFromSizeForArbitrary,
   maxGeneratedLengthFromSizeForArbitrary,
   maxLengthFromMinLength,
   MaxLengthUpperBound,
@@ -264,8 +264,8 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
   });
 });
 
-describe('depthFactorFromSizeForArbitrary', () => {
-  it('should only consider the received depthFactor when set to a numeric value', () => {
+describe('depthSizeFromSizeForArbitrary', () => {
+  it('should only consider the received depthSize when set to a numeric value', () => {
     fc.assert(
       fc.property(
         sizeRelatedGlobalConfigArb,
@@ -273,12 +273,12 @@ describe('depthFactorFromSizeForArbitrary', () => {
         fc.boolean(),
         (config, size, specifiedMaxDepth) => {
           // Arrange / Act
-          const computedDepthFactor = withConfiguredGlobal(config, () =>
-            depthFactorFromSizeForArbitrary(size, specifiedMaxDepth)
+          const computedDepthBias = withConfiguredGlobal(config, () =>
+            depthBiasFromSizeForArbitrary(size, specifiedMaxDepth)
           );
 
           // Assert
-          expect(computedDepthFactor).toBe(size);
+          expect(computedDepthBias).toBe(1 / size);
         }
       )
     );
@@ -288,13 +288,13 @@ describe('depthFactorFromSizeForArbitrary', () => {
     fc.assert(
       fc.property(sizeRelatedGlobalConfigArb, sizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
         // Arrange / Act
-        const computedDepthFactor = withConfiguredGlobal(config, () =>
-          depthFactorFromSizeForArbitrary(size, specifiedMaxDepth)
+        const computedDepthBias = withConfiguredGlobal(config, () =>
+          depthBiasFromSizeForArbitrary(size, specifiedMaxDepth)
         );
-        const expectedDepthFactor = { xsmall: 1, small: 1 / 2, medium: 1 / 4, large: 1 / 8, xlarge: 1 / 16 }[size];
+        const expectedDepthBias = { xsmall: 1, small: 1 / 2, medium: 1 / 4, large: 1 / 8, xlarge: 1 / 16 }[size];
 
         // Assert
-        expect(computedDepthFactor).toBe(expectedDepthFactor);
+        expect(computedDepthBias).toBe(expectedDepthBias);
       })
     );
   });
@@ -307,13 +307,13 @@ describe('depthFactorFromSizeForArbitrary', () => {
         const equivalentSize = relativeSizeToSize(size, defaultSize);
 
         // Act
-        const computedDepthFactor = withConfiguredGlobal(config, () =>
-          depthFactorFromSizeForArbitrary(size, specifiedMaxDepth)
+        const computedDepthBias = withConfiguredGlobal(config, () =>
+          depthBiasFromSizeForArbitrary(size, specifiedMaxDepth)
         );
-        const expectedDepthFactor = depthFactorFromSizeForArbitrary(equivalentSize, false);
+        const expectedDepthBias = depthBiasFromSizeForArbitrary(equivalentSize, false);
 
         // Assert
-        expect(computedDepthFactor).toBe(expectedDepthFactor);
+        expect(computedDepthBias).toBe(expectedDepthBias);
       })
     );
   });
@@ -322,12 +322,12 @@ describe('depthFactorFromSizeForArbitrary', () => {
     fc.assert(
       fc.property(sizeRelatedGlobalConfigArb, fc.boolean(), (config, specifiedMaxDepth) => {
         // Arrange / Act
-        const computedDepthFactor = withConfiguredGlobal(config, () =>
-          depthFactorFromSizeForArbitrary('max', specifiedMaxDepth)
+        const computedDepthBias = withConfiguredGlobal(config, () =>
+          depthBiasFromSizeForArbitrary('max', specifiedMaxDepth)
         );
 
         // Assert
-        expect(computedDepthFactor).toBe(0);
+        expect(computedDepthBias).toBe(0);
       })
     );
   });
@@ -336,12 +336,12 @@ describe('depthFactorFromSizeForArbitrary', () => {
     fc.assert(
       fc.property(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange / Act
-        const computedDepthFactor = withConfiguredGlobal({ ...config, defaultSizeToMaxWhenMaxSpecified: true }, () =>
-          depthFactorFromSizeForArbitrary(undefined, true)
+        const computedDepthBias = withConfiguredGlobal({ ...config, defaultSizeToMaxWhenMaxSpecified: true }, () =>
+          depthBiasFromSizeForArbitrary(undefined, true)
         );
 
         // Assert
-        expect(computedDepthFactor).toBe(0);
+        expect(computedDepthBias).toBe(0);
       })
     );
   });

@@ -1,7 +1,7 @@
 import { Arbitrary, isArbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
 import { DepthIdentifier } from './_internals/helpers/DepthContext';
-import { DepthFactorSizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Conjonction of a weight and an arbitrary used by {@link oneof}
@@ -64,7 +64,7 @@ export type OneOfConstraints = {
    *
    * @remarks Since 2.14.0
    */
-  depthFactor?: DepthFactorSizeForArbitrary;
+  depthSize?: DepthSize;
   /**
    * Maximal authorized depth.
    * Once this depth has been reached only the first arbitrary will be used.

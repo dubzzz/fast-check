@@ -41,7 +41,7 @@ export interface SparseArrayConstraints {
    */
   size?: SizeForArbitrary;
   /**
-   * When receiving a depth identifier, the arbitrary will impact the depthFactor
+   * When receiving a depth identifier, the arbitrary will impact the depth
    * attached to it to avoid going too deep if it already generated lots of items.
    *
    * In other words, if the number of generated values within the collection is large
