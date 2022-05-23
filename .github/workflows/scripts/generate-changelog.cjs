@@ -26,7 +26,7 @@ async function extractLastTag() {
 /**
  * Extract and parse the logs of git to get lines for the changelog
  * @param {string} fromIdentifier
- * @returns {Promise<{newFeaturesSection:string[], maintenanceSection:{type:string,pr:string,title:string}[], errors: string[]}>}
+ * @returns {Promise<{breakingSection:string[], newFeaturesSection:string[], maintenanceSection:{type:string,pr:string,title:string}[], errors: string[]}>}
  */
 async function extractAndParseDiff(fromIdentifier) {
   // Extract raw diff log
@@ -37,6 +37,7 @@ async function extractAndParseDiff(fromIdentifier) {
     .filter((line) => line.length !== 0);
 
   // Parse raw diff log
+  const breakingSection = [];
   const newFeaturesSection = [];
   const maintenanceSection = [];
   const errors = [];
@@ -52,6 +53,10 @@ async function extractAndParseDiff(fromIdentifier) {
       break;
     }
     switch (type) {
+      case '💥':
+      case ':boom:':
+        breakingSection.push(buildPrLine(pr, title));
+        break;
       case '⚡️':
       case ':zap:':
       case '✨':
@@ -109,7 +114,7 @@ async function extractAndParseDiff(fromIdentifier) {
     }
   }
 
-  return { newFeaturesSection, maintenanceSection, errors };
+  return { breakingSection, newFeaturesSection, maintenanceSection, errors };
 }
 
 /**
@@ -119,11 +124,15 @@ async function extractAndParseDiff(fromIdentifier) {
 async function run({ nextVersion, shortDescription }) {
   // Extract metas for changelog
   const lastTag = await extractLastTag();
-  const { newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(lastTag);
+  const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(lastTag);
 
   // Build changelog message
   const codeUrl = `https://github.com/dubzzz/fast-check/tree/v${nextVersion}`;
   const diffUrl = `https://github.com/dubzzz/fast-check/compare/${lastTag}...v${nextVersion}`;
+  const breakingBlock = breakingSection
+    .reverse()
+    .map((line) => `- ${line}`)
+    .join('\n');
   const newFeaturesBlock = newFeaturesSection
     .reverse()
     .map((line) => `- ${line}`)
@@ -137,6 +146,7 @@ async function run({ nextVersion, shortDescription }) {
     `# ${nextVersion}\n\n` +
     `_${shortDescription}_\n` +
     `[[Code](${codeUrl})][[Diff](${diffUrl})]\n\n` +
+    (breakingBlock.length !== 0 ? '## Breaking changes\n\n' + `${breakingBlock}\n\n` : '') +
     '## Features\n\n' +
     `${newFeaturesBlock}\n\n` +
     '## Fixes\n\n' +
