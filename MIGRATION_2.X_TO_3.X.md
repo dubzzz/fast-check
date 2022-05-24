@@ -57,6 +57,22 @@ As the migration is pretty automatable, a codemod is provided to do part of the 
 [^2]: For instance, we added `size` and `depthIdentifier` onto `array` doing it with yet another set of extra parameters would have been problematic.
 [^3]: Initially, the rule has been: one extra argument for each new option like `array(arb, maxLength)`. But it used to be replaced by constraints-based signatures like `object(constraints)` for the most recent additions.
 
+## Drop some arbitraries ✨
+
+Some arbitraries were duplicated, others had ambiguous names... so they got dropped in v3. The change below can be applied without having to bump to v3.
+
+Here are the arbitraries that got removed and the replacement they got:
+
+- `jsonObject` ➜ `jsonValue` — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
+- `unicodeJsonObject` ➜ `unicodeJsonValue` — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
+- `set` ➜ `uniqueArray` — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
+- `dedup` ➜ `clone` — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
+- `clonedConstant` ➜ `constant` — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
+- `genericTuple` ➜ `tuple` — [#2940](https://github.com/dubzzz/fast-check/pull/2940)
+- `frequency` ➜ `oneof` — [#2960](https://github.com/dubzzz/fast-check/pull/2960)
+
+Be careful when doing the change from `set` to `uniqueArray` as the API changed a bit and the default comparison operator switched from `===` to `SameValue`. Most of the other changes should be straightforward with no major impact.
+
 ---
 
 # Migration 1.x to 2.x
