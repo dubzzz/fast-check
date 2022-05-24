@@ -73,6 +73,57 @@ Here are the arbitraries that got removed and the replacement they got:
 
 Be careful when doing the change from `set` to `uniqueArray` as the API changed a bit and the default comparison operator switched from `===` to `SameValue`. Most of the other changes should be straightforward with no major impact.
 
+## New floating point arbitraries ✨
+
+-> 2928
+
+## No more support for TypeScript versions <4.1 ✨
+
+Support for versions of TypeScript below 4.1 has been removed by [#2935](https://github.com/dubzzz/fast-check/pull/2935). No need to wait `fast-chech@3` to bump to `typescript@4.1` or later.
+
+## Depth follow the size ✨
+
+We now try to limit automatically the depth of the recursive structures generated — [#2949](https://github.com/dubzzz/fast-check/pull/2949).
+
+It has one major impact if you use `oneof` in conjonction with `letrec`: the first arbitrary you specify in `oneof` must be a leaf. In other words:
+
+```ts
+const { tree } = fc.letrec((tie) => ({
+  tree: fc.oneof(tie('leaf'), tie('node')), // Good!!!
+  node: fc.record({ left: tie('tree'), right: tie('tree') }),
+  leaf: fc.nat(),
+}));
+
+// And not:
+// const { tree } = fc.letrec((tie) => ({
+//   tree: fc.oneof(tie('node'), tie('leaf')), // BAD!!!
+//   node: fc.record({ left: tie('tree'), right: tie('tree') }),
+//   leaf: fc.nat(),
+// }));
+```
+
+By _leaf_, we mean something that does not re-run a potentially infinite recursion but will stop for sure in a finite amount of bumps. In the example above `tie('leaf')` is a leaf as it links to `fc.nat()` which definitely does not re-run yet another recursion cycle. But it could have been a constant value or any other terminal case (see it as the terminal case of your recursion).
+
+In order to unlock this feature and change in v2, you must define a `baseSize` globally. It can be done with:
+
+```ts
+fc.configureGlobal({ baseSize: 'small' });
+// 'small' is the default value when not specified
+// but needs to be for v2 if you want to force its usage on depths
+```
+
+For backward compatibility reasons, in order to unlock the "depth inferred by size" in v2, you need to explicitely define a `baseSize` value globally or to define a `depthFactor` (now `depthSize` in v3) at the level of your recursive arbitrary. In v3, not specifying it will be fully equivalent to specifying it with value `'small'`.
+
+## No more defaulting of some constraints 💥
+
+Some arbitraries used to come with hardcoded values for some of their constraints when they were not specified by the user. They tend to use values that differ from what we use for main arbitraries. In an attempt, to use as much as possible the same defaulting strategies throughout our arbitraries, we have dropped some of those defaulted constraints to make them fit with others.
+
+Here is the list of the constraints that got impacted:
+
+- `maxCount` will not longer be defaulted to `5` on `lorem`: it will now use the same defaulting logic as arrays do — [#2952](https://github.com/dubzzz/fast-check/pull/2952)
+- `maxKeys` will not longer be defaulted to `5` on object-like arbitraries: it will now use the same defaulting logic as arrays do — [#2951](https://github.com/dubzzz/fast-check/pull/2951)
+- `maxDepth` will not longer be defaulted to `2` on object-like arbitraries: it will now be defaulted to infinity to let the object goes as deep as possible with respect to size related constraints — [#2951](https://github.com/dubzzz/fast-check/pull/2951)
+
 ---
 
 # Migration 1.x to 2.x
