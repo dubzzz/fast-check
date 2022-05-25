@@ -134,6 +134,18 @@ fc.configureGlobal({ baseSize: 'small' });
 
 For backward compatibility reasons, in order to unlock the "depth inferred by size" in v2, you need to explicitely define a `baseSize` value globally or to define a `depthFactor` (now `depthSize` in v3) at the level of your recursive arbitrary. In v3, not specifying it will be fully equivalent to specifying it with value `'small'`.
 
+## Random number generators must follow the new API exposed by `pure-rand` ✨👽️
+
+THe PR [#2941](https://github.com/dubzzz/fast-check/pull/2941) drops the support for legacy APIs of `pure-rand`. If you were defining your own random number generator and not using one of the packaged ones, you may probably double-check this change. We basically makes it compulsary for any passed random number generator passed to runner to come with `clone`, `unsafeNext` and `unsafeJump` (if `jump`).
+
+The only users being impacted will be the ones using:
+
+```ts
+fc.assert(..., {randomType: (seed) => myRandomForSeed(seed)})
+```
+
+**Guidelines for v2**: New API will already be used if exposed inside v2 runner. When receiving a new API the v2 version will just forward it as is to the rest of the code (as v3 does now), but contrary to v3 if it receives a legacy version of the API it wraps it into a new instance exposing the new API to the runners.
+
 ## No more defaulting of some constraints 💥
 
 Some arbitraries used to come with hardcoded values for some of their constraints when they were not specified by the user. They tend to use values that differ from what we use for main arbitraries. In an attempt, to use as much as possible the same defaulting strategies throughout our arbitraries, we have dropped some of those defaulted constraints to make them fit with others.
