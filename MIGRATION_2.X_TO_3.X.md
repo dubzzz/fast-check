@@ -53,6 +53,8 @@ So signatures have been adapted to embrace our new approach:
 
 As the migration is pretty automatable, a codemod is provided to do part of the changes linked to this part for you. More details at: https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures
 
+**Guidelines for v2**: Move any of the signatures specified above to its recent equivalent.
+
 [^1]: Like `integer(max)` or `array(arb, maxLength)` and even `array(arb, minLength, maxLength)`.
 [^2]: For instance, we added `size` and `depthIdentifier` onto `array` doing it with yet another set of extra parameters would have been problematic.
 [^3]: Initially, the rule has been: one extra argument for each new option like `array(arb, maxLength)`. But it used to be replaced by constraints-based signatures like `object(constraints)` for the most recent additions.
@@ -73,13 +75,31 @@ Here are the arbitraries that got removed and the replacement they got:
 
 Be careful when doing the change from `set` to `uniqueArray` as the API changed a bit and the default comparison operator switched from `===` to `SameValue`. Most of the other changes should be straightforward with no major impact.
 
+**Guidelines for v2**: Get rid off any of the signatures specified above, except `frequency` as `oneof` cannot handle its usages before version 3.
+
 ## New floating point arbitraries ✨
 
--> 2928
+Up to version 2, the default behaviour of `fc.float()` and `fc.double()` has been to uniformaly generate entries within the specified range by including the min and not the max. In other words the probability to generate an entry from the first half of the range was close to[^4] 50%, the probability to generate one from the second half of the range was close to[^4] 50% too.
+
+In version 2.6.0, we proposed new implementations for `fc.float()` and `fc.double()`. Those new implementations are accessible by passing the constraint `{next:true}` to the arbitrary. Contrary to the previous version, the new implementation has the following characteristics:
+
+- not uniform on the values — _the probability to generate values from the first half of the range will probably not be the same as the one to generate values from the second half of the range_
+- generate any possible value within the range — _any possible value within the range has the same probability to be selected but as there are more floating point numbers in range `[0, 1]` than in `[10, 11]` the first one will be more likely_
+- min (included) and max (included) and min ≤ max — _max is now included and has to be higher or equal to min_
+- any possible value means `NaN` too — _because `NaN` is often a missed value for double it will be included by default except if using the option `noNaN`_
+- any possible value means infinity too — _because infinity is often a missed value for double it will be included by default except if using the option `noDefaultInfinity` or specifying an explicit range by setting both a `min` and a `max`_
+- any possible value means `-0` too — _because `-0` is often a missed value for double it will be included by default if part of the requested range_
+- default range includes all the possible floating point values — _by default, or `fc.double()`, means from -infinity to +infinity with NaN and -0 and the exact same probability go generate any of the doubles_
+
+**Guidelines for v2**: You can already toggle the new version or v3 version by passing the constraint `next: true` whenever you use a `fc.float()` or `fc.double()`. Please note from the characteristics detailed above that the default range for the previous versions differ from the default in new version, that exotic values like `-0`, `NaN` or infinity are now there by default...
+
+[^4]: Actually because of bias, for smaller runs we tend not to follow the final and target distribution so it might not be exactly 50% when biased is on (the default). But as you go in the runs, then the bias will be close to 0 and you will reach the target distribution.
 
 ## No more support for TypeScript versions <4.1 ✨
 
 Support for versions of TypeScript below 4.1 has been removed by [#2935](https://github.com/dubzzz/fast-check/pull/2935). No need to wait `fast-chech@3` to bump to `typescript@4.1` or later.
+
+**Guidelines for v2**: Start using TypeScript 4.1 or above even if you are still on v2.
 
 ## Depth follow the size ✨
 
@@ -104,7 +124,7 @@ const { tree } = fc.letrec((tie) => ({
 
 By _leaf_, we mean something that does not re-run a potentially infinite recursion but will stop for sure in a finite amount of bumps. In the example above `tie('leaf')` is a leaf as it links to `fc.nat()` which definitely does not re-run yet another recursion cycle. But it could have been a constant value or any other terminal case (see it as the terminal case of your recursion).
 
-In order to unlock this feature and change in v2, you must define a `baseSize` globally. It can be done with:
+**Guidelines for v2**: In order to unlock this feature and change in v2, you must define a `baseSize` globally. It can be done with:
 
 ```ts
 fc.configureGlobal({ baseSize: 'small' });
