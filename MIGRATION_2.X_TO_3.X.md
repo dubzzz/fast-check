@@ -155,3 +155,19 @@ Here is the list of the constraints that got impacted:
 - `maxCount` will not longer be defaulted to `5` on `lorem`: it will now use the same defaulting logic as arrays do — [#2952](https://github.com/dubzzz/fast-check/pull/2952)
 - `maxKeys` will not longer be defaulted to `5` on object-like arbitraries: it will now use the same defaulting logic as arrays do — [#2951](https://github.com/dubzzz/fast-check/pull/2951)
 - `maxDepth` will not longer be defaulted to `2` on object-like arbitraries: it will now be defaulted to infinity to let the object goes as deep as possible with respect to size related constraints — [#2951](https://github.com/dubzzz/fast-check/pull/2951)
+
+## `depthSize` the new name for `depthFactor` 💥👽️
+
+`depthFactor` used to be ambiguous as `0` meant no bias on depth and `+infinity` meant full bias on depth while `'small'` meant lots of bias and `'large'` meant very little bias. As numerical version to bias the depth is mostly targeting very advanced users as we recommend using size-based versions instead, the naming as been updated — [#2951](https://github.com/dubzzz/fast-check/pull/2951).
+
+You are impacted if and only if your codebase is using `depthFactor`, for most of users the change will simply be to rename it to `depthSize` and the code will behave the same way.
+
+For users using `depthFactor` with numerical values — _in other words, `'small'`, `'large'`, `'='` or `'+1'` are all good but `0.1`, `1` and any other numeric values_ — the numeric value will have to be updated as follow: `1` ➜ `1/1` = `1`, `0.1` ➜ `1/0.1` = `10`, `10` ➜ `1/10` = `0.1`... More generally speaking: `depthFactor: n` becomes `depthSize: 1/n`.
+
+## The value returned by the `run` method on properties changed 💥👽️
+
+If you wrote your own `IRawProperty` or made direct calls to `run` on one instance of property, you may have to change your code to handle the new API properly — [#2959](https://github.com/dubzzz/fast-check/pull/2959).
+
+Side-note: As property is mostly an internal structure used to glue together arbitraries to predicate so that they can be passed altogether to the runner we don't expect too many users having played with it. But as the API has been exposed to our external users and can be extended by them to add extra features on top of existing properties[^5], we prefer to warn them about the change.
+
+[^5]: In fast-check, we implement timeout on properties with a property instance rewrapping a source one.
