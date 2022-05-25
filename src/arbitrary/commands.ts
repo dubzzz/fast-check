@@ -21,7 +21,6 @@ import {
  * @remarks Since 1.5.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, CheckAsync extends boolean>(
   commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
   constraints?: CommandsContraints
@@ -38,28 +37,17 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * @remarks Since 1.5.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real>(
   commandArbs: Arbitrary<Command<Model, Real>>[],
   constraints?: CommandsContraints
 ): Arbitrary<Iterable<Command<Model, Real>>>;
-// eslint-disable-next-line @typescript-eslint/ban-types
 function commands<Model extends object, Real, RunResult, CheckAsync extends boolean>(
   commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
-  constraints?: number | CommandsContraints
+  constraints: CommandsContraints = {}
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
-  const config =
-    constraints == null ? {} : typeof constraints === 'number' ? { maxCommands: constraints } : constraints;
-  const size = config.size;
-  const maxCommands = config.maxCommands !== undefined ? config.maxCommands : MaxLengthUpperBound;
-  const specifiedMaxCommands = config.maxCommands !== undefined;
+  const { size, maxCommands = MaxLengthUpperBound, disableReplayLog = false, replayPath = null } = constraints;
+  const specifiedMaxCommands = constraints.maxCommands !== undefined;
   const maxGeneratedCommands = maxGeneratedLengthFromSizeForArbitrary(size, 0, maxCommands, specifiedMaxCommands);
-  return new CommandsArbitrary(
-    commandArbs,
-    maxGeneratedCommands,
-    maxCommands,
-    config.replayPath != null ? config.replayPath : null,
-    !!config.disableReplayLog
-  );
+  return new CommandsArbitrary(commandArbs, maxGeneratedCommands, maxCommands, replayPath, disableReplayLog);
 }
 export { commands };
