@@ -1,6 +1,6 @@
 # 3.0.0
 
-_Make fast-check easier with the full support of size and a new easily extensible API for custom arbitraries_
+_Easier and more expressive thanks to the full support of size and a new and extensible API for custom arbitraries_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v2.25.0...v3.0.0)]
 
 This new major of fast-check is:
