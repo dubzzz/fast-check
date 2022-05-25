@@ -134,9 +134,22 @@ fc.configureGlobal({ baseSize: 'small' });
 
 For backward compatibility reasons, in order to unlock the "depth inferred by size" in v2, you need to explicitely define a `baseSize` value globally or to define a `depthFactor` (now `depthSize` in v3) at the level of your recursive arbitrary. In v3, not specifying it will be fully equivalent to specifying it with value `'small'`.
 
+## `Arbitrary` API changed ✨👽️
+
+There are many ways you could be impacted by this one, but most of the time it corresponds to pretty advanced usages of the library:
+
+- You call manually `generate` on one of the arbitraries defined by the library
+- You implemented the API of `Arbitrary` to define your own arbitrary
+
+While the first case, is one of the possible usages, it's probably not the most important usage making people rely on the API of `Arbitrary`.
+
+The legacy API of `Arbitrary` has been replaced by the API of `NextArbitrary` (referred as `Arbitrary` in v3) — [#2944](https://github.com/dubzzz/fast-check/pull/2944) and [#2945](https://github.com/dubzzz/fast-check/pull/2945). More details on those APIs on the [documentation for advanced arbitraries](https://github.com/dubzzz/fast-check/blob/v2.25.0/documentation/AdvancedArbitraries.md#starting-at-version-2150).
+
+**Guidelines for v2**: In v2, you can already start to implement the new APIs internally and converting the produced instances when calling runners, properties or arbitraries exposed by v2. Once you adapted your custom arbitraries to the new API, you can convert them to the old one by calling `fc.convertFromNext` or to the new one (if you want to convert an arbitrary defined in the framework) with `fc.convertToNext`. The two converters have been added in v2 to help with the migration, they have been dropped in v3 as the legacy API does not exist anymore in v3.
+
 ## Random number generators must follow the new API exposed by `pure-rand` ✨👽️
 
-THe PR [#2941](https://github.com/dubzzz/fast-check/pull/2941) drops the support for legacy APIs of `pure-rand`. If you were defining your own random number generator and not using one of the packaged ones, you may probably double-check this change. We basically makes it compulsary for any passed random number generator passed to runner to come with `clone`, `unsafeNext` and `unsafeJump` (if `jump`).
+The PR [#2941](https://github.com/dubzzz/fast-check/pull/2941) drops the support for legacy APIs of `pure-rand`. If you were defining your own random number generator and not using one of the packaged ones, you may probably double-check this change. We basically makes it compulsary for any passed random number generator passed to runner to come with `clone`, `unsafeNext` and `unsafeJump` (if `jump`).
 
 The only users being impacted will be the ones using:
 
@@ -166,7 +179,7 @@ For users using `depthFactor` with numerical values — _in other words, `'small
 
 ## The value returned by the `run` method on properties changed 💥👽️
 
-If you wrote your own `IRawProperty` or made direct calls to `run` on one instance of property, you may have to change your code to handle the new API properly — [#2959](https://github.com/dubzzz/fast-check/pull/2959).
+If you wrote your own `IRawProperty` or made direct calls to `run` on one instance of property, you may have to change your code to handle the new API properly — [#2959](https://github.com/dubzzz/fast-check/pull/2959). The API has also been impacted by [#2942](https://github.com/dubzzz/fast-check/pull/2942).
 
 Side-note: As property is mostly an internal structure used to glue together arbitraries to predicate so that they can be passed altogether to the runner we don't expect too many users having played with it. But as the API has been exposed to our external users and can be extended by them to add extra features on top of existing properties[^5], we prefer to warn them about the change.
 
