@@ -18,42 +18,44 @@ In the past, some signatures used to be ambiguous[^1], some were not extensible[
 
 So signatures have been adapted to embrace our new approach:
 
-- `array(arb, maxLength)` ➜ `array(arb, {maxLength})` — [#2927](https://github.com/dubzzz/fast-check/pull/2927)
-- `array(arb, minLength, maxLength)` ➜ `array(arb, {minLength, maxLength})` — [#2927](https://github.com/dubzzz/fast-check/pull/2927)
-- `asciiString(maxLength)` ➜ `asciiString({maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `asciiString(minLength, maxLength)` ➜ `asciiString({minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `base64String(maxLength)` ➜ `base64String({maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `base64String(minLength, maxLength)` ➜ `base64String({minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `fullUnicodeString(maxLength)` ➜ `fullUnicodeString({maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `fullUnicodeString(minLength, maxLength)` ➜ `fullUnicodeString({minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `hexaString(maxLength)` ➜ `hexaString({maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `hexaString(minLength, maxLength)` ➜ `hexaString({minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `string(maxLength)` ➜ `string({maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `string(minLength, maxLength)` ➜ `string({minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `string16bits(maxLength)` ➜ `string16bits({maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `string16bits(minLength, maxLength)` ➜ `string16bits({minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `stringOf(charArb, maxLength)` ➜ `stringOf(charArb, {maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `stringOf(charArb, minLength, maxLength)` ➜ `stringOf(charArb, {minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `unicodeString(maxLength)` ➜ `unicodeString({maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `unicodeString(minLength, maxLength)` ➜ `unicodeString({minLength, maxLength})` — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
-- `shuffledSubarray(originalArray, minLength, maxLength)` ➜ `shuffledSubarray(originalArray, {minLength, maxLength})` — [#2930](https://github.com/dubzzz/fast-check/pull/2930)
-- `subarray(originalArray, minLength, maxLength)` ➜ `subarray(originalArray, {minLength, maxLength})` — [#2930](https://github.com/dubzzz/fast-check/pull/2930)
-- `commands(commandArbs, maxCommands)` ➜ `commands(commandArbs, maxCommands)` — [#2931](https://github.com/dubzzz/fast-check/pull/2931)
-- `option(arb, freq)` ➜ `option(arb, {freq})` — [#2932](https://github.com/dubzzz/fast-check/pull/2932)
-- `json(maxDepth)` ➜ `json({maxDepth})` — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
-- `unicodeJson(maxDepth)` ➜ `unicodeJson({maxDepth})` — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
+- `array(arb, maxLength)` ➜ `array(arb, {maxLength})` _requires at least 2.4.0_ — [#2927](https://github.com/dubzzz/fast-check/pull/2927)
+- `array(arb, minLength, maxLength)` ➜ `array(arb, {minLength, maxLength})` _requires at least 2.4.0_ — [#2927](https://github.com/dubzzz/fast-check/pull/2927)
+- `asciiString(maxLength)` ➜ `asciiString({maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `asciiString(minLength, maxLength)` ➜ `asciiString({minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `base64String(maxLength)` ➜ `base64String({maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `base64String(minLength, maxLength)` ➜ `base64String({minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `fullUnicodeString(maxLength)` ➜ `fullUnicodeString({maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `fullUnicodeString(minLength, maxLength)` ➜ `fullUnicodeString({minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `hexaString(maxLength)` ➜ `hexaString({maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `hexaString(minLength, maxLength)` ➜ `hexaString({minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `string(maxLength)` ➜ `string({maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `string(minLength, maxLength)` ➜ `string({minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `string16bits(maxLength)` ➜ `string16bits({maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `string16bits(minLength, maxLength)` ➜ `string16bits({minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `stringOf(charArb, maxLength)` ➜ `stringOf(charArb, {maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `stringOf(charArb, minLength, maxLength)` ➜ `stringOf(charArb, {minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `unicodeString(maxLength)` ➜ `unicodeString({maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `unicodeString(minLength, maxLength)` ➜ `unicodeString({minLength, maxLength})` _requires at least 2.4.0_ — [#2929](https://github.com/dubzzz/fast-check/pull/2929)
+- `shuffledSubarray(originalArray, minLength, maxLength)` ➜ `shuffledSubarray(originalArray, {minLength, maxLength})` _requires at least 2.4.0_ — [#2930](https://github.com/dubzzz/fast-check/pull/2930)
+- `subarray(originalArray, minLength, maxLength)` ➜ `subarray(originalArray, {minLength, maxLength})` _requires at least 2.4.0_ — [#2930](https://github.com/dubzzz/fast-check/pull/2930)
+- `commands(commandArbs, maxCommands)` ➜ `commands(commandArbs, maxCommands)` _requires at least 1.11.0_ — [#2931](https://github.com/dubzzz/fast-check/pull/2931)
+- `option(arb, freq)` ➜ `option(arb, {freq})` _requires at least 1.17.0_ — [#2932](https://github.com/dubzzz/fast-check/pull/2932)
+- `json(maxDepth)` ➜ `json({maxDepth})` _requires at least 2.5.0_ — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
+- `unicodeJson(maxDepth)` ➜ `unicodeJson({maxDepth})` _requires at least 2.5.0_ — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
 - `lorem(maxWordsCount)` ➜ `lorem({maxWordsCount})` — [#2934](https://github.com/dubzzz/fast-check/pull/2934)
-- `lorem(maxWordsCount, sentencesMode)` ➜ `lorem({maxWordsCount, mode})` — [#2934](https://github.com/dubzzz/fast-check/pull/2934)
-- `double(max)` ➜ `double({max})` — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
-- `double(min, max)` ➜ `double({min, max})` — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
-- `float(max)` ➜ `float({max})` — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
-- `float(min, max)` ➜ `float({min, max})` — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
-- `integer(max)` ➜ `integer({max})` — [#2939](https://github.com/dubzzz/fast-check/pull/2939)
-- `integer(min, max)` ➜ `integer({min, max})` — [#2939](https://github.com/dubzzz/fast-check/pull/2939)
+- `lorem(maxWordsCount, sentencesMode)` ➜ `lorem({maxWordsCount, mode})` _requires at least 2.5.0_ — [#2934](https://github.com/dubzzz/fast-check/pull/2934)
+- `double(max)` ➜ `double({max})` _requires at least 2.8.0_ — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
+- `double(min, max)` ➜ `double({min, max})` _requires at least 2.8.0_ — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
+- `float(max)` ➜ `float({max})` _requires at least 2.8.0_ — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
+- `float(min, max)` ➜ `float({min, max})` _requires at least 2.8.0_ — [#2928](https://github.com/dubzzz/fast-check/pull/2928)
+- `integer(max)` ➜ `integer({max})` _requires at least 2.6.0_ — [#2939](https://github.com/dubzzz/fast-check/pull/2939)
+- `integer(min, max)` ➜ `integer({min, max})` _requires at least 2.6.0_ — [#2939](https://github.com/dubzzz/fast-check/pull/2939)
 
 As the migration is pretty automatable, a codemod is provided to do part of the changes linked to this part for you. More details at: https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures
 
-**Guidelines for v2**: Move any of the signatures specified above to its recent equivalent.
+**Other related issues and PRs**: [#992](https://github.com/dubzzz/fast-check/issues/992)
+
+**Guidelines for v2 (≥2.8.0 recommended)**: Move any of the signatures specified above to its recent equivalent.
 
 [^1]: Like `integer(max)` or `array(arb, maxLength)` and even `array(arb, minLength, maxLength)`.
 [^2]: For instance, we added `size` and `depthIdentifier` onto `array` doing it with yet another set of extra parameters would have been problematic.
@@ -65,17 +67,19 @@ Some arbitraries were duplicated, others had ambiguous names... so they got drop
 
 Here are the arbitraries that got removed and the replacement they got:
 
-- `jsonObject` ➜ `jsonValue` — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
-- `unicodeJsonObject` ➜ `unicodeJsonValue` — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
-- `set` ➜ `uniqueArray` — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
-- `dedup` ➜ `clone` — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
-- `clonedConstant` ➜ `constant` — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
-- `genericTuple` ➜ `tuple` — [#2940](https://github.com/dubzzz/fast-check/pull/2940)
-- `frequency` ➜ `oneof` — [#2960](https://github.com/dubzzz/fast-check/pull/2960)
+- `jsonObject` ➜ `jsonValue` _requires at least 2.20.0_ — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
+- `unicodeJsonObject` ➜ `unicodeJsonValue` _requires at least 2.20.0_ — [#2933](https://github.com/dubzzz/fast-check/pull/2933)
+- `set` ➜ `uniqueArray` _requires at least 2.23.0_ — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
+- `dedup` ➜ `clone` _requires at least 2.5.0_ — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
+- `clonedConstant` ➜ `constant` _requires at least 2.15.0_ — [#2938](https://github.com/dubzzz/fast-check/pull/2938)
+- `genericTuple` ➜ `tuple` _requires at least 2.14.0_ — [#2940](https://github.com/dubzzz/fast-check/pull/2940)
+- `frequency` ➜ `oneof` _requires at least 3.0.0_ — [#2960](https://github.com/dubzzz/fast-check/pull/2960)
 
 Be careful when doing the change from `set` to `uniqueArray` as the API changed a bit and the default comparison operator switched from `===` to `SameValue`. Most of the other changes should be straightforward with no major impact.
 
-**Guidelines for v2**: Get rid off any of the signatures specified above, except `frequency` as `oneof` cannot handle its usages before version 3.
+**Other related issues and PRs**: [#2457(jsonObject/unicodeJsonObject)](https://github.com/dubzzz/fast-check/issues/2457), [#1985(set)](https://github.com/dubzzz/fast-check/discussions/1985), [#530(dedup)](https://github.com/dubzzz/fast-check/issues/530), [#1750(constant)](https://github.com/dubzzz/fast-check/pull/1750), [#2955(frequency)](https://github.com/dubzzz/fast-check/pull/2955)
+
+**Guidelines for v2 (≥2.23.0 recommended)**: Get rid off any of the signatures specified above, except `frequency` as `oneof` cannot handle its usages before version 3.
 
 ## New floating point arbitraries ✨
 
@@ -91,13 +95,17 @@ In version 2.6.0, we proposed new implementations for `fc.float()` and `fc.doubl
 - any possible value means `-0` too — _because `-0` is often a missed value for double it will be included by default if part of the requested range_
 - default range includes all the possible floating point values — _by default, or `fc.double()`, means from -infinity to +infinity with NaN and -0 and the exact same probability go generate any of the doubles_
 
-**Guidelines for v2**: You can already toggle the new version or v3 version by passing the constraint `next: true` whenever you use a `fc.float()` or `fc.double()`. Please note from the characteristics detailed above that the default range for the previous versions differ from the default in new version, that exotic values like `-0`, `NaN` or infinity are now there by default...
+**Other related issues and PRs**: [#1040(float)](https://github.com/dubzzz/fast-check/pull/1040), [#1187(double)](https://github.com/dubzzz/fast-check/pull/1187)
+
+**Guidelines for v2 (≥2.8.0 recommended)**: You can already toggle the new version or v3 version by passing the constraint `next: true` whenever you use a `fc.float()` or `fc.double()`. Please note from the characteristics detailed above that the default range for the previous versions differ from the default in new version, that exotic values like `-0`, `NaN` or infinity are now there by default...
 
 [^4]: Actually because of bias, for smaller runs we tend not to follow the final and target distribution so it might not be exactly 50% when biased is on (the default). But as you go in the runs, then the bias will be close to 0 and you will reach the target distribution.
 
 ## No more support for TypeScript versions <4.1 ✨
 
 Support for versions of TypeScript below 4.1 has been removed by [#2935](https://github.com/dubzzz/fast-check/pull/2935). No need to wait `fast-chech@3` to bump to `typescript@4.1` or later.
+
+**Other related issues and PRs**: [#1492](https://github.com/dubzzz/fast-check/issues/1492), [#1517](https://github.com/dubzzz/fast-check/pull/1517), [#1520](https://github.com/dubzzz/fast-check/pull/1520)
 
 **Guidelines for v2**: Start using TypeScript 4.1 or above even if you are still on v2.
 
@@ -124,7 +132,9 @@ const { tree } = fc.letrec((tie) => ({
 
 By _leaf_, we mean something that does not re-run a potentially infinite recursion but will stop for sure in a finite amount of bumps. In the example above `tie('leaf')` is a leaf as it links to `fc.nat()` which definitely does not re-run yet another recursion cycle. But it could have been a constant value or any other terminal case (see it as the terminal case of your recursion).
 
-**Guidelines for v2**: In order to unlock this feature and change in v2, you must define a `baseSize` globally. It can be done with:
+**Other related issues and PRs**: [#2884](https://github.com/dubzzz/fast-check/pull/2884), [#1603](https://github.com/dubzzz/fast-check/pull/1603), [#1598](https://github.com/dubzzz/fast-check/pull/1598), [#1601](https://github.com/dubzzz/fast-check/pull/1601)
+
+**Guidelines for v2 (≥2.25.0 recommended)**: In order to unlock this feature and change in v2, you must define a `baseSize` globally. It can be done with:
 
 ```ts
 fc.configureGlobal({ baseSize: 'small' });
