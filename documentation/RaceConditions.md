@@ -3,7 +3,7 @@
 In order to ease the detection of race conditions in your code, `fast-check` comes with a built-in asynchronous scheduler.
 The aim of the scheduler - `fc.scheduler()` - is to reorder the order in which your async calls will resolve.
 
-By doing this it can highlight potential race conditions in your code. Please refer to [code snippets](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests) for more details.
+By doing this it can highlight potential race conditions in your code. Please refer to [code snippets](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/examples?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests) for more details.
 
 ## Table of contents
 

@@ -218,8 +218,8 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Check ES Version
         run: yarn test:es
-  test_example:
-    name: 'Test example'
+  test_examples:
+    name: 'Test examples/'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -235,14 +235,14 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'example'
-      - name: Typecheck example/
+          path: 'examples'
+      - name: Typecheck examples/
         run: |
-          cd example
+          cd examples
           yarn typecheck
-      - name: Test example/
+      - name: Test examples/
         run: |
-          cd example
+          cd examples
           yarn test
   test_types:
     name: 'Test types'
@@ -427,7 +427,7 @@ jobs:
       - test
       - test_e2e
       - test_cjs_esm
-      - test_example
+      - test_examples
       - test_node_8
       - test_es_version
       - test_package_quality

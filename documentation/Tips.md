@@ -132,7 +132,7 @@ Model based testing approach have been introduced into fast-check to ease UI tes
 
 The idea of the approach is to define commands that could be applied to your system. The framework then picks zero, one or more commands and run them sequentially if they can be executed on the current state.
 
-A full example is available [here](https://github.com/dubzzz/fast-check/tree/main/example/004-stateMachine/musicPlayer).
+A full example is available [here](https://github.com/dubzzz/fast-check/tree/main/examples/004-stateMachine/musicPlayer).
 
 Let's take the case of a list class with `pop`, `push`, `size` methods as an example.
 
@@ -214,9 +214,9 @@ Even if JavaScript is mostly a mono-threaded language, it is quite easy to intro
 
 `fast-check` comes with a built-in feature accessible through `fc.scheduler` that will help you to detect such issues earlier during the development. It basically re-orders the execution of your promises or async tasks in order to make it crash under unexpected orderings.
 
-The best way to see it in action is certainly to check the snippets provided in our [CodeSandbox@005-race](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests).
+The best way to see it in action is certainly to check the snippets provided in our [CodeSandbox@005-race](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/examples?hidenavigation=1&module=%2F005-race%2Fautocomplete%2Fmain.spec.tsx&previewwindow=tests).
 
-Here is a very simple React-based example that you can play with on [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?hidenavigation=1&module=%2F005-race%2FuserProfile%2Fmain.spec.tsx&previewwindow=tests):
+Here is a very simple React-based example that you can play with on [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/examples?hidenavigation=1&module=%2F005-race%2FuserProfile%2Fmain.spec.tsx&previewwindow=tests):
 
 ```jsx
 /* Component */

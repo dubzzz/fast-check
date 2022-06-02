@@ -2,7 +2,7 @@
 
 This directory gathers multiple examples of properties you might come with when using `fast-check`.
 
-Try online with [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
+Try online with [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/examples?previewwindow=tests).
 
 _Teach yourself property based through examples_
 

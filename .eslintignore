@@ -1,6 +1,6 @@
 codemods/**/snippet-*
 docs/
-example/
+examples/
 node_modules/
 lib/
 lib-*/
