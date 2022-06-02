@@ -25,7 +25,7 @@ Property based testing framework for JavaScript/TypeScript
 
 ## Getting started
 
-Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
+Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/examples?previewwindow=tests).
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: _for all (x, y, ...) such that precondition(x, y, ...) holds predicate(x, y, ...) is true_.
 
@@ -70,7 +70,7 @@ In case of failure, the test raises a red flag. Its output should help you to di
 
 Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-check-examples/blob/main/test-ava/example.spec.js), [jasmine](https://github.com/dubzzz/fast-check-examples/blob/main/test-jasmine/example.spec.js), [jest](https://github.com/dubzzz/fast-check-examples/blob/main/test-jest/example.spec.js), [mocha](https://github.com/dubzzz/fast-check-examples/blob/main/test/longest%20common%20substr/test.js) and [tape](https://github.com/dubzzz/fast-check-examples/blob/main/test-tape/example.spec.js).
 
-More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/main/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
+More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/main/examples), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
 

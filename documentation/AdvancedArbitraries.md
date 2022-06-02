@@ -99,7 +99,7 @@ const intNoShrink = fc.integer().noShrink();
 
 ## Build your own
 
-In general, whatever the version of fast-check you are using, it is highly recommended to have a look to how [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/main/src/arbitrary) have been implementated and to the simpler [examples](https://github.com/dubzzz/fast-check/tree/main/example) provided in the repository.
+In general, whatever the version of fast-check you are using, it is highly recommended to have a look to how [built-in arbitraries](https://github.com/dubzzz/fast-check/tree/main/src/arbitrary) have been implementated and to the simpler [examples](https://github.com/dubzzz/fast-check/tree/main/examples) provided in the repository.
 
 ### Starting at version 2.15.0
 

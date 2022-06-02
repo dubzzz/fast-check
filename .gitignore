@@ -2,7 +2,7 @@ bundle/package/
 coverage/
 dist/
 docs/
-example/output/
+examples/output/
 lib/
 lib-*/
 node_modules/

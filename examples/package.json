@@ -1,7 +1,8 @@
 {
-  "name": "fast-check-examples",
-  "version": "1.0.0",
+  "private": true,
+  "name": "@fast-check/examples",
   "description": "Examples of usage of fast-check",
+  "version": "0.0.0",
   "scripts": {
     "test": "jest",
     "typecheck": "tsc --noEmit"
@@ -32,7 +33,6 @@
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
-  "private": true,
   "jest": {
     "moduleFileExtensions": [
       "ts",

@@ -2,7 +2,7 @@
 //    npx jscodeshift --dry --print -t transform.cjs snippet-*.js --debug=true
 //    npx jscodeshift --parser=ts --extensions=ts --dry --print -t transform.cjs snippet-*.ts --debug=true
 // Or against the codebase of fast-check itself:
-//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../example/ ../../src/ ../../test/ --local=true --debug=true
+//    npx jscodeshift --parser=ts --extensions=ts -t transform.cjs ../../examples/ ../../src/ ../../test/ --local=true --debug=true
 
 // Useful ressources:
 // - https://astexplorer.net/

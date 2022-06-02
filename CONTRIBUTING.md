@@ -15,7 +15,7 @@ Use your best judgment, and feel free to propose changes to this document in a p
 Before asking questions, please double-check you can not find your answer in one of the examples provided or in the documentation of the project:
 
 - [Documentation](https://github.com/dubzzz/fast-check/blob/main/README.md)
-- [Examples provided inside the project](https://github.com/dubzzz/fast-check/tree/main/example)
+- [Examples provided inside the project](https://github.com/dubzzz/fast-check/tree/main/examples)
 - [Examples of properties](https://github.com/dubzzz/fast-check-examples)
 - [Example: fuzzing a REST API](https://github.com/dubzzz/fuzz-rest-api)
 
