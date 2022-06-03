@@ -12,43 +12,43 @@ NODE_MAJOR=$(node --version | cut -d. -f 1 | cut -dv -f 2)
 NODE_MINOR=$(node --version | cut -d. -f 2)
 
 if [ $NODE_MAJOR -gt 13 ] || [ $NODE_MAJOR -eq 13 ] && [ $NODE_MINOR -ge 2 ] || [ $NODE_MAJOR -eq 12 ] && [ $NODE_MINOR -ge 18 ]; then
-    cd test-esm-node-with-import
+    cd test-bundle-node-with-import
     yarn test
     cd ..
 
-    cd test-esm-node-extension-mjs
+    cd test-bundle-node-extension-mjs
     yarn test
     cd ..
 fi
 
-cd test-esm-node-extension-cjs
+cd test-bundle-node-extension-cjs
 yarn test
 cd ..
 
-cd test-esm-node-with-require
+cd test-bundle-node-with-require
 yarn test
 cd ..
 
-cd test-esm-rollup-with-import
+cd test-bundle-rollup-with-import
 yarn test
 cd ..
 
-cd test-esm-rollup-with-require
+cd test-bundle-rollup-with-require
 yarn test
 cd ..
 
-cd test-esm-webpack-with-import
+cd test-bundle-webpack-with-import
 yarn test
 cd ..
 
-cd test-esm-webpack-with-require
+cd test-bundle-webpack-with-require
 yarn test
 cd ..
 
-cd test-esm-esbuild-with-require
+cd test-bundle-esbuild-with-require
 yarn test
 cd ..
 
-cd test-esm-esbuild-with-import
+cd test-bundle-esbuild-with-import
 yarn test
 cd ..
