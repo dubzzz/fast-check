@@ -164,13 +164,17 @@ describe('myArbitrary (integration)', () => {
 
 Then run `yarn e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
 
-- Legacy support test - in `test/legacy/main.js`
+- Legacy support test - in `packages/test-minimal-support/main.js`
 
-The `legacy` spec is responsible to check that most of the arbitraries provided by fast-check are working fine on very old releases of node.
+The spec is responsible to check that most of the arbitraries provided by fast-check are working fine on rather old releases of node.
 
-- Typing test - in `test/type/main.ts`
+- Typing test - in `packages/test-types/main.ts`
 
-The `type` spec is responsible to check that the typings are correct but they also ensure that they will not break with future changes or upcoming releases of TypeScript.
+The spec is responsible to check that the typings are correct. It also ensures that they will not break with future changes or upcoming releases of TypeScript.
+
+- Bundled test - in `packages/test-bundle-*`
+
+The specs are responsible to check that the build package will be loadable correctly from various bundlers and runtimes without any import issues.
 
 ✔️ _Document the arbitrary_
 

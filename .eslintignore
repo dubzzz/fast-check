@@ -5,8 +5,5 @@ node_modules/
 lib/
 lib-*/
 perf/
-test/esm/
-test/legacy/
-test/type/
-test/rollup/
+packages/test-*
 jest*.js

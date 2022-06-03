@@ -273,24 +273,24 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/type'
+          path: 'packages/test-types'
       - name: TypeScript version
         run: |
-          cd test/type
+          cd packages/test-types
           npx -p typescript@${{matrix.ts-version}} tsc --version
-      - name: Test test/type/
+      - name: Test packages/test-types/
         run: |
-          cd test/type
+          cd packages/test-types
           npx -p typescript@${{matrix.ts-version}} tsc
-      - name: Test test/type/ with --moduleResolution nodenext
+      - name: Test packages/test-types/ with --moduleResolution nodenext
         if: matrix.ts-version == 'next'
         run: |
-          cd test/type
+          cd packages/test-types
           npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
-      - name: Test test/type/ with --exactOptionalPropertyTypes
+      - name: Test packages/test-types/ with --exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
-          cd test/type
+          cd packages/test-types
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
           npx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
   test_node_8:
@@ -310,14 +310,14 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/legacy/node-8'
+          path: 'packages/test-minimal-support'
       - name: Using Node v8.x
         uses: actions/setup-node@v3
         with:
           node-version: '8.x'
-      - name: Test test/legacy/node-8/
+      - name: Test packages/test-minimal-support/
         run: |
-          cd test/legacy/node-8
+          cd packages/test-minimal-support
           node --version
           node main.js
   test_cjs_esm:
@@ -357,48 +357,48 @@ jobs:
       - name: Install dependencies but use current build for fast-check (node-extension-cjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-extension-cjs'
+          path: 'packages/test-bundle-node-extension-cjs'
       - name: Install dependencies but use current build for fast-check (node-extension-mjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-extension-mjs'
+          path: 'packages/test-bundle-node-extension-mjs'
       - name: Install dependencies but use current build for fast-check (node-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-with-import'
+          path: 'packages/test-bundle-node-with-import'
       - name: Install dependencies but use current build for fast-check (node-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-with-require'
+          path: 'packages/test-bundle-node-with-require'
       - name: Install dependencies but use current build for fast-check (rollup-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/rollup-with-import'
+          path: 'packages/test-bundle-rollup-with-import'
       - name: Install dependencies but use current build for fast-check (rollup-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/rollup-with-require'
+          path: 'packages/test-bundle-rollup-with-require'
       - name: Install dependencies but use current build for fast-check (webpack-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/webpack-with-import'
+          path: 'packages/test-bundle-webpack-with-import'
       - name: Install dependencies but use current build for fast-check (webpack-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/webpack-with-require'
+          path: 'packages/test-bundle-webpack-with-require'
       - name: Install dependencies but use current build for fast-check (esbuild-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/esbuild-with-import'
+          path: 'packages/test-bundle-esbuild-with-import'
       - name: Install dependencies but use current build for fast-check (esbuild-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/esbuild-with-require'
+          path: 'packages/test-bundle-esbuild-with-require'
       - name: Check compatibility
         run: |
-          cd test/esm
+          cd packages
           node --version
-          sh run.sh
+          sh run-test-bundle.sh
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation

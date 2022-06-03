@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "@fast-check/test-bundle-webpack-with-require",
+  "description": "Test making sure fast-check can be used with CJS in Webpack",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "webpack && webpack --config webpack.config.dry.js",
+    "out:dry": "node dist/dry.js",
+    "out:start": "node dist/main.js > out.txt",
+    "dry": "yarn build && yarn out:dry",
+    "start": "yarn build && yarn out:start",
+    "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
+  },
+  "dependencies": {
+    "fast-check": "*"
+  },
+  "devDependencies": {
+    "querystring-es3": "^0.2.1",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "license": "MIT"
+}
