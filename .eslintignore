@@ -1,9 +1,0 @@
-codemods/**/snippet-*
-docs/
-examples/
-node_modules/
-lib/
-lib-*/
-perf/
-packages/test-*
-jest*.js

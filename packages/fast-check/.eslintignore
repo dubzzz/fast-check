@@ -1,0 +1,7 @@
+bundle/
+node_modules/
+lib/
+lib-*/
+perf/
+jest*.js
+jest*.cjs

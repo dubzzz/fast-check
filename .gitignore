@@ -8,11 +8,9 @@ lib-*/
 node_modules/
 .nyc_output/
 .vscode/
-*.generated.ts
-*.generated.spec.ts
 *.tgz
 deopt.out
 v8.log
 v8.out
-test/esm/**/out.txt
+test-bundle-*/out.txt
 .idea
