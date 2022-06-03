@@ -4,7 +4,7 @@ import { applyTransform } from 'jscodeshift/dist/testUtils';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import * as unifySignatureTransform from '../../../codemods/unify-signatures/transform.cjs';
+import * as unifySignatureTransform from '../../../../../codemods/unify-signatures/transform.cjs';
 
 const defaultTransformOptions = {
   simplifyMin: false,
