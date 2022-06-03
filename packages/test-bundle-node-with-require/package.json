@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@fast-check/test-bundle-node-with-import",
+  "name": "@fast-check/test-bundle-node-with-require",
   "description": "Test making sure fast-check can be referenced from CJS projects",
   "version": "0.0.0",
   "type": "commonjs",
