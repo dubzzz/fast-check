@@ -28,8 +28,8 @@ yarn add -D fast-check
 import fc from 'fast-check';
 import { contains } from './my-contains.js'; // eg.: (text, pattern) => text.indexOf(pattern) >= 0;
 
-describe("containts", () => {
-  it("should always contain itself", () => {
+describe('containts', () => {
+  it('should always contain itself', () => {
     fc.assert(
       fc.property(fc.string(), (text) => {
         // string text always contains text
@@ -37,8 +37,8 @@ describe("containts", () => {
       })
     );
   });
-  
-  it("should always contain its substrings", () => {
+
+  it('should always contain its substrings', () => {
     fc.assert(
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // string a + b + c always contains b, whatever the values of a, b and c
