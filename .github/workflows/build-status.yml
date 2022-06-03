@@ -137,7 +137,7 @@ jobs:
         with:
           node-version: "16.x"
       - name: Check package score using skypack
-        run: npx @skypack/package-check
+        run: cd packages/fast-check && npx @skypack/package-check
   documentation:
     name: "Build documentation"
     runs-on: ubuntu-latest
