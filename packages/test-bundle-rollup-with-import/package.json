@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "@fast-check/test-bundle-rollup-with-import",
+  "description": "Test making sure fast-check can be used with ESM in Rollup",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "rollup --config rollup.config.js && rollup --config rollup.config.dry.js",
+    "out:dry": "node dist/dry.js",
+    "out:start": "node dist/main.js > out.txt",
+    "dry": "yarn build && yarn out:dry",
+    "start": "yarn build && yarn out:start",
+    "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
+  },
+  "dependencies": {
+    "fast-check": "*"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
+    "rollup": "^2.70.2"
+  },
+  "license": "MIT"
+}

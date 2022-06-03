@@ -14,5 +14,5 @@
     "stripInternal": true,
     "outDir": "lib/"
   },
-  "exclude": ["examples", "test/esm", "test/legacy", "test/type"]
+  "exclude": ["examples", "packages"]
 }
