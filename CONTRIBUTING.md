@@ -180,4 +180,4 @@ The specs are responsible to check that the build package will be loadable corre
 
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @internal */` tag to hide internals - otherwise they would get published into the generated documentation
 
-- Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md
+- Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Arbitraries.md
