@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: "16.x"
       - name: Install dependencies
-        run: cd packages/fast-check && yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Check format
         run: cd packages/fast-check && yarn format:check
       - name: Check lint
@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: "16.x"
       - name: Install dependencies
-        run: cd packages/fast-check && yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
         run: cd packages/fast-check && yarn build
       - name: Typecheck
@@ -76,7 +76,7 @@ jobs:
         with:
           node-version: ${{matrix.node-version}}
       - name: Install dependencies
-        run: cd packages/fast-check && yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
         run: cd packages/fast-check && yarn build
       - name: Unit tests
@@ -117,7 +117,7 @@ jobs:
         with:
           node-version: ${{matrix.node-version}}
       - name: Install dependencies
-        run: cd packages/fast-check && yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
         run: cd packages/fast-check && yarn build
       - name: End-to-end tests
@@ -152,7 +152,7 @@ jobs:
         with:
           node-version: "16.x"
       - name: Install dependencies
-        run: cd packages/fast-check && yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build minimal package
         run: cd packages/fast-check && yarn build:publish-types
       - name: Generate documentation
@@ -178,7 +178,7 @@ jobs:
         with:
           node-version: "16.x"
       - name: Install dependencies
-        run: cd packages/fast-check && yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build production package
         run: cd packages/fast-check && yarn build:prod-ci
       - name: Create bundle
@@ -215,7 +215,7 @@ jobs:
         with:
           node-version: "16.x"
       - name: Install dependencies
-        run: cd packages/fast-check && yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Check ES Version
         run: cd packages/fast-check && yarn test:es
   test_examples:
