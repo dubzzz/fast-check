@@ -1,11 +1,11 @@
-name: 'Install dependencies but use current build for fast-check'
-description: 'Install dependencies but use current build for fast-check'
+name: "Install dependencies but use current build for fast-check"
+description: "Install dependencies but use current build for fast-check"
 inputs:
   path:
-    description: 'Directory path'
+    description: "Directory path"
     required: true
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - run: |
         PROJECT_ROOT_PATH="$(pwd)"
@@ -13,7 +13,7 @@ runs:
         echo "ℹ️ Clean yarn cache entry for fast-check (if any)..."
         yarn cache clean fast-check
         echo "ℹ️ Install dependencies..."
-        yarn --frozen-lockfile
+        yarn --immutable
         echo "ℹ️ Clean yarn cache entry for fast-check..."
         yarn cache clean fast-check
         echo "ℹ️ Install current build for fast-check..."
