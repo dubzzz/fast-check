@@ -3,7 +3,6 @@
   "name": "@fast-check/test-types",
   "description": "Test making sure fast-check expose the right typings",
   "version": "0.0.0",
-  "scripts": {},
   "dependencies": {
     "fast-check": "*"
   },
