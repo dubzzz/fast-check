@@ -235,6 +235,7 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/examples"
           path: "examples"
       - name: Typecheck examples/
         run: |
@@ -273,6 +274,7 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-types"
           path: "packages/test-types"
       - name: TypeScript version
         run: |
@@ -310,6 +312,7 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-minimal-support"
           path: "packages/test-minimal-support"
       - name: Using Node v8.x
         uses: actions/setup-node@v3
@@ -357,42 +360,52 @@ jobs:
       - name: Install dependencies but use current build for fast-check (node-extension-cjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-bundle-node-extension-cjs"
           path: "packages/test-bundle-node-extension-cjs"
       - name: Install dependencies but use current build for fast-check (node-extension-mjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-bundle-node-extension-mjs"
           path: "packages/test-bundle-node-extension-mjs"
       - name: Install dependencies but use current build for fast-check (node-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-bundle-node-with-import"
           path: "packages/test-bundle-node-with-import"
       - name: Install dependencies but use current build for fast-check (node-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-bundle-node-with-require"
           path: "packages/test-bundle-node-with-require"
       - name: Install dependencies but use current build for fast-check (rollup-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-bundle-rollup-with-import"
           path: "packages/test-bundle-rollup-with-import"
       - name: Install dependencies but use current build for fast-check (rollup-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-bundle-rollup-with-require"
           path: "packages/test-bundle-rollup-with-require"
       - name: Install dependencies but use current build for fast-check (webpack-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-webpack-rollup-with-import"
           path: "packages/test-bundle-webpack-with-import"
       - name: Install dependencies but use current build for fast-check (webpack-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-webpack-rollup-with-require"
           path: "packages/test-bundle-webpack-with-require"
       - name: Install dependencies but use current build for fast-check (esbuild-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-esbuild-rollup-with-import"
           path: "packages/test-bundle-esbuild-with-import"
       - name: Install dependencies but use current build for fast-check (esbuild-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
+          package: "@fast-check/test-esbuild-rollup-with-require"
           path: "packages/test-bundle-esbuild-with-require"
       - name: Check compatibility
         run: |
