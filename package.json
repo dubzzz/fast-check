@@ -5,6 +5,7 @@
   "version": "0.0.0",
   "packageManager": "yarn@3.2.1",
   "workspaces": [
+    ".github/actions/*",
     "examples",
     "packages/*"
   ]
