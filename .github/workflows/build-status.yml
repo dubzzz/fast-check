@@ -26,11 +26,11 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn workspace @fast-check/monorepo install --immutable
       - name: Check format
         run: yarn format:check
       - name: Check lint
-        run: yarn workspace fast-check lint:check
+        run: yarn lint:check
   typecheck:
     name: 'Typecheck'
     runs-on: ubuntu-latest

@@ -39,9 +39,7 @@
     "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --tsconfig tsconfig.nospec.json --out docs src/fast-check-default.ts && node postbuild/main.cjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
-    "docs:serve": "yarn dlx serve docs/",
-    "lint": "eslint \"**/*.{js,ts}\" --fix",
-    "lint:check": "eslint \"**/*.{js,ts}\""
+    "docs:serve": "yarn dlx serve docs/"
   },
   "repository": {
     "type": "git",
@@ -63,13 +61,9 @@
     "@microsoft/api-extractor": "^7.9.10",
     "@types/jest": "^28.0.0",
     "@types/node": "^17.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
     "buffer": "^6.0.1",
     "cross-env": "^7.0.2",
     "es-check": "^6.2.1",
-    "eslint": "^8.0.0",
-    "eslint-config-prettier": "^8.1.0",
     "jest": "^28.0.0",
     "jscodeshift": "^0.13.0",
     "mkdirp": "^1.0.4",
