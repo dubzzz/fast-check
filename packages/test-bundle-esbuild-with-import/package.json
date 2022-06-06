@@ -4,11 +4,11 @@
   "description": "Test making sure fast-check can be used with ESM in ESBuild",
   "version": "0.0.0",
   "scripts": {
-    "build:browser": "esbuild main.js --bundle --platform=browser --outfile=dist/main.browser.js",
-    "build:node": "esbuild main.js --bundle --platform=node --outfile=dist/main.node.js",
-    "build": "yarn build:browser && yarn build:node",
+    "generate:browser": "esbuild main.js --bundle --platform=browser --outfile=dist/main.browser.js",
+    "generate:node": "esbuild main.js --bundle --platform=node --outfile=dist/main.node.js",
+    "generate": "yarn generate:browser && yarn generate:node",
     "out": "node dist/main.browser.js > out.txt && node dist/main.node.js >> out.txt",
-    "start": "yarn build && yarn out",
+    "start": "yarn generate && yarn out",
     "test": "yarn start && diff expectedResult.txt out.txt"
   },
   "dependencies": {
