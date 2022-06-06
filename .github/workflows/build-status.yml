@@ -20,14 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Check format
@@ -39,14 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
@@ -61,11 +55,6 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Cache for node_modules
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Cache for Jest
         uses: actions/cache@v3
         with:
@@ -75,6 +64,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}
+          cache: "yarn"
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
@@ -102,11 +92,6 @@ jobs:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
     steps:
       - uses: actions/checkout@v3
-      - name: Cache for node_modules
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Cache for Jest
         uses: actions/cache@v3
         with:
@@ -116,6 +101,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}
+          cache: "yarn"
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
@@ -143,14 +129,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build minimal package
@@ -169,14 +152,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build production package
@@ -206,14 +186,11 @@ jobs:
         run: |
           tar -xvf fast-check.tgz package/lib
           mv package/lib packages/fast-check/lib
-      - uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Check ES Version
