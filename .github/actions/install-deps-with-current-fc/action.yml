@@ -13,10 +13,8 @@ runs:
     - run: |
         PROJECT_ROOT_PATH="$(pwd)"
         cd "${{inputs.path}}"
-        echo "ℹ️ Clean yarn cache entry for fast-check (if any)..."
-        yarn cache clean fast-check
         echo "ℹ️ Install dependencies..."
-        yarn --immutable
+        yarn workspace "${{inputs.package}}" install --immutable
         echo "ℹ️ Install current build for fast-check..."
         yarn workspace "${{inputs.package}}" add "file:$PROJECT_ROOT_PATH/fast-check.tgz"
         echo "ℹ️ Revert local changes..."
