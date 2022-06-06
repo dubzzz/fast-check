@@ -20,8 +20,6 @@
   "sideEffects": false,
   "runkitExampleFilename": "runkit.cjs",
   "scripts": {
-    "perf": "node perf/benchmark.js",
-    "profile": "node --prof --no-logfile-per-isolate --trace-deopt --trace-opt-verbose perf/profiler.js > deopt.out && node --prof-process v8.log > v8.out",
     "build": "tsc -p tsconfig.nospec.json",
     "build:watch": "tsc -p tsconfig.nospec.json -w",
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
@@ -67,7 +65,6 @@
     "@types/node": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "benchmark": "^2.1.4",
     "buffer": "^6.0.1",
     "cross-env": "^7.0.2",
     "es-check": "^6.2.1",
