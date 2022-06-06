@@ -367,22 +367,22 @@ jobs:
       - name: Install dependencies but use current build for fast-check (webpack-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          package: "@fast-check/test-webpack-rollup-with-import"
+          package: "@fast-check/test-webpack-with-import"
           path: "packages/test-bundle-webpack-with-import"
       - name: Install dependencies but use current build for fast-check (webpack-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          package: "@fast-check/test-webpack-rollup-with-require"
+          package: "@fast-check/test-webpack-with-require"
           path: "packages/test-bundle-webpack-with-require"
       - name: Install dependencies but use current build for fast-check (esbuild-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          package: "@fast-check/test-esbuild-rollup-with-import"
+          package: "@fast-check/test-esbuild-with-import"
           path: "packages/test-bundle-esbuild-with-import"
       - name: Install dependencies but use current build for fast-check (esbuild-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          package: "@fast-check/test-esbuild-rollup-with-require"
+          package: "@fast-check/test-esbuild-with-require"
           path: "packages/test-bundle-esbuild-with-require"
       - name: Check compatibility
         run: |
