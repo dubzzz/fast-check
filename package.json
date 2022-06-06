@@ -8,5 +8,19 @@
     ".github/actions/*",
     "examples",
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "codesandbox:build": "yarn workspace fast-check build",
+    "format": "prettier --write .",
+    "format:check": "prettier --list-different .",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint ."
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.1.0",
+    "prettier": "2.6.2"
+  }
 }

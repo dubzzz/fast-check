@@ -34,19 +34,19 @@ Install the module with: `yarn add fast-check --dev` or `npm install fast-check 
 Example of integration in [mocha](http://mochajs.org/):
 
 ```js
-const fc = require("fast-check");
+const fc = require('fast-check');
 
 // Code under test
 const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
-describe("properties", () => {
+describe('properties', () => {
   // string text always contains itself
-  it("should always contain itself", () => {
+  it('should always contain itself', () => {
     fc.assert(fc.property(fc.string(), (text) => contains(text, text)));
   });
   // string a + b + c always contains b, whatever the values of a, b and c
-  it("should always contain its substrings", () => {
+  it('should always contain its substrings', () => {
     fc.assert(
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
@@ -149,8 +149,8 @@ fast-check has been able to find some unexpected behaviour among famous npm pack
 **Code example:**
 
 ```js
-m.stringify({ bar: ["a", null, "b"] }, { arrayFormat: "bracket" }); //=> "bar[]=a&bar&bar[]=b"
-m.parse("bar[]=a&bar&bar[]=b", { arrayFormat: "bracket" }); //=> {bar: [null, 'b']}
+m.stringify({ bar: ['a', null, 'b'] }, { arrayFormat: 'bracket' }); //=> "bar[]=a&bar&bar[]=b"
+m.parse('bar[]=a&bar&bar[]=b', { arrayFormat: 'bracket' }); //=> {bar: [null, 'b']}
 ```
 
 **[MORE: Issues detected thanks to fast-check](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/IssuesDiscovered.md)**

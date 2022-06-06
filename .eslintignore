@@ -1,0 +1,9 @@
+node_modules/
+examples/
+packages/*/lib/
+packages/*/lib-*/
+packages/test-bundle-*/
+packages/test-minimal-support/
+packages/test-types/
+jest*.js
+jest*.cjs

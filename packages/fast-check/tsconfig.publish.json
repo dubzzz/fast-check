@@ -1,9 +1,10 @@
 {
-  "extends": "./tsconfig.nospec.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "noEmit": false,
+    "outDir": "lib/",
     "declaration": false,
-    "incremental": false,
-    "removeComments": true,
-    "sourceMap": false
-  }
+    "removeComments": true
+  },
+  "include": ["src/**/*"]
 }
