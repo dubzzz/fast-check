@@ -12,7 +12,7 @@ node_modules/
 deopt.out
 v8.log
 v8.out
-test-bundle-*/out.txt
+packages/test-bundle-*/out.txt
 .idea
 
 # https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
