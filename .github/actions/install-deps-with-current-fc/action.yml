@@ -11,12 +11,12 @@ runs:
   using: "composite"
   steps:
     - run: |
-        PROJECT_ROOT_PATH="$(pwd)"
-        cd "${{inputs.path}}"
+        ls -alh
+        ls -alh "$(pwd)"
         echo "ℹ️ Install dependencies..."
         yarn workspace "${{inputs.package}}" install --immutable
         echo "ℹ️ Install current build for fast-check..."
-        yarn workspace "${{inputs.package}}" add "file:$PROJECT_ROOT_PATH/fast-check.tgz"
+        yarn workspace "${{inputs.package}}" add "file:$(pwd)/fast-check.tgz"
         echo "ℹ️ Revert local changes..."
         git checkout -- package.json
         git checkout -- yarn.lock
