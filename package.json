@@ -13,8 +13,8 @@
     "codesandbox:build:prod": "yarn workspace fast-check build:prod",
     "format": "prettier --write .",
     "format:check": "prettier --list-different .",
-    "lint": "eslint \"**/*.{js,ts}\" --fix",
-    "lint:check": "eslint \"**/*.{js,ts}\""
+    "lint": "eslint . --fix",
+    "lint:check": "eslint ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.0.0",
