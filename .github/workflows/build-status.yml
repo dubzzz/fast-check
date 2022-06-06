@@ -399,7 +399,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages
-          folder: docs
+          folder: packages/fast-check/docs/
           clean: true
   publish_package:
     name: 'Publish package'
