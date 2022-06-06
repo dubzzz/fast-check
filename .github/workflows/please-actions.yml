@@ -34,14 +34,11 @@ jobs:
       - name: Install fast-check dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build package
-        run: cd packages/fast-check && yarn build:prod-ci
+        run: yarn workspace fast-check build:prod-ci
       - name: Generate documentation
-        run: cd packages/fast-check && yarn docs-ci
+        run: yarn workspace fast-check yarn docs-ci
       - name: Generate bundle
-        run: |
-          cd packages/fast-check
-          yarn pack
-          mv fast-check-*.tgz packages/fast-check/docs/fast-check.tgz
+        run: yarn workspace fast-check pack --out docs/%s.tgz
       - name: Install deploy-netlify dependencies
         run: |
           cd ./.github/actions/deploy-netlify
