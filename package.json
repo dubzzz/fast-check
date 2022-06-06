@@ -10,7 +10,6 @@
     "packages/*"
   ],
   "scripts": {
-    "codesandbox:build:prod": "yarn build:all",
     "build:all": "yarn workspaces foreach -ptvi run build",
     "test:all": "yarn workspaces foreach -pvi run test && yarn workspaces foreach -pvi run e2e",
     "typecheck:all": "yarn workspaces foreach -pvi run typecheck",
