@@ -17,12 +17,8 @@ runs:
         yarn cache clean fast-check
         echo "ℹ️ Install dependencies..."
         yarn --immutable
-        echo "ℹ️ Clean yarn cache entry for fast-check..."
-        yarn cache clean fast-check
         echo "ℹ️ Install current build for fast-check..."
         yarn workspace "${{inputs.package}}" add "file:$PROJECT_ROOT_PATH/fast-check.tgz"
-        echo "ℹ️ Clean yarn cache entry for fast-check..."
-        yarn cache clean fast-check
         echo "ℹ️ Revert local changes..."
         git checkout -- package.json
         git checkout -- yarn.lock
