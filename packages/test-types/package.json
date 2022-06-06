@@ -6,5 +6,8 @@
   "dependencies": {
     "fast-check": "workspace:*"
   },
+  "scripts": {
+    "codesandbox:build:prod": "yarn workspace fast-check build:prod"
+  },
   "license": "MIT"
 }
