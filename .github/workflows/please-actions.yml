@@ -34,7 +34,7 @@ jobs:
       - name: Install fast-check dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build package
-        run: yarn workspace fast-check build:prod-ci
+        run: yarn workspace fast-check build-ci
       - name: Generate documentation
         run: yarn workspace fast-check yarn docs-ci
       - name: Generate bundle

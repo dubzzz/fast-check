@@ -1,4 +1,4 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { ReplayPath } from '../../../../src/check/model/ReplayPath';
 

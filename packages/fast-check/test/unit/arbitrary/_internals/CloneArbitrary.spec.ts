@@ -1,4 +1,4 @@
-import fc from '../../../../lib/fast-check';
+import fc from 'fast-check';
 import { CloneArbitrary } from '../../../../src/arbitrary/_internals/CloneArbitrary';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';

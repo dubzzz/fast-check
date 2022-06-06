@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
+    "noEmit": true,
+    "outDir": "lib/",
     "target": "es2017",
     "module": "commonjs",
-    "declaration": true,
     "importHelpers": false,
-    "incremental": true,
+    "incremental": false,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "preserveConstEnums": true,
-    "removeComments": false,
-    "sourceMap": true,
-    "strict": true,
-    "stripInternal": true,
-    "outDir": "lib/",
-    "skipLibCheck": true
-  },
-  "exclude": ["examples", "packages"]
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strict": true
+  }
 }

@@ -160,7 +160,7 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build production package
-        run: yarn workspace fast-check build:prod-ci
+        run: yarn workspace fast-check build-ci
       - name: Create bundle
         run: yarn workspace fast-check pack --out %s.tgz
       - name: Upload production package

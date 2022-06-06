@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { double, DoubleConstraints } from '../../../src/arbitrary/double';
 import {

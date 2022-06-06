@@ -1,4 +1,4 @@
-import fc from '../../../../../lib/fast-check';
+import fc from 'fast-check';
 import { timeToDateMapper, timeToDateUnmapper } from '../../../../../src/arbitrary/_internals/mappers/TimeToDate';
 
 describe('timeToDateUnmapper', () => {

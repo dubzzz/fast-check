@@ -1,4 +1,4 @@
-import fc from '../../../../../lib/fast-check';
+import fc from 'fast-check';
 import { patternsToStringUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/PatternsToString';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
 

@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { char16bits } from '../../../src/arbitrary/char16bits';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

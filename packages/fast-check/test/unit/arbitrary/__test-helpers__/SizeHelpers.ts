@@ -1,5 +1,5 @@
 import { assert } from 'console';
-import fc from '../../../../lib/fast-check';
+import fc from 'fast-check';
 import {
   RelativeSize,
   Size,

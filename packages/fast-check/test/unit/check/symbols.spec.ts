@@ -1,5 +1,5 @@
 import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 describe('symbols', () => {
   it('should declare distinct cloneMethod for distinct libraries', () => {

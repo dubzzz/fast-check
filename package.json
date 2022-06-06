@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "codesandbox:build:prod": "yarn workspace fast-check build:prod",
+    "codesandbox:build": "yarn workspace fast-check build",
     "format": "prettier --write .",
     "format:check": "prettier --list-different .",
     "lint": "eslint . --fix",

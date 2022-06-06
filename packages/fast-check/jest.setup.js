@@ -1,5 +1,5 @@
 const process = require('process');
-const fc = require('./lib/fast-check');
+const fc = require('fast-check');
 
 // Default timeout of 120s
 jest.setTimeout(120000);

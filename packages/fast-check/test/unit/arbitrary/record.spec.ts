@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { record, RecordConstraints } from '../../../src/arbitrary/record';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
