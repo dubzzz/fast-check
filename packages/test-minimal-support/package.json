@@ -4,7 +4,7 @@
   "description": "Test making sure fast-check can be used with it's official minimal requirement of node",
   "version": "0.0.0",
   "dependencies": {
-    "fast-check": "*"
+    "fast-check": "workspace:*"
   },
   "license": "MIT"
 }

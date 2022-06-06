@@ -4,7 +4,7 @@
   "description": "Test making sure fast-check expose the right typings",
   "version": "0.0.0",
   "dependencies": {
-    "fast-check": "*"
+    "fast-check": "workspace:*"
   },
   "license": "MIT"
 }

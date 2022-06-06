@@ -794,7 +794,7 @@ __metadata:
     "@types/react": ^18.0.0
     "@types/supertest": ^2.0.12
     express: ^4.17.3
-    fast-check: "*"
+    fast-check: "workspace:*"
     jest: ^28.0.0
     jest-environment-jsdom: ^28.1.0
     lodash: ^4.17.21
@@ -818,7 +818,7 @@ __metadata:
   resolution: "@fast-check/test-bundle-esbuild-with-import@workspace:packages/test-bundle-esbuild-with-import"
   dependencies:
     esbuild: ^0.14.38
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -827,7 +827,7 @@ __metadata:
   resolution: "@fast-check/test-bundle-esbuild-with-require@workspace:packages/test-bundle-esbuild-with-require"
   dependencies:
     esbuild: ^0.14.38
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -835,7 +835,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-bundle-node-extension-cjs@workspace:packages/test-bundle-node-extension-cjs"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -843,7 +843,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-bundle-node-extension-mjs@workspace:packages/test-bundle-node-extension-mjs"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -851,7 +851,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-bundle-node-with-import@workspace:packages/test-bundle-node-with-import"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -859,7 +859,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-bundle-node-with-require@workspace:packages/test-bundle-node-with-require"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -869,7 +869,7 @@ __metadata:
   dependencies:
     "@rollup/plugin-commonjs": ^22.0.0
     "@rollup/plugin-node-resolve": ^13.2.1
-    fast-check: "*"
+    fast-check: "workspace:*"
     rollup: ^2.70.2
   languageName: unknown
   linkType: soft
@@ -880,7 +880,7 @@ __metadata:
   dependencies:
     "@rollup/plugin-commonjs": ^22.0.0
     "@rollup/plugin-node-resolve": ^13.2.1
-    fast-check: "*"
+    fast-check: "workspace:*"
     rollup: ^2.70.2
   languageName: unknown
   linkType: soft
@@ -889,7 +889,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-bundle-webpack-with-import@workspace:packages/test-bundle-webpack-with-import"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
     querystring-es3: ^0.2.1
     webpack: ^5.72.0
     webpack-cli: ^4.9.2
@@ -900,7 +900,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-bundle-webpack-with-require@workspace:packages/test-bundle-webpack-with-require"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
     querystring-es3: ^0.2.1
     webpack: ^5.72.0
     webpack-cli: ^4.9.2
@@ -911,7 +911,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-minimal-support@workspace:packages/test-minimal-support"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -919,7 +919,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/test-types@workspace:packages/test-types"
   dependencies:
-    fast-check: "*"
+    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -6844,7 +6844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-check@*, fast-check@workspace:packages/fast-check":
+"fast-check@workspace:*, fast-check@workspace:packages/fast-check":
   version: 0.0.0-use.local
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:

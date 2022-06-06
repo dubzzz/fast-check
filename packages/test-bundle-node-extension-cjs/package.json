@@ -10,7 +10,7 @@
     "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
   },
   "dependencies": {
-    "fast-check": "*"
+    "fast-check": "workspace:*"
   },
   "license": "MIT"
 }
