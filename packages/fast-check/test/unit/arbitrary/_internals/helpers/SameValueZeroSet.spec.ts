@@ -1,4 +1,4 @@
-import * as fc from '../../../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { SameValueZeroSet } from '../../../../../src/arbitrary/_internals/helpers/SameValueZeroSet';
 
 describe('SameValueZeroSet', () => {

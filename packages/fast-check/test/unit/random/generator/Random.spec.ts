@@ -1,5 +1,5 @@
 import * as prand from 'pure-rand';
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { Random } from '../../../../src/random/generator/Random';
 

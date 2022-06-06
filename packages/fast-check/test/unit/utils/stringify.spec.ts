@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 // Importing 'buffer' imports the real implementation from node
 // Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side

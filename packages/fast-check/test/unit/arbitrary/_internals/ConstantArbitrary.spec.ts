@@ -1,4 +1,4 @@
-import fc from '../../../../lib/fast-check';
+import fc from 'fast-check';
 import { ConstantArbitrary } from '../../../../src/arbitrary/_internals/ConstantArbitrary';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { cloneMethod } from '../../../../src/check/symbols';

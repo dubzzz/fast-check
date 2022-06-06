@@ -10,7 +10,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
 import { Stream } from '../../../../src/stream/Stream';
 import { PropertyFailure } from '../../../../src/check/property/IRawProperty';
-import fc from '../../../../lib/fast-check';
+import fc from 'fast-check';
 
 describe('AsyncProperty', () => {
   afterEach(() => resetConfigureGlobal());

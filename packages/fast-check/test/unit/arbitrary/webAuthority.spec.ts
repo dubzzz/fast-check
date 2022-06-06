@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { webAuthority, WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority';
 import { URL } from 'url';
 

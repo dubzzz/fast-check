@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { float64Array, Float64ArrayConstraints } from '../../../src/arbitrary/float64Array';
 
 import {

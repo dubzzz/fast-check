@@ -1,4 +1,4 @@
-import fc from '../../../../../lib/fast-check';
+import fc from 'fast-check';
 import { filterInvalidSubdomainLabel } from '../../../../../src/arbitrary/_internals/helpers/InvalidSubdomainLabelFiIter';
 
 describe('filterInvalidSubdomainLabel', () => {

@@ -1,4 +1,4 @@
-import * as fc from '../../../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { CustomEqualSet } from '../../../../../src/arbitrary/_internals/helpers/CustomEqualSet';
 
 describe('CustomEqualSet', () => {

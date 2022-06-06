@@ -1,4 +1,4 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { cloneIfNeeded, hasCloneMethod } from '../../../../src/check/symbols';

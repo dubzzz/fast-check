@@ -1,4 +1,4 @@
-const fc = require('../lib/fast-check');
+const fc = require('fast-check');
 const { runComplexFailure, runArraySuccess } = require('./tasks');
 
 const run = runArraySuccess;

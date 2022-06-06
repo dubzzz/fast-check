@@ -1,4 +1,4 @@
-import fc from '../../../../lib/fast-check';
+import fc from 'fast-check';
 import prand from 'pure-rand';
 
 import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary';

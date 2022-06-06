@@ -1,4 +1,4 @@
-import * as fc from '../../../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { typedIntArrayArbitraryArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
 
 import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '../../__test-helpers__/ArbitraryHelpers';

@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { lorem, LoremConstraints } from '../../../src/arbitrary/lorem';
 import {
   assertProduceValuesShrinkableWithoutContext,

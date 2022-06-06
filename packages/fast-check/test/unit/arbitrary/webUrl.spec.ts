@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { webUrl, WebUrlConstraints } from '../../../src/arbitrary/webUrl';
 import { URL } from 'url';
 

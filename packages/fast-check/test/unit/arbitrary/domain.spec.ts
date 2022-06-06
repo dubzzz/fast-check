@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { domain, DomainConstraints } from '../../../src/arbitrary/domain';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { URL } from 'url';

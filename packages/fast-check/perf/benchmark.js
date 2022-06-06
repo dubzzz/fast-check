@@ -1,6 +1,6 @@
 const Benchmark = require('benchmark');
 const fcOld = require('../lib-old/fast-check');
-const fcNew = require('../lib/fast-check');
+const fcNew = require('fast-check');
 
 const { runComplexFailure, runArraySuccess } = require('./tasks');
 

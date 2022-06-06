@@ -96,7 +96,7 @@ We expect a quite minimal amount of tests to be added as most of the logic depen
 - _Unit-test_ &amp; _Integration_ - in `test/unit/arbitrary`
 
 ```js
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { myArbitrary } from '../../../../src/arbitrary/MyArbitrary';
 import {
   assertProduceCorrectValues,

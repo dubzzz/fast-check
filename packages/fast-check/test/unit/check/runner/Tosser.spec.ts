@@ -1,4 +1,4 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { toss } from '../../../../src/check/runner/Tosser';
 import { Stream, stream } from '../../../../src/stream/Stream';

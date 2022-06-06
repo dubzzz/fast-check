@@ -1,4 +1,4 @@
-import * as fc from '../../../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { RunExecution } from '../../../../../src/check/runner/reporter/RunExecution';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';

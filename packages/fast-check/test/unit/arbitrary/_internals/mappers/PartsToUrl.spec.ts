@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import fc from '../../../../../lib/fast-check';
+import fc from 'fast-check';
 import { partsToUrlUnmapper } from '../../../../../src/arbitrary/_internals/mappers/PartsToUrl';
 
 describe('partsToUrlUnmapper', () => {

@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { date } from '../../../src/arbitrary/date';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import {

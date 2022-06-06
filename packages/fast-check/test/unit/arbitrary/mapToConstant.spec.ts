@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { mapToConstant } from '../../../src/arbitrary/mapToConstant';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
