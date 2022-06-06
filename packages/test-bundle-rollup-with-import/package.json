@@ -12,7 +12,7 @@
     "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
   },
   "dependencies": {
-    "fast-check": "*"
+    "fast-check": "workspace:*"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",

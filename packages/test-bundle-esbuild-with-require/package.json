@@ -12,7 +12,7 @@
     "test": "yarn start && diff expectedResult.txt out.txt"
   },
   "dependencies": {
-    "fast-check": "*"
+    "fast-check": "workspace:*"
   },
   "devDependencies": {
     "esbuild": "^0.14.38"

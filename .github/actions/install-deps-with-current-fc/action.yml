@@ -1,28 +1,20 @@
-name: 'Install dependencies but use current build for fast-check'
-description: 'Install dependencies but use current build for fast-check'
+name: "Install dependencies but use current build for fast-check"
+description: "Install dependencies but use current build for fast-check"
 inputs:
+  package:
+    description: "Name of the package"
+    required: true
   path:
-    description: 'Directory path'
+    description: "Directory path"
     required: true
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - run: |
-        PROJECT_ROOT_PATH="$(pwd)"
-        cd "${{inputs.path}}"
-        echo "ℹ️ Clean yarn cache entry for fast-check (if any)..."
-        yarn cache clean fast-check
         echo "ℹ️ Install dependencies..."
-        yarn --frozen-lockfile
-        echo "ℹ️ Clean yarn cache entry for fast-check..."
-        yarn cache clean fast-check
+        yarn workspace "${{inputs.package}}" install --immutable
         echo "ℹ️ Install current build for fast-check..."
-        yarn add "file:$PROJECT_ROOT_PATH/fast-check.tgz"
-        echo "ℹ️ Clean yarn cache entry for fast-check..."
-        yarn cache clean fast-check
-        echo "ℹ️ Revert local changes..."
-        git checkout -- package.json
-        git checkout -- yarn.lock
+        yarn workspace "${{inputs.package}}" add "fast-check@$(pwd)/fast-check.tgz"
       shell: bash
     - run: |
         echo "ℹ️ Copy script..."

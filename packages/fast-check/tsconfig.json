@@ -12,7 +12,8 @@
     "sourceMap": true,
     "strict": true,
     "stripInternal": true,
-    "outDir": "lib/"
+    "outDir": "lib/",
+    "skipLibCheck": true
   },
   "exclude": ["examples", "packages"]
 }

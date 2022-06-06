@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "@fast-check/monorepo",
+  "description": "Test making sure fast-check expose the right typings",
+  "version": "0.0.0",
+  "packageManager": "yarn@3.2.1",
+  "workspaces": [
+    ".github/actions/*",
+    "examples",
+    "packages/*"
+  ]
+}
