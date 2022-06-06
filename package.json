@@ -8,5 +8,13 @@
     ".github/actions/*",
     "examples",
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "codesandbox:build:prod": "yarn workspace fast-check build:prod",
+    "format": "prettier --write .",
+    "format:check": "prettier --list-different ."
+  },
+  "devDependencies": {
+    "prettier": "2.6.2"
+  }
 }
