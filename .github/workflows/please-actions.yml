@@ -7,7 +7,7 @@ on:
 
 jobs:
   please_deploy:
-    name: "Please deploy"
+    name: 'Please deploy'
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && github.event.comment.body == 'please deploy'
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: '16.x'
       - name: Install fast-check dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build package
@@ -50,7 +50,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
 
   please_merge:
-    name: "Please merge"
+    name: 'Please merge'
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && github.event.comment.body == 'please merge'
     steps:
@@ -97,7 +97,7 @@ jobs:
         run: git push
 
   please_debug:
-    name: "Please debug"
+    name: 'Please debug'
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && github.event.comment.body == 'please debug'
     steps:

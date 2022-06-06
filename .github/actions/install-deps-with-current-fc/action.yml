@@ -1,14 +1,14 @@
-name: "Install dependencies but use current build for fast-check"
-description: "Install dependencies but use current build for fast-check"
+name: 'Install dependencies but use current build for fast-check'
+description: 'Install dependencies but use current build for fast-check'
 inputs:
   package:
-    description: "Name of the package"
+    description: 'Name of the package'
     required: true
   path:
-    description: "Directory path"
+    description: 'Directory path'
     required: true
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - run: |
         echo "ℹ️ Install dependencies..."
