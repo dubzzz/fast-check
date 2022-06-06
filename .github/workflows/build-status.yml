@@ -28,9 +28,9 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Check format
-        run: cd packages/fast-check && yarn format:check
+        run: yarn workspace fast-check format:check
       - name: Check lint
-        run: cd packages/fast-check && yarn lint:check
+        run: yarn workspace fast-check lint:check
   typecheck:
     name: "Typecheck"
     runs-on: ubuntu-latest
@@ -44,9 +44,9 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
-        run: cd packages/fast-check && yarn build
+        run: yarn workspace fast-check build
       - name: Typecheck
-        run: cd packages/fast-check && yarn typecheck
+        run: yarn workspace fast-check typecheck
   test:
     name: "Test"
     runs-on: ubuntu-latest
@@ -68,14 +68,14 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
-        run: cd packages/fast-check && yarn build
+        run: yarn workspace fast-check build
       - name: Unit tests
         shell: bash -l {0}
         run: |
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          cd packages/fast-check && yarn test
+          yarn workspace fast-check test
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -105,14 +105,14 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
-        run: cd packages/fast-check && yarn build
+        run: yarn workspace fast-check build
       - name: End-to-end tests
         shell: bash -l {0}
         run: |
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          cd packages/fast-check && yarn e2e
+          yarn workspace fast-check e2e
   test_package_quality:
     name: "Test package quality"
     runs-on: ubuntu-latest
@@ -137,9 +137,9 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build minimal package
-        run: cd packages/fast-check && yarn build:publish-types
+        run: yarn workspace fast-check build:publish-types
       - name: Generate documentation
-        run: cd packages/fast-check && yarn docs-ci
+        run: yarn workspace fast-check docs-ci
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
@@ -160,11 +160,9 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Build production package
-        run: cd packages/fast-check && yarn build:prod-ci
+        run: yarn workspace fast-check build:prod-ci
       - name: Create bundle
-        run: |
-          cd packages/fast-check && yarn pack
-          mv package.tgz fast-check.tgz
+        run: yarn workspace fast-check pack --out %s.tgz
       - name: Upload production package
         uses: actions/upload-artifact@v3
         with:
@@ -194,7 +192,7 @@ jobs:
       - name: Install dependencies
         run: yarn workspace fast-check install --immutable
       - name: Check ES Version
-        run: cd packages/fast-check && yarn test:es
+        run: yarn workspace fast-check test:es
   test_examples:
     name: "Test examples/"
     needs: production_package
@@ -215,13 +213,9 @@ jobs:
           package: "@fast-check/examples"
           path: "examples"
       - name: Typecheck examples/
-        run: |
-          cd examples
-          yarn typecheck
+        run: yarn workspace @fast-check/examples typecheck
       - name: Test examples/
-        run: |
-          cd examples
-          yarn test
+        run: yarn workspace @fast-check/examples test
   test_types:
     name: "Test types"
     needs: production_package
