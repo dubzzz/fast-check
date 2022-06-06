@@ -2,7 +2,7 @@
   "compilerOptions": {
     "lib": ["es2020"],
     "noEmit": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "strict": true
   }
 }
