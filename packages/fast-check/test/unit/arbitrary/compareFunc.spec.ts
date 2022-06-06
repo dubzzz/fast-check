@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { compareFunc } from '../../../src/arbitrary/compareFunc';
 
 import { hasCloneMethod, cloneIfNeeded } from '../../../src/check/symbols';

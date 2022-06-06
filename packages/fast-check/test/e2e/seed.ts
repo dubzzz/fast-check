@@ -1,5 +1,5 @@
 import * as process from 'process';
-import * as fc from '../../lib/fast-check';
+import * as fc from 'fast-check';
 
 const globalConfig = fc.readConfigureGlobal() || {};
 const globalSeed = globalConfig.seed;

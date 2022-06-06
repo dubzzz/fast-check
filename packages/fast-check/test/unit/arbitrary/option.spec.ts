@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { option, OptionConstraints } from '../../../src/arbitrary/option';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';

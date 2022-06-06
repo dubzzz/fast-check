@@ -1,4 +1,4 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { arrayInt64 } from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';

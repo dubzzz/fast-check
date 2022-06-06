@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 
 import { unicodeJsonValue, JsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
 import {

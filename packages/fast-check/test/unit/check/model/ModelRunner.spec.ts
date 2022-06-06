@@ -1,4 +1,4 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 import { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand';
 import { Command } from '../../../../src/check/model/command/Command';

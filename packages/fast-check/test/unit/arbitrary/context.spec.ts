@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { context, ContextValue } from '../../../src/arbitrary/context';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

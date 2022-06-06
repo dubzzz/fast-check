@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { func } from '../../../src/arbitrary/func';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';

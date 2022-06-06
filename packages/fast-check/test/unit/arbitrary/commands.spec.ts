@@ -1,4 +1,4 @@
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { commands } from '../../../src/arbitrary/commands';
 
 import prand from 'pure-rand';

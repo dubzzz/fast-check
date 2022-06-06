@@ -1,5 +1,5 @@
 {
-  "buildCommand": "codesandbox:build:prod",
+  "buildCommand": "codesandbox:build",
   "sandboxes": ["vanilla", "/examples"],
   "packages": ["packages/fast-check"],
   "node": "14"

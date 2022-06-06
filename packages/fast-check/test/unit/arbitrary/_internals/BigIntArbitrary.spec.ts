@@ -1,4 +1,4 @@
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { BigIntArbitrary } from '../../../../src/arbitrary/_internals/BigIntArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';

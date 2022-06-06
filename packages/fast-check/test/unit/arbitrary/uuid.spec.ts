@@ -1,4 +1,4 @@
-import fc from '../../../lib/fast-check';
+import fc from 'fast-check';
 import { uuid } from '../../../src/arbitrary/uuid';
 import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 

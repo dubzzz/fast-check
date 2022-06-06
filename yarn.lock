@@ -6851,6 +6851,7 @@ __metadata:
     buffer: ^6.0.1
     cross-env: ^7.0.2
     es-check: ^6.2.1
+    fast-check: "workspace:*"
     jest: ^28.0.0
     jscodeshift: ^0.13.0
     mkdirp: ^1.0.4

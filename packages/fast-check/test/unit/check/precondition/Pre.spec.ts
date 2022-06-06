@@ -1,6 +1,6 @@
 import { pre } from '../../../../src/check/precondition/Pre';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
-import * as fc from '../../../../lib/fast-check';
+import * as fc from 'fast-check';
 
 describe('pre', () => {
   it('should not throw on thruthy condition', () => {

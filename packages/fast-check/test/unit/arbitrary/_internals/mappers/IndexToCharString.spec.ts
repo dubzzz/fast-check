@@ -1,4 +1,4 @@
-import * as fc from '../../../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { indexToCharStringUnmapper } from '../../../../../src/arbitrary/_internals/mappers/IndexToCharString';
 
 describe('indexToCharStringUnmapper', () => {

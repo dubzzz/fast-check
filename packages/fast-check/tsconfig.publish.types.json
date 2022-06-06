@@ -1,10 +1,12 @@
 {
-  "extends": "./tsconfig.publish.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "noEmit": false,
+    "outDir": "lib/types/",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "incremental": false,
     "removeComments": false,
-    "outDir": "lib/types"
-  }
+    "stripInternal": true
+  },
+  "include": ["src/**/*"]
 }

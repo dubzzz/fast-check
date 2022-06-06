@@ -3,7 +3,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { Stream } from '../../../../src/stream/Stream';
-import fc from '../../../../lib/fast-check';
+import fc from 'fast-check';
 
 describe('WithShrinkFromOtherArbitrary', () => {
   describe('generate', () => {

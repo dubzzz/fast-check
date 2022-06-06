@@ -1,4 +1,4 @@
-import fc from '../../../../../lib/fast-check';
+import fc from 'fast-check';
 import { shrinkInteger } from '../../../../../src/arbitrary/_internals/helpers/ShrinkInteger';
 
 describe('shrinkInteger', () => {
