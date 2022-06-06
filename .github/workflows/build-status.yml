@@ -184,7 +184,7 @@ jobs:
       - name: Create bundle
         run: |
           cd packages/fast-check && yarn pack
-          mv fast-check-*.tgz fast-check.tgz
+          mv package.tgz fast-check.tgz
       - name: Upload production package
         uses: actions/upload-artifact@v3
         with:
