@@ -1,19 +1,19 @@
-bundle/package/
-coverage/
-dist/
-docs/
-examples/output/
-lib/
-lib-*/
 node_modules/
-.nyc_output/
-.vscode/
+
+# Various generated files
+packages/*/coverage/
+packages/*/lib/
+packages/*/lib-*/
+packages/fast-check/docs/
+packages/test-bundle-*/out.txt
 *.tgz
 deopt.out
 v8.log
 v8.out
-packages/test-bundle-*/out.txt
+
+# IDE related files
 .idea
+.vscode
 
 # https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
 .pnp.*
