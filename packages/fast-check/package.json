@@ -30,7 +30,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest --config jest.unit.config.cjs --coverage --verbose",
     "test:watch": "jest --config jest.unit.config.cjs --watch",
-    "test:debug": "node --inspect node_modules/jest/bin/jest.js --config jest.unit.config.cjs --watch --runInBand",
+    "test:debug": "node --inspect ../../node_modules/jest/bin/jest.js --config jest.unit.config.cjs --watch --runInBand",
     "test:es:cjs": "es-check es2017 lib/**/*.js --not=esm -v",
     "test:es:esm": "es-check es2017 lib/esm/**/*.js --module -v",
     "test:es": "yarn test:es:cjs && yarn test:es:esm",
