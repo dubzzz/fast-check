@@ -926,6 +926,7 @@ __metadata:
   resolution: "@fast-check/test-types@workspace:packages/test-types"
   dependencies:
     fast-check: "workspace:*"
+    typescript: ^4.3.2
   languageName: unknown
   linkType: soft
 

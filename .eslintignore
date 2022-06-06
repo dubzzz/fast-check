@@ -1,5 +1,6 @@
 node_modules/
 examples/
+packages/*/dist/
 packages/*/lib/
 packages/*/lib-*/
 packages/test-bundle-*/
