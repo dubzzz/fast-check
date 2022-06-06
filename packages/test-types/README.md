@@ -6,4 +6,5 @@ How to run it?
 
 ```sh
 npx -p typescript tsc
+# Alternatively: yarn dlx -p typescript tsc
 ```

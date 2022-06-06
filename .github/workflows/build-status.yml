@@ -123,7 +123,7 @@ jobs:
         with:
           node-version: "16.x"
       - name: Check package score using skypack
-        run: cd packages/fast-check && npx @skypack/package-check
+        run: cd packages/fast-check && yarn dlx @skypack/package-check
   documentation:
     name: "Build documentation"
     runs-on: ubuntu-latest
@@ -250,22 +250,22 @@ jobs:
       - name: TypeScript version
         run: |
           cd packages/test-types
-          npx -p typescript@${{matrix.ts-version}} tsc --version
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc --version
       - name: Test packages/test-types/
         run: |
           cd packages/test-types
-          npx -p typescript@${{matrix.ts-version}} tsc
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc
       - name: Test packages/test-types/ with --moduleResolution nodenext
         if: matrix.ts-version == 'next'
         run: |
           cd packages/test-types
-          npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
       - name: Test packages/test-types/ with --exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
           cd packages/test-types
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
-          npx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
   test_node_8:
     name: "Test legacy Node"
     needs: production_package
