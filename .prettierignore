@@ -1,5 +1,6 @@
 .yarn/
 packages/*/coverage/
+packages/*/dist/
 packages/*/lib/
 packages/*/lib-*/
 packages/fast-check/docs/

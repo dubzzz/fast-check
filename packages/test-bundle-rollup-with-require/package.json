@@ -4,11 +4,11 @@
   "description": "Test making sure fast-check can be used with CJS in Rollup",
   "version": "0.0.0",
   "scripts": {
-    "build": "rollup --config rollup.config.js && rollup --config rollup.config.dry.js",
+    "generate": "rollup --config rollup.config.js && rollup --config rollup.config.dry.js",
     "out:dry": "node dist/dry.js",
     "out:start": "node dist/main.js > out.txt",
-    "dry": "yarn build && yarn out:dry",
-    "start": "yarn build && yarn out:start",
+    "dry": "yarn generate && yarn out:dry",
+    "start": "yarn generate && yarn out:start",
     "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
   },
   "dependencies": {

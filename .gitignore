@@ -2,6 +2,7 @@ node_modules/
 
 # Various generated files
 packages/*/coverage/
+packages/*/dist/
 packages/*/lib/
 packages/*/lib-*/
 packages/fast-check/docs/
