@@ -147,22 +147,22 @@ function extractReleaseKind(oldTagName, newTagName) {
   return releaseKind;
 }
 
-const nextVersionRegex = /fast-check@workspace:packages\/fast-check: Bumped to (\d+\.\d+\.\d+)/;
-
 /**
  * @param {{shortDescription:string}} configuration
  * @returns {Promise<{branchName:string, commitName:string, errors:string[]}>}
  */
 async function run({ shortDescription }) {
   // Get next version via yarn
-  const { stdout: yarnOut } = await execFile('yarn', ['version', 'apply', '--all', '--dry-run']);
+  const { stdout: yarnOut } = await execFile('yarn', ['version', 'apply', '--all', '--dry-run', '--json']);
   let nextVersion = '0.0.0';
   for (const line of yarnOut.split('\n')) {
-    const m = nextVersionRegex.exec(line);
-    if (m) {
-      nextVersion = m[1];
-      break;
-    }
+    try {
+      const details = JSON.parse(line);
+      if (details.ident === 'fast-check') {
+        nextVersion = details.newVersion;
+        break;
+      }
+    } catch (err) {}
   }
 
   // Extract metas for changelog
