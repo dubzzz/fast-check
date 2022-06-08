@@ -31,6 +31,20 @@ jobs:
         run: yarn format:check
       - name: Check lint
         run: yarn lint:check
+  package_version:
+    name: 'Package Version'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - name: Ensure versions have been properly bumped
+        run: yarn version check
   typecheck:
     name: 'Typecheck'
     runs-on: ubuntu-latest
@@ -407,6 +421,7 @@ jobs:
       - production_package
       - documentation
       - format_lint
+      - package_version
       - typecheck
       - test
       - test_e2e
