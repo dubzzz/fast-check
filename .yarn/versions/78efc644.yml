@@ -2,6 +2,7 @@ releases:
   fast-check: patch
 
 declined:
+  - "@fast-check/monorepo"
   - "@fast-check/examples"
   - "@fast-check/test-bundle-esbuild-with-import"
   - "@fast-check/test-bundle-esbuild-with-require"
