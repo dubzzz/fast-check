@@ -1,9 +1,7 @@
-bundle/
-coverage/
-docs/
-documentation/Arbitraries.md
-dist/
-lib/
-lib-*/
-*.generated.ts
-*.generated.spec.ts
+.yarn/
+packages/*/coverage/
+packages/*/dist/
+packages/*/lib/
+packages/*/lib-*/
+packages/fast-check/docs/
+packages/fast-check/documentation/Arbitraries.md

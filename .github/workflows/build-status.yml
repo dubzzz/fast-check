@@ -20,39 +20,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace @fast-check/monorepo install --immutable
       - name: Check format
         run: yarn format:check
       - name: Check lint
         run: yarn lint:check
+  package_version:
+    name: 'Package Version'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - name: Ensure versions have been properly bumped
+        run: yarn version check
   typecheck:
     name: 'Typecheck'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
-        run: yarn build
+        run: yarn workspace fast-check build
       - name: Typecheck
-        run: yarn typecheck
+        run: yarn workspace fast-check typecheck
   test:
     name: 'Test'
     runs-on: ubuntu-latest
@@ -61,11 +69,6 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Cache for node_modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Cache for Jest
         uses: actions/cache@v3
         with:
@@ -75,17 +78,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
-        run: yarn build
+        run: yarn workspace fast-check build
       - name: Unit tests
         shell: bash -l {0}
         run: |
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          yarn test
+          yarn workspace fast-check test
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -102,11 +106,6 @@ jobs:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
     steps:
       - uses: actions/checkout@v3
-      - name: Cache for node_modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-${{matrix.node-version}}
       - name: Cache for Jest
         uses: actions/cache@v3
         with:
@@ -116,17 +115,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build the library (dev version)
-        run: yarn build
+        run: yarn workspace fast-check build
       - name: End-to-end tests
         shell: bash -l {0}
         run: |
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          yarn e2e
+          yarn workspace fast-check e2e
   test_package_quality:
     name: 'Test package quality'
     runs-on: ubuntu-latest
@@ -137,31 +137,28 @@ jobs:
         with:
           node-version: '16.x'
       - name: Check package score using skypack
-        run: npx @skypack/package-check
+        run: cd packages/fast-check && yarn dlx @skypack/package-check
   documentation:
     name: 'Build documentation'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build minimal package
-        run: yarn build:publish-types
+        run: yarn workspace fast-check build:publish-types
       - name: Generate documentation
-        run: yarn docs-ci
+        run: yarn workspace fast-check docs-ci
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
           name: docs
-          path: docs/
+          path: packages/fast-check/docs/
           if-no-files-found: error
           retention-days: 1
   production_package:
@@ -169,27 +166,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}-v16.x
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build production package
-        run: yarn build:prod-ci
+        run: yarn workspace fast-check build-ci
       - name: Create bundle
-        run: |
-          yarn pack
-          mv fast-check-*.tgz fast-check.tgz
+        run: yarn workspace fast-check pack --out %s.tgz
       - name: Upload production package
         uses: actions/upload-artifact@v3
         with:
           name: bundle
-          path: fast-check.tgz
+          path: packages/fast-check/fast-check.tgz
           if-no-files-found: error
           retention-days: 1
   test_es_version:
@@ -205,21 +197,18 @@ jobs:
       - name: Extract pre-bundled lib
         run: |
           tar -xvf fast-check.tgz package/lib
-          mv package/lib lib
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{runner.os}}-modules-${{hashFiles('**/yarn.lock')}}
+          mv package/lib packages/fast-check/lib
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Check ES Version
-        run: yarn test:es
-  test_example:
-    name: 'Test example'
+        run: yarn workspace fast-check test:es
+  test_examples:
+    name: 'Test examples/'
     needs: production_package
     runs-on: ubuntu-latest
     steps:
@@ -235,15 +224,12 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'example'
-      - name: Typecheck example/
-        run: |
-          cd example
-          yarn typecheck
-      - name: Test example/
-        run: |
-          cd example
-          yarn test
+          package: '@fast-check/examples'
+          path: 'examples'
+      - name: Typecheck examples/
+        run: yarn workspace @fast-check/examples typecheck
+      - name: Test examples/
+        run: yarn workspace @fast-check/examples test
   test_types:
     name: 'Test types'
     needs: production_package
@@ -273,26 +259,27 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/type'
+          package: '@fast-check/test-types'
+          path: 'packages/test-types'
       - name: TypeScript version
         run: |
-          cd test/type
-          npx -p typescript@${{matrix.ts-version}} tsc --version
-      - name: Test test/type/
+          cd packages/test-types
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc --version
+      - name: Test packages/test-types/
         run: |
-          cd test/type
-          npx -p typescript@${{matrix.ts-version}} tsc
-      - name: Test test/type/ with --moduleResolution nodenext
+          cd packages/test-types
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc
+      - name: Test packages/test-types/ with --moduleResolution nodenext
         if: matrix.ts-version == 'next'
         run: |
-          cd test/type
-          npx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
-      - name: Test test/type/ with --exactOptionalPropertyTypes
+          cd packages/test-types
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
+      - name: Test packages/test-types/ with --exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
-          cd test/type
+          cd packages/test-types
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
-          npx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
   test_node_8:
     name: 'Test legacy Node'
     needs: production_package
@@ -310,14 +297,15 @@ jobs:
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/legacy/node-8'
+          package: '@fast-check/test-minimal-support'
+          path: 'packages/test-minimal-support'
       - name: Using Node v8.x
         uses: actions/setup-node@v3
         with:
           node-version: '8.x'
-      - name: Test test/legacy/node-8/
+      - name: Test packages/test-minimal-support/
         run: |
-          cd test/legacy/node-8
+          cd packages/test-minimal-support
           node --version
           node main.js
   test_cjs_esm:
@@ -357,48 +345,58 @@ jobs:
       - name: Install dependencies but use current build for fast-check (node-extension-cjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-extension-cjs'
+          package: '@fast-check/test-bundle-node-extension-cjs'
+          path: 'packages/test-bundle-node-extension-cjs'
       - name: Install dependencies but use current build for fast-check (node-extension-mjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-extension-mjs'
+          package: '@fast-check/test-bundle-node-extension-mjs'
+          path: 'packages/test-bundle-node-extension-mjs'
       - name: Install dependencies but use current build for fast-check (node-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-with-import'
+          package: '@fast-check/test-bundle-node-with-import'
+          path: 'packages/test-bundle-node-with-import'
       - name: Install dependencies but use current build for fast-check (node-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/node-with-require'
+          package: '@fast-check/test-bundle-node-with-require'
+          path: 'packages/test-bundle-node-with-require'
       - name: Install dependencies but use current build for fast-check (rollup-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/rollup-with-import'
+          package: '@fast-check/test-bundle-rollup-with-import'
+          path: 'packages/test-bundle-rollup-with-import'
       - name: Install dependencies but use current build for fast-check (rollup-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/rollup-with-require'
+          package: '@fast-check/test-bundle-rollup-with-require'
+          path: 'packages/test-bundle-rollup-with-require'
       - name: Install dependencies but use current build for fast-check (webpack-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/webpack-with-import'
+          package: '@fast-check/test-bundle-webpack-with-import'
+          path: 'packages/test-bundle-webpack-with-import'
       - name: Install dependencies but use current build for fast-check (webpack-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/webpack-with-require'
+          package: '@fast-check/test-bundle-webpack-with-require'
+          path: 'packages/test-bundle-webpack-with-require'
       - name: Install dependencies but use current build for fast-check (esbuild-with-import)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/esbuild-with-import'
+          package: '@fast-check/test-bundle-esbuild-with-import'
+          path: 'packages/test-bundle-esbuild-with-import'
       - name: Install dependencies but use current build for fast-check (esbuild-with-require)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
-          path: 'test/esm/esbuild-with-require'
+          package: '@fast-check/test-bundle-esbuild-with-require'
+          path: 'packages/test-bundle-esbuild-with-require'
       - name: Check compatibility
         run: |
-          cd test/esm
+          cd packages
           node --version
-          sh run.sh
+          sh run-test-bundle.sh
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
@@ -410,12 +408,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: docs
-          path: docs/
+          path: packages/fast-check/docs/
       - name: Publish to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages
-          folder: docs
+          folder: packages/fast-check/docs/
           clean: true
   publish_package:
     name: 'Publish package'
@@ -423,11 +421,12 @@ jobs:
       - production_package
       - documentation
       - format_lint
+      - package_version
       - typecheck
       - test
       - test_e2e
       - test_cjs_esm
-      - test_example
+      - test_examples
       - test_node_8
       - test_es_version
       - test_package_quality

@@ -1,8 +1,0 @@
-{
-  "scripts": {},
-  "dependencies": {
-    "fast-check": "*"
-  },
-  "license": "MIT",
-  "private": true
-}

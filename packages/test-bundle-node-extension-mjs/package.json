@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "@fast-check/test-bundle-node-extension-mjs",
+  "description": "Test making sure fast-check can be referenced from mjs files",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "dry": "node dry.mjs",
+    "start": "node main.mjs > out.txt",
+    "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
+  },
+  "dependencies": {
+    "fast-check": "workspace:*"
+  },
+  "license": "MIT"
+}

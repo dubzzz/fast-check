@@ -32,19 +32,17 @@ jobs:
         with:
           node-version: '16.x'
       - name: Install fast-check dependencies
-        run: yarn --frozen-lockfile
+        run: yarn workspace fast-check install --immutable
       - name: Build package
-        run: yarn build:prod-ci
+        run: yarn workspace fast-check build-ci
       - name: Generate documentation
-        run: yarn docs-ci
+        run: yarn workspace fast-check yarn docs-ci
       - name: Generate bundle
-        run: |
-          yarn pack
-          mv fast-check-*.tgz docs/fast-check.tgz
+        run: yarn workspace fast-check pack --out docs/%s.tgz
       - name: Install deploy-netlify dependencies
         run: |
           cd ./.github/actions/deploy-netlify
-          yarn --frozen-lockfile
+          yarn workspace @fast-check/deploy-netlify install --immutable
       - name: Deploy on Netlify
         uses: ./.github/actions/deploy-netlify
         env:

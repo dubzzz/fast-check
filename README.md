@@ -25,7 +25,7 @@ Property based testing framework for JavaScript/TypeScript
 
 ## Getting started
 
-Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/example?previewwindow=tests).
+Hands-on tutorial and definition of Property Based Testing: [🏁 see tutorial](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/HandsOnPropertyBased.md). Or directly try it online on our pre-configured [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/examples?previewwindow=tests).
 
 Property based testing frameworks check the truthfulness of properties. A property is a statement like: _for all (x, y, ...) such that precondition(x, y, ...) holds predicate(x, y, ...) is true_.
 
@@ -70,36 +70,36 @@ In case of failure, the test raises a red flag. Its output should help you to di
 
 Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-check-examples/blob/main/test-ava/example.spec.js), [jasmine](https://github.com/dubzzz/fast-check-examples/blob/main/test-jasmine/example.spec.js), [jest](https://github.com/dubzzz/fast-check-examples/blob/main/test-jest/example.spec.js), [mocha](https://github.com/dubzzz/fast-check-examples/blob/main/test/longest%20common%20substr/test.js) and [tape](https://github.com/dubzzz/fast-check-examples/blob/main/test-tape/example.spec.js).
 
-More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/main/example), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
+More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/main/examples), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
 Useful documentations:
 
-- [🏁 Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/main/documentation/HandsOnPropertyBased.md)
-- [🐣 Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md)
-- [🔧 Custom arbitraries](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md)
-- [🏃‍♂️ Property based runners](https://github.com/dubzzz/fast-check/blob/main/documentation/Runners.md)
-- [💥 Tips](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md)
+- [🏁 Introduction to Property Based & Hands On](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/HandsOnPropertyBased.md)
+- [🐣 Built-in arbitraries](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Arbitraries.md)
+- [🔧 Custom arbitraries](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/AdvancedArbitraries.md)
+- [🏃‍♂️ Property based runners](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Runners.md)
+- [💥 Tips](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md)
 - [🔌 API Reference](https://dubzzz.github.io/fast-check/)
 - [⭐ Awesome fast-check](https://github.com/dubzzz/awesome-fast-check)
-- [🤯 How fast-check works?](https://github.com/dubzzz/fast-check/blob/main/documentation/HowItWorks.md)
+- [🤯 How fast-check works?](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/HowItWorks.md)
 
 ## Why should I migrate to fast-check?
 
 fast-check has initially been designed in an attempt to cope with limitations I encountered while using other property based testing frameworks designed for JavaScript:
 
 - **Types:** strong and up-to-date types - _thanks to TypeScript_
-- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-values)\] - _some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker_
-- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#transform-arbitraries)\] - _able to bind the output of an arbitrary as input of another one while keeping the shrink working_
-- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - _filtering invalid entries can be done directly inside the check function if needed_
-- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md#combinors-of-arbitraries-t)\] - _surprisingly some frameworks don't_
-- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/AdvancedArbitraries.md#biased-arbitraries)\] - _by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually_
-- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#opt-for-verbose-failures)\] - _easier troubleshooting with verbose mode enabled_
-- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#replay-after-failure)\] - _no need to replay the whole sequence, you get directly the counterexample_
-- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#add-custom-examples-next-to-generated-ones)\] - _no need to duplicate the code to play the property on custom examples_
-- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#log-within-a-predicate)\] - _simplify your troubleshoot with fc.context and its logging feature_
-- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - _use the power of property based testing to test UI, APIs or state machines_
-- **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#detect-race-conditions)\] - _shuffle the way your promises and async calls resolve using the power of property based testing to detect races_
-- **Unique:** simplify user definable corner cases \[[more](https://github.com/dubzzz/fast-check/blob/main/documentation/Tips.md#simplify-user-definable-corner-cases)\] - _simplify bug resolution by asking fast-check if it can find an even simpler corner case_
+- **Extendable:** easy `map` method to derive existing arbitraries while keeping shrink \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/AdvancedArbitraries.md#transform-values)\] - _some frameworks ask the user to provide both a->b and b->a mappings in order to keep a shrinker_
+- **Extendable:** kind of flatMap-operation called `chain` \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/AdvancedArbitraries.md#transform-arbitraries)\] - _able to bind the output of an arbitrary as input of another one while keeping the shrink working_
+- **Extendable:** precondition checks with `fc.pre(...)` \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#filter-invalid-combinations-using-pre-conditions)\] - _filtering invalid entries can be done directly inside the check function if needed_
+- **Smart:** ability to shrink on `fc.oneof` \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Arbitraries.md#combinors-of-arbitraries-t)\] - _surprisingly some frameworks don't_
+- **Smart:** biased by default \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/AdvancedArbitraries.md#biased-arbitraries)\] - _by default it generates both small and large values, making it easier to dig into counterexamples without having to tweak a size parameter manually_
+- **Debug:** verbose mode \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#opt-for-verbose-failures)\] - _easier troubleshooting with verbose mode enabled_
+- **Debug:** replay directly on the minimal counterexample \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#replay-after-failure)\] - _no need to replay the whole sequence, you get directly the counterexample_
+- **Debug:** custom examples in addition of generated ones \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#add-custom-examples-next-to-generated-ones)\] - _no need to duplicate the code to play the property on custom examples_
+- **Debug:** logger per predicate run \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#log-within-a-predicate)\] - _simplify your troubleshoot with fc.context and its logging feature_
+- **Unique:** model based approach \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#model-based-testing-or-ui-test)\]\[[article](https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5)\] - _use the power of property based testing to test UI, APIs or state machines_
+- **Unique:** detect race conditions in your code \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#detect-race-conditions)\] - _shuffle the way your promises and async calls resolve using the power of property based testing to detect races_
+- **Unique:** simplify user definable corner cases \[[more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#simplify-user-definable-corner-cases)\] - _simplify bug resolution by asking fast-check if it can find an even simpler corner case_
 
 For more details, refer to the documentation in the links above.
 
@@ -153,7 +153,7 @@ m.stringify({ bar: ['a', null, 'b'] }, { arrayFormat: 'bracket' }); //=> "bar[]=
 m.parse('bar[]=a&bar&bar[]=b', { arrayFormat: 'bracket' }); //=> {bar: [null, 'b']}
 ```
 
-**[MORE: Issues detected thanks to fast-check](https://github.com/dubzzz/fast-check/blob/main/documentation/IssuesDiscovered.md)**
+**[MORE: Issues detected thanks to fast-check](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/IssuesDiscovered.md)**
 
 ## Credits
 

@@ -1,0 +1,91 @@
+{
+  "name": "fast-check",
+  "version": "3.0.0",
+  "description": "Property based testing framework for JavaScript (like QuickCheck)",
+  "type": "commonjs",
+  "main": "lib/fast-check.js",
+  "exports": {
+    ".": {
+      "require": "./lib/fast-check.js",
+      "types": "./lib/types/fast-check.d.ts",
+      "default": "./lib/esm/fast-check.js"
+    }
+  },
+  "module": "lib/esm/fast-check.js",
+  "types": "lib/types/fast-check.d.ts",
+  "files": [
+    "lib",
+    "runkit.cjs"
+  ],
+  "sideEffects": false,
+  "runkitExampleFilename": "runkit.cjs",
+  "scripts": {
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.cjs",
+    "build-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --config jest.unit.config.cjs --coverage --verbose",
+    "test:watch": "jest --config jest.unit.config.cjs --watch",
+    "test:debug": "node --inspect ../../node_modules/jest/bin/jest.js --config jest.unit.config.cjs --watch --runInBand",
+    "test:es:cjs": "es-check es2017 lib/**/*.js --not=esm -v",
+    "test:es:esm": "es-check es2017 lib/esm/**/*.js --module -v",
+    "test:es": "yarn test:es:cjs && yarn test:es:esm",
+    "e2e": "jest --config jest.e2e.config.cjs --coverage --verbose",
+    "e2e:watch": "jest --config jest.e2e.config.cjs --watch",
+    "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
+    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.cjs",
+    "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
+    "docs:serve": "yarn dlx serve docs/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check#readme",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "dependencies": {
+    "pure-rand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.9.10",
+    "@types/jest": "^28.0.0",
+    "@types/node": "^17.0.0",
+    "buffer": "^6.0.1",
+    "cross-env": "^7.0.2",
+    "es-check": "^6.2.1",
+    "fast-check": "workspace:*",
+    "jest": "^28.0.0",
+    "jscodeshift": "^0.13.0",
+    "mkdirp": "^1.0.4",
+    "replace-in-file": "^6.0.0",
+    "source-map-support": "^0.5.19",
+    "ts-jest": "^28.0.0",
+    "typedoc": "^0.22.3",
+    "typescript": "^4.3.2"
+  },
+  "keywords": [
+    "property-based testing",
+    "end-to-end testing",
+    "unit testing",
+    "testing",
+    "quickcheck",
+    "jscheck",
+    "jsverify"
+  ],
+  "tsd": {
+    "directory": "test/type"
+  },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/fast-check"
+  }
+}
