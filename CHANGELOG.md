@@ -1,3 +1,36 @@
+# 0.0.0
+
+_Just trying_
+[[Code](https://github.com/dubzzz/fast-check/tree/v0.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.0.0...v0.0.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#2986](https://github.com/dubzzz/fast-check/pull/2986)) CI: Switch to Yarn 3 and simple monorepo 
+- ([PR#2987](https://github.com/dubzzz/fast-check/pull/2987)) CI: Simplify test-bundle script following merge of Yarn 3
+- ([PR#2988](https://github.com/dubzzz/fast-check/pull/2988)) CI: Switch to `yarn workspace *` instead of `cd packages/*`
+- ([PR#2990](https://github.com/dubzzz/fast-check/pull/2990)) CI: Replace `npx` by `yarn dlx`
+- ([PR#2991](https://github.com/dubzzz/fast-check/pull/2991)) CI: Setup prettier at the root of the project
+- ([PR#2992](https://github.com/dubzzz/fast-check/pull/2992)) CI: Drop unneeded benchmarks
+- ([PR#2993](https://github.com/dubzzz/fast-check/pull/2993)) CI: Fix script not using the right path
+- ([PR#2994](https://github.com/dubzzz/fast-check/pull/2994)) CI: Fix gh-pages publication follwoing move to monorepo
+- ([PR#2995](https://github.com/dubzzz/fast-check/pull/2995)) CI: Clean-up `.gitignore`
+- ([PR#2996](https://github.com/dubzzz/fast-check/pull/2996)) CI: Move eslint at top level
+- ([PR#2989](https://github.com/dubzzz/fast-check/pull/2989)) CI: Make `fast-check` self reference itself as a dev dependency
+- ([PR#2997](https://github.com/dubzzz/fast-check/pull/2997)) CI: Define top-level script to simplify build and test
+- ([PR#2999](https://github.com/dubzzz/fast-check/pull/2999)) CI: Setup for `yarn version check`
+- ([PR#3001](https://github.com/dubzzz/fast-check/pull/3001)) CI: Make use of `yarn version` for generate changelog
+- ([PR#3000](https://github.com/dubzzz/fast-check/pull/3000)) Doc: Default to readme from `packages/fast-check`
+- ([PR#2982](https://github.com/dubzzz/fast-check/pull/2982)) Move: Move `example/` to `examples/`
+- ([PR#2983](https://github.com/dubzzz/fast-check/pull/2983)) Move: Move part of `test/` into `packages/test-bundle-*`
+- ([PR#2984](https://github.com/dubzzz/fast-check/pull/2984)) Move: Move part of source code into `packages/fast-check`
+- ([PR#2977](https://github.com/dubzzz/fast-check/pull/2977)) Refactor: Simplify logic to read constraints for `commands`
+
+---
+
 # 3.0.0
 
 _Easier and more expressive thanks to the full support of size and a new and extensible API for custom arbitraries_
