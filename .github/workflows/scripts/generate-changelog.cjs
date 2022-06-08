@@ -120,17 +120,60 @@ async function extractAndParseDiff(fromIdentifier) {
 }
 
 /**
- * @param {{nextVersion:string, shortDescription:string}} configuration
+ * Extract and parse the logs of git to get lines for the changelog
+ * @param {string} tagName
+ * @returns {{major:string,minor:string,patch:string}}
+ */
+function extractMajorMinorPatch(tagName) {
+  const [major, minor, patch] = tagName.split('v')[1].split('.');
+  return { major, minor, patch };
+}
+
+/**
+ * Extract the kind of release
+ * @param {string} oldTagName
+ * @param {string} newTagName
+ * @returns {'major'|'minor'|'patch'}
+ */
+function extractReleaseKind(oldTagName, newTagName) {
+  const oldTagVersion = extractMajorMinorPatch(oldTagName);
+  const newTagVersion = extractMajorMinorPatch(newTagName);
+  const releaseKind =
+    newTagVersion.major !== oldTagVersion.major
+      ? 'major'
+      : newTagVersion.minor !== oldTagVersion.minor
+      ? 'minor'
+      : 'patch';
+  return releaseKind;
+}
+
+const nextVersionRegex = /fast-check@workspace:packages\/fast-check: Bumped to (\d+\.\d+\.\d+)/;
+
+/**
+ * @param {{shortDescription:string}} configuration
  * @returns {Promise<{branchName:string, commitName:string, errors:string[]}>}
  */
-async function run({ nextVersion, shortDescription }) {
+async function run({ shortDescription }) {
+  // Get next version via yarn
+  const { stdout: yarnOut } = await execFile('yarn', ['version', 'apply', '--all', '--dry-run']);
+  let nextVersion = '0.0.0';
+  for (const line of yarnOut.split('\n')) {
+    const m = nextVersionRegex.exec(line);
+    if (m) {
+      nextVersion = m[1];
+      break;
+    }
+  }
+
   // Extract metas for changelog
   const lastTag = await extractLastTag();
+  const nextTag = `v${nextVersion}`;
+  const releaseKind = extractReleaseKind(lastTag, nextTag);
   const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(lastTag);
 
   // Build changelog message
-  const codeUrl = `https://github.com/dubzzz/fast-check/tree/v${nextVersion}`;
-  const diffUrl = `https://github.com/dubzzz/fast-check/compare/${lastTag}...v${nextVersion}`;
+  const codeUrl = `https://github.com/dubzzz/fast-check/tree/${nextTag}`;
+  const diffUrl = `https://github.com/dubzzz/fast-check/compare/${lastTag}...${nextTag}`;
   const breakingBlock = breakingSection
     .reverse()
     .map((line) => `- ${line}`)
@@ -163,12 +206,12 @@ async function run({ nextVersion, shortDescription }) {
   // Update changelog
   const changelogFilename = './CHANGELOG.md';
   const previousContent = await readFile(changelogFilename);
-  await writeFile(changelogFilename, `${body}\n\n${nextVersion.endsWith('.0') ? `---\n\n` : ''}${previousContent}`);
+  await writeFile(changelogFilename, `${body}\n\n${releaseKind !== 'patch' ? `---\n\n` : ''}${previousContent}`);
   await execFile('git', ['add', changelogFilename]);
 
   // Update package.json
-  await execFile('npm', ['version', '--no-git-tag-version', nextVersion]);
-  await execFile('git', ['add', 'package.json']);
+  await execFile('yarn', ['version', 'apply', '--all']);
+  await execFile('git', ['add', 'packages/fast-check/package.json']);
 
   // Create another branch and commit on it
   const branchName = `changelog-${nextVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}`;

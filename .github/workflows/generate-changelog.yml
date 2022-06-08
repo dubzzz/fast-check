@@ -3,10 +3,6 @@ name: Generate Changelog
 on:
   workflow_dispatch:
     inputs:
-      nextVersion:
-        description: 'Next version (eg.: 2.20.0)'
-        required: true
-        type: string
       shortDescription:
         description: 'Short description'
         required: true
@@ -28,10 +24,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const nextVersion = process.env.NEXT_VERSION;
             const shortDescription = process.env.SHORT_DESCRIPTION;
             const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');
-            const {branchName, commitName, content, errors} = await run({nextVersion, shortDescription});
+            const {branchName, commitName, content, errors} = await run({shortDescription});
             const owner = context.payload.repository.owner.login;
             const repo = context.payload.repository.name;
             const title = commitName;
@@ -41,5 +36,4 @@ jobs:
             const body = `Resulting CHANGELOG at: https://github.com/dubzzz/fast-check/blob/${branchName}/CHANGELOG.md\n\n${bodyErrors}`
             await github.rest.pulls.create({owner, repo, title, head, base, body});
         env:
-          NEXT_VERSION: ${{github.event.inputs.nextVersion}}
           SHORT_DESCRIPTION: ${{github.event.inputs.shortDescription}}
