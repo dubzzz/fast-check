@@ -41,7 +41,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git"
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/fast-check"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
