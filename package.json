@@ -10,6 +10,7 @@
     "packages/*"
   ],
   "scripts": {
+    "contributor:add": "all-contributors add",
     "build:all": "yarn workspaces foreach -ptvi run build",
     "test:all": "yarn workspaces foreach -pvi run test && yarn workspaces foreach -pvi run e2e",
     "typecheck:all": "yarn workspaces foreach -pvi run typecheck",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "all-contributors-cli": "^6.20.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.1.0",
     "prettier": "2.6.2"

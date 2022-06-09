@@ -1,0 +1,14 @@
+{
+  "projectName": "fast-check",
+  "projectOwner": "Nicolas DUBIEN <github@dubien.org>",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "packages/fast-check/README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "gitmoji",
+  "contributors": [],
+  "contributorsPerLine": 7
+}
