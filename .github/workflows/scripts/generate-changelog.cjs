@@ -2,6 +2,7 @@
 const {
   promises: { readFile, writeFile },
 } = require('fs');
+const path = require('path');
 const util = require('util');
 const execFile = util.promisify(require('child_process').execFile);
 
@@ -12,15 +13,6 @@ const execFile = util.promisify(require('child_process').execFile);
  */
 function buildPrLine(pr, title) {
   return `([PR#${pr}](https://github.com/dubzzz/fast-check/pull/${pr})) ${title}`;
-}
-
-/**
- * Extract most recent tag in current branch
- * @returns {Promise<string>}
- */
-async function extractLastTag() {
-  const { stdout: lastTagOutput } = await execFile('git', ['describe', '--tags', '--abbrev=0']);
-  return lastTagOutput.trim();
 }
 
 /**
@@ -152,28 +144,33 @@ function extractReleaseKind(oldTagName, newTagName) {
  * @returns {Promise<{branchName:string, commitName:string, errors:string[]}>}
  */
 async function run({ shortDescription }) {
+  const packageName = 'fast-check';
+
   // Get next version via yarn
   const { stdout: yarnOut } = await execFile('yarn', ['version', 'apply', '--all', '--dry-run', '--json']);
-  let nextVersion = '0.0.0';
-  for (const line of yarnOut.split('\n')) {
-    try {
-      const details = JSON.parse(line);
-      if (details.ident === 'fast-check') {
-        nextVersion = details.newVersion;
-        break;
-      }
-    } catch (err) {}
+  const allBumps = yarnOut
+    .split('\n')
+    .filter((line) => line.trim().length !== 0)
+    .map((line) => JSON.parse(line));
+  const fastCheckBump = allBumps.find((bump) => bump.ident === packageName);
+  if (fastCheckBump === undefined) {
+    throw new Error(
+      `Unable to find ${packageName} in the list of bumped versions, received:\n${yarnOut
+        .split('\n')
+        .map((line) => `>  ${line}`)}`
+    );
   }
+  const { oldVersion, newVersion, cwd: packageLocation } = fastCheckBump;
 
   // Extract metas for changelog
-  const lastTag = await extractLastTag();
-  const nextTag = `v${nextVersion}`;
-  const releaseKind = extractReleaseKind(lastTag, nextTag);
-  const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(lastTag);
+  const oldTag = `v${oldVersion}`;
+  const newTag = `v${newVersion}`;
+  const releaseKind = extractReleaseKind(oldTag, newTag);
+  const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(oldTag);
 
   // Build changelog message
-  const codeUrl = `https://github.com/dubzzz/fast-check/tree/${nextTag}`;
-  const diffUrl = `https://github.com/dubzzz/fast-check/compare/${lastTag}...${nextTag}`;
+  const codeUrl = `https://github.com/dubzzz/fast-check/tree/${newTag}`;
+  const diffUrl = `https://github.com/dubzzz/fast-check/compare/${oldTag}...${newTag}`;
   const breakingBlock = breakingSection
     .reverse()
     .map((line) => `- ${line}`)
@@ -188,7 +185,7 @@ async function run({ shortDescription }) {
     .map(({ type, title, pr }) => `- ${buildPrLine(pr, `${type}: ${title}`)}`)
     .join('\n');
   const body =
-    `# ${nextVersion}\n\n` +
+    `# ${newVersion}\n\n` +
     `_${shortDescription}_\n` +
     `[[Code](${codeUrl})][[Diff](${diffUrl})]\n\n` +
     (breakingBlock.length !== 0 ? '## Breaking changes\n\n' + `${breakingBlock}\n\n` : '') +
@@ -204,18 +201,18 @@ async function run({ shortDescription }) {
   }
 
   // Update changelog
-  const changelogFilename = './CHANGELOG.md';
-  const previousContent = await readFile(changelogFilename);
-  await writeFile(changelogFilename, `${body}\n\n${releaseKind !== 'patch' ? `---\n\n` : ''}${previousContent}`);
-  await execFile('git', ['add', changelogFilename]);
+  const changelogPath = path.join(packageLocation, 'CHANGELOG.md');
+  const previousContent = await readFile(changelogPath);
+  await writeFile(changelogPath, `${body}\n\n${releaseKind !== 'patch' ? `---\n\n` : ''}${previousContent}`);
+  await execFile('git', ['add', changelogPath]);
 
   // Update package.json
   await execFile('yarn', ['version', 'apply', '--all']);
-  await execFile('git', ['add', 'packages/fast-check/package.json']);
+  await execFile('git', ['add', path.join(packageLocation, 'package.json')]);
 
   // Create another branch and commit on it
-  const branchName = `changelog-${nextVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}`;
-  const commitName = `🔖 Update CHANGELOG.md for ${nextVersion}`;
+  const branchName = `changelog-${newVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}`;
+  const commitName = `🔖 Update CHANGELOG.md for ${newVersion}`;
   await execFile('git', ['checkout', '-b', branchName]);
   await execFile('git', ['commit', '-m', commitName]);
   await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
