@@ -103,6 +103,14 @@ fast-check has initially been designed in an attempt to cope with limitations I 
 
 For more details, refer to the documentation in the links above.
 
+### Trusted
+
+fast-check has been trusted for years by big projects like: [jest](https://github.com/facebook/jest), [jasmine](https://github.com/jasmine/jasmine), [fp-ts](https://github.com/gcanti/fp-ts), [io-ts](https://github.com/gcanti/io-ts), [ramda](https://github.com/ramda/ramda), [js-yaml](https://github.com/nodeca/js-yaml), [query-string](https://github.com/sindresorhus/query-string)...
+
+### Powerful
+
+It also proved useful in finding bugs among major open source projects such as [jest](https://github.com/facebook/jest), [query-string](https://github.com/sindresorhus/query-string)... and [many others](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/IssuesDiscovered.md).
+
 ## Compatibility
 
 Here are the minimal requirements to use fast-check properly without any polyfills:
@@ -125,35 +133,6 @@ Here are the minimal requirements to use fast-check properly without any polyfil
 ### ReScript bindings
 
 Bindings to use fast-check in [ReScript](https://rescript-lang.org) are available in package [rescript-fast-check](https://www.npmjs.com/rescript-fast-check). They are maintained by [@TheSpyder](https://github.com/TheSpyder) as an external project.
-
-## Issues found by fast-check in famous packages
-
-fast-check has been able to find some unexpected behaviour among famous npm packages. Here are some of the errors detected using fast-check:
-
-**[jest](https://github.com/facebook/jest/)**
-
-**Issue detected:** `toStrictEqual` fails to distinguish 0 from 5e-324 \[[more](https://github.com/facebook/jest/issues/7941)\]
-
-**Code example:** `expect(0).toStrictEqual(5e-324)` succeeds
-
-**[js-yaml](https://github.com/nodeca/js-yaml/)**
-
-**Issue detected:** enabling `!!int: binary` style when dumping negative integers produces invalid content \[[more](https://github.com/nodeca/js-yaml/pull/398)\]
-
-**Code example:** `yaml.dump({toto: -10}, {styles:{'!!int':'binary'}})` produces `toto: 0b-1010` not `toto: -0b1010`
-
-**[query-string](https://github.com/sindresorhus/query-string)**
-
-**Issue detected:** enabling the `bracket` setting when exporting arrays containing null values produces an invalid output for the parser \[[more](https://github.com/sindresorhus/query-string/pull/138)\]
-
-**Code example:**
-
-```js
-m.stringify({ bar: ['a', null, 'b'] }, { arrayFormat: 'bracket' }); //=> "bar[]=a&bar&bar[]=b"
-m.parse('bar[]=a&bar&bar[]=b', { arrayFormat: 'bracket' }); //=> {bar: [null, 'b']}
-```
-
-**[MORE: Issues detected thanks to fast-check](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/IssuesDiscovered.md)**
 
 ## Contributors ✨
 
