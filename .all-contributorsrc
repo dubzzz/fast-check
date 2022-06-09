@@ -7,7 +7,7 @@
     "packages/fast-check/README.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "commitConvention": "gitmoji",
   "contributors": [],
   "contributorsPerLine": 7
