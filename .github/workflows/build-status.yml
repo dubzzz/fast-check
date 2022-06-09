@@ -31,6 +31,20 @@ jobs:
         run: yarn format:check
       - name: Check lint
         run: yarn lint:check
+  dedupe_required:
+    name: 'Dedupe required'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - name: Ensure no dedupe required
+        run: yarn dedupe --check
   package_version:
     name: 'Package Version'
     runs-on: ubuntu-latest
@@ -421,6 +435,7 @@ jobs:
       - production_package
       - documentation
       - format_lint
+      - dedupe_required
       - package_version
       - typecheck
       - test
