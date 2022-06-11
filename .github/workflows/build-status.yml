@@ -15,8 +15,29 @@ on:
       - 'fix-v*'
 
 jobs:
+  warmup_yarn_cache:
+    name: 'Warm up Yarn cache'
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        id: yarn-cache
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - name: Update Yarn cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        env:
+          # Using PNP linker for better performance
+          YARN_NODE_LINKER: pnp
+        run: yarn install --immutable
   format_lint:
     name: 'Format & Lint'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -33,6 +54,7 @@ jobs:
         run: yarn lint:check
   dedupe_required:
     name: 'Dedupe required'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -47,6 +69,7 @@ jobs:
         run: yarn dedupe --check
   package_version:
     name: 'Package Version'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -61,6 +84,7 @@ jobs:
         run: yarn version check
   typecheck:
     name: 'Typecheck'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -77,6 +101,7 @@ jobs:
         run: yarn workspace fast-check typecheck
   test:
     name: 'Test'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -113,6 +138,7 @@ jobs:
           verbose: false # default: false
   test_e2e:
     name: 'Test E2E'
+    needs: warmup_yarn_cache
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
@@ -154,6 +180,7 @@ jobs:
         run: cd packages/fast-check && yarn dlx @skypack/package-check
   documentation:
     name: 'Build documentation'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -177,6 +204,7 @@ jobs:
           retention-days: 1
   production_package:
     name: 'Build production package'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -200,7 +228,9 @@ jobs:
           retention-days: 1
   test_es_version:
     name: 'Test ES Version'
-    needs: production_package
+    needs:
+      - warmup_yarn_cache
+      - production_package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -223,7 +253,9 @@ jobs:
         run: yarn workspace fast-check test:es
   test_examples:
     name: 'Test examples/'
-    needs: production_package
+    needs:
+      - warmup_yarn_cache
+      - production_package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -231,6 +263,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Download production package
         uses: actions/download-artifact@v3
         with:
@@ -246,7 +279,9 @@ jobs:
         run: yarn workspace @fast-check/examples test
   test_types:
     name: 'Test types'
-    needs: production_package
+    needs:
+      - warmup_yarn_cache
+      - production_package
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -266,6 +301,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Download production package
         uses: actions/download-artifact@v3
         with:
@@ -296,7 +332,9 @@ jobs:
           yarn dlx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
   test_node_8:
     name: 'Test legacy Node'
-    needs: production_package
+    needs:
+      - warmup_yarn_cache
+      - production_package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -304,6 +342,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'yarn'
       - name: Download production package
         uses: actions/download-artifact@v3
         with:
@@ -322,9 +361,17 @@ jobs:
           cd packages/test-minimal-support
           node --version
           node main.js
+      # Re-install node 16, for clean-up related logic as it does not work with node 8
+      # The caching logic of actions/setup-node calls yarn to know the version
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
   test_cjs_esm:
     name: 'Test CJS & ESM'
-    needs: production_package
+    needs:
+      - warmup_yarn_cache
+      - production_package
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -349,6 +396,11 @@ jobs:
           - '13'
     steps:
       - uses: actions/checkout@v3
+      - name: Using Node v16.x to fetch Yarn cache
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
       - name: Using Node v${{matrix.node-version}}
         shell: bash -l {0}
         run: nvm install ${{matrix.node-version}}
