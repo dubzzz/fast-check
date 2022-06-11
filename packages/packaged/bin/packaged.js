@@ -1,3 +1,5 @@
+/* global process, console, require */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { removeNonPublishedFiles } = require('../lib/packaged.js');
 
 const args = process.argv.slice(2);
