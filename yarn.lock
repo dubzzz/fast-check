@@ -814,7 +814,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.0.0
     "@typescript-eslint/parser": ^5.0.0
     all-contributors-cli: ^6.20.0
-    eslint: ^8.0.0
+    eslint: ^8.17.0
     eslint-config-prettier: ^8.1.0
     prettier: 2.6.2
   languageName: unknown
@@ -6565,7 +6565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.0.0":
+"eslint@npm:^8.17.0":
   version: 8.17.0
   resolution: "eslint@npm:8.17.0"
   dependencies:
