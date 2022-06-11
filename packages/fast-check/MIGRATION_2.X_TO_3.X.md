@@ -113,7 +113,7 @@ Support for versions of TypeScript below 4.1 has been removed by [#2935](https:/
 
 We now try to limit automatically the depth of the recursive structures generated — [#2949](https://github.com/dubzzz/fast-check/pull/2949).
 
-It has one major impact if you use `oneof` in conjonction with `letrec`: the first arbitrary you specify in `oneof` must be a leaf. In other words:
+It has one major impact if you use `oneof` in conjunction with `letrec`: the first arbitrary you specify in `oneof` must be a leaf. In other words:
 
 ```ts
 const { tree } = fc.letrec((tie) => ({
