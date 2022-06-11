@@ -240,6 +240,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bundle
+          path: packages/
       - name: Speaking... to check bundle downloaded
         run: ls -Rv
       - name: Extract pre-bundled lib
