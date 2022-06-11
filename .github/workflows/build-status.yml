@@ -247,7 +247,7 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace install --immutable
+        run: yarn install --immutable
       - name: Fill from pre-bundled packages
         run: yarn workspaces foreach -pvi --no-private run unpack
       - name: Check ES Version
