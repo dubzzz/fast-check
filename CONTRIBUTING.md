@@ -46,10 +46,21 @@ Once done with your development you can check it follow the recommended code sty
 
 You should also check for linting by running `yarn lint:check` and fix lint problems with `yarn lint`.
 
-#### Travis CI integration
+#### GitHub Actions integration
 
-All pull requests will trigger Travis CI builds.
+All pull requests will trigger GitHub Actions chekcs.
 It ensures that the pull request follow the code style of the project and do not break existing tests.
+
+#### Notify how impactful your change will be
+
+Any change in the code may have impact in the next release. In order to ease our deployment process we try to anticipate as much as possible the impacts of each single pull request from a semver point of view:
+
+- decline: really no impact code side from a bundle point of view
+- patch: no visible impact, generally mostly fixing bugs or typos in the code
+- minor: new features
+- major: breaking changes
+
+In order to ease this work, before opening the PR (or after if you forgot to do it), you should run the script `yarn version:bump` to underline which packages have been impacted. Please note that our internals and private packages must always be toggled to 'decline' as we don't plan to bump their versions.
 
 #### Update your PR
 
