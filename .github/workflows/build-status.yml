@@ -241,17 +241,15 @@ jobs:
         with:
           name: bundle
           path: packages/
-      - name: Extract pre-bundled lib
-        run: |
-          yarn workspaces foreach -pvi --no-private run unpack
-          mv package/lib packages/fast-check/lib
-      - name: Using Node v16.x
+      - name: Using Node v16.x 
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
+        run: yarn workspace install --immutable
+      - name: Fill from pre-bundled packages
+        run: yarn workspaces foreach -pvi --no-private run unpack
       - name: Check ES Version
         run: yarn workspace fast-check test:es
   test_examples:
