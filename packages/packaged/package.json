@@ -7,7 +7,8 @@
   "types": "lib/packaged.d.ts",
   "bin": "./bin/packaged.js",
   "files": [
-    "bin"
+    "bin",
+    "lib"
   ],
   "sideEffects": false,
   "scripts": {

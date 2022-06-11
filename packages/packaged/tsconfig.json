@@ -6,7 +6,7 @@
     "module": "commonjs",
     "declaration": true,
     "importHelpers": false,
-    "incremental": true,
+    "incremental": false,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "preserveConstEnums": true,
