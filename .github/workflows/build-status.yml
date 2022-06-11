@@ -241,11 +241,9 @@ jobs:
         with:
           name: bundle
           path: packages/
-      - name: Speaking... to check bundle downloaded
-        run: ls -Rv
       - name: Extract pre-bundled lib
         run: |
-          tar -xvf fast-check.tgz package/lib
+          yarn workspaces foreach -pvi --no-private unpack
           mv package/lib packages/fast-check/lib
       - name: Using Node v16.x
         uses: actions/setup-node@v3
