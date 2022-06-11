@@ -240,6 +240,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bundle
+      - name: Speaking... to check bundle downloaded
+        run: ls -Rv
       - name: Extract pre-bundled lib
         run: |
           tar -xvf fast-check.tgz package/lib
