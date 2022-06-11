@@ -361,6 +361,12 @@ jobs:
           cd packages/test-minimal-support
           node --version
           node main.js
+      # Re-install node 16, for clean-up related logic as it does not work with node 8
+      # The caching logic of actions/setup-node calls yarn to know the version
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
   test_cjs_esm:
     name: 'Test CJS & ESM'
     needs:
