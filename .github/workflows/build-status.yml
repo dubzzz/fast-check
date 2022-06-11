@@ -202,8 +202,8 @@ jobs:
           path: packages/fast-check/docs/
           if-no-files-found: error
           retention-days: 1
-  production_package:
-    name: 'Build production package'
+  production_packages:
+    name: 'Build production packages'
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
@@ -214,23 +214,25 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
-      - name: Build production package
-        run: yarn workspace fast-check build-ci
+        run: yarn install --immutable
+      - name: Build production packages
+        run: yarn workspaces foreach -ptvi run build-ci
       - name: Create bundle
-        run: yarn workspace fast-check pack --out %s.tgz
+        # package.tgz is the default name, we could also have used %s.tgz
+        # but it tends to make other scripts more difficult to write than having a simple and shared name
+        run: yarn workspaces foreach -pvi --no-private pack --out package.tgz
       - name: Upload production package
         uses: actions/upload-artifact@v3
         with:
           name: bundle
-          path: packages/fast-check/fast-check.tgz
+          path: packages/**/fast-check.tgz
           if-no-files-found: error
           retention-days: 1
   test_es_version:
     name: 'Test ES Version'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -255,7 +257,7 @@ jobs:
     name: 'Test examples/'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -281,7 +283,7 @@ jobs:
     name: 'Test types'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -334,7 +336,7 @@ jobs:
     name: 'Test legacy Node'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -371,7 +373,7 @@ jobs:
     name: 'Test CJS & ESM'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -484,7 +486,7 @@ jobs:
   publish_package:
     name: 'Publish package'
     needs:
-      - production_package
+      - production_packages
       - documentation
       - format_lint
       - dedupe_required

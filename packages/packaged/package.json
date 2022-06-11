@@ -12,7 +12,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --incremental",
+    "build-ci": "tsc",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
