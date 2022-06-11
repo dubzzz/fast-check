@@ -225,7 +225,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bundle
-          path: packages/**/fast-check.tgz
+          path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
   test_es_version:
