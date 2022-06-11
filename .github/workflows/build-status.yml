@@ -243,7 +243,7 @@ jobs:
           path: packages/
       - name: Extract pre-bundled lib
         run: |
-          yarn workspaces foreach -pvi --no-private unpack
+          yarn workspaces foreach -pvi --no-private run unpack
           mv package/lib packages/fast-check/lib
       - name: Using Node v16.x
         uses: actions/setup-node@v3
