@@ -11,10 +11,6 @@ runs:
   using: 'composite'
   steps:
     - run: |
-        echo "ℹ️ Install current build for fast-check..."
-        yarn workspace "${{inputs.package}}" add "fast-check@$(pwd)/fast-check.tgz"
-      shell: bash
-    - run: |
         echo "ℹ️ Copy script..."
         cp .github/actions/install-deps-with-current-fc/check-hash.cjs "${{inputs.path}}/check-hash-$GITHUB_SHA.cjs"
         echo "ℹ️ Check version of fast-check..."
