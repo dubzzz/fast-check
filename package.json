@@ -24,6 +24,7 @@
     "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
+    "@fast-check/packaged": "*",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "all-contributors-cli": "^6.20.0",
