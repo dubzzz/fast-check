@@ -222,7 +222,7 @@ jobs:
       - name: Upload production packages
         uses: actions/upload-artifact@v3
         with:
-          name: bundle
+          name: bundles
           path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
@@ -234,11 +234,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Download production package
-        uses: actions/download-artifact@v3
-        with:
-          name: bundle
-          path: packages/
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
@@ -246,7 +241,12 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Fill from pre-bundled packages
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
         run: yarn unpack:all
       - name: Check ES Version
         run: yarn workspace fast-check test:es
@@ -263,10 +263,15 @@ jobs:
         with:
           node-version: '16.x'
           cache: 'yarn'
-      - name: Download production package
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -295,16 +300,20 @@ jobs:
           - 'rc'
           - 'next'
     steps:
-      - uses: actions/checkout@v3
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
-      - name: Download production package
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -342,10 +351,15 @@ jobs:
         with:
           node-version: '16.x'
           cache: 'yarn'
-      - name: Download production package
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -395,18 +409,23 @@ jobs:
           - '13'
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x to fetch Yarn cache
+      - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Using Node v${{matrix.node-version}}
         shell: bash -l {0}
         run: nvm install ${{matrix.node-version}}
-      - name: Download production package
-        uses: actions/download-artifact@v3
-        with:
-          name: bundle
       - name: Install dependencies but use current build for fast-check (node-extension-cjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -505,10 +524,11 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Download production package
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
       - name: Publish package
         run: npm publish fast-check.tgz
         env:
