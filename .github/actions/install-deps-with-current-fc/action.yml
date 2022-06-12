@@ -11,10 +11,8 @@ runs:
   using: 'composite'
   steps:
     - run: |
-        echo "ℹ️ Install dependencies..."
-        yarn workspace "${{inputs.package}}" install --immutable
         echo "ℹ️ Install current build for fast-check..."
-        yarn workspace "${{inputs.package}}" add "fast-check@$(pwd)/fast-check.tgz"
+        yarn workspace "${{inputs.package}}" add "fast-check@$(pwd)/packages/fast-check/package.tgz"
       shell: bash
     - run: |
         echo "ℹ️ Copy script..."

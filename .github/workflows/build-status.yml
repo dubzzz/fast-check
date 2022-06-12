@@ -202,8 +202,8 @@ jobs:
           path: packages/fast-check/docs/
           if-no-files-found: error
           retention-days: 1
-  production_package:
-    name: 'Build production package'
+  production_packages:
+    name: 'Build production packages'
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
@@ -214,48 +214,47 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
-      - name: Build production package
-        run: yarn workspace fast-check build-ci
-      - name: Create bundle
-        run: yarn workspace fast-check pack --out %s.tgz
-      - name: Upload production package
+        run: yarn install --immutable
+      - name: Build production packages
+        run: yarn build-ci:all
+      - name: Create bundles
+        run: yarn pack:all
+      - name: Upload production packages
         uses: actions/upload-artifact@v3
         with:
-          name: bundle
-          path: packages/fast-check/fast-check.tgz
+          name: bundles
+          path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
   test_es_version:
     name: 'Test ES Version'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Download production package
-        uses: actions/download-artifact@v3
-        with:
-          name: bundle
-      - name: Extract pre-bundled lib
-        run: |
-          tar -xvf fast-check.tgz package/lib
-          mv package/lib packages/fast-check/lib
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Check ES Version
         run: yarn workspace fast-check test:es
   test_examples:
     name: 'Test examples/'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -264,10 +263,15 @@ jobs:
         with:
           node-version: '16.x'
           cache: 'yarn'
-      - name: Download production package
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -281,7 +285,7 @@ jobs:
     name: 'Test types'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -302,10 +306,15 @@ jobs:
         with:
           node-version: '16.x'
           cache: 'yarn'
-      - name: Download production package
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -334,7 +343,7 @@ jobs:
     name: 'Test legacy Node'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -343,10 +352,15 @@ jobs:
         with:
           node-version: '16.x'
           cache: 'yarn'
-      - name: Download production package
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Install dependencies but use current build for fast-check
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -371,7 +385,7 @@ jobs:
     name: 'Test CJS & ESM'
     needs:
       - warmup_yarn_cache
-      - production_package
+      - production_packages
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -396,18 +410,23 @@ jobs:
           - '13'
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x to fetch Yarn cache
+      - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Using Node v${{matrix.node-version}}
         shell: bash -l {0}
         run: nvm install ${{matrix.node-version}}
-      - name: Download production package
-        uses: actions/download-artifact@v3
-        with:
-          name: bundle
       - name: Install dependencies but use current build for fast-check (node-extension-cjs)
         uses: ./.github/actions/install-deps-with-current-fc
         with:
@@ -484,7 +503,7 @@ jobs:
   publish_package:
     name: 'Publish package'
     needs:
-      - production_package
+      - production_packages
       - documentation
       - format_lint
       - dedupe_required
@@ -506,10 +525,11 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Download production package
+      - name: Download production packages
         uses: actions/download-artifact@v3
         with:
-          name: bundle
+          name: bundles
+          path: packages/
       - name: Publish package
         run: npm publish fast-check.tgz
         env:
