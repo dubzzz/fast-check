@@ -300,8 +300,8 @@ jobs:
           - 'rc'
           - 'next'
     steps:
-       - uses: actions/checkout@v3
-       - name: Using Node v16.x
+      - uses: actions/checkout@v3
+      - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
