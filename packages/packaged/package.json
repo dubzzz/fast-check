@@ -14,8 +14,7 @@
   "scripts": {
     "build": "tsc --incremental",
     "build-ci": "tsc",
-    "typecheck": "tsc --noEmit",
-    "unpack": "tar -xvf package.tgz package/"
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",

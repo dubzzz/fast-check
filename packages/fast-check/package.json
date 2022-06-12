@@ -37,8 +37,7 @@
     "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.cjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
-    "docs:serve": "yarn dlx serve docs/",
-    "unpack": "tar -xvf package.tgz package/"
+    "docs:serve": "yarn dlx serve docs/"
   },
   "repository": {
     "type": "git",

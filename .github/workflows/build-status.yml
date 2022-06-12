@@ -216,12 +216,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
       - name: Build production packages
-        run: yarn workspaces foreach -ptvi run build-ci
-      - name: Create bundle
-        # package.tgz is the default name, we could also have used %s.tgz
-        # but it tends to make other scripts more difficult to write than having a simple and shared name
-        run: yarn workspaces foreach -pvi --no-private pack --out package.tgz
-      - name: Upload production package
+        run: yarn build-ci:all
+      - name: Create bundles
+        run: yarn pack:all
+      - name: Upload production packages
         uses: actions/upload-artifact@v3
         with:
           name: bundle
@@ -241,7 +239,7 @@ jobs:
         with:
           name: bundle
           path: packages/
-      - name: Using Node v16.x 
+      - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
@@ -249,7 +247,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
       - name: Fill from pre-bundled packages
-        run: yarn workspaces foreach -pvi --no-private run unpack
+        run: yarn unpack:all
       - name: Check ES Version
         run: yarn workspace fast-check test:es
   test_examples:
