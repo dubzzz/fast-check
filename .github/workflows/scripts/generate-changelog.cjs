@@ -208,10 +208,7 @@ async function run({ shortDescription }) {
 
   // Update package.json
   await execFile('yarn', ['version', 'apply', '--all']);
-  for (const { cwd: bumpedPackageLocation } of allBumps) {
-    await execFile('git', ['add', path.join(bumpedPackageLocation, 'package.json')]);
-  }
-  await execFile('git', ['add', '.yarn/versions/*']);
+  await execFile('git', ['add', path.join(packageLocation, 'package.json')]);
 
   // Create another branch and commit on it
   const branchName = `changelog-${newVersion.replace(/\./g, '-')}-${Math.random().toString(16).substring(2)}`;
