@@ -122,6 +122,11 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Alter internals to behave as if published
