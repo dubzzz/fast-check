@@ -188,6 +188,7 @@ jobs:
       - name: End-to-end tests
         shell: bash -l {0}
         run: |
+          export EXPECT_COMMIT_HASH="true"
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
