@@ -272,7 +272,7 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
-      - name: Dependencies behave as published
+      - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/examples' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Typecheck examples/
         run: yarn workspace @fast-check/examples typecheck
@@ -312,7 +312,7 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
-      - name: Dependencies behave as published
+      - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: TypeScript version
         run: |
@@ -355,7 +355,7 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
-      - name: Dependencies behave as published
+      - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-minimal-support' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Using Node v8.x
         uses: actions/setup-node@v3
@@ -415,11 +415,11 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '@fast-check/test-bundle-*' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Using Node v${{matrix.node-version}}
         shell: bash -l {0}
         run: nvm install ${{matrix.node-version}}
-      - name: Dependencies behave as published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/test-bundle-*' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Check compatibility
         run: |
           cd packages
