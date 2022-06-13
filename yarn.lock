@@ -811,6 +811,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/monorepo@workspace:."
   dependencies:
+    "@fast-check/packaged": "*"
     "@typescript-eslint/eslint-plugin": ^5.0.0
     "@typescript-eslint/parser": ^5.0.0
     all-contributors-cli: ^6.20.0
@@ -820,7 +821,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fast-check/packaged@workspace:packages/packaged":
+"@fast-check/packaged@*, @fast-check/packaged@workspace:packages/packaged":
   version: 0.0.0-use.local
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:

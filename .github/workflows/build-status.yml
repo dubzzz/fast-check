@@ -272,11 +272,8 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
-      - name: Install dependencies but use current build for fast-check
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/examples'
-          path: 'examples'
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '@fast-check/examples' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Typecheck examples/
         run: yarn workspace @fast-check/examples typecheck
       - name: Test examples/
@@ -315,11 +312,8 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
-      - name: Install dependencies but use current build for fast-check
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-types'
-          path: 'packages/test-types'
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: TypeScript version
         run: |
           cd packages/test-types
@@ -361,11 +355,8 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
-      - name: Install dependencies but use current build for fast-check
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-minimal-support'
-          path: 'packages/test-minimal-support'
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '@fast-check/test-minimal-support' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Using Node v8.x
         uses: actions/setup-node@v3
         with:
@@ -424,59 +415,11 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '@fast-check/test-bundle-*' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Using Node v${{matrix.node-version}}
         shell: bash -l {0}
         run: nvm install ${{matrix.node-version}}
-      - name: Install dependencies but use current build for fast-check (node-extension-cjs)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-node-extension-cjs'
-          path: 'packages/test-bundle-node-extension-cjs'
-      - name: Install dependencies but use current build for fast-check (node-extension-mjs)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-node-extension-mjs'
-          path: 'packages/test-bundle-node-extension-mjs'
-      - name: Install dependencies but use current build for fast-check (node-with-import)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-node-with-import'
-          path: 'packages/test-bundle-node-with-import'
-      - name: Install dependencies but use current build for fast-check (node-with-require)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-node-with-require'
-          path: 'packages/test-bundle-node-with-require'
-      - name: Install dependencies but use current build for fast-check (rollup-with-import)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-rollup-with-import'
-          path: 'packages/test-bundle-rollup-with-import'
-      - name: Install dependencies but use current build for fast-check (rollup-with-require)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-rollup-with-require'
-          path: 'packages/test-bundle-rollup-with-require'
-      - name: Install dependencies but use current build for fast-check (webpack-with-import)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-webpack-with-import'
-          path: 'packages/test-bundle-webpack-with-import'
-      - name: Install dependencies but use current build for fast-check (webpack-with-require)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-webpack-with-require'
-          path: 'packages/test-bundle-webpack-with-require'
-      - name: Install dependencies but use current build for fast-check (esbuild-with-import)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-esbuild-with-import'
-          path: 'packages/test-bundle-esbuild-with-import'
-      - name: Install dependencies but use current build for fast-check (esbuild-with-require)
-        uses: ./.github/actions/install-deps-with-current-fc
-        with:
-          package: '@fast-check/test-bundle-esbuild-with-require'
-          path: 'packages/test-bundle-esbuild-with-require'
       - name: Check compatibility
         run: |
           cd packages
