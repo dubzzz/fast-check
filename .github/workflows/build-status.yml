@@ -84,7 +84,9 @@ jobs:
         run: yarn version check
   typecheck:
     name: 'Typecheck'
-    needs: warmup_yarn_cache
+    needs:
+      - warmup_yarn_cache
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -94,11 +96,16 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
-      - name: Build the library (dev version)
-        run: yarn workspace fast-check build
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Typecheck
-        run: yarn workspace fast-check typecheck
+        run: yarn workspaces foreach -pvi run typecheck
   test:
     name: 'Test'
     needs:
