@@ -15,12 +15,10 @@ on:
       - 'fix-v*'
 
 jobs:
+  # Root jobs
   warmup_yarn_cache:
     name: 'Warm up Yarn cache'
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Using Node v16.x
@@ -35,6 +33,65 @@ jobs:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
         run: yarn install --immutable
+  warmup_yarn_cache_others:
+    name: 'Warm up Yarn cache (others)'
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: ['macos-latest', 'windows-latest']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        id: yarn-cache
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - name: Update Yarn cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        env:
+          # Using PNP linker for better performance
+          YARN_NODE_LINKER: pnp
+        run: yarn install --immutable
+  no_dedupe_required:
+    name: 'No dedupe required'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Ensure no dedupe required
+        run: yarn dedupe --check
+  all_version_bump_declared:
+    name: 'All version bump declared'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Ensure versions have been properly bumped
+        run: yarn version check
+  package_quality:
+    name: 'Package quality'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Check package score using skypack
+        run: cd packages/fast-check && yarn dlx @skypack/package-check
+
+  # Jobs requesting warmup_yarn_cache
   format_lint:
     name: 'Format & Lint'
     needs: warmup_yarn_cache
@@ -52,36 +109,32 @@ jobs:
         run: yarn format:check
       - name: Check lint
         run: yarn lint:check
-  dedupe_required:
-    name: 'Dedupe required'
+  production_packages:
+    name: 'Build production packages'
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Using Node v16.x
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'yarn'
-      - name: Ensure no dedupe required
-        run: yarn dedupe --check
-  package_version:
-    name: 'Package Version'
-    needs: warmup_yarn_cache
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build production packages
+        run: yarn build-ci:all
+      - name: Create bundles
+        run: yarn pack:all
+      - name: Upload production packages
+        uses: actions/upload-artifact@v3
         with:
-          fetch-depth: 0
-      - name: Using Node v16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          cache: 'yarn'
-      - name: Ensure versions have been properly bumped
-        run: yarn version check
+          name: bundles
+          path: packages/**/package.tgz
+          if-no-files-found: error
+          retention-days: 1
+
+  # Jobs requesting warmup_yarn_cache AND production_packages
   typecheck:
     name: 'Typecheck'
     needs:
@@ -156,6 +209,7 @@ jobs:
     name: 'Test E2E'
     needs:
       - warmup_yarn_cache
+      - warmup_yarn_cache_others
       - production_packages
     runs-on: ${{matrix.os}}
     strategy:
@@ -193,17 +247,6 @@ jobs:
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           yarn workspace fast-check e2e
-  test_package_quality:
-    name: 'Test package quality'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Using Node v16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      - name: Check package score using skypack
-        run: cd packages/fast-check && yarn dlx @skypack/package-check
   documentation:
     name: 'Build documentation'
     needs:
@@ -233,30 +276,6 @@ jobs:
         with:
           name: docs
           path: packages/fast-check/docs/
-          if-no-files-found: error
-          retention-days: 1
-  production_packages:
-    name: 'Build production packages'
-    needs: warmup_yarn_cache
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Using Node v16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Build production packages
-        run: yarn build-ci:all
-      - name: Create bundles
-        run: yarn pack:all
-      - name: Upload production packages
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundles
-          path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
   test_es_version:
@@ -458,6 +477,8 @@ jobs:
           cd packages
           node --version
           sh run-test-bundle.sh
+
+  # Publication jobs
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
@@ -482,8 +503,9 @@ jobs:
       - production_packages
       - documentation
       - format_lint
-      - dedupe_required
-      - package_version
+      - no_dedupe_required
+      - all_version_bump_declared
+      - package_quality
       - typecheck
       - test
       - test_e2e
@@ -491,7 +513,6 @@ jobs:
       - test_examples
       - test_node_8
       - test_es_version
-      - test_package_quality
       - test_types
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
