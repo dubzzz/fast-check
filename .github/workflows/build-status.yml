@@ -18,10 +18,7 @@ jobs:
   # Root jobs
   warmup_yarn_cache:
     name: 'Warm up Yarn cache'
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: ['ubuntu-latest']
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Using Node v16.x
