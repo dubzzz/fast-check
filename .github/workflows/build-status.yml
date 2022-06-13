@@ -84,7 +84,9 @@ jobs:
         run: yarn version check
   typecheck:
     name: 'Typecheck'
-    needs: warmup_yarn_cache
+    needs:
+      - warmup_yarn_cache
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -94,14 +96,21 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
-      - name: Build the library (dev version)
-        run: yarn workspace fast-check build
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Typecheck
-        run: yarn workspace fast-check typecheck
+        run: yarn workspaces foreach -pvi run typecheck
   test:
     name: 'Test'
-    needs: warmup_yarn_cache
+    needs:
+      - warmup_yarn_cache
+      - production_packages
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -119,9 +128,16 @@ jobs:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
-      - name: Build the library (dev version)
-        run: yarn workspace fast-check build
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from 'fast-check' --no-private --exclude 'fast-check' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Unit tests
         shell: bash -l {0}
         run: |
@@ -138,7 +154,9 @@ jobs:
           verbose: false # default: false
   test_e2e:
     name: 'Test E2E'
-    needs: warmup_yarn_cache
+    needs:
+      - warmup_yarn_cache
+      - production_packages
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
@@ -157,9 +175,16 @@ jobs:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
-      - name: Build the library (dev version)
-        run: yarn workspace fast-check build
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from 'fast-check' --no-private --exclude 'fast-check' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: End-to-end tests
         shell: bash -l {0}
         run: |
@@ -181,7 +206,9 @@ jobs:
         run: cd packages/fast-check && yarn dlx @skypack/package-check
   documentation:
     name: 'Build documentation'
-    needs: warmup_yarn_cache
+    needs:
+      - warmup_yarn_cache
+      - production_packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -191,9 +218,14 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn workspace fast-check install --immutable
-      - name: Build minimal package
-        run: yarn workspace fast-check build:publish-types
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
       - name: Generate documentation
         run: yarn workspace fast-check docs-ci
       - name: Upload documentation
