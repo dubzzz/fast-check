@@ -54,7 +54,6 @@ jobs:
           YARN_NODE_LINKER: pnp
         run: yarn install --immutable
   sanity_checks:
-    name: 'Sanity checks'
     uses: ./.github/workflows/sanity-checks.yml
 
   # Jobs requesting warmup_yarn_cache
