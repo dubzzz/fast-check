@@ -12,8 +12,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc --incremental",
-    "build-ci": "tsc",
+    "build": "tsc -p tsconfig.publish.json --incremental",
+    "build-ci": "tsc -p tsconfig.publish.json",
     "test": "jest --verbose",
     "typecheck": "tsc --noEmit"
   },

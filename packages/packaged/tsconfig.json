@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "noEmit": false,
+    "noEmit": true,
     "outDir": "lib/",
     "target": "es2017",
     "module": "commonjs",
@@ -13,6 +13,5 @@
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true
-  },
-  "include": ["src/**/*"]
+  }
 }
