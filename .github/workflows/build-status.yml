@@ -54,7 +54,10 @@ jobs:
           YARN_NODE_LINKER: pnp
         run: yarn install --immutable
   sanity_checks:
-    uses: ./.github/workflows/sanity-checks.yml
+    name: 'Sanity checks'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/sanity-checks.yml
 
   # Jobs requesting warmup_yarn_cache
   format_lint:
