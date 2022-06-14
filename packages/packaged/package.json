@@ -14,6 +14,7 @@
   "scripts": {
     "build": "tsc --incremental",
     "build-ci": "tsc",
+    "test": "jest --verbose",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -35,8 +36,11 @@
     "tar": "^6.1.11"
   },
   "devDependencies": {
+    "@types/jest": "^28.0.0",
     "@types/pacote": "^11.1.4",
     "@types/tar": "^6.1.1",
+    "jest": "^28.0.0",
+    "ts-jest": "^28.0.0",
     "typescript": "^4.3.2"
   },
   "keywords": [],
