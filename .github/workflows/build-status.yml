@@ -256,13 +256,14 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
+        node-version: [16.x]
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: ${{matrix.node-version}}
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
