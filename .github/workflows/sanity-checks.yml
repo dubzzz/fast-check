@@ -1,0 +1,44 @@
+# Set of sanity checks we want to ensure on the package
+name: Sanity checks
+
+on:
+  workflow_dispatch:
+
+jobs:
+  no_dedupe_required:
+    name: 'No dedupe required'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Ensure no dedupe required
+        run: yarn dedupe --check
+  all_version_bump_declared:
+    name: 'All version bump declared'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Ensure versions have been properly bumped
+        run: yarn version check
+  package_quality:
+    name: 'Package quality'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Check package score using skypack
+        run: cd packages/fast-check && yarn dlx @skypack/package-check
