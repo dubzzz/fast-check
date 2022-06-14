@@ -1,0 +1,5 @@
+releases:
+  "@fast-check/packaged": patch
+
+declined:
+  - "@fast-check/monorepo"

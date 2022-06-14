@@ -825,10 +825,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
+    "@types/jest": ^28.0.0
     "@types/pacote": ^11.1.4
     "@types/tar": ^6.1.1
+    jest: ^28.0.0
     pacote: ^13.6.0
     tar: ^6.1.11
+    ts-jest: ^28.0.0
     typescript: ^4.3.2
   bin:
     packaged: ./bin/packaged.js

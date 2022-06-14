@@ -31,7 +31,9 @@ export async function removeNonPublishedFiles(
   const kept: string[] = [];
   const removed: string[] = [];
   const publishedFiles = await computePublishedFiles(packageRoot);
-  const normalizedPublishedFiles = new Set(publishedFiles.map((filename) => path.normalize(filename)));
+  const normalizedPublishedFiles = new Set(
+    publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename)))
+  );
 
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
