@@ -69,11 +69,8 @@ jobs:
   all_version_bump_declared:
     name: 'All version bump declared'
     runs-on: ubuntu-latest
+    if: github.event_name != "pull_request" || !startsWith(github.head_ref, 'renovate/') || github.event.pull_request.user.login != "renovate[bot]"
     steps:
-      - name: Debug
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
