@@ -97,7 +97,9 @@ Fetching from a REST API using `fetch("http://domain/")` or accessing data from 
 **Signature:**
 
 ```ts
-scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) => (...args: TArgs) => Promise<T>
+scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) =>
+  (...args: TArgs) =>
+    Promise<T>;
 ```
 
 **Usages:**
