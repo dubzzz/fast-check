@@ -22,9 +22,9 @@ jobs:
       matrix:
         package-name: ['fast-check', '@fast-check/packaged']
         node-version: [12.x, 14.x, 16.x]
-        include:
-          - os: 'windows-latest'
-            package-name: fast-check
+        exclude:
+          - package-name: fast-check
+            node-version: 12.x
     steps:
       - name: Install dependencies
         run: echo "Hello"
