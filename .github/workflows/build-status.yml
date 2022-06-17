@@ -228,7 +228,7 @@ jobs:
           yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
       - name: Codecov
         uses: codecov/codecov-action@v3
-        if: ${{matrix.package-name}} == 'fast-check' && ${{matrix.script-name}} == 'test'
+        if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
           flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
