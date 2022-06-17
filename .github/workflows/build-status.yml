@@ -23,10 +23,6 @@ jobs:
         package-name: ['fast-check', '@fast-check/packaged']
         node-version: [12.x, 14.x, 16.x]
         include:
-          - script-name: 'e2e'
-            package-name: 'fast-check'
-          - os: 'macos-latest'
-            package-name: 'fast-check'
           - os: 'windows-latest'
             package-name: fast-check
     steps:
