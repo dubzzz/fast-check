@@ -174,12 +174,12 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
         os: ['ubuntu-latest']
         include:
-          - script-name: e2e
-            package-name: fast-check
-          - os: macos-latest
-            package-name: fast-check
-          - os: windows-latest
-            package-name: fast-check
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+          - package-name: 'fast-check'
+            os: 'macos-latest'
+          - package-name: fast-check
+            os: 'windows-latest'
           #- package-name: '@fast-check/packaged'
           #  os: macos-latest
           #- package-name: '@fast-check/packaged'
