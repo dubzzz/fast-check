@@ -460,13 +460,10 @@ jobs:
       - package_quality
       - typecheck
       - test
-      - test_e2e
       - test_cjs_esm
-      - test_examples
       - test_node_8
       - test_es_version
       - test_types
-      - test_fastcheck_packaged
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
