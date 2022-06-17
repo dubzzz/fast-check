@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "build": "tsc && tsc --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "build-ci": "yarn build",
     "ava-test": "ava -s -t",
     "test": "sh test.sh"
   },
