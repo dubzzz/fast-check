@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
-const { testProp, fc } = require('ava-fast-check');
+const { testProp, fc } = require('@fast-check/ava');
 
 // for all a, b, c strings
 // b is a substring of a + b + c
