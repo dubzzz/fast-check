@@ -1,6 +1,6 @@
 {
   "buildCommand": "build:all",
   "sandboxes": ["vanilla", "/examples"],
-  "packages": ["packages/fast-check"],
+  "packages": ["packages/ava", "packages/fast-check", "packages/packaged"],
   "node": "14"
 }

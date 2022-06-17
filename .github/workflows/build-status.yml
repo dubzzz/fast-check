@@ -169,7 +169,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        package-name: ['fast-check', '@fast-check/packaged']
+        package-name: ['fast-check', '@fast-check/ava', '@fast-check/packaged']
         script-name: ['test']
         node-version: [14.x, 16.x]
         os: ['ubuntu-latest']
@@ -193,6 +193,14 @@ jobs:
             os: 'windows-latest'
           # Limited matrix for test only packages
           - package-name: '@fast-check/examples'
+            script-name: 'test'
+            node-version: 16.x
+            os: 'ubuntu-latest'
+          - package-name: '@fast-check/test-ava-bundle-cjs'
+            script-name: 'test'
+            node-version: 16.x
+            os: 'ubuntu-latest'
+          - package-name: '@fast-check/test-ava-bundle-esm'
             script-name: 'test'
             node-version: 16.x
             os: 'ubuntu-latest'
@@ -221,6 +229,8 @@ jobs:
         run: yarn workspaces foreach -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Unit tests
         shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
         run: |
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")

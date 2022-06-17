@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "@fast-check/test-ava-bundle-esm",
+  "descrition": "Test bundling of @fast-check/ava against ESM runners",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "ava"
+  },
+  "devDependencies": {
+    "@fast-check/ava": "workspace:*",
+    "ava": "^4.0.0",
+    "fast-check": "workspace:*"
+  },
+  "license": "MIT"
+}
