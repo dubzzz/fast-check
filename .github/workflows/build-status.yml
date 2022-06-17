@@ -275,30 +275,6 @@ jobs:
           path: packages/fast-check/docs/
           if-no-files-found: error
           retention-days: 1
-  test_es_version:
-    name: 'Test ES Version'
-    needs:
-      - warmup_yarn_cache
-      - production_packages
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Using Node v16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Check ES Version
-        run: yarn workspace fast-check test:es
   test_types:
     name: 'Test types'
     needs:
@@ -479,7 +455,6 @@ jobs:
       - test
       - test_cjs_esm
       - test_node_8
-      - test_es_version
       - test_types
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
