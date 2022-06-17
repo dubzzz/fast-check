@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package-name: ['fast-check']
+        package-name: ['fast-check', '@fast-check/packaged']
         node-version: [12.x, 14.x, 16.x]
         include:
           - script-name: 'e2e'
