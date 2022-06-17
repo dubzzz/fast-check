@@ -50,3 +50,7 @@ const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, ke
 // kept and removed are arrays of strings
 // they may contain files or directories
 ```
+
+## Minimal requirements
+
+- Node ≥14.14.0
