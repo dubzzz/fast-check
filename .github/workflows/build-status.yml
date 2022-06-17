@@ -161,41 +161,41 @@ jobs:
       - name: Typecheck
         run: yarn workspaces foreach -pvi run typecheck
   test:
-    name: 'Test'
+    name: 'Test ${{matrix.package-name}}'
     needs:
       - warmup_yarn_cache
       - warmup_yarn_cache_others
       - production_packages
-    runs-on: ${{matrix.os}}
+    runs-on: ${{join([matrix.os, 'latest'], '-')}}
     strategy:
       matrix:
         package-name: ['fast-check', '@fast-check/packaged']
         script-name: ['test']
         node-version: [12.x, 14.x, 16.x]
-        os: ['ubuntu-latest']
+        os: ['ubuntu']
         include:
           # More platforms...
           - package-name: 'fast-check'
             script-name: 'e2e'
             node-version: 16.x
-            os: 'macos-latest'
+            os: 'macos'
           - package-name: 'fast-check'
             script-name: 'e2e'
             node-version: 16.x
-            os: 'windows-latest'
+            os: 'windows'
           - package-name: '@fast-check/packaged'
             script-name: 'test'
             node-version: 16.x
-            os: 'macos-latest'
+            os: 'macos'
           - package-name: '@fast-check/packaged'
             script-name: 'test'
             node-version: 16.x
-            os: 'windows-latest'
+            os: 'windows'
           # Limited matrix
           - package-name: '@fast-check/examples'
             script-name: 'test'
             node-version: 16.x
-            os: 'ubuntu-latest'
+            os: 'ubuntu'
     steps:
       - uses: actions/checkout@v3
       - name: Cache for Jest
