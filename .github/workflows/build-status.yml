@@ -164,18 +164,38 @@ jobs:
     name: 'Test'
     needs:
       - warmup_yarn_cache
+      - warmup_yarn_cache_others
       - production_packages
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        package-name: ['fast-check', '@fast-check/packaged', '@fast-check/examples']
+        script-name: ['test']
         node-version: [12.x, 14.x, 16.x]
+        os: ['ubuntu-latest']
+        include:
+          - package-name: fast-check
+            script-name: e2e
+            os: macos-latest
+          - package-name: fast-check
+            script-name: e2e
+            os: windows-latest
+          - package-name: '@fast-check/packaged'
+            os: macos-latest
+          - package-name: '@fast-check/packaged'
+            os: windows-latest
+        exclude:
+          - package-name: '@fast-check/examples'
+            node-version: 12.x
+          - package-name: '@fast-check/examples'
+            node-version: 14.x
     steps:
       - uses: actions/checkout@v3
-      - name: Cache for Jest
-        uses: actions/cache@v3
-        with:
-          path: /tmp/jest_rt
-          key: ${{runner.os}}-${{matrix.node-version}}-jest-test
+      #- name: Cache for Jest
+      #  uses: actions/cache@v3
+      #  with:
+      #    path: /tmp/jest_rt
+      #    key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@v3
         with:
@@ -191,21 +211,22 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from 'fast-check' --no-private --exclude 'fast-check' exec yarn node $(yarn bin packaged) --keep-node-modules
+        run: yarn workspaces foreach -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Unit tests
         shell: bash -l {0}
         run: |
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          yarn workspace fast-check test
-      - name: Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
-          fail_ci_if_error: false # default: false
-          verbose: false # default: false
+          yarn workspace ${{matrix.package-name}} ${{matrix.script-name}}
+      #- name: Codecov
+      #  uses: codecov/codecov-action@v3
+      #  if: ${{matrix.package-name}} == 'fast-check' && ${{matrix.script-name}} == 'test'
+      #  with:
+      #    name: unit-tests-${{matrix.node-version}}-${{runner.os}}
+      #    flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+      #    fail_ci_if_error: false # default: false
+      #    verbose: false # default: false
   test_e2e:
     name: 'Test E2E'
     needs:
