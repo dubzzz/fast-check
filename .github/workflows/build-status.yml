@@ -26,6 +26,9 @@ jobs:
         exclude:
           - package-name: fast-check
             node-version: 12.x
+        include:
+          - package-name: fast-check
+            node-version: 17.x
     steps:
       - name: Install dependencies
         run: echo "Hello"
