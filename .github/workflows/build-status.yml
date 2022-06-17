@@ -164,7 +164,7 @@ jobs:
     name: 'Test'
     needs:
       - warmup_yarn_cache
-      - production_packages
+      - warmup_yarn_cache_others
       - production_packages
     runs-on: ubuntu-latest
     strategy:
