@@ -1,0 +1,7 @@
+releases:
+  "@fast-check/ava": patch
+
+declined:
+  - "@fast-check/monorepo"
+  - "@fast-check/test-ava-bundle-cjs"
+  - "@fast-check/test-ava-bundle-esm"
