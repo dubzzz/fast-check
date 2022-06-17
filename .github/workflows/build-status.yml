@@ -24,11 +24,10 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
         aaa-version: [12.x, 14.x, 16.x]
         exclude:
-          - package-name: fast-check
-            node-version: 12.x
+          - node-version: 12.x
         include:
           - package-name: fast-check
-            node-version: [17.x, 18.x]
+            node-version: [12.x]
     steps:
       - name: Install dependencies
         run: echo "Hello"
