@@ -23,12 +23,12 @@ jobs:
         package-name: ['fast-check']
         node-version: [12.x, 14.x, 16.x]
         include:
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-          - package-name: 'fast-check'
-            os: 'macos-latest'
-          - package-name: fast-check
-            os: 'windows-latest'
+          - script-name: 'e2e'
+            package-name: 'fast-check'
+          - os: 'macos-latest'
+            package-name: 'fast-check'
+          - os: 'windows-latest'
+            package-name: fast-check
     steps:
       - name: Install dependencies
         run: echo "Hello"
