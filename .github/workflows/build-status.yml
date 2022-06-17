@@ -15,22 +15,6 @@ on:
       - 'fix-v*'
 
 jobs:
-  hello:
-    name: 'Hello'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package-name: ['fast-check', '@fast-check/packaged']
-        node-version: [12.x, 14.x, 16.x]
-        aaa-version: [12.x, 14.x, 16.x]
-        exclude:
-          - node-version: 12.x
-        include:
-          - package-name: fast-check
-            node-version: 12.x
-    steps:
-      - name: Install dependencies
-        run: echo "Hello"
   # Root jobs
   warmup_yarn_cache:
     name: 'Warm up Yarn cache'
@@ -185,33 +169,40 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        package-name: ['fast-check']
+        package-name: ['fast-check', '@fast-check/packaged']
         script-name: ['test']
         node-version: [12.x, 14.x, 16.x]
         os: ['ubuntu-latest']
         include:
+          # More platforms...
           - package-name: 'fast-check'
             script-name: 'e2e'
-          - package-name: 'fast-check'
+            node-version: 16.x
             os: 'macos-latest'
-          - package-name: fast-check
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 16.x
             os: 'windows-latest'
-          #- package-name: '@fast-check/packaged'
-          #  os: macos-latest
-          #- package-name: '@fast-check/packaged'
-          #  os: windows-latest
-        #exclude:
-        #  - package-name: '@fast-check/examples'
-        #    node-version: 12.x
-        #  - package-name: '@fast-check/examples'
-        #    node-version: 14.x
+          - package-name: '@fast-check/packaged'
+            script-name: 'test'
+            node-version: 16.x
+            os: 'macos-latest'
+          - package-name: '@fast-check/packaged'
+            script-name: 'test'
+            node-version: 16.x
+            os: 'windows-latest'
+          # Limited matrix
+          - package-name: '@fast-check/examples'
+            script-name: 'test'
+            node-version: 16.x
+            os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
-      #- name: Cache for Jest
-      #  uses: actions/cache@v3
-      #  with:
-      #    path: /tmp/jest_rt
-      #    key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
+      - name: Cache for Jest
+        uses: actions/cache@v3
+        with:
+          path: /tmp/jest_rt
+          key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@v3
         with:
@@ -235,14 +226,14 @@ jobs:
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
-      #- name: Codecov
-      #  uses: codecov/codecov-action@v3
-      #  if: ${{matrix.package-name}} == 'fast-check' && ${{matrix.script-name}} == 'test'
-      #  with:
-      #    name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-      #    flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
-      #    fail_ci_if_error: false # default: false
-      #    verbose: false # default: false
+      - name: Codecov
+        uses: codecov/codecov-action@v3
+        if: ${{matrix.package-name}} == 'fast-check' && ${{matrix.script-name}} == 'test'
+        with:
+          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          fail_ci_if_error: false # default: false
+          verbose: false # default: false
   documentation:
     name: 'Build documentation'
     needs:
