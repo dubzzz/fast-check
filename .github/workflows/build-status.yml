@@ -189,9 +189,7 @@ jobs:
     strategy:
       matrix:
         package-name: ['fast-check']
-        script-name: ['test']
         node-version: [12.x, 14.x, 16.x]
-        os: ['ubuntu-latest']
         include:
           - package-name: 'fast-check'
             script-name: 'e2e'
