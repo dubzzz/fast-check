@@ -161,7 +161,7 @@ jobs:
       - name: Typecheck
         run: yarn workspaces foreach -pvi run typecheck
   test:
-    name: 'Test ${{matrix.package-name}}'
+    name: 'Test'
     needs:
       - warmup_yarn_cache
       - warmup_yarn_cache_others
