@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import { tarball } from 'pacote';
 import * as path from 'path';
 import { list } from 'tar';

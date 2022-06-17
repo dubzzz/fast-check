@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import * as path from 'path';
 import { removeNonPublishedFiles } from '../src/packaged';
 
