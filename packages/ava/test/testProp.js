@@ -1,7 +1,9 @@
+// eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
 const { testProp, fc } = require('../lib/ava-fast-check');
 
 const delay = (duration) =>
   new Promise((resolve) => {
+    // eslint-disable-next-line no-undef
     setTimeout(() => resolve(), duration);
   });
 

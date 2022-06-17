@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
 const { testProp, fc } = require('ava-fast-check');
 
 // for all a, b, c strings

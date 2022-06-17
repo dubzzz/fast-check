@@ -1,4 +1,4 @@
-import test, { AfterFn, BeforeFn, ExecutionContext, Implementation, ImplementationFn, TestFn, TryResult } from 'ava';
+import test, { AfterFn, BeforeFn, Implementation, ImplementationFn, TestFn, TryResult } from 'ava';
 import * as fc from 'fast-check';
 
 export { fc, test };
@@ -32,7 +32,7 @@ function wrapProp<Context, Ts extends NonEmptyArray<any>>(
   prop: Prop<Context, Ts>,
   params?: fc.Parameters<Ts>
 ): Implementation<Ts, Context> {
-  return async (t, ...args) => {
+  return async (t, ..._args) => {
     let failingTry: undefined | TryResult;
 
     try {
