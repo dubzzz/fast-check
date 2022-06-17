@@ -169,7 +169,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package-name: ['fast-check', '@fast-check/packaged', '@fast-check/examples']
+        package-name: ['fast-check']
         script-name: ['test']
         node-version: [12.x, 14.x, 16.x]
         os: ['ubuntu-latest']
@@ -180,15 +180,15 @@ jobs:
           - package-name: fast-check
             script-name: e2e
             os: windows-latest
-          - package-name: '@fast-check/packaged'
-            os: macos-latest
-          - package-name: '@fast-check/packaged'
-            os: windows-latest
-        exclude:
-          - package-name: '@fast-check/examples'
-            node-version: 12.x
-          - package-name: '@fast-check/examples'
-            node-version: 14.x
+          #- package-name: '@fast-check/packaged'
+          #  os: macos-latest
+          #- package-name: '@fast-check/packaged'
+          #  os: windows-latest
+        #exclude:
+        #  - package-name: '@fast-check/examples'
+        #    node-version: 12.x
+        #  - package-name: '@fast-check/examples'
+        #    node-version: 14.x
     steps:
       - uses: actions/checkout@v3
       #- name: Cache for Jest
@@ -218,7 +218,7 @@ jobs:
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          yarn workspace ${{matrix.package-name}} ${{matrix.script-name}}
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
       #- name: Codecov
       #  uses: codecov/codecov-action@v3
       #  if: ${{matrix.package-name}} == 'fast-check' && ${{matrix.script-name}} == 'test'
@@ -227,79 +227,6 @@ jobs:
       #    flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
       #    fail_ci_if_error: false # default: false
       #    verbose: false # default: false
-  test_e2e:
-    name: 'Test E2E'
-    needs:
-      - warmup_yarn_cache
-      - warmup_yarn_cache_others
-      - production_packages
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-    steps:
-      - uses: actions/checkout@v3
-      - name: Cache for Jest
-        uses: actions/cache@v3
-        with:
-          path: /tmp/jest_rt
-          key: ${{runner.os}}-${{matrix.node-version}}-jest-test-e2e
-      - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{matrix.node-version}}
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from 'fast-check' --no-private --exclude 'fast-check' exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: End-to-end tests
-        shell: bash -l {0}
-        run: |
-          export EXPECT_COMMIT_HASH="true"
-          export EXPECT_DEFAULT_SEED="true"
-          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
-          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          yarn workspace fast-check e2e
-  test_fastcheck_packaged:
-    name: 'Test @fast-check/packaged'
-    needs:
-      - warmup_yarn_cache
-      - warmup_yarn_cache_others
-      - production_packages
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        node-version: [16.x]
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-    steps:
-      - uses: actions/checkout@v3
-      - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{matrix.node-version}}
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/packaged' --no-private --exclude '@fast-check/packaged' exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Test
-        run: yarn workspace @fast-check/packaged test
   documentation:
     name: 'Build documentation'
     needs:
@@ -355,34 +282,6 @@ jobs:
         run: yarn unpack:all
       - name: Check ES Version
         run: yarn workspace fast-check test:es
-  test_examples:
-    name: 'Test examples/'
-    needs:
-      - warmup_yarn_cache
-      - production_packages
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Using Node v16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/examples' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Typecheck examples/
-        run: yarn workspace @fast-check/examples typecheck
-      - name: Test examples/
-        run: yarn workspace @fast-check/examples test
   test_types:
     name: 'Test types'
     needs:
