@@ -248,6 +248,35 @@ jobs:
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           yarn workspace fast-check e2e
+  test_fastcheck_ava:
+    name: 'Test @fast-check/ava'
+    needs:
+      - warmup_yarn_cache
+      - warmup_yarn_cache_others
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '@fast-check/ava' --no-private --exclude '@fast-check/ava' exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Test
+        run: yarn workspace @fast-check/ava test
   test_fastcheck_packaged:
     name: 'Test @fast-check/packaged'
     needs:
@@ -546,6 +575,8 @@ jobs:
       - test_node_8
       - test_es_version
       - test_types
+      - ava
+      - test_fastcheck_ava
       - test_fastcheck_packaged
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
