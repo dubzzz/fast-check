@@ -191,7 +191,7 @@ jobs:
             script-name: 'test'
             node-version: 16.x
             os: 'windows-latest'
-          # Limited matrix
+          # Limited matrix for test only packages
           - package-name: '@fast-check/examples'
             script-name: 'test'
             node-version: 16.x
