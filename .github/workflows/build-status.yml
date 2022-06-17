@@ -17,7 +17,7 @@ on:
 jobs:
   hello:
     name: 'Hello'
-    runs-on: ${{matrix.os}}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         package-name: ['fast-check']
