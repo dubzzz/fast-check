@@ -33,9 +33,11 @@
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
   "homepage": "https://github.com/dubzzz/fast-check#readme",
-  "peerDependencies": {
-    "ava": ">=4.0.0",
+  "dependencies": {
     "fast-check": "^3.0.0"
+  },
+  "peerDependencies": {
+    "ava": ">=4.0.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.44",

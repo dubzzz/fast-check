@@ -761,7 +761,6 @@ __metadata:
     typescript: ^4.0.3
   peerDependencies:
     ava: ">=4.0.0"
-    fast-check: ^3.0.0
   languageName: unknown
   linkType: soft
 
