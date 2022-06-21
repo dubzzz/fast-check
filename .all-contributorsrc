@@ -89,7 +89,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1596818?v=4",
       "profile": "https://github.com/EricCrosson",
       "contributions": [
-        "doc"
+        "doc",
+        "code"
       ]
     },
     {
@@ -443,7 +444,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/23299544?v=4",
       "profile": "https://tomeraberba.ch/",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "test"
       ]
     },
     {
@@ -453,6 +456,27 @@
       "profile": "https://github.com/0xflotus",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "CodeLenny",
+      "name": "Ryan Leonard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9272847?v=4",
+      "profile": "https://github.com/CodeLenny",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
+    },
+    {
+      "login": "bitjson",
+      "name": "Jason Dreyzehner",
+      "avatar_url": "https://avatars.githubusercontent.com/u/904007?v=4",
+      "profile": "https://blog.bitjson.com/",
+      "contributions": [
+        "code",
+        "test"
       ]
     }
   ],
