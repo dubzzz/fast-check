@@ -4,7 +4,7 @@ Utility package removing any files that will not be part of the final bundle pub
 
 <a href="https://badge.fury.io/js/@fast-check%2Fpackaged"><img src="https://badge.fury.io/js/@fast-check%2Fpackaged.svg" alt="npm version" /></a>
 <a href="https://www.npmjs.com/package/@fast-check/packaged"><img src="https://img.shields.io/npm/dm/@fast-check%2Fpackaged" alt="monthly downloads" /></a>
-<a href="https://github.com/dubzzz/fast-check/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fpackaged.svg" alt="License" /></a>
+<a href="https://github.com/dubzzz/fast-check/blob/main/packages/packaged/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fpackaged.svg" alt="License" /></a>
 
 ---
 
