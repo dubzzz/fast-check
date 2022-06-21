@@ -801,7 +801,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fast-check/jest@workspace:packages/jest":
+"@fast-check/jest@workspace:*, @fast-check/jest@workspace:packages/jest":
   version: 0.0.0-use.local
   resolution: "@fast-check/jest@workspace:packages/jest"
   dependencies:
@@ -959,6 +959,26 @@ __metadata:
     querystring-es3: ^0.2.1
     webpack: ^5.72.0
     webpack-cli: ^4.9.2
+  languageName: unknown
+  linkType: soft
+
+"@fast-check/test-jest-bundle-cjs@workspace:packages/test-jest-bundle-cjs":
+  version: 0.0.0-use.local
+  resolution: "@fast-check/test-jest-bundle-cjs@workspace:packages/test-jest-bundle-cjs"
+  dependencies:
+    "@fast-check/jest": "workspace:*"
+    fast-check: "workspace:*"
+    jest: ^28.0.0
+  languageName: unknown
+  linkType: soft
+
+"@fast-check/test-jest-bundle-esm@workspace:packages/test-jest-bundle-esm":
+  version: 0.0.0-use.local
+  resolution: "@fast-check/test-jest-bundle-esm@workspace:packages/test-jest-bundle-esm"
+  dependencies:
+    "@fast-check/jest": "workspace:*"
+    fast-check: "workspace:*"
+    jest: ^28.0.0
   languageName: unknown
   linkType: soft
 
