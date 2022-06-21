@@ -801,6 +801,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fast-check/jest@workspace:packages/jest":
+  version: 0.0.0-use.local
+  resolution: "@fast-check/jest@workspace:packages/jest"
+  dependencies:
+    "@types/jest": ^28.0.0
+    "@types/node": ^17.0.44
+    fast-check: "workspace:*"
+    jest: ^28.0.0
+    ts-jest: ^28.0.0
+    ts-node: ^9.0.0
+    typescript: ^4.7.3
+  peerDependencies:
+    jest: ">=25.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@fast-check/monorepo@workspace:.":
   version: 0.0.0-use.local
   resolution: "@fast-check/monorepo@workspace:."
@@ -15443,6 +15459,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^4.7.3":
+  version: 4.7.4
+  resolution: "typescript@npm:4.7.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 5750181b1cd7e6482c4195825547e70f944114fb47e58e4aa7553e62f11b3f3173766aef9c281783edfd881f7b8299cf35e3ca8caebe73d8464528c907a164df
+  languageName: node
+  linkType: hard
+
 "typescript@npm:~4.6.3":
   version: 4.6.4
   resolution: "typescript@npm:4.6.4"
@@ -15460,6 +15486,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 137d18a77f52254a284960b16ab53d0619f57b69b5d585804b8413f798a1175ce3e774fb95e6a101868577aafe357d8fcfc9171f0dc9fc0c210e9ae59d107cc0
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.7.3#~builtin<compat/typescript>":
+  version: 4.7.4
+  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
   languageName: node
   linkType: hard
 

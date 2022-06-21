@@ -1,0 +1,5 @@
+releases:
+  "@fast-check/jest": patch
+
+declined:
+  - "@fast-check/monorepo"
