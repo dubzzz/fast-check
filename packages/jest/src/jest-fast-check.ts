@@ -55,6 +55,7 @@ export function testProp<Ts extends [any] | any[]>(
   internalTestProp(test, label, arbitraries, prop, params);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace testProp {
   export const only = <Ts extends [any] | any[]>(
     label: string,
@@ -68,6 +69,7 @@ export namespace testProp {
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
   ): void => internalTestProp(test.skip, label, arbitraries, prop, params);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export const todo = <Ts extends [any] | any[]>(label: string, arbitraries?: ArbitraryTuple<Ts>): void =>
     test.todo(label);
 }
@@ -81,6 +83,7 @@ export function itProp<Ts extends [any] | any[]>(
   internalTestProp(it, label, arbitraries, prop, params);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace itProp {
   export const only = <Ts extends [any] | any[]>(
     label: string,
@@ -94,6 +97,7 @@ export namespace itProp {
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
   ): void => internalTestProp(it.skip, label, arbitraries, prop, params);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export const todo = <Ts extends [any] | any[]>(label: string, arbitraries?: ArbitraryTuple<Ts>): void =>
     it.todo(label);
 }
