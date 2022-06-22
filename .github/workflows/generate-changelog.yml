@@ -1,12 +1,6 @@
 name: Generate Changelog
 
-on:
-  workflow_dispatch:
-    inputs:
-      shortDescription:
-        description: 'Short description'
-        required: true
-        type: string
+on: workflow_dispatch
 
 jobs:
   generate_changelog:
@@ -24,9 +18,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const shortDescription = process.env.SHORT_DESCRIPTION;
             const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');
-            const {branchName, commitName, content, errors} = await run({shortDescription});
+            const {branchName, commitName, content, errors} = await run();
             const owner = context.payload.repository.owner.login;
             const repo = context.payload.repository.name;
             const title = commitName;
@@ -35,5 +28,3 @@ jobs:
             const bodyErrors = errors.length !== 0 ? `Got the following errors:\n${errors.map(e => `- ${e}`).join('\n')}` : '';
             const body = `Resulting CHANGELOG at: https://github.com/dubzzz/fast-check/blob/${branchName}/CHANGELOG.md\n\n${bodyErrors}`
             await github.rest.pulls.create({owner, repo, title, head, base, body});
-        env:
-          SHORT_DESCRIPTION: ${{github.event.inputs.shortDescription}}

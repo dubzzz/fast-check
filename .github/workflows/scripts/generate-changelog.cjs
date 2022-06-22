@@ -164,10 +164,9 @@ function extractReleaseKind(oldTagName, newTagName) {
 }
 
 /**
- * @param {{shortDescription:string}} configuration
  * @returns {Promise<{branchName:string, commitName:string, errors:string[]}>}
  */
-async function run({ shortDescription }) {
+async function run() {
   const allErrors = [];
 
   // Get packages to be bumped via yarn
@@ -206,7 +205,7 @@ async function run({ shortDescription }) {
       .join('\n');
     const body =
       `# ${newVersion}\n\n` +
-      `_${shortDescription}_\n` +
+      `_TODO Description_\n` +
       `[[Code](${codeUrl})]${!isInitialTag(oldTag) ? `[[Diff](${diffUrl})]` : ''}\n\n` +
       (breakingBlock.length !== 0 ? '## Breaking changes\n\n' + `${breakingBlock}\n\n` : '') +
       '## Features\n\n' +
