@@ -19,12 +19,13 @@ jobs:
         with:
           script: |
             const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');
-            const {branchName, commitName, content, errors} = await run();
+            const {branchName, commitName, content, errors, changelogs} = await run();
             const owner = context.payload.repository.owner.login;
             const repo = context.payload.repository.name;
             const title = commitName;
             const head = branchName;
             const base = 'main';
+            const bodyChangelogs = changelogs.map(c => `- ${c}`).join('\n');
             const bodyErrors = errors.length !== 0 ? `Got the following errors:\n${errors.map(e => `- ${e}`).join('\n')}` : '';
-            const body = `Resulting CHANGELOG at: https://github.com/dubzzz/fast-check/blob/${branchName}/CHANGELOG.md\n\n${bodyErrors}`
+            const body = `Resulting CHANGELOG at:\n${bodyChangelogs}\n\n${bodyErrors}`
             await github.rest.pulls.create({owner, repo, title, head, base, body});
