@@ -1,3 +1,55 @@
+# 3.0.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.0.0...v3.0.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#2986](https://github.com/dubzzz/fast-check/pull/2986)) CI: Switch to Yarn 3 and simple monorepo 
+- ([PR#2987](https://github.com/dubzzz/fast-check/pull/2987)) CI: Simplify test-bundle script following merge of Yarn 3
+- ([PR#2988](https://github.com/dubzzz/fast-check/pull/2988)) CI: Switch to `yarn workspace *` instead of `cd packages/*`
+- ([PR#2990](https://github.com/dubzzz/fast-check/pull/2990)) CI: Replace `npx` by `yarn dlx`
+- ([PR#2991](https://github.com/dubzzz/fast-check/pull/2991)) CI: Setup prettier at the root of the project
+- ([PR#2992](https://github.com/dubzzz/fast-check/pull/2992)) CI: Drop unneeded benchmarks
+- ([PR#2993](https://github.com/dubzzz/fast-check/pull/2993)) CI: Fix script not using the right path
+- ([PR#2994](https://github.com/dubzzz/fast-check/pull/2994)) CI: Fix gh-pages publication follwoing move to monorepo
+- ([PR#2995](https://github.com/dubzzz/fast-check/pull/2995)) CI: Clean-up `.gitignore`
+- ([PR#2996](https://github.com/dubzzz/fast-check/pull/2996)) CI: Move eslint at top level
+- ([PR#2989](https://github.com/dubzzz/fast-check/pull/2989)) CI: Make `fast-check` self reference itself as a dev dependency
+- ([PR#2997](https://github.com/dubzzz/fast-check/pull/2997)) CI: Define top-level script to simplify build and test
+- ([PR#2999](https://github.com/dubzzz/fast-check/pull/2999)) CI: Setup for `yarn version check`
+- ([PR#3001](https://github.com/dubzzz/fast-check/pull/3001)) CI: Make use of `yarn version` for generate changelog
+- ([PR#3003](https://github.com/dubzzz/fast-check/pull/3003)) CI: Fix usages of `yarn version` when generating changelog
+- ([PR#3005](https://github.com/dubzzz/fast-check/pull/3005)) CI: Move anything package related next to its package
+- ([PR#3008](https://github.com/dubzzz/fast-check/pull/3008)) CI: Check the need for `dedupe` for each run
+- ([PR#3010](https://github.com/dubzzz/fast-check/pull/3010)) CI: Cross-jobs caching for yarn
+- ([PR#3011](https://github.com/dubzzz/fast-check/pull/3011)) CI: Enhance and document version related rules for PRs
+- ([PR#3014](https://github.com/dubzzz/fast-check/pull/3014)) CI: Run tests against trimmed versions of the packages
+- ([PR#3015](https://github.com/dubzzz/fast-check/pull/3015)) CI: Make fast-check's tests rely on its own build
+- ([PR#3017](https://github.com/dubzzz/fast-check/pull/3017)) CI: Faster workflow of GH Actions
+- ([PR#3023](https://github.com/dubzzz/fast-check/pull/3023)) CI: Factorize test jobs via matrix of GH Actions
+- ([PR#3024](https://github.com/dubzzz/fast-check/pull/3024)) CI: Drop es-check related jobs
+- ([PR#3032](https://github.com/dubzzz/fast-check/pull/3032)) CI: Handle monorepo in generate changelog
+- ([PR#3034](https://github.com/dubzzz/fast-check/pull/3034)) CI: Better links in PR generating changelog
+- ([PR#3037](https://github.com/dubzzz/fast-check/pull/3037)) CI: Adapt build script to publish any package
+- ([PR#3000](https://github.com/dubzzz/fast-check/pull/3000)) Doc: Default to readme from `packages/fast-check`
+- ([PR#3006](https://github.com/dubzzz/fast-check/pull/3006)) Doc: Start following all-contributors specification
+- ([PR#3007](https://github.com/dubzzz/fast-check/pull/3007)) Doc: Rework the "bug discovered with fast-check" section of the README
+- ([PR#3027](https://github.com/dubzzz/fast-check/pull/3027)) Doc: Add missing README for `@fast-check/ava`
+- ([PR#3029](https://github.com/dubzzz/fast-check/pull/3029)) Doc: Add missing contributors from `@fast-check/ava`
+- ([PR#3030](https://github.com/dubzzz/fast-check/pull/3030)) Doc: Basic README for `@fast-check/jest`
+- ([PR#3031](https://github.com/dubzzz/fast-check/pull/3031)) Doc: Add missing README files on bundle related tests
+- ([PR#2982](https://github.com/dubzzz/fast-check/pull/2982)) Move: Move `example/` to `examples/`
+- ([PR#2983](https://github.com/dubzzz/fast-check/pull/2983)) Move: Move part of `test/` into `packages/test-bundle-*`
+- ([PR#2984](https://github.com/dubzzz/fast-check/pull/2984)) Move: Move part of source code into `packages/fast-check`
+- ([PR#2977](https://github.com/dubzzz/fast-check/pull/2977)) Refactor: Simplify logic to read constraints for `commands`
+- ([PR#3016](https://github.com/dubzzz/fast-check/pull/3016)) Test: Check SHA1 of produced bundle in E2E tests
+- ([PR#3018](https://github.com/dubzzz/fast-check/pull/3018)) Test: Add some tests for `@fast-check/packaged`
+
 # 3.0.0
 
 _Easier and more expressive thanks to the full support of size and a new and extensible API for custom arbitraries_
