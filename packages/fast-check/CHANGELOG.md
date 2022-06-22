@@ -1,3 +1,16 @@
+# 3.0.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.0.0...v3.0.1)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 3.0.0
 
 _Easier and more expressive thanks to the full support of size and a new and extensible API for custom arbitraries_
