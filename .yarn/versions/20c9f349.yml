@@ -1,0 +1,3 @@
+declined:
+  - "@fast-check/monorepo"
+  - "@fast-check/jest"
