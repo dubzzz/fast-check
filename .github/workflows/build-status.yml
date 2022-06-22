@@ -7,7 +7,8 @@ on:
       - 'next-*_*_*'
       - 'fix-v*'
     tags:
-      - v**
+      - 'v**'
+      - '*/v**'
   pull_request:
     branches:
       - main
@@ -464,7 +465,7 @@ jobs:
       - test_cjs_esm
       - test_node_8
       - test_types
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Using Node v16.x
@@ -477,7 +478,23 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - name: Publish package
-        run: npm publish fast-check.tgz
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Publish fast-check
+        run: npm publish packages/fast-check/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: startsWith(github.ref, 'refs/tags/ava/v')
+        name: Publish @fast-check/ava
+        run: npm publish packages/ava/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: startsWith(github.ref, 'refs/tags/jest/v')
+        name: Publish @fast-check/jest
+        run: npm publish packages/jest/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: startsWith(github.ref, 'refs/tags/packaged/v')
+        name: Publish @fast-check/packaged
+        run: npm publish packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
