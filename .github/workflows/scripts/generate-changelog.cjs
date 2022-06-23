@@ -227,9 +227,10 @@ async function run() {
     await execFile('git', ['add', changelogPath]);
   }
 
-  // Update all needed package.json
+  // Bump towards latest version and add files for upcoming commit
   await execFile('yarn', ['version', 'apply', '--all']);
   await execFile('git', ['add', './**/package.json']);
+  await execFile('git', ['add', '.yarn/versions']);
 
   // Create another branch and commit on it
   const branchName = `changelog-${Math.random().toString(16).substring(2)}`;
@@ -241,7 +242,10 @@ async function run() {
   // Compute the list of all impacted changelogs
   const changelogs = allBumps
     .map((b) => b.cwd.substring(process.cwd().length + 1).replace(/\\/g, '/'))
-    .map((packageRelativePath) => `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`);
+    .map(
+      (packageRelativePath) =>
+        `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`
+    );
 
   // Return useful details
   return { branchName, commitName, errors: allErrors, changelogs };
