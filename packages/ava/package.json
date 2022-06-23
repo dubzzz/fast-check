@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
-  "homepage": "https://github.com/dubzzz/fast-check#readme",
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/ava#readme",
   "dependencies": {
     "fast-check": "^3.0.0"
   },
