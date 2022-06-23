@@ -1,11 +1,7 @@
 # 3.0.1
 
-_TODO Description_
+_Basic setup for monorepo_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.0.0...v3.0.1)]
-
-## Features
-
-
 
 ## Fixes
 
@@ -39,16 +35,12 @@ _TODO Description_
 - ([PR#3000](https://github.com/dubzzz/fast-check/pull/3000)) Doc: Default to readme from `packages/fast-check`
 - ([PR#3006](https://github.com/dubzzz/fast-check/pull/3006)) Doc: Start following all-contributors specification
 - ([PR#3007](https://github.com/dubzzz/fast-check/pull/3007)) Doc: Rework the "bug discovered with fast-check" section of the README
-- ([PR#3027](https://github.com/dubzzz/fast-check/pull/3027)) Doc: Add missing README for `@fast-check/ava`
-- ([PR#3029](https://github.com/dubzzz/fast-check/pull/3029)) Doc: Add missing contributors from `@fast-check/ava`
-- ([PR#3030](https://github.com/dubzzz/fast-check/pull/3030)) Doc: Basic README for `@fast-check/jest`
 - ([PR#3031](https://github.com/dubzzz/fast-check/pull/3031)) Doc: Add missing README files on bundle related tests
 - ([PR#2982](https://github.com/dubzzz/fast-check/pull/2982)) Move: Move `example/` to `examples/`
 - ([PR#2983](https://github.com/dubzzz/fast-check/pull/2983)) Move: Move part of `test/` into `packages/test-bundle-*`
 - ([PR#2984](https://github.com/dubzzz/fast-check/pull/2984)) Move: Move part of source code into `packages/fast-check`
 - ([PR#2977](https://github.com/dubzzz/fast-check/pull/2977)) Refactor: Simplify logic to read constraints for `commands`
 - ([PR#3016](https://github.com/dubzzz/fast-check/pull/3016)) Test: Check SHA1 of produced bundle in E2E tests
-- ([PR#3018](https://github.com/dubzzz/fast-check/pull/3018)) Test: Add some tests for `@fast-check/packaged`
 
 # 3.0.0
 
