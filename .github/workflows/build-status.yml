@@ -480,21 +480,21 @@ jobs:
           path: packages/
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Publish fast-check
-        run: npm publish packages/fast-check/package.tgz
+        run: npm publish --access public packages/fast-check/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/ava/v')
         name: Publish @fast-check/ava
-        run: npm publish packages/ava/package.tgz
+        run: npm publish --access public packages/ava/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/jest/v')
         name: Publish @fast-check/jest
-        run: npm publish packages/jest/package.tgz
+        run: npm publish --access public packages/jest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/packaged/v')
         name: Publish @fast-check/packaged
-        run: npm publish packages/packaged/package.tgz
+        run: npm publish --access public packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
