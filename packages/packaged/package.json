@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
-  "homepage": "https://github.com/dubzzz/fast-check/packages/packaged",
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/packaged#readme",
   "engines": {
     "node": ">=14.14.0"
   },
