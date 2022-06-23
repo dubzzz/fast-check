@@ -32,6 +32,7 @@ _Basic setup for monorepo_
 - ([PR#3032](https://github.com/dubzzz/fast-check/pull/3032)) CI: Handle monorepo in generate changelog
 - ([PR#3034](https://github.com/dubzzz/fast-check/pull/3034)) CI: Better links in PR generating changelog
 - ([PR#3037](https://github.com/dubzzz/fast-check/pull/3037)) CI: Adapt build script to publish any package
+- ([PR#3039](https://github.com/dubzzz/fast-check/pull/3039)) CI: Also commit `.yarn/versions` with changelogs
 - ([PR#3000](https://github.com/dubzzz/fast-check/pull/3000)) Doc: Default to readme from `packages/fast-check`
 - ([PR#3006](https://github.com/dubzzz/fast-check/pull/3006)) Doc: Start following all-contributors specification
 - ([PR#3007](https://github.com/dubzzz/fast-check/pull/3007)) Doc: Rework the "bug discovered with fast-check" section of the README
