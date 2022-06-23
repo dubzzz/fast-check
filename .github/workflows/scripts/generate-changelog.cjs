@@ -241,7 +241,10 @@ async function run() {
   // Compute the list of all impacted changelogs
   const changelogs = allBumps
     .map((b) => b.cwd.substring(process.cwd().length + 1).replace(/\\/g, '/'))
-    .map((packageRelativePath) => `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`);
+    .map(
+      (packageRelativePath) =>
+        `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`
+    );
 
   // Return useful details
   return { branchName, commitName, errors: allErrors, changelogs };
