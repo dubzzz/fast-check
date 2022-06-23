@@ -227,9 +227,10 @@ async function run() {
     await execFile('git', ['add', changelogPath]);
   }
 
-  // Update all needed package.json
+  // Bump towards latest version and add files for upcoming commit
   await execFile('yarn', ['version', 'apply', '--all']);
   await execFile('git', ['add', './**/package.json']);
+  await execFile('git', ['add', '.yarn/versions']);
 
   // Create another branch and commit on it
   const branchName = `changelog-${Math.random().toString(16).substring(2)}`;
