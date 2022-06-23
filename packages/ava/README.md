@@ -1,6 +1,6 @@
 # `@fast-check/ava`
 
-![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/logo/logo.png)
+![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/packages/fast-check/documentation/images/logo.png)
 
 Bring the power of property based testing framework `fast-check` into AVA.
 `@fast-check/ava` simplifies the integration of `fast-check` into AVA testing framework.
