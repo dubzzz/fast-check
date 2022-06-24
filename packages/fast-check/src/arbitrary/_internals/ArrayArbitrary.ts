@@ -358,7 +358,7 @@ function buildSlicedGenerator<T>(
         if (eligibleIndices.length === 0) {
           return;
         }
-        activeSliceIndex = mrng.nextInt(0, eligibleIndices.length - 1);
+        activeSliceIndex = eligibleIndices[mrng.nextInt(0, eligibleIndices.length - 1)];
         nextIndexInSlice = 0;
         lastIndexInSlice = targetLength - 1;
       }
