@@ -37,7 +37,8 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     depthIdentifier: DepthIdentifier | string | undefined,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
-    readonly setBuilder?: CustomSetBuilder<Value<T>>
+    readonly setBuilder: CustomSetBuilder<Value<T>> | undefined,
+    readonly getCustomSlices: (() => T[][]) | undefined
   ) {
     super();
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
@@ -75,13 +76,15 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   ): Value<T>[] {
     let numSkippedInRow = 0;
     const s = setBuilder();
+    const slices = this.getCustomSlices !== undefined ? this.getCustomSlices() : [];
+    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, slices, biasFactorItems);
     // Try to append into items up to the target size
     // We may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
     // we accept a max of maxGeneratedLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
     while (s.size() < N && numSkippedInRow < this.maxGeneratedLength) {
-      const current = this.arb.generate(mrng, biasFactorItems);
+      const current = slicedGenerator.next();
       if (s.tryAdd(current)) {
         numSkippedInRow = 0;
       } else {
@@ -108,8 +111,11 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
 
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): Value<T>[] {
     const items: Value<T>[] = [];
+    const slices = this.getCustomSlices !== undefined ? this.getCustomSlices() : [];
+    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, slices, biasFactorItems);
+    slicedGenerator.attemptExact(N);
     for (let index = 0; index !== N; ++index) {
-      const current = this.arb.generate(mrng, biasFactorItems);
+      const current = slicedGenerator.next();
       items.push(current);
     }
     return items;
@@ -315,4 +321,72 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
       this.wrapper(contextualValue[0], true, contextualValue[1], contextualValue[2])
     );
   }
+}
+
+type SlicedGenerator<T> = {
+  attemptExact: (targetLength: number) => void;
+  next: () => Value<T>;
+};
+
+function buildSlicedGenerator<T>(
+  arb: Arbitrary<T>,
+  mrng: Random,
+  slices: T[][],
+  biasFactor: number | undefined
+): SlicedGenerator<T> {
+  if (biasFactor === undefined || slices.length === 0) {
+    return {
+      attemptExact: () => {},
+      next: () => arb.generate(mrng, biasFactor),
+    };
+  }
+  // WARNING: The code below makes the assumptions that we only receive non-empty slices!
+  let activeSliceIndex = 0;
+  let nextIndexInSlice = 0; // the next index to take from the slice
+  let lastIndexInSlice = -1; // the last index accepted for the current slice
+  return {
+    attemptExact: (targetLength) => {
+      if (targetLength !== 0 && mrng.nextInt(1, biasFactor) === 1) {
+        // Let's setup the generator for exact matching if any possible
+        const eligibleIndices: number[] = [];
+        for (let index = 0; index !== slices.length; ++index) {
+          const slice = slices[index];
+          if (slice.length === targetLength) {
+            eligibleIndices.push(index);
+          }
+        }
+        if (eligibleIndices.length === 0) {
+          return;
+        }
+        activeSliceIndex = mrng.nextInt(0, eligibleIndices.length - 1);
+        nextIndexInSlice = 0;
+        lastIndexInSlice = targetLength - 1;
+      }
+    },
+    next: (): Value<T> => {
+      if (nextIndexInSlice <= lastIndexInSlice) {
+        // We continue on the previously selected slice
+        return new Value(slices[activeSliceIndex][nextIndexInSlice++], undefined);
+      }
+      if (mrng.nextInt(1, biasFactor) !== 1) {
+        // We don't use the slices
+        return arb.generate(mrng, biasFactor);
+      }
+      // We update the active slice
+      activeSliceIndex = mrng.nextInt(0, slices.length - 1);
+      if (mrng.nextInt(1, biasFactor) !== 1) {
+        // We will consider the whole slice and not a sub-set of it
+        nextIndexInSlice = 1;
+        lastIndexInSlice = slices.length - 1;
+        return new Value(slices[activeSliceIndex][0], undefined);
+      }
+      const slice = slices[activeSliceIndex];
+      const rangeBoundaryA = mrng.nextInt(0, slice.length - 1);
+      const rangeBoundaryB = mrng.nextInt(0, slice.length - 1);
+      nextIndexInSlice = Math.min(rangeBoundaryA, rangeBoundaryB);
+      lastIndexInSlice = Math.max(rangeBoundaryA, rangeBoundaryB);
+      lastIndexInSlice = slices.length - 1;
+      return new Value(slices[activeSliceIndex][nextIndexInSlice++], undefined);
+    },
+  };
 }

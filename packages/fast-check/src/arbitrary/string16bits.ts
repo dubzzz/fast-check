@@ -1,8 +1,9 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array } from './array';
+import { array, ArrayConstraintsInternal } from './array';
 import { char16bits } from './char16bits';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { charsToStringMapper, charsToStringUnmapper } from './_internals/mappers/CharsToString';
+import { createSlicesForStringBuilder } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -14,5 +15,8 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 export function string16bits(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return array(char16bits(), constraints).map(charsToStringMapper, charsToStringUnmapper);
+  const charArbitrary = char16bits();
+  const slicesBuilder = createSlicesForStringBuilder(charArbitrary, charsToStringUnmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, getCustomSlices: slicesBuilder };
+  return array(charArbitrary, enrichedConstraints).map(charsToStringMapper, charsToStringUnmapper);
 }

@@ -44,7 +44,15 @@ describe('ArrayArbitrary', () => {
             const { instance: mrng } = fakeRandom();
 
             // Act
-            const arb = new ArrayArbitrary(instance, minLength, maxGeneratedLength, maxLength, undefined);
+            const arb = new ArrayArbitrary(
+              instance,
+              minLength,
+              maxGeneratedLength,
+              maxLength,
+              undefined,
+              undefined,
+              undefined
+            );
             const g = arb.generate(mrng, undefined);
 
             // Assert
@@ -82,7 +90,15 @@ describe('ArrayArbitrary', () => {
             const { instance: mrng } = fakeRandom();
 
             // Act
-            const arb = new ArrayArbitrary(instance, minLength, maxGeneratedLength, maxLength, undefined, setBuilder);
+            const arb = new ArrayArbitrary(
+              instance,
+              minLength,
+              maxGeneratedLength,
+              maxLength,
+              undefined,
+              setBuilder,
+              undefined
+            );
             const g = arb.generate(mrng, undefined);
 
             // Assert
@@ -132,7 +148,8 @@ describe('ArrayArbitrary', () => {
               minLength,
               maxLength,
               undefined,
-              withSetBuilder ? setBuilder : undefined
+              withSetBuilder ? setBuilder : undefined,
+              undefined
             );
             const g = arb.generate(mrng, biasFactor);
 
@@ -198,7 +215,8 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
-              withSetBuilder ? setBuilder : undefined
+              withSetBuilder ? setBuilder : undefined,
+              undefined
             );
             arb.generate(mrng, biasFactor);
 
@@ -230,7 +248,7 @@ describe('ArrayArbitrary', () => {
       const { instance: mrng } = fakeRandom();
 
       // Act
-      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined);
+      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, undefined, undefined);
       const g = arb.generate(mrng, undefined);
 
       // Assert
@@ -258,7 +276,7 @@ describe('ArrayArbitrary', () => {
       const { instance: mrng } = fakeRandom();
 
       // Act
-      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined);
+      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, undefined, undefined);
       const g = arb.generate(mrng, undefined);
 
       // Assert
@@ -307,7 +325,8 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
-              withSetBuilder ? setBuilder : undefined
+              withSetBuilder ? setBuilder : undefined,
+              undefined
             );
             const out = arb.canShrinkWithoutContext(value);
 
@@ -358,7 +377,8 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
-              withSetBuilder ? setBuilder : undefined
+              withSetBuilder ? setBuilder : undefined,
+              undefined
             );
             const out = arb.canShrinkWithoutContext(value.map((v) => v[0]));
 
@@ -404,7 +424,15 @@ describe('ArrayArbitrary', () => {
             setBuilder.mockReturnValue(customSet);
 
             // Act
-            const arb = new ArrayArbitrary(instance, minLength, maxGeneratedLength, maxLength, undefined, setBuilder);
+            const arb = new ArrayArbitrary(
+              instance,
+              minLength,
+              maxGeneratedLength,
+              maxLength,
+              undefined,
+              setBuilder,
+              undefined
+            );
             const out = arb.canShrinkWithoutContext(value.map((v) => v[0]));
 
             // Assert
@@ -450,7 +478,8 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
-              withSetBuilder ? setBuilder : undefined
+              withSetBuilder ? setBuilder : undefined,
+              undefined
             );
             const out = arb.canShrinkWithoutContext(value);
 
@@ -494,7 +523,8 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
-              withSetBuilder ? setBuilder : undefined
+              withSetBuilder ? setBuilder : undefined,
+              undefined
             );
             const out = arb.canShrinkWithoutContext(value);
 
@@ -512,7 +542,7 @@ describe('ArrayArbitrary (integration)', () => {
     // Arrange
     const alreadySeenCloneable = new Set<unknown>();
     const mrng = new Random(prand.mersenne(0));
-    const arb = new ArrayArbitrary(new CloneableArbitrary(), 0, 5, 100, undefined); // 0 to 5 generated items
+    const arb = new ArrayArbitrary(new CloneableArbitrary(), 0, 5, 100, undefined, undefined, undefined); // 0 to 5 generated items
 
     // Act
     let g = arb.generate(mrng, undefined);

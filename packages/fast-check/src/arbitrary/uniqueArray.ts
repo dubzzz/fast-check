@@ -223,7 +223,15 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
   const depthIdentifier = constraints.depthIdentifier;
   const setBuilder = buildUniqueArraySetBuilder(constraints);
 
-  const arrayArb = new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength, depthIdentifier, setBuilder);
+  const arrayArb = new ArrayArbitrary<T>(
+    arb,
+    minLength,
+    maxGeneratedLength,
+    maxLength,
+    depthIdentifier,
+    setBuilder,
+    undefined
+  );
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);
 }

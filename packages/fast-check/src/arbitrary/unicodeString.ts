@@ -1,8 +1,9 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array } from './array';
+import { array, ArrayConstraintsInternal } from './array';
 import { unicode } from './unicode';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
+import { createSlicesForStringBuilder } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -14,5 +15,8 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 export function unicodeString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return array(unicode(), constraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
+  const charArbitrary = unicode();
+  const slicesBuilder = createSlicesForStringBuilder(charArbitrary, codePointsToStringUnmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, getCustomSlices: slicesBuilder };
+  return array(charArbitrary, enrichedConstraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }
