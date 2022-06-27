@@ -334,7 +334,7 @@ function buildSlicedGenerator<T>(
   slices: T[][],
   biasFactor: number | undefined
 ): SlicedGenerator<T> {
-  if (biasFactor === undefined || slices.length === 0) {
+  if (biasFactor === undefined || slices.length === 0 || mrng.nextInt(1, biasFactor) !== 1) {
     return {
       attemptExact: () => {},
       next: () => arb.generate(mrng, biasFactor),
