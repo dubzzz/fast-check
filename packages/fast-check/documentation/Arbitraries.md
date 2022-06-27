@@ -684,19 +684,19 @@ _When using `minLength` and `maxLength` make sure that they are compatible toget
 
 ```js
 fc.base64String()
-// Examples of generated values: "rgk=", "co==", "RD/Evefg", "xBE=", "FoRD"…
+// Examples of generated values: "rgk=", "It==", "RD/Evefg", "xBE=", "FoRD"…
 
 fc.base64String({maxLength: 8})
 // Note: Any base64 string containing up to 8 (included) characters
-// Examples of generated values: "", "reak", "pr==", "key=", "xBk="…
+// Examples of generated values: "", "AcWxDA==", "DGFHcB==", "xBk=", "+rgk"…
 
 fc.base64String({minLength: 8})
 // Note: Any base64 string containing at least 8 (included) characters
-// Examples of generated values: "E8double", "wPvVnst=", "7WXEBForaLaj2H8mGc==", "reak", "roto"…
+// Examples of generated values: "F8ACBC9B", "Bxp+l5valueO", "7WXEBForaLaj2H8mGc==", "AcWxDA+KMsIEQg0B6MC=", "constructor="…
 
 fc.base64String({minLength: 4, maxLength: 12})
 // Note: Any base64 string containing between 4 (included) and 12 (included) characters
-// Examples of generated values: "rUs8bJfAngr=", "typeof==", "Bset", "brea", "C379"…
+// Examples of generated values: "rUs8bJfAngr=", "9DtEEy==", "Yv+EZD==", "call", "C379"…
 ```
 </details>
 
@@ -728,15 +728,15 @@ fc.string()
 
 fc.string({maxLength: 3})
 // Note: Any string containing up to 3 (included) characters
-// Examples of generated values: "", "~*2", "{Z", "!d", "jlZ"…
+// Examples of generated values: "", "~*2", "{Z", "CD", "jlZ"…
 
 fc.string({minLength: 3})
 // Note: Any string containing at least 3 (included) characters
-// Examples of generated values: "W=*$Fm V4Yf4<qC", "stati", "~*2[s\\,qgwio", "nDL?K[,", "{Z:gG\")"…
+// Examples of generated values: "W=*$Fm V4Yf4<qC", "%T[$2", "~*2[s\\,qgwio", "nDL?K[,", "{Z:gG\")"…
 
 fc.string({minLength: 4, maxLength: 6})
 // Note: Any string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "x<H+`", "set", "catch", "&con", "0fT*RK"…
+// Examples of generated values: "x<H+`", "bind", "0xine", "%&zpr", "hIx~"…
 ```
 </details>
 
@@ -768,15 +768,15 @@ fc.asciiString()
 
 fc.asciiString({maxLength: 3})
 // Note: Any ascii string containing up to 3 (included) characters
-// Examples of generated values: "p", "vC", "", "'\u0010*", "d"…
+// Examples of generated values: " ", "vC", "", "'\u0010*", "l"…
 
 fc.asciiString({minLength: 3})
 // Note: Any ascii string containing at least 3 (included) characters
-// Examples of generated values: "plements", "vCkn&}{", "__p", "'\u0010*6ua\u0017JEpG\u000bg<#\u0007", "set"…
+// Examples of generated values: " prototype", "vCkn&}{", "\u0006& ", "'\u0010*6ua\u0017JEpG\u000bg<#\u0007", "caller"…
 
 fc.asciiString({minLength: 4, maxLength: 6})
 // Note: Any ascii string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "conti", "!.Qj?-", "V\u0002\u0014z\fT", "brea", "\u0007U\u0006t#"…
+// Examples of generated values: "\u001b0E\"!", "!.Qj?-", "V\u0002\u0014z\fT", "name", "\u0007U\u0006t#"…
 ```
 </details>
 
@@ -804,19 +804,19 @@ fc.asciiString({minLength: 4, maxLength: 6})
 
 ```js
 fc.unicodeString()
-// Examples of generated values: "", "ﰗ!￻in", "µ", "娇\u001eᨫ㽹矌", "┛䅯퉳"…
+// Examples of generated values: "", "咉ٻ!&)￹￶￻", "᭏", "娇\u001eᨫ㽹矌", "┛䅯퉳"…
 
 fc.unicodeString({maxLength: 3})
 // Note: Any unicode (from BMP-plan) string containing up to 3 (included) characters
-// Examples of generated values: "l", "", "⇾燏", "__", "ሖꧾㆳ"…
+// Examples of generated values: "(", "", "⇾燏", "on", "ሖꧾㆳ"…
 
 fc.unicodeString({minLength: 3})
 // Note: Any unicode (from BMP-plan) string containing at least 3 (included) characters
-// Examples of generated values: "loat", "杮಴⿆뎶蝐母쪀㩑ᶔ䰚搞慢䲉欐", "⇾燏ᅙ秱뵴ꇺ꿵玽鄧돟鐎䕝ᑿ", "class", "const"…
+// Examples of generated values: "toLocaleString", "杮಴⿆뎶蝐母쪀㩑ᶔ䰚搞慢䲉欐", "⇾燏ᅙ秱뵴ꇺ꿵玽鄧돟鐎䕝ᑿ", "apply", "call"…
 
 fc.unicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode (from BMP-plan) string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "紫ᡔ楬莼媛", "swit", "/ref", "set", "랂巻ᗽ"…
+// Examples of generated values: "紫ᡔ楬莼媛", "￵!릭(", "ꤘ廯￶$ﭙ+", "call", "랂巻ᗽ"…
 ```
 </details>
 
@@ -846,19 +846,19 @@ fc.unicodeString({minLength: 4, maxLength: 6})
 
 ```js
 fc.string16bits()
-// Examples of generated values: "埫쒠爤", "__", "૑ᚃ⵿⫄㖯孞℠", "⤱黁醙", "⦕끅Ȩ鋑\uda43"…
+// Examples of generated values: "埫쒠爤", "\udb48p", "૑ᚃ⵿⫄㖯孞℠", "⤱黁醙", "⦕끅Ȩ鋑\uda43"…
 
 fc.string16bits({maxLength: 3})
 // Note: Any string (not really legal ones sometimes) containing up to 3 (included) characters
-// Examples of generated values: "", "環", "ऻ㨖ẗ", "sta", "㓱"…
+// Examples of generated values: "", "!", "ऻ㨖ẗ", "-꜆+", "㓱"…
 
 fc.string16bits({minLength: 3})
 // Note: Any string (not really legal ones sometimes) containing at least 3 (included) characters
-// Examples of generated values: " ￺_", "case", "ऻ㨖ẗ倄쾁伅周쀫", "fin", "catch"…
+// Examples of generated values: "‶!￺", "!ᩱ￾", "ऻ㨖ẗ倄쾁伅周쀫", "\"䴜੖", "apply"…
 
 fc.string16bits({minLength: 4, maxLength: 6})
 // Note: Any string (not really legal ones sometimes) containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "孢\udbcd퉭⻵", "↩㄁\ude77䟾鏹撜", "쒍fina", "ructo", "䵬ଛ쩀蛩‮৶"…
+// Examples of generated values: "孢\udbcd퉭⻵", "↩㄁\ude77䟾鏹撜", "ṇ貄/&䵃", "\"廤⾛￲\ud870", "䵬ଛ쩀蛩‮৶"…
 ```
 </details>
 
@@ -888,19 +888,19 @@ _Be aware that the length is considered in terms of the number of glyphs in the 
 
 ```js
 fc.fullUnicodeString()
-// Examples of generated values: "𾪖򘔼򭐂񿈋𰥞", "񫹚􏿿vo", "󘅽󘺂򦀵򈄓񧟵", "󥐫򱡭􌺛愋Ꚁ𻧗ᨘ񀄮􍹣", "constructo"…
+// Examples of generated values: "𾪖򘔼򭐂񿈋𰥞", "񦆏(􏿮񪞆", "󘅽󘺂򦀵򈄓񧟵", "󥐫򱡭􌺛愋Ꚁ𻧗ᨘ񀄮􍹣", "$$􏿻'()􋇶/\"󥟐"…
 
 fc.fullUnicodeString({maxLength: 3})
 // Note: Any unicode string containing up to 3 (included) code-points
-// Examples of generated values: "🷣", "𪇍򱲆", "", "f", ","…
+// Examples of generated values: "🷣", "𪇍򱲆", "", "\"", "𫕈"…
 
 fc.fullUnicodeString({minLength: 3})
 // Note: Any unicode string containing at least 3 (included) code-points
-// Examples of generated values: "🷣󸯜򎪳񖶌󪊀򳘟𙂄󟠷󄏧𰷡", "𪇍򱲆𖰌󣉄𵨡𻥕𰆏򦇘󜁳򁿳򎗯􈤘񖇅󑃙񡳏", "𜔱𫍯e", "򞡺oto", "𞄊􊪆󧁴𦳫󇗋𨖸񉵊򫧏𞩻󓖞򼦃𘅏񀔾"…
+// Examples of generated values: "🷣󸯜򎪳񖶌󪊀򳘟𙂄󟠷󄏧𰷡", "𪇍򱲆𖰌󣉄𵨡𻥕𰆏򦇘󜁳򁿳򎗯􈤘񖇅󑃙񡳏", "缭򁤇𫍯", "􂋳.􏿬􂣐𐼾", "𞄊􊪆󧁴𦳫󇗋𨖸񉵊򫧏𞩻󓖞򼦃𘅏񀔾"…
 
 fc.fullUnicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode string containing between 4 (included) and 6 (included) code-points
-// Examples of generated values: "񅈡򅰻񱅜򾐬񲆗񃯹", "__pro", "catch", "clas", "prot"…
+// Examples of generated values: "񅈡򅰻񱅜򾐬񲆗񃯹", "+񙷦-򽺺􏿮", "􏿶ref", "call", "name"…
 ```
 </details>
 
@@ -933,11 +933,11 @@ fc.stringOf(fc.hexa())
 
 fc.stringOf(fc.char(), {maxLength: 3})
 // Note: Any string containing up to 3 (included) characters extracted from `fc.char()`
-// Examples of generated values: "r", "Ue", ")H", "", "Z"…
+// Examples of generated values: "+", "y\\", ")H", "", "Z"…
 
 fc.stringOf(fc.char(), {minLength: 4, maxLength: 6})
 // Note: Any string containing between 4 (included) and 6 (included) characters extracted from `fc.char()`
-// Examples of generated values: "*jlRI", "}<6Fm", "Par", "\"&$m", "ZgIk"…
+// Examples of generated values: "*jlRI", "}<6Fm", "Q #(Q", "Qz&:", "ZgIk"…
 
 fc.stringOf(fc.constantFrom('a', 'b'), {maxLength: 5})
 // Note: Any string containing between 0 (included) and 5 (included) characters extracted from `fc.constantFrom('a', 'b')`
@@ -988,7 +988,7 @@ fc.json({maxDepth: 0})
 
 fc.json({maxDepth: 1})
 // Examples of generated values:
-// • "{\"mTZw9f!~2\":\"N'!U6\",\"9=\":-3.6221384866363086e-275,\"\":\"cq\",\"__\":true,\"{\":8.853393817909763e-157,\"const\":false,\"oB\":2.1759198691538852e+229}"
+// • "{\"mTZw9f!~2\":\"N'!U6\",\"9=\":-3.6221384866363086e-275,\"\":\"cq\",\"re\":null,\"~aller\":null,\"valueOf\":false,\"HoB)<PLf S\":null}"
 // • "{\"UzMWL`G@{_\":null,\"znC\":\"nY\",\"J\":3.849085080516248e-191,\"r3$\\\\\":\"`vl9%HJT)\",\"jHSz2\":3413124726.2879148,\"\":\"`L\"}"
 // • "{}"
 // • "{\"Q|t9};*Iow\":true,\"r(>uO\":false,\"I$2`I_6@\":false,\"qO[OhM7\":9.314698990394179e+30,\"&!j*hIk\":\"H\\\"\\\"~\",\"`bcc\":2.5169346616860097e+70,\"!2 +k;_\":-4.469218455495708e+292,\"#AhOnL@1\":\")A)gi\"}"
@@ -998,7 +998,7 @@ fc.json({maxDepth: 1})
 fc.json({depthSize: 'medium'})
 // Examples of generated values:
 // • "1.1084525170506737e-156"
-// • "[\"__\",[{\"w\":-1.1857209341850858e-124,\"|W?cf9Z\":false,\"q<jbxV`W\":false,\"<8#VV;.QyK\":5.371783952168317e-166},false,false,null,1.7034257982462728e-15,\"fstDP}\",null,false],{}]"
+// • "[\"co\",{\"r*,M9|W?c\":[false,null,\"bxV\",null,false,7.171087774329574e+120,true,2.122763095763206e-112,5.371783952168317e-166,false]},{\"XLL8w\":null}]"
 // • "[{\"4\":null,\"Dn\":2.4426060849173823e-107,\"1pISp\":false,\"*_BU-!U\":1.300167092106387e+131,\":\":-5.1320442429180716e-297,\"y\":\"\",\"lY\":2.196066668993201e-230,\"[|Q\\\\G-=K?Y\":\"HZ\",\"ikX?aw\":null,\"-y@`)3mh\":\"f|M\"},[]]"
 // • "[\"_\",\" {_xR<tiQ\",null,{\"uc2~2XP0\":null,\"6Y\\\\j|g/DhM\":\")1yN\",\"%\\\\!K4qL!}\":false,\"^%79'x3\":null,\"x3(>2 \":null,\"+\":-1.345402215261541e-31,\"\\\"{Xb.&4d_u\":{\"$ D^DE2V33\":false,\"P\":true},\"s\":\"(!>\"},false,\"B\"]"
 // • "true"
@@ -1032,14 +1032,14 @@ fc.json({depthSize: 'medium'})
 fc.unicodeJson()
 // Examples of generated values:
 // • "[[]]"
-// • "{\"w\":\"냚鶖뜥\",\"!na\":3.470304720637026e-200,\"\":\"r\",\"⃮훢⻜䓦嶚滒Ղ\":1.7976931348623127e+308,\"yi\":null,\"㙐瓬쟡\":null}"
+// • "{\"r\":\"\",\"螘餪╁鏽螽\":\"\",\"￶i\":\"bind\",\"/￲\":\"￱\",\"瓬쟡뵺ꙏԏầ\":true,\"caller\":1.797693134862314e+308}"
 // • "{\"\":null}"
 // • "{}"
 // • "{\"迵끀꧋좡ꏶ塣\":[],\"뒓䬹Ⱝ䧎﹥ï飸\":-8.224504184276682e+98,\"旞荫㹢ފ\":{\"畵콆쳑Ｈ᜞\":22332369363.887035,\"㍮ㅜޞ\":null,\"ꉶ瀞뿱끮筡팹᧊\":\"곺缇㱐\",\"⮦ﺕ끨꿸\":\"薀ɿ⫝̸挖\",\"緢픳䪔쬤顅蓦\":null,\"뀙䙔炽ঞ弩\":\"ჷ\"},\"\":true,\"∗㋈쪺驎쓭籺뗪\":null}"
 // • …
 
 fc.unicodeJson({maxDepth: 0})
-// Examples of generated values: "false", "\"tch\"", "null", "\"倣\"", "4.1604273853370814e+265"…
+// Examples of generated values: "false", "\"&ޔ넡+/,\"", "null", "\"倣\"", "4.1604273853370814e+265"…
 
 fc.unicodeJson({maxDepth: 1})
 // Examples of generated values:
@@ -1054,7 +1054,7 @@ fc.unicodeJson({depthSize: 'medium'})
 // Examples of generated values:
 // • "{\"讆層ꦍ쩖䊼\":6.422585986069521e+229,\"\":[null,true,true,false,null,null,false],\"톙띨ᓘ箜\":\"景\",\"犟ﯼ⛺㴞撟㨕\":[1.502368761936634e+269,true,false],\"脓境鲖㽾抳뫞ຳ\":false,\"阠\":-3.440279645467618e+252,\"髇૱ꩀ杨垹佡⍳\":false,\"꦳\":null,\"悪뤶⛬厕놳鑤䴆뛰稾\":\"刕䥮鋅舻쓋\"}"
 // • "1.7398076905782003e-265"
-// • "\"cas\""
+// • "\"㩵詫,\""
 // • "[]"
 // • "{\"햧ཧ觌♘䣯Ⓖ崊䏓䵊\":{},\"㋄ǋ膮朲㌦냔ℋፋ\":{\"㋂\":{\"戹⾤礓\":2.1056912914512038e+48},\"\":false,\"絉泤璱鱾ق媀\":-4.1425806591889986e+212,\"샭 隆ἑ킷받붇ᡡ\":-3.3861837092165883e-127,\"ꪞ쳍爽\":true,\"⍚뮚䑥ᝳ륿ಒ菑\":\"挩聆ᝮ櫸树ޞ\"}}"
 // • …
@@ -1247,19 +1247,19 @@ fc.uuidV(5)
 
 ```js
 fc.domain()
-// Examples of generated values: "j6ib52zarmf.cat", "00.se", "35b10n-w.7xe2.xai", "0.h6a4sfyde.ur", "c.co"…
+// Examples of generated values: "j6ib52zarmf.bin", "00.kc", "35b10n-w.7xe2.xai", "0.h6a4sfyde.nz", "c.na"…
 
 fc.domain({size: '-1'})
 // Note: Generate smaller domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
-// Examples of generated values: "ec.ob", "1nl.0it.oxt", "za.kjs", "3tu.d.co", "rn.d0.kfx"…
+// Examples of generated values: "ec.ob", "1nl.0it.oxt", "za.kjs", "3tu.d.lc", "rn.d0.kfx"…
 
 fc.domain({size: '+1'})
 // Note: Generate larger domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'medium'
 // Examples of generated values:
-// • "e3lmceoiktylhwob3i097i07lbqe.g.ew2a5jzl4dm7y4.fwith6.c.5c.0soh3743x58n3bx85s-a8bkfnda8-bbnke3gjrr7ui57n5.ez-ns69b5k6g8ugc1t7zvwsf0dzq1wywm7okkc1w6pt2.w.xudebugger"
-// • "1n2983iaqbaqqez.j5exoz885-r97uinqna5rb0u35junfiav5p6q3xrw-ceribgdz.dconstructor"
-// • "z72rbhb9tjfoqq4whcj589.r94hzbjrbnrt2r8s0b3zu83fa0ysem2dbaf0quiow7d.7-9kklongf.dbreaka.7puba.c.d.dn.5f.et"
-// • "3twerafs1lktsebj9o0p2g6p2adbdu63vwsr7kw57-lkbeb3p7ef1383xqmej69.80h5rjtsk4n2c82ecntzsy1tt0-1udt3fsc2rdctnnu68w6x3re1yk9gp.6.6ah5085en0kni5y25swn0aoahmhknzf00.15czrzh4wu00hes7p4860s6ui8-htm5x4b-cquy9rbal6.4.vo"
+// • "e3lmceoiktylhwob3i097i07lbqe.g.ew2a5jzl4dm7y4.f767sc9.a8mp77soh3743x58n3bx85s-a8bkfnda8-bbnke3gjrr7ui57nqt.ez-ns69b5k6g8ugc1t7zvwsf0dzq1wywm7okkc1w6pt2.w.b5q7l242x-fcosehdxghwp1js5oykwo14t-7y5x.7gftao9au5u-ynym-yq027d9kc.bltzefaey"
+// • "1n2983iaqbaqqez.j5exoz885-r97uinqna5rb0u35junfiav5p6q3xrw-ceribgdz.umyncrdcuyzcbs"
+// • "z72rbhb9tjfoqq4whcj589.r94hzbjrbnrt2r8s0b3zu83fa0ysem2dbaf0quiow7d.7wp9ypk-fddyaf-4dqibdap.dn.56.572ggc.eahn5fa5z-fwxc04d88-59bq7wcdgyybxicl8p7rff9ub2y58arh3cqyoaf.f6kargturvbsm7tw-oech4ibo.9ocddldahtd8be8ftdfrc87bawmfhdh66md8.ubxqd"
+// • "3twerafs1lktsebj9o0p2g6p2adbdu63vwsr7kw57-lkbeb3p7ef1383xqmej69.80h5rjtsk4n2c82ecntzsy1tt0-1udt3fsc2rdctnnu68w6x3re1yk9gp.6.6ah5085en0kni5y25swn0aoahmhknzf00.15czrzh4wu00hes7p4860s6ui8-htm5x4b-cquy9rbal6.4.mt"
 // • "rq42wt9mq67kg30r5iz55yh9.5g4zvgp29o.mrgob7gvx4r85rpwosrgr1dpw6dlvn6--pneig1.7co96i0-5d0zaw7thxb30jt9eyq6c67v7o0tnz4xhc8twkiyy46h.7tpqwpzihjluq4h4d0hwtcikxiyackva3xkk78.98b2cnk7yr-1kdxkq4vlikoly658f6d1j8ddrzo95.q739viaqbdk2u3etgcclbe4u7-kqnoe2i.ire"
 // • …
 ```
@@ -1293,17 +1293,17 @@ fc.domain({size: '+1'})
 
 ```js
 fc.webAuthority()
-// Examples of generated values: "qj5h7-5.d6je1ud1x.co", "5y6.let", "qswitca.7q2f.pr", "vyd-xdhj.vu94x4.nl", "5sr6j0ayq2et.a.eur"…
+// Examples of generated values: "qj5h7-5.d6je1ud1x.yy", "52c.cnb", "qbaqf84.e.tzy", "vyd-xdhj.vu94x4.nl", "5sr6j0ayq2et.a.eur"…
 
 fc.webAuthority({
   withIPv4: true,
 })
-// Examples of generated values: "227.252.4.231", "6.1.143.3", "nlefeaoklaq7.ijm", "18fl.se", "6.3.255.158"…
+// Examples of generated values: "227.252.4.231", "6.1.143.3", "nlefeaoklaq7.ijm", "1ce9.kt", "6.3.255.158"…
 
 fc.webAuthority({
   withIPv4Extended: true,
 })
-// Examples of generated values: "4constrw.9d.cas", "0xa", "0xefebe5f3", "6prob.hau", "0345.077777767"…
+// Examples of generated values: "4fc6-arq.j9m.voe", "0xa", "0xefebe5f3", "6keyb.auf", "0345.077777767"…
 
 fc.webAuthority({
   withIPv4: true,
@@ -1337,7 +1337,7 @@ fc.webAuthority({
 
 ```js
 fc.webFragments()
-// Examples of generated values: "hip", "__", "K/z=)RtC", "E7y", "%F0%B5%81%85:w,+"…
+// Examples of generated values: "hip", "c&", "K/z=)RtC", "E7y", "%F0%B5%81%85:w,+"…
 ```
 </details>
 
@@ -1363,7 +1363,7 @@ fc.webFragments()
 
 ```js
 fc.webQueryParameters()
-// Examples of generated values: "52mi", "L3ns-", "X%F3%AB%BA%8AksM", "bSO", "b"…
+// Examples of generated values: "52mi", "L3ns-", "X%F3%AB%BA%8AksM", "bSO", "g"…
 ```
 </details>
 
@@ -1387,7 +1387,7 @@ fc.webQueryParameters()
 
 ```js
 fc.webSegment()
-// Examples of generated values: "cla", "097", "f", "BgyH", "get"…
+// Examples of generated values: "ref", "097", "e", "BgyH", "apply"…
 ```
 </details>
 
@@ -1417,28 +1417,34 @@ fc.webSegment()
 
 ```js
 fc.webUrl()
-// Examples of generated values: "https://lo.se/Ib%F3%94%A1%92!fLr", "https://4.n", "https://710n-lu1.s.zl", "https://af9.sx/MHHK", "https://6uzbj4.pr/n"…
+// Examples of generated values: "https://lo.ui", "https://4.xlm", "https://710n-lu1.s.zl", "https://ao1.ia/YisProt", "https://6uzbj4.pr"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
 })
-// Examples of generated values: "ftps://lpro5.o5wag0v.vy", "ftps://5ana.x02y.yi", "ftp://f.d.nl/1", "ftp://d3mhpf.xtb", "ftps://4.pr/"…
+// Examples of generated values:
+// • "ftps://lrefd.fuoaa.ecv/C9by:U)xN1"
+// • "ftps://5ana.x02y.be/B%F2%9D%86%96;x%F1%8D%9D%BE.g-"
+// • "ftp://f.d.nl/1"
+// • "ftp://d3mhpf.xtb"
+// • "ftps://4.ap"
+// • …
 
 fc.webUrl({
   withFragments: true,
   withQueryParameters: true,
 })
 // Examples of generated values:
-// • "https://6teotdbx.con/$6=-XX%F2%9F%95%8BW?el#cn"
-// • "http://ntgafkj31t.8x7x09flrvhg.yd?ou#Toqc"
-// • "http://e4.17v9z34.xh/?i#"
-// • "http://8.jef?7#long"
+// • "https://6teotdbx.nle?N=#d/e"
+// • "http://ntgafkj31t.8x7x09flrvhg.yd?ez#c"
+// • "http://ed.az3bzcn6p.dai/_#@cbd?:b"
+// • "http://8.jef?a#gne,"
 // • "https://qc.ieele4.fcg?P%F1%81%9C%A5N+0DN%F3%97%8C%85fX"
 // • …
 
 fc.webUrl({size: '-1'})
 // Note: Generate smaller urls compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
-// Examples of generated values: "http://d.de", "https://h.lp/%F3%A0%B4%9E", "http://64.e.tod/%F0%9F%AA%B3", "https://b.uq.lc/)", "https://g26.cat"…
+// Examples of generated values: "http://d.zy", "https://h.lp/%F3%A0%B4%9E", "http://6e.9j8.xft/g", "https://b.uq.ll", "https://g26.eow"…
 ```
 </details>
 
@@ -1465,16 +1471,16 @@ fc.webUrl({size: '-1'})
 ```js
 fc.emailAddress()
 // Examples of generated values:
-// • "e0f7||'5tqsh.1k_opz+.*%^'k&w.cdd@5interfad.se"
-// • "interfac.{|'!viad.c@y.apnqwg.tm"
+// • "e0f7||'5tqsh.1k_opz+.*%^'k&w.cdd@5bdc55fta.bs"
+// • "bf|!drdd.55^.}dc|@v.alx"
 // • "|bi9r}.|9lm^.iw8i39$~doz.|dlr.nl}~gfu+.x0pr-{%*mh&*.efx.4`@v.au"
-// • "/2.{9=mp&2?e#w-.%-'=%itden.?8#_c1g_3c.=#0e~/_j^n&*.9@8y3l33b6.y7o558ir45.af"
-// • "z*3y`3.teb.4~6|&&xep.{dfz=pp/mmx.-n^%smik'z.%.4+c._.g-csml66'@gc.qr"
+// • "/2.{9=mp&2?e#w-.%-'=%itden.?8#_c1g_3c.=#0e~/_j^n&*.9@8y3l33b6.y7o558ir45.ix"
+// • "z*3y`3.teb.4~6|&&xep.{dfz=pp/mmx.-n^%smik'z.%.4+c._.g-csml66'@gc.vd"
 // • …
 
 fc.emailAddress({size: '-1'})
 // Note: Generate smaller email addresses compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
-// Examples of generated values: "hn@s1v.i9.em", "%@xo.s.exp", "f@d.pr", "kg.kg@5a.pr", "{.lv@bwm.uzw"…
+// Examples of generated values: "hn@s1v.i9.aw", "%@xa.fe.fd", "{@4hq.d.dn", "kg.kg@5y.zr", "e._t@m5.pw"…
 ```
 </details>
 
@@ -2158,7 +2164,7 @@ fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 // Examples of generated values: 2147483617, Number.NaN, 259062763, 13, 23…
 
 fc.option(fc.string(), { nil: undefined })
-// Examples of generated values: "^_|\"T.5rB", "__", "o", undefined, "g"…
+// Examples of generated values: "^_|\"T.5rB", "te", " A3D$k", undefined, "#"…
 
 // fc.option fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
@@ -2307,7 +2313,7 @@ fc.tuple(fc.nat())
 // Examples of generated values: [2147483621], [28], [2147483641], [242661188], [263784372]…
 
 fc.tuple(fc.nat(), fc.string())
-// Examples of generated values: [2147483619,"6*xn_VkQ"], [12,"const"], [468194571,"*_J"], [14,"2&0"], [5,"__"]…
+// Examples of generated values: [2147483619,"6*xn_VkQ"], [12,"Z>Ybi"], [468194571,"*_J"], [14,"2&0"], [5,"S4"]…
 ```
 </details>
 
@@ -2718,9 +2724,9 @@ fc.infiniteStream(fc.nat(9))
 fc.dictionary(fc.string(), fc.string())
 // Examples of generated values:
 // • {"+":"iM#O7X(G58"}
-// • {"y":"rm<45]&THs","case":"inte","&":"se","Khdb":"+eak"}
+// • {"y":"rm<45]&THs","!zJY!$":"l","":"B&|I","Bv\\:C<kA[/":"HUCVM2}}mg"}
 // • {"H=>.L$K":";j %u9","PT":"l[jR4C"}
-// • {"}9":"xp/g?g","'M":"UbM/K","534pHy":"T/","Z":"","9V02D":"con","":"\"I"}
+// • {"}9":"xp/g?g","'M":"UbM/K","534pHy":"T/","Z":"","&le":"!a[I#r+h","m(e\"EKt%":""}
 // • {"vT`":"~yWotB,m@1","LRwi":",kU~9",",qZ8":"ckz-r^?@","zQP=-!BC":";:S","dA+b<f-\"3T":"[if y\\"}
 // • …
 
@@ -2729,7 +2735,7 @@ fc.dictionary(fc.string(), fc.nat())
 // • {"":1389984732,"Yp$g&t^dp]":1638300335,"+":438403284,"41ST4G":1593876328,"sZ=":474921142,"wjFpf":912590676,"tFK(!":547671001,"Ot=":1404889232}
 // • {"BS9-o":1729454479,"OQYWH":1003935961,"a{6S(OQ?\"":1204427717,"n6wY":452693617,"L":1919551662,"KlqB{{":360825924,"":1745761795,"#h#S$":1570990143,"G%":1211363041,"=.":158635507}
 // • {}
-// • {"Fb+6vZ=< ":589373246,"try":2147483628}
+// • {"Fb+6vZ=< ":589373246,"yy!":1372344322}
 // • {"4":57689789,"d":2049278068,".b3n,":1846889886,":E":887324279,"*9\\$WNce":108003991}
 // • …
 
@@ -2738,9 +2744,9 @@ fc.dictionary(fc.string(), fc.nat(), {minKeys: 2})
 // Examples of generated values:
 // • {"T<M3<":620901509,"DaM\"":1958316323}
 // • {"Tc\"":2147483642,"bIKoG7_j":2147483643,"A\\`~@<Y":258879863}
-// • {"brea":5,"Mb":28,"l5zuK":1290565472,"catch":2147483646,"cla":4,"={mK\",R":9,"5case":293078634,"-":153893444,"q}":4}
-// • {"d":30,"I":29,">_\\1;|6K":1205151563,"[$>":17,"`B":1177845366,"KYj(7Ad":27,"re":883645555,"__proto":15,"r]Wj$uSZn@":1190061756,"":30,"break":1009509430,"};\\xl-0W:":702891646,"W#":25}
-// • {"":860828778,"__":27,"5p":19,"<":1809275098,"r}f":5}
+// • {"name":19,"M!$":335798314,"I}xy$}?i|\"":2147483640,"p":1839244593,"\"_Yy[;\"J-":153893444,"`N":2147483619,"#8o7_`7":1016546359,"x":2147483617,"n0tx":507325698,"rAM0C4}:":1665875736}
+// • {"|":281859129,"}":17,"6r":761554278,"":640237334,"+%":1210799674,"f`My$7\"A{>":2147483645,"2qYK|j56":2147483635,"Zn":1154026117,"length":2147483624,"jt}":28,"R2":0,"C":1911678324,"||#\"~e(%":2147483638}
+// • {"":15,".":2147483630,"key":2147483626,"-0;AQTo4":22,"calle":24,"r}f":5}
 // • …
 ```
 </details>
@@ -2871,7 +2877,7 @@ fc.object({
 // Note: Keys in ['a', 'b', 'c']
 // Examples of generated values:
 // • {"c":{"a":[2223840646279353,"h9:UV"]}}
-// • {"b":"\"z"}
+// • {"b":"n6"}
 // • {"b":"aDA:0O%&","c":"ml> Vxr|#Z"}
 // • {"a":undefined,"c":{"b":{"b":-2744422.7404951486,"a":false,"c":undefined},"c":{"a":{"a":true,"c":5.222481920280682e+281,"b":null},"b":[false,-5859275070785724,true,undefined,6858969963582941,null,1.8448062036331595e+49]},"a":[true,-2.654821843566987e-86,"=>0_gmW",-2.183227734435476e-131,null,"SDo:fvR",false]},"b":-9007199254740942}
 // • {}
@@ -2885,7 +2891,7 @@ fc.object({
 // • {"s!?U&|m":-1.0485154233556375e+169," !":1.4341461931946127e-41}
 // • {":WEs/srS+":-1.4306206862420248e-230,"lb(<%.BW9":-1.12096281696434e+147,"":-2808744269250452,"=Pfn":3774914358605209,"Wvd=pRw}Q":"o};9PoD","N":1.9219429100542987e+297}
 // • {"WW!oe%r(1":2650041073451851,"FiY":-1.6208386987872436e+84,"a$aR@~l":"fE*qB<GE:'","snhE":-19848761391.284126,"er <4QOmI<":undefined,":kN3b~6T:#":false}
-// • {".ubli":false}
+// • {"!&\"x3":2.67e-322}
 // • …
 
 fc.object({
@@ -2896,7 +2902,7 @@ fc.object({
 // • {"s!?U&|m":false," !":{"7P4>bQM?p[":4203343495210831,">":2.0906852232169096e+42,"`":-4593123640797049,"LGycL6n%-":true,"":"<","haz":5.385981839468276e-152,"=(JIi":null,"b1.}px4V":2.5032399777082345e+138,"M.B18":undefined,"qS6}U":5.729290276602422e-206}}
 // • {":WEs/srS+":{"":6943949833833631,"<%":null,"96d^[vb)H":true,"=Pfn":3774914358605209,"Wvd=pRw}Q":"o};9PoD","N":1.9219429100542987e+297,"r7TL+k'*H":""},"ok[Dq= \\B":"7","E":-6377101369721867,"/>|.\\":5.954825314159987e+110,">H4JG)JX h":[],"N{L3@":["_Ymf]'yQ,v"]}
 // • {"WW!oe%r(1":[true],"iY|l~8a$aR":[8505448012610949,false,true,undefined,"' sn",3.71928368109998e+110],"6/":-1.5902927368612857e+59,"QOm":"k",":kN3b~6T:#":"2V7Sy8YR%C",";%<o8`":{"5":5514214195141761,"v38P6":"3\"Hr.V","V/J":9.308141883525299e-26,"XiL(":true,"":false,"0O":-7926882429425619,"Cy+Wch":true,"_1QI|.oV":-8789568770078252,"%\\[":-3.1724602748143796e+131}}
-// • {".ubli":",OQcl}V_o"}
+// • {"!&\"x3":-5.1959969431659936e-157}
 // • …
 
 
@@ -2911,8 +2917,8 @@ fc.object({
   withTypedArray: true,
 })
 // Examples of generated values:
-// • {"clas":new Map([[-37616150338326590124992033563638969200448676706535233497532506719669914224466n,new Set([])],[undefined,false],[new String("Q-"),-4.382583160970761e+187],[-2171140562392060,new String("sXXTvp,'")],["new String(\"*1=8f-U\")",3361013393753915],[new Boolean(true),new Number(4654137576433329)],[new String(""),undefined]]),"j":"\"new Set([true,7391805003567811623639174583710652596714788836056311754505608985016585268996n,new Date(\\\"5723-11-28T07:48:49.395Z\\\"),3301564262941661,new Number(-2.729254271404126e+180),new Boolean(true),\\\"&^c@\\\"])\"","":new Map([])}
-// • {"Rsv1:ZP":[new String("K"),Uint32Array.from([])],"#Q&fX":new Map([["proto",new Date("1969-12-31T23:59:59.974Z")],["3b;=9|i>4W",null],["catch",-9810303613234756270861617368450616463436227319657869839864106938374498666500n],["\"\"[wi",Int32Array.from([1282806999,294771270,1779860177,496625380,-1965599962])],["WDnZ#(",new Date("+050898-09-20T05:53:37.188Z")]]),"__p":[-30,new Number(-9007199254740940),-2716593443926899,new Number(2038841419086077),Uint8Array.from([])]}
+// • {"bind":[-37616150338326590124992033563638969200448676706535233497532506719669914224466n,new Set([]),undefined,false,new String("Q-"),-4.382583160970761e+187,-2171140562392060],"Xv,2\"$8 ":new Set([new Map([["Jy%<d",new Number(6.0563504369911e+35)],["o) I5`",false],["true",false],["TA\"V?G%ou~",76522690086549],["@&^c@",-1860627229476972],["#1DeqK;ke",null],["~4EG#","{d|-?V:g"]]),Object.assign(Object.create(null),{"5&&HnU":new Number(4784030239630033),"A":-177070376079212,"":-15423005569527380915877852838693692882675926549072622495376623289448448579113n,"iKb>":50949625150474965865199450852851222935017515785893722279556107165312676688179n,"rN5bc":1.326077372845436e-33,"Z":"bZ3:"})]),"\\":new Set([{"zz":Object.assign(Object.create(null),{"_l5?@#S\\o":undefined,"`":true}),"*`18o":new Set([new Map([["wF",new Number(-5780393855045961)],["hI",-2.566996474387108e-151]]),Float64Array.from([1.1012627478650911e-85,2.5425117407027388e-303,1.6154115940207547e-44,4.87186182240186e-250,-3.814493795215296e-26]),new String("V{`|\"n5}"),new Number(2102479438489001)])},new Set([Int32Array.from([1144084943,1989838976,1761746708,2092209650,-1484917531]),Object.assign(Object.create(null),{"9":"Z# 5&","\"zGsh,\"":-45692450207949754410489055805741236964616726131394258252267257681758891820882n,"TG3*T":new Date("-062077-04-20T00:21:13.280Z"),"=PlZCl":-7455451386984652,"m|)[{T":{"A<5mH_hOc!":new Date("-246981-04-23T22:20:33.957Z"),"cmFIpt":new Number(-7509933762441366),"N$:?4e":null},"NLM7":new Number(-5.387847798981765e-96),"]\\&`C":new Number(-3.919347087038038e-198)}),new Date("+181571-05-05T21:56:43.404Z")])])}
+// • {"Rsv1:ZP":[new String("K"),Uint32Array.from([])],"#Q&fX":new Map([["toString",Int16Array.from([15137,6963,-31618,-8152])],["9|i>4WD-n",undefined],["b",{}],["new Boolean(false)",-39259946980083279554715593783698463511610872004626833366423526738428242390239n],["",new Number(39)]]),"o;YP":[Uint16Array.from([55390]),new Map([[-1409948495533723,new Map([["new String(\"__loo\")",-2716593443926899],["9",new Date("-176498-10-13T05:22:57.615Z")],["",new String("&")],["01()h]",new String("@:|3")],["to",new Boolean(true)],["N&",28301999390138252060997941314553879042536015981990292700845462324271358256376n]])],[new Number(-1.7976931348623057e+308),new Set([new String("fF"),new String("^^nd"),false,new String("F3JXjV"),null,new Number(7461511085717193),new String("3<d1(O@E"),"!(2u)ZLUY",new String("*G8a\\*4E")])],[new String("k*dmT"),-1.5976645319447407e-196]]),new Map([["p~6",undefined],["<:!jM",new String("g")],["",-54n],["$$.{%aMT$","new String(\"_\")"],["ref","roto"],["8btqU9v3o",5.353796534935123e-77],["KORIY=7M}",undefined],["]61","yy/q;_cgR"],["new Number(-9007199254740943)",new String("5toStri")]])]}
 // • {"p?EZci9K7":{"#5JexvBJ>":Object.assign(Object.create(null),{"":25684384368652268371676662066259766667845500441350905050408509540519578692163n,"-4Kl%=":new String("7C0'u/cSTB")}),"0#:,":Uint8Array.from([236,162,112,136]),"Int16Array.from([-24991])":new String("g(vi`]/Q")},"IY+)IeR')":"Int16Array.from([-18242,-153,859,9780,-27358,26061,-27319,-4196,-9661])","N9tt":[]}
 // • {"};;j/k&2T":"o|dt","\\^idc":"\"new Map([[\\\"ymateD^Ev\\\",new String(\\\"J/%\\\\\\\\tX\\\")],[\\\"1\\\",new Date(\\\"+156518-02-04T18:07:05.796Z\\\")],[\\\",#\\\",new Number(1.2404435461119862e-8)],[\\\"vG.BwH{;\\\",new Date(\\\"-157210-09-22T10:10:22.206Z\\\")],[\\\"Xkv6KQ`Bh:\\\",\\\":Tf/5\\\"],[\\\"u)#5ePF$\\\",new Date(\\\"+247214-07-04T02:11:31.096Z\\\")]])\"","c*yU,.3GJ;":new Set([Object.assign(Object.create(null),{"P":new Map([])}),Float32Array.from([1.1393710410909086e-12,-9.610829694210658e+34,6.892901351825247e+37,-1.1824430957001336e-23,-1.5599477564315388e-15,22252509028417536,1606339071741788200]),Uint16Array.from([])]),"=#.fV^":new Number(1.0504779603677702e-268),"oMx":"\"new String(\\\"v\\\")\"","?*":[new Boolean(false),-8722669478184039,{"7Y":5316757657384553386054430893336163447822120960694178069693618944368891234780n,"uI":true,"":undefined,"=~]6-'M`":Object.assign(Object.create(null),{" Pr":new Boolean(false),"P}+dpjc{1":-50471221628943054093582994173190448203503755389266799758454517406244851505194n,"(Fm}_8":null}),"-R":19764688648316229735956382706053039105057640280971601823867474685961036183711n,"9ib/ps4{G":new Number(-2.7881089723393896e+280)},"new String(\"\")",[3.049005758572219e-288,7206622030149095,new Boolean(false),-3778007657565243,Uint16Array.from([])]],"":new String("4Rh"),"|6W,~y/":{"7":new Number(4.7807484009152274e-17),"ndQOiBz":new Date("+160205-03-25T10:12:08.332Z"),"vr)y,":30861843742924062520256157601957515516249055665477737692884703671332441082861n,"M":-19725002196895166999899064855650259015787520190730416688359352806673015777836n,"lpV^)>tfC&":new Boolean(true),"JL3":Object.assign(Object.create(null),{"/@V?y":39179270544590235212836875017713535490113648006163477959239021460828071876153n,"/GQ":new String("Q-!M>Us,"),"C;f":true,"2UBmV":-1.559872804640631e+114,"(T]\\q[1'o":"Tq^s8","xdZC9uE;!i":false,"C|r=}%U $":new Number(-4467144213983644),"}u3wd":new Number(6099962509105905),"new Date(\"-083351-08-26T00:37:32.198Z\")":new String("8")}),"WgESy6d":new Date("+032749-02-10T15:05:42.728Z"),"W":new String("]")}}
 // • {"RrAs^,;_'d":new String("2cx:"),"rwe":"1n!c","^KL'jR":Object.assign(Object.create(null),{",=QAr":-4115125381305223,"';}PmFHH![":new Date("+161404-04-11T22:01:07.424Z"),"*-ci":new Number(-5102224709906805),"@zeo]{&":"ukv",".80h!+#q":1.0462267051244647e+207,"'Hw,fY":new Number(5203533473541469),"v{~SW@~M3":"Ru>m","Ms":undefined})}
@@ -2925,9 +2931,9 @@ fc.object({
 // Note: For the moment, we have to specify maxDepth to avoid falling back onto its default value
 // Examples of generated values:
 // • {"":{"~?WDIxqj":6219704217632073}}
-// • {"pro":4.8695829793010686e+272}
-// • {"":true,"~#8}Z\"$<>b":[3.05066817432267e-222,[[-402040690031456],"","X3Xj",undefined,"Fwc8-KTbDs",[7413771313986293,-5525759939773108,3.2141717692547117e-206,7.54265233206461e-153,"(X'U+z"]]]}
-// • {"":{".,":[],"\"S&%x8R":{"aM2KQJMd!p":{"XU#[1kF\"":1.2674907938049296e-227},"(]!$vI\\m7#":[1166197889192629]},"}":[2292513427670517,false,{},"dNa",null],"G\\>|":{"cdVh`}m.":false,"l2uPo#w|":true,"=T O":1243207589776073,"{1t{8n%4^:":-2.7549920310987523e-181}},"#goto":"PM}AHl","8L":[undefined],"d'T_e":{"":[5987803158814993,"__proto_",undefined,-2.0751125743412753e-118,1.7976931348623073e+308,false,true],"S":["proto",8e-323],"lo":{},"b":[[6209742311750853,true,-5376066015083554,null,5118147596336197],[],null],"set":{".":"Zk","%8B/(og$":7.831244164278387e-138,"{%imp":6707493848214997}},"__protot":{},"q}\"":false,"=1":null,"~2":-2.03e-322}
+// • {"key":[[1.150720177689488e+117,1.8078054409861614e-40,"t",true,true,"S_fOOrJy",-1.159284631999241e+67,-8482811971832566,[5744662626420023],1.881925480738678e+109],[{},415112446291073,2.2615188075759266e+82,null,"b\\O#W",-1.4339510037731787e-185,5.859235261897208e-257],false]}
+// • {"":true,"Bc)T(,2(":9007199254740978}
+// • {"":{"9":-3.461388016230001e+43,"9.,D;h":{"\"S&%x8R":{},"Ea":"","JMd!p\\S":-2003817952230367,"1kF\"_T7q":"!$vI\\","":" Gqr7OE?_",">8)jAI-":5801701074806025,"39A~":"]KM}dNa@j","P&G\\>|M0Ij":"h`}m.)","f.l2uPo#":1.4721111552125072e+67},"(=":{"":{"z":4788105806149147,"8n%4^:T1":["-49@Y","","PM}AHl",-6634545010126951,-1.6323744640205306e+110,true,"T_"],"+'mF8BLauB":[]},"NnJUU'[-h\"":undefined},"6|P=Bc8S":"6%~rAS"},"tring":undefined,"~4":undefined,"9n1YSY-.vC":[[[false,null,2503393974794063,"uDl",8470544558146823,"B","yJ<V"]],"c$ !"],"q":{"afsV\"p4":"=>0_gmW","cbX!`)Hxo":-1214043840153340,"vR%k+{B":false,"WDFXT}ED`":true,"HO":-2261608893904031,"1#J-:%t":-3.9091772664445854e+78,"2Z2I<}":false,"7O,|D'":{"6~RWax":496831675241833,"":4974522267741933,"u`":true,"Cqz%HY":")r","^#~.1`":-3.905904144329039e-144,"Ci%8":false},"g$IwKNq8DH":638602134381873},"e!1":undefined,"s&~7Z^":[],"~!?E| $H":{"~i#B ms]t":true,"valueOf":{"":-3.4416484489521326e+262,"&(xj8":"mPU_","Y":"Wp3S","'RE_v{$*L":"(iw{)1,@","##":"ZSJrO2eS^","LR51vql":1403215317636985},"$\"P,$V":{"#":{"ny$. 6;\" ":",6Ia"," ":" ","xG$":-1.2218497609618295e+70,"=1;W4-":"$ter_","!s":"e!Q{\""},"length":null},"SS)nahe":"W-H<hc","(call":[undefined,[true,"J{p","2jdV*&II","<)[V&pN","`#Ar3"]],"call":{}}}
 // • {}
 // • …
 ```
@@ -2961,17 +2967,23 @@ fc.object({
 fc.jsonValue()
 // Examples of generated values:
 // • {"iWE$U_3M":false,"4L8Yr":1.0806001346002873e+274,"bo\":5":"Tro*&t(bXi","{e~\\gX0Ed":false,"y|9":true,"9?d:foL+as":null,"_N|}s":"Jaag<G`<L","[/|iFjY":true,"x\"":true,";":-1.1171857024835108e-58}
-// • {"3O":[null,{"lU ;Wao@":";xj)Win","l&%B":[-7.244210028304684e-255,null,-1.0603988221685689e-29,"w*",true,2.339144845912112e+28,null,-4.1319931103154393e-219,3.0508115461200976e+112],"mBE":1.249318890457807e+250,"z([sn":true},[{"f?":true,"]4":true,"'j~!":null,"J-*)F4CMnC":2.526076247359088e-33,"@VG\"[~ac}":-2.6327708404790712e-197,"Z":null,"K?GlB?":true,"z]8-":5.364690702410539e+233}]],"v":{"&":false,"XF:K^c~U":null,"GwKu}>":{"E1`d&":-6.717400873051508e+208,"":"6zA15W\"x","d9":true,"_":null},"\"\\lYzz":-7.4e-323,"1o:ILR\\A3":null},"t":null}
-// • "__p"
-// • "__"
-// • {"__p":"","MTvN8AE0gi":["1NBlE",3.24113878811968e+60,-0.0000046111853119812925,-2.3875211909710658e-60,6.206976954946466e+70,5.318455295270126e+63,"|s%~",false,null]}
+// • {"3O":[null,{"lU ;Wao@":";xj)Win","l&%B":[-7.244210028304684e-255,null,-1.0603988221685689e-29,"w*",true,2.339144845912112e+28,null,-4.1319931103154393e-219,3.0508115461200976e+112],"mBE":1.249318890457807e+250,"z([sn":true},[{"f?":true,"]4":true,"'j~!":null,"J-*)F4CMnC":2.526076247359088e-33,"@VG\"[~ac}":-2.6327708404790712e-197,"Z":null,"K?GlB?":true,"z]8-":5.364690702410539e+233}]],"\"":{"(":5.375484881463349e+287,"XF:K^c~U":null,"GwKu}>":{"E1`d&":-6.717400873051508e+208,"":"6zA15W\"x","d9":true,"_":null},"\"\\lYzz":-7.4e-323,"1o:ILR\\A3":null},"~":{"[ZD":true,"%rx":{">":false,"":null,"u_a":51404419592877030000,"XUN{)r^_N":false,"kTOUa9y":"l7&zFx7",":xsG":null,":J.<^sXm;":"8G","jA:qt0":3.572560542703272e-234},"D[p":"yRqR2?","[l":[true,-1.0421973983518383e-178,"1je",8.843998930251289e-119,false,-5.152446787514041e+159,9.506889712165612e+87,false],"":"&q4R-yX)O#","G}a+5@+gD":null,"Sq,K' ":true}}
+// • "ref"
+// • "5b"
+// • {"key":{},"MTvN8AE0gi":["1NBlE",3.24113878811968e+60,-0.0000046111853119812925,-2.3875211909710658e-60,6.206976954946466e+70,5.318455295270126e+63,"|s%~",false,null]}
 // • …
 
 fc.jsonValue({maxDepth: 0})
 // Examples of generated values: 7.890307626412925e-165, null, 2.57e-322, -1.7976931348623153e+308, false…
 
 fc.jsonValue({maxDepth: 1})
-// Examples of generated values: [true,-7.918315061101222e-252,true,null,null,"/}}"], -1.2e-322, [null,"srS+"], "W!oe%r(", {"{y!.k":null,"ass":null,"":null}…
+// Examples of generated values:
+// • [true,-7.918315061101222e-252,true,null,null,"/}}"]
+// • -1.2e-322
+// • [null,"srS+"]
+// • "W!oe%r("
+// • {"{y!.k":null,"|Oc&o&sq%!":-4.0148040652606947e-280,"":9.4e-323}
+// • …
 
 fc.statistics(
   fc.jsonValue(),
@@ -2994,16 +3006,16 @@ fc.statistics(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....44.74%
-// • 10 to 49 items..37.76%
-// • 5 to 9 items....17.41%
-// • 50 to 99 items...0.09%
+// • 1 to 4 items....44.78%
+// • 10 to 49 items..37.80%
+// • 5 to 9 items....17.32%
+// • 50 to 99 items...0.10%
 // For size = "medium":
-// • 50 to 99 items....35.58%
-// • 1 to 4 items......34.86%
-// • 10 to 49 items....20.01%
-// • 100 to 499 items...9.25%
-// • 500 to 999 items...0.26%
+// • 50 to 99 items....35.48%
+// • 1 to 4 items......34.85%
+// • 10 to 49 items....19.99%
+// • 100 to 499 items...9.41%
+// • 500 to 999 items...0.23%
 
 fc.statistics(
   fc.jsonValue({maxDepth: 2}),
@@ -3026,14 +3038,14 @@ fc.statistics(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....44.55%
-// • 5 to 9 items....34.67%
-// • 10 to 49 items..20.78%
+// • 1 to 4 items....44.58%
+// • 5 to 9 items....34.62%
+// • 10 to 49 items..20.80%
 // For size = "medium":
-// • 1 to 4 items......34.78%
-// • 50 to 99 items....34.04%
-// • 10 to 49 items....25.63%
-// • 100 to 499 items...4.21%
+// • 1 to 4 items......34.75%
+// • 50 to 99 items....34.01%
+// • 10 to 49 items....25.64%
+// • 100 to 499 items...4.26%
 // • 5 to 9 items.......1.34%
 ```
 </details>
@@ -3117,7 +3129,7 @@ fc.anything()
 // Examples of generated values:
 // • {"0sv'Tmhu":7.539250605364674e+254,"WtR%)":"9;[d;,G","NB:<~!66":"2Jagm0~","eN\\y":true,"":true,"xy 45|Z":"-aT@8","XQa^|_IU3^":1.2616016700584982e+82,"L38=tY7A9b":"b;hc3ty,>","4S4Rv":7588482540849003,";b":7267042625139189}
 // • 43
-// • "conti"
+// • ",key"
 // • {"'{RS":"Q&L","a)~#":-6069883125884153,"EFn=>O(":{"(e.;*JjY":false,"n*St`aF~":0.05014394779399645,"hkDw$:=>":true,"":-7358937421237663,")=A":null,"tEmU":false},"ZIEm":true,"|!T.":"&2","_s)ItBYRR":2.2846030757775376e-12,"|M[":[-3.964992976030417e-58,-2.1581526301783996e-176,5.2369687674103834e-70,7997711898664625,2.8481412631092096e-252,"WKqk\\r",1.0415301956108186e+75],"3{5)IsGYV":-4406545775562818,"1|`":"Xai:","":false}
 // • {}
 // • …
@@ -3138,7 +3150,7 @@ fc.anything({
   maxDepth: 0,
 })
 // Note: Only root values
-// Examples of generated values: undefined, false, "tch", -718042952162017, -1.9263249085363102e-246…
+// Examples of generated values: undefined, false, "&EO!& ", -718042952162017, -1.9263249085363102e-246…
 
 fc.anything({
   maxDepth: 1,
@@ -3146,7 +3158,7 @@ fc.anything({
 // Examples of generated values:
 // • -9007199254740952
 // • 1068292005279453
-// • "for"
+// • "|O!"
 // • [false,5823643812448959,undefined,"}",9.124929382447695e-86,undefined,"OFyc|3a=","q[Hn<",-4.557876961826521e-17,-4048517812111079]
 // • -2.7873486028769266e-78
 // • …
@@ -3163,7 +3175,7 @@ fc.anything({
   withSparseArray: true,
 })
 // Examples of generated values:
-// • {"set":{},"d":"\"false\"","#\\Pz":new Map([[new Number(-3375385215334703),"C8K=)o5c`"],[57896044618658097711785492504343953926634992332820282019728792003956564819934n,undefined],[new Date("-001472-03-01T09:50:01.446Z"),new Boolean(true)],[new Boolean(true),-271203529729575],[new Number(-2.517591535410722e+36),new Number(-1.24e-322)],[new Number(-1.797693134862304e+308),new Date("-236454-05-21T14:19:06.285Z")]])}
+// • {"ref":new Map([[new Map([[new Number(-8905474807765584),new String("Nk\"7#\\Pz")],[new Map([["WTq#a^",new String("C8K=)o5c`")]]),-2224550862762793407845042277047189858615842907218592173843194224355196513421n]]),-42648024011756020971112102676373839487311771903878971977829507739085340272548n]]),"`vJ~RA'":"\"__\"","Object.create(null)":"undefined"}
 // • [Uint32Array.from([3281742357,1338023626,3836558467,3268059952]),new Number(3.7214512198494237e-112)]
 // • [new Map([[-7474874382742641,new Map([[-4615411266401850490628713054522977361569910633878888811735023483461287791228n,"cT17fn="],[Object.assign(Object.create(null),{"l~":new String("*"),"":new String("k>)!:~"),"P[7":new String(">OKe(^s"),"D<0hK":"Et[ae","hacVS":true,"new Number(4439989912205791)":new Map([["'jpQ.%2!p",new String("R")],["9+4{qIE<R",new Number(5703819954978061)],["false",false]]),"465653674874254437531430477441918650015012755274567380269581709949558527314n":undefined,"#3\" 9e#kK":new Boolean(true)}),6514086946132733],[true,48168665237753281033133707475977365737369323412250573417337879366073902339121n],[-37747999309036447366227026204600042385524066700062055357196021969532733759549n,new Boolean(true)]])]])]
 // • 73n
@@ -3178,8 +3190,8 @@ fc.anything({
 // Examples of generated values:
 // • {}
 // • ["&cP<5:e(y\""]
-// • {"clSk1?*.":false,"N|":[],"0u?brKlCx":"__p","":true,"|Lfloat":"9{qw&k","=s":2.8e-322,"cla":5159075609604291,"Or9yi %'":null,"V\"-:<x3z0#":null}
-// • {"m#e:2@":false,"~eO#":-1.7976931348623127e+308,"p":-2.6e-322,"#D:k9{O":"Lget","get":true,"":false,"\\H?0},.~97":6847963005648795,"__":"'xI_f.@o@k","O":"int","e}cat":{"|kP":-7.964602801431733e+56,"H7":false}}
+// • {"9":-7,"clSk1?*.":false,"N|":[],"0u?brKlCx":"key","":"~D=7)-LT,","Ey":"","|>fi":5159075609604291,"r9y":true,"jQVIV":"x3z0#(=usb"}
+// • {"8":false,"m#e:2@":false,"~eO#":-1.7976931348623127e+308,"~":-2.6e-322,"#D:k9{O":"`%\"\"\" ~","}":undefined,"|&&__":false,"@k/UOo-":true,"Dej97Y9?eO":-1.2889696386603489e+306,"@Pm n|kPLT":false}
 // • 1.022676058193833e-127
 // • …
 ```
@@ -3617,7 +3629,7 @@ fc.integer().filter(n => n % 2 !== 0)
 
 fc.string().filter(s => s[0] < s[1])
 // Note: Only produce strings with `s[0] < s[1]`
-// Examples of generated values: "dp]dA+GK", "Sa{6S(", ",hsLWj#=y", "bo", "cd+M."…
+// Examples of generated values: "dp]dA+GK", "Sa{6S(", "hsLWj#=y", "\"}8}r!c}", "cd+M."…
 ```
 </details>
 
@@ -3653,7 +3665,7 @@ fc.tuple(fc.integer(), fc.integer())
 // Examples of generated values: [-2147483620,1211945858], [-1079425464,-233690526], [-2147483633,-2], [1592081894,2147483645], [6,25]…
 
 fc.string().map(s => `[${s.length}] -> ${s}`)
-// Examples of generated values: "[8] -> 40M;<f/D", "[2] -> 7a", "[2] -> :f", "[2] -> ru", "[9] -> 0LFg6!aMF"…
+// Examples of generated values: "[8] -> 40M;<f/D", "[2] -> 7a", "[2] -> 7S", "[2] -> !_", "[9] -> 0LFg6!aMF"…
 ```
 </details>
 
