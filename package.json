@@ -1,104 +1,35 @@
 {
-  "name": "fast-check",
-  "version": "2.25.0",
-  "description": "Property based testing framework for JavaScript (like QuickCheck)",
-  "type": "commonjs",
-  "main": "lib/fast-check.js",
-  "exports": {
-    ".": {
-      "require": "./lib/fast-check.js",
-      "types": "./lib/types/fast-check.d.ts",
-      "default": "./lib/esm/fast-check.js"
-    }
-  },
-  "module": "lib/esm/fast-check.js",
-  "types": "lib/types/fast-check.d.ts",
-  "files": [
-    "lib",
-    "runkit.cjs"
+  "private": true,
+  "name": "@fast-check/monorepo",
+  "description": "Test making sure fast-check expose the right typings",
+  "version": "0.0.0",
+  "packageManager": "yarn@3.2.1",
+  "workspaces": [
+    ".github/actions/*",
+    "examples",
+    "packages/*"
   ],
-  "sideEffects": false,
-  "runkitExampleFilename": "runkit.cjs",
   "scripts": {
-    "perf": "node perf/benchmark.js",
-    "profile": "node --prof --no-logfile-per-isolate --trace-deopt --trace-opt-verbose perf/profiler.js > deopt.out && node --prof-process v8.log > v8.out",
-    "build": "tsc -p tsconfig.nospec.json",
-    "build:watch": "tsc -p tsconfig.nospec.json -w",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "build:prod": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.cjs",
-    "build:prod-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build:prod",
-    "typecheck": "tsc --noEmit",
-    "test": "jest --config jest.unit.config.cjs --coverage --verbose",
-    "test:watch": "jest --config jest.unit.config.cjs --watch",
-    "test:debug": "node --inspect node_modules/jest/bin/jest.js --config jest.unit.config.cjs --watch --runInBand",
-    "test:es:cjs": "es-check es2017 lib/**/*.js --not=esm -v",
-    "test:es:esm": "es-check es2017 lib/esm/**/*.js --module -v",
-    "test:es": "yarn test:es:cjs && yarn test:es:esm",
-    "e2e": "jest --config jest.e2e.config.cjs --coverage --verbose",
-    "e2e:watch": "jest --config jest.e2e.config.cjs --watch",
-    "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
-    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --tsconfig tsconfig.nospec.json --out docs src/fast-check-default.ts && node postbuild/main.cjs",
-    "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
-    "docs:serve": "npx serve docs/",
+    "contributor:add": "all-contributors add",
+    "build:all": "yarn workspaces foreach -ptvi run build",
+    "build-ci:all": "yarn workspaces foreach -ptvi run build-ci",
+    "test:all": "yarn workspaces foreach -pvi run test && yarn workspaces foreach -pvi run e2e",
+    "typecheck:all": "yarn workspaces foreach -pvi run typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --list-different .",
-    "lint": "eslint \"**/*.{js,ts}\" --fix",
-    "lint:check": "eslint \"**/*.{js,ts}\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git"
-  },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/dubzzz/fast-check/issues"
-  },
-  "homepage": "https://github.com/dubzzz/fast-check#readme",
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "dependencies": {
-    "pure-rand": "^5.0.1"
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "version:bump": "yarn version check --interactive && yarn workspace @fast-check/monorepo version decline",
+    "pack:all": "yarn workspaces foreach -pvi --no-private pack --out package.tgz",
+    "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.9.10",
-    "@types/jest": "^27.0.0",
-    "@types/node": "^17.0.0",
+    "@fast-check/packaged": "*",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "benchmark": "^2.1.4",
-    "buffer": "^6.0.1",
-    "cross-env": "^7.0.2",
-    "es-check": "^6.2.1",
-    "eslint": "^8.0.0",
+    "all-contributors-cli": "^6.20.0",
+    "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.1.0",
-    "jest": "^28.0.0",
-    "jscodeshift": "^0.13.0",
-    "mkdirp": "^1.0.4",
-    "prettier": "2.6.2",
-    "replace-in-file": "^6.0.0",
-    "source-map-support": "^0.5.19",
-    "ts-jest": "^28.0.0",
-    "typedoc": "^0.22.3",
-    "typescript": "^4.3.2"
-  },
-  "keywords": [
-    "property-based testing",
-    "end-to-end testing",
-    "unit testing",
-    "testing",
-    "quickcheck",
-    "jscheck",
-    "jsverify"
-  ],
-  "tsd": {
-    "directory": "test/type"
-  },
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/fast-check"
+    "prettier": "2.7.1"
   }
 }

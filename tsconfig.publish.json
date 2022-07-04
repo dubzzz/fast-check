@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.nospec.json",
-  "compilerOptions": {
-    "declaration": false,
-    "incremental": false,
-    "removeComments": true,
-    "sourceMap": false
-  }
-}

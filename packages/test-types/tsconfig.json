@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}

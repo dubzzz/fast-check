@@ -1,0 +1,51 @@
+{
+  "name": "@fast-check/packaged",
+  "description": "Utility package removing any files that will not be part of the final bundle",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "main": "lib/packaged.js",
+  "types": "lib/packaged.d.ts",
+  "bin": "./bin/packaged.js",
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.publish.json --incremental",
+    "build-ci": "tsc -p tsconfig.publish.json",
+    "test": "jest --verbose",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/packaged"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/packaged#readme",
+  "engines": {
+    "node": ">=14.14.0"
+  },
+  "dependencies": {
+    "pacote": "^13.6.0",
+    "tar": "^6.1.11"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.0.0",
+    "@types/pacote": "^11.1.4",
+    "@types/tar": "^6.1.1",
+    "jest": "^28.0.0",
+    "ts-jest": "^28.0.0",
+    "typescript": "^4.3.2"
+  },
+  "keywords": [],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/fast-check"
+  }
+}

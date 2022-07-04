@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "lib/types/",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "removeComments": false,
+    "stripInternal": true
+  },
+  "include": ["src/**/*"]
+}

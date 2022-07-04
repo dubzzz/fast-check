@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "@fast-check/test-bundle-node-with-require",
+  "description": "Test making sure fast-check can be referenced from CJS projects",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "dry": "node dry.js",
+    "start": "node main.js > out.txt",
+    "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
+  },
+  "dependencies": {
+    "fast-check": "workspace:*"
+  },
+  "license": "MIT"
+}
