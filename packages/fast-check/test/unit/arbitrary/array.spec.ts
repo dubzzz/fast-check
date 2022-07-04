@@ -38,7 +38,15 @@ describe('array', () => {
         const arb = withConfiguredGlobal(config, () => array(childInstance));
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), 0x7fffffff, undefined);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(
+          childInstance,
+          0,
+          expect.any(Number),
+          0x7fffffff,
+          undefined,
+          undefined,
+          []
+        );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
         expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
@@ -61,13 +69,21 @@ describe('array', () => {
         const arb = withConfiguredGlobal(config, () => array(childInstance, { maxLength }));
 
         // Assert
-        expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, expect.any(Number), maxLength, undefined);
+        expect(ArrayArbitrary).toHaveBeenCalledWith(
+          childInstance,
+          0,
+          expect.any(Number),
+          maxLength,
+          undefined,
+          undefined,
+          []
+        );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(0);
         expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(maxLength);
         expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
         if (config.defaultSizeToMaxWhenMaxSpecified) {
-          expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, undefined);
+          expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, undefined, undefined, []);
         }
         expect(arb).toBe(instance);
       })
@@ -137,7 +153,15 @@ describe('array', () => {
           expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(maxLength);
           expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
           if (config.defaultSizeToMaxWhenMaxSpecified) {
-            expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, minLength, maxLength, maxLength, undefined);
+            expect(ArrayArbitrary).toHaveBeenCalledWith(
+              childInstance,
+              minLength,
+              maxLength,
+              maxLength,
+              undefined,
+              undefined,
+              []
+            );
           }
           expect(arb).toBe(instance);
         }
@@ -183,7 +207,9 @@ describe('array', () => {
               minLength,
               maxLength,
               maxLength,
-              depthIdentifier
+              depthIdentifier,
+              undefined,
+              []
             );
           }
           expect(arb).toBe(instance);
