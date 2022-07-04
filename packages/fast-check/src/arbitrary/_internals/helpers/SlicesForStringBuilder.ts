@@ -28,10 +28,10 @@ const dangerousStrings = [
   'ref',
 ];
 
-export function createSlicesForStringBuilder(
+export function createSlicesForString(
   charArbitrary: Arbitrary<string>,
   stringSplitter: (value: string) => string[]
-): () => string[][] {
+): string[][] {
   const slicesForString: string[][] = dangerousStrings
     .map((dangerous) => {
       try {
@@ -41,7 +41,6 @@ export function createSlicesForStringBuilder(
       }
     })
     .filter((entry) => entry.length > 0 && entry.every((c) => charArbitrary.canShrinkWithoutContext(c)));
-  return function buildSlicesForString(): string[][] {
-    return slicesForString;
-  };
+
+  return slicesForString;
 }

@@ -3,7 +3,7 @@ import { array, ArrayConstraintsInternal } from './array';
 import { char16bits } from './char16bits';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { charsToStringMapper, charsToStringUnmapper } from './_internals/mappers/CharsToString';
-import { createSlicesForStringBuilder } from './_internals/helpers/SlicesForStringBuilder';
+import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -16,7 +16,7 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  */
 export function string16bits(constraints: StringSharedConstraints = {}): Arbitrary<string> {
   const charArbitrary = char16bits();
-  const slicesBuilder = createSlicesForStringBuilder(charArbitrary, charsToStringUnmapper);
-  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, getCustomSlices: slicesBuilder };
+  const experimentalCustomSlices = createSlicesForString(charArbitrary, charsToStringUnmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
   return array(charArbitrary, enrichedConstraints).map(charsToStringMapper, charsToStringUnmapper);
 }

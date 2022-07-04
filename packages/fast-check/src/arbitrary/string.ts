@@ -3,7 +3,7 @@ import { array, ArrayConstraintsInternal } from './array';
 import { char } from './char';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
-import { createSlicesForStringBuilder } from './_internals/helpers/SlicesForStringBuilder';
+import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -16,7 +16,7 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  */
 export function string(constraints: StringSharedConstraints = {}): Arbitrary<string> {
   const charArbitrary = char();
-  const slicesBuilder = createSlicesForStringBuilder(charArbitrary, codePointsToStringUnmapper);
-  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, getCustomSlices: slicesBuilder };
+  const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
   return array(charArbitrary, enrichedConstraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }
