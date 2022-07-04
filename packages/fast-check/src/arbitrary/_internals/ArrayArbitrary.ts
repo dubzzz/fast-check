@@ -7,6 +7,7 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { CustomSetBuilder } from './interfaces/CustomSet';
 import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
+import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator';
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -75,13 +76,14 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   ): Value<T>[] {
     let numSkippedInRow = 0;
     const s = setBuilder();
+    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, [], biasFactorItems);
     // Try to append into items up to the target size
     // We may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
     // we accept a max of maxGeneratedLength consecutive failures. This circuit breaker may cause
     // generated to be smaller than the minimal accepted one.
     while (s.size() < N && numSkippedInRow < this.maxGeneratedLength) {
-      const current = this.arb.generate(mrng, biasFactorItems);
+      const current = slicedGenerator.next();
       if (s.tryAdd(current)) {
         numSkippedInRow = 0;
       } else {
@@ -108,8 +110,10 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
 
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): Value<T>[] {
     const items: Value<T>[] = [];
+    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, [], biasFactorItems);
+    slicedGenerator.attemptExact(N);
     for (let index = 0; index !== N; ++index) {
-      const current = this.arb.generate(mrng, biasFactorItems);
+      const current = slicedGenerator.next();
       items.push(current);
     }
     return items;
