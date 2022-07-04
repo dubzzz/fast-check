@@ -34,9 +34,8 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     const sanitizedConstraints: _SanitizedConstraints = {
       depthBias: depthBiasFromSizeForArbitrary(constraints.depthSize, constraints.maxDepth !== undefined),
-      depthIdentifier: constraints.depthIdentifier,
-      maxDepth: constraints.maxDepth,
-      withCrossShrink: constraints.withCrossShrink,
+      maxDepth: constraints.maxDepth != undefined ? constraints.maxDepth : Number.POSITIVE_INFINITY,
+      withCrossShrink: !!constraints.withCrossShrink,
     };
     return new FrequencyArbitrary(warbs, sanitizedConstraints, getDepthContextFor(constraints.depthIdentifier));
   }
@@ -172,12 +171,12 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
 
   /** Check if generating a value based on the first arbitrary is compulsory */
   private mustGenerateFirst(): boolean {
-    return this.constraints.maxDepth !== undefined && this.constraints.maxDepth <= this.context.depth;
+    return this.constraints.maxDepth <= this.context.depth;
   }
 
   /** Check if fallback on first arbitrary during shrinking is required */
   private mustFallbackToFirstInShrink(idx: number): boolean {
-    return idx !== 0 && !!this.constraints.withCrossShrink && this.warbs[0].weight !== 0;
+    return idx !== 0 && this.constraints.withCrossShrink && this.warbs[0].weight !== 0;
   }
 
   /** Compute the benefit for the current depth */
@@ -204,10 +203,9 @@ export type _Constraints = {
 
 /** @internal */
 type _SanitizedConstraints = {
-  withCrossShrink: boolean | undefined;
+  withCrossShrink: boolean;
   depthBias: number;
-  maxDepth: number | undefined;
-  depthIdentifier: DepthIdentifier | string | undefined;
+  maxDepth: number;
 };
 
 /** @internal */

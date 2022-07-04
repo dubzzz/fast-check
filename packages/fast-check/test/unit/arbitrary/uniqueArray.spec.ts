@@ -42,7 +42,8 @@ describe('uniqueArray', () => {
           expect.any(Number),
           0x7fffffff,
           undefined,
-          expect.any(Function)
+          expect.any(Function),
+          []
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
@@ -72,7 +73,8 @@ describe('uniqueArray', () => {
           expect.any(Number),
           maxLength,
           undefined,
-          expect.any(Function)
+          expect.any(Function),
+          []
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(0);
@@ -85,7 +87,8 @@ describe('uniqueArray', () => {
             maxLength,
             maxLength,
             undefined,
-            expect.any(Function)
+            expect.any(Function),
+            []
           );
         }
         expect(arb).toBe(instance);
@@ -113,7 +116,8 @@ describe('uniqueArray', () => {
           expect.any(Number),
           0x7fffffff,
           undefined,
-          expect.any(Function)
+          expect.any(Function),
+          []
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         if (minLength !== 2 ** 31 - 1) {
@@ -153,7 +157,8 @@ describe('uniqueArray', () => {
             expect.any(Number),
             maxLength,
             undefined,
-            expect.any(Function)
+            expect.any(Function),
+            []
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
@@ -166,7 +171,8 @@ describe('uniqueArray', () => {
               maxLength,
               maxLength,
               undefined,
-              expect.any(Function)
+              expect.any(Function),
+              []
             );
           }
           expect(arb).toBe(instance);
@@ -219,7 +225,8 @@ describe('uniqueArray', () => {
             expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
             constraints.depthIdentifier,
-            expect.any(Function)
+            expect.any(Function),
+            []
           );
           expect(arb).toBe(instance);
         }

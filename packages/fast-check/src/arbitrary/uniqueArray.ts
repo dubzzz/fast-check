@@ -230,7 +230,7 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
     maxLength,
     depthIdentifier,
     setBuilder,
-    undefined
+    []
   );
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);

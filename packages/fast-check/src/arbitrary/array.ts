@@ -61,7 +61,7 @@ export interface ArrayConstraintsInternal<T> extends ArrayConstraints {
    * Each entry must have at least one element of type T into it.
    * Each T must be a value acceptable for the arbitrary passed to the array.
    */
-  getCustomSlices?: () => T[][];
+  experimentalCustomSlices?: T[][];
 }
 
 /**
@@ -81,14 +81,7 @@ function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitr
   const maxLength = maxLengthOrUnset !== undefined ? maxLengthOrUnset : MaxLengthUpperBound;
   const specifiedMaxLength = maxLengthOrUnset !== undefined;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
-  return new ArrayArbitrary<T>(
-    arb,
-    minLength,
-    maxGeneratedLength,
-    maxLength,
-    depthIdentifier,
-    undefined,
-    (constraints as ArrayConstraintsInternal<T>).getCustomSlices
-  );
+  const customSlices = (constraints as ArrayConstraintsInternal<T>).experimentalCustomSlices || [];
+  return new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength, depthIdentifier, undefined, customSlices);
 }
 export { array };
