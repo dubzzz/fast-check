@@ -38,7 +38,8 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     depthIdentifier: DepthIdentifier | string | undefined,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
-    readonly setBuilder?: CustomSetBuilder<Value<T>>
+    readonly setBuilder: CustomSetBuilder<Value<T>> | undefined,
+    readonly customSlices: T[][]
   ) {
     super();
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
@@ -76,7 +77,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   ): Value<T>[] {
     let numSkippedInRow = 0;
     const s = setBuilder();
-    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, [], biasFactorItems);
+    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, this.customSlices, biasFactorItems);
     // Try to append into items up to the target size
     // We may reject some items as they are already part of the set
     // so we need to retry and generate other ones. In order to prevent infinite loop,
@@ -110,7 +111,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
 
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): Value<T>[] {
     const items: Value<T>[] = [];
-    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, [], biasFactorItems);
+    const slicedGenerator = buildSlicedGenerator(this.arb, mrng, this.customSlices, biasFactorItems);
     slicedGenerator.attemptExact(N);
     for (let index = 0; index !== N; ++index) {
       const current = slicedGenerator.next();

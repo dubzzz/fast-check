@@ -50,6 +50,21 @@ export interface ArrayConstraints {
 }
 
 /**
+ * Extra but internal constraints that can be passed to array.
+ * This extra set is made of constraints mostly targets experimental and internal features not yet mature to be exposed.
+ * @internal
+ */
+export interface ArrayConstraintsInternal<T> extends ArrayConstraints {
+  /**
+   * Extra user-definable and hardcoded values.
+   * Each entry in the array could be used to build the final generated value outputed by the arbitrary of array on generate.
+   * Each entry must have at least one element of type T into it.
+   * Each T must be a value acceptable for the arbitrary passed to the array.
+   */
+  experimentalCustomSlices?: T[][];
+}
+
+/**
  * For arrays of values coming from `arb`
  *
  * @param arb - Arbitrary used to generate the values inside the array
@@ -66,6 +81,7 @@ function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitr
   const maxLength = maxLengthOrUnset !== undefined ? maxLengthOrUnset : MaxLengthUpperBound;
   const specifiedMaxLength = maxLengthOrUnset !== undefined;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
-  return new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength, depthIdentifier);
+  const customSlices = (constraints as ArrayConstraintsInternal<T>).experimentalCustomSlices || [];
+  return new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength, depthIdentifier, undefined, customSlices);
 }
 export { array };
