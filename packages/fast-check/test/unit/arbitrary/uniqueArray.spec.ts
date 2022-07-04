@@ -87,7 +87,8 @@ describe('uniqueArray', () => {
             maxLength,
             maxLength,
             undefined,
-            expect.any(Function)
+            expect.any(Function),
+            []
           );
         }
         expect(arb).toBe(instance);
@@ -170,7 +171,8 @@ describe('uniqueArray', () => {
               maxLength,
               maxLength,
               undefined,
-              expect.any(Function)
+              expect.any(Function),
+              []
             );
           }
           expect(arb).toBe(instance);

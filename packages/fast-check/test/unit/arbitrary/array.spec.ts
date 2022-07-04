@@ -108,7 +108,9 @@ describe('array', () => {
           minLength,
           expect.any(Number),
           0x7fffffff,
-          undefined
+          undefined,
+          undefined,
+          []
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         if (minLength !== 2 ** 31 - 1) {
@@ -146,7 +148,9 @@ describe('array', () => {
             minLength,
             expect.any(Number),
             maxLength,
-            undefined
+            undefined,
+            undefined,
+            []
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
@@ -195,7 +199,9 @@ describe('array', () => {
             minLength,
             expect.any(Number),
             maxLength,
-            depthIdentifier
+            depthIdentifier,
+            undefined,
+            []
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
