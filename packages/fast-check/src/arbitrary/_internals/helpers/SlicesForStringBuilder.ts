@@ -59,7 +59,7 @@ export function createSlicesForString(
   const slicesForString: string[][] = [];
   for (const dangerous of dangerousStrings) {
     const candidate = computeCandidateString(dangerous, charArbitrary, stringSplitter);
-    if (candidate) {
+    if (candidate !== undefined) {
       slicesForString.push(candidate);
     }
   }
