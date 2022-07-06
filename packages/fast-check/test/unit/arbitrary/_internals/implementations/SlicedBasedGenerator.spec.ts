@@ -89,6 +89,7 @@ describe('SlicedBasedGenerator', () => {
             // Arrange
             const { instance: arb, generate } = fakeArbitrary();
             const { instance: mrng, nextInt } = fakeRandom();
+            const allValuesFromSlices = slices.flat();
 
             // Act
             const generator = new SlicedBasedGenerator(arb, mrng, slices, biasFactor);
@@ -106,7 +107,9 @@ describe('SlicedBasedGenerator', () => {
                 }
                 return (streamModValues.next().value % (max - min + 1)) + min; // pure random for next calls
               });
-              readFromGenerator.push(generator.next().value);
+              const value = generator.next().value;
+              expect(allValuesFromSlices).toContain(value); // should only produce values coming from slices
+              readFromGenerator.push(value);
             }
 
             // Assert

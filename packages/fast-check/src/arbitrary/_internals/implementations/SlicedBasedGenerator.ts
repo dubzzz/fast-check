@@ -43,18 +43,17 @@ export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
     }
     // We update the active slice
     this.activeSliceIndex = this.mrng.nextInt(0, this.slices.length - 1);
+    const slice = this.slices[this.activeSliceIndex];
     if (this.mrng.nextInt(1, this.biasFactor) !== 1) {
       // We will consider the whole slice and not a sub-set of it
       this.nextIndexInSlice = 1;
-      this.lastIndexInSlice = this.slices.length - 1;
-      return new Value(this.slices[this.activeSliceIndex][0], undefined);
+      this.lastIndexInSlice = slice.length - 1;
+      return new Value(slice[0], undefined);
     }
-    const slice = this.slices[this.activeSliceIndex];
     const rangeBoundaryA = this.mrng.nextInt(0, slice.length - 1);
     const rangeBoundaryB = this.mrng.nextInt(0, slice.length - 1);
     this.nextIndexInSlice = Math.min(rangeBoundaryA, rangeBoundaryB);
     this.lastIndexInSlice = Math.max(rangeBoundaryA, rangeBoundaryB);
-    this.lastIndexInSlice = this.slices.length - 1;
-    return new Value(this.slices[this.activeSliceIndex][this.nextIndexInSlice++], undefined);
+    return new Value(slice[this.nextIndexInSlice++], undefined);
   }
 }
