@@ -1364,10 +1364,10 @@ Execution summary:
 `;
 
 exports[`NoRegression domain 1`] = `
-"Property failed after 6 tests
-{ seed: 42, path: \\"5:0:1:0\\", endOnFailure: true }
+"Property failed after 5 tests
+{ seed: 42, path: \\"4:0:3:0:0:1:2:1:0:0:0:0\\", endOnFailure: true }
 Counterexample: [\\"aa.aa\\"]
-Shrunk 3 time(s)
+Shrunk 11 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
@@ -1375,12 +1375,25 @@ Execution summary:
 [32m√[0m [\\"81u3tvl23k4.ref\\"]
 [32m√[0m [\\"4.vlj\\"]
 [32m√[0m [\\"fk71i1i4.uvo\\"]
-[32m√[0m [\\"xprototypeq.fs\\"]
-[31m×[0m [\\"4iw3esxxza.aw\\"]
-. [31m×[0m [\\"aiw3esxxza.aw\\"]
-. . [32m√[0m [\\"a.aw\\"]
-. . [31m×[0m [\\"aa.aw\\"]
-. . . [31m×[0m [\\"aa.aa\\"]"
+[31m×[0m [\\"xprotccbcalm.xsx\\"]
+. [31m×[0m [\\"aprotccbcalm.xsx\\"]
+. . [32m√[0m [\\"a.xsx\\"]
+. . [32m√[0m [\\"am.xsx\\"]
+. . [32m√[0m [\\"acbcalm.xsx\\"]
+. . [31m×[0m [\\"aotccbcalm.xsx\\"]
+. . . [31m×[0m [\\"atccbcalm.xsx\\"]
+. . . . [31m×[0m [\\"accbcalm.xsx\\"]
+. . . . . [32m√[0m [\\"acbcalm.xsx\\"]
+. . . . . [31m×[0m [\\"aacbcalm.xsx\\"]
+. . . . . . [32m√[0m [\\"acalm.xsx\\"]
+. . . . . . [32m√[0m [\\"acbcalm.xsx\\"]
+. . . . . . [31m×[0m [\\"aam.xsx\\"]
+. . . . . . . [32m√[0m [\\"am.xsx\\"]
+. . . . . . . [31m×[0m [\\"aaa.xsx\\"]
+. . . . . . . . [31m×[0m [\\"aa.xsx\\"]
+. . . . . . . . . [31m×[0m [\\"aa.sx\\"]
+. . . . . . . . . . [31m×[0m [\\"aa.ax\\"]
+. . . . . . . . . . . [31m×[0m [\\"aa.aa\\"]"
 `;
 
 exports[`NoRegression double 1`] = `
@@ -4843,7 +4856,7 @@ Shrunk 1 time(s)
 Got error: Property failed by returning false
 
 Execution summary:
-[32m√[0m [\\"bz089axab-ea.in\\"]
+[32m√[0m [\\"bz089axab-ea.ia\\"]
 [31m×[0m [\\"ac.cc\\"]
 . [31m×[0m [\\"a.cc\\"]
 . . [32m√[0m [\\"a.ac\\"]

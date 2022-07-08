@@ -688,7 +688,7 @@ fc.base64String()
 
 fc.base64String({maxLength: 8})
 // Note: Any base64 string containing up to 8 (included) characters
-// Examples of generated values: "", "AcWxDA==", "DGFHcB==", "xBk=", "+rgk"…
+// Examples of generated values: "", "AcWxDA==", "y/==", "DGFHcB==", "xBk="…
 
 fc.base64String({minLength: 8})
 // Note: Any base64 string containing at least 8 (included) characters
@@ -772,7 +772,7 @@ fc.asciiString({maxLength: 3})
 
 fc.asciiString({minLength: 3})
 // Note: Any ascii string containing at least 3 (included) characters
-// Examples of generated values: " prototype", "vCkn&}{", "\u0006& ", "'\u0010*6ua\u0017JEpG\u000bg<#\u0007", "caller"…
+// Examples of generated values: " prototype#p", "vCkn&}{", "\u0006& ", "'\u0010*6ua\u0017JEpG\u000bg<#\u0007", "caller"…
 
 fc.asciiString({minLength: 4, maxLength: 6})
 // Note: Any ascii string containing between 4 (included) and 6 (included) characters
@@ -812,7 +812,7 @@ fc.unicodeString({maxLength: 3})
 
 fc.unicodeString({minLength: 3})
 // Note: Any unicode (from BMP-plan) string containing at least 3 (included) characters
-// Examples of generated values: "toLocaleString", "杮಴⿆뎶蝐母쪀㩑ᶔ䰚搞慢䲉欐", "⇾燏ᅙ秱뵴ꇺ꿵玽鄧돟鐎䕝ᑿ", "apply", "call"…
+// Examples of generated values: "toLocaleString", "杮಴⿆뎶蝐母쪀㩑ᶔ䰚搞慢䲉欐", "⇾燏ᅙ秱뵴ꇺ꿵玽鄧돟鐎䕝ᑿ", "apply", "call䪎"…
 
 fc.unicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode (from BMP-plan) string containing between 4 (included) and 6 (included) characters
@@ -900,7 +900,7 @@ fc.fullUnicodeString({minLength: 3})
 
 fc.fullUnicodeString({minLength: 4, maxLength: 6})
 // Note: Any unicode string containing between 4 (included) and 6 (included) code-points
-// Examples of generated values: "񅈡򅰻񱅜򾐬񲆗񃯹", "+񙷦-򽺺􏿮", "􏿶ref", "call", "name"…
+// Examples of generated values: "񅈡򅰻񱅜򾐬񲆗񃯹", "+񙷦-򽺺􏿮", "􏿶r𼻃!in", "call", "name"…
 ```
 </details>
 
@@ -988,7 +988,7 @@ fc.json({maxDepth: 0})
 
 fc.json({maxDepth: 1})
 // Examples of generated values:
-// • "{\"mTZw9f!~2\":\"N'!U6\",\"9=\":-3.6221384866363086e-275,\"\":\"cq\",\"re\":null,\"~aller\":null,\"valueOf\":false,\"HoB)<PLf S\":null}"
+// • "{\"mTZw9f!~2\":\"N'!U6\",\"9=\":-3.6221384866363086e-275,\"\":\"cq\",\"re\":null,\"~all\\\"calle\":false,\"HoB)<PLf S\":null,\"!9$\":null}"
 // • "{\"UzMWL`G@{_\":null,\"znC\":\"nY\",\"J\":3.849085080516248e-191,\"r3$\\\\\":\"`vl9%HJT)\",\"jHSz2\":3413124726.2879148,\"\":\"`L\"}"
 // • "{}"
 // • "{\"Q|t9};*Iow\":true,\"r(>uO\":false,\"I$2`I_6@\":false,\"qO[OhM7\":9.314698990394179e+30,\"&!j*hIk\":\"H\\\"\\\"~\",\"`bcc\":2.5169346616860097e+70,\"!2 +k;_\":-4.469218455495708e+292,\"#AhOnL@1\":\")A)gi\"}"
@@ -1247,7 +1247,7 @@ fc.uuidV(5)
 
 ```js
 fc.domain()
-// Examples of generated values: "j6ib52zarmf.bin", "00.kc", "35b10n-w.7xe2.xai", "0.h6a4sfyde.nz", "c.na"…
+// Examples of generated values: "j6ib52zarmf.bit", "00.kc", "35b10n-w.7xe2.xai", "0.h6a4sfyde.nz", "c.na"…
 
 fc.domain({size: '-1'})
 // Note: Generate smaller domain name compared to default. As default size is 'small' (if unchanged), it is equivalent to 'xsmall'
@@ -1387,7 +1387,7 @@ fc.webQueryParameters()
 
 ```js
 fc.webSegment()
-// Examples of generated values: "ref", "097", "e", "BgyH", "apply"…
+// Examples of generated values: "ref", "097", "e", "BgyH", "applyh"…
 ```
 </details>
 
@@ -2164,7 +2164,7 @@ fc.option(fc.nat(), { freq: 2, nil: Number.NaN })
 // Examples of generated values: 2147483617, Number.NaN, 259062763, 13, 23…
 
 fc.option(fc.string(), { nil: undefined })
-// Examples of generated values: "^_|\"T.5rB", "te", " A3D$k", undefined, "#"…
+// Examples of generated values: "^_|\"T.5rB", "t_", " A3D$k", undefined, "#"…
 
 // fc.option fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
@@ -2744,7 +2744,7 @@ fc.dictionary(fc.string(), fc.nat(), {minKeys: 2})
 // Examples of generated values:
 // • {"T<M3<":620901509,"DaM\"":1958316323}
 // • {"Tc\"":2147483642,"bIKoG7_j":2147483643,"A\\`~@<Y":258879863}
-// • {"name":19,"M!$":335798314,"I}xy$}?i|\"":2147483640,"p":1839244593,"\"_Yy[;\"J-":153893444,"`N":2147483619,"#8o7_`7":1016546359,"x":2147483617,"n0tx":507325698,"rAM0C4}:":1665875736}
+// • {"name":19,"M!$":335798314,"I}xy$}?i|\"":2147483640,"p":1839244593,"\"_Yy[;\"J-":153893444,"`N":2147483619,"namep":1325293218,"o7_`7S\";G":946441814,"&/#~zA0!":2137081001,"<":1207844250}
 // • {"|":281859129,"}":17,"6r":761554278,"":640237334,"+%":1210799674,"f`My$7\"A{>":2147483645,"2qYK|j56":2147483635,"Zn":1154026117,"length":2147483624,"jt}":28,"R2":0,"C":1911678324,"||#\"~e(%":2147483638}
 // • {"":15,".":2147483630,"key":2147483626,"-0;AQTo4":22,"calle":24,"r}f":5}
 // • …
@@ -2933,7 +2933,7 @@ fc.object({
 // • {"":{"~?WDIxqj":6219704217632073}}
 // • {"key":[[1.150720177689488e+117,1.8078054409861614e-40,"t",true,true,"S_fOOrJy",-1.159284631999241e+67,-8482811971832566,[5744662626420023],1.881925480738678e+109],[{},415112446291073,2.2615188075759266e+82,null,"b\\O#W",-1.4339510037731787e-185,5.859235261897208e-257],false]}
 // • {"":true,"Bc)T(,2(":9007199254740978}
-// • {"":{"9":-3.461388016230001e+43,"9.,D;h":{"\"S&%x8R":{},"Ea":"","JMd!p\\S":-2003817952230367,"1kF\"_T7q":"!$vI\\","":" Gqr7OE?_",">8)jAI-":5801701074806025,"39A~":"]KM}dNa@j","P&G\\>|M0Ij":"h`}m.)","f.l2uPo#":1.4721111552125072e+67},"(=":{"":{"z":4788105806149147,"8n%4^:T1":["-49@Y","","PM}AHl",-6634545010126951,-1.6323744640205306e+110,true,"T_"],"+'mF8BLauB":[]},"NnJUU'[-h\"":undefined},"6|P=Bc8S":"6%~rAS"},"tring":undefined,"~4":undefined,"9n1YSY-.vC":[[[false,null,2503393974794063,"uDl",8470544558146823,"B","yJ<V"]],"c$ !"],"q":{"afsV\"p4":"=>0_gmW","cbX!`)Hxo":-1214043840153340,"vR%k+{B":false,"WDFXT}ED`":true,"HO":-2261608893904031,"1#J-:%t":-3.9091772664445854e+78,"2Z2I<}":false,"7O,|D'":{"6~RWax":496831675241833,"":4974522267741933,"u`":true,"Cqz%HY":")r","^#~.1`":-3.905904144329039e-144,"Ci%8":false},"g$IwKNq8DH":638602134381873},"e!1":undefined,"s&~7Z^":[],"~!?E| $H":{"~i#B ms]t":true,"valueOf":{"":-3.4416484489521326e+262,"&(xj8":"mPU_","Y":"Wp3S","'RE_v{$*L":"(iw{)1,@","##":"ZSJrO2eS^","LR51vql":1403215317636985},"$\"P,$V":{"#":{"ny$. 6;\" ":",6Ia"," ":" ","xG$":-1.2218497609618295e+70,"=1;W4-":"$ter_","!s":"e!Q{\""},"length":null},"SS)nahe":"W-H<hc","(call":[undefined,[true,"J{p","2jdV*&II","<)[V&pN","`#Ar3"]],"call":{}}}
+// • {"":{"9":-3.461388016230001e+43,"9.,D;h":{"\"S&%x8R":{},"Ea":"","JMd!p\\S":-2003817952230367,"1kF\"_T7q":"!$vI\\","":" Gqr7OE?_",">8)jAI-":5801701074806025,"39A~":"]KM}dNa@j","P&G\\>|M0Ij":"h`}m.)","f.l2uPo#":1.4721111552125072e+67},"(=":{"":{"z":4788105806149147,"8n%4^:T1":["-49@Y","","PM}AHl",-6634545010126951,-1.6323744640205306e+110,true,"T_"],"+'mF8BLauB":[]},"NnJUU'[-h\"":undefined},"6|P=Bc8S":"6%~rAS"},"trinprotg":undefined,"-!\" %5a}!":{"Dl":-51,"B":[{"GRm<bLt":true,"` |!f'XeB":{},"":null,"afsV\"p4":"=>0_gmW"}]},"bX!`)H":{"f":false,"{B":false,"":{"oLocal":true,"\"on":-1980292707129680,"b":[[6209742311750853,true,{"_q8I":5118147596336197,"`. Yj":5608488012025733,"Y]t9Q":-4.401945419023974e-238,"~.1`":-3.905904144329039e-144,"Ci%8":false,"g$IwKNq8DH":638602134381873,"OiQe":7613547781660793,"eLmky1xV":6368664655449581,"ZX":undefined,"CIJs{hipTW":"=1"},null,false],[undefined,true,false],-24],"|1":undefined},"\"":"Zl","_B%":"valueOf","tK":[{},-18,"1h. "]},"0M":[{"{\\z":{"QG+LT!":5294070507541373,"hiqBW":true,"g9^i3s&~":"yu[2,;is}g","!rK?V":-4939550064372643},"*":{">HnDS%=[wS":7281687384159073,"==1JB":1402895683482529,"Cs+":1955920526926029,"8j":"cd\\o6IM","C":{"(xj8X":1.5289195253900472e-273,"_7":"[Wp","S^'RE_v{":true,"":"iw{)1,@","##":"ZSJrO2eS^"}},"LR51vql":1403215317636985,"":[{"Oz\"+Pl":"e","":2.3071114788752324e+282,"J/":49915990622301,",U":1.3399761918867005e+113,"{B":-993081575959169,"J%*v6":4682658003308353,"IaCt\"HE":null,"I2zmWHb W=":-4.903098060948444e-258,"]G2t%z1":2.1721586303272484e+125},"W4-XAxC.",[null,"d"],false,-8947763076130676,false]}],"y)\\O{--HjL":["Q9P*+x","kyu`[4","S)nahef<3K","<hc1ZNLN","GI\\2[fx$G",2.7158509665673894e-136,true,"J{p","2jdV*&II","<)[V&pN"],"5v":[7977585490841949,-7665139006656751,{"Yc":{"\\0k}&3&y":{"d-\\&U":"z|lRj:","HP0U>POQ&":-4292282062994742},"%f+L,?~":undefined,"`r'VK~!3`h":"\\"},"l&a`gy1_MZ":"]"},2.958790503857081e-207],"$ze!b1<l":[[undefined,"y",false,"E","Lpyu",-6.7659035940443625e-71,"AsXFEGfN]U",false,true],null,[2.141669339469667e-108,"OBBK>k",false,undefined,7.461251404911577e-134,"%dg1'",-8697355241018531,1.0769658830918787e+187,"N"],-3597775677569731,1.2596197048839978e-45,-1664291181470588]}
 // • {}
 // • …
 ```
@@ -3007,15 +3007,15 @@ fc.statistics(
 // • 1 to 4 items..100.00%
 // For size = "small":
 // • 1 to 4 items....44.78%
-// • 10 to 49 items..37.80%
-// • 5 to 9 items....17.32%
+// • 10 to 49 items..37.79%
+// • 5 to 9 items....17.33%
 // • 50 to 99 items...0.10%
 // For size = "medium":
-// • 50 to 99 items....35.48%
-// • 1 to 4 items......34.85%
-// • 10 to 49 items....19.99%
-// • 100 to 499 items...9.41%
-// • 500 to 999 items...0.23%
+// • 50 to 99 items......35.51%
+// • 1 to 4 items........34.85%
+// • 10 to 49 items......19.95%
+// • 100 to 499 items.....9.45%
+// • 500 to 999 items.....0.19%
 
 fc.statistics(
   fc.jsonValue({maxDepth: 2}),
@@ -3038,15 +3038,15 @@ fc.statistics(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....44.58%
-// • 5 to 9 items....34.62%
-// • 10 to 49 items..20.80%
+// • 1 to 4 items....44.59%
+// • 5 to 9 items....34.60%
+// • 10 to 49 items..20.81%
 // For size = "medium":
 // • 1 to 4 items......34.75%
-// • 50 to 99 items....34.01%
-// • 10 to 49 items....25.64%
-// • 100 to 499 items...4.26%
-// • 5 to 9 items.......1.34%
+// • 50 to 99 items....34.06%
+// • 10 to 49 items....25.63%
+// • 100 to 499 items...4.24%
+// • 5 to 9 items.......1.32%
 ```
 </details>
 
@@ -3129,7 +3129,7 @@ fc.anything()
 // Examples of generated values:
 // • {"0sv'Tmhu":7.539250605364674e+254,"WtR%)":"9;[d;,G","NB:<~!66":"2Jagm0~","eN\\y":true,"":true,"xy 45|Z":"-aT@8","XQa^|_IU3^":1.2616016700584982e+82,"L38=tY7A9b":"b;hc3ty,>","4S4Rv":7588482540849003,";b":7267042625139189}
 // • 43
-// • ",key"
+// • ",keyn"
 // • {"'{RS":"Q&L","a)~#":-6069883125884153,"EFn=>O(":{"(e.;*JjY":false,"n*St`aF~":0.05014394779399645,"hkDw$:=>":true,"":-7358937421237663,")=A":null,"tEmU":false},"ZIEm":true,"|!T.":"&2","_s)ItBYRR":2.2846030757775376e-12,"|M[":[-3.964992976030417e-58,-2.1581526301783996e-176,5.2369687674103834e-70,7997711898664625,2.8481412631092096e-252,"WKqk\\r",1.0415301956108186e+75],"3{5)IsGYV":-4406545775562818,"1|`":"Xai:","":false}
 // • {}
 // • …
