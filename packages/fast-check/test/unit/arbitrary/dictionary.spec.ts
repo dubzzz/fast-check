@@ -28,8 +28,7 @@ describe('dictionary (integration)', () => {
   );
 
   const isCorrect = (value: Record<string, unknown>, extra: Extra) => {
-    expect(value.constructor).toBe(Object);
-    expect(value.__proto__).toBe(Object.prototype);
+    expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
     for (const k of Object.keys(value)) {
       expect(extra.keys).toContain(k);
     }
