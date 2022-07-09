@@ -175,7 +175,11 @@ jobs:
         node-version: [14.x, 16.x]
         os: ['ubuntu-latest']
         include:
-          # More platforms...
+          # More platforms and scripts...
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 16.x
+            os: 'ubuntu-latest'
           - package-name: 'fast-check'
             script-name: 'e2e'
             node-version: 16.x
