@@ -69,6 +69,11 @@ function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parame
   return [...streamSample(generator, params)];
 }
 
+/** @internal */
+function round2(n: number): number {
+  return (Math.round(n * 100) / 100).toFixed(2);
+}
+
 /**
  * Gather useful statistics concerning generated values
  *
@@ -113,7 +118,7 @@ function statistics<Ts>(
   }
   const data = Object.entries(recorded)
     .sort((a, b) => b[1] - a[1])
-    .map((i) => [i[0], `${((i[1] * 100.0) / qParams.numRuns).toFixed(2)}%`]);
+    .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
   const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
