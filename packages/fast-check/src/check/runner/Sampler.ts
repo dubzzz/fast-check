@@ -70,7 +70,7 @@ function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parame
 }
 
 /** @internal */
-function round2(n: number): number {
+function round2(n: number): string {
   return (Math.round(n * 100) / 100).toFixed(2);
 }
 
