@@ -1,8 +1,9 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array } from './array';
+import { array, ArrayConstraintsInternal } from './array';
 import { hexa } from './hexa';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
+import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -14,6 +15,9 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 function hexaString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return array(hexa(), constraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
+  const charArbitrary = hexa();
+  const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
+  return array(charArbitrary, enrichedConstraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }
 export { hexaString };

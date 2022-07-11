@@ -1,7 +1,8 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array } from './array';
+import { array, ArrayConstraintsInternal } from './array';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString';
+import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -14,5 +15,8 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 export function stringOf(charArb: Arbitrary<string>, constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return array(charArb, constraints).map(patternsToStringMapper, patternsToStringUnmapperFor(charArb, constraints));
+  const unmapper = patternsToStringUnmapperFor(charArb, constraints);
+  const experimentalCustomSlices = createSlicesForString(charArb, unmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
+  return array(charArb, enrichedConstraints).map(patternsToStringMapper, unmapper);
 }

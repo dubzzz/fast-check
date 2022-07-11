@@ -1,8 +1,9 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array } from './array';
+import { array, ArrayConstraintsInternal } from './array';
 import { ascii } from './ascii';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
+import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -14,5 +15,8 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
  * @public
  */
 export function asciiString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  return array(ascii(), constraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
+  const charArbitrary = ascii();
+  const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
+  return array(charArbitrary, enrichedConstraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }

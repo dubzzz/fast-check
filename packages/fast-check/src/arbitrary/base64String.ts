@@ -1,10 +1,11 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array } from './array';
+import { array, ArrayConstraintsInternal } from './array';
 import { base64 } from './base64';
 import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength';
 import { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { stringToBase64Mapper, stringToBase64Unmapper } from './_internals/mappers/StringToBase64';
+import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -28,7 +29,15 @@ function base64String(constraints: StringSharedConstraints = {}): Arbitrary<stri
   if (minLength % 4 !== 0) throw new Error('Minimal length of base64 strings must be a multiple of 4');
   if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
 
-  return array(base64(), { minLength, maxLength, size: requestedSize })
+  const charArbitrary = base64();
+  const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
+  const enrichedConstraints: ArrayConstraintsInternal<string> = {
+    minLength,
+    maxLength,
+    size: requestedSize,
+    experimentalCustomSlices,
+  };
+  return array(charArbitrary, enrichedConstraints)
     .map(codePointsToStringMapper, codePointsToStringUnmapper)
     .map(stringToBase64Mapper, stringToBase64Unmapper);
 }
