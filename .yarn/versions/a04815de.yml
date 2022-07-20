@@ -1,6 +1,6 @@
 releases:
-  "@fast-check/ava": majo
-  "@fast-check/jest": major
+  - "@fast-check/ava": majo
+  - "@fast-check/jest": major
 
 declined:
   - "fast-check/monorepo"
