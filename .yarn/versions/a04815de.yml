@@ -1,6 +1,6 @@
-declined:
-  - "@fast-check/monorepo"
+releases:
+  "@fast-check/ava": majo
+  "@fast-check/jest": major
 
-undecided:
-  - "@fast-check/ava"
-  - "@fast-check/jest"
+declined:
+  - "fast-check/monorepo"
