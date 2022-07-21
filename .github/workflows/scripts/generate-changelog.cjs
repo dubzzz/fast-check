@@ -229,7 +229,11 @@ async function run() {
 
   // Bump towards latest version and add files for upcoming commit
   await execFile('yarn', ['version', 'apply', '--all']);
-  await execFile('git', ['add', './**/package.json']);
+  for (const packageBump of allBumps) {
+    const { cwd: packageLocation } = packageBump;
+    const packageJsonPath = path.join(packageLocation, 'package.json');
+    await execFile('git', ['add', packageJsonPath]);
+  }
   await execFile('git', ['add', '.yarn/versions']);
 
   // Create another branch and commit on it
