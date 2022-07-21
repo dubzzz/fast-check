@@ -105,7 +105,9 @@ async function extractAndParseDiff(fromIdentifier) {
         maintenanceSection.push({ type: 'Move', pr, title });
         break;
       default:
-        errors.push(`Unhandled type: ${type} on PR-${pr} with title ${title}`);
+        errors.push(
+          `Unhandled type: ${type} on [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
+        );
         break;
     }
   }
