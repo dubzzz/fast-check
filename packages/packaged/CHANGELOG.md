@@ -1,6 +1,6 @@
 # 0.0.2
 
-_TODO Description_
+_Declare the proper homepage for the package_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.1...packaged%2Fv0.0.2)]
 
 ## Fixes

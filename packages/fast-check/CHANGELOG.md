@@ -1,6 +1,6 @@
 # 3.1.0
 
-_TODO Description_
+_Generate more dangerous strings by default_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.0.1...v3.1.0)]
 
 ## Features
@@ -15,7 +15,6 @@ _TODO Description_
 - ([PR#3050](https://github.com/dubzzz/fast-check/pull/3050)) Bug: Allow strange keys as keys of dictionary
 - ([PR#3051](https://github.com/dubzzz/fast-check/pull/3051)) Bug: Better rounding in `statistics`
 - ([PR#3052](https://github.com/dubzzz/fast-check/pull/3052)) CI: Add missing Ubuntu env for e2e
-- ([PR#3058](https://github.com/dubzzz/fast-check/pull/3058)) CI: Prepare 1.x for `@fast-check/{ava,jest}`
 - ([PR#3047](https://github.com/dubzzz/fast-check/pull/3047)) Refactor: Implement sliced based generator for arrays
 - ([PR#3059](https://github.com/dubzzz/fast-check/pull/3059)) Script: Add links to buggy PRs in changelog PR
 - ([PR#3060](https://github.com/dubzzz/fast-check/pull/3060)) Script: Only commit `package.json` corresponding to impacted CHANGELOGs
