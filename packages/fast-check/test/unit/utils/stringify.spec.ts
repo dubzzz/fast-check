@@ -301,6 +301,12 @@ describe('stringify', () => {
     expect(stringify({ ['__proto__']: 1 })).toEqual('{["__proto__"]:1}');
     // NOTE: {__proto__: 1} and {'__proto__': 1} are not the same as {['__proto__']: 1}
   });
+  it('Should be able to stringify Object with custom __proto__ value and no prototype', () => {
+    const instance = Object.assign(Object.create(null), { ['__proto__']: 1 });
+    expect(stringify(instance)).toEqual('Object.assign(Object.create(null),{["__proto__"]:1})');
+    // NOTE: {['__proto__']: 1} is not the same as Object.assign(Object.create(null),{["__proto__"]:1})
+    // The first one has a prototype equal to Object, the second one has no prototype.
+  });
   it('Should be able to stringify Promise but not show its value or status in sync mode', () => {
     const p1 = Promise.resolve(1); // resolved
     const p2 = Promise.reject(1); // rejected
