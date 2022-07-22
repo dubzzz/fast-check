@@ -6,6 +6,9 @@ import { stringify } from '../../../utils/stringify';
 import { integer } from '../../integer';
 import { tuple } from '../../tuple';
 
+const safeAssign = Object.assign.bind(Object);
+const safeKeys = Object.keys.bind(Object);
+
 /** @internal */
 export function buildCompareFunctionArbitrary<T, TOut>(
   cmp: (hA: number, hB: number) => TOut
@@ -22,9 +25,9 @@ export function buildCompareFunctionArbitrary<T, TOut>(
         recorded[`[${reprA},${reprB}]`] = val;
         return val;
       };
-      return Object.assign(f, {
+      return safeAssign(f, {
         toString: () => {
-          const seenValues = Object.keys(recorded)
+          const seenValues = safeKeys(recorded)
             .sort()
             .map((k) => `${k} => ${stringify(recorded[k])}`)
             .map((line) => `/* ${escapeForMultilineComments(line)} */`);

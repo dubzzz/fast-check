@@ -23,6 +23,10 @@ const dangerousStrings = [
   'length',
   'name',
   'prototype',
+  // Globals and co.
+  //'this',
+  //'globalThis',
+  //'window',
   // React
   'key',
   'ref',

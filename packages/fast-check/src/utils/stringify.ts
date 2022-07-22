@@ -1,3 +1,10 @@
+const safeToString = Object.prototype.toString;
+const safeToStringCall = Object.prototype.toString.call.bind(Object.prototype.toString);
+const safeKeys = Object.keys.bind(Object);
+const safeGetOwnPropertySymbols = Object.getOwnPropertySymbols.bind(Object);
+const safeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor.bind(Object);
+const safeGetPrototypeOf = Object.getPrototypeOf.bind(Object);
+
 /**
  * Use this symbol to define a custom serializer for your instances.
  * Serializer must be a function returning a string (see {@link WithToStringMethod}).
@@ -138,7 +145,7 @@ export function stringifyInternal<Ts>(
     }
   }
 
-  switch (Object.prototype.toString.call(value)) {
+  switch (safeToStringCall(value)) {
     case '[object Array]': {
       const arr = value as unknown as unknown[];
       if (arr.length >= 50 && isSparseArray(arr)) {
@@ -177,7 +184,7 @@ export function stringifyInternal<Ts>(
     case '[object Object]': {
       try {
         const toStringAccessor = (value as any).toString; // <-- Can throw
-        if (typeof toStringAccessor === 'function' && toStringAccessor !== Object.prototype.toString) {
+        if (typeof toStringAccessor === 'function' && toStringAccessor !== safeToString) {
           // Instance (or one of its parent prototypes) overrides the default toString of Object
           return (value as any).toString(); // <-- Can throw
         }
@@ -196,17 +203,17 @@ export function stringifyInternal<Ts>(
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
-        ...Object.keys(value).map(mapper),
-        ...Object.getOwnPropertySymbols(value)
+        ...safeKeys(value).map(mapper),
+        ...safeGetOwnPropertySymbols(value)
           .filter((s) => {
-            const descriptor = Object.getOwnPropertyDescriptor(value, s);
+            const descriptor = safeGetOwnPropertyDescriptor(value, s);
             return descriptor && descriptor.enumerable;
           })
           .map(mapper),
       ];
       const rawRepr = '{' + stringifiedProperties.join(',') + '}';
 
-      if (Object.getPrototypeOf(value) === null) {
+      if (safeGetPrototypeOf(value) === null) {
         return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
       }
       return rawRepr;
@@ -262,7 +269,7 @@ export function stringifyInternal<Ts>(
       if (typeof Buffer !== 'undefined' && typeof Buffer.isBuffer === 'function' && Buffer.isBuffer(value)) {
         return `Buffer.from(${stringifyInternal(Array.from(value.values()), currentValues, getAsyncContent)})`;
       }
-      const valuePrototype = Object.getPrototypeOf(value);
+      const valuePrototype = safeGetPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
       if (typeof className === 'string') {
         const typedArray = value as unknown as
@@ -292,7 +299,7 @@ export function stringifyInternal<Ts>(
   try {
     return (value as any).toString();
   } catch {
-    return Object.prototype.toString.call(value);
+    return safeToStringCall(value) as string;
   }
 }
 

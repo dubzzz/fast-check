@@ -10,12 +10,15 @@ import { QualifiedParameters } from './configuration/QualifiedParameters';
 import { toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
+const safeHasOwnPropertyCall = Object.prototype.hasOwnProperty.call.bind(Object.prototype.hasOwnProperty);
+const safeEntries = Object.entries.bind(Object);
+
 /** @internal */
 function toProperty<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   qParams: QualifiedParameters<Ts>
 ): IRawProperty<Ts> {
-  const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
+  const prop = !safeHasOwnPropertyCall(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
     : (generator as IRawProperty<Ts>);
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
@@ -116,7 +119,7 @@ function statistics<Ts>(
       recorded[c] = (recorded[c] || 0) + 1;
     }
   }
-  const data = Object.entries(recorded)
+  const data = safeEntries(recorded)
     .sort((a, b) => b[1] - a[1])
     .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
   const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);

@@ -5,6 +5,8 @@ import { Stream } from '../../stream/Stream';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange';
 import { shrinkInteger } from './helpers/ShrinkInteger';
 
+const safeIs = Object.is.bind(Object);
+
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
   constructor(readonly min: number, readonly max: number) {
@@ -20,7 +22,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
     return (
       typeof value === 'number' &&
       Number.isInteger(value) &&
-      !Object.is(value, -0) &&
+      !safeIs(value, -0) &&
       this.min <= value &&
       value <= this.max
     );

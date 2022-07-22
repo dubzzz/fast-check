@@ -3,6 +3,8 @@ import { cloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
 import { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
 
+const safeAssign = Object.assign.bind(Object);
+
 /** @internal */
 type TriggeredTask<TMetaData> = {
   status: 'resolved' | 'rejected';
@@ -178,7 +180,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     //   get done() { return status.done },
     //   get faulty() { return status.faulty }
     // };
-    return Object.assign(status, {
+    return safeAssign(status, {
       task: Promise.resolve(sequenceTask).then(() => {
         return { done: status.done, faulty: status.faulty };
       }),

@@ -1,8 +1,14 @@
+const safeDefineProperty = Object.defineProperty.bind(Object);
+const safeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor.bind(Object);
+const safeGetOwnPropertySymbols = Object.getOwnPropertySymbols.bind(Object);
+const safeGetOwnPropertyNames = Object.getOwnPropertyNames.bind(Object);
+const safeEntries = Object.entries.bind(Object);
+
 /** @internal */
 export function keyValuePairsToObjectMapper<T>(items: [string, T][]): { [key: string]: T } {
   const obj: { [key: string]: T } = {};
   for (const keyValue of items) {
-    Object.defineProperty(obj, keyValue[0], {
+    safeDefineProperty(obj, keyValue[0], {
       enumerable: true,
       configurable: true,
       writable: true,
@@ -15,7 +21,7 @@ export function keyValuePairsToObjectMapper<T>(items: [string, T][]): { [key: st
 /** @internal */
 function buildInvalidPropertyNameFilter(obj: unknown): (key: string) => boolean {
   return function invalidPropertyNameFilter(key: string): boolean {
-    const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+    const descriptor = safeGetOwnPropertyDescriptor(obj, key);
     return (
       descriptor === undefined ||
       !descriptor.configurable ||
@@ -36,11 +42,11 @@ export function keyValuePairsToObjectUnmapper<T>(value: unknown): [string, T][] 
   if (!('constructor' in value) || value.constructor !== Object) {
     throw new Error('Incompatible instance received: should be of exact type Object');
   }
-  if (Object.getOwnPropertySymbols(value).length > 0) {
+  if (safeGetOwnPropertySymbols(value).length > 0) {
     throw new Error('Incompatible instance received: should contain symbols');
   }
-  if (Object.getOwnPropertyNames(value).find(buildInvalidPropertyNameFilter(value)) !== undefined) {
+  if (safeGetOwnPropertyNames(value).find(buildInvalidPropertyNameFilter(value)) !== undefined) {
     throw new Error('Incompatible instance received: should contain only c/e/w properties without get/set');
   }
-  return Object.entries(value);
+  return safeEntries(value);
 }

@@ -4,6 +4,8 @@ import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 
+const safeDefineProperty = Object.defineProperty.bind(Object);
+
 /** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
 /** @internal */
@@ -20,7 +22,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     }
   }
   private static makeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): WithCloneMethod<TValue[]> {
-    return Object.defineProperty(vs, cloneMethod, {
+    return safeDefineProperty(vs, cloneMethod, {
       value: () => {
         const cloned = [];
         for (let idx = 0; idx !== values.length; ++idx) {

@@ -3,6 +3,9 @@ import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { Value } from './Value';
 
+const safeDefineProperty = Object.defineProperty.bind(Object);
+const safeIsExtensible = Object.isExtensible.bind(Object);
+
 /**
  * Abstract class able to generate values on type `T`
  *
@@ -300,11 +303,11 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     if (
       v.hasToBeCloned &&
       ((typeof mappedValue === 'object' && mappedValue !== null) || typeof mappedValue === 'function') &&
-      Object.isExtensible(mappedValue) &&
+      safeIsExtensible(mappedValue) &&
       !hasCloneMethod(mappedValue)
     ) {
       // WARNING: In case the mapped value is not extensible it will not be extended
-      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v)[0] });
+      safeDefineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v)[0] });
     }
     return [mappedValue, sourceValue];
   }

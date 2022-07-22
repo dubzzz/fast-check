@@ -2,6 +2,8 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
 import { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
 
+const safeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor.bind(Object);
+
 /**
  * Constraints to be applied on {@link record}
  * @remarks Since 0.0.12
@@ -103,7 +105,7 @@ function record<T>(
 
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
   for (let idx = 0; idx !== requiredKeys.length; ++idx) {
-    const descriptor = Object.getOwnPropertyDescriptor(recordModel, requiredKeys[idx]);
+    const descriptor = safeGetOwnPropertyDescriptor(recordModel, requiredKeys[idx]);
     if (descriptor === undefined) {
       throw new Error(`requiredKeys cannot reference keys that have not been defined in recordModel`);
     }

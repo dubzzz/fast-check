@@ -4,6 +4,8 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { cloneMethod, hasCloneMethod } from '../../check/symbols';
 
+const safeIs = Object.is.bind(Object);
+
 /** @internal */
 export class ConstantArbitrary<T> extends Arbitrary<T> {
   constructor(readonly values: T[]) {
@@ -19,14 +21,14 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
   }
   canShrinkWithoutContext(value: unknown): value is T {
     for (let idx = 0; idx !== this.values.length; ++idx) {
-      if (Object.is(this.values[idx], value)) {
+      if (safeIs(this.values[idx], value)) {
         return true;
       }
     }
     return false;
   }
   shrink(value: T, context?: unknown): Stream<Value<T>> {
-    if (context === 0 || Object.is(value, this.values[0])) {
+    if (context === 0 || safeIs(value, this.values[0])) {
       return Stream.nil();
     }
     return Stream.of(new Value(this.values[0], 0));

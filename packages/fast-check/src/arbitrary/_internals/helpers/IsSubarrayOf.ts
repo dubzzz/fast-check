@@ -1,8 +1,10 @@
+const safeIs = Object.is.bind(Object);
+
 export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
   const countMap = new Map<unknown, number>();
   let countMinusZero = 0;
   for (const sourceEntry of source) {
-    if (Object.is(sourceEntry, -0)) {
+    if (safeIs(sourceEntry, -0)) {
       ++countMinusZero;
     } else {
       const oldCount = countMap.get(sourceEntry) || 0;
@@ -14,7 +16,7 @@ export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
       return false;
     }
     const smallEntry = small[index];
-    if (Object.is(smallEntry, -0)) {
+    if (safeIs(smallEntry, -0)) {
       if (countMinusZero === 0) return false;
       --countMinusZero;
     } else {

@@ -1,5 +1,7 @@
 import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
 
+const safeDefineProperty = Object.defineProperty.bind(Object);
+
 /**
  * A `Value<T, TShrink = T>` holds an internal value of type `T`
  * and its associated context
@@ -49,7 +51,7 @@ export class Value<T> {
     this.hasToBeCloned = customGetValue !== undefined || hasCloneMethod(value_);
     this.readOnce = false;
     if (this.hasToBeCloned) {
-      Object.defineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
+      safeDefineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
     } else {
       this.value = value_;
     }

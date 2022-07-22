@@ -5,6 +5,8 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify';
 
+const safeDefineProperties = Object.defineProperties.bind(Object);
+
 /** @internal */
 function prettyPrint(seenValuesStrings: string[]): string {
   return `Stream(${seenValuesStrings.join(',')}…)`;
@@ -28,7 +30,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
-      return Object.defineProperties(s, {
+      return safeDefineProperties(s, {
         toString: { value: () => prettyPrint(seenValues.map(stringify)) },
         [toStringMethod]: { value: () => prettyPrint(seenValues.map(stringify)) },
         [asyncToStringMethod]: { value: async () => prettyPrint(await Promise.all(seenValues.map(asyncStringify))) },

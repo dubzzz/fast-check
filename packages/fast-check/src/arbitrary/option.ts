@@ -4,6 +4,8 @@ import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_inte
 import { DepthIdentifier } from './_internals/helpers/DepthContext';
 import { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
 
+const safeHasOwnPropertyCall = Object.prototype.hasOwnProperty.call.bind(Object.prototype.hasOwnProperty);
+
 /**
  * Constraints to be applied on {@link option}
  * @remarks Since 2.2.0
@@ -58,7 +60,7 @@ export function option<T, TNil = null>(
   constraints: OptionConstraints<TNil> = {}
 ): Arbitrary<T | TNil> {
   const freq = constraints.freq == null ? 5 : constraints.freq;
-  const nilValue = Object.prototype.hasOwnProperty.call(constraints, 'nil') ? constraints.nil : (null as any);
+  const nilValue = safeHasOwnPropertyCall(constraints, 'nil') ? constraints.nil : (null as any);
   const nilArb = constant(nilValue);
   const weightedArbs = [
     { arbitrary: nilArb, weight: 1, fallbackValue: { default: nilValue } },

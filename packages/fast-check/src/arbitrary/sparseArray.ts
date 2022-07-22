@@ -9,6 +9,8 @@ import {
   SizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength';
 
+const safeEntries = Object.entries.bind(Object);
+
 /**
  * Constraints to be applied on {@link sparseArray}
  * @remarks Since 2.13.0
@@ -140,7 +142,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       if (noTrailingHole && value.length !== 0 && !(value.length - 1 in value)) {
         throw new Error('No trailing hole');
       }
-      return Object.entries(value as T[]).map((entry): [number, T] => [Number(entry[0]), entry[1]]);
+      return safeEntries(value as T[]).map((entry): [number, T] => [Number(entry[0]), entry[1]]);
     }
   );
 

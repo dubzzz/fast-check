@@ -7,6 +7,9 @@ import { integer } from './integer';
 import { tuple } from './tuple';
 import { escapeForMultilineComments } from './_internals/helpers/TextEscaper';
 
+const safeKeys = Object.keys.bind(Object);
+const safeDefineProperties = Object.defineProperties.bind(Object);
+
 /**
  * For pure functions
  *
@@ -26,7 +29,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
         return hasCloneMethod(val) ? val[cloneMethod]() : val;
       };
       function prettyPrint(stringifiedOuts: string): string {
-        const seenValues = Object.keys(recorded)
+        const seenValues = safeKeys(recorded)
           .sort()
           .map((k) => `${k} => ${stringify(recorded[k])}`)
           .map((line) => `/* ${escapeForMultilineComments(line)} */`);
@@ -36,7 +39,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
   return outs[hash('${seed}' + stringify(args)) % outs.length];
 }`;
       }
-      return Object.defineProperties(f, {
+      return safeDefineProperties(f, {
         toString: { value: () => prettyPrint(stringify(outs)) },
         [toStringMethod]: { value: () => prettyPrint(stringify(outs)) },
         [asyncToStringMethod]: { value: async () => prettyPrint(await asyncStringify(outs)) },
