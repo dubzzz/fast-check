@@ -65,6 +65,7 @@ describe('stringify', () => {
         // JSON.parse('{"a": -0}') -> preserves -0
         // JSON.stringify({a: -0}) -> changes -0 into 0, it produces {"a":0}
         fc.anything({
+          key: fc.string().filter((k) => k !== '__proto__'),
           values: [
             fc.boolean(),
             fc.integer(),
