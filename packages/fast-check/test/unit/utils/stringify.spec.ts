@@ -65,6 +65,7 @@ describe('stringify', () => {
         // JSON.parse('{"a": -0}') -> preserves -0
         // JSON.stringify({a: -0}) -> changes -0 into 0, it produces {"a":0}
         fc.anything({
+          key: fc.string().filter((k) => k !== '__proto__'),
           values: [
             fc.boolean(),
             fc.integer(),
@@ -299,6 +300,12 @@ describe('stringify', () => {
   it('Should be able to stringify Object with custom __proto__ value', () => {
     expect(stringify({ ['__proto__']: 1 })).toEqual('{["__proto__"]:1}');
     // NOTE: {__proto__: 1} and {'__proto__': 1} are not the same as {['__proto__']: 1}
+  });
+  it('Should be able to stringify Object with custom __proto__ value and no prototype', () => {
+    const instance = Object.assign(Object.create(null), { ['__proto__']: 1 });
+    expect(stringify(instance)).toEqual('Object.assign(Object.create(null),{["__proto__"]:1})');
+    // NOTE: {['__proto__']: 1} is not the same as Object.assign(Object.create(null),{["__proto__"]:1})
+    // The first one has a prototype equal to Object, the second one has no prototype.
   });
   it('Should be able to stringify Promise but not show its value or status in sync mode', () => {
     const p1 = Promise.resolve(1); // resolved
