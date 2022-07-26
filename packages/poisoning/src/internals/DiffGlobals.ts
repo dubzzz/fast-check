@@ -6,33 +6,14 @@ const safeObjectIs = Object.is;
 
 type DiffGlobals = {
   keyName: string;
-  subKeyName?: string;
+  subKeyName: string;
   type: 'added' | 'removed' | 'changed';
 };
 
 /** Compute the diff between two versions of globals */
 export function diffGlobals(initialGlobals: AllGlobals, newGlobals: AllGlobals): DiffGlobals[] {
   const allInitialEntries = [...initialGlobals[EntriesSymbol]()];
-  const allNewEntries = [...newGlobals[EntriesSymbol]()];
   const observedDiffs: PoisoningFreeArray<DiffGlobals> = toPoisoningFreeArray<DiffGlobals>([]);
-
-  // added
-  for (let index = 0; index !== allNewEntries.length; ++index) {
-    const entry = allNewEntries[index][0];
-    const entryName = allNewEntries[index][1].name;
-    if (!initialGlobals[HasSymbol](entry)) {
-      observedDiffs[PushSymbol]({ keyName: entryName, type: 'added' });
-    }
-  }
-
-  // removed
-  for (let index = 0; index !== allInitialEntries.length; ++index) {
-    const entry = allInitialEntries[index][0];
-    const entryName = allInitialEntries[index][1].name;
-    if (!newGlobals[HasSymbol](entry)) {
-      observedDiffs[PushSymbol]({ keyName: entryName, type: 'removed' });
-    }
-  }
 
   // changed
   for (let index = 0; index !== allInitialEntries.length; ++index) {
@@ -43,7 +24,6 @@ export function diffGlobals(initialGlobals: AllGlobals, newGlobals: AllGlobals):
     if (!newGlobals[HasSymbol](entry)) {
       continue;
     }
-    let changeDetected = false;
     const newEntryMatch = newGlobals[GetSymbol](entry)!;
     const newEntryProperties = newEntryMatch.properties;
     const allNewEntryProperties = [...newEntryProperties[EntriesSymbol]()];
@@ -52,7 +32,6 @@ export function diffGlobals(initialGlobals: AllGlobals, newGlobals: AllGlobals):
     for (let propertyIndex = 0; propertyIndex !== allNewEntryProperties.length; ++propertyIndex) {
       const propertyName = allNewEntryProperties[propertyIndex][0];
       if (!entryProperties[HasSymbol](propertyName)) {
-        changeDetected = true;
         observedDiffs[PushSymbol]({ keyName: entryName, subKeyName: propertyName, type: 'added' });
       }
     }
@@ -61,7 +40,6 @@ export function diffGlobals(initialGlobals: AllGlobals, newGlobals: AllGlobals):
     for (let propertyIndex = 0; propertyIndex !== allEntryProperties.length; ++propertyIndex) {
       const propertyName = allEntryProperties[propertyIndex][0];
       if (!newEntryProperties[HasSymbol](propertyName)) {
-        changeDetected = true;
         observedDiffs[PushSymbol]({ keyName: entryName, subKeyName: propertyName, type: 'removed' });
       }
     }
@@ -75,13 +53,8 @@ export function diffGlobals(initialGlobals: AllGlobals, newGlobals: AllGlobals):
       }
       const newEntryPropertyMatch = newEntryProperties[GetSymbol](propertyName)!;
       if (!safeObjectIs(propertyDescriptor.value, newEntryPropertyMatch.value)) {
-        changeDetected = true;
         observedDiffs[PushSymbol]({ keyName: entryName, subKeyName: propertyName, type: 'changed' });
       }
-    }
-
-    if (changeDetected) {
-      observedDiffs[PushSymbol]({ keyName: entryName, type: 'changed' });
     }
   }
 
