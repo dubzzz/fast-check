@@ -1,6 +1,6 @@
 # 3.1.1
 
-_TODO Description_
+_Better package.json definition and `__proto__` related fixes_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.0...v3.1.1)]
 
 ## Features

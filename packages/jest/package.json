@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
   "dependencies": {
-    "fast-check": "^3.1.1"
+    "fast-check": "^3.0.0"
   },
   "peerDependencies": {
     "jest": ">=25.1.0"
