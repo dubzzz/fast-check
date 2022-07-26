@@ -15,8 +15,7 @@ describe('buildValuesAndSeparateKeysToObjectMapper', () => {
     const obj = mapper(values);
 
     // Assert
-    expect(obj.constructor).toBe(Object);
-    expect(obj.__proto__).toBe(Object.prototype);
+    expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
   });
 
   it('should replace magic values by no key', () => {
@@ -35,6 +34,23 @@ describe('buildValuesAndSeparateKeysToObjectMapper', () => {
     expect(obj).toHaveProperty('c');
     expect(obj).toHaveProperty('d');
     expect(obj).toEqual({ a: undefined, c: null, d: 0 });
+  });
+
+  it('should be able to produce instances with "__proto__" as key', () => {
+    // Arrange
+    const keys: (string | symbol)[] = ['__proto__'];
+    const magicNoValue = Symbol('no-value');
+    const values: any[] = [0];
+
+    // Act
+    const mapper = buildValuesAndSeparateKeysToObjectMapper<any, typeof magicNoValue>(keys, magicNoValue);
+    const obj = mapper(values);
+
+    // Assert
+    expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
+    expect(obj).toHaveProperty('__proto__');
+    expect(obj.__proto__).toBe(0);
+    expect(obj).toEqual({ ['__proto__']: 0 });
   });
 });
 
@@ -98,6 +114,34 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
 
     // Assert
     expect(values).toEqual(['hello', magicNoValue, undefined, 'e', magicNoValue, magicNoValue]);
+  });
+
+  it('should properly unmap instances of Object with "__proto__" as key when there', () => {
+    // Arrange
+    const obj = { ['__proto__']: 'e' };
+    const keys: (string | symbol)[] = ['toString', '__proto__', 'a'];
+    const magicNoValue = Symbol('no-value');
+
+    // Act
+    const unmapper = buildValuesAndSeparateKeysToObjectUnmapper<any, typeof magicNoValue>(keys, magicNoValue);
+    const values = unmapper(obj);
+
+    // Assert
+    expect(values).toEqual([magicNoValue, 'e', magicNoValue]);
+  });
+
+  it('should properly unmap instances of Object with "__proto__" as key when not there', () => {
+    // Arrange
+    const obj = {};
+    const keys: (string | symbol)[] = ['toString', '__proto__', 'a'];
+    const magicNoValue = Symbol('no-value');
+
+    // Act
+    const unmapper = buildValuesAndSeparateKeysToObjectUnmapper<any, typeof magicNoValue>(keys, magicNoValue);
+    const values = unmapper(obj);
+
+    // Assert
+    expect(values).toEqual([magicNoValue, magicNoValue, magicNoValue]);
   });
 
   it.each`
