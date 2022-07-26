@@ -87,7 +87,12 @@ describe('record', () => {
         const requiredKeys: any[] = [];
         for (const k of keys) {
           const { instance } = fakeArbitrary();
-          recordModel[k] = instance;
+          Object.defineProperty(recordModel, k, {
+            value: instance,
+            configurable: true,
+            enumerable: true,
+            writable: true,
+          });
           if (isRequired(k)) {
             requiredKeys.push(k);
           }
@@ -254,7 +259,12 @@ describe('record (integration)', () => {
     const recordModel: Record<string | symbol, Arbitrary<number>> = {};
     for (const m of metas) {
       const instance = new FakeIntegerArbitrary(m.valueStart, 10);
-      recordModel[m.key] = instance;
+      Object.defineProperty(recordModel, m.key, {
+        value: instance,
+        configurable: true,
+        enumerable: true,
+        writable: true,
+      });
     }
     return record(recordModel, constraints);
   };
