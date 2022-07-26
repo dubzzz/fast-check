@@ -5,6 +5,7 @@
   "type": "commonjs",
   "main": "lib/ava-fast-check.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "require": "./lib/ava-fast-check.js",
       "import": "./lib/esm/ava-fast-check.js",

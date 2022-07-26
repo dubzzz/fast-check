@@ -5,6 +5,7 @@
   "type": "commonjs",
   "main": "lib/fast-check.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "require": "./lib/fast-check.js",
       "types": "./lib/types/fast-check.d.ts",

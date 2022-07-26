@@ -5,6 +5,7 @@
   "type": "commonjs",
   "main": "lib/jest-fast-check.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "require": "./lib/jest-fast-check.js",
       "import": "./lib/esm/jest-fast-check.js",
