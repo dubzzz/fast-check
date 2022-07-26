@@ -1,32 +1,21 @@
 import { captureAllGlobals } from './internals/CaptureAllGlobals';
-import { diffGlobals } from './internals/DiffGlobals';
+import { trackDiffsOnGlobals } from './internals/TrackDiffsOnGlobal';
 
 const initialGlobals = captureAllGlobals();
 
 export function restoreGlobals(): void {
-  const currentGlobals = captureAllGlobals();
-  const diffs = diffGlobals(initialGlobals, currentGlobals);
+  const diffs = trackDiffsOnGlobals(initialGlobals);
   for (let index = 0; index !== diffs.length; ++index) {
     diffs[index].patch();
   }
 }
 
 export function assertNoPoisoning(): void {
-  const currentGlobals = captureAllGlobals();
-  const diffs = diffGlobals(initialGlobals, currentGlobals);
+  const diffs = trackDiffsOnGlobals(initialGlobals);
   if (diffs.length !== 0) {
-    let impactedElements = '';
-    for (let index = 0; index !== diffs.length; ++index) {
-      const elementName =
-        diffs[index].subKeyName !== undefined
-          ? diffs[index].keyName + '[' + diffs[index].subKeyName + ']'
-          : diffs[index].keyName;
-
-      if (impactedElements.length === 0) {
-        impactedElements = elementName;
-      } else {
-        impactedElements += ', ' + elementName;
-      }
+    let impactedElements = diffs[0].keyName;
+    for (let index = 1; index !== diffs.length; ++index) {
+      impactedElements += ', ' + diffs[index].keyName;
     }
     throw new Error('Poisoning detected on ' + impactedElements);
   }
