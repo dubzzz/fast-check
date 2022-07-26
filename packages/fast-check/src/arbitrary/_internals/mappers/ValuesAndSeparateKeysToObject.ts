@@ -9,7 +9,12 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
     for (let idx = 0; idx !== keys.length; ++idx) {
       const valueWrapper = gs[idx];
       if (valueWrapper !== noKeyValue) {
-        obj[keys[idx]] = valueWrapper as T[keyof T]; // not TNoKey
+        Object.defineProperty(obj, keys[idx], {
+          value: valueWrapper,
+          configurable: true,
+          enumerable: true,
+          writable: true,
+        });
       }
     }
     return obj as Partial<T> & Pick<T, EnumerableKeyOf<T>>;
