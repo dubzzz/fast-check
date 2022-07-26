@@ -205,6 +205,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/CodeLenny"><img src="https://avatars.githubusercontent.com/u/9272847?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ryan Leonard</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=CodeLenny" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=CodeLenny" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=CodeLenny" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://blog.bitjson.com/"><img src="https://avatars.githubusercontent.com/u/904007?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jason Dreyzehner</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=bitjson" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=bitjson" title="Tests">⚠️</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://matinzd.dev/"><img src="https://avatars.githubusercontent.com/u/24797481?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Matin Zadeh Dolatabad</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=matinzd" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
