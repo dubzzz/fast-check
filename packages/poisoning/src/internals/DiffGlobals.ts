@@ -8,6 +8,7 @@ type DiffGlobals = {
   keyName: string;
   subKeyName: string;
   type: 'added' | 'removed' | 'changed';
+  patch: () => void;
 };
 
 /** Compute the diff between two versions of globals */
@@ -32,15 +33,30 @@ export function diffGlobals(initialGlobals: AllGlobals, newGlobals: AllGlobals):
     for (let propertyIndex = 0; propertyIndex !== allNewEntryProperties.length; ++propertyIndex) {
       const propertyName = allNewEntryProperties[propertyIndex][0];
       if (!entryProperties[HasSymbol](propertyName)) {
-        observedDiffs[PushSymbol]({ keyName: entryName, subKeyName: propertyName, type: 'added' });
+        observedDiffs[PushSymbol]({
+          keyName: entryName,
+          subKeyName: propertyName,
+          type: 'added',
+          patch: () => {
+            delete (entry as object)[propertyName];
+          },
+        });
       }
     }
 
     // removed
     for (let propertyIndex = 0; propertyIndex !== allEntryProperties.length; ++propertyIndex) {
       const propertyName = allEntryProperties[propertyIndex][0];
+      const propertyDescriptor = allEntryProperties[propertyIndex][1];
       if (!newEntryProperties[HasSymbol](propertyName)) {
-        observedDiffs[PushSymbol]({ keyName: entryName, subKeyName: propertyName, type: 'removed' });
+        observedDiffs[PushSymbol]({
+          keyName: entryName,
+          subKeyName: propertyName,
+          type: 'removed',
+          patch: () => {
+            Object.defineProperty(entry, propertyName, propertyDescriptor);
+          },
+        });
       }
     }
 
@@ -53,7 +69,14 @@ export function diffGlobals(initialGlobals: AllGlobals, newGlobals: AllGlobals):
       }
       const newEntryPropertyMatch = newEntryProperties[GetSymbol](propertyName)!;
       if (!safeObjectIs(propertyDescriptor.value, newEntryPropertyMatch.value)) {
-        observedDiffs[PushSymbol]({ keyName: entryName, subKeyName: propertyName, type: 'changed' });
+        observedDiffs[PushSymbol]({
+          keyName: entryName,
+          subKeyName: propertyName,
+          type: 'changed',
+          patch: () => {
+            Object.defineProperty(entry, propertyName, propertyDescriptor);
+          },
+        });
       }
     }
   }
