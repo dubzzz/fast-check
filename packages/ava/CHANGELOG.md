@@ -3,10 +3,6 @@
 _Add missing export for package.json_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.0.0...ava%2Fv1.0.1)]
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#3066](https://github.com/dubzzz/fast-check/pull/3066)) Bug: Export package.json
