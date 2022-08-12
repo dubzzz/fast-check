@@ -1,0 +1,53 @@
+{
+  "private": true,
+  "name": "@fast-check/poisoning",
+  "description": "Set of utilities to ease detection and revert of poisoning",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "main": "lib/main.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": "./lib/main.js",
+      "import": "./lib/esm/main.js",
+      "default": "./lib/esm/main.js"
+    }
+  },
+  "module": "lib/esm/main.js",
+  "types": "lib/main.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc && tsc --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "build-ci": "yarn build",
+    "test": "todo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/poisoning"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
+  "devDependencies": {
+    "jest": "^28.0.0",
+    "ts-jest": "^28.0.0",
+    "typescript": "^4.0.3"
+  },
+  "keywords": [
+    "poisoning",
+    "cve",
+    "prototype",
+    "detection",
+    "fast-check"
+  ],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/fast-check"
+  }
+}

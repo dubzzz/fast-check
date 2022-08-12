@@ -857,6 +857,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fast-check/poisoning@workspace:packages/poisoning":
+  version: 0.0.0-use.local
+  resolution: "@fast-check/poisoning@workspace:packages/poisoning"
+  dependencies:
+    jest: ^28.0.0
+    ts-jest: ^28.0.0
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
 "@fast-check/test-ava-bundle-cjs@workspace:packages/test-ava-bundle-cjs":
   version: 0.0.0-use.local
   resolution: "@fast-check/test-ava-bundle-cjs@workspace:packages/test-ava-bundle-cjs"
