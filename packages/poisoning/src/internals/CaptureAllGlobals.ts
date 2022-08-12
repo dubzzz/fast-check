@@ -1,6 +1,6 @@
-import { toPoisoningFreeArray, SortSymbol } from './PoisoningFreeArray';
-import { HasSymbol, SetSymbol, toPoisoningFreeMap } from './PoisoningFreeMap';
-import { AllGlobals, GlobalDetails } from './types/AllGlobals';
+import { toPoisoningFreeArray, SortSymbol } from './PoisoningFreeArray.js';
+import { HasSymbol, SetSymbol, toPoisoningFreeMap } from './PoisoningFreeMap.js';
+import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectEntries = Object.entries;

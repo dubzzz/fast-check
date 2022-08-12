@@ -1,6 +1,6 @@
-import { PoisoningFreeArray, toPoisoningFreeArray, PushSymbol } from './PoisoningFreeArray';
-import { EntriesSymbol, HasSymbol } from './PoisoningFreeMap';
-import { AllGlobals } from './types/AllGlobals';
+import { PoisoningFreeArray, toPoisoningFreeArray, PushSymbol } from './PoisoningFreeArray.js';
+import { EntriesSymbol, HasSymbol } from './PoisoningFreeMap.js';
+import { AllGlobals } from './types/AllGlobals.js';
 
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectEntries = Object.entries;
@@ -58,7 +58,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
           keyName: name + '.' + propertyName,
           type: 'added',
           patch: () => {
-            delete (instance as object)[propertyName];
+            delete (instance as any)[propertyName];
           },
         });
       }

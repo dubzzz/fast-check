@@ -1,4 +1,4 @@
-import { PoisoningFreeMap } from '../PoisoningFreeMap';
+import { PoisoningFreeMap } from '../PoisoningFreeMap.js';
 
 export type GlobalDetails = {
   name: string;
