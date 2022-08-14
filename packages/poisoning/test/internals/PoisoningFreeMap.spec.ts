@@ -4,7 +4,7 @@ import {
   HasSymbol,
   SetSymbol,
   toPoisoningFreeMap,
-} from '../../src/internals/PoisoningFreeMap';
+} from '../../src/internals/PoisoningFreeMap.js';
 
 describe('PoisoningFreeMap', () => {
   it.each`

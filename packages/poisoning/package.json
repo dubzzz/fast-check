@@ -37,6 +37,7 @@
   "devDependencies": {
     "jest": "^28.0.0",
     "ts-jest": "^28.0.0",
+    "ts-jest-resolver": "^2.0.0",
     "typescript": "^4.0.3"
   },
   "keywords": [

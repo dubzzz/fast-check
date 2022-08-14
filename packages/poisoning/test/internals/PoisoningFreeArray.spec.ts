@@ -1,4 +1,4 @@
-import { PushSymbol, SortSymbol, toPoisoningFreeArray } from '../../src/internals/PoisoningFreeArray';
+import { PushSymbol, SortSymbol, toPoisoningFreeArray } from '../../src/internals/PoisoningFreeArray.js';
 
 describe('PoisoningFreeArray', () => {
   it.each`
