@@ -1,8 +1,9 @@
-import { PushSymbol, SortSymbol, toPoisoningFreeArray } from '../../src/internals/PoisoningFreeArray.js';
+import { MapSymbol, PushSymbol, SortSymbol, toPoisoningFreeArray } from '../../src/internals/PoisoningFreeArray.js';
 
 describe('PoisoningFreeArray', () => {
   it.each`
     originalName | symbol
+    ${'map'}     | ${MapSymbol}
     ${'push'}    | ${PushSymbol}
     ${'sort'}    | ${SortSymbol}
   `('should only expose safe $originalName on the altered instances', ({ originalName, symbol }) => {
