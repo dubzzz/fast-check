@@ -13,7 +13,7 @@ export const SortSymbol = Symbol('safe.sort');
 export type PoisoningFreeArray<T> = Array<T> & {
   [MapSymbol]: <U>(mapper: (v: T) => U) => Array<U>;
   [PushSymbol]: (...values: T[]) => void;
-  [SortSymbol]: () => T[];
+  [SortSymbol]: (compare: (keyA: T, keyB: T) => number) => T[];
 };
 
 /** Alter an instance of Array to include non-poisonable methods */

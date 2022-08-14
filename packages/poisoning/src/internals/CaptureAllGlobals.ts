@@ -6,6 +6,10 @@ const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 
+function compareKeys(keyA: [string | symbol, PropertyDescriptor], keyB: [string | symbol, PropertyDescriptor]): number {
+  return String(keyA[0]).localeCompare(String(keyB[0]));
+}
+
 function extractAllDescriptorsDetails(instance: unknown): [string | symbol, PropertyDescriptor][] {
   const descriptors: Record<string | symbol, PropertyDescriptor> = safeObjectGetOwnPropertyDescriptors(instance);
   const allDescriptors = toPoisoningFreeArray([
@@ -18,7 +22,7 @@ function extractAllDescriptorsDetails(instance: unknown): [string | symbol, Prop
       descriptors[name as keyof typeof descriptors],
     ])
   );
-  return allDescriptorsDetails[SortSymbol]();
+  return allDescriptorsDetails[SortSymbol](compareKeys);
 }
 
 function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name: string): void {
