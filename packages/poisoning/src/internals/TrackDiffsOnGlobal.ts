@@ -3,7 +3,8 @@ import { EntriesSymbol, HasSymbol } from './PoisoningFreeMap.js';
 import { AllGlobals } from './types/AllGlobals.js';
 
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
-const safeObjectEntries = Object.entries;
+const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
+const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 const safeObjectIs = Object.is;
 
 type DiffOnGlobal = {
@@ -31,7 +32,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
       const initialPropertyValue = initialPropertyDescriptor.value;
       if (!(propertyName in (instance as any))) {
         observedDiffs[PushSymbol]({
-          keyName: name + '.' + propertyName,
+          keyName: name + '.' + String(propertyName),
           type: 'removed',
           patch: () => {
             Object.defineProperty(instance, propertyName, initialPropertyDescriptor);
@@ -39,7 +40,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
         });
       } else if (!safeObjectIs(initialPropertyValue, (instance as any)[propertyName])) {
         observedDiffs[PushSymbol]({
-          keyName: name + '.' + propertyName,
+          keyName: name + '.' + String(propertyName),
           type: 'changed',
           patch: () => {
             Object.defineProperty(instance, propertyName, initialPropertyDescriptor);
@@ -50,12 +51,15 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
 
     // Drop properties not part of the initial definition
     const currentDescriptors = safeObjectGetOwnPropertyDescriptors(instance);
-    const currentDescriptorsList = safeObjectEntries(currentDescriptors);
+    const currentDescriptorsList = [
+      ...safeObjectGetOwnPropertyNames(currentDescriptors),
+      ...safeObjectGetOwnPropertySymbols(currentDescriptors),
+    ];
     for (let descriptorIndex = 0; descriptorIndex !== currentDescriptorsList.length; ++descriptorIndex) {
-      const propertyName = currentDescriptorsList[descriptorIndex][0];
+      const propertyName = currentDescriptorsList[descriptorIndex];
       if (!initialProperties[HasSymbol](propertyName)) {
         observedDiffs[PushSymbol]({
-          keyName: name + '.' + propertyName,
+          keyName: name + '.' + String(propertyName),
           type: 'added',
           patch: () => {
             delete (instance as any)[propertyName];

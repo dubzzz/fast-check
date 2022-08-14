@@ -1,13 +1,23 @@
-import { toPoisoningFreeArray, SortSymbol } from './PoisoningFreeArray.js';
+import { toPoisoningFreeArray, MapSymbol, SortSymbol } from './PoisoningFreeArray.js';
 import { HasSymbol, SetSymbol, toPoisoningFreeMap } from './PoisoningFreeMap.js';
 import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
-const safeObjectEntries = Object.entries;
+const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
+const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 
-function extractAllDescriptorsDetails(instance: unknown): [string, PropertyDescriptor][] {
-  const descriptors: Record<string, PropertyDescriptor> = safeObjectGetOwnPropertyDescriptors(instance);
-  const allDescriptorsDetails = toPoisoningFreeArray(safeObjectEntries(descriptors));
+function extractAllDescriptorsDetails(instance: unknown): [string | symbol, PropertyDescriptor][] {
+  const descriptors: Record<string | symbol, PropertyDescriptor> = safeObjectGetOwnPropertyDescriptors(instance);
+  const allDescriptors = toPoisoningFreeArray([
+    ...safeObjectGetOwnPropertyNames(descriptors),
+    ...safeObjectGetOwnPropertySymbols(descriptors),
+  ]);
+  const allDescriptorsDetails = toPoisoningFreeArray(
+    allDescriptors[MapSymbol]((name): [string | symbol, PropertyDescriptor] => [
+      name,
+      descriptors[name as keyof typeof descriptors],
+    ])
+  );
   return allDescriptorsDetails[SortSymbol]();
 }
 
@@ -21,14 +31,14 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
   const allDescriptorsDetails = extractAllDescriptorsDetails(instance);
   const localGlobal: GlobalDetails = {
     name,
-    properties: toPoisoningFreeMap(new Map<string, PropertyDescriptor>()),
+    properties: toPoisoningFreeMap(new Map<string | symbol, PropertyDescriptor>()),
   };
   knownGlobals[SetSymbol](instance, localGlobal);
   for (let index = 0; index !== allDescriptorsDetails.length; ++index) {
     const descriptorName = allDescriptorsDetails[index][0];
     const descriptor = allDescriptorsDetails[index][1];
     localGlobal.properties[SetSymbol](descriptorName, descriptor);
-    captureOneRecursively(knownGlobals, descriptor.value, name + '.' + descriptorName);
+    captureOneRecursively(knownGlobals, descriptor.value, name + '.' + String(descriptorName));
   }
 }
 
