@@ -19,9 +19,10 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc && tsc --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "build-ci": "yarn build",
-    "test": "jest"
+    "build": "tsc -p tsconfig.publish.json --incremental && tsc -p tsconfig.publish.json --incremental --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "build-ci": "tsc -p tsconfig.publish.json && tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
