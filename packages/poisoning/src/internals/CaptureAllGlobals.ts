@@ -42,6 +42,11 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
     const descriptorName = allDescriptorsDetails[index][0];
     const descriptor = allDescriptorsDetails[index][1];
     localGlobal.properties[SetSymbol](descriptorName, descriptor);
+    if (typeof descriptorName === 'symbol') {
+      // Do not scan the internal data within keys attached symbol
+      // For instance: do not monitor the content of globalThis.Symbol(JEST_STATE_SYMBOL)
+      continue;
+    }
     captureOneRecursively(knownGlobals, descriptor.value, name + '.' + String(descriptorName));
   }
 }

@@ -2,6 +2,7 @@ const safeMapGet = Map.prototype.get;
 const safeMapHas = Map.prototype.has;
 const safeMapEntries = Map.prototype.entries;
 const safeMapSet = Map.prototype.set;
+const safeObjectDefineProperty = Object.defineProperty;
 
 /** Alias for Map.prototype.get */
 export const GetSymbol = Symbol('safe.get');
@@ -22,25 +23,25 @@ export type PoisoningFreeMap<K, V> = Map<K, V> & {
 
 /** Alter an instance of Map to include non-poisonable methods */
 export function toPoisoningFreeMap<K, V>(instance: Map<K, V>): PoisoningFreeMap<K, V> {
-  Object.defineProperty(instance, GetSymbol, {
+  safeObjectDefineProperty(instance, GetSymbol, {
     value: safeMapGet,
     configurable: false,
     enumerable: false,
     writable: false,
   });
-  Object.defineProperty(instance, HasSymbol, {
+  safeObjectDefineProperty(instance, HasSymbol, {
     value: safeMapHas,
     configurable: false,
     enumerable: false,
     writable: false,
   });
-  Object.defineProperty(instance, EntriesSymbol, {
+  safeObjectDefineProperty(instance, EntriesSymbol, {
     value: safeMapEntries,
     configurable: false,
     enumerable: false,
     writable: false,
   });
-  Object.defineProperty(instance, SetSymbol, {
+  safeObjectDefineProperty(instance, SetSymbol, {
     value: safeMapSet,
     configurable: false,
     enumerable: false,

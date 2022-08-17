@@ -6,6 +6,7 @@ const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 const safeObjectIs = Object.is;
+const safeObjectDefineProperty = Object.defineProperty;
 
 type DiffOnGlobal = {
   keyName: string;
@@ -21,6 +22,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
   for (let index = 0; index !== allInitialGlobals.length; ++index) {
     const instance = allInitialGlobals[index][0];
     const name = allInitialGlobals[index][1].name;
+    const currentDescriptors = safeObjectGetOwnPropertyDescriptors(instance);
     const initialProperties = allInitialGlobals[index][1].properties;
     const initialPropertiesList = [...initialProperties[EntriesSymbol]()];
 
@@ -29,31 +31,34 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
     for (let propertyIndex = 0; propertyIndex !== initialPropertiesList.length; ++propertyIndex) {
       const propertyName = initialPropertiesList[propertyIndex][0];
       const initialPropertyDescriptor = initialPropertiesList[propertyIndex][1];
-      const initialPropertyValue = initialPropertyDescriptor.value;
+
       if (!(propertyName in (instance as any))) {
         observedDiffs[PushSymbol]({
           keyName: name + '.' + String(propertyName),
           type: 'removed',
           patch: () => {
-            Object.defineProperty(instance, propertyName, initialPropertyDescriptor);
+            safeObjectDefineProperty(instance, propertyName, initialPropertyDescriptor);
           },
         });
-      } else if (!safeObjectIs(initialPropertyValue, (instance as any)[propertyName])) {
+      } else if (
+        !safeObjectIs(initialPropertyDescriptor.value, (currentDescriptors as any)[propertyName].value) ||
+        !safeObjectIs(initialPropertyDescriptor.get, (currentDescriptors as any)[propertyName].get) ||
+        !safeObjectIs(initialPropertyDescriptor.set, (currentDescriptors as any)[propertyName].set)
+      ) {
         observedDiffs[PushSymbol]({
           keyName: name + '.' + String(propertyName),
           type: 'changed',
           patch: () => {
-            Object.defineProperty(instance, propertyName, initialPropertyDescriptor);
+            safeObjectDefineProperty(instance, propertyName, initialPropertyDescriptor);
           },
         });
       }
     }
 
     // Drop properties not part of the initial definition
-    const currentDescriptors = safeObjectGetOwnPropertyDescriptors(instance);
     const currentDescriptorsList = [
-      ...safeObjectGetOwnPropertyNames(currentDescriptors),
-      ...safeObjectGetOwnPropertySymbols(currentDescriptors),
+      ...safeObjectGetOwnPropertyNames(instance),
+      ...safeObjectGetOwnPropertySymbols(instance),
     ];
     for (let descriptorIndex = 0; descriptorIndex !== currentDescriptorsList.length; ++descriptorIndex) {
       const propertyName = currentDescriptorsList[descriptorIndex];

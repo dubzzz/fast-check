@@ -1,6 +1,7 @@
 const safeArrayMap = Array.prototype.map;
 const safeArrayPush = Array.prototype.push;
 const safeArraySort = Array.prototype.sort;
+const safeObjectDefineProperty = Object.defineProperty;
 
 /** Alias for Array.prototype.map */
 export const MapSymbol = Symbol('safe.map');
@@ -18,19 +19,19 @@ export type PoisoningFreeArray<T> = Array<T> & {
 
 /** Alter an instance of Array to include non-poisonable methods */
 export function toPoisoningFreeArray<T>(instance: T[]): PoisoningFreeArray<T> {
-  Object.defineProperty(instance, MapSymbol, {
+  safeObjectDefineProperty(instance, MapSymbol, {
     value: safeArrayMap,
     configurable: false,
     enumerable: false,
     writable: false,
   });
-  Object.defineProperty(instance, PushSymbol, {
+  safeObjectDefineProperty(instance, PushSymbol, {
     value: safeArrayPush,
     configurable: false,
     enumerable: false,
     writable: false,
   });
-  Object.defineProperty(instance, SortSymbol, {
+  safeObjectDefineProperty(instance, SortSymbol, {
     value: safeArraySort,
     configurable: false,
     enumerable: false,
