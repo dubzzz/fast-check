@@ -170,7 +170,12 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        package-name: ['fast-check', '@fast-check/ava', '@fast-check/jest', '@fast-check/packaged']
+        package-name:
+          - 'fast-check'
+          - '@fast-check/ava'
+          - '@fast-check/jest'
+          - '@fast-check/packaged'
+          - '@fast-check/poisoning'
         script-name: ['test']
         node-version: [14.x, 16.x]
         os: ['ubuntu-latest']
