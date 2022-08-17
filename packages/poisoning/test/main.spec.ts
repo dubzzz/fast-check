@@ -87,6 +87,8 @@ describe('assertNoPoisoning', () => {
     dropAll('Map', Map);
     dropAll('Function.prototype', Function.prototype);
     dropAll('Function', Function);
+    dropAll('Error.prototype', Error.prototype);
+    dropAll('Error', Error);
 
     // Act / Assert
     // Manual expectation mimicing "expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/)"
@@ -99,6 +101,9 @@ describe('assertNoPoisoning', () => {
     }
     if (caughtError === undefined) {
       throw new Error('Expected an error be thrown during the test');
+    }
+    if (!(caughtError instanceof Error)) {
+      throw new Error('Expected an error of type Error to be thrown during the test');
     }
     restoreGlobals();
     expect(() => assertNoPoisoning()).not.toThrow();
