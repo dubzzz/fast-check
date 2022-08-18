@@ -98,6 +98,32 @@ describe('trackDiffsOnGlobals', () => {
     expect(diff).toContainEqual({ type: 'changed', keyName: 'globalA.a', patch: expect.any(Function) });
     expect(globalA).toEqual({ a: 2 });
   });
+
+  it('should detect deleted own entries still existing thanks to prototype', () => {
+    // Arrange
+    class BaseA {
+      hello() {}
+    }
+    const helloOverride = () => {};
+    const globalA = new BaseA();
+    globalA.hello = helloOverride; // 'a' now defines 'hello' as one of its own properties
+    const allGlobals: AllGlobals = toPoisoningFreeMap(
+      new Map<unknown, GlobalDetails>([[globalA, extractGlobalDetailsFor('globalA', globalA)]])
+    );
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    delete globalA.hello; // deleting hello from globalA but globalA.hello can still be called (prototype call)
+
+    // Act
+    const diff = trackDiffsOnGlobals(allGlobals);
+    expect(globalA).not.toEqual({ hello: helloOverride });
+    diff.forEach((d) => d.patch());
+
+    // Assert
+    expect(diff).toHaveLength(1);
+    expect(diff).toContainEqual({ type: 'removed', keyName: 'globalA.hello', patch: expect.any(Function) });
+    expect(globalA).toEqual({ hello: helloOverride });
+  });
 });
 
 // Helpers
