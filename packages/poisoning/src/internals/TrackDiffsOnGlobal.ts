@@ -32,7 +32,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
       const propertyName = initialPropertiesList[propertyIndex][0];
       const initialPropertyDescriptor = initialPropertiesList[propertyIndex][1];
 
-      if (!(propertyName in (instance as any))) {
+      if (!(propertyName in (currentDescriptors as any))) {
         observedDiffs[PushSymbol]({
           keyName: name + '.' + String(propertyName),
           type: 'removed',
