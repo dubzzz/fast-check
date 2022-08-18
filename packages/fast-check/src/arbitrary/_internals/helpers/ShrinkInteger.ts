@@ -1,13 +1,16 @@
 import { Value } from '../../../check/arbitrary/definition/Value';
 import { Stream, stream } from '../../../stream/Stream';
 
+const safeMathCeil = Math.ceil;
+const safeMathFloor = Math.floor;
+
 /** @internal */
 function halvePosInteger(n: number): number {
-  return Math.floor(n / 2);
+  return safeMathFloor(n / 2);
 }
 /** @internal */
 function halveNegInteger(n: number): number {
-  return Math.ceil(n / 2);
+  return safeMathCeil(n / 2);
 }
 
 /**

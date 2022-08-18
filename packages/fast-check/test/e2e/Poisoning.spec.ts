@@ -10,7 +10,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // Arrange
     let runId = 0;
     let failedOnce = false;
-    const resultStream = fc.sample(fc.infiniteStream(fc.boolean()), { numRuns: 1 })[0];
+    const resultStream = fc.sample(fc.infiniteStream(fc.boolean()), { seed, numRuns: 1 })[0];
     const testResult = (): boolean => {
       if (++runId === 100 && !failedOnce) {
         // Force a failure for the 100th execution if we never encountered any before
@@ -26,7 +26,10 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // Act
     let interceptedException: unknown = undefined;
     try {
-      fc.assert(fc.property(arbitraryBuilder(), (_v) => testResult()));
+      fc.assert(
+        fc.property(arbitraryBuilder(), (_v) => testResult()),
+        { seed }
+      );
     } catch (err) {
       interceptedException = err;
     }
