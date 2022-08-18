@@ -507,3 +507,8 @@ jobs:
         run: npm publish --access public packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: startsWith(github.ref, 'refs/tags/poisoning/v')
+        name: Publish @fast-check/poisoning
+        run: npm publish --access public packages/poisoning/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
