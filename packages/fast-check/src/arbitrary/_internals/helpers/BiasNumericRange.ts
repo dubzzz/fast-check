@@ -1,6 +1,9 @@
+const safeMathFloor = Math.floor;
+const safeMathLog = Math.log;
+
 /** @internal */
 export function integerLogLike(v: number): number {
-  return Math.floor(Math.log(v) / Math.log(2));
+  return safeMathFloor(safeMathLog(v) / safeMathLog(2));
 }
 
 /** @internal */

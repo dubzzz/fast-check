@@ -5,6 +5,8 @@ import { Stream } from '../../stream/Stream';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange';
 import { shrinkInteger } from './helpers/ShrinkInteger';
 
+const safeMathSign = Math.sign;
+
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
   constructor(readonly min: number, readonly max: number) {
@@ -87,7 +89,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
     if (typeof context !== 'number') {
       throw new Error(`Invalid context type passed to IntegerArbitrary (#1)`);
     }
-    if (context !== 0 && Math.sign(current) !== Math.sign(context)) {
+    if (context !== 0 && safeMathSign(current) !== safeMathSign(context)) {
       throw new Error(`Invalid context value passed to IntegerArbitrary (#2)`);
     }
     return true;
