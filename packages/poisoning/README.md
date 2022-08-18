@@ -21,4 +21,4 @@ The package comes with:
 
 ## Minimal requirements
 
-- Node ≥?.?.?
+- Node ≥8.0.0
