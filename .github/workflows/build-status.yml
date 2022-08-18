@@ -16,7 +16,7 @@ on:
       - 'fix-v*'
 
 concurrency:
-  group: try-cancel-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
