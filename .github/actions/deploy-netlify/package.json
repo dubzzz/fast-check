@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "main": "index.cjs",
   "dependencies": {
-    "@actions/core": "^1.7.0",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^5.0.1",
     "netlify-cli": "^10.0.0"
   }
