@@ -38,7 +38,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     restoreGlobals(); // Restore globals before running real checks
     expect(interceptedException).toBeDefined();
     expect(interceptedException).toBeInstanceOf(Error);
-    expect((interceptedException as Error).message).toMatch(/Property failed after/);
+    expect(interceptedException).toMatch(/Property failed after/);
   });
 });
 
