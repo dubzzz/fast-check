@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@fast-check/poisoning",
   "description": "Set of utilities to ease detection and revert of poisoning",
   "version": "0.0.0",
