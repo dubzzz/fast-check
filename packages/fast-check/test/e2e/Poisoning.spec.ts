@@ -62,7 +62,7 @@ function dropMainGlobals(): void {
     Boolean,
     //String,
     Symbol,
-    //Date,
+    Date,
     Promise,
     RegExp,
     Error,
@@ -102,7 +102,7 @@ function dropMainGlobals(): void {
     //URL,
     URLSearchParams,
     JSON,
-    //Math,
+    Math,
     Intl,
   ];
   for (const mainGlobal of mainGlobals) {

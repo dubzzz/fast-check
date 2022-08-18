@@ -4,6 +4,9 @@ import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
 import { RandomGenerator } from 'pure-rand';
 
+const safeDateNow = Date.now;
+const safeMathRandom = Math.random;
+
 /**
  * Configuration extracted from incoming Parameters
  *
@@ -82,7 +85,7 @@ export class QualifiedParameters<T> {
 
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
-    if (p.seed == null) return Date.now() ^ (Math.random() * 0x100000000);
+    if (p.seed == null) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
 
     // Seed is a 32 bits signed integer
     const seed32 = p.seed | 0;
