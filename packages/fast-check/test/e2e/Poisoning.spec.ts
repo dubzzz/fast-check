@@ -4,8 +4,8 @@ import { seed } from './seed';
 
 describe(`Poisoning (seed: ${seed})`, () => {
   it.each`
-    name         | arbitraryBuilder
-    ${'integer'} | ${() => fc.integer()}
+    name      | arbitraryBuilder
+    ${'noop'} | ${() => noop()}
   `('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
@@ -61,7 +61,7 @@ function dropMainGlobals(): void {
     //Object,
     //Function,
     //Array,
-    //Number,
+    Number,
     Boolean,
     //String,
     Symbol,
@@ -114,4 +114,28 @@ function dropMainGlobals(): void {
     }
     dropAllFromObj(mainGlobal);
   }
+}
+
+class NoopArbitrary extends fc.Arbitrary<number> {
+  generate(_mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
+    return new fc.Value<number>(0, undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is number {
+    return false;
+  }
+  shrink(value: number, _context: unknown): fc.Stream<fc.Value<number>> {
+    if (value > 5) {
+      return fc.Stream.nil();
+    }
+    return fc.Stream.of(
+      new fc.Value<number>(value + 1, undefined), // emulate a shrinker using bare minimal primitives
+      new fc.Value<number>(value + 2, undefined),
+      new fc.Value<number>(value + 3, undefined)
+    );
+  }
+}
+function noop() {
+  // Always returns the same value and does not use random number instance.
+  // The aim of this arbitrary is to control that we can execute the runner and property even in poisoned context.
+  return new NoopArbitrary();
 }
