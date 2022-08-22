@@ -59,11 +59,11 @@ function dropAllFromObj(obj: unknown): void {
 function dropMainGlobals(): void {
   const mainGlobals = [
     Object,
-    //Function,
-    //Array,
+    Function,
+    Array,
     Number,
     Boolean,
-    //String,
+    String,
     Symbol,
     Date,
     Promise,

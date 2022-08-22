@@ -1,4 +1,4 @@
-import { safeToString } from './globals';
+import { safeIndexOf, safeJoin, safeMap, safePush, safeToString } from './globals';
 
 /**
  * Use this symbol to define a custom serializer for your instances.
@@ -116,10 +116,10 @@ export function stringifyInternal<Ts>(
   previousValues: any[],
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent
 ): string {
-  const currentValues = previousValues.concat([value]);
+  const currentValues = [...previousValues, value];
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (previousValues.indexOf(value) !== -1) {
+    if (safeIndexOf(previousValues, value) !== -1) {
       return '[cyclic]';
     }
   }
@@ -149,17 +149,20 @@ export function stringifyInternal<Ts>(
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
         for (const index in arr) {
           if (!Number.isNaN(Number(index)))
-            assignments.push(`${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
+            safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
         }
         return assignments.length !== 0
-          ? `Object.assign(Array(${arr.length}),{${assignments.join(',')}})`
+          ? `Object.assign(Array(${arr.length}),{${safeJoin(assignments, ',')}})`
           : `Array(${arr.length})`;
       }
       // stringifiedArray results in: '' for [,]
       // stringifiedArray results in: ',' for [,,]
       // stringifiedArray results in: '1,' for [1,,]
       // stringifiedArray results in: '1,,2' for [1,,2]
-      const stringifiedArray = arr.map((v) => stringifyInternal(v, currentValues, getAsyncContent)).join(',');
+      const stringifiedArray = safeJoin(
+        safeMap(arr, (v) => stringifyInternal(v, currentValues, getAsyncContent)),
+        ','
+      );
       return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
     case '[object BigInt]':
@@ -294,7 +297,7 @@ export function stringifyInternal<Ts>(
   try {
     return (value as any).toString();
   } catch {
-    return Object.prototype.toString.call(value);
+    return safeToString(value);
   }
 }
 
