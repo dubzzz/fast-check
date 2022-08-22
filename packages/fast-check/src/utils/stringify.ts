@@ -1,3 +1,5 @@
+import { safeToString } from './globals';
+
 /**
  * Use this symbol to define a custom serializer for your instances.
  * Serializer must be a function returning a string (see {@link WithToStringMethod}).
@@ -138,7 +140,7 @@ export function stringifyInternal<Ts>(
     }
   }
 
-  switch (Object.prototype.toString.call(value)) {
+  switch (safeToString(value)) {
     case '[object Array]': {
       const arr = value as unknown as unknown[];
       if (arr.length >= 50 && isSparseArray(arr)) {
