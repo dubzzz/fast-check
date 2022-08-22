@@ -1,3 +1,4 @@
+import { safePush } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
@@ -67,7 +68,8 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
   if (out.verbose >= VerbosityLevel.VeryVerbose) {
     details = formatExecutionSummary(out.executionSummary, stringifyOne);
   } else {
-    hints.push(
+    safePush(
+      hints,
       'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status'
     );
   }
@@ -83,14 +85,14 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
     out.numShrinks
   } time(s)\nGot error: ${out.error}`;
   let details: string | null = null;
-  const hints = [];
+  const hints: string[] = [];
 
   if (out.verbose >= VerbosityLevel.VeryVerbose) {
     details = formatExecutionSummary(out.executionSummary, stringifyOne);
   } else if (out.verbose === VerbosityLevel.Verbose) {
     details = formatFailures(out.failures, stringifyOne);
   } else {
-    hints.push('Enable verbose mode in order to have the list of all failing values encountered during the run');
+    safePush(hints, 'Enable verbose mode in order to have the list of all failing values encountered during the run');
   }
 
   return { message, details, hints };
@@ -100,12 +102,13 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
 function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, stringifyOne: (value: Ts) => string) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
   let details: string | null = null;
-  const hints = [];
+  const hints: string[] = [];
 
   if (out.verbose >= VerbosityLevel.VeryVerbose) {
     details = formatExecutionSummary(out.executionSummary, stringifyOne);
   } else {
-    hints.push(
+    safePush(
+      hints,
       'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status'
     );
   }

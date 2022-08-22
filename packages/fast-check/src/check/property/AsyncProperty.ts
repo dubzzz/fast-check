@@ -7,6 +7,7 @@ import {
   AsyncPropertyHookFunction,
 } from './AsyncProperty.generic';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
+import { safeForEach, safeMap, safeSlice } from '../../utils/globals';
 
 /**
  * Instantiate a new {@link fast-check#IAsyncProperty}
@@ -20,10 +21,10 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   if (args.length < 2) {
     throw new Error('asyncProperty expects at least two parameters');
   }
-  const arbs = args.slice(0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
+  const arbs = safeSlice(args, 0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => Promise<boolean | void>;
-  arbs.forEach(assertIsArbitrary);
-  const mappedArbs = arbs.map((arb): typeof arb => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
+  safeForEach(arbs, assertIsArbitrary);
+  const mappedArbs = safeMap(arbs, (arb): typeof arb => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new AsyncProperty(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 

@@ -4,6 +4,7 @@ import { ExecutionTree } from './ExecutionTree';
 import { RunDetails } from './RunDetails';
 import { QualifiedParameters } from '../configuration/QualifiedParameters';
 import { PropertyFailure } from '../../property/IRawProperty';
+import { safeSplit } from '../../../utils/globals';
 
 /**
  * Report the status of a run
@@ -68,8 +69,8 @@ export class RunExecution<Ts> {
   }
 
   private isSuccess = (): boolean => this.pathToFailure == null;
-  private firstFailure = (): number => (this.pathToFailure ? +this.pathToFailure.split(':')[0] : -1);
-  private numShrinks = (): number => (this.pathToFailure ? this.pathToFailure.split(':').length - 1 : 0);
+  private firstFailure = (): number => (this.pathToFailure ? +safeSplit(this.pathToFailure, ':')[0] : -1);
+  private numShrinks = (): number => (this.pathToFailure ? safeSplit(this.pathToFailure, ':').length - 1 : 0);
 
   private extractFailures() {
     if (this.isSuccess()) {

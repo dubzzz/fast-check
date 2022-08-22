@@ -3,6 +3,7 @@ import { Stream } from '../../stream/Stream';
 import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
+import { safeMap, safePush } from '../../utils/globals';
 
 /** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
@@ -38,8 +39,8 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     for (let idx = 0; idx !== values.length; ++idx) {
       const v = values[idx];
       cloneable = cloneable || v.hasToBeCloned;
-      vs.push(v.value);
-      ctxs.push(v.context);
+      safePush(vs, v.value);
+      safePush(ctxs, v.context);
     }
     if (cloneable) {
       TupleArbitrary.makeItCloneable(vs, values);
@@ -47,7 +48,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     return new Value(vs, ctxs);
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
-    return TupleArbitrary.wrapper<Ts>(this.arbs.map((a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
+    return TupleArbitrary.wrapper<Ts>(safeMap(this.arbs, (a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
   }
   canShrinkWithoutContext(value: unknown): value is Ts {
     if (!Array.isArray(value) || value.length !== this.arbs.length) {

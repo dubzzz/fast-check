@@ -2,6 +2,7 @@ import { Arbitrary, assertIsArbitrary } from '../arbitrary/definition/Arbitrary'
 import { tuple } from '../../arbitrary/tuple';
 import { Property, IProperty, IPropertyWithHooks, PropertyHookFunction } from './Property.generic';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
+import { safeForEach, safeMap, safeSlice } from '../../utils/globals';
 
 /**
  * Instantiate a new {@link fast-check#IProperty}
@@ -15,10 +16,10 @@ function property<Ts extends [unknown, ...unknown[]]>(
   if (args.length < 2) {
     throw new Error('property expects at least two parameters');
   }
-  const arbs = args.slice(0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
+  const arbs = safeSlice(args, 0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => boolean | void;
-  arbs.forEach(assertIsArbitrary);
-  const mappedArbs = arbs.map((arb): typeof arb => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
+  safeForEach(arbs, assertIsArbitrary);
+  const mappedArbs = safeMap(arbs, (arb): typeof arb => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new Property(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 
