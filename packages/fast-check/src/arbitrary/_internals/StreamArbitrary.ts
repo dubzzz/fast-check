@@ -3,6 +3,7 @@ import { Value } from '../../check/arbitrary/definition/Value';
 import { cloneMethod } from '../../check/symbols';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { safePush } from '../../utils/globals';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify';
 
 /** @internal */
@@ -23,7 +24,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
       const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
         while (true) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
-          seenValues.push(value);
+          safePush(seenValues, value);
           yield value;
         }
       };
