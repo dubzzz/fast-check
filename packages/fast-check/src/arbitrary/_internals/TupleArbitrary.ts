@@ -3,7 +3,9 @@ import { Stream } from '../../stream/Stream';
 import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { safeMap, safePush } from '../../utils/globals';
+import { safeMap, safePush, safeSlice } from '../../utils/globals';
+
+const safeArrayIsArray = Array.isArray;
 
 /** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
@@ -65,16 +67,16 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     // shrinking one by one is the not the most comprehensive
     // but allows a reasonable number of entries in the shrink
     let s = Stream.nil<Value<Ts>>();
-    const safeContext: unknown[] = Array.isArray(context) ? context : [];
+    const safeContext: unknown[] = safeArrayIsArray(context) ? context : [];
     for (let idx = 0; idx !== this.arbs.length; ++idx) {
       const shrinksForIndex: Stream<Value<Ts>> = this.arbs[idx]
         .shrink(value[idx], safeContext[idx])
         .map((v) => {
-          const nextValues: Value<unknown>[] = value.map((v, idx) => new Value(cloneIfNeeded(v), safeContext[idx]));
-          return nextValues
-            .slice(0, idx)
-            .concat([v])
-            .concat(nextValues.slice(idx + 1));
+          const nextValues: Value<unknown>[] = safeMap(
+            value,
+            (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx])
+          );
+          return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
         })
         .map((values) => TupleArbitrary.wrapper(values) as Value<Ts>);
       s = s.join(shrinksForIndex);
