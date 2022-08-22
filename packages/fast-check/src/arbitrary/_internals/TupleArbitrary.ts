@@ -25,9 +25,9 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
   private static makeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): WithCloneMethod<TValue[]> {
     return Object.defineProperty(vs, cloneMethod, {
       value: () => {
-        const cloned = [];
+        const cloned: TValue[] = [];
         for (let idx = 0; idx !== values.length; ++idx) {
-          cloned.push(values[idx].value); // push potentially cloned values
+          safePush(cloned, values[idx].value); // push potentially cloned values
         }
         TupleArbitrary.makeItCloneable(cloned, values);
         return cloned;
