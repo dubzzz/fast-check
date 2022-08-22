@@ -53,7 +53,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     return TupleArbitrary.wrapper<Ts>(safeMap(this.arbs, (a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
   }
   canShrinkWithoutContext(value: unknown): value is Ts {
-    if (!Array.isArray(value) || value.length !== this.arbs.length) {
+    if (!safeArrayIsArray(value) || value.length !== this.arbs.length) {
       return false;
     }
     for (let index = 0; index !== this.arbs.length; ++index) {
