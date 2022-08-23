@@ -3,6 +3,8 @@ import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { Value } from './Value';
 
+const safeObjectAssign = Object.assign;
+
 /**
  * Abstract class able to generate values on type `T`
  *
@@ -207,11 +209,11 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
           : Stream.nil<Value<U>>()
       ).join(
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
-          const newContext: ChainArbitraryContext<T, U> = {
-            ...context,
+          // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
+          const newContext: ChainArbitraryContext<T, U> = safeObjectAssign(safeObjectAssign({}, context), {
             chainedContext: dst.context,
             stoppedForOriginal: true,
-          };
+          });
           return new Value(dst.value_, newContext);
         })
       );
@@ -264,7 +266,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
   readonly bindValueMapper: (v: Value<T>) => Value<U>;
   constructor(readonly arb: Arbitrary<T>, readonly mapper: (t: T) => U, readonly unmapper?: (possiblyU: unknown) => T) {
     super();
-    this.bindValueMapper = this.valueMapper.bind(this);
+    this.bindValueMapper = (v: Value<T>): Value<U> => this.valueMapper(v);
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const g = this.arb.generate(mrng, biasFactor);
@@ -328,7 +330,7 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
   readonly bindRefinementOnValue: (v: Value<T>) => v is Value<U>;
   constructor(readonly arb: Arbitrary<T>, readonly refinement: (t: T) => t is U) {
     super();
-    this.bindRefinementOnValue = this.refinementOnValue.bind(this);
+    this.bindRefinementOnValue = (v: Value<T>): v is Value<U> => this.refinementOnValue(v);
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     // eslint-disable-next-line no-constant-condition

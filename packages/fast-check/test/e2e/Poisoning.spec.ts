@@ -4,8 +4,11 @@ import { seed } from './seed';
 
 describe(`Poisoning (seed: ${seed})`, () => {
   it.each`
-    name      | arbitraryBuilder
-    ${'noop'} | ${() => noop()}
+    name              | arbitraryBuilder
+    ${'noop'}         | ${() => noop()}
+    ${'noop::chain'}  | ${() => noop().chain(() => noop())}
+    ${'noop::filter'} | ${() => noop().filter(() => true)}
+    ${'noop::map'}    | ${() => noop().map((v) => v)}
   `('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
