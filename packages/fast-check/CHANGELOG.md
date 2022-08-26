@@ -1,15 +1,10 @@
 # 3.1.2
 
-_TODO Description_
+_More resilient to external poisoning on `assert` and `property`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.1...v3.1.2)]
-
-## Features
-
-- ([PR#3078](https://github.com/dubzzz/fast-check/pull/3078)) Mark `@fast-check/poisoning` as public
 
 ## Fixes
 
-- ([PR#3080](https://github.com/dubzzz/fast-check/pull/3080)) Bug: Properly distinguish from prototype and from instance
 - ([PR#3082](https://github.com/dubzzz/fast-check/pull/3082)) Bug: Protect `assert` from poisoned `Math` or `Date`
 - ([PR#3086](https://github.com/dubzzz/fast-check/pull/3086)) Bug: Resist to poisoning of `Object`
 - ([PR#3087](https://github.com/dubzzz/fast-check/pull/3087)) Bug: Resist to poisoning of `Function`/`Array`/`String`
