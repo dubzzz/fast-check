@@ -43,7 +43,7 @@ describe('assertNoPoisoning', () => {
     }
   });
 
-  it('should throw an Error if global altered and be able to revert the change', () => {
+  it('should throw an Error if global altered via globalThis and be able to revert the change', () => {
     // Arrange
     const F = globalThis.Function;
     globalThis.Function = jest.fn();
@@ -55,6 +55,23 @@ describe('assertNoPoisoning', () => {
       expect(() => assertNoPoisoning()).not.toThrow();
     } finally {
       globalThis.Function = F;
+    }
+  });
+
+  it('should throw an Error if global value altered and be able to revert the change', () => {
+    // Arrange
+    const F = Function;
+    // eslint-disable-next-line no-global-assign
+    Function = jest.fn();
+
+    // Act / Assert
+    try {
+      expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/);
+      restoreGlobals();
+      expect(() => assertNoPoisoning()).not.toThrow();
+    } finally {
+      // eslint-disable-next-line no-global-assign
+      Function = F;
     }
   });
 
