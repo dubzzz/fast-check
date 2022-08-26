@@ -1,5 +1,7 @@
 import { safeIndexOf, safeJoin, safeMap, safePush, safeToString } from './globals';
 
+const safeJsonStringify = JSON.stringify;
+
 /**
  * Use this symbol to define a custom serializer for your instances.
  * Serializer must be a function returning a string (see {@link WithToStringMethod}).
@@ -174,7 +176,7 @@ export function stringifyInternal<Ts>(
     }
     case '[object Date]': {
       const d = value as unknown as Date;
-      return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
+      return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${safeJsonStringify(d.toISOString())})`;
     }
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -200,7 +202,7 @@ export function stringifyInternal<Ts>(
             ? '["__proto__"]'
             : typeof k === 'symbol'
             ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
-            : JSON.stringify(k)
+            : safeJsonStringify(k)
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
@@ -222,18 +224,18 @@ export function stringifyInternal<Ts>(
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
     case '[object String]':
-      return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
+      return typeof value === 'string' ? safeJsonStringify(value) : `new String(${safeJsonStringify(value)})`;
     case '[object Symbol]': {
       const s = value as unknown as symbol;
       if (Symbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
+        return `Symbol.for(${safeJsonStringify(Symbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       if (desc === null) {
         return 'Symbol()';
       }
       const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
-      return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
+      return s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`;
     }
     case '[object Promise]': {
       const promiseContent = getAsyncContent(value as any as Promise<unknown>);
