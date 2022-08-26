@@ -1,4 +1,0 @@
-declined:
-  - "@fast-check/monorepo"
-  - fast-check
-  - "@fast-check/poisoning"
