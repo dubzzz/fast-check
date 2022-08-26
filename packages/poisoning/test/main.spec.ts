@@ -75,6 +75,34 @@ describe('assertNoPoisoning', () => {
     }
   });
 
+  it('should throw an Error if globalThis gets changed into another type and be able to revert the change', () => {
+    // Arrange
+    const G = globalThis;
+    (globalThis as any) = 1;
+
+    // Act / Assert
+    let error: unknown = undefined;
+    try {
+      assertNoPoisoning();
+    } catch (err) {
+      error = err;
+    }
+    if (error === undefined) {
+      (globalThis as any) = G;
+      throw new Error('No error has been thrown');
+    }
+    if (!/Poisoning detected/.test((error as Error).message)) {
+      (globalThis as any) = G;
+      throw new Error(`Received error does not fulfill expectations, got: ${error}`);
+    }
+    try {
+      restoreGlobals();
+      expect(() => assertNoPoisoning()).not.toThrow();
+    } finally {
+      (globalThis as any) = G;
+    }
+  });
+
   it('should be able to handle highly destructive changes removing important primitives', () => {
     // Arrange
     const own = Object.getOwnPropertyNames;
