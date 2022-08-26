@@ -1,3 +1,25 @@
+# 3.1.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.1...v3.1.2)]
+
+## Features
+
+- ([PR#3078](https://github.com/dubzzz/fast-check/pull/3078)) Mark `@fast-check/poisoning` as public
+
+## Fixes
+
+- ([PR#3080](https://github.com/dubzzz/fast-check/pull/3080)) Bug: Properly distinguish from prototype and from instance
+- ([PR#3082](https://github.com/dubzzz/fast-check/pull/3082)) Bug: Protect `assert` from poisoned `Math` or `Date`
+- ([PR#3086](https://github.com/dubzzz/fast-check/pull/3086)) Bug: Resist to poisoning of `Object`
+- ([PR#3087](https://github.com/dubzzz/fast-check/pull/3087)) Bug: Resist to poisoning of `Function`/`Array`/`String`
+- ([PR#3089](https://github.com/dubzzz/fast-check/pull/3089)) Bug: Clear poisoning instability in `filter`, `map`, `chain`
+- ([PR#3079](https://github.com/dubzzz/fast-check/pull/3079)) CI: Auto-cancel previous runs on new commits
+- ([PR#3088](https://github.com/dubzzz/fast-check/pull/3088)) Script: Add script to run e2e tests in debug mode
+- ([PR#3092](https://github.com/dubzzz/fast-check/pull/3092)) Script: Better handle new projects in changelog generator
+- ([PR#3081](https://github.com/dubzzz/fast-check/pull/3081)) Test: Add some poisoning e2e for fast-check
+- ([PR#3085](https://github.com/dubzzz/fast-check/pull/3085)) Test: Check poisoning against noop arbitrary (for now)
+
 # 3.1.1
 
 _Better package.json definition and `__proto__` related fixes_
