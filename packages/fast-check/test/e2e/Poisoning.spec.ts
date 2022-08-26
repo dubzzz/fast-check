@@ -47,6 +47,9 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'tuple', arbitraryBuilder: () => fc.tuple(noop(), noop()) },
     { name: 'array', arbitraryBuilder: () => fc.array(noop()) },
     { name: 'uniqueArray', arbitraryBuilder: () => fc.uniqueArray(basic()) },
+    { name: 'uniqueArray::SameValueZero', arbitraryBuilder: () => fc.uniqueArray(basic(), CmpSameValueZero) },
+    { name: 'uniqueArray::IsStrictlyEqual', arbitraryBuilder: () => fc.uniqueArray(basic(), CmpIsStrictlyEqual) },
+    { name: 'uniqueArray::Custom', arbitraryBuilder: () => fc.uniqueArray(basic(), { comparator: (a, b) => a === b }) },
     { name: 'subarray', arbitraryBuilder: () => fc.subarray([1, 2, 3, 4, 5]) },
     { name: 'shuffledSubarray', arbitraryBuilder: () => fc.shuffledSubarray([1, 2, 3, 4, 5]) },
     { name: 'sparseArray', arbitraryBuilder: () => fc.sparseArray(noop()) },
@@ -208,3 +211,5 @@ function basic() {
 function mapToConstantEntry(offset: number) {
   return { num: 10, build: (v: number) => v + offset };
 }
+const CmpSameValueZero = { comparator: 'SameValueZero' as const };
+const CmpIsStrictlyEqual = { comparator: 'IsStrictlyEqual' as const };
