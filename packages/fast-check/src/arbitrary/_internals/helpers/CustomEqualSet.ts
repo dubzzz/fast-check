@@ -1,4 +1,4 @@
-import { safePush, safeSlice } from '../../../utils/globals';
+import { safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
 
 /**
@@ -28,6 +28,6 @@ export class CustomEqualSet<T> implements CustomSet<T> {
   }
 
   getData(): T[] {
-    return safeSlice(this.data);
+    return this.data;
   }
 }
