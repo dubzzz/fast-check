@@ -9,7 +9,7 @@ export function integerLogLike(v: number): number {
 /** @internal */
 export function bigIntLogLike(v: bigint): bigint {
   if (v === BigInt(0)) return BigInt(0);
-  return BigInt(v.toString().length);
+  return BigInt(String(v).length);
 }
 
 /** @internal */
