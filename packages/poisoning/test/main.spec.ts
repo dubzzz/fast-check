@@ -43,7 +43,7 @@ describe('assertNoPoisoning', () => {
     }
   });
 
-  it('should throw an Error if global altered and be able to revert the change', () => {
+  it('should throw an Error if global altered via globalThis and be able to revert the change', () => {
     // Arrange
     const F = globalThis.Function;
     globalThis.Function = jest.fn();
@@ -55,6 +55,51 @@ describe('assertNoPoisoning', () => {
       expect(() => assertNoPoisoning()).not.toThrow();
     } finally {
       globalThis.Function = F;
+    }
+  });
+
+  it('should throw an Error if global value altered and be able to revert the change', () => {
+    // Arrange
+    const F = Function;
+    // eslint-disable-next-line no-global-assign
+    Function = jest.fn();
+
+    // Act / Assert
+    try {
+      expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/);
+      restoreGlobals();
+      expect(() => assertNoPoisoning()).not.toThrow();
+    } finally {
+      // eslint-disable-next-line no-global-assign
+      Function = F;
+    }
+  });
+
+  it('should throw an Error if globalThis gets changed into another type and be able to revert the change', () => {
+    // Arrange
+    const G = globalThis;
+    (globalThis as any) = 1;
+
+    // Act / Assert
+    let error: unknown = undefined;
+    try {
+      assertNoPoisoning();
+    } catch (err) {
+      error = err;
+    }
+    if (error === undefined) {
+      (globalThis as any) = G;
+      throw new Error('No error has been thrown');
+    }
+    if (!/Poisoning detected/.test((error as Error).message)) {
+      (globalThis as any) = G;
+      throw new Error(`Received error does not fulfill expectations, got: ${error}`);
+    }
+    try {
+      restoreGlobals();
+      expect(() => assertNoPoisoning()).not.toThrow();
+    } finally {
+      (globalThis as any) = G;
     }
   });
 
