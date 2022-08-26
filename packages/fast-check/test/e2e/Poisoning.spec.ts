@@ -189,13 +189,13 @@ function noop() {
 }
 class BasicArbitrary extends fc.Arbitrary<number> {
   generate(mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
-    return new fc.Value<number>(mrng.nextInt(), undefined);
+    return new fc.Value<number>(mrng.nextInt() % 1000, undefined);
   }
   canShrinkWithoutContext(value: unknown): value is number {
     return false;
   }
   shrink(value: number, _context: unknown): fc.Stream<fc.Value<number>> {
-    if (value < 100) {
+    if (value < 10) {
       return fc.Stream.nil();
     }
     return fc.Stream.of(
@@ -205,7 +205,7 @@ class BasicArbitrary extends fc.Arbitrary<number> {
   }
 }
 function basic() {
-  // Directly extracting values out of mrng without extra treatments
+  // Directly extracting values out of mrng without too many treatments
   return new BasicArbitrary();
 }
 function mapToConstantEntry(offset: number) {
