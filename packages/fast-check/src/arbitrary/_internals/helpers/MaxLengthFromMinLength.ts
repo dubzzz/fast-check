@@ -1,4 +1,8 @@
 import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalParameters';
+import { safeIndexOf } from '../../../utils/globals';
+
+const safeMathFloor = Math.floor;
+const safeMathMin = Math.min;
 
 /**
  * Shared upper bound for max length of array-like entities handled within fast-check
@@ -76,7 +80,7 @@ export const DefaultSize: Size = 'small';
 export function maxLengthFromMinLength(minLength: number, size: Size): number {
   switch (size) {
     case 'xsmall':
-      return Math.floor(1.1 * minLength) + 1; // min + (0.1 * min + 1)
+      return safeMathFloor(1.1 * minLength) + 1; // min + (0.1 * min + 1)
     case 'small':
       return 2 * minLength + 10; // min + (1 * min + 10)
     case 'medium':
@@ -95,11 +99,11 @@ export function maxLengthFromMinLength(minLength: number, size: Size): number {
  * @internal
  */
 export function relativeSizeToSize(size: Size | RelativeSize, defaultSize: Size): Size {
-  const sizeInRelative = orderedRelativeSize.indexOf(size as RelativeSize);
+  const sizeInRelative = safeIndexOf(orderedRelativeSize, size as RelativeSize);
   if (sizeInRelative === -1) {
     return size as Size;
   }
-  const defaultSizeInSize = orderedSize.indexOf(defaultSize);
+  const defaultSizeInSize = safeIndexOf(orderedSize, defaultSize);
   if (defaultSizeInSize === -1) {
     throw new Error(`Unable to offset size based on the unknown defaulted one: ${defaultSize}`);
   }
@@ -139,7 +143,7 @@ export function maxGeneratedLengthFromSizeForArbitrary(
     return maxLength;
   }
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
-  return Math.min(maxLengthFromMinLength(minLength, finalSize), maxLength);
+  return safeMathMin(maxLengthFromMinLength(minLength, finalSize), maxLength);
 }
 
 /**
