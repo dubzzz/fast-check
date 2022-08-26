@@ -67,6 +67,14 @@ export function safeToString(instance: unknown): string {
   return safeApply(untouchedToString, instance, []);
 }
 
+// Set
+const untouchedAdd = Set.prototype.add;
+
+/** @internal */
+export function safeAdd<T>(instance: Set<T>, ...args: [T]): Set<T> {
+  return safeApply(untouchedAdd, instance, args);
+}
+
 // String
 const untouchedSplit: (separator: string | RegExp, limit?: number | undefined) => string[] = String.prototype.split;
 
