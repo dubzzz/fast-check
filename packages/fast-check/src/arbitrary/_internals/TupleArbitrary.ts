@@ -6,6 +6,7 @@ import { Value } from '../../check/arbitrary/definition/Value';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';
 
 const safeArrayIsArray = Array.isArray;
+const safeObjectDefineProperty = Object.defineProperty;
 
 /** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
@@ -23,7 +24,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     }
   }
   private static makeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): WithCloneMethod<TValue[]> {
-    return Object.defineProperty(vs, cloneMethod, {
+    return safeObjectDefineProperty(vs, cloneMethod, {
       value: () => {
         const cloned: TValue[] = [];
         for (let idx = 0; idx !== values.length; ++idx) {

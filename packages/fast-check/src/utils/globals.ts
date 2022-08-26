@@ -6,7 +6,9 @@ const untouchedIndexOf = Array.prototype.indexOf;
 const untouchedJoin = Array.prototype.join;
 const untouchedMap = Array.prototype.map;
 const untouchedPush = Array.prototype.push;
+const untouchedSplice: <T>(this: T[], start: number, deleteCount?: number | undefined) => T[] = Array.prototype.splice;
 const untouchedSlice = Array.prototype.slice;
+const untouchedSort = Array.prototype.sort;
 
 /** @internal */
 export function safeForEach<T>(instance: T[], ...args: [fn: (value: T, index: number, array: T[]) => void]): void {
@@ -37,8 +39,18 @@ export function safePush<T>(instance: T[], ...args: T[]): number {
 }
 
 /** @internal */
+export function safeSplice<T>(instance: T[], ...args: [start: number, deleteCount?: number | undefined]): T[] {
+  return safeApply(untouchedSplice, instance, args);
+}
+
+/** @internal */
 export function safeSlice<T>(instance: T[], ...args: [start?: number | undefined, end?: number | undefined]): T[] {
   return safeApply(untouchedSlice, instance, args);
+}
+
+/** @internal */
+export function safeSort<T>(instance: T[], ...args: [compareFn?: ((a: any, b: any) => number) | undefined]): T[] {
+  return safeApply(untouchedSort, instance, args);
 }
 
 // Object
@@ -53,6 +65,14 @@ export function safeHasOwnProperty(instance: unknown, v: PropertyKey): boolean {
 /** @internal */
 export function safeToString(instance: unknown): string {
   return safeApply(untouchedToString, instance, []);
+}
+
+// Set
+const untouchedAdd = Set.prototype.add;
+
+/** @internal */
+export function safeAdd<T>(instance: Set<T>, ...args: [T]): Set<T> {
+  return safeApply(untouchedAdd, instance, args);
 }
 
 // String

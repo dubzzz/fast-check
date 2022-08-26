@@ -1,3 +1,4 @@
+import { safePush, safeSlice } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
 
 /**
@@ -18,7 +19,7 @@ export class CustomEqualSet<T> implements CustomSet<T> {
         return false;
       }
     }
-    this.data.push(value);
+    safePush(this.data, value);
     return true;
   }
 
@@ -27,6 +28,6 @@ export class CustomEqualSet<T> implements CustomSet<T> {
   }
 
   getData(): T[] {
-    return this.data.slice();
+    return safeSlice(this.data);
   }
 }

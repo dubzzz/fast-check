@@ -11,6 +11,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'noop::chain', arbitraryBuilder: () => noop().chain(() => noop()) },
     { name: 'noop::filter', arbitraryBuilder: () => noop().filter(() => true) },
     { name: 'noop::map', arbitraryBuilder: () => noop().map((v) => v) },
+    { name: 'basic', arbitraryBuilder: () => basic() },
     // Boolean
     { name: 'boolean', arbitraryBuilder: () => fc.boolean() },
     // Numeric
@@ -42,6 +43,17 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'oneof', arbitraryBuilder: () => fc.oneof(noop(), noop()) },
     { name: 'mapToConstant', arbitraryBuilder: () => fc.mapToConstant(mapToConstantEntry(0), mapToConstantEntry(100)) },
     { name: 'clone', arbitraryBuilder: () => fc.clone(noop(), 2) },
+    // : Array
+    { name: 'tuple', arbitraryBuilder: () => fc.tuple(noop(), noop()) },
+    { name: 'array', arbitraryBuilder: () => fc.array(noop()) },
+    { name: 'uniqueArray', arbitraryBuilder: () => fc.uniqueArray(basic()) },
+    { name: 'uniqueArray::SameValueZero', arbitraryBuilder: () => fc.uniqueArray(basic(), CmpSameValueZero) },
+    { name: 'uniqueArray::IsStrictlyEqual', arbitraryBuilder: () => fc.uniqueArray(basic(), CmpIsStrictlyEqual) },
+    { name: 'uniqueArray::Custom', arbitraryBuilder: () => fc.uniqueArray(basic(), { comparator: (a, b) => a === b }) },
+    { name: 'subarray', arbitraryBuilder: () => fc.subarray([1, 2, 3, 4, 5]) },
+    { name: 'shuffledSubarray', arbitraryBuilder: () => fc.shuffledSubarray([1, 2, 3, 4, 5]) },
+    { name: 'sparseArray', arbitraryBuilder: () => fc.sparseArray(noop()) },
+    { name: 'infiniteStream', arbitraryBuilder: () => fc.infiniteStream(noop()) },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
@@ -175,6 +187,29 @@ function noop() {
   // The aim of this arbitrary is to control that we can execute the runner and property even in poisoned context.
   return new NoopArbitrary();
 }
+class BasicArbitrary extends fc.Arbitrary<number> {
+  generate(mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
+    return new fc.Value<number>(mrng.nextInt() % 1000, undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is number {
+    return false;
+  }
+  shrink(value: number, _context: unknown): fc.Stream<fc.Value<number>> {
+    if (value < 10) {
+      return fc.Stream.nil();
+    }
+    return fc.Stream.of(
+      new fc.Value<number>((3 * value) / 4, undefined), // emulate a shrinker using bare minimal primitives
+      new fc.Value<number>(value / 2, undefined)
+    );
+  }
+}
+function basic() {
+  // Directly extracting values out of mrng without too many treatments
+  return new BasicArbitrary();
+}
 function mapToConstantEntry(offset: number) {
   return { num: 10, build: (v: number) => v + offset };
 }
+const CmpSameValueZero = { comparator: 'SameValueZero' as const };
+const CmpIsStrictlyEqual = { comparator: 'IsStrictlyEqual' as const };
