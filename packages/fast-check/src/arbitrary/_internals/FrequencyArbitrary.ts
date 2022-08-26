@@ -4,6 +4,12 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
 import { depthBiasFromSizeForArbitrary, DepthSize } from './helpers/MaxLengthFromMinLength';
+import { safePush } from '../../utils/globals';
+
+const safeNumberIsInteger = Number.isInteger;
+const safeMathFloor = Math.floor;
+const safeMathPow = Math.pow;
+const safeMathMin = Math.min;
 
 /** @internal */
 export class FrequencyArbitrary<T> extends Arbitrary<T> {
@@ -22,7 +28,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
       }
       const currentWeight = warbs[idx].weight;
       totalWeight += currentWeight;
-      if (!Number.isInteger(currentWeight)) {
+      if (!safeNumberIsInteger(currentWeight)) {
         throw new Error(`${label} expects weights to be integer values`);
       }
       if (currentWeight < 0) {
@@ -50,7 +56,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     this.cumulatedWeights = [];
     for (let idx = 0; idx !== warbs.length; ++idx) {
       currentWeight += warbs[idx].weight;
-      this.cumulatedWeights.push(currentWeight);
+      safePush(this.cumulatedWeights, currentWeight);
     }
     this.totalWeight = currentWeight;
   }
@@ -187,9 +193,9 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     // We use a pow-based biased benefit as the deeper we go the more chance we have
     // to encounter thousands of instances of the current arbitrary.
-    const depthBenefit = Math.floor(Math.pow(1 + depthBias, this.context.depth)) - 1;
+    const depthBenefit = safeMathFloor(safeMathPow(1 + depthBias, this.context.depth)) - 1;
     // -0 has to be converted into 0 thus we call ||0
-    return -Math.min(this.totalWeight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
+    return -safeMathMin(this.totalWeight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
   }
 }
 

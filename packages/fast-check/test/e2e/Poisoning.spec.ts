@@ -34,6 +34,14 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'unicode', arbitraryBuilder: () => fc.unicode() },
     { name: 'char16bits', arbitraryBuilder: () => fc.char16bits() },
     { name: 'fullUnicode', arbitraryBuilder: () => fc.fullUnicode() },
+    // Combinators
+    // : Simple
+    { name: 'constant', arbitraryBuilder: () => fc.constant(1) },
+    { name: 'constantFrom', arbitraryBuilder: () => fc.constantFrom(1, 2, 3) },
+    { name: 'option', arbitraryBuilder: () => fc.option(noop()) },
+    { name: 'oneof', arbitraryBuilder: () => fc.oneof(noop(), noop()) },
+    { name: 'mapToConstant', arbitraryBuilder: () => fc.mapToConstant(mapToConstantEntry(0), mapToConstantEntry(100)) },
+    { name: 'clone', arbitraryBuilder: () => fc.clone(noop(), 2) },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
@@ -166,4 +174,7 @@ function noop() {
   // Always returns the same value and does not use random number instance.
   // The aim of this arbitrary is to control that we can execute the runner and property even in poisoned context.
   return new NoopArbitrary();
+}
+function mapToConstantEntry(offset: number) {
+  return { num: 10, build: (v: number) => v + offset };
 }

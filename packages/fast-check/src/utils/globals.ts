@@ -14,7 +14,10 @@ export function safeForEach<T>(instance: T[], ...args: [fn: (value: T, index: nu
 }
 
 /** @internal */
-export function safeIndexOf<T>(instance: T[], ...args: [searchElement: any, fromIndex?: number | undefined]): number {
+export function safeIndexOf<T>(
+  instance: readonly T[],
+  ...args: [searchElement: any, fromIndex?: number | undefined]
+): number {
   return safeApply(untouchedIndexOf, instance, args);
 }
 
@@ -39,7 +42,13 @@ export function safeSlice<T>(instance: T[], ...args: [start?: number | undefined
 }
 
 // Object
+const untouchedHasOwnProperty = Object.prototype.hasOwnProperty;
 const untouchedToString = Object.prototype.toString;
+
+/** @internal */
+export function safeHasOwnProperty(instance: unknown, v: PropertyKey): boolean {
+  return safeApply(untouchedHasOwnProperty, instance, [v]);
+}
 
 /** @internal */
 export function safeToString(instance: unknown): string {
