@@ -25,6 +25,15 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'bigInt', arbitraryBuilder: () => fc.bigInt() },
     { name: 'bigUintN', arbitraryBuilder: () => fc.bigUintN(64) },
     { name: 'bigUint', arbitraryBuilder: () => fc.bigUint() },
+    // String
+    // : Single character
+    { name: 'hexa', arbitraryBuilder: () => fc.hexa() },
+    { name: 'base64', arbitraryBuilder: () => fc.base64() },
+    { name: 'char', arbitraryBuilder: () => fc.char() },
+    { name: 'ascii', arbitraryBuilder: () => fc.ascii() },
+    { name: 'unicode', arbitraryBuilder: () => fc.unicode() },
+    { name: 'char16bits', arbitraryBuilder: () => fc.char16bits() },
+    { name: 'fullUnicode', arbitraryBuilder: () => fc.fullUnicode() },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
