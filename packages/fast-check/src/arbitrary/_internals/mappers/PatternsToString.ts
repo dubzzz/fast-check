@@ -1,10 +1,11 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { MaxLengthUpperBound } from '../helpers/MaxLengthFromMinLength';
 import { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
+import { safeJoin, safePop, safePush, safeSubstring } from '../../../utils/globals';
 
 /** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
 export function patternsToStringMapper(tab: string[]): string {
-  return tab.join('');
+  return safeJoin(tab, '');
 }
 
 /** @internal */
@@ -40,14 +41,14 @@ export function patternsToStringUnmapperFor(
     const stack: StackItem[] = [{ endIndexChunks: 0, nextStartIndex: 1, chunks: [] }];
     while (stack.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const last = stack.pop()!;
+      const last = safePop(stack)!;
 
       // Going deeper in the tree
       // TODO - Use larger chunks first instead of small ones then large ones
       for (let index = last.nextStartIndex; index <= value.length; ++index) {
-        const chunk = value.substring(last.endIndexChunks, index);
+        const chunk = safeSubstring(value, last.endIndexChunks, index);
         if (patternsArb.canShrinkWithoutContext(chunk)) {
-          const newChunks = last.chunks.concat([chunk]);
+          const newChunks = [...last.chunks, chunk];
           if (index === value.length) {
             if (newChunks.length < minLength || newChunks.length > maxLength) {
               break; // =continue as we already reach the last index of the for-loop
@@ -59,9 +60,9 @@ export function patternsToStringUnmapperFor(
           // Actually it corresponds to moving to the next index in the for-loop BUT as we want to go deep first,
           // we stop the iteration of the current for-loop via a break and delay the analysis for next index for later
           // with this push.
-          stack.push({ endIndexChunks: last.endIndexChunks, nextStartIndex: index + 1, chunks: last.chunks });
+          safePush(stack, { endIndexChunks: last.endIndexChunks, nextStartIndex: index + 1, chunks: last.chunks });
           // Pushed to go deeper in the tree
-          stack.push({ endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+          safePush(stack, { endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
           break;
         }
       }

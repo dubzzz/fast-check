@@ -35,6 +35,15 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'unicode', arbitraryBuilder: () => fc.unicode() },
     { name: 'char16bits', arbitraryBuilder: () => fc.char16bits() },
     { name: 'fullUnicode', arbitraryBuilder: () => fc.fullUnicode() },
+    // : Multiple characters
+    { name: 'hexaString', arbitraryBuilder: () => fc.hexaString() },
+    { name: 'base64String', arbitraryBuilder: () => fc.base64String() },
+    { name: 'string', arbitraryBuilder: () => fc.string() },
+    { name: 'asciiString', arbitraryBuilder: () => fc.asciiString() },
+    { name: 'unicodeString', arbitraryBuilder: () => fc.unicodeString() },
+    { name: 'string16bits', arbitraryBuilder: () => fc.string16bits() },
+    { name: 'fullUnicodeString', arbitraryBuilder: () => fc.fullUnicodeString() },
+    { name: 'stringOf', arbitraryBuilder: () => fc.stringOf(fc.char()) },
     // Combinators
     // : Simple
     { name: 'constant', arbitraryBuilder: () => fc.constant(1) },

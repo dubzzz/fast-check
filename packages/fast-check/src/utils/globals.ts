@@ -6,6 +6,7 @@ const untouchedIndexOf = Array.prototype.indexOf;
 const untouchedJoin = Array.prototype.join;
 const untouchedMap = Array.prototype.map;
 const untouchedPush = Array.prototype.push;
+const untouchedPop = Array.prototype.pop;
 const untouchedSplice: <T>(this: T[], start: number, deleteCount?: number | undefined) => T[] = Array.prototype.splice;
 const untouchedSlice = Array.prototype.slice;
 const untouchedSort = Array.prototype.sort;
@@ -36,6 +37,11 @@ export function safeMap<T, U>(instance: T[], ...args: [fn: (value: T, index: num
 /** @internal */
 export function safePush<T>(instance: T[], ...args: T[]): number {
   return safeApply(untouchedPush, instance, args);
+}
+
+/** @internal */
+export function safePop<T>(instance: T[]): T | undefined {
+  return safeApply(untouchedPop, instance, []);
 }
 
 /** @internal */
@@ -77,8 +83,16 @@ export function safeAdd<T>(instance: Set<T>, ...args: [T]): Set<T> {
 
 // String
 const untouchedSplit: (separator: string | RegExp, limit?: number | undefined) => string[] = String.prototype.split;
+const untouchedSubstring = String.prototype.substring;
 
 /** @internal */
 export function safeSplit(instance: string, ...args: Parameters<typeof untouchedSplit>): string[] {
   return safeApply(untouchedSplit, instance, args);
 }
+
+/** @internal */
+export function safeSubstring(instance: string, ...args: Parameters<typeof untouchedSubstring>): string {
+  return safeApply(untouchedSubstring, instance, args);
+}
+
+//
