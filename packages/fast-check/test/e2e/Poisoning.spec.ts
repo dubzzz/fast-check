@@ -3,13 +3,29 @@ import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
 describe(`Poisoning (seed: ${seed})`, () => {
-  it.each`
-    name              | arbitraryBuilder
-    ${'noop'}         | ${() => noop()}
-    ${'noop::chain'}  | ${() => noop().chain(() => noop())}
-    ${'noop::filter'} | ${() => noop().filter(() => true)}
-    ${'noop::map'}    | ${() => noop().map((v) => v)}
-  `('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
+  it.each<{
+    name: string;
+    arbitraryBuilder: () => fc.Arbitrary<unknown>;
+  }>([
+    { name: 'noop', arbitraryBuilder: () => noop() },
+    { name: 'noop::chain', arbitraryBuilder: () => noop().chain(() => noop()) },
+    { name: 'noop::filter', arbitraryBuilder: () => noop().filter(() => true) },
+    { name: 'noop::map', arbitraryBuilder: () => noop().map((v) => v) },
+    // Boolean
+    { name: 'boolean', arbitraryBuilder: () => fc.boolean() },
+    // Numeric
+    { name: 'integer', arbitraryBuilder: () => fc.integer() },
+    { name: 'nat', arbitraryBuilder: () => fc.nat() },
+    { name: 'maxSafeInteger', arbitraryBuilder: () => fc.maxSafeInteger() },
+    { name: 'maxSafeNat', arbitraryBuilder: () => fc.maxSafeNat() },
+    { name: 'float', arbitraryBuilder: () => fc.float() },
+    // pure-rand is not resilient to prototype poisoning occuring on Array
+    //{ name: 'double', arbitraryBuilder: () => fc.double() },
+    { name: 'bigIntN', arbitraryBuilder: () => fc.bigIntN(64) },
+    { name: 'bigInt', arbitraryBuilder: () => fc.bigInt() },
+    { name: 'bigUintN', arbitraryBuilder: () => fc.bigUintN(64) },
+    { name: 'bigUint', arbitraryBuilder: () => fc.bigUint() },
+  ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
     let failedOnce = false;

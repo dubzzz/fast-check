@@ -1,6 +1,8 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary';
 
+const safeNumberIsInteger = Number.isInteger;
+
 /**
  * Constraints to be applied on {@link integer}
  * @remarks Since 2.6.0
@@ -44,10 +46,10 @@ export function integer(constraints: IntegerConstraints = {}): Arbitrary<number>
   if (fullConstraints.min > fullConstraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');
   }
-  if (!Number.isInteger(fullConstraints.min)) {
+  if (!safeNumberIsInteger(fullConstraints.min)) {
     throw new Error('fc.integer minimum value should be an integer');
   }
-  if (!Number.isInteger(fullConstraints.max)) {
+  if (!safeNumberIsInteger(fullConstraints.max)) {
     throw new Error('fc.integer maximum value should be an integer');
   }
   return new IntegerArbitrary(fullConstraints.min, fullConstraints.max);

@@ -6,6 +6,8 @@ import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange';
 import { shrinkInteger } from './helpers/ShrinkInteger';
 
 const safeMathSign = Math.sign;
+const safeNumberIsInteger = Number.isInteger;
+const safeObjectIs = Object.is;
 
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
@@ -21,8 +23,8 @@ export class IntegerArbitrary extends Arbitrary<number> {
   canShrinkWithoutContext(value: unknown): value is number {
     return (
       typeof value === 'number' &&
-      Number.isInteger(value) &&
-      !Object.is(value, -0) &&
+      safeNumberIsInteger(value) &&
+      !safeObjectIs(value, -0) &&
       this.min <= value &&
       value <= this.max
     );

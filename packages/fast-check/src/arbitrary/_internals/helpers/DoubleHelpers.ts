@@ -1,5 +1,10 @@
 import { ArrayInt64, clone64, isEqual64 } from './ArrayInt64';
 
+const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
+const safeNaN = Number.NaN;
+const safeEpsilon = Number.EPSILON;
+
 /** @internal */
 const INDEX_POSITIVE_INFINITY: ArrayInt64 = { sign: 1, data: [2146435072, 0] }; // doubleToIndex(Number.MAX_VALUE) + 1;
 /** @internal */
@@ -23,7 +28,7 @@ const INDEX_NEGATIVE_INFINITY: ArrayInt64 = { sign: -1, data: [2146435072, 1] };
 export function decomposeDouble(d: number): { exponent: number; significand: number } {
   // 1 => significand 0b1   - exponent 1 (will be preferred)
   //   => significand 0b0.1 - exponent 2
-  const maxSignificand = 2 - Number.EPSILON;
+  const maxSignificand = 2 - safeEpsilon;
   for (let exponent = -1022; exponent !== 1024; ++exponent) {
     const powExponent = 2 ** exponent;
     const maxForExponent = maxSignificand * powExponent;
@@ -31,7 +36,7 @@ export function decomposeDouble(d: number): { exponent: number; significand: num
       return { exponent, significand: d / powExponent };
     }
   }
-  return { exponent: Number.NaN, significand: Number.NaN };
+  return { exponent: safeNaN, significand: safeNaN };
 }
 
 /** @internal */
@@ -74,16 +79,16 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): ArrayIn
  * @internal
  */
 export function doubleToIndex(d: number): ArrayInt64 {
-  if (d === Number.POSITIVE_INFINITY) {
+  if (d === safePositiveInfinity) {
     return clone64(INDEX_POSITIVE_INFINITY);
   }
-  if (d === Number.NEGATIVE_INFINITY) {
+  if (d === safeNegativeInfinity) {
     return clone64(INDEX_NEGATIVE_INFINITY);
   }
   const decomp = decomposeDouble(d);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
-  if (d > 0 || (d === 0 && 1 / d === Number.POSITIVE_INFINITY)) {
+  if (d > 0 || (d === 0 && 1 / d === safePositiveInfinity)) {
     return { sign: 1, data: indexInDoubleFromDecomp(exponent, significand) };
   } else {
     const indexOpposite = indexInDoubleFromDecomp(exponent, -significand);
@@ -116,7 +121,7 @@ export function indexToDouble(index: ArrayInt64): number {
     return -indexToDouble(indexOpposite); // -indexToDouble(-index - 1);
   }
   if (isEqual64(index, INDEX_POSITIVE_INFINITY)) {
-    return Number.POSITIVE_INFINITY;
+    return safePositiveInfinity;
   }
   if (index.data[0] < 0x200000) {
     // if: index < 2 ** 53  <--> index[0] < 2 ** (53-32) = 0x20_0000
@@ -138,6 +143,6 @@ export function indexToDouble(index: ArrayInt64): number {
   //             = 1 + ((postIndexHigh % 2**20) * 2**32 + postIndexLow) / 2**52
   //             = 1 + ((postIndexHigh & 0xfffff) * 2**32 + postIndexLow) / 2**52
   //             = 1 + ((postIndexHigh & 0xfffff) * 2**32 + postIndexLow) * Number.EPSILON
-  const significand = 1 + ((postIndexHigh & 0xfffff) * 2 ** 32 + index.data[1]) * Number.EPSILON;
+  const significand = 1 + ((postIndexHigh & 0xfffff) * 2 ** 32 + index.data[1]) * safeEpsilon;
   return significand * 2 ** exponent;
 }
