@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
-  "version": "0.0.0",
   "packageManager": "yarn@3.2.3",
   "workspaces": [
     ".github/actions/*",
@@ -19,7 +18,7 @@
     "format:check": "prettier --list-different .",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
-    "version:bump": "yarn version check --interactive && yarn workspace @fast-check/monorepo version decline",
+    "version:bump": "yarn version check --interactive",
     "pack:all": "yarn workspaces foreach -pvi --no-private pack --out package.tgz",
     "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
   },

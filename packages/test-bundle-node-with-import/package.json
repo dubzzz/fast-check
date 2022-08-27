@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/test-bundle-node-with-import",
   "description": "Test making sure fast-check can be referenced from ESM projects",
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dry": "node dry.js",

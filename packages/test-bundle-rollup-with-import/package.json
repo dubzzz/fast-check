@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/test-bundle-rollup-with-import",
   "description": "Test making sure fast-check can be used with ESM in Rollup",
-  "version": "0.0.0",
   "scripts": {
     "generate": "rollup --config rollup.config.js && rollup --config rollup.config.dry.js",
     "out:dry": "node dist/dry.js",
