@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/test-bundle-webpack-with-require",
   "description": "Test making sure fast-check can be used with CJS in Webpack",
-  "version": "0.0.0",
   "scripts": {
     "generate": "webpack && webpack --config webpack.config.dry.js",
     "out:dry": "node dist/dry.js",
