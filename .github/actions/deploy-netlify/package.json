@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/deploy-netlify",
   "description": "Test making sure fast-check expose the right typings",
-  "version": "0.0.0",
   "main": "index.cjs",
   "dependencies": {
     "@actions/core": "^1.7.0",
