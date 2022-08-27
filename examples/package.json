@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/examples",
   "description": "Examples of usage of fast-check",
-  "version": "0.0.0",
   "scripts": {
     "test": "jest",
     "typecheck": "tsc --noEmit"
