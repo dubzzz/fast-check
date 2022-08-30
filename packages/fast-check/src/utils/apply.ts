@@ -1,4 +1,6 @@
+const safeObjectGetPrototypeOf = Object.getPrototypeOf;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const untouchedPrototype = Function.prototype;
 const untouchedApply = Function.prototype.apply;
 
 const ApplySymbol = Symbol('apply');
@@ -28,9 +30,12 @@ export function safeApply<T, TArgs extends unknown[], TReturn>(
   instance: T,
   args: TArgs
 ): TReturn {
-  const descApply = safeObjectGetOwnPropertyDescriptor(f, 'apply');
-  if (descApply !== undefined && descApply.value === untouchedApply) {
-    return f.apply(instance, args);
+  const fPrototype = safeObjectGetPrototypeOf(f);
+  if (fPrototype === untouchedPrototype && safeObjectGetOwnPropertyDescriptor(f, 'apply') === undefined) {
+    const functionApplyDesc = safeObjectGetOwnPropertyDescriptor(untouchedPrototype, 'apply');
+    if (functionApplyDesc !== undefined && functionApplyDesc.value === untouchedApply) {
+      return f.apply(instance, args);
+    }
   }
   return safeApplyHacky(f, instance, args);
 }
