@@ -5,6 +5,7 @@ const untouchedForEach = Array.prototype.forEach;
 const untouchedIndexOf = Array.prototype.indexOf;
 const untouchedJoin = Array.prototype.join;
 const untouchedMap = Array.prototype.map;
+const untouchedFilter = Array.prototype.filter;
 const untouchedPush = Array.prototype.push;
 const untouchedPop = Array.prototype.pop;
 const untouchedSplice: <T>(this: T[], start: number, deleteCount?: number | undefined) => T[] = Array.prototype.splice;
@@ -32,6 +33,16 @@ export function safeJoin<T>(instance: T[], ...args: [separator?: string | undefi
 /** @internal */
 export function safeMap<T, U>(instance: T[], ...args: [fn: (value: T, index: number, array: T[]) => U]): U[] {
   return safeApply(untouchedMap, instance, args);
+}
+
+/** @internal */
+export function safeFilter<T, U extends T>(
+  instance: T[],
+  ...args:
+    | [predicate: (value: T, index: number, array: T[]) => value is U]
+    | [predicate: (value: T, index: number, array: T[]) => unknown]
+): U[] {
+  return safeApply(untouchedFilter, instance, args);
 }
 
 /** @internal */

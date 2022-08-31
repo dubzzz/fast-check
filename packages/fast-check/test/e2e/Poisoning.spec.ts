@@ -63,6 +63,15 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'shuffledSubarray', arbitraryBuilder: () => fc.shuffledSubarray([1, 2, 3, 4, 5]) },
     { name: 'sparseArray', arbitraryBuilder: () => fc.sparseArray(noop()) },
     { name: 'infiniteStream', arbitraryBuilder: () => fc.infiniteStream(noop()) },
+    // : Object
+    { name: 'dictionary', arbitraryBuilder: () => fc.dictionary(basic().map(String), noop()) },
+    { name: 'record', arbitraryBuilder: () => fc.record({ a: noop(), b: noop() }) },
+    { name: 'record::requiredKeys', arbitraryBuilder: () => fc.record({ a: noop(), b: noop() }, { requiredKeys: [] }) },
+    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
+    //{ name: 'object', arbitraryBuilder: () => fc.object() },
+    //{ name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
+    //{ name: 'unicodeJsonValue', arbitraryBuilder: () => fc.unicodeJsonValue() },
+    //{ name: 'anything', arbitraryBuilder: () => fc.anything() },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
