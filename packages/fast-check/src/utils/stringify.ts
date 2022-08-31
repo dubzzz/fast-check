@@ -1,6 +1,10 @@
-import { safeIndexOf, safeJoin, safeMap, safePush, safeToString } from './globals';
+import { safeFilter, safeIndexOf, safeJoin, safeMap, safePush, safeToString } from './globals';
 
 const safeJsonStringify = JSON.stringify;
+const safeObjectKeys = Object.keys;
+const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
+const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const safeObjectGetPrototypeOf = Object.getPrototypeOf;
 
 /**
  * Use this symbol to define a custom serializer for your instances.
@@ -206,17 +210,18 @@ export function stringifyInternal<Ts>(
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
-        ...Object.keys(value).map(mapper),
-        ...Object.getOwnPropertySymbols(value)
-          .filter((s) => {
-            const descriptor = Object.getOwnPropertyDescriptor(value, s);
+        ...safeMap(safeObjectKeys(value), mapper),
+        ...safeMap(
+          safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
+            const descriptor = safeObjectGetOwnPropertyDescriptor(value, s);
             return descriptor && descriptor.enumerable;
-          })
-          .map(mapper),
+          }),
+          mapper
+        ),
       ];
-      const rawRepr = '{' + stringifiedProperties.join(',') + '}';
+      const rawRepr = '{' + safeJoin(stringifiedProperties, ',') + '}';
 
-      if (Object.getPrototypeOf(value) === null) {
+      if (safeObjectGetPrototypeOf(value) === null) {
         return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
       }
       return rawRepr;
