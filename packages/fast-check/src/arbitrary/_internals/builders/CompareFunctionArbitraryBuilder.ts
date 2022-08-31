@@ -5,6 +5,10 @@ import { hash } from '../../../utils/hash';
 import { stringify } from '../../../utils/stringify';
 import { integer } from '../../integer';
 import { tuple } from '../../tuple';
+import { safeJoin } from '../../../utils/globals';
+
+const safeObjectAssign = Object.assign;
+const safeObjectKeys = Object.keys;
 
 /** @internal */
 export function buildCompareFunctionArbitrary<T, TOut>(
@@ -22,14 +26,16 @@ export function buildCompareFunctionArbitrary<T, TOut>(
         recorded[`[${reprA},${reprB}]`] = val;
         return val;
       };
-      return Object.assign(f, {
+      return safeObjectAssign(f, {
         toString: () => {
-          const seenValues = Object.keys(recorded)
+          const seenValues = safeObjectKeys(recorded)
             .sort()
             .map((k) => `${k} => ${stringify(recorded[k])}`)
             .map((line) => `/* ${escapeForMultilineComments(line)} */`);
           return `function(a, b) {
-  // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
+  // With hash and stringify coming from fast-check${
+    seenValues.length !== 0 ? `\n  ${safeJoin(seenValues, '\n  ')}` : ''
+  }
   const cmp = ${cmp};
   const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
   const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};
