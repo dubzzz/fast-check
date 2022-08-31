@@ -26,6 +26,21 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'bigInt', arbitraryBuilder: () => fc.bigInt() },
     { name: 'bigUintN', arbitraryBuilder: () => fc.bigUintN(64) },
     { name: 'bigUint', arbitraryBuilder: () => fc.bigUint() },
+    // Date
+    { name: 'date', arbitraryBuilder: () => fc.date() },
+    // Typed Array
+    { name: 'int8Array', arbitraryBuilder: () => fc.int8Array() },
+    { name: 'uint8Array', arbitraryBuilder: () => fc.uint8Array() },
+    { name: 'uint8ClampedArray', arbitraryBuilder: () => fc.uint8ClampedArray() },
+    { name: 'int16Array', arbitraryBuilder: () => fc.int16Array() },
+    { name: 'uint16Array', arbitraryBuilder: () => fc.uint16Array() },
+    { name: 'int32Array', arbitraryBuilder: () => fc.int32Array() },
+    { name: 'uint32Array', arbitraryBuilder: () => fc.uint32Array() },
+    { name: 'float32Array', arbitraryBuilder: () => fc.float32Array() },
+    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
+    //{ name: 'float64Array', arbitraryBuilder: () => fc.float64Array() },
+    { name: 'bigInt64Array', arbitraryBuilder: () => fc.bigInt64Array() },
+    { name: 'bigUint64Array', arbitraryBuilder: () => fc.bigUint64Array() },
     // String
     // : Single character
     { name: 'hexa', arbitraryBuilder: () => fc.hexa() },

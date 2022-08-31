@@ -70,6 +70,20 @@ export function safeSort<T>(instance: T[], ...args: [compareFn?: ((a: any, b: an
   return safeApply(untouchedSort, instance, args);
 }
 
+// Date
+const untouchedGetTime = Date.prototype.getTime;
+const untouchedToISOString = Date.prototype.toISOString;
+
+/** @internal */
+export function safeGetTime(instance: Date): number {
+  return safeApply(untouchedGetTime, instance, []);
+}
+
+/** @internal */
+export function safeToISOString(instance: Date): string {
+  return safeApply(untouchedToISOString, instance, []);
+}
+
 // Object
 const untouchedHasOwnProperty = Object.prototype.hasOwnProperty;
 const untouchedToString = Object.prototype.toString;
