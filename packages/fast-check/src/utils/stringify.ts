@@ -1,6 +1,18 @@
-import { safeFilter, safeIndexOf, safeJoin, safeMap, safePush, safeToString } from './globals';
+import {
+  safeFilter,
+  safeGetTime,
+  safeIndexOf,
+  safeJoin,
+  safeMap,
+  safePush,
+  safeToISOString,
+  safeToString,
+} from './globals';
 
+const safeArrayFrom = Array.from;
+const safeBufferIsBuffer = typeof Buffer !== 'undefined' ? Buffer.isBuffer : undefined;
 const safeJsonStringify = JSON.stringify;
+const safeNumberIsNaN = Number.isNaN;
 const safeObjectKeys = Object.keys;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -154,7 +166,7 @@ export function stringifyInternal<Ts>(
         // Discarded: map then join will still show holes
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
         for (const index in arr) {
-          if (!Number.isNaN(Number(index)))
+          if (!safeNumberIsNaN(Number(index)))
             safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
         }
         return assignments.length !== 0
@@ -180,7 +192,7 @@ export function stringifyInternal<Ts>(
     }
     case '[object Date]': {
       const d = value as unknown as Date;
-      return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${safeJsonStringify(d.toISOString())})`;
+      return safeNumberIsNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${safeJsonStringify(safeToISOString(d))})`;
     }
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -274,10 +286,11 @@ export function stringifyInternal<Ts>(
     case '[object Float64Array]':
     case '[object BigInt64Array]':
     case '[object BigUint64Array]': {
-      if (typeof Buffer !== 'undefined' && typeof Buffer.isBuffer === 'function' && Buffer.isBuffer(value)) {
-        return `Buffer.from(${stringifyInternal(Array.from(value.values()), currentValues, getAsyncContent)})`;
+      if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(value)) {
+        // Warning: value.values() may crash at runtime if Buffer got poisoned
+        return `Buffer.from(${stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)})`;
       }
-      const valuePrototype = Object.getPrototypeOf(value);
+      const valuePrototype = safeObjectGetPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
       if (typeof className === 'string') {
         const typedArray = value as unknown as
@@ -292,9 +305,10 @@ export function stringifyInternal<Ts>(
           | Float64Array
           | BigInt64Array
           | BigUint64Array;
+        // Warning: typedArray.values() may crash at runtime if type got poisoned
         const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
         return `${className}.from(${stringifyInternal(
-          Array.from(valuesFromTypedArr),
+          safeArrayFrom(valuesFromTypedArr),
           currentValues,
           getAsyncContent
         )})`;
