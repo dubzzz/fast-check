@@ -119,5 +119,3 @@ export function safeSplit(instance: string, ...args: Parameters<typeof untouched
 export function safeSubstring(instance: string, ...args: Parameters<typeof untouchedSubstring>): string {
   return safeApply(untouchedSubstring, instance, args);
 }
-
-//

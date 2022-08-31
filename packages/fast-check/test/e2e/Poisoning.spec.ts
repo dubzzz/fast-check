@@ -87,6 +87,9 @@ describe(`Poisoning (seed: ${seed})`, () => {
     //{ name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
     //{ name: 'unicodeJsonValue', arbitraryBuilder: () => fc.unicodeJsonValue() },
     //{ name: 'anything', arbitraryBuilder: () => fc.anything() },
+    // : Recursive structures
+    { name: 'letrec', arbitraryBuilder: () => letrecTree() },
+    { name: 'memo', arbitraryBuilder: () => memoTree() },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
@@ -246,3 +249,22 @@ function mapToConstantEntry(offset: number) {
 }
 const CmpSameValueZero = { comparator: 'SameValueZero' as const };
 const CmpIsStrictlyEqual = { comparator: 'IsStrictlyEqual' as const };
+type Leaf = number;
+type Node = { left: Tree; right: Tree };
+type Tree = Leaf | Node;
+function letrecTree() {
+  return fc.letrec((tie) => ({
+    tree: fc.oneof(tie('leaf'), tie('node')),
+    node: fc.record({ left: tie('tree'), right: tie('tree') }),
+    leaf: fc.nat(),
+  })).tree;
+}
+function memoTree() {
+  const tree = fc.memo<Tree>((n) => fc.oneof(leaf(), node(n)));
+  const node = fc.memo<Node>((n): fc.Arbitrary<Node> => {
+    if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
+    return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
+  });
+  const leaf: () => fc.Arbitrary<Leaf> = fc.nat;
+  return tree(2);
+}
