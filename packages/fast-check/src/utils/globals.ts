@@ -1,4 +1,4 @@
-import { safeApply } from './apply';
+import { buildSafeMethod, safeApply } from './apply';
 
 // Array
 const untouchedForEach = Array.prototype.forEach;
@@ -107,33 +107,18 @@ export function safeAdd<T>(instance: Set<T>, ...args: [T]): Set<T> {
 }
 
 // String
-const untouchedSplit: (separator: string | RegExp, limit?: number | undefined) => string[] = String.prototype.split;
-const untouchedStartsWith = String.prototype.startsWith;
-const untouchedEndsWith = String.prototype.endsWith;
-const untouchedSubstring = String.prototype.substring;
+export const safeSplit = buildSafeMethod(String, 'split') as (
+  instance: string,
+  separator: string | RegExp,
+  limit?: number | undefined
+) => string[];
+export const safeStartsWith = buildSafeMethod(String, 'startsWith');
+export const safeEndsWith = buildSafeMethod(String, 'endsWith');
+export const safeSubstring = buildSafeMethod(String, 'substring');
+
 const untouchedToLowerCase = String.prototype.toLowerCase;
 const untouchedToUpperCase = String.prototype.toUpperCase;
 const untouchedPadStart = String.prototype.padStart;
-
-/** @internal */
-export function safeSplit(instance: string, ...args: Parameters<typeof untouchedSplit>): string[] {
-  return safeApply(untouchedSplit, instance, args);
-}
-
-/** @internal */
-export function safeStartsWith(instance: string, ...args: Parameters<typeof untouchedStartsWith>): boolean {
-  return safeApply(untouchedStartsWith, instance, args);
-}
-
-/** @internal */
-export function safeEndsWith(instance: string, ...args: Parameters<typeof untouchedEndsWith>): boolean {
-  return safeApply(untouchedEndsWith, instance, args);
-}
-
-/** @internal */
-export function safeSubstring(instance: string, ...args: Parameters<typeof untouchedSubstring>): string {
-  return safeApply(untouchedSubstring, instance, args);
-}
 
 /** @internal */
 export function safeToLowerCase(instance: string): string {

@@ -48,3 +48,20 @@ export function safeApply<T, TArgs extends unknown[], TReturn>(
   }
   return safeApplyHacky(f, instance, args);
 }
+
+/**
+ * Build a safe version of an exisiting method
+ * @internal
+ */
+export function buildSafeMethod<
+  TType extends { [K in TMethodName]: (...args: any[]) => any },
+  TMethodName extends string
+>(
+  typeConstructor: new () => TType,
+  methodName: TMethodName
+): (instance: TType, ...args: Parameters<TType[TMethodName]>) => ReturnType<TType[TMethodName]> {
+  const method = typeConstructor.prototype[methodName];
+  return function safe(instance, ...args) {
+    return safeApply(method, instance, args);
+  };
+}
