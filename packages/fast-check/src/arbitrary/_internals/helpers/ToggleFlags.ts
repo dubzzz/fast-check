@@ -1,3 +1,5 @@
+import { safePush } from '../../../utils/globals';
+
 /** @internal */
 export function countToggledBits(n: bigint): number {
   let count = 0;
@@ -30,7 +32,7 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
 export function computeTogglePositions(chars: string[], toggleCase: (rawChar: string) => string): number[] {
   const positions: number[] = [];
   for (let idx = chars.length - 1; idx !== -1; --idx) {
-    if (toggleCase(chars[idx]) !== chars[idx]) positions.push(idx);
+    if (toggleCase(chars[idx]) !== chars[idx]) safePush(positions, idx);
   }
   return positions;
 }

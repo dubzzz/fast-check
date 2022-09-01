@@ -44,6 +44,24 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'string16bits', arbitraryBuilder: () => fc.string16bits() },
     { name: 'fullUnicodeString', arbitraryBuilder: () => fc.fullUnicodeString() },
     { name: 'stringOf', arbitraryBuilder: () => fc.stringOf(fc.char()) },
+    // : More specific strings
+    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
+    //{ name: 'json', arbitraryBuilder: () => fc.json() },
+    //{ name: 'unicodeJson', arbitraryBuilder: () => fc.unicodeJson() },
+    { name: 'lorem', arbitraryBuilder: () => fc.lorem() },
+    { name: 'ipV4', arbitraryBuilder: () => fc.ipV4() },
+    { name: 'ipV4Extended', arbitraryBuilder: () => fc.ipV4Extended() },
+    { name: 'ipV6', arbitraryBuilder: () => fc.ipV6() },
+    { name: 'uuid', arbitraryBuilder: () => fc.uuid() },
+    { name: 'uuidV', arbitraryBuilder: () => fc.uuidV(4) },
+    { name: 'domain', arbitraryBuilder: () => fc.domain() },
+    { name: 'webAuthority', arbitraryBuilder: () => fc.webAuthority() },
+    { name: 'webFragments', arbitraryBuilder: () => fc.webFragments() },
+    { name: 'webQueryParameters', arbitraryBuilder: () => fc.webQueryParameters() },
+    { name: 'webSegment', arbitraryBuilder: () => fc.webSegment() },
+    { name: 'webUrl', arbitraryBuilder: () => fc.webUrl() },
+    { name: 'emailAddress', arbitraryBuilder: () => fc.emailAddress() },
+    { name: 'mixedCase', arbitraryBuilder: () => fc.mixedCase(fc.string()) },
     // Date
     { name: 'date', arbitraryBuilder: () => fc.date() },
     // Typed Array
