@@ -108,7 +108,12 @@ export function safeAdd<T>(instance: Set<T>, ...args: [T]): Set<T> {
 
 // String
 const untouchedSplit: (separator: string | RegExp, limit?: number | undefined) => string[] = String.prototype.split;
+const untouchedStartsWith = String.prototype.startsWith;
+const untouchedEndsWith = String.prototype.endsWith;
 const untouchedSubstring = String.prototype.substring;
+const untouchedToLowerCase = String.prototype.toLowerCase;
+const untouchedToUpperCase = String.prototype.toUpperCase;
+const untouchedPadStart = String.prototype.padStart;
 
 /** @internal */
 export function safeSplit(instance: string, ...args: Parameters<typeof untouchedSplit>): string[] {
@@ -116,6 +121,39 @@ export function safeSplit(instance: string, ...args: Parameters<typeof untouched
 }
 
 /** @internal */
+export function safeStartsWith(instance: string, ...args: Parameters<typeof untouchedStartsWith>): boolean {
+  return safeApply(untouchedStartsWith, instance, args);
+}
+
+/** @internal */
+export function safeEndsWith(instance: string, ...args: Parameters<typeof untouchedEndsWith>): boolean {
+  return safeApply(untouchedEndsWith, instance, args);
+}
+
+/** @internal */
 export function safeSubstring(instance: string, ...args: Parameters<typeof untouchedSubstring>): string {
   return safeApply(untouchedSubstring, instance, args);
+}
+
+/** @internal */
+export function safeToLowerCase(instance: string): string {
+  return safeApply(untouchedToLowerCase, instance, []);
+}
+
+/** @internal */
+export function safeToUpperCase(instance: string): string {
+  return safeApply(untouchedToUpperCase, instance, []);
+}
+
+/** @internal */
+export function safePadStart(instance: string, ...args: Parameters<typeof untouchedPadStart>): string {
+  return safeApply(untouchedPadStart, instance, args);
+}
+
+// Number
+const untouchedNumberToString = Number.prototype.toString;
+
+/** @internal */
+export function safeNumberToString(instance: number, ...args: Parameters<typeof untouchedNumberToString>): string {
+  return safeApply(untouchedNumberToString, instance, args);
 }

@@ -1,11 +1,15 @@
+import { safeNumberToString, safeSubstring } from '../../../utils/globals';
+
+const safeNumberParseInt = Number.parseInt;
+
 /** @internal */
 export function natToStringifiedNatMapper(options: ['dec' | 'oct' | 'hex', number]): string {
   const [style, v] = options;
   switch (style) {
     case 'oct':
-      return `0${Number(v).toString(8)}`;
+      return `0${safeNumberToString(v, 8)}`;
     case 'hex':
-      return `0x${Number(v).toString(16)}`;
+      return `0x${safeNumberToString(v, 16)}`;
     case 'dec':
     default:
       return `${v}`;
@@ -14,8 +18,8 @@ export function natToStringifiedNatMapper(options: ['dec' | 'oct' | 'hex', numbe
 
 /** @internal */
 export function tryParseStringifiedNat(stringValue: string, radix: number): number {
-  const parsedNat = Number.parseInt(stringValue, radix);
-  if (parsedNat.toString(radix) !== stringValue) {
+  const parsedNat = safeNumberParseInt(stringValue, radix);
+  if (safeNumberToString(parsedNat, radix) !== stringValue) {
     throw new Error('Invalid value');
   }
   return parsedNat;
@@ -28,9 +32,9 @@ export function natToStringifiedNatUnmapper(value: unknown): ['dec' | 'oct' | 'h
   }
   if (value.length >= 2 && value[0] === '0') {
     if (value[1] === 'x') {
-      return ['hex', tryParseStringifiedNat(value.substr(2), 16)];
+      return ['hex', tryParseStringifiedNat(safeSubstring(value, 2), 16)];
     }
-    return ['oct', tryParseStringifiedNat(value.substr(1), 8)];
+    return ['oct', tryParseStringifiedNat(safeSubstring(value, 1), 8)];
   }
   return ['dec', tryParseStringifiedNat(value, 10)];
 }

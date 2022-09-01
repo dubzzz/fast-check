@@ -1,11 +1,12 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { safeJoin, safeSplit } from '../utils/globals';
 import { oneof } from './oneof';
 import { tuple } from './tuple';
 import { buildStringifiedNatArbitrary } from './_internals/builders/StringifiedNatArbitraryBuilder';
 
 /** @internal */
 function dotJoinerMapper(data: string[]): string {
-  return data.join('.');
+  return safeJoin(data, '.');
 }
 
 /** @internal */
@@ -13,7 +14,7 @@ function dotJoinerUnmapper(value: unknown): string[] {
   if (typeof value !== 'string') {
     throw new Error('Invalid type');
   }
-  return value.split('.');
+  return safeSplit(value, '.');
 }
 
 /**

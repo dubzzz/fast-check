@@ -3,14 +3,16 @@ import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
 
-/** @internal */
-const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
+const safeStringFromCharCode = String.fromCharCode;
 
 /** @internal */
-const upperCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x41) };
+const lowerCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x61) };
 
 /** @internal */
-const numericMapper = { num: 10, build: (v: number) => String.fromCharCode(v + 0x30) };
+const upperCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x41) };
+
+/** @internal */
+const numericMapper = { num: 10, build: (v: number) => safeStringFromCharCode(v + 0x30) };
 
 /** @internal */
 function percentCharArbMapper(c: string): string {

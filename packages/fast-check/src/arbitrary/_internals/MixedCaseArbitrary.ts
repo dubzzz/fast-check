@@ -10,6 +10,7 @@ import {
   computeNextFlags,
   computeTogglePositions,
 } from './helpers/ToggleFlags';
+import { safeJoin, safeSlice } from '../../utils/globals';
 
 /** @internal */
 type MixedCaseArbitraryContext = {
@@ -53,7 +54,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
     const flagsValue = flagsArb.generate(mrng, undefined); // true => toggle the char, false => keep it as-is
 
     applyFlagsOnChars(chars, flagsValue.value, togglePositions, this.toggleCase);
-    return new Value(chars.join(''), this.buildContextFor(rawStringValue, flagsValue));
+    return new Value(safeJoin(chars, ''), this.buildContextFor(rawStringValue, flagsValue));
   }
 
   canShrinkWithoutContext(value: unknown): value is string {
@@ -106,7 +107,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
         applyFlagsOnChars(nChars, nFlags, nTogglePositions, this.toggleCase);
         // Remark: Value nFlags can be attached to a context equal to undefined
         // as `canShrinkWithoutContext(nFlags) === true` for the bigint arbitrary
-        return new Value(nChars.join(''), this.buildContextFor(nRawStringValue, new Value(nFlags, undefined)));
+        return new Value(safeJoin(nChars, ''), this.buildContextFor(nRawStringValue, new Value(nFlags, undefined)));
       })
       .join(
         makeLazy(() => {
@@ -115,10 +116,10 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
           return bigUintN(togglePositions.length)
             .shrink(flags, contextSafe.flagsContext)
             .map((nFlagsValue) => {
-              const nChars = chars.slice(); // cloning chars
+              const nChars = safeSlice(chars); // cloning chars
               applyFlagsOnChars(nChars, nFlagsValue.value, togglePositions, this.toggleCase);
               return new Value(
-                nChars.join(''),
+                safeJoin(nChars, ''),
                 this.buildContextFor(new Value(rawString, contextSafe.rawStringContext), nFlagsValue)
               );
             });
