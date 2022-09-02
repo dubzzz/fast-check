@@ -1,4 +1,7 @@
+import { safeAdd, safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
+
+const safeNumberIsNaN = Number.isNaN;
 
 /**
  * CustomSet based on "strict equality" as defined by:
@@ -22,14 +25,14 @@ export class StrictlyEqualSet<T, U> implements CustomSet<T> {
 
   tryAdd(value: T): boolean {
     const selected = this.selector(value);
-    if (Number.isNaN(selected)) {
-      this.data.push(value);
+    if (safeNumberIsNaN(selected)) {
+      safePush(this.data, value);
       return true;
     }
     const sizeBefore = this.selectedItemsExceptNaN.size;
-    this.selectedItemsExceptNaN.add(selected);
+    safeAdd(this.selectedItemsExceptNaN, selected);
     if (sizeBefore !== this.selectedItemsExceptNaN.size) {
-      this.data.push(value);
+      safePush(this.data, value);
       return true;
     }
     return false;

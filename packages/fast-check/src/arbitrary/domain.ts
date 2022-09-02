@@ -10,6 +10,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter';
 import { resolveSize, relativeSizeToSize, Size, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { adapter, AdapterOutput } from './_internals/AdapterArbitrary';
+import { safeJoin, safeSlice, safeSplit, safeSubstring } from '../utils/globals';
 
 /** @internal */
 function toSubdomainLabelMapper([f, d]: [string, [string, string] | null]): string {
@@ -23,7 +24,7 @@ function toSubdomainLabelUnmapper(value: unknown): [string, [string, string] | n
   if (value.length === 1) {
     return [value[0], null];
   }
-  return [value[0], [value.substring(1, value.length - 1), value[value.length - 1]]];
+  return [value[0], [safeSubstring(value, 1, value.length - 1), value[value.length - 1]]];
 }
 
 /** @internal */
@@ -53,7 +54,7 @@ function subdomainLabel(size: Size) {
 
 /** @internal */
 function labelsMapper(elements: [string[], string]): string {
-  return `${elements[0].join('.')}.${elements[1]}`;
+  return `${safeJoin(elements[0], '.')}.${elements[1]}`;
 }
 /** @internal */
 function labelsUnmapper(value: unknown): [string[], string] {
@@ -61,7 +62,7 @@ function labelsUnmapper(value: unknown): [string[], string] {
     throw new Error('Unsupported type');
   }
   const lastDotIndex = value.lastIndexOf('.');
-  return [value.substring(0, lastDotIndex).split('.'), value.substring(lastDotIndex + 1)];
+  return [safeSplit(safeSubstring(value, 0, lastDotIndex), '.'), safeSubstring(value, lastDotIndex + 1)];
 }
 
 /** @internal */
@@ -76,7 +77,7 @@ function labelsAdapter(labels: [string[], string]): AdapterOutput<[string[], str
     //    a domain name (i.e., the sum of all label octets and label lengths) is limited to 255.
     // It seems that this restriction has been relaxed in modern web browsers.
     if (lengthNotIncludingIndex > 255) {
-      return { adapted: true, value: [subDomains.slice(0, index), suffix] };
+      return { adapted: true, value: [safeSlice(subDomains, 0, index), suffix] };
     }
   }
   return { adapted: false, value: labels };

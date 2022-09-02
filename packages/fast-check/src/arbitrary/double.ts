@@ -11,6 +11,13 @@ import { arrayInt64 } from './_internals/ArrayInt64Arbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers';
 
+const safeNumberIsNaN = Number.isNaN;
+
+const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
+const safeMaxValue = Number.MAX_VALUE;
+const safeNaN = Number.NaN;
+
 /**
  * Constraints to be applied on {@link double}
  * @remarks Since 2.6.0
@@ -50,7 +57,7 @@ export interface DoubleConstraints {
  * @internal
  */
 function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints) {
-  if (Number.isNaN(d)) {
+  if (safeNumberIsNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
     throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 32-bit float');
   }
@@ -78,8 +85,8 @@ export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
-    min = noDefaultInfinity ? -Number.MAX_VALUE : Number.NEGATIVE_INFINITY,
-    max = noDefaultInfinity ? Number.MAX_VALUE : Number.POSITIVE_INFINITY,
+    min = noDefaultInfinity ? -safeMaxValue : safeNegativeInfinity,
+    max = noDefaultInfinity ? safeMaxValue : safePositiveInfinity,
   } = constraints;
   const minIndex = safeDoubleToIndex(min, 'min');
   const maxIndex = safeDoubleToIndex(max, 'max');
@@ -102,12 +109,12 @@ export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
   const maxIndexWithNaN = positiveMaxIdx ? add64(maxIndex, Unit64) : maxIndex;
   return arrayInt64(minIndexWithNaN, maxIndexWithNaN).map(
     (index) => {
-      if (isStrictlySmaller64(maxIndex, index) || isStrictlySmaller64(index, minIndex)) return Number.NaN;
+      if (isStrictlySmaller64(maxIndex, index) || isStrictlySmaller64(index, minIndex)) return safeNaN;
       else return indexToDouble(index);
     },
     (value) => {
       if (typeof value !== 'number') throw new Error('Unsupported type');
-      if (Number.isNaN(value)) return !isEqual64(maxIndex, maxIndexWithNaN) ? maxIndexWithNaN : minIndexWithNaN;
+      if (safeNumberIsNaN(value)) return !isEqual64(maxIndex, maxIndexWithNaN) ? maxIndexWithNaN : minIndexWithNaN;
       return doubleToIndex(value);
     }
   );

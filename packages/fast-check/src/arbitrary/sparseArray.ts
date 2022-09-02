@@ -1,4 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { safeMap, safeSlice } from '../utils/globals';
 import { tuple } from './tuple';
 import { uniqueArray } from './uniqueArray';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder';
@@ -8,6 +9,11 @@ import {
   MaxLengthUpperBound,
   SizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength';
+
+const safeMathMin = Math.min;
+const safeMathMax = Math.max;
+const safeArrayIsArray = Array.isArray;
+const safeObjectEntries = Object.entries;
 
 /**
  * Constraints to be applied on {@link sparseArray}
@@ -60,7 +66,7 @@ export interface SparseArrayConstraints {
 function extractMaxIndex(indexesAndValues: [number, unknown][]) {
   let maxIndex = -1;
   for (let index = 0; index !== indexesAndValues.length; ++index) {
-    maxIndex = Math.max(maxIndex, indexesAndValues[index][0]);
+    maxIndex = safeMathMax(maxIndex, indexesAndValues[index][0]);
   }
   return maxIndex;
 }
@@ -112,11 +118,11 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
     throw new Error(`The minimal number of non-hole elements cannot be higher than the maximal number of non-holes`);
   }
 
-  const resultedMaxNumElements = Math.min(maxNumElements, maxLength);
+  const resultedMaxNumElements = safeMathMin(maxNumElements, maxLength);
   const resultedSizeMaxNumElements = constraints.maxNumElements !== undefined || size !== undefined ? size : '=';
 
-  const maxGeneratedIndexAuthorized = Math.max(maxGeneratedLength - 1, 0); // just preventing special case for maxGeneratedLength=0
-  const maxIndexAuthorized = Math.max(maxLength - 1, 0); // just preventing special case for maxLength=0
+  const maxGeneratedIndexAuthorized = safeMathMax(maxGeneratedLength - 1, 0); // just preventing special case for maxGeneratedLength=0
+  const maxIndexAuthorized = safeMathMax(maxLength - 1, 0); // just preventing special case for maxLength=0
   const sparseArrayNoTrailingHole = uniqueArray(
     tuple(restrictedIntegerArbitraryBuilder(0, maxGeneratedIndexAuthorized, maxIndexAuthorized), arb),
     {
@@ -134,13 +140,13 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       return arrayFromItems(lastIndex + 1, items);
     },
     (value: unknown): [number, T][] => {
-      if (!Array.isArray(value)) {
+      if (!safeArrayIsArray(value)) {
         throw new Error('Not supported entry type');
       }
       if (noTrailingHole && value.length !== 0 && !(value.length - 1 in value)) {
         throw new Error('No trailing hole');
       }
-      return Object.entries(value as T[]).map((entry): [number, T] => [Number(entry[0]), entry[1]]);
+      return safeMap(safeObjectEntries(value as T[]), (entry): [number, T] => [Number(entry[0]), entry[1]]);
     }
   );
 
@@ -158,12 +164,12 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       if (sparse.length >= targetLength) {
         return sparse;
       }
-      const longerSparse = sparse.slice();
+      const longerSparse = safeSlice(sparse);
       longerSparse.length = targetLength;
       return longerSparse;
     },
     (value: unknown): [T[], number] => {
-      if (!Array.isArray(value)) {
+      if (!safeArrayIsArray(value)) {
         throw new Error('Not supported entry type');
       }
       return [value, value.length];

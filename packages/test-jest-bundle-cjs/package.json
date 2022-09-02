@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/test-jest-bundle-cjs",
   "descrition": "Test bundling of @fast-check/jest against CJS runners",
-  "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
     "test": "jest --config jest.config.cjs"

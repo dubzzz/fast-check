@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "commonjs",
   "main": "lib/fast-check.js",

@@ -1,3 +1,10 @@
+const safeNumberIsInteger = Number.isInteger;
+const safeNumberIsNaN = Number.isNaN;
+
+const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
+const safeNaN = Number.NaN;
+
 /** @internal */
 export const MIN_VALUE_32 = 2 ** -126 * 2 ** -23;
 /** @internal */
@@ -39,7 +46,7 @@ export function decomposeFloat(f: number): { exponent: number; significand: numb
       return { exponent, significand: f / powExponent };
     }
   }
-  return { exponent: Number.NaN, significand: Number.NaN };
+  return { exponent: safeNaN, significand: safeNaN };
 }
 
 /** @internal */
@@ -70,19 +77,19 @@ function indexInFloatFromDecomp(exponent: number, significand: number) {
  * @internal
  */
 export function floatToIndex(f: number): number {
-  if (f === Number.POSITIVE_INFINITY) {
+  if (f === safePositiveInfinity) {
     return INDEX_POSITIVE_INFINITY;
   }
-  if (f === Number.NEGATIVE_INFINITY) {
+  if (f === safeNegativeInfinity) {
     return INDEX_NEGATIVE_INFINITY;
   }
   const decomp = decomposeFloat(f);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
-  if (Number.isNaN(exponent) || Number.isNaN(significand) || !Number.isInteger(significand * 0x800000)) {
-    return Number.NaN;
+  if (safeNumberIsNaN(exponent) || safeNumberIsNaN(significand) || !safeNumberIsInteger(significand * 0x800000)) {
+    return safeNaN;
   }
-  if (f > 0 || (f === 0 && 1 / f === Number.POSITIVE_INFINITY)) {
+  if (f > 0 || (f === 0 && 1 / f === safePositiveInfinity)) {
     return indexInFloatFromDecomp(exponent, significand);
   } else {
     return -indexInFloatFromDecomp(exponent, -significand) - 1;
@@ -101,7 +108,7 @@ export function indexToFloat(index: number): number {
     return -indexToFloat(-index - 1);
   }
   if (index === INDEX_POSITIVE_INFINITY) {
-    return Number.POSITIVE_INFINITY;
+    return safePositiveInfinity;
   }
   if (index < 0x1000000) {
     // The first 2**24 elements correspond to values having

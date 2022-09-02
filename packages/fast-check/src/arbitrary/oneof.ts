@@ -1,4 +1,5 @@
 import { Arbitrary, isArbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { safeMap, safeSlice } from '../utils/globals';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
 import { DepthIdentifier } from './_internals/helpers/DepthContext';
 import { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
@@ -142,10 +143,10 @@ function oneof<Ts extends MaybeWeightedArbitrary<unknown>[]>(
   // TODO With TypeScript 4.0 it will be possible to properly define typings for `oneof(...arbs, constraints)`
   const constraints = args[0];
   if (isOneOfContraints(constraints)) {
-    const weightedArbs = (args.slice(1) as MaybeWeightedArbitrary<OneOfValue<Ts>>[]).map(toWeightedArbitrary);
+    const weightedArbs = safeMap(safeSlice(args, 1) as MaybeWeightedArbitrary<OneOfValue<Ts>>[], toWeightedArbitrary);
     return FrequencyArbitrary.from(weightedArbs, constraints, 'fc.oneof');
   }
-  const weightedArbs = (args as MaybeWeightedArbitrary<OneOfValue<Ts>>[]).map(toWeightedArbitrary);
+  const weightedArbs = safeMap(args as MaybeWeightedArbitrary<OneOfValue<Ts>>[], toWeightedArbitrary);
   return FrequencyArbitrary.from(weightedArbs, {}, 'fc.oneof');
 }
 export { oneof };

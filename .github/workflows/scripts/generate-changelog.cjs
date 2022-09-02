@@ -1,6 +1,7 @@
 // @ts-check
 const {
   promises: { readFile, writeFile },
+  existsSync,
 } = require('fs');
 const path = require('path');
 const util = require('util');
@@ -18,9 +19,11 @@ function buildPrLine(pr, title) {
 /**
  * Extract and parse the logs of git to get lines for the changelog
  * @param {string} fromIdentifier
+ * @param {string} packageName
  * @returns {Promise<{breakingSection:string[], newFeaturesSection:string[], maintenanceSection:{type:string,pr:string,title:string}[], errors: string[]}>}
  */
-async function extractAndParseDiff(fromIdentifier) {
+async function extractAndParseDiff(fromIdentifier, packageName) {
+  const packageTypeSuffix = packageName === 'fast-check' ? '' : `(${packageName.split('/')[1]})`;
   const breakingSection = [];
   const newFeaturesSection = [];
   const maintenanceSection = [];
@@ -46,13 +49,18 @@ async function extractAndParseDiff(fromIdentifier) {
       break;
     }
     const [, title, pr] = m;
+    const hasAppropriateSuffix = packageTypeSuffix === '' ? !type.includes('(') : type.endsWith(packageTypeSuffix);
+    if (!hasAppropriateSuffix) {
+      errors.push(
+        `ℹ️ Not related to ${packageName}: [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
+      );
+      continue;
+    }
     switch (type) {
       case '💥':
       case ':boom:':
         breakingSection.push(buildPrLine(pr, title));
         break;
-      case '⚡️':
-      case ':zap:':
       case '✨':
       case ':sparkles:':
       case '🗑️':
@@ -60,6 +68,10 @@ async function extractAndParseDiff(fromIdentifier) {
       case '🏷️':
       case ':label:':
         newFeaturesSection.push(buildPrLine(pr, title));
+        break;
+      case '⚡️':
+      case ':zap:':
+        maintenanceSection.push({ type: 'Performance', pr, title });
         break;
       case '🔥':
       case ':fire:':
@@ -104,9 +116,12 @@ async function extractAndParseDiff(fromIdentifier) {
       case ':truck:':
         maintenanceSection.push({ type: 'Move', pr, title });
         break;
+      case '🎉':
+      case ':tada:':
+        break;
       default:
         errors.push(
-          `Unhandled type: ${type} on [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
+          `⚠️ Unhandled type: ${type} on [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
         );
         break;
     }
@@ -185,7 +200,10 @@ async function run() {
     const oldTag = computeTag(oldVersion, packageName);
     const newTag = computeTag(newVersion, packageName);
     const releaseKind = extractReleaseKind(oldTag, newTag);
-    const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(oldTag);
+    const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(
+      oldTag,
+      packageName
+    );
 
     // Build changelog message
     const codeUrl = `https://github.com/dubzzz/fast-check/tree/${encodeURIComponent(newTag)}`;
@@ -224,7 +242,7 @@ async function run() {
 
     // Update changelog
     const changelogPath = path.join(packageLocation, 'CHANGELOG.md');
-    const previousContent = await readFile(changelogPath);
+    const previousContent = existsSync(changelogPath) ? await readFile(changelogPath) : '';
     await writeFile(changelogPath, `${body}\n\n${releaseKind !== 'patch' ? `---\n\n` : ''}${previousContent}`);
     await execFile('git', ['add', changelogPath]);
   }

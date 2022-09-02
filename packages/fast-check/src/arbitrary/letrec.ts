@@ -1,5 +1,8 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { safeHasOwnProperty } from '../utils/globals';
+
+const safeObjectCreate = Object.create;
 
 /**
  * Type of the value produced by {@link letrec}
@@ -92,9 +95,9 @@ export function letrec<T>(builder: T extends Record<string, unknown> ? LetrecTyp
 export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>;
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
-  const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = Object.create(null);
+  const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
   const tie = (key: keyof T): Arbitrary<any> => {
-    if (!Object.prototype.hasOwnProperty.call(lazyArbs, key)) {
+    if (!safeHasOwnProperty(lazyArbs, key)) {
       // Call to hasOwnProperty ensures that the property key will be defined
       lazyArbs[key] = new LazyArbitrary(String(key));
     }
@@ -103,7 +106,7 @@ export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBui
   };
   const strictArbs = builder(tie as any);
   for (const key in strictArbs) {
-    if (!Object.prototype.hasOwnProperty.call(strictArbs, key)) {
+    if (!safeHasOwnProperty(strictArbs, key)) {
       // Prevents accidental iteration over properties inherited from an object’s prototype
       continue;
     }

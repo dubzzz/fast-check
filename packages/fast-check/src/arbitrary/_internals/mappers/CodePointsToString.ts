@@ -1,6 +1,8 @@
+import { safeJoin } from '../../../utils/globals';
+
 /** @internal - tab is supposed to be composed of valid code-points, not halved surrogate pairs */
 export function codePointsToStringMapper(tab: string[]): string {
-  return tab.join('');
+  return safeJoin(tab, '');
 }
 
 /** @internal */

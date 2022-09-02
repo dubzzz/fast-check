@@ -1,4 +1,10 @@
+import { safePush } from '../../../utils/globals';
 import { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor';
+
+const safeObjectDefineProperty = Object.defineProperty;
+const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
+const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 
 /** @internal */
 export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: EnumerableKeyOf<T>[], noKeyValue: TNoKey) {
@@ -9,7 +15,7 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
     for (let idx = 0; idx !== keys.length; ++idx) {
       const valueWrapper = gs[idx];
       if (valueWrapper !== noKeyValue) {
-        Object.defineProperty(obj, keys[idx], {
+        safeObjectDefineProperty(obj, keys[idx], {
           value: valueWrapper,
           configurable: true,
           enumerable: true,
@@ -33,7 +39,7 @@ export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: Enum
     let extractedPropertiesCount = 0;
     const extractedValues: (T[keyof T] | TNoKey)[] = [];
     for (let idx = 0; idx !== keys.length; ++idx) {
-      const descriptor = Object.getOwnPropertyDescriptor(value, keys[idx]);
+      const descriptor = safeObjectGetOwnPropertyDescriptor(value, keys[idx]);
       if (descriptor !== undefined) {
         if (!descriptor.configurable || !descriptor.enumerable || !descriptor.writable) {
           throw new Error('Incompatible instance received: should contain only c/e/w properties');
@@ -42,13 +48,13 @@ export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: Enum
           throw new Error('Incompatible instance received: should contain only no get/set properties');
         }
         ++extractedPropertiesCount;
-        extractedValues.push(descriptor.value);
+        safePush(extractedValues, descriptor.value);
       } else {
-        extractedValues.push(noKeyValue);
+        safePush(extractedValues, noKeyValue);
       }
     }
-    const namePropertiesCount = Object.getOwnPropertyNames(value).length;
-    const symbolPropertiesCount = Object.getOwnPropertySymbols(value).length;
+    const namePropertiesCount = safeObjectGetOwnPropertyNames(value).length;
+    const symbolPropertiesCount = safeObjectGetOwnPropertySymbols(value).length;
     if (extractedPropertiesCount !== namePropertiesCount + symbolPropertiesCount) {
       throw new Error('Incompatible instance received: should not contain extra properties');
     }
