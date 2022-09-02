@@ -1,3 +1,28 @@
+# 3.1.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.2...v3.1.3)]
+
+## Features
+
+- ([PR#3100](https://github.com/dubzzz/fast-check/pull/3100)) Drop unneeded copy for full custom `uniqueArray`
+- ([PR#3105](https://github.com/dubzzz/fast-check/pull/3105)) Faster implementation for `safeApply`
+
+## Fixes
+
+- ([PR#3094](https://github.com/dubzzz/fast-check/pull/3094)) Bug: Make numeric arbitraries resistant to poisoning
+- ([PR#3096](https://github.com/dubzzz/fast-check/pull/3096)) Bug: Make single char arbitraries resistant to poisoning
+- ([PR#3097](https://github.com/dubzzz/fast-check/pull/3097)) Bug: Make simple combinators arbitraries resistant to poisoning
+- ([PR#3098](https://github.com/dubzzz/fast-check/pull/3098)) Bug: Make array combinators arbitraries resistant to poisoning
+- ([PR#3099](https://github.com/dubzzz/fast-check/pull/3099)) Bug: Make multi chars arbitraries resistant to poisoning
+- ([PR#3102](https://github.com/dubzzz/fast-check/pull/3102)) Bug: Fix `safeApply` never calling original `apply`
+- ([PR#3103](https://github.com/dubzzz/fast-check/pull/3103)) Bug: Make object arbitraries resistant to poisoning
+- ([PR#3104](https://github.com/dubzzz/fast-check/pull/3104)) Bug: Make typed arrays arbitraries resistant to poisoning
+- ([PR#3106](https://github.com/dubzzz/fast-check/pull/3106)) Bug: Make recursive arbitraries resistant to poisoning
+- ([PR#3107](https://github.com/dubzzz/fast-check/pull/3107)) Bug: Make function arbitraries resistant to poisoning
+- ([PR#3108](https://github.com/dubzzz/fast-check/pull/3108)) Bug: Make complex strings arbitraries resistant to poisoning
+- ([PR#3101](https://github.com/dubzzz/fast-check/pull/3101)) CI: Do not suggest private packages during version bumps
+
 # 3.1.2
 
 _More resilient to external poisoning on `assert` and `property`_
