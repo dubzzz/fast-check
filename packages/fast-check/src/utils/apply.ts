@@ -55,9 +55,10 @@ export function safeApply<T, TArgs extends unknown[], TReturn>(
  */
 export function buildSafeMethod<
   TType extends { [K in TMethodName]: (...args: any[]) => any },
-  TMethodName extends string
+  TMethodName extends string,
+  TArgsCtor extends unknown[]
 >(
-  typeConstructor: new () => TType,
+  typeConstructor: new (...args: TArgsCtor) => TType,
   methodName: TMethodName
 ): (instance: TType, ...args: Parameters<TType[TMethodName]>) => ReturnType<TType[TMethodName]> {
   const method = typeConstructor.prototype[methodName];
