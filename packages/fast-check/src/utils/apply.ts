@@ -62,7 +62,17 @@ export function buildSafeMethod<
   methodName: TMethodName
 ): (instance: TType, ...args: Parameters<TType[TMethodName]>) => ReturnType<TType[TMethodName]> {
   const method = typeConstructor.prototype[methodName];
+  function safeExtractMethod(instance: TType) {
+    try {
+      return instance[methodName];
+    } catch (err) {
+      return undefined;
+    }
+  }
   return function safe(instance, ...args) {
+    if (safeExtractMethod(instance) === method) {
+      return instance[methodName](...args);
+    }
     return safeApply(method, instance, args);
   };
 }
