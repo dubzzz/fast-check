@@ -4,8 +4,13 @@
   "commitMessagePrefix": "⬆️ ",
   "packageRules": [
     {
+      "matchDepTypes": ["dependencies"],
       "matchPackagePatterns": ["*"],
       "rangeStrategy": "replace"
+    },
+    {
+      "matchPackagePatterns": ["*"],
+      "rangeStrategy": "bump"
     }
   ]
 }
