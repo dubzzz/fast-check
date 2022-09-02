@@ -6,7 +6,7 @@ export const safeForEach = buildSafeMethod(Array, 'forEach') as <T>(
   fn: (value: T, index: number, array: T[]) => void
 ) => void;
 export const safeIndexOf = buildSafeMethod(Array, 'indexOf') as <T>(
-  instance: T[],
+  instance: readonly T[],
   searchElement: T,
   fromIndex?: number | undefined
 ) => number;
