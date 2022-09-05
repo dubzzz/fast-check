@@ -836,7 +836,7 @@ __metadata:
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
     "@types/jest": ^28.0.0
-    "@types/pacote": ^11.1.4
+    "@types/pacote": ^11.1.5
     "@types/tar": ^6.1.1
     jest: ^28.0.0
     pacote: ^13.6.0
@@ -3047,15 +3047,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pacote@npm:^11.1.4":
-  version: 11.1.4
-  resolution: "@types/pacote@npm:11.1.4"
+"@types/pacote@npm:^11.1.5":
+  version: 11.1.5
+  resolution: "@types/pacote@npm:11.1.5"
   dependencies:
     "@types/node": "*"
     "@types/npm-registry-fetch": "*"
     "@types/npmlog": "*"
     "@types/ssri": "*"
-  checksum: a898498dbb752c5b2b38b909f8771de56b8fc9246d5e14702eba40b9833ea3432adfa5cd2ed4c8d96bf2cc49435e00cbfdc2141b6b367d2b4c616ec8bfe5e95f
+  checksum: 0042061a6eb126d85c0bb4948632a3c0a4a6be0ea9860fef941798281028663864bf3001c02497f1bd0efb93f8c28498e043bcec4239d132fa14b85fe88f520f
   languageName: node
   linkType: hard
 
