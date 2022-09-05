@@ -7165,7 +7165,7 @@ __metadata:
     jscodeshift: ^0.13.0
     mkdirp: ^1.0.4
     pure-rand: ^5.0.1
-    replace-in-file: ^6.0.0
+    replace-in-file: ^6.3.5
     source-map-support: ^0.5.19
     ts-jest: ^28.0.0
     typedoc: ^0.23.0
@@ -13357,7 +13357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"replace-in-file@npm:^6.0.0":
+"replace-in-file@npm:^6.3.5":
   version: 6.3.5
   resolution: "replace-in-file@npm:6.3.5"
   dependencies:
