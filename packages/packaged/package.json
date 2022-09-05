@@ -32,7 +32,7 @@
     "node": ">=14.14.0"
   },
   "dependencies": {
-    "pacote": "^13.6.0",
+    "pacote": "^13.6.2",
     "tar": "^6.1.11"
   },
   "devDependencies": {
