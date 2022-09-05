@@ -7162,7 +7162,7 @@ __metadata:
     cross-env: ^7.0.2
     fast-check: "workspace:*"
     jest: ^28.0.0
-    jscodeshift: ^0.13.0
+    jscodeshift: ^0.13.1
     mkdirp: ^1.0.4
     pure-rand: ^5.0.1
     replace-in-file: ^6.0.0
@@ -9950,7 +9950,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jscodeshift@npm:^0.13.0":
+"jscodeshift@npm:^0.13.1":
   version: 0.13.1
   resolution: "jscodeshift@npm:0.13.1"
   dependencies:
