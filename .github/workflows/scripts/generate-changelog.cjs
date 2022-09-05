@@ -61,8 +61,6 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       case ':boom:':
         breakingSection.push(buildPrLine(pr, title));
         break;
-      case '⚡️':
-      case ':zap:':
       case '✨':
       case ':sparkles:':
       case '🗑️':
@@ -70,6 +68,10 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       case '🏷️':
       case ':label:':
         newFeaturesSection.push(buildPrLine(pr, title));
+        break;
+      case '⚡️':
+      case ':zap:':
+        maintenanceSection.push({ type: 'Performance', pr, title });
         break;
       case '🔥':
       case ':fire:':

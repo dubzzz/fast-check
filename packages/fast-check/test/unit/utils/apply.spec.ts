@@ -1,4 +1,4 @@
-import { safeApply } from '../../../src/utils/apply';
+import { buildSafeMethod, safeApply } from '../../../src/utils/apply';
 
 describe('safeApply', () => {
   it('should apply if no poisoning', () => {
@@ -113,5 +113,63 @@ describe('safeApply', () => {
     } finally {
       Object.defineProperty(Function.prototype, 'apply', originalApplyDescriptor!);
     }
+  });
+});
+
+describe('buildSafeMethod', () => {
+  it('should be able to call the right method when untouched', () => {
+    // Arrange
+    class MyClass {
+      constructor(public readonly name: string) {}
+      hello(end: string) {
+        return `Hello ${this.name}${end}`;
+      }
+    }
+    const safeHello = buildSafeMethod(MyClass, 'hello');
+    const instance = new MyClass('Paul');
+
+    // Act
+    const message = safeHello(instance, '!');
+
+    // Assert
+    expect(message).toBe('Hello Paul!');
+  });
+
+  it('should be able to call the right method when poisoned at instance level', () => {
+    // Arrange
+    class MyClass {
+      constructor(public readonly name: string) {}
+      hello(end: string) {
+        return `Hello ${this.name}${end}`;
+      }
+    }
+    const safeHello = buildSafeMethod(MyClass, 'hello');
+    const instance = new MyClass('Anna');
+    instance.hello = () => 'poisoned';
+
+    // Act
+    const message = safeHello(instance, '!');
+
+    // Assert
+    expect(message).toBe('Hello Anna!');
+  });
+
+  it('should be able to call the right method when poisoned at prototype level', () => {
+    // Arrange
+    class MyClass {
+      constructor(public readonly name: string) {}
+      hello(end: string) {
+        return `Hello ${this.name}${end}`;
+      }
+    }
+    const safeHello = buildSafeMethod(MyClass, 'hello');
+    const instance = new MyClass('Jessy');
+    MyClass.prototype.hello = () => 'poisoned';
+
+    // Act
+    const message = safeHello(instance, '!');
+
+    // Assert
+    expect(message).toBe('Hello Jessy!');
   });
 });
