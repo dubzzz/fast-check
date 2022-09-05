@@ -14,7 +14,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@actions/github@npm:^5.0.1":
+"@actions/github@npm:^5.0.3":
   version: 5.0.3
   resolution: "@actions/github@npm:5.0.3"
   dependencies:
@@ -769,7 +769,7 @@ __metadata:
   resolution: "@fast-check/deploy-netlify@workspace:.github/actions/deploy-netlify"
   dependencies:
     "@actions/core": ^1.7.0
-    "@actions/github": ^5.0.1
+    "@actions/github": ^5.0.3
     netlify-cli: ^11.0.0
   languageName: unknown
   linkType: soft
