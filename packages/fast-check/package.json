@@ -64,7 +64,7 @@
     "cross-env": "^7.0.3",
     "fast-check": "workspace:*",
     "jest": "^28.0.0",
-    "jscodeshift": "^0.13.0",
+    "jscodeshift": "^0.13.1",
     "mkdirp": "^1.0.4",
     "replace-in-file": "^6.3.5",
     "source-map-support": "^0.5.19",
