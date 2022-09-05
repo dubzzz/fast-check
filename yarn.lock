@@ -7166,7 +7166,7 @@ __metadata:
     mkdirp: ^1.0.4
     pure-rand: ^5.0.1
     replace-in-file: ^6.3.5
-    source-map-support: ^0.5.19
+    source-map-support: ^0.5.21
     ts-jest: ^28.0.0
     typedoc: ^0.23.0
     typescript: ^4.3.2
@@ -14136,7 +14136,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.19, source-map-support@npm:~0.5.20":
+"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.19, source-map-support@npm:^0.5.21, source-map-support@npm:~0.5.20":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
   dependencies:
