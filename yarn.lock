@@ -826,7 +826,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.0.0
     all-contributors-cli: ^6.20.0
     eslint: ^8.17.0
-    eslint-config-prettier: ^8.1.0
+    eslint-config-prettier: ^8.5.0
     prettier: 2.7.1
   languageName: unknown
   linkType: soft
@@ -6758,7 +6758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.1.0":
+"eslint-config-prettier@npm:^8.5.0":
   version: 8.5.0
   resolution: "eslint-config-prettier@npm:8.5.0"
   peerDependencies:

@@ -28,7 +28,7 @@
     "@typescript-eslint/parser": "^5.0.0",
     "all-contributors-cli": "^6.20.0",
     "eslint": "^8.17.0",
-    "eslint-config-prettier": "^8.1.0",
+    "eslint-config-prettier": "^8.5.0",
     "prettier": "2.7.1"
   }
 }
