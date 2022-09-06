@@ -4,12 +4,17 @@
   "commitMessagePrefix": "⬆️ ",
   "packageRules": [
     {
+      "matchPaths": ["**/package.json"],
       "matchDepTypes": ["dependencies"],
-      "matchPackagePatterns": ["*"],
       "rangeStrategy": "replace"
     },
     {
-      "matchPackagePatterns": ["*"],
+      "matchPaths": ["**/package.json"],
+      "matchDepTypes": ["devDependencies"],
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchPaths": ["**/!(package.json)"],
       "rangeStrategy": "bump"
     }
   ]
