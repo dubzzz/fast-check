@@ -218,7 +218,7 @@ describe('letrec', () => {
       const biasFactor = 42;
       const { instance: simpleArb, generate } = fakeArbitrary();
       generate.mockReturnValueOnce(new Value(null, undefined));
-      const { a } = letrec((tie) =>
+      const { a } = letrec<{ a: unknown }>((tie) =>
         Object.assign(Object.create(null), {
           a: tie('b'),
           b: simpleArb,
