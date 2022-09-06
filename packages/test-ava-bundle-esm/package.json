@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "ava": "^4.0.0",
+    "ava": "^4.3.3",
     "fast-check": "workspace:*"
   },
   "license": "MIT"
