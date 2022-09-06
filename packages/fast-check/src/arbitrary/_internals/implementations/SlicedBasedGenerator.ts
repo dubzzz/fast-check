@@ -1,6 +1,7 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../check/arbitrary/definition/Value';
 import { Random } from '../../../random/generator/Random';
+import { safePush } from '../../../utils/globals';
 import { SlicedGenerator } from '../interfaces/SlicedGenerator';
 
 const safeMathMin = Math.min;
@@ -24,7 +25,7 @@ export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
       for (let index = 0; index !== this.slices.length; ++index) {
         const slice = this.slices[index];
         if (slice.length === targetLength) {
-          eligibleIndices.push(index);
+          safePush(eligibleIndices, index);
         }
       }
       if (eligibleIndices.length === 0) {
