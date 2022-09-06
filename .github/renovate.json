@@ -5,8 +5,8 @@
   "packageRules": [
     {
       "matchPaths": ["**/package.json"],
-      "matchDepTypes": ["dependencies"],
-      "rangeStrategy": "replace"
+      "matchDepTypes": ["dependencies", "peerDependencies", "optionalDependencies"],
+      "rangeStrategy": "update-lockfile"
     },
     {
       "matchPaths": ["**/package.json"],
