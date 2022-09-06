@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/packaged",
   "description": "Utility package removing any files that will not be part of the final bundle",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "commonjs",
   "main": "lib/packaged.js",
   "types": "lib/packaged.d.ts",

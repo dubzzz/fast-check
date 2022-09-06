@@ -1,3 +1,19 @@
+# 3.1.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.2...v3.1.3)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3143](https://github.com/dubzzz/fast-check/pull/3143)) Bug: Make `webFragments/Segment/QueryParameters` resistant to poisoning
+- ([PR#3152](https://github.com/dubzzz/fast-check/pull/3152)) Bug: Protect string generators against poisoning
+- ([PR#3151](https://github.com/dubzzz/fast-check/pull/3151)) CI: Update bump strategy of renovate
+- ([PR#3112](https://github.com/dubzzz/fast-check/pull/3112)) Performance: Speed-up all safe versions built-in methods
+
 # 3.1.2
 
 _More resilient to external poisoning on `assert` and `property`_

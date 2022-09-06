@@ -1,3 +1,16 @@
+# 0.0.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.2...packaged%2Fv0.0.3)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.2
 
 _Declare the proper homepage for the package_
