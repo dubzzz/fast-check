@@ -819,7 +819,7 @@ __metadata:
     "@types/node": ^17.0.44
     fast-check: "workspace:*"
     jest: ^29.0.0
-    ts-jest: ^28.0.0
+    ts-jest: ^28.0.8
     typescript: ^4.7.3
   peerDependencies:
     jest: ">=25.1.0"
@@ -850,7 +850,7 @@ __metadata:
     jest: ^29.0.0
     pacote: ^13.6.2
     tar: ^6.1.11
-    ts-jest: ^28.0.0
+    ts-jest: ^28.0.8
     typescript: ^4.3.2
   bin:
     packaged: ./bin/packaged.js
@@ -862,7 +862,7 @@ __metadata:
   resolution: "@fast-check/poisoning@workspace:packages/poisoning"
   dependencies:
     jest: ^29.0.0
-    ts-jest: ^28.0.0
+    ts-jest: ^28.0.8
     ts-jest-resolver: ^2.0.0
     typescript: ^4.0.3
   languageName: unknown
