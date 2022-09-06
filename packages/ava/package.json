@@ -45,7 +45,7 @@
     "ava": "^4.0.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
-    "typescript": "^4.0.3"
+    "typescript": "^4.8.2"
   },
   "keywords": [
     "ava",
