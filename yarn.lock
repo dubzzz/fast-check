@@ -934,7 +934,7 @@ __metadata:
   resolution: "@fast-check/test-bundle-rollup-with-import@workspace:packages/test-bundle-rollup-with-import"
   dependencies:
     "@rollup/plugin-commonjs": ^22.0.2
-    "@rollup/plugin-node-resolve": ^13.2.1
+    "@rollup/plugin-node-resolve": ^13.3.0
     fast-check: "workspace:*"
     rollup: ^2.79.0
   languageName: unknown
@@ -945,7 +945,7 @@ __metadata:
   resolution: "@fast-check/test-bundle-rollup-with-require@workspace:packages/test-bundle-rollup-with-require"
   dependencies:
     "@rollup/plugin-commonjs": ^22.0.2
-    "@rollup/plugin-node-resolve": ^13.2.1
+    "@rollup/plugin-node-resolve": ^13.3.0
     fast-check: "workspace:*"
     rollup: ^2.79.0
   languageName: unknown
@@ -2336,7 +2336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-node-resolve@npm:^13.2.1":
+"@rollup/plugin-node-resolve@npm:^13.3.0":
   version: 13.3.0
   resolution: "@rollup/plugin-node-resolve@npm:13.3.0"
   dependencies:
