@@ -46,7 +46,6 @@
     "fast-check": "workspace:*",
     "jest": "^29.0.0",
     "ts-jest": "^28.0.0",
-    "ts-node": "^10.0.0",
     "typescript": "^4.7.3"
   },
   "keywords": [
