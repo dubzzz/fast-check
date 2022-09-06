@@ -159,7 +159,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
 
@@ -177,7 +177,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
 
@@ -271,7 +271,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.canShrinkWithoutContext(expectedValue)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
   });
@@ -310,7 +310,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.shrink(expectedValue, expectedContext)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
   });

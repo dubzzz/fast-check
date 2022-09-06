@@ -1178,14 +1178,14 @@ describe('SchedulerImplem', () => {
       await s.waitOne();
       expect(s.toString()).toMatchInlineSnapshot(`
         "schedulerFor()\`
-        -> [task\${3}] function::(6,0) rejected with value new Error(\\"Unexpected: 6 >= 0\\")
+        -> [task\${3}] function::(6,0) rejected with value new Error("Unexpected: 6 >= 0")
         -> [task\${1}] function::(0,3) resolved with value 0
         -> [task\${2}] function::(1,4) pending\`"
       `);
       await s.waitOne();
       expect(s.toString()).toMatchInlineSnapshot(`
         "schedulerFor()\`
-        -> [task\${3}] function::(6,0) rejected with value new Error(\\"Unexpected: 6 >= 0\\")
+        -> [task\${3}] function::(6,0) rejected with value new Error("Unexpected: 6 >= 0")
         -> [task\${1}] function::(0,3) resolved with value 0
         -> [task\${2}] function::(1,4) resolved with value 1\`"
       `);
@@ -1220,13 +1220,13 @@ describe('SchedulerImplem', () => {
           "schedulerFor()\`
           -> [task\${1}] function::taskA() pending
           -> [task\${2}] function::anotherTaskNameForB(42) pending
-          -> [task\${3}] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) pending\`"
+          -> [task\${3}] function::somethingElseForC({"a":{"b":5},"c":0},4) pending\`"
         `);
       await s.waitAll();
       expect(s.toString()).toMatchInlineSnapshot(`
           "schedulerFor()\`
-          -> [task\${3}] function::somethingElseForC({\\"a\\":{\\"b\\":5},\\"c\\":0},4) resolved with value \\"c\\"
-          -> [task\${1}] function::taskA() resolved with value {\\"response\\":\\"dummy response for task A\\"}
+          -> [task\${3}] function::somethingElseForC({"a":{"b":5},"c":0},4) resolved with value "c"
+          -> [task\${1}] function::taskA() resolved with value {"response":"dummy response for task A"}
           -> [task\${2}] function::anotherTaskNameForB(42) resolved with value 3\`"
         `);
       expect(s.count()).toBe(0);
