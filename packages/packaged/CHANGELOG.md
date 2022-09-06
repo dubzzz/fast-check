@@ -1,6 +1,6 @@
 # 0.0.3
 
-_TODO Description_
+_Better permissions on the executable script exposed in bin_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.2...packaged%2Fv0.0.3)]
 
 ## Fixes
