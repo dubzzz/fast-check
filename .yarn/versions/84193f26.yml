@@ -1,0 +1,6 @@
+releases:
+  fast-check: patch
+
+declined:
+  - "@fast-check/ava"
+  - "@fast-check/jest"
