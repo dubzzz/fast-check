@@ -222,7 +222,7 @@ export function stringifyInternal<Ts>(
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
-        ...safeMap(safeObjectKeys(value), mapper),
+        ...safeMap(safeObjectKeys(value as object), mapper),
         ...safeMap(
           safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
             const descriptor = safeObjectGetOwnPropertyDescriptor(value, s);
