@@ -1,3 +1,5 @@
+import { safeCharCodeAt } from '../../../utils/globals';
+
 /** @internal */
 export const indexToCharStringMapper = String.fromCodePoint;
 
@@ -10,12 +12,12 @@ export function indexToCharStringUnmapper(c: unknown): number {
     throw new Error('Cannot unmap string with more or less than one character');
   }
 
-  const c1 = c.charCodeAt(0);
+  const c1 = safeCharCodeAt(c, 0);
   if (c.length === 1) {
     return c1; // partial surrogate is ok
   }
 
-  const c2 = c.charCodeAt(1);
+  const c2 = safeCharCodeAt(c, 1);
   if (c1 < 0xd800 || c1 > 0xdbff || c2 < 0xdc00 || c2 > 0xdfff) {
     throw new Error('Cannot unmap invalid surrogate pairs');
   }

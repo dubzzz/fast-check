@@ -57,6 +57,7 @@ export const safeSubstring = buildSafeMethod(String, 'substring');
 export const safeToLowerCase = buildSafeMethod(String, 'toLowerCase');
 export const safeToUpperCase = buildSafeMethod(String, 'toUpperCase');
 export const safePadStart = buildSafeMethod(String, 'padStart');
+export const safeCharCodeAt = buildSafeMethod(String, 'charCodeAt');
 
 // Number
 export const safeNumberToString = buildSafeMethod(Number, 'toString');
