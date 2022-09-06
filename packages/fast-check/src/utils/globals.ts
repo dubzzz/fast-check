@@ -1,5 +1,11 @@
 import { safeApply } from './apply';
 
+// Various remarks concerning this file:
+// - Functions accepting a variadic number of arguments ALWAYS use (...args) instead of (a, b)
+//   Some build-ins behave differently for f(a, undefined) and f(a) such as splice, it would reduce such risk
+// - The file is very verbose BUT extracting an helper factorizing it kills the performance, so we had to copy-paste
+//   the pattern over and over
+
 // Array
 
 const untouchedForEach = Array.prototype.forEach;
@@ -88,17 +94,20 @@ export function safeForEach<T>(instance: T[], fn: (value: T, index: number, arra
   }
   return safeApply(untouchedForEach, instance, [fn]);
 }
-export function safeIndexOf<T>(instance: readonly T[], searchElement: T, fromIndex?: number | undefined): number {
+export function safeIndexOf<T>(
+  instance: readonly T[],
+  ...args: [searchElement: T, fromIndex?: number | undefined]
+): number {
   if (extractIndexOf(instance) === untouchedIndexOf) {
-    return instance.indexOf(searchElement, fromIndex);
+    return instance.indexOf(...args);
   }
-  return safeApply(untouchedIndexOf, instance, [searchElement, fromIndex]);
+  return safeApply(untouchedIndexOf, instance, args);
 }
-export function safeJoin<T>(instance: T[], separator?: string | undefined): string {
+export function safeJoin<T>(instance: T[], ...args: [separator?: string | undefined]): string {
   if (extractJoin(instance) === untouchedJoin) {
-    return instance.join(separator);
+    return instance.join(...args);
   }
-  return safeApply(untouchedJoin, instance, [separator]);
+  return safeApply(untouchedJoin, instance, args);
 }
 export function safeMap<T, U>(instance: T[], fn: (value: T, index: number, array: T[]) => U): U[] {
   if (extractMap(instance) === untouchedMap) {
@@ -127,23 +136,23 @@ export function safePop<T>(instance: T[]): T | undefined {
   }
   return safeApply(untouchedPop, instance, []);
 }
-export function safeSplice<T>(instance: T[], start: number, deleteCount?: number | undefined): T[] {
+export function safeSplice<T>(instance: T[], ...args: [start: number, deleteCount?: number | undefined]): T[] {
   if (extractSplice(instance) === untouchedSplice) {
-    return instance.splice(start, deleteCount);
+    return instance.splice(...args);
   }
-  return safeApply(untouchedSplice, instance, [start, deleteCount]);
+  return safeApply(untouchedSplice, instance, args);
 }
-export function safeSlice<T>(instance: T[], start?: number | undefined, end?: number | undefined): T[] {
+export function safeSlice<T>(instance: T[], ...args: [start?: number | undefined, end?: number | undefined]): T[] {
   if (extractSlice(instance) === untouchedSlice) {
-    return instance.slice(start, end);
+    return instance.slice(...args);
   }
-  return safeApply(untouchedSlice, instance, [start, end]);
+  return safeApply(untouchedSlice, instance, args);
 }
-export function safeSort<T>(instance: T[], compareFn?: ((a: T, b: T) => number) | undefined): T[] {
+export function safeSort<T>(instance: T[], ...args: [compareFn?: ((a: T, b: T) => number) | undefined]): T[] {
   if (extractSort(instance) === untouchedSort) {
-    return instance.sort(compareFn);
+    return instance.sort(...args);
   }
-  return safeApply(untouchedSort, instance, [compareFn]);
+  return safeApply(untouchedSort, instance, args);
 }
 
 // Date
@@ -260,29 +269,38 @@ function extractCharCodeAt(instance: string) {
     return undefined;
   }
 }
-export function safeSplit(instance: string, separator: string | RegExp, limit?: number | undefined): string[] {
+export function safeSplit(
+  instance: string,
+  ...args: [separator: string | RegExp, limit?: number | undefined]
+): string[] {
   if (extractSplit(instance) === untouchedSplit) {
-    return instance.split(separator, limit);
+    return instance.split(...args);
   }
-  return safeApply(untouchedSplit, instance, [separator, limit]);
+  return safeApply(untouchedSplit, instance, args);
 }
-export function safeStartsWith(instance: string, searchString: string, position?: number | undefined): boolean {
+export function safeStartsWith(
+  instance: string,
+  ...args: [searchString: string, position?: number | undefined]
+): boolean {
   if (extractStartsWith(instance) === untouchedStartsWith) {
-    return instance.startsWith(searchString, position);
+    return instance.startsWith(...args);
   }
-  return safeApply(untouchedStartsWith, instance, [searchString, position]);
+  return safeApply(untouchedStartsWith, instance, args);
 }
-export function safeEndsWith(instance: string, searchString: string, endPosition?: number | undefined): boolean {
+export function safeEndsWith(
+  instance: string,
+  ...args: [searchString: string, endPosition?: number | undefined]
+): boolean {
   if (extractEndsWith(instance) === untouchedEndsWith) {
-    return instance.endsWith(searchString, endPosition);
+    return instance.endsWith(...args);
   }
-  return safeApply(untouchedEndsWith, instance, [searchString, endPosition]);
+  return safeApply(untouchedEndsWith, instance, args);
 }
-export function safeSubstring(instance: string, start: number, end?: number | undefined): string {
+export function safeSubstring(instance: string, ...args: [start: number, end?: number | undefined]): string {
   if (extractSubstring(instance) === untouchedSubstring) {
-    return instance.substring(start, end);
+    return instance.substring(...args);
   }
-  return safeApply(untouchedSubstring, instance, [start, end]);
+  return safeApply(untouchedSubstring, instance, args);
 }
 export function safeToLowerCase(instance: string): string {
   if (extractToLowerCase(instance) === untouchedToLowerCase) {
@@ -296,11 +314,11 @@ export function safeToUpperCase(instance: string): string {
   }
   return safeApply(untouchedToUpperCase, instance, []);
 }
-export function safePadStart(instance: string, maxLength: number, fillString?: string | undefined): string {
+export function safePadStart(instance: string, ...args: [maxLength: number, fillString?: string | undefined]): string {
   if (extractPadStart(instance) === untouchedPadStart) {
-    return instance.padStart(maxLength, fillString);
+    return instance.padStart(...args);
   }
-  return safeApply(untouchedPadStart, instance, [maxLength, fillString]);
+  return safeApply(untouchedPadStart, instance, args);
 }
 export function safeCharCodeAt(instance: string, index: number): number {
   if (extractCharCodeAt(instance) === untouchedCharCodeAt) {
@@ -319,11 +337,11 @@ function extractNumberToString(instance: number) {
     return undefined;
   }
 }
-export function safeNumberToString(instance: number, radix?: number | undefined): string {
+export function safeNumberToString(instance: number, ...args: [radix?: number | undefined]): string {
   if (extractNumberToString(instance) === untouchedNumberToString) {
-    return instance.toString(radix);
+    return instance.toString(...args);
   }
-  return safeApply(untouchedNumberToString, instance, [radix]);
+  return safeApply(untouchedNumberToString, instance, args);
 }
 
 // Object
