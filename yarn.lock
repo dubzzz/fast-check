@@ -765,7 +765,7 @@ __metadata:
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
     "@types/node": ^17.0.44
-    ava: ^4.0.1
+    ava: ^4.3.3
     esm: ^3.2.25
     fast-check: "workspace:*"
     typescript: ^4.0.3
@@ -873,7 +873,7 @@ __metadata:
   resolution: "@fast-check/test-ava-bundle-cjs@workspace:packages/test-ava-bundle-cjs"
   dependencies:
     "@fast-check/ava": "workspace:*"
-    ava: ^4.0.0
+    ava: ^4.3.3
     fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -883,7 +883,7 @@ __metadata:
   resolution: "@fast-check/test-ava-bundle-esm@workspace:packages/test-ava-bundle-esm"
   dependencies:
     "@fast-check/ava": "workspace:*"
-    ava: ^4.0.0
+    ava: ^4.3.3
     fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -4453,9 +4453,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ava@npm:^4.0.0, ava@npm:^4.0.1":
-  version: 4.3.0
-  resolution: "ava@npm:4.3.0"
+"ava@npm:^4.3.3":
+  version: 4.3.3
+  resolution: "ava@npm:4.3.3"
   dependencies:
     acorn: ^8.7.1
     acorn-walk: ^8.2.0
@@ -4509,7 +4509,7 @@ __metadata:
       optional: true
   bin:
     ava: entrypoints/cli.mjs
-  checksum: fa1ac6d9a8ea01edf4f481a014ca4ae46699c44a1d2b9175644116419a3e7e3c20a94635b15993402fe67f99efc62fdb2bde0dffa42bb354df96b6e9dca73374
+  checksum: 6365f0e9fab13b3f471e4f71081ba9f8015d4ea62df6b6685cb752442edd6720ddd76011c2a5cbd595dcf6d675cfd7486d72cecfa94225adb6dd511215713fff
   languageName: node
   linkType: hard
 
