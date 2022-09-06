@@ -40,6 +40,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
     .filter((line) => line.length !== 0);
 
   // Parse raw diff log
+  let numSkippedBecauseUnrelated = 0;
   for (const lineDiff of diffOutputLines) {
     console.debug(`[debug] Parsing ${lineDiff}`);
     const [type, ...titleAndPR] = lineDiff.split(' ');
@@ -53,10 +54,8 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
     const [, title, pr] = m;
     const hasAppropriateSuffix = packageTypeSuffix === '' ? !type.includes('(') : type.endsWith(packageTypeSuffix);
     if (!hasAppropriateSuffix) {
-      console.debug(`[debug] >> skipped invalid package`);
-      errors.push(
-        `ℹ️ Not related to ${packageName}: [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
-      );
+      console.debug(`[debug] >> unrelated package`);
+      ++numSkippedBecauseUnrelated;
       continue;
     }
     switch (type) {
@@ -128,6 +127,13 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         );
         break;
     }
+  }
+  if (numSkippedBecauseUnrelated !== 0) {
+    errors.push(
+      `ℹ️ Skipped ${numSkippedBecauseUnrelated} package${
+        numSkippedBecauseUnrelated > 1 ? 's' : ''
+      } because ot related to ${packageName}`
+    );
   }
 
   return { breakingSection, newFeaturesSection, maintenanceSection, errors };
