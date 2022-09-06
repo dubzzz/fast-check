@@ -41,16 +41,19 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
 
   // Parse raw diff log
   for (const lineDiff of diffOutputLines) {
+    console.debug(`[debug] Parsing ${lineDiff}`);
     const [type, ...titleAndPR] = lineDiff.split(' ');
     const prExtractor = /^(.*) \(#(\d+)\)$/;
     const m = prExtractor.exec(titleAndPR.join(' '));
     if (!m) {
+      console.debug(`[debug] >> failed to extract PR/title`);
       errors.push(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
-      break;
+      continue;
     }
     const [, title, pr] = m;
     const hasAppropriateSuffix = packageTypeSuffix === '' ? !type.includes('(') : type.endsWith(packageTypeSuffix);
     if (!hasAppropriateSuffix) {
+      console.debug(`[debug] >> skipped invalid package`);
       errors.push(
         `ℹ️ Not related to ${packageName}: [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
       );
@@ -195,11 +198,13 @@ async function run() {
 
   for (const packageBump of allBumps) {
     const { oldVersion, newVersion, cwd: packageLocation, ident: packageName } = packageBump;
+    console.debug(`[debug] Checking ${packageName} between version ${oldVersion} and version ${newVersion}`);
 
     // Extract metas for changelog
     const oldTag = computeTag(oldVersion, packageName);
     const newTag = computeTag(newVersion, packageName);
     const releaseKind = extractReleaseKind(oldTag, newTag);
+    console.debug(`[debug] Checking ${packageName} between tag ${oldTag} and tag ${newTag}`);
     const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(
       oldTag,
       packageName
