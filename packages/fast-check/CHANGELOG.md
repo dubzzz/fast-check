@@ -1,6 +1,6 @@
 # 3.1.3
 
-_TODO Description_
+_More resilient to external poisoning on all arbitraries_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.2...v3.1.3)]
 
 ## Fixes
