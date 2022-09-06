@@ -757,7 +757,6 @@ __metadata:
     ava: ^4.0.1
     esm: ^3.2.25
     fast-check: "workspace:*"
-    ts-node: ^10.0.0
     typescript: ^4.0.3
   peerDependencies:
     ava: ">=4.0.0"
@@ -810,7 +809,6 @@ __metadata:
     fast-check: "workspace:*"
     jest: ^28.0.0
     ts-jest: ^28.0.0
-    ts-node: ^10.0.0
     typescript: ^4.7.3
   peerDependencies:
     jest: ">=25.1.0"
@@ -7105,7 +7103,6 @@ __metadata:
     mkdirp: ^1.0.4
     pure-rand: ^5.0.1
     replace-in-file: ^6.3.5
-    source-map-support: ^0.5.19
     ts-jest: ^28.0.0
     typedoc: ^0.23.14
     typescript: ^4.3.2
@@ -14963,7 +14960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.0.0, ts-node@npm:^10.6.0":
+"ts-node@npm:^10.6.0":
   version: 10.9.1
   resolution: "ts-node@npm:10.9.1"
   dependencies:
