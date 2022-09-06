@@ -19,7 +19,7 @@ function extractForEach(instance: unknown[]) {
     return undefined;
   }
 }
-function extractIndexOf(instance: unknown[]) {
+function extractIndexOf(instance: readonly unknown[]) {
   try {
     return instance.indexOf;
   } catch (err) {
@@ -88,7 +88,7 @@ export function safeForEach<T>(instance: T[], fn: (value: T, index: number, arra
   }
   return safeApply(untouchedForEach, instance, [fn]);
 }
-export function safeIndexOf<T>(instance: T[], searchElement: T, fromIndex?: number | undefined): number {
+export function safeIndexOf<T>(instance: readonly T[], searchElement: T, fromIndex?: number | undefined): number {
   if (extractIndexOf(instance) === untouchedIndexOf) {
     return instance.indexOf(searchElement, fromIndex);
   }
