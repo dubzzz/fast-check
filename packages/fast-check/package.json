@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check#readme",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=v16.17.0"
   },
   "dependencies": {
     "pure-rand": "^5.0.1"
