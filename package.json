@@ -24,11 +24,11 @@
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
     "all-contributors-cli": "^6.20.0",
-    "eslint": "^8.17.0",
-    "eslint-config-prettier": "^8.1.0",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
     "prettier": "2.7.1"
   }
 }

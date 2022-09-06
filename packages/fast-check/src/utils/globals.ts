@@ -203,6 +203,7 @@ const untouchedSubstring = String.prototype.substring;
 const untouchedToLowerCase = String.prototype.toLowerCase;
 const untouchedToUpperCase = String.prototype.toUpperCase;
 const untouchedPadStart = String.prototype.padStart;
+const untouchedCharCodeAt = String.prototype.charCodeAt;
 function extractSplit(instance: string) {
   try {
     return instance.split;
@@ -252,6 +253,13 @@ function extractPadStart(instance: string) {
     return undefined;
   }
 }
+function extractCharCodeAt(instance: string) {
+  try {
+    return instance.charCodeAt;
+  } catch (err) {
+    return undefined;
+  }
+}
 export function safeSplit(instance: string, separator: string | RegExp, limit?: number | undefined): string[] {
   if (extractSplit(instance) === untouchedSplit) {
     return instance.split(separator, limit);
@@ -293,6 +301,12 @@ export function safePadStart(instance: string, maxLength: number, fillString?: s
     return instance.padStart(maxLength, fillString);
   }
   return safeApply(untouchedPadStart, instance, [maxLength, fillString]);
+}
+export function safeCharCodeAt(instance: string, index: number): number {
+  if (extractCharCodeAt(instance) === untouchedCharCodeAt) {
+    return instance.charCodeAt(index);
+  }
+  return safeApply(untouchedCharCodeAt, instance, [index]);
 }
 
 // Number

@@ -1,3 +1,5 @@
+import { safeCharCodeAt } from './globals';
+
 /** @internal */
 const crc32Table = [
   0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3, 0x0edb8832,
@@ -46,14 +48,14 @@ export function hash(repr: string): number {
   // and https://msdn.microsoft.com/en-us/library/dd905031.aspx
   let crc = 0xffffffff;
   for (let idx = 0; idx < repr.length; ++idx) {
-    const c = repr.charCodeAt(idx);
+    const c = safeCharCodeAt(repr, idx);
     if (c < 0x80) {
       crc = crc32Table[(crc & 0xff) ^ c] ^ (crc >> 8);
     } else if (c < 0x800) {
       crc = crc32Table[(crc & 0xff) ^ (192 | ((c >> 6) & 31))] ^ (crc >> 8);
       crc = crc32Table[(crc & 0xff) ^ (128 | (c & 63))] ^ (crc >> 8);
     } else if (c >= 0xd800 && c < 0xe000) {
-      const cNext = repr.charCodeAt(++idx);
+      const cNext = safeCharCodeAt(repr, ++idx);
       if (c >= 0xdc00 || cNext < 0xdc00 || cNext > 0xdfff || Number.isNaN(cNext)) {
         // invalid surrogate pair => <ef bf bd> with Buffer.from
         idx -= 1;
