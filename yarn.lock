@@ -943,7 +943,7 @@ __metadata:
   resolution: "@fast-check/test-bundle-rollup-with-import@workspace:packages/test-bundle-rollup-with-import"
   dependencies:
     "@rollup/plugin-commonjs": ^22.0.2
-    "@rollup/plugin-node-resolve": ^13.3.0
+    "@rollup/plugin-node-resolve": ^14.0.0
     fast-check: "workspace:*"
     rollup: ^2.79.0
   languageName: unknown
@@ -954,7 +954,7 @@ __metadata:
   resolution: "@fast-check/test-bundle-rollup-with-require@workspace:packages/test-bundle-rollup-with-require"
   dependencies:
     "@rollup/plugin-commonjs": ^22.0.2
-    "@rollup/plugin-node-resolve": ^13.3.0
+    "@rollup/plugin-node-resolve": ^14.0.0
     fast-check: "workspace:*"
     rollup: ^2.79.0
   languageName: unknown
@@ -2590,9 +2590,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-node-resolve@npm:^13.3.0":
-  version: 13.3.0
-  resolution: "@rollup/plugin-node-resolve@npm:13.3.0"
+"@rollup/plugin-node-resolve@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@rollup/plugin-node-resolve@npm:14.0.0"
   dependencies:
     "@rollup/pluginutils": ^3.1.0
     "@types/resolve": 1.17.1
@@ -2601,8 +2601,8 @@ __metadata:
     is-module: ^1.0.0
     resolve: ^1.19.0
   peerDependencies:
-    rollup: ^2.42.0
-  checksum: ec5418e6b3c23a9e30683056b3010e9d325316dcfae93fbc673ae64dad8e56a2ce761c15c48f5e2dcfe0c822fdc4a4905ee6346e3dcf90603ba2260afef5a5e6
+    rollup: ^2.78.0
+  checksum: c40e7db6c36fd34d699904e8fdf87e550d608d1fe99f2004eda0251d2e436934a901336730eedcb051c2a0c600ee3fc3173b9a2013968247de1fda06fb0a6605
   languageName: node
   linkType: hard
 
