@@ -3,10 +3,6 @@
 _TODO Description_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.2...v3.1.3)]
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#3094](https://github.com/dubzzz/fast-check/pull/3094)) Bug: Make numeric arbitraries resistant to poisoning
