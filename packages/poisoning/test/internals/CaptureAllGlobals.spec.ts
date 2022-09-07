@@ -31,20 +31,19 @@ describe('captureAllGlobals', () => {
   // For the moment, internal data for globals linked to symbols is not tracked
   it.each(expectedGlobalsExcludingSymbols)('should track the content of $globalName', ({ globalName, globalValue }) => {
     // Arrange / Act
-    const fullGlobalName = `globalThis.${globalName}`;
     const globals = captureAllGlobals();
 
     // Assert
     const flattenGlobalsNames = [...globals.values()].map((globalDetails) => globalDetails.name);
     try {
-      expect(flattenGlobalsNames).toContainEqual(fullGlobalName);
+      expect(flattenGlobalsNames).toContainEqual(globalName);
     } catch (err) {
       const flattenGlobalsValuesToName = new Map(
         [...globals.entries()].map(([globalDetailsValue, globalDetails]) => [globalDetailsValue, globalDetails.name])
       );
       if (flattenGlobalsValuesToName.has(globalValue)) {
         const associatedName = flattenGlobalsValuesToName.get(globalValue);
-        const errorMessage = `Found value for ${globalName} (looked for ${fullGlobalName}) attached to ${associatedName}`;
+        const errorMessage = `Found value for ${globalName} attached to ${associatedName}`;
         throw new Error(errorMessage, { cause: err });
       }
       throw err;
