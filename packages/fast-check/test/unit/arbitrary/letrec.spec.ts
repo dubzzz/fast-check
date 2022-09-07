@@ -159,7 +159,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
 
@@ -177,7 +177,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
 
@@ -218,7 +218,7 @@ describe('letrec', () => {
       const biasFactor = 42;
       const { instance: simpleArb, generate } = fakeArbitrary();
       generate.mockReturnValueOnce(new Value(null, undefined));
-      const { a } = letrec((tie) =>
+      const { a } = letrec<{ a: unknown }>((tie) =>
         Object.assign(Object.create(null), {
           a: tie('b'),
           b: simpleArb,
@@ -271,7 +271,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.canShrinkWithoutContext(expectedValue)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
   });
@@ -310,7 +310,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.shrink(expectedValue, expectedContext)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary \\"missing\\" not correctly initialized"`
+        `"Lazy arbitrary "missing" not correctly initialized"`
       );
     });
   });

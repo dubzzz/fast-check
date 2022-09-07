@@ -1,12 +1,15 @@
+const safeMathFloor = Math.floor;
+const safeMathLog = Math.log;
+
 /** @internal */
 export function integerLogLike(v: number): number {
-  return Math.floor(Math.log(v) / Math.log(2));
+  return safeMathFloor(safeMathLog(v) / safeMathLog(2));
 }
 
 /** @internal */
 export function bigIntLogLike(v: bigint): bigint {
   if (v === BigInt(0)) return BigInt(0);
-  return BigInt(v.toString().length);
+  return BigInt(String(v).length);
 }
 
 /** @internal */

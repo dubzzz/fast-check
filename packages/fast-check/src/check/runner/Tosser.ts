@@ -3,6 +3,7 @@ import { RandomGenerator, skipN } from 'pure-rand';
 import { Random } from '../../random/generator/Random';
 import { IRawProperty } from '../property/IRawProperty';
 import { Value } from '../arbitrary/definition/Value';
+import { safeMap } from '../../utils/globals';
 
 /** @internal */
 function lazyGenerate<Ts>(generator: IRawProperty<Ts>, rng: RandomGenerator, idx: number): () => Value<Ts> {
@@ -16,7 +17,7 @@ export function* toss<Ts>(
   random: (seed: number) => RandomGenerator,
   examples: Ts[]
 ): IterableIterator<() => Value<Ts>> {
-  yield* examples.map((e) => () => new Value(e, undefined));
+  yield* safeMap(examples, (e) => () => new Value(e, undefined));
   let idx = 0;
   let rng = random(seed);
   for (;;) {

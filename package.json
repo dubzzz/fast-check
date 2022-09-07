@@ -2,8 +2,7 @@
   "private": true,
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
-  "version": "0.0.0",
-  "packageManager": "yarn@3.2.2",
+  "packageManager": "yarn@3.2.3",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -19,17 +18,17 @@
     "format:check": "prettier --list-different .",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
-    "version:bump": "yarn version check --interactive && yarn workspace @fast-check/monorepo version decline",
+    "version:bump": "yarn version check --interactive",
     "pack:all": "yarn workspaces foreach -pvi --no-private pack --out package.tgz",
     "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
     "all-contributors-cli": "^6.20.0",
-    "eslint": "^8.17.0",
-    "eslint-config-prettier": "^8.1.0",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
     "prettier": "2.7.1"
   }
 }

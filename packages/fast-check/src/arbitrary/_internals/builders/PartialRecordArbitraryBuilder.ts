@@ -1,4 +1,5 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import { safeIndexOf, safePush } from '../../../utils/globals';
 import { option } from '../../option';
 import { tuple } from '../../tuple';
 import { EnumerableKeyOf, extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor';
@@ -20,8 +21,11 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
   for (let index = 0; index !== keys.length; ++index) {
     const k: EnumerableKeyOf<T> = keys[index];
     const requiredArbitrary = recordModel[k];
-    if (requiredKeys === undefined || requiredKeys.indexOf(k as TKeys) !== -1) arbs.push(requiredArbitrary);
-    else arbs.push(option(requiredArbitrary, { nil: noKeyValue }));
+    if (requiredKeys === undefined || safeIndexOf(requiredKeys, k as TKeys) !== -1) {
+      safePush(arbs, requiredArbitrary);
+    } else {
+      safePush(arbs, option(requiredArbitrary, { nil: noKeyValue as NoKeyType }));
+    }
   }
   return tuple(...arbs).map(
     buildValuesAndSeparateKeysToObjectMapper<T, NoKeyType>(keys, noKeyValue),

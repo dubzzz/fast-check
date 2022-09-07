@@ -6,6 +6,8 @@ import { codePointsToStringMapper, codePointsToStringUnmapper } from './_interna
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
+const safeObjectAssign = Object.assign;
+
 /**
  * For strings of {@link hexa}
  *
@@ -17,7 +19,10 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 function hexaString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
   const charArbitrary = hexa();
   const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
-  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
+  // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
+  const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {
+    experimentalCustomSlices,
+  });
   return array(charArbitrary, enrichedConstraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
 }
 export { hexaString };

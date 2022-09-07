@@ -1,3 +1,52 @@
+# 3.1.3
+
+_More resilient to external poisoning on all arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.2...v3.1.3)]
+
+## Fixes
+
+- ([PR#3094](https://github.com/dubzzz/fast-check/pull/3094)) Bug: Make numeric arbitraries resistant to poisoning
+- ([PR#3096](https://github.com/dubzzz/fast-check/pull/3096)) Bug: Make single char arbitraries resistant to poisoning
+- ([PR#3097](https://github.com/dubzzz/fast-check/pull/3097)) Bug: Make simple combinators arbitraries resistant to poisoning
+- ([PR#3098](https://github.com/dubzzz/fast-check/pull/3098)) Bug: Make array combinators arbitraries resistant to poisoning
+- ([PR#3099](https://github.com/dubzzz/fast-check/pull/3099)) Bug: Make multi chars arbitraries resistant to poisoning
+- ([PR#3102](https://github.com/dubzzz/fast-check/pull/3102)) Bug: Fix `safeApply` never calling original `apply`
+- ([PR#3103](https://github.com/dubzzz/fast-check/pull/3103)) Bug: Make object arbitraries resistant to poisoning
+- ([PR#3104](https://github.com/dubzzz/fast-check/pull/3104)) Bug: Make typed arrays arbitraries resistant to poisoning
+- ([PR#3106](https://github.com/dubzzz/fast-check/pull/3106)) Bug: Make recursive arbitraries resistant to poisoning
+- ([PR#3107](https://github.com/dubzzz/fast-check/pull/3107)) Bug: Make function arbitraries resistant to poisoning
+- ([PR#3108](https://github.com/dubzzz/fast-check/pull/3108)) Bug: Make complex strings arbitraries resistant to poisoning
+- ([PR#3143](https://github.com/dubzzz/fast-check/pull/3143)) Bug: Make `webFragments/Segment/QueryParameters` resistant to poisoning
+- ([PR#3152](https://github.com/dubzzz/fast-check/pull/3152)) Bug: Protect string generators against poisoning
+- ([PR#3101](https://github.com/dubzzz/fast-check/pull/3101)) CI: Do not suggest private packages during version bumps
+- ([PR#3113](https://github.com/dubzzz/fast-check/pull/3113)) CI: Consider ⚡️ aka zap PRs as fixes for changelog
+- ([PR#3111](https://github.com/dubzzz/fast-check/pull/3111)) CI: Try to configure renovate to open more PRs
+- ([PR#3150](https://github.com/dubzzz/fast-check/pull/3150)) CI: Change update strategy for renovate
+- ([PR#3151](https://github.com/dubzzz/fast-check/pull/3151)) CI: Update bump strategy of renovate
+- ([PR#3141](https://github.com/dubzzz/fast-check/pull/3141)) Clean: Drop unused dependencies
+- ([PR#3100](https://github.com/dubzzz/fast-check/pull/3100)) Performance: Drop unneeded copy for full custom `uniqueArray`
+- ([PR#3105](https://github.com/dubzzz/fast-check/pull/3105)) Performance: Faster implementation for `safeApply`
+- ([PR#3112](https://github.com/dubzzz/fast-check/pull/3112)) Performance: Speed-up all safe versions built-in methods
+- ([PR#3109](https://github.com/dubzzz/fast-check/pull/3109)) Refactor: Extract and share code computing safe versions for built-ins
+- ([PR#3154](https://github.com/dubzzz/fast-check/pull/3154)) Script: More verbose CHANGELOG script and continue on failure
+
+# 3.1.2
+
+_More resilient to external poisoning on `assert` and `property`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.1...v3.1.2)]
+
+## Fixes
+
+- ([PR#3082](https://github.com/dubzzz/fast-check/pull/3082)) Bug: Protect `assert` from poisoned `Math` or `Date`
+- ([PR#3086](https://github.com/dubzzz/fast-check/pull/3086)) Bug: Resist to poisoning of `Object`
+- ([PR#3087](https://github.com/dubzzz/fast-check/pull/3087)) Bug: Resist to poisoning of `Function`/`Array`/`String`
+- ([PR#3089](https://github.com/dubzzz/fast-check/pull/3089)) Bug: Clear poisoning instability in `filter`, `map`, `chain`
+- ([PR#3079](https://github.com/dubzzz/fast-check/pull/3079)) CI: Auto-cancel previous runs on new commits
+- ([PR#3088](https://github.com/dubzzz/fast-check/pull/3088)) Script: Add script to run e2e tests in debug mode
+- ([PR#3092](https://github.com/dubzzz/fast-check/pull/3092)) Script: Better handle new projects in changelog generator
+- ([PR#3081](https://github.com/dubzzz/fast-check/pull/3081)) Test: Add some poisoning e2e for fast-check
+- ([PR#3085](https://github.com/dubzzz/fast-check/pull/3085)) Test: Check poisoning against noop arbitrary (for now)
+
 # 3.1.1
 
 _Better package.json definition and `__proto__` related fixes_

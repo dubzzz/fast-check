@@ -1,3 +1,12 @@
+# 0.0.3
+
+_Better permissions on the executable script exposed in bin_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.2...packaged%2Fv0.0.3)]
+
+## Fixes
+
+- ([PR#3142](https://github.com/dubzzz/fast-check/pull/3142)) Bug: Fix permissions of `bin/packaged.js`
+
 # 0.0.2
 
 _Declare the proper homepage for the package_

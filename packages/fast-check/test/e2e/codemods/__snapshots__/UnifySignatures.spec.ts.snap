@@ -304,7 +304,7 @@ exports[`codemods::unify-signature (parser: babel) lorem should migrate fc.lorem
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: 5,
-  mode: mode ? \\"sentences\\" : \\"words\\"
+  mode: mode ? "sentences" : "words"
 });"
 `;
 
@@ -312,7 +312,7 @@ exports[`codemods::unify-signature (parser: babel) lorem should migrate fc.lorem
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: 5,
-  mode: \\"sentences\\"
+  mode: "sentences"
 });"
 `;
 
@@ -320,7 +320,7 @@ exports[`codemods::unify-signature (parser: babel) lorem should migrate fc.lorem
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: num,
-  mode: mode ? \\"sentences\\" : \\"words\\"
+  mode: mode ? "sentences" : "words"
 });"
 `;
 
@@ -918,7 +918,7 @@ exports[`codemods::unify-signature (parser: ts) lorem should migrate fc.lorem(5,
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: 5,
-  mode: mode ? \\"sentences\\" : \\"words\\"
+  mode: mode ? "sentences" : "words"
 });"
 `;
 
@@ -926,7 +926,7 @@ exports[`codemods::unify-signature (parser: ts) lorem should migrate fc.lorem(5,
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: 5,
-  mode: \\"sentences\\"
+  mode: "sentences"
 });"
 `;
 
@@ -934,7 +934,7 @@ exports[`codemods::unify-signature (parser: ts) lorem should migrate fc.lorem(nu
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: num,
-  mode: mode ? \\"sentences\\" : \\"words\\"
+  mode: mode ? "sentences" : "words"
 });"
 `;
 
@@ -1532,7 +1532,7 @@ exports[`codemods::unify-signature (parser: tsx) lorem should migrate fc.lorem(5
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: 5,
-  mode: mode ? \\"sentences\\" : \\"words\\"
+  mode: mode ? "sentences" : "words"
 });"
 `;
 
@@ -1540,7 +1540,7 @@ exports[`codemods::unify-signature (parser: tsx) lorem should migrate fc.lorem(5
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: 5,
-  mode: \\"sentences\\"
+  mode: "sentences"
 });"
 `;
 
@@ -1548,7 +1548,7 @@ exports[`codemods::unify-signature (parser: tsx) lorem should migrate fc.lorem(n
 "const fc = require('fast-check');
 fc.lorem({
   maxCount: num,
-  mode: mode ? \\"sentences\\" : \\"words\\"
+  mode: mode ? "sentences" : "words"
 });"
 `;
 

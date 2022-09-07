@@ -2,14 +2,13 @@
   "private": true,
   "name": "@fast-check/test-ava-bundle-cjs",
   "descrition": "Test bundling of @fast-check/ava against CJS runners",
-  "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
     "test": "ava"
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "ava": "^4.0.0",
+    "ava": "^4.3.3",
     "fast-check": "workspace:*"
   },
   "license": "MIT"

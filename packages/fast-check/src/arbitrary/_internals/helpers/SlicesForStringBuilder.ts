@@ -1,4 +1,5 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import { safePush } from '../../../utils/globals';
 
 const dangerousStrings = [
   // Default attributes on raw Object (from ({}).*)
@@ -60,7 +61,7 @@ export function createSlicesForString(
   for (const dangerous of dangerousStrings) {
     const candidate = computeCandidateString(dangerous, charArbitrary, stringSplitter);
     if (candidate !== undefined) {
-      slicesForString.push(candidate);
+      safePush(slicesForString, candidate);
     }
   }
   return slicesForString;

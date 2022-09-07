@@ -1,3 +1,23 @@
+import {
+  safeFilter,
+  safeGetTime,
+  safeIndexOf,
+  safeJoin,
+  safeMap,
+  safePush,
+  safeToISOString,
+  safeToString,
+} from './globals';
+
+const safeArrayFrom = Array.from;
+const safeBufferIsBuffer = typeof Buffer !== 'undefined' ? Buffer.isBuffer : undefined;
+const safeJsonStringify = JSON.stringify;
+const safeNumberIsNaN = Number.isNaN;
+const safeObjectKeys = Object.keys;
+const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
+const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const safeObjectGetPrototypeOf = Object.getPrototypeOf;
+
 /**
  * Use this symbol to define a custom serializer for your instances.
  * Serializer must be a function returning a string (see {@link WithToStringMethod}).
@@ -114,10 +134,10 @@ export function stringifyInternal<Ts>(
   previousValues: any[],
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent
 ): string {
-  const currentValues = previousValues.concat([value]);
+  const currentValues = [...previousValues, value];
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (previousValues.indexOf(value) !== -1) {
+    if (safeIndexOf(previousValues, value) !== -1) {
       return '[cyclic]';
     }
   }
@@ -138,7 +158,7 @@ export function stringifyInternal<Ts>(
     }
   }
 
-  switch (Object.prototype.toString.call(value)) {
+  switch (safeToString(value)) {
     case '[object Array]': {
       const arr = value as unknown as unknown[];
       if (arr.length >= 50 && isSparseArray(arr)) {
@@ -146,27 +166,33 @@ export function stringifyInternal<Ts>(
         // Discarded: map then join will still show holes
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
         for (const index in arr) {
-          if (!Number.isNaN(Number(index)))
-            assignments.push(`${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
+          if (!safeNumberIsNaN(Number(index)))
+            safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
         }
         return assignments.length !== 0
-          ? `Object.assign(Array(${arr.length}),{${assignments.join(',')}})`
+          ? `Object.assign(Array(${arr.length}),{${safeJoin(assignments, ',')}})`
           : `Array(${arr.length})`;
       }
       // stringifiedArray results in: '' for [,]
       // stringifiedArray results in: ',' for [,,]
       // stringifiedArray results in: '1,' for [1,,]
       // stringifiedArray results in: '1,,2' for [1,,2]
-      const stringifiedArray = arr.map((v) => stringifyInternal(v, currentValues, getAsyncContent)).join(',');
+      const stringifiedArray = safeJoin(
+        safeMap(arr, (v) => stringifyInternal(v, currentValues, getAsyncContent)),
+        ','
+      );
       return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
     case '[object BigInt]':
       return `${value}n`;
-    case '[object Boolean]':
-      return typeof value === 'boolean' ? JSON.stringify(value) : `new Boolean(${JSON.stringify(value)})`;
+    case '[object Boolean]': {
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      const unboxedToString = (value as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing
+      return typeof value === 'boolean' ? unboxedToString : `new Boolean(${unboxedToString})`;
+    }
     case '[object Date]': {
       const d = value as unknown as Date;
-      return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
+      return safeNumberIsNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${safeJsonStringify(safeToISOString(d))})`;
     }
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -192,21 +218,22 @@ export function stringifyInternal<Ts>(
             ? '["__proto__"]'
             : typeof k === 'symbol'
             ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
-            : JSON.stringify(k)
+            : safeJsonStringify(k)
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
-        ...Object.keys(value).map(mapper),
-        ...Object.getOwnPropertySymbols(value)
-          .filter((s) => {
-            const descriptor = Object.getOwnPropertyDescriptor(value, s);
+        ...safeMap(safeObjectKeys(value as object), mapper),
+        ...safeMap(
+          safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
+            const descriptor = safeObjectGetOwnPropertyDescriptor(value, s);
             return descriptor && descriptor.enumerable;
-          })
-          .map(mapper),
+          }),
+          mapper
+        ),
       ];
-      const rawRepr = '{' + stringifiedProperties.join(',') + '}';
+      const rawRepr = '{' + safeJoin(stringifiedProperties, ',') + '}';
 
-      if (Object.getPrototypeOf(value) === null) {
+      if (safeObjectGetPrototypeOf(value) === null) {
         return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
       }
       return rawRepr;
@@ -214,18 +241,18 @@ export function stringifyInternal<Ts>(
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
     case '[object String]':
-      return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
+      return typeof value === 'string' ? safeJsonStringify(value) : `new String(${safeJsonStringify(value)})`;
     case '[object Symbol]': {
       const s = value as unknown as symbol;
       if (Symbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
+        return `Symbol.for(${safeJsonStringify(Symbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       if (desc === null) {
         return 'Symbol()';
       }
       const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
-      return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
+      return s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`;
     }
     case '[object Promise]': {
       const promiseContent = getAsyncContent(value as any as Promise<unknown>);
@@ -259,10 +286,11 @@ export function stringifyInternal<Ts>(
     case '[object Float64Array]':
     case '[object BigInt64Array]':
     case '[object BigUint64Array]': {
-      if (typeof Buffer !== 'undefined' && typeof Buffer.isBuffer === 'function' && Buffer.isBuffer(value)) {
-        return `Buffer.from(${stringifyInternal(Array.from(value.values()), currentValues, getAsyncContent)})`;
+      if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(value)) {
+        // Warning: value.values() may crash at runtime if Buffer got poisoned
+        return `Buffer.from(${stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)})`;
       }
-      const valuePrototype = Object.getPrototypeOf(value);
+      const valuePrototype = safeObjectGetPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
       if (typeof className === 'string') {
         const typedArray = value as unknown as
@@ -277,9 +305,10 @@ export function stringifyInternal<Ts>(
           | Float64Array
           | BigInt64Array
           | BigUint64Array;
+        // Warning: typedArray.values() may crash at runtime if type got poisoned
         const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
         return `${className}.from(${stringifyInternal(
-          Array.from(valuesFromTypedArr),
+          safeArrayFrom(valuesFromTypedArr),
           currentValues,
           getAsyncContent
         )})`;
@@ -292,7 +321,7 @@ export function stringifyInternal<Ts>(
   try {
     return (value as any).toString();
   } catch {
-    return Object.prototype.toString.call(value);
+    return safeToString(value);
   }
 }
 

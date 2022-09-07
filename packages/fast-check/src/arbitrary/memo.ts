@@ -1,4 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { safeHasOwnProperty } from '../utils/globals';
 
 /**
  * Output type for {@link memo}
@@ -33,7 +34,7 @@ export function memo<T>(builder: (maxDepth: number) => Arbitrary<T>): Memo<T> {
   const previous: { [depth: number]: Arbitrary<T> } = {};
   return ((maxDepth?: number): Arbitrary<T> => {
     const n = maxDepth !== undefined ? maxDepth : contextRemainingDepth;
-    if (!Object.prototype.hasOwnProperty.call(previous, n)) {
+    if (!safeHasOwnProperty(previous, n)) {
       const prev = contextRemainingDepth;
       contextRemainingDepth = n - 1;
       previous[n] = builder(n);

@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/test-types",
   "description": "Test making sure fast-check expose the right typings",
-  "version": "0.0.0",
   "scripts": {
     "test": "tsc"
   },
@@ -10,7 +9,7 @@
     "fast-check": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^4.3.2"
+    "typescript": "^4.8.2"
   },
   "license": "MIT"
 }

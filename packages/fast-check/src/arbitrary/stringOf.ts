@@ -5,6 +5,8 @@ import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internal
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
+const safeObjectAssign = Object.assign;
+
 /**
  * For strings using the characters produced by `charArb`
  *
@@ -17,6 +19,9 @@ export { StringSharedConstraints } from './_shared/StringSharedConstraints';
 export function stringOf(charArb: Arbitrary<string>, constraints: StringSharedConstraints = {}): Arbitrary<string> {
   const unmapper = patternsToStringUnmapperFor(charArb, constraints);
   const experimentalCustomSlices = createSlicesForString(charArb, unmapper);
-  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
+  // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
+  const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {
+    experimentalCustomSlices,
+  });
   return array(charArb, enrichedConstraints).map(patternsToStringMapper, unmapper);
 }

@@ -99,10 +99,12 @@ export interface WebAuthorityConstraints {
 export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<string> {
   const c = constraints || {};
   const size = c.size;
-  const hostnameArbs = [domain({ size })]
-    .concat(c.withIPv4 === true ? [ipV4()] : [])
-    .concat(c.withIPv6 === true ? [ipV6().map(bracketedMapper, bracketedUnmapper)] : [])
-    .concat(c.withIPv4Extended === true ? [ipV4Extended()] : []);
+  const hostnameArbs = [
+    domain({ size }),
+    ...(c.withIPv4 === true ? [ipV4()] : []),
+    ...(c.withIPv6 === true ? [ipV6().map(bracketedMapper, bracketedUnmapper)] : []),
+    ...(c.withIPv4Extended === true ? [ipV4Extended()] : []),
+  ];
   return tuple(
     c.withUserInfo === true ? option(hostUserInfo(size)) : constant(null),
     oneof(...hostnameArbs),

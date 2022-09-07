@@ -1,26 +1,28 @@
+import { safeEndsWith, safeJoin, safeSlice, safeSplit, safeStartsWith, safeSubstring } from '../../../utils/globals';
+
 /** @internal */
 function readBh(value: string): string[] {
   if (value.length === 0) return [];
-  else return value.split(':');
+  else return safeSplit(value, ':');
 }
 
 /** @internal */
 function extractEhAndL(value: string): [string[], string] {
-  const valueSplits = value.split(':');
+  const valueSplits = safeSplit(value, ':');
   if (valueSplits.length >= 2 && valueSplits[valueSplits.length - 1].length <= 4) {
     // valueSplits[valueSplits.length - 1] is a h16
     // so we need to take the two last entries for l
     return [
-      valueSplits.slice(0, valueSplits.length - 2),
+      safeSlice(valueSplits, 0, valueSplits.length - 2),
       `${valueSplits[valueSplits.length - 2]}:${valueSplits[valueSplits.length - 1]}`,
     ];
   }
-  return [valueSplits.slice(0, valueSplits.length - 1), valueSplits[valueSplits.length - 1]];
+  return [safeSlice(valueSplits, 0, valueSplits.length - 1), valueSplits[valueSplits.length - 1]];
 }
 
 /** @internal */
 export function fullySpecifiedMapper(data: [/*eh*/ string[], /*l*/ string]): string {
-  return `${data[0].join(':')}:${data[1]}`;
+  return `${safeJoin(data[0], ':')}:${data[1]}`;
 }
 /** @internal */
 export function fullySpecifiedUnmapper(value: unknown): [string[], string] {
@@ -32,20 +34,20 @@ export function fullySpecifiedUnmapper(value: unknown): [string[], string] {
 
 /** @internal */
 export function onlyTrailingMapper(data: [/*eh*/ string[], /*l*/ string]): string {
-  return `::${data[0].join(':')}:${data[1]}`;
+  return `::${safeJoin(data[0], ':')}:${data[1]}`;
 }
 /** @internal */
 export function onlyTrailingUnmapper(value: unknown): [string[], string] {
   // Shape:
   // >  "::" 5( h16 ":" ) ls32
   if (typeof value !== 'string') throw new Error('Invalid type');
-  if (!value.startsWith('::')) throw new Error('Invalid value');
-  return extractEhAndL(value.substring(2));
+  if (!safeStartsWith(value, '::')) throw new Error('Invalid value');
+  return extractEhAndL(safeSubstring(value, 2));
 }
 
 /** @internal */
 export function multiTrailingMapper(data: [/*bh*/ string[], /*eh*/ string[], /*l*/ string]): string {
-  return `${data[0].join(':')}::${data[1].join(':')}:${data[2]}`;
+  return `${safeJoin(data[0], ':')}::${safeJoin(data[1], ':')}:${data[2]}`;
 }
 /** @internal */
 export function multiTrailingUnmapper(value: unknown): [string[], string[], string] {
@@ -55,7 +57,7 @@ export function multiTrailingUnmapper(value: unknown): [string[], string[], stri
   // >  [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
   // >  [ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32
   if (typeof value !== 'string') throw new Error('Invalid type');
-  const [bhString, trailingString] = value.split('::', 2);
+  const [bhString, trailingString] = safeSplit(value, '::', 2);
   const [eh, l] = extractEhAndL(trailingString);
   return [readBh(bhString), eh, l];
 }
@@ -69,12 +71,12 @@ export function multiTrailingUnmapperOne(value: unknown): [string[], string, str
   // Shape:
   // >  [ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32
   const out = multiTrailingUnmapper(value);
-  return [out[0], out[1].join(':') /* nothing to join in theory */, out[2]];
+  return [out[0], safeJoin(out[1], ':') /* nothing to join in theory */, out[2]];
 }
 
 /** @internal */
 export function singleTrailingMapper(data: [/*bh*/ string[], /*l / eh*/ string]): string {
-  return `${data[0].join(':')}::${data[1]}`;
+  return `${safeJoin(data[0], ':')}::${data[1]}`;
 }
 /** @internal */
 export function singleTrailingUnmapper(value: unknown): [string[], string] {
@@ -82,19 +84,19 @@ export function singleTrailingUnmapper(value: unknown): [string[], string] {
   // >  [ *4( h16 ":" ) h16 ] "::" ls32
   // >  [ *5( h16 ":" ) h16 ] "::" h16
   if (typeof value !== 'string') throw new Error('Invalid type');
-  const [bhString, trailing] = value.split('::', 2);
+  const [bhString, trailing] = safeSplit(value, '::', 2);
   return [readBh(bhString), trailing];
 }
 
 /** @internal */
 export function noTrailingMapper(data: [/*bh*/ string[]]): string {
-  return `${data[0].join(':')}::`;
+  return `${safeJoin(data[0], ':')}::`;
 }
 /** @internal */
 export function noTrailingUnmapper(value: unknown): [string[]] {
   // Shape:
   // >  [ *6( h16 ":" ) h16 ] "::"
   if (typeof value !== 'string') throw new Error('Invalid type');
-  if (!value.endsWith('::')) throw new Error('Invalid value');
-  return [readBh(value.substring(0, value.length - 2))];
+  if (!safeEndsWith(value, '::')) throw new Error('Invalid value');
+  return [readBh(safeSubstring(value, 0, value.length - 2))];
 }

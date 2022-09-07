@@ -2,6 +2,14 @@ import { integer } from './integer';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers';
 
+const safeNumberIsFinite = Number.isFinite;
+const safeNumberIsInteger = Number.isInteger;
+const safeNumberIsNaN = Number.isNaN;
+
+const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
+const safeNaN = Number.NaN;
+
 /**
  * Constraints to be applied on {@link float}
  * @remarks Since 2.6.0
@@ -43,13 +51,13 @@ export interface FloatConstraints {
 function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
   const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
   const errorMessage = 'fc.float constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
-  if (Number.isNaN(f) || (Number.isFinite(f) && (f < -MAX_VALUE_32 || f > MAX_VALUE_32))) {
+  if (safeNumberIsNaN(f) || (safeNumberIsFinite(f) && (f < -MAX_VALUE_32 || f > MAX_VALUE_32))) {
     // Number.NaN does not have any associated index in the current implementation
     // Finite values outside of the 32-bit range for floats cannot be 32-bit floats
     throw new Error(errorMessage);
   }
   const index = floatToIndex(f);
-  if (!Number.isInteger(index)) {
+  if (!safeNumberIsInteger(index)) {
     // Index not being an integer means that original value was not a valid 32-bit float
     throw new Error(errorMessage);
   }
@@ -80,8 +88,8 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
-    min = noDefaultInfinity ? -MAX_VALUE_32 : Number.NEGATIVE_INFINITY,
-    max = noDefaultInfinity ? MAX_VALUE_32 : Number.POSITIVE_INFINITY,
+    min = noDefaultInfinity ? -MAX_VALUE_32 : safeNegativeInfinity,
+    max = noDefaultInfinity ? MAX_VALUE_32 : safePositiveInfinity,
   } = constraints;
   const minIndex = safeFloatToIndex(min, 'min');
   const maxIndex = safeFloatToIndex(max, 'max');
@@ -102,12 +110,12 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
   const maxIndexWithNaN = maxIndex > 0 ? maxIndex + 1 : maxIndex;
   return integer({ min: minIndexWithNaN, max: maxIndexWithNaN }).map(
     (index) => {
-      if (index > maxIndex || index < minIndex) return Number.NaN;
+      if (index > maxIndex || index < minIndex) return safeNaN;
       else return indexToFloat(index);
     },
     (value) => {
       if (typeof value !== 'number') throw new Error('Unsupported type');
-      if (Number.isNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
+      if (safeNumberIsNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
       return floatToIndex(value);
     }
   );

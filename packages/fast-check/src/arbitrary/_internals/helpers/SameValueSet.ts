@@ -1,4 +1,7 @@
+import { safeAdd, safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
+
+const safeObjectIs = Object.is;
 
 /**
  * CustomSet based on "SameValue" as defined by:
@@ -22,18 +25,18 @@ export class SameValueSet<T, U> implements CustomSet<T> {
 
   tryAdd(value: T): boolean {
     const selected = this.selector(value);
-    if (Object.is(selected, -0)) {
+    if (safeObjectIs(selected, -0)) {
       if (this.hasMinusZero) {
         return false;
       }
-      this.data.push(value);
+      safePush(this.data, value);
       this.hasMinusZero = true;
       return true;
     }
     const sizeBefore = this.selectedItemsExceptMinusZero.size;
-    this.selectedItemsExceptMinusZero.add(selected);
+    safeAdd(this.selectedItemsExceptMinusZero, selected);
     if (sizeBefore !== this.selectedItemsExceptMinusZero.size) {
-      this.data.push(value);
+      safePush(this.data, value);
       return true;
     }
     return false;

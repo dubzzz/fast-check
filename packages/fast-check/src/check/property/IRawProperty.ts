@@ -3,6 +3,9 @@ import { Stream } from '../../stream/Stream';
 import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
+const safeMathFloor = Math.floor;
+const safeMathLog = Math.log;
+
 /**
  * Represent failures of the property
  * @remarks Since 3.0.0
@@ -80,4 +83,4 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
  *
  * @internal
  */
-export const runIdToFrequency = (runId: number): number => 2 + Math.floor(Math.log(runId + 1) / Math.log(10));
+export const runIdToFrequency = (runId: number): number => 2 + safeMathFloor(safeMathLog(runId + 1) / safeMathLog(10));

@@ -2,7 +2,6 @@
   "private": true,
   "name": "@fast-check/test-bundle-node-extension-mjs",
   "description": "Test making sure fast-check can be referenced from mjs files",
-  "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
     "dry": "node dry.mjs",
