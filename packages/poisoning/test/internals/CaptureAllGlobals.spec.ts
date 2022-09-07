@@ -1,24 +1,53 @@
 import { captureAllGlobals } from '../../src/internals/CaptureAllGlobals.js';
 
 describe('captureAllGlobals', () => {
-  it.each`
-    globalName                             | globalValue
-    ${'Array'}                             | ${Array}
-    ${'Array.prototype'}                   | ${Array.prototype}
-    ${'Array.prototype.map'}               | ${Array.prototype.map}
-    ${'Object'}                            | ${Object}
-    ${'Object.entries'}                    | ${Object.entries}
-    ${'Function'}                          | ${Function}
-    ${'setTimeout'}                        | ${setTimeout}
-    ${'Map.prototype[Symbol.toStringTag]'} | ${Map.prototype[Symbol.toStringTag]}
-  `('should capture $globalName', ({ globalValue }) => {
+  const expectedGlobals = [
+    { globalName: 'Array', globalValue: Array },
+    { globalName: 'Array.prototype', globalValue: Array.prototype },
+    { globalName: 'Array.prototype.map', globalValue: Array.prototype.map },
+    { globalName: 'Object', globalValue: Object },
+    { globalName: 'Object.entries', globalValue: Object.entries },
+    { globalName: 'Function', globalValue: Function },
+    { globalName: 'Function.prototype.apply', globalValue: Function.prototype.apply },
+    { globalName: 'Function.prototype.call', globalValue: Function.prototype.call },
+    { globalName: 'setTimeout', globalValue: setTimeout },
+    { globalName: 'Map.prototype[Symbol.toStringTag]', globalValue: Map.prototype[Symbol.toStringTag], isSymbol: true },
+    { globalName: 'Object.prototype.toString', globalValue: Object.prototype.toString },
+    { globalName: 'Number.prototype.toString', globalValue: Number.prototype.toString }, // not the same as Object one
+  ];
+  const expectedGlobalsExcludingSymbols = expectedGlobals.filter((item) => !item.isSymbol);
+
+  it.each(expectedGlobals)('should capture value for $globalName', ({ globalValue }) => {
     // Arrange / Act
     const globals = captureAllGlobals();
 
     // Assert
-    const flattenGlobals = [...globals.values()].flatMap((globalDetails) =>
+    const flattenGlobalsValues = [...globals.values()].flatMap((globalDetails) =>
       [...globalDetails.properties.values()].map((property) => property.value)
     );
-    expect(flattenGlobals).toContainEqual(globalValue);
+    expect(flattenGlobalsValues).toContainEqual(globalValue);
+  });
+
+  // For the moment, internal data for globals linked to symbols is not tracked
+  it.each(expectedGlobalsExcludingSymbols)('should track the content of $globalName', ({ globalName, globalValue }) => {
+    // Arrange / Act
+    const fullGlobalName = `globalThis.${globalName}`;
+    const globals = captureAllGlobals();
+
+    // Assert
+    const flattenGlobalsNames = [...globals.values()].map((globalDetails) => globalDetails.name);
+    try {
+      expect(flattenGlobalsNames).toContainEqual(fullGlobalName);
+    } catch (err) {
+      const flattenGlobalsValuesToName = new Map(
+        [...globals.entries()].map(([globalDetailsValue, globalDetails]) => [globalDetailsValue, globalDetails.name])
+      );
+      if (flattenGlobalsValuesToName.has(globalValue)) {
+        const associatedName = flattenGlobalsValuesToName.get(globalValue);
+        const errorMessage = `Found value for ${globalName} (looked for ${fullGlobalName}) attached to ${associatedName}`;
+        throw new Error(errorMessage, { cause: err });
+      }
+      throw err;
+    }
   });
 });
