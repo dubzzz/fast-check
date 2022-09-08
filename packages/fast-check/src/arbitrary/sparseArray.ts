@@ -10,6 +10,7 @@ import {
   SizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength';
 
+const SArray = Array;
 const safeMathMin = Math.min;
 const safeMathMax = Math.max;
 const safeArrayIsArray = Array.isArray;
@@ -73,7 +74,7 @@ function extractMaxIndex(indexesAndValues: [number, unknown][]) {
 
 /** @internal */
 function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
-  const array = Array<T>(length);
+  const array = SArray<T>(length);
   for (let index = 0; index !== indexesAndValues.length; ++index) {
     const it = indexesAndValues[index];
     if (it[0] < length) array[it[0]] = it[1];

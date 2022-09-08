@@ -10,6 +10,8 @@ import {
   UndefinedContextPlaceholder,
 } from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
 
+const SString = String;
+
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
  * on a {@link IAsyncPropertyWithHooks}
@@ -114,7 +116,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       if (err instanceof Error && err.stack) {
         return { error: err, errorMessage: `${err}\n\nStack trace: ${err.stack}` };
       }
-      return { error: err, errorMessage: String(err) };
+      return { error: err, errorMessage: SString(err) };
     } finally {
       await this.afterEachHook();
     }

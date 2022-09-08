@@ -5,6 +5,8 @@ import {
   typedIntArrayArbitraryArbitraryBuilder,
 } from './_internals/builders/TypedIntArrayArbitraryBuilder';
 
+const SUint8ClampedArray = Uint8ClampedArray;
+
 /**
  * For Uint8ClampedArray
  * @remarks Since 2.9.0
@@ -15,7 +17,7 @@ export function uint8ClampedArray(constraints: IntArrayConstraints = {}): Arbitr
     constraints,
     0,
     255,
-    Uint8ClampedArray,
+    SUint8ClampedArray,
     integer
   );
 }

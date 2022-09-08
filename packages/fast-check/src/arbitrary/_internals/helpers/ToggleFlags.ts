@@ -1,11 +1,13 @@
 import { safePush } from '../../../utils/globals';
 
+const SBigInt = BigInt;
+
 /** @internal */
 export function countToggledBits(n: bigint): number {
   let count = 0;
-  while (n > BigInt(0)) {
-    if (n & BigInt(1)) ++count;
-    n >>= BigInt(1);
+  while (n > SBigInt(0)) {
+    if (n & SBigInt(1)) ++count;
+    n >>= SBigInt(1);
   }
   return count;
 }
@@ -15,11 +17,11 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
   // whenever possible we want to preserve the same number of toggled positions
   // whenever possible we want to keep them at the same place
   // flags: 1000101 -> 10011 or 11001 (second choice for the moment)
-  const allowedMask = (BigInt(1) << BigInt(nextSize)) - BigInt(1);
+  const allowedMask = (SBigInt(1) << SBigInt(nextSize)) - SBigInt(1);
   const preservedFlags = flags & allowedMask;
   let numMissingFlags = countToggledBits(flags - preservedFlags);
   let nFlags = preservedFlags;
-  for (let mask = BigInt(1); mask <= allowedMask && numMissingFlags !== 0; mask <<= BigInt(1)) {
+  for (let mask = SBigInt(1); mask <= allowedMask && numMissingFlags !== 0; mask <<= SBigInt(1)) {
     if (!(nFlags & mask)) {
       nFlags |= mask;
       --numMissingFlags;
@@ -51,8 +53,8 @@ export function computeFlagsFromChars(
   toggledChars: string[],
   togglePositions: number[]
 ): bigint {
-  let flags = BigInt(0);
-  for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
+  let flags = SBigInt(0);
+  for (let idx = 0, mask = SBigInt(1); idx !== togglePositions.length; ++idx, mask <<= SBigInt(1)) {
     if (untoggledChars[togglePositions[idx]] !== toggledChars[togglePositions[idx]]) {
       flags |= mask;
     }
@@ -76,7 +78,7 @@ export function applyFlagsOnChars(
   togglePositions: number[],
   toggleCase: (rawChar: string) => string
 ): void {
-  for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
+  for (let idx = 0, mask = SBigInt(1); idx !== togglePositions.length; ++idx, mask <<= SBigInt(1)) {
     if (flags & mask) chars[togglePositions[idx]] = toggleCase(chars[togglePositions[idx]]);
   }
 }

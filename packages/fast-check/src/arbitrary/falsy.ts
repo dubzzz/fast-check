@@ -1,6 +1,8 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { constantFrom } from './constantFrom';
 
+const SBigInt = BigInt;
+
 /**
  * Constraints to be applied on {@link falsy}
  * @remarks Since 1.26.0
@@ -50,5 +52,5 @@ export function falsy<TConstraints extends FalsyContraints>(
   if (!constraints || !constraints.withBigInt) {
     return constantFrom<FalsyValue[]>(false, null, undefined, 0, '', NaN);
   }
-  return constantFrom<FalsyValue<TConstraints>[]>(false, null, undefined, 0, '', NaN, BigInt(0) as any);
+  return constantFrom<FalsyValue<TConstraints>[]>(false, null, undefined, 0, '', NaN, SBigInt(0) as any);
 }

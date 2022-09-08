@@ -5,6 +5,9 @@ import {
   typedIntArrayArbitraryArbitraryBuilder,
 } from './_internals/builders/TypedIntArrayArbitraryBuilder';
 
+const SBigInt = BigInt;
+const SBigUint64Array = BigUint64Array;
+
 /**
  * For BigUint64Array
  * @remarks Since 3.0.0
@@ -13,9 +16,9 @@ import {
 export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigUint64Array> {
   return typedIntArrayArbitraryArbitraryBuilder<BigUint64Array, bigint>(
     constraints,
-    BigInt(0),
-    BigInt('18446744073709551615'),
-    BigUint64Array,
+    SBigInt(0),
+    SBigInt('18446744073709551615'),
+    SBigUint64Array,
     bigInt
   );
 }

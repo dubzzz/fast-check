@@ -12,6 +12,8 @@ import {
 } from './helpers/ToggleFlags';
 import { safeJoin, safeSlice } from '../../utils/globals';
 
+const SBigInt = BigInt;
+
 /** @internal */
 type MixedCaseArbitraryContext = {
   rawString: string;
@@ -89,7 +91,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
         contextSafe = {
           rawString: value,
           rawStringContext: undefined,
-          flags: BigInt(0),
+          flags: SBigInt(0),
           flagsContext: undefined,
         };
       }

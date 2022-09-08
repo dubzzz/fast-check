@@ -1,6 +1,8 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { BigIntArbitrary } from './_internals/BigIntArbitrary';
 
+const SBigInt = BigInt;
+
 /**
  * Constraints to be applied on {@link bigUint}
  * @remarks Since 2.6.0
@@ -16,7 +18,7 @@ export interface BigUintConstraints {
 
 /** @internal */
 function computeDefaultMax(): bigint {
-  return (BigInt(1) << BigInt(256)) - BigInt(1);
+  return (SBigInt(1) << SBigInt(256)) - SBigInt(1);
 }
 
 /**
@@ -49,6 +51,6 @@ function bigUint(constraints?: bigint | BigUintConstraints): Arbitrary<bigint> {
   if (max < 0) {
     throw new Error('fc.bigUint expects max to be greater than or equal to zero');
   }
-  return new BigIntArbitrary(BigInt(0), max);
+  return new BigIntArbitrary(SBigInt(0), max);
 }
 export { bigUint };

@@ -1,6 +1,7 @@
 import { safeAdd, safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
 
+const SSet = Set;
 const safeNumberIsNaN = Number.isNaN;
 
 /**
@@ -19,7 +20,7 @@ export class StrictlyEqualSet<T, U> implements CustomSet<T> {
   private readonly data: T[];
 
   constructor(private readonly selector: (value: T) => U) {
-    this.selectedItemsExceptNaN = new Set();
+    this.selectedItemsExceptNaN = new SSet();
     this.data = [];
   }
 

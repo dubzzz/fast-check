@@ -1,6 +1,8 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { BigIntArbitrary } from './_internals/BigIntArbitrary';
 
+const SBigInt = BigInt;
+
 /**
  * For signed bigint of n bits
  *
@@ -15,7 +17,7 @@ export function bigIntN(n: number): Arbitrary<bigint> {
   if (n < 1) {
     throw new Error('fc.bigIntN expects requested number of bits to be superior or equal to 1');
   }
-  const min = BigInt(-1) << BigInt(n - 1);
-  const max = (BigInt(1) << BigInt(n - 1)) - BigInt(1);
+  const min = SBigInt(-1) << SBigInt(n - 1);
+  const max = (SBigInt(1) << SBigInt(n - 1)) - SBigInt(1);
   return new BigIntArbitrary(min, max);
 }

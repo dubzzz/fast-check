@@ -10,6 +10,8 @@ import {
   RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails';
 
+const SError = Error;
+
 /** @internal */
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
@@ -238,13 +240,13 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 /** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
   if (!out.failed) return;
-  throw new Error(defaultReportMessage(out));
+  throw new SError(defaultReportMessage(out));
 }
 
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
   if (!out.failed) return;
-  throw new Error(await asyncDefaultReportMessage(out));
+  throw new SError(await asyncDefaultReportMessage(out));
 }
 
 /**

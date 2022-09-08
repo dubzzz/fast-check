@@ -5,6 +5,7 @@ import { mapToConstant } from '../../mapToConstant';
 import { safeCharCodeAt, safeNumberToString } from '../../../utils/globals';
 
 const safeStringFromCharCode = String.fromCharCode;
+const safeEncodeURIComponent = encodeURIComponent;
 
 /** @internal */
 const lowerCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x61) };
@@ -17,7 +18,7 @@ const numericMapper = { num: 10, build: (v: number) => safeStringFromCharCode(v 
 
 /** @internal */
 function percentCharArbMapper(c: string): string {
-  const encoded = encodeURIComponent(c);
+  const encoded = safeEncodeURIComponent(c);
   return c !== encoded ? encoded : `%${safeNumberToString(safeCharCodeAt(c, 0), 16)}`; // always %xy / no %x or %xyz
 }
 /** @internal */

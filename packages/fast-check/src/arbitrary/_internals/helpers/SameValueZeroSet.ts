@@ -1,6 +1,8 @@
 import { safeAdd, safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
 
+const SSet = Set;
+
 /**
  * CustomSet based on "SameValueZero" as defined by:
  * https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero
@@ -14,7 +16,7 @@ export class SameValueZeroSet<T, U> implements CustomSet<T> {
   private readonly data: T[];
 
   constructor(private readonly selector: (value: T) => U) {
-    this.selectedItems = new Set();
+    this.selectedItems = new SSet();
     this.data = [];
   }
 

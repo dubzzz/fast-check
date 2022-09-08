@@ -5,6 +5,7 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { safeMap, safePush } from '../../utils/globals';
 
+const safeSymbolIterator: typeof Symbol.iterator = Symbol.iterator;
 const safeIsArray = Array.isArray;
 const safeObjectIs = Object.is;
 
@@ -55,7 +56,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
   }
 
   private *shrinkImpl(value: T[], contexts: unknown[]): IterableIterator<Value<T>[]> {
-    const its = safeMap(value, (v, idx) => this.arb.shrink(v, contexts[idx])[Symbol.iterator]());
+    const its = safeMap(value, (v, idx) => this.arb.shrink(v, contexts[idx])[safeSymbolIterator]());
     let cur = safeMap(its, (it) => it.next());
     while (!cur[0].done) {
       yield safeMap(cur, (c) => c.value);

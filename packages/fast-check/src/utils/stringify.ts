@@ -9,6 +9,7 @@ import {
   safeToString,
 } from './globals';
 
+const SString = String;
 const safeArrayFrom = Array.from;
 const safeBufferIsBuffer = typeof Buffer !== 'undefined' ? Buffer.isBuffer : undefined;
 const safeJsonStringify = JSON.stringify;
@@ -17,6 +18,8 @@ const safeObjectKeys = Object.keys;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const safeObjectGetPrototypeOf = Object.getPrototypeOf;
+const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
 
 /**
  * Use this symbol to define a custom serializer for your instances.
@@ -97,7 +100,7 @@ function getSymbolDescription(s: symbol): string | null {
   if (s.description !== undefined) return s.description;
 
   // description is always undefined in node 6, 8, 10 (not 12)
-  const m = findSymbolNameRegex.exec(String(s));
+  const m = findSymbolNameRegex.exec(SString(s));
   // '' considered equivalent to undefined for node <12 (unable to distinguish undefined from '')
   // s.description would have been equal to '' in node 12+
   return m && m[1].length ? m[1] : null;
@@ -107,13 +110,13 @@ function getSymbolDescription(s: symbol): string | null {
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
-      return 1 / numValue === Number.NEGATIVE_INFINITY ? '-0' : '0';
-    case Number.NEGATIVE_INFINITY:
+      return 1 / numValue === safeNegativeInfinity ? '-0' : '0';
+    case safeNegativeInfinity:
       return 'Number.NEGATIVE_INFINITY';
-    case Number.POSITIVE_INFINITY:
+    case safePositiveInfinity:
       return 'Number.POSITIVE_INFINITY';
     default:
-      return numValue === numValue ? String(numValue) : 'Number.NaN';
+      return numValue === numValue ? SString(numValue) : 'Number.NaN';
   }
 }
 

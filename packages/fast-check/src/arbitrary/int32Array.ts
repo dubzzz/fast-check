@@ -5,6 +5,8 @@ import {
   typedIntArrayArbitraryArbitraryBuilder,
 } from './_internals/builders/TypedIntArrayArbitraryBuilder';
 
+const SInt32Array = Int32Array;
+
 /**
  * For Int32Array
  * @remarks Since 2.9.0
@@ -15,7 +17,7 @@ export function int32Array(constraints: IntArrayConstraints = {}): Arbitrary<Int
     constraints,
     -0x80000000,
     0x7fffffff,
-    Int32Array,
+    SInt32Array,
     integer
   );
 }

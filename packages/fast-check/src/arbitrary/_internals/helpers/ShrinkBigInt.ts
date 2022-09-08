@@ -1,12 +1,14 @@
 import { Stream, stream } from '../../../stream/Stream';
 import { Value } from '../../../check/arbitrary/definition/Value';
 
+const SBigInt = BigInt;
+
 /**
  * Halve towards zero
  * @internal
  */
 function halveBigInt(n: bigint): bigint {
-  return n / BigInt(2);
+  return n / SBigInt(2);
 }
 
 /**

@@ -1,6 +1,7 @@
 import { safeAdd, safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
 
+const SSet = Set;
 const safeObjectIs = Object.is;
 
 /**
@@ -18,7 +19,7 @@ export class SameValueSet<T, U> implements CustomSet<T> {
   private hasMinusZero: boolean;
 
   constructor(private readonly selector: (value: T) => U) {
-    this.selectedItemsExceptMinusZero = new Set();
+    this.selectedItemsExceptMinusZero = new SSet();
     this.data = [];
     this.hasMinusZero = false;
   }
