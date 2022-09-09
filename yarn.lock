@@ -12015,8 +12015,8 @@ __metadata:
   linkType: hard
 
 "netlify-cli@npm:^11.5.1":
-  version: 11.6.0
-  resolution: "netlify-cli@npm:11.6.0"
+  version: 11.7.0
+  resolution: "netlify-cli@npm:11.7.0"
   dependencies:
     "@netlify/build": ^27.16.1
     "@netlify/config": ^18.2.3
@@ -12129,7 +12129,7 @@ __metadata:
   bin:
     netlify: bin/run
     ntl: bin/run
-  checksum: 7c981265664e891b9acd725efcc51e51e1149ec837d03105954af4e32c7174b19a3620b0ffa5c973b9204cb81555b742f16217bc5252a8187b10a3e098ee5992
+  checksum: 245d14efcf3379ea905b1ecba3679625068766efc58c9942b98c8e3388f4f3b0df6c26a9df1d0f8f22810830aab4fe0d8388b0daafd6884dbd988d978ea37dc0
   languageName: node
   linkType: hard
 
