@@ -36,7 +36,7 @@
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
   "devDependencies": {
     "jest": "^29.0.2",
-    "ts-jest": "^28.0.8",
+    "ts-jest": "^29.0.0",
     "ts-jest-resolver": "^2.0.0",
     "typescript": "^4.8.3"
   },
