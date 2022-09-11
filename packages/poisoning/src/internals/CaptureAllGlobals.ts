@@ -52,7 +52,8 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
       // For instance: do not track the content of globalThis.__coverage__
       continue;
     }
-    captureOneRecursively(knownGlobals, descriptor.value, name + '.' + String(descriptorName), false);
+    const subGlobalName = topLevel ? name + '.' + String(descriptorName) : String(descriptorName);
+    captureOneRecursively(knownGlobals, descriptor.value, subGlobalName, false);
   }
 }
 
