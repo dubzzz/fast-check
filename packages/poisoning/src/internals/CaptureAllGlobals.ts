@@ -47,7 +47,8 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
       // For instance: do not monitor the content of globalThis.Symbol(JEST_STATE_SYMBOL)
       continue;
     }
-    captureOneRecursively(knownGlobals, descriptor.value, name + '.' + String(descriptorName));
+    const subGlobalName = name !== 'globalThis' ? name + '.' + String(descriptorName) : String(descriptorName);
+    captureOneRecursively(knownGlobals, descriptor.value, subGlobalName);
   }
 }
 
