@@ -25,7 +25,7 @@ function extractAllDescriptorsDetails(instance: unknown): [string | symbol, Prop
   return allDescriptorsDetails[SortSymbol](compareKeys);
 }
 
-function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name: string): void {
+function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name: string, topLevel: boolean): void {
   if (typeof instance !== 'function' && typeof instance !== 'object') {
     return;
   }
@@ -47,13 +47,18 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
       // For instance: do not monitor the content of globalThis.Symbol(JEST_STATE_SYMBOL)
       continue;
     }
-    captureOneRecursively(knownGlobals, descriptor.value, name + '.' + String(descriptorName));
+    if (topLevel && descriptorName[0] === '_') {
+      // Do not scan what's sounds like private properties dropped on globalThis
+      // For instance: do not track the content of globalThis.__coverage__
+      continue;
+    }
+    captureOneRecursively(knownGlobals, descriptor.value, name + '.' + String(descriptorName), false);
   }
 }
 
 /** Capture all globals accessible from globalThis */
 export function captureAllGlobals(): AllGlobals {
   const knownGlobals = toPoisoningFreeMap(new Map<unknown, GlobalDetails>());
-  captureOneRecursively(knownGlobals, globalThis, 'globalThis');
+  captureOneRecursively(knownGlobals, globalThis, 'globalThis', true);
   return knownGlobals;
 }
