@@ -2,6 +2,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { double, DoubleConstraints } from './double';
 import { array } from './array';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { Float64Array } from '../utils/globals';
 
 /**
  * Constraints to be applied on {@link float64Array}

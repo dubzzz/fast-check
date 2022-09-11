@@ -1,5 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeMap, safeSlice } from '../utils/globals';
+import { Array, safeMap, safeSlice } from '../utils/globals';
 import { tuple } from './tuple';
 import { uniqueArray } from './uniqueArray';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder';
@@ -10,7 +10,6 @@ import {
   SizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength';
 
-const SArray = Array;
 const safeMathMin = Math.min;
 const safeMathMax = Math.max;
 const safeArrayIsArray = Array.isArray;
@@ -74,7 +73,7 @@ function extractMaxIndex(indexesAndValues: [number, unknown][]) {
 
 /** @internal */
 function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
-  const array = SArray<T>(length);
+  const array = Array<T>(length);
   for (let index = 0; index !== indexesAndValues.length; ++index) {
     const it = indexesAndValues[index];
     if (it[0] < length) array[it[0]] = it[1];

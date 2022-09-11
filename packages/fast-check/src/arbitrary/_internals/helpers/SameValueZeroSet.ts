@@ -1,7 +1,5 @@
-import { safeAdd, safePush } from '../../../utils/globals';
+import { Set, safeAdd, safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
-
-const SSet = Set;
 
 /**
  * CustomSet based on "SameValueZero" as defined by:
@@ -16,7 +14,7 @@ export class SameValueZeroSet<T, U> implements CustomSet<T> {
   private readonly data: T[];
 
   constructor(private readonly selector: (value: T) => U) {
-    this.selectedItems = new SSet();
+    this.selectedItems = new Set();
     this.data = [];
   }
 

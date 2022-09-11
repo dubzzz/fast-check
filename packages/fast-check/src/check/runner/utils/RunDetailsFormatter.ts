@@ -1,4 +1,4 @@
-import { safePush } from '../../../utils/globals';
+import { Error, safePush } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
@@ -9,8 +9,6 @@ import {
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails';
-
-const SError = Error;
 
 /** @internal */
 function formatHints(hints: string[]): string {
@@ -240,13 +238,13 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 /** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
   if (!out.failed) return;
-  throw new SError(defaultReportMessage(out));
+  throw new Error(defaultReportMessage(out));
 }
 
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
   if (!out.failed) return;
-  throw new SError(await asyncDefaultReportMessage(out));
+  throw new Error(await asyncDefaultReportMessage(out));
 }
 
 /**

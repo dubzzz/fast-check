@@ -27,6 +27,9 @@ export { SError as Error };
 const SFloat32Array: typeof Float32Array = typeof Float32Array !== 'undefined' ? Float32Array : undefined!;
 export { SFloat32Array as Float32Array };
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SFloat64Array: typeof Float64Array = typeof Float64Array !== 'undefined' ? Float64Array : undefined!;
+export { SFloat64Array as Float64Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const SInt8Array: typeof Int8Array = typeof Int8Array !== 'undefined' ? Int8Array : undefined!;
 export { SInt8Array as Int8Array };
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -41,6 +44,9 @@ export { SNumber as Number };
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const SString: typeof String = typeof String !== 'undefined' ? String : undefined!;
 export { SString as String };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SSet: typeof Set = typeof Set !== 'undefined' ? Set : undefined!;
+export { SSet as Set };
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const SUint8Array: typeof Uint8Array = typeof Uint8Array !== 'undefined' ? Uint8Array : undefined!;
 export { SUint8Array as Uint8Array };

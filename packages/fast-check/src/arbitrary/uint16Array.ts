@@ -1,11 +1,10 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { Uint16Array } from '../utils/globals';
 import { integer } from './integer';
 import {
   IntArrayConstraints,
   typedIntArrayArbitraryArbitraryBuilder,
 } from './_internals/builders/TypedIntArrayArbitraryBuilder';
-
-const SUint16Array = Uint16Array;
 
 /**
  * For Uint16Array
@@ -13,6 +12,6 @@ const SUint16Array = Uint16Array;
  * @public
  */
 export function uint16Array(constraints: IntArrayConstraints = {}): Arbitrary<Uint16Array> {
-  return typedIntArrayArbitraryArbitraryBuilder<Uint16Array, number>(constraints, 0, 65535, SUint16Array, integer);
+  return typedIntArrayArbitraryArbitraryBuilder<Uint16Array, number>(constraints, 0, 65535, Uint16Array, integer);
 }
 export { IntArrayConstraints };

@@ -1,5 +1,5 @@
-const SBigInt = BigInt;
-const SString = String;
+import { BigInt, String } from '../../../utils/globals';
+
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;
 
@@ -10,8 +10,8 @@ export function integerLogLike(v: number): number {
 
 /** @internal */
 export function bigIntLogLike(v: bigint): bigint {
-  if (v === SBigInt(0)) return SBigInt(0);
-  return SBigInt(SString(v).length);
+  if (v === BigInt(0)) return BigInt(0);
+  return BigInt(String(v).length);
 }
 
 /** @internal */

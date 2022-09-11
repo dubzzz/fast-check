@@ -2,10 +2,9 @@ import { fullUnicode } from '../../fullUnicode';
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
-import { safeCharCodeAt, safeNumberToString } from '../../../utils/globals';
+import { safeCharCodeAt, safeNumberToString, encodeURIComponent } from '../../../utils/globals';
 
 const safeStringFromCharCode = String.fromCharCode;
-const safeEncodeURIComponent = encodeURIComponent;
 
 /** @internal */
 const lowerCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x61) };
@@ -18,7 +17,7 @@ const numericMapper = { num: 10, build: (v: number) => safeStringFromCharCode(v 
 
 /** @internal */
 function percentCharArbMapper(c: string): string {
-  const encoded = safeEncodeURIComponent(c);
+  const encoded = encodeURIComponent(c);
   return c !== encoded ? encoded : `%${safeNumberToString(safeCharCodeAt(c, 0), 16)}`; // always %xy / no %x or %xyz
 }
 /** @internal */

@@ -1,11 +1,10 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { Uint8Array } from '../utils/globals';
 import { integer } from './integer';
 import {
   IntArrayConstraints,
   typedIntArrayArbitraryArbitraryBuilder,
 } from './_internals/builders/TypedIntArrayArbitraryBuilder';
-
-const SUint8Array = Uint8Array;
 
 /**
  * For Uint8Array
@@ -13,6 +12,6 @@ const SUint8Array = Uint8Array;
  * @public
  */
 export function uint8Array(constraints: IntArrayConstraints = {}): Arbitrary<Uint8Array> {
-  return typedIntArrayArbitraryArbitraryBuilder<Uint8Array, number>(constraints, 0, 255, SUint8Array, integer);
+  return typedIntArrayArbitraryArbitraryBuilder<Uint8Array, number>(constraints, 0, 255, Uint8Array, integer);
 }
 export { IntArrayConstraints };

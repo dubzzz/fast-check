@@ -1,19 +1,17 @@
-const SBoolean = Boolean;
-const SNumber = Number;
-const SString = String;
+import { Boolean, Number, String } from '../../../utils/globals';
 
 /** @internal */
 export function unboxedToBoxedMapper(value: unknown): unknown {
   switch (typeof value) {
     case 'boolean':
       // tslint:disable-next-line:no-construct
-      return new SBoolean(value);
+      return new Boolean(value);
     case 'number':
       // tslint:disable-next-line:no-construct
-      return new SNumber(value);
+      return new Number(value);
     case 'string':
       // tslint:disable-next-line:no-construct
-      return new SString(value);
+      return new String(value);
     default:
       return value;
   }
@@ -24,7 +22,7 @@ export function unboxedToBoxedUnmapper(value: unknown): unknown {
   if (typeof value !== 'object' || value === null || !('constructor' in value)) {
     return value;
   }
-  return value.constructor === SBoolean || value.constructor === SNumber || value.constructor === SString
+  return value.constructor === Boolean || value.constructor === Number || value.constructor === String
     ? // eslint-disable-next-line @typescript-eslint/ban-types
       (value as Boolean | Number | String).valueOf()
     : value;

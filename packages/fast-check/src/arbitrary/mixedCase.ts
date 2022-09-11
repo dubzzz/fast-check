@@ -1,9 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeToUpperCase, safeToLowerCase } from '../utils/globals';
+import { safeToUpperCase, safeToLowerCase, BigInt, Error } from '../utils/globals';
 import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary';
-
-const SBigInt = BigInt;
-const SError = Error;
 
 /**
  * Constraints to be applied on {@link mixedCase}
@@ -45,8 +42,8 @@ function defaultToggleCase(rawChar: string) {
  * @public
  */
 export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseConstraints): Arbitrary<string> {
-  if (typeof SBigInt === 'undefined') {
-    throw new SError(`mixedCase requires BigInt support`);
+  if (typeof BigInt === 'undefined') {
+    throw new Error(`mixedCase requires BigInt support`);
   }
   const toggleCase = (constraints && constraints.toggleCase) || defaultToggleCase;
   const untoggleAll = constraints && constraints.untoggleAll;

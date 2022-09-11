@@ -2,8 +2,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { float, FloatConstraints } from './float';
 import { array } from './array';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-
-const SFloat32Array = Float32Array;
+import { Float32Array } from '../utils/globals';
 
 /**
  * Constraints to be applied on {@link float32Array}
@@ -30,12 +29,12 @@ export type Float32ArrayConstraints = {
 
 /** @internal */
 function toTypedMapper(data: number[]): Float32Array {
-  return SFloat32Array.from(data);
+  return Float32Array.from(data);
 }
 
 /** @internal */
 function fromTypedUnmapper(value: unknown): number[] {
-  if (!(value instanceof SFloat32Array)) throw new Error('Unexpected type');
+  if (!(value instanceof Float32Array)) throw new Error('Unexpected type');
   return [...value];
 }
 

@@ -1,7 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { BigInt } from '../utils/globals';
 import { BigIntArbitrary } from './_internals/BigIntArbitrary';
-
-const SBigInt = BigInt;
 
 /**
  * Constraints to be applied on {@link bigInt}
@@ -27,14 +26,14 @@ export interface BigIntConstraints {
  */
 function buildCompleteBigIntConstraints(constraints: BigIntConstraints): Required<BigIntConstraints> {
   const DefaultPow = 256;
-  const DefaultMin = SBigInt(-1) << SBigInt(DefaultPow - 1);
-  const DefaultMax = (SBigInt(1) << SBigInt(DefaultPow - 1)) - SBigInt(1);
+  const DefaultMin = BigInt(-1) << BigInt(DefaultPow - 1);
+  const DefaultMax = (BigInt(1) << BigInt(DefaultPow - 1)) - BigInt(1);
 
   const min = constraints.min;
   const max = constraints.max;
   return {
-    min: min !== undefined ? min : DefaultMin - (max !== undefined && max < SBigInt(0) ? max * max : SBigInt(0)),
-    max: max !== undefined ? max : DefaultMax + (min !== undefined && min > SBigInt(0) ? min * min : SBigInt(0)),
+    min: min !== undefined ? min : DefaultMin - (max !== undefined && max < BigInt(0) ? max * max : BigInt(0)),
+    max: max !== undefined ? max : DefaultMax + (min !== undefined && min > BigInt(0) ? min * min : BigInt(0)),
   };
 }
 
