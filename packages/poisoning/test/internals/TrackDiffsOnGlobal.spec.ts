@@ -139,5 +139,6 @@ function extractGlobalDetailsFor(itemName: string, item: unknown): GlobalDetails
         ])
       )
     ),
+    topLevelRoots: toPoisoningFreeMap(new Map([[itemName, true]])),
   };
 }

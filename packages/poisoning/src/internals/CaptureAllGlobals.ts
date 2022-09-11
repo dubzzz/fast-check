@@ -1,5 +1,5 @@
 import { toPoisoningFreeArray, MapSymbol, SortSymbol } from './PoisoningFreeArray.js';
-import { HasSymbol, SetSymbol, toPoisoningFreeMap } from './PoisoningFreeMap.js';
+import { GetSymbol, HasSymbol, SetSymbol, toPoisoningFreeMap } from './PoisoningFreeMap.js';
 import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
@@ -25,17 +25,51 @@ function extractAllDescriptorsDetails(instance: unknown): [string | symbol, Prop
   return allDescriptorsDetails[SortSymbol](compareKeys);
 }
 
-function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name: string, topLevel: boolean): void {
+function flagRootRecursively(knownGlobals: AllGlobals, instance: unknown, currentRoot: string): void {
+  const storedGlobal = knownGlobals[GetSymbol](instance);
+  if (storedGlobal === undefined) {
+    // Unknown global, we can stop the recursion
+    return;
+  }
+  if (storedGlobal.topLevelRoots[HasSymbol](currentRoot)) {
+    // Already flagged with this root, we can stop the recursion
+    return;
+  }
+  // Add the new root to the existing list
+  storedGlobal.topLevelRoots[SetSymbol](currentRoot, true);
+  // Recurse into children of the current node
+  for (const [, descriptor] of storedGlobal.properties) {
+    flagRootRecursively(knownGlobals, descriptor.value, currentRoot);
+  }
+}
+
+function captureOneRecursively(
+  knownGlobals: AllGlobals,
+  instance: unknown,
+  name: string,
+  topLevel: boolean,
+  currentRoot: string
+): void {
   if (typeof instance !== 'function' && typeof instance !== 'object') {
     return;
   }
-  if (instance === null || instance === undefined || knownGlobals[HasSymbol](instance)) {
+  if (instance === null || instance === undefined) {
+    return;
+  }
+  if (knownGlobals[HasSymbol](instance)) {
+    flagRootRecursively(knownGlobals, instance, currentRoot);
     return;
   }
   const allDescriptorsDetails = extractAllDescriptorsDetails(instance);
   const localGlobal: GlobalDetails = {
     name,
     properties: toPoisoningFreeMap(new Map<string | symbol, PropertyDescriptor>()),
+    topLevelRoots: toPoisoningFreeMap(
+      new Map<string, true>([
+        ['globalThis', true],
+        [currentRoot, true], // Potentially including itself
+      ])
+    ),
   };
   knownGlobals[SetSymbol](instance, localGlobal);
   for (let index = 0; index !== allDescriptorsDetails.length; ++index) {
@@ -53,13 +87,19 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
       continue;
     }
     const subGlobalName = !topLevel ? name + '.' + String(descriptorName) : String(descriptorName);
-    captureOneRecursively(knownGlobals, descriptor.value, subGlobalName, false);
+    captureOneRecursively(
+      knownGlobals,
+      descriptor.value,
+      subGlobalName,
+      false,
+      !topLevel ? currentRoot : subGlobalName
+    );
   }
 }
 
 /** Capture all globals accessible from globalThis */
 export function captureAllGlobals(): AllGlobals {
   const knownGlobals = toPoisoningFreeMap(new Map<unknown, GlobalDetails>());
-  captureOneRecursively(knownGlobals, globalThis, 'globalThis', true);
+  captureOneRecursively(knownGlobals, globalThis, 'globalThis', true, 'globalThis');
   return knownGlobals;
 }
