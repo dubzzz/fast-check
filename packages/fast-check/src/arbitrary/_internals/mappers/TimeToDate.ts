@@ -1,4 +1,4 @@
-import { safeGetTime } from '../../../utils/globals';
+import { Date, Error, safeGetTime } from '../../../utils/globals';
 
 /** @internal */
 export function timeToDateMapper(time: number): Date {

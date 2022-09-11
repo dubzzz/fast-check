@@ -1,4 +1,4 @@
-import { safePush } from '../../../utils/globals';
+import { BigInt, safePush } from '../../../utils/globals';
 
 /** @internal */
 export function countToggledBits(n: bigint): number {

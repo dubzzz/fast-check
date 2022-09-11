@@ -1,5 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeToUpperCase, safeToLowerCase } from '../utils/globals';
+import { safeToUpperCase, safeToLowerCase, BigInt, Error } from '../utils/globals';
 import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary';
 
 /**

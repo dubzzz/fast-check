@@ -1,3 +1,5 @@
+import { Boolean, Number, String } from '../../../utils/globals';
+
 /** @internal */
 export function unboxedToBoxedMapper(value: unknown): unknown {
   switch (typeof value) {

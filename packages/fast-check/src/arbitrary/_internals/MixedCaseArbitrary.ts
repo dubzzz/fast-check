@@ -11,6 +11,7 @@ import {
   computeTogglePositions,
 } from './helpers/ToggleFlags';
 import { safeJoin, safeSlice } from '../../utils/globals';
+import { BigInt } from '../../utils/globals';
 
 /** @internal */
 type MixedCaseArbitraryContext = {
