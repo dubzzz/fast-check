@@ -6,6 +6,8 @@ import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/Dep
 import { depthBiasFromSizeForArbitrary, DepthSize } from './helpers/MaxLengthFromMinLength';
 import { safePush } from '../../utils/globals';
 
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
+const safeMaxSafeInteger = Number.MAX_SAFE_INTEGER;
 const safeNumberIsInteger = Number.isInteger;
 const safeMathFloor = Math.floor;
 const safeMathPow = Math.pow;
@@ -40,7 +42,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     const sanitizedConstraints: _SanitizedConstraints = {
       depthBias: depthBiasFromSizeForArbitrary(constraints.depthSize, constraints.maxDepth !== undefined),
-      maxDepth: constraints.maxDepth != undefined ? constraints.maxDepth : Number.POSITIVE_INFINITY,
+      maxDepth: constraints.maxDepth != undefined ? constraints.maxDepth : safePositiveInfinity,
       withCrossShrink: !!constraints.withCrossShrink,
     };
     return new FrequencyArbitrary(warbs, sanitizedConstraints, getDepthContextFor(constraints.depthIdentifier));
@@ -195,7 +197,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     // to encounter thousands of instances of the current arbitrary.
     const depthBenefit = safeMathFloor(safeMathPow(1 + depthBias, this.context.depth)) - 1;
     // -0 has to be converted into 0 thus we call ||0
-    return -safeMathMin(this.totalWeight * depthBenefit, Number.MAX_SAFE_INTEGER) || 0;
+    return -safeMathMin(this.totalWeight * depthBenefit, safeMaxSafeInteger) || 0;
   }
 }
 
