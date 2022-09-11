@@ -1,6 +1,65 @@
 import { safeApply } from './apply';
 
-// Various remarks concerning this file:
+// Globals
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SArray: typeof Array = typeof Array !== 'undefined' ? Array : undefined!;
+export { SArray as Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SBigInt: typeof BigInt = typeof BigInt !== 'undefined' ? BigInt : undefined!;
+export { SBigInt as BigInt };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SBigInt64Array: typeof BigInt64Array = typeof BigInt64Array !== 'undefined' ? BigInt64Array : undefined!;
+export { SBigInt64Array as BigInt64Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SBigUint64Array: typeof BigUint64Array = typeof BigUint64Array !== 'undefined' ? BigUint64Array : undefined!;
+export { SBigUint64Array as BigUint64Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SBoolean: typeof Boolean = typeof Boolean !== 'undefined' ? Boolean : undefined!;
+export { SBoolean as Boolean };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SDate: typeof Date = typeof Date !== 'undefined' ? Date : undefined!;
+export { SDate as Date };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SError: typeof Error = typeof Error !== 'undefined' ? Error : undefined!;
+export { SError as Error };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SFloat32Array: typeof Float32Array = typeof Float32Array !== 'undefined' ? Float32Array : undefined!;
+export { SFloat32Array as Float32Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SInt8Array: typeof Int8Array = typeof Int8Array !== 'undefined' ? Int8Array : undefined!;
+export { SInt8Array as Int8Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SInt16Array: typeof Int16Array = typeof Int16Array !== 'undefined' ? Int16Array : undefined!;
+export { SInt16Array as Int16Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SInt32Array: typeof Int32Array = typeof Int32Array !== 'undefined' ? Int32Array : undefined!;
+export { SInt32Array as Int32Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SNumber: typeof Number = typeof Number !== 'undefined' ? Number : undefined!;
+export { SNumber as Number };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SString: typeof String = typeof String !== 'undefined' ? String : undefined!;
+export { SString as String };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SUint8Array: typeof Uint8Array = typeof Uint8Array !== 'undefined' ? Uint8Array : undefined!;
+export { SUint8Array as Uint8Array };
+const SUint8ClampedArray: typeof Uint8ClampedArray =
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  typeof Uint8ClampedArray !== 'undefined' ? Uint8ClampedArray : undefined!;
+export { SUint8ClampedArray as Uint8ClampedArray };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SUint16Array: typeof Uint16Array = typeof Uint16Array !== 'undefined' ? Uint16Array : undefined!;
+export { SUint16Array as Uint16Array };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SUint32Array: typeof Uint32Array = typeof Uint32Array !== 'undefined' ? Uint32Array : undefined!;
+export { SUint32Array as Uint32Array };
+const SencodeURIComponent: typeof encodeURIComponent =
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  typeof encodeURIComponent !== 'undefined' ? encodeURIComponent : undefined!;
+export { SencodeURIComponent as encodeURIComponent };
+
+// Various remarks concerning this part of the file:
 // - Functions accepting a variadic number of arguments ALWAYS use (...args) instead of (a, b)
 //   Some build-ins behave differently for f(a, undefined) and f(a) such as splice, it would reduce such risk
 // - The file is very verbose BUT extracting an helper factorizing it kills the performance, so we had to copy-paste
