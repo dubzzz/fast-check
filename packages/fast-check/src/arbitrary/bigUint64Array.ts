@@ -1,4 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { BigInt, BigUint64Array } from '../utils/globals';
 import { bigInt } from './bigInt';
 import {
   BigIntArrayConstraints,

@@ -1,4 +1,4 @@
-import { safeAdd, safePush } from '../../../utils/globals';
+import { Set, safeAdd, safePush } from '../../../utils/globals';
 import { CustomSet } from '../interfaces/CustomSet';
 
 const safeObjectIs = Object.is;

@@ -1,4 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { Uint8ClampedArray } from '../utils/globals';
 import { integer } from './integer';
 import {
   IntArrayConstraints,

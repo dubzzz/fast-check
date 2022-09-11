@@ -7,6 +7,7 @@ import {
   safePush,
   safeToISOString,
   safeToString,
+  String,
 } from './globals';
 
 const safeArrayFrom = Array.from;

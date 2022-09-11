@@ -1,4 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { BigInt } from '../utils/globals';
 import { constantFrom } from './constantFrom';
 
 /**

@@ -1,5 +1,6 @@
 import { Stream, stream } from '../../../stream/Stream';
 import { Value } from '../../../check/arbitrary/definition/Value';
+import { BigInt } from '../../../utils/globals';
 
 /**
  * Halve towards zero

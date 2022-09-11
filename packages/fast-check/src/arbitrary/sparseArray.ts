@@ -1,5 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeMap, safeSlice } from '../utils/globals';
+import { Array, safeMap, safeSlice } from '../utils/globals';
 import { tuple } from './tuple';
 import { uniqueArray } from './uniqueArray';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder';

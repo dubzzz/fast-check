@@ -2,7 +2,7 @@ import { fullUnicode } from '../../fullUnicode';
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
-import { safeCharCodeAt, safeNumberToString } from '../../../utils/globals';
+import { safeCharCodeAt, safeNumberToString, encodeURIComponent } from '../../../utils/globals';
 
 const safeStringFromCharCode = String.fromCharCode;
 
