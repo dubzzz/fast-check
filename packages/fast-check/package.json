@@ -53,7 +53,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^5.0.1"
+    "pure-rand": "^5.0.2"
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",

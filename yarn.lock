@@ -7430,7 +7430,7 @@ __metadata:
     jest: ^29.0.2
     jscodeshift: ^0.13.1
     mkdirp: ^1.0.4
-    pure-rand: ^5.0.1
+    pure-rand: ^5.0.2
     replace-in-file: ^6.3.5
     ts-jest: ^29.0.0
     typedoc: ^0.23.14
@@ -13655,7 +13655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^5.0.1":
+"pure-rand@npm:^5.0.1, pure-rand@npm:^5.0.2":
   version: 5.0.3
   resolution: "pure-rand@npm:5.0.3"
   checksum: a898ab8a40a8eebc641123dab19308044d8bd979efeaba1d8a45e9977593b25b00c3bd9681e2a558a7daec96c6fb8709995b8f10c55475e892b96f381bb6c6d2
