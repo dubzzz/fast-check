@@ -9,6 +9,7 @@ import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
 } from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
+import { String } from '../../utils/globals';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`

@@ -4,6 +4,7 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { biasNumericRange, bigIntLogLike } from './helpers/BiasNumericRange';
 import { shrinkBigInt } from './helpers/ShrinkBigInt';
+import { BigInt } from '../../utils/globals';
 
 /** @internal */
 export class BigIntArbitrary extends Arbitrary<bigint> {

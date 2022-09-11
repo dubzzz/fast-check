@@ -1,4 +1,4 @@
-import { safePush } from '../../../utils/globals';
+import { Error, safePush } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';

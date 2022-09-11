@@ -1,3 +1,5 @@
+import { BigInt, String } from '../../../utils/globals';
+
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;
 
