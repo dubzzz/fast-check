@@ -17,6 +17,8 @@ const safeObjectKeys = Object.keys;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const safeObjectGetPrototypeOf = Object.getPrototypeOf;
+const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
 
 /**
  * Use this symbol to define a custom serializer for your instances.
@@ -107,10 +109,10 @@ function getSymbolDescription(s: symbol): string | null {
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
-      return 1 / numValue === Number.NEGATIVE_INFINITY ? '-0' : '0';
-    case Number.NEGATIVE_INFINITY:
+      return 1 / numValue === safeNegativeInfinity ? '-0' : '0';
+    case safeNegativeInfinity:
       return 'Number.NEGATIVE_INFINITY';
-    case Number.POSITIVE_INFINITY:
+    case safePositiveInfinity:
       return 'Number.POSITIVE_INFINITY';
     default:
       return numValue === numValue ? String(numValue) : 'Number.NaN';
