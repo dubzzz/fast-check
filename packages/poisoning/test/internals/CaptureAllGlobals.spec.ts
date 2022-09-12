@@ -1,4 +1,6 @@
 import { captureAllGlobals } from '../../src/internals/CaptureAllGlobals.js';
+import { toPoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
+import { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
 describe('captureAllGlobals', () => {
   const expectedGlobals = [
@@ -143,6 +145,66 @@ describe('captureAllGlobals', () => {
     } finally {
       delete (globalThis as any).keyA;
       delete (globalThis as any).keyD;
+    }
+  });
+
+  it('should attach the minimal depth from globalThis to each global', () => {
+    // Arrange
+    const dataB = { c: { d: 5 } };
+    const dataA = { a: { b: dataB } };
+    const dataC = { e: dataB };
+    (globalThis as any).dataA = dataA;
+    (globalThis as any).dataB = dataB;
+    (globalThis as any).dataC = dataC;
+    const expectedExtractedDataA: GlobalDetails = {
+      name: 'dataA',
+      properties: expect.any(Map),
+      depth: 1,
+      topLevelRoots: toPoisoningFreeMap(new Map([['globalThis', true]])),
+    };
+    const expectedExtractedDataB: GlobalDetails = {
+      name: 'dataB',
+      properties: expect.any(Map),
+      depth: 1,
+      topLevelRoots: toPoisoningFreeMap(
+        new Map([
+          ['globalThis', true], // for depth 1 and depth 0, any root leading to it
+          ['dataA', true],
+          ['dataC', true],
+        ])
+      ),
+    };
+    const expectedExtractedDataC: GlobalDetails = {
+      name: 'dataC',
+      properties: expect.any(Map),
+      depth: 1,
+      topLevelRoots: toPoisoningFreeMap(new Map([['globalThis', true]])),
+    };
+    const expectedExtractedD: GlobalDetails = {
+      name: 'd',
+      properties: expect.any(Map),
+      depth: 1,
+      topLevelRoots: toPoisoningFreeMap(
+        new Map([
+          ['dataB', true], // for depth >1 only owned by roots
+        ])
+      ),
+    };
+
+    try {
+      // Act
+      const globals = captureAllGlobals();
+
+      // Assert
+      const extractedDataA = globals.get(dataA);
+      expect(extractedDataA).toEqual(expect.objectContaining(expectedExtractedDataA));
+      const extractedDataB = globals.get(dataB);
+      const extractedDataC = globals.get(dataC);
+      const extractedD = globals.get(dataB.c.d);
+    } finally {
+      delete (globalThis as any).dataA;
+      delete (globalThis as any).dataB;
+      delete (globalThis as any).dataC;
     }
   });
 });

@@ -3,12 +3,16 @@ import { trackDiffsOnGlobals } from './internals/TrackDiffsOnGlobal.js';
 
 const initialGlobals = captureAllGlobals();
 
+export type ExtraOptions = {
+  ignoreRoots: RegExp;
+};
+
 /**
  * Restore all globals as they were when first importing this package.
  *
  * Remark: At least, it attempts to do so
  */
-export function restoreGlobals(): void {
+export function restoreGlobals(options?: ExtraOptions): void {
   const diffs = trackDiffsOnGlobals(initialGlobals);
   for (let index = 0; index !== diffs.length; ++index) {
     diffs[index].patch();
@@ -27,7 +31,7 @@ export function restoreGlobals(): void {
  * - someone added a new global on `window` (browser case) or `global` (node case) or modern `globalThis` (everywhere)
  * - someone changed `Array.prototype.map` into another function
  */
-export function assertNoPoisoning(): void {
+export function assertNoPoisoning(options?: ExtraOptions): void {
   const diffs = trackDiffsOnGlobals(initialGlobals);
   if (diffs.length !== 0) {
     let impactedElements = diffs[0].keyName;
