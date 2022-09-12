@@ -47,7 +47,7 @@ function captureOneRecursively(
   knownGlobals: AllGlobals,
   instance: unknown,
   name: string,
-  topLevel: boolean,
+  currentDepth: number,
   currentRoot: string
 ): void {
   if (typeof instance !== 'function' && typeof instance !== 'object') {
@@ -64,6 +64,7 @@ function captureOneRecursively(
   const localGlobal: GlobalDetails = {
     name,
     properties: toPoisoningFreeMap(new Map<string | symbol, PropertyDescriptor>()),
+    depth: currentDepth,
     topLevelRoots: toPoisoningFreeMap(
       new Map<string, true>([
         ['globalThis', true],
@@ -81,18 +82,18 @@ function captureOneRecursively(
       // For instance: do not monitor the content of globalThis.Symbol(JEST_STATE_SYMBOL)
       continue;
     }
-    if (topLevel && descriptorName[0] === '_') {
+    if (currentDepth === 0 && descriptorName[0] === '_') {
       // Do not scan what's sounds like private properties dropped on globalThis
       // For instance: do not track the content of globalThis.__coverage__
       continue;
     }
-    const subGlobalName = !topLevel ? name + '.' + String(descriptorName) : String(descriptorName);
+    const subGlobalName = currentDepth !== 0 ? name + '.' + String(descriptorName) : String(descriptorName);
     captureOneRecursively(
       knownGlobals,
       descriptor.value,
       subGlobalName,
-      false,
-      !topLevel ? currentRoot : subGlobalName
+      currentDepth + 1,
+      currentDepth !== 0 ? currentRoot : subGlobalName
     );
   }
 }
@@ -100,6 +101,6 @@ function captureOneRecursively(
 /** Capture all globals accessible from globalThis */
 export function captureAllGlobals(): AllGlobals {
   const knownGlobals = toPoisoningFreeMap(new Map<unknown, GlobalDetails>());
-  captureOneRecursively(knownGlobals, globalThis, 'globalThis', true, 'globalThis');
+  captureOneRecursively(knownGlobals, globalThis, 'globalThis', 0, 'globalThis');
   return knownGlobals;
 }
