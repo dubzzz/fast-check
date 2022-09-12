@@ -25,7 +25,7 @@ function extractAllDescriptorsDetails(instance: unknown): [string | symbol, Prop
   return allDescriptorsDetails[SortSymbol](compareKeys);
 }
 
-function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name: string, topLevel: boolean): void {
+function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name: string, currentDepth: number): void {
   if (typeof instance !== 'function' && typeof instance !== 'object') {
     return;
   }
@@ -35,6 +35,7 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
   const allDescriptorsDetails = extractAllDescriptorsDetails(instance);
   const localGlobal: GlobalDetails = {
     name,
+    depth: currentDepth,
     properties: toPoisoningFreeMap(new Map<string | symbol, PropertyDescriptor>()),
   };
   knownGlobals[SetSymbol](instance, localGlobal);
@@ -47,19 +48,19 @@ function captureOneRecursively(knownGlobals: AllGlobals, instance: unknown, name
       // For instance: do not monitor the content of globalThis.Symbol(JEST_STATE_SYMBOL)
       continue;
     }
-    if (topLevel && descriptorName[0] === '_') {
+    if (currentDepth === 0 && descriptorName[0] === '_') {
       // Do not scan what's sounds like private properties dropped on globalThis
       // For instance: do not track the content of globalThis.__coverage__
       continue;
     }
-    const subGlobalName = !topLevel ? name + '.' + String(descriptorName) : String(descriptorName);
-    captureOneRecursively(knownGlobals, descriptor.value, subGlobalName, false);
+    const subGlobalName = currentDepth !== 0 ? name + '.' + String(descriptorName) : String(descriptorName);
+    captureOneRecursively(knownGlobals, descriptor.value, subGlobalName, currentDepth + 1);
   }
 }
 
 /** Capture all globals accessible from globalThis */
 export function captureAllGlobals(): AllGlobals {
   const knownGlobals = toPoisoningFreeMap(new Map<unknown, GlobalDetails>());
-  captureOneRecursively(knownGlobals, globalThis, 'globalThis', true);
+  captureOneRecursively(knownGlobals, globalThis, 'globalThis', 0);
   return knownGlobals;
 }
