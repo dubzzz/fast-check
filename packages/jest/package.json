@@ -61,13 +61,13 @@
       "ts",
       "js"
     ],
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.json"
-      }
-    },
     "transform": {
-      "^.+\\.ts$": "ts-jest"
+      "^.+\\.ts$": [
+        "ts-jest",
+        {
+          "tsConfig": "tsconfig.json"
+        }
+      ]
     },
     "testMatch": [
       "**/*.spec.ts"
