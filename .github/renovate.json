@@ -6,16 +6,19 @@
     {
       "matchPaths": ["**/package.json"],
       "matchDepTypes": ["dependencies", "peerDependencies", "optionalDependencies"],
-      "rangeStrategy": "update-lockfile"
+      "rangeStrategy": "update-lockfile",
+      "postUpdateOptions": "yarnDedupeHighest"
     },
     {
       "matchPaths": ["**/package.json"],
       "matchDepTypes": ["devDependencies"],
-      "rangeStrategy": "bump"
+      "rangeStrategy": "bump",
+      "postUpdateOptions": "yarnDedupeHighest"
     },
     {
       "matchPaths": ["**/!(package.json)"],
-      "rangeStrategy": "bump"
+      "rangeStrategy": "bump",
+      "postUpdateOptions": "yarnDedupeHighest"
     }
   ]
 }
