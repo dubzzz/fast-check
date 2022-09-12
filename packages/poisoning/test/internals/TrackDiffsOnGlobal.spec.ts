@@ -131,6 +131,7 @@ describe('trackDiffsOnGlobals', () => {
 function extractGlobalDetailsFor(itemName: string, item: unknown): GlobalDetails {
   return {
     name: itemName,
+    depth: 0,
     properties: toPoisoningFreeMap(
       new Map(
         [...Object.getOwnPropertyNames(item), ...Object.getOwnPropertySymbols(item)].map((keyName) => [
