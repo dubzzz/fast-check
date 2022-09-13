@@ -3,19 +3,69 @@ import { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
 describe('captureAllGlobals', () => {
   const expectedGlobals = [
-    { globalName: 'Array', globalValue: Array },
-    { globalName: 'Array.prototype', globalValue: Array.prototype },
-    { globalName: 'Array.prototype.map', globalValue: Array.prototype.map },
-    { globalName: 'Object', globalValue: Object },
-    { globalName: 'Object.entries', globalValue: Object.entries },
-    { globalName: 'Function', globalValue: Function },
-    { globalName: 'Function.prototype.apply', globalValue: Function.prototype.apply },
-    { globalName: 'Function.prototype.call', globalValue: Function.prototype.call },
-    { globalName: 'setTimeout', globalValue: setTimeout },
-    { globalName: 'Map.prototype[Symbol.toStringTag]', globalValue: Map.prototype[Symbol.toStringTag], isSymbol: true },
-    { globalName: 'Object.prototype.toString', globalValue: Object.prototype.toString },
-    { globalName: 'Number.prototype.toString', globalValue: Number.prototype.toString }, // not the same as Object one
+    {
+      globalName: 'Array',
+      globalValue: Array,
+      expectedDepth: 1,
+    },
+    {
+      globalName: 'Array.prototype',
+      globalValue: Array.prototype,
+      expectedDepth: 2,
+    },
+    {
+      globalName: 'Array.prototype.map',
+      globalValue: Array.prototype.map,
+      expectedDepth: 3,
+    },
+    {
+      globalName: 'Object',
+      globalValue: Object,
+      expectedDepth: 1,
+    },
+    {
+      globalName: 'Object.entries',
+      globalValue: Object.entries,
+      expectedDepth: 2,
+    },
+    {
+      globalName: 'Function',
+      globalValue: Function,
+      expectedDepth: 1,
+    },
+    {
+      globalName: 'Function.prototype.apply',
+      globalValue: Function.prototype.apply,
+      expectedDepth: 3,
+    },
+    {
+      globalName: 'Function.prototype.call',
+      globalValue: Function.prototype.call,
+      expectedDepth: 3,
+    },
+    {
+      globalName: 'setTimeout',
+      globalValue: setTimeout,
+      expectedDepth: 1,
+    },
+    {
+      globalName: 'Map.prototype[Symbol.toStringTag]',
+      globalValue: Map.prototype[Symbol.toStringTag],
+      expectedDepth: 3,
+      isSymbol: true,
+    },
+    {
+      globalName: 'Object.prototype.toString',
+      globalValue: Object.prototype.toString,
+      expectedDepth: 3,
+    },
+    {
+      globalName: 'Number.prototype.toString', // not the same as Object one
+      globalValue: Number.prototype.toString,
+      expectedDepth: 3,
+    },
   ];
+  // For the moment, internal data for globals linked to symbols is not tracked
   const expectedGlobalsExcludingSymbols = expectedGlobals.filter((item) => !item.isSymbol);
 
   it.each(expectedGlobals)('should capture value for $globalName', ({ globalValue }) => {
@@ -29,7 +79,6 @@ describe('captureAllGlobals', () => {
     expect(flattenGlobalsValues).toContainEqual(globalValue);
   });
 
-  // For the moment, internal data for globals linked to symbols is not tracked
   it.each(expectedGlobalsExcludingSymbols)('should track the content of $globalName', ({ globalName, globalValue }) => {
     // Arrange / Act
     const globals = captureAllGlobals();
@@ -50,6 +99,17 @@ describe('captureAllGlobals', () => {
       throw err;
     }
   });
+
+  it.each(expectedGlobalsExcludingSymbols)(
+    'should attach the right depth to $globalName',
+    ({ globalValue, expectedDepth }) => {
+      // Arrange / Act
+      const globals = captureAllGlobals();
+
+      // Assert
+      expect(globals.get(globalValue)?.depth).toBe(expectedDepth);
+    }
+  );
 
   it('should attach the minimal depth from globalThis to each global', () => {
     // Arrange
