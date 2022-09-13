@@ -1,4 +1,4 @@
-import { toPoisoningFreeArray, MapSymbol, SortSymbol } from './PoisoningFreeArray.js';
+import { toPoisoningFreeArray, MapSymbol, SortSymbol, ShiftSymbol, PushSymbol } from './PoisoningFreeArray.js';
 import { HasSymbol, SetSymbol, toPoisoningFreeMap } from './PoisoningFreeMap.js';
 import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
@@ -34,10 +34,12 @@ type NextCapture = {
 /** Capture all globals accessible from globalThis */
 export function captureAllGlobals(): AllGlobals {
   const knownGlobals = toPoisoningFreeMap(new Map<unknown, GlobalDetails>());
-  const nextCaptures: NextCapture[] = [{ instance: globalThis, name: 'globalThis', currentDepth: 0 }];
+  const nextCaptures = toPoisoningFreeArray<NextCapture>([
+    { instance: globalThis, name: 'globalThis', currentDepth: 0 },
+  ]);
   while (nextCaptures.length !== 0) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { instance, name, currentDepth } = nextCaptures.shift()!;
+    const { instance, name, currentDepth } = nextCaptures[ShiftSymbol]()!;
 
     if (typeof instance !== 'function' && typeof instance !== 'object') {
       continue;
@@ -68,7 +70,7 @@ export function captureAllGlobals(): AllGlobals {
         continue;
       }
       const subGlobalName = currentDepth !== 0 ? name + '.' + String(descriptorName) : String(descriptorName);
-      nextCaptures.push({ instance: descriptor.value, name: subGlobalName, currentDepth: currentDepth + 1 });
+      nextCaptures[PushSymbol]({ instance: descriptor.value, name: subGlobalName, currentDepth: currentDepth + 1 });
     }
   }
   return knownGlobals;

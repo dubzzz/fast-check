@@ -1,5 +1,6 @@
 const safeArrayMap = Array.prototype.map;
 const safeArrayPush = Array.prototype.push;
+const safeArrayShift = Array.prototype.shift;
 const safeArraySort = Array.prototype.sort;
 const safeObjectDefineProperty = Object.defineProperty;
 
@@ -7,6 +8,8 @@ const safeObjectDefineProperty = Object.defineProperty;
 export const MapSymbol = Symbol('safe.map');
 /** Alias for Array.prototype.push */
 export const PushSymbol = Symbol('safe.push');
+/** Alias for Array.prototype.shift */
+export const ShiftSymbol = Symbol('safe.shift');
 /** Alias for Array.prototype.sort */
 export const SortSymbol = Symbol('safe.sort');
 
@@ -14,6 +17,7 @@ export const SortSymbol = Symbol('safe.sort');
 export type PoisoningFreeArray<T> = Array<T> & {
   [MapSymbol]: <U>(mapper: (v: T) => U) => Array<U>;
   [PushSymbol]: (...values: T[]) => void;
+  [ShiftSymbol]: () => T | undefined;
   [SortSymbol]: (compare: (keyA: T, keyB: T) => number) => T[];
 };
 
@@ -27,6 +31,12 @@ export function toPoisoningFreeArray<T>(instance: T[]): PoisoningFreeArray<T> {
   });
   safeObjectDefineProperty(instance, PushSymbol, {
     value: safeArrayPush,
+    configurable: false,
+    enumerable: false,
+    writable: false,
+  });
+  safeObjectDefineProperty(instance, ShiftSymbol, {
+    value: safeArrayShift,
     configurable: false,
     enumerable: false,
     writable: false,
