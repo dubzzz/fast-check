@@ -819,7 +819,7 @@ __metadata:
     "@types/node": ^17.0.44
     fast-check: "workspace:*"
     jest: ^29.0.3
-    ts-jest: ^29.0.0
+    ts-jest: ^29.0.1
     typescript: ^4.8.3
   peerDependencies:
     jest: ">=25.1.0"
@@ -850,7 +850,7 @@ __metadata:
     jest: ^29.0.3
     pacote: ^13.6.2
     tar: ^6.1.11
-    ts-jest: ^29.0.0
+    ts-jest: ^29.0.1
     typescript: ^4.8.3
   bin:
     packaged: ./bin/packaged.js
@@ -862,7 +862,7 @@ __metadata:
   resolution: "@fast-check/poisoning@workspace:packages/poisoning"
   dependencies:
     jest: ^29.0.3
-    ts-jest: ^29.0.0
+    ts-jest: ^29.0.1
     ts-jest-resolver: ^2.0.0
     typescript: ^4.8.3
   languageName: unknown
@@ -7432,7 +7432,7 @@ __metadata:
     mkdirp: ^1.0.4
     pure-rand: ^5.0.2
     replace-in-file: ^6.3.5
-    ts-jest: ^29.0.0
+    ts-jest: ^29.0.1
     typedoc: ^0.23.14
     typescript: ^4.8.3
   languageName: unknown
@@ -15745,9 +15745,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.0.0":
-  version: 29.0.0
-  resolution: "ts-jest@npm:29.0.0"
+"ts-jest@npm:^29.0.1":
+  version: 29.0.1
+  resolution: "ts-jest@npm:29.0.1"
   dependencies:
     bs-logger: 0.x
     fast-json-stable-stringify: 2.x
@@ -15774,7 +15774,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: f4e811aa910b7cd2ef6a9269700dda17ccf253ebdb6ba9e596982d238292d6482973e670e7a6875209e7d246cdf575d79590fc503e12e9368e9105d1d74f09fc
+  checksum: f126675beb0d103d440b0297dc331ce37ba0f1e1a8002f4e97bfeb9043cf21b4de03deebf11ac1f08b7e4978d87f6a1c71e398b1c2f8535df3b684338786408e
   languageName: node
   linkType: hard
 
