@@ -1,3 +1,4 @@
+const SMap = Map;
 const safeMapGet = Map.prototype.get;
 const safeMapHas = Map.prototype.has;
 const safeMapEntries = Map.prototype.entries;
@@ -22,7 +23,7 @@ export type PoisoningFreeMap<K, V> = Map<K, V> & {
 };
 
 /** Alter an instance of Map to include non-poisonable methods */
-export function toPoisoningFreeMap<K, V>(instance: Map<K, V>): PoisoningFreeMap<K, V> {
+function toPoisoningFreeMap<K, V>(instance: Map<K, V>): PoisoningFreeMap<K, V> {
   safeObjectDefineProperty(instance, GetSymbol, {
     value: safeMapGet,
     configurable: false,
@@ -49,3 +50,10 @@ export function toPoisoningFreeMap<K, V>(instance: Map<K, V>): PoisoningFreeMap<
   });
   return instance as PoisoningFreeMap<K, V>;
 }
+
+/** Factory responsible to build instances of PoisoningFreeMap */
+export const PoisoningFreeMap = {
+  from<K, V>(ins?: readonly (readonly [K, V])[] | Iterable<readonly [K, V]> | null): PoisoningFreeMap<K, V> {
+    return toPoisoningFreeMap(new SMap(ins));
+  },
+};

@@ -1,7 +1,8 @@
-import { PoisoningFreeArray, toPoisoningFreeArray, PushSymbol } from './PoisoningFreeArray.js';
+import { PoisoningFreeArray, PushSymbol } from './PoisoningFreeArray.js';
 import { EntriesSymbol, HasSymbol } from './PoisoningFreeMap.js';
 import { AllGlobals } from './types/AllGlobals.js';
 
+const SString = String;
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
@@ -17,7 +18,7 @@ type DiffOnGlobal = {
 /** Compute the diff between two versions of globals */
 export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] {
   const allInitialGlobals = [...initialGlobals[EntriesSymbol]()];
-  const observedDiffs: PoisoningFreeArray<DiffOnGlobal> = toPoisoningFreeArray<DiffOnGlobal>([]);
+  const observedDiffs = PoisoningFreeArray.from<DiffOnGlobal>([]);
 
   for (let index = 0; index !== allInitialGlobals.length; ++index) {
     const instance = allInitialGlobals[index][0];
@@ -34,7 +35,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
 
       if (!(propertyName in (currentDescriptors as any))) {
         observedDiffs[PushSymbol]({
-          keyName: name + '.' + String(propertyName),
+          keyName: name + '.' + SString(propertyName),
           type: 'removed',
           patch: () => {
             safeObjectDefineProperty(instance, propertyName, initialPropertyDescriptor);
@@ -46,7 +47,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
         !safeObjectIs(initialPropertyDescriptor.set, (currentDescriptors as any)[propertyName].set)
       ) {
         observedDiffs[PushSymbol]({
-          keyName: name + '.' + String(propertyName),
+          keyName: name + '.' + SString(propertyName),
           type: 'changed',
           patch: () => {
             safeObjectDefineProperty(instance, propertyName, initialPropertyDescriptor);
@@ -64,7 +65,7 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
       const propertyName = currentDescriptorsList[descriptorIndex];
       if (!initialProperties[HasSymbol](propertyName)) {
         observedDiffs[PushSymbol]({
-          keyName: name + '.' + String(propertyName),
+          keyName: name + '.' + SString(propertyName),
           type: 'added',
           patch: () => {
             delete (instance as any)[propertyName];

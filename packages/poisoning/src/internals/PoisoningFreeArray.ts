@@ -1,3 +1,4 @@
+const safeArrayFrom = Array.from;
 const safeArrayMap = Array.prototype.map;
 const safeArrayPush = Array.prototype.push;
 const safeArrayShift = Array.prototype.shift;
@@ -22,7 +23,7 @@ export type PoisoningFreeArray<T> = Array<T> & {
 };
 
 /** Alter an instance of Array to include non-poisonable methods */
-export function toPoisoningFreeArray<T>(instance: T[]): PoisoningFreeArray<T> {
+function toPoisoningFreeArray<T>(instance: T[]): PoisoningFreeArray<T> {
   safeObjectDefineProperty(instance, MapSymbol, {
     value: safeArrayMap,
     configurable: false,
@@ -49,3 +50,10 @@ export function toPoisoningFreeArray<T>(instance: T[]): PoisoningFreeArray<T> {
   });
   return instance as PoisoningFreeArray<T>;
 }
+
+/** Factory responsible to build instances of PoisoningFreeArray */
+export const PoisoningFreeArray = {
+  from<T>(arrayLike: ArrayLike<T>): PoisoningFreeArray<T> {
+    return toPoisoningFreeArray(safeArrayFrom(arrayLike));
+  },
+};
