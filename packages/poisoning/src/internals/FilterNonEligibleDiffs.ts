@@ -1,9 +1,17 @@
 import { PoisoningFreeArray, PushSymbol } from './PoisoningFreeArray';
-import { DiffOnGlobal } from './TrackDiffsOnGlobal';
+import { GlobalDetails } from './types/AllGlobals';
+
+export type SubDiffOnGlobal = {
+  keyName: string;
+  globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>;
+};
 
 /** Create a new arrays of diffs containing only eligible ones */
-export function filterNonEligibleDiffs(diffs: DiffOnGlobal[], ignoredRootRegex: RegExp): DiffOnGlobal[] {
-  const keptDiffs = PoisoningFreeArray.from<DiffOnGlobal>([]);
+export function filterNonEligibleDiffs<TDiff extends SubDiffOnGlobal>(
+  diffs: TDiff[],
+  ignoredRootRegex: RegExp
+): TDiff[] {
+  const keptDiffs = PoisoningFreeArray.from<TDiff>([]);
   for (let index = 0; index !== diffs.length; ++index) {
     const diff = diffs[index];
     switch (diff.globalDetails.depth) {
@@ -23,7 +31,7 @@ export function filterNonEligibleDiffs(diffs: DiffOnGlobal[], ignoredRootRegex: 
         let allRootsIgnored = true;
         const allRoots = [...diff.globalDetails.rootAncestors];
         for (let rootIndex = 0; rootIndex !== allRoots.length; ++rootIndex) {
-          allRootsIgnored = allRootsIgnored && !ignoredRootRegex.test(diff.globalDetails.name);
+          allRootsIgnored = allRootsIgnored && ignoredRootRegex.test(allRoots[rootIndex]);
         }
         if (!allRootsIgnored) {
           keptDiffs[PushSymbol](diff);

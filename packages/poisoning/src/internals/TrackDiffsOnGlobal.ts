@@ -9,12 +9,12 @@ const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 const safeObjectIs = Object.is;
 const safeObjectDefineProperty = Object.defineProperty;
 
-export type DiffOnGlobal = {
+type DiffOnGlobal = {
   keyName: string;
   fullyQualifiedKeyName: string;
   type: 'added' | 'removed' | 'changed';
-  patch: () => void;
   globalDetails: GlobalDetails;
+  patch: () => void;
 };
 
 /** Compute the diff between two versions of globals */
