@@ -1,4 +1,5 @@
 import { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
+import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 import { trackDiffsOnGlobals } from '../../src/internals/TrackDiffsOnGlobal.js';
 import { AllGlobals, GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
@@ -138,5 +139,6 @@ function extractGlobalDetailsFor(itemName: string, item: unknown): GlobalDetails
         Object.getOwnPropertyDescriptor(item, keyName)!,
       ])
     ),
+    rootAncestors: PoisoningFreeSet.from(['globalThis']),
   };
 }
