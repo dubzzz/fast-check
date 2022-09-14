@@ -1,22 +1,25 @@
-import { toPoisoningFreeArray, MapSymbol, SortSymbol, ShiftSymbol, PushSymbol } from './PoisoningFreeArray.js';
-import { HasSymbol, SetSymbol, toPoisoningFreeMap } from './PoisoningFreeMap.js';
+import { PoisoningFreeArray, MapSymbol, SortSymbol, ShiftSymbol, PushSymbol } from './PoisoningFreeArray.js';
+import { HasSymbol, SetSymbol, PoisoningFreeMap } from './PoisoningFreeMap.js';
 import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
+const SString = String;
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 
 function compareKeys(keyA: [string | symbol, PropertyDescriptor], keyB: [string | symbol, PropertyDescriptor]): number {
-  return String(keyA[0]).localeCompare(String(keyB[0]));
+  const sA = SString(keyA[0]);
+  const sB = SString(keyB[0]);
+  return sA < sB ? -1 : sA > sB ? 1 : 0;
 }
 
 function extractAllDescriptorsDetails(instance: unknown): [string | symbol, PropertyDescriptor][] {
   const descriptors: Record<string | symbol, PropertyDescriptor> = safeObjectGetOwnPropertyDescriptors(instance);
-  const allDescriptors = toPoisoningFreeArray([
+  const allDescriptors = PoisoningFreeArray.from([
     ...safeObjectGetOwnPropertyNames(descriptors),
     ...safeObjectGetOwnPropertySymbols(descriptors),
   ]);
-  const allDescriptorsDetails = toPoisoningFreeArray(
+  const allDescriptorsDetails = PoisoningFreeArray.from(
     allDescriptors[MapSymbol]((name): [string | symbol, PropertyDescriptor] => [
       name,
       descriptors[name as keyof typeof descriptors],
@@ -33,8 +36,8 @@ type NextCapture = {
 
 /** Capture all globals accessible from globalThis */
 export function captureAllGlobals(): AllGlobals {
-  const knownGlobals = toPoisoningFreeMap(new Map<unknown, GlobalDetails>());
-  const nextCaptures = toPoisoningFreeArray<NextCapture>([
+  const knownGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>();
+  const nextCaptures = PoisoningFreeArray.from<NextCapture>([
     { instance: globalThis, name: 'globalThis', currentDepth: 0 },
   ]);
   while (nextCaptures.length !== 0) {
@@ -52,7 +55,7 @@ export function captureAllGlobals(): AllGlobals {
     const localGlobal: GlobalDetails = {
       name,
       depth: currentDepth,
-      properties: toPoisoningFreeMap(new Map<string | symbol, PropertyDescriptor>()),
+      properties: PoisoningFreeMap.from<string | symbol, PropertyDescriptor>(),
     };
     knownGlobals[SetSymbol](instance, localGlobal);
     for (let index = 0; index !== allDescriptorsDetails.length; ++index) {
@@ -69,7 +72,7 @@ export function captureAllGlobals(): AllGlobals {
         // For instance: do not track the content of globalThis.__coverage__
         continue;
       }
-      const subGlobalName = currentDepth !== 0 ? name + '.' + String(descriptorName) : String(descriptorName);
+      const subGlobalName = currentDepth !== 0 ? name + '.' + SString(descriptorName) : SString(descriptorName);
       nextCaptures[PushSymbol]({ instance: descriptor.value, name: subGlobalName, currentDepth: currentDepth + 1 });
     }
   }
