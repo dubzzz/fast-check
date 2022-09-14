@@ -11,9 +11,9 @@ import { sizeArb } from './SizeHelpers';
 function poisoningAfterEach(nestedAfterEach: () => void) {
   nestedAfterEach();
   try {
-    assertNoPoisoning();
+    assertNoPoisoning({ ignoredRootRegex: /^_coverage_$/ });
   } catch (err) {
-    restoreGlobals();
+    restoreGlobals({ ignoredRootRegex: /^_coverage_$/ });
     throw err;
   }
 }
