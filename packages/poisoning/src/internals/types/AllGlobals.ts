@@ -1,4 +1,5 @@
 import { PoisoningFreeMap } from '../PoisoningFreeMap.js';
+import { PoisoningFreeSet } from '../PoisoningFreeSet.js';
 
 export type GlobalDetails = {
   /**
@@ -7,7 +8,7 @@ export type GlobalDetails = {
    */
   name: string;
   /**
-   * Depth of the global relative to the scanning root
+   * Depth of the global relative to the scanning root.
    * Remark: in the current implementation it might not be the shortest one but it will be updated soon
    */
   depth: number;
@@ -16,6 +17,11 @@ export type GlobalDetails = {
    * it contains all the keys and symbols enumarable or not, configurable or not attached to it
    */
   properties: PoisoningFreeMap<string | symbol, PropertyDescriptor>;
+  /**
+   * Set of root ancestors being parents of the global.
+   * Remark: if a root is a parent of a global through another root it will not be listed
+   */
+  rootAncestors: PoisoningFreeSet<string>;
 };
 
 export type AllGlobals = PoisoningFreeMap<unknown, GlobalDetails>;

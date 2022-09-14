@@ -1,4 +1,5 @@
 import { captureAllGlobals } from '../../src/internals/CaptureAllGlobals.js';
+import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 import { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
 describe('captureAllGlobals', () => {
@@ -7,62 +8,74 @@ describe('captureAllGlobals', () => {
       globalName: 'Array',
       globalValue: Array,
       expectedDepth: 1,
+      expectedRoots: PoisoningFreeSet.from(['globalThis', 'Array']), // Array because Array.prototype.constructor
     },
     {
       globalName: 'Array.prototype',
       globalValue: Array.prototype,
       expectedDepth: 2,
+      expectedRoots: PoisoningFreeSet.from(['Array']),
     },
     {
       globalName: 'Array.prototype.map',
       globalValue: Array.prototype.map,
       expectedDepth: 3,
+      expectedRoots: PoisoningFreeSet.from(['Array']),
     },
     {
       globalName: 'Object',
       globalValue: Object,
       expectedDepth: 1,
+      expectedRoots: PoisoningFreeSet.from(['globalThis', 'Object']), // Object because Object.prototype.constructor
     },
     {
       globalName: 'Object.entries',
       globalValue: Object.entries,
       expectedDepth: 2,
+      expectedRoots: PoisoningFreeSet.from(['Object']),
     },
     {
       globalName: 'Function',
       globalValue: Function,
       expectedDepth: 1,
+      expectedRoots: PoisoningFreeSet.from(['globalThis', 'Function']), // Function because Function.prototype.constructor
     },
     {
       globalName: 'Function.prototype.apply',
       globalValue: Function.prototype.apply,
       expectedDepth: 3,
+      expectedRoots: PoisoningFreeSet.from(['Function']),
     },
     {
       globalName: 'Function.prototype.call',
       globalValue: Function.prototype.call,
       expectedDepth: 3,
+      expectedRoots: PoisoningFreeSet.from(['Function']),
     },
     {
       globalName: 'setTimeout',
       globalValue: setTimeout,
       expectedDepth: 1,
+      expectedRoots: PoisoningFreeSet.from(['globalThis', 'setTimeout']), // setTimeout because setTimeout.prototype.constructor
     },
     {
       globalName: 'Map.prototype[Symbol.toStringTag]',
       globalValue: Map.prototype[Symbol.toStringTag],
       expectedDepth: 3,
+      expectedRoots: PoisoningFreeSet.from(['Map']),
       isSymbol: true,
     },
     {
       globalName: 'Object.prototype.toString',
       globalValue: Object.prototype.toString,
       expectedDepth: 3,
+      expectedRoots: PoisoningFreeSet.from(['Object']),
     },
     {
       globalName: 'Number.prototype.toString', // not the same as Object one
       globalValue: Number.prototype.toString,
       expectedDepth: 3,
+      expectedRoots: PoisoningFreeSet.from(['Number']),
     },
   ];
   // For the moment, internal data for globals linked to symbols is not tracked
@@ -111,6 +124,17 @@ describe('captureAllGlobals', () => {
     }
   );
 
+  it.each(expectedGlobalsExcludingSymbols)(
+    'should link $globalName to the right roots',
+    ({ globalValue, expectedRoots }) => {
+      // Arrange / Act
+      const globals = captureAllGlobals();
+
+      // Assert
+      expect(globals.get(globalValue)?.rootAncestors).toEqual(expectedRoots);
+    }
+  );
+
   it('should attach the minimal depth from globalThis to each global', () => {
     // Arrange
     const dataB = { c: { d: 5 } };
@@ -125,36 +149,43 @@ describe('captureAllGlobals', () => {
       name: 'globalThis',
       depth: 0,
       properties: expect.any(Map),
+      rootAncestors: PoisoningFreeSet.from(['globalThis']),
     };
     const expectedExtractedDataA: GlobalDetails = {
       name: 'dataA',
       depth: 1,
       properties: expect.any(Map),
+      rootAncestors: PoisoningFreeSet.from(['globalThis', 'dataD']),
     };
     const expectedExtractedDataB: GlobalDetails = {
       name: 'dataB',
       depth: 1,
       properties: expect.any(Map),
+      rootAncestors: PoisoningFreeSet.from(['globalThis', 'dataA', 'dataC']), // not dataD as it passes through other roots
     };
     const expectedExtractedDataC: GlobalDetails = {
       name: 'dataC',
       depth: 1,
       properties: expect.any(Map),
+      rootAncestors: PoisoningFreeSet.from(['globalThis', 'dataD']),
     };
     const expectedExtractedDataD: GlobalDetails = {
       name: 'dataD',
       depth: 1,
       properties: expect.any(Map),
+      rootAncestors: PoisoningFreeSet.from(['globalThis']),
     };
     const expectedExtractedC: GlobalDetails = {
       name: 'dataB.c', // shortest path to c
       depth: 2,
       properties: expect.any(Map),
+      rootAncestors: PoisoningFreeSet.from(['dataB']),
     };
     const expectedExtractedK: GlobalDetails = {
       name: 'dataD.h.i.j.k', // shortest and only path to k
       depth: 5,
       properties: expect.any(Map),
+      rootAncestors: PoisoningFreeSet.from(['dataD']),
     };
 
     try {
@@ -163,19 +194,19 @@ describe('captureAllGlobals', () => {
 
       // Assert
       const extractedGlobalThis = globals.get(globalThis);
-      expect(extractedGlobalThis).toEqual(expect.objectContaining(expectedExtractedGlobalThis));
+      expect(extractedGlobalThis).toEqual(expectedExtractedGlobalThis);
       const extractedDataA = globals.get(dataA);
-      expect(extractedDataA).toEqual(expect.objectContaining(expectedExtractedDataA));
+      expect(extractedDataA).toEqual(expectedExtractedDataA);
       const extractedDataB = globals.get(dataB);
-      expect(extractedDataB).toEqual(expect.objectContaining(expectedExtractedDataB));
+      expect(extractedDataB).toEqual(expectedExtractedDataB);
       const extractedDataC = globals.get(dataC);
-      expect(extractedDataC).toEqual(expect.objectContaining(expectedExtractedDataC));
+      expect(extractedDataC).toEqual(expectedExtractedDataC);
       const extractedDataD = globals.get(dataD);
-      expect(extractedDataD).toEqual(expect.objectContaining(expectedExtractedDataD));
+      expect(extractedDataD).toEqual(expectedExtractedDataD);
       const extractedC = globals.get(dataB.c);
-      expect(extractedC).toEqual(expect.objectContaining(expectedExtractedC));
+      expect(extractedC).toEqual(expectedExtractedC);
       const extractedK = globals.get(dataD.h.i.j.k);
-      expect(extractedK).toEqual(expect.objectContaining(expectedExtractedK));
+      expect(extractedK).toEqual(expectedExtractedK);
     } finally {
       delete (globalThis as any).dataA;
       delete (globalThis as any).dataB;
