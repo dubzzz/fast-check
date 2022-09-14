@@ -19,7 +19,13 @@ describe('trackDiffsOnGlobals', () => {
 
     // Assert
     expect(diff).toHaveLength(1);
-    expect(diff).toContainEqual({ type: 'added', keyName: 'globalA.a', patch: expect.any(Function) });
+    expect(diff).toContainEqual({
+      type: 'added',
+      keyName: 'a',
+      fullyQualifiedKeyName: 'globalA.a',
+      patch: expect.any(Function),
+      globalDetails: expect.anything(),
+    });
     expect(globalA).toEqual({});
   });
 
@@ -39,7 +45,13 @@ describe('trackDiffsOnGlobals', () => {
 
     // Assert
     expect(diff).toHaveLength(1);
-    expect(diff).toContainEqual({ type: 'added', keyName: 'globalA.Symbol(my-symbol)', patch: expect.any(Function) });
+    expect(diff).toContainEqual({
+      type: 'added',
+      keyName: 'Symbol(my-symbol)',
+      fullyQualifiedKeyName: 'globalA.Symbol(my-symbol)',
+      patch: expect.any(Function),
+      globalDetails: expect.anything(),
+    });
     expect(globalA).toEqual({});
   });
 
@@ -58,7 +70,13 @@ describe('trackDiffsOnGlobals', () => {
 
     // Assert
     expect(diff).toHaveLength(1);
-    expect(diff).toContainEqual({ type: 'added', keyName: 'globalA.a', patch: expect.any(Function) });
+    expect(diff).toContainEqual({
+      type: 'added',
+      keyName: 'a',
+      fullyQualifiedKeyName: 'globalA.a',
+      patch: expect.any(Function),
+      globalDetails: expect.anything(),
+    });
     expect('a' in globalA).toBe(false);
   });
 
@@ -77,7 +95,13 @@ describe('trackDiffsOnGlobals', () => {
 
     // Assert
     expect(diff).toHaveLength(1);
-    expect(diff).toContainEqual({ type: 'removed', keyName: 'globalA.a', patch: expect.any(Function) });
+    expect(diff).toContainEqual({
+      type: 'removed',
+      keyName: 'a',
+      fullyQualifiedKeyName: 'globalA.a',
+      patch: expect.any(Function),
+      globalDetails: expect.anything(),
+    });
     expect(globalA).toEqual({ a: 2 });
   });
 
@@ -96,7 +120,13 @@ describe('trackDiffsOnGlobals', () => {
 
     // Assert
     expect(diff).toHaveLength(1);
-    expect(diff).toContainEqual({ type: 'changed', keyName: 'globalA.a', patch: expect.any(Function) });
+    expect(diff).toContainEqual({
+      type: 'changed',
+      keyName: 'a',
+      fullyQualifiedKeyName: 'globalA.a',
+      patch: expect.any(Function),
+      globalDetails: expect.anything(),
+    });
     expect(globalA).toEqual({ a: 2 });
   });
 
@@ -122,7 +152,13 @@ describe('trackDiffsOnGlobals', () => {
 
     // Assert
     expect(diff).toHaveLength(1);
-    expect(diff).toContainEqual({ type: 'removed', keyName: 'globalA.hello', patch: expect.any(Function) });
+    expect(diff).toContainEqual({
+      type: 'removed',
+      keyName: 'hello',
+      fullyQualifiedKeyName: 'globalA.hello',
+      patch: expect.any(Function),
+      globalDetails: expect.anything(),
+    });
     expect(globalA).toEqual({ hello: helloOverride });
   });
 });
