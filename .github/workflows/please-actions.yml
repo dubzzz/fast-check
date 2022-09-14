@@ -36,7 +36,7 @@ jobs:
       - name: Build package
         run: yarn workspace fast-check build-ci
       - name: Generate documentation
-        run: yarn workspace fast-check yarn docs-ci
+        run: yarn workspace fast-check docs-ci
       - name: Generate bundle
         run: yarn workspace fast-check pack --out docs/%s.tgz
       - name: Install deploy-netlify dependencies
