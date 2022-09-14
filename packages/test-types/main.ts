@@ -316,6 +316,9 @@ expectType<fc.Arbitrary<string | number>>()(
   fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, fc.nat()),
   '"oneof" with weighted arbitraries and non-weighted arbitraries'
 );
+expectType<fc.Arbitrary<number>>()(fc.oneof(...([] as fc.Arbitrary<number>[])), '"oneof" from array of arbitraries');
+expectType<fc.Arbitrary<never>>()(fc.oneof(), '"oneof" must receive at least one arbitrary');
+
 // @ts-expect-error - oneof expects arbitraries not raw values
 fc.oneof(fc.string(), '1');
 // @ts-expect-error - oneof expects weighted arbitraries with real arbitrraies and not raw values
