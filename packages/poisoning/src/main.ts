@@ -1,10 +1,11 @@
 import { captureAllGlobals } from './internals/CaptureAllGlobals.js';
+import { filterNonEligibleDiffs } from './internals/FilterNonEligibleDiffs.js';
 import { trackDiffsOnGlobals } from './internals/TrackDiffsOnGlobal.js';
 
 const initialGlobals = captureAllGlobals();
 
 export type ExtraOptions = {
-  ignoreRoots: RegExp;
+  ignoredRootRegex: RegExp;
 };
 
 /**
@@ -13,7 +14,11 @@ export type ExtraOptions = {
  * Remark: At least, it attempts to do so
  */
 export function restoreGlobals(options?: ExtraOptions): void {
-  const diffs = trackDiffsOnGlobals(initialGlobals);
+  const allDiffs = trackDiffsOnGlobals(initialGlobals);
+  const diffs =
+    options !== undefined && options.ignoredRootRegex !== undefined
+      ? filterNonEligibleDiffs(allDiffs, options.ignoredRootRegex)
+      : allDiffs;
   for (let index = 0; index !== diffs.length; ++index) {
     diffs[index].patch();
   }
@@ -32,11 +37,15 @@ export function restoreGlobals(options?: ExtraOptions): void {
  * - someone changed `Array.prototype.map` into another function
  */
 export function assertNoPoisoning(options?: ExtraOptions): void {
-  const diffs = trackDiffsOnGlobals(initialGlobals);
+  const allDiffs = trackDiffsOnGlobals(initialGlobals);
+  const diffs =
+    options !== undefined && options.ignoredRootRegex !== undefined
+      ? filterNonEligibleDiffs(allDiffs, options.ignoredRootRegex)
+      : allDiffs;
   if (diffs.length !== 0) {
-    let impactedElements = diffs[0].keyName;
+    let impactedElements = diffs[0].fullyQualifiedKeyName;
     for (let index = 1; index !== diffs.length; ++index) {
-      impactedElements += ', ' + diffs[index].keyName;
+      impactedElements += ', ' + diffs[index].fullyQualifiedKeyName;
     }
     throw new Error('Poisoning detected on ' + impactedElements);
   }
