@@ -38,10 +38,10 @@
     "fast-check": "^3.0.0"
   },
   "peerDependencies": {
-    "jest": ">=25.1.0"
+    "@jest/globals": ">=25.5.2"
   },
   "devDependencies": {
-    "@types/jest": "^29.0.2",
+    "@jest/globals": "^29.0.3",
     "@types/node": "^17.0.44",
     "fast-check": "workspace:*",
     "jest": "^29.0.3",

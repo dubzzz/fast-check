@@ -1,3 +1,4 @@
+import { describe } from '@jest/globals';
 import { itProp, fc } from '../src/jest-fast-check';
 
 const delay = (duration: number) =>
