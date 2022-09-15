@@ -4,10 +4,6 @@ import { trackDiffsOnGlobals } from './internals/TrackDiffsOnGlobal.js';
 
 const initialGlobals = captureAllGlobals();
 
-export type ExtraOptions = {
-  ignoredRootRegex: RegExp;
-};
-
 /**
  * Some extra options for {@link restoreGlobals} and {@link assertNoPoisoning}
  */
