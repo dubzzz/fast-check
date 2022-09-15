@@ -1,0 +1,6 @@
+declined:
+  - "@fast-check/ava"
+  - fast-check
+  - "@fast-check/jest"
+  - "@fast-check/packaged"
+  - "@fast-check/poisoning"
