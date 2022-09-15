@@ -97,11 +97,6 @@ export function captureAllGlobals(): AllGlobals {
         // For instance: do not monitor the content of globalThis.Symbol(JEST_STATE_SYMBOL)
         continue;
       }
-      if (currentDepth === 0 && descriptorName[0] === '_') {
-        // Do not scan what's sounds like private properties dropped on globalThis
-        // For instance: do not track the content of globalThis.__coverage__
-        continue;
-      }
       const subGlobalName = currentDepth !== 0 ? name + '.' + SString(descriptorName) : SString(descriptorName);
       const newLastRootInPath = currentDepth <= 1 ? name : lastRootInPath;
       nextCaptures[PushSymbol]({
