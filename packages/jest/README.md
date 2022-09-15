@@ -39,7 +39,7 @@ Please note that the properties accepted by `@fast-check/jest` as input can eith
 
 If you want to forward custom parameters to fast-check, `testProp` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
 
-`@fast-check/jest` also comes with `.only`, `.skip` and `.todo` from jest.
+`@fast-check/jest` also comes with `.only`, `.skip`, `.todo` and `.concurrent` from jest. It also accepts more complex ones such as `.concurrent.failing` or `.concurrent.only.failing`.
 
 ```javascript
 import { itProp, testProp, fc } from '@fast-check/jest';
