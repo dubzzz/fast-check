@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noEmit": true,
     "declaration": true,
     "sourceMap": false,
     "alwaysStrict": true,
@@ -13,7 +14,5 @@
     "module": "commonjs",
     "target": "es2017",
     "outDir": "lib/"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  }
 }
