@@ -1662,27 +1662,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.24.0":
-  version: 7.24.0
-  resolution: "@microsoft/api-extractor-model@npm:7.24.0"
+"@microsoft/api-extractor-model@npm:7.24.1":
+  version: 7.24.1
+  resolution: "@microsoft/api-extractor-model@npm:7.24.1"
   dependencies:
     "@microsoft/tsdoc": 0.14.1
     "@microsoft/tsdoc-config": ~0.16.1
-    "@rushstack/node-core-library": 3.51.1
-  checksum: d683ca227ed79f0bd8725caba190bb281b1f2088602268cbecd5d8dd690c601034c447a35e22f63866f79544f9648bc46631e0d724c3e54bc7438591e1f4312f
+    "@rushstack/node-core-library": 3.51.2
+  checksum: 3c5b688cd4f77324749c5dd15f912a91a7dd8bab71667bdc87b0d999fae8ce84859da9efc99c5e3fd9659d88e0069783d5c1c64232852c4bf88ac38ab9957e19
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.31.0":
-  version: 7.31.0
-  resolution: "@microsoft/api-extractor@npm:7.31.0"
+"@microsoft/api-extractor@npm:^7.31.1":
+  version: 7.31.1
+  resolution: "@microsoft/api-extractor@npm:7.31.1"
   dependencies:
-    "@microsoft/api-extractor-model": 7.24.0
+    "@microsoft/api-extractor-model": 7.24.1
     "@microsoft/tsdoc": 0.14.1
     "@microsoft/tsdoc-config": ~0.16.1
-    "@rushstack/node-core-library": 3.51.1
-    "@rushstack/rig-package": 0.3.14
-    "@rushstack/ts-command-line": 4.12.2
+    "@rushstack/node-core-library": 3.51.2
+    "@rushstack/rig-package": 0.3.15
+    "@rushstack/ts-command-line": 4.12.3
     colors: ~1.2.1
     lodash: ~4.17.15
     resolve: ~1.17.0
@@ -1691,7 +1691,7 @@ __metadata:
     typescript: ~4.7.4
   bin:
     api-extractor: bin/api-extractor
-  checksum: 834b0c534905e0c6cd5312da64dee15c9aa5384aae2dc77b139e136780eec2cabe51d3cd0cb8962f4d54ca40fba0284db374644d0686f11851bb58892ed375b9
+  checksum: 7c09a2939901e56f77c566466b86bb81d81180da16b6183f052f229c6582a861c6144f9d0cebaf21d19da8ddc3fb3476f6452435fadca876d1076de8bd373f3f
   languageName: node
   linkType: hard
 
@@ -2648,9 +2648,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/node-core-library@npm:3.51.1":
-  version: 3.51.1
-  resolution: "@rushstack/node-core-library@npm:3.51.1"
+"@rushstack/node-core-library@npm:3.51.2":
+  version: 3.51.2
+  resolution: "@rushstack/node-core-library@npm:3.51.2"
   dependencies:
     "@types/node": 12.20.24
     colors: ~1.2.1
@@ -2660,29 +2660,29 @@ __metadata:
     resolve: ~1.17.0
     semver: ~7.3.0
     z-schema: ~5.0.2
-  checksum: 92f7e39f03f4931a7007b4a79427d82bfe078146133a138219205abf873607898f7667fa368e3cb28c93bb1a2b9dc70ddaf2d316bc47a9a17b591d69d1025068
+  checksum: 0f9ac85fccc43220897a307f1b8612e319c49973a7435d43bc2252976d8c01d930bd9c04a6645d3199f39b7564e9c4edd9539b97556e702a339f4b57673d8797
   languageName: node
   linkType: hard
 
-"@rushstack/rig-package@npm:0.3.14":
-  version: 0.3.14
-  resolution: "@rushstack/rig-package@npm:0.3.14"
+"@rushstack/rig-package@npm:0.3.15":
+  version: 0.3.15
+  resolution: "@rushstack/rig-package@npm:0.3.15"
   dependencies:
     resolve: ~1.17.0
     strip-json-comments: ~3.1.1
-  checksum: 3e9c6bdfc79b4a408fbb3248593fe34e23164c4997c68b6cb905ad4a38f53ac628f90fc715c9225348cba1cf0af410bfa55ed5a58c833aa53fdde6cf4a2e0a33
+  checksum: dd3cfc679ca17d286273eb3e177456d5cae2a5c8d07d26a589f75903966932d985ccd4256b79d14da5b2a20c14c4b19975101db8849abe8c9484c0fa3650f7b8
   languageName: node
   linkType: hard
 
-"@rushstack/ts-command-line@npm:4.12.2":
-  version: 4.12.2
-  resolution: "@rushstack/ts-command-line@npm:4.12.2"
+"@rushstack/ts-command-line@npm:4.12.3":
+  version: 4.12.3
+  resolution: "@rushstack/ts-command-line@npm:4.12.3"
   dependencies:
     "@types/argparse": 1.0.38
     argparse: ~1.0.9
     colors: ~1.2.1
     string-argv: ~0.3.1
-  checksum: 6ee016c7dcdc9c55cfaea5b71d8b34d942404764de72a51f2f4d50d4db51f1cc5e0df496de6b96eb9f086ab500f366f63afc33699adecf601f02bfe9a4d157f6
+  checksum: d1aa2e4e84801653f0805cdd260b333508c3de37716fe3df77a69ea0d9b59c870054724afd52aa09d64e45c717b62e1bb1072117b2884b6c799ac885cc71480c
   languageName: node
   linkType: hard
 
@@ -7450,7 +7450,7 @@ __metadata:
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": ^7.31.0
+    "@microsoft/api-extractor": ^7.31.1
     "@types/jest": ^29.0.2
     "@types/node": ^17.0.0
     buffer: ^6.0.3
