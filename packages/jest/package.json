@@ -56,23 +56,6 @@
     "quickcheck",
     "fast-check"
   ],
-  "jest": {
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "transform": {
-      "^.+\\.ts$": [
-        "ts-jest",
-        {
-          "tsConfig": "tsconfig.json"
-        }
-      ]
-    },
-    "testMatch": [
-      "**/*.spec.ts"
-    ]
-  },
   "funding": {
     "type": "opencollective",
     "url": "https://opencollective.com/fast-check"
