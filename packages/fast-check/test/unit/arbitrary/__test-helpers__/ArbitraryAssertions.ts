@@ -1,11 +1,22 @@
 import * as prand from 'pure-rand';
 import * as fc from 'fast-check';
+import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../../src/random/generator/Random';
 import { withConfiguredGlobal } from './GlobalSettingsHelpers';
 import { sizeArb } from './SizeHelpers';
+
+function poisoningAfterEach(nestedAfterEach: () => void) {
+  nestedAfterEach();
+  try {
+    assertNoPoisoning({ ignoredRootRegex: /^__coverage__$/ });
+  } catch (err) {
+    restoreGlobals({ ignoredRootRegex: /^__coverage__$/ });
+    throw err;
+  }
+}
 
 // Minimal requirements
 // > The following assertions are supposed to be fulfilled by any of the arbitraries
@@ -27,32 +38,34 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
     assertParameters,
   } = options;
   fc.assert(
-    fc.property(
-      fc.integer().noShrink(),
-      biasFactorArbitrary(),
-      fc.infiniteStream(fc.nat({ max: 20 })),
-      extra,
-      (seed, biasFactor, shrinkPath, extraParameters) => {
-        // Arrange
-        const arb = arbitraryBuilder(extraParameters);
+    fc
+      .property(
+        fc.integer().noShrink(),
+        biasFactorArbitrary(),
+        fc.infiniteStream(fc.nat({ max: 20 })),
+        extra,
+        (seed, biasFactor, shrinkPath, extraParameters) => {
+          // Arrange
+          const arb = arbitraryBuilder(extraParameters);
 
-        // Act / Assert
-        let g1: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
-        let g2: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
-        if (noInitialContext) {
-          const originalG2 = g2!;
-          g2 = new Value(originalG2.value_, undefined, () => originalG2.value);
+          // Act / Assert
+          let g1: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
+          let g2: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
+          if (noInitialContext) {
+            const originalG2 = g2!;
+            g2 = new Value(originalG2.value_, undefined, () => originalG2.value);
+          }
+          while (g1 !== null && g2 !== null) {
+            assertEquality(isEqual, g1.value, g2.value, extraParameters);
+            const pos = shrinkPath.next().value;
+            g1 = arb.shrink(g1.value_, g1.context).getNthOrLast(pos);
+            g2 = arb.shrink(g2.value_, g2.context).getNthOrLast(pos);
+          }
+          expect(g1).toBe(null);
+          expect(g2).toBe(null);
         }
-        while (g1 !== null && g2 !== null) {
-          assertEquality(isEqual, g1.value, g2.value, extraParameters);
-          const pos = shrinkPath.next().value;
-          g1 = arb.shrink(g1.value_, g1.context).getNthOrLast(pos);
-          g2 = arb.shrink(g2.value_, g2.context).getNthOrLast(pos);
-        }
-        expect(g1).toBe(null);
-        expect(g2).toBe(null);
-      }
-    ),
+      )
+      .afterEach(poisoningAfterEach),
     assertParameters
   );
 }
@@ -72,25 +85,27 @@ export function assertProduceCorrectValues<T, U = never>(
   const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
     options;
   fc.assert(
-    fc.property(
-      fc.integer().noShrink(),
-      biasFactorArbitrary(),
-      fc.infiniteStream(fc.nat({ max: 20 })),
-      extra,
-      (seed, biasFactor, shrinkPath, extraParameters) => {
-        // Arrange
-        const arb = arbitraryBuilder(extraParameters);
+    fc
+      .property(
+        fc.integer().noShrink(),
+        biasFactorArbitrary(),
+        fc.infiniteStream(fc.nat({ max: 20 })),
+        extra,
+        (seed, biasFactor, shrinkPath, extraParameters) => {
+          // Arrange
+          const arb = arbitraryBuilder(extraParameters);
 
-        // Act / Assert
-        let g: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
-        while (g !== null) {
-          assertCorrectness(isCorrect, g.value, extraParameters, arb);
-          const pos = shrinkPath.next().value;
-          g = arb.shrink(g.value, g.context).getNthOrLast(pos);
+          // Act / Assert
+          let g: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
+          while (g !== null) {
+            assertCorrectness(isCorrect, g.value, extraParameters, arb);
+            const pos = shrinkPath.next().value;
+            g = arb.shrink(g.value, g.context).getNthOrLast(pos);
+          }
+          expect(g).toBe(null);
         }
-        expect(g).toBe(null);
-      }
-    ),
+      )
+      .afterEach(poisoningAfterEach),
     assertParameters
   );
 }
@@ -112,21 +127,23 @@ export function assertGenerateEquivalentTo<T, U = never>(
     assertParameters,
   } = options;
   fc.assert(
-    fc.property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
-      // Arrange
-      const arbA = arbitraryBuilderA(extraParameters);
-      const arbB = arbitraryBuilderB(extraParameters);
+    fc
+      .property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
+        // Arrange
+        const arbA = arbitraryBuilderA(extraParameters);
+        const arbB = arbitraryBuilderB(extraParameters);
 
-      // Act
-      const gA = arbA.generate(randomFromSeed(seed), biasFactor);
-      const gB = arbB.generate(randomFromSeed(seed), biasFactor);
+        // Act
+        const gA = arbA.generate(randomFromSeed(seed), biasFactor);
+        const gB = arbB.generate(randomFromSeed(seed), biasFactor);
 
-      // Assert
-      assertEquality(isEqual, gA.value, gB.value, extraParameters);
-      if (isEqualContext) {
-        assertEquality(isEqualContext, gA.context, gB.context, extraParameters);
-      }
-    }),
+        // Assert
+        assertEquality(isEqual, gA.value, gB.value, extraParameters);
+        if (isEqualContext) {
+          assertEquality(isEqualContext, gA.context, gB.context, extraParameters);
+        }
+      })
+      .afterEach(poisoningAfterEach),
     assertParameters
   );
 }
