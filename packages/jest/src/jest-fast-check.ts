@@ -1,21 +1,7 @@
+import { it, test } from '@jest/globals';
 import * as fc from 'fast-check';
 
-// TODO Import them directly
-// Typings copied from the one of @types/jest
-interface DoneCallback {
-  (...args: any[]): any;
-  fail(error?: string | { message: string }): any;
-}
-type ProvidesCallback = (cb: DoneCallback) => any;
-interface It {
-  (name: string, fn?: ProvidesCallback, timeout?: number): void;
-  only: It;
-  skip: It;
-  todo: It;
-}
-
-declare const test: It;
-declare const it: It;
+type It = typeof it;
 
 // Pre-requisite: https://github.com/Microsoft/TypeScript/pull/26063
 // Require TypeScript 3.1
@@ -31,7 +17,7 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
 }
 
 function internalTestProp<Ts extends [any] | any[]>(
-  testFn: It,
+  testFn: It['only' | 'skip'],
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
