@@ -16,8 +16,8 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
 }
 
-function internalTestProp<Ts extends [any] | any[]>(
-  testFn: It['only' | 'skip'],
+function internalTestPropExecute<Ts extends [any] | any[]>(
+  testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'],
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
@@ -32,60 +32,66 @@ function internalTestProp<Ts extends [any] | any[]>(
   });
 }
 
-export function testProp<Ts extends [any] | any[]>(
-  label: string,
-  arbitraries: ArbitraryTuple<Ts>,
-  prop: Prop<Ts>,
-  params?: fc.Parameters<Ts>
-): void {
-  internalTestProp(test, label, arbitraries, prop, params);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace testProp {
-  export const only = <Ts extends [any] | any[]>(
+// Mimic Failing from @jest/types
+function internalTestPropFailing(testFn: It['failing']) {
+  function base<Ts extends [any] | any[]>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
-  ): void => internalTestProp(test.only, label, arbitraries, prop, params);
-  export const skip = <Ts extends [any] | any[]>(
+  ): void {
+    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+  }
+  const extras = {
+    // TODO - each
+  };
+  return Object.assign(base, extras);
+}
+
+// Mimic ItBase from @jest/types
+function internalTestPropBase(testFn: It['only' | 'skip']) {
+  function base<Ts extends [any] | any[]>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
-  ): void => internalTestProp(test.skip, label, arbitraries, prop, params);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  export const todo = <Ts extends [any] | any[]>(label: string, arbitraries?: ArbitraryTuple<Ts>): void =>
-    test.todo(label);
+  ): void {
+    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+  }
+  const extras = {
+    failing: internalTestPropFailing(testFn.failing),
+  };
+  return Object.assign(base, extras);
 }
 
-export function itProp<Ts extends [any] | any[]>(
-  label: string,
-  arbitraries: ArbitraryTuple<Ts>,
-  prop: Prop<Ts>,
-  params?: fc.Parameters<Ts>
-): void {
-  internalTestProp(it, label, arbitraries, prop, params);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace itProp {
-  export const only = <Ts extends [any] | any[]>(
+// Mimic ItConcurrentExtended from @jest/types
+function internalTestPropConcurrent(testFn: It | It['concurrent']) {
+  function base<Ts extends [any] | any[]>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
-  ): void => internalTestProp(it.only, label, arbitraries, prop, params);
-  export const skip = <Ts extends [any] | any[]>(
-    label: string,
-    arbitraries: ArbitraryTuple<Ts>,
-    prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
-  ): void => internalTestProp(it.skip, label, arbitraries, prop, params);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  export const todo = <Ts extends [any] | any[]>(label: string, arbitraries?: ArbitraryTuple<Ts>): void =>
-    it.todo(label);
+  ): void {
+    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+  }
+  const extras = {
+    only: internalTestPropBase(testFn.only),
+    skip: internalTestPropBase(testFn.skip),
+    failing: internalTestPropFailing(testFn.failing),
+  };
+  return Object.assign(base, extras);
 }
 
+// Mimic ItConcurrent from @jest/types
+function internalTestProp(testFn: It) {
+  const base = internalTestPropConcurrent(testFn);
+  const extras = {
+    concurrent: internalTestPropConcurrent(testFn.concurrent),
+    todo: testFn.todo,
+  };
+  return Object.assign(base, extras);
+}
+
+export const testProp = internalTestProp(test);
+export const itProp = internalTestProp(it);
 export { fc };

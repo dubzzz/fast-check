@@ -29,4 +29,16 @@ describe('itProp', () => {
   // itProp.skip
 
   itProp.skip('should never be executed', [fc.boolean()], (a) => a, { seed: 48 });
+
+  // itProp.failing
+
+  itProp.failing('should fail because passing', [fc.boolean()], (_a) => true, { seed: 48 });
+
+  // itProp.concurrent
+
+  itProp.concurrent('should fail for concurrent', [fc.boolean()], (_a) => false, { seed: 4848 });
+
+  // itProp.concurrent.failing
+
+  itProp.concurrent.failing('should fail for concurrent because passing', [fc.boolean()], (_a) => true, { seed: 4848 });
 });

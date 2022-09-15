@@ -27,3 +27,7 @@ testProp('should fail with seed=4242 and path="25"', [fc.constant(null)], (_unus
 // testProp.skip
 
 testProp.skip('should never be executed', [fc.boolean()], (a) => a, { seed: 48 });
+
+// testProp.failing
+
+testProp.failing('should fail because passing', [fc.boolean()], (_a) => true, { seed: 48 });
