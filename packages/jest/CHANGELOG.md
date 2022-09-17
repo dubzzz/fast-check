@@ -1,3 +1,18 @@
+# 1.1.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.0.1...jest%2Fv1.1.0)]
+
+## Features
+
+
+
+## Fixes
+
+
+
+---
+
 # 1.0.1
 
 _Add missing export for package.json_
