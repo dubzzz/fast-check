@@ -40,8 +40,10 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
     .filter((line) => line.length !== 0);
 
   // Parse raw diff log
+  let numPRs = 0;
   let numSkippedBecauseUnrelated = 0;
   for (const lineDiff of diffOutputLines) {
+    ++numPRs;
     console.debug(`[debug] Parsing ${lineDiff}`);
     const [type, ...titleAndPR] = lineDiff.split(' ');
     const prExtractor = /^(.*) \(#(\d+)\)$/;
@@ -58,7 +60,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       ++numSkippedBecauseUnrelated;
       continue;
     }
-    switch (type) {
+    switch (type.split('(')[0]) {
       case '💥':
       case ':boom:':
         breakingSection.push(buildPrLine(pr, title));
@@ -130,9 +132,9 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
   }
   if (numSkippedBecauseUnrelated !== 0) {
     errors.push(
-      `ℹ️ Skipped ${numSkippedBecauseUnrelated} package${
+      `ℹ️ Skipped ${numSkippedBecauseUnrelated} PR${
         numSkippedBecauseUnrelated > 1 ? 's' : ''
-      } because ot related to ${packageName}`
+      }/${numPRs} because unrelated to ${packageName}`
     );
   }
 
