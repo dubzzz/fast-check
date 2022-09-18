@@ -42,6 +42,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
   // Parse raw diff log
   let numPRs = 0;
   let numFailed = 0;
+  let numIgnored = 0;
   let numSkippedBecauseUnrelated = 0;
   for (const lineDiff of diffOutputLines) {
     ++numPRs;
@@ -101,6 +102,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         break;
       case '⬆️':
       case ':arrow_up:':
+        ++numIgnored;
         break;
       case '♻️':
       case ':recycle:':
@@ -124,6 +126,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         break;
       case '🎉':
       case ':tada:':
+        ++numIgnored;
         break;
       default:
         ++numFailed;
@@ -136,6 +139,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
   if (numSkippedBecauseUnrelated !== 0) {
     errors.push(`ℹ️ Scanned ${numPRs} PRs for ${packageName}:`);
     errors.push(`ℹ️ • accepted: ${maintenanceSection.length + newFeaturesSection.length + breakingSection.length},`);
+    errors.push(`ℹ️ • skipped ignored: ${numIgnored},`);
     errors.push(`ℹ️ • skipped unrelated: ${numSkippedBecauseUnrelated},`);
     errors.push(`ℹ️ • failed: ${numFailed}`);
   }
