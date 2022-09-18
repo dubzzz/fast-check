@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "incremental": false,
+    "sourceMap": false,
+    "target": "es2017",
+    "module": "commonjs",
+    "importHelpers": false,
+    "preserveConstEnums": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}

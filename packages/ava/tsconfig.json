@@ -1,16 +1,3 @@
 {
-  "compilerOptions": {
-    "noEmit": true,
-    "declaration": true,
-    "sourceMap": false,
-    "strict": true,
-    "alwaysStrict": true,
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "skipLibCheck": true,
-    "downlevelIteration": true,
-    "module": "commonjs",
-    "target": "es2017",
-    "outDir": "lib/"
-  }
+  "extends": "../../tsconfig.shared.json"
 }
