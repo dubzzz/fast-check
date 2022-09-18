@@ -7465,7 +7465,7 @@ __metadata:
     pure-rand: ^5.0.2
     replace-in-file: ^6.3.5
     ts-jest: ^29.0.1
-    typedoc: ^0.23.14
+    typedoc: ^0.23.15
     typescript: ^4.8.3
   languageName: unknown
   linkType: soft
@@ -15987,9 +15987,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.23.14":
-  version: 0.23.14
-  resolution: "typedoc@npm:0.23.14"
+"typedoc@npm:^0.23.15":
+  version: 0.23.15
+  resolution: "typedoc@npm:0.23.15"
   dependencies:
     lunr: ^2.3.9
     marked: ^4.0.19
@@ -15999,7 +15999,7 @@ __metadata:
     typescript: 4.6.x || 4.7.x || 4.8.x
   bin:
     typedoc: bin/typedoc
-  checksum: 4037dc0db4aa8b205ac505bdc191de404ea2da3eb8dabbf8172851c239b85a96fbfd81503dc2d4789066d6901d76c552abc73ee04a239763b69b90587d44527b
+  checksum: 2313bcda09755332e15e40fb2e72ac8d72447abfcd60f7c555d3a232ad1fe3596afd87ddcfbdf17eb081fc65f1cbf43b02e05adf38e6ade55f64d475da4271d7
   languageName: node
   linkType: hard
 
