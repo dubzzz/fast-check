@@ -41,6 +41,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
 
   // Parse raw diff log
   let numPRs = 0;
+  let numFailed = 0;
   let numSkippedBecauseUnrelated = 0;
   for (const lineDiff of diffOutputLines) {
     ++numPRs;
@@ -49,6 +50,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
     const prExtractor = /^(.*) \(#(\d+)\)$/;
     const m = prExtractor.exec(titleAndPR.join(' '));
     if (!m) {
+      ++numFailed;
       console.debug(`[debug] >> failed to extract PR/title`);
       errors.push(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
       continue;
@@ -124,6 +126,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       case ':tada:':
         break;
       default:
+        ++numFailed;
         errors.push(
           `⚠️ Unhandled type: ${type} on [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
         );
@@ -131,11 +134,10 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
     }
   }
   if (numSkippedBecauseUnrelated !== 0) {
-    errors.push(
-      `ℹ️ Skipped ${numSkippedBecauseUnrelated} PR${
-        numSkippedBecauseUnrelated > 1 ? 's' : ''
-      }/${numPRs} because unrelated to ${packageName}`
-    );
+    errors.push(`ℹ️ Scanned ${numPRs} PRs for ${packageName}:`);
+    errors.push(`ℹ️ • accepted: ${maintenanceSection.length + newFeaturesSection.length + breakingSection.length},`);
+    errors.push(`ℹ️ • skipped unrelated: ${numSkippedBecauseUnrelated},`);
+    errors.push(`ℹ️ • failed: ${numFailed}`);
   }
 
   return { breakingSection, newFeaturesSection, maintenanceSection, errors };
