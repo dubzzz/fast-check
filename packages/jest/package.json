@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/jest",
   "description": "Property based testing for Jest based on fast-check",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "commonjs",
   "main": "lib/jest-fast-check.js",
   "exports": {
@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
   "dependencies": {
-    "fast-check": "^3.0.0"
+    "fast-check": "^3.1.4"
   },
   "peerDependencies": {
     "@jest/globals": ">=25.5.2"

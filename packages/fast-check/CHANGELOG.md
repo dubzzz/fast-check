@@ -1,3 +1,29 @@
+# 3.1.4
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.3...v3.1.4)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3172](https://github.com/dubzzz/fast-check/pull/3172)) Bug: Fix some remaining accesses to global properties
+- ([PR#3165](https://github.com/dubzzz/fast-check/pull/3165)) Bug: Resist to poisoning of top-level types
+- ([PR#3184](https://github.com/dubzzz/fast-check/pull/3184)) CI: Require renovate to always try to dedupe
+- ([PR#3186](https://github.com/dubzzz/fast-check/pull/3186)) CI: Adapt configuration for new ts-jest
+- ([PR#3194](https://github.com/dubzzz/fast-check/pull/3194)) CI: Attempt to fix "please deploy"
+- ([PR#3196](https://github.com/dubzzz/fast-check/pull/3196)) CI: Build every package for "please deploy"
+- ([PR#3208](https://github.com/dubzzz/fast-check/pull/3208)) CI: Better PRs for changelogs cross packages
+- ([PR#3156](https://github.com/dubzzz/fast-check/pull/3156)) Doc: Add missing changesets in changelog of 2.21.0
+- ([PR#3185](https://github.com/dubzzz/fast-check/pull/3185)) Refactor: Attach a `depth` onto globals internally
+- ([PR#3157](https://github.com/dubzzz/fast-check/pull/3157)) Script: Less verbose description for PRs of CHANGELOG
+- ([PR#3174](https://github.com/dubzzz/fast-check/pull/3174)) Test: Add tests dropping all globals
+- ([PR#3183](https://github.com/dubzzz/fast-check/pull/3183)) Test: Add some more type related tests for oneof
+- ([PR#3076](https://github.com/dubzzz/fast-check/pull/3076)) Test: Check arbitraries do not cause any poisoning
+- ([PR#3205](https://github.com/dubzzz/fast-check/pull/3205)) Test: Add missing "typecheck" scripts on packages
+
 # 3.1.3
 
 _More resilient to external poisoning on all arbitraries_
