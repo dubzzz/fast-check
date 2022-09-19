@@ -15,6 +15,7 @@ _TODO Description_
 - ([PR#3188](https://github.com/dubzzz/fast-check/pull/3188)) Bug: Compute smallest depth for each global
 - ([PR#3193](https://github.com/dubzzz/fast-check/pull/3193)) Bug: Even more resiliency against poisoning
 - ([PR#3195](https://github.com/dubzzz/fast-check/pull/3195)) Refactor: Keep track of root ancestors
+- ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
 - ([PR#3095](https://github.com/dubzzz/fast-check/pull/3095)) Test: Test against direct updates of globals
 - ([PR#3159](https://github.com/dubzzz/fast-check/pull/3159)) Test: Check captured name for globals
 

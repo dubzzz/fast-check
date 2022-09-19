@@ -10,7 +10,10 @@ _TODO Description_
 ## Fixes
 
 - ([PR#3200](https://github.com/dubzzz/fast-check/pull/3200)) CI: Extract jest config outside of package.json
+- ([PR#3212](https://github.com/dubzzz/fast-check/pull/3212)) CI: Share `tsconfig.json` across public packages
+- ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
 - ([PR#3201](https://github.com/dubzzz/fast-check/pull/3201)) Refactor: Rely on `@jest/globals` for `@fast-check/jest`
+- ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
 
 ---
 
