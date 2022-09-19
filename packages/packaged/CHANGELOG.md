@@ -1,6 +1,6 @@
 # 0.0.4
 
-_TODO Description_
+_Only keep comments in published typings not in published code_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.3...packaged%2Fv0.0.4)]
 
 ## Fixes
