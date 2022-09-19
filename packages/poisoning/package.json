@@ -13,7 +13,7 @@
     }
   },
   "module": "lib/esm/main.js",
-  "types": "lib/types/main.d.ts",
+  "types": "lib/main.d.ts",
   "files": [
     "lib"
   ],
