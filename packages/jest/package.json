@@ -21,7 +21,8 @@
     "build": "tsc -p tsconfig.publish.json && tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "build-ci": "yarn build",
     "jest-test": "jest",
-    "test": "sh test.sh"
+    "test": "sh test.sh",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
