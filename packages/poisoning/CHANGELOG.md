@@ -8,7 +8,7 @@ _Add ability to omit some instances when checking for poisoning_
 - ([PR#3160](https://github.com/dubzzz/fast-check/pull/3160)) Adopt shorter names for labels of globals
 - ([PR#3176](https://github.com/dubzzz/fast-check/pull/3176)) Do not track private globals
 - ([PR#3198](https://github.com/dubzzz/fast-check/pull/3198)) Add ability to ignore some roots
-- ([PR#3199](https://github.com/dubzzz/fast-check/pull/3199)) Also track roots starting by "_"
+- ([PR#3199](https://github.com/dubzzz/fast-check/pull/3199)) Also track roots starting by "\_"
 
 ## Fixes
 
