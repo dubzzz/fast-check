@@ -18,8 +18,11 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.publish.json && tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
     "build-ci": "yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "ava-test": "ava -s -t",
     "test": "sh test.sh",
     "typecheck": "tsc --noEmit"

@@ -12,8 +12,10 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc -p tsconfig.publish.json --incremental",
-    "build-ci": "tsc -p tsconfig.publish.json",
+    "build": "yarn build:publish-cjs && yarn build:publish-types",
+    "build-ci": "yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "test": "jest --verbose",
     "typecheck": "tsc --noEmit"
   },
