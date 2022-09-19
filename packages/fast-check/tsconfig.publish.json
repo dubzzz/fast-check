@@ -2,8 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "outDir": "lib/",
     "declaration": false,
+    "outDir": "lib/",
     "removeComments": true
   },
   "include": ["src/**/*"]

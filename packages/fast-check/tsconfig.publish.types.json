@@ -2,9 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "outDir": "lib/types/",
     "declaration": true,
     "emitDeclarationOnly": true,
+    "outDir": "lib/types/",
     "removeComments": false,
     "stripInternal": true
   },

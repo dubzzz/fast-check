@@ -17,7 +17,7 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
 }
 
 function internalTestPropExecute<Ts extends [any] | any[]>(
-  testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'],
+  testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing'],
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
@@ -33,7 +33,7 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
 }
 
 // Mimic Failing from @jest/types
-function internalTestPropFailing(testFn: It['failing']) {
+function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['failing']) {
   function base<Ts extends [any] | any[]>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
@@ -49,7 +49,7 @@ function internalTestPropFailing(testFn: It['failing']) {
 }
 
 // Mimic ItBase from @jest/types
-function internalTestPropBase(testFn: It['only' | 'skip']) {
+function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['only' | 'skip']) {
   function base<Ts extends [any] | any[]>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
