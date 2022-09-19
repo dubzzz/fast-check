@@ -1,6 +1,6 @@
 # 0.0.2
 
-_TODO Description_
+_Add ability to omit some instances when checking for poisoning_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.1...poisoning%2Fv0.0.2)]
 
 ## Features
