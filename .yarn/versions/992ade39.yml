@@ -1,5 +1,0 @@
-declined:
-  - fast-check
-  - "@fast-check/jest"
-  - "@fast-check/packaged"
-  - "@fast-check/poisoning"

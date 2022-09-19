@@ -1,3 +1,22 @@
+# 1.1.0
+
+_Support more variants of `it`_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.0.1...jest%2Fv1.1.0)]
+
+## Features
+
+- ([PR#3203](https://github.com/dubzzz/fast-check/pull/3203)) Add `it.failing` and `it.concurrent` and combinations
+
+## Fixes
+
+- ([PR#3200](https://github.com/dubzzz/fast-check/pull/3200)) CI: Extract jest config outside of package.json
+- ([PR#3212](https://github.com/dubzzz/fast-check/pull/3212)) CI: Share `tsconfig.json` across public packages
+- ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
+- ([PR#3201](https://github.com/dubzzz/fast-check/pull/3201)) Refactor: Rely on `@jest/globals` for `@fast-check/jest`
+- ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
+
+---
+
 # 1.0.1
 
 _Add missing export for package.json_

@@ -1,3 +1,12 @@
+# 0.0.4
+
+_Only keep comments in published typings not in published code_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.3...packaged%2Fv0.0.4)]
+
+## Fixes
+
+- ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
+
 # 0.0.3
 
 _Better permissions on the executable script exposed in bin_
