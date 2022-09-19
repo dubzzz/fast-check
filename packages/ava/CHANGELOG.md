@@ -1,3 +1,16 @@
+# 1.0.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.0.1...ava%2Fv1.0.2)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 1.0.1
 
 _Add missing export for package.json_
