@@ -40,13 +40,18 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
     .filter((line) => line.length !== 0);
 
   // Parse raw diff log
+  let numPRs = 0;
+  let numFailed = 0;
+  let numIgnored = 0;
   let numSkippedBecauseUnrelated = 0;
   for (const lineDiff of diffOutputLines) {
+    ++numPRs;
     console.debug(`[debug] Parsing ${lineDiff}`);
     const [type, ...titleAndPR] = lineDiff.split(' ');
     const prExtractor = /^(.*) \(#(\d+)\)$/;
     const m = prExtractor.exec(titleAndPR.join(' '));
     if (!m) {
+      ++numFailed;
       console.debug(`[debug] >> failed to extract PR/title`);
       errors.push(`Failed to extract PR/title from: ${JSON.stringify(lineDiff)}`);
       continue;
@@ -58,7 +63,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       ++numSkippedBecauseUnrelated;
       continue;
     }
-    switch (type) {
+    switch (type.split('(')[0]) {
       case '💥':
       case ':boom:':
         breakingSection.push(buildPrLine(pr, title));
@@ -97,6 +102,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         break;
       case '⬆️':
       case ':arrow_up:':
+        ++numIgnored;
         break;
       case '♻️':
       case ':recycle:':
@@ -120,8 +126,10 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         break;
       case '🎉':
       case ':tada:':
+        ++numIgnored;
         break;
       default:
+        ++numFailed;
         errors.push(
           `⚠️ Unhandled type: ${type} on [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
         );
@@ -129,11 +137,11 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
     }
   }
   if (numSkippedBecauseUnrelated !== 0) {
-    errors.push(
-      `ℹ️ Skipped ${numSkippedBecauseUnrelated} package${
-        numSkippedBecauseUnrelated > 1 ? 's' : ''
-      } because ot related to ${packageName}`
-    );
+    errors.push(`ℹ️ Scanned ${numPRs} PRs for ${packageName}:`);
+    errors.push(`ℹ️ • accepted: ${maintenanceSection.length + newFeaturesSection.length + breakingSection.length},`);
+    errors.push(`ℹ️ • skipped ignored: ${numIgnored},`);
+    errors.push(`ℹ️ • skipped unrelated: ${numSkippedBecauseUnrelated},`);
+    errors.push(`ℹ️ • failed: ${numFailed}`);
   }
 
   return { breakingSection, newFeaturesSection, maintenanceSection, errors };
