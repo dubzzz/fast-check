@@ -1,6 +1,6 @@
 # 3.1.4
 
-_TODO Description_
+_Increased resiliency to poisoned globals_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.3...v3.1.4)]
 
 ## Fixes
