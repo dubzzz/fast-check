@@ -1,0 +1,10 @@
+releases:
+  "@fast-check/ava": patch
+  "@fast-check/jest": patch
+
+declined:
+  - "@fast-check/packaged"
+  - "@fast-check/poisoning"
+
+undecided:
+  - fast-check
