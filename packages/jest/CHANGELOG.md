@@ -1,6 +1,6 @@
 # 1.1.0
 
-_TODO Description_
+_Support more variants of `it`_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.0.1...jest%2Fv1.1.0)]
 
 ## Features
