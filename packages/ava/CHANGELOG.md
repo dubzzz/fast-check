@@ -1,6 +1,6 @@
 # 1.0.2
 
-_TODO Description_
+_Only keep comments in published typings not in published code_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.0.1...ava%2Fv1.0.2)]
 
 ## Fixes
