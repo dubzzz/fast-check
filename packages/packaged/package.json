@@ -4,6 +4,15 @@
   "version": "0.0.3",
   "type": "commonjs",
   "main": "lib/packaged.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": "./lib/packaged.js",
+      "import": "./lib/esm/packaged.js",
+      "default": "./lib/esm/packaged.js"
+    }
+  },
+  "module": "lib/esm/packaged.js",
   "types": "lib/packaged.d.ts",
   "bin": "./bin/packaged.js",
   "files": [
@@ -12,8 +21,11 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc -p tsconfig.publish.json --incremental",
-    "build-ci": "tsc -p tsconfig.publish.json",
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
+    "build-ci": "yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "test": "jest --verbose",
     "typecheck": "tsc --noEmit"
   },
