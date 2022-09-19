@@ -13,7 +13,7 @@
     }
   },
   "module": "lib/esm/jest-fast-check.js",
-  "types": "lib/jest-fast-check.d.ts",
+  "types": "lib/types/jest-fast-check.d.ts",
   "files": [
     "lib"
   ],

@@ -4,7 +4,7 @@
   "version": "0.0.3",
   "type": "commonjs",
   "main": "lib/packaged.js",
-  "types": "lib/packaged.d.ts",
+  "types": "lib/types/packaged.d.ts",
   "bin": "./bin/packaged.js",
   "files": [
     "bin",

@@ -13,7 +13,7 @@
     }
   },
   "module": "lib/esm/ava-fast-check.js",
-  "types": "lib/ava-fast-check.d.ts",
+  "types": "lib/types/ava-fast-check.d.ts",
   "files": [
     "lib"
   ],
