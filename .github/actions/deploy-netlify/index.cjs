@@ -35,7 +35,7 @@ async function run() {
   }
 
   const { err: netlifyDeployErr, stdout: netlifyLog } = await execAsync(
-    'netlify deploy --dir=docs/ --message="Publish to Netlify on PR"'
+    'netlify deploy --dir=packages/fast-check/docs/ --message="Publish to Netlify on PR"'
   );
   if (netlifyDeployErr && netlifyDeployErr.code) {
     core.setFailed(`deploy-netlify failed on deploy: ${netlifyDeployErr}`);

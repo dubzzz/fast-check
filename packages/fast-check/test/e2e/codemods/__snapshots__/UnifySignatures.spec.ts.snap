@@ -1,0 +1,1843 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`codemods::unify-signature (parser: babel) array should migrate fc.array(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) array should migrate fc.array(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) array should migrate fc.array(arb, minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) asciiString should migrate fc.asciiString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) asciiString should migrate fc.asciiString(5); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) asciiString should migrate fc.asciiString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) base64String should migrate fc.base64String(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) base64String should migrate fc.base64String(5); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) base64String should migrate fc.base64String(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) bigInt should migrate fc.bigInt(1n, 2n); 1`] = `
+"const fc = require('fast-check');
+fc.bigInt({
+  min: 1n,
+  max: 2n
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) bigInt should migrate fc.bigInt(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.bigInt({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) bigUint should migrate fc.bigUint(1n); 1`] = `
+"const fc = require('fast-check');
+fc.bigUint({
+  max: 1n
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) bigUint should migrate fc.bigUint(BigInt(1)); 1`] = `
+"const fc = require('fast-check');
+fc.bigUint({
+  max: BigInt(1)
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) commands should migrate fc.commands([], 10); 1`] = `
+"const fc = require('fast-check');
+fc.commands([], {
+  maxCommands: 10
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) double should migrate fc.double(1); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) double should migrate fc.double(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) double should migrate fc.double(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) float should migrate fc.float(1); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) float should migrate fc.float(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) float should migrate fc.float(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) fullUnicodeString should migrate fc.fullUnicodeString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) fullUnicodeString should migrate fc.fullUnicodeString(5); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) fullUnicodeString should migrate fc.fullUnicodeString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) hexaString should migrate fc.hexaString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) hexaString should migrate fc.hexaString(5); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) hexaString should migrate fc.hexaString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) import from local files should recognize default import from fast-check when --local=true 1`] = `
+"import fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) import from local files should recognize local aliased import when --local=true 1`] = `
+"import fc from './path';
+import { array as localArray } from './path';
+fc.assert(fc.property(localArray(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) import from local files should recognize local default import when --local=true 1`] = `
+"import fc from './path';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) import should recognize aliased import 1`] = `
+"import { assert, property, nat } from 'fast-check';
+import { array as fcArray } from 'fast-check';
+assert(property(fcArray(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) import should recognize default import 1`] = `
+"import fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) import should recognize named import 1`] = `
+"import { assert, property, array, nat } from 'fast-check';
+assert(property(array(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) import should recognize star import 1`] = `
+"import * as fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) integer should migrate fc.integer(1); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) integer should migrate fc.integer(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) integer should migrate fc.integer(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) json should migrate fc.json(2); 1`] = `
+"const fc = require('fast-check');
+fc.json({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) jsonObject should migrate fc.jsonObject(2); 1`] = `
+"const fc = require('fast-check');
+fc.jsonObject({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) lorem should migrate fc.lorem(5); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) lorem should migrate fc.lorem(5, mode); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5,
+  mode: mode ? "sentences" : "words"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) lorem should migrate fc.lorem(5, true); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5,
+  mode: "sentences"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) lorem should migrate fc.lorem(num, mode); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: num,
+  mode: mode ? "sentences" : "words"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) nat should migrate fc.nat(1); 1`] = `
+"const fc = require('fast-check');
+fc.nat({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) option should migrate fc.option(arb, 10); 1`] = `
+"const fc = require('fast-check');
+fc.option(arb, {
+  freq: 10
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) require from local files should recognize default require from fast-check when --local=true 1`] = `
+"const fc = require('fast-check');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) require from local files should recognize local aliased require when --local=true 1`] = `
+"const fc = require('./path');
+const { array: localArray } = require('./path');
+fc.assert(fc.property(localArray(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) require from local files should recognize local default require when --local=true 1`] = `
+"const fc = require('./path');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) require should recognize aliased require 1`] = `
+"const { assert, property, nat } = require('fast-check');
+const { array: fcArray } = require('fast-check');
+assert(property(fcArray(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) require should recognize default require 1`] = `
+"const fc = require('fast-check');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) require should recognize named require 1`] = `
+"const { assert, property, array, nat } = require('fast-check');
+assert(property(array(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, 1, 5, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: 1,
+  maxLength: 5,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, 5, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: 5,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, function (a, b) { return a === b; }); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  compare: function (a, b) { return a === b; }
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, maxLength, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: maxLength,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, minLength, maxLength, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: minLength,
+  maxLength: maxLength,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) set should migrate fc.set(arb, minLength, maxLength, compare); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: minLength,
+  maxLength: maxLength,
+  compare: compare
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) shuffledSubarray should migrate fc.shuffledSubarray([1, 2, 3], 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray([1, 2, 3], {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) shuffledSubarray should migrate fc.shuffledSubarray(computeArray(), 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray(computeArray(), {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) shuffledSubarray should migrate fc.shuffledSubarray(myArray, 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray(myArray, {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) string should migrate fc.string(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) string should migrate fc.string(5); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) string should migrate fc.string(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) string16bits should migrate fc.string16bits(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) string16bits should migrate fc.string16bits(5); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) string16bits should migrate fc.string16bits(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) stringOf should migrate fc.stringOf(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) stringOf should migrate fc.stringOf(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) stringOf should migrate fc.stringOf(arb, minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) subarray should migrate fc.subarray([1, 2, 3], 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray([1, 2, 3], {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) subarray should migrate fc.subarray(computeArray(), 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray(computeArray(), {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) subarray should migrate fc.subarray(myArray, 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray(myArray, {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) unicodeJson should migrate fc.unicodeJson(2); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeJson({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) unicodeJsonObject should migrate fc.unicodeJsonObject(2); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeJsonObject({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) unicodeString should migrate fc.unicodeString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) unicodeString should migrate fc.unicodeString(5); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: babel) unicodeString should migrate fc.unicodeString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) array should migrate fc.array(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) array should migrate fc.array(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) array should migrate fc.array(arb, minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) asciiString should migrate fc.asciiString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) asciiString should migrate fc.asciiString(5); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) asciiString should migrate fc.asciiString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) base64String should migrate fc.base64String(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) base64String should migrate fc.base64String(5); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) base64String should migrate fc.base64String(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) bigInt should migrate fc.bigInt(1n, 2n); 1`] = `
+"const fc = require('fast-check');
+fc.bigInt({
+  min: 1n,
+  max: 2n
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) bigInt should migrate fc.bigInt(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.bigInt({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) bigUint should migrate fc.bigUint(1n); 1`] = `
+"const fc = require('fast-check');
+fc.bigUint({
+  max: 1n
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) bigUint should migrate fc.bigUint(BigInt(1)); 1`] = `
+"const fc = require('fast-check');
+fc.bigUint({
+  max: BigInt(1)
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) commands should migrate fc.commands([], 10); 1`] = `
+"const fc = require('fast-check');
+fc.commands([], {
+  maxCommands: 10
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) double should migrate fc.double(1); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) double should migrate fc.double(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) double should migrate fc.double(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) float should migrate fc.float(1); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) float should migrate fc.float(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) float should migrate fc.float(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) fullUnicodeString should migrate fc.fullUnicodeString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) fullUnicodeString should migrate fc.fullUnicodeString(5); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) fullUnicodeString should migrate fc.fullUnicodeString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) hexaString should migrate fc.hexaString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) hexaString should migrate fc.hexaString(5); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) hexaString should migrate fc.hexaString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) import from local files should recognize default import from fast-check when --local=true 1`] = `
+"import fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) import from local files should recognize local aliased import when --local=true 1`] = `
+"import fc from './path';
+import { array as localArray } from './path';
+fc.assert(fc.property(localArray(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) import from local files should recognize local default import when --local=true 1`] = `
+"import fc from './path';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) import should recognize aliased import 1`] = `
+"import { assert, property, nat } from 'fast-check';
+import { array as fcArray } from 'fast-check';
+assert(property(fcArray(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) import should recognize default import 1`] = `
+"import fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) import should recognize named import 1`] = `
+"import { assert, property, array, nat } from 'fast-check';
+assert(property(array(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) import should recognize star import 1`] = `
+"import * as fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) integer should migrate fc.integer(1); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) integer should migrate fc.integer(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) integer should migrate fc.integer(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) json should migrate fc.json(2); 1`] = `
+"const fc = require('fast-check');
+fc.json({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) jsonObject should migrate fc.jsonObject(2); 1`] = `
+"const fc = require('fast-check');
+fc.jsonObject({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) lorem should migrate fc.lorem(5); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) lorem should migrate fc.lorem(5, mode); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5,
+  mode: mode ? "sentences" : "words"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) lorem should migrate fc.lorem(5, true); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5,
+  mode: "sentences"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) lorem should migrate fc.lorem(num, mode); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: num,
+  mode: mode ? "sentences" : "words"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) nat should migrate fc.nat(1); 1`] = `
+"const fc = require('fast-check');
+fc.nat({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) option should migrate fc.option(arb, 10); 1`] = `
+"const fc = require('fast-check');
+fc.option(arb, {
+  freq: 10
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) require from local files should recognize default require from fast-check when --local=true 1`] = `
+"const fc = require('fast-check');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) require from local files should recognize local aliased require when --local=true 1`] = `
+"const fc = require('./path');
+const { array: localArray } = require('./path');
+fc.assert(fc.property(localArray(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) require from local files should recognize local default require when --local=true 1`] = `
+"const fc = require('./path');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) require should recognize aliased require 1`] = `
+"const { assert, property, nat } = require('fast-check');
+const { array: fcArray } = require('fast-check');
+assert(property(fcArray(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) require should recognize default require 1`] = `
+"const fc = require('fast-check');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) require should recognize named require 1`] = `
+"const { assert, property, array, nat } = require('fast-check');
+assert(property(array(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, 1, 5, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: 1,
+  maxLength: 5,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, 5, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: 5,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, function (a, b) { return a === b; }); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  compare: function (a, b) { return a === b; }
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, maxLength, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: maxLength,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, minLength, maxLength, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: minLength,
+  maxLength: maxLength,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) set should migrate fc.set(arb, minLength, maxLength, compare); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: minLength,
+  maxLength: maxLength,
+  compare: compare
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) shuffledSubarray should migrate fc.shuffledSubarray([1, 2, 3], 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray([1, 2, 3], {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) shuffledSubarray should migrate fc.shuffledSubarray(computeArray(), 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray(computeArray(), {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) shuffledSubarray should migrate fc.shuffledSubarray(myArray, 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray(myArray, {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) string should migrate fc.string(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) string should migrate fc.string(5); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) string should migrate fc.string(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) string16bits should migrate fc.string16bits(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) string16bits should migrate fc.string16bits(5); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) string16bits should migrate fc.string16bits(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) stringOf should migrate fc.stringOf(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) stringOf should migrate fc.stringOf(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) stringOf should migrate fc.stringOf(arb, minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) subarray should migrate fc.subarray([1, 2, 3], 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray([1, 2, 3], {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) subarray should migrate fc.subarray(computeArray(), 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray(computeArray(), {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) subarray should migrate fc.subarray(myArray, 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray(myArray, {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) unicodeJson should migrate fc.unicodeJson(2); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeJson({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) unicodeJsonObject should migrate fc.unicodeJsonObject(2); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeJsonObject({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) unicodeString should migrate fc.unicodeString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) unicodeString should migrate fc.unicodeString(5); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: ts) unicodeString should migrate fc.unicodeString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) array should migrate fc.array(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) array should migrate fc.array(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) array should migrate fc.array(arb, minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.array(arb, {
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) asciiString should migrate fc.asciiString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) asciiString should migrate fc.asciiString(5); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) asciiString should migrate fc.asciiString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.asciiString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) base64String should migrate fc.base64String(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) base64String should migrate fc.base64String(5); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) base64String should migrate fc.base64String(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.base64String({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) bigInt should migrate fc.bigInt(1n, 2n); 1`] = `
+"const fc = require('fast-check');
+fc.bigInt({
+  min: 1n,
+  max: 2n
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) bigInt should migrate fc.bigInt(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.bigInt({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) bigUint should migrate fc.bigUint(1n); 1`] = `
+"const fc = require('fast-check');
+fc.bigUint({
+  max: 1n
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) bigUint should migrate fc.bigUint(BigInt(1)); 1`] = `
+"const fc = require('fast-check');
+fc.bigUint({
+  max: BigInt(1)
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) commands should migrate fc.commands([], 10); 1`] = `
+"const fc = require('fast-check');
+fc.commands([], {
+  maxCommands: 10
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) double should migrate fc.double(1); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) double should migrate fc.double(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) double should migrate fc.double(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.double({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) float should migrate fc.float(1); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) float should migrate fc.float(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) float should migrate fc.float(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.float({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) fullUnicodeString should migrate fc.fullUnicodeString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) fullUnicodeString should migrate fc.fullUnicodeString(5); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) fullUnicodeString should migrate fc.fullUnicodeString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.fullUnicodeString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) hexaString should migrate fc.hexaString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) hexaString should migrate fc.hexaString(5); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) hexaString should migrate fc.hexaString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.hexaString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) import from local files should recognize default import from fast-check when --local=true 1`] = `
+"import fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) import from local files should recognize local aliased import when --local=true 1`] = `
+"import fc from './path';
+import { array as localArray } from './path';
+fc.assert(fc.property(localArray(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) import from local files should recognize local default import when --local=true 1`] = `
+"import fc from './path';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) import should recognize aliased import 1`] = `
+"import { assert, property, nat } from 'fast-check';
+import { array as fcArray } from 'fast-check';
+assert(property(fcArray(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) import should recognize default import 1`] = `
+"import fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) import should recognize named import 1`] = `
+"import { assert, property, array, nat } from 'fast-check';
+assert(property(array(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) import should recognize star import 1`] = `
+"import * as fc from 'fast-check';
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) integer should migrate fc.integer(1); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) integer should migrate fc.integer(1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  min: 1,
+  max: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) integer should migrate fc.integer(min, max); 1`] = `
+"const fc = require('fast-check');
+fc.integer({
+  min: min,
+  max: max
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) json should migrate fc.json(2); 1`] = `
+"const fc = require('fast-check');
+fc.json({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) jsonObject should migrate fc.jsonObject(2); 1`] = `
+"const fc = require('fast-check');
+fc.jsonObject({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) lorem should migrate fc.lorem(5); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) lorem should migrate fc.lorem(5, mode); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5,
+  mode: mode ? "sentences" : "words"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) lorem should migrate fc.lorem(5, true); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: 5,
+  mode: "sentences"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) lorem should migrate fc.lorem(num, mode); 1`] = `
+"const fc = require('fast-check');
+fc.lorem({
+  maxCount: num,
+  mode: mode ? "sentences" : "words"
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) nat should migrate fc.nat(1); 1`] = `
+"const fc = require('fast-check');
+fc.nat({
+  max: 1
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) option should migrate fc.option(arb, 10); 1`] = `
+"const fc = require('fast-check');
+fc.option(arb, {
+  freq: 10
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) require from local files should recognize default require from fast-check when --local=true 1`] = `
+"const fc = require('fast-check');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) require from local files should recognize local aliased require when --local=true 1`] = `
+"const fc = require('./path');
+const { array: localArray } = require('./path');
+fc.assert(fc.property(localArray(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) require from local files should recognize local default require when --local=true 1`] = `
+"const fc = require('./path');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) require should recognize aliased require 1`] = `
+"const { assert, property, nat } = require('fast-check');
+const { array: fcArray } = require('fast-check');
+assert(property(fcArray(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) require should recognize default require 1`] = `
+"const fc = require('fast-check');
+fc.assert(fc.property(fc.array(fc.nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) require should recognize named require 1`] = `
+"const { assert, property, array, nat } = require('fast-check');
+assert(property(array(nat(), {
+  minLength: 7,
+  maxLength: 10
+}), () => true));"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, 1, 5, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: 1,
+  maxLength: 5,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, 5, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: 5,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, function (a, b) { return a === b; }); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  compare: function (a, b) { return a === b; }
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, maxLength, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  maxLength: maxLength,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, minLength, maxLength, (a, b) => a === b); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: minLength,
+  maxLength: maxLength,
+  compare: (a, b) => a === b
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) set should migrate fc.set(arb, minLength, maxLength, compare); 1`] = `
+"const fc = require('fast-check');
+fc.set(arb, {
+  minLength: minLength,
+  maxLength: maxLength,
+  compare: compare
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) shuffledSubarray should migrate fc.shuffledSubarray([1, 2, 3], 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray([1, 2, 3], {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) shuffledSubarray should migrate fc.shuffledSubarray(computeArray(), 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray(computeArray(), {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) shuffledSubarray should migrate fc.shuffledSubarray(myArray, 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.shuffledSubarray(myArray, {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) string should migrate fc.string(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) string should migrate fc.string(5); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) string should migrate fc.string(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.string({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) string16bits should migrate fc.string16bits(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) string16bits should migrate fc.string16bits(5); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) string16bits should migrate fc.string16bits(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.string16bits({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) stringOf should migrate fc.stringOf(arb, 1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) stringOf should migrate fc.stringOf(arb, 5); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) stringOf should migrate fc.stringOf(arb, minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.stringOf(arb, {
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) subarray should migrate fc.subarray([1, 2, 3], 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray([1, 2, 3], {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) subarray should migrate fc.subarray(computeArray(), 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray(computeArray(), {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) subarray should migrate fc.subarray(myArray, 1, 2); 1`] = `
+"const fc = require('fast-check');
+fc.subarray(myArray, {
+  minLength: 1,
+  maxLength: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) unicodeJson should migrate fc.unicodeJson(2); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeJson({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) unicodeJsonObject should migrate fc.unicodeJsonObject(2); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeJsonObject({
+  maxDepth: 2
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) unicodeString should migrate fc.unicodeString(1, 5); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  minLength: 1,
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) unicodeString should migrate fc.unicodeString(5); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  maxLength: 5
+});"
+`;
+
+exports[`codemods::unify-signature (parser: tsx) unicodeString should migrate fc.unicodeString(minLength, maxLength); 1`] = `
+"const fc = require('fast-check');
+fc.unicodeString({
+  minLength: minLength,
+  maxLength: maxLength
+});"
+`;

@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "@fast-check/test-bundle-node-with-import",
+  "description": "Test making sure fast-check can be referenced from ESM projects",
+  "type": "module",
+  "scripts": {
+    "dry": "node dry.js",
+    "start": "node main.js > out.txt",
+    "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
+  },
+  "dependencies": {
+    "fast-check": "workspace:*"
+  },
+  "license": "MIT"
+}

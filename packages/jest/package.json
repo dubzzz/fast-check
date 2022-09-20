@@ -1,0 +1,67 @@
+{
+  "name": "@fast-check/jest",
+  "description": "Property based testing for Jest based on fast-check",
+  "version": "1.1.0",
+  "type": "commonjs",
+  "main": "lib/jest-fast-check.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": "./lib/jest-fast-check.js",
+      "import": "./lib/esm/jest-fast-check.js",
+      "default": "./lib/esm/jest-fast-check.js"
+    }
+  },
+  "module": "lib/esm/jest-fast-check.js",
+  "types": "lib/jest-fast-check.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
+    "build-ci": "yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "jest-test": "jest",
+    "test": "sh test.sh",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/jest"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
+  "dependencies": {
+    "fast-check": "^3.0.0"
+  },
+  "peerDependencies": {
+    "@jest/globals": ">=25.5.2"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.0.3",
+    "@types/node": "^17.0.44",
+    "fast-check": "workspace:*",
+    "jest": "^29.0.3",
+    "ts-jest": "^29.0.1",
+    "typescript": "^4.8.3"
+  },
+  "keywords": [
+    "jest",
+    "generative",
+    "property-based testing",
+    "testing",
+    "quickcheck",
+    "fast-check"
+  ],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/fast-check"
+  }
+}

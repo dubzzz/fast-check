@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.publish.types.json",
+  "compilerOptions": {
+    "outDir": "lib/"
+  },
+  "include": ["src/"]
+}

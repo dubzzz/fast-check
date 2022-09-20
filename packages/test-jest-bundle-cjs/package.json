@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "@fast-check/test-jest-bundle-cjs",
+  "descrition": "Test bundling of @fast-check/jest against CJS runners",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest --config jest.config.cjs"
+  },
+  "devDependencies": {
+    "@fast-check/jest": "workspace:*",
+    "fast-check": "workspace:*",
+    "jest": "^29.0.3"
+  },
+  "license": "MIT"
+}

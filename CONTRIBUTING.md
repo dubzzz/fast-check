@@ -15,7 +15,7 @@ Use your best judgment, and feel free to propose changes to this document in a p
 Before asking questions, please double-check you can not find your answer in one of the examples provided or in the documentation of the project:
 
 - [Documentation](https://github.com/dubzzz/fast-check/blob/main/README.md)
-- [Examples provided inside the project](https://github.com/dubzzz/fast-check/tree/main/example)
+- [Examples provided inside the project](https://github.com/dubzzz/fast-check/tree/main/examples)
 - [Examples of properties](https://github.com/dubzzz/fast-check-examples)
 - [Example: fuzzing a REST API](https://github.com/dubzzz/fuzz-rest-api)
 
@@ -34,7 +34,7 @@ In order to start playing with the code locally you must run the following set o
 ```bash
 git clone https://github.com/dubzzz/fast-check.git && cd fast-check
 yarn
-yarn build    #compile the code in ./src, build the ./lib content
+yarn workspace fast-check build    #compile the code in packages/fast-check/src, build the packages/fast-check/lib content
 ```
 
 Once done, everything is ready for you to start working on the code.
@@ -46,10 +46,21 @@ Once done with your development you can check it follow the recommended code sty
 
 You should also check for linting by running `yarn lint:check` and fix lint problems with `yarn lint`.
 
-#### Travis CI integration
+#### GitHub Actions integration
 
-All pull requests will trigger Travis CI builds.
+All pull requests will trigger GitHub Actions chekcs.
 It ensures that the pull request follow the code style of the project and do not break existing tests.
+
+#### Notify how impactful your change will be
+
+Any change in the code may have impact in the next release. In order to ease our deployment process we try to anticipate as much as possible the impacts of each single pull request from a semver point of view:
+
+- decline: really no impact code side from a bundle point of view
+- patch: no visible impact, generally mostly fixing bugs or typos in the code
+- minor: new features
+- major: breaking changes
+
+In order to ease this work, before opening the PR (or after if you forgot to do it), you should run the script `yarn version:bump` to underline which packages have been impacted. Please note that our internals and private packages must always be toggled to 'decline' as we don't plan to bump their versions.
 
 #### Update your PR
 
@@ -96,7 +107,7 @@ We expect a quite minimal amount of tests to be added as most of the logic depen
 - _Unit-test_ &amp; _Integration_ - in `test/unit/arbitrary`
 
 ```js
-import * as fc from '../../../lib/fast-check';
+import * as fc from 'fast-check';
 import { myArbitrary } from '../../../../src/arbitrary/MyArbitrary';
 import {
   assertProduceCorrectValues,
@@ -162,18 +173,22 @@ describe('myArbitrary (integration)', () => {
 
 - No regression test - in `test/e2e/NoRegression.spec.ts`
 
-Then run `yarn e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
+Then run `yarn workspace fast-check e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
 
-- Legacy support test - in `test/legacy/main.js`
+- Legacy support test - in `packages/test-minimal-support/main.js`
 
-The `legacy` spec is responsible to check that most of the arbitraries provided by fast-check are working fine on very old releases of node.
+The spec is responsible to check that most of the arbitraries provided by fast-check are working fine on rather old releases of node.
 
-- Typing test - in `test/type/main.ts`
+- Typing test - in `packages/test-types/main.ts`
 
-The `type` spec is responsible to check that the typings are correct but they also ensure that they will not break with future changes or upcoming releases of TypeScript.
+The spec is responsible to check that the typings are correct. It also ensures that they will not break with future changes or upcoming releases of TypeScript.
+
+- Bundled test - in `packages/test-bundle-*`
+
+The specs are responsible to check that the build package will be loadable correctly from various bundlers and runtimes without any import issues.
 
 ✔️ _Document the arbitrary_
 
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @internal */` tag to hide internals - otherwise they would get published into the generated documentation
 
-- Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/main/documentation/Arbitraries.md
+- Add the arbitrary into the list of Built-in Arbitraries - see https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Arbitraries.md

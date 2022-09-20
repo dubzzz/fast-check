@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "@fast-check/test-bundle-webpack-with-import",
+  "description": "Test making sure fast-check can be used with ESM in Webpack",
+  "scripts": {
+    "generate": "webpack && webpack --config webpack.config.dry.js",
+    "out:dry": "node dist/dry.js",
+    "out:start": "node dist/main.js > out.txt",
+    "dry": "yarn generate && yarn out:dry",
+    "start": "yarn generate && yarn out:start",
+    "test": "yarn dry && yarn start && diff expectedResult.txt out.txt"
+  },
+  "dependencies": {
+    "fast-check": "workspace:*"
+  },
+  "devDependencies": {
+    "querystring-es3": "^0.2.1",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "license": "MIT"
+}

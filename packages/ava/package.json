@@ -1,0 +1,74 @@
+{
+  "name": "@fast-check/ava",
+  "description": "Property based testing for AVA based on fast-check",
+  "version": "1.0.2",
+  "type": "commonjs",
+  "main": "lib/ava-fast-check.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": "./lib/ava-fast-check.js",
+      "import": "./lib/esm/ava-fast-check.js",
+      "default": "./lib/esm/ava-fast-check.js"
+    }
+  },
+  "module": "lib/esm/ava-fast-check.js",
+  "types": "lib/ava-fast-check.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
+    "build-ci": "yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "ava-test": "ava -s -t",
+    "test": "sh test.sh",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/ava"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/ava#readme",
+  "dependencies": {
+    "fast-check": "^3.0.0"
+  },
+  "peerDependencies": {
+    "ava": ">=4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.44",
+    "ava": "^4.3.3",
+    "esm": "^3.2.25",
+    "fast-check": "workspace:*",
+    "typescript": "^4.8.3"
+  },
+  "keywords": [
+    "ava",
+    "generative",
+    "property-based testing",
+    "testing",
+    "quickcheck",
+    "fast-check"
+  ],
+  "ava": {
+    "files": [
+      "test/**/*"
+    ],
+    "require": [
+      "esm"
+    ]
+  },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/fast-check"
+  }
+}

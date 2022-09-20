@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "@fast-check/test-minimal-support",
+  "description": "Test making sure fast-check can be used with it's official minimal requirement of node",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "dependencies": {
+    "fast-check": "workspace:*"
+  },
+  "license": "MIT"
+}
