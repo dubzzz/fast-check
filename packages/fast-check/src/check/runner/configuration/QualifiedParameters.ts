@@ -33,6 +33,7 @@ export class QualifiedParameters<T> {
   ignoreEqualValues: boolean;
   reporter: ((runDetails: RunDetails<T>) => void) | null;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
+  errorWithCause: boolean;
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -57,11 +58,12 @@ export class QualifiedParameters<T> {
     this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
     this.reporter = QualifiedParameters.readOrDefault(p, 'reporter', null);
     this.asyncReporter = QualifiedParameters.readOrDefault(p, 'asyncReporter', null);
+    this.errorWithCause = QualifiedParameters.readBoolean(p, 'errorWithCause');
   }
 
   toParameters(): Parameters<T> {
     const orUndefined = <V>(value: V | null) => (value !== null ? value : undefined);
-    return {
+    const parameters: { [K in keyof Required<Parameters<T>>]: Parameters<T>[K] } = {
       seed: this.seed,
       randomType: this.randomType,
       numRuns: this.numRuns,
@@ -80,7 +82,9 @@ export class QualifiedParameters<T> {
       endOnFailure: this.endOnFailure,
       reporter: orUndefined(this.reporter),
       asyncReporter: orUndefined(this.asyncReporter),
+      errorWithCause: this.errorWithCause,
     };
+    return parameters;
   }
 
   private static readSeed = <T>(p: Parameters<T>): number => {
