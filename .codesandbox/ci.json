@@ -1,6 +1,13 @@
 {
   "buildCommand": "build:all",
   "sandboxes": ["vanilla", "/examples"],
-  "packages": ["packages/ava", "packages/fast-check", "packages/jest", "packages/packaged"],
+  "packages": [
+    "packages/ava",
+    "packages/fast-check",
+    "packages/jest",
+    "packages/packaged",
+    "packages/poisoning",
+    "packages/vitest"
+  ],
   "node": "14"
 }
