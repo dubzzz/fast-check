@@ -81,11 +81,13 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
 
 /** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
+  const noErrorInMessage = out.runConfiguration.errorWithCause;
+  const messageErrorPart = noErrorInMessage ? '' : `\nGot error: ${out.error}`;
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${
     out.numShrinks
-  } time(s)\nGot error: ${out.error}`;
+  } time(s)${messageErrorPart}`;
   let details: string | null = null;
   const hints: string[] = [];
 
@@ -238,7 +240,10 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 }
 
 /** @internal */
-function buildErrorWithOriginalContext<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
+function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
+  if (!out.runConfiguration.errorWithCause) {
+    throw new Error(errorMessage);
+  }
   const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
   const error = new ErrorWithCause(errorMessage, { cause: out.errorInstance });
   if (!('cause' in error)) {
@@ -250,13 +255,13 @@ function buildErrorWithOriginalContext<Ts>(errorMessage: string | undefined, out
 /** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
   if (!out.failed) return;
-  throw buildErrorWithOriginalContext<Ts>(defaultReportMessage(out), out);
+  throw buildError<Ts>(defaultReportMessage(out), out);
 }
 
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
   if (!out.failed) return;
-  throw buildErrorWithOriginalContext<Ts>(await asyncDefaultReportMessage(out), out);
+  throw buildError<Ts>(await asyncDefaultReportMessage(out), out);
 }
 
 /**
