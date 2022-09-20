@@ -1,0 +1,78 @@
+import { it, test } from 'vitest';
+import * as fc from 'fast-check';
+
+type It = typeof it;
+
+// Pre-requisite: https://github.com/Microsoft/TypeScript/pull/26063
+// Require TypeScript 3.1
+type ArbitraryTuple<Ts extends [any] | any[]> = {
+  [P in keyof Ts]: fc.Arbitrary<Ts[P]>;
+};
+
+type Prop<Ts extends [any] | any[]> = (...args: Ts) => boolean | void | PromiseLike<boolean | void>;
+type PromiseProp<Ts extends [any] | any[]> = (...args: Ts) => Promise<boolean | void>;
+
+function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
+  return (...args: Ts) => Promise.resolve(prop(...args));
+}
+
+function internalTestPropExecute<Ts extends [any] | any[]>(
+  testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
+  label: string,
+  arbitraries: ArbitraryTuple<Ts>,
+  prop: Prop<Ts>,
+  params?: fc.Parameters<Ts>
+): void {
+  const customParams: fc.Parameters<Ts> = params || {};
+  if (customParams.seed === undefined) customParams.seed = Date.now();
+
+  const promiseProp = wrapProp(prop);
+  testFn(`${label} (with seed=${customParams.seed})`, async () => {
+    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), params);
+  });
+}
+
+// Mimic ItBase from vitest
+function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['only' | 'skip']) {
+  function base<Ts extends [any] | any[]>(
+    label: string,
+    arbitraries: ArbitraryTuple<Ts>,
+    prop: Prop<Ts>,
+    params?: fc.Parameters<Ts>
+  ): void {
+    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+  }
+  const extras = {};
+  return Object.assign(base, extras);
+}
+
+// Mimic ItConcurrentExtended from vitest
+function internalTestPropConcurrent(testFn: It | It['concurrent']) {
+  function base<Ts extends [any] | any[]>(
+    label: string,
+    arbitraries: ArbitraryTuple<Ts>,
+    prop: Prop<Ts>,
+    params?: fc.Parameters<Ts>
+  ): void {
+    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+  }
+  const extras = {
+    only: internalTestPropBase(testFn.only),
+    skip: internalTestPropBase(testFn.skip),
+  };
+  return Object.assign(base, extras);
+}
+
+// Mimic ItConcurrent from vitest
+function internalTestProp(testFn: It) {
+  const base = internalTestPropConcurrent(testFn);
+  const extras = {
+    concurrent: internalTestPropConcurrent(testFn.concurrent),
+    todo: testFn.todo,
+  };
+  return Object.assign(base, extras);
+}
+
+export const testProp = internalTestProp(test);
+export const itProp = internalTestProp(it);
+export { fc };

@@ -1,0 +1,62 @@
+{
+  "name": "@fast-check/vitest",
+  "description": "Property based testing for Vitest based on fast-check",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "main": "lib/vitest-fast-check.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": "./lib/vitest-fast-check.js",
+      "import": "./lib/esm/vitest-fast-check.js",
+      "default": "./lib/esm/vitest-fast-check.js"
+    }
+  },
+  "module": "lib/esm/vitest-fast-check.js",
+  "types": "lib/vitest-fast-check.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
+    "build-ci": "yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/vitest"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/vitest#readme",
+  "dependencies": {
+    "fast-check": "^3.0.0"
+  },
+  "peerDependencies": {
+    "vitest": ">=0.23.4"
+  },
+  "devDependencies": {
+    "fast-check": "workspace:*",
+    "typescript": "^4.8.3",
+    "vitest": "^0.23.4"
+  },
+  "keywords": [
+    "vitest",
+    "generative",
+    "property-based testing",
+    "testing",
+    "quickcheck",
+    "fast-check"
+  ],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/fast-check"
+  }
+}
