@@ -10,6 +10,8 @@ import {
   RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails';
 
+const safeObjectAssign = Object.assign;
+
 /** @internal */
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
@@ -240,7 +242,7 @@ function buildErrorWithOriginalContext<Ts>(errorMessage: string | undefined, out
   const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
   const error = new ErrorWithCause(errorMessage, { cause: out.errorInstance });
   if (!('cause' in error)) {
-    Object.assign(error, { cause: out.errorInstance });
+    safeObjectAssign(error, { cause: out.errorInstance });
   }
   return error;
 }
