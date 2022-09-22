@@ -1,5 +1,6 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { Error } from '../../utils/globals';
 import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { PropertyFailure, IRawProperty } from './IRawProperty';
@@ -9,7 +10,10 @@ const timeoutAfter = (timeMs: number) => {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = setTimeout(() => {
-      resolve({ error: undefined, errorMessage: `Property timeout: exceeded limit of ${timeMs} milliseconds` });
+      resolve({
+        error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
+        errorMessage: `Property timeout: exceeded limit of ${timeMs} milliseconds`,
+      });
     }, timeMs);
   });
   return {
