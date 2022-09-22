@@ -25,18 +25,76 @@ function runWorker<Ts extends unknown[]>(
 export type WorkerProperty<Ts> = fc.IAsyncPropertyWithHooks<Ts> & { start: () => () => void };
 
 type WorkerPool<Ts extends unknown[]> = {
-  startPool: () => {stop:()=> void}
-  acquireOne: ()=>{release: () => void}
-}
-function workerPool<Ts extends unknown[]>(url: URL, currentWorkerId: number):WorkerPool<Ts> {
+  /** By starting the pool we ensures that we will always preserve at least one running worker */
+  startPool: () => { stop: () => void };
+  /** Take one worker for the pool if any is available to handle queries, or spawn a new one */
+  acquireOne: (
+    ins: Ts,
+    onSuccess: (value: unknown) => void,
+    onFailure: (error: unknown) => void
+  ) => { release: () => void };
+};
+
+type PooledWorkerRegistration = {
+  currentRunId: number;
+  onSuccess: (value: unknown) => void;
+  onFailure: (error: unknown) => void;
+};
+type PooledWorker = {
+  worker: Worker;
+  registration: PooledWorkerRegistration | null;
+};
+
+type ToPooledWorkerMessage = { runId: number } & (
+  | { success: true; output: unknown }
+  | { success: false; error: unknown }
+);
+
+function workerPool<Ts extends unknown[]>(url: URL, currentWorkerId: number): WorkerPool<Ts> {
   // startPool
   // -> stop
   // acquireOne (implicitely)
   // -> release
-  const workers: Worker[] = [];
-  return {
-    startPool: () =>
+
+  let runId = 0;
+  const workers: PooledWorker[] = [];
+  function spawnNewWorker(): PooledWorker {
+    let registration: PooledWorkerRegistration | null = undefined;
+    const worker = new Worker(url, { workerData: { currentWorkerId } });
+    worker.on('message', (data: ToPooledWorkerMessage) => {
+      if (registration === null || data.runId !== registration.currentRunId) {
+        return;
+      }
+      if (data.success) {
+        registration.onSuccess(data.output);
+      } else {
+        registration.onFailure(data.error);
+      }
+    });
+    worker.on('error', (err) => {
+      if (registration === null) {
+        return;
+      }
+      registration.onFailure(err);
+    });
+    worker.on('exit', (code) => {
+      if (registration === null || code === 0) {
+        return;
+      }
+      registration.onFailure(new Error(`Worker stopped with exit code ${code}`));
+      // We should probably kill the worker too
+    });
   }
+  return {
+    // startPool: () =>
+    acquireOne: (ins, onSuccess, onFailure) => {
+      const firstAvailableWorker = workers.find((w) => w.currentRunId === undefined);
+      const worker = firstAvailableWorker || spawnNewWorker();
+      const currentRunId = ++runId;
+      tasks.set(currentRunId, { resolve, reject });
+      worker.postMessage({ ins, runId: currentRunId });
+    },
+  };
 }
 
 function runMainThread(): WorkerProperty<Ts> {
