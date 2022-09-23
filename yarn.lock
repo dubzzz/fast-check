@@ -15,14 +15,14 @@ __metadata:
   linkType: hard
 
 "@actions/github@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "@actions/github@npm:5.0.3"
+  version: 5.1.0
+  resolution: "@actions/github@npm:5.1.0"
   dependencies:
     "@actions/http-client": ^2.0.1
     "@octokit/core": ^3.6.0
     "@octokit/plugin-paginate-rest": ^2.17.0
     "@octokit/plugin-rest-endpoint-methods": ^5.13.0
-  checksum: 1d8e8c5c351dd069a96b1ec39c8f609a2bbcb135d69bb8d9bb5c00752bdff81ec6d67ca90eb77dedc657cd630af484538f881c16eb5b008fd3ee5f430d0c38d2
+  checksum: a53ed9218976370c8fb6e222130a2ded68261d7c00d4b3ebce3bf8e436fe04eba8fc8bf2a21bd046351300b25db31bb1138d56a6687a7b78bb37f0c3721c32a5
   languageName: node
   linkType: hard
 
