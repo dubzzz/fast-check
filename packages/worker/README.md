@@ -20,14 +20,14 @@ The most noticeable changes you will have to do are:
 
 - hoist properties so that they get declared on the root scope
 - replace `fc.property` by `workerProperty` and adds the extra URL parameter
-- replace `fc.assert` by `assertWorker`
 
 ```js
 import { isMainThread } from 'node:worker_threads';
 import { workerProperty, assertWorker } from '@fast-check/worker';
 import fc from 'fast-check';
 
-const p1 = workerProperty(new URL(import.meta.url), fc.nat(), fc.nat(), (start, end) => {
+const workerFileUrl = new URL(import.meta.url); // or __fileName in commonjs
+const p1 = workerProperty(workerFileUrl, fc.nat(), fc.nat(), (start, end) => {
   // starting a possibly infinite loop
   for (let i = start; i !== end; ++i) {
     // doing stuff...
@@ -36,7 +36,7 @@ const p1 = workerProperty(new URL(import.meta.url), fc.nat(), fc.nat(), (start, 
 
 if (isMainThread) {
   test('should assess p1', async () => {
-    await assertWorker(p1, { timeout: 1000 });
+    await fc.assert(p1, { timeout: 1000 });
   });
 }
 ```
