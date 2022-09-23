@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.publish.types.json",
   "compilerOptions": {
+    "target": "es2020",
     "outDir": "lib/"
   },
   "include": ["src/"]

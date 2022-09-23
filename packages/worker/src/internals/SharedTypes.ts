@@ -3,7 +3,7 @@ import type { Arbitrary, IAsyncPropertyWithHooks } from 'fast-check';
 export type PropertyArbitraries<Ts extends unknown[]> = {
   [K in keyof Ts]: Arbitrary<Ts[K]>;
 };
-export type PropertyPredicate<Ts extends unknown[]> = (...args: Ts) => Promise<boolean | void>;
+export type PropertyPredicate<Ts extends unknown[]> = (...args: Ts) => boolean | void | Promise<boolean | void>;
 export type WorkerProperty<Ts> = IAsyncPropertyWithHooks<Ts>;
 
 export type MainThreadToWorkerMessage<Ts> = { runId: number; inputs: Ts };
