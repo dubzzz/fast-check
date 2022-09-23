@@ -5,7 +5,7 @@ import {
   type PreconditionFailure,
   type PropertyFailure,
 } from 'fast-check';
-import { type WorkerProperty } from './SharedTypes';
+import { type WorkerProperty } from './SharedTypes.js';
 
 /**
  * NoopWorkerProperty is a placeholder instance of property returned

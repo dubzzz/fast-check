@@ -1,9 +1,9 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { runWorker } from './internals/WorkerRunner';
-import { runMainThread } from './internals/MainThreadRunner';
-import { NoopWorkerProperty } from './internals/NoopWorkerProperty';
-import { type PropertyArbitraries, type PropertyPredicate, type WorkerProperty } from './internals/SharedTypes';
+import { runWorker } from './internals/WorkerRunner.js';
+import { runMainThread } from './internals/MainThreadRunner.js';
+import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
+import { type PropertyArbitraries, type PropertyPredicate, type WorkerProperty } from './internals/SharedTypes.js';
 
 let lastWorkerId = 0;
 export function workerProperty<Ts extends [unknown, ...unknown[]]>(

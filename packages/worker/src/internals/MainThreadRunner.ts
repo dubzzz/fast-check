@@ -5,7 +5,7 @@ import {
   type PropertyArbitraries,
   type WorkerProperty,
   type MainThreadToWorkerMessage,
-} from './SharedTypes';
+} from './SharedTypes.js';
 
 /**
  *
