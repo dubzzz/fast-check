@@ -1,4 +1,4 @@
-import { isMainThread, parentPort, workerData, Worker } from 'node:worker_threads';
+import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { runWorker } from './internals/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
@@ -6,7 +6,7 @@ import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
 import { type PropertyArbitraries, type PropertyPredicate, type WorkerProperty } from './internals/SharedTypes.js';
 
 let lastWorkerId = 0;
-const allKnownWorkersPerProperty = new Map<WorkerProperty<unknown>, Worker[]>();
+const allKnownTerminateAllWorkersPerProperty = new Map<WorkerProperty<unknown>, () => Promise<void>>();
 
 export function workerProperty<Ts extends [unknown, ...unknown[]]>(
   url: URL,
@@ -16,14 +16,8 @@ export function workerProperty<Ts extends [unknown, ...unknown[]]>(
   if (isMainThread) {
     // Main thread code
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const property = runMainThread<Ts>(url, currentWorkerId, arbitraries, (worker) => {
-      const workers = allKnownWorkersPerProperty.get(property);
-      if (workers === undefined) {
-        allKnownWorkersPerProperty.set(property, [worker]);
-      } else {
-        workers.push(worker);
-      }
-    });
+    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentWorkerId, arbitraries);
+    allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
     return property;
   } else if (parentPort !== null && currentWorkerId === workerData.currentWorkerId) {
     // Worker code
@@ -36,10 +30,9 @@ export function workerProperty<Ts extends [unknown, ...unknown[]]>(
 }
 
 export function clearAllWorkersFor(property: WorkerProperty<unknown>): void {
-  const workers = allKnownWorkersPerProperty.get(property);
-  if (workers === undefined) {
+  const terminateAllWorkers = allKnownTerminateAllWorkersPerProperty.get(property);
+  if (terminateAllWorkers === undefined) {
     return;
   }
-  workers.forEach((worker) => worker.terminate());
-  allKnownWorkersPerProperty.delete(property);
+  terminateAllWorkers();
 }
