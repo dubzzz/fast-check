@@ -1,7 +1,7 @@
 import { type MessagePort } from 'node:worker_threads';
 import {
-  type PropertyPredicate,
   type MainThreadToWorkerMessage,
+  type PropertyPredicate,
   type WorkerToMainThreadMessage,
 } from './SharedTypes.js';
 
@@ -11,11 +11,9 @@ import {
  * @param predicate - the predicate to assess
  */
 export function runWorker<Ts extends unknown[]>(parentPort: MessagePort, predicate: PropertyPredicate<Ts>): void {
-  // TODO - Workers should be able to be re-used through executions of the same predicate
-  // in order to increase the overall performance of a worker-based version
-  parentPort.once('message', (payload: MainThreadToWorkerMessage<Ts>) => {
-    const { inputs, runId } = payload;
-    Promise.resolve(predicate(...inputs)).then(
+  parentPort.on('message', (message: MainThreadToWorkerMessage<Ts>) => {
+    const { payload, runId } = message;
+    Promise.resolve(predicate(...payload)).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { success: true, output, runId };
         parentPort.postMessage(message);
