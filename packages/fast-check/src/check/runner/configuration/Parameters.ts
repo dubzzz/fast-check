@@ -187,4 +187,14 @@ export interface Parameters<T = void> {
    * @remarks Since 1.25.0
    */
   asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
+  /**
+   * Should the thrown Error include a cause leading to the original Error?
+   *
+   * In such case the original Error will disappear from the message of the Error thrown by fast-check
+   * and only appear within the cause part of it.
+   *
+   * Remark: At the moment, only node (≥16.14.0) and vitest seem to properly display such errors.
+   * Others will just discard the cause at display time.
+   */
+  errorWithCause?: boolean;
 }

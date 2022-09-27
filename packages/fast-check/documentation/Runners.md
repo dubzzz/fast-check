@@ -138,6 +138,10 @@ export interface Parameters<T = void> {
   // it cannot be used in conjonction with reporter
   // it cannot be set on synchronous properties
   // it will be used by assert for asynchronous properties
+  errorWithCause?: boolean; // optional, enable Error with cause instead of raw Error including the original error
+  // as part of the message. The Error with cause format is currently well supported starting at node ≥16.14.0
+  // and by test runners such as vitest (neither jasmine, nor mocha, nor jest supported Error with cause when
+  // tested on the 20th of September 2022).
 }
 ```
 

@@ -31,8 +31,9 @@ const parametersArbitrary = fc.record(
     endOnFailure: fc.boolean(),
     reporter: fc.func(fc.constant(undefined)),
     asyncReporter: fc.func(fc.constant(Promise.resolve(undefined))),
+    errorWithCause: fc.boolean(),
   },
-  { withDeletedKeys: true }
+  { requiredKeys: [] }
 );
 
 const hardCodedRandomType = fc.constantFrom(

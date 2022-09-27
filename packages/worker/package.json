@@ -1,19 +1,19 @@
 {
-  "name": "@fast-check/jest",
-  "description": "Property based testing for Jest based on fast-check",
-  "version": "1.1.0",
+  "name": "@fast-check/worker",
+  "description": "Provide built-ins to run predicates directly within dedicated workers",
+  "version": "0.0.0",
   "type": "commonjs",
-  "main": "lib/jest-fast-check.js",
+  "main": "lib/main.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "require": "./lib/jest-fast-check.js",
-      "import": "./lib/esm/jest-fast-check.js",
-      "default": "./lib/esm/jest-fast-check.js"
+      "require": "./lib/main.js",
+      "import": "./lib/esm/main.js",
+      "default": "./lib/esm/main.js"
     }
   },
-  "module": "lib/esm/jest-fast-check.js",
-  "types": "lib/jest-fast-check.d.ts",
+  "module": "lib/esm/main.js",
+  "types": "lib/main.d.ts",
   "files": [
     "lib"
   ],
@@ -23,41 +23,31 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "jest-test": "jest",
-    "test": "sh test.sh",
+    "test": "jest",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dubzzz/fast-check.git",
-    "directory": "packages/jest"
+    "directory": "packages/worker"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
-  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
   "dependencies": {
     "fast-check": "^3.0.0"
   },
-  "peerDependencies": {
-    "@jest/globals": ">=25.5.2"
-  },
   "devDependencies": {
-    "@jest/globals": "^29.0.3",
-    "@types/node": "^17.0.44",
-    "fast-check": "workspace:*",
     "jest": "^29.0.3",
     "ts-jest": "^29.0.2",
+    "ts-jest-resolver": "^2.0.0",
     "typescript": "^4.8.3"
   },
   "keywords": [
-    "jest",
-    "generative",
-    "property-based testing",
-    "testing",
-    "quickcheck",
+    "worker",
     "fast-check"
   ],
   "funding": {
