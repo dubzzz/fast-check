@@ -18,7 +18,8 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   const pool = new WorkerPool<boolean | void, Ts>(workerFileUrl, workerId);
   const property = fc.asyncProperty<Ts>(...arbitraries, async (...inputs) => {
     return new Promise((resolve, reject) => {
-      pool.acquireOne(inputs, resolve, reject);
+      // TODO - Move acquire phase into some kind of beforeEach not to run it with the predicate
+      pool.acquireOne(inputs, resolve, reject).catch(reject);
     });
   });
   const terminateAllWorkers = () => pool.terminateAllWorkers();

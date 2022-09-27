@@ -11,8 +11,12 @@ export class WorkerPool<TSuccess, TPayload> {
   }
 
   /** Take one worker from the pool if any is available to handle queries or spawn a new one */
-  public acquireOne(payload: TPayload, onSuccess: OnSuccessCallback<TSuccess>, onFailure: OnErrorCallback): void {
-    const worker = this.pool.getFirstAvailableWorker() || this.pool.spawnNewWorker();
+  public async acquireOne(
+    payload: TPayload,
+    onSuccess: OnSuccessCallback<TSuccess>,
+    onFailure: OnErrorCallback
+  ): Promise<void> {
+    const worker = this.pool.getFirstAvailableWorker() || (await this.pool.spawnNewWorker());
     return worker.register(payload, onSuccess, onFailure);
   }
 
