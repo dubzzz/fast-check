@@ -787,7 +787,7 @@ __metadata:
   dependencies:
     "@actions/core": ^1.7.0
     "@actions/github": ^5.0.3
-    netlify-cli: ^11.5.1
+    netlify-cli: ^12.0.0
   languageName: unknown
   linkType: soft
 
@@ -1750,18 +1750,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/build@npm:^27.18.5":
-  version: 27.18.5
-  resolution: "@netlify/build@npm:27.18.5"
+"@netlify/build@npm:^27.18.6":
+  version: 27.18.6
+  resolution: "@netlify/build@npm:27.18.6"
   dependencies:
     "@bugsnag/js": ^7.0.0
-    "@netlify/cache-utils": ^4.0.0
-    "@netlify/config": ^18.2.3
+    "@netlify/cache-utils": ^4.1.5
+    "@netlify/config": ^18.2.4
     "@netlify/edge-bundler": ^2.2.0
-    "@netlify/functions-utils": ^4.2.9
-    "@netlify/git-utils": ^4.0.0
+    "@netlify/functions-utils": ^4.2.10
+    "@netlify/git-utils": ^4.1.2
     "@netlify/plugins-list": ^6.46.0
-    "@netlify/run-utils": ^4.0.0
+    "@netlify/run-utils": ^4.0.2
     "@netlify/zip-it-and-ship-it": ^7.1.2
     "@sindresorhus/slugify": ^2.0.0
     "@types/node": ^16.0.0
@@ -1810,14 +1810,14 @@ __metadata:
     uuid: ^8.0.0
     yargs: ^17.3.1
   bin:
-    netlify-build: src/core/bin.js
-  checksum: b8c85ebb3969b1290d204979f5fae16ed6a0e119674e3048b653bc3bf4564b35aac385b4369f5c19927980600f63a8792a3cc1e8cfbde0faab466f116ec5eead
+    netlify-build: lib/core/bin.js
+  checksum: bd00c567c9f7f2f5650357c1e4392311cbc0831b814d67f219dc5b0650c2cb48aba4c8fe342bf3cfde0618359d13a81d60e3fd4bca97af7adeaf56acb6713b05
   languageName: node
   linkType: hard
 
-"@netlify/cache-utils@npm:^4.0.0":
-  version: 4.1.4
-  resolution: "@netlify/cache-utils@npm:4.1.4"
+"@netlify/cache-utils@npm:^4.1.5":
+  version: 4.1.5
+  resolution: "@netlify/cache-utils@npm:4.1.5"
   dependencies:
     cpy: ^8.1.0
     del: ^6.0.0
@@ -1828,13 +1828,13 @@ __metadata:
     move-file: ^3.0.0
     path-exists: ^5.0.0
     readdirp: ^3.4.0
-  checksum: 9d0bac76b5aa562920458b808c2f6e2775da7b9dbc32e0337287623b1cb2a480f2af5ac21d5f54f7b84ca0265d5061d9bc364e28f08bf05e8b6e612f1f23c18b
+  checksum: 90bdcff47da9de758066db8ae7a98cbf35669fd3b4322c4949904747fb21c686e0052a15dae6377bbb7c1f9023c19305b27bc5adc1a0a12763a02c234da8b9a8
   languageName: node
   linkType: hard
 
-"@netlify/config@npm:^18.2.3":
-  version: 18.2.3
-  resolution: "@netlify/config@npm:18.2.3"
+"@netlify/config@npm:^18.2.4":
+  version: 18.2.4
+  resolution: "@netlify/config@npm:18.2.4"
   dependencies:
     chalk: ^5.0.0
     cron-parser: ^4.1.0
@@ -1861,8 +1861,8 @@ __metadata:
     validate-npm-package-name: ^4.0.0
     yargs: ^17.3.1
   bin:
-    netlify-config: src/bin/main.js
-  checksum: 66cf6033cd1b71d387a4db78146527927f8fbb6340336f95b6c6a04e055ad4abad62acb5fb5c86b8aafe63ea5f5e0d732c5d5c42f25f10d904cfa0ab58612b44
+    netlify-config: lib/bin/main.js
+  checksum: 25672c983fd1197eeadeceb0387ec00ca7a01d9e3770da82361f182d41a4a7ec593681ea8ec89da51fd2e067a91e2b11de03322b06bb4bfd81766785c932f08b
   languageName: node
   linkType: hard
 
@@ -2117,27 +2117,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/functions-utils@npm:^4.2.9":
-  version: 4.2.9
-  resolution: "@netlify/functions-utils@npm:4.2.9"
+"@netlify/functions-utils@npm:^4.2.10":
+  version: 4.2.10
+  resolution: "@netlify/functions-utils@npm:4.2.10"
   dependencies:
     "@netlify/zip-it-and-ship-it": ^7.1.2
     cpy: ^8.1.0
     path-exists: ^5.0.0
-  checksum: 54a191dbde0ccbfdd507a403962dbadfa7b33fcfecb809e690b02bfce60224498d39feec4f2ca95b3e79e794d2fc9f49124c2e4aee36822c5f0572717d3889b6
+  checksum: 922530d30e2d301da6a74013e34e47b283957bd9382a81d495008ff3be3be70cc78346878f2574adac12636db9b36378ac74d414f4deb9944539c4114fd9483f
   languageName: node
   linkType: hard
 
-"@netlify/git-utils@npm:^4.0.0":
-  version: 4.1.1
-  resolution: "@netlify/git-utils@npm:4.1.1"
+"@netlify/git-utils@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "@netlify/git-utils@npm:4.1.2"
   dependencies:
     execa: ^6.0.0
     map-obj: ^5.0.0
     micromatch: ^4.0.2
     moize: ^6.0.0
     path-exists: ^5.0.0
-  checksum: 5abbfe506aa1e18e801e7efc8d8385da77814f9835930a3a4b37b2272b1330ce2e4a015479aa0365691e5d3fdccc69e3733fbccd2b09b31e7eb39e9bf4fbe105
+  checksum: 3fbb35a55dd01f4c9b4d99e39d288f4b7f12de1942424007e36a51191f41845efbec9f5f69d48e886251532bd2a4d5eaa428ff6379fb60d3f89b6fbfb7ccff45
   languageName: node
   linkType: hard
 
@@ -2308,12 +2308,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/run-utils@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "@netlify/run-utils@npm:4.0.1"
+"@netlify/run-utils@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@netlify/run-utils@npm:4.0.2"
   dependencies:
     execa: ^6.0.0
-  checksum: 83962588c94fb186265c2e6875249da2b2cbd6d4338334682eff9f7bcfe0baa47587e52fde04e1b735f3e8213d6ffe2fba5349f93164ddd9f9679ab43ffd6172
+  checksum: b6fcb6fe1be4fd359b3f20618ff3dd289afbaef1abef7889f27e8ca4d010c6b7a8dcc49100379302219719a15b715fe8d0fc81d2cdd207a16e74c4216fc6445f
   languageName: node
   linkType: hard
 
@@ -12052,16 +12052,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"netlify-cli@npm:^11.5.1":
-  version: 11.8.3
-  resolution: "netlify-cli@npm:11.8.3"
+"netlify-cli@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "netlify-cli@npm:12.0.0"
   dependencies:
-    "@netlify/build": ^27.18.5
-    "@netlify/config": ^18.2.3
+    "@netlify/build": ^27.18.6
+    "@netlify/config": ^18.2.4
     "@netlify/edge-bundler": ^2.2.0
     "@netlify/framework-info": ^9.2.0
     "@netlify/local-functions-proxy": ^1.1.1
-    "@netlify/plugins-list": ^6.46.0
     "@netlify/zip-it-and-ship-it": ^7.1.2
     "@octokit/rest": ^18.0.0
     "@sindresorhus/slugify": ^1.1.0
@@ -12134,7 +12133,6 @@ __metadata:
     node-version-alias: ^1.0.1
     omit.js: ^2.0.2
     ora: ^5.0.0
-    p-event: ^4.2.0
     p-filter: ^2.1.0
     p-map: ^4.0.0
     p-wait-for: ^3.0.0
@@ -12160,14 +12158,14 @@ __metadata:
     toml: ^3.0.0
     unixify: ^1.0.0
     update-notifier: ^5.0.0
-    uuid: ^8.0.0
+    uuid: ^9.0.0
     wait-port: ^0.3.0
     winston: ^3.2.1
     write-file-atomic: ^4.0.0
   bin:
     netlify: bin/run
     ntl: bin/run
-  checksum: 6b78067ae093f39a07021c68199752a0fd0c727dfb73e3b9c8e034f9685b2725ef92cb21afcbfea33d3a5da696c3738d3513c1181f7765ae8a9b9cf76ed59c3a
+  checksum: 9fcec7bb1c57912bd13612355076717fe299a12345abfc8484adf26f65b894a9dad5f84e7be0507bffc1c83ebead3977bd44bbcbd1d183ae7d15d79dfdf02ef4
   languageName: node
   linkType: hard
 
@@ -12880,7 +12878,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-event@npm:^4.0.0, p-event@npm:^4.1.0, p-event@npm:^4.2.0":
+"p-event@npm:^4.0.0, p-event@npm:^4.1.0":
   version: 4.2.0
   resolution: "p-event@npm:4.2.0"
   dependencies:
