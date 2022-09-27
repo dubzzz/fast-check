@@ -49,8 +49,9 @@ export class BasicPool<TSuccess, TPayload> {
   /**
    * Spawn a new instance of worker ready to handle new tasks
    */
-  public spawnNewWorker(): PooledWorker<TSuccess, TPayload> {
+  public async spawnNewWorker(): Promise<PooledWorker<TSuccess, TPayload>> {
     let runIdInWorker = -1;
+    let ready = false;
     let faulty = false;
     let registration: {
       currentRunId: number;
@@ -58,6 +59,20 @@ export class BasicPool<TSuccess, TPayload> {
       onFailure: OnErrorCallback;
     } | null = null;
     const worker = new Worker(this.workerFileUrl, { workerData: { currentWorkerId: this.workerId } });
+
+    let resolveOnline: () => void = () => undefined;
+    let rejectOnline: (error: unknown) => void = () => undefined;
+    const waitOnline = new Promise<void>((resolve, reject) => {
+      resolveOnline = resolve;
+      rejectOnline = reject;
+    });
+
+    worker.on('online', () => {
+      // Emitted when the worker thread has started executing JavaScript code.
+      // More details at https://nodejs.org/api/worker_threads.html#event-online
+      ready = true;
+      resolveOnline();
+    });
 
     worker.on('message', (data: WorkerToPoolMessage<TSuccess>): void => {
       // Emitted for any incoming message, containing the cloned input of port.postMessage().
@@ -76,6 +91,10 @@ export class BasicPool<TSuccess, TPayload> {
     worker.on('messageerror', (err: Error): void => {
       // Emitted when deserializing a message failed.
       // More details at https://nodejs.org/api/worker_threads.html#event-messageerror
+      if (!ready) {
+        faulty = true; // we don't really expect such message while not ready
+        rejectOnline(err);
+      }
       if (registration !== null) {
         registration.onFailure(err);
       }
@@ -86,6 +105,9 @@ export class BasicPool<TSuccess, TPayload> {
       // Emitted if the worker thread throws an uncaught exception. In that case, the worker is terminated.
       // More details at https://nodejs.org/api/worker_threads.html#event-error
       faulty = true;
+      if (!ready) {
+        rejectOnline(err);
+      }
       if (registration !== null) {
         registration.onFailure(err);
       }
@@ -96,14 +118,18 @@ export class BasicPool<TSuccess, TPayload> {
       // Emitted once the worker has stopped. If the worker exited by calling process.exit(), the exitCode parameter is the passed exit code. If the worker was terminated, the exitCode parameter is 1.
       // More details at https://nodejs.org/api/worker_threads.html#event-exit
       faulty = true;
+      const err = new Error(`Worker stopped with exit code ${code}`);
+      if (!ready) {
+        rejectOnline(err);
+      }
       if (registration !== null) {
-        registration.onFailure(new Error(`Worker stopped with exit code ${code}`));
+        registration.onFailure(err);
       }
       registration = null;
     });
 
     const isFaulty = () => faulty;
-    const isAvailable = () => !isFaulty() && registration === null;
+    const isAvailable = () => ready && !isFaulty() && registration === null;
 
     const pooledWorker: InternalPooledWorker<TSuccess, TPayload> = {
       worker,
@@ -120,6 +146,8 @@ export class BasicPool<TSuccess, TPayload> {
       },
     };
     this.workers.push(pooledWorker);
+
+    await waitOnline;
     return pooledWorker;
   }
 
