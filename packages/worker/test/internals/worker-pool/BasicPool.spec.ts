@@ -141,6 +141,29 @@ describe('BasicPool', () => {
     expect(onFailure).not.toHaveBeenCalled();
   });
 
+  it('should call failure handler and mark the worker as faulty when receiving messageerror message', () => {
+    // Arrange
+    const { on, postMessage } = mockWorker();
+    const workerFileUrl = new URL('file:///worker.cjs');
+    const workerId = 0;
+    const onSuccess = jest.fn();
+    const onFailure = jest.fn();
+    const pool = new BasicPool<string, string>(workerFileUrl, workerId);
+    const worker = pool.spawnNewWorker();
+    worker.register('to-worker', onSuccess, onFailure);
+
+    // Act
+    const onErrorHandler = on.mock.calls.find(([eventName]) => eventName === 'messageerror')![1];
+    onErrorHandler(new Error('failed to serialize/deserialize payload!')); // emulate messageerror message
+
+    // Assert
+    expect(onFailure).toHaveBeenCalledTimes(1);
+    expect(worker.isAvailable()).toBe(true); // we can recover immediately from such problems
+    expect(worker.isFaulty()).toBe(false);
+    expect(postMessage).toHaveBeenCalledTimes(1);
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
   it('should call failure handler and mark the worker as faulty when receiving error message', () => {
     // Arrange
     const { on, postMessage } = mockWorker();

@@ -60,6 +60,8 @@ export class BasicPool<TSuccess, TPayload> {
     const worker = new Worker(this.workerFileUrl, { workerData: { currentWorkerId: this.workerId } });
 
     worker.on('message', (data: WorkerToPoolMessage<TSuccess>): void => {
+      // Emitted for any incoming message, containing the cloned input of port.postMessage().
+      // More details at https://nodejs.org/api/worker_threads.html#event-message
       if (registration === null || data.runId !== registration.currentRunId) {
         return;
       }
@@ -71,18 +73,33 @@ export class BasicPool<TSuccess, TPayload> {
       registration = null;
     });
 
-    worker.on('error', (err): void => {
+    worker.on('messageerror', (err: Error): void => {
+      // Emitted when deserializing a message failed.
+      // More details at https://nodejs.org/api/worker_threads.html#event-messageerror
+      if (registration !== null) {
+        registration.onFailure(err);
+      }
+      registration = null;
+    });
+
+    worker.on('error', (err: Error): void => {
+      // Emitted if the worker thread throws an uncaught exception. In that case, the worker is terminated.
+      // More details at https://nodejs.org/api/worker_threads.html#event-error
       faulty = true;
       if (registration !== null) {
         registration.onFailure(err);
       }
+      registration = null;
     });
 
-    worker.on('exit', (code): void => {
+    worker.on('exit', (code: number): void => {
+      // Emitted once the worker has stopped. If the worker exited by calling process.exit(), the exitCode parameter is the passed exit code. If the worker was terminated, the exitCode parameter is 1.
+      // More details at https://nodejs.org/api/worker_threads.html#event-exit
       faulty = true;
       if (registration !== null) {
         registration.onFailure(new Error(`Worker stopped with exit code ${code}`));
       }
+      registration = null;
     });
 
     const isFaulty = () => faulty;
