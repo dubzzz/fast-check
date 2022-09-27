@@ -840,7 +840,7 @@ __metadata:
     "@fast-check/packaged": "*"
     "@typescript-eslint/eslint-plugin": ^5.38.1
     "@typescript-eslint/parser": ^5.38.1
-    all-contributors-cli: ^6.20.5
+    all-contributors-cli: ^6.21.0
     eslint: ^8.24.0
     eslint-config-prettier: ^8.5.0
     prettier: 2.7.1
@@ -4026,9 +4026,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"all-contributors-cli@npm:^6.20.5":
-  version: 6.20.5
-  resolution: "all-contributors-cli@npm:6.20.5"
+"all-contributors-cli@npm:^6.21.0":
+  version: 6.21.0
+  resolution: "all-contributors-cli@npm:6.21.0"
   dependencies:
     "@babel/runtime": ^7.7.6
     async: ^3.1.0
@@ -4042,7 +4042,7 @@ __metadata:
     yargs: ^15.0.1
   bin:
     all-contributors: dist/cli.js
-  checksum: 39e514b2ae1a2cb7d3e10f63c65b3f0bcf045b856546c9ed2cb734ce8bca0ef4878c18c7123e3f43b4755842884dc0db42bae77bc1a692425f2b78501e40354c
+  checksum: c3faf71420c133151395ed53767d2e0cf946e802090151782fbe2b2e149babcb99743c8b63831fbd364847a39a3cb87fc53bc11b52196b47429969c62803cc36
   languageName: node
   linkType: hard
 
