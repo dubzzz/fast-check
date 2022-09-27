@@ -2,9 +2,14 @@ import { isMainThread } from 'node:worker_threads';
 import fc from 'fast-check';
 import { clearAllWorkersFor } from '@fast-check/worker';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { passingProperty, failingProperty, blockEventLoopProperty } from './main.properties.cjs';
+import {
+  passingProperty,
+  failingProperty,
+  blockEventLoopProperty,
+  buildUnregisteredProperty,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+} from './main.properties.cjs';
 
 if (isMainThread) {
   describe('workerProperty', () => {
@@ -44,10 +49,26 @@ if (isMainThread) {
         // Arrange / Act / Assert
         try {
           await expect(
-            fc.assert(blockEventLoopProperty, { ...assertOptions, numRuns: 5, endOnFailure: true })
+            fc.assert(blockEventLoopProperty, { ...assertOptions, endOnFailure: true })
           ).rejects.toThrowError(/Property timeout: exceeded limit of 1000 milliseconds/);
         } finally {
           clearAllWorkersFor(blockEventLoopProperty);
+        }
+      },
+      jestTimeout
+    );
+
+    it(
+      'should fail to start when property has not been registered',
+      async () => {
+        // Arrange / Act / Assert
+        const unregisteredProperty = buildUnregisteredProperty();
+        try {
+          await expect(fc.assert(unregisteredProperty, assertOptions)).rejects.toThrowError(
+            /Worker stopped with exit code 0/
+          );
+        } finally {
+          clearAllWorkersFor(unregisteredProperty);
         }
       },
       jestTimeout
