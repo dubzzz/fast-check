@@ -12055,8 +12055,8 @@ __metadata:
   linkType: hard
 
 "netlify-cli@npm:^12.0.0":
-  version: 12.0.1
-  resolution: "netlify-cli@npm:12.0.1"
+  version: 12.0.2
+  resolution: "netlify-cli@npm:12.0.2"
   dependencies:
     "@netlify/build": ^27.18.6
     "@netlify/config": ^18.2.4
@@ -12161,13 +12161,13 @@ __metadata:
     unixify: ^1.0.0
     update-notifier: ^5.0.0
     uuid: ^9.0.0
-    wait-port: ^0.3.0
+    wait-port: ^1.0.1
     winston: ^3.2.1
     write-file-atomic: ^4.0.0
   bin:
     netlify: bin/run
     ntl: bin/run
-  checksum: 6606f234b306f53be3bd2cce84faf869d809b153c81465226db2db23d463408f983e41e9db365b484a2dc96a61f473110c830e4c6410a563a11ffd43bc2a16dd
+  checksum: 86e8770bf40cdee4c1dae40c37fc9e16d767a305a4862a1b40243e61360f953fa2350b0ae2bd80aa14fd2e8f6e39e845f78786d0aa9a3f84f684a65c545b3e59
   languageName: node
   linkType: hard
 
@@ -16303,16 +16303,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-port@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "wait-port@npm:0.3.0"
+"wait-port@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "wait-port@npm:1.0.1"
   dependencies:
     chalk: ^4.1.2
     commander: ^9.3.0
     debug: ^4.3.4
   bin:
     wait-port: bin/wait-port.js
-  checksum: 44e467450286b19cc3706ff4c4df6c239cb7c3eb159bf32d6e99f1b751a044f51582eb52d9a0c6cf4014d2cf0938a5ee5a1bef96e0f6840ad9f4e5fc249a6e07
+  checksum: 56e77befcac58d03fc8ed872582b7ccdca0a561e6221d089ec092366c046263174ca42f02d98fd3f6f99dd7aa1f2b15fe4337a0eacaa53e90630c3ef3953bf48
   languageName: node
   linkType: hard
 
