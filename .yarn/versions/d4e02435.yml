@@ -4,3 +4,4 @@ releases:
 declined:
   - "@fast-check/ava"
   - "@fast-check/jest"
+  - "@fast-check/worker"
