@@ -227,7 +227,7 @@ miniFc.assert = (property, { seed = Date.now() } = {}) => {
 };
 ```
 
-The previous section did not explian the reason for using pure random generators. In property based testing, we want properties to be reproducible no matter the seed, no matter the hardware and no matter the time... But we also want to have independent runs for each iteration in the loop.
+The previous section did not explain the reason for using pure random generators. In property based testing, we want properties to be reproducible no matter the seed, no matter the hardware and no matter the time... But we also want to have independent runs for each iteration in the loop.
 
 For instance, in the implementation defined above, we call generate with the following instances of `Random`:
 
