@@ -12165,8 +12165,8 @@ __metadata:
   linkType: hard
 
 "netlify-cli@npm:^12.0.0":
-  version: 12.0.4
-  resolution: "netlify-cli@npm:12.0.4"
+  version: 12.0.5
+  resolution: "netlify-cli@npm:12.0.5"
   dependencies:
     "@netlify/build": ^27.20.1
     "@netlify/config": ^18.2.4
@@ -12277,7 +12277,7 @@ __metadata:
   bin:
     netlify: bin/run
     ntl: bin/run
-  checksum: d8a22d6a45d68da98018ba347f0c4226e3d71195932a905945c99824aeb93aad31952d0efb4933cac402539d9e5ca5f89a7c31afe220fdf92434fa73e31149df
+  checksum: a8ed7c3b899140fbe6b880e78c1621305dfa8efd2423652b68ddfc596fe94cb6f1e062b4b1e9debcaefa75ede0e281c69eed9fc489b999a6567f928bf6008af4
   languageName: node
   linkType: hard
 
