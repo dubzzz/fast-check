@@ -34,7 +34,7 @@
     "node": ">=14.14.0"
   },
   "dependencies": {
-    "pacote": "^13.6.2",
+    "pacote": "^14.0.0",
     "tar": "^6.1.11"
   },
   "devDependencies": {
