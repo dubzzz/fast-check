@@ -265,10 +265,7 @@ async function writeToFile(
   // Write the files
   await Promise.all([
     fs.writeFile(specFilePath, specContent),
-    fs.writeFile(
-      jestConfigPath,
-      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {} };`,
-    ),
+    fs.writeFile(jestConfigPath, `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {} };`),
   ]);
 
   return { specFileName, jestConfigRelativePath };
