@@ -89,7 +89,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
     // Assert
     expectFail(out, specFileName);
     expectAlignedSeeds(out);
-    expect(out).toMatch(/× property fail async \(with seed=-?\d+\)/);
+    expect(out).toMatch(/[×✕] property fail async \(with seed=-?\d+\)/);
   });
 
   it.concurrent('should fail with locally requested seed', async () => {
