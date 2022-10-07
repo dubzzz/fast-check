@@ -183,7 +183,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
 
       // Assert
       expectPass(out, specFileName);
-      expect(out).toMatch(/√ property pass on truthy property \(with seed=-?\d+\)/);
+      expect(out).toMatch(/[√✓] property pass on truthy property \(with seed=-?\d+\)/);
     });
 
     it.concurrent('should fail on falsy property', async () => {
