@@ -66,10 +66,10 @@ function internalTestProp<Context, Ts extends NonEmptyArray<any>>(
   prop: Prop<Context, Ts>,
   params?: fc.Parameters<Ts>
 ): void {
-  const customParams: fc.Parameters<Ts> = params || {};
+  const customParams: fc.Parameters<Ts> = { ...params };
   if (customParams.seed === undefined) customParams.seed = Date.now();
 
-  testFn(`${label} (with seed=${customParams.seed})`, wrapProp(arbitraries, prop, params));
+  testFn(`${label} (with seed=${customParams.seed})`, wrapProp(arbitraries, prop, customParams));
 }
 
 function exposeModifier<Context, T extends Extract<keyof TestFn, AvaModifierWhitelist>>(
