@@ -37,7 +37,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
 
     // Assert
     expectPass(out, specFileName);
-    expect(out).toMatch(/√ property pass sync \(with seed=-?\d+\)/);
+    expect(out).toMatch(/[√✓] property pass sync \(with seed=-?\d+\)/);
   });
 
   it.concurrent('should pass on truthy asynchronous property', async () => {
