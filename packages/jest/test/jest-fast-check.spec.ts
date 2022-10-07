@@ -291,7 +291,7 @@ function expectFail(out: string, specFileName: string): void {
 }
 
 function expectAlignedSeeds(out: string): void {
-  expect(out).toMatch(/× .* \(with seed=-?\d+\)/);
+  expect(out).toMatch(/[×✕] .* \(with seed=-?\d+\)/);
   const receivedSeed = out.split('seed=')[1].split(')')[0];
   expect(out).toMatch(new RegExp('seed\\s*:\\s*' + receivedSeed + '[^\\d]'));
 }
