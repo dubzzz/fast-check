@@ -71,7 +71,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
     // Assert
     expectFail(out, specFileName);
     expectAlignedSeeds(out);
-    expect(out).toMatch(/× property fail sync \(with seed=-?\d+\)/);
+    expect(out).toMatch(/[×✕] property fail sync \(with seed=-?\d+\)/);
   });
 
   it.concurrent('should fail on falsy asynchronous property', async () => {
