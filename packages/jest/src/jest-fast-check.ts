@@ -37,12 +37,12 @@ function internalTestProp<Ts extends [any] | any[]>(
   prop: Prop<Ts>,
   params?: fc.Parameters<Ts>
 ): void {
-  const customParams: fc.Parameters<Ts> = params || {};
+  const customParams: fc.Parameters<Ts> = { ...params };
   if (customParams.seed === undefined) customParams.seed = Date.now();
 
   const promiseProp = wrapProp(prop);
   testFn(`${label} (with seed=${customParams.seed})`, async () => {
-    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), params);
+    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
   });
 }
 
