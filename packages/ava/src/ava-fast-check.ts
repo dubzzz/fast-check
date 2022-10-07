@@ -68,7 +68,12 @@ function internalTestProp<Context, Ts extends NonEmptyArray<any>>(
 ): void {
   const customParams: fc.Parameters<Ts> = { ...params };
   if (customParams.seed === undefined) {
-    customParams.seed = Date.now() ^ (Math.random() * 0x100000000);
+    const seedFromGlobals = fc.readConfigureGlobal().seed;
+    if (seedFromGlobals !== undefined) {
+      customParams.seed = seedFromGlobals;
+    } else {
+      customParams.seed = Date.now() ^ (Math.random() * 0x100000000);
+    }
   }
 
   testFn(`${label} (with seed=${customParams.seed})`, wrapProp(arbitraries, prop, customParams));
