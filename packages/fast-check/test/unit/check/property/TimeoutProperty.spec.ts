@@ -138,7 +138,7 @@ describe('TimeoutProperty', () => {
 
     // Assert
     expect(await runPromise).toEqual({
-      error: undefined,
+      error: expect.any(Error),
       errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
     });
   });
@@ -156,7 +156,7 @@ describe('TimeoutProperty', () => {
 
     // Assert
     expect(await runPromise).toEqual({
-      error: undefined,
+      error: expect.any(Error),
       errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
     });
   });

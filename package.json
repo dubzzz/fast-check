@@ -2,7 +2,7 @@
   "private": true,
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
-  "packageManager": "yarn@3.2.3",
+  "packageManager": "yarn@3.2.4",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -24,9 +24,9 @@
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
-    "all-contributors-cli": "^6.22.0",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "all-contributors-cli": "^6.23.1",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "2.7.1"

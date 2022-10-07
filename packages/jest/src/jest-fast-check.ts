@@ -23,7 +23,7 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
   prop: Prop<Ts>,
   params?: fc.Parameters<Ts>
 ): void {
-  const customParams: fc.Parameters<Ts> = params || {};
+  const customParams: fc.Parameters<Ts> = { ...params };
   if (customParams.seed === undefined) {
     customParams.seed = Date.now() ^ (Math.random() * 0x100000000);
   }

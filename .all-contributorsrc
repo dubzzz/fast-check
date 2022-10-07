@@ -487,6 +487,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "JJ",
+      "name": "Juan Julián Merelo Guervós",
+      "avatar_url": "https://avatars.githubusercontent.com/u/500?v=4",
+      "profile": "http://goo.gl/IlWG8U",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
