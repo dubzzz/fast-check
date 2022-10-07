@@ -30,7 +30,7 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
 
   const promiseProp = wrapProp(prop);
   testFn(`${label} (with seed=${customParams.seed})`, async () => {
-    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), params);
+    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
   });
 }
 
