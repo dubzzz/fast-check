@@ -2101,9 +2101,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/framework-info@npm:^9.2.0":
-  version: 9.2.0
-  resolution: "@netlify/framework-info@npm:9.2.0"
+"@netlify/framework-info@npm:^9.3.0":
+  version: 9.3.0
+  resolution: "@netlify/framework-info@npm:9.3.0"
   dependencies:
     ajv: ^8.0.0
     filter-obj: ^3.0.0
@@ -2113,7 +2113,7 @@ __metadata:
     p-locate: ^6.0.0
     read-pkg-up: ^9.0.0
     semver: ^7.3.4
-  checksum: e27d31c2c5c2aae855c795314366847c6adadc7ec14c3c6fbffd0fa5811d67aa19f8a011f3c7e4c312c3a705bbdcc028363351c10074005e0729509792c83c86
+  checksum: 559874667840fc688148dec8f223fc98a5dd51ba679f26063e8045322235da342d0743e7d068c14c6a76d8c5096ea1d7a5c5ad9d59d1ca459b9023163d000ad0
   languageName: node
   linkType: hard
 
@@ -12165,13 +12165,13 @@ __metadata:
   linkType: hard
 
 "netlify-cli@npm:^12.0.0":
-  version: 12.0.6
-  resolution: "netlify-cli@npm:12.0.6"
+  version: 12.0.7
+  resolution: "netlify-cli@npm:12.0.7"
   dependencies:
     "@netlify/build": ^27.20.1
     "@netlify/config": ^18.2.4
     "@netlify/edge-bundler": ^2.6.0
-    "@netlify/framework-info": ^9.2.0
+    "@netlify/framework-info": ^9.3.0
     "@netlify/local-functions-proxy": ^1.1.1
     "@netlify/zip-it-and-ship-it": ^7.1.2
     "@octokit/rest": ^19.0.0
@@ -12277,7 +12277,7 @@ __metadata:
   bin:
     netlify: bin/run
     ntl: bin/run
-  checksum: 582dc0eab2e105671939a916d6daf49bec22f75a73cda30afbadb4a48f59a46d90ebfa272e58a15bdacc94c47c73a938927448c44189d192da44b0061c5ed700
+  checksum: e8404fec5bbf7d90e9cbb776bbc7e97a20b1b82dee9fc58e9b9d7b62782609b03a21af071767b9aacc03781dbd3a14f5f31e285b184acdf883a1a07222f30f32
   languageName: node
   linkType: hard
 
