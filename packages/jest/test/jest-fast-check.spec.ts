@@ -189,7 +189,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
     it.concurrent('should fail on falsy property', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runner, () => {
-        runnerProp.concurrent('property fail on falsy property', [fc.constant(null)], (_unused) => true);
+        runnerProp.concurrent('property fail on falsy property', [fc.constant(null)], (_unused) => false);
       });
 
       // Act
