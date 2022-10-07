@@ -267,7 +267,7 @@ async function writeToFile(
     fs.writeFile(specFilePath, specContent),
     fs.writeFile(
       jestConfigPath,
-      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {} };`
+      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {} };`,
     ),
   ]);
 
