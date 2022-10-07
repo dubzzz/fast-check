@@ -235,6 +235,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
 
 // Helper
 
+let num = -1;
 async function writeToFile(
   runner: 'testProp' | 'itProp',
   fileContent: () => void
@@ -242,7 +243,7 @@ async function writeToFile(
   const specFileSeed = Math.random().toString(16).substring(2);
 
   // Prepare test file itself
-  const specFileName = `generated-${specFileSeed}.spec.js`;
+  const specFileName = `generated-${specFileSeed}-${++num}.spec.js`;
   const specFilePath = path.join(generatedTestsDirectory, specFileName);
   const fileContentString = String(fileContent);
   const wrapInDescribeIfNeeded =
