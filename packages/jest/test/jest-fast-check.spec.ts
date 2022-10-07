@@ -227,7 +227,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
 
         // Assert
         expectFail(out, specFileName);
-        expect(out).toMatch(/× property fail because passing \(with seed=-?\d+\)/);
+        expect(out).toMatch(/[×✕] property fail because passing \(with seed=-?\d+\)/);
       });
     });
   });
