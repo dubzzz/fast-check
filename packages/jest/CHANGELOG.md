@@ -1,3 +1,21 @@
+# 1.2.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.1.0...jest%2Fv1.2.0)]
+
+## Features
+
+- ([PR#3277](https://github.com/dubzzz/fast-check/pull/3277)) Align seed computation with fast-check's one
+
+## Fixes
+
+- ([PR#3279](https://github.com/dubzzz/fast-check/pull/3279)) Bug: Pass the forged seed to the runner
+- ([PR#3281](https://github.com/dubzzz/fast-check/pull/3281)) Bug: Fallback on the seed coming from globals if any
+- ([PR#3282](https://github.com/dubzzz/fast-check/pull/3282)) Test: Rewrite tests of `@fast-check/jest`
+- ([PR#3284](https://github.com/dubzzz/fast-check/pull/3284)) Test: Faster tests without `babel-jest`
+
+---
+
 # 1.1.0
 
 _Support more variants of `it`_

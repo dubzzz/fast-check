@@ -1,3 +1,22 @@
+# 3.2.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.4...v3.2.0)]
+
+## Features
+
+- ([PR#2965](https://github.com/dubzzz/fast-check/pull/2965)) Attach the original `Error` as a cause of thrown one
+- ([PR#3224](https://github.com/dubzzz/fast-check/pull/3224)) Attach real errors to internal failures
+
+## Fixes
+
+- ([PR#3225](https://github.com/dubzzz/fast-check/pull/3225)) CI: Publish `@fast-check/poisoning` on CodeSandbox's builds
+- ([PR#3260](https://github.com/dubzzz/fast-check/pull/3260)) Doc: Sync with current path
+- ([PR#3264](https://github.com/dubzzz/fast-check/pull/3264)) Doc: Improve grammar in HowItWorks
+- ([PR#3292](https://github.com/dubzzz/fast-check/pull/3292)) Test: Stabilize tests of `SlicedBasedGenerator`
+
+---
+
 # 3.1.4
 
 _Increased resiliency to poisoned globals_
