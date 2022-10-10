@@ -47,18 +47,7 @@ export async function assert<Ts>(property: IAsyncProperty<Ts> | IProperty<Ts>, p
   }
 }
 
-/**
- * Create an async property backed by workers.
- * The predicate will ALWAYS run in another worker and not within the main thread which will only deal with the generation of the random values and orchestration.
- *
- * For the moment such property MUST explicitely be executed from the `assert` helper function of this package.
- * Otherwise workers will stay forever.
- *
- * @param url - URL towards the worker file: usually `pathToFileURL(__filename)` for commonjs and `new URL(import.meta.url)` for es modules
- * @param args - Arbitraries and predicate
- * @public
- */
-export function workerProperty<Ts extends [unknown, ...unknown[]]>(
+function workerProperty<Ts extends [unknown, ...unknown[]]>(
   url: URL,
   ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
 ): WorkerProperty<Ts> {
@@ -77,4 +66,30 @@ export function workerProperty<Ts extends [unknown, ...unknown[]]>(
   // Cannot throw for invalid worker at this point as we may not be the only worker for this run
   // so we just return a dummy no-op property
   return new NoopWorkerProperty<Ts>();
+}
+
+/**
+ * Create a builder for async properties backed by workers.
+ * The output of this function can be used as `fc.property` or `fc.asyncProperty` except it must be executed by the `assert` of this package.
+ *
+ * The properties build from this builder will ALWAYS run predicates in another worker and not within the main thread which will only deal
+ * with the generation of the random values and orchestration.
+ *
+ * For the moment such properties MUST explicitely be executed from the `assert` helper function of this package.
+ * Otherwise workers will stay forever.
+ *
+ *
+ * @param url - URL towards the worker file: usually `pathToFileURL(__filename)` for commonjs and `new URL(import.meta.url)` for es modules
+ * @public
+ */
+export function propertyFor(
+  url: URL
+): <Ts extends [unknown, ...unknown[]]>(
+  ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
+) => WorkerProperty<Ts> {
+  return function property<Ts extends [unknown, ...unknown[]]>(
+    ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
+  ): WorkerProperty<Ts> {
+    return workerProperty(url, ...args);
+  };
 }
