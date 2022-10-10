@@ -34,6 +34,7 @@
     "node": ">=14.14.0"
   },
   "dependencies": {
+    "@npmcli/arborist": "^6.0.0 || ^6.0.0-pre.0",
     "pacote": "^14.0.0",
     "tar": "^6.1.11"
   },
