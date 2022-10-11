@@ -31,7 +31,6 @@ describe('webPath (integration)', () => {
     if (path.length !== 0) {
       expect(path[0]).toBe('/');
     }
-    expect(path).not.toContain('//');
   };
 
   const webPathBuilder = (extra: Extra) => webPath(extra);
