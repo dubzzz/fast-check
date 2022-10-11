@@ -11,6 +11,7 @@ export interface CommandsContraints {
    *
    * You probably want to use `size` instead.
    *
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 1.11.0
    */
   maxCommands?: number;
@@ -21,6 +22,7 @@ export interface CommandsContraints {
   size?: SizeForArbitrary;
   /**
    * Do not show replayPath in the output
+   * @defaultValue false
    * @remarks Since 1.11.0
    */
   disableReplayLog?: boolean;

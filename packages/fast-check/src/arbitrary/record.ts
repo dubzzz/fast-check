@@ -18,6 +18,7 @@ export type RecordConstraints<T = unknown> =
        *
        * Warning: Cannot be used in conjunction with withDeletedKeys.
        *
+       * @defaultValue Array containing all keys of recordModel
        * @remarks Since 2.11.0
        */
       requiredKeys?: T[];
@@ -27,6 +28,8 @@ export type RecordConstraints<T = unknown> =
        * Allow to remove keys from the generated record.
        * Warning: Cannot be used in conjunction with requiredKeys.
        * Prefer: `requiredKeys: []` over `withDeletedKeys: true`
+       *
+       * @defaultValue false
        * @remarks Since 1.0.0
        */
       withDeletedKeys?: boolean;
