@@ -1,6 +1,0 @@
-releases:
-  fast-check: minor
-
-declined:
-  - "@fast-check/ava"
-  - "@fast-check/jest"
