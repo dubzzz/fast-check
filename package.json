@@ -26,7 +26,7 @@
     "@fast-check/packaged": "*",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
-    "all-contributors-cli": "^6.23.1",
+    "all-contributors-cli": "^6.24.0",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "2.7.1"
