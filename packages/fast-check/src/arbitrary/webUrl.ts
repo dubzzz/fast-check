@@ -26,7 +26,7 @@ export interface WebUrlConstraints {
   validSchemes?: string[];
   /**
    * Settings for {@link webAuthority}
-   * @defaultValue {}
+   * @defaultValue &#123;&#125;
    * @remarks Since 1.14.0
    */
   authoritySettings?: WebAuthorityConstraints;
