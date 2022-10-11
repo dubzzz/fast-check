@@ -1342,6 +1342,32 @@ fc.webFragments()
 </details>
 
 <details>
+<summary><b>webPath</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webpath">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Web path
+>
+> Following the specs specified by RFC 3986 and WHATWG URL Standard
+
+*&#8195;Signatures*
+
+- `fc.webPath()`
+- `fc.webPath({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
+
+*&#8195;Usages*
+
+```js
+fc.webPath()
+// Examples of generated values: "", "/AwBKGBUB", "/%F4%85%A2%88%F0%91%90%B5dU'", "/key", "/O"…
+```
+</details>
+
+<details>
 <summary><b>webQueryParameters</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webqueryparameters">api</a>]</summary><br/>
 
 *&#8195;Description*
