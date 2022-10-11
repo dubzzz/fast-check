@@ -1,6 +1,6 @@
 # 1.1.0
 
-_TODO Description_
+_Align seed computation with fast-check's one_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.0.2...ava%2Fv1.1.0)]
 
 ## Features

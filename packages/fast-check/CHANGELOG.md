@@ -1,6 +1,6 @@
 # 3.2.0
 
-_TODO Description_
+_Stop copying the Error into the thrown one but use cause when asked too_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.1.4...v3.2.0)]
 
 ## Features

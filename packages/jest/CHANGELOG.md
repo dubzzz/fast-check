@@ -1,6 +1,6 @@
 # 1.2.0
 
-_TODO Description_
+_Align seed computation with fast-check's one_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.1.0...jest%2Fv1.2.0)]
 
 ## Features
