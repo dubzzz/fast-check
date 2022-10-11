@@ -23,21 +23,25 @@ const safeObjectEntries = Object.entries;
 export interface SparseArrayConstraints {
   /**
    * Upper bound of the generated array size (maximal size: 4294967295)
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.13.0
    */
   maxLength?: number;
   /**
    * Lower bound of the number of non-hole elements
+   * @defaultValue 0
    * @remarks Since 2.13.0
    */
   minNumElements?: number;
   /**
    * Upper bound of the number of non-hole elements
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.13.0
    */
   maxNumElements?: number;
   /**
    * When enabled, all generated arrays will either be the empty array or end by a non-hole
+   * @defaultValue false
    * @remarks Since 2.13.0
    */
   noTrailingHole?: boolean;

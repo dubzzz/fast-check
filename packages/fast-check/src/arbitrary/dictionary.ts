@@ -17,11 +17,13 @@ function dictionaryKeyExtractor(entry: [string, unknown]): string {
 export interface DictionaryConstraints {
   /**
    * Lower bound for the number of keys defined into the generated instance
+   * @defaultValue 0
    * @remarks Since 2.22.0
    */
   minKeys?: number;
   /**
    * Lower bound for the number of keys defined into the generated instance
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.22.0
    */
   maxKeys?: number;

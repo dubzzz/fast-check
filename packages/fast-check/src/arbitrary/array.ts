@@ -15,11 +15,13 @@ import { DepthIdentifier } from './_internals/helpers/DepthContext';
 export interface ArrayConstraints {
   /**
    * Lower bound of the generated array size
+   * @defaultValue 0
    * @remarks Since 2.4.0
    */
   minLength?: number;
   /**
    * Upper bound of the generated array size
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.4.0
    */
   maxLength?: number;
