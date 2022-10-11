@@ -6,6 +6,26 @@ import { timeToDateMapper, timeToDateUnmapper } from './_internals/mappers/TimeT
 const safeNumberIsNaN = Number.isNaN;
 
 /**
+ * Constraints to be applied on {@link date}
+ * @remarks Since 3.3.0
+ * @public
+ */
+export interface DateConstraints {
+  /**
+   * Lower bound of the range (included)
+   * @defaultValue new Date(-8640000000000000)
+   * @remarks Since 1.17.0
+   */
+  min?: Date;
+  /**
+   * Upper bound of the range (included)
+   * @defaultValue new Date(8640000000000000)
+   * @remarks Since 1.17.0
+   */
+  max?: Date;
+}
+
+/**
  * For date between constraints.min or new Date(-8640000000000000) (included) and constraints.max or new Date(8640000000000000) (included)
  *
  * @param constraints - Constraints to apply when building instances
@@ -13,7 +33,7 @@ const safeNumberIsNaN = Number.isNaN;
  * @remarks Since 1.17.0
  * @public
  */
-export function date(constraints?: { min?: Date; max?: Date }): Arbitrary<Date> {
+export function date(constraints?: DateConstraints): Arbitrary<Date> {
   // Date min and max in ECMAScript specification : https://stackoverflow.com/a/11526569/3707828
   const intMin = constraints && constraints.min !== undefined ? safeGetTime(constraints.min) : -8640000000000000;
   const intMax = constraints && constraints.max !== undefined ? safeGetTime(constraints.max) : 8640000000000000;

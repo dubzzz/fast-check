@@ -36,7 +36,7 @@ import { unicode } from './arbitrary/unicode';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
-import { date } from './arbitrary/date';
+import { date, DateConstraints } from './arbitrary/date';
 import { clone, CloneValue } from './arbitrary/clone';
 import { dictionary, DictionaryConstraints } from './arbitrary/dictionary';
 import { emailAddress, EmailAddressConstraints } from './arbitrary/emailAddress';
@@ -351,6 +351,7 @@ export {
   BigIntArrayConstraints,
   BigUintConstraints,
   CommandsContraints,
+  DateConstraints,
   DictionaryConstraints,
   DomainConstraints,
   DoubleConstraints,
