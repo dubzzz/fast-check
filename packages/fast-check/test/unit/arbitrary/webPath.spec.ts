@@ -27,7 +27,7 @@ describe('webPath (integration)', () => {
   const isCorrect = (path: string) => {
     // Valid path given the specs defined by WHATWG URL Standard: https://url.spec.whatwg.org/
     // A TypeError will be thrown if the input is not a valid URL: https://nodejs.org/api/url.html#url_constructor_new_url_input_base
-    expect(() => new URL(path, 'http://domain')).not.toThrow();
+    expect(() => new URL('http://domain' + path)).not.toThrow();
     if (path.length !== 0) {
       expect(path[0]).toBe('/');
     }
