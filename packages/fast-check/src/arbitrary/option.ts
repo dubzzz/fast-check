@@ -19,7 +19,7 @@ export interface OptionConstraints<TNil = null> {
   freq?: number;
   /**
    * The nil value
-   * @defautValue null
+   * @defaultValue null
    * @remarks Since 1.17.0
    */
   nil?: TNil;
