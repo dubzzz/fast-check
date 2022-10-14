@@ -5169,33 +5169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cacache@npm:^16.0.0, cacache@npm:^16.1.0":
-  version: 16.1.1
-  resolution: "cacache@npm:16.1.1"
-  dependencies:
-    "@npmcli/fs": ^2.1.0
-    "@npmcli/move-file": ^2.0.0
-    chownr: ^2.0.0
-    fs-minipass: ^2.1.0
-    glob: ^8.0.1
-    infer-owner: ^1.0.4
-    lru-cache: ^7.7.1
-    minipass: ^3.1.6
-    minipass-collect: ^1.0.2
-    minipass-flush: ^1.0.5
-    minipass-pipeline: ^1.2.4
-    mkdirp: ^1.0.4
-    p-map: ^4.0.0
-    promise-inflight: ^1.0.1
-    rimraf: ^3.0.2
-    ssri: ^9.0.0
-    tar: ^6.1.11
-    unique-filename: ^1.1.1
-  checksum: 488524617008b793f0249b0c4ea2c330c710ca997921376e15650cc2415a8054491ae2dee9f01382c2015602c0641f3f977faf2fa7361aa33d2637dcfb03907a
-  languageName: node
-  linkType: hard
-
-"cacache@npm:^16.1.3":
+"cacache@npm:^16.0.0, cacache@npm:^16.1.0, cacache@npm:^16.1.3":
   version: 16.1.3
   resolution: "cacache@npm:16.1.3"
   dependencies:
@@ -12811,18 +12785,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-package-arg@npm:^9.0.0, npm-package-arg@npm:^9.0.1":
-  version: 9.0.2
-  resolution: "npm-package-arg@npm:9.0.2"
-  dependencies:
-    hosted-git-info: ^5.0.0
-    semver: ^7.3.5
-    validate-npm-package-name: ^4.0.0
-  checksum: 07828f330f611214a0aa1e87f402b30b3dc90388671470ad8dc1551f28b0cb886f1f75fa7c37e894a9598640a555c05643642994ecacb9a6c68f655e571968f7
-  languageName: node
-  linkType: hard
-
-"npm-package-arg@npm:^9.1.0":
+"npm-package-arg@npm:^9.0.0, npm-package-arg@npm:^9.0.1, npm-package-arg@npm:^9.1.0":
   version: 9.1.2
   resolution: "npm-package-arg@npm:9.1.2"
   dependencies:
@@ -12843,19 +12806,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-pick-manifest@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "npm-pick-manifest@npm:7.0.1"
-  dependencies:
-    npm-install-checks: ^5.0.0
-    npm-normalize-package-bin: ^1.0.1
-    npm-package-arg: ^9.0.0
-    semver: ^7.3.5
-  checksum: 9a4a8e64d2214783b2b74a361845000f5d91bb40c7858e2a30af2ac7876d9296efc37f8cacf60335e96a45effee2035b033d9bdefb4889757cc60d85959accbb
-  languageName: node
-  linkType: hard
-
-"npm-pick-manifest@npm:^7.0.2":
+"npm-pick-manifest@npm:^7.0.0, npm-pick-manifest@npm:^7.0.2":
   version: 7.0.2
   resolution: "npm-pick-manifest@npm:7.0.2"
   dependencies:
@@ -12867,7 +12818,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-registry-fetch@npm:^13.0.0":
+"npm-registry-fetch@npm:^13.0.0, npm-registry-fetch@npm:^13.0.1":
   version: 13.3.1
   resolution: "npm-registry-fetch@npm:13.3.1"
   dependencies:
@@ -12879,21 +12830,6 @@ __metadata:
     npm-package-arg: ^9.0.1
     proc-log: ^2.0.0
   checksum: 5a941c2c799568e0dbccfc15f280444da398dadf2eede1b1921f08ddd5cb5f32c7cb4d16be96401f95a33073aeec13a3fd928c753790d3c412c2e64e7f7c6ee4
-  languageName: node
-  linkType: hard
-
-"npm-registry-fetch@npm:^13.0.1":
-  version: 13.1.1
-  resolution: "npm-registry-fetch@npm:13.1.1"
-  dependencies:
-    make-fetch-happen: ^10.0.6
-    minipass: ^3.1.6
-    minipass-fetch: ^2.0.3
-    minipass-json-stream: ^1.0.1
-    minizlib: ^2.1.2
-    npm-package-arg: ^9.0.1
-    proc-log: ^2.0.0
-  checksum: e085faf5cdc1cfe9b8f825065a0823531b2a28799d84614b3971e344dde087f9089c0f0220360771a81f110c5444978c6f7309084ff7d7d396252b068148bb44
   languageName: node
   linkType: hard
 
@@ -16445,30 +16381,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unique-filename@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "unique-filename@npm:1.1.1"
-  dependencies:
-    unique-slug: ^2.0.0
-  checksum: cf4998c9228cc7647ba7814e255dec51be43673903897b1786eff2ac2d670f54d4d733357eb08dea969aa5e6875d0e1bd391d668fbdb5a179744e7c7551a6f80
-  languageName: node
-  linkType: hard
-
 "unique-filename@npm:^2.0.0":
   version: 2.0.1
   resolution: "unique-filename@npm:2.0.1"
   dependencies:
     unique-slug: ^3.0.0
   checksum: 807acf3381aff319086b64dc7125a9a37c09c44af7620bd4f7f3247fcd5565660ac12d8b80534dcbfd067e6fe88a67e621386dd796a8af828d1337a8420a255f
-  languageName: node
-  linkType: hard
-
-"unique-slug@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "unique-slug@npm:2.0.2"
-  dependencies:
-    imurmurhash: ^0.1.4
-  checksum: 5b6876a645da08d505dedb970d1571f6cebdf87044cb6b740c8dbb24f0d6e1dc8bdbf46825fd09f994d7cf50760e6f6e063cfa197d51c5902c00a861702eb75a
   languageName: node
   linkType: hard
 
