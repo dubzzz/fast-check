@@ -19,19 +19,19 @@ This package tends to provide a way to run easily your properties within dedicat
 Here are some of the changes you will have to do:
 
 - hoist properties so that they get declared on the root scope
-- replace `fc.property` by `workerProperty` and adds the extra URL parameter
+- replace `fc.property` by `property` coming from `propertyFor(<path-to-file>)`
 - replace `fc.assert` by `assert` coming from `@fast-check/worker` for automatic cleaning of the workers as the test ends
 - transpilation has not been addressed yet but it may probably work
-- in theory, if you were only using `workerProperty` and `assert` without any external framework for `test`, `it` and others, the separation of the property from the assertion would be useless as the check for main thread is fully handled within `@fast-check/worker` itself so no hoisting needing in such case
+- in theory, if you were only using `propertyFor` and `assert` without any external framework for `test`, `it` and others, the separation of the property from the assertion would be useless as the check for main thread is fully handled within `@fast-check/worker` itself so no hoisting needing in such case
 
 ```js
 import { test } from '@jest/globals';
 import fc from 'fast-check';
 import { isMainThread } from 'node:worker_threads';
-import { assert, workerProperty, clearAllWorkersFor } from '@fast-check/worker';
+import { assert, propertyFor } from '@fast-check/worker';
 
-const workerFileUrl = new URL(import.meta.url); // or pathToFileURL(__filename) in commonjs
-const p1 = workerProperty(workerFileUrl, fc.nat(), fc.nat(), (start, end) => {
+const property = propertyFor(new URL(import.meta.url)); // or propertyFor(pathToFileURL(__filename)) in commonjs
+const p1 = property(workerFileUrl, fc.nat(), fc.nat(), (start, end) => {
   // starting a possibly infinite loop
   for (let i = start; i !== end; ++i) {
     // doing stuff...

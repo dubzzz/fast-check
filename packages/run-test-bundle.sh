@@ -13,8 +13,10 @@ if [ $NODE_MAJOR -gt 13 ] || [ $NODE_MAJOR -eq 13 ] && [ $NODE_MINOR -ge 2 ] || 
 fi
 yarn workspace @fast-check/test-bundle-node-extension-cjs test
 yarn workspace @fast-check/test-bundle-node-with-require test
-yarn workspace @fast-check/test-bundle-rollup-with-import test
-yarn workspace @fast-check/test-bundle-rollup-with-require test
+if [ $NODE_MAJOR -gt 14 ] || [ $NODE_MAJOR -eq 14 ] && [ $NODE_MINOR -ge 18 ]; then
+    yarn workspace @fast-check/test-bundle-rollup-with-import test
+    yarn workspace @fast-check/test-bundle-rollup-with-require test
+fi
 yarn workspace @fast-check/test-bundle-webpack-with-import test
 yarn workspace @fast-check/test-bundle-webpack-with-require test
 yarn workspace @fast-check/test-bundle-esbuild-with-require test

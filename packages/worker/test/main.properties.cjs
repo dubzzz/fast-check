@@ -1,11 +1,10 @@
 const { pathToFileURL } = require('node:url');
 const fc = require('fast-check');
-const { workerProperty } = require('@fast-check/worker');
+const { propertyFor } = require('@fast-check/worker');
 
-const workerFileUrl = pathToFileURL(__filename);
+const property = propertyFor(pathToFileURL(__filename));
 
-exports.blockEventLoopProperty = workerProperty(
-  workerFileUrl,
+exports.blockEventLoopProperty = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (from, to) => {
@@ -15,8 +14,7 @@ exports.blockEventLoopProperty = workerProperty(
   }
 );
 
-exports.passingProperty = workerProperty(
-  workerFileUrl,
+exports.passingProperty = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (from, to) => {
@@ -26,8 +24,7 @@ exports.passingProperty = workerProperty(
   }
 );
 
-exports.failingProperty = workerProperty(
-  workerFileUrl,
+exports.failingProperty = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (_from, _to) => {
@@ -36,11 +33,6 @@ exports.failingProperty = workerProperty(
 );
 
 exports.buildUnregisteredProperty = () =>
-  workerProperty(
-    workerFileUrl,
-    fc.integer({ min: -1000, max: 1000 }),
-    fc.integer({ min: -1000, max: 1000 }),
-    (_from, _to) => {
-      return true; // success
-    }
-  );
+  property(fc.integer({ min: -1000, max: 1000 }), fc.integer({ min: -1000, max: 1000 }), (_from, _to) => {
+    return true; // success
+  });

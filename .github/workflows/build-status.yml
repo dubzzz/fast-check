@@ -460,7 +460,7 @@ jobs:
           name: docs
           path: packages/fast-check/docs/
       - name: Publish to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.0
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
           folder: packages/fast-check/docs/

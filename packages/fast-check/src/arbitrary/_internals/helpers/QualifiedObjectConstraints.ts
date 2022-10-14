@@ -16,17 +16,18 @@ export interface ObjectConstraints {
   /**
    * Limit the depth of the object by increasing the probability to generate simple values (defined via values)
    * as we go deeper in the object.
-   *
    * @remarks Since 2.20.0
    */
   depthSize?: DepthSize;
   /**
    * Maximal depth allowed
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 0.0.7
    */
   maxDepth?: number;
   /**
    * Maximal number of keys
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 1.13.0
    */
   maxKeys?: number;
@@ -37,78 +38,68 @@ export interface ObjectConstraints {
   size?: SizeForArbitrary;
   /**
    * Arbitrary for keys
-   *
-   * Default for `key` is: {@link string}
+   * @defaultValue {@link string}
    * @remarks Since 0.0.7
    */
   key?: Arbitrary<string>;
   /**
    * Arbitrary for values
-   *
-   * Default for `values` are:
-   * - {@link boolean},
-   * - {@link integer},
-   * - {@link double},
-   * - {@link string}
-   * - constants among:
-   *  - `null`,
-   *  - `undefined`,
-   *  - `Number.NaN`,
-   *  - `+0`,
-   *  - `-0`,
-   *  - `Number.EPSILON`,
-   *  - `Number.MIN_VALUE`,
-   *  - `Number.MAX_VALUE`,
-   *  - `Number.MIN_SAFE_INTEGER`,
-   *  - `Number.MAX_SAFE_INTEGER`,
-   *  - `Number.POSITIVE_INFINITY`,
-   *  - `Number.NEGATIVE_INFINITY`
+   * @defaultValue {@link boolean}, {@link integer}, {@link double}, {@link string}, null, undefined, Number.NaN, +0, -0, Number.EPSILON, Number.MIN_VALUE, Number.MAX_VALUE, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY
    * @remarks Since 0.0.7
    */
   values?: Arbitrary<unknown>[];
   /**
    * Also generate boxed versions of values
+   * @defaultValue false
    * @remarks Since 1.11.0
    */
   withBoxedValues?: boolean;
   /**
    * Also generate Set
+   * @defaultValue false
    * @remarks Since 1.11.0
    */
   withSet?: boolean;
   /**
    * Also generate Map
+   * @defaultValue false
    * @remarks Since 1.11.0
    */
   withMap?: boolean;
   /**
    * Also generate string representations of object instances
+   * @defaultValue false
    * @remarks Since 1.17.0
    */
   withObjectString?: boolean;
   /**
    * Also generate object with null prototype
+   * @defaultValue false
    * @remarks Since 1.23.0
    */
   withNullPrototype?: boolean;
   /**
    * Also generate BigInt
+   * @defaultValue false
    * @remarks Since 1.26.0
    */
   withBigInt?: boolean;
   /**
    * Also generate Date
+   * @defaultValue false
    * @remarks Since 2.5.0
    */
   withDate?: boolean;
   /**
    * Also generate typed arrays in: (Uint|Int)(8|16|32)Array and Float(32|64)Array
    * Remark: no typed arrays made of bigint
+   * @defaultValue false
    * @remarks Since 2.9.0
    */
   withTypedArray?: boolean;
   /**
    * Also generate sparse arrays (arrays with holes)
+   * @defaultValue false
    * @remarks Since 2.13.0
    */
   withSparseArray?: boolean;

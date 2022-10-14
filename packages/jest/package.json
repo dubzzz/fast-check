@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/jest",
   "description": "Property based testing for Jest based on fast-check",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "commonjs",
   "main": "lib/jest-fast-check.js",
   "exports": {
@@ -23,8 +23,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "jest-test": "jest",
-    "test": "sh test.sh",
+    "test": "jest",
     "typecheck": "tsc --noEmit"
   },
   "repository": {

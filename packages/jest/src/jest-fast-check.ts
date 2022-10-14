@@ -23,12 +23,19 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
   prop: Prop<Ts>,
   params?: fc.Parameters<Ts>
 ): void {
-  const customParams: fc.Parameters<Ts> = params || {};
-  if (customParams.seed === undefined) customParams.seed = Date.now();
+  const customParams: fc.Parameters<Ts> = { ...params };
+  if (customParams.seed === undefined) {
+    const seedFromGlobals = fc.readConfigureGlobal().seed;
+    if (seedFromGlobals !== undefined) {
+      customParams.seed = seedFromGlobals;
+    } else {
+      customParams.seed = Date.now() ^ (Math.random() * 0x100000000);
+    }
+  }
 
   const promiseProp = wrapProp(prop);
   testFn(`${label} (with seed=${customParams.seed})`, async () => {
-    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), params);
+    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
   });
 }
 
