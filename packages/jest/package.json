@@ -44,10 +44,10 @@
     "@jest/globals": ">=25.5.2"
   },
   "devDependencies": {
-    "@jest/globals": "^29.1.2",
+    "@jest/globals": "^29.2.0",
     "@types/node": "^17.0.44",
     "fast-check": "workspace:*",
-    "jest": "^29.1.2",
+    "jest": "^29.2.0",
     "ts-jest": "^29.0.3",
     "typescript": "^4.8.4"
   },
