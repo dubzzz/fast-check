@@ -12,7 +12,7 @@ import { list } from 'tar';
  */
 export async function computePublishedFiles(packageRoot: string): Promise<string[]> {
   const publishedFiles: string[] = [];
-  const tarBuffer = await tarball(`file:${packageRoot}`, { dryRun: true, tree: Arborist });
+  const tarBuffer = await tarball(`file:${packageRoot}`, { dryRun: true, Arborist });
   const stream = list({
     onentry: (entry) => {
       const entryPath: string = entry.path as any;
