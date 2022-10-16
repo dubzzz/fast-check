@@ -33,7 +33,7 @@ export function shouldIgnoreProperty(
 ): boolean {
   return (
     shouldIgnoreGlobal(globalDetails, ignoredRootRegex) ||
-    (globalDetails.depth === 0 && !ignoredRootRegex.test(propertyName))
+    (globalDetails.depth === 0 && ignoredRootRegex.test(propertyName))
   );
 }
 
@@ -45,9 +45,7 @@ export function filterNonEligibleDiffs<TDiff extends SubDiffOnGlobal>(
   const keptDiffs = PoisoningFreeArray.from<TDiff>([]);
   for (let index = 0; index !== diffs.length; ++index) {
     const diff = diffs[index];
-    if (!shouldIgnoreGlobal(diff.globalDetails, ignoredRootRegex)) {
-      keptDiffs[PushSymbol](diff);
-    } else if (diff.globalDetails.depth === 0 && !ignoredRootRegex.test(diff.keyName)) {
+    if (!shouldIgnoreProperty(diff.globalDetails, diff.keyName, ignoredRootRegex)) {
       keptDiffs[PushSymbol](diff);
     }
   }
