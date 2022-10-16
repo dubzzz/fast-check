@@ -1,44 +1,34 @@
-import { PoisoningFreeArray, PushSymbol } from './PoisoningFreeArray';
 import { GlobalDetails } from './types/AllGlobals';
 
-export type SubDiffOnGlobal = {
-  keyName: string;
-  globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>;
-};
-
-/** Create a new arrays of diffs containing only eligible ones */
-export function filterNonEligibleDiffs<TDiff extends SubDiffOnGlobal>(
-  diffs: TDiff[],
+/** Check whether or not a global has to be ignored for diff tracking */
+export function shouldIgnoreGlobal(
+  globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
   ignoredRootRegex: RegExp
-): TDiff[] {
-  const keptDiffs = PoisoningFreeArray.from<TDiff>([]);
-  for (let index = 0; index !== diffs.length; ++index) {
-    const diff = diffs[index];
-    switch (diff.globalDetails.depth) {
-      case 0: {
-        if (!ignoredRootRegex.test(diff.keyName)) {
-          keptDiffs[PushSymbol](diff);
-        }
-        break;
+): boolean {
+  switch (globalDetails.depth) {
+    case 0:
+      return false; // need to check the name of the property
+    case 1:
+      return ignoredRootRegex.test(globalDetails.name);
+    default: {
+      let allRootsIgnored = true;
+      const allRoots = [...globalDetails.rootAncestors];
+      for (let rootIndex = 0; rootIndex !== allRoots.length; ++rootIndex) {
+        allRootsIgnored = allRootsIgnored && ignoredRootRegex.test(allRoots[rootIndex]);
       }
-      case 1: {
-        if (!ignoredRootRegex.test(diff.globalDetails.name)) {
-          keptDiffs[PushSymbol](diff);
-        }
-        break;
-      }
-      default: {
-        let allRootsIgnored = true;
-        const allRoots = [...diff.globalDetails.rootAncestors];
-        for (let rootIndex = 0; rootIndex !== allRoots.length; ++rootIndex) {
-          allRootsIgnored = allRootsIgnored && ignoredRootRegex.test(allRoots[rootIndex]);
-        }
-        if (!allRootsIgnored) {
-          keptDiffs[PushSymbol](diff);
-        }
-        break;
-      }
+      return allRootsIgnored;
     }
   }
-  return keptDiffs;
+}
+
+/** Check whether or not a property from a global has to be ignored for diff tracking */
+export function shouldIgnoreProperty(
+  globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
+  propertyName: string,
+  ignoredRootRegex: RegExp
+): boolean {
+  return (
+    shouldIgnoreGlobal(globalDetails, ignoredRootRegex) ||
+    (globalDetails.depth === 0 && ignoredRootRegex.test(propertyName))
+  );
 }
