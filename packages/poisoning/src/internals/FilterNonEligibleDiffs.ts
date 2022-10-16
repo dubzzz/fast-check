@@ -1,10 +1,4 @@
-import { PoisoningFreeArray, PushSymbol } from './PoisoningFreeArray';
 import { GlobalDetails } from './types/AllGlobals';
-
-export type SubDiffOnGlobal = {
-  keyName: string;
-  globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>;
-};
 
 /** Check whether or not a global has to be ignored for diff tracking */
 export function shouldIgnoreGlobal(
@@ -37,19 +31,4 @@ export function shouldIgnoreProperty(
     shouldIgnoreGlobal(globalDetails, ignoredRootRegex) ||
     (globalDetails.depth === 0 && ignoredRootRegex.test(propertyName))
   );
-}
-
-/** Create a new arrays of diffs containing only eligible ones */
-export function filterNonEligibleDiffs<TDiff extends SubDiffOnGlobal>(
-  diffs: TDiff[],
-  ignoredRootRegex: RegExp
-): TDiff[] {
-  const keptDiffs = PoisoningFreeArray.from<TDiff>([]);
-  for (let index = 0; index !== diffs.length; ++index) {
-    const diff = diffs[index];
-    if (!shouldIgnoreProperty(diff.globalDetails, diff.keyName, ignoredRootRegex)) {
-      keptDiffs[PushSymbol](diff);
-    }
-  }
-  return keptDiffs;
 }
