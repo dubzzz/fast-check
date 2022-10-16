@@ -1,5 +1,5 @@
 import { captureAllGlobals } from './internals/CaptureAllGlobals.js';
-import { filterGlobals, filterNonEligibleDiffs } from './internals/FilterNonEligibleDiffs.js';
+import { shouldIgnoreGlobal, shouldIgnoreProperty } from './internals/FilterNonEligibleDiffs.js';
 import { trackDiffsOnGlobals } from './internals/TrackDiffsOnGlobal.js';
 
 const initialGlobals = captureAllGlobals();
@@ -24,10 +24,17 @@ export type ExtraOptions = {
 function trackDiffsOnGlobalsBasedOnOptions(options: ExtraOptions | undefined) {
   const ignoredRootRegex =
     options !== undefined && options.ignoredRootRegex !== undefined ? options.ignoredRootRegex : undefined;
-  const allDiffs = trackDiffsOnGlobals(
-    ignoredRootRegex !== undefined ? filterGlobals(initialGlobals, ignoredRootRegex) : initialGlobals
-  );
-  return ignoredRootRegex !== undefined ? filterNonEligibleDiffs(allDiffs, ignoredRootRegex) : allDiffs;
+  return ignoredRootRegex !== undefined
+    ? trackDiffsOnGlobals(
+        initialGlobals,
+        (globalDetails) => !shouldIgnoreGlobal(globalDetails, ignoredRootRegex),
+        (globalDetails, propertyName) => !shouldIgnoreProperty(globalDetails, propertyName, ignoredRootRegex)
+      )
+    : trackDiffsOnGlobals(
+        initialGlobals,
+        () => true,
+        () => true
+      );
 }
 
 /**

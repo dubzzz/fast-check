@@ -13,7 +13,11 @@ describe('trackDiffsOnGlobals', () => {
     globalA.a = 2; // adding key onto a tracked global
 
     // Act
-    const diff = trackDiffsOnGlobals(allGlobals);
+    const diff = trackDiffsOnGlobals(
+      allGlobals,
+      () => true,
+      () => true
+    );
     expect(globalA).not.toEqual({});
     diff.forEach((d) => d.patch());
 
@@ -39,7 +43,11 @@ describe('trackDiffsOnGlobals', () => {
     globalA[addedSymbol] = 2; // adding key onto a tracked global
 
     // Act
-    const diff = trackDiffsOnGlobals(allGlobals);
+    const diff = trackDiffsOnGlobals(
+      allGlobals,
+      () => true,
+      () => true
+    );
     expect(globalA).not.toEqual({});
     diff.forEach((d) => d.patch());
 
@@ -64,7 +72,11 @@ describe('trackDiffsOnGlobals', () => {
     Object.defineProperty(globalA, 'a', { configurable: true, enumerable: false, writable: false, value: 2 }); // adding key onto a tracked global
 
     // Act
-    const diff = trackDiffsOnGlobals(allGlobals);
+    const diff = trackDiffsOnGlobals(
+      allGlobals,
+      () => true,
+      () => true
+    );
     expect('a' in globalA).toBe(true);
     diff.forEach((d) => d.patch());
 
@@ -89,7 +101,11 @@ describe('trackDiffsOnGlobals', () => {
     delete globalA.a; // deleting key from a tracked global
 
     // Act
-    const diff = trackDiffsOnGlobals(allGlobals);
+    const diff = trackDiffsOnGlobals(
+      allGlobals,
+      () => true,
+      () => true
+    );
     expect(globalA).not.toEqual({ a: 2 });
     diff.forEach((d) => d.patch());
 
@@ -114,7 +130,11 @@ describe('trackDiffsOnGlobals', () => {
     globalA.a = 3; // updating value linked to a key from a tracked global
 
     // Act
-    const diff = trackDiffsOnGlobals(allGlobals);
+    const diff = trackDiffsOnGlobals(
+      allGlobals,
+      () => true,
+      () => true
+    );
     expect(globalA).not.toEqual({ a: 2 });
     diff.forEach((d) => d.patch());
 
@@ -146,7 +166,11 @@ describe('trackDiffsOnGlobals', () => {
     delete globalA.hello; // deleting hello from globalA but globalA.hello can still be called (prototype call)
 
     // Act
-    const diff = trackDiffsOnGlobals(allGlobals);
+    const diff = trackDiffsOnGlobals(
+      allGlobals,
+      () => true,
+      () => true
+    );
     expect(globalA).not.toEqual({ hello: helloOverride });
     diff.forEach((d) => d.patch());
 

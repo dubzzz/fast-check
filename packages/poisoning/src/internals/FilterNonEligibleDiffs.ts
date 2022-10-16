@@ -1,13 +1,12 @@
 import { PoisoningFreeArray, PushSymbol } from './PoisoningFreeArray';
-import { EntriesSymbol, PoisoningFreeMap } from './PoisoningFreeMap';
-import { AllGlobals, GlobalDetails } from './types/AllGlobals';
+import { GlobalDetails } from './types/AllGlobals';
 
 export type SubDiffOnGlobal = {
   keyName: string;
   globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>;
 };
 
-function shouldIgnoreGlobal(
+export function shouldIgnoreGlobal(
   globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
   ignoredRootRegex: RegExp
 ): boolean {
@@ -27,6 +26,17 @@ function shouldIgnoreGlobal(
   }
 }
 
+export function shouldIgnoreProperty(
+  globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
+  propertyName: string,
+  ignoredRootRegex: RegExp
+): boolean {
+  return (
+    shouldIgnoreGlobal(globalDetails, ignoredRootRegex) ||
+    (globalDetails.depth === 0 && !ignoredRootRegex.test(propertyName))
+  );
+}
+
 /** Create a new arrays of diffs containing only eligible ones */
 export function filterNonEligibleDiffs<TDiff extends SubDiffOnGlobal>(
   diffs: TDiff[],
@@ -42,15 +52,4 @@ export function filterNonEligibleDiffs<TDiff extends SubDiffOnGlobal>(
     }
   }
   return keptDiffs;
-}
-
-/** Pre-filter all globals to only kept eligible ones, not to scan too many of them */
-export function filterGlobals(initialGlobals: AllGlobals, ignoredRootRegex: RegExp): AllGlobals {
-  const newGlobalsArray = PoisoningFreeArray.from<[unknown, GlobalDetails]>([]);
-  for (const entry of initialGlobals[EntriesSymbol]()) {
-    if (!shouldIgnoreGlobal(entry[1], ignoredRootRegex)) {
-      newGlobalsArray[PushSymbol](entry);
-    }
-  }
-  return PoisoningFreeMap.from(newGlobalsArray);
 }
