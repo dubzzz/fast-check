@@ -932,7 +932,7 @@ __metadata:
     "@rollup/plugin-commonjs": ^23.0.0
     "@rollup/plugin-node-resolve": ^15.0.0
     fast-check: "workspace:*"
-    rollup: ^3.2.1
+    rollup: ^3.2.2
   languageName: unknown
   linkType: soft
 
@@ -943,7 +943,7 @@ __metadata:
     "@rollup/plugin-commonjs": ^23.0.0
     "@rollup/plugin-node-resolve": ^15.0.0
     fast-check: "workspace:*"
-    rollup: ^3.2.1
+    rollup: ^3.2.2
   languageName: unknown
   linkType: soft
 
@@ -14358,9 +14358,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "rollup@npm:3.2.1"
+"rollup@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "rollup@npm:3.2.2"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -14368,7 +14368,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 52fa82deb5368c5ad0ef585c6900b782b246834a597b782e648adb3e4b8e458c111b634c358619d6137837fe064e704090d58d84f298d0c508d7a1aef9c0caf3
+  checksum: c4de594630348d3dab98262c95df8b3e206abde2f9b885ee703fd33e106988a255c051c2f1ea200403365803be1e097f5ade8e220220a3179f89f4589847c69e
   languageName: node
   linkType: hard
 
