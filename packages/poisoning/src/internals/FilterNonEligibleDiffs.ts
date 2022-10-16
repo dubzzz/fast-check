@@ -27,8 +27,5 @@ export function shouldIgnoreProperty(
   propertyName: string,
   ignoredRootRegex: RegExp
 ): boolean {
-  return (
-    shouldIgnoreGlobal(globalDetails, ignoredRootRegex) ||
-    (globalDetails.depth === 0 && ignoredRootRegex.test(propertyName))
-  );
+  return globalDetails.depth === 0 && ignoredRootRegex.test(propertyName);
 }

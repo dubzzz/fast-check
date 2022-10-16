@@ -42,7 +42,7 @@ describe('shouldIgnore{Global,Property}', () => {
     const out = shouldIgnore(entry, /^_/);
 
     // Assert
-    expect(out).toEqual({ global: true, property: true });
+    expect(out).toEqual({ global: true, property: false });
   });
 
   it('should keep any direct property of a non ignored root', () => {
@@ -70,7 +70,7 @@ describe('shouldIgnore{Global,Property}', () => {
     const out = shouldIgnore(entry, /^_/);
 
     // Assert
-    expect(out).toEqual({ global: true, property: true });
+    expect(out).toEqual({ global: true, property: false });
   });
 
   it('should keep any children with all roots being non ignored', () => {
