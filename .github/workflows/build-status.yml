@@ -317,7 +317,7 @@ jobs:
       - name: Retrieve potentially dropped test-bundle
         run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check bundles
-        run: yarn workspaces foreach -pvi --no-private run test:bundle
+        run: yarn workspaces foreach -pvi --no-private run test-bundle
   test_types:
     name: 'Test types'
     needs:
