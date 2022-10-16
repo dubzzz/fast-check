@@ -767,7 +767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fast-check/ava@workspace:*, @fast-check/ava@workspace:packages/ava":
+"@fast-check/ava@workspace:packages/ava":
   version: 0.0.0-use.local
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
@@ -872,26 +872,6 @@ __metadata:
     ts-jest: ^29.0.3
     ts-jest-resolver: ^2.0.0
     typescript: ^4.8.4
-  languageName: unknown
-  linkType: soft
-
-"@fast-check/test-ava-bundle-cjs@workspace:packages/test-ava-bundle-cjs":
-  version: 0.0.0-use.local
-  resolution: "@fast-check/test-ava-bundle-cjs@workspace:packages/test-ava-bundle-cjs"
-  dependencies:
-    "@fast-check/ava": "workspace:*"
-    ava: ^4.3.3
-    fast-check: "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@fast-check/test-ava-bundle-esm@workspace:packages/test-ava-bundle-esm":
-  version: 0.0.0-use.local
-  resolution: "@fast-check/test-ava-bundle-esm@workspace:packages/test-ava-bundle-esm"
-  dependencies:
-    "@fast-check/ava": "workspace:*"
-    ava: ^4.3.3
-    fast-check: "workspace:*"
   languageName: unknown
   linkType: soft
 
