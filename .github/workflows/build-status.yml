@@ -211,14 +211,6 @@ jobs:
             script-name: 'test'
             node-version: 16.x
             os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-ava-bundle-cjs'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-ava-bundle-esm'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
       - name: Cache for Jest
