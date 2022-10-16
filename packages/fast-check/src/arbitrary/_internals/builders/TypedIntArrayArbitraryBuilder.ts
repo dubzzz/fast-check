@@ -47,11 +47,13 @@ export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType extends I
 export type IntArrayConstraints = {
   /**
    * Lower bound of the generated array size
+   * @defaultValue 0
    * @remarks Since 2.9.0
    */
   minLength?: number;
   /**
    * Upper bound of the generated array size
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.9.0
    */
   maxLength?: number;
@@ -82,11 +84,13 @@ export type IntArrayConstraints = {
 export type BigIntArrayConstraints = {
   /**
    * Lower bound of the generated array size
+   * @defaultValue 0
    * @remarks Since 3.0.0
    */
   minLength?: number;
   /**
    * Upper bound of the generated array size
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 3.0.0
    */
   maxLength?: number;
