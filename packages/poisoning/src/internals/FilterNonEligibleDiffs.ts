@@ -6,6 +6,7 @@ export type SubDiffOnGlobal = {
   globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>;
 };
 
+/** Check whether or not a global has to be ignored for diff tracking */
 export function shouldIgnoreGlobal(
   globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
   ignoredRootRegex: RegExp
@@ -26,6 +27,7 @@ export function shouldIgnoreGlobal(
   }
 }
 
+/** Check whether or not a property from a global has to be ignored for diff tracking */
 export function shouldIgnoreProperty(
   globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
   propertyName: string,
