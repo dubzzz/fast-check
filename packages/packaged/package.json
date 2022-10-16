@@ -46,8 +46,14 @@
     "typescript": "^4.8.4"
   },
   "keywords": [],
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/fast-check"
-  }
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    },
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    }
+  ]
 }
