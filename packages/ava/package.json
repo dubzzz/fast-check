@@ -25,6 +25,9 @@
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "ava-test": "ava -s -t",
     "test": "sh test.sh",
+    "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
+    "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
+    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -67,8 +70,14 @@
       "esm"
     ]
   },
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/fast-check"
-  }
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    },
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    }
+  ]
 }

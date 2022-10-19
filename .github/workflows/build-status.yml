@@ -211,22 +211,6 @@ jobs:
             script-name: 'test'
             node-version: 16.x
             os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-ava-bundle-cjs'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-ava-bundle-esm'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-jest-bundle-cjs'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-jest-bundle-esm'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
       - name: Cache for Jest
@@ -298,6 +282,34 @@ jobs:
           path: packages/fast-check/docs/
           if-no-files-found: error
           retention-days: 1
+  test_bundle:
+    name: 'Test bundle'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Retrieve potentially dropped test-bundle
+        run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-bundle || true"
+      - name: Check bundles
+        run: yarn workspaces foreach -pvi --no-private run test-bundle
   test_types:
     name: 'Test types'
     needs:
@@ -476,6 +488,7 @@ jobs:
       - package_quality
       - typecheck
       - test
+      - test_bundle
       - test_cjs_esm
       - test_node_8
       - test_types
