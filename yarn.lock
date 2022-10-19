@@ -2463,15 +2463,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/installed-package-contents@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@npmcli/installed-package-contents@npm:2.0.0"
+"@npmcli/installed-package-contents@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@npmcli/installed-package-contents@npm:2.0.1"
   dependencies:
     npm-bundled: ^3.0.0
     npm-normalize-package-bin: ^3.0.0
   bin:
-    installed-package-contents: index.js
-  checksum: e992dd45a6154f93439bf4ec65a9ef36398e242643b78e17d96a0c8d4e1c302bbad578d1ec9168b318b34593a24970afabb5304dc581d178e2326004d536f39c
+    installed-package-contents: lib/index.js
+  checksum: 75126a3b3a741cd68e78ccea25256e87734379e5e0d827674fc3ec1f39b6ed356ae2c3e2d906c9c0247c192e8ca7e67188ad346f86042baabbac274e9b02d770
   languageName: node
   linkType: hard
 
@@ -13604,11 +13604,11 @@ __metadata:
   linkType: hard
 
 "pacote@npm:^15.0.0":
-  version: 15.0.2
-  resolution: "pacote@npm:15.0.2"
+  version: 15.0.3
+  resolution: "pacote@npm:15.0.3"
   dependencies:
     "@npmcli/git": ^4.0.0
-    "@npmcli/installed-package-contents": ^2.0.0
+    "@npmcli/installed-package-contents": ^2.0.1
     "@npmcli/promise-spawn": ^4.0.0
     "@npmcli/run-script": ^5.0.0
     cacache: ^17.0.0
@@ -13626,7 +13626,7 @@ __metadata:
     tar: ^6.1.11
   bin:
     pacote: lib/bin.js
-  checksum: 7bd1839b277ded49c6de22cab3cefbeeb9988ef3af5998f4e4ac1d71efc5321f7d7a63587168ec5fda0498eb0f747d57fe3bb39f9e646877cb94063e6b9a259a
+  checksum: 8664a89509532b8a2fa871c14ba5dafba41527d8b492aa908edef5ae60dd52557daabf71da7ba2450f506e0b89056461a70bf551444f93fd0b31a05a3f01ef9e
   languageName: node
   linkType: hard
 
