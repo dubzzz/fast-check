@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import { tarball } from 'pacote';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import Arborist from '@npmcli/arborist';
+import { Arborist } from '@npmcli/arborist';
 import * as path from 'path';
 import { list } from 'tar';
 
