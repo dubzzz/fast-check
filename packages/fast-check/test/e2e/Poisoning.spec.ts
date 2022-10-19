@@ -59,6 +59,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'webFragments', arbitraryBuilder: () => fc.webFragments() },
     { name: 'webQueryParameters', arbitraryBuilder: () => fc.webQueryParameters() },
     { name: 'webSegment', arbitraryBuilder: () => fc.webSegment() },
+    { name: 'webPath', arbitraryBuilder: () => fc.webPath() },
     { name: 'webUrl', arbitraryBuilder: () => fc.webUrl() },
     { name: 'emailAddress', arbitraryBuilder: () => fc.emailAddress() },
     { name: 'mixedCase', arbitraryBuilder: () => fc.mixedCase(fc.string()) },
