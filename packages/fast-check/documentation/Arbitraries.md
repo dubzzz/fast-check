@@ -969,7 +969,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), {minLength: 1, maxLength: 3})
 *&#8195;with:*
 
 - `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
-- `maxDepth?` — _maximal depth of generated objects_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
 
 *&#8195;Usages*
 
@@ -1024,7 +1024,7 @@ fc.json({depthSize: 'medium'})
 *&#8195;with:*
 
 - `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
-- `maxDepth?` — _maximal depth of generated objects_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
 
 *&#8195;Usages*
 
@@ -2043,7 +2043,7 @@ fc.float64Array({minLength: 1})
 - `min?` — default: `-18446744073709551616n` — _minimal value (included)_
 - `max?` — default: `18446744073709551615n` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -2083,7 +2083,7 @@ fc.bigInt64Array({min: 0n, minLength: 1})
 - `min?` — default: `0n` — _minimal value (included)_
 - `max?` — default: `36893488147419103231n` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `2 * minLength + 10` — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](#size-explained) — _maximal length (included)_
 
 *&#8195;Usages*
 
@@ -2881,7 +2881,7 @@ fc.record({
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
 - `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
-- `maxDepth?` — default: `undefined` — _maximal depth for generated objects (Map and Set included into objects)_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
@@ -2994,7 +2994,7 @@ fc.object({
 *&#8195;with:*
 
 - `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
-- `maxDepth?` — default: `undefined` — _maximal depth for generated objects (Map and Set included into objects)_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
 
@@ -3105,7 +3105,7 @@ fc.statistics(
 *&#8195;with:*
 
 - `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
-- `maxDepth?` — default: `undefined` — _maximal depth for generated objects (Map and Set included into objects)_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
 
 *&#8195;Usages*
 
@@ -3143,7 +3143,7 @@ fc.unicodeJsonValue({maxDepth: 1})
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
 - `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
-- `maxDepth?` — default: `undefined` — _maximal depth for generated objects (Map and Set included into objects)_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
 - `maxKeys?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of keys in generated objects (Map and Set included into objects)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
@@ -3798,7 +3798,7 @@ fc.context()
 *&#8195;with:*
 
 - `commandArbs` — _array of arbitraries responsible to generate commands_
-- `disableReplayLog?` — _disable the display of details regarding the replay for commands_
+- `disableReplayLog?` — default: `false` — _disable the display of details regarding the replay for commands_
 - `maxCommands?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of commands to generate (included)_
 - `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
 - `replayPath?` — _only used when replaying commands_

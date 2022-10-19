@@ -13,11 +13,13 @@ import { safeHasOwnProperty } from '../utils/globals';
 export interface OptionConstraints<TNil = null> {
   /**
    * The probability to build a nil value is of `1 / freq`
+   * @defaultValue 5
    * @remarks Since 1.17.0
    */
   freq?: number;
   /**
-   * The nil value (default would be null)
+   * The nil value
+   * @defaultValue null
    * @remarks Since 1.17.0
    */
   nil?: TNil;
@@ -30,7 +32,7 @@ export interface OptionConstraints<TNil = null> {
   depthSize?: DepthSize;
   /**
    * Maximal authorized depth. Once this depth has been reached only nil will be used.
-   *
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.14.0
    */
   maxDepth?: number;

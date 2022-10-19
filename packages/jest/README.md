@@ -21,6 +21,12 @@ npm install --save-dev @fast-check/jest
 
 In order to work properly, `@fast-check/jest` requires `jest` to be installed.
 
+We also highly recommend users to launch their tests using the `--show-seed` option provided by Jest. It ensures Jest will always print the seed by itself (requires Jest ≥29.2.0).
+
+```sh
+jest --show-seed
+```
+
 ## Example
 
 ```javascript

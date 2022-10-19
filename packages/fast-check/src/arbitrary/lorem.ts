@@ -23,6 +23,7 @@ export interface LoremConstraints {
    * - maximal number of words in case mode is 'words'
    * - maximal number of sentences in case mode is 'sentences'
    *
+   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.5.0
    */
   maxCount?: number;
@@ -32,7 +33,6 @@ export interface LoremConstraints {
    * - sentences: multiple sentences
    *
    * @defaultValue 'words'
-   *
    * @remarks Since 2.5.0
    */
   mode?: 'words' | 'sentences';

@@ -20,21 +20,25 @@ const safeObjectAssign = Object.assign;
 export interface WebUrlConstraints {
   /**
    * Enforce specific schemes, eg.: http, https
+   * @defaultValue ['http', 'https']
    * @remarks Since 1.14.0
    */
   validSchemes?: string[];
   /**
    * Settings for {@link webAuthority}
+   * @defaultValue &#123;&#125;
    * @remarks Since 1.14.0
    */
   authoritySettings?: WebAuthorityConstraints;
   /**
    * Enable query parameters in the generated url
+   * @defaultValue false
    * @remarks Since 1.14.0
    */
   withQueryParameters?: boolean;
   /**
    * Enable fragments in the generated url
+   * @defaultValue false
    * @remarks Since 1.14.0
    */
   withFragments?: boolean;

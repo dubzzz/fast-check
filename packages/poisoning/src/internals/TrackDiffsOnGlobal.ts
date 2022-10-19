@@ -18,13 +18,20 @@ type DiffOnGlobal = {
 };
 
 /** Compute the diff between two versions of globals */
-export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] {
+export function trackDiffsOnGlobals(
+  initialGlobals: AllGlobals,
+  isEligibleGlobal: (globalDetails: GlobalDetails) => boolean,
+  isEligibleProperty: (globalDetails: GlobalDetails, propertyName: string) => boolean
+): DiffOnGlobal[] {
   const allInitialGlobals = [...initialGlobals[EntriesSymbol]()];
   const observedDiffs = PoisoningFreeArray.from<DiffOnGlobal>([]);
 
   for (let index = 0; index !== allInitialGlobals.length; ++index) {
     const instance = allInitialGlobals[index][0];
     const globalDetails = allInitialGlobals[index][1];
+    if (!isEligibleGlobal(globalDetails)) {
+      continue;
+    }
     const name = globalDetails.name;
     const currentDescriptors = safeObjectGetOwnPropertyDescriptors(instance);
     const initialProperties = globalDetails.properties;
@@ -36,6 +43,9 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
       const propertyName = initialPropertiesList[propertyIndex][0];
       const initialPropertyDescriptor = initialPropertiesList[propertyIndex][1];
 
+      if (!isEligibleProperty(globalDetails, SString(propertyName))) {
+        continue;
+      }
       if (!(propertyName in (currentDescriptors as any))) {
         observedDiffs[PushSymbol]({
           keyName: SString(propertyName),
@@ -70,6 +80,9 @@ export function trackDiffsOnGlobals(initialGlobals: AllGlobals): DiffOnGlobal[] 
     ];
     for (let descriptorIndex = 0; descriptorIndex !== currentDescriptorsList.length; ++descriptorIndex) {
       const propertyName = currentDescriptorsList[descriptorIndex];
+      if (!isEligibleProperty(globalDetails, SString(propertyName))) {
+        continue;
+      }
       if (!initialProperties[HasSymbol](propertyName)) {
         observedDiffs[PushSymbol]({
           keyName: SString(propertyName),

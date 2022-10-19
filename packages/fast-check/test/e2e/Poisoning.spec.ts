@@ -187,8 +187,6 @@ function dropMainGlobals(): void {
     Set,
     WeakMap,
     WeakSet,
-    WeakRef,
-    FinalizationRegistry,
     Proxy,
     Reflect,
     Buffer,
@@ -220,8 +218,34 @@ function dropMainGlobals(): void {
     JSON,
     Math,
     Intl,
+    EvalError,
+    RangeError,
+    ReferenceError,
+    SyntaxError,
+    TypeError,
+    URIError,
+    Atomics,
+    WebAssembly,
     globalThis,
   ];
+  const skippedGlobals = new Set(['AggregateError', 'FinalizationRegistry', 'WeakRef', 'URL']);
+  const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
+    (globalName) =>
+      globalName[0] >= 'A' &&
+      globalName[0] <= 'Z' &&
+      (typeof (globalThis as any)[globalName] === 'function' || typeof (globalThis as any)[globalName] === 'object')
+  );
+  const mainGlobalsSet = new Set<unknown>(mainGlobals);
+  const missingGlobals: string[] = [];
+  for (const globalName of allAccessibleGlobals) {
+    if (skippedGlobals.has(globalName)) {
+      continue;
+    }
+    if (!mainGlobalsSet.has((globalThis as any)[globalName])) {
+      missingGlobals.push(globalName);
+    }
+  }
+  expect(missingGlobals).toEqual([]);
   for (const mainGlobal of mainGlobals) {
     if ('prototype' in mainGlobal) {
       dropAllFromObj(mainGlobal.prototype);

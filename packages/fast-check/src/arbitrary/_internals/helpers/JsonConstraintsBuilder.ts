@@ -25,6 +25,7 @@ export interface JsonSharedConstraints {
   depthSize?: DepthSize;
   /**
    * Maximal depth allowed
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.5.0
    */
   maxDepth?: number;

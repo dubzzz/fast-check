@@ -10,6 +10,7 @@ import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary';
 export interface MixedCaseConstraints {
   /**
    * Transform a character to its upper and/or lower case version
+   * @defaultValue try `toUpperCase` on the received code-point, if no effect try `toLowerCase`
    * @remarks Since 1.17.0
    */
   toggleCase?: (rawChar: string) => string;
