@@ -1,5 +1,8 @@
 import { promises as fs } from 'fs';
 import { tarball } from 'pacote';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { Arborist } from '@npmcli/arborist';
 import * as path from 'path';
 import { list } from 'tar';
 
@@ -9,7 +12,7 @@ import { list } from 'tar';
  */
 export async function computePublishedFiles(packageRoot: string): Promise<string[]> {
   const publishedFiles: string[] = [];
-  const tarBuffer = await tarball(`file:${packageRoot}`, { dryRun: true });
+  const tarBuffer = await tarball(`file:${packageRoot}`, { dryRun: true, Arborist });
   const stream = list({
     onentry: (entry) => {
       const entryPath: string = entry.path as any;
