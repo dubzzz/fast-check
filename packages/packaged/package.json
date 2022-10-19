@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@npmcli/arborist": "6.0.0-pre.4",
-    "pacote": "^14.0.0",
+    "pacote": "^15.0.0",
     "tar": "^6.1.11"
   },
   "devDependencies": {
