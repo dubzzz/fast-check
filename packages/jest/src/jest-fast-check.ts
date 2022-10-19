@@ -32,7 +32,7 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
       // This option is only available since v29.2.0 of Jest
       // See official release note: https://github.com/facebook/jest/releases/tag/v29.2.0
       const seedFromJest = typeof jest.getSeed === 'function' ? jest.getSeed() : undefined;
-      if (seedFromJest) {
+      if (seedFromJest !== undefined) {
         customParams.seed = seedFromJest;
       } else {
         customParams.seed = Date.now() ^ (Math.random() * 0x100000000);
