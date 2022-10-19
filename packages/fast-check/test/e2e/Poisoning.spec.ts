@@ -186,8 +186,6 @@ function dropMainGlobals(): void {
     Set,
     WeakMap,
     WeakSet,
-    WeakRef,
-    FinalizationRegistry,
     Proxy,
     Reflect,
     Buffer,
