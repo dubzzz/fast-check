@@ -217,22 +217,17 @@ function dropMainGlobals(): void {
     JSON,
     Math,
     Intl,
+    EvalError,
+    RangeError,
+    ReferenceError,
+    SyntaxError,
+    TypeError,
+    URIError,
+    Atomics,
+    WebAssembly,
     globalThis,
   ];
-  const skippedGlobals = new Set([
-    'AggregateError',
-    'EvalError',
-    'RangeError',
-    'ReferenceError',
-    'SyntaxError',
-    'TypeError',
-    'URIError',
-    'FinalizationRegistry',
-    'WeakRef',
-    'Atomics',
-    'WebAssembly',
-    'URL',
-  ]);
+  const skippedGlobals = new Set(['AggregateError', 'FinalizationRegistry', 'WeakRef', 'URL']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
       globalName[0] >= 'A' &&
