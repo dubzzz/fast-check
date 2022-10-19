@@ -186,7 +186,11 @@ function dropMainGlobals(): void {
     Set,
     WeakMap,
     WeakSet,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     WeakRef,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     FinalizationRegistry,
     Proxy,
     Reflect,
