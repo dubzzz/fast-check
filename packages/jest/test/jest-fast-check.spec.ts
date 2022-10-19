@@ -105,7 +105,7 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
 
     // Assert
     expectFail(out, specFileName);
-    expectAlignedSeeds(out);
+    expectAlignedSeeds(out, { noAlignWithJest: true });
     expect(out).toMatch(/[×✕] property fail with locally requested seed \(with seed=4242\)/);
   });
 
@@ -121,8 +121,23 @@ describe.each<{ runner: RunnerType }>([{ runner: 'testProp' }, { runner: 'itProp
 
     // Assert
     expectFail(out, specFileName);
-    expectAlignedSeeds(out);
+    expectAlignedSeeds(out, { noAlignWithJest: true });
     expect(out).toMatch(/[×✕] property fail with globally requested seed \(with seed=4848\)/);
+  });
+
+  it.concurrent('should fail with seed requested at jest level', async () => {
+    // Arrange
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runner, () => {
+      runnerProp('property fail with globally requested seed', [fc.constant(null)], (_unused) => false);
+    });
+
+    // Act
+    const out = await runSpec(jestConfigRelativePath, { jestSeed: 6969 });
+
+    // Assert
+    expectFail(out, specFileName);
+    expectAlignedSeeds(out);
+    expect(out).toMatch(/[×✕] property fail with globally requested seed \(with seed=6969\)/);
   });
 
   describe('.skip', () => {
@@ -271,11 +286,17 @@ async function writeToFile(
   return { specFileName, jestConfigRelativePath };
 }
 
-async function runSpec(jestConfigRelativePath: string): Promise<string> {
+async function runSpec(jestConfigRelativePath: string, opts: { jestSeed?: number } = {}): Promise<string> {
   const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin', 'jest'], { shell: true });
   const jestBinaryPath = jestBinaryPathCommand.split('\n')[0];
   try {
-    const { stderr: specOutput } = await execFile('node', [jestBinaryPath, '--config', jestConfigRelativePath]);
+    const { stderr: specOutput } = await execFile('node', [
+      jestBinaryPath,
+      '--config',
+      jestConfigRelativePath,
+      '--show-seed',
+      ...(opts.jestSeed !== undefined ? ['--seed', String(opts.jestSeed)] : []),
+    ]);
     return specOutput;
   } catch (err) {
     return (err as any).stderr;
@@ -290,8 +311,26 @@ function expectFail(out: string, specFileName: string): void {
   expect(out).toMatch(new RegExp('FAIL .*/' + specFileName));
 }
 
-function expectAlignedSeeds(out: string): void {
-  expect(out).toMatch(/[×✕] .* \(with seed=-?\d+\)/);
-  const receivedSeed = out.split('seed=')[1].split(')')[0];
-  expect(out).toMatch(new RegExp('seed\\s*:\\s*' + receivedSeed + '[^\\d]'));
+function expectAlignedSeeds(out: string, opts: { noAlignWithJest?: boolean } = {}): void {
+  // Seed printed by jest has the shape:
+  // >   Seed:        -518086725
+  // >   Test Suites: 1 failed, 1 total
+  // >   Tests:       1 failed, 1 total
+  // >   Snapshots:   0 total
+  // >   Time:        0.952 s
+  // >   Ran all test suites
+  const JestSeedMatcher = /Seed:\s+(-?\d+)/;
+  expect(out).toMatch(JestSeedMatcher);
+  const jestSeed = JestSeedMatcher.exec(out)![1];
+  // Seed printed by jest-fast-check next to test name has the shape:
+  // >   × property fail on falsy property (with seed=-518086725)
+  const JestFastCheckSeedMatcher = opts.noAlignWithJest
+    ? /[×✕] .* \(with seed=(-?\d+)\)/
+    : new RegExp('[×✕] .* \\(with seed=(' + jestSeed + ')\\)');
+  expect(out).toMatch(JestFastCheckSeedMatcher);
+  const jestFastCheckSeed = JestFastCheckSeedMatcher.exec(out)![1];
+  // Seed printed by fast-check in case of failure has the shape:
+  // >   Property failed after 1 tests
+  // >   { seed: -518086725, path: \"0\", endOnFailure: true }
+  expect(out).toMatch(new RegExp('\\{[^}]*seed\\s*:\\s*' + jestFastCheckSeed + '[^\\d]'));
 }
