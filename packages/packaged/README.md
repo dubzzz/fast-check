@@ -53,4 +53,6 @@ const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, ke
 
 ## Minimal requirements
 
-- Node ≥14.14.0
+- Node ≥14.17.0<sup>(1)</sup>
+
+_(1): In theory 14.14.0, should be enough but as the package uses `pacote` internally, we have to align with its requirements: `^14.17.0 || ^16.13.0 || >=18.0.0`._
