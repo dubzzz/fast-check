@@ -129,13 +129,16 @@ function enrichWithTestProp<T extends (...args: any[]) => any>(testFn: T): FastC
   if (typeof testFn !== 'function') {
     throw new Error(`Unexpected entry encountered while build {it/test} for @fast-check/jest`);
   }
-  if (Object.keys(testFn).length === 0) {
+  const allVariationKeys = (Object.getOwnPropertyNames(testFn) as Array<keyof typeof testFn>).filter(
+    (key) => typeof testFn[key] === 'function'
+  );
+  if (allVariationKeys.length === 0) {
     return testFn as FastCheckItBuilder<T>;
   }
   const enrichedTestFn = (...args: Parameters<T>): ReturnType<T> => testFn(...args);
   const extraKeys: Partial<FastCheckItBuilder<T>> = {};
-  for (const key in testFn) {
-    extraKeys[key] = key === 'each' ? enrichWithTestProp(testFn[key] as any) : testFn[key];
+  for (const key of allVariationKeys) {
+    extraKeys[key] = key !== 'each' ? enrichWithTestProp(testFn[key] as any) : testFn[key];
   }
   if ('each' in testFn) {
     extraKeys['prop' as keyof typeof extraKeys] = buildTestProp(testFn as any) as any;
