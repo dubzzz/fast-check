@@ -1,3 +1,13 @@
+# 1.1.1
+
+_Add GitHub Sponsors link_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.0...ava%2Fv1.1.1)]
+
+## Fixes
+
+- ([PR#3316](https://github.com/dubzzz/fast-check/pull/3316)) Funding: Add link to GitHub sponsors in funding
+- ([PR#3319](https://github.com/dubzzz/fast-check/pull/3319)) Test: Internalize bundle checks for ava package
+
 # 1.1.0
 
 _Align seed computation with fast-check's one_
