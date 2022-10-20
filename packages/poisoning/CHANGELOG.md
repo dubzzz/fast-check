@@ -1,3 +1,16 @@
+# 0.0.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.2...poisoning%2Fv0.0.3)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3317](https://github.com/dubzzz/fast-check/pull/3317)) Performance: Faster diff tracking with pre-filtering of uneligible
+
 # 0.0.2
 
 _Add ability to omit some instances when checking for poisoning_

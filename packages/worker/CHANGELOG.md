@@ -1,3 +1,16 @@
+# 0.0.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.1...worker%2Fv0.0.2)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.1
 
 _First stable release of `@fast-check/worker`_
