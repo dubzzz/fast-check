@@ -12,10 +12,10 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
 
-import * as UriPathArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/UriPathArbitraryBuilder';
 import * as WebAuthorityMock from '../../../src/arbitrary/webAuthority';
 import * as WebFragmentsMock from '../../../src/arbitrary/webFragments';
 import * as WebQueryParametersMock from '../../../src/arbitrary/webQueryParameters';
+import * as WebPathMock from '../../../src/arbitrary/webPath';
 import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
@@ -32,22 +32,22 @@ describe('webUrl', () => {
       fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
         // Arrange
         const { instance } = fakeArbitrary();
-        const buildUriPathArbitrary = jest.spyOn(UriPathArbitraryBuilderMock, 'buildUriPathArbitrary');
-        buildUriPathArbitrary.mockReturnValue(instance);
         const webAuthority = jest.spyOn(WebAuthorityMock, 'webAuthority');
         webAuthority.mockReturnValue(instance);
         const webFragments = jest.spyOn(WebFragmentsMock, 'webFragments');
         webFragments.mockReturnValue(instance);
         const webQueryParameters = jest.spyOn(WebQueryParametersMock, 'webQueryParameters');
         webQueryParameters.mockReturnValue(instance);
+        const webPath = jest.spyOn(WebPathMock, 'webPath');
+        webPath.mockReturnValue(instance);
 
         // Act
         withConfiguredGlobal(config, () => webUrl(constraints));
 
         // Assert
-        expect(buildUriPathArbitrary).toHaveBeenCalledTimes(1); // always used
+        expect(webPath).toHaveBeenCalledTimes(1); // always used
         expect(webAuthority).toHaveBeenCalledTimes(1); // always used
-        const resolvedSizeForPath = buildUriPathArbitrary.mock.calls[0][0];
+        const resolvedSizeForPath = webPath.mock.calls[0][0]!.size;
         if (constraints.authoritySettings === undefined || constraints.authoritySettings === undefined) {
           expect(webAuthority.mock.calls[0][0]!.size).toBe(resolvedSizeForPath);
         }

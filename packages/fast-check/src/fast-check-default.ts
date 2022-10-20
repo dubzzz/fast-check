@@ -98,6 +98,7 @@ import { uuid } from './arbitrary/uuid';
 import { uuidV } from './arbitrary/uuidV';
 import { webAuthority, WebAuthorityConstraints } from './arbitrary/webAuthority';
 import { webFragments, WebFragmentsConstraints } from './arbitrary/webFragments';
+import { webPath, WebPathConstraints } from './arbitrary/webPath';
 import { webQueryParameters, WebQueryParametersConstraints } from './arbitrary/webQueryParameters';
 import { webSegment, WebSegmentConstraints } from './arbitrary/webSegment';
 import { webUrl, WebUrlConstraints } from './arbitrary/webUrl';
@@ -292,6 +293,7 @@ export {
   webAuthority,
   webSegment,
   webFragments,
+  webPath,
   webQueryParameters,
   webUrl,
   emailAddress,
@@ -382,6 +384,7 @@ export {
   ShuffledSubarrayConstraints,
   WebAuthorityConstraints,
   WebFragmentsConstraints,
+  WebPathConstraints,
   WebQueryParametersConstraints,
   WebSegmentConstraints,
   WebUrlConstraints,
