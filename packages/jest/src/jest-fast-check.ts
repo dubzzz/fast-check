@@ -126,16 +126,18 @@ type FastCheckItBuilder<T> = T &
   };
 
 function enrichWithTestProp<T extends (...args: any[]) => any>(testFn: T): FastCheckItBuilder<T> {
-  if (Object.keys(testFn).length === 0) {
-    return testFn as FastCheckItBuilder<T>;
-  }
-  const enrichedTestFn = (...args: Parameters<T>): ReturnType<T> => testFn(...args);
+  let atLeastOneExtra = false;
   const extraKeys: Partial<FastCheckItBuilder<T>> = {};
   for (const key in testFn) {
     if (typeof testFn[key] === 'function') {
+      atLeastOneExtra = true;
       extraKeys[key] = key !== 'each' ? enrichWithTestProp(testFn[key] as any) : testFn[key];
     }
   }
+  if (!atLeastOneExtra) {
+    return testFn as FastCheckItBuilder<T>;
+  }
+  const enrichedTestFn = (...args: Parameters<T>): ReturnType<T> => testFn(...args);
   if ('each' in testFn) {
     extraKeys['prop' as keyof typeof extraKeys] = buildTestProp(testFn as any) as any;
   }
