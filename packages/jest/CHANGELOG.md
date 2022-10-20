@@ -1,3 +1,19 @@
+# 1.3.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.2.0...jest%2Fv1.3.0)]
+
+## Features
+
+- ([PR#3332](https://github.com/dubzzz/fast-check/pull/3332)) Take seed coming from Jest whenever provided
+
+## Fixes
+
+- ([PR#3333](https://github.com/dubzzz/fast-check/pull/3333)) Doc: Add new recommendations around Jest and `--show-seed`
+- ([PR#3315](https://github.com/dubzzz/fast-check/pull/3315)) Test: Internalize bundle checks for jest package
+
+---
+
 # 1.2.0
 
 _Align seed computation with fast-check's one_

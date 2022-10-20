@@ -1,3 +1,16 @@
+# 0.0.5
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.4...packaged%2Fv0.0.5)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.4
 
 _Only keep comments in published typings not in published code_
