@@ -1,14 +1,15 @@
 # 0.0.3
 
-_TODO Description_
+_Faster computation of diffs when filters apply_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.2...poisoning%2Fv0.0.3)]
 
 ## Features
 
-
+- ([PR#3318](https://github.com/dubzzz/fast-check/pull/3318)) Do not recompute ignore globals for attributes
 
 ## Fixes
 
+- ([PR#3316](https://github.com/dubzzz/fast-check/pull/3316)) Funding: Add link to GitHub sponsors in funding
 - ([PR#3317](https://github.com/dubzzz/fast-check/pull/3317)) Performance: Faster diff tracking with pre-filtering of uneligible
 
 # 0.0.2

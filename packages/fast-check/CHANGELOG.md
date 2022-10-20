@@ -1,17 +1,18 @@
 # 3.3.0
 
-_TODO Description_
+_Expose `webPath` arbitrary_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.2.0...v3.3.0)]
 
 ## Features
 
-- ([PR#3299](https://github.com/dubzzz/fast-check/pull/3299)) Explicitely declare typings for constraints on `date`
+- ([PR#3299](https://github.com/dubzzz/fast-check/pull/3299)) Explicitly declare typings for constraints on `date`
 - ([PR#3300](https://github.com/dubzzz/fast-check/pull/3300)) Expose an url path builder called `webPath`
 
 ## Fixes
 
 - ([PR#3328](https://github.com/dubzzz/fast-check/pull/3328)) CI: Drop netlify related code and "please <stuff>" actions
 - ([PR#3298](https://github.com/dubzzz/fast-check/pull/3298)) Doc: Document default values in the JSDoc
+- ([PR#3316](https://github.com/dubzzz/fast-check/pull/3316)) Funding: Add link to GitHub sponsors in funding
 - ([PR#3301](https://github.com/dubzzz/fast-check/pull/3301)) Test: Poisoning checks compatible with watch mode
 - ([PR#3330](https://github.com/dubzzz/fast-check/pull/3330)) Test: Make sure poisoning spec never forget one global
 

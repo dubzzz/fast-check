@@ -1,15 +1,11 @@
 # 0.0.5
 
-_TODO Description_
+_Add GitHub Sponsors link_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.4...packaged%2Fv0.0.5)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#3316](https://github.com/dubzzz/fast-check/pull/3316)) Funding: Add link to GitHub sponsors in funding
 
 # 0.0.4
 
