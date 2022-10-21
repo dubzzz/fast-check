@@ -30,7 +30,7 @@ describe.each<{ runnerName: RunnerType }>([{ runnerName: 'test' }, { runnerName:
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.prop([fc.string(), fc.string(), fc.string()])('property pass sync', (a, b, c) => {
-          return `${a}${b}${c}`.includes(b as string);
+          return `${a}${b}${c}`.includes(b);
         });
       });
 
@@ -47,7 +47,7 @@ describe.each<{ runnerName: RunnerType }>([{ runnerName: 'test' }, { runnerName:
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.prop([fc.string(), fc.string(), fc.string()])('property pass async', async (a, b, c) => {
           await new Promise((resolve) => setTimeout(resolve, 0));
-          return `${a}${b}${c}`.includes(b as string);
+          return `${a}${b}${c}`.includes(b);
         });
       });
 

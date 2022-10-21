@@ -107,11 +107,27 @@ function internalTestProp(testFn: It) {
   return Object.assign(base, extras);
 }
 
+/**
+ * Type used for any `{it,test}.*.prop`
+ */
 type TestProp<Ts extends [any] | any[]> = (
   arbitraries: ArbitraryTuple<Ts>,
   params?: fc.Parameters<Ts>
 ) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
 
+/**
+ * prop has just been declared for typing reasons, ideally TestProp should be enough
+ * and should be used to replace `{ prop: typeof prop }` by `{ prop: TestProp<???> }`
+ */
+declare const prop: <Ts extends [any] | any[]>(
+  arbitraries: ArbitraryTuple<Ts>,
+  params?: fc.Parameters<Ts>
+) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
+
+/**
+ * Build `{it,test}.*.prop` out of `{it,test}.*`
+ * @param testFn - The source `{it,test}.*`
+ */
 function buildTestProp<Ts extends [any] | any[]>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing']
 ): TestProp<Ts> {
@@ -120,11 +136,17 @@ function buildTestProp<Ts extends [any] | any[]>(
       internalTestPropExecute(testFn, testName, arbitraries, prop, params);
 }
 
+/**
+ * Revamped {it,test} with added `.prop`
+ */
 type FastCheckItBuilder<T> = T &
-  ('each' extends keyof T ? T & { prop: TestProp<unknown[]> } : T) & {
+  ('each' extends keyof T ? T & { prop: typeof prop } : T) & {
     [K in keyof Omit<T, 'each'>]: FastCheckItBuilder<T[K]>;
   };
 
+/**
+ * Build the enriched version of {it,test}, the one with added `.prop`
+ */
 function enrichWithTestProp<T extends (...args: any[]) => any>(testFn: T): FastCheckItBuilder<T> {
   let atLeastOneExtra = false;
   const extraKeys: Partial<FastCheckItBuilder<T>> = {};
