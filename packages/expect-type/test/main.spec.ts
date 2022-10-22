@@ -5,6 +5,8 @@ function type<T>() {
   return null as any as T;
 }
 
+// expectType
+
 expectType<5>()(type<5>(), '5 is 5');
 expectType<number>()(type<number>(), 'number is number');
 expectType<never>()(type<never>(), 'never is never');
@@ -53,6 +55,8 @@ expectType<[5]>()(type<[15]>(), '[15] is not [5]');
 //expectType<[any]>()(type<[unknown]>(), '[unknown] is not [any]');
 //// @ts-expect-error - [any] is not [unknown]
 //expectType<[unknown]>()(type<[any]>(), '[any] is not [unknown]');
+
+// expectTypeAssignable
 
 expectTypeAssignable<number>()(type<number>(), 'number is assignable to number');
 expectTypeAssignable<number>()(type<5>(), '5 is assignable to number');
