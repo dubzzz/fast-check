@@ -29,6 +29,40 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
   { specName: 'itProp', runnerName: 'it', useLegacySignatures: true },
   { specName: 'it', runnerName: 'it', useLegacySignatures: false },
 ])('$specName', ({ runnerName, useLegacySignatures }) => {
+  if (!useLegacySignatures) {
+    it.concurrent('should pass on successful no prop mode', async () => {
+      // Arrange
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        runner('successful no prop', () => {
+          expect(true).toBe(true);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectPass(out, specFileName);
+      expect(out).toMatch(/[√✓] successful no prop/);
+    });
+
+    it.concurrent('should fail on failing no prop mode', async () => {
+      // Arrange
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        runner('failing no prop', () => {
+          expect(false).toBe(true);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+      expect(out).toMatch(/[×✕] failing no prop/);
+    });
+  }
+
   it.concurrent('should pass on truthy synchronous property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
@@ -160,6 +194,40 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
   });
 
   describe('.failing', () => {
+    if (!useLegacySignatures) {
+      it.concurrent('should fail on successful no prop mode', async () => {
+        // Arrange
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+          runner.failing('successful no prop', () => {
+            expect(true).toBe(true);
+          });
+        });
+
+        // Act
+        const out = await runSpec(jestConfigRelativePath);
+
+        // Assert
+        expectFail(out, specFileName);
+        expect(out).toMatch(/[×✕] successful no prop/);
+      });
+
+      it.concurrent('should pass on failing no prop mode', async () => {
+        // Arrange
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+          runner.failing('failing no prop', () => {
+            expect(false).toBe(true);
+          });
+        });
+
+        // Act
+        const out = await runSpec(jestConfigRelativePath);
+
+        // Assert
+        expectPass(out, specFileName);
+        expect(out).toMatch(/[√✓] failing no prop/);
+      });
+    }
+
     it.concurrent('should pass because failing', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
